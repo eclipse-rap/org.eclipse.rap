@@ -113,8 +113,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
     "scrollBarsSelection" : function( widget, value ) {
       widget.setHasScrollBarsSelectionListener( value );
     }
-  } ),
-
-  methods : []
+  } )
 
 } );

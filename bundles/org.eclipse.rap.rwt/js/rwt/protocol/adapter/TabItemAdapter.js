@@ -54,12 +54,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.TabItem", {
       }
     },
     "toolTip" : rwt.protocol.AdapterUtil.getControlPropertyHandler( "toolTip" )
-  },
-
-  listeners : [],
-
-  listenerHandler : {},
-
-  methods : []
+  }
 
 } );

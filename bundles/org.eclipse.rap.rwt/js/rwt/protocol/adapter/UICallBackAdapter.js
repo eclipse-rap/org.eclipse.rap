@@ -19,14 +19,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.client.UICallBack", {
 
   properties : [
     "active"
-  ],
-
-  propertyHandler : {},
-
-  listeners : [],
-
-  listenerHandler : {},
-
-  methods : []
+  ]
 
 } );

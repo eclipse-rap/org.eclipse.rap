@@ -97,8 +97,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.MenuItem", {
       }
     },
     "Help" : rwt.protocol.AdapterUtil.getControlListenerHandler( "Help" )
-  },
-
-  methods : []
+  }
 
 } );

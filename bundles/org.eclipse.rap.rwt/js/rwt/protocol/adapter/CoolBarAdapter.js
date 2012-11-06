@@ -29,8 +29,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.CoolBar", {
 
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [] ),
 
-  listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
-
-  methods : []
+  listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} )
 
 } );

@@ -63,12 +63,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.CTabItem", {
     "showing" : function( widget, value ) {
       widget.setVisibility( value );
     }
-  },
-
-  listeners : [],
-
-  listenerHandler : {},
-
-  methods : []
+  }
 
 } );

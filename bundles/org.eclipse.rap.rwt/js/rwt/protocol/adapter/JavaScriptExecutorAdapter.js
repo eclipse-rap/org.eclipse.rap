@@ -19,14 +19,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.client.JavaScriptExecutor", {
 
   destructor : rwt.util.Function.returnTrue,
 
-  properties : [],
-
-  propertyHandler : {},
-
-  listeners : [],
-
-  listenerHandler : {},
-
   methods : [
     "execute"
   ],

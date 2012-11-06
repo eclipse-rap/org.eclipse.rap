@@ -29,12 +29,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.DropTarget", {
       var control = source.control;
       org.eclipse.rwt.DNDSupport.getInstance().setDropTargetTransferTypes( control, value );
     }
-  },
-
-  listeners : [],
-
-  listenerHandler : {},
-
-  methods : []
+  }
 
 } );

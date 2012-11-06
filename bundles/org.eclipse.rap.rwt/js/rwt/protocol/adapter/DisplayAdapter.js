@@ -25,8 +25,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Display", {
     "cancelKeys"
   ],
 
-  listeners : [],
-
   methods : [
     "allowEvent",
     "cancelEvent",

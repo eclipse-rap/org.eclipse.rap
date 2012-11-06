@@ -17,14 +17,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.client.TextSizeMeasurement", {
 
   service : true,
 
-  properties : [],
-
-  listeners : [],
-
   methods : [
     "measureItems"
-  ],
-
-  propertyHandler : {}
+  ]
 
 } );

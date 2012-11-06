@@ -27,8 +27,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ToolBar", {
 
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [] ),
 
-  listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
-
-  methods : []
+  listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} )
 
 } );

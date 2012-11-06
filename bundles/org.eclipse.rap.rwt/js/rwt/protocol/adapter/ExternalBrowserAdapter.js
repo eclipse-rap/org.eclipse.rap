@@ -17,14 +17,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ExternalBrowser", {
 
   destructor : rwt.util.Function.returnTrue,
 
-  properties : [],
-
-  propertyHandler : {},
-
-  listeners : [],
-
-  listenerHandler : {},
-
   methods : [
     "open",
     "close"

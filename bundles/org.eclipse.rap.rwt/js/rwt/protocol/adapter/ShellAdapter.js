@@ -107,8 +107,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
     "Move"
   ] ),
 
-  listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
-
-  methods : []
+  listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} )
 
 } );

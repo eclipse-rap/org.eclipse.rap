@@ -52,10 +52,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ControlDecorator", {
     }
   },
 
-  listeners : [ "Selection", "DefaultSelection" ],
-
-  listenerHandler : {},
-
-  methods : []
+  listeners : [ "Selection", "DefaultSelection" ]
 
 } );

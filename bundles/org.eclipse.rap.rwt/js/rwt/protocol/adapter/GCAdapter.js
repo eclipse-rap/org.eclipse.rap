@@ -20,14 +20,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.GC", {
     gc.dispose();
   },
 
-  properties : [],
-
-  propertyHandler : {},
-
-  listeners : [],
-
-  listenerHandler : {},
-
   methods : [ "init", "draw" ],
 
   methodHandler : {
@@ -44,6 +36,5 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.GC", {
       gc.draw( properties.operations );
     }
   }
-
 
 } );

@@ -38,12 +38,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.CoolItem", {
         widget.setControl( control );
       } );
     }
-  },
-
-  listeners : [],
-
-  listenerHandler : {},
-
-  methods : []
+  }
 
 } );

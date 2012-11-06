@@ -58,8 +58,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ScrolledComposite", {
     "scrollBarsSelection" : function( widget, value ) {
       widget.setHasSelectionListener( value );
     }
-  } ),
-
-  methods : []
+  } )
 
 } );

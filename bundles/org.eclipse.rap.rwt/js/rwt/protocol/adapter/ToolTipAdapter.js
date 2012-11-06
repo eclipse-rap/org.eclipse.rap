@@ -64,10 +64,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ToolTip", {
 
   listeners : [
     "Selection"
-  ],
-
-  listenerHandler : {},
-
-  methods : []
+  ]
 
 } );

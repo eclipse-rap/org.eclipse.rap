@@ -115,12 +115,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridItem", {
     "customVariant" : function( widget, value ) {
       widget.setVariant( value );
     }
-  },
-
-  listeners : [],
-
-  listenerHandler : {},
-
-  methods : []
+  }
 
 } );

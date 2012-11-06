@@ -59,10 +59,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.List", {
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
     "Selection",
     "DefaultSelection"
-  ] ),
-
-  listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
-
-  methods : []
+  ] )
 
 } );

@@ -17,10 +17,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.theme.ThemeStore", {
 
   service : true,
 
-  properties : [],
-
-  propertyHandler : {},
-
   methods : [
     "loadActiveTheme",
     "loadFallbackTheme"

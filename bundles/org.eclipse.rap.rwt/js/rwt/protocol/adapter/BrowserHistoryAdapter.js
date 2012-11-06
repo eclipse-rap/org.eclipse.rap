@@ -17,15 +17,9 @@ rwt.protocol.AdapterRegistry.add( "rwt.client.BrowserHistory", {
 
   service : true,
 
-  properties : [],
-
-  propertyHandler : {},
-
   listeners : [
     "Navigation"
   ],
-
-  listenerHandler : {},
 
   methods : [
     "add"

@@ -85,10 +85,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ToolItem", {
 
   listeners : [
     "Selection"
-  ],
-
-  listenerHandler : {},
-
-  methods : []
+  ]
 
 } );

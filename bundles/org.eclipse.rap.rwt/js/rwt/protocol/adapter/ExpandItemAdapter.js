@@ -50,12 +50,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ExpandItem", {
         widget.setImage( value[ 0 ] );
       }
     }
-  },
-
-  listeners : [],
-
-  listenerHandler : {},
-
-  methods : []
+  }
 
 } );

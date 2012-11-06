@@ -50,8 +50,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Combo", {
     "Modify"
   ] ),
 
-  listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
-
-  methods : []
+  listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} )
 
 } );

@@ -33,9 +33,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Composite", {
 
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [] ),
 
-  listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
-
-  methods : []
-
+  listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} )
 
 } );

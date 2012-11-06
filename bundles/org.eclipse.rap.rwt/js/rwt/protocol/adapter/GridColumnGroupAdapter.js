@@ -35,15 +35,9 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridColumnGroup", {
     "customVariant"
   ],
 
-  propertyHandler : {},
-
   listeners : [
     "Expand",
     "Collapse"
-  ],
-
-  listenerHandler : {},
-
-  methods : []
+  ]
 
 } );
