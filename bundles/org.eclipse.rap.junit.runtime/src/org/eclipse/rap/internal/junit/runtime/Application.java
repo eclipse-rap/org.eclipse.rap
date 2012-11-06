@@ -44,9 +44,9 @@ public class Application implements IEntryPoint, ITestHarness {
 
   private int createAndRunWorkbench() {
     int result;
-    String entryPointName = getEntryPointName();
-    if( entryPointName != null ) {
-      IEntryPoint entryPoint = getEntryPoint( entryPointName );
+    String entryPointPath = getEntryPointPath();
+    if( entryPointPath != null ) {
+      IEntryPoint entryPoint = getEntryPoint( entryPointPath );
       result = entryPoint.createUI();
     } else {
       result = createAndRunEmptyWorkbench();
@@ -65,7 +65,7 @@ public class Application implements IEntryPoint, ITestHarness {
     return PlatformUI.createAndRunWorkbench( display, workbenchAdvisor );
   }
 
-  private String getEntryPointName() {
+  private String getEntryPointPath() {
     String parameter = RWT.getRequest().getParameter( "testentrypoint" );
     String result = null;
     if( !"rapjunit".equals( parameter ) && !"".equals( parameter ) ) {
@@ -74,11 +74,11 @@ public class Application implements IEntryPoint, ITestHarness {
     return result;
   }
 
-  private IEntryPoint getEntryPoint( String entryPointName ) {
+  private IEntryPoint getEntryPoint( String entryPointPath ) {
     EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
-    EntryPointRegistration registration = entryPointManager.getRegistrationByPath( entryPointName );
+    EntryPointRegistration registration = entryPointManager.getRegistrationByPath( entryPointPath );
     if( registration == null ) {
-      throw new IllegalArgumentException( entryPointName );
+      throw new IllegalArgumentException( entryPointPath );
     }
     return registration.getFactory().create();
   }

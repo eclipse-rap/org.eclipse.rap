@@ -13,8 +13,12 @@ package org.eclipse.rap.ui.internal.branding;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 
 
 public final class BrandingUtil {
@@ -23,7 +27,9 @@ public final class BrandingUtil {
 
   public static String getCurrentBrandingId() {
     EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
-    Map<String, String> properties = entryPointManager.getCurrentEntryPointProperties();
+    HttpServletRequest request = ContextProvider.getRequest();
+    EntryPointRegistration registration = entryPointManager.getEntryPointRegistration( request );
+    Map<String, String> properties = registration.getProperties();
     return properties.get( BrandingUtil.ENTRY_POINT_BRANDING );
   }
 

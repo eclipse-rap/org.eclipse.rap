@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.client.WebClient;
@@ -25,6 +26,7 @@ import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.internal.service.StartupPageTemplate.VariableWriter;
 import org.eclipse.rap.rwt.internal.theme.QxImage;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
@@ -147,7 +149,9 @@ public class StartupPage {
 
   private Map<String, String> getCurrentEntryPointProperties() {
     EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
-    return entryPointManager.getCurrentEntryPointProperties();
+    HttpServletRequest request = ContextProvider.getRequest();
+    EntryPointRegistration registration = entryPointManager.getEntryPointRegistration( request );
+    return registration.getProperties();
   }
 
   private String getResourceLocation( String resourceName ) {

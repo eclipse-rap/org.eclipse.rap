@@ -19,7 +19,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -36,8 +35,8 @@ public class EntryPointManager {
     entryPoints = new HashMap<String, EntryPointRegistration>();
   }
 
-  public void register( String path, 
-                        Class<? extends IEntryPoint> type, 
+  public void register( String path,
+                        Class<? extends IEntryPoint> type,
                         Map<String, String> properties )
   {
     ParamCheck.notNull( path, "path" );
@@ -62,20 +61,6 @@ public class EntryPointManager {
     }
   }
 
-  public EntryPointRegistration getRegistrationByPath( String path ) {
-    synchronized( entryPoints ) {
-      return entryPoints.get( path );
-    }
-  }
-
-  public Collection<String> getServletPaths() {
-    Collection<String> result;
-    synchronized( entryPoints ) {
-      result = new ArrayList<String>( entryPoints.keySet() );
-    }
-    return result;
-  }
-
   public EntryPointRegistration getEntryPointRegistration( HttpServletRequest request ) {
     EntryPointRegistration result = null;
     String path = request.getServletPath();
@@ -88,10 +73,18 @@ public class EntryPointManager {
     return result;
   }
 
-  public Map<String, String> getCurrentEntryPointProperties() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    EntryPointRegistration registration = getEntryPointRegistration( request );
-    return registration.getProperties();
+  public EntryPointRegistration getRegistrationByPath( String path ) {
+    synchronized( entryPoints ) {
+      return entryPoints.get( path );
+    }
+  }
+
+  public Collection<String> getServletPaths() {
+    Collection<String> result;
+    synchronized( entryPoints ) {
+      result = new ArrayList<String>( entryPoints.keySet() );
+    }
+    return result;
   }
 
   private void doRegister( String path, IEntryPointFactory factory, Map<String, String> properties )

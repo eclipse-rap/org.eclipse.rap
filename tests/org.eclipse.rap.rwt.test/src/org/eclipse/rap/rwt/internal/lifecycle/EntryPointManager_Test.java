@@ -19,7 +19,6 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
@@ -201,16 +200,16 @@ public class EntryPointManager_Test extends TestCase {
 
     assertTrue( entryPointManager.getServletPaths().isEmpty() );
   }
-  
+
   public void testGetEntryPointRegistration() {
     HashMap<String, String> properties = new HashMap<String, String>();
     properties.put( "prop", "value" );
     entryPointManager.register( PATH, entryPointFactory, properties );
     TestRequest request = new TestRequest();
     request.setServletPath( PATH );
-    
+
     EntryPointRegistration registration = entryPointManager.getEntryPointRegistration( request );
-    
+
     assertNotNull( registration );
     assertEquals( "value", registration.getProperties().get( "prop" ) );
   }
@@ -218,24 +217,12 @@ public class EntryPointManager_Test extends TestCase {
   public void testGetEntryPointRegistrationForUnregisteredEntryPoint() {
     TestRequest request = new TestRequest();
     request.setServletPath( PATH );
-    
+
     try {
       entryPointManager.getEntryPointRegistration( request );
       fail();
     } catch( Exception expected ) {
     }
-  }
-  
-  public void testGetCurrentEntryPointProperties() {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put( "test", "true" );
-    entryPointManager.register( "/foo", entryPointFactory, parameters );
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.setServletPath( "/foo" );
-
-    Map<String, String> properties = entryPointManager.getCurrentEntryPointProperties();
-
-    assertEquals( "true", properties.get( "test" ) );
   }
 
   private void assertRegisterByPathFails( String path, Class<? extends IEntryPoint> type ) {
