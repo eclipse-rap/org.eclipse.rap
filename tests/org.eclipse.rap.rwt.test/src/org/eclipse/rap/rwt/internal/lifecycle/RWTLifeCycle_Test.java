@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -85,8 +86,8 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testDefaultEntryPoint() throws IOException {
-    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, 
-                                      TestEntryPointWithLog.class, 
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH,
+                                      TestEntryPointWithLog.class,
                                       null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
 
@@ -224,8 +225,8 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testExceptionInPhaseListener() throws IOException {
-    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, 
-                                      TestEntryPoint.class, 
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH,
+                                      TestEntryPoint.class,
                                       null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new ExceptionListenerTest() );
@@ -738,8 +739,8 @@ public class RWTLifeCycle_Test extends TestCase {
 
   public void testExceptionInRender() throws Exception {
     fakeServletPath( EntryPointUtil.DEFAULT_PATH );
-    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, 
-                                      ExceptionInRenderEntryPoint.class, 
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH,
+                                      ExceptionInRenderEntryPoint.class,
                                       null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     try {
@@ -892,6 +893,7 @@ public class RWTLifeCycle_Test extends TestCase {
   private static void newSession() {
     ContextProvider.disposeContext();
     Fixture.createServiceContext();
+    Fixture.fakeClient( new WebClient() );
   }
 
   private static UIThread getUIThread() {

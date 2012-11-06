@@ -12,7 +12,9 @@ package org.eclipse.rap.rwt.client;
 
 import org.eclipse.rap.rwt.client.service.BrowserHistory;
 import org.eclipse.rap.rwt.client.service.ClientService;
+import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
+import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
 import org.eclipse.rap.rwt.internal.widgets.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.internal.widgets.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -53,6 +55,11 @@ public class WebClient_Test extends TestCase {
   public void testGetBrowserHistoryService() {
     ClientService service = client.getService( BrowserHistory.class );
     assertTrue( service instanceof BrowserHistoryImpl );
+  }
+
+  public void testGetExitConfirmationService() {
+    ClientService service = client.getService( ExitConfirmation.class );
+    assertTrue( service instanceof ExitConfirmationImpl );
   }
 
   //////////////////

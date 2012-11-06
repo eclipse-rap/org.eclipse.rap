@@ -17,7 +17,9 @@ import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.client.service.BrowserHistory;
 import org.eclipse.rap.rwt.client.service.ClientService;
+import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
+import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
 import org.eclipse.rap.rwt.internal.widgets.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.internal.widgets.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
@@ -110,6 +112,8 @@ public class WebClient implements Client {
       result = ( T )getServiceImpl( JavaScriptExecutorImpl.class );
     } else if( type == BrowserHistory.class ) {
       result = ( T )getServiceImpl( BrowserHistoryImpl.class );
+    } else if( type == ExitConfirmation.class ) {
+      result = ( T )getServiceImpl( ExitConfirmationImpl.class );
     }
     return result;
   }

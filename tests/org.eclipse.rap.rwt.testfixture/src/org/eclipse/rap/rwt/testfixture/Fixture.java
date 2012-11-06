@@ -38,6 +38,7 @@ import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.client.Client;
+import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.engine.RWTServletContextListener;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextHelper;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
@@ -104,12 +105,6 @@ public final class Fixture {
 
   private static ServletContext servletContext;
   private static RWTServletContextListener rwtServletContextListener;
-
-  public static class FixtureApplicationConfigurator implements ApplicationConfiguration {
-    public void configure( Application application ) {
-      application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
-    }
-  }
 
   ////////////////////////////////////////////
   // Methods to control global servlet context
@@ -230,6 +225,7 @@ public final class Fixture {
     useTestResourceManager();
     createApplicationContext();
     createServiceContext();
+    fakeClient( new WebClient() );
   }
 
   public static void useDefaultResourceManager() {
@@ -706,4 +702,11 @@ public final class Fixture {
   private Fixture() {
     // prevent instantiation
   }
+
+  public static class FixtureApplicationConfigurator implements ApplicationConfiguration {
+    public void configure( Application application ) {
+      application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
+    }
+  }
+
 }

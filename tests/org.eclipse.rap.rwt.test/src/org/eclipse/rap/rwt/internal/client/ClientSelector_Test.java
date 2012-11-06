@@ -32,6 +32,7 @@ public class ClientSelector_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakeClient( null );
     clientSelector = new ClientSelector();
   }
 

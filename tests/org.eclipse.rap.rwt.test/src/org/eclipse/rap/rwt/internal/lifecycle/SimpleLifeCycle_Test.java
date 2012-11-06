@@ -17,6 +17,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -43,8 +44,8 @@ public class SimpleLifeCycle_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    ISessionStore sessionSore = ContextProvider.getSessionStore();
-    ApplicationContextUtil.set( sessionSore, ApplicationContextUtil.getInstance() );
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
+    ApplicationContextUtil.set( sessionStore, ApplicationContextUtil.getInstance() );
     lifeCycle = new SimpleLifeCycle();
   }
 
@@ -118,7 +119,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     registerEntryPoint( TestEntryPoint.class );
     TestRequest request = ( TestRequest )RWT.getRequest();
     request.setServerName( "/rap" );
-    
+
     lifeCycle.execute();
     Fixture.fakeNewRequest();
     lifeCycle.execute();
@@ -285,6 +286,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   private static void newSession() {
     ContextProvider.disposeContext();
     Fixture.createServiceContext();
+    Fixture.fakeClient( new WebClient() );
   }
 
   private static class ThreadRecordingPhaseListener implements PhaseListener {

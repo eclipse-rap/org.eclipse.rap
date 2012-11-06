@@ -16,6 +16,8 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyVal
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
@@ -165,8 +167,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static String getExitConfirmation() {
-    // TODO [rh] read exit confirmation from API introduced with bug 374478
-    return null;
+    ExitConfirmation exitConfirmation = RWT.getClient().getService( ExitConfirmation.class );
+    return exitConfirmation == null ? null : exitConfirmation.getMessage();
   }
 
   /////////////////////////////

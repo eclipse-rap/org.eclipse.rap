@@ -24,6 +24,8 @@ import java.lang.reflect.Field;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
@@ -56,6 +58,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
+import org.json.JSONObject;
 import org.mockito.InOrder;
 
 
@@ -358,6 +361,36 @@ public class DisplayLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findCreateOperation( "myShell" ) );
+  }
+
+  public void testRendersExitConfirmation() throws IOException {
+    RWT.getClient().getService( ExitConfirmation.class ).setMessage( "test" );
+
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "test", message.findSetProperty( displayId, "exitConfirmation" ) );
+  }
+
+  public void testPreservesExitConfirmation() throws IOException {
+    RWT.getClient().getService( ExitConfirmation.class ).setMessage( "test" );
+
+    displayLCA.preserveValues( display );
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( displayId, "exitConfirmation" ) );
+  }
+
+  public void testRendersExitConfirmationReset() throws IOException {
+    RWT.getClient().getService( ExitConfirmation.class ).setMessage( "test" );
+    displayLCA.preserveValues( display );
+
+    RWT.getClient().getService( ExitConfirmation.class ).setMessage( null );
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( displayId, "exitConfirmation" ) );
   }
 
   private static void setEnableUiTests( boolean value ) {
