@@ -428,10 +428,7 @@ qx.Class.define( "rwt.widgets.Combo", {
 
     _reDispatch : function( event ) {
       var originalTarget = event.getTarget();
-      var originalTargetParent = originalTarget.getParent();
-      if(    originalTargetParent === this._list
-          || originalTargetParent === this._list._vertScrollBar )
-      {
+      if( this._list.contains( originalTarget ) ) {
         // TODO [tb] : should be disposed automatically, test
         originalTarget.dispatchEvent( event, false );
         event.stopPropagation();

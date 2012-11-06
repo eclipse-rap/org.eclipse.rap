@@ -570,6 +570,36 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       checkbox.destroy();
     },
 
+    // bug 388717
+    testEventRedispatch_3 : function() {
+      var logger = TestUtil.getLogger();
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      shell.addEventListener( "mousedown", logger.log, logger );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Combo",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      var combo = ObjectManager.getObject( "w3" );
+      combo.setSpace( 10, 81, 6, 23 );
+      combo.setItemHeight( 19 );
+      combo.setEditable( false );
+      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
+      combo.setVisibleItemCount( 5 );
+      TestUtil.flush();
+      combo.setListVisible( true );
+      TestUtil.flush();
+
+      TestUtil.click( combo._list.getItems()[ 1 ] );
+
+      assertEquals( 0, logger.getLog().length );
+      shell.destroy();
+    },
+
     testButtonClick : function() {
       var combo = this._createDefaultCombo();
       TestUtil.click( combo._button );
