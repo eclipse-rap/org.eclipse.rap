@@ -1496,7 +1496,7 @@ public class TreeItem extends Item {
         data[ i ].preferredWidthBuffer = Data.UNKNOWN_WIDTH;
       }
     }
-    if( recursive && getExpanded() ) {
+    if( recursive && expanded ) {
       for( int i = 0; i < itemCount; i++ ) {
         TreeItem item = items[ i ];
         if( item != null ) {
