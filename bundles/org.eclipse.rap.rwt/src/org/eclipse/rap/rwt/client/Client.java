@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.client;
 
+import java.io.Serializable;
+
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.ClientService;
 
@@ -25,7 +27,7 @@ import org.eclipse.rap.rwt.client.service.ClientService;
  * @see RWT#getClient()
  * @since 2.0
  */
-public interface Client {
+public interface Client extends Serializable {
 
   /**
    * Returns this client's implementation of a given service, if available.
