@@ -2074,6 +2074,18 @@ public class TreeItem_Test extends TestCase {
     assertSame( anotherRootItem, tree.getSelection()[ 0 ] );
   }
 
+  public void testClearPreferredWidthBuffersRecursive() {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem rootItem = new TreeItem( tree, SWT.NONE );
+    TreeItem subItem = new TreeItem( rootItem, SWT.NONE );
+    rootItem.setExpanded( true );
+
+    tree.changed( new Control[ 0 ] );
+
+    assertFalse( rootItem.hasPreferredWidthBuffer( 0 ) );
+    assertFalse( subItem.hasPreferredWidthBuffer( 0 ) );
+  }
+
   //////////////////
   // Helping methods
 

@@ -1489,11 +1489,19 @@ public class TreeItem extends Item {
     data[ index ].preferredWidthBuffer = preferredWidthBuffer;
   }
 
-  void clearPreferredWidthBuffers() {
+  void clearPreferredWidthBuffers( boolean recursive ) {
     int count = Math.max( 1, parent.getColumnCount() );
     for( int i = 0; i < count; i++ ) {
       if( hasData( i ) ) {
         data[ i ].preferredWidthBuffer = Data.UNKNOWN_WIDTH;
+      }
+    }
+    if( recursive && getExpanded() ) {
+      for( int i = 0; i < itemCount; i++ ) {
+        TreeItem item = items[ i ];
+        if( item != null ) {
+          item.clearPreferredWidthBuffers( recursive );
+        }
       }
     }
   }
