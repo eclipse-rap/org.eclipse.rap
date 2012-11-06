@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.internal.service.StartupPageTemplate.VariableWriter;
@@ -102,7 +101,7 @@ public class StartupPage {
     for( String location : jsLibraries ) {
       writeScriptTag( printWriter, location );
     }
-    writeScriptTag( printWriter, RWTFactory.getJSLibraryConcatenator().getLocation() );
+    writeScriptTag( printWriter, applicationContext.getJSLibraryConcatenator().getLocation() );
   }
 
   protected void writeScriptTag( PrintWriter printWriter, String libraryLocation ) {
