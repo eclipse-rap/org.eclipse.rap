@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.theme;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
@@ -49,11 +48,7 @@ public final class ThemeUtil {
    */
   public static String getCurrentThemeId() {
     ISessionStore sessionStore = ContextProvider.getSessionStore();
-    String result = ( String )sessionStore.getAttribute( CURR_THEME_ATTR );
-    if( result == null ) {
-      result = RWT.DEFAULT_THEME_ID;
-    }
-    return result;
+    return ( String )sessionStore.getAttribute( CURR_THEME_ATTR );
   }
 
   /**
