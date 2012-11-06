@@ -32,10 +32,8 @@ public class ClientSelector {
   }
 
   public void selectClient( HttpServletRequest request ) {
-    if( getBufferedClient() == null ) {
-      ClientProvider provider = findClientProvider( request );
-      bufferClient( provider.getClient() );
-    }
+    ClientProvider provider = findClientProvider( request );
+    bufferClient( provider.getClient() );
   }
 
   public Client getSelectedClient() {

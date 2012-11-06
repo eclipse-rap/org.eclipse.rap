@@ -12,8 +12,6 @@ package org.eclipse.rap.rwt.internal.client;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.servlet.http.HttpServletRequest;
@@ -83,16 +81,6 @@ public class ClientSelector_Test extends TestCase {
     clientSelector.selectClient( mockRequest() );
 
     assertSame( expected, clientSelector.getSelectedClient() );
-  }
-
-  public void testSelectedClientBuffered() {
-    ClientProvider provider = mockClientProvider( true, mock( Client.class ) );
-    clientSelector.addClientProvider( provider );
-
-    clientSelector.selectClient( mockRequest() );
-    clientSelector.selectClient( mockRequest() );
-
-    verify( provider, times( 1 ) ).accept( any( HttpServletRequest.class ) );
   }
 
   public void testActivateInstallsWebClientProvider() {
