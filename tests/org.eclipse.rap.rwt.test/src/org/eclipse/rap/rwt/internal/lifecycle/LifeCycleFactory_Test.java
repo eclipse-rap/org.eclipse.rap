@@ -14,24 +14,22 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerRegistry;
-import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
+import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class LifeCycleFactory_Test extends TestCase {
+  private ApplicationContext applicationContext;
   private LifeCycleFactory lifeCycleFactory;
-  private PhaseListenerRegistry phaseListenerRegistry;
 
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    phaseListenerRegistry = new PhaseListenerRegistry();
-    lifeCycleFactory = new LifeCycleFactory( phaseListenerRegistry );
+    applicationContext = ApplicationContextUtil.get( Fixture.getServletContext() );
+    lifeCycleFactory = new LifeCycleFactory( applicationContext );
   }
 
   @Override
@@ -82,9 +80,19 @@ public class LifeCycleFactory_Test extends TestCase {
     assertSame( SimpleLifeCycle.class, lifeCycleClass );
   }
 
+  public void testGetLifeCycle() {
+    lifeCycleFactory.configure( TestLifeCycle.class );
+    lifeCycleFactory.activate();
+    
+    TestLifeCycle lifeCycle = ( TestLifeCycle )lifeCycleFactory.getLifeCycle();
+    
+    assertEquals( applicationContext, lifeCycle.applicationContext );
+  }
+  
   public void testGetLifeCycleWithRegisteredPhaseListeners() {
     PhaseListener phaseListener = mock( PhaseListener.class );
-    phaseListenerRegistry.add( phaseListener );
+    applicationContext.getPhaseListenerRegistry().removeAll();
+    applicationContext.getPhaseListenerRegistry().add( phaseListener );
     lifeCycleFactory.configure( TestLifeCycle.class );
     lifeCycleFactory.activate();
 
@@ -94,7 +102,12 @@ public class LifeCycleFactory_Test extends TestCase {
   }
 
   private static class TestLifeCycle extends LifeCycle {
+    final ApplicationContext applicationContext;
     PhaseListener addedPhaseListener;
+    public TestLifeCycle( ApplicationContext applicationContext ) {
+      super( applicationContext );
+      this.applicationContext = applicationContext;
+    }
     @Override
     public void addPhaseListener( PhaseListener listener ) {
       addedPhaseListener = listener;

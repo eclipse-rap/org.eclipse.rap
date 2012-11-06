@@ -15,6 +15,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -190,6 +191,10 @@ public class RWT_Test extends TestCase {
 
     private String invocationLog = "";
 
+    public TestLifeCycle( ApplicationContext applicationContext ) {
+      super( applicationContext );
+    }
+    
     @Override
     public void execute() throws IOException {
     }

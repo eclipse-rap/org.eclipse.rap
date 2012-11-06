@@ -113,10 +113,11 @@ public class SimpleLifeCycle extends LifeCycle {
   private final PhaseListenerManager phaseListenerManager;
   private final IPhase[] phases;
 
-  public SimpleLifeCycle() {
-    phaseListenerManager = new PhaseListenerManager( this );
-    phases = new IPhase[] {
-      new PrepareUIRoot(),
+  public SimpleLifeCycle( ApplicationContext applicationContext ) {
+    super( applicationContext );
+    this.phaseListenerManager = new PhaseListenerManager( this );
+    this.phases = new IPhase[] {
+      new PrepareUIRoot( applicationContext ),
       new ReadData(),
       new ProcessAction(),
       new Render()

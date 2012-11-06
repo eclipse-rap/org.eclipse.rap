@@ -85,7 +85,7 @@ public class ApplicationContext {
     resourceManager = new ResourceManagerImpl( resourceDirectory );
     phaseListenerRegistry = new PhaseListenerRegistry();
     entryPointManager = new EntryPointManager();
-    lifeCycleFactory = new LifeCycleFactory( phaseListenerRegistry );
+    lifeCycleFactory = new LifeCycleFactory( this );
     themeManager = new ThemeManager();
     resourceFactory = new ResourceFactory();
     imageFactory = new ImageFactory();

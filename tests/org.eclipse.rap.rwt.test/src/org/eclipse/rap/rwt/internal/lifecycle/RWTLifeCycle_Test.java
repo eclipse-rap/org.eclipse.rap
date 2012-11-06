@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -842,7 +843,7 @@ public class RWTLifeCycle_Test extends TestCase {
 
   public void testGetUIThreadWhileLifeCycleInExecute() throws IOException {
     entryPointManager.register( EntryPointManager.DEFAULT_PATH, TestEntryPoint.class, null );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = new RWTLifeCycle( ApplicationContextUtil.getInstance() );
     final Thread[] currentThread = { null };
     final Thread[] uiThread = { null };
     lifeCycle.addPhaseListener( new PhaseListener() {
@@ -865,7 +866,7 @@ public class RWTLifeCycle_Test extends TestCase {
 
   public void testGetUIThreadAfterLifeCycleExecuted() throws IOException {
     entryPointManager.register( EntryPointManager.DEFAULT_PATH, TestEntryPoint.class, null );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = new RWTLifeCycle( ApplicationContextUtil.getInstance() );
     lifeCycle.execute();
 
     Thread uiThread = LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() ).getThread();

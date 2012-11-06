@@ -36,7 +36,6 @@ import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener.PhaseEventI
 import org.eclipse.swt.widgets.Display;
 
 
-// TODO [rh] see if it is possible to move this test to org.eclipse.rwt.test
 public class SimpleLifeCycle_Test extends TestCase {
 
   private LifeCycle lifeCycle;
@@ -46,7 +45,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     Fixture.setUp();
     ISessionStore sessionStore = ContextProvider.getSessionStore();
     ApplicationContextUtil.set( sessionStore, ApplicationContextUtil.getInstance() );
-    lifeCycle = new SimpleLifeCycle();
+    lifeCycle = new SimpleLifeCycle( ApplicationContextUtil.getInstance() );
   }
 
   @Override

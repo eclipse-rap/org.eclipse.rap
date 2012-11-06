@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -28,7 +29,7 @@ public class PrepareUIRoot_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    phase = new PrepareUIRoot();
+    phase = new PrepareUIRoot( ApplicationContextUtil.getInstance() );
     TestEntryPoint.wasInvoked = false;
   }
 
