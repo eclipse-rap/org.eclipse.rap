@@ -9,8 +9,10 @@ SCRIPTS_DIR=$(dirname $(readlink -nm $0))
 
 if [ "${BUILD_TYPE:0:1}" == "S" ]; then
   sign=true
+  SIGNPROFILE="-Peclipse-sign"
 else
   sign=false
+  SIGNPROFILE=""
 fi
 
 ######################################################################
@@ -23,8 +25,8 @@ rm -rf "$WORKSPACE"/runtimeRepo "$WORKSPACE"/*.zip
 # Build RAP Runtime
 
 cd "$WORKSPACE/org.eclipse.rap/releng/org.eclipse.rap.releng"
-echo "Running maven on $PWD, sign=$sign"
-$MVN -e clean package -Dsign=$sign
+echo "Running maven on $PWD, $SIGNPROFILE"
+$MVN -e clean package $SIGNPROFILE
 exitcode=$?
 if [ "$exitcode" != "0" ]; then
   echo "Maven exited with error code " + $exitcode

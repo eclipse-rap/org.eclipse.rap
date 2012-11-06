@@ -24,12 +24,13 @@
   <properties>
     <tycho-version>0.16.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
-    <signing-plugin-version>1.0.5</signing-plugin-version>
+    <signing-plugin-version>1.0.1</signing-plugin-version>
     <surefire-version>2.9</surefire-version>
     <junit-version>3.8.2</junit-version>
     <mockito-version>1.8.4</mockito-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <baseline-repository>http://download.eclipse.org/rt/rap/nightly/runtime/</baseline-repository>
+    <tycho.scmUrl>scm:git:git://git.eclipse.org/gitroot/rap/org.eclipse.rap.git</tycho.scmUrl>
   </properties>
 
   <prerequisites>
@@ -117,6 +118,11 @@
             <artifactId>tycho-buildtimestamp-jgit</artifactId>
             <version>${tycho-extras-version}</version>
           </dependency>
+          <dependency> 
+            <groupId>org.eclipse.tycho.extras</groupId> 
+            <artifactId>tycho-sourceref-jgit</artifactId> 
+            <version>${tycho-extras-version}</version> 
+          </dependency> 
         </dependencies>
         <configuration>
           <timestampProvider>jgit</timestampProvider>
@@ -124,6 +130,9 @@
             pom.xml
           </jgit.ignore>
           <format>yyyyMMdd-HHmm</format>
+          <sourceReferences> 
+            <generate>true</generate> 
+          </sourceReferences> 
         </configuration>
       </plugin>
 
@@ -155,15 +164,6 @@
       </plugin>
 
       <plugin>
-        <groupId>org.eclipse.dash.maven</groupId>
-        <artifactId>eclipse-signing-maven-plugin</artifactId>
-        <version>${signing-plugin-version}</version>
-        <configuration>
-          <signerInputDirectory>/home/data/httpd/download-staging.priv/rt/rap</signerInputDirectory>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${surefire-version}</version>
@@ -187,6 +187,94 @@
 
     </plugins>
   </build>
+
+  <profiles>
+
+    <profile>
+      <id>eclipse-sign</id>
+
+      <pluginRepositories>
+        <pluginRepository>
+          <id>m2e-cbi</id>
+          <url>http://download.eclipse.org/technology/m2e/maven/</url>
+        </pluginRepository>
+      </pluginRepositories>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>target-platform-configuration</artifactId>
+            <version>${tycho-version}</version>
+            <configuration>
+              <includePackedArtifacts>true</includePackedArtifacts>
+            </configuration>
+          </plugin>
+
+          <plugin>
+            <groupId>org.eclipse.tycho.extras</groupId>
+            <artifactId>tycho-pack200a-plugin</artifactId>
+            <version>${tycho-extras-version}</version>
+            <executions>
+              <execution>
+                <id>pack200-normalize</id>
+                <goals>
+                  <goal>normalize</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.eclipse.cbi.maven.plugins</groupId>
+            <artifactId>eclipse-jarsigner-plugin</artifactId>
+            <version>${signing-plugin-version}</version>
+            <executions>
+              <execution>
+                <id>sign</id>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.eclipse.tycho.extras</groupId>
+            <artifactId>tycho-pack200b-plugin</artifactId>
+            <version>${tycho-extras-version}</version>
+            <executions>
+              <execution>
+                <id>pack200-pack</id>
+                <goals>
+                  <goal>pack</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>tycho-p2-plugin</artifactId>
+            <version>${tycho-version}</version>
+            <executions>
+              <execution>
+                <id>p2-metadata</id>
+                <goals>
+                  <goal>p2-metadata</goal>
+                </goals>
+                <phase>package</phase>
+              </execution>
+            </executions>
+            <configuration>
+              <defaultP2Metadata>false</defaultP2Metadata>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
 
   <dependencies>
     <dependency>
