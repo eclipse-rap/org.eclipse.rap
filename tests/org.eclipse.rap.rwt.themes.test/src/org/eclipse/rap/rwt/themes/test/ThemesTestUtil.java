@@ -17,6 +17,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
@@ -105,7 +106,7 @@ public class ThemesTestUtil {
     themeManager.initialize();
     themeManager.registerTheme( theme );
     themeManager.activate();
-    ThemeUtil.setCurrentThemeId( themeId );
+    ThemeUtil.setCurrentThemeId( ContextProvider.getSessionStore(), themeId );
   }
 
   public static void cleanupThemes() {

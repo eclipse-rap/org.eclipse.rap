@@ -328,6 +328,45 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.destroy();
     },
 
+    testKeyDownAndHoldApps : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new rwt.widgets.base.Terminator();
+      widget.addToDocument();
+      TestUtil.flush();
+      widget.focus();
+      var log = this._addKeyLogger( widget, true, false, false );
+      TestUtil.keyDown( widget._getTargetNode(), "Apps" );
+      TestUtil.keyDown( widget._getTargetNode(), "Apps" );
+      var expected = [ "keydown", "keypress", "keypress" ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },
+
+    testAppsKeyLoosingKeyUp : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new rwt.widgets.base.Terminator();
+      widget.addToDocument();
+      TestUtil.flush();
+      widget.focus();
+      var log = this._addKeyLogger( widget, true, true, false );
+      TestUtil.keyDown( widget._getTargetNode(), "Apps" );
+      TestUtil.keyDown( widget._getTargetNode(), "X" );
+      TestUtil.keyUp( widget._getTargetNode(), "X" );
+      TestUtil.keyDown( widget._getTargetNode(), "Apps" );
+      var expected = [
+        "keydown", "Apps",
+        "keypress", "Apps",
+        "keyup", "Apps",
+        "keydown", "X",
+        "keypress", "X",
+        "keyup", "X",
+        "keydown", "Apps",
+        "keypress", "Apps"
+      ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },
+
     testKeyHoldNonPrintable : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new rwt.widgets.base.Terminator();
@@ -534,6 +573,44 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       TestUtil.fakeMouseEventDOM( text._inputElement, "contextmenu", right );
       assertEquals( 1, log.length );
 
+      text.destroy();
+    },
+
+    testStoreMouseEvent : function(){
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var text = new rwt.widgets.Text( false );
+      text.addToDocument();
+      text.setSpace( 0, 50, 0, 21 );
+      TestUtil.flush();
+      text.focus();
+      var log = [];
+      var left = qx.event.type.MouseEvent.buttons.left;
+      var right = qx.event.type.MouseEvent.buttons.right;
+
+      TestUtil.fakeMouseEventDOM( text.getElement(), "mousemove", left, 10, 20 );
+      //TestUtil.fakeMouseEventDOM( text._inputElement, "contextmenu", right );
+
+      assertEquals( 10, qx.event.type.MouseEvent.getPageX() );
+      assertEquals( 20, qx.event.type.MouseEvent.getPageY() );
+      text.destroy();
+    },
+
+    testStoreMouseEventNotContextMenu : function(){
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var text = new rwt.widgets.Text( false );
+      text.addToDocument();
+      text.setSpace( 0, 50, 0, 21 );
+      TestUtil.flush();
+      text.focus();
+      var log = [];
+      var left = qx.event.type.MouseEvent.buttons.left;
+      var right = qx.event.type.MouseEvent.buttons.right;
+
+      TestUtil.fakeMouseEventDOM( text.getElement(), "mousemove", left, 10, 20 );
+      TestUtil.fakeMouseEventDOM( text._inputElement, "contextmenu", right, 0, 0 );
+
+      assertEquals( 10, qx.event.type.MouseEvent.getPageX() );
+      assertEquals( 20, qx.event.type.MouseEvent.getPageY() );
       text.destroy();
     },
 

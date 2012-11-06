@@ -34,6 +34,7 @@ public class ApplicationContextActivator_Test extends TestCase {
   private JSLibraryConcatenator jsLibraryConcatenator;
   private ServiceManager serviceManager;
   private ClientSelector clientSelector;
+  private StartupPage startupPage;
 
   @Override
   protected void setUp() {
@@ -50,6 +51,7 @@ public class ApplicationContextActivator_Test extends TestCase {
     verify( jsLibraryConcatenator ).activate();
     verify( jsLibraryConcatenator ).startJSConcatenation();
     verify( clientSelector ).activate();
+    verify( startupPage ).activate();
   }
 
   public void testDeactivate() {
@@ -61,6 +63,7 @@ public class ApplicationContextActivator_Test extends TestCase {
     verify( lifeCycleFactory ).deactivate();
     verify( serviceManager ).clear();
     verify( themeManager ).deactivate();
+    verify( startupPage ).deactivate();
   }
 
   private void mockApplicationContext() {
@@ -85,7 +88,7 @@ public class ApplicationContextActivator_Test extends TestCase {
     IResourceManager resourceManager = mock( IResourceManager.class );
     when( applicationContext.getResourceManager() ).thenReturn( resourceManager );
 
-    StartupPage startupPage = mock( StartupPage.class );
+    startupPage = mock( StartupPage.class );
     when( applicationContext.getStartupPage() ).thenReturn( startupPage );
 
     clientSelector = mock( ClientSelector.class );

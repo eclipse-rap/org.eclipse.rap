@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.theme.QxAppearanceWriter;
-import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.jstest.TestContribution;
 import org.eclipse.swt.internal.widgets.displaykit.ClientResourcesAdapter;
@@ -28,9 +27,8 @@ import org.eclipse.swt.internal.widgets.displaykit.ClientResourcesAdapter;
 public class RWTContribution implements TestContribution {
 
   private static final String APPEARANCE_NAME = "appearance.js";
-  private static final String THEME_NAME = "default-theme.js";
   private static final String TEST_SETTINGS_RESOURCE = "/resource/TestSettings.js";
-  private static final String JSON_PARSER_RESOURCE = "json2.js";
+  private static final String JSON_PARSER_RESOURCE = "json2.min.js";
 
   public String getName() {
     return "rwt";
@@ -45,7 +43,6 @@ public class RWTContribution implements TestContribution {
     }
     result.add( JSON_PARSER_RESOURCE );
     result.add( APPEARANCE_NAME );
-    result.add( THEME_NAME );
     return toArray( result );
   }
 
@@ -54,9 +51,6 @@ public class RWTContribution implements TestContribution {
     if( APPEARANCE_NAME.equals( resource ) ) {
       String appearanceCode = getAppearanceCode();
       result = new ByteArrayInputStream( appearanceCode.getBytes( "UTF-8" ) );
-    } else if( THEME_NAME.equals( resource ) ) {
-      String themeCode = getThemeCode();
-      result = new ByteArrayInputStream( themeCode.getBytes( "UTF-8" ) );
     } else if( TEST_SETTINGS_RESOURCE.equals( resource ) ) {
       result = getClass().getResourceAsStream( resource );
     } else {
@@ -69,18 +63,6 @@ public class RWTContribution implements TestContribution {
     ThemeManager themeManager = RWTFactory.getThemeManager();
     List<String> customAppearances = themeManager.getAppearances();
     return QxAppearanceWriter.createQxAppearanceTheme( customAppearances );
-  }
-
-  private String getThemeCode() {
-    return "document.write( '<script src=\""
-           + getThemeLocation()
-           + "\" type=\"text/javascript\"></script>' );";
-  }
-
-  private String getThemeLocation() {
-    ThemeManager themeManager = RWTFactory.getThemeManager();
-    Theme defaultTheme = themeManager.getTheme( ThemeManager.FALLBACK_THEME_ID );
-    return defaultTheme.getRegisteredLocation();
   }
 
   private static String[] toArray( List<String> list ) {

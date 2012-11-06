@@ -401,6 +401,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.destroy();
     },
 
+    testApplicationModal : function() {
+      var shell = new rwt.widgets.Shell( {} );
+      shell.addState( "rwt_APPLICATION_MODAL" );
+      shell.initialize();
+
+      assertTrue( shell._appModal );
+      shell.destroy();
+    },
+
+    testPrimaryModal : function() {
+      var shell = new rwt.widgets.Shell( {} );
+      shell.addState( "rwt_PRIMARY_MODAL" );
+      shell.initialize();
+
+      assertTrue( shell._appModal );
+      shell.destroy();
+    },
+
     /////////
     // Helper
 

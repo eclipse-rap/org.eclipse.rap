@@ -43,6 +43,14 @@ public class StartupPage {
     this.jsLibraries = new ArrayList<String>();
   }
 
+  public void activate() {
+    startupPageTemplate = createStartupPageTemplate();
+  }
+
+  public void deactivate() {
+    startupPageTemplate = null;
+  }
+
   public void addJsLibrary( String location ) {
     ParamCheck.notNull( location, "location" );
     jsLibraries.add( location );
@@ -50,8 +58,7 @@ public class StartupPage {
 
   void send( HttpServletResponse response ) throws IOException {
     setResponseHeaders( response );
-    setCurrentTheme();
-    getStartupPageTemplate().writePage( response.getWriter(), new StartupPageValueProvider() );
+    startupPageTemplate.writePage( response.getWriter(), new StartupPageValueProvider() );
   }
 
   static void setResponseHeaders( HttpServletResponse response ) {
@@ -66,13 +73,8 @@ public class StartupPage {
     response.addHeader( "Cache-Control", "max-age=0, no-cache, must-revalidate, no-store" );
   }
 
-  protected StartupPageTemplate getStartupPageTemplate() throws IOException {
-    synchronized( this ) {
-      if( startupPageTemplate == null ) {
-        startupPageTemplate = new StartupPageTemplate();
-      }
-    }
-    return startupPageTemplate;
+  protected StartupPageTemplate createStartupPageTemplate() {
+    return new StartupPageTemplate();
   }
 
   protected void writeTitle( PrintWriter printWriter ) {
@@ -126,14 +128,6 @@ public class StartupPage {
     code.append( StartupJson.get() );
     code.append( ");/*EOM*/" );
     printWriter.write( code.toString() );
-  }
-
-  private void setCurrentTheme() {
-    Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
-    String themeId = properties.get( WebClient.THEME_ID );
-    if( themeId != null && themeId.length() > 0 ) {
-      ThemeUtil.setCurrentThemeId( themeId );
-    }
   }
 
   protected String getBackgroundImageLocation() {

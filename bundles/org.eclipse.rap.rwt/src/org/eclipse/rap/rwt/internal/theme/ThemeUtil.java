@@ -31,7 +31,7 @@ public final class ThemeUtil {
 
   private static final String DEFAULT_THEME_CSS = "resource/theme/default.css";
 
-  private static final String CURR_THEME_ATTR = "org.eclipse.rap.theme.current";
+  public static final String CURR_THEME_ATTR = "org.eclipse.rap.theme.current";
 
   /**
    * Returns the ids of all themes that are currently registered.
@@ -58,16 +58,14 @@ public final class ThemeUtil {
 
   /**
    * Sets the current theme to the theme identified by the given id.
-   *
+   * @param sessionStore TODO
    * @param themeId the id of the theme to activate
+   *
    * @throws IllegalArgumentException if no theme with the given id is
    *             registered
    */
-  public static void setCurrentThemeId( String themeId ) {
-    if( !RWTFactory.getThemeManager().hasTheme( themeId ) ) {
-      throw new IllegalArgumentException( "Illegal theme id: " + themeId );
-    }
-    ContextProvider.getSessionStore().setAttribute( CURR_THEME_ATTR, themeId );
+  public static void setCurrentThemeId( ISessionStore sessionStore, String themeId ) {
+    sessionStore.setAttribute( CURR_THEME_ATTR, themeId );
   }
 
   public static Theme getCurrentTheme() {

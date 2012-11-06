@@ -141,6 +141,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
     new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ).service();
 
+    sessionStore = ContextProvider.getSessionStore();
     assertSame( applicationContext, ApplicationContextUtil.get( sessionStore ) );
   }
 

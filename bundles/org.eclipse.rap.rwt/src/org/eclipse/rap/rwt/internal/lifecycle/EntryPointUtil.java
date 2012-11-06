@@ -38,17 +38,8 @@ public class EntryPointUtil {
   }
 
   private static EntryPointRegistration findCurrentEntryPointRegistration() {
-    EntryPointRegistration result = null;
     HttpServletRequest request = ContextProvider.getRequest();
-    String path = request.getServletPath();
-    if( path != null && path.length() > 0 ) {
-      EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
-      result = entryPointManager.getRegistrationByPath( path );
-    }
-    if( result == null ) {
-      throw new IllegalArgumentException( "Entry point not found: " + path );
-    }
-    return result;
+    return RWTFactory.getEntryPointManager().getEntryPointRegistration( request );
   }
 
 }

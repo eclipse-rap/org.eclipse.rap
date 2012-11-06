@@ -166,6 +166,11 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           func.call( context, event.type, keyCode, charCode, event );
         }
         var pseudoTypes = EventHandlerUtil.getEventPseudoTypes( event, keyCode, charCode );
+        var keyUpCodes =  EventHandlerUtil.mustRestoreKeyup( keyCode, pseudoTypes );
+        for( var i = 0; i < keyUpCodes.length; i++ ) {
+          this._onkeyevent_post( event, "keyup", keyUpCodes[ i ], 0 );
+          EventHandlerUtil.clearStuckKey( keyUpCodes[ i ] );
+        }
         for( var i = 0; i < pseudoTypes.length; i++ ) {
           this._onkeyevent_post( event, pseudoTypes[ i ], keyCode, charCode );
         }
@@ -383,7 +388,9 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
                                                        vOriginalTarget,
                                                        vRelatedTarget );
       // Store last Event in MouseEvent Constructor. Needed for Tooltips, ...
-      qx.event.type.MouseEvent.storeEventState( vEventObject );
+      if( vType !== "contextmenu" ) {
+        qx.event.type.MouseEvent.storeEventState( vEventObject );
+      }
       if( vDispatchTarget.getEnabled() && !eventConsumed ) {
         vDispatchTarget.dispatchEvent( vEventObject );
         this._onmouseevent_special_post( vType,

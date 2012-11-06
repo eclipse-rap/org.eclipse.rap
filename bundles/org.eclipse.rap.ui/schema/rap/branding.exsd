@@ -211,29 +211,6 @@ The icon should be in the .ico format for compatibility with all browsers.
       </complexType>
    </element>
 
-   <element name="entrypoint">
-      <annotation>
-         <appInfo>
-            <meta.element labelAttribute="id"/>
-         </appInfo>
-         <documentation>
-            An element which references to an existing entrypoint defined by &lt;code&gt;org.eclipse.rap.ui.entrypoint&lt;/code&gt;.
-         </documentation>
-      </annotation>
-      <complexType>
-         <attribute name="id" type="string">
-            <annotation>
-               <documentation>
-                  The id of the referenced entrypoint or application extension.
-               </documentation>
-               <appInfo>
-                  <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.entrypoint/entrypoint/@id"/>
-               </appInfo>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
    <element name="presentationFactory">
       <complexType>
          <sequence>

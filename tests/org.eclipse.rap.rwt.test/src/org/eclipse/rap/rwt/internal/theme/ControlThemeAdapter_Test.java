@@ -64,7 +64,7 @@ public class ControlThemeAdapter_Test extends TestCase {
   public void testGetBorderWidthForCompositeSubclass() throws IOException {
     String css = "Composite.special { border: 23px solid gray }";
     ThemeTestUtil.registerTheme( "custom", css, null );
-    ThemeUtil.setCurrentThemeId( "custom" );
+    ThemeTestUtil.setCurrentThemeId( "custom" );
 
     Composite subclassedComposite = new Composite( shell, SWT.BORDER ) {
       // empty subclass

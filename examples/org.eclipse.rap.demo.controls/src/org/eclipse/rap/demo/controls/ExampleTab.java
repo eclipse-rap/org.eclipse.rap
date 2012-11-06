@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -461,7 +462,7 @@ abstract class ExampleTab implements Serializable {
               }
             }
             String newThemeId = availableThemeIds[ index ];
-            ThemeUtil.setCurrentThemeId( newThemeId );
+            ThemeUtil.setCurrentThemeId( ContextProvider.getSessionStore(), newThemeId );
           }
         } );
         shell.pack();

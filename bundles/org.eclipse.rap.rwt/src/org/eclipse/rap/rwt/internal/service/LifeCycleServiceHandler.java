@@ -16,12 +16,12 @@ import java.text.MessageFormat;
 import java.util.Map;
 
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.RWTMessages;
-import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
@@ -138,28 +138,20 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   }
 
   private static void reinitializeSessionStore() {
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
+    SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSessionStore();
     Integer version = RWTRequestVersionControl.getInstance().getCurrentRequestId();
     Map<String, String[]> bufferedParameters = RequestParameterBuffer.getBufferedParameters();
     ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
-    clearSessionStore();
+    sessionStore.valueUnbound( null );
+    HttpServletRequest request = ContextProvider.getRequest();
+    SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
+    sessionStore = ( SessionStoreImpl )builder.buildSessionStore();
+    ContextProvider.getContext().setSessionStore( sessionStore );
     RWTRequestVersionControl.getInstance().setCurrentRequestId( version );
     if( bufferedParameters != null ) {
       RequestParameterBuffer.store( bufferedParameters );
     }
-    ApplicationContextUtil.set( sessionStore, applicationContext );
-    applicationContext.getClientSelector().selectClient( ContextProvider.getRequest() );
-  }
-
-  private static void clearSessionStore() {
-    SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSessionStore();
-    // clear attributes of session store to enable new startup
-    sessionStore.valueUnbound( null );
-    // reinitialize session store state
-    sessionStore.valueBound( null );
-    // TODO [rh] ContextProvider#getSessionStore() also initializes a session (slightly different)
-    //      merge both code passages
-    SingletonManager.install( sessionStore );
+    applicationContext.getClientSelector().selectClient( request );
   }
 
   private static void reinitializeServiceStore() {

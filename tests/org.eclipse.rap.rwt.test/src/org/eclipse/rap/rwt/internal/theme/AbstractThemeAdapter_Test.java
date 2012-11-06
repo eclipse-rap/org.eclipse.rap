@@ -14,20 +14,18 @@ package org.eclipse.rap.rwt.internal.theme;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.theme.AbstractThemeAdapter;
-import org.eclipse.rap.rwt.internal.theme.IThemeCssElement;
-import org.eclipse.rap.rwt.internal.theme.Theme;
-import org.eclipse.rap.rwt.internal.theme.ThemeCssElement;
-import org.eclipse.rap.rwt.internal.theme.ThemeManager;
-import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
-import org.eclipse.rap.rwt.internal.theme.ThemeableWidget;
-import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Tree;
 
 
 public class AbstractThemeAdapter_Test extends TestCase {
@@ -90,7 +88,7 @@ public class AbstractThemeAdapter_Test extends TestCase {
     assertNotNull( defaultColor );
     int defaultBorderWidth = adapter.getCssBorderWidth( "CustomWidget", "border", custom );
     // switch theme
-    ThemeUtil.setCurrentThemeId( "customId" );
+    ThemeUtil.setCurrentThemeId( ContextProvider.getSessionStore(), "customId" );
     // color is redefined
     Color customColor = adapter.getCssColor( "CustomWidget", "color", custom );
     assertFalse( defaultColor.equals( customColor ) );

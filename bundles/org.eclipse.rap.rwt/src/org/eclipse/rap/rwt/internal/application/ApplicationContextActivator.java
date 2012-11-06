@@ -39,6 +39,7 @@ public class ApplicationContextActivator {
   }
 
   private void activateInstances() {
+    applicationContext.getStartupPage().activate();
     applicationContext.getLifeCycleFactory().activate();
     // Note: order is crucial here
     applicationContext.getJSLibraryConcatenator().startJSConcatenation();
@@ -61,6 +62,7 @@ public class ApplicationContextActivator {
   }
 
   private void deactivateInstances() {
+    applicationContext.getStartupPage().deactivate();
     applicationContext.getJSLibraryConcatenator().deactivate();
     applicationContext.getLifeCycleFactory().deactivate();
     applicationContext.getServiceManager().clear();

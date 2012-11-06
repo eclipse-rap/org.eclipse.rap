@@ -115,7 +115,7 @@ public final class ThemePropertyAdapterRegistry {
   public static class ImagePropertyAdapter implements ThemePropertyAdapter {
 
     public String getKey( QxType value ) {
-      return computeKey( value );
+      return createKey( value );
     }
 
     public String getSlot( QxType value ) {
@@ -150,7 +150,7 @@ public final class ThemePropertyAdapterRegistry {
       return result;
     }
 
-    private String computeKey( QxType value ) {
+    private String createKey( QxType value ) {
       String result = Integer.toHexString( value.hashCode() );
       QxImage image = ( QxImage )value;
       if( image.path != null ) {
@@ -208,7 +208,7 @@ public final class ThemePropertyAdapterRegistry {
   public static class CursorPropertyAdapter implements ThemePropertyAdapter {
 
     public String getKey( QxType value ) {
-      return computeKey( value );
+      return createKey( value );
     }
 
     public String getSlot( QxType value ) {
@@ -226,7 +226,7 @@ public final class ThemePropertyAdapterRegistry {
       return result;
     }
 
-    private String computeKey( QxType value ) {
+    private String createKey( QxType value ) {
       String result = Integer.toHexString( value.hashCode() );
       QxCursor cursor = ( QxCursor )value;
       if( cursor.isCustomCursor() ) {
