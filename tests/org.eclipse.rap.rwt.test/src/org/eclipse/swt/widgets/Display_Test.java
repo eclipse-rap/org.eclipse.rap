@@ -890,7 +890,7 @@ public class Display_Test extends TestCase {
 
   public void testEnsureIdIsW1() throws IOException {
     Class<EnsureIdEntryPoint> entryPointClass = EnsureIdEntryPoint.class;
-    RWTFactory.getEntryPointManager().registerByPath( "/rap", entryPointClass, null );
+    RWTFactory.getEntryPointManager().register( "/rap", entryPointClass, null );
     Fixture.fakeNewRequest();
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();

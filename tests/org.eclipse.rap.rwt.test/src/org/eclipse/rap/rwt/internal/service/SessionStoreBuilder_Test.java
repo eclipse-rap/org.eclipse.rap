@@ -28,7 +28,6 @@ import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
@@ -100,7 +99,7 @@ public class SessionStoreBuilder_Test extends TestCase {
   private void registerEntryPoint( HashMap<String, String> properties ) {
     EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
     IEntryPointFactory factory = mock( IEntryPointFactory.class );
-    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, factory, properties );
+    entryPointManager.register( EntryPointManager.DEFAULT_PATH, factory, properties );
   }
 
   private void assertSingletonManagerIsInstalled( ISessionStore sessionStore ) {

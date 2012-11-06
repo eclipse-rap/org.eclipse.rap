@@ -19,6 +19,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -27,48 +28,50 @@ import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 
 public class EntryPointManager {
 
-  private final Map<String, EntryPointRegistration> entryPointsByPath;
+  public static final String DEFAULT_PATH = "/rap";
+
+  private final Map<String, EntryPointRegistration> entryPoints;
 
   public EntryPointManager() {
-    entryPointsByPath = new HashMap<String, EntryPointRegistration>();
+    entryPoints = new HashMap<String, EntryPointRegistration>();
   }
 
-  public void registerByPath( String path,
-                              Class<? extends IEntryPoint> type,
-                              Map<String, String> properties )
+  public void register( String path, 
+                        Class<? extends IEntryPoint> type, 
+                        Map<String, String> properties )
   {
     ParamCheck.notNull( path, "path" );
     checkValidPath( path );
-    doRegisterByPath( path, new DefaultEntryPointFactory( type ), properties );
+    doRegister( path, new DefaultEntryPointFactory( type ), properties );
   }
 
 
-  public void registerByPath( String path,
-                              IEntryPointFactory entryPointFactory,
-                              Map<String, String> properties )
+  public void register( String path,
+                        IEntryPointFactory entryPointFactory,
+                        Map<String, String> properties )
   {
     ParamCheck.notNull( path, "path" );
     ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
     checkValidPath( path );
-    doRegisterByPath( path, entryPointFactory, properties );
+    doRegister( path, entryPointFactory, properties );
   }
 
   public void deregisterAll() {
-    synchronized( entryPointsByPath ) {
-      entryPointsByPath.clear();
+    synchronized( entryPoints ) {
+      entryPoints.clear();
     }
   }
 
   public EntryPointRegistration getRegistrationByPath( String path ) {
-    synchronized( entryPointsByPath ) {
-      return entryPointsByPath.get( path );
+    synchronized( entryPoints ) {
+      return entryPoints.get( path );
     }
   }
 
   public Collection<String> getServletPaths() {
     Collection<String> result;
-    synchronized( entryPointsByPath ) {
-      result = new ArrayList<String>( entryPointsByPath.keySet() );
+    synchronized( entryPoints ) {
+      result = new ArrayList<String>( entryPoints.keySet() );
     }
     return result;
   }
@@ -85,13 +88,17 @@ public class EntryPointManager {
     return result;
   }
 
-  private void doRegisterByPath( String key,
-                                 IEntryPointFactory factory,
-                                 Map<String, String> properties )
+  public Map<String, String> getCurrentEntryPointProperties() {
+    HttpServletRequest request = ContextProvider.getRequest();
+    EntryPointRegistration registration = getEntryPointRegistration( request );
+    return registration.getProperties();
+  }
+
+  private void doRegister( String path, IEntryPointFactory factory, Map<String, String> properties )
   {
-    synchronized( entryPointsByPath ) {
-      checkPathAvailable( key );
-      entryPointsByPath.put( key, new EntryPointRegistration( factory, properties ) );
+    synchronized( entryPoints ) {
+      checkPathAvailable( path );
+      entryPoints.put( path, new EntryPointRegistration( factory, properties ) );
     }
   }
 
@@ -108,7 +115,7 @@ public class EntryPointManager {
   }
 
   private void checkPathAvailable( String path ) {
-    if( entryPointsByPath.containsKey( path ) ) {
+    if( entryPoints.containsKey( path ) ) {
       throw new IllegalArgumentException( "Entry point already registered for path " + path );
     }
   }

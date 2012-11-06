@@ -17,7 +17,6 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -188,7 +187,7 @@ public class PreserveWidgets_Test extends TestCase {
   }
 
   public void testStartup() throws Exception {
-    RWTFactory.getEntryPointManager().registerByPath( EntryPointUtil.DEFAULT_PATH,
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
                                                       TestEntryPointWithShell.class,
                                                       null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();

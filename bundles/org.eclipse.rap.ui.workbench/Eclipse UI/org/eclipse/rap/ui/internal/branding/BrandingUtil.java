@@ -13,7 +13,8 @@ package org.eclipse.rap.ui.internal.branding;
 
 import java.util.Map;
 
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 
 
 public final class BrandingUtil {
@@ -21,7 +22,8 @@ public final class BrandingUtil {
   public static final String ENTRY_POINT_BRANDING = "org.eclipse.rap.ui.branding";
 
   public static String getCurrentBrandingId() {
-    Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
+    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
+    Map<String, String> properties = entryPointManager.getCurrentEntryPointProperties();
     return properties.get( BrandingUtil.ENTRY_POINT_BRANDING );
   }
 

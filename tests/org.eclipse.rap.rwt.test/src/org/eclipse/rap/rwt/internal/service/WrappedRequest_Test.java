@@ -97,7 +97,7 @@ public class WrappedRequest_Test extends TestCase {
   }
 
   public void testStartupRequestWithParameter() throws Exception {
-    RWTFactory.getEntryPointManager().registerByPath( "/rap", DefaultEntryPoint.class, null );
+    RWTFactory.getEntryPointManager().register( "/rap", DefaultEntryPoint.class, null );
     Fixture.fakeNewGetRequest();
     Fixture.fakeRequestParam( "param", "value" );
     RWTFactory.getServiceManager().getHandler().service();

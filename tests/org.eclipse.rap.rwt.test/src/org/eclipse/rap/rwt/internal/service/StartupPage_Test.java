@@ -139,7 +139,7 @@ public class StartupPage_Test extends TestCase {
     String head = "<head />";
     properties.put( WebClient.HEAD_HTML, head );
     properties.put( WebClient.FAVICON, favIcon );
-    RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, properties );    
+    RWTFactory.getEntryPointManager().register( "/rap", TestEntryPoint.class, properties );    
     activateStartupPage( variableFrom( StartupPageTemplate.TOKEN_HEADERS ) );
     
     startupPage.send( response );
@@ -266,7 +266,7 @@ public class StartupPage_Test extends TestCase {
     if( propertyName != null ) {
       properties.put( propertyName, propertyValue );
     }
-    RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, properties );
+    RWTFactory.getEntryPointManager().register( "/rap", TestEntryPoint.class, properties );
   }
 
 }

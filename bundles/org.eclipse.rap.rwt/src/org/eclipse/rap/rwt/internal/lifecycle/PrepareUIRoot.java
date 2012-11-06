@@ -11,6 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.widgets.Display;
@@ -25,12 +29,19 @@ final class PrepareUIRoot implements IPhase {
   public PhaseId execute( Display display ) {
     PhaseId result;
     if( LifeCycleUtil.isStartup() ) {
-      IEntryPoint entryPoint = EntryPointUtil.getCurrentEntryPoint();
+      IEntryPoint entryPoint = createEntryPoint();
       entryPoint.createUI();
       result = PhaseId.RENDER;
     } else {
       result = PhaseId.READ_DATA;
     }
     return result;
+  }
+
+  private static IEntryPoint createEntryPoint() {
+    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
+    HttpServletRequest request = ContextProvider.getRequest();
+    EntryPointRegistration registration = entryPointManager.getEntryPointRegistration( request );
+    return registration.getFactory().create();
   }
 }

@@ -18,7 +18,7 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 
 
 /**
@@ -59,7 +59,7 @@ public final class TestRequest implements HttpServletRequest {
     serverName = DEFAULT_SERVER_NAME;
     contextPath = DEFAULT_CONTEX_PATH;
     requestURI = DEFAULT_REQUEST_URI;
-    servletPath = EntryPointUtil.DEFAULT_PATH;
+    servletPath = EntryPointManager.DEFAULT_PATH;
     parameters = new HashMap<String,String[]>();
     headers = new HashMap<String, String>();
     attributes = new HashMap<String,Object>();

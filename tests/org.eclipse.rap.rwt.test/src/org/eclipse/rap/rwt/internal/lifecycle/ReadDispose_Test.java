@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -48,7 +47,7 @@ public class ReadDispose_Test extends TestCase {
   public void testWidgetDisposal() throws Exception {
     // Run requests to initialize the 'system'
     Fixture.fakeNewRequest();
-    RWTFactory.getEntryPointManager().registerByPath( EntryPointUtil.DEFAULT_PATH,
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
                                                       WidgetDisposalEntryPoint.class,
                                                       null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();

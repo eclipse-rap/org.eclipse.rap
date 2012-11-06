@@ -83,7 +83,7 @@ public class ApplicationImpl implements Application, Adaptable {
     ParamCheck.notNull( path, "path" );
     ParamCheck.notNull( entryPointType, "entryPointType" );
 
-    applicationContext.getEntryPointManager().registerByPath( path, entryPointType, properties );
+    applicationContext.getEntryPointManager().register( path, entryPointType, properties );
   }
 
   public void addEntryPoint( String path,
@@ -93,7 +93,7 @@ public class ApplicationImpl implements Application, Adaptable {
     ParamCheck.notNull( path, "path" );
     ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
 
-    applicationContext.getEntryPointManager().registerByPath( path, entryPointFactory, properties );
+    applicationContext.getEntryPointManager().register( path, entryPointFactory, properties );
   }
 
   public void addResource( String resourceName, ResourceLoader resourceLoader ) {

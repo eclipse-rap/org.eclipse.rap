@@ -24,7 +24,7 @@ import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.service.StartupPageTemplate.VariableWriter;
 import org.eclipse.rap.rwt.internal.theme.QxImage;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
@@ -78,22 +78,22 @@ public class StartupPage {
   }
 
   protected void writeTitle( PrintWriter printWriter ) {
-    writeEntryPointproperty( printWriter, WebClient.PAGE_TITLE );
+    writeEntryPointProperty( printWriter, WebClient.PAGE_TITLE );
   }
 
   protected void writeBody( PrintWriter printWriter ) {
-    writeEntryPointproperty( printWriter, WebClient.BODY_HTML );
+    writeEntryPointProperty( printWriter, WebClient.BODY_HTML );
   }
 
   protected void writeHead( PrintWriter printWriter ) {
-    Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
+    Map<String, String> properties = getCurrentEntryPointProperties();
     String favIcon = properties.get( WebClient.FAVICON );
     if( favIcon != null && favIcon.length() > 0 ) {
       String pattern = "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"%1$s\" />";
       String favIocnMarkup = String.format( pattern, getResourceLocation( favIcon ) );
       printWriter.write( favIocnMarkup );
     }
-    writeEntryPointproperty( printWriter, WebClient.HEAD_HTML );
+    writeEntryPointProperty( printWriter, WebClient.HEAD_HTML );
   }
 
   protected void writeLibraries( PrintWriter printWriter ) {
@@ -145,12 +145,17 @@ public class StartupPage {
     return ( QxImage )ThemeUtil.getCssValue( "Display", "background-image", defaultSelector );
   }
 
+  private Map<String, String> getCurrentEntryPointProperties() {
+    EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
+    return entryPointManager.getCurrentEntryPointProperties();
+  }
+
   private String getResourceLocation( String resourceName ) {
     return applicationContext.getResourceManager().getLocation( resourceName );
   }
 
-  private static void writeEntryPointproperty( PrintWriter printWriter, String property ) {
-    Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
+  private void writeEntryPointProperty( PrintWriter printWriter, String property ) {
+    Map<String, String> properties = getCurrentEntryPointProperties();
     String title = properties.get( property );
     if( title != null ) {
       printWriter.write( title );

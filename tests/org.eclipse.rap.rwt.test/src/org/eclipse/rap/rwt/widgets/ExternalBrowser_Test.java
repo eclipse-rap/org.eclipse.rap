@@ -16,7 +16,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -85,7 +85,7 @@ public class ExternalBrowser_Test extends TestCase {
    * matches the order of the ExternalBrowser#open/close calls
    */
   public void testExecutionOrder() throws IOException {
-    RWTFactory.getEntryPointManager().registerByPath( EntryPointUtil.DEFAULT_PATH,
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
                                                       TestExecutionOrderEntryPoint.class,
                                                       null );
     Fixture.fakeNewRequest();

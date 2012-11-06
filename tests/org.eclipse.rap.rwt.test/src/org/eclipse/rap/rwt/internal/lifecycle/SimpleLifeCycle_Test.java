@@ -280,7 +280,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
 
   private static void registerEntryPoint( Class<? extends IEntryPoint> type ) {
-    RWTFactory.getEntryPointManager().registerByPath( "/rap", type, null );
+    RWTFactory.getEntryPointManager().register( "/rap", type, null );
   }
 
   private static void newSession() {

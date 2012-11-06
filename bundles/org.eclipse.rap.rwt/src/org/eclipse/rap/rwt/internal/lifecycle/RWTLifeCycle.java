@@ -13,6 +13,9 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rap.rwt.internal.lifecycle.UIThread.UIThreadTerminatedError;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -173,7 +176,10 @@ public class RWTLifeCycle extends LifeCycle {
   int createUI() {
     int result = -1;
     if( ZERO.equals( getCurrentPhase() ) && LifeCycleUtil.isStartup() ) {
-      IEntryPoint entryPoint = EntryPointUtil.getCurrentEntryPoint();
+      EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
+      HttpServletRequest request = ContextProvider.getRequest();
+      EntryPointRegistration registration = entryPointManager.getEntryPointRegistration( request );
+      IEntryPoint entryPoint = registration.getFactory().create();
       result = entryPoint.createUI();
     }
     return result;

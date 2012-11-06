@@ -62,8 +62,8 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   @Override
   protected void setUp() {
     Fixture.setUp();
-    RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, null );
-    RWTFactory.getEntryPointManager().registerByPath( "/test", TestEntryPoint.class, null );
+    RWTFactory.getEntryPointManager().register( "/rap", TestEntryPoint.class, null );
+    RWTFactory.getEntryPointManager().register( "/test", TestEntryPoint.class, null );
   }
 
   @Override

@@ -66,6 +66,16 @@ public class DefaultEntryPointFactory_Test extends TestCase {
     assertTrue( entryPoint instanceof TestEntryPoint );
   }
 
+  public void testCreateTwice() {
+    DefaultEntryPointFactory factory = new DefaultEntryPointFactory( TestEntryPoint.class );
+    
+    IEntryPoint entryPoint1 = factory.create();
+    IEntryPoint entryPoint2 = factory.create();
+    
+    assertNotNull( entryPoint1 );
+    assertNotSame( entryPoint1, entryPoint2 );
+  }
+  
   public void testCreateWithInnerClass() {
     DefaultEntryPointFactory factory = new DefaultEntryPointFactory( EntryPoint.class );
 

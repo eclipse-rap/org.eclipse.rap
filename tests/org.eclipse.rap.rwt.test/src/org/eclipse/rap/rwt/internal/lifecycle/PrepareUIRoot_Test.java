@@ -51,7 +51,7 @@ public class PrepareUIRoot_Test extends TestCase {
 
   public void testExecuteInFirstRequests() throws IOException {
     EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
-    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, TestEntryPoint.class, null );
+    entryPointManager.register( EntryPointManager.DEFAULT_PATH, TestEntryPoint.class, null );
 
     PhaseId phaseId = phase.execute( null );
 

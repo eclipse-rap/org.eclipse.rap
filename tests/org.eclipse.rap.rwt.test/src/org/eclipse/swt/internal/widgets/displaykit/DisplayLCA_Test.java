@@ -28,7 +28,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
@@ -192,7 +192,7 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderInitiallyDisposed() throws Exception {
-    RWTFactory.getEntryPointManager().registerByPath( EntryPointUtil.DEFAULT_PATH,
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
                                                       TestRenderInitiallyDisposedEntryPoint.class,
                                                       null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
@@ -206,7 +206,7 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderDisposed() throws Exception {
-    RWTFactory.getEntryPointManager().registerByPath( EntryPointUtil.DEFAULT_PATH,
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
                                                       TestRenderDisposedEntryPoint.class,
                                                       null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();

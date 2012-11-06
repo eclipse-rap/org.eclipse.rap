@@ -11,7 +11,6 @@ package org.eclipse.rap.ui.interactiondesign;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -26,7 +25,6 @@ import org.eclipse.jface.internal.provisional.action.IToolBarManager2;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rap.ui.interactiondesign.internal.ConfigurableStackProxy;
 import org.eclipse.rap.ui.interactiondesign.layout.LayoutRegistry;
 import org.eclipse.rap.ui.internal.branding.BrandingUtil;
