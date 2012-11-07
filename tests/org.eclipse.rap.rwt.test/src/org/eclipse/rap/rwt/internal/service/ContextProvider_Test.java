@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import javax.servlet.http.HttpSession;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
@@ -97,22 +95,6 @@ public class ContextProvider_Test extends TestCase {
       fail( "Response parameter must not be null." );
     } catch( NullPointerException npe ) {
     }
-  }
-  
-  public void testSessionIsAttachedToSessionStore() {
-    Fixture.createServiceContext();
-    ISessionStore sessionStore1 = ContextProvider.getSessionStore();
-    HttpSession session1 = ContextProvider.getRequest().getSession();
-    Fixture.disposeOfServiceContext();
-    
-    Fixture.createServiceContext();
-    HttpSession session2 = ContextProvider.getRequest().getSession();
-    session2.setAttribute( SessionStoreImpl.ATTR_SESSION_STORE, sessionStore1 );
-    ISessionStore sessionStore2 = ContextProvider.getSessionStore();
-    
-    assertSame( sessionStore1, sessionStore2 );
-    assertNotSame( session1, session2 );
-    assertSame( session2, sessionStore2.getHttpSession() );
   }
   
   public void testApplicationContextIsAttachedToSessionStore() {

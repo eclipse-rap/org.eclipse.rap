@@ -145,7 +145,6 @@ public class ContextProvider {
         SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
         result = ( SessionStoreImpl )builder.buildSessionStore();
       }
-      result.attachHttpSession( httpSession );
       getContext().setSessionStore( result );
     }
     return result;
