@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
 
@@ -81,7 +80,6 @@ public class Canvas extends Composite {
    */
   public Canvas( Composite parent, int style ) {
     super( parent, style );
-    repaint();
   }
 
   /**
@@ -92,6 +90,7 @@ public class Canvas extends Composite {
    * from application code.
    * </p>
    */
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -164,6 +163,7 @@ public class Canvas extends Composite {
   /////////////
   // repainting
 
+  @Override
   void notifyResize( Point oldSize ) {
     super.notifyResize( oldSize );
     if( !oldSize.equals( getSize() ) ) {
@@ -171,6 +171,7 @@ public class Canvas extends Composite {
     }
   }
 
+  @Override
   void internalSetRedraw( boolean redraw ) {
     super.internalSetRedraw( redraw );
     if( redraw ) {
@@ -184,10 +185,9 @@ public class Canvas extends Composite {
       gcAdapter.setForceRedraw( true );
     }
     GC gc = new GC( this );
-    Rectangle clientArea = getClientArea();
     Event paintEvent = new Event();
     paintEvent.gc = gc;
-    paintEvent.setBounds( clientArea );
+    paintEvent.setBounds( getClientArea() );
     notifyListeners( SWT.Paint, paintEvent );
     gc.dispose();
   }

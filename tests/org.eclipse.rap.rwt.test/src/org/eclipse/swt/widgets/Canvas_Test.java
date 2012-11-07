@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,9 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
+import org.junit.Test;
 
 
 public class Canvas_Test extends TestCase {
@@ -29,6 +31,7 @@ public class Canvas_Test extends TestCase {
   private java.util.List<PaintEvent> paintEventLog;
   private Canvas canvas;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -38,6 +41,7 @@ public class Canvas_Test extends TestCase {
     canvas = new Canvas( shell, SWT.NONE );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -50,7 +54,7 @@ public class Canvas_Test extends TestCase {
     } );
 
     canvas.redraw();
-    
+
     assertEquals( 1, paintEventLog.size() );
     PaintEvent event = paintEventLog.get( 0 );
     assertSame( canvas, event.widget );
@@ -60,7 +64,7 @@ public class Canvas_Test extends TestCase {
     assertEquals( event.width, canvas.getClientArea().width );
     assertEquals( event.height, canvas.getClientArea().height );
   }
-  
+
   public void testResize() {
     canvas.addPaintListener( new PaintListener() {
       public void paintControl( PaintEvent event ) {
@@ -70,7 +74,7 @@ public class Canvas_Test extends TestCase {
     canvas.setSize( 100, 100 );
     assertEquals( 1, paintEventLog.size() );
   }
-  
+
   public void testMultiplePaintEvents() {
     canvas.addPaintListener( new PaintListener() {
       public void paintControl( PaintEvent event ) {
@@ -84,31 +88,31 @@ public class Canvas_Test extends TestCase {
     IGCAdapter adapter = canvas.getAdapter( IGCAdapter.class );
     assertEquals( 1, adapter.getGCOperations().length );
   }
-  
+
   public void testIsSerializable() throws Exception {
     Canvas deserializedCanvas = Fixture.serializeAndDeserialize( canvas );
     assertNotNull( deserializedCanvas );
   }
-  
+
   public void testAddPaintListener() {
     canvas.addPaintListener( mock( PaintListener.class ) );
-    
+
     assertTrue( canvas.isListening( SWT.Paint ) );
   }
 
   public void testRemovePaintListener() {
     PaintListener listener = mock( PaintListener.class );
     canvas.addPaintListener( listener );
-    
+
     canvas.removePaintListener( listener );
-    
+
     assertFalse( canvas.isListening( SWT.Paint ) );
   }
-  
+
   public void testRemovePaintListenerUnregistersUntypedEvent() {
     PaintListener listener = mock( PaintListener.class );
     canvas.addPaintListener( listener );
-    
+
     canvas.removePaintListener( listener );
 
     assertFalse( canvas.isListening( SWT.Paint ) );
@@ -127,5 +131,16 @@ public class Canvas_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
+  @Test
+  public void testConstructorDoesNotSendPaintEvents() {
+    // See bug 393771
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Canvas canvas = new Canvas( shell, SWT.NONE );
+    canvas.addPaintListener( mock( PaintListener.class ) );
+
+    assertEquals( 0, EventList.getInstance().getAll().length );
+  }
+
 }
