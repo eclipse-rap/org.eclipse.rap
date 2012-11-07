@@ -134,8 +134,6 @@ public class Canvas_Test extends TestCase {
 
   public void testConstructorDoesNotSendPaintEvents() {
     // See bug 393771
-    Shell shell = new Shell( display );
-    Canvas canvas = new Canvas( shell, SWT.NONE );
     canvas.addPaintListener( mock( PaintListener.class ) );
 
     assertEquals( 0, EventList.getInstance().getAll().length );
