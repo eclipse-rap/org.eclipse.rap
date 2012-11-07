@@ -1206,6 +1206,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( "42px", text._messageElement.style.width );
     },
 
+    // See Bug 392810
+    testMessageLayoutWithOnePixelWidth : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SEARCH" ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 1, 1 ],
+          "message" : "foo"
+        }
+      } );
+
+      TestUtil.flush();
+
+      text = ObjectManager.getObject( "w3" );
+      assertEquals( "0px", text._messageElement.style.width );
+    },
+
     testSearchIconsLayout : function() {
       Processor.processOperation( {
         "target" : "w3",

@@ -486,13 +486,14 @@ qx.Class.define( "rwt.widgets.Text", {
       if( this._messageElement ) {
         var styleMap = this._getMessageStyle();
         var style = this._messageElement.style;
-        style.width = (   this.getBoxWidth()
-                        - this._cachedBorderLeft
-                        - this._cachedBorderRight
-                        - styleMap.paddingLeft
-                        - styleMap.paddingRight
-                        - this._getIconOuterWidth( "search" )
-                        - this._getIconOuterWidth( "cancel" ) ) + "px";
+        var width = this.getBoxWidth()
+                    - this._cachedBorderLeft
+                    - this._cachedBorderRight
+                    - styleMap.paddingLeft
+                    - styleMap.paddingRight
+                    - this._getIconOuterWidth( "search" )
+                    - this._getIconOuterWidth( "cancel" );
+        style.width = Math.max( 0, width ) + "px";
         var messageHeight = parseInt( style.height, 10 );
         style.top = Math.round( this.getInnerHeight() / 2 - messageHeight / 2 ) + "px";
         style.left = ( this._getIconOuterWidth( "search" ) + styleMap.paddingLeft ) + "px";
