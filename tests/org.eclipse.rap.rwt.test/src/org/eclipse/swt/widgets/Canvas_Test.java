@@ -23,12 +23,12 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
-import org.junit.Test;
 
 
 public class Canvas_Test extends TestCase {
 
   private java.util.List<PaintEvent> paintEventLog;
+  private Display display;
   private Canvas canvas;
 
   @Override
@@ -36,7 +36,7 @@ public class Canvas_Test extends TestCase {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     paintEventLog = new ArrayList<PaintEvent>();
-    Display display = new Display();
+    display = new Display();
     Shell shell = new Shell( display );
     canvas = new Canvas( shell, SWT.NONE );
   }
@@ -132,10 +132,8 @@ public class Canvas_Test extends TestCase {
     }
   }
 
-  @Test
   public void testConstructorDoesNotSendPaintEvents() {
     // See bug 393771
-    Display display = new Display();
     Shell shell = new Shell( display );
     Canvas canvas = new Canvas( shell, SWT.NONE );
     canvas.addPaintListener( mock( PaintListener.class ) );
