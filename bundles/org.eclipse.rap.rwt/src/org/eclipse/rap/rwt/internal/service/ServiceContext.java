@@ -132,7 +132,7 @@ public final class ServiceContext {
   }
 
   public ISessionStore getSessionStore() {
-    if( sessionStore != null && !( ( SessionStoreImpl )sessionStore ).isBound() ) {
+    if( sessionStore != null && !sessionStore.isBound() ) {
       sessionStore = null;
     }
     return sessionStore;

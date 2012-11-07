@@ -12,11 +12,13 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -28,6 +30,7 @@ import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.events.EventUtil;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.WidgetGraphicsAdapter;
@@ -170,7 +173,9 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       }
       result = ( T )widgetAdapter;
     } else if( adapter == IThemeAdapter.class ) {
-      result = ( T )RWTFactory.getThemeManager().getThemeAdapterManager().getThemeAdapter( this );
+      ApplicationContext applicationContext = getApplicationContext();
+      ThemeManager themeManager = applicationContext.getThemeManager();
+      result = ( T )themeManager.getThemeAdapterManager().getThemeAdapter( this );
     } else if( adapter == IWidgetGraphicsAdapter.class ) {
       if( widgetGraphicsAdapter == null ) {
         widgetGraphicsAdapter = new WidgetGraphicsAdapter();
@@ -178,11 +183,16 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       result = ( T )widgetGraphicsAdapter;
     } else if ( adapter == ILifeCycleAdapter.class ) {
       if( lifeCycleAdapterFactory == null ) {
-        lifeCycleAdapterFactory = RWTFactory.getLifeCycleAdapterFactory();
+        lifeCycleAdapterFactory = getApplicationContext().getLifeCycleAdapterFactory();
       }
       result = ( T )lifeCycleAdapterFactory.getAdapter( this );
     }
     return result;
+  }
+
+  private ApplicationContext getApplicationContext() {
+    IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
+    return ApplicationContextUtil.get( displayAdapter.getSessionStore() );
   }
 
   /**

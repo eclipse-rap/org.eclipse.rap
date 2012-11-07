@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.rap.rwt.Adaptable;
+import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
@@ -744,10 +746,15 @@ public class Display extends Device implements Adaptable {
       }
       result = ( T )widgetAdapter;
     } else if( adapter == ILifeCycleAdapter.class ) {
-      result = ( T )RWTFactory.getLifeCycleAdapterFactory().getAdapter( this );
+      result = ( T )getApplicationContext().getLifeCycleAdapterFactory().getAdapter( this );
     }
     return result;
   }
+
+  private ApplicationContext getApplicationContext() {
+    return ApplicationContextUtil.get( sessionStore );
+  }
+
 
   ///////////////////
   // Shell management
@@ -886,10 +893,7 @@ public class Display extends Device implements Adaptable {
         WeakReference current = displays[ i ];
         if( current != null ) {
           Display display = ( Display )current.get();
-          if(    display != null
-              && !display.isDisposed()
-              && display.thread == thread )
-          {
+          if( display != null && !display.isDisposed() && display.thread == thread ) {
             result = display;
           }
         }
@@ -1166,7 +1170,7 @@ public class Display extends Device implements Adaptable {
    */
   public boolean sleep() {
     checkDevice();
-    LifeCycle lifeCycle = ( LifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
+    LifeCycle lifeCycle = ( LifeCycle )getApplicationContext().getLifeCycleFactory().getLifeCycle();
     lifeCycle.sleep();
     // return true as we cannot reliably determinate what actually caused
     // lifeCycle#sleep() to return
@@ -1551,7 +1555,7 @@ public class Display extends Device implements Adaptable {
    */
   public Cursor getSystemCursor( int id ) {
     checkDevice();
-    return RWTFactory.getResourceFactory().getCursor( id );
+    return getApplicationContext().getResourceFactory().getCursor( id );
   }
 
   /**
@@ -2195,8 +2199,8 @@ public class Display extends Device implements Adaptable {
     return RWTFactory.getDisplaysHolder().getDisplays();
   }
 
-  private static void setDisplays( WeakReference<Display>[] displays ) {
-    RWTFactory.getDisplaysHolder().setDisplays( displays );
+  private void setDisplays( WeakReference<Display>[] displays ) {
+    getApplicationContext().getDisplaysHolder().setDisplays( displays );
   }
 
   /////////////////////
