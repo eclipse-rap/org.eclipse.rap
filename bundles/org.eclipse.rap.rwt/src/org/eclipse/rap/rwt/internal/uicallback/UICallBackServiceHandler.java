@@ -13,12 +13,9 @@ package org.eclipse.rap.rwt.internal.uicallback;
 
 import java.io.IOException;
 
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.IServiceHandler;
 
 
@@ -28,16 +25,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
 
   public void service() throws IOException {
     HttpServletResponse response = ContextProvider.getResponse();
-    configureResponseHeaders( response );
-    ProtocolMessageWriter writer = new ProtocolMessageWriter();
     UICallBackManager.getInstance().processRequest( response );
-    String message = writer.createMessage();
-    response.getWriter().write( message );
-  }
-
-  private static void configureResponseHeaders( ServletResponse response ) {
-    response.setContentType( HTTP.CONTENT_TYPE_JSON );
-    response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
   }
 
 }
