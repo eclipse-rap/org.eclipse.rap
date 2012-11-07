@@ -487,15 +487,13 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
         var all = document.all;
         var list = this._cursorElements = [];
 
-        if (value != null && value != "" && value != "auto")
-        {
+        if (value != null && value !== "" && value !== "auto" ) {
           for (var i=0, l=all.length; i<l; i++)
           {
             elem = all[i];
             current = elem.style.cursor;
 
-            if (current != null && current != "" && current != "auto")
-            {
+            if( current != null && current !== "" && current !== "auto" ) {
               elem._oldCursor = current;
               elem.style.cursor = value;
               list.push(elem);

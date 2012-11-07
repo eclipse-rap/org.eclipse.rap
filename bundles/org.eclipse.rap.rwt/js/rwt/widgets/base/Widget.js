@@ -4075,14 +4075,14 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     //////////////////
     // Adapter Support
 
-    getAdapter : function( clazz ) {
+    getAdapter : function( Clazz ) {
       if( this._adapters === undefined ) {
         this._adapters = {};
       }
-      var key = clazz.classname;
+      var key = Clazz.classname;
       var result = this._adapters[ key ];
       if( result == null ) {
-        new clazz( this );
+        new Clazz( this );
         result = this._adapters[ key ];
       }
       return result;

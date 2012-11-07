@@ -408,8 +408,10 @@ qx.Class.define("rwt.widgets.base.BoxLayout",
     {
       var ch = this.getVisibleChildren(), chc, i = -1, sp = this.getSpacing(), s = -sp;
 
-      while (chc = ch[++i]) {
+      chc = ch[++i];
+      while( chc ) {
         s += chc.getOuterHeight() + sp;
+        chc = ch[++i];
       }
 
       return s;
@@ -434,11 +436,12 @@ qx.Class.define("rwt.widgets.base.BoxLayout",
     {
       var ch = this.getVisibleChildren(), chc, i = -1;
 
-      while (chc = ch[++i])
-      {
+      chc = ch[++i];
+      while( chc ) {
         if (chc._recomputeStretchingX() && chc._recomputeBoxWidth()) {
           chc._recomputeOuterWidth();
         }
+        chc = ch[++i];
       }
     },
 
@@ -453,11 +456,12 @@ qx.Class.define("rwt.widgets.base.BoxLayout",
     {
       var ch = this.getVisibleChildren(), chc, i = -1;
 
-      while (chc = ch[++i])
-      {
+      chc = ch[++i];
+      while( chc ) {
         if (chc._recomputeStretchingY() && chc._recomputeBoxHeight()) {
           chc._recomputeOuterHeight();
         }
+        chc = ch[++i];
       }
     }
   }

@@ -141,7 +141,7 @@ qx.Class.define("rwt.util.Object",
     getKeysAsString : function(map)
     {
       var keys = rwt.util.Object.getKeys(map);
-      if (keys.length == 0) {
+      if (keys.length === 0) {
         return "";
       }
 

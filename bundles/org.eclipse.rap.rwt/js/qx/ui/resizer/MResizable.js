@@ -262,48 +262,33 @@ qx.Mixin.define("qx.ui.resizer.MResizable",
         this.getTopLevelWidget().setGlobalCursor(null);
 
         // sync sizes to frame
-        switch(this.getResizeMethod())
-        {
-          case "frame":
-            var o = this._frame;
+        if(    this.getResizeMethod() === "lazyopaque"
+            || ( this.getResizeMethod() === "frame" && this._frame && this._frame.getParent() )
+         ) {
+          if (s.lastLeft != null) {
+            this.setLeft(s.lastLeft);
+          }
 
-            if (!(o && o.getParent())) {
-              break;
-            }
+          if (s.lastTop != null) {
+            this.setTop(s.lastTop);
+          }
 
-            // no break here
+          if (s.lastWidth != null)
+          {
+            this._changeWidth(s.lastWidth);
+          }
 
-          case "lazyopaque":
-            if (s.lastLeft != null) {
-              this.setLeft(s.lastLeft);
-            }
+          if (s.lastHeight != null)
+          {
+            this._changeHeight(s.lastHeight);
+          }
 
-            if (s.lastTop != null) {
-              this.setTop(s.lastTop);
-            }
-
-            if (s.lastWidth != null)
-            {
-              this._changeWidth(s.lastWidth);
-            }
-
-            if (s.lastHeight != null)
-            {
-              this._changeHeight(s.lastHeight);
-            }
-
-            if (this.getResizeMethod() == "frame") {
-              this._frame.setParent(null);
-            }
-
-            break;
-
-          case "translucent":
-            this.setOpacity(null);
-            break;
+          if (this.getResizeMethod() == "frame") {
+            this._frame.setParent(null);
+          }
+        } else if( this.getResizeMethod() === "translucent" ) {
+          this.setOpacity(null);
         }
-
-        // cleanup session
         delete this._resizeSession;
       }
 

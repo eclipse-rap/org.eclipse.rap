@@ -393,7 +393,7 @@ qx.Class.define("rwt.widgets.base.Parent",
      * @return {Boolean} whether the number of children is 0
      */
     isEmpty : function() {
-      return this.getChildrenLength() == 0;
+      return this.getChildrenLength() === 0;
     },
 
 
@@ -504,7 +504,7 @@ qx.Class.define("rwt.widgets.base.Parent",
      * @return {Boolean} whether there are any visible children inside
      */
     isVisibleEmpty : function() {
-      return this.getVisibleChildrenLength() == 0;
+      return this.getVisibleChildrenLength() === 0;
     },
 
 
@@ -839,8 +839,10 @@ qx.Class.define("rwt.widgets.base.Parent",
         return;
       }
 
-      while (chc = ch[++i]) {
+      chc = ch[++i];
+      while( chc ) {
         vFunc.call(chc, i);
+        chc = ch[++i];
       }
     },
 
@@ -861,8 +863,10 @@ qx.Class.define("rwt.widgets.base.Parent",
         return;
       }
 
-      while (chc = ch[++i]) {
+      chc = ch[++i];
+      while( chc ) {
         vFunc.call(chc, i);
+        chc = ch[++i];
       }
     },
 

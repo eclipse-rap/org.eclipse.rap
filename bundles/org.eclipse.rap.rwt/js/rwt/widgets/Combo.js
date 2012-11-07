@@ -565,29 +565,30 @@ qx.Class.define( "rwt.widgets.Combo", {
           }
           this.setFocused( true );
           evt.stopPropagation();
-          break;
+        break;
         case "Escape":
           if( this._dropped ) {
             this._toggleListVisibility();
           }
           this.setFocused( true );
           evt.stopPropagation();
-          break;
+        break;
         case "Down":
         case "Up":
-          if( evt.isAltPressed() ) {
-            this._toggleListVisibility();
-          }
         case "PageUp":
         case "PageDown":
-          if( this._selected || this._manager.getSelectedItem() ) {
-            this._list._onkeypress( evt );
-            var selected = this._manager.getSelectedItem();
-            this._setSelected( selected );
-          } else if( this._list.getItemsCount() ) {
-            this._setSelected( this._list.getItems()[ 0 ] );
+          if( evt.isAltPressed() ) {
+            this._toggleListVisibility();
+          } else {
+            if( this._selected || this._manager.getSelectedItem() ) {
+              this._list._onkeypress( evt );
+              var selected = this._manager.getSelectedItem();
+              this._setSelected( selected );
+            } else if( this._list.getItemsCount() ) {
+              this._setSelected( this._list.getItems()[ 0 ] );
+            }
           }
-          break;
+        break;
       }
       if( this._field.isCreated() && !org.eclipse.swt.EventUtil.getSuspended() ) {
         this._handleSelectionChange();

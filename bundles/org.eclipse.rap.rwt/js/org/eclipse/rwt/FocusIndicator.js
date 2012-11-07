@@ -41,10 +41,10 @@ qx.Class.define( "org.eclipse.rwt.FocusIndicator", {
       if( !padding ) {
         padding = [ 0, 0, 0, 0 ];
       }
-      var paddingIsZero =    padding[ 0 ] == 0
-                          && padding[ 1 ] == 0
-                          && padding[ 2 ] == 0
-                          && padding[ 3 ] == 0;
+      var paddingIsZero =    padding[ 0 ] === 0
+                          && padding[ 1 ] === 0
+                          && padding[ 2 ] === 0
+                          && padding[ 3 ] === 0;
       var usePadding = !paddingIsZero && focusElement != null;
       if( hasValidBorder && ( margin != null || usePadding ) ) {
         var color = tv.getCssColor( cssSelector, "background-color" );

@@ -245,7 +245,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       if( fill ) {
         style.backgroundColor = this._context.fillStyle;
       }
-      if( this._context.font != "" ) {
+      if( this._context.font !== "" && this._context.font != null ) {
         style.font = this._context.font;
       }
       textElement.innerHTML = text;

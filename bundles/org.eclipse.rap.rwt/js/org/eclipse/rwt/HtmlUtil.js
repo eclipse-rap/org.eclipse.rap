@@ -52,7 +52,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
         };
       }
       return result;
-    } )(),
+    }() ),
 
     setOpacity  : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function( target, value ) {

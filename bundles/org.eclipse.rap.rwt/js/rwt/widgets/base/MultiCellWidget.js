@@ -278,7 +278,7 @@ qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
           childNumber++;
         }
       }
-      if( this.getEnabled() == false ) {
+      if( !this.getEnabled() ) {
         this._applyEnabled( false );
       }
     },
@@ -582,7 +582,6 @@ qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       var inner = this.getInnerWidth();
       var firstCellLeft  = null;
       switch( align ) {
-        default:
         case "left":
           firstCellLeft  = pad[ 3 ];
         break;
@@ -591,6 +590,9 @@ qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
         break;
         case "right":
           firstCellLeft  = pad[ 3 ] + inner - total;
+        break;
+        default:
+          firstCellLeft  = pad[ 3 ];
         break;
       }
       var left = firstCellLeft ;
@@ -624,7 +626,6 @@ qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       var height = this.getCellHeight( cell );
       var top = null;
       switch( align ) {
-        default:
         case "top":
           top = pad[ 0 ];
         break;
@@ -633,6 +634,9 @@ qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
         break;
         case "bottom":
           top = pad[ 0 ] + inner - height;
+        break;
+        default:
+          top = pad[ 0 ];
         break;
       }
       var style = this.getCellNode( cell ).style;

@@ -98,7 +98,7 @@ qx.Class.define( "rwt.widgets.Slider", {
 
     _onKeyPress : function( evt ) {
       var keyIdentifier = evt.getKeyIdentifier();
-      var sel;
+      var sel = null;
       if( rwt.widgets.Slider._isNoModifierPressed( evt ) ) {
         switch( keyIdentifier ) {
           case "Left":
@@ -158,7 +158,7 @@ qx.Class.define( "rwt.widgets.Slider", {
             evt.stopPropagation();
             break;
         }
-        if( sel != undefined ) {
+        if( sel != null ) {
           if( sel < this._minimum ) {
             sel = this._minimum;
           }

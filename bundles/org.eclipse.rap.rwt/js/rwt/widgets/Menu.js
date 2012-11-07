@@ -96,7 +96,7 @@ qx.Class.define( "rwt.widgets.Menu", {
         case "rwt.widgets.base.BasicText":
         case "qx.ui.form.TextArea":
           // NOTE: "enabled" can be "inherit", so it is not always a boolean
-          if( target.getEnabled() != false ) {
+          if( target.getEnabled() !== false ) {
             if( rwt.widgets.Menu._hasNativeMenu( domTarget ) ) {
               result = target.getContextMenu() == null;
             }
@@ -197,7 +197,7 @@ qx.Class.define( "rwt.widgets.Menu", {
         }
         this._maxCellWidths[ cell ] = max;
       }
-      if( cell === 0 && this._maxCellWidths[ 0 ] == 0 && this.getMaxCellWidth( 1 ) == 0 ) {
+      if( cell === 0 && this._maxCellWidths[ 0 ] === 0 && this.getMaxCellWidth( 1 ) === 0 ) {
         this._maxCellWidths[ cell ] = 13;
       }
       return this._maxCellWidths[ cell ];

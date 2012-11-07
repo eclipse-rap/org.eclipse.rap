@@ -135,7 +135,7 @@ qx.Class.define( "rwt.widgets.Scale", {
 
     _onKeyPress : function( evt ) {
       var keyIdentifier = evt.getKeyIdentifier();
-      var sel;
+      var sel = null;
       if( rwt.widgets.Scale._isNoModifierPressed( evt ) ) {
         switch( keyIdentifier ) {
           case "Left":
@@ -195,7 +195,7 @@ qx.Class.define( "rwt.widgets.Scale", {
             evt.stopPropagation();
             break;
         }
-        if( sel != undefined ) {
+        if( sel != null ) {
           this.setSelection( sel );
           this._scheduleSendChanges();
         }

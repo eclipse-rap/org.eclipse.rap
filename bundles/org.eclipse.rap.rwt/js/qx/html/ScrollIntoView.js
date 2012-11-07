@@ -78,7 +78,7 @@ qx.Class.define("qx.html.ScrollIntoView",
 
           if (vAlignLeft) {
             vParent.scrollLeft = vOffset;
-          } else if (vAlignLeft == false) {
+          } else if (vAlignLeft === false) {
             vParent.scrollLeft = vOffset + vWidth - vParentWidth;
           } else if (vWidth > vParentWidth || vOffset < vParentScrollLeft) {
             vParent.scrollLeft = vOffset;
@@ -152,7 +152,7 @@ qx.Class.define("qx.html.ScrollIntoView",
 
           if (vAlignTop) {
             vParent.scrollTop = vOffset;
-          } else if (vAlignTop == false) {
+          } else if (vAlignTop === false) {
             vParent.scrollTop = vOffset + vHeight - vParentHeight;
           } else if (vHeight > vParentHeight || vOffset < vParentScrollTop) {
             vParent.scrollTop = vOffset;

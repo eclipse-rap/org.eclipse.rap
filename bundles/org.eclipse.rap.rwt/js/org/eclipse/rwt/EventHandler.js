@@ -269,7 +269,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         var vDomTarget = EventHandlerUtil.getDomTarget( vDomEvent );
         var vType = vDomEvent.type;
         if( vType == "mousemove" ) {
-          if( this._mouseIsDown && vDomEvent.button == 0 ) {
+          if( this._mouseIsDown && vDomEvent.button === 0 ) {
             this._onmouseevent_post( vDomEvent, "mouseup", vDomTarget );
             this._mouseIsDown = false;
           }

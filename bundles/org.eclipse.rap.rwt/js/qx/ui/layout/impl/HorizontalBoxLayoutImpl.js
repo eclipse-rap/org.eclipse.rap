@@ -554,8 +554,10 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
 
         case "center":
         case "center-reversed":
-          while (chc = ch[++i]) {
+          chc = ch[ ++i ];
+          while( chc ) {
             chc.addToLayoutChanges("locationX");
+            chc = ch[ ++i ];
           }
 
           break;
@@ -563,8 +565,10 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
         default:
           i += vIndex;
 
-          while (chc = ch[++i]) {
+          chc = ch[ ++i ];
+          while( chc ) {
             chc.addToLayoutChanges("locationX");
+            chc = ch[ ++i ];
           }
       }
     },
@@ -662,8 +666,10 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
           // re-layout all children
           i = -1;
 
-          while (chc = ch[++i]) {
+          chc = ch[++i];
+          while( chc ) {
             w._layoutChild(chc);
+            chc = ch[++i];
           }
 
           break;
@@ -674,13 +680,14 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
           i = -1;
           var changed = false;
 
-          while (chc = ch[++i])
-          {
+          chc = ch[++i];
+          while( chc ) {
             if (changed || vChildrenQueue[chc.toHashCode()])
             {
               w._layoutChild(chc);
               changed = true;
             }
+            chc = ch[++i];
           }
       }
     },

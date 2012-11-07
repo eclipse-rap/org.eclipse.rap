@@ -471,35 +471,29 @@ qx.Class.define("qx.bom.element.Location",
           }
         }
 
-        switch(mode)
-        {
-          case "padding":
-            left += this.__num(elem, "paddingLeft");
-            top += this.__num(elem, "paddingTop");
-            right -= this.__num(elem, "paddingRight");
-            bottom -= this.__num(elem, "paddingBottom");
-            // no break here
-
-          case "scroll":
-            left -= elem.scrollLeft;
-            top -= elem.scrollTop;
-            right -= elem.scrollLeft;
-            bottom -= elem.scrollTop;
-            // no break here
-
-          case "border":
-            left += this.__num(elem, "borderLeftWidth");
-            top += this.__num(elem, "borderTopWidth");
-            right -= this.__num(elem, "borderRightWidth");
-            bottom -= this.__num(elem, "borderBottomWidth");
-            break;
-
-          case "margin":
-            left -= this.__num(elem, "marginLeft");
-            top -= this.__num(elem, "marginTop");
-            right += this.__num(elem, "marginRight");
-            bottom += this.__num(elem, "marginBottom");
-            break;
+        if( mode === "padding" ) {
+          left += this.__num(elem, "paddingLeft");
+          top += this.__num(elem, "paddingTop");
+          right -= this.__num(elem, "paddingRight");
+          bottom -= this.__num(elem, "paddingBottom");
+        }
+        if( mode === "padding" || mode === "scroll" ) {
+          left -= elem.scrollLeft;
+          top -= elem.scrollTop;
+          right -= elem.scrollLeft;
+          bottom -= elem.scrollTop;
+        }
+        if( mode === "padding" || mode === "scroll" || mode === "border" ) {
+          left += this.__num(elem, "borderLeftWidth");
+          top += this.__num(elem, "borderTopWidth");
+          right -= this.__num(elem, "borderRightWidth");
+          bottom -= this.__num(elem, "borderBottomWidth");
+        }
+        if( mode === "margin" ) {
+          left -= this.__num(elem, "marginLeft");
+          top -= this.__num(elem, "marginTop");
+          right += this.__num(elem, "marginRight");
+          bottom += this.__num(elem, "marginBottom");
         }
       }
 

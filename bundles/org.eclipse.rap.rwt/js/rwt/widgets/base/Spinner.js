@@ -471,7 +471,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
             }
 
             // supress all key events without modifier
-            if (e.getModifiers() == 0) {
+            if( e.getModifiers() === 0 ) {
               e.preventDefault();
             }
         }
@@ -884,20 +884,18 @@ qx.Class.define("rwt.widgets.base.Spinner",
 
       var wrap = this.getManager().getWrap();
 
-      switch(this._intervalIncrease)
-      {
+      switch( this._intervalIncrease ) {
         case true:
-          if (this.getValue() == this.getMax() && !wrap) {
-            return;
+          if( !( this.getValue() == this.getMax() && !wrap ) ) {
+            this._timer.restartWith(this.getInterval());
           }
-
+        break;
         case false:
-          if (this.getValue() == this.getMin() && !wrap) {
-            return;
+          if( !( this.getValue() == this.getMin() && !wrap ) ) {
+            this._timer.restartWith(this.getInterval());
           }
+        break;
       }
-
-      this._timer.restartWith(this.getInterval());
     },
 
 
@@ -925,8 +923,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
         return;
       }
 
-      if ((el.value == "") || (el.value == "-"))
-      {
+      if( ( el.value === "" ) || ( el.value === "-" ) ) {
         if (!acceptEmpty)
         {
           this.resetValue();

@@ -64,7 +64,7 @@ qx.Class.define("rwt.util.String",
         temp += ch;
       }
 
-      if (addRight == true){
+      if( addRight === true ){
         return str + temp;
       } else {
         return temp + str;

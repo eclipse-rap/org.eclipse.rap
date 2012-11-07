@@ -67,7 +67,7 @@ qx.Class.define("qx.html.Scroll",
       } else if(ev.srcElement){
         el = ev.srcElement;
       }
-      if(el && (ev.scrollLeft != 0 || ev.scrollTop != 0)) {
+      if( el && ( ev.scrollLeft !== 0 || ev.scrollTop !== 0 ) ) {
         el.scrollLeft = 0;
         el.scrollTop = 0;
       }

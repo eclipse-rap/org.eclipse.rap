@@ -223,7 +223,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     setFillColor : function( shape, color ) {
       var fill = shape.fill;
       fill.type = "solid";
-      if( color != null && color != "transparent" && color != "" ) {
+      if( color != null && color !== "transparent" && color !== "" ) {
         this._setFillEnabled( shape, true );
         fill.color = color;
         shape.restoreData.fill.color = color;
@@ -509,7 +509,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
 
     _transitionColorPart : function( color1, color2, pos ) {
       // TODO [tb] : color1 should always be a number, parseInt not needed?
-      var part = parseInt( color1 ) + ( ( color2 - color1 ) * pos );
+      var part = parseInt( color1, 10 ) + ( ( color2 - color1 ) * pos );
       return Math.round( part );
     },
 

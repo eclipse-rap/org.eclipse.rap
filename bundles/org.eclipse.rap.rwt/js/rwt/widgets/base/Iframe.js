@@ -668,6 +668,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
 
     destroy : function() {
       // best known method to remove iframe content from memory is to set this url:
+      /*jshint scripturl:true */
       var src = "javascript:false;";
       if( rwt.client.Client.isMshtml() && this._iframeNode && this.getSource() !== src ) {
         this.setStyleProperty( "visibility", "hidden" );

@@ -556,8 +556,10 @@ qx.Class.define("qx.ui.layout.impl.VerticalBoxLayoutImpl",
 
         case "middle":
         case "middle-reversed":
-          while (chc = ch[++i]) {
+          chc = ch[++i];
+          while( chc ) {
             chc.addToLayoutChanges("locationY");
+            chc = ch[++i];
           }
 
           break;
@@ -565,8 +567,10 @@ qx.Class.define("qx.ui.layout.impl.VerticalBoxLayoutImpl",
         default:
           i += vIndex;
 
-          while (chc = ch[++i]) {
+          chc = ch[++i];
+          while( chc ) {
             chc.addToLayoutChanges("locationY");
+            chc = ch[++i];
           }
       }
     },
@@ -664,8 +668,10 @@ qx.Class.define("qx.ui.layout.impl.VerticalBoxLayoutImpl",
           // re-layout all children
           i = -1;
 
-          while (chc = ch[++i]) {
+          chc = ch[++i];
+          while( chc ) {
             w._layoutChild(chc);
+            chc = ch[++i];
           }
 
           break;
@@ -676,13 +682,14 @@ qx.Class.define("qx.ui.layout.impl.VerticalBoxLayoutImpl",
           i = -1;
           var changed = false;
 
-          while (chc = ch[++i])
-          {
+          chc = ch[++i];
+          while( chc ) {
             if (changed || vChildrenQueue[chc.toHashCode()])
             {
               w._layoutChild(chc);
               changed = true;
             }
+            chc = ch[++i];
           }
       }
     },
