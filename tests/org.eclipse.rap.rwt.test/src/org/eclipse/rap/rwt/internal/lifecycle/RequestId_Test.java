@@ -13,11 +13,11 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.lifecycle.RWTRequestVersionControl;
+import org.eclipse.rap.rwt.internal.lifecycle.RequestId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
-public class RWTRequestVersionControl_Test extends TestCase {
+public class RequestId_Test extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
@@ -31,49 +31,49 @@ public class RWTRequestVersionControl_Test extends TestCase {
   }
 
   public void testInitialRequestId() {
-    Integer requestId = RWTRequestVersionControl.getInstance().nextRequestId();
+    Integer requestId = RequestId.getInstance().nextRequestId();
 
     assertEquals( 0, requestId.intValue() );
   }
 
   public void testIsValidForInitialRequest() {
-    boolean valid = RWTRequestVersionControl.getInstance().isValid();
+    boolean valid = RequestId.getInstance().isValid();
 
     assertTrue( valid );
   }
 
   public void testIsValid() {
-    Integer nextRequestId = RWTRequestVersionControl.getInstance().nextRequestId();
-    Fixture.fakeHeadParameter( RWTRequestVersionControl.REQUEST_COUNTER, nextRequestId.toString() );
+    Integer nextRequestId = RequestId.getInstance().nextRequestId();
+    Fixture.fakeHeadParameter( RequestId.REQUEST_COUNTER, nextRequestId.toString() );
 
-    boolean valid = RWTRequestVersionControl.getInstance().isValid();
+    boolean valid = RequestId.getInstance().isValid();
 
     assertTrue( valid );
   }
 
   public void testIsValidWithUnknownRequestVersion() {
-    RWTRequestVersionControl.getInstance().nextRequestId();
-    Fixture.fakeHeadParameter( RWTRequestVersionControl.REQUEST_COUNTER, "4711" );
+    RequestId.getInstance().nextRequestId();
+    Fixture.fakeHeadParameter( RequestId.REQUEST_COUNTER, "4711" );
 
-    boolean valid = RWTRequestVersionControl.getInstance().isValid();
+    boolean valid = RequestId.getInstance().isValid();
 
     assertFalse( valid );
   }
 
   public void testIsValidWhenNoRequestVersionWasSent() {
-    RWTRequestVersionControl.getInstance().nextRequestId();
-    RWTRequestVersionControl.getInstance().nextRequestId();
+    RequestId.getInstance().nextRequestId();
+    RequestId.getInstance().nextRequestId();
 
-    boolean valid = RWTRequestVersionControl.getInstance().isValid();
+    boolean valid = RequestId.getInstance().isValid();
 
     assertTrue( valid );
   }
 
   public void testSerialization() throws Exception {
-    Integer requestId = RWTRequestVersionControl.getInstance().nextRequestId();
+    Integer requestId = RequestId.getInstance().nextRequestId();
 
-    RWTRequestVersionControl deserialized
-      = Fixture.serializeAndDeserialize( RWTRequestVersionControl.getInstance() );
+    RequestId deserialized
+      = Fixture.serializeAndDeserialize( RequestId.getInstance() );
 
     assertEquals( requestId, deserialized.getCurrentRequestId() );
   }

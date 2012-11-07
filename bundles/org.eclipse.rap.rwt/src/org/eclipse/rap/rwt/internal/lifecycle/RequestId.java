@@ -11,23 +11,32 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import org.eclipse.rap.rwt.SingletonUtil;
+import javax.servlet.http.HttpSession;
+
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 // TODO [rh] find a handier name
-public final class RWTRequestVersionControl implements SerializableCompatibility {
+public final class RequestId implements SerializableCompatibility {
+  private static final String ATTR_INSTANCE = RequestId.class.getName() + "#instance";
   private static final Integer INITIAL_REQUEST_ID = new Integer( -1 );
 
   static final String REQUEST_COUNTER = "requestCounter";
 
-  public static RWTRequestVersionControl getInstance() {
-    return SingletonUtil.getSessionInstance( RWTRequestVersionControl.class );
+  public static RequestId getInstance() {
+    HttpSession session = ContextProvider.getSessionStore().getHttpSession();
+    RequestId result = ( RequestId )session.getAttribute( ATTR_INSTANCE );
+    if( result == null ) {
+      result = new RequestId();
+      session.setAttribute( ATTR_INSTANCE, result );
+    }
+    return result;
   }
 
   private Integer requestId;
 
-  private RWTRequestVersionControl() {
+  private RequestId() {
     requestId = INITIAL_REQUEST_ID;
   }
 
@@ -48,7 +57,4 @@ public final class RWTRequestVersionControl implements SerializableCompatibility
     return requestId;
   }
 
-  public void setCurrentRequestId( Integer version ) {
-    this.requestId = version;
-  }
 }

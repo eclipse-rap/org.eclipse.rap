@@ -32,7 +32,7 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.RWTRequestVersionControl;
+import org.eclipse.rap.rwt.internal.lifecycle.RequestId;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
@@ -122,14 +122,14 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
   public void testRequestCounterAfterSessionRestart() throws Exception {
     initializeSessionStore();
-    RWTRequestVersionControl.getInstance().nextRequestId();
-    Integer versionBeforeRestart = RWTRequestVersionControl.getInstance().nextRequestId();
+    RequestId.getInstance().nextRequestId();
+    Integer versionBeforeRestart = RequestId.getInstance().nextRequestId();
 
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
     new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ).service();
 
-    Integer versionAfterRestart = RWTRequestVersionControl.getInstance().getCurrentRequestId();
+    Integer versionAfterRestart = RequestId.getInstance().getCurrentRequestId();
     assertEquals( versionBeforeRestart.intValue() + 1, versionAfterRestart.intValue() );
   }
 

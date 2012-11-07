@@ -26,7 +26,7 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.RWTRequestVersionControl;
+import org.eclipse.rap.rwt.internal.lifecycle.RequestId;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
@@ -108,7 +108,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   // helping methods
 
   private static boolean isRequestCounterValid() {
-    return hasInitializeParameter() || RWTRequestVersionControl.getInstance().isValid();
+    return hasInitializeParameter() || RequestId.getInstance().isValid();
   }
 
   private static void handleInvalidRequestCounter() {
@@ -139,7 +139,6 @@ public class LifeCycleServiceHandler implements IServiceHandler {
 
   private static void reinitializeSessionStore() {
     SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSessionStore();
-    Integer version = RWTRequestVersionControl.getInstance().getCurrentRequestId();
     Map<String, String[]> bufferedParameters = RequestParameterBuffer.getBufferedParameters();
     ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
     sessionStore.valueUnbound( null );
@@ -147,7 +146,6 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
     sessionStore = ( SessionStoreImpl )builder.buildSessionStore();
     ContextProvider.getContext().setSessionStore( sessionStore );
-    RWTRequestVersionControl.getInstance().setCurrentRequestId( version );
     if( bufferedParameters != null ) {
       RequestParameterBuffer.store( bufferedParameters );
     }
