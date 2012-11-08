@@ -14,7 +14,7 @@ public final class Resource2 implements IResource {
   }
 
   public String getLocation() {
-    return "org/eclipse/rap/ui/tests/resources/Resource1.js"; //$NON-NLS-1$
+    return "org/eclipse/rap/ui/tests/resources/Resource2.js"; //$NON-NLS-1$
   }
 
   public boolean isExternal() {
