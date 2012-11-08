@@ -33,7 +33,7 @@
       <entrypoint
             class="org.eclipse.rap.demo.databinding.DataBindingEntryPoint"
             id="org.eclipse.rap.demo.databinding.entrypoint1"
-            path="databinding">
+            path="/databinding">
       </entrypoint>
    </extension>
      
