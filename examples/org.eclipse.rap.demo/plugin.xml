@@ -11,12 +11,14 @@
           path="/workbench"/>
     <entrypoint
           branding="org.eclipse.rap.design.example.business.branding"
+          brandingId="org.eclipse.rap.design.example.business.branding"
           class="org.eclipse.rap.demo.DemoWorkbench"
           id="org.eclipse.rap.demo.workbench.business"
           path="/business">
     </entrypoint>
     <entrypoint
           branding="org.eclipse.rap.design.example.fancy.branding"
+          brandingId="org.eclipse.rap.design.example.fancy.branding"
           class="org.eclipse.rap.demo.DemoWorkbench"
           id="org.eclipse.rap.demo.workbench.fancy"
           path="/fancy">

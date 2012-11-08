@@ -19,7 +19,6 @@
       <branding
             favicon="img/business/favicon.png"
             id="org.eclipse.rap.design.example.business.branding"
-            servletName="business"
             themeId="org.eclipse.rap.design.example.business.theme"
             title="RAP business design">
          <presentationFactory
@@ -35,7 +34,6 @@
       <branding
             favicon="img/fancy/favicon.png"
             id="org.eclipse.rap.design.example.fancy.branding"
-            servletName="fancy"
             themeId="org.eclipse.rap.design.example.fancy.theme"
             title="RAP fancy design">
          <presentationFactory
