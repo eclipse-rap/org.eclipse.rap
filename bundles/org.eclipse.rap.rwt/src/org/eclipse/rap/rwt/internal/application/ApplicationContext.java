@@ -44,8 +44,9 @@ import org.eclipse.swt.internal.widgets.DisplaysHolder;
 public class ApplicationContext {
   // TODO [fappel]: this allows to set a fake double of the resource manager for testing purpose.
   //                Think about a less intrusive solution.
-  static IResourceManager testResourceManager;
-  
+  // [rst] made public to allow access from testfixture in OSGi (bug 391510)
+  public static IResourceManager testResourceManager;
+
   // TODO [fappel]: themeManager isn't final for performance reasons of the testsuite.
   //                TestServletContext#setAttribute(String,Object) will replace the runtime
   //                implementation with an optimized version for testing purpose. Think about

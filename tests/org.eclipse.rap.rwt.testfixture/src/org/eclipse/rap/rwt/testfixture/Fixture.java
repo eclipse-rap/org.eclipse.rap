@@ -133,7 +133,13 @@ public final class Fixture {
     registerConfigurer();
     rwtServletContextListener = new RWTServletContextListener();
     ServletContextEvent event = new ServletContextEvent( servletContext );
-    rwtServletContextListener.contextInitialized( event );
+    ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
+    try {
+      Thread.currentThread().setContextClassLoader( Fixture.class.getClassLoader() );
+      rwtServletContextListener.contextInitialized( event );
+    } finally {
+      Thread.currentThread().setContextClassLoader( oldContextClassLoader );
+    }
   }
 
   public static void triggerServletContextDestroyed() {
