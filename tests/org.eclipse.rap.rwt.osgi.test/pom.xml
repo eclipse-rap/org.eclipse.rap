@@ -24,4 +24,24 @@
   <artifactId>org.eclipse.rap.rwt.osgi.test</artifactId>
   <packaging>eclipse-plugin</packaging>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- manually remove the dependency to the compiled and signed jar -->
+          <classpathDependencyExcludes>
+            <classpathDependencyExcludes>org.eclipse.rap:org.eclipse.rap.rwt.osgi</classpathDependencyExcludes>
+          </classpathDependencyExcludes>
+          <!-- manually include jar in classpath (maven-surefire does not use tycho's classpath resolver) -->
+          <additionalClasspathElements>
+            <additionalClasspathElement>${basedir}/../../bundles/org.eclipse.rap.rwt.osgi/target/classes/</additionalClasspathElement>
+            <additionalClasspathElement>${basedir}/lib/resource_manager_test.jar</additionalClasspathElement>
+          </additionalClasspathElements>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
