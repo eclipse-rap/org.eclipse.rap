@@ -167,6 +167,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${surefire-version}</version>
+        <configuration>
+          <argLine>-Djava.security.manager -Djava.security.policy=${basedir}/java.policy</argLine>
+        </configuration>
         <executions>
           <execution>
             <id>test</id>
