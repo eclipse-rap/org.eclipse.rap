@@ -29,7 +29,9 @@
     <junit-version>3.8.2</junit-version>
     <mockito-version>1.8.4</mockito-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- disabled due to bug 393977
     <baseline-repository>http://download.eclipse.org/rt/rap/nightly/runtime/</baseline-repository>
+     -->
     <tycho.scmUrl>scm:git:git://git.eclipse.org/gitroot/rap/org.eclipse.rap.git</tycho.scmUrl>
   </properties>
 
@@ -140,6 +142,7 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-p2-plugin</artifactId>
         <version>${tycho-version}</version>
+        <!-- disabled due to bug 393977
         <configuration>
           <baselineRepositories>
             <repository>
@@ -147,6 +150,7 @@
             </repository>
           </baselineRepositories>
         </configuration>
+         -->
       </plugin>
 
       <plugin>
