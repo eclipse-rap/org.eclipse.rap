@@ -540,6 +540,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
         TestUtil.flush();
       }
       rwt.protocol.ObjectRegistry.add( "w3", tree );
+      rwt.protocol.ObjectRegistry.add( "w3_vscroll", tree.getVerticalBar() );
+      rwt.protocol.ObjectRegistry.add( "w3_hscroll", tree.getHorizontalBar() );
       return tree;
     },
 

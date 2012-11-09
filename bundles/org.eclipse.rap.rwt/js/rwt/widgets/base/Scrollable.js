@@ -101,6 +101,22 @@ qx.Class.define( "rwt.widgets.base.Scrollable", {
       this._blockScrolling = value;
     },
 
+    getVerticalBar : function() {
+      return this._vertScrollBar;
+    },
+
+    getHorizontalBar : function() {
+      return this._horzScrollBar;
+    },
+
+    isVerticalBarVisible : function() {
+      return this._vertScrollBar.getDisplay();
+    },
+
+    isHorizontalBarVisible : function() {
+      return this._horzScrollBar.getDisplay();
+    },
+
     /////////
     // Layout
 
@@ -214,7 +230,7 @@ qx.Class.define( "rwt.widgets.base.Scrollable", {
         this._syncClientArea( true, false );
       }
       if( !this._internalChangeFlag ) {
-        this.createDispatchEvent( "userScroll" );
+        this.dispatchSimpleEvent( "userScroll", true );
       }
     },
 
@@ -223,7 +239,7 @@ qx.Class.define( "rwt.widgets.base.Scrollable", {
         this._syncClientArea( false, true );
       }
       if( !this._internalChangeFlag ) {
-        this.createDispatchEvent( "userScroll" );
+        this.dispatchSimpleEvent( "userScroll", false );
       }
     },
 

@@ -234,8 +234,9 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( 54, rootItem3.getBounds().y );
 
     Fixture.fakeNewRequest( display );
-    Fixture.fakeSetParameter( getId( tree ), "scrollLeft", "0" );
-    Fixture.fakeSetParameter( getId( tree ), "topItemIndex", "2" );
+    Fixture.fakeSetParameter( getId( tree.getHorizontalBar() ), "selection", "0" );
+    Integer scrollTop = Integer.valueOf( 2 * tree.getItemHeight() );
+    Fixture.fakeSetParameter( getId( tree.getVerticalBar() ), "selection", scrollTop );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( -54, rootItem.getBounds().y );

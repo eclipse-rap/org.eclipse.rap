@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
@@ -16,8 +17,6 @@ import org.eclipse.swt.widgets.ExpandItem;
 public interface IExpandBarAdapter {
 
   Rectangle getBounds( ExpandItem item );
-
-  boolean isVScrollbarVisible();
 
   Rectangle getBottomSpacingBounds();
 }

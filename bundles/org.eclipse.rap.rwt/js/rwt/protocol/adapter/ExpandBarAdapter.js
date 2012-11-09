@@ -23,7 +23,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ExpandBar", {
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "bottomSpacingBounds",
-    "vScrollBarVisible",
     "vScrollBarMax"
   ] ),
 

@@ -19,13 +19,9 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -38,8 +34,6 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 
 public class ScrolledCompositeLCA_Test extends TestCase {
@@ -48,6 +42,9 @@ public class ScrolledCompositeLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private ScrolledComposite sc;
+  private ScrollBar hScroll;
+  private ScrollBar vScroll;
   private ScrolledCompositeLCA lca;
 
   @Override
@@ -55,6 +52,9 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    hScroll = sc.getHorizontalBar();
+    vScroll = sc.getVerticalBar();
     lca = new ScrolledCompositeLCA();
     Fixture.fakeNewRequest( display );
   }
@@ -65,7 +65,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   }
 
   public void testControlListeners() throws IOException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( sc );
     ControlLCATestUtil.testFocusListener( sc );
     ControlLCATestUtil.testMouseListener( sc );
@@ -76,15 +75,13 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    int scStyle = SWT.H_SCROLL | SWT.V_SCROLL;
-    ScrolledComposite sc = new ScrolledComposite( shell, scStyle );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( sc );
     assertEquals( null, adapter.getPreserved( PROP_SHOW_FOCUSED_CONTROL ) );
-    sc.getHorizontalBar().setSelection( 23 );
-    sc.getVerticalBar().setSelection( 42 );
+    hScroll.setSelection( 23 );
+    vScroll.setSelection( 42 );
     sc.setShowFocusedControl( true );
-    assertEquals( 23, sc.getHorizontalBar().getSelection() );
-    assertEquals( 42, sc.getVerticalBar().getSelection() );
+    assertEquals( 23, hScroll.getSelection() );
+    assertEquals( 42, vScroll.getSelection() );
     Rectangle rectangle = new Rectangle( 12, 30, 20, 40 );
     sc.setBounds( rectangle );
     Fixture.markInitialized( display );
@@ -154,35 +151,29 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   }
 
   public void testReadData_ScrollBarsSelection() {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     sc.setContent( new Composite( sc, SWT.NONE ) );
 
-    Fixture.fakeSetParameter( getId( sc ), "horizontalBar.selection", Integer.valueOf( 1 ) );
-    Fixture.fakeSetParameter( getId( sc ), "verticalBar.selection", Integer.valueOf( 2 ) );
+    Fixture.fakeSetParameter( getId( hScroll ), "selection", Integer.valueOf( 1 ) );
+    Fixture.fakeSetParameter( getId( vScroll ), "selection", Integer.valueOf( 2 ) );
     Fixture.readDataAndProcessAction( sc );
 
     assertEquals( new Point( 1, 2 ), sc.getOrigin() );
   }
 
   public void testReadData_ScrollBarsSelectionEvent() {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     sc.setContent( new Composite( sc, SWT.NONE ) );
     SelectionListener selectionListener = mock( SelectionListener.class );
-    sc.getHorizontalBar().addSelectionListener( selectionListener );
-    sc.getVerticalBar().addSelectionListener( selectionListener );
+    hScroll.addSelectionListener( selectionListener );
+    vScroll.addSelectionListener( selectionListener );
 
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "horizontal", Boolean.TRUE );
-    parameters.put( "vertical", Boolean.TRUE );
-    Fixture.fakeNotifyOperation( getId( sc ), "scrollBarSelected", parameters );
+    Fixture.fakeNotifyOperation( getId( hScroll ), "Selection", null );
+    Fixture.fakeNotifyOperation( getId( vScroll ), "Selection", null );
     Fixture.readDataAndProcessAction( sc );
 
     verify( selectionListener, times( 2 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   public void testRenderCreate() throws IOException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-
     lca.renderInitialization( sc );
 
     Message message = Fixture.getProtocolMessage();
@@ -194,8 +185,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-
     lca.renderInitialization( sc );
 
     Message message = Fixture.getProtocolMessage();
@@ -204,8 +193,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialContent() throws IOException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-
     lca.render( sc );
 
     Message message = Fixture.getProtocolMessage();
@@ -214,7 +201,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   }
 
   public void testRenderContent() throws IOException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     Composite content = new Composite( sc, SWT.NONE );
     String contentId = WidgetUtil.getId( content );
 
@@ -226,7 +212,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   }
 
   public void testRenderContentUnchanged() throws IOException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     Composite content = new Composite( sc, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( sc );
@@ -240,19 +225,17 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialOrigin() throws IOException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
 
     lca.render( sc );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( sc );
-    assertTrue( operation.getPropertyNames().indexOf( "origin" ) == -1 );
+    assertNull( message.findSetOperation( hScroll, "selection" ) );
+    assertNull( message.findSetOperation( vScroll, "selection" ) );
   }
 
-  public void testRenderOrigin() throws IOException, JSONException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+  public void testRenderOrigin() throws IOException {
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
 
@@ -260,26 +243,24 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( sc, "origin" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 2 ]", actual ) );
+    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( hScroll, "selection" ) );
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( vScroll, "selection" ) );
   }
 
-  public void testRenderOrigin_SetByScrollbar() throws IOException, JSONException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+  public void testRenderOrigin_SetByScrollbar() throws IOException {
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
 
-    sc.getHorizontalBar().setSelection( 1 );
-    sc.getVerticalBar().setSelection( 2 );
+    hScroll.setSelection( 1 );
+    vScroll.setSelection( 2 );
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( sc, "origin" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 2 ]", actual ) );
+    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( hScroll, "selection" ) );
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( vScroll, "selection" ) );
   }
 
   public void testRenderOriginUnchanged() throws IOException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
     Fixture.markInitialized( display );
@@ -290,12 +271,11 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( sc, "origin" ) );
+    assertNull( message.findSetOperation( hScroll, "selection" ) );
+    assertNull( message.findSetOperation( vScroll, "selection" ) );
   }
 
   public void testRenderInitialShowFocusedControl() throws IOException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-
     lca.render( sc );
 
     Message message = Fixture.getProtocolMessage();
@@ -304,8 +284,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   }
 
   public void testRenderShowFocusedControl() throws IOException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-
     sc.setShowFocusedControl( true );
     lca.renderChanges( sc );
 
@@ -314,7 +292,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   }
 
   public void testRenderShowFocusedControlUnchanged() throws IOException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     Fixture.markInitialized( display );
     Fixture.markInitialized( sc );
 
@@ -327,132 +304,128 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   }
 
   public void testRenderAddScrollBarsSelectionListener_Horizontal() throws Exception {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     Fixture.markInitialized( display );
     Fixture.markInitialized( sc );
+    Fixture.markInitialized( hScroll );
     Fixture.preserveWidgets();
 
-    sc.getHorizontalBar().addSelectionListener( new SelectionAdapter() { } );
+    hScroll.addSelectionListener( new SelectionAdapter() { } );
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( sc, "scrollBarsSelection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( hScroll, "Selection" ) );
   }
 
   public void testRenderRemoveScrollBarsSelectionListener_Horizontal() throws Exception {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     SelectionListener listener = new SelectionAdapter() { };
-    sc.getHorizontalBar().addSelectionListener( listener );
+    hScroll.addSelectionListener( listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( sc );
+    Fixture.markInitialized( hScroll );
     Fixture.preserveWidgets();
 
-    sc.getHorizontalBar().removeSelectionListener( listener );
+    hScroll.removeSelectionListener( listener );
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( sc, "scrollBarsSelection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( hScroll, "Selection" ) );
   }
 
   public void testRenderScrollBarsSelectionListenerUnchanged_Horizontal() throws Exception {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     Fixture.markInitialized( display );
     Fixture.markInitialized( sc );
+    Fixture.markInitialized( hScroll );
     Fixture.preserveWidgets();
 
-    sc.getHorizontalBar().addSelectionListener( new SelectionAdapter() { } );
+    hScroll.addSelectionListener( new SelectionAdapter() { } );
     Fixture.preserveWidgets();
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( sc, "scrollBarsSelection" ) );
+    assertNull( message.findListenOperation( hScroll, "Selection" ) );
   }
 
   public void testRenderAddScrollBarsSelectionListener_Vertical() throws Exception {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     Fixture.markInitialized( display );
     Fixture.markInitialized( sc );
+    Fixture.markInitialized( vScroll );
     Fixture.preserveWidgets();
 
-    sc.getVerticalBar().addSelectionListener( new SelectionAdapter() { } );
+    vScroll.addSelectionListener( new SelectionAdapter() { } );
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( sc, "scrollBarsSelection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( vScroll, "Selection" ) );
   }
 
   public void testRenderRemoveScrollBarsSelectionListener_Vertical() throws Exception {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     SelectionListener listener = new SelectionAdapter() { };
-    sc.getVerticalBar().addSelectionListener( listener );
+    vScroll.addSelectionListener( listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( sc );
+    Fixture.markInitialized( vScroll );
     Fixture.preserveWidgets();
 
-    sc.getVerticalBar().removeSelectionListener( listener );
+    vScroll.removeSelectionListener( listener );
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( sc, "scrollBarsSelection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( vScroll, "Selection" ) );
   }
 
   public void testRenderScrollBarsSelectionListenerUnchanged_Vertical() throws Exception {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     Fixture.markInitialized( display );
     Fixture.markInitialized( sc );
+    Fixture.markInitialized( vScroll );
     Fixture.preserveWidgets();
 
-    sc.getVerticalBar().addSelectionListener( new SelectionAdapter() { } );
+    vScroll.addSelectionListener( new SelectionAdapter() { } );
     Fixture.preserveWidgets();
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( sc, "scrollBarsSelection" ) );
+    assertNull( message.findListenOperation( vScroll, "Selection" ) );
   }
 
-  public void testRenderInitialScrollBarsVisible() throws IOException, JSONException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-
+  public void testRenderInitialScrollBarsVisible() throws IOException {
     lca.render( sc );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findCreateProperty( sc, "scrollBarsVisible" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ false, false ]", actual ) );
+    assertNull( message.findSetOperation( hScroll, "visibility" ) );
+    assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 
-  public void testRenderScrollBarsVisible_Horizontal() throws IOException, JSONException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-
-    sc.getHorizontalBar().setVisible( true );
+  public void testRenderScrollBarsVisible_Horizontal() throws IOException {
+    hScroll.setVisible( true );
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( sc, "scrollBarsVisible" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ true, false ]", actual ) );
+    assertEquals( Boolean.TRUE, message.findSetProperty( hScroll, "visibility" ) );
+    assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 
-  public void testRenderScrollBarsVisible_Vertical() throws IOException, JSONException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-
-    sc.getVerticalBar().setVisible( true );
+  public void testRenderScrollBarsVisible_Vertical() throws IOException {
+    vScroll.setVisible( true );
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( sc, "scrollBarsVisible" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ false, true ]", actual ) );
+    assertNull( message.findSetOperation( hScroll, "visibility" ) );
+    assertEquals( Boolean.TRUE, message.findSetProperty( vScroll, "visibility" ) );
   }
 
   public void testRenderScrollBarsVisibleUnchanged() throws IOException {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     Fixture.markInitialized( display );
     Fixture.markInitialized( sc );
+    Fixture.markInitialized( hScroll );
+    Fixture.markInitialized( vScroll );
 
-    sc.getHorizontalBar().setVisible( false );
-    sc.getVerticalBar().setVisible( false );
+    hScroll.setVisible( false );
+    vScroll.setVisible( false );
     Fixture.preserveWidgets();
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( sc, "scrollBarsVisible" ) );
+    assertNull( message.findSetOperation( hScroll, "visibility" ) );
+    assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 }

@@ -65,7 +65,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      TestUtil.protocolSet( "w3", { "vScrollBarVisible"  : true } );
+
+      TestUtil.protocolSet( "w3_vscroll", { "visibility" : true } );
+
       assertTrue( widget._vertScrollBar.getDisplay() );
       shell.destroy();
       widget.destroy();
@@ -243,6 +245,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
         "properties" : {
           "style" : style,
           "parent" : parentId
+        }
+      } );
+      rwt.protocol.MessageProcessor.processOperation( {
+        "target" : id + "_vscroll",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrollBar",
+        "properties" : {
+          "parent" : id,
+          "style" : [ "VERTICAL" ],
+          "visibility" : true
+        }
+      } );
+      rwt.protocol.MessageProcessor.processOperation( {
+        "target" : id + "_hscroll",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrollBar",
+        "properties" : {
+          "parent" : id,
+          "style" : [ "HORIZONTAL" ],
+          "visibility" : true
         }
       } );
       return rwt.protocol.ObjectRegistry.getObject( id );

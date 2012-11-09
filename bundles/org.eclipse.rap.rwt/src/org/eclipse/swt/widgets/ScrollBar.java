@@ -12,11 +12,13 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.scrollbarkit.ScrollBarThemeAdapter;
 
 /**
@@ -516,6 +518,14 @@ public class ScrollBar extends Widget {
     }
     removeListener( SWT.Selection, listener );
     removeListener( SWT.DefaultSelection, listener );
+  }
+
+  @Override
+  public void dispose() {
+    // FIXME: [if] ScrollBar has no LCA. Quick fix that prevents Scrollbars to be added to
+    // DisposedWidgets list. See DisplayLCA#disposeWidgets()
+    ( ( WidgetAdapter )getAdapter( IWidgetAdapter.class ) ).setInitialized( false );
+    super.dispose();
   }
 
   //////////////////

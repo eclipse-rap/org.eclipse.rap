@@ -24,6 +24,7 @@ qx.Class.define( "rwt.widgets.base.ScrollBar", {
     this._renderSamples = 0;
     this._eventTimerId = null;
     this._setMinimum( 0 );
+    this._hasSelectionListener = false;
     this._minThumbSize = this._getMinThumbSize();
     this.setIncrement( 20 );
     this.addEventListener( "click", this._stopEvent, this );
@@ -86,6 +87,14 @@ qx.Class.define( "rwt.widgets.base.ScrollBar", {
       this._updatePageIncrement();
     },
 
+    setHasSelectionListener : function( value ) {
+      this._hasSelectionListener = value;
+    },
+
+    getHasSelectionListener : function() {
+      return this._hasSelectionListener;
+    },
+
     setMergeEvents : function( value ) {
       if( !value && this._mergeEvents ) {
         throw new Error( "mergeEvents can not be set to false" );
@@ -116,6 +125,10 @@ qx.Class.define( "rwt.widgets.base.ScrollBar", {
           this.setMergeEvents( true );
         }
       }
+    },
+
+    isHorizontal : function() {
+      return this._horizontal;
     },
 
     //////////////

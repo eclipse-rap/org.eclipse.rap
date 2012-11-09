@@ -1531,6 +1531,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
           "headerVisible" : true
         }
       } );
+      rwt.protocol.MessageProcessor.processOperation( {
+        "target" : id + "_vscroll",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrollBar",
+        "properties" : {
+          "parent" : id,
+          "style" : [ "VERTICAL" ]
+        }
+      } );
+      rwt.protocol.MessageProcessor.processOperation( {
+        "target" : id + "_hscroll",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrollBar",
+        "properties" : {
+          "parent" : id,
+          "style" : [ "HORIZONTAL" ]
+        }
+      } );
       return rwt.protocol.ObjectRegistry.getObject( id );
     },
 
