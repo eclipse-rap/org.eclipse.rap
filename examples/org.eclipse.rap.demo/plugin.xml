@@ -10,14 +10,12 @@
           id="org.eclipse.rap.demo.workbench.default"
           path="/workbench"/>
     <entrypoint
-          branding="org.eclipse.rap.design.example.business.branding"
           brandingId="org.eclipse.rap.design.example.business.branding"
           class="org.eclipse.rap.demo.DemoWorkbench"
           id="org.eclipse.rap.demo.workbench.business"
           path="/business">
     </entrypoint>
     <entrypoint
-          branding="org.eclipse.rap.design.example.fancy.branding"
           brandingId="org.eclipse.rap.design.example.fancy.branding"
           class="org.eclipse.rap.demo.DemoWorkbench"
           id="org.eclipse.rap.demo.workbench.fancy"
@@ -67,9 +65,9 @@
            id="org.eclipse.rap.demo.perspective.planning"
            name="Planning">
      </perspective>
-  </extension> 
+  </extension>
 
-  <extension point="org.eclipse.ui.views"> 
+  <extension point="org.eclipse.ui.views">
       <view
             class="org.eclipse.ui.ExtensionFactory:progressView"
             icon= "icons/pview.gif"
@@ -81,37 +79,37 @@
             class="org.eclipse.rap.demo.DemoChartViewPart"
             icon="icons/contact.gif"
             id="org.eclipse.rap.demo.DemoChartViewPart"
-            name="Chart"/> 
+            name="Chart"/>
       <view
             category="one"
             class="org.eclipse.rap.demo.DemoTreeViewPart"
             icon="icons/info.gif"
             id="org.eclipse.rap.demo.DemoTreeViewPartII"
-            name="View II"/> 
+            name="View II"/>
       <view
             category="one"
             class="org.eclipse.rap.demo.DemoTreeViewPart"
             icon="icons/login.gif"
             id="org.eclipse.rap.demo.DemoTreeViewPart"
-            name="Tree"/> 
+            name="Tree"/>
       <view
             category="two"
             class="org.eclipse.rap.demo.DemoFormViewPart"
             icon="icons/register.gif"
             id="org.eclipse.rap.demo.DemoFormViewPart"
-            name="Form"/> 
+            name="Form"/>
       <view
             category="two"
             class="org.eclipse.rap.demo.DemoTableViewPart"
             icon="icons/search.gif"
             id="org.eclipse.rap.demo.DemoTableViewPart"
-            name="Table"/> 
+            name="Table"/>
       <view
             category="two"
             class="org.eclipse.rap.demo.DemoSelectionViewPart"
             icon="icons/status.gif"
             id="org.eclipse.rap.demo.DemoSelectionViewPart"
-            name="Selection View"/> 
+            name="Selection View"/>
       <view
             allowMultiple="true"
             category="two"
@@ -254,9 +252,9 @@
             class="org.eclipse.rap.demo.wizard.DemoExport"
             id="org.eclipse.rap.demo.export">
          <description>
-            This is an example for a export wizard. 
+            This is an example for a export wizard.
          </description>
-      </wizard>         
+      </wizard>
       <wizard
             name="Demo Export"
             icon="icons/sample.gif"
@@ -264,7 +262,7 @@
             class="org.eclipse.rap.demo.wizard.DemoExport"
             id="org.eclipse.rap.demo.exportI">
          <description>
-            This is an example for a export wizard. 
+            This is an example for a export wizard.
          </description>
       </wizard>
    </extension>
@@ -283,7 +281,7 @@
             name="Demo Import"
             icon="icons/sample.gif"
             id="org.eclipse.rap.demo.import"
-            category="org.eclipse.rap.democategory"            
+            category="org.eclipse.rap.democategory"
             class="org.eclipse.rap.demo.wizard.DemoImport">
          <description>
             This is an example for a import wizard.
@@ -293,14 +291,14 @@
             name="Demo Import"
             icon="icons/sample.gif"
             id="org.eclipse.rap.demo.importI"
-            category="org.eclipse.rap.democategoryI"            
+            category="org.eclipse.rap.democategoryI"
             class="org.eclipse.rap.demo.wizard.DemoImport">
          <description>
             This is an example for a import wizard.
          </description>
       </wizard>
    </extension>
-   
+
    <extension point="org.eclipse.ui.preferencePages">
       <page
          id="org.eclipse.ui.demo.PreferencePage"
