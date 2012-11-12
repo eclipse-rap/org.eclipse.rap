@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -155,9 +156,7 @@ public class TreeTab extends ExampleTab {
       public void widgetSelected( SelectionEvent event ) {
         TreeItem item = tree.getTopItem();
         String message = "Current topItem: " + item.toString();
-        MessageDialog.openInformation( tree.getShell(),
-                                       "Information",
-                                       message );
+        MessageDialog.openInformation( tree.getShell(), "Information", message );
       }
     } );
     Button setTopItemButton = createPropertyButton( "Set selection as topItem", SWT.PUSH );
@@ -179,25 +178,27 @@ public class TreeTab extends ExampleTab {
     tree = new Tree( parent, style );
     if( ( style & SWT.VIRTUAL ) != 0 ) {
       tree.addListener( SWT.SetData, new Listener() {
-        public void handleEvent( final Event event ) {
-          if( event.type == SWT.SetData ) {
-            if( updateVirtualItemsDelayed ) {
-              final Display display = event.display;
-              Job job = new Job( "Delayed Tree Item Update" ) {
-                @Override
-                protected IStatus run( IProgressMonitor monitor ) {
-                  display.asyncExec( new Runnable() {
-                    public void run() {
-                      updateItem( ( TreeItem )event.item );
-                    }
-                  } );
-                  return Status.OK_STATUS;
-                }
-              };
-              job.schedule( 1000 );
-            } else {
-              updateItem( ( TreeItem )event.item );
-            }
+        public void handleEvent( Event event ) {
+          final TreeItem item = ( TreeItem )event.item;
+          if( updateVirtualItemsDelayed ) {
+            final String id = TreeTab.class.getName() + Integer.toString( item.hashCode() );
+            final Display display = event.display;
+            Job job = new Job( "Delayed Tree Item Update" ) {
+              @Override
+              protected IStatus run( IProgressMonitor monitor ) {
+                display.asyncExec( new Runnable() {
+                  public void run() {
+                    updateItem( item );
+                    UICallBack.deactivate( id );
+                  }
+                } );
+                return Status.OK_STATUS;
+              }
+            };
+            UICallBack.activate( id );
+            job.schedule( 1000 );
+          } else {
+            updateItem( item );
           }
         }
       } );
@@ -213,7 +214,7 @@ public class TreeTab extends ExampleTab {
       col1.setMoveable( columnsMoveable );
       col1.addSelectionListener( new SelectionAdapter() {
         @Override
-        public void widgetSelected( final SelectionEvent event ) {
+        public void widgetSelected( SelectionEvent event ) {
           Tree tree = col1.getParent();
           if( tree.getSortColumn() == col1 ) {
             if( tree.getSortDirection() == SWT.UP ) {
@@ -256,9 +257,7 @@ public class TreeTab extends ExampleTab {
           itemText = item.getText();
         }
         String message = "You requested a context menu for: " + itemText;
-        MessageDialog.openInformation( tree.getShell(),
-                                       "Information",
-                                       message );
+        MessageDialog.openInformation( tree.getShell(), "Information", message );
       }
     } );
     treeMenuItem.setText( "TreeContextMenuItem" );
@@ -323,24 +322,26 @@ public class TreeTab extends ExampleTab {
   }
 
   private void updateItem( TreeItem item ) {
-    int columns = item.getParent().getColumnCount();
-    int index = -1;
-    if( item.getParentItem() == null ) {
-      index = item.getParent().indexOf( item );
-    } else {
-      index = item.getParentItem().indexOf( item );
-    }
-    String text = item.getParentItem() == null ? "Node_" : "Subnode_";
-    if( columns == 0 ) {
-      item.setText( text + index );
-      if( showImages ) {
-        item.setImage( treeImage );
+    if( !item.isDisposed() ) {
+      int columns = item.getParent().getColumnCount();
+      int index = -1;
+      if( item.getParentItem() == null ) {
+        index = item.getParent().indexOf( item );
+      } else {
+        index = item.getParentItem().indexOf( item );
       }
-    } else {
-      for( int i = 0; i < columns; i++ ) {
-        item.setText( i, text + index + "." + i );
-        if( i < 2 && showImages ) {
-          item.setImage( i, treeImage );
+      String text = item.getParentItem() == null ? "Node_" : "Subnode_";
+      if( columns == 0 ) {
+        item.setText( text + index );
+        if( showImages ) {
+          item.setImage( treeImage );
+        }
+      } else {
+        for( int i = 0; i < columns; i++ ) {
+          item.setText( i, text + index + "." + i );
+          if( i < 2 && showImages ) {
+            item.setImage( i, treeImage );
+          }
         }
       }
     }
@@ -664,7 +665,7 @@ public class TreeTab extends ExampleTab {
     button.setSelection( columnsMoveable );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         columnsMoveable = button.getSelection();
         TreeColumn[] columns = getTree().getColumns();
         for( int i = 0; i < columns.length; i++ ) {
@@ -680,7 +681,7 @@ public class TreeTab extends ExampleTab {
     button.setSelection( columnImages );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         columnImages = button.getSelection();
         TreeColumn[] columns = getTree().getColumns();
         for( int i = 0; i < columns.length; i++ ) {
