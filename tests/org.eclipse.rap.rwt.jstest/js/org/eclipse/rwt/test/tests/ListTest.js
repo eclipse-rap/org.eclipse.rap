@@ -356,6 +356,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       widget.destroy();
     },
 
+    testSetHasFocusListenerByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.List",
+        "properties" : {
+          "style" : [ "MULTI" ],
+          "parent" : "w2"
+        }
+      } );
+      TestUtil.protocolListen( "w3", { "FocusIn" : true } );
+      TestUtil.protocolListen( "w3", { "FocusOut" : true } );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w3" );
+      assertTrue( widget.hasEventListeners( "focusin" ) );
+      assertTrue( widget.hasEventListeners( "focusout" ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testCreateDispose : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
