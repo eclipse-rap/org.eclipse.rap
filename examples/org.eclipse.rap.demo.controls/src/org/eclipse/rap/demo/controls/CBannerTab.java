@@ -27,7 +27,6 @@ public final class CBannerTab extends ExampleTab {
 
   @Override
   protected void createStyleControls( final Composite parent ) {
-    createStyleButton( "BORDER", SWT.BORDER );
     createBgColorButton();
     createBgImageButton();
   }
