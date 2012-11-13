@@ -166,9 +166,9 @@ public final class TableLCA extends AbstractWidgetLCA {
     renderProperty( table, PROP_HEADER_HEIGHT, table.getHeaderHeight(), ZERO );
     renderProperty( table, PROP_HEADER_VISIBLE, table.getHeaderVisible(), false );
     renderProperty( table, PROP_LINES_VISIBLE, table.getLinesVisible(), false );
-    renderTopItemIndex( table );
+    renderProperty( table, PROP_TOP_ITEM_INDEX, table.getTopIndex(), ZERO );
     renderProperty( table, PROP_FOCUS_ITEM, getFocusItem( table ), null );
-    renderScrollLeft( table );
+    renderProperty( table, PROP_SCROLL_LEFT, getScrollLeft( table ), ZERO );
     renderProperty( table, PROP_SELECTION, getSelection( table ), DEFAULT_SELECTION );
     renderProperty( table, PROP_SORT_DIRECTION, getSortDirection( table ), DEFAULT_SORT_DIRECTION );
     renderProperty( table, PROP_SORT_COLUMN, table.getSortColumn(), null );
@@ -216,18 +216,10 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
   private static void readTopItemIndex( Table table ) {
-    Integer scrollTop = ScrollBarLCAUtil.readSelection( table.getVerticalBar() );
-    if( scrollTop != null ) {
-      int topIndex = scrollTop.intValue() / table.getItemHeight();
+    String value = WidgetLCAUtil.readPropertyValue( table, "topItemIndex" );
+    if( value != null ) {
+      int topIndex = NumberFormatUtil.parseInt( value );
       table.setTopIndex( topIndex );
-    }
-  }
-
-  private static void renderTopItemIndex( Table table ) {
-    int newValue = table.getTopIndex();
-    String prop = PROP_TOP_ITEM_INDEX;
-    if( hasChanged( table, prop, Integer.valueOf( newValue ), Integer.valueOf( ZERO ) ) ) {
-      ScrollBarLCAUtil.renderSelection( table.getVerticalBar(), newValue * table.getItemHeight() );
     }
   }
 
@@ -242,17 +234,10 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
   private static void readScrollLeft( Table table ) {
-    Integer scrollLeft = ScrollBarLCAUtil.readSelection( table.getHorizontalBar() );
-    if( scrollLeft != null ) {
-      getTableAdapter( table ).setLeftOffset( scrollLeft.intValue() );
-    }
-  }
-
-  private static void renderScrollLeft( Table table ) {
-    int newValue = getScrollLeft( table );
-    String prop = PROP_SCROLL_LEFT;
-    if( hasChanged( table, prop, Integer.valueOf( newValue ), Integer.valueOf( ZERO ) ) ) {
-      ScrollBarLCAUtil.renderSelection( table.getHorizontalBar(), newValue );
+    String value = WidgetLCAUtil.readPropertyValue( table, "scrollLeft" );
+    if( value != null ) {
+      int leftOffset = NumberFormatUtil.parseInt( value );
+      table.getAdapter( ITableAdapter.class ).setLeftOffset( leftOffset );
     }
   }
 

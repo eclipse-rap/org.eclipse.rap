@@ -43,11 +43,6 @@ qx.Class.define( "rwt.widgets.List", {
 
   members : {
 
-    setVBarSelection : function( value ) {
-      this.base( arguments, value );
-      this.setTopIndex( value / this._itemHeight );
-    },
-
     setTopIndex : function( value ) {
       this._topIndex = value;
       this._applyTopIndex( value );
@@ -58,7 +53,7 @@ qx.Class.define( "rwt.widgets.List", {
       if( items.length > 0 && items[ 0 ].isCreated() ) {
         var itemHeight = this.getManager().getItemHeight( items[ 0 ] );
         if( itemHeight > 0 ) {
-          this._vertScrollBar.setValue( newIndex * itemHeight );
+          this._clientArea.setScrollTop( newIndex * itemHeight );
         }
       }
     },
@@ -121,10 +116,10 @@ qx.Class.define( "rwt.widgets.List", {
     },
 
     _onUserScroll : function( horizontal ) {
+      var topIndex = this._isCreated ? this._getTopIndex() : 0;
       var server = rwt.remote.Server.getInstance();
-      var scrollbar = horizontal ? this._horzScrollBar : this._vertScrollBar;
-      var serverObject = server.getServerObject( scrollbar );
-      serverObject.set( "selection", scrollbar.getValue() );
+      var serverObject = server.getServerObject( this );
+      serverObject.set( "topIndex", topIndex );
     },
 
     _onDblClick : function( evt ) {

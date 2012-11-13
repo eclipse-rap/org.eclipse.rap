@@ -62,6 +62,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
     "footerHeight",
     "footerVisible",
     "linesVisible",
+    "topItemIndex",
+    "scrollLeft",
     "selection",
     "focusItem",
     "sortDirection",

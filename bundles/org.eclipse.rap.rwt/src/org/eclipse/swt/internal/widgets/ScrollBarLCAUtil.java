@@ -12,7 +12,6 @@ package org.eclipse.swt.internal.widgets;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
@@ -91,27 +90,6 @@ public class ScrollBarLCAUtil {
     ScrollBar vScroll = scrollable.getVerticalBar();
     if( vScroll != null ) {
       getAdapter( vScroll ).setInitialized( true );
-    }
-  }
-
-  ////////////
-  // Selection
-
-  public static Integer readSelection( ScrollBar scrollBar ) {
-    Integer result = null;
-    if( scrollBar != null ) {
-      String value = readPropertyValue( scrollBar, PROP_SELECTION );
-      if( value != null ) {
-        result = Integer.valueOf( value );
-        scrollBar.setSelection( result.intValue() );
-      }
-    }
-    return result;
-  }
-
-  public static void renderSelection( ScrollBar scrollBar, int selection ) {
-    if( scrollBar != null ) {
-      renderProperty( scrollBar, PROP_SELECTION, selection, 0 );
     }
   }
 

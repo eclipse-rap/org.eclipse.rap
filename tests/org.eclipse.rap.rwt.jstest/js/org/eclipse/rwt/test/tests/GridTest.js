@@ -215,7 +215,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       widget.setItemCount( 10 );
       widget.setItemHeight( 20 );
       TestUtil.flush();
-      TestUtil.protocolSet( "w3_vscroll", { "selection" : 60 } );
+      TestUtil.protocolSet( "w3", { "topItemIndex" : 3 } );
       assertEquals( 60, widget._vertScrollBar.getValue() );
       assertEquals( 3, widget.getTopItemIndex() );
       shell.destroy();
@@ -256,9 +256,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       widget.setItemCount( 1 );
       widget.setItemMetrics( 0, 0, 150, 0, 0, 0, 0 );
       TestUtil.flush();
-      //TestUtil.protocolSet( "w3", { "scrollLeft" : 10 } );
 
-      TestUtil.protocolSet( "w3_hscroll", { "selection" : 10 } );
+      TestUtil.protocolSet( "w3", { "scrollLeft" : 10 } );
 
       assertEquals( 10, widget._horzScrollBar.getValue() );
       shell.destroy();
@@ -908,8 +907,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( 0, tree._vertScrollBar.getValue() );
       var req = rwt.remote.Server.getInstance();
       req.send();
-      var message = TestUtil.getMessageObject();
-      assertEquals( 0, message.findSetProperty( "w3_hscroll", "selection" ) );
+      assertEquals( "0", TestUtil.getMessageObject().findSetProperty( "wtest", "scrollLeft" ) );
       wm.remove( tree );
       tree.destroy();
     },
@@ -2266,8 +2264,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( 0, TestUtil.getRequestsSend() );
       rwt.remote.Server.getInstance().send();
 
-      var message = TestUtil.getMessageObject();
-      assertEquals( 160, message.findSetProperty( "w3_vscroll", "selection" ) );
+      assertEquals( 8, TestUtil.getMessageObject().findSetProperty( "w3", "topItemIndex" ) );
       tree.destroy();
     },
 
@@ -2823,8 +2820,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( 0, TestUtil.getRequestsSend() );
       rwt.remote.Server.getInstance().send();
 
-      var message = TestUtil.getMessageObject();
-      assertEquals( 160, message.findSetProperty( "w3_hscroll", "selection" ) );
+      assertEquals( 160, TestUtil.getMessageObject().findSetProperty( "w3", "scrollLeft" ) );
       tree.destroy();
     },
 
@@ -3164,8 +3160,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var message = TestUtil.getMessageObject();
-      assertEquals( 160, message.findSetProperty( "w3_vscroll", "selection" ) );
+      assertEquals( 8, TestUtil.getMessageObject().findSetProperty( "w3", "topItemIndex" ) );
       tree.destroy();
     },
 
@@ -3185,8 +3180,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var message = TestUtil.getMessageObject();
-      assertEquals( 160, message.findSetProperty( "w3_hscroll", "selection" ) );
+      assertEquals( 160, TestUtil.getMessageObject().findSetProperty( "w3", "scrollLeft" ) );
       tree.destroy();
     },
 
@@ -4063,7 +4057,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
-      assertEquals( 30, msg.findSetProperty( "w3_hscroll", "selection" ) );
+      assertEquals( 30, msg.findSetProperty( "w3", "scrollLeft" ) );
       assertNotNull( msg.findNotifyOperation( "w3_hscroll", "Selection" ) );
       tree.destroy();
     },
@@ -4082,7 +4076,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
-      assertEquals( 60, msg.findSetProperty( "w3_vscroll", "selection" ) );
+      assertEquals( 3, msg.findSetProperty( "w3", "topItemIndex" ) );
       assertNotNull( msg.findNotifyOperation( "w3_vscroll", "Selection" ) );
       tree.destroy();
     },

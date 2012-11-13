@@ -27,8 +27,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ScrollBar", {
   destructor : function() {},
 
   properties : [
-    "visibility",
-    "selection"
+    "visibility"
   ],
 
   propertyHandler : {
@@ -40,16 +39,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ScrollBar", {
         parent.setScrollBarsVisible( value, parent.isVerticalBarVisible() );
       } else {
         parent.setScrollBarsVisible( parent.isHorizontalBarVisible(), value );
-      }
-    },
-    "selection" : function( widget, value ) {
-      var parent = widget.getParent();
-      // NOTE : use parent.setXBarSelection because scrollable uses internal change flag
-      // TODO [tb] : introduce flag for programatic changes on ScrollBar scroll events
-      if( widget.isHorizontal() ) {
-        parent.setHBarSelection( value );
-      } else {
-        parent.setVBarSelection( value );
       }
     }
   },

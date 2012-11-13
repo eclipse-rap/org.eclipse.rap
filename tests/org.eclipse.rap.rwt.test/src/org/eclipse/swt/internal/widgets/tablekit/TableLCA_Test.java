@@ -1051,7 +1051,8 @@ public class TableLCA_Test extends TestCase {
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( table.getVerticalBar(), "selection" ) );
+    CreateOperation operation = message.findCreateOperation( table );
+    assertTrue( operation.getPropertyNames().indexOf( "topItemIndex" ) == -1 );
   }
 
   public void testRenderTopItemIndex() throws IOException {
@@ -1061,8 +1062,7 @@ public class TableLCA_Test extends TestCase {
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    Integer expected = Integer.valueOf( 2 * table.getItemHeight() );
-    assertEquals( expected, message.findSetProperty( table.getVerticalBar(), "selection" ) );
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( table, "topItemIndex" ) );
   }
 
   public void testRenderTopItemIndexUnchanged() throws IOException {
@@ -1075,7 +1075,7 @@ public class TableLCA_Test extends TestCase {
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( table.getVerticalBar(), "selection" ) );
+    assertNull( message.findSetOperation( table, "topItemIndex" ) );
   }
 
   public void testRenderInitialFocusItem() throws IOException {
@@ -1114,7 +1114,8 @@ public class TableLCA_Test extends TestCase {
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( table.getHorizontalBar(), "selection" ) );
+    CreateOperation operation = message.findCreateOperation( table );
+    assertTrue( operation.getPropertyNames().indexOf( "scrollLeft" ) == -1 );
   }
 
   public void testRenderScrollLeft() throws IOException {
@@ -1122,8 +1123,7 @@ public class TableLCA_Test extends TestCase {
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    Integer expected = Integer.valueOf( 10 );
-    assertEquals( expected, message.findSetProperty( table.getHorizontalBar(), "selection" ) );
+    assertEquals( Integer.valueOf( 10 ), message.findSetProperty( table, "scrollLeft" ) );
   }
 
   public void testRenderScrollLeftUnchanged() throws IOException {
@@ -1135,7 +1135,7 @@ public class TableLCA_Test extends TestCase {
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( table.getHorizontalBar(), "selection" ) );
+    assertNull( message.findSetOperation( table, "scrollLeft" ) );
   }
 
   public void testRenderInitialSelection() throws IOException {
@@ -1619,8 +1619,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   private void fakeSetTopItemIndex( Table table, int index ) {
-    Integer selection = Integer.valueOf( index * table.getItemHeight() );
-    Fixture.fakeSetParameter( getId( table.getVerticalBar() ), "selection", selection );
+    Fixture.fakeSetParameter( getId( table ), "topItemIndex", Integer.valueOf( index ) );
   }
 
 }

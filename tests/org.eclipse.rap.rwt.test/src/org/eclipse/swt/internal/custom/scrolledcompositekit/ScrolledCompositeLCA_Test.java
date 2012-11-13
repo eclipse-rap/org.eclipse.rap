@@ -19,9 +19,11 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -29,11 +31,23 @@ import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.ScrollBar;
+import org.eclipse.swt.widgets.Shell;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 
 public class ScrolledCompositeLCA_Test extends TestCase {
@@ -153,8 +167,8 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   public void testReadData_ScrollBarsSelection() {
     sc.setContent( new Composite( sc, SWT.NONE ) );
 
-    Fixture.fakeSetParameter( getId( hScroll ), "selection", Integer.valueOf( 1 ) );
-    Fixture.fakeSetParameter( getId( vScroll ), "selection", Integer.valueOf( 2 ) );
+    Fixture.fakeSetParameter( getId( sc ), "horizontalBar.selection", Integer.valueOf( 1 ) );
+    Fixture.fakeSetParameter( getId( sc ), "verticalBar.selection", Integer.valueOf( 2 ) );
     Fixture.readDataAndProcessAction( sc );
 
     assertEquals( new Point( 1, 2 ), sc.getOrigin() );
@@ -235,7 +249,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( vScroll, "selection" ) );
   }
 
-  public void testRenderOrigin() throws IOException {
+  public void testRenderOrigin() throws IOException, JSONException {
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
 
@@ -243,11 +257,11 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( hScroll, "selection" ) );
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( vScroll, "selection" ) );
+    JSONArray actual = ( JSONArray )message.findSetProperty( sc, "origin" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 2 ]", actual ) );
   }
 
-  public void testRenderOrigin_SetByScrollbar() throws IOException {
+  public void testRenderOrigin_SetByScrollbar() throws IOException, JSONException {
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
 
@@ -256,8 +270,8 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( hScroll, "selection" ) );
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( vScroll, "selection" ) );
+    JSONArray actual = ( JSONArray )message.findSetProperty( sc, "origin" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 2 ]", actual ) );
   }
 
   public void testRenderOriginUnchanged() throws IOException {

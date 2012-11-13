@@ -468,7 +468,7 @@ public class TreeLCA_Test extends TestCase {
     hScroll.addSelectionListener( listener );
 
     Fixture.fakeNewRequest( display );
-    Fixture.fakeSetParameter( getId( hScroll ), "selection", Integer.valueOf( 10 ) );
+    Fixture.fakeSetParameter( getId( tree ), "scrollLeft", Integer.valueOf( 10 ) );
     Fixture.fakeNotifyOperation( getId( hScroll ), "Selection", null );
     Fixture.readDataAndProcessAction( tree );
 
@@ -480,12 +480,12 @@ public class TreeLCA_Test extends TestCase {
     vScroll.addSelectionListener( listener );
 
     Fixture.fakeNewRequest( display );
-    Fixture.fakeSetParameter( getId( vScroll ), "selection", Integer.valueOf( 10 ) );
+    Fixture.fakeSetParameter( getId( tree ), "topItemIndex", Integer.valueOf( 10 ) );
     Fixture.fakeNotifyOperation( getId( vScroll ), "Selection", null );
     Fixture.readDataAndProcessAction( tree );
 
     assertEquals( 1, events.size() );
-    assertEquals( 10, vScroll.getSelection());
+    assertEquals( 10 * tree.getItemHeight(), vScroll.getSelection());
   }
 
   public void testCellTooltipRequestForMissingCells() {
@@ -1013,7 +1013,8 @@ public class TreeLCA_Test extends TestCase {
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( tree.getVerticalBar(), "selection" ) );
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "topItemIndex" ) == -1 );
   }
 
   public void testRenderTopItemIndex() throws IOException {
@@ -1025,8 +1026,7 @@ public class TreeLCA_Test extends TestCase {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    Integer expected = Integer.valueOf( 2 * tree.getItemHeight() );
-    assertEquals( expected, message.findSetProperty( tree.getVerticalBar(), "selection" ) );
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( tree, "topItemIndex" ) );
   }
 
   public void testRenderTopItemIndexUnchanged() throws IOException {
@@ -1041,14 +1041,15 @@ public class TreeLCA_Test extends TestCase {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( tree.getVerticalBar(), "selection" ) );
+    assertNull( message.findSetOperation( tree, "topItemIndex" ) );
   }
 
   public void testRenderInitialScrollLeft() throws IOException {
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( tree.getHorizontalBar(), "selection" ) );
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "scrollLeft" ) == -1 );
   }
 
   public void testRenderScrollLeft() throws IOException {
@@ -1056,8 +1057,7 @@ public class TreeLCA_Test extends TestCase {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    Integer expected = Integer.valueOf( 10 );
-    assertEquals( expected, message.findSetProperty( tree.getHorizontalBar(), "selection" ) );
+    assertEquals( Integer.valueOf( 10 ), message.findSetProperty( tree, "scrollLeft" ) );
   }
 
   public void testRenderScrollLeftUnchanged() throws IOException {
@@ -1069,7 +1069,7 @@ public class TreeLCA_Test extends TestCase {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( tree.getHorizontalBar(), "selection" ) );
+    assertNull( message.findSetOperation( tree, "scrollLeft" ) );
   }
 
   public void testRenderInitialSelection() throws IOException {
@@ -1602,7 +1602,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   private void fakeSetTopItemIndex( Tree tree, int index ) {
-    Integer selection = Integer.valueOf( index * tree.getItemHeight() );
-    Fixture.fakeSetParameter( getId( tree.getVerticalBar() ), "selection", selection );
+    Fixture.fakeSetParameter( getId( tree ), "topItemIndex", Integer.valueOf( index ) );
   }
 }

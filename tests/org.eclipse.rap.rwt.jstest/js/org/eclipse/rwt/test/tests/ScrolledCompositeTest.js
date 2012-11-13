@@ -104,13 +104,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
         "type" : "rwt.widgets.ScrolledComposite",
         "properties" : {
           "style" : [],
-          "parent" : "w2"
+          "parent" : "w2",
+          "origin" : [ 1, 2 ]
         }
       } );
-      this._createProtocolScrollBars( "w3" );
-
-      TestUtil.protocolSet( "w3_hscroll", { "selection" : 1 } );
-      TestUtil.protocolSet( "w3_vscroll", { "selection" : 2 } );
 
       var ObjectRegistry = rwt.protocol.ObjectRegistry;
       var widget = ObjectRegistry.getObject( "w3" );
@@ -382,8 +379,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       rwt.remote.Server.getInstance().send();
 
       var msg = TestUtil.getMessageObject();
-      assertEquals( 10, msg.findSetProperty( "w3_hscroll", "selection" ) );
-      assertEquals( 20, msg.findSetProperty( "w3_vscroll", "selection" ) );
+      assertEquals( 10, msg.findSetProperty( "w3", "horizontalBar.selection" ) );
+      assertEquals( 20, msg.findSetProperty( "w3", "verticalBar.selection" ) );
       composite.destroy();
     },
 
@@ -451,7 +448,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       assertEquals( [ 50, 0 ], position );
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      assertNull( message.findSetOperation( "w3_vscroll", "selection" ) );
+      assertNull( message.findSetOperation( "w3", "verticalBar.selection" ) );
       assertNull( message.findNotifyOperation( "w3_vscroll", "Selection" ) );
       composite.destroy();
     },
@@ -475,7 +472,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var position = this._getScrollPosition( composite );
       assertEquals( [ 0, 70 ], position );
       var message = TestUtil.getMessageObject();
-      assertNull( message.findSetOperation( "w3_hscroll", "selection" ) );
+      assertNull( message.findSetOperation( "w3", "horizontalBar.selection" ) );
       assertNull( message.findNotifyOperation( "w3_hscroll", "Selection" ) );
       composite.destroy();
     },
@@ -555,7 +552,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
 
       var message = TestUtil.getLastMessage();
-      assertEquals( 20, message.findSetProperty( "w3_hscroll", "selection" ) );
+      assertEquals( 20, message.findSetProperty( "w3", "horizontalBar.selection" ) );
       assertNotNull( message.findNotifyOperation( "w3_hscroll", "Selection" ) );
       composite.destroy();
     },
@@ -570,7 +567,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
 
       var message = TestUtil.getLastMessage();
-      assertEquals( 20, message.findSetProperty( "w3_vscroll", "selection" ) );
+      assertEquals( 20, message.findSetProperty( "w3", "verticalBar.selection" ) );
       assertNotNull( message.findNotifyOperation( "w3_vscroll", "Selection" ) );
       composite.destroy();
     },

@@ -42,6 +42,7 @@ import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
@@ -176,11 +177,11 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderProperty( tree, PROP_HEADER_HEIGHT, tree.getHeaderHeight(), ZERO );
     renderProperty( tree, PROP_HEADER_VISIBLE, tree.getHeaderVisible(), false );
     renderProperty( tree, PROP_LINES_VISIBLE, tree.getLinesVisible(), false );
-    renderTopItemIndex( tree );
+    renderProperty( tree, PROP_TOP_ITEM_INDEX, getTopItemIndex( tree ), ZERO );
     if( tree.getSelectionCount() > 0 ) {
       renderProperty( tree, PROP_FOCUS_ITEM, getFocusItem( tree ), null );
     }
-    renderScrollLeft( tree );
+    renderProperty( tree, PROP_SCROLL_LEFT, getScrollLeft( tree ), ZERO );
     renderProperty( tree, PROP_SELECTION, getSelection( tree ), DEFAULT_SELECTION );
     renderProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ), DEFAULT_SORT_DIRECTION );
     renderProperty( tree, PROP_SORT_COLUMN, tree.getSortColumn(), null );
@@ -259,34 +260,34 @@ public final class TreeLCA extends AbstractWidgetLCA {
   }
 
   private static void readScrollLeft( Tree tree ) {
-    Integer scrollLeft = ScrollBarLCAUtil.readSelection( tree.getHorizontalBar() );
-    if( scrollLeft != null ) {
-      getTreeAdapter( tree ).setScrollLeft( scrollLeft.intValue() );
-    }
-  }
-
-  private static void renderScrollLeft( Tree tree ) {
-    int newValue = getScrollLeft( tree );
-    String prop = PROP_SCROLL_LEFT;
-    if( hasChanged( tree, prop, Integer.valueOf( newValue ), Integer.valueOf( ZERO ) ) ) {
-      ScrollBarLCAUtil.renderSelection( tree.getHorizontalBar(), newValue );
+    String left = WidgetLCAUtil.readPropertyValue( tree, "scrollLeft" );
+    if( left != null ) {
+      int leftOffset = parsePosition( left );
+      final ITreeAdapter treeAdapter = getTreeAdapter( tree );
+      treeAdapter.setScrollLeft( leftOffset );
+      processScrollBarSelection( tree.getHorizontalBar(), leftOffset );
     }
   }
 
   private static void readTopItemIndex( Tree tree ) {
-    Integer scrollTop = ScrollBarLCAUtil.readSelection( tree.getVerticalBar() );
-    if( scrollTop != null ) {
-      int topIndex = scrollTop.intValue() / tree.getItemHeight();
-      getTreeAdapter( tree ).setTopItemIndex( topIndex );
+    String topItemIndex = WidgetLCAUtil.readPropertyValue( tree, "topItemIndex" );
+    if( topItemIndex != null ) {
+      final ITreeAdapter treeAdapter = getTreeAdapter( tree );
+      int newIndex = parsePosition( topItemIndex );
+      int topOffset = newIndex * tree.getItemHeight();
+      treeAdapter.setTopItemIndex( newIndex );
+      processScrollBarSelection( tree.getVerticalBar(), topOffset );
     }
   }
 
-  private static void renderTopItemIndex( Tree tree ) {
-    int newValue = getTopItemIndex( tree );
-    String prop = PROP_TOP_ITEM_INDEX;
-    if( hasChanged( tree, prop, Integer.valueOf( newValue ), Integer.valueOf( ZERO ) ) ) {
-      ScrollBarLCAUtil.renderSelection( tree.getVerticalBar(), newValue * tree.getItemHeight() );
+  private static int parsePosition( String position ) {
+    int result = 0;
+    try {
+      result = Integer.valueOf( position ).intValue();
+    } catch( NumberFormatException e ) {
+      // ignore and use default value
     }
+    return result;
   }
 
   ////////////////
@@ -363,6 +364,12 @@ public final class TreeLCA extends AbstractWidgetLCA {
       result = "down";
     }
     return result;
+  }
+
+  private static void processScrollBarSelection( ScrollBar scrollBar, int selection ) {
+    if( scrollBar != null ) {
+      scrollBar.setSelection( selection );
+    }
   }
 
   private static boolean hasExpandListener( Tree tree ) {

@@ -357,7 +357,8 @@ public class ListLCA_Test extends TestCase {
     lca.render( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( vScroll, "selection" ) );
+    CreateOperation operation = message.findCreateOperation( list );
+    assertTrue( operation.getPropertyNames().indexOf( "topIndex" ) == -1 );
   }
 
   public void testRenderTopIndex() throws IOException {
@@ -367,8 +368,7 @@ public class ListLCA_Test extends TestCase {
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    Integer expected = Integer.valueOf( 2 * list.getItemHeight() );
-    assertEquals( expected, message.findSetProperty( vScroll, "selection" ) );
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( list, "topIndex" ) );
   }
 
   public void testRenderTopIndexUnchanged() throws IOException {
@@ -383,7 +383,7 @@ public class ListLCA_Test extends TestCase {
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( vScroll, "selection" ) );
+    assertNull( message.findSetOperation( list, "topIndex" ) );
   }
 
   public void testRenderInitialFocusIndex() throws IOException {
@@ -596,7 +596,6 @@ public class ListLCA_Test extends TestCase {
 
   private void fakeTopIndex( int value ) {
     Fixture.fakeNewRequest( display );
-    Integer selection = Integer.valueOf( value * list.getItemHeight() );
-    Fixture.fakeSetParameter( getId( list.getVerticalBar() ), "selection", selection );
+    Fixture.fakeSetParameter( getId( list ), "topIndex", Integer.valueOf( value ) );
   }
 }

@@ -237,13 +237,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "style" : [ "MULTI" ],
           "parent" : "w2",
           "items" : [ "a", "b", "c" ],
+          "topIndex" : 2,
           "itemDimensions" : [ 100, 10 ]
         }
       } );
-      this._createProtocolScrollBars( "w3" );
-
-      TestUtil.protocolSet( "w3_vscroll", { "selection" : 20 } );
-
       var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 2, widget._topIndex );
@@ -383,6 +380,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasDefaultSelectionListener );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasFocusListenerByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.List",
+        "properties" : {
+          "style" : [ "MULTI" ],
+          "parent" : "w2"
+        }
+      } );
+      TestUtil.protocolListen( "w3", { "FocusIn" : true } );
+      TestUtil.protocolListen( "w3", { "FocusOut" : true } );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w3" );
+      assertTrue( widget.hasEventListeners( "focusin" ) );
+      assertTrue( widget.hasEventListeners( "focusout" ) );
       shell.destroy();
       widget.destroy();
     },
@@ -544,7 +564,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       rwt.remote.Server.getInstance().send();
 
       var message = TestUtil.getLastMessage();
-      assertEquals( 40, message.findSetProperty( "w3_vscroll", "selection" ) );
+      assertEquals( 2, message.findSetProperty( "w3", "topIndex" ) );
       list.destroy();
     },
 

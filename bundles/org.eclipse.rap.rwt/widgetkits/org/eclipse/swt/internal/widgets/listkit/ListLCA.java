@@ -53,7 +53,7 @@ public class ListLCA extends AbstractWidgetLCA {
 
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
   private static final int[] DEFAUT_SELECTION_INDICES = new int[ 0 ];
-  private static final Integer DEFAULT_TOP_INDEX = Integer.valueOf( 0 );
+  private static final int DEFAULT_TOP_INDEX = 0;
   private static final int DEFAULT_FOCUS_INDEX = -1;
   private static final Point DEFAULT_ITEM_DIMENSIONS = new Point( 0, 0 );
 
@@ -109,7 +109,7 @@ public class ListLCA extends AbstractWidgetLCA {
                     PROP_SELECTION_INDICES,
                     list.getSelectionIndices(),
                     DEFAUT_SELECTION_INDICES );
-    renderTopIndex( list );
+    renderProperty( list, PROP_TOP_INDEX, list.getTopIndex(), DEFAULT_TOP_INDEX );
     renderProperty( list, PROP_FOCUS_INDEX, list.getFocusIndex(), DEFAULT_FOCUS_INDEX );
     renderListener( list, PROP_SELECTION_LISTENER, list.isListening( SWT.Selection ), false );
     renderListener( list,
@@ -139,10 +139,9 @@ public class ListLCA extends AbstractWidgetLCA {
   }
 
   private static void readTopIndex( List list ) {
-    Integer scrollTop = ScrollBarLCAUtil.readSelection( list.getVerticalBar() );
-    if( scrollTop != null ) {
-      int topIndex = scrollTop.intValue() / list.getItemHeight();
-      list.setTopIndex( topIndex );
+    String value = WidgetLCAUtil.readPropertyValue( list, PROP_TOP_INDEX );
+    if( value != null ) {
+      list.setTopIndex( NumberFormatUtil.parseInt( value ) );
     }
   }
 

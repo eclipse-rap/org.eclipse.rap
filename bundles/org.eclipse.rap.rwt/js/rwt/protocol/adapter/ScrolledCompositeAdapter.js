@@ -22,6 +22,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ScrolledComposite", {
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
+    "origin",
     "content",
     "showFocusedControl"
   ] ),

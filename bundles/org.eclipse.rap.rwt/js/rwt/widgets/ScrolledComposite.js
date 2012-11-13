@@ -116,8 +116,9 @@ qx.Class.define( "rwt.widgets.ScrolledComposite", {
     _onUserScroll : function( horizontal ) {
       var server = rwt.remote.Server.getInstance();
       var scrollbar = horizontal ? this._horzScrollBar : this._vertScrollBar;
-      var serverObject = server.getServerObject( scrollbar );
-      serverObject.set( "selection", scrollbar.getValue() );
+      var serverObject = server.getServerObject( this );
+      var prop = horizontal ? "horizontalBar.selection" : "verticalBar.selection";
+      serverObject.set( prop, scrollbar.getValue() );
       if( scrollbar.getHasSelectionListener() ) {
         if( horizontal ) {
           server.onNextSend( this._sendHorizontalScrolled, this );

@@ -283,17 +283,8 @@ qx.Class.define( "rwt.widgets.Grid", {
       return this._topItemIndex;
     },
 
-    // TODO [tb] : remove after fixing tests
     setScrollLeft: function( value ) {
       this._horzScrollBar.setValue( value );
-    },
-
-    setHBarSelection : function( value ) {
-      this._horzScrollBar.setValue( value );
-    },
-
-    setVBarSelection : function( value ) {
-      this._vertScrollBar.setValue( value );
     },
 
     selectItem : function( item ) {
@@ -979,8 +970,8 @@ qx.Class.define( "rwt.widgets.Grid", {
 
     _sendTopItemIndexChange : function() {
       var server = rwt.remote.Server.getInstance();
-      var serverObject = server.getServerObject( this._vertScrollBar );
-      serverObject.set( "selection", this._vertScrollBar.getValue() );
+      var serverObject = server.getServerObject( this );
+      serverObject.set( "topItemIndex", this._topItemIndex );
       if( this._isVirtual || this._vertScrollBar.getHasSelectionListener() ) {
         this._startScrollBarChangesTimer( false );
       }
@@ -991,8 +982,8 @@ qx.Class.define( "rwt.widgets.Grid", {
       // but currently this is needed to sync the value with the
       // server when the scrollbars are hidden by the server.
       var server = rwt.remote.Server.getInstance();
-      var serverObject = server.getServerObject( this._horzScrollBar );
-      serverObject.set( "selection", this._horzScrollBar.getValue() );
+      var serverObject = server.getServerObject( this );
+      serverObject.set( "scrollLeft", this._horzScrollBar.getValue() );
       if( this._isVirtual || this._horzScrollBar.getHasSelectionListener() ) {
         this._startScrollBarChangesTimer( true );
       }
