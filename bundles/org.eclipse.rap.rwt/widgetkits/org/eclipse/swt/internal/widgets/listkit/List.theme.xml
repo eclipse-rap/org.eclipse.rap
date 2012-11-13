@@ -42,7 +42,7 @@
 
       <property name="background-color"
           description="Background color for list items." />
-          
+
       <property name="background-image"
           description="Background image or gradient for list items." />
 

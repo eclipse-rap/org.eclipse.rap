@@ -27,7 +27,7 @@
 <booleanAttribute key="org.eclipse.rap.launch.openBrowser" value="true"/>
 <intAttribute key="org.eclipse.rap.launch.port" value="10080"/>
 <stringAttribute key="org.eclipse.rap.launch.servletName" value="/business"/>
-<stringAttribute key="org.eclipse.rap.launch.servletPath" value="/workbench"/>
+<stringAttribute key="org.eclipse.rap.launch.servletPath" value="/business"/>
 <intAttribute key="org.eclipse.rap.launch.sessionTimeout" value="0"/>
 <booleanAttribute key="org.eclipse.rap.launch.terminatePrevious" value="true"/>
 <booleanAttribute key="org.eclipse.rap.launch.useDefaultDataLocation" value="true"/>
