@@ -794,6 +794,93 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.destroy();
     },
 
+    testApplyCustomVariantToExistingItems : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.List",
+        "properties" : {
+          "style" : [ "MULTI" ],
+          "parent" : "w2",
+          "items" : [ "a", "b", "c" ]
+        }
+      } );
+
+      TestUtil.protocolSet( "w3", { "customVariant" : "variant_myVariant" } );
+
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w3" );
+      var items = widget.getItems();
+      assertTrue( items[ 0 ].hasState( "variant_myVariant" ) );
+      assertTrue( items[ 1 ].hasState( "variant_myVariant" ) );
+      assertTrue( items[ 2 ].hasState( "variant_myVariant" ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testApplyCustomVariantToNewItems : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.List",
+        "properties" : {
+          "style" : [ "MULTI" ],
+          "parent" : "w2",
+          "customVariant" : "variant_myVariant"
+        }
+      } );
+      TestUtil.flush();
+
+      TestUtil.protocolSet( "w3", { "items" : [ "a", "b", "c" ] } );
+
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w3" );
+      var items = widget.getItems();
+      assertTrue( items[ 0 ].hasState( "variant_myVariant" ) );
+      assertTrue( items[ 1 ].hasState( "variant_myVariant" ) );
+      assertTrue( items[ 2 ].hasState( "variant_myVariant" ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testReplaceCustomVariant : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.List",
+        "properties" : {
+          "style" : [ "MULTI" ],
+          "parent" : "w2",
+          "customVariant" : "variant_myVariant",
+          "items" : [ "a", "b", "c" ]
+        }
+      } );
+      TestUtil.flush();
+
+      TestUtil.protocolSet( "w3", { "customVariant" : "variant_other" } );
+
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w3" );
+      var items = widget.getItems();
+      assertFalse( items[ 0 ].hasState( "variant_myVariant" ) );
+      assertFalse( items[ 1 ].hasState( "variant_myVariant" ) );
+      assertFalse( items[ 2 ].hasState( "variant_myVariant" ) );
+      assertTrue( items[ 0 ].hasState( "variant_other" ) );
+      assertTrue( items[ 1 ].hasState( "variant_other" ) );
+      assertTrue( items[ 2 ].hasState( "variant_other" ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
     //////////
     // Helpers
 

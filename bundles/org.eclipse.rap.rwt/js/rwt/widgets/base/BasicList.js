@@ -221,6 +221,9 @@ qx.Class.define( "rwt.widgets.base.BasicList", {
           if( i % 2 === 0 ) {
             item.addState( "even" );
           }
+          if( this._customVariant !== null ) {
+            item.addState( this._customVariant );
+          }
           this._clientArea.add( item );
         }
       }
@@ -339,24 +342,17 @@ qx.Class.define( "rwt.widgets.base.BasicList", {
       this._vertScrollBar.setMaximum( this._itemHeight * itemCount );
     },
 
-    addState : function( state ) {
-      this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" ) {
-        var items = this.getItems();
-        for( var i = 0; i < items.length; i++ ) {
-          items[ i ].addState( state );
-        }
+    setCustomVariant : function( value ) {
+      if( this._customVariant !== null ) {
+        var oldState = this._customVariant;
+        this._clientArea.forEachChild( function() {
+          this.removeState( oldState );
+        } );
       }
-    },
-
-    removeState : function( state ) {
-      this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" ) {
-        var items = this.getItems();
-        for( var i = 0; i < items.length; i++ ) {
-          items[ i ].removeState( state );
-        }
-      }
+      this._clientArea.forEachChild( function() {
+        this.addState( value );
+      } );
+      this.base( arguments, value );
     },
 
     _onListItemMouseOver : function( evt ) {
