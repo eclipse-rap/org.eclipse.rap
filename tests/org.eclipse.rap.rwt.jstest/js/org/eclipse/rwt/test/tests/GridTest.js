@@ -3145,7 +3145,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
-
     testVirtualSendTopItemIndex : function() {
       TestUtil.prepareTimerUse();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
@@ -3181,6 +3180,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertEquals( 160, TestUtil.getMessageObject().findSetProperty( "w3", "scrollLeft" ) );
+      tree.destroy();
+    },
+
+    testVirtualNoScrollSendTopItemIndex : function() {
+      TestUtil.prepareTimerUse();
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var tree = this._createDefaultTree( false, false, "virtual" );
+      this._fillTree( tree, 100 );
+      TestUtil.initRequestLog();
+      TestUtil.flush();
+
+      tree._vertScrollBar.setValue( 50 );
+      tree._vertScrollBar.setValue( 160 );
+      assertEquals( 0, TestUtil.getRequestsSend() );
+      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertEquals( 8, TestUtil.getMessageObject().findSetProperty( "w3", "topItemIndex" ) );
+      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Selection" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "SetData" ) );
       tree.destroy();
     },
 
@@ -4046,6 +4065,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testSendSelectedEventHorizontal : function() {
       TestUtil.createShellByProtocol( "w2" );
       var tree = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      rwt.protocol.MessageProcessor.processOperation( {
+        "target" : "w3_hscroll",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrollBar",
+        "properties" : {
+          "parent" : "w3",
+          "style" : [ "HORIZONTAL" ]
+        }
+      } );
       this._createTreeItemByProtocol( "w4", "w3", 0 );
       tree.setItemHeight( 20 );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500, 0, 10 );
@@ -4065,6 +4093,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testSendSelectedEventVertical : function() {
       TestUtil.createShellByProtocol( "w2" );
       var tree = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      rwt.protocol.MessageProcessor.processOperation( {
+        "target" : "w3_vscroll",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrollBar",
+        "properties" : {
+          "parent" : "w3",
+          "style" : [ "VERTICAL" ]
+        }
+      } );
       this._fillTree( tree, 10 );
       tree.setItemHeight( 20 );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500, 0, 10 );
@@ -4099,24 +4136,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
           "bounds" : [ 0, 0, 100, 100 ]
         }
       } );
-      rwt.protocol.MessageProcessor.processOperation( {
-        "target" : id + "_vscroll",
-        "action" : "create",
-        "type" : "rwt.widgets.ScrollBar",
-        "properties" : {
-          "parent" : id,
-          "style" : [ "VERTICAL" ]
-        }
-      } );
-      rwt.protocol.MessageProcessor.processOperation( {
-        "target" : id + "_hscroll",
-        "action" : "create",
-        "type" : "rwt.widgets.ScrollBar",
-        "properties" : {
-          "parent" : id,
-          "style" : [ "HORIZONTAL" ]
-        }
-      } );
+//      rwt.protocol.MessageProcessor.processOperation( {
+//        "target" : id + "_vscroll",
+//        "action" : "create",
+//        "type" : "rwt.widgets.ScrollBar",
+//        "properties" : {
+//          "parent" : id,
+//          "style" : [ "VERTICAL" ]
+//        }
+//      } );
+//      rwt.protocol.MessageProcessor.processOperation( {
+//        "target" : id + "_hscroll",
+//        "action" : "create",
+//        "type" : "rwt.widgets.ScrollBar",
+//        "properties" : {
+//          "parent" : id,
+//          "style" : [ "HORIZONTAL" ]
+//        }
+//      } );
       return rwt.protocol.ObjectRegistry.getObject( id );
     },
 
@@ -4152,8 +4189,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       args[ "indentionWidth" ] = 16;
       var tree = new rwt.widgets.Grid( args );
       rwt.protocol.ObjectRegistry.add( "w3", tree );
-      rwt.protocol.ObjectRegistry.add( "w3_vscroll", tree.getVerticalBar() );
-      rwt.protocol.ObjectRegistry.add( "w3_hscroll", tree.getHorizontalBar() );
+//      rwt.protocol.ObjectRegistry.add( "w3_vscroll", tree.getVerticalBar() );
+//      rwt.protocol.ObjectRegistry.add( "w3_hscroll", tree.getHorizontalBar() );
       if( option === "fixedColumns" ) {
         org.eclipse.rwt.GridUtil.setFixedColumns( tree, arg );
       }

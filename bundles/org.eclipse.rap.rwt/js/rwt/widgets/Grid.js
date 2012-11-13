@@ -991,10 +991,15 @@ qx.Class.define( "rwt.widgets.Grid", {
 
     _startScrollBarChangesTimer : function( horizontal ) {
       var server = rwt.remote.Server.getInstance();
-      if( horizontal ) {
+      if( horizontal && this._horzScrollBar.getHasSelectionListener() ) {
         server.onNextSend( this._sendHorizontalScrolled, this );
       } else {
-        server.onNextSend( this._sendVerticalScrolled, this );
+        if( this._vertScrollBar.getHasSelectionListener() ) {
+          server.onNextSend( this._sendVerticalScrolled, this );
+        }
+        if( this._isVirtual ) {
+          server.onNextSend( this._sendSetData, this );
+        }
       }
       server.sendDelayed( 400 );
     },
@@ -1007,6 +1012,11 @@ qx.Class.define( "rwt.widgets.Grid", {
     _sendHorizontalScrolled : function() {
       var server = rwt.remote.Server.getInstance();
       server.getServerObject( this._horzScrollBar ).notify( "Selection" );
+    },
+
+    _sendSetData : function() {
+      var server = rwt.remote.Server.getInstance();
+      server.getServerObject( this ).notify( "SetData" );
     },
 
     _sendItemUpdate : function( item, event ) {
