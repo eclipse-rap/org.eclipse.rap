@@ -12,7 +12,6 @@
 package org.eclipse.swt.internal.widgets.treekit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
@@ -78,6 +77,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final String PROP_SORT_DIRECTION = "sortDirection";
   private static final String PROP_SORT_COLUMN = "sortColumn";
   private static final String PROP_SELECTION_LISTENER = "Selection";
+  private static final String PROP_SETDATA_LISTENER = "SetData";
   private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
   private static final String PROP_EXPAND_LISTENER = "Expand";
   private static final String PROP_COLLAPSE_LISTENER = "Collapse";
@@ -110,6 +110,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     preserveProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ) );
     preserveProperty( tree, PROP_SORT_COLUMN, tree.getSortColumn() );
     preserveListener( tree, PROP_SELECTION_LISTENER, tree.isListening( SWT.Selection ) );
+    preserveListener( tree, PROP_SETDATA_LISTENER, listensToSetData( tree ) );
     preserveListener( tree,
                       PROP_DEFAULT_SELECTION_LISTENER,
                       tree.isListening( SWT.DefaultSelection ) );
@@ -186,6 +187,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ), DEFAULT_SORT_DIRECTION );
     renderProperty( tree, PROP_SORT_COLUMN, tree.getSortColumn(), null );
     renderListener( tree, PROP_SELECTION_LISTENER, tree.isListening( SWT.Selection ), false );
+    renderListener( tree, PROP_SETDATA_LISTENER, listensToSetData( tree ), false );
     renderListener( tree,
                     PROP_DEFAULT_SELECTION_LISTENER,
                     tree.isListening( SWT.DefaultSelection ),
@@ -316,6 +318,10 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   //////////////////
   // Helping methods
+
+  private boolean listensToSetData( Tree tree ) {
+    return ( tree.getStyle() & SWT.VIRTUAL ) != 0;
+  }
 
   private static boolean isMarkupEnabled( Tree tree ) {
     return Boolean.TRUE.equals( tree.getData( RWT.MARKUP_ENABLED ) );

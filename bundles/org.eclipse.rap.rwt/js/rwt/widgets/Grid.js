@@ -18,7 +18,6 @@ qx.Class.define( "rwt.widgets.Grid", {
     this.base( arguments );
     this._rootItem = new rwt.widgets.GridItem();
     // Style-Flags:
-    this._isVirtual = false;
     this._hasMultiSelection = false;
     // Internal State:
     this._hasSelectionListener = false;
@@ -26,6 +25,7 @@ qx.Class.define( "rwt.widgets.Grid", {
     this._leadItem = null;
     this._topItemIndex = 0;
     this._topItem = null;
+    this._hasSetDataListener = false;
     this._selection = [];
     this._focusItem = null;
     this._renderQueue = {};
@@ -166,9 +166,6 @@ qx.Class.define( "rwt.widgets.Grid", {
         this._config.hasCheckBoxes = true;
         this._config.checkBoxLeft = map.checkBoxMetrics[ 0 ];
         this._config.checkBoxWidth = map.checkBoxMetrics[ 1 ];
-      }
-      if( map.virtual ) {
-        this._isVirtual = true;
       }
       if( typeof map.indentionWidth === "number" ) {
         this._config.indentionWidth = map.indentionWidth;
@@ -362,6 +359,10 @@ qx.Class.define( "rwt.widgets.Grid", {
 
     setHasCollapseListener : function( value ) {
       this._hasCollapseListener = value;
+    },
+
+    setHasSetDataListener : function( value ) {
+      this._hasSetDataListener = value;
     },
 
     setAlignment : function( column, value ) {
@@ -972,7 +973,7 @@ qx.Class.define( "rwt.widgets.Grid", {
       var server = rwt.remote.Server.getInstance();
       var serverObject = server.getServerObject( this );
       serverObject.set( "topItemIndex", this._topItemIndex );
-      if( this._isVirtual || this._vertScrollBar.getHasSelectionListener() ) {
+      if( this._hasSetDataListener || this._vertScrollBar.getHasSelectionListener() ) {
         this._startScrollBarChangesTimer( false );
       }
     },
@@ -984,7 +985,7 @@ qx.Class.define( "rwt.widgets.Grid", {
       var server = rwt.remote.Server.getInstance();
       var serverObject = server.getServerObject( this );
       serverObject.set( "scrollLeft", this._horzScrollBar.getValue() );
-      if( this._isVirtual || this._horzScrollBar.getHasSelectionListener() ) {
+      if( this._hasSetDataListener || this._horzScrollBar.getHasSelectionListener() ) {
         this._startScrollBarChangesTimer( true );
       }
     },
@@ -997,7 +998,7 @@ qx.Class.define( "rwt.widgets.Grid", {
         if( this._vertScrollBar.getHasSelectionListener() ) {
           server.onNextSend( this._sendVerticalScrolled, this );
         }
-        if( this._isVirtual ) {
+        if( this._hasSetDataListener ) {
           server.onNextSend( this._sendSetData, this );
         }
       }

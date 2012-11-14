@@ -15,7 +15,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
     var styleMap = rwt.protocol.AdapterUtil.createStyleMap( properties.style );
     var configMap = {
       appearance : properties.appearance,
-      virtual : styleMap.VIRTUAL,
       noScroll : styleMap.NO_SCROLL,
       multiSelection : styleMap.MULTI,
       check : styleMap.CHECK,
@@ -116,7 +115,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
     "Selection",
     "DefaultSelection",
     "Expand",
-    "Collapse"
+    "Collapse",
+    "SetData"
   ] ),
 
   listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {

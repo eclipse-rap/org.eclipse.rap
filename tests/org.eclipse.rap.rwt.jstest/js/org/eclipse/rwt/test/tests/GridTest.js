@@ -45,7 +45,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertFalse( widget.getRenderConfig().fullSelection );
       assertFalse( widget.getRenderConfig().hideSelection );
       assertFalse( widget.getRenderConfig().hasCheckBoxes );
-      assertFalse( widget._isVirtual );
       assertFalse( widget._hasMultiSelection );
       assertTrue( widget._rowContainer.hasEventListeners( "mousewheel" ) );
       assertEquals( [ 2, 4 ], widget.getRenderConfig().selectionPadding );
@@ -63,7 +62,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertTrue( widget.getRenderConfig().fullSelection );
       assertTrue( widget.getRenderConfig().hideSelection );
       assertTrue( widget.getRenderConfig().hasCheckBoxes );
-      assertTrue( widget._isVirtual );
       assertTrue( widget._hasMultiSelection );
       assertFalse( widget._rowContainer.hasEventListeners( "mousewheel" ) );
       assertEquals( undefined, widget.getRenderConfig().selectionPadding );
@@ -4136,24 +4134,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
           "bounds" : [ 0, 0, 100, 100 ]
         }
       } );
-//      rwt.protocol.MessageProcessor.processOperation( {
-//        "target" : id + "_vscroll",
-//        "action" : "create",
-//        "type" : "rwt.widgets.ScrollBar",
-//        "properties" : {
-//          "parent" : id,
-//          "style" : [ "VERTICAL" ]
-//        }
-//      } );
-//      rwt.protocol.MessageProcessor.processOperation( {
-//        "target" : id + "_hscroll",
-//        "action" : "create",
-//        "type" : "rwt.widgets.ScrollBar",
-//        "properties" : {
-//          "parent" : id,
-//          "style" : [ "HORIZONTAL" ]
-//        }
-//      } );
       return rwt.protocol.ObjectRegistry.getObject( id );
     },
 
@@ -4189,10 +4169,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       args[ "indentionWidth" ] = 16;
       var tree = new rwt.widgets.Grid( args );
       rwt.protocol.ObjectRegistry.add( "w3", tree );
-//      rwt.protocol.ObjectRegistry.add( "w3_vscroll", tree.getVerticalBar() );
-//      rwt.protocol.ObjectRegistry.add( "w3_hscroll", tree.getHorizontalBar() );
       if( option === "fixedColumns" ) {
         org.eclipse.rwt.GridUtil.setFixedColumns( tree, arg );
+      }
+      if( option === "virtual" ) {
+        tree.setHasSetDataListener( true );
       }
       tree.setItemHeight( 20 );
       tree.setLeft( 0 );

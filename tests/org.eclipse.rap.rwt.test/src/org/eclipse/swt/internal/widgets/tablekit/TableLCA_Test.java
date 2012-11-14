@@ -782,13 +782,38 @@ public class TableLCA_Test extends TestCase {
     table = new Table( shell, SWT.VIRTUAL | SWT.NO_SCROLL | SWT.MULTI );
 
     lca.renderInitialization( table );
+    lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( table );
-    Object[] styles = operation.getStyles();
+    CreateOperation create = message.findCreateOperation( table );
+    Object[] styles = create.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "VIRTUAL" ) );
     assertTrue( Arrays.asList( styles ).contains( "NO_SCROLL" ) );
     assertTrue( Arrays.asList( styles ).contains( "MULTI" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( table, "SetData" ) );
+  }
+
+  public void testDontRenderSetDataListenerTwice() throws Exception {
+    table = new Table( shell, SWT.VIRTUAL | SWT.NO_SCROLL | SWT.MULTI );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( table );
+    Fixture.preserveWidgets();
+
+    lca.renderChanges( table );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( table, "SetData" ) );
+  }
+
+  public void testDontRenderSetDataWithoutVirtual() throws Exception {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( table );
+    Fixture.preserveWidgets();
+
+    lca.renderChanges( table );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( table, "SetData" ) );
   }
 
   public void testRenderCreateWithHideSelection() throws IOException {

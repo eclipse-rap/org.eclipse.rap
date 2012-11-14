@@ -707,6 +707,7 @@ public class TreeLCA_Test extends TestCase {
     Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.NO_SCROLL | SWT.MULTI );
 
     lca.renderInitialization( tree );
+    lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
@@ -714,6 +715,30 @@ public class TreeLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "VIRTUAL" ) );
     assertTrue( Arrays.asList( styles ).contains( "NO_SCROLL" ) );
     assertTrue( Arrays.asList( styles ).contains( "MULTI" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "SetData" ) );
+  }
+
+  public void testDontRenderSetDataListenerTwice() throws Exception {
+    Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.NO_SCROLL | SWT.MULTI );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    Fixture.preserveWidgets();
+
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( tree, "SetData" ) );
+  }
+
+  public void testDontRenderSetDataWithoutVirtual() throws Exception {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    Fixture.preserveWidgets();
+
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( tree, "SetData" ) );
   }
 
   public void testRenderCreateWithFullSelection() throws IOException {
