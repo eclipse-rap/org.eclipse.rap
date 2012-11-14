@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.rap.equinox.target.feature"
-      label="Rich Ajax Platform (RAP) Basic Equinox Target Feature"
+      label="RAP Basic Equinox Target"
       version="2.0.0.qualifier"
       provider-name="Eclipse.org - RAP">
 

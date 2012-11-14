@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.rap.examples.feature"
-      label="RAP Runtime Examples"
+      label="RAP Examples"
       version="2.0.0.qualifier"
       provider-name="Eclipse.org - RAP">
 
