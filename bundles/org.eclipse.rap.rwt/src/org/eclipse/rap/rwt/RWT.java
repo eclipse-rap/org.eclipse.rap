@@ -552,7 +552,7 @@ public final class RWT {
    * @return the browser history support implementation
    * @see IBrowserHistory
    * @since 1.3
-   * @deprecated use BrowserHistory service instead
+   * @deprecated use BrowserHistory client service instead, see {@link Client#getService(Class)}
    */
   @Deprecated
   public static IBrowserHistory getBrowserHistory() {
