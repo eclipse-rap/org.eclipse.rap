@@ -50,7 +50,9 @@ public class ScrollBarLCAUtil {
   private static void preserveValues( ScrollBar scrollBar ) {
     if( scrollBar != null ) {
       preserveProperty( scrollBar, PROP_VISIBILITY, scrollBar.getVisible() );
-      preserveListener( scrollBar, PROP_SELECTION_LISTENER, isListening( scrollBar ) );
+      preserveListener( scrollBar,
+                        PROP_SELECTION_LISTENER,
+                        scrollBar.isListening( SWT.Selection ) );
     }
   }
 
@@ -77,7 +79,10 @@ public class ScrollBarLCAUtil {
   private static void renderChanges( ScrollBar scrollBar ) {
     if( scrollBar != null ) {
       renderProperty( scrollBar, PROP_VISIBILITY, scrollBar.getVisible(), false );
-      renderListener( scrollBar, PROP_SELECTION_LISTENER, isListening( scrollBar ), false );
+      renderListener( scrollBar,
+                      PROP_SELECTION_LISTENER,
+                      scrollBar.isListening( SWT.Selection ),
+                      false );
     }
   }
 
@@ -108,12 +113,6 @@ public class ScrollBarLCAUtil {
 
   //////////////////
   // Helping methods
-
-  private static boolean isListening( ScrollBar scrollBar ) {
-    boolean isVerticalScrollBar = ( scrollBar.getStyle() & SWT.VERTICAL ) != 0;
-    boolean isParentVirtual = ( scrollBar.getParent().getStyle() & SWT.VIRTUAL ) != 0;
-    return isVerticalScrollBar && isParentVirtual || scrollBar.isListening( SWT.Selection );
-  }
 
   private static WidgetAdapter getAdapter( ScrollBar scrollBar ) {
     return ( WidgetAdapter )scrollBar.getAdapter( IWidgetAdapter.class );
