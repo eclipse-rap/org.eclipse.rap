@@ -35,7 +35,6 @@ public class ScrollBarLCAUtil {
     "HORIZONTAL", "VERTICAL"
   };
 
-  private static final String PROP_SELECTION = "selection";
   private static final String PROP_VISIBILITY = "visibility";
   private static final String PROP_SELECTION_LISTENER = "Selection";
 

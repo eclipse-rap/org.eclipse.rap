@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.listkit;
 
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
@@ -150,13 +149,6 @@ public class ListLCA extends AbstractWidgetLCA {
     if( paramValue != null ) {
       int focusIndex = NumberFormatUtil.parseInt( paramValue );
       getAdapter( list ).setFocusIndex( focusIndex );
-    }
-  }
-
-  private static void renderTopIndex( List list ) {
-    int newValue = list.getTopIndex();
-    if( hasChanged( list, PROP_TOP_INDEX, Integer.valueOf( newValue ), DEFAULT_TOP_INDEX ) ) {
-      ScrollBarLCAUtil.renderSelection( list.getVerticalBar(), newValue * list.getItemHeight() );
     }
   }
 
