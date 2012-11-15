@@ -1379,6 +1379,18 @@ public class Tree_Test extends TestCase {
     assertEquals( tree.getItem( 4 ), tree.getTopItem() );
   }
 
+  public void testTopItemOnItemDispose() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    createTreeItems( tree, 10 );
+    int visibleItems = 3;
+    tree.setSize( 100, visibleItems * tree.getItemHeight() );
+    tree.setTopItem( tree.getItem( 7 ) );
+
+    tree.getItem( 8 ).dispose();
+
+    assertEquals( tree.getItem( 6 ), tree.getTopItem() );
+  }
+
   public void testTopIndexOnTemporaryResize() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 100, 100 );

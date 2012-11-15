@@ -536,7 +536,7 @@ public class Tree extends Composite {
     TreeItem result = null;
     if( itemCount > 0 ) {
       List visibleItems = collectVisibleItems( null );
-      result = ( TreeItem )visibleItems.get( topItemIndex );
+      result = ( TreeItem )visibleItems.get( getTopItemIndex() );
     }
     return result;
   }
@@ -550,6 +550,10 @@ public class Tree extends Composite {
   }
 
   int getTopItemIndex() {
+    if( !isFlatIndexValid ) {
+      updateAllItems();
+      adjustTopItemIndex();
+    }
     return topItemIndex;
   }
 
@@ -2147,7 +2151,7 @@ public class Tree extends Composite {
     boolean result = false;
     int headerHeight = getHeaderHeight();
     int itemHeight = getItemHeight();
-    int itemPosition = headerHeight + ( flatIndex - getTopItemIndex() ) * itemHeight;
+    int itemPosition = headerHeight + ( flatIndex - topItemIndex ) * itemHeight;
     // TODO shouldn't we call getClientArea() instead?
     if( itemPosition >= 0 && itemPosition <= getSize().y ) {
       result = true;
