@@ -282,6 +282,8 @@ public final class ClientResources {
     "org/eclipse/rwt/KeyEventSupport.js",
     "rwt/client/JavaScriptExecutor.js",
     "rwt/protocol/adapter/JavaScriptExecutorAdapter.js",
+    "rwt/client/JavaScriptLoader.js",
+    "rwt/protocol/adapter/JavaScriptLoaderAdapter.js",
     "rwt/runtime/System.js"
   };
 
