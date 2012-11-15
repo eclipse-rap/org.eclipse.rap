@@ -221,6 +221,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
           if( i % 2 === 0 ) {
             item.addState( "even" );
           }
+          if( this._customVariant !== null ) {
+            item.addState( this._customVariant );
+          }
           this._clientArea.add( item );
         }
       }
