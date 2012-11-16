@@ -6,7 +6,7 @@
          <meta.schema plugin="org.eclipse.rap.ui" id="phaselistener" name="PhaseListener"/>
       </appInfo>
       <documentation>
-         The extension point is used to register a &lt;code&gt;PhaseListener&lt;/code&gt; implementation. PhaseListeners are objects that are registered to be notified at the beginning and ending of each phase of the request processing lifecycle (see &lt;code&gt;ILifeCycle&lt;/code&gt;). Extensions should provide a class that implements &lt;code&gt;org.eclipse.rwt.lifecycle.PhaseListener&lt;/code&gt;.
+         The extension point is used to register a &lt;code&gt;PhaseListener&lt;/code&gt; implementation. PhaseListeners are objects that are registered to be notified at the beginning and ending of each phase of the request processing lifecycle (see &lt;code&gt;ILifeCycle&lt;/code&gt;). Extensions should provide a class that implements &lt;code&gt;org.eclipse.rap.rwt.lifecycle.PhaseListener&lt;/code&gt;.
       </documentation>
    </annotation>
 
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.rwt.lifecycle.PhaseListener"/>
+                  <meta.attribute kind="java" basedOn="org.eclipse.rap.rwt.lifecycle.PhaseListener"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -93,11 +93,11 @@
          <meta.section type="apiInfo"/>
       </appInfo>
       <documentation>
-         RWT divides the life cycle of an HTTP request into different phases that are executed sequentially. Each phase has its special purpose and creates the prerequisites needed by the following phases for proper execution. A PhaseListener has to implement the &lt;code&gt;org.eclipse.rwt.lifecycle.PhaseListener&lt;/code&gt; interface.
+         RWT divides the life cycle of an HTTP request into different phases that are executed sequentially. Each phase has its special purpose and creates the prerequisites needed by the following phases for proper execution. A PhaseListener has to implement the &lt;code&gt;org.eclipse.rap.rwt.lifecycle.PhaseListener&lt;/code&gt; interface.
 
 &lt;pre&gt;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.lifecycle.*;
 
 public class DemoPhaseListener implements PhaseListener {
 

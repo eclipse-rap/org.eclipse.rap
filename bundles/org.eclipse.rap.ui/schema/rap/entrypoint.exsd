@@ -63,7 +63,7 @@ As an alternative to registering an entrypoint, Eclipse applications can also us
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  The identifier of this entrypoint. Used in &lt;code&gt;org.eclipse.rap.ui.branding&lt;/code&gt; extension point.
+                  The identifier of this entrypoint.
                </documentation>
             </annotation>
          </attribute>
@@ -73,7 +73,7 @@ As an alternative to registering an entrypoint, Eclipse applications can also us
                   An implementation of &lt;code&gt;IEntryPoint&lt;/code&gt; which starts the application.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.rwt.lifecycle.IEntryPoint"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.rap.rwt.lifecycle.IEntryPoint"/>
                </appInfo>
             </annotation>
          </attribute>
