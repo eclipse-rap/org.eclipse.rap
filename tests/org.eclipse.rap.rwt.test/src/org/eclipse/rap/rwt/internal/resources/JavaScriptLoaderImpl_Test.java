@@ -32,6 +32,18 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
     assertTrue( resourceManager.isRegistered( expected ) );
   }
 
+  public void testDoNotRegisterTwice() {
+    ensureFiles( new String[]{ "resourcetest1.js" } );
+    ensureFiles( new String[]{ "utf-8-resource.js" } );
+
+    // Same module, different return value: not a valid usecase!
+    // Used to check for repeated registration
+    String expected = getRegistryPath() + "/resourcetest1.js";
+    String notExpected = getRegistryPath() + "/utf-8-resource.js";
+    assertTrue( resourceManager.isRegistered( expected ) );
+    assertFalse( resourceManager.isRegistered( notExpected ) );
+  }
+
   /////////
   // Helper
 

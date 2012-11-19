@@ -16,12 +16,17 @@ import java.io.InputStream;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.service.IApplicationStore;
 
 
 public class JavaScriptLoaderImpl implements JavaScriptLoader {
 
+  private static final String MODULES_KEY = JavaScriptModuleRegistry.class.getName() + "#instance";
+
   public void ensureModule( Class< ? extends JavaScriptModule> type ) {
-    registerModule( type );
+    if( !isRegistered( type ) ) {
+      registerModule( type );
+    }
   }
 
   private void registerModule( Class< ? extends JavaScriptModule> type ) {
@@ -34,7 +39,7 @@ public class JavaScriptLoaderImpl implements JavaScriptLoader {
     } catch( IOException ioe ) {
       throw new IllegalArgumentException( "Failed to load resources", ioe );
     }
-    //getApplicationModules().put( module );
+    getApplicationModules().put( module );
   }
 
   private static void registerFile( JavaScriptModule module, String fileName ) throws IOException {
@@ -42,6 +47,7 @@ public class JavaScriptLoaderImpl implements JavaScriptLoader {
     InputStream inputStream = module.getLoader().getResourceAsStream( localPath );
     IResourceManager resourceManager = RWT.getResourceManager();
     try {
+      // TODO [tb] : ensure that content is not concatenated to core js library
       resourceManager.register( getPublicPath( module, fileName ), inputStream );
     } finally {
       if( inputStream != null ) {
@@ -61,6 +67,20 @@ public class JavaScriptLoaderImpl implements JavaScriptLoader {
 
   private static String getLocalPath( JavaScriptModule module, String fileName ) {
     return module.getDirectory() + fileName;
+  }
+
+  private static boolean isRegistered( Class<? extends JavaScriptModule> clazz ) {
+    return getApplicationModules().get( clazz ) != null;
+  }
+
+  private static JavaScriptModuleRegistry getApplicationModules() {
+    IApplicationStore store = RWT.getApplicationStore();
+    JavaScriptModuleRegistry result = ( JavaScriptModuleRegistry )store.getAttribute( MODULES_KEY );
+    if( result == null ) {
+      result = new JavaScriptModuleRegistry();
+      store.setAttribute( MODULES_KEY, result );
+    }
+    return result;
   }
 
 }

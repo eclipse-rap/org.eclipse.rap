@@ -100,7 +100,7 @@ public class ResourceManagerImpl implements IResourceManager {
     }
     return result;
   }
-  
+
   //////////////////
   // helping methods
 
@@ -169,7 +169,7 @@ public class ResourceManagerImpl implements IResourceManager {
 
   //////////////////
   // helping methods
-  
+
   private static void checkPath( String path ) {
     if( path.length() == 0 ) {
       throw new IllegalArgumentException( "Path must not be empty" );
