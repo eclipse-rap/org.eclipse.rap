@@ -24,34 +24,37 @@ import org.eclipse.swt.widgets.Shell;
 
 public class JavaScriptLoaderImpl_Test extends TestCase {
 
+  private static final String JS_FILE_1 = "resourcetest1.js";
+  private static final String JS_FILE_2 = "utf-8-resource.js";
+
   private JavaScriptLoader loader = new JavaScriptLoaderImpl();
   private IResourceManager resourceManager;
   private Display display;
 
   public void testRegisterOnce() {
-    ensureFiles( new String[]{ "resourcetest1.js" } );
+    ensureFiles( new String[]{ JS_FILE_1 } );
 
     String expected = getRegistryPath() + "/resourcetest1.js";
     assertTrue( resourceManager.isRegistered( expected ) );
   }
 
   public void testDoNotRegisterTwice() {
-    ensureFiles( new String[]{ "resourcetest1.js" } );
-    ensureFiles( new String[]{ "utf-8-resource.js" } );
+    ensureFiles( new String[]{ JS_FILE_1 } );
+    ensureFiles( new String[]{ JS_FILE_2 } );
 
     // Same module, different return value: not a valid use case!
     // Used to check for repeated registration
-    String expected = getRegistryPath() + "/resourcetest1.js";
-    String notExpected = getRegistryPath() + "/utf-8-resource.js";
+    String expected = getRegistryPath() + "/" + JS_FILE_1;
+    String notExpected = getRegistryPath() + "/" + JS_FILE_2;
     assertTrue( resourceManager.isRegistered( expected ) );
     assertFalse( resourceManager.isRegistered( notExpected ) );
   }
 
   public void testRegisterMultipleFiles() {
-    ensureFiles( new String[]{ "resourcetest1.js", "utf-8-resource.js" } );
+    ensureFiles( new String[]{ JS_FILE_1, JS_FILE_2 } );
 
-    String expectedOne = getRegistryPath() + "/resourcetest1.js";
-    String expectedTwo = getRegistryPath() + "/utf-8-resource.js";
+    String expectedOne = getRegistryPath() + "/" + JS_FILE_1;
+    String expectedTwo = getRegistryPath() + "/" + JS_FILE_2;
     assertTrue( resourceManager.isRegistered( expectedOne ) );
     assertTrue( resourceManager.isRegistered( expectedTwo ) );
   }
@@ -75,24 +78,62 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
   }
 
   public void testLoadOnce() {
-    ensureFiles( new String[]{ "resourcetest1.js" } );
+    ensureFiles( new String[]{ JS_FILE_1 } );
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    String expected = "rwt-resources/" + getRegistryPath() + "/resourcetest1.js";
+    String expected = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
     assertNotNull( findLoadOperation( message, expected ) );
   }
 
   public void testLoadBeforeCreateWidget() {
-    ensureFiles( new String[]{ "resourcetest1.js" } );
+    ensureFiles( new String[]{ JS_FILE_1 } );
     Shell shell = new Shell( display );
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    String expected = "rwt-resources/" + getRegistryPath() + "/resourcetest1.js";
+    String expected = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
     CreateOperation create = message.findCreateOperation( shell );
     CallOperation load = findLoadOperation( message, expected );
     assertTrue( load.getPosition() < create.getPosition() );
+  }
+
+  public void testDoNotLoadTwiceForSameRequest() {
+    ensureFiles( new String[]{ JS_FILE_1 } );
+    ensureFiles( new String[]{ JS_FILE_1 } );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    String expected = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
+    assertNotNull( findLoadOperation( message, expected ) );
+    assertEquals( 1, message.getOperationCount() );
+  }
+
+  public void testDoNotLoadTwiceForSameSession() {
+    ensureFiles( new String[]{ JS_FILE_1 } );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Fixture.fakeNewRequest();
+    ensureFiles( new String[]{ JS_FILE_1 } );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    String expected = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
+    assertNull( findLoadOperation( message, expected ) );
+  }
+
+  public void testDoLoadTwiceForSameApplication() {
+    ensureFiles( new String[]{ JS_FILE_1 } );
+    Fixture.executeLifeCycleFromServerThread();
+
+    tearDown();
+    setUp();
+    ensureFiles( new String[]{ JS_FILE_1 } );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    String expected = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
+    assertNotNull( findLoadOperation( message, expected ) );
   }
 
   /////////

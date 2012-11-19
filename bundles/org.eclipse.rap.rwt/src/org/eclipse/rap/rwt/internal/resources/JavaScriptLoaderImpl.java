@@ -29,10 +29,12 @@ public class JavaScriptLoaderImpl implements JavaScriptLoader {
   private static final String MODULES_KEY = JavaScriptModuleRegistry.class.getName() + "#instance";
 
   public void ensureModule( Class< ? extends JavaScriptModule> type ) {
-    if( !isRegistered( type ) ) {
-      registerModule( type );
+    if( !isLoaded( type ) ) {
+      if( !isRegistered( type ) ) {
+        registerModule( type );
+      }
+      loadModule( type );
     }
-    loadModule( type );
   }
 
   private void registerModule( Class< ? extends JavaScriptModule> type ) {
@@ -42,6 +44,7 @@ public class JavaScriptLoaderImpl implements JavaScriptLoader {
       throw new IllegalStateException( "No JavaScript files found!" );
     }
     try {
+      // TODO [tb] : check for duplicates?
       for( int i = 0; i < fileNames.length; i++ ) {
         registerFile( module, fileNames[ i ] );
       }
@@ -99,6 +102,10 @@ public class JavaScriptLoaderImpl implements JavaScriptLoader {
 
   private static boolean isRegistered( Class<? extends JavaScriptModule> clazz ) {
     return getApplicationModules().get( clazz ) != null;
+  }
+
+  private static boolean isLoaded( Class<? extends JavaScriptModule> clazz ) {
+    return getSessionModules().get( clazz ) != null;
   }
 
   private static JavaScriptModuleRegistry getApplicationModules() {
