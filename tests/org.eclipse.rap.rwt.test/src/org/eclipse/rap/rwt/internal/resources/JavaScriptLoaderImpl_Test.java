@@ -20,6 +20,8 @@ import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 
 public class JavaScriptLoaderImpl_Test extends TestCase {
@@ -136,6 +138,32 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
     assertNotNull( findLoadOperation( message, expected ) );
   }
 
+  public void testLoadMultipleFiles() {
+    ensureFiles( new String[]{ JS_FILE_1, JS_FILE_2 } );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    String expectedOne = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
+    String expectedTwo = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_2;
+    CallOperation operationOne = findLoadOperation( message, expectedOne );
+    CallOperation operationTwo = findLoadOperation( message, expectedTwo );
+    assertNotNull( operationOne );
+    assertEquals( operationOne.getPosition(), operationTwo.getPosition() );
+  }
+
+  public void testLoadMultipleFilesInOrder() throws JSONException {
+    ensureFiles( new String[]{ JS_FILE_1, JS_FILE_2 } );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    String expectedOne = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
+    String expectedTwo = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_2;
+    CallOperation operation = findLoadOperation( message, expectedOne );
+    JSONArray files = ( JSONArray )operation.getProperty( "files" );
+    assertEquals( expectedOne, files.getString( 0 ) );
+    assertEquals( expectedTwo, files.getString( 1 ) );
+  }
+
   /////////
   // Helper
 
@@ -166,9 +194,17 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
         CallOperation operation = ( CallOperation )message.getOperation( i );
         if(    operation.getTarget().equals( "rwt.client.JavaScriptLoader" )
             && "load".equals( operation.getMethodName() )
-            && file.equals( operation.getProperty( "url" ) )
         ) {
-          result = operation;
+          JSONArray files = ( JSONArray )operation.getProperty( "files" );
+          for( int j = 0; j < files.length(); j++ ) {
+            try {
+              if( files.getString( j ).equals( file ) ) {
+                result = operation;
+              }
+            } catch( JSONException e ) {
+              throw new RuntimeException( e );
+            }
+          }
         }
       }
     }

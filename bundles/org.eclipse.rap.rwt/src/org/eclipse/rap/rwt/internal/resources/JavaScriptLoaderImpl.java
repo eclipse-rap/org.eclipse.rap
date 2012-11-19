@@ -72,18 +72,19 @@ public class JavaScriptLoaderImpl implements JavaScriptLoader {
   private static void loadModule( Class<? extends JavaScriptModule> clazz ) {
     JavaScriptModule module = getApplicationModules().get( clazz );
     String[] fileNames = module.getFileNames();
+    String[] filePaths = new String[ fileNames.length ];
+    IResourceManager resourceManager = RWT.getResourceManager();
     for( int i = 0; i < fileNames.length; i++ ) {
-      loadFile( module, fileNames[ i ] );
+      filePaths[ i ] = resourceManager.getLocation( getPublicPath( module, fileNames[ i ] ) );
     }
+    appendLoadOperation( module, filePaths );
     getSessionModules().put( module );
   }
 
-  private static void loadFile( JavaScriptModule module, String file ) {
-    IResourceManager resourceManager = RWT.getResourceManager();
-    String url = resourceManager.getLocation( getPublicPath( module, file ) );
+  private static void appendLoadOperation( JavaScriptModule module, String[] files ) {
     ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
     Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( "url", url );
+    properties.put( "files", files );
     writer.appendCall( "rwt.client.JavaScriptLoader", "load", properties );
   }
 

@@ -72,17 +72,19 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.FakeServer", {
     },
 
     respond : function( request ) {
-      var response = this.handleMessage( this._getCall( request, "send" )[ 0 ] );
+      var response = this.createResponse( request );
       request.responseText = response;
       request.status = 200;
       request.readyState = 4;
       request.onreadystatechange();
     },
 
-    handleMessage : function( message ) {
+    createResponse : function( request ) {
       var response = "";
       if( this.getRequestHandler() ) {
-        response += this.getRequestHandler()( message );
+        var data = this._getCall( request, "send" )[ 0 ];
+        var url = this._getCall( request, "open" )[ 1 ];
+        response += this.getRequestHandler()( data, url );
       }
       return response;
     },

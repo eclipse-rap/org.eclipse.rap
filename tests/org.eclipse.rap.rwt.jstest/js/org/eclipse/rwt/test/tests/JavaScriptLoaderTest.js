@@ -14,7 +14,7 @@
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var MessageProcessor = rwt.protocol.MessageProcessor;
 var ObjectRegistry = rwt.protocol.ObjectRegistry;
-
+var FakeServer = org.eclipse.rwt.test.fixture.FakeServer;
 
 qx.Class.define( "org.eclipse.rwt.test.tests.JavaScriptLoaderTest", {
 
@@ -25,7 +25,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.JavaScriptLoaderTest", {
     testLoadSendsRequest : function() {
       scheduleResponse();
 
-      load( "rwt-resource/myJS" );
+      load( [ "rwt-resource/myJS" ] );
 
       assertNotNull( getRequestArguments( "send" ) );
     },
@@ -33,7 +33,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.JavaScriptLoaderTest", {
     testRequestOpenParams : function() {
       scheduleResponse();
 
-      load( "rwt-resource/myJS" );
+      load( [ "rwt-resource/myJS" ] );
 
       var open = getRequestArguments( "open" );
       assertEquals( "GET", open[ 0 ] );
@@ -44,28 +44,63 @@ qx.Class.define( "org.eclipse.rwt.test.tests.JavaScriptLoaderTest", {
     testParseScript : function() {
       scheduleResponse( "rwt.protocol.ObjectRegistry.add( \"testObj\", { \"value\" : 42 } );" );
 
-      load( "rwt-resource/myJS" );
+      load( [ "rwt-resource/myJS" ] );
 
       var result = ObjectRegistry.getObject( "testObj" );
       assertEquals( 42, result.value );
+    },
+
+    testLoadMultipleSendsMultipleRequest : function() {
+      scheduleResponse();
+
+      load( [ "rwt-resource/myJS", "rwt-resource/myOtherJS" ] );
+
+      assertNotNull( getRequestArguments( "send", 0 ) );
+      assertNotNull( getRequestArguments( "send", 1 ) );
+    },
+
+    testMultipleRequestOpenParams : function() {
+      scheduleResponse();
+
+      load( [ "rwt-resource/myJS", "rwt-resource/myOtherJS" ] );
+
+      assertEquals( "rwt-resource/myJS", getRequestArguments( "open", 0 )[ 1 ] );
+      assertEquals( "rwt-resource/myOtherJS", getRequestArguments( "open", 1 )[ 1 ] );
+    },
+
+    testParseMultipleScriptsInOrder : function() {
+      FakeServer.getInstance().setRequestHandler( function( message, url ) {
+        var response;
+        if( url === "rwt-resource/myJS" ) {
+          response = "rwt.protocol.ObjectRegistry.add( \"testObj\", { \"value\" : 42 } );";
+        } else if( url === "rwt-resource/myOtherJS" ) {
+          response = "rwt.protocol.ObjectRegistry.getObject( \"testObj\" ).value++;";
+        }
+        return response;
+      } );
+
+      load( [ "rwt-resource/myJS", "rwt-resource/myOtherJS" ] );
+
+      var result = ObjectRegistry.getObject( "testObj" );
+      assertEquals( 43, result.value );
     }
 
   }
 
 } );
 
-function load( url ) {
-  TestUtil.protocolCall( "rwt.client.JavaScriptLoader", "load", { "url" : url } );
+function load( files ) {
+  TestUtil.protocolCall( "rwt.client.JavaScriptLoader", "load", { "files" : files } );
 }
 
 function scheduleResponse( response ) {
-  org.eclipse.rwt.test.fixture.FakeServer.getInstance().setRequestHandler( function() {
+  FakeServer.getInstance().setRequestHandler( function() {
     return response;
   } );
 }
 
-function getRequestArguments( type ) {
-  var log = TestUtil.getXMLHttpRequests()[ 0 ].getLog();
+function getRequestArguments( type, position ) {
+  var log = TestUtil.getXMLHttpRequests()[ position ? position : 0 ].getLog();
   var result = null;
   for( var i = 0; i < log.length; i++ ) {
     if( log[ i ][ 0 ] === type ) {

@@ -14,7 +14,13 @@ namespace( "rwt.client" );
 rwt.client.JavaScriptLoader = {
 
   load : function( params ) {
-    var request = new rwt.remote.Request( params.url, "GET", "text/javascript" );
+    for( var i = 0; i < params.files.length; i++ ) {
+      this._loadFile( params.files[ i ] );
+    }
+  },
+
+  _loadFile : function( file ) {
+    var request = new rwt.remote.Request( file, "GET", "text/javascript" );
     request.setAsynchronous( false );
     request.setSuccessHandler( this._onLoad, this );
     request.send();
