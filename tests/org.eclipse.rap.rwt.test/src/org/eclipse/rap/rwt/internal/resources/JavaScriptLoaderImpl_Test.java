@@ -61,6 +61,16 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
     assertTrue( resourceManager.isRegistered( expectedTwo ) );
   }
 
+  public void testRegisterMultipleModules() {
+    ensureFiles( new String[]{ JS_FILE_1 } );
+    ensureFiles( new String[]{ JS_FILE_2 }, true );
+
+    String expectedOne = getRegistryPath( false ) + "/" + JS_FILE_1;
+    String expectedTwo = getRegistryPath( true ) + "/" + JS_FILE_2;
+    assertTrue( resourceManager.isRegistered( expectedOne ) );
+    assertTrue( resourceManager.isRegistered( expectedTwo ) );
+  }
+
   public void testFileNotFound() {
     try {
       ensureFiles( new String[]{ "this-file-does-not-exist.js" } );
@@ -164,6 +174,34 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
     assertEquals( expectedTwo, files.getString( 1 ) );
   }
 
+  public void testLoadMultipleModulesInSameRequest() {
+    ensureFiles( new String[]{ JS_FILE_1 }, false );
+    ensureFiles( new String[]{ JS_FILE_2 }, true );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    String expectedOne = "rwt-resources/" + getRegistryPath( false ) + "/" + JS_FILE_1;
+    String expectedTwo = "rwt-resources/" + getRegistryPath( true ) + "/" + JS_FILE_2;
+    CallOperation operationOne = findLoadOperation( message, expectedOne );
+    CallOperation operationTwo = findLoadOperation( message, expectedTwo );
+    assertTrue( operationOne.getPosition() < operationTwo.getPosition() );
+  }
+
+  public void testLoadMultipleModulesInMultipleRequest() {
+    ensureFiles( new String[]{ JS_FILE_1 }, false );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Fixture.fakeNewRequest();
+    ensureFiles( new String[]{ JS_FILE_2 }, true );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    String notExpected = "rwt-resources/" + getRegistryPath( false ) + "/" + JS_FILE_1;
+    String expected = "rwt-resources/" + getRegistryPath( true ) + "/" + JS_FILE_2;
+    assertNotNull( findLoadOperation( message, expected ) );
+    assertNull( findLoadOperation( message, notExpected ) );
+  }
+
   /////////
   // Helper
 
@@ -179,12 +217,31 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
   }
 
   private void ensureFiles( String[] files ) {
-    DummyModule.files = files;
-    loader.ensureModule( DummyModule.class );
+    ensureFiles( files, false );
+  }
+
+  private void ensureFiles( String[] files, boolean secondModule ) {
+    if( secondModule ) {
+      DummyModuleTwo.files = files;
+      loader.ensureModule( DummyModuleTwo.class );
+    } else {
+      DummyModule.files = files;
+      loader.ensureModule( DummyModule.class );
+    }
   }
 
   private String getRegistryPath() {
-    return "DummyModule" + String.valueOf( DummyModule.class.hashCode() );
+    return getRegistryPath( false );
+  }
+
+  private String getRegistryPath( boolean secondModule ) {
+    String result;
+    if( secondModule ) {
+      result = "DummyModuleTwo" + String.valueOf( DummyModuleTwo.class.hashCode() );
+    } else {
+      result = "DummyModule" + String.valueOf( DummyModule.class.hashCode() );
+    }
+    return result;
   }
 
   private CallOperation findLoadOperation( Message message, String file ) {
@@ -209,6 +266,45 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
       }
     }
     return result;
+  }
+
+  /////////////////
+  // helper classes
+
+  static public class DummyModule implements JavaScriptModule {
+
+    public static String[] files;
+
+    public String getDirectory() {
+      return "org/eclipse/rap/rwt/internal/resources";
+    }
+
+    public String[] getFileNames() {
+      return files;
+    }
+
+    public ClassLoader getLoader() {
+      return this.getClass().getClassLoader();
+    }
+
+  }
+
+  static public class DummyModuleTwo implements JavaScriptModule {
+
+    public static String[] files;
+
+    public String getDirectory() {
+      return "org/eclipse/rap/rwt/internal/resources";
+    }
+
+    public String[] getFileNames() {
+      return files;
+    }
+
+    public ClassLoader getLoader() {
+      return this.getClass().getClassLoader();
+    }
+
   }
 
 }
