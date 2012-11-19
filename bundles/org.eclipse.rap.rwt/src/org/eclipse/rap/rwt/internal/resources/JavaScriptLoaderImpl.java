@@ -51,8 +51,12 @@ public class JavaScriptLoaderImpl implements JavaScriptLoader {
   }
 
   private static String getPublicPath( JavaScriptModule module, String fileName ) {
-    //return String.valueOf( module.getClass().hashCode() ) + "/" + fileName;
-    return "test/" + fileName;
+    Class type = module.getClass();
+    String result =   type.getSimpleName()
+                    + String.valueOf( type.hashCode() )
+                    + "/"
+                    + fileName;
+    return result;
   }
 
   private static String getLocalPath( JavaScriptModule module, String fileName ) {

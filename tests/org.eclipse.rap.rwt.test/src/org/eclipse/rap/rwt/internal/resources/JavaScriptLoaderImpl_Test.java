@@ -28,7 +28,8 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
   public void testRegisterOnce() {
     ensureFiles( new String[]{ "resourcetest1.js" } );
 
-    assertTrue( resourceManager.isRegistered( "test/resourcetest1.js" ) );
+    String expected = getRegistryPath() + "/resourcetest1.js";
+    assertTrue( resourceManager.isRegistered( expected ) );
   }
 
   /////////
@@ -46,6 +47,10 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
   private void ensureFiles( String[] files ) {
     JavaScriptLoaderImpl_Test.files = files;
     loader.ensureModule( DummyModule.class );
+  }
+
+  private String getRegistryPath() {
+    return "DummyModule" + String.valueOf( DummyModule.class.hashCode() );
   }
 
 }
