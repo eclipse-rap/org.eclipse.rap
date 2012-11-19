@@ -13,6 +13,8 @@ package org.eclipse.rap.rwt.internal.resources;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.WebClient;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -138,8 +140,7 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
     ensureFiles( new String[]{ JS_FILE_1 } );
     Fixture.executeLifeCycleFromServerThread();
 
-    tearDown();
-    setUp();
+    newSession();
     ensureFiles( new String[]{ JS_FILE_1 } );
     Fixture.executeLifeCycleFromServerThread();
 
@@ -200,6 +201,19 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
     String expected = "rwt-resources/" + getRegistryPath( true ) + "/" + JS_FILE_2;
     assertNotNull( findLoadOperation( message, expected ) );
     assertNull( findLoadOperation( message, notExpected ) );
+  }
+
+  public void testFileNamesChangeAtRuntime() {
+    ensureFiles( new String[]{ JS_FILE_1 } );
+    Fixture.executeLifeCycleFromServerThread();
+
+    newSession();
+    ensureFiles( new String[]{ JS_FILE_2 } );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    String expected = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
+    assertNotNull( findLoadOperation( message, expected ) );
   }
 
   /////////
@@ -266,6 +280,15 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
       }
     }
     return result;
+  }
+
+  private void newSession() {
+    ContextProvider.disposeContext();
+    Fixture.createServiceContext();
+    Fixture.fakeClient( new WebClient() );
+    display = new Display();
+    Fixture.fakeNewRequest( display );
+    resourceManager = RWT.getResourceManager();
   }
 
   /////////////////

@@ -43,49 +43,42 @@ public class JavaScriptLoaderImpl implements JavaScriptLoader {
     if( fileNames.length == 0 ) {
       throw new IllegalStateException( "No JavaScript files found!" );
     }
+    String[] filePaths = new String[ fileNames.length ];
     try {
       // TODO [tb] : check for duplicates?
       for( int i = 0; i < fileNames.length; i++ ) {
-        registerFile( module, fileNames[ i ] );
+        filePaths[ i ] = registerFile( module, fileNames[ i ] );
       }
     } catch( IOException ioe ) {
       throw new IllegalArgumentException( "Failed to load resources", ioe );
     }
-    getApplicationModules().put( module );
+    getApplicationModules().put( type, filePaths );
   }
 
-  private static void registerFile( JavaScriptModule module, String fileName ) throws IOException {
+  private static String registerFile( JavaScriptModule module, String fileName ) throws IOException {
     String localPath = getLocalPath( module, fileName );
     InputStream inputStream = module.getLoader().getResourceAsStream( localPath );
     if( inputStream == null ) {
       throw new IOException( "File " + localPath + " does not exist." );
     }
     IResourceManager resourceManager = RWT.getResourceManager();
+    String publicPath = getPublicPath( module, fileName );
     try {
       // TODO [tb] : ensure that content is not concatenated to core js library
-      resourceManager.register( getPublicPath( module, fileName ), inputStream );
+      resourceManager.register( publicPath, inputStream );
     } finally {
       inputStream.close();
     }
+    return resourceManager.getLocation( publicPath );
   }
 
-  private static void loadModule( Class<? extends JavaScriptModule> clazz ) {
-    JavaScriptModule module = getApplicationModules().get( clazz );
-    String[] fileNames = module.getFileNames();
-    String[] filePaths = new String[ fileNames.length ];
-    IResourceManager resourceManager = RWT.getResourceManager();
-    for( int i = 0; i < fileNames.length; i++ ) {
-      filePaths[ i ] = resourceManager.getLocation( getPublicPath( module, fileNames[ i ] ) );
-    }
-    appendLoadOperation( module, filePaths );
-    getSessionModules().put( module );
-  }
-
-  private static void appendLoadOperation( JavaScriptModule module, String[] files ) {
+  private static void loadModule( Class<? extends JavaScriptModule> type ) {
+    String[] files = getApplicationModules().get( type );
     ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "files", files );
     writer.appendCall( "rwt.client.JavaScriptLoader", "load", properties );
+    getSessionModules().put( type, files );
   }
 
   private static String getPublicPath( JavaScriptModule module, String fileName ) {
@@ -121,6 +114,21 @@ public class JavaScriptLoaderImpl implements JavaScriptLoader {
 
   private static JavaScriptModuleRegistry getSessionModules() {
     return SingletonUtil.getSessionInstance( JavaScriptModuleRegistry.class );
+  }
+
+  static private class JavaScriptModuleRegistry {
+
+    private Map<Class< ? extends JavaScriptModule>, String[]> map
+     = new HashMap<Class<? extends JavaScriptModule>, String[]>();
+
+    public void put( Class<? extends JavaScriptModule> type, String[] files ) {
+      map.put( type, files );
+    }
+
+    public String[] get( Class<? extends JavaScriptModule> type ) {
+      return map.get( type );
+    }
+
   }
 
 }
