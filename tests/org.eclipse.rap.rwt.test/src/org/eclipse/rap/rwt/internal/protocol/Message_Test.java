@@ -15,11 +15,14 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.*;
+import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.Message.ListenOperation;
+import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -145,6 +148,15 @@ public class Message_Test extends TestCase {
       fail();
     } catch( IllegalStateException expected ) {
     }
+  }
+
+  public void testGetOperationPosition() {
+    writer.appendCreate( "w1", "type" );
+    writer.appendCreate( "w2", "type" );
+
+    Message message = getMessage();
+    assertEquals( 0, message.getOperation( 0 ).getPosition() );
+    assertEquals( 1, message.getOperation( 1 ).getPosition() );
   }
 
   public void testCreateOperation() {

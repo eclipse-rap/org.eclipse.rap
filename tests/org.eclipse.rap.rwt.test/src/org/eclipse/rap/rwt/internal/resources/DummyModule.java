@@ -12,16 +12,18 @@ package org.eclipse.rap.rwt.internal.resources;
 
 public class DummyModule implements JavaScriptModule {
 
+  public static String[] files;
+
   public String getDirectory() {
     return "org/eclipse/rap/rwt/internal/resources";
   }
 
   public String[] getFileNames() {
-    return JavaScriptLoaderImpl_Test.files;
+    return DummyModule.files;
   }
 
   public ClassLoader getLoader() {
-    return JavaScriptLoaderImpl_Test.class.getClassLoader();
+    return DummyModule.class.getClassLoader();
   }
 
 }

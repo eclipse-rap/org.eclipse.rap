@@ -10,11 +10,15 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Widget;
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
@@ -71,15 +75,15 @@ public final class Message {
     JSONArray operation = getOperationAsJson( position );
     String action = getOperationAction( operation );
     if( action.equals( "create" ) ) {
-      result = new CreateOperation( operation );
+      result = new CreateOperation( operation, position );
     } else if( action.equals( "call" ) ) {
-      result = new CallOperation( operation );
+      result = new CallOperation( operation, position );
     } else if( action.equals( "set" ) ) {
-      result = new SetOperation( operation );
+      result = new SetOperation( operation, position );
     } else if( action.equals( "listen" ) ) {
-      result = new ListenOperation( operation );
+      result = new ListenOperation( operation, position );
     } else if( action.equals( "destroy" ) ) {
-      result = new DestroyOperation( operation );
+      result = new DestroyOperation( operation, position );
     } else {
       throw new IllegalArgumentException( "Unknown operation action: " + action );
     }
@@ -232,10 +236,12 @@ public final class Message {
   public abstract class Operation {
 
     private final String target;
+    private final int position;
     protected final JSONArray operation;
 
-    private Operation( JSONArray operation ) {
+    private Operation( JSONArray operation, int position ) {
       this.operation = operation;
+      this.position = position;
       try {
         target = operation.getString( 1 );
       } catch( JSONException e ) {
@@ -264,14 +270,18 @@ public final class Message {
       return result;
     }
 
+    public int getPosition() {
+      return position;
+    }
+
     abstract protected JSONObject getProperties();
 
   }
 
   public final class CreateOperation extends Operation {
 
-    private CreateOperation( JSONArray operation ) {
-      super( operation );
+    private CreateOperation( JSONArray operation, int position ) {
+      super( operation, position );
     }
 
     public String getParent() {
@@ -320,8 +330,8 @@ public final class Message {
 
   public final class CallOperation extends Operation {
 
-    private CallOperation( JSONArray operation ) {
-      super( operation );
+    private CallOperation( JSONArray operation, int position ) {
+      super( operation, position );
     }
 
     public String getMethodName() {
@@ -349,8 +359,8 @@ public final class Message {
 
   public final class SetOperation extends Operation {
 
-    private SetOperation( JSONArray operation ) {
-      super( operation );
+    private SetOperation( JSONArray operation, int position ) {
+      super( operation, position );
     }
 
     @Override
@@ -368,8 +378,8 @@ public final class Message {
 
   public final class ListenOperation extends Operation {
 
-    private ListenOperation( JSONArray operation ) {
-      super( operation );
+    private ListenOperation( JSONArray operation, int position ) {
+      super( operation, position );
     }
 
     public boolean listensTo( String eventName ) {
@@ -391,8 +401,8 @@ public final class Message {
 
   public final class DestroyOperation extends Operation {
 
-    private DestroyOperation( JSONArray operation ) {
-      super( operation );
+    private DestroyOperation( JSONArray operation, int position ) {
+      super( operation, position );
     }
 
     @Override
