@@ -10,11 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.resources;
 
-import org.eclipse.rap.rwt.client.service.ClientService;
 
+public interface JavaScriptModule {
 
-public interface JavaScriptLoader extends ClientService  {
+  public String getDirectory();
 
-  void ensureModule( Class<? extends JavaScriptModule> type );
+  public String[] getFileNames();
+
+  public ClassLoader getLoader();
 
 }

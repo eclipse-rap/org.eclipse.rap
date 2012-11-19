@@ -10,23 +10,19 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.resources;
 
-import junit.framework.TestCase;
+public class DummyModule implements JavaScriptModule {
 
-
-public class JavaScriptLoader_Test extends TestCase {
-
-  JavaScriptLoader loader;
-
-  public void testGetJavaScriptLoader() {
-
+  public String getDirectory() {
+    return "org/eclipse/rap/rwt/internal/resources";
   }
 
-  public void setUp() {
-
+  public String[] getFileNames() {
+    return JavaScriptLoaderImpl_Test.files;
   }
 
-  public void tearDown() {
-
+  public ClassLoader getLoader() {
+    return JavaScriptLoaderImpl_Test.class.getClassLoader();
   }
 
 }
+
