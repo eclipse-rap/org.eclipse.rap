@@ -64,7 +64,7 @@ To invoke the service handler a developer needs to construct a URL. The URL must
                   An implementation of &lt;code&gt;IServiceHandler&lt;/code&gt;
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.rwt.service.IServiceHandler"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.rap.rwt.service.IServiceHandler"/>
                </appInfo>
             </annotation>
          </attribute>

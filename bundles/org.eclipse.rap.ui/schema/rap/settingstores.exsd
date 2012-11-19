@@ -14,16 +14,16 @@ Developers that want to implement their own setting store must provide a setting
 &lt;p&gt;
 Note that at runtime only &lt;b&gt;one&lt;/b&gt; (out of all available) factories will be used to create new &lt;code&gt;ISettingStore&lt;/code&gt; instances. Which factory is used can be controlled in two ways:
 &lt;ul&gt;
-&lt;li&gt;In a normal RAP deployment you can specify the factory to be used by placing the following property in the OSGi config.ini file: &lt;code&gt;org.eclipse.rwt.settingStoreFactory=&lt;i&gt;id&lt;/i&gt;&lt;/code&gt; where &lt;i&gt;id&lt;/i&gt; identifies a particular factory element. Example:
+&lt;li&gt;In a normal RAP deployment you can specify the factory to be used by placing the following property in the OSGi config.ini file: &lt;code&gt;org.eclipse.rap.rwt.settingStoreFactory=&lt;i&gt;id&lt;/i&gt;&lt;/code&gt; where &lt;i&gt;id&lt;/i&gt; identifies a particular factory element. Example:
 &lt;pre&gt;
-org.eclipse.rwt.settingStoreFactory=file
+org.eclipse.rap.rwt.settingStoreFactory=file
 &lt;/pre&gt;
 &lt;/li&gt;
 &lt;li&gt;In an RWT-only deployment you can specify the factory to be used by placing the following snippet in the web.xml file:&lt;br&gt;
 &lt;pre&gt;
 &amp;lt;init-param&amp;gt;
-  &amp;lt;param-name&amp;gt;org.eclipse.rwt.settingStoreFactory&amp;lt;/param-name&amp;gt;
-  &amp;lt;param-value&amp;gt;org.eclipse.rwt.service.RWTFileSettingStoreFactory&amp;lt;/param-value&amp;gt;
+  &amp;lt;param-name&amp;gt;org.eclipse.rap.rwt.settingStoreFactory&amp;lt;/param-name&amp;gt;
+  &amp;lt;param-value&amp;gt;org.eclipse.rap.rwt.service.RWTFileSettingStoreFactory&amp;lt;/param-value&amp;gt;
 &amp;lt;/init-param&amp;gt;
 &lt;/pre&gt;
 &lt;li&gt;If nothing is specified, the class &lt;code&gt;WorkbenchFileSettingStoreFactory&lt;/code&gt; will be used in a regular RAP deployment. In an RWT only deployment the class &lt;code&gt;RWTFileSettingStoreFactory&lt;/code&gt; will be used instead.&lt;/li&gt;
@@ -88,10 +88,10 @@ org.eclipse.rwt.settingStoreFactory=file
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  a fully qualified name of the class implementing the &lt;code&gt;org.eclipse.rwt.service.ISettingStoreFactory&lt;/code&gt; interface.
+                  a fully qualified name of the class implementing the &lt;code&gt;org.eclipse.rap.rwt.service.ISettingStoreFactory&lt;/code&gt; interface.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.rwt.service.ISettingStoreFactory"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.rap.rwt.service.ISettingStoreFactory"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -120,7 +120,7 @@ org.eclipse.rwt.settingStoreFactory=file
             id=&quot;file&quot;&gt;
       &lt;/factory&gt;
       &lt;factory
-            class=&quot;org.eclipse.rwt.service.RWTFileSettingStoreFactory&quot;
+            class=&quot;org.eclipse.rap.rwt.service.RWTFileSettingStoreFactory&quot;
             id=&quot;rwtfile&quot;&gt;
       &lt;/factory&gt;
    &lt;/extension&gt;
@@ -133,7 +133,7 @@ org.eclipse.rwt.settingStoreFactory=file
          <meta.section type="apiInfo"/>
       </appInfo>
       <documentation>
-         To obtain a setting store use &lt;code&gt;RWT.getSettingStore()&lt;/code&gt;. This will use the configured &lt;code&gt;org.eclipse.rwt.service.ISettingStoreFactory&lt;/code&gt; to generate and return an appropriate &lt;code&gt;org.eclipse.rwt.service.ISettingStore&lt;/code&gt; instance for this session.
+         To obtain a setting store use &lt;code&gt;RWT.getSettingStore()&lt;/code&gt;. This will use the configured &lt;code&gt;org.eclipse.rap.rwt.service.ISettingStoreFactory&lt;/code&gt; to generate and return an appropriate &lt;code&gt;org.eclipse.rap.rwt.service.ISettingStore&lt;/code&gt; instance for this session.
 &lt;p&gt;
 Developers wishing to provide their own setting store must implement &lt;code&gt;ISettingStore&lt;/code&gt; and &lt;code&gt;ISettingStoreFactory&lt;/code&gt; and contribute their factory using this extension point.
       </documentation>
