@@ -20,7 +20,15 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridItem", {
   },
 
   destructor : function( item ) {
+    var destroyItems = item.getUncachedChildren();
+    for( var i = 0; i < destroyItems.length; i++ ) {
+      destroyItems[ i ].dispose();
+    }
     item.dispose();
+  },
+
+  getDestroyableChildren : function( widget ) {
+    return widget.getCachedChildren();
   },
 
   properties : [

@@ -18,9 +18,13 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class TabItemLCA extends AbstractWidgetLCA {
@@ -47,6 +51,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     TabFolder parent = tabItem.getParent();
     IClientObject clientObject = ClientObjectFactory.getClientObject( tabItem );
     clientObject.create( TYPE );
+    // TODO [tb] : Do not render id!
     clientObject.set( "id", WidgetUtil.getId( tabItem ) );
     clientObject.set( "parent", WidgetUtil.getId( parent ) );
     clientObject.set( "index", parent.indexOf( tabItem ) ) ;

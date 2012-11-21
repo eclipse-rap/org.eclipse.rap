@@ -265,11 +265,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
         }
       } );
       var target = this._getDummyTarget( "dummyId" );
-      target.setParent( {
-        getChildren : function() {
-          return [ target ];
-        }
-      } );
       processor.processOperationArray( [ "destroy", "dummyId" ] );
       assertEquals( [ "destroy" ], target.getLog() );
       assertNull( target.getParent() );
@@ -287,14 +282,35 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
         }
       } );
       var target = this._getDummyTarget( "dummyId" );
-      target.setParent( {
-        getChildren : function() {
-          return [ target ];
-        }
-      } );
       processor.processOperationArray( [ "destroy", "dummyId" ] );
       assertEquals( [ "foo", "destroy" ], target.getLog() );
       assertTrue( this._getTargetById( "dummyId" ) == null );
+      registry.remove( "dummyType" );
+    },
+
+    testProcessDestroyWithChildren : function() {
+      var registry = rwt.protocol.AdapterRegistry;
+      var processor = rwt.protocol.MessageProcessor;
+      registry.add( "dummyType", {
+        "destructor" : function( obj ) {
+          obj.destroy();
+        },
+        "getDestroyableChildren" : function( obj ) {
+          return obj.getChildren ? obj.getChildren() : [];
+        }
+      } );
+      var target = this._getDummyTarget( "dummyId1" );
+      var childOne = this._getDummyTarget( "dummyId2" );
+      var childTwo = this._getDummyTarget( "dummyId3" );
+      target.getChildren = function() {
+        return [ childOne, childTwo, null, undefined ];
+      };
+
+      processor.processOperationArray( [ "destroy", "dummyId1" ] );
+
+      assertTrue( this._getTargetById( "dummyId1" ) == null );
+      assertTrue( this._getTargetById( "dummyId2" ) == null );
+      assertTrue( this._getTargetById( "dummyId3" ) == null );
       registry.remove( "dummyType" );
     },
 

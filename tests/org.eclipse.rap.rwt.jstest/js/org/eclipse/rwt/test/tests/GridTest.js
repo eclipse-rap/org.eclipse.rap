@@ -13,6 +13,7 @@
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var ObjectRegistry = rwt.protocol.ObjectRegistry;
+var MessageProcessor = rwt.protocol.MessageProcessor;
 
 qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
@@ -53,6 +54,32 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( undefined, widget.getRenderConfig().checkBoxWidth );
       shell.destroy();
       widget.destroy();
+    },
+
+    testDestroyGridWithItemsByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var grid = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      MessageProcessor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.GridItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 3
+        }
+      } );
+      var item = ObjectRegistry.getObject( "w4" );
+
+      MessageProcessor.processOperation( {
+        "target" : "w3",
+        "action" : "destroy"
+      } );
+      TestUtil.flush();
+
+      assertTrue( grid.isDisposed() );
+      assertTrue( item.isDisposed() );
+      assertTrue( ObjectRegistry.getObject( "w4" ) == null );
+      shell.destroy();
     },
 
     testCreateTreeWithStylesByProtocol : function() {
@@ -274,6 +301,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertTrue( widget.isItemSelected( item1 ) );
       assertFalse( widget.isItemSelected( item2 ) );
       assertTrue( widget.isItemSelected( item3 ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetSelectionWithDisposeByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [ "MULTI" ] );
+      widget.setItemCount( 3 );
+      var item1 = this._createTreeItemByProtocol( "w4", "w3", 0 );
+      var item2 = this._createTreeItemByProtocol( "w5", "w3", 1 );
+      var item3 = this._createTreeItemByProtocol( "w6", "w3", 2 );
+
+      TestUtil.protocolSet( "w3", { "selection" : [ "w4", "w5" ] } );
+      MessageProcessor.processOperation( {
+        "target" : "w4",
+        "action" : "destroy"
+      } );
+      TestUtil.protocolSet( "w3", { "selection" : [] } );
+      TestUtil.flush();
+
+      assertTrue( item1.isDisposed() );
       shell.destroy();
       widget.destroy();
     },

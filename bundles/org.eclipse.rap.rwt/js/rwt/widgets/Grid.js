@@ -463,7 +463,9 @@ qx.Class.define( "rwt.widgets.Grid", {
     _onItemUpdate : function( event ) {
       var item = event.target;
       if( event.msg === "collapsed" ) {
-        if( this._focusItem && this._focusItem.isChildOf( item ) ) {
+        if(    this._focusItem
+            && ( this._focusItem.isDisposed() || this._focusItem.isChildOf( item ) )
+        ) {
           this.setFocusItem( item );
         }
       }
@@ -1197,6 +1199,7 @@ qx.Class.define( "rwt.widgets.Grid", {
     },
 
     deselectAll : function() {
+      this._checkDisposedItems();
       var oldSelection = this._selection;
       this._selection = [];
       for( var i = 0; i < oldSelection.length; i++ ) {

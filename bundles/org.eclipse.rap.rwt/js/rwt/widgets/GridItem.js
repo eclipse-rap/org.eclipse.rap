@@ -57,9 +57,26 @@ qx.Class.define( "rwt.widgets.GridItem", {
   },
 
   destruct : function() {
-    if( this._parent != null ) {
+    if( this._parent != null && !this._parent.isDisposed() ) {
       this._parent._remove( this );
     }
+    this._parent = null;
+    this._height = null;
+    this._children = null;
+    this._indexCache = null;
+    this._expandedItems = null;
+    this._customHeightItems = null;
+    this._texts = null;
+    this._images = null;
+    this._font = null;
+    this._cellFonts = null;
+    this._foreground = null;
+    this._cellForegrounds = null;
+    this._background = null;
+    this._cellBackgrounds = null;
+    this._cellChecked = null;
+    this._cellGrayed = null;
+    this._rootItem = null;
   },
 
   statics : {
@@ -352,6 +369,26 @@ qx.Class.define( "rwt.widgets.GridItem", {
       return this._children[ index ].isCached();
     },
 
+    getCachedChildren : function() {
+      var result = [];
+      for( var i = 0; i < this._children.length; i++ ) {
+        if( this.isChildCreated( i ) && this.isChildCached( i ) ) {
+          result.push( this._children[ i ] );
+        }
+      }
+      return result;
+    },
+
+    getUncachedChildren : function() {
+      var result = [];
+      for( var i = 0; i < this._children.length; i++ ) {
+        if( this.isChildCreated( i ) && !this.isChildCached( i ) ) {
+          result.push( this._children[ i ] );
+        }
+      }
+      return result;
+    },
+
     getOffsetHeight : function() {
       var result = this.getOwnHeight();
       if( this.isExpanded() && this.hasChildren() ) {
@@ -384,7 +421,7 @@ qx.Class.define( "rwt.widgets.GridItem", {
     getChild : function( index ) {
       var result = this._children[ index ];
       if( !result ) {
-       if( index >= 0 && index < this._children.length ) {
+        if( index >= 0 && index < this._children.length ) {
           result = new rwt.widgets.GridItem( this, index, true );
         }
       }

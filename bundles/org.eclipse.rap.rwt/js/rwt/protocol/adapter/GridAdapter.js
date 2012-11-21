@@ -45,7 +45,15 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
     if( hBarId ) {
       rwt.protocol.MessageProcessor.processOperationArray( [ "destroy", hBarId ] );
     }
+    var destroyItems = widget.getRootItem().getUncachedChildren();
+    for( var i = 0; i < destroyItems.length; i++ ) {
+      destroyItems[ i ].dispose();
+    }
     rwt.protocol.AdapterUtil.getControlDestructor()( widget );
+  },
+
+  getDestroyableChildren : function( widget ) {
+    return widget.getRootItem().getCachedChildren();
   },
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [

@@ -96,11 +96,19 @@ rwt.protocol.MessageProcessor = {
     var objectEntry = rwt.protocol.ObjectRegistry.getEntry( targetId );
     var adapter = objectEntry.adapter;
     var targetObject = objectEntry.object;
+    var children =   adapter.getDestroyableChildren
+                   ? adapter.getDestroyableChildren( targetObject )
+                   : null;
     if( adapter.destructor ) {
       adapter.destructor( targetObject );
     }
     rwt.protocol.ObjectRegistry.remove( targetId );
     rwt.protocol.ServerObjectFactory.remove( targetId );
+    for( var i = 0; children != null && i < children.length; i++ ) {
+      if( children[ i ] ) {
+        this._processDestroy( rwt.protocol.ObjectRegistry.getId( children[ i ] ) );
+      }
+    }
   },
 
   _processSet : function( targetId, properties ) {
