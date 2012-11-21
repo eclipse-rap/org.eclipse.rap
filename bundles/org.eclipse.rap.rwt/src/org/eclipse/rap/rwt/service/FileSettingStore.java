@@ -27,13 +27,13 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 public final class FileSettingStore implements ISettingStore {
 
   /**
-   * This key (value "org.eclipse.rwt.service.FileSettingStore.dir") can be
+   * This key (value "org.eclipse.rap.rwt.service.FileSettingStore.dir") can be
    * used to configure the working directory for file settings stores.
    * See {@link RWTFileSettingStoreFactory} and
    * <code>WorkbenchFileSettingStoreFactory</code>.
    */
   public static final String FILE_SETTING_STORE_DIR
-    = "org.eclipse.rwt.service.FileSettingStore.dir";
+    = "org.eclipse.rap.rwt.service.FileSettingStore.dir";
 
   private static final Random RANDOM = new Random( System.currentTimeMillis() );
 

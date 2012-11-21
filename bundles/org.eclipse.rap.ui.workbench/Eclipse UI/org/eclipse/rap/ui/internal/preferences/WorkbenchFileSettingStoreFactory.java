@@ -23,16 +23,16 @@ import org.osgi.framework.Bundle;
 
 
 /**
- * {@link ISettingStoreFactory} that creates {@link FileSettingStore} 
+ * {@link ISettingStoreFactory} that creates {@link FileSettingStore}
  * instances.
  * <p>
  * This particular implementation uses the following strategy to determine
  * the path for persisting the data of a FileSettingStore:
  * <ol>
- * <li>Use the directory specified by the system property 
- * <code>"org.eclipse.rwt.service.FileSettingStore.dir"</code>.
+ * <li>Use the directory specified by the system property
+ * <code>"org.eclipse.rap.rwt.service.FileSettingStore.dir"</code>.
  * </li>
- * <li>Use a subdirectory in the state location of the  
+ * <li>Use a subdirectory in the state location of the
  * org.eclipse.rap.ui.workbench bundle.
  * </li>
  * </ol>
@@ -41,14 +41,14 @@ import org.osgi.framework.Bundle;
  * be created.
  * <p>
  * <b>Note:</b> This setting store factory should be used in a regular
- * RAP deployment. For an RWT only deployment use the 
+ * RAP deployment. For an RWT only deployment use the
  * {@link RWTFileSettingStoreFactory}.
- * 
+ *
  */
 public final class WorkbenchFileSettingStoreFactory
   implements ISettingStoreFactory
 {
-  
+
   public ISettingStore createSettingStore( final String storeId ) {
     ParamCheck.notNullOrEmpty( storeId, "storeId" ); //$NON-NLS-1$
     ISettingStore result = new FileSettingStore( getWorkDir() );
@@ -60,10 +60,10 @@ public final class WorkbenchFileSettingStoreFactory
     }
     return result;
   }
-  
+
   //////////////////
   // helping methods
-  
+
   private File getWorkDir() {
     File result = getWorkDirFromEnvironment();
     if( result == null ) {
@@ -77,7 +77,7 @@ public final class WorkbenchFileSettingStoreFactory
     }
     return result;
   }
-  
+
   private File getWorkDirFromEnvironment() {
     String path = System.getProperty( FileSettingStore.FILE_SETTING_STORE_DIR );
     return ( path != null ) ? new File( path ) : null;

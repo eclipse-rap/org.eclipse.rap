@@ -29,7 +29,7 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
  * the path for persisting the data of a FileSettingStore:
  * <ol>
  * <li>Use the directory specified by the init-parameter
- * <code>"org.eclipse.rwt.service.FileSettingStore.dir"</code> in the
+ * <code>"org.eclipse.rap.rwt.service.FileSettingStore.dir"</code> in the
  * web.xml.
  * </li>
  * <li>Use the directory specified by the
