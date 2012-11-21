@@ -33,7 +33,6 @@ import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.lifecycle.PhaseListenerUtil;
 import org.eclipse.rap.rwt.service.SessionStoreEvent;
 import org.eclipse.rap.rwt.service.SessionStoreListener;
 import org.eclipse.swt.SWT;
@@ -97,11 +96,11 @@ public final class BrowserHistoryImpl
   public void afterPhase( PhaseEvent event ) {
     Display sessionDisplay = LifeCycleUtil.getSessionDisplay();
     if( display == sessionDisplay ) {
-      if( PhaseListenerUtil.isPrepareUIRoot( event ) && isStartup() ) {
+      if( event.getPhaseId() == PhaseId.PREPARE_UI_ROOT && isStartup() ) {
         processNavigationEvent();
-      } else if( PhaseListenerUtil.isReadData( event ) ) {
+      } else if( event.getPhaseId() == PhaseId.READ_DATA ) {
         preserveNavigationListener();
-      } else if( PhaseListenerUtil.isRender( event ) ) {
+      } else if( event.getPhaseId() == PhaseId.RENDER ) {
         renderNavigationListener();
         renderAdd();
       }
@@ -111,7 +110,7 @@ public final class BrowserHistoryImpl
   public void beforePhase( PhaseEvent event ) {
     Display sessionDisplay = LifeCycleUtil.getSessionDisplay();
     if( display == sessionDisplay ) {
-      if( PhaseListenerUtil.isProcessAction( event ) && !isStartup() ) {
+      if( event.getPhaseId() == PhaseId.PROCESS_ACTION && !isStartup() ) {
         processNavigationEvent();
       }
     }
@@ -205,4 +204,5 @@ public final class BrowserHistoryImpl
       this.text = text;
     }
   }
+
 }

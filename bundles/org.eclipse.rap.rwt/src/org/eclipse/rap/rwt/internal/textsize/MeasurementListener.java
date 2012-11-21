@@ -11,13 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
-
 import org.eclipse.rap.rwt.lifecycle.*;
 
 
 public class MeasurementListener implements PhaseListener {
 
-  private TextSizeRecalculation textSizeRecalculation;
+  private final TextSizeRecalculation textSizeRecalculation;
 
   public MeasurementListener() {
     textSizeRecalculation = new TextSizeRecalculation();
@@ -25,18 +24,18 @@ public class MeasurementListener implements PhaseListener {
 
   //////////////////////////
   // interface PhaseListener
-  
+
   public void beforePhase( PhaseEvent event ) {
-    if( PhaseListenerUtil.isPrepareUIRoot( event ) ) {
+    if( event.getPhaseId() == PhaseId.PREPARE_UI_ROOT ) {
       handleStartupProbeMeasurementResults();
     }
-    if( PhaseListenerUtil.isProcessAction( event ) ) {
+    if( event.getPhaseId() == PhaseId.PROCESS_ACTION ) {
       handleMeasurementResults();
     }
   }
 
   public void afterPhase( PhaseEvent event ) {
-    if( PhaseListenerUtil.isRender( event ) ) {
+    if( event.getPhaseId() == PhaseId.RENDER ) {
       handleMeasurementRequests();
     }
   }
@@ -44,7 +43,6 @@ public class MeasurementListener implements PhaseListener {
   public PhaseId getPhaseId() {
     return PhaseId.ANY;
   }
-
 
   //////////////////
   // helping methods
@@ -66,4 +64,5 @@ public class MeasurementListener implements PhaseListener {
   private MeasurementOperator getMeasurementOperator() {
     return MeasurementOperator.getInstance();
   }
+
 }
