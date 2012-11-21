@@ -14,8 +14,8 @@ package org.eclipse.rap.rwt.internal;
 
 public final class RWTProperties {
 
-  public static final String CLIENT_LIBRARY_VARIANT = "org.eclipse.rwt.clientLibraryVariant";
-  public static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
+  public static final String DEVELOPMEMT_MODE = "org.eclipse.rap.rwt.developmentMode";
+
   public static final String ENABLE_THEME_WARNINGS = "org.eclipse.rap.enableThemeWarnings";
   /*
    * Used in conjunction with <code>WidgetUtil#CUSTOM_WIDGET_ID</code>,
@@ -33,8 +33,7 @@ public final class RWTProperties {
   }
 
   public static boolean isDevelopmentMode() {
-    String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
-    return DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
+    return getBooleanProperty( DEVELOPMEMT_MODE, false );
   }
 
   private static boolean getBooleanProperty( String key, boolean defaultValue ) {
@@ -45,4 +44,5 @@ public final class RWTProperties {
     }
     return result;
   }
+
 }

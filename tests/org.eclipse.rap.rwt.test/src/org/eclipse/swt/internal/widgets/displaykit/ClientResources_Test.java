@@ -51,8 +51,7 @@ public class ClientResources_Test extends TestCase {
   }
 
   public void testRegisterResourcesDebug() {
-    System.setProperty( RWTProperties.CLIENT_LIBRARY_VARIANT,
-                        RWTProperties.DEBUG_CLIENT_LIBRARY_VARIANT );
+    System.setProperty( RWTProperties.DEVELOPMEMT_MODE, "true" );
     clientResources.registerResources();
 
     assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
@@ -62,7 +61,7 @@ public class ClientResources_Test extends TestCase {
   }
 
   public void testRegisteredContent() throws IOException {
-    System.getProperties().remove( RWTProperties.CLIENT_LIBRARY_VARIANT );
+    System.getProperties().remove( RWTProperties.DEVELOPMEMT_MODE );
     clientResources.registerResources();
     String clientJs = getRegisteredContent( "rap-client.js" );
 
@@ -74,8 +73,7 @@ public class ClientResources_Test extends TestCase {
   }
 
   public void testRegisteredContentDebug() throws IOException {
-    System.setProperty( RWTProperties.CLIENT_LIBRARY_VARIANT,
-                        RWTProperties.DEBUG_CLIENT_LIBRARY_VARIANT );
+    System.setProperty( RWTProperties.DEVELOPMEMT_MODE, "true" );
     clientResources.registerResources();
     String clientJs = getRegisteredContent( "rap-client.js" );
 
