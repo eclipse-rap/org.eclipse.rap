@@ -20,7 +20,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -clean -console -consolelog"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true&#13;&#10;-Dosgi.noShutdown=true&#13;&#10;-Dorg.eclipse.equinox.http.jetty.log.stderr.threshold=info&#13;&#10;-Dorg.eclipse.rap.performance.dbpath=/tmp/performance&#13;&#10;-Dorg.eclipse.rap.enableThemeWarnings=true&#13;&#10;-Dorg.eclipse.rwt.enableUITests=true&#13;&#10;-Xms512m -Xmx512m&#13;&#10;-XX:NewSize=128m -XX:MaxNewSize=128m&#13;&#10;-XX:PermSize=64m -XX:MaxPermSize=64m&#13;&#10;-XX:+UseConcMarkSweepGC&#13;&#10;-Dsun.rmi.dgc.client.gcInterval=600000 -Dsun.rmi.dgc.server.gcInterval=600000&#13;&#10;-Xint&#13;&#10;-Dorg.eclipse.equinox.http.jetty.customizer.class_REMOVE_=org.eclipse.rap.jettycustomizer.internal.SessionCookieCustomizer"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true&#13;&#10;-Dosgi.noShutdown=true&#13;&#10;-Dorg.eclipse.equinox.http.jetty.log.stderr.threshold=info"/>
 <stringAttribute key="org.eclipse.rap.launch.browserMode" value="INTERNAL"/>
 <stringAttribute key="org.eclipse.rap.launch.contextpath" value="/rapdemo"/>
 <stringAttribute key="org.eclipse.rap.launch.dataLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.rap.ui.launch/RAPExamplesDemo"/>
