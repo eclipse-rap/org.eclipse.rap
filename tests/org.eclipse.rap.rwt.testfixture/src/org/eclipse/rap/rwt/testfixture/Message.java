@@ -162,6 +162,10 @@ public final class Message {
 
   public DestroyOperation findDestroyOperation( Widget widget ) {
     String target = WidgetUtil.getId( widget );
+    return findDestroyOperation( target );
+  }
+  
+  public DestroyOperation findDestroyOperation( String target) {
     return ( DestroyOperation )findOperation( DestroyOperation.class, target );
   }
 

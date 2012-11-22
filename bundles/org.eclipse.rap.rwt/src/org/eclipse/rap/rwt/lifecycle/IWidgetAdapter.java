@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -22,35 +23,7 @@ import org.eclipse.swt.widgets.Widget;
  *
  * @since 2.0
  */
-public interface IWidgetAdapter {
-
-  /**
-   * Returns the id that identifies the widget on the client.
-   *
-   * @return the widget id
-   */
-  String getId();
-
-  /**
-   * Indicates whether this widget has been initialized already. A widget is
-   * considered initialized when the response that creates and initializes the
-   * widget has been rendered.
-   *
-   * @return <code>true</code> if this widget has already been initialized,
-   *         <code>false</code> otherwise
-   */
-  boolean isInitialized();
-
-  /**
-   * Preserves a specified value for a specified key. Used to preserve values in
-   * the LCA method
-   * {@link IWidgetLifeCycleAdapter#preserveValues(org.eclipse.swt.widgets.Widget)
-   * preserveValues}.
-   *
-   * @param propertyName the key to map the preserved value to
-   * @param value the value to preserve
-   */
-  void preserve( String propertyName, Object value );
+public interface IWidgetAdapter extends RemoteObjectAdapter {
 
   /**
    * Returns the preserved value for a specified key.
@@ -60,6 +33,15 @@ public interface IWidgetAdapter {
    *         preserved for this key
    */
   Object getPreserved( String propertyName );
+  
+  /**
+   * Indicates whether this object has been initialized already. An object is
+   * considered initialized when the create message has been rendered.
+   *
+   * @return <code>true</code> if this object has already been initialized,
+   *         <code>false</code> otherwise
+   */
+  boolean isInitialized();
 
   /**
    * Notifies the receiver that the given <code>widget</code> has beend
@@ -68,4 +50,13 @@ public interface IWidgetAdapter {
    * @since 1.2
    */
   void markDisposed( Widget widget );
+  
+  /**
+   * Preserves a specified value for a specified key. Used to preserve values in
+   * the LCA method
+   *
+   * @param propertyName the key to map the preserved value to
+   * @param value the value to preserve
+   */
+  void preserve( String propertyName, Object value );
 }

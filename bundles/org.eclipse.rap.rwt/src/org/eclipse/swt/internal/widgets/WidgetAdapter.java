@@ -18,15 +18,15 @@ import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectAdapter;
-import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
+import org.eclipse.rap.rwt.internal.protocol.RemoteObjectAdapterImpl;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Widget;
 
 
 public final class WidgetAdapter
-  implements IWidgetAdapter, IClientObjectAdapter, SerializableCompatibility
+  implements IWidgetAdapter, SerializableCompatibility
 {
 
   private final String id;
@@ -36,7 +36,7 @@ public final class WidgetAdapter
   private String jsParent;
   private transient IRenderRunnable renderRunnable;
   private transient String cachedVariant;
-  private ClientObjectAdapter gcObjectAdapter;
+  private RemoteObjectAdapterImpl gcObjectAdapter;
 
   public WidgetAdapter() {
     this( IdGenerator.getInstance().newId( "w" ) );
@@ -127,9 +127,10 @@ public final class WidgetAdapter
     }
   }
 
+  @SuppressWarnings( "unchecked" )
   public Adaptable getGCForClient() {
     if( gcObjectAdapter == null ) {
-      gcObjectAdapter = new ClientObjectAdapter( "gc" );
+      gcObjectAdapter = new RemoteObjectAdapterImpl( null, null, "gc" );
     }
     return createGcAdaptable();
   }
@@ -139,7 +140,7 @@ public final class WidgetAdapter
     return new Adaptable() {
 
       public <T> T getAdapter( Class<T> adapter ) {
-        if( adapter == IClientObjectAdapter.class ) {
+        if( adapter == RemoteObjectAdapter.class ) {
           return ( T )gcObjectAdapter;
         }
         return null;

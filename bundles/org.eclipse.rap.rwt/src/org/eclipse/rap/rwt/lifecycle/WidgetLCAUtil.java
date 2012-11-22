@@ -1108,7 +1108,7 @@ public final class WidgetLCAUtil {
     return StylesUtil.filterStyles( widget, styles );
   }
 
-  static boolean equals( Object object1, Object object2 ) {
+  public static boolean equals( Object object1, Object object2 ) {
     boolean result;
     if( object1 == object2 ) {
       result = true;

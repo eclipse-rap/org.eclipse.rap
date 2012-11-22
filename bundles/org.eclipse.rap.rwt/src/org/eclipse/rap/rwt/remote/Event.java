@@ -8,25 +8,18 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.protocol;
+package org.eclipse.rap.rwt.remote;
 
-import org.eclipse.swt.internal.widgets.IdGenerator;
+import java.util.Map;
 
 
-public class ClientObjectAdapter implements IClientObjectAdapter {
-
-  private final String id;
-
-  public ClientObjectAdapter() {
-    this( "o" );
-  }
-
-  public ClientObjectAdapter( String customPrefix ) {
-    id = IdGenerator.getInstance().newId( customPrefix );
-  }
-
-  public String getId() {
-    return id;
-  }
-
+/**
+ * @since 2.0
+ */
+public interface Event<T> {
+  
+  String getName();
+  
+  void notify( T object, Map<String, Object> properties );
+  
 }

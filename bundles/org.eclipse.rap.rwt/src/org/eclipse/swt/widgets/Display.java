@@ -30,7 +30,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
@@ -46,6 +45,7 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -740,7 +740,7 @@ public class Display extends Device implements Adaptable {
         displayAdapter = new DisplayAdapter();
       }
       result = ( T )displayAdapter;
-    } else if( adapter == IClientObjectAdapter.class || adapter == IWidgetAdapter.class ) {
+    } else if( adapter == RemoteObjectAdapter.class || adapter == IWidgetAdapter.class ) {
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter( "w1" );
       }

@@ -8,11 +8,16 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.protocol;
+package org.eclipse.rap.rwt.remote;
 
 
-public interface IClientObjectAdapter {
-
-  String getId();
-
+/**
+ * @since 2.0
+ */
+public interface Property<T> {
+  
+  String getName();
+  
+  void set( T object, Object value );
+  
 }

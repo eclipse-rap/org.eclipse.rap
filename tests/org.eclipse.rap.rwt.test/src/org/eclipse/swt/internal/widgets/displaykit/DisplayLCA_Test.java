@@ -21,6 +21,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -34,6 +36,10 @@ import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.TestRemoteObject;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.TestRemoteObjectSpecifier;
+import org.eclipse.rap.rwt.internal.protocol.RemoteObjectAdapterImpl;
+import org.eclipse.rap.rwt.internal.protocol.RemoteObjectAdapterRegistry;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -45,6 +51,7 @@ import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.swt.SWT;
@@ -144,7 +151,7 @@ public class DisplayLCA_Test extends TestCase {
     inOrder.verify( lca ).readData( text );
     verifyNoMoreInteractions( lca );
   }
-
+  
   public void testReadDisplayBounds() {
     Fixture.fakeSetParameter( getId( display ), "bounds", new int[] { 0, 0, 30, 70 } );
 
@@ -316,7 +323,7 @@ public class DisplayLCA_Test extends TestCase {
     assertNotNull( message.findCallOperation( displayId, "beep" ) );
     assertFalse( display.getAdapter( IDisplayAdapter.class ).isBeepCalled() );
   }
-
+  
   public void testRenderEnableUiTests() throws IOException {
     setEnableUiTests( true );
 
@@ -381,7 +388,7 @@ public class DisplayLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( displayId, "exitConfirmation" ) );
   }
-
+  
   public void testRendersExitConfirmationReset() throws IOException {
     RWT.getClient().getService( ExitConfirmation.class ).setMessage( "test" );
     displayLCA.preserveValues( display );
@@ -402,6 +409,38 @@ public class DisplayLCA_Test extends TestCase {
     } catch( Exception e ) {
       throw new RuntimeException( "Failed to set enabled field", e );
     }
+  }
+
+  public void testReadDataForRemoteObject() {
+    RemoteObjectAdapterImpl adapter = createRemoteObject();
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( TestRemoteObjectSpecifier.TEST_PROPERTY, "bar" );
+    Fixture.fakeSetOperation( adapter.getId(), parameters );
+    
+    displayLCA.readData( display );
+    
+    assertEquals( "bar", ( ( TestRemoteObject )adapter.getRemoteObject() ).getTest() );
+  }
+
+  public void testRendersRemoteObject() throws IOException {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    RemoteObjectAdapterImpl adapter = createRemoteObject();
+    adapter.set( TestRemoteObjectSpecifier.TEST_PROPERTY, "foo" );
+    
+    displayLCA.render( display );
+    
+    CreateOperation operation = Fixture.getProtocolMessage().findCreateOperation( adapter.getId() );
+    assertNotNull( operation );
+    assertEquals( "foo", operation.getProperty( TestRemoteObjectSpecifier.TEST_PROPERTY ) );
+  }
+
+  private RemoteObjectAdapterImpl createRemoteObject() {
+    TestRemoteObject remoteObject = new TestRemoteObject();
+    remoteObject.setTest( "foo" );
+    RemoteObjectAdapterImpl<TestRemoteObject> adapter 
+      = new RemoteObjectAdapterImpl<TestRemoteObject>( remoteObject, TestRemoteObjectSpecifier.class, "o" );
+    RemoteObjectAdapterRegistry.getInstance().register( adapter );
+    return adapter;
   }
 
   private static class TestWidgetLCA extends AbstractWidgetLCA {

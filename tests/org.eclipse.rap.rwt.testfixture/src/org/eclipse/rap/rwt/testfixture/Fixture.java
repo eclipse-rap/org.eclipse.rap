@@ -249,7 +249,6 @@ public final class Fixture {
     useDefaultResourceManager();
   }
 
-
   ////////////////////
   // LifeCycle helpers
 
