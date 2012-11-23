@@ -11,11 +11,10 @@
 package org.eclipse.rap.rwt.remote;
 
 
-
 /**
  * @since 2.0
  */
-public interface RemoteObjectAdapter {
+public interface RemoteObject<T> {
 
   /**
    * Returns the id that identifies the object on the client.

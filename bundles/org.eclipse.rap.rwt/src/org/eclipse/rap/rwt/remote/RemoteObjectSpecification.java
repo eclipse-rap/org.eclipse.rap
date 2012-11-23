@@ -10,16 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.remote;
 
-import java.util.Map;
 
 
 /**
  * @since 2.0
  */
-public interface EventNotification<T> {
+public interface RemoteObjectSpecification<T> {
+
+  String getType();
   
-  String getName();
-  
-  void notify( T object, Map<String, Object> properties );
-  
+  void define( RemoteObjectDefinition<T> definition );
 }

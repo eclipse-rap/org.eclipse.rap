@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeListener;
@@ -167,7 +167,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     // The adapters returned here are buffered for performance reasons. Don't change this without
     // good reason
     T result = null;
-    if( adapter == RemoteObjectAdapter.class || adapter == IWidgetAdapter.class ) {
+    if( adapter == RemoteObject.class || adapter == IWidgetAdapter.class ) {
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter();
       }

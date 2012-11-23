@@ -18,9 +18,9 @@ import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
-import org.eclipse.rap.rwt.internal.protocol.RemoteObjectAdapterImpl;
+import org.eclipse.rap.rwt.internal.protocol.RemoteObjectImpl;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Widget;
 
@@ -36,7 +36,7 @@ public final class WidgetAdapter
   private String jsParent;
   private transient IRenderRunnable renderRunnable;
   private transient String cachedVariant;
-  private RemoteObjectAdapterImpl gcObjectAdapter;
+  private RemoteObjectImpl gcObjectAdapter;
 
   public WidgetAdapter() {
     this( IdGenerator.getInstance().newId( "w" ) );
@@ -130,7 +130,7 @@ public final class WidgetAdapter
   @SuppressWarnings( "unchecked" )
   public Adaptable getGCForClient() {
     if( gcObjectAdapter == null ) {
-      gcObjectAdapter = new RemoteObjectAdapterImpl( null, null, "gc" );
+      gcObjectAdapter = new RemoteObjectImpl( null, null, "gc" );
     }
     return createGcAdaptable();
   }
@@ -140,7 +140,7 @@ public final class WidgetAdapter
     return new Adaptable() {
 
       public <T> T getAdapter( Class<T> adapter ) {
-        if( adapter == RemoteObjectAdapter.class ) {
+        if( adapter == RemoteObject.class ) {
           return ( T )gcObjectAdapter;
         }
         return null;

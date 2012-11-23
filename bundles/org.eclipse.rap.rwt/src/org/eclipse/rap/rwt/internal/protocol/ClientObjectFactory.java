@@ -16,7 +16,7 @@ import java.util.Map;
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.IServiceStore;
 
 
@@ -33,7 +33,7 @@ public final class ClientObjectFactory {
 
   /**
    * Returns an {@link IClientObject} instance for the given object. The object
-   * must provide an {@link RemoteObjectAdapter} in its
+   * must provide an {@link RemoteObject} in its
    * {@link Adaptable#getAdapter(Class)} method. The returned client object
    * instance is unique during a request.
    * <p>
@@ -46,12 +46,12 @@ public final class ClientObjectFactory {
    */
   public static IClientObject getClientObject( Adaptable object ) {
     ParamCheck.notNull( object, "object" );
-    RemoteObjectAdapter adapter = getAdapter( object );
+    RemoteObject adapter = getAdapter( object );
     return getForId( adapter.getId() );
   }
 
-  private static RemoteObjectAdapter getAdapter( Adaptable object ) {
-    RemoteObjectAdapter result = object.getAdapter( RemoteObjectAdapter.class );
+  private static RemoteObject getAdapter( Adaptable object ) {
+    RemoteObject result = object.getAdapter( RemoteObject.class );
     if( result == null ) {
       String message = "Could not retrieve an instance of IClientObjectAdapter.";
       throw new IllegalArgumentException( message );

@@ -14,12 +14,13 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWr
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
-import org.eclipse.rap.rwt.remote.Call;
-import org.eclipse.rap.rwt.remote.EventNotification;
-import org.eclipse.rap.rwt.remote.Property;
-import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
+import org.eclipse.rap.rwt.remote.EventHandler;
+import org.eclipse.rap.rwt.remote.MethodHandler;
+import org.eclipse.rap.rwt.remote.PropertyHandler;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 
 
 public class RemoteObjectSynchronizer<T> {
@@ -37,58 +38,68 @@ public class RemoteObjectSynchronizer<T> {
   }
 
   public void set( T object, Map<String, Object> setProperties ) {
-    List<Property<T>> objectProperties = definition.getProperties();
-    for( Property<T> objectProperty : objectProperties ) {
-      Object newValue = setProperties.get( objectProperty.getName() );
-      if( newValue != null ) {
-        objectProperty.set( object, newValue );
+    for( Entry<String, Object> entry : setProperties.entrySet() ) {
+      PropertyHandler<T> propertyHandler = definition.getProperty( entry.getKey() );
+      if( propertyHandler != null ) {
+        propertyHandler.set( object, entry.getValue() );
+      } else {
+        throw new IllegalStateException( "Property " 
+                                         + entry.getKey() 
+                                         + " is not configured for type " 
+                                         + object.getClass().getName() );
       }
     }
   }
 
   public void call( T object, String methodName, Map<String, Object> callProperties ) {
-    List<Call<T>> calls = definition.getCalls();
-    for( Call<T> call : calls ) {
-      if( call.getName().equals( methodName ) ) {
-        call.call( object, callProperties );
-      }
+    MethodHandler<T> methodHandler = definition.getMethod( methodName );
+    if( methodHandler != null ) {
+      methodHandler.call( object, callProperties );
+    } else {
+      throw new IllegalStateException( "Method "
+                                       + methodName
+                                       + " is not configured for type "
+                                       + object.getClass().getName() );
     }
   }
 
   public void notify( T object, String eventName, Map<String, Object> properties ) {
-    List<EventNotification<T>> events = definition.getEvents();
-    for( EventNotification<T> event : events ) {
-      if( event.getName().equals( eventName ) ) {
-        notifyEventInProcessActionPhase( object, properties, event );
-      }
+    EventHandler<T> eventHandler = definition.getEventHandler( eventName );
+    if( eventHandler != null ) {
+      notifyEventInProcessActionPhase( object, properties, eventHandler );
+    } else {
+      throw new IllegalStateException( "Event "
+                                       + eventName
+                                       + " is not configured for type "
+                                       + object.getClass().getName() );
     }
   }
 
   private void notifyEventInProcessActionPhase( final T object,
                                                 final Map<String, Object> properties,
-                                                final EventNotification<T> event )
+                                                final EventHandler<T> eventHandler )
   {
     ProcessActionRunner.add( new Runnable() {
       public void run() {
-        event.notify( object, properties );
+        eventHandler.notify( object, properties );
       }
     } );
   }
 
-  public void create( RemoteObjectAdapter adapter ) {
+  public void create( RemoteObject adapter ) {
     getProtocolWriter().appendCreate( adapter.getId(), type );
   }
 
-  public void render( RemoteObjectAdapter adapter ) {
-    RemoteObjectAdapterImpl<?> adapterImpl = ( RemoteObjectAdapterImpl )adapter;
-    List<Runnable> renderQueue = adapterImpl.getRenderQueue();
+  public void render( RemoteObject remoteObject ) {
+    RemoteObjectImpl<?> remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
+    List<Runnable> renderQueue = remoteObjectImpl.getRenderQueue();
     for( Runnable runnable : renderQueue ) {
       runnable.run();
     }
     renderQueue.clear();
   }
 
-  public void destroy( RemoteObjectAdapter adapter ) {
-    getProtocolWriter().appendDestroy( adapter.getId() );
+  public void destroy( RemoteObject remoteObject ) {
+    getProtocolWriter().appendDestroy( remoteObject.getId() );
   }
 }

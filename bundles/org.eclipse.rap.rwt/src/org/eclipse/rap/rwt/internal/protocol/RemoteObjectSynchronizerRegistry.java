@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
-import org.eclipse.rap.rwt.remote.RemoteObjectSpecifier;
+import org.eclipse.rap.rwt.remote.RemoteObjectSpecification;
 
 
 public class RemoteObjectSynchronizerRegistry {
@@ -36,22 +36,22 @@ public class RemoteObjectSynchronizerRegistry {
     synchronizers = Collections.synchronizedList( new ArrayList<RemoteObjectSynchronizer<?>>() );
   }
 
-  public <T> void register( Class<T> type, Class<? extends RemoteObjectSpecifier<T>> specifierType )
+  public <T> void register( Class<T> type, Class<? extends RemoteObjectSpecification<T>> specification )
     throws IllegalStateException 
   {
     if( getSynchronizerForType( type ) == null ) {
-      createDefinition( type, createSpecifier( specifierType ) );
+      createDefinition( type, createSpecification( specification ) );
     } 
   }
   
-  private <T> RemoteObjectSpecifier<T> createSpecifier( Class<? extends RemoteObjectSpecifier<T>> specifierType ) {
+  private <T> RemoteObjectSpecification<T> createSpecification( Class<? extends RemoteObjectSpecification<T>> specifierType ) {
     return ClassUtil.newInstance( specifierType );
   }
 
-  private <T> void createDefinition( Class<T> type, RemoteObjectSpecifier<T> specifier ) {
+  private <T> void createDefinition( Class<T> type, RemoteObjectSpecification<T> specification ) {
     RemoteObjectDefinitionImpl<T> definition = new RemoteObjectDefinitionImpl<T>( type );
-    specifier.define( definition );
-    synchronizers.add( new RemoteObjectSynchronizer<T>( definition, specifier.getType() ) );
+    specification.define( definition );
+    synchronizers.add( new RemoteObjectSynchronizer<T>( definition, specification.getType() ) );
   }
   
   @SuppressWarnings( "unchecked" )

@@ -11,14 +11,11 @@
 package org.eclipse.rap.rwt.internal.protocol;
 
 import static org.mockito.Mockito.mock;
-
-import java.util.List;
-
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.remote.Call;
-import org.eclipse.rap.rwt.remote.EventNotification;
-import org.eclipse.rap.rwt.remote.Property;
+import org.eclipse.rap.rwt.remote.EventHandler;
+import org.eclipse.rap.rwt.remote.MethodHandler;
+import org.eclipse.rap.rwt.remote.PropertyHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
@@ -44,35 +41,41 @@ public class RemoteObjectDefinitionImpl_Test extends TestCase {
     try {
       new RemoteObjectDefinitionImpl<Object>( null );
       fail();
-    } catch( IllegalArgumentException expected ) {}
+    } catch( NullPointerException expected ) {}
   }
   
   @SuppressWarnings( "unchecked" )
   public void testHasProperty() {
     RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
-    Property property = mock( Property.class );
+    PropertyHandler property = mock( PropertyHandler.class );
     
-    definition.addProperty( property );
+    definition.addProperty( "foo", property );
     
-    List<Property<Object>> properties = definition.getProperties();
-    assertTrue( properties.contains( property ) );
-    assertEquals( 1, properties.size() );
-  }
-  
-  @SuppressWarnings( "unchecked" )
-  public void testPropertiesIsSafeCopy() {
-    RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
-    definition.addProperty( mock( Property.class ) );
-    
-    List<Property<Object>> properties = definition.getProperties();
-
-    assertNotSame( properties, definition.getProperties() );
+    assertNotNull( definition.getProperty( "foo" ) );
   }
   
   public void testFailsWithNullProperty() {
     RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
     try {
-      definition.addProperty( null );
+      definition.addProperty( "foo", null );
+      fail();
+    } catch( NullPointerException expected ) {}
+  }
+  
+  @SuppressWarnings( "unchecked" )
+  public void testFailsWithNullPropertyName() {
+    RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
+    try {
+      definition.addProperty( null, mock( PropertyHandler.class ) );
+      fail();
+    } catch( NullPointerException expected ) {}
+  }
+  
+  @SuppressWarnings( "unchecked" )
+  public void testFailsWithEmptyPropertyName() {
+    RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
+    try {
+      definition.addProperty( "", mock( PropertyHandler.class ) );
       fail();
     } catch( IllegalArgumentException expected ) {}
   }
@@ -80,29 +83,35 @@ public class RemoteObjectDefinitionImpl_Test extends TestCase {
   @SuppressWarnings( "unchecked" )
   public void testHasEvent() {
     RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
-    EventNotification event = mock( EventNotification.class );
+    EventHandler event = mock( EventHandler.class );
     
-    definition.addEvent( event );
+    definition.addEventHandler( "foo", event );
     
-    List<EventNotification<Object>> events = definition.getEvents();
-    assertTrue( events.contains( event ) );
-    assertEquals( 1, events.size() );
-  }
-  
-  @SuppressWarnings( "unchecked" )
-  public void testEventsIsSafeCopy() {
-    RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
-    definition.addEvent( mock( EventNotification.class ) );
-    
-    List<EventNotification<Object>> events = definition.getEvents();
-    
-    assertNotSame( events, definition.getEvents() );
+    assertNotNull( definition.getEventHandler( "foo" ) );
   }
   
   public void testFailsWithNullEvent() {
     RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
     try {
-      definition.addEvent( null );
+      definition.addEventHandler( "foo", null );
+      fail();
+    } catch( NullPointerException expected ) {}
+  }
+  
+  @SuppressWarnings( "unchecked" )
+  public void testFailsWithNullEventName() {
+    RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
+    try {
+      definition.addEventHandler( null, mock( EventHandler.class ) );
+      fail();
+    } catch( NullPointerException expected ) {}
+  }
+  
+  @SuppressWarnings( "unchecked" )
+  public void testFailsWithEmptyEventName() {
+    RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
+    try {
+      definition.addEventHandler( "", mock( EventHandler.class ) );
       fail();
     } catch( IllegalArgumentException expected ) {}
   }
@@ -110,29 +119,35 @@ public class RemoteObjectDefinitionImpl_Test extends TestCase {
   @SuppressWarnings( "unchecked" )
   public void testHasCall() {
     RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
-    Call call = mock( Call.class );
+    MethodHandler method = mock( MethodHandler.class );
     
-    definition.addCall( call );
+    definition.addMethod( "foo", method );
     
-    List<Call<Object>> calls = definition.getCalls();
-    assertTrue( calls.contains( call ) );
-    assertEquals( 1, calls.size() );
-  }
-  
-  @SuppressWarnings( "unchecked" )
-  public void testCallsIsSafeCopy() {
-    RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
-    definition.addCall( mock( Call.class ) );
-    
-    List<Call<Object>> calls = definition.getCalls();
-    
-    assertNotSame( calls, definition.getCalls() );
+    assertNotNull( definition.getMethod( "foo" ) );
   }
   
   public void testFailsWithNullCall() {
     RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
     try {
-      definition.addCall( null );
+      definition.addMethod( "foo", null );
+      fail();
+    } catch( NullPointerException expected ) {}
+  }
+  
+  @SuppressWarnings( "unchecked" )
+  public void testFailsWithNullMethodName() {
+    RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
+    try {
+      definition.addMethod( null, mock( MethodHandler.class ) );
+      fail();
+    } catch( NullPointerException expected ) {}
+  }
+  
+  @SuppressWarnings( "unchecked" )
+  public void testFailsWithEmptyMethodName() {
+    RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
+    try {
+      definition.addMethod( "", mock( MethodHandler.class ) );
       fail();
     } catch( IllegalArgumentException expected ) {}
   }

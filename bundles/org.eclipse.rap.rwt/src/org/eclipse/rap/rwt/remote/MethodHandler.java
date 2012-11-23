@@ -10,14 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.remote;
 
+import java.util.Map;
+
 
 /**
  * @since 2.0
  */
-public interface Property<T> {
+public interface MethodHandler<T> {
   
-  String getName();
-  
-  void set( T object, Object value );
+  void call( T object, Map<String, Object> properties );
   
 }

@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
-import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Widget;
  *
  * @since 2.0
  */
-public interface IWidgetAdapter extends RemoteObjectAdapter {
+public interface IWidgetAdapter extends RemoteObject {
 
   /**
    * Returns the preserved value for a specified key.

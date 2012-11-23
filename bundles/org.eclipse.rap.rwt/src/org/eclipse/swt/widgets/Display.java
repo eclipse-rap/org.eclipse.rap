@@ -45,7 +45,7 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -740,7 +740,7 @@ public class Display extends Device implements Adaptable {
         displayAdapter = new DisplayAdapter();
       }
       result = ( T )displayAdapter;
-    } else if( adapter == RemoteObjectAdapter.class || adapter == IWidgetAdapter.class ) {
+    } else if( adapter == RemoteObject.class || adapter == IWidgetAdapter.class ) {
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter( "w1" );
       }

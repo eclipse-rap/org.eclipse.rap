@@ -10,21 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.remote.Call;
-import org.eclipse.rap.rwt.remote.EventNotification;
-import org.eclipse.rap.rwt.remote.Property;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.TestRemoteObject;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.TestRemoteObjectSpecification;
+import org.eclipse.rap.rwt.remote.PropertyHandler;
 import org.eclipse.rap.rwt.remote.RemoteUtil;
-import org.eclipse.rap.rwt.remote.RemoteUtil.CallHandler;
-import org.eclipse.rap.rwt.remote.RemoteUtil.EventNotificationHandler;
-import org.eclipse.rap.rwt.remote.RemoteUtil.PropertyHandler;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class RemoteUtil_Test extends TestCase {
@@ -33,184 +25,176 @@ public class RemoteUtil_Test extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
+    Fixture.setUp();
     testObject = new TestObject();
   }
   
-  public void testSetsBooleanProperty() {
-    Property<TestObject> property = RemoteUtil.createBooleanProperty( TestObject.class, "boolProperty" );
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+  
+  public void testCreateRemoteObject() {
+    RemoteObjectImpl<TestRemoteObject> remoteObject 
+      = RemoteUtil.createRemoteObject( new TestRemoteObject(), TestRemoteObjectSpecification.class );
     
-    property.set( testObject, Boolean.TRUE );
+    assertNotNull( remoteObject );
+  }
+  
+  public void testCreateRemoteObjectFailsWithNullObject() {
+    try {
+      RemoteUtil.createRemoteObject( null, TestRemoteObjectSpecification.class );
+    } catch( NullPointerException expected ) {}
+  }
+  
+  public void testCreateRemoteObjectFailsWithNullSpecification() {
+    try {
+      RemoteUtil.createRemoteObject( new TestRemoteObject(), null);
+    } catch( NullPointerException expected ) {}
+  }
+  
+  public void testSetsBooleanPropertyHandler() {
+    PropertyHandler<TestObject> handler = RemoteUtil.createBooleanPropertyHandler( TestObject.class, "boolProperty" );
+    
+    handler.set( testObject, Boolean.TRUE );
     
     assertTrue( testObject.boolProperty );
   }
   
-  public void testSetsStringProperty() {
-    Property<TestObject> property = RemoteUtil.createStringProperty( TestObject.class, "stringProperty" );
+  public void testSetsStringPropertyHandler() {
+    PropertyHandler<TestObject> handler = RemoteUtil.createStringPropertyHandler( TestObject.class, "stringProperty" );
     
-    property.set( testObject, "foo" );
+    handler.set( testObject, "foo" );
     
     assertEquals( "foo", testObject.stringProperty );
   }
   
-  public void testSetsIntProperty() {
-    Property<TestObject> property = RemoteUtil.createIntProperty( TestObject.class, "intProperty" );
+  public void testSetsIntPropertyHandler() {
+    PropertyHandler<TestObject> handler = RemoteUtil.createIntPropertyHandler( TestObject.class, "intProperty" );
     
-    property.set( testObject, Integer.valueOf( 42 ) );
+    handler.set( testObject, Integer.valueOf( 42 ) );
     
     assertEquals( 42, testObject.intProperty );
   }
   
-  public void testSetsDoubleProperty() {
-    Property<TestObject> property = RemoteUtil.createDoubleProperty( TestObject.class, "doubleProperty" );
+  public void testSetsDoublePropertyHandler() {
+    PropertyHandler<TestObject> handler = RemoteUtil.createDoublePropertyHandler( TestObject.class, "doubleProperty" );
     
-    property.set( testObject, Double.valueOf( 42.42 ) );
+    handler.set( testObject, Double.valueOf( 42.42 ) );
     
     assertEquals( 42.42, testObject.doubleProperty, 0 );
   }
   
-  public void testSetsCustomTypeProperty() {
+  public void testSetsCustomTypePropertyHandler() {
     TestObject paramObject = new TestObject();
-    Property<TestObject> property = RemoteUtil.createObjectProperty( TestObject.class, "objectProperty" );
+    PropertyHandler<TestObject> handler = RemoteUtil.createObjectPropertyHandler( TestObject.class, "objectProperty" );
     
-    property.set( testObject, paramObject );
+    handler.set( testObject, paramObject );
     
     assertEquals( paramObject, testObject.objectProperty );
   }
   
-  @SuppressWarnings( "unchecked" )
-  public void testSetsCustomProperty() {
-    TestObject paramObject = new TestObject();
-    PropertyHandler<TestObject> customPropertyHandler = mock( PropertyHandler.class );
-    Property<TestObject> property = RemoteUtil.createProperty( "objectProperty", customPropertyHandler );
-    
-    property.set( testObject, paramObject );
-    
-    verify( customPropertyHandler ).set( testObject, paramObject );
-  }
-  
-  @SuppressWarnings( "unchecked" )
-  public void testNotifiesCustomEventNotification() {
-    EventNotificationHandler<TestObject> handler = mock( EventNotificationHandler.class );
-    EventNotification<TestObject> notification = RemoteUtil.createEventNotification( "foo", handler );
-    Map<String, Object> properties = new HashMap<String, Object>();
-    
-    notification.notify( testObject, properties );
-    
-    verify( handler ).notify( testObject, properties );
-  }
-  
-  @SuppressWarnings( "unchecked" )
-  public void testCallsCustomCall() {
-    CallHandler<TestObject> handler = mock( CallHandler.class );
-    Call<TestObject> call = RemoteUtil.createCall( "foo", handler );
-    Map<String, Object> properties = new HashMap<String, Object>();
-    
-    call.call( testObject, properties );
-    
-    verify( handler ).call( testObject, properties );
-  }
-  
-  public void testCreateBooleanPropertyFailsWithNullPropertyName() {
+  public void testCreateBooleanPropertyHandlerFailsWithNullPropertyName() {
     try {
-      RemoteUtil.createBooleanProperty( TestObject.class, null );
+      RemoteUtil.createBooleanPropertyHandler( TestObject.class, null );
       fail();
     } catch( NullPointerException expected ) {}
   }
   
-  public void testCreateStringPropertyFailsWithNullPropertyName() {
+  public void testCreateStringPropertyHandlerFailsWithNullPropertyName() {
     try {
-      RemoteUtil.createStringProperty( TestObject.class, null );
+      RemoteUtil.createStringPropertyHandler( TestObject.class, null );
       fail();
     } catch( NullPointerException expected ) {}
   }
   
-  public void testCreateIntPropertyFailsWithNullPropertyName() {
+  public void testCreateIntPropertyHandlerFailsWithNullPropertyName() {
     try {
-      RemoteUtil.createIntProperty( TestObject.class, null );
+      RemoteUtil.createIntPropertyHandler( TestObject.class, null );
       fail();
     } catch( NullPointerException expected ) {}
   }
   
-  public void testCreateDoublePropertyFailsWithNullPropertyName() {
+  public void testCreateDoublePropertyHandlerFailsWithNullPropertyName() {
     try {
-      RemoteUtil.createDoubleProperty( TestObject.class, null );
+      RemoteUtil.createDoublePropertyHandler( TestObject.class, null );
       fail();
     } catch( NullPointerException expected ) {}
   }
   
-  public void testCreateObjectPropertyFailsWithNullPropertyName() {
+  public void testCreateObjectPropertyHandlerFailsWithNullPropertyName() {
     try {
-      RemoteUtil.createObjectProperty( TestObject.class, null );
+      RemoteUtil.createObjectPropertyHandler( TestObject.class, null );
       fail();
     } catch( NullPointerException expected ) {}
   }
   
-  public void testCreateBooleanPropertyFailsWithNullType() {
+  public void testCreateBooleanPropertyHandlerFailsWithNullType() {
     try {
-      RemoteUtil.createBooleanProperty( null, "test" );
+      RemoteUtil.createBooleanPropertyHandler( null, "test" );
       fail();
     } catch( NullPointerException expected ) {}
   }
   
-  public void testCreateStringPropertyFailsWithNullType() {
+  public void testCreateStringPropertyHandlerFailsWithNullType() {
     try {
-      RemoteUtil.createStringProperty( null, "test" );
+      RemoteUtil.createStringPropertyHandler( null, "test" );
       fail();
     } catch( NullPointerException expected ) {}
   }
   
-  public void testCreateIntPropertyFailsWithNullType() {
+  public void testCreateIntPropertyHandlerFailsWithNullType() {
     try {
-      RemoteUtil.createIntProperty( null, "test" );
+      RemoteUtil.createIntPropertyHandler( null, "test" );
       fail();
     } catch( NullPointerException expected ) {}
   }
   
-  public void testCreateDoublePropertyFailsWithNullType() {
+  public void testCreateDoublePropertyHandlerFailsWithNullType() {
     try {
-      RemoteUtil.createDoubleProperty( null, "test" );
+      RemoteUtil.createDoublePropertyHandler( null, "test" );
       fail();
     } catch( NullPointerException expected ) {}
   }
   
-  public void testCreateObjectPropertyFailsWithNullType() {
+  public void testCreateObjectPropertyHandlerFailsWithNullType() {
     try {
-      RemoteUtil.createObjectProperty( null, "test" );
+      RemoteUtil.createObjectPropertyHandler( null, "test" );
       fail();
     } catch( NullPointerException expected ) {}
   }
   
-  public void testCreateBooleanPropertyFailsWithEmptyPropertyName() {
+  public void testCreateBooleanPropertyHandlerFailsWithEmptyPropertyName() {
     try {
-      RemoteUtil.createBooleanProperty( TestObject.class, "" );
+      RemoteUtil.createBooleanPropertyHandler( TestObject.class, "" );
       fail();
     } catch( IllegalArgumentException expected ) {}
   }
   
-  public void testCreateStringPropertyFailsWithEmptyPropertyName() {
+  public void testCreateStringPropertyHandlerFailsWithEmptyPropertyName() {
     try {
-      RemoteUtil.createStringProperty( TestObject.class, "" );
+      RemoteUtil.createStringPropertyHandler( TestObject.class, "" );
       fail();
     } catch( IllegalArgumentException expected ) {}
   }
   
-  public void testCreateIntPropertyFailsWithEmptyPropertyName() {
+  public void testCreateIntPropertyHandlerFailsWithEmptyPropertyName() {
     try {
-      RemoteUtil.createIntProperty( TestObject.class, "" );
+      RemoteUtil.createIntPropertyHandler( TestObject.class, "" );
       fail();
     } catch( IllegalArgumentException expected ) {}
   }
   
-  public void testCreateDoublePropertyFailsWithEmptyPropertyName() {
+  public void testCreateDoublePropertyHandlerFailsWithEmptyPropertyName() {
     try {
-      RemoteUtil.createDoubleProperty( TestObject.class, "" );
+      RemoteUtil.createDoublePropertyHandler( TestObject.class, "" );
       fail();
     } catch( IllegalArgumentException expected ) {}
   }
   
-  public void testCreateObjectPropertyFailsWithEmptyPropertyName() {
+  public void testCreateObjectPropertyHandlerFailsWithEmptyPropertyName() {
     try {
-      RemoteUtil.createObjectProperty( TestObject.class, "" );
+      RemoteUtil.createObjectPropertyHandler( TestObject.class, "" );
       fail();
     } catch( IllegalArgumentException expected ) {}
   }

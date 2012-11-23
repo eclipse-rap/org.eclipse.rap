@@ -16,18 +16,18 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
-public class RemoteObjectAdapterRegistry_Test extends TestCase {
+public class RemoteObjectRegistry_Test extends TestCase {
   
-  private RemoteObjectAdapterRegistry registry;
+  private RemoteObjectRegistry registry;
 
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    registry = RemoteObjectAdapterRegistry.getInstance();
+    registry = RemoteObjectRegistry.getInstance();
   }
 
   @Override
@@ -36,41 +36,41 @@ public class RemoteObjectAdapterRegistry_Test extends TestCase {
   }
   
   public void testInstanceIsSingleton() {
-    assertSame( registry, RemoteObjectAdapterRegistry.getInstance() );
+    assertSame( registry, RemoteObjectRegistry.getInstance() );
   }
   
   public void testCreateAddsAdapter() {
-    RemoteObjectAdapter adapter = mock( RemoteObjectAdapter.class );
+    RemoteObject remoteObject = mock( RemoteObject.class );
     
-    registry.register( adapter );
+    registry.register( remoteObject );
     
-    List<RemoteObjectAdapter> adapters = registry.getAdapters();
-    assertTrue( adapters.contains( adapter ) );
+    List<RemoteObject> remoteObjects = registry.getRemoteObjects();
+    assertTrue( remoteObjects.contains( remoteObject ) );
   }
   
   public void testRemoveAdapterRemovesItFromAdapters() {
-    RemoteObjectAdapter adapter = mock( RemoteObjectAdapter.class );
-    registry.register( adapter );
+    RemoteObject remoteObject = mock( RemoteObject.class );
+    registry.register( remoteObject );
 
-    registry.remove( adapter );
+    registry.remove( remoteObject );
     
-    List<RemoteObjectAdapter> adapters = registry.getAdapters();
-    assertFalse( adapters.contains( adapter ) );
+    List<RemoteObject> remoteObjects = registry.getRemoteObjects();
+    assertFalse( remoteObjects.contains( remoteObject ) );
   }
   
   public void testHoldsAllAdapters() {
-    registry.register( mock( RemoteObjectAdapter.class ) );
-    registry.register( mock( RemoteObjectAdapter.class ) );
-    registry.register( mock( RemoteObjectAdapter.class ) );
+    registry.register( mock( RemoteObject.class ) );
+    registry.register( mock( RemoteObject.class ) );
+    registry.register( mock( RemoteObject.class ) );
     
-    List<RemoteObjectAdapter> adapters = registry.getAdapters();
-    assertEquals( 3, adapters.size() );
+    List<RemoteObject> remoteObjects = registry.getRemoteObjects();
+    assertEquals( 3, remoteObjects.size() );
   }
   
   public void testAdaptersIsSafeCopy() {
-    List<RemoteObjectAdapter> adapters = registry.getAdapters();
+    List<RemoteObject> remoteObjects = registry.getRemoteObjects();
     
-    assertNotSame( adapters, registry.getAdapters() );
+    assertNotSame( remoteObjects, registry.getRemoteObjects() );
   }
   
 }

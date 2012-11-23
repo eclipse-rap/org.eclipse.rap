@@ -16,7 +16,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.TestRemoteObject;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.TestRemoteObjectSpecifier;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.TestRemoteObjectSpecification;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
@@ -42,9 +42,9 @@ public class RemoteObjectSynchronizerRegistry_Test extends TestCase {
   public void testDefinesDefinition() {
     TestRemoteObject remoteObject = new TestRemoteObject();
     Map<String, Object> setProperties = new HashMap<String, Object>();
-    setProperties.put( TestRemoteObjectSpecifier.TEST_PROPERTY, "foo" );
+    setProperties.put( TestRemoteObjectSpecification.TEST_PROPERTY, "foo" );
     
-    registry.register( TestRemoteObject.class, TestRemoteObjectSpecifier.class );
+    registry.register( TestRemoteObject.class, TestRemoteObjectSpecification.class );
     RemoteObjectSynchronizer<TestRemoteObject> synchronizer = registry.getSynchronizerForType( TestRemoteObject.class );
     synchronizer.set( remoteObject, setProperties );
     
@@ -53,20 +53,20 @@ public class RemoteObjectSynchronizerRegistry_Test extends TestCase {
   }
   
   public void testGetReigsteredSynchronizer() {
-    registry.register( TestRemoteObject.class, TestRemoteObjectSpecifier.class );
+    registry.register( TestRemoteObject.class, TestRemoteObjectSpecification.class );
     
     assertNotNull( registry.getSynchronizerForType( TestRemoteObject.class ) );
   }
   
   public void testSynchronizerHasSameTypeAsRegisteredWith() {
-    registry.register( TestRemoteObject.class, TestRemoteObjectSpecifier.class );
+    registry.register( TestRemoteObject.class, TestRemoteObjectSpecification.class );
     
     RemoteObjectSynchronizer<TestRemoteObject> synchronizer = registry.getSynchronizerForType( TestRemoteObject.class );
     assertEquals( TestRemoteObject.class, synchronizer.getType() );
   }
   
   public void testIgnoresRegisteringOfTypesTwice() {
-    registry.register( TestRemoteObject.class, TestRemoteObjectSpecifier.class );
-    registry.register( TestRemoteObject.class, TestRemoteObjectSpecifier.class );
+    registry.register( TestRemoteObject.class, TestRemoteObjectSpecification.class );
+    registry.register( TestRemoteObject.class, TestRemoteObjectSpecification.class );
   }
 }

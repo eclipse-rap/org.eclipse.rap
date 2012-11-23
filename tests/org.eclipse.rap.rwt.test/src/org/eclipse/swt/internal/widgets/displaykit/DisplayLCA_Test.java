@@ -37,9 +37,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.TestRemoteObject;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.TestRemoteObjectSpecifier;
-import org.eclipse.rap.rwt.internal.protocol.RemoteObjectAdapterImpl;
-import org.eclipse.rap.rwt.internal.protocol.RemoteObjectAdapterRegistry;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.TestRemoteObjectSpecification;
+import org.eclipse.rap.rwt.internal.protocol.RemoteObjectImpl;
+import org.eclipse.rap.rwt.internal.protocol.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -412,34 +412,34 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testReadDataForRemoteObject() {
-    RemoteObjectAdapterImpl adapter = createRemoteObject();
+    RemoteObjectImpl adapter = createRemoteObject();
     Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( TestRemoteObjectSpecifier.TEST_PROPERTY, "bar" );
+    parameters.put( TestRemoteObjectSpecification.TEST_PROPERTY, "bar" );
     Fixture.fakeSetOperation( adapter.getId(), parameters );
     
     displayLCA.readData( display );
     
-    assertEquals( "bar", ( ( TestRemoteObject )adapter.getRemoteObject() ).getTest() );
+    assertEquals( "bar", ( ( TestRemoteObject )adapter.getObject() ).getTest() );
   }
 
   public void testRendersRemoteObject() throws IOException {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    RemoteObjectAdapterImpl adapter = createRemoteObject();
-    adapter.set( TestRemoteObjectSpecifier.TEST_PROPERTY, "foo" );
+    RemoteObjectImpl adapter = createRemoteObject();
+    adapter.set( TestRemoteObjectSpecification.TEST_PROPERTY, "foo" );
     
     displayLCA.render( display );
     
     CreateOperation operation = Fixture.getProtocolMessage().findCreateOperation( adapter.getId() );
     assertNotNull( operation );
-    assertEquals( "foo", operation.getProperty( TestRemoteObjectSpecifier.TEST_PROPERTY ) );
+    assertEquals( "foo", operation.getProperty( TestRemoteObjectSpecification.TEST_PROPERTY ) );
   }
 
-  private RemoteObjectAdapterImpl createRemoteObject() {
+  private RemoteObjectImpl createRemoteObject() {
     TestRemoteObject remoteObject = new TestRemoteObject();
     remoteObject.setTest( "foo" );
-    RemoteObjectAdapterImpl<TestRemoteObject> adapter 
-      = new RemoteObjectAdapterImpl<TestRemoteObject>( remoteObject, TestRemoteObjectSpecifier.class, "o" );
-    RemoteObjectAdapterRegistry.getInstance().register( adapter );
+    RemoteObjectImpl<TestRemoteObject> adapter 
+      = new RemoteObjectImpl<TestRemoteObject>( remoteObject, TestRemoteObjectSpecification.class, "o" );
+    RemoteObjectRegistry.getInstance().register( adapter );
     return adapter;
   }
 

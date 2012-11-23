@@ -16,7 +16,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.TestRemoteObject;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.TestRemoteObjectSpecifier;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.TestRemoteObjectSpecification;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -27,18 +27,18 @@ import org.eclipse.rap.rwt.testfixture.Message.ListenOperation;
 
 public class RemoteObjectSynchronizer_Test extends TestCase {
   
-  private TestRemoteObject remoteObject;
+  private TestRemoteObject object;
   private RemoteObjectSynchronizer<TestRemoteObject> synchronizer;
 
   @Override
   public void setUp() throws Exception {
     Fixture.setUp();
-    RemoteObjectDefinitionImpl<TestRemoteObject> configuration 
+    RemoteObjectDefinitionImpl<TestRemoteObject> definition 
       = new RemoteObjectDefinitionImpl<TestRemoteObject>( TestRemoteObject.class );
-    TestRemoteObjectSpecifier initializer = new TestRemoteObjectSpecifier();
-    initializer.define( configuration );
-    synchronizer = new RemoteObjectSynchronizer<TestRemoteObject>( configuration, TestRemoteObjectSpecifier.TEST_TYPE );
-    remoteObject = new TestRemoteObject();
+    TestRemoteObjectSpecification specification = new TestRemoteObjectSpecification();
+    specification.define( definition );
+    synchronizer = new RemoteObjectSynchronizer<TestRemoteObject>( definition, TestRemoteObjectSpecification.TEST_TYPE );
+    object = new TestRemoteObject();
   }
   
   @Override
@@ -48,21 +48,41 @@ public class RemoteObjectSynchronizer_Test extends TestCase {
   
   public void testSetsProperties() {
     Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( TestRemoteObjectSpecifier.TEST_PROPERTY, "fooBar" );
+    properties.put( TestRemoteObjectSpecification.TEST_PROPERTY, "fooBar" );
     
-    synchronizer.set( remoteObject, properties );
+    synchronizer.set( object, properties );
     
-    assertEquals( "fooBar", remoteObject.test );
+    assertEquals( "fooBar", object.test );
+  }
+  
+  public void testSetFailsWithNotDefinedProperties() {
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "42", "fooBar" );
+    
+    try {
+      synchronizer.set( object, properties );
+      fail();
+    } catch( IllegalStateException expected ) {}
   }
   
   public void testCallsObject() {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "foo", "bar" );
     
-    synchronizer.call( remoteObject, TestRemoteObjectSpecifier.TEST_CALL, properties );
+    synchronizer.call( object, TestRemoteObjectSpecification.TEST_CALL, properties );
     
-    assertNotNull( remoteObject.callProperties );
-    assertEquals( "bar", remoteObject.callProperties.get( "foo" ) );
+    assertNotNull( object.callProperties );
+    assertEquals( "bar", object.callProperties.get( "foo" ) );
+  }
+  
+  public void testCallFailsWithNotDefinedmethod() {
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "42", "fooBar" );
+    
+    try {
+      synchronizer.call( object, "42", properties );
+      fail();
+    } catch( IllegalStateException expected ) {}
   }
   
   public void testNotifiesObjectInProcessActionPhase() {
@@ -70,78 +90,89 @@ public class RemoteObjectSynchronizer_Test extends TestCase {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "foo", "bar" );
     
-    synchronizer.notify( remoteObject, TestRemoteObjectSpecifier.TEST_EVENT, properties );
+    synchronizer.notify( object, TestRemoteObjectSpecification.TEST_EVENT, properties );
     
-    assertNotNull( remoteObject.eventProperties );
-    assertEquals( "bar", remoteObject.eventProperties.get( "foo" ) );
+    assertNotNull( object.eventProperties );
+    assertEquals( "bar", object.eventProperties.get( "foo" ) );
+  }
+  
+  public void testNotifyFailsWithNotDefinedEvent() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "42", "fooBar" );
+    
+    try {
+      synchronizer.notify( object, "42", properties );
+      fail();
+    } catch( IllegalStateException expected ) {}
   }
   
   public void testCreateRendersCreateOperation() {
-    RemoteObjectAdapterImpl<TestRemoteObject> adapter 
-      = new RemoteObjectAdapterImpl<TestRemoteObject>( remoteObject, null );
+    RemoteObjectImpl<TestRemoteObject> remoteObject 
+      = new RemoteObjectImpl<TestRemoteObject>( object, null );
     
-    synchronizer.create( adapter );
+    synchronizer.create( remoteObject );
     
-    CreateOperation createOperation = Fixture.getProtocolMessage().findCreateOperation( adapter.getId() );
-    assertEquals( TestRemoteObjectSpecifier.TEST_TYPE, createOperation.getType() );
+    CreateOperation createOperation = Fixture.getProtocolMessage().findCreateOperation( remoteObject.getId() );
+    assertEquals( TestRemoteObjectSpecification.TEST_TYPE, createOperation.getType() );
   }
   
   public void testDestroyRendersDestroyOperation() {
-    RemoteObjectAdapterImpl<TestRemoteObject> adapter 
-      = new RemoteObjectAdapterImpl<TestRemoteObject>( remoteObject, null );
+    RemoteObjectImpl<TestRemoteObject> remoteObject 
+      = new RemoteObjectImpl<TestRemoteObject>( object, null );
     
-    synchronizer.destroy( adapter );
+    synchronizer.destroy( remoteObject );
     
-    DestroyOperation destroyOperation = Fixture.getProtocolMessage().findDestroyOperation( adapter.getId() );
+    DestroyOperation destroyOperation = Fixture.getProtocolMessage().findDestroyOperation( remoteObject.getId() );
     assertNotNull( destroyOperation );
   }
   
   public void testRendersRenderQueueFromAdapterWithSets() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    RemoteObjectAdapterImpl<TestRemoteObject> adapter 
-      = new RemoteObjectAdapterImpl<TestRemoteObject>( remoteObject, null );
-    adapter.set( TestRemoteObjectSpecifier.TEST_PROPERTY, "foo" );
+    RemoteObjectImpl<TestRemoteObject> remoteObject 
+      = new RemoteObjectImpl<TestRemoteObject>( object, null );
+    remoteObject.set( TestRemoteObjectSpecification.TEST_PROPERTY, "foo" );
     
-    synchronizer.render( adapter );
+    synchronizer.render( remoteObject );
     
-    Object property = Fixture.getProtocolMessage().findSetProperty( adapter.getId(), 
-                                                                    TestRemoteObjectSpecifier.TEST_PROPERTY );
+    Object property = Fixture.getProtocolMessage().findSetProperty( remoteObject.getId(), 
+                                                                    TestRemoteObjectSpecification.TEST_PROPERTY );
     assertEquals( "foo", property );
   }
   
   public void testRendersRenderQueueFromAdapterWithCalls() {
-    RemoteObjectAdapterImpl<TestRemoteObject> adapter 
-      = new RemoteObjectAdapterImpl<TestRemoteObject>( remoteObject, null );
+    RemoteObjectImpl<TestRemoteObject> remoteObject 
+      = new RemoteObjectImpl<TestRemoteObject>( object, null );
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "foo", "bar" );
-    adapter.call( "fooBar", properties );
+    remoteObject.call( "fooBar", properties );
     
-    synchronizer.render( adapter );
+    synchronizer.render( remoteObject );
     
-    CallOperation operation = Fixture.getProtocolMessage().findCallOperation( adapter.getId(), "fooBar" );
+    CallOperation operation = Fixture.getProtocolMessage().findCallOperation( remoteObject.getId(), "fooBar" );
     assertEquals( "bar", operation.getProperty( "foo" ) );
   }
   
   public void testRendersRenderQueueFromAdapterWithListen() {
-    RemoteObjectAdapterImpl<TestRemoteObject> adapter 
-      = new RemoteObjectAdapterImpl<TestRemoteObject>( remoteObject, null );
-    adapter.listen( "foo", true );
+    RemoteObjectImpl<TestRemoteObject> remoteObject 
+      = new RemoteObjectImpl<TestRemoteObject>( object, null );
+    remoteObject.listen( "foo", true );
     
-    synchronizer.render( adapter );
+    synchronizer.render( remoteObject );
     
-    ListenOperation operation = Fixture.getProtocolMessage().findListenOperation( adapter.getId(), "foo" );
+    ListenOperation operation = Fixture.getProtocolMessage().findListenOperation( remoteObject.getId(), "foo" );
     assertNotNull( operation );
   }
   
   public void testClearsRenderQueueFromAdapterAfterRender() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    RemoteObjectAdapterImpl<TestRemoteObject> adapter  
-      = new RemoteObjectAdapterImpl<TestRemoteObject>( remoteObject, null );
-    adapter.set( TestRemoteObjectSpecifier.TEST_PROPERTY, "foo" );
+    RemoteObjectImpl<TestRemoteObject> remoteObject  
+      = new RemoteObjectImpl<TestRemoteObject>( object, null );
+    remoteObject.set( TestRemoteObjectSpecification.TEST_PROPERTY, "foo" );
     
-    synchronizer.render( adapter );
+    synchronizer.render( remoteObject );
     
-    assertTrue( adapter.getRenderQueue().isEmpty() );
+    assertTrue( remoteObject.getRenderQueue().isEmpty() );
   }
   
 }

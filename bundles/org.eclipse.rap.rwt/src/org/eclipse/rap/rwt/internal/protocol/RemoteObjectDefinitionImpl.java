@@ -10,64 +10,62 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.eclipse.rap.rwt.remote.Call;
-import org.eclipse.rap.rwt.remote.EventNotification;
-import org.eclipse.rap.rwt.remote.Property;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.remote.EventHandler;
+import org.eclipse.rap.rwt.remote.MethodHandler;
+import org.eclipse.rap.rwt.remote.PropertyHandler;
 import org.eclipse.rap.rwt.remote.RemoteObjectDefinition;
 
 
 public class RemoteObjectDefinitionImpl<T> implements RemoteObjectDefinition<T> {
 
   private final Class<T> type;
-  private final List<Property<T>> properties;
-  private final List<EventNotification<T>> events;
-  private final List<Call<T>> calls;
+  private final Map<String, PropertyHandler<T>> properties;
+  private final Map<String, EventHandler<T>> eventHandlers;
+  private final Map<String, MethodHandler<T>> methods;
 
   public RemoteObjectDefinitionImpl( Class<T> type ) {
-    checkArgument( type, "Type must not be null." );
+    ParamCheck.notNull( type, "RemoteObjectType" );
     this.type = type;
-    this.properties = new ArrayList<Property<T>>();
-    this.events = new ArrayList<EventNotification<T>>();
-    this.calls = new ArrayList<Call<T>>();
+    this.properties = new HashMap<String, PropertyHandler<T>>();
+    this.eventHandlers = new HashMap<String, EventHandler<T>>();
+    this.methods = new HashMap<String, MethodHandler<T>>();
   }
 
   public Class<T> getType() {
     return type;
   }
 
-  public void addProperty( Property<T> property ) {
-    checkArgument( property, "Property must not be null." );
-    properties.add( property );
+  public void addProperty( String name, PropertyHandler<T> propertyHandler ) {
+    ParamCheck.notNullOrEmpty( name, "Property Name" );
+    ParamCheck.notNull( propertyHandler, "PropertyHandler" );
+    properties.put( name, propertyHandler );
   }
 
-  public void addEvent( EventNotification<T> event ) {
-    checkArgument( event, "Event must not be null." );
-    events.add( event );
+  public void addEventHandler( String eventName, EventHandler<T> eventHandler ) {
+    ParamCheck.notNullOrEmpty( eventName, "Event Name" );
+    ParamCheck.notNull( eventHandler, "EventHandler" );
+    eventHandlers.put( eventName, eventHandler );
   }
 
-  public void addCall( Call<T> call ) {
-    checkArgument( call, "Call must not be null." );
-    calls.add( call );
+  public void addMethod( String name, MethodHandler<T> methodHandler ) {
+    ParamCheck.notNullOrEmpty( name, "Mehtod Name" );
+    ParamCheck.notNull( methodHandler, "MethodHandler" );
+    methods.put( name, methodHandler );
   }
 
-  public List<Property<T>> getProperties() {
-    return new ArrayList<Property<T>>( properties );
+  public PropertyHandler<T> getProperty( String name ) {
+    return properties.get( name );
   }
 
-  public List<EventNotification<T>> getEvents() {
-    return new ArrayList<EventNotification<T>>( events );
+  public EventHandler<T> getEventHandler( String eventName ) {
+    return eventHandlers.get( eventName );
   }
 
-  public List<Call<T>> getCalls() {
-    return new ArrayList<Call<T>>( calls );
-  }
-
-  private static void checkArgument( Object argument, String errorMessage ) {
-    if( argument == null ) {
-      throw new IllegalArgumentException( errorMessage );
-    }
+  public MethodHandler<T> getMethod( String name ) {
+    return methods.get( name );
   }
 }

@@ -20,12 +20,12 @@ import java.util.Map;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
-import org.eclipse.rap.rwt.remote.RemoteObjectSpecifier;
+import org.eclipse.rap.rwt.remote.RemoteObject;
+import org.eclipse.rap.rwt.remote.RemoteObjectSpecification;
 import org.eclipse.swt.internal.widgets.IdGenerator;
 
 
-public class RemoteObjectAdapterImpl<T> implements RemoteObjectAdapter {
+public class RemoteObjectImpl<T> implements RemoteObject {
 
   private final String id;
   private boolean initialized;
@@ -34,13 +34,13 @@ public class RemoteObjectAdapterImpl<T> implements RemoteObjectAdapter {
   private List<Runnable> queue;
   private HashMap<String, Boolean> listeners;
 
-  public RemoteObjectAdapterImpl( T remoteObject, Class<? extends RemoteObjectSpecifier<T>> specifierType ) {
-    this( remoteObject, specifierType, "o" );
+  public RemoteObjectImpl( T remoteObject, Class<? extends RemoteObjectSpecification<T>> specificationType ) {
+    this( remoteObject, specificationType, "o" );
   }
 
   @SuppressWarnings( "unchecked" )
-  public RemoteObjectAdapterImpl( T remoteObject,
-                                  Class<? extends RemoteObjectSpecifier<T>> specifierType,
+  public RemoteObjectImpl( T remoteObject,
+                                  Class<? extends RemoteObjectSpecification<T>> specifierType,
                                   String customPrefix )
   {
     this.id = IdGenerator.getInstance().newId( customPrefix );
@@ -51,7 +51,7 @@ public class RemoteObjectAdapterImpl<T> implements RemoteObjectAdapter {
       Class<T> remoteType = ( Class<T> )remoteObject.getClass();
       // TODO: Think about register implementation. Second call does nothing!
       RemoteObjectSynchronizerRegistry.getInstance().register( remoteType, specifierType );
-      RemoteObjectAdapterRegistry.getInstance().register( this );
+      RemoteObjectRegistry.getInstance().register( this );
     }
   }
 
@@ -75,7 +75,7 @@ public class RemoteObjectAdapterImpl<T> implements RemoteObjectAdapter {
     return destroyed;
   }
 
-  public T getRemoteObject() {
+  public T getObject() {
     return remoteObject;
   }
 
@@ -92,8 +92,7 @@ public class RemoteObjectAdapterImpl<T> implements RemoteObjectAdapter {
   public void set( final String propertyName, final String propertyValue ) {
     ParamCheck.notNullOrEmpty( propertyName, "Property Name" );
     ParamCheck.notNull( propertyValue, "Property Value" );
-    // TODO: Also accessible from Threads without any phase?
-    if( !CurrentPhase.get().equals( PhaseId.READ_DATA ) ) {
+    if( !PhaseId.READ_DATA.equals( CurrentPhase.get() ) ) {
       Runnable appendSetRunnable = new Runnable() {
         public void run() {
           getProtocolWriter().appendSet( getId(), propertyName, propertyValue );

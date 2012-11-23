@@ -15,31 +15,31 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.rap.rwt.SingletonUtil;
-import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 
 
-public class RemoteObjectAdapterRegistry {
+public class RemoteObjectRegistry {
   
-  private final List<RemoteObjectAdapter> adapters;
+  private final List<RemoteObject> remoteObjects;
 
-  public static RemoteObjectAdapterRegistry getInstance() {
-    return SingletonUtil.getSessionInstance( RemoteObjectAdapterRegistry.class );
+  public static RemoteObjectRegistry getInstance() {
+    return SingletonUtil.getSessionInstance( RemoteObjectRegistry.class );
   }
 
-  private RemoteObjectAdapterRegistry() {
-    adapters = Collections.synchronizedList( new ArrayList<RemoteObjectAdapter>() );
+  private RemoteObjectRegistry() {
+    remoteObjects = Collections.synchronizedList( new ArrayList<RemoteObject>() );
   }
   
-  public void register( RemoteObjectAdapter adapter ) {
-    adapters.add( adapter );
+  public void register( RemoteObject remoteObject ) {
+    remoteObjects.add( remoteObject );
   }
   
-  void remove( RemoteObjectAdapter adapter ) {
-    adapters.remove( adapter );
+  void remove( RemoteObject remoteObject ) {
+    remoteObjects.remove( remoteObject );
   }
   
-  public List<RemoteObjectAdapter> getAdapters() {
-    return new ArrayList<RemoteObjectAdapter>( adapters );
+  public List<RemoteObject> getRemoteObjects() {
+    return new ArrayList<RemoteObject>( remoteObjects );
   }
 
 }

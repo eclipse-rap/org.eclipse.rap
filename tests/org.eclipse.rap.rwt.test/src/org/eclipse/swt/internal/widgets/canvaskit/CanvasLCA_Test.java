@@ -18,7 +18,7 @@ import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -337,7 +337,7 @@ public class CanvasLCA_Test extends TestCase {
   static String getGcId( Widget widget ) {
     WidgetAdapter adapter = ( WidgetAdapter )widget.getAdapter( IWidgetAdapter.class );
     Adaptable gcForClient = adapter.getGCForClient();
-    return gcForClient.getAdapter( RemoteObjectAdapter.class ).getId();
+    return gcForClient.getAdapter( RemoteObject.class ).getId();
   }
 
 }

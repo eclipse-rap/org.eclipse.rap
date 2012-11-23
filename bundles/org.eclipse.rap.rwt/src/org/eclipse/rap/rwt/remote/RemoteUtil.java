@@ -11,9 +11,8 @@
 package org.eclipse.rap.rwt.remote;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.protocol.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
@@ -21,103 +20,53 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
  * @since 2.0
  */
 public class RemoteUtil {
-
-  public static interface EventNotificationHandler<T> {
-    
-    void notify( T object, Map<String, Object> properties );
-  }
   
-  public static interface CallHandler<T> {
-    
-    void call( T object, Map<String, Object> properties );
-  }
-  
-  public static interface PropertyHandler<T> {
-    
-    void set( T object, Object propertyValue );
-  }
-  
-  public static <T> EventNotification<T> createEventNotification( 
-    final String eventName, 
-    final EventNotificationHandler<T> eventNotificationHandler ) 
+  // TODO: don't return Impl. Move API method into interface.
+  public static <T> RemoteObjectImpl<T> createRemoteObject( 
+    T object,
+    Class< ? extends RemoteObjectSpecification<T>> specificationType )
   {
-    return new EventNotification<T>() {
-
-      public String getName() {
-        return eventName;
-      }
-
-      public void notify( T object, Map<String, Object> properties ) {
-        eventNotificationHandler.notify( object, properties );
-      }
-    };
+    return new RemoteObjectImpl<T>( object, specificationType );
   }
   
-  public static <T> Call<T> createCall( final String methodName, final CallHandler<T> callHandler ) {
-    return new Call<T>() {
-      
-      public String getName() {
-        return methodName;
-      }
-      
-      public void call( T object, Map<String, Object> properties ) {
-        callHandler.call( object, properties );
-      }
-    };
+  public static <T> PropertyHandler<T> createBooleanPropertyHandler( Class<T> remoteType, String propertyName ) {
+    return createReflectivePropertyHandler( Boolean.class, remoteType, propertyName );
   }
   
-  public static <T> Property<T> createProperty( final String propertyName, final PropertyHandler<T> propertyHandler ) {
-    return new Property<T>() {
-
-      public String getName() {
-        return propertyName;
-      }
-
-      public void set( T object, Object value ) {
-        propertyHandler.set( object, value );
-      }
-      
-    };
+  public static <T> PropertyHandler<T> createStringPropertyHandler( Class<T> remoteType, String propertyName ) {
+    return createReflectivePropertyHandler( String.class, remoteType, propertyName );
   }
   
-  public static <T> Property<T> createBooleanProperty( Class<T> remoteType, String propertyName ) {
-    return createReflectiveProperty( Boolean.class, remoteType, propertyName );
+  public static <T> PropertyHandler<T> createIntPropertyHandler( Class<T> remoteType, String propertyName ) {
+    return createReflectivePropertyHandler( Integer.class, remoteType, propertyName );
   }
   
-  public static <T> Property<T> createStringProperty( Class<T> remoteType, String propertyName ) {
-    return createReflectiveProperty( String.class, remoteType, propertyName );
+  public static <T> PropertyHandler<T> createDoublePropertyHandler( Class<T> remoteType, String propertyName ) {
+    return createReflectivePropertyHandler( Double.class, remoteType, propertyName );
   }
   
-  public static <T> Property<T> createIntProperty( Class<T> remoteType, String propertyName ) {
-    return createReflectiveProperty( Integer.class, remoteType, propertyName );
-  }
-  
-  public static <T> Property<T> createDoubleProperty( Class<T> remoteType, String propertyName ) {
-    return createReflectiveProperty( Double.class, remoteType, propertyName );
-  }
-  
-  public static <T> Property<T> createObjectProperty( Class<T> remoteType, String propertyName ) {
-    return createReflectiveProperty( Object.class, remoteType, propertyName );
+  public static <T> PropertyHandler<T> createObjectPropertyHandler( Class<T> remoteType, String propertyName ) {
+    return createReflectivePropertyHandler( Object.class, remoteType, propertyName );
   }
 
-  private static <T> Property<T> createReflectiveProperty( Class<?> type, Class<T> remoteType, String propertyName ) {
-    ParamCheck.notNullOrEmpty( propertyName, "propertyName" );
+  private static <T> PropertyHandler<T> createReflectivePropertyHandler( 
+    Class<?> type, 
+    Class<T> remoteType, 
+    String propertyName ) 
+  {
     ParamCheck.notNull( remoteType, "remoteType" );
-    return new ReflectiveProperty<T>( propertyName, type );
+    ParamCheck.notNullOrEmpty( propertyName, "Property Name" );
+    return new ReflectivePropertyHandler<T>( propertyName, type );
   }
   
-  private static class ReflectiveProperty<T> implements Property<T> {
+  private static class ReflectivePropertyHandler<T> implements PropertyHandler<T> {
     
     private final String name;
     private final Class<?> type;
   
-    public ReflectiveProperty( String name, Class<?> type ) {
+    public ReflectivePropertyHandler( String name, Class<?> type ) {
       this.name = name;
       this.type = type;
-    }
-  
-    public String getName() {
-      return name;
     }
   
     public void set( Object object, Object value ) throws IllegalStateException {
@@ -136,7 +85,7 @@ public class RemoteUtil {
     private void invokeSetMethod( String methodName, Object object, Object propertyValue )
       throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
     {
-      Method method = object.getClass().getDeclaredMethod( methodName, getTypeToCast( type ) );
+      java.lang.reflect.Method method = object.getClass().getDeclaredMethod( methodName, getTypeToCast( type ) );
       if( !method.isAccessible() ) {
         method.setAccessible( true );
       }

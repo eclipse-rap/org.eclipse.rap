@@ -17,9 +17,9 @@ package org.eclipse.rap.rwt.remote;
  */
 public interface RemoteObjectDefinition<T> {
 
-  void addProperty( Property<T> property );
+  void addProperty( String name, PropertyHandler<T> propertyHandler );
 
-  void addEvent( EventNotification<T> event );
+  void addEventHandler( String eventName, EventHandler<T> eventHandler );
 
-  void addCall( Call<T> call );
+  void addMethod( String name, MethodHandler<T> methodHandler );
 }

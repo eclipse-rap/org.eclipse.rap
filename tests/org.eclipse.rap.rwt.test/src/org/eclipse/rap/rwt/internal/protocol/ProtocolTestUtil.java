@@ -12,11 +12,11 @@ package org.eclipse.rap.rwt.internal.protocol;
 
 import java.util.Map;
 
-import org.eclipse.rap.rwt.remote.Call;
-import org.eclipse.rap.rwt.remote.EventNotification;
-import org.eclipse.rap.rwt.remote.Property;
+import org.eclipse.rap.rwt.remote.EventHandler;
+import org.eclipse.rap.rwt.remote.MethodHandler;
+import org.eclipse.rap.rwt.remote.PropertyHandler;
 import org.eclipse.rap.rwt.remote.RemoteObjectDefinition;
-import org.eclipse.rap.rwt.remote.RemoteObjectSpecifier;
+import org.eclipse.rap.rwt.remote.RemoteObjectSpecification;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,7 +68,7 @@ public class ProtocolTestUtil {
     
   }
 
-  public static class TestRemoteObjectSpecifier implements RemoteObjectSpecifier<TestRemoteObject> {
+  public static class TestRemoteObjectSpecification implements RemoteObjectSpecification<TestRemoteObject> {
   
     public static final String TEST_PROPERTY = "test";
     public static final String TEST_CALL = "call";
@@ -80,35 +80,19 @@ public class ProtocolTestUtil {
     }
 
     public void define( RemoteObjectDefinition<TestRemoteObject> definition ) {
-      definition.addProperty( new Property<TestRemoteObject>() {
-  
-        public String getName() {
-          return TEST_PROPERTY;
-        }
-  
+      definition.addProperty( TEST_PROPERTY, new PropertyHandler<TestRemoteObject>() {
         public void set( TestRemoteObject object, Object value ) {
           object.setTest( ( String )value );
         } 
-        
       } );
-      definition.addCall( new Call<TestRemoteObject>() {
-        
-        public String getName() {
-          return TEST_CALL;
-        }
-        
+      definition.addMethod( TEST_CALL, new MethodHandler<TestRemoteObject>() {
         public void call( TestRemoteObject object, Map<String, Object> properties ) {
           object.call( properties );
         }
       } );
-      definition.addEvent( new EventNotification<TestRemoteObject>() {
-        
+      definition.addEventHandler( TEST_EVENT, new EventHandler<TestRemoteObject>() {
         public void notify( TestRemoteObject object, Map<String, Object> properties ) {
           object.fireEvent( properties );
-        }
-        
-        public String getName() {
-          return TEST_EVENT;
         }
       } );
     }

@@ -20,7 +20,7 @@ import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
@@ -197,7 +197,7 @@ public class WidgetAdapter_Test extends TestCase {
     WidgetAdapter adapter = new WidgetAdapter();
     Adaptable gc = adapter.getGCForClient();
 
-    assertNotNull( gc.getAdapter( RemoteObjectAdapter.class ) );
+    assertNotNull( gc.getAdapter( RemoteObject.class ) );
   }
 
   public void testGetGCForClientAdapterWithInvalidClass() {
@@ -211,7 +211,7 @@ public class WidgetAdapter_Test extends TestCase {
     WidgetAdapter adapter = new WidgetAdapter();
     Adaptable gc = adapter.getGCForClient();
 
-    String id = gc.getAdapter( RemoteObjectAdapter.class ).getId();
+    String id = gc.getAdapter( RemoteObject.class ).getId();
 
     assertTrue( id.startsWith( "gc" ) );
   }
@@ -220,8 +220,8 @@ public class WidgetAdapter_Test extends TestCase {
     WidgetAdapter adapter = new WidgetAdapter();
     Adaptable gc = adapter.getGCForClient();
 
-    String id1 = gc.getAdapter( RemoteObjectAdapter.class ).getId();
-    String id2 = gc.getAdapter( RemoteObjectAdapter.class ).getId();
+    String id1 = gc.getAdapter( RemoteObject.class ).getId();
+    String id2 = gc.getAdapter( RemoteObject.class ).getId();
 
     assertEquals( id1, id2 );
   }
