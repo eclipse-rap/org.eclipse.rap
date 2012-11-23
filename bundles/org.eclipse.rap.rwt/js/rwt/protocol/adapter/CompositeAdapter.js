@@ -21,6 +21,10 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Composite", {
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
+  getDestroyableChildren : function( widget ) {
+    return widget.getChildren().concat();
+  },
+
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "backgroundGradient",
     "roundedBorder"
