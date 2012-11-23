@@ -362,6 +362,7 @@ rwt.protocol.AdapterUtil = {
       // [if] do nothing, parent is set in ScrolledComposite#setContent which is called from the
       // server-side - see bug 349161
       widget.setUserData( "scrolledComposite", parent ); // Needed by "bounds" handler
+      parent.getUserData( "controls" ).push( widget.getDbKey() );
     } else if ( parent instanceof rwt.widgets.TabFolder ) {
       widget.setUserData( "tabFolder", parent ); // Needed by "bounds" handler
       parent.getUserData( "controls" ).push( widget.getDbKey() );

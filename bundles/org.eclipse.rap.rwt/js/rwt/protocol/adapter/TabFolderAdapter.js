@@ -17,7 +17,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.TabFolder", {
     result.setUserData( "isControl", true );
     rwt.protocol.AdapterUtil.setParent( result, properties.parent );
     result.setHideFocus( true );
-    result.setUserData( "controls", [] );
     result.setPlaceBarOnTop( properties.style.indexOf( "BOTTOM" ) === -1 );
     return result;
   },

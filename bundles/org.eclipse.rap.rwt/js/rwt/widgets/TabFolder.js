@@ -34,6 +34,7 @@ qx.Class.define("rwt.widgets.TabFolder",
     this._bar = new rwt.widgets.base.TabFolderBar();
     this._pane = new rwt.widgets.base.TabFolderPane();
     this.add( this._bar, this._pane );
+    this.setUserData( "controls", [] );
   },
 
 

@@ -21,6 +21,15 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ScrolledComposite", {
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
+  getDestroyableChildren : function( widget ) {
+    var controls = [];
+    var controlKeys = widget.getUserData( "controls" );
+    for( var i = 0; i < controlKeys.length; i++ ) {
+      controls.push( qx.core.Object.getDb()[ controlKeys[ i ] ] );
+    }
+    return rwt.protocol.AdapterUtil.filterUnregisteredObjects( controls );
+  },
+
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "origin",
     "content",
