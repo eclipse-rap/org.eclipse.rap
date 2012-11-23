@@ -364,6 +364,7 @@ rwt.protocol.AdapterUtil = {
       widget.setUserData( "scrolledComposite", parent ); // Needed by "bounds" handler
     } else if ( parent instanceof rwt.widgets.TabFolder ) {
       widget.setUserData( "tabFolder", parent ); // Needed by "bounds" handler
+      parent.getUserData( "controls" ).push( widget.getDbKey() );
     } else if( parent instanceof rwt.widgets.ExpandBar ) {
       parent.addWidget( widget );
     } else {

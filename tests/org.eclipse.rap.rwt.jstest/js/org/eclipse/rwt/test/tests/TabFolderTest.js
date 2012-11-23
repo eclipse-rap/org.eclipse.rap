@@ -110,6 +110,35 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       assertEquals( undefined, ObjectManager.getObject( "w4pg" ) );
     },
 
+    testDestroyChildrenWithFolderByProtocol : function() {
+      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+      var item = this._createTabItemByProtocol( "w4", "w3" );
+      var ObjectRegistry = rwt.protocol.ObjectRegistry;
+      var page = ObjectRegistry.getObject( "w4pg" );
+      var MessageProcessor = rwt.protocol.MessageProcessor;
+      MessageProcessor.processOperationArray( [ "create", "w5", "rwt.widgets.Composite", {
+          "style" : [ "BORDER" ],
+          "parent" : "w3"
+        }
+      ] );
+      var control = ObjectRegistry.getObject( "w4" );
+
+      MessageProcessor.processOperation( {
+        "target" : "w3",
+        "action" : "destroy"
+      } );
+      TestUtil.flush();
+
+      assertTrue( folder.isDisposed() );
+      assertTrue( item.isDisposed() );
+      assertTrue( page.isDisposed() );
+      assertTrue( control.isDisposed() );
+      assertEquals( undefined, ObjectRegistry.getObject( "w3" ) );
+      assertEquals( undefined, ObjectRegistry.getObject( "w4" ) );
+      assertEquals( undefined, ObjectRegistry.getObject( "w5" ) );
+      assertEquals( undefined, ObjectRegistry.getObject( "w4pg" ) );
+    },
+
     testSetTextByProtocol : function() {
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );

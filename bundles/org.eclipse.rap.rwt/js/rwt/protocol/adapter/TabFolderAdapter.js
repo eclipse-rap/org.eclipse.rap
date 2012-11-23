@@ -17,11 +17,22 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.TabFolder", {
     result.setUserData( "isControl", true );
     rwt.protocol.AdapterUtil.setParent( result, properties.parent );
     result.setHideFocus( true );
+    result.setUserData( "controls", [] );
     result.setPlaceBarOnTop( properties.style.indexOf( "BOTTOM" ) === -1 );
     return result;
   },
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
+
+  getDestroyableChildren : function( widget ) {
+    var controls = [];
+    var controlKeys = widget.getUserData( "controls" );
+    for( var i = 0; i < controlKeys.length; i++ ) {
+      controls.push( qx.core.Object.getDb()[ controlKeys[ i ] ] );
+    }
+    var result = widget.getBar().getChildren().concat( controls );
+    return rwt.protocol.AdapterUtil.filterUnregisteredObjects( result );
+  },
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "selection"
