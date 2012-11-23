@@ -24,6 +24,9 @@ rwt.protocol.AdapterUtil = {
     if( widget.getUserData( "serverGC" ) ) {
       result.push( widget.getUserData( "serverGC" ) );
     }
+    if( widget.getUserData( "toolTipWidget" ) ) {
+      result.push( widget.getUserData( "toolTipWidget" ) );
+    }
     return result;
   },
 
