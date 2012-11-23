@@ -24,6 +24,16 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Menu", {
 
   destructor : rwt.protocol.AdapterUtil.getWidgetDestructor(),
 
+  getDestroyableChildren : function( widget ) {
+    var children;
+    if( widget instanceof rwt.widgets.MenuBar ) {
+      children = widget.getChildren();
+    } else {
+      children = widget._layout.getChildren();
+    }
+    return rwt.protocol.AdapterUtil.filterUnregisteredObjects( children );
+  },
+
   properties : [
     "parent",
     "bounds",

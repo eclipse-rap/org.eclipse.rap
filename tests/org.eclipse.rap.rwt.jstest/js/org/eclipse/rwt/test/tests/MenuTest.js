@@ -165,6 +165,42 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.destroy();
     },
 
+    testDestroyMenuItemWithPopupMenuByProtocol : function() {
+      var menu = createPopUpMenuByProtocol( "w3" );
+      var item = createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
+
+      MessageProcessor.processOperationArray( [ "destroy", "w3" ] );
+      TestUtil.flush();
+
+      var ObjectRegistry = rwt.protocol.ObjectRegistry;
+      assertTrue( menu.isDisposed() );
+      assertTrue( item.isDisposed() );
+      assertTrue( ObjectRegistry.getObject( "w3" ) == null );
+      assertTrue( ObjectRegistry.getObject( "w4" ) == null );
+    },
+
+    testDestroyMenuItemWithMenuBarByProtocol : function() {
+      var ObjectRegistry = rwt.protocol.ObjectRegistry;
+      MessageProcessor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Menu",
+        "properties" : {
+          "style" : [ "BAR" ]
+        }
+      } );
+      var menu = ObjectRegistry.getObject( "w3" );
+      var item = createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
+
+      MessageProcessor.processOperationArray( [ "destroy", "w3" ] );
+      TestUtil.flush();
+
+      assertTrue( menu.isDisposed() );
+      assertTrue( item.isDisposed() );
+      assertTrue( ObjectRegistry.getObject( "w3" ) == null );
+      assertTrue( ObjectRegistry.getObject( "w4" ) == null );
+    },
+
     testCreateMenuItemSeparatorByProtocol : function() {
       var menu = createPopUpMenuByProtocol( "w3" );
       var widget = createMenuItemByProtocol( "w4", "w3", [ "SEPARATOR" ] );

@@ -25,7 +25,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Group", {
     return rwt.protocol.AdapterUtil.filterUnregisteredObjects( widget.getChildren() );
   },
 
-
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "text"
   ] ),
