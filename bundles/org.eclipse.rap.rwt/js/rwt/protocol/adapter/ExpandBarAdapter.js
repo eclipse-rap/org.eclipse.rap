@@ -21,6 +21,11 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ExpandBar", {
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
+  getDestroyableChildren : function( widget ) {
+    var children =  widget._clientArea.getChildren();
+    return rwt.protocol.AdapterUtil.filterUnregisteredObjects( children );
+  },
+
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "bottomSpacingBounds",
     "vScrollBarMax"

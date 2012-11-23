@@ -29,16 +29,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
   getDestroyableChildren : function( widget ) {
-    var ObjectRegistry = rwt.protocol.ObjectRegistry;
-    var children = widget.getChildren();
-    var result = [];
-    for( var i = 0; i < children.length; i++ ) {
-      console.log( ObjectRegistry.getId( children[ i ] ) );
-      if( ObjectRegistry.getId( children[ i ] ) ) {
-        result.push( children[ i ] );
-      }
-    }
-    return result;
+    return rwt.protocol.AdapterUtil.filterUnregisteredObjects( widget.getChildren() );
   },
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [

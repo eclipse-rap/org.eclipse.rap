@@ -384,6 +384,17 @@ rwt.protocol.AdapterUtil = {
     }
   },
 
+  filterUnregisteredObjects : function( list ) {
+    var ObjectRegistry = rwt.protocol.ObjectRegistry;
+    var result = [];
+    for( var i = 0; i < list.length; i++ ) {
+      if( ObjectRegistry.getId( list[ i ] ) ) {
+        result.push( list[ i ] );
+      }
+    }
+    return result;
+  },
+
   getShell : function( widget ) {
     var result = widget;
     while( result && !( result instanceof rwt.widgets.Shell ) ) {
