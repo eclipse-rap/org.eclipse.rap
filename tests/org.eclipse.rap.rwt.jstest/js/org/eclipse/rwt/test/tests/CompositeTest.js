@@ -78,6 +78,34 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
       shell.destroy();
     },
 
+    testDestroyCompositeWithGCByProtocol : function() {
+      MessageProcessor.processOperationArray( [ "create", "w2", "rwt.widgets.Shell", {
+          "style" : [ "BORDER" ]
+        }
+      ] );
+      MessageProcessor.processOperationArray( [ "create", "w3", "rwt.widgets.Composite", {
+          "style" : [ "BORDER" ],
+          "parent" : "w2"
+        }
+      ] );
+      MessageProcessor.processOperationArray( [ "create", "w4", "rwt.widgets.GC", {
+          "parent" : "w3"
+        }
+      ] );
+      var shell  = ObjectRegistry.getObject( "w2" );
+      var parent = ObjectRegistry.getObject( "w3" );
+      var child  = ObjectRegistry.getObject( "w4" );
+
+      MessageProcessor.processOperationArray( [ "destroy", "w3"] );
+      TestUtil.flush();
+
+      assertTrue( ObjectRegistry.getObject( "w3" ) == null );
+      assertTrue( parent.isDisposed() );
+      assertTrue( ObjectRegistry.getObject( "w4" ) == null );
+      assertTrue( child.isDisposed() );
+      shell.destroy();
+    },
+
     testCompositeBackgroundInitial : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;

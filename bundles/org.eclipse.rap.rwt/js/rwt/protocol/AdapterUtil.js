@@ -21,6 +21,9 @@ rwt.protocol.AdapterUtil = {
     var children = widget.getChildren ? widget.getChildren() : null;
     var result = rwt.protocol.AdapterUtil.filterUnregisteredObjects( children ? children : [] );
     result = result.concat( rwt.protocol.AdapterUtil.getDragAndDropChildren( widget ) );
+    if( widget.getUserData( "serverGC" ) ) {
+      result.push( widget.getUserData( "serverGC" ) );
+    }
     return result;
   },
 
