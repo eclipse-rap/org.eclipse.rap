@@ -178,7 +178,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       checkToolItem.destroy();
     },
 
-    testCreateDestroyTooItemByProtocol : function() {
+    testCreateDestroyTooltemByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
@@ -190,6 +190,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       TestUtil.flush();
       assertTrue( widget.isDisposed() );
       var ObjectManager = rwt.protocol.ObjectRegistry;
+      assertEquals( undefined, ObjectManager.getObject( "w4" ) );
+      shell.destroy();
+      toolbar.destroy();
+    },
+
+    testDestroyTooltemWithToolBarByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
+      var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
+
+      rwt.protocol.MessageProcessor.processOperation( {
+        "target" : "w3",
+        "action" : "destroy"
+      } );
+      TestUtil.flush();
+
+      assertTrue( toolbar.isDisposed() );
+      assertTrue( widget.isDisposed() );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      assertEquals( undefined, ObjectManager.getObject( "w3" ) );
       assertEquals( undefined, ObjectManager.getObject( "w4" ) );
       shell.destroy();
       toolbar.destroy();

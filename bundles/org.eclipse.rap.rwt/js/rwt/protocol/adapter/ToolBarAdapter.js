@@ -21,6 +21,10 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ToolBar", {
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
+  getDestroyableChildren : function( widget ) {
+    return widget.getChildren().concat();
+  },
+
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [] ),
 
   propertyHandler : rwt.protocol.AdapterUtil.extendControlPropertyHandler( {} ),
