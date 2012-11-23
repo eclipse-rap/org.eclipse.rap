@@ -53,7 +53,12 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
   },
 
   getDestroyableChildren : function( widget ) {
-    return widget.getRootItem().getCachedChildren();
+    var result = widget.getRootItem().getCachedChildren();
+    var columns = widget._columns;
+    for( var key in columns ) {
+      result.push( columns[ key ] );
+    }
+    return result;
   },
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
