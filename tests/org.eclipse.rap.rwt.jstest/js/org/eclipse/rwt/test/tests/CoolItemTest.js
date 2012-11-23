@@ -61,7 +61,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
       bar.destroy();
     },
 
-    testDestroyCoolItemByTheProtocol : function() {
+    testDestroyCoolItemByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createCoolBar();
       var processor = rwt.protocol.MessageProcessor;
@@ -81,6 +81,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
         "action" : "destroy"
       } );
       assertNull( item.getParent() );
+      bar.destroy();
+    },
+
+    testDestroyCoolItemWithCoolBar : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bar = this._createCoolBar();
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.CoolItem",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      var item = rwt.protocol.ObjectRegistry.getObject( "w3" );
+      TestUtil.flush();
+
+      processor.processOperationArray( [ "destroy", "w2" ] );
+      TestUtil.flush();
+
+      assertTrue( rwt.protocol.ObjectRegistry.getObject( "w3" ) == null );
+      assertTrue( item.isDisposed() );
       bar.destroy();
     },
 
@@ -129,6 +153,43 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
       var item = rwt.protocol.ObjectRegistry.getObject( "w3" );
       var button = rwt.protocol.ObjectRegistry.getObject( "w4" );
       assertIdentical( button, item._control );
+      bar.destroy();
+    },
+
+    testDestroyCoolItemAndControlWithCoolBar : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bar = this._createCoolBar();
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.CoolItem",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "control" : "w4"
+        }
+      } );
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w2"
+        }
+      } );
+      var item = rwt.protocol.ObjectRegistry.getObject( "w3" );
+      var control = rwt.protocol.ObjectRegistry.getObject( "w4" );
+      TestUtil.flush();
+
+      processor.processOperationArray( [ "destroy", "w2" ] );
+      TestUtil.flush();
+
+      assertTrue( rwt.protocol.ObjectRegistry.getObject( "w3" ) == null );
+      assertTrue( item.isDisposed() );
+      assertTrue( rwt.protocol.ObjectRegistry.getObject( "w4" ) == null );
+      assertTrue( control.isDisposed() );
       bar.destroy();
     },
 
