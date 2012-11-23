@@ -21,9 +21,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Group", {
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
-  getDestroyableChildren : function( widget ) {
-    return rwt.protocol.AdapterUtil.filterUnregisteredObjects( widget.getChildren() );
-  },
+  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "text"

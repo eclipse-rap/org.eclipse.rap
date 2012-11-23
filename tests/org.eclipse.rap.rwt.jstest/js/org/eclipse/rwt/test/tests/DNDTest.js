@@ -56,7 +56,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       button.destroy();
     },
 
-
     testDisposeDragSourceByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
@@ -89,6 +88,41 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
         "target" : "w4",
         "action" : "destroy"
       } );
+      assertFalse( dndSupport.isDragSource( button ) );
+      button.destroy();
+    },
+
+    testDisposeDragSourceWithControlByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      TestUtil.createShellByProtocol( "w2" );
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "parent" : "w2",
+          "style" : [ "PUSH" ]
+        }
+      } );
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.DragSource",
+        "properties" : {
+          "control" : "w3",
+          "style" : [ "DROP_COPY", "DROP_MOVE" ]
+        }
+      } );
+      var button = ObjectManager.getObject( "w3" );
+
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "destroy"
+      } );
+
       assertFalse( dndSupport.isDragSource( button ) );
       button.destroy();
     },
@@ -165,7 +199,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       button.destroy();
     },
 
-
     testDisposeDropTargetByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
@@ -198,6 +231,41 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
         "target" : "w4",
         "action" : "destroy"
       } );
+      assertFalse( dndSupport.isDropTarget( button ) );
+      button.destroy();
+    },
+
+    testDisposeDropTargetWithControlByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      TestUtil.createShellByProtocol( "w2" );
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "parent" : "w2",
+          "style" : [ "PUSH" ]
+        }
+      } );
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.DropTarget",
+        "properties" : {
+          "control" : "w3",
+          "style" : [ "DROP_COPY", "DROP_MOVE" ]
+        }
+      } );
+      var button = ObjectManager.getObject( "w3" );
+
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "destroy"
+      } );
+
       assertFalse( dndSupport.isDropTarget( button ) );
       button.destroy();
     },

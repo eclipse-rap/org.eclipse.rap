@@ -17,6 +17,13 @@ rwt.protocol.AdapterUtil = {
     rwt.protocol.AdapterUtil._widgetDestructor( widget );
   },
 
+  _childrenFinder : function( widget ) {
+    var children = widget.getChildren ? widget.getChildren() : null;
+    var result = rwt.protocol.AdapterUtil.filterUnregisteredObjects( children ? children : [] );
+    result = result.concat( rwt.protocol.AdapterUtil.getDragAndDropChildren( widget ) );
+    return result;
+  },
+
   _widgetDestructor : function( widget ) {
     widget.setToolTip( null );
     widget.setUserData( "toolTipText", null );
@@ -296,6 +303,10 @@ rwt.protocol.AdapterUtil = {
     return this._controlDestructor;
   },
 
+  getDestroyableChildrenFinder : function( widget ) {
+    return this._childrenFinder;
+  },
+
   extendControlProperties : function( list ) {
     return list.concat( this._controlProperties );
   },
@@ -393,6 +404,17 @@ rwt.protocol.AdapterUtil = {
       if( ObjectRegistry.getId( list[ i ] ) ) {
         result.push( list[ i ] );
       }
+    }
+    return result;
+  },
+
+  getDragAndDropChildren : function( widget ) {
+   var result = [];
+   if( widget.getUserData( "dragSource" ) ) {
+      result.push( widget.getUserData( "dragSource" ) );
+    }
+    if( widget.getUserData( "dropTarget" ) ) {
+      result.push( widget.getUserData( "dropTarget" ) );
     }
     return result;
   },

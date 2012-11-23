@@ -33,6 +33,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Slider", {
 
   propertyHandler : rwt.protocol.AdapterUtil.extendControlPropertyHandler( {} ),
 
+  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
+
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
     "Selection"
   ] ),

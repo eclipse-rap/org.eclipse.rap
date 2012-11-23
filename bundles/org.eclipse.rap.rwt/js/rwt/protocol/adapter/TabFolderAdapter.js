@@ -30,7 +30,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.TabFolder", {
       controls.push( qx.core.Object.getDb()[ controlKeys[ i ] ] );
     }
     var result = widget.getBar().getChildren().concat( controls );
-    return rwt.protocol.AdapterUtil.filterUnregisteredObjects( result );
+    result = result.concat( rwt.protocol.AdapterUtil.getDragAndDropChildren( widget ) );
+    return result;
   },
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [

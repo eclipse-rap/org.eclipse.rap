@@ -22,12 +22,14 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ScrolledComposite", {
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
   getDestroyableChildren : function( widget ) {
-    var controls = [];
+    var children = [];
     var controlKeys = widget.getUserData( "controls" );
     for( var i = 0; i < controlKeys.length; i++ ) {
-      controls.push( qx.core.Object.getDb()[ controlKeys[ i ] ] );
+      children.push( qx.core.Object.getDb()[ controlKeys[ i ] ] );
     }
-    return rwt.protocol.AdapterUtil.filterUnregisteredObjects( controls );
+    children = rwt.protocol.AdapterUtil.filterUnregisteredObjects( children );
+    children = children.concat( rwt.protocol.AdapterUtil.getDragAndDropChildren( widget ) );
+    return children;
   },
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [

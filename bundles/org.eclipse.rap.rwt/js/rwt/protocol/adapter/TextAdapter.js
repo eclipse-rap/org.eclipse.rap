@@ -26,9 +26,9 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Text", {
     return result;
   },
 
-  destructor : function( widget ) {
-    rwt.protocol.AdapterUtil.getControlDestructor()( widget );
-  },
+  destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
+
+  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "text",

@@ -15,10 +15,12 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.DropTarget", {
     var control = rwt.protocol.ObjectRegistry.getObject( properties.control );
     var result = { "control" : control };
     org.eclipse.rwt.DNDSupport.getInstance().registerDropTarget( control, properties.style );
+    control.setUserData( "dropTarget", result );
     return result;
   },
 
   destructor : function( source ) {
+    source.control.setUserData( "dropTarget", null );
     org.eclipse.rwt.DNDSupport.getInstance().deregisterDropTarget( source.control );
   },
 

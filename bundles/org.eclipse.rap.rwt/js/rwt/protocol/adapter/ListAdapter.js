@@ -23,6 +23,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.List", {
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
+  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
+
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     // order of items, selection, focus is crucial
     "items",

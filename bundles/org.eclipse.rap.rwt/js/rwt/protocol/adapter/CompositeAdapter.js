@@ -21,9 +21,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Composite", {
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
-  getDestroyableChildren : function( widget ) {
-    return widget.getChildren().concat();
-  },
+  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "backgroundGradient",

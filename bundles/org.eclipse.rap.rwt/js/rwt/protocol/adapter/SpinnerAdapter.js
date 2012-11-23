@@ -28,6 +28,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Spinner", {
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
+  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
+
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     // [if] Important: Order matters - minimum, maximum, selection
     "minimum",

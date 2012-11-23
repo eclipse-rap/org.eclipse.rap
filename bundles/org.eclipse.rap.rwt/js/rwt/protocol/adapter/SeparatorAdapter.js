@@ -30,6 +30,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Separator", {
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
+  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
+
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [] ),
 
   propertyHandler : rwt.protocol.AdapterUtil.extendControlPropertyHandler( {} ),
