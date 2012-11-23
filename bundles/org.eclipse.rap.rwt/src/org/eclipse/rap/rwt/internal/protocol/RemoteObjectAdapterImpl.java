@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
 import org.eclipse.rap.rwt.remote.RemoteObjectSpecifier;
@@ -79,6 +80,7 @@ public class RemoteObjectAdapterImpl<T> implements RemoteObjectAdapter {
   }
 
   public void call( final String methodName, final Map<String, Object> properties ) {
+    ParamCheck.notNullOrEmpty( methodName, "Methodname" );
     Runnable appendCallRunnable = new Runnable() {
       public void run() {
         getProtocolWriter().appendCall( getId(), methodName, properties );
@@ -88,6 +90,8 @@ public class RemoteObjectAdapterImpl<T> implements RemoteObjectAdapter {
   }
 
   public void set( final String propertyName, final String propertyValue ) {
+    ParamCheck.notNullOrEmpty( propertyName, "Property Name" );
+    ParamCheck.notNull( propertyValue, "Property Value" );
     // TODO: Also accessible from Threads without any phase?
     if( !CurrentPhase.get().equals( PhaseId.READ_DATA ) ) {
       Runnable appendSetRunnable = new Runnable() {
@@ -100,6 +104,7 @@ public class RemoteObjectAdapterImpl<T> implements RemoteObjectAdapter {
   }
 
   public void listen( String eventName, boolean shoudlListen ) {
+    ParamCheck.notNullOrEmpty( eventName, "Eventname" );
     Boolean oldShoudListenEntry = listeners.get( eventName );
     if( oldShoudListenEntry == null || oldShoudListenEntry.booleanValue() != shoudlListen ) {
       appendListenRunnable( eventName, shoudlListen );

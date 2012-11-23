@@ -198,4 +198,83 @@ public class RemoteObjectAdapterImpl_Test extends TestCase {
     assertTrue( operations.isEmpty() );
   }
   
+  public void testQueuesCallsFailsWithNullProperty() {
+    RemoteObjectAdapterImpl<TestRemoteObject> adapter 
+      = new RemoteObjectAdapterImpl<TestRemoteObject>(  new TestRemoteObject(), TestRemoteObjectSpecifier.class, "gl" );
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "foo", "bar" );
+    
+    try {
+      adapter.call( null, properties );
+      fail();
+    } catch( NullPointerException expected ) {}
+  }
+  
+  public void testQueuesCallsFailsWithEmptyProperty() {
+    RemoteObjectAdapterImpl<TestRemoteObject> adapter 
+    = new RemoteObjectAdapterImpl<TestRemoteObject>(  new TestRemoteObject(), TestRemoteObjectSpecifier.class, "gl" );
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "foo", "bar" );
+    
+    try {
+      adapter.call( "", properties );
+      fail();
+    } catch( IllegalArgumentException expected ) {}
+  }
+  
+  public void testQueueSetsFailsWithNullName() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    RemoteObjectAdapterImpl<TestRemoteObject> adapter 
+      = new RemoteObjectAdapterImpl<TestRemoteObject>(  new TestRemoteObject(), TestRemoteObjectSpecifier.class, "gl" );
+     
+    try {
+      adapter.set( null, "bar" );
+      fail();
+    } catch( NullPointerException expected ) {}
+  }
+  
+  public void testQueueSetsFailsWithEmptyName() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    RemoteObjectAdapterImpl<TestRemoteObject> adapter 
+      = new RemoteObjectAdapterImpl<TestRemoteObject>(  new TestRemoteObject(), TestRemoteObjectSpecifier.class, "gl" );
+    
+    try {
+      adapter.set( "", "bar" );
+      fail();
+    } catch( IllegalArgumentException expected ) {}
+  }
+  
+  public void testQueueSetsFailsWithNullValue() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    RemoteObjectAdapterImpl<TestRemoteObject> adapter 
+      = new RemoteObjectAdapterImpl<TestRemoteObject>(  new TestRemoteObject(), TestRemoteObjectSpecifier.class, "gl" );
+    
+    try {
+      adapter.set( "foo", null );
+      fail();
+    } catch( NullPointerException expected ) {}
+  }
+  
+  public void testQueueListensFailsWithNullName() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    RemoteObjectAdapterImpl<TestRemoteObject> adapter 
+      = new RemoteObjectAdapterImpl<TestRemoteObject>(  new TestRemoteObject(), TestRemoteObjectSpecifier.class, "gl" );
+    
+    try {
+      adapter.listen( null, true );
+      fail();
+    } catch( NullPointerException expected ) {}
+  }
+  
+  public void testQueueListensFailsWithEmptyName() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    RemoteObjectAdapterImpl<TestRemoteObject> adapter 
+      = new RemoteObjectAdapterImpl<TestRemoteObject>(  new TestRemoteObject(), TestRemoteObjectSpecifier.class, "gl" );
+    
+    try {
+      adapter.listen( "", true );
+      fail();
+    } catch( IllegalArgumentException expected ) {}
+  }
+  
 }
