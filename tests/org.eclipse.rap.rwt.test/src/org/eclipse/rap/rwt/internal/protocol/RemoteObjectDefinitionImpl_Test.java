@@ -17,7 +17,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.remote.Call;
-import org.eclipse.rap.rwt.remote.Event;
+import org.eclipse.rap.rwt.remote.EventNotification;
 import org.eclipse.rap.rwt.remote.Property;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
@@ -80,11 +80,11 @@ public class RemoteObjectDefinitionImpl_Test extends TestCase {
   @SuppressWarnings( "unchecked" )
   public void testHasEvent() {
     RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
-    Event event = mock( Event.class );
+    EventNotification event = mock( EventNotification.class );
     
     definition.addEvent( event );
     
-    List<Event<Object>> events = definition.getEvents();
+    List<EventNotification<Object>> events = definition.getEvents();
     assertTrue( events.contains( event ) );
     assertEquals( 1, events.size() );
   }
@@ -92,9 +92,9 @@ public class RemoteObjectDefinitionImpl_Test extends TestCase {
   @SuppressWarnings( "unchecked" )
   public void testEventsIsSafeCopy() {
     RemoteObjectDefinitionImpl<Object> definition = new RemoteObjectDefinitionImpl<Object>( Object.class );
-    definition.addEvent( mock( Event.class ) );
+    definition.addEvent( mock( EventNotification.class ) );
     
-    List<Event<Object>> events = definition.getEvents();
+    List<EventNotification<Object>> events = definition.getEvents();
     
     assertNotSame( events, definition.getEvents() );
   }

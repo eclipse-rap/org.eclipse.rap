@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.protocol;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.remote.Call;
-import org.eclipse.rap.rwt.remote.Event;
+import org.eclipse.rap.rwt.remote.EventNotification;
 import org.eclipse.rap.rwt.remote.Property;
 import org.eclipse.rap.rwt.remote.RemoteObjectDefinition;
 import org.eclipse.rap.rwt.remote.RemoteObjectSpecifier;
@@ -101,7 +101,7 @@ public class ProtocolTestUtil {
           object.call( properties );
         }
       } );
-      definition.addEvent( new Event<TestRemoteObject>() {
+      definition.addEvent( new EventNotification<TestRemoteObject>() {
         
         public void notify( TestRemoteObject object, Map<String, Object> properties ) {
           object.fireEvent( properties );

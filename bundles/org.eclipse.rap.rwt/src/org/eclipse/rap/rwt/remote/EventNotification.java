@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * @since 2.0
  */
-public interface Event<T> {
+public interface EventNotification<T> {
   
   String getName();
   

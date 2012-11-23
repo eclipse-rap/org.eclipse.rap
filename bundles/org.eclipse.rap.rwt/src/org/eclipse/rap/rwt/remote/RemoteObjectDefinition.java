@@ -19,7 +19,7 @@ public interface RemoteObjectDefinition<T> {
 
   void addProperty( Property<T> property );
 
-  void addEvent( Event<T> event );
+  void addEvent( EventNotification<T> event );
 
   void addCall( Call<T> call );
 }

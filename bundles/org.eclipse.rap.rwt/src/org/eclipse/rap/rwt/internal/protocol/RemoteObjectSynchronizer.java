@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.remote.Call;
-import org.eclipse.rap.rwt.remote.Event;
+import org.eclipse.rap.rwt.remote.EventNotification;
 import org.eclipse.rap.rwt.remote.Property;
 import org.eclipse.rap.rwt.remote.RemoteObjectAdapter;
 
@@ -56,8 +56,8 @@ public class RemoteObjectSynchronizer<T> {
   }
 
   public void notify( T object, String eventName, Map<String, Object> properties ) {
-    List<Event<T>> events = definition.getEvents();
-    for( Event<T> event : events ) {
+    List<EventNotification<T>> events = definition.getEvents();
+    for( EventNotification<T> event : events ) {
       if( event.getName().equals( eventName ) ) {
         notifyEventInProcessActionPhase( object, properties, event );
       }
@@ -66,7 +66,7 @@ public class RemoteObjectSynchronizer<T> {
 
   private void notifyEventInProcessActionPhase( final T object,
                                                 final Map<String, Object> properties,
-                                                final Event<T> event )
+                                                final EventNotification<T> event )
   {
     ProcessActionRunner.add( new Runnable() {
       public void run() {

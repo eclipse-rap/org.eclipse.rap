@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.rap.rwt.remote.Call;
-import org.eclipse.rap.rwt.remote.Event;
+import org.eclipse.rap.rwt.remote.EventNotification;
 import org.eclipse.rap.rwt.remote.Property;
 import org.eclipse.rap.rwt.remote.RemoteObjectDefinition;
 
@@ -23,14 +23,14 @@ public class RemoteObjectDefinitionImpl<T> implements RemoteObjectDefinition<T> 
 
   private final Class<T> type;
   private final List<Property<T>> properties;
-  private final List<Event<T>> events;
+  private final List<EventNotification<T>> events;
   private final List<Call<T>> calls;
 
   public RemoteObjectDefinitionImpl( Class<T> type ) {
     checkArgument( type, "Type must not be null." );
     this.type = type;
     this.properties = new ArrayList<Property<T>>();
-    this.events = new ArrayList<Event<T>>();
+    this.events = new ArrayList<EventNotification<T>>();
     this.calls = new ArrayList<Call<T>>();
   }
 
@@ -43,7 +43,7 @@ public class RemoteObjectDefinitionImpl<T> implements RemoteObjectDefinition<T> 
     properties.add( property );
   }
 
-  public void addEvent( Event<T> event ) {
+  public void addEvent( EventNotification<T> event ) {
     checkArgument( event, "Event must not be null." );
     events.add( event );
   }
@@ -57,8 +57,8 @@ public class RemoteObjectDefinitionImpl<T> implements RemoteObjectDefinition<T> 
     return new ArrayList<Property<T>>( properties );
   }
 
-  public List<Event<T>> getEvents() {
-    return new ArrayList<Event<T>>( events );
+  public List<EventNotification<T>> getEvents() {
+    return new ArrayList<EventNotification<T>>( events );
   }
 
   public List<Call<T>> getCalls() {
