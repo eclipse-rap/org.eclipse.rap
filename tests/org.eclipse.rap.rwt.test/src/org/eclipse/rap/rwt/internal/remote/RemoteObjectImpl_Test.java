@@ -48,6 +48,14 @@ public class RemoteObjectImpl_Test extends TestCase {
     Fixture.tearDown();
   }
 
+  public void testReturnsId() {
+    RemoteObjectImpl remoteObject = new RemoteObjectImpl( "id", "type" );
+
+    String id = remoteObject.getId();
+
+    assertEquals( "id", id );
+  }
+
   public void testDoesNotRenderOperationsImmediately() {
     remoteObject.call( "method", mockProperties() );
 

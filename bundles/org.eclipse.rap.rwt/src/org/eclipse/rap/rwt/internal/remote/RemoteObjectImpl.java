@@ -19,26 +19,30 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 
 public class RemoteObjectImpl implements RemoteObject {
 
-  private final String target;
+  private final String id;
   private final List<RenderRunnable> renderQueue;
   private boolean destroyed;
 
-  public RemoteObjectImpl( String id, final String type ) {
-    target = id;
+  public RemoteObjectImpl( final String id, final String type ) {
+    this.id = id;
     destroyed = false;
     renderQueue = new ArrayList<RenderRunnable>();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
-        writer.appendCreate( target, type );
+        writer.appendCreate( id, type );
       }
     } );
+  }
+
+  public String getId() {
+    return id;
   }
 
   public void set( final String name, final int value ) {
     checkDestroyed();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
-        writer.appendSet( target, name, value );
+        writer.appendSet( id, name, value );
       }
     } );
   }
@@ -47,7 +51,7 @@ public class RemoteObjectImpl implements RemoteObject {
     checkDestroyed();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
-        writer.appendSet( target, name, value );
+        writer.appendSet( id, name, value );
       }
     } );
   }
@@ -56,7 +60,7 @@ public class RemoteObjectImpl implements RemoteObject {
     checkDestroyed();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
-        writer.appendSet( target, name, value );
+        writer.appendSet( id, name, value );
       }
     } );
   }
@@ -65,7 +69,7 @@ public class RemoteObjectImpl implements RemoteObject {
     checkDestroyed();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
-        writer.appendSet( target, name, value );
+        writer.appendSet( id, name, value );
       }
     } );
   }
@@ -74,7 +78,7 @@ public class RemoteObjectImpl implements RemoteObject {
     checkDestroyed();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
-        writer.appendSet( target, name, value );
+        writer.appendSet( id, name, value );
       }
     } );
   }
@@ -83,7 +87,7 @@ public class RemoteObjectImpl implements RemoteObject {
     checkDestroyed();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
-        writer.appendListen( target, eventType, listen );
+        writer.appendListen( id, eventType, listen );
       }
     } );
   }
@@ -92,7 +96,7 @@ public class RemoteObjectImpl implements RemoteObject {
     checkDestroyed();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
-        writer.appendCall( target, method, properties );
+        writer.appendCall( id, method, properties );
       }
     } );
   }
@@ -101,7 +105,7 @@ public class RemoteObjectImpl implements RemoteObject {
     checkDestroyed();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
-        writer.appendDestroy( target );
+        writer.appendDestroy( id );
       }
     } );
     destroyed = true;
