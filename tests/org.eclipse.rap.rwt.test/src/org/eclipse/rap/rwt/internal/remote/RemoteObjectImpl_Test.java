@@ -86,6 +86,14 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( 23 ) );
   }
 
+  public void testChecksNameForSetInt() {
+    try {
+      remoteObject.set( null, 23 );
+      fail();
+    } catch( NullPointerException exception ) {
+    }
+  }
+
   public void testChecksStateForSetInt() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
@@ -100,6 +108,14 @@ public class RemoteObjectImpl_Test extends TestCase {
     remoteObject.render( writer );
 
     verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( 47.11 ) );
+  }
+
+  public void testChecksNameForSetDouble() {
+    try {
+      remoteObject.set( null, 47.11 );
+      fail();
+    } catch( NullPointerException exception ) {
+    }
   }
 
   public void testChecksStateForSetDouble() {
@@ -118,6 +134,14 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( true ) );
   }
 
+  public void testChecksNameForSetBoolean() {
+    try {
+      remoteObject.set( null, true );
+      fail();
+    } catch( NullPointerException exception ) {
+    }
+  }
+
   public void testChecksStateForSetBoolean() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
@@ -132,6 +156,14 @@ public class RemoteObjectImpl_Test extends TestCase {
     remoteObject.render( writer );
 
     verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( "foo" ) );
+  }
+
+  public void testChecksNameForSetString() {
+    try {
+      remoteObject.set( null, "foo" );
+      fail();
+    } catch( NullPointerException exception ) {
+    }
   }
 
   public void testChecksStateForSetString() {
@@ -151,6 +183,14 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendSet( eq( objectId ), eq( "property" ), same( object ) );
   }
 
+  public void testChecksNameForSetObject() {
+    try {
+      remoteObject.set( null, new Object() );
+      fail();
+    } catch( NullPointerException exception ) {
+    }
+  }
+
   public void testChecksStateForSetObject() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
@@ -165,6 +205,14 @@ public class RemoteObjectImpl_Test extends TestCase {
     remoteObject.render( writer );
 
     verify( writer ).appendListen( eq( objectId ), eq( "event" ), eq( true ) );
+  }
+
+  public void testChecksNameForListen() {
+    try {
+      remoteObject.listen( null, true );
+      fail();
+    } catch( NullPointerException exception ) {
+    }
   }
 
   public void testChecksStateForListen() {
@@ -182,6 +230,14 @@ public class RemoteObjectImpl_Test extends TestCase {
     remoteObject.render( writer );
 
     verify( writer ).appendCall( eq( objectId ), eq( "method" ), same( properties ) );
+  }
+
+  public void testChecksNameForCall() {
+    try {
+      remoteObject.call( null, mockProperties() );
+      fail();
+    } catch( NullPointerException exception ) {
+    }
   }
 
   public void testChecksStateForCall() {

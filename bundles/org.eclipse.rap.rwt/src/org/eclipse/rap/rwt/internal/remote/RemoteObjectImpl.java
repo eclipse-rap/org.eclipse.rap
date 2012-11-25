@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
 public class RemoteObjectImpl implements RemoteObject {
@@ -40,6 +41,7 @@ public class RemoteObjectImpl implements RemoteObject {
   }
 
   public void set( final String name, final int value ) {
+    ParamCheck.notNullOrEmpty( name, "name" );
     checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
@@ -49,6 +51,7 @@ public class RemoteObjectImpl implements RemoteObject {
   }
 
   public void set( final String name, final double value ) {
+    ParamCheck.notNullOrEmpty( name, "name" );
     checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
@@ -58,6 +61,7 @@ public class RemoteObjectImpl implements RemoteObject {
   }
 
   public void set( final String name, final boolean value ) {
+    ParamCheck.notNullOrEmpty( name, "name" );
     checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
@@ -67,6 +71,7 @@ public class RemoteObjectImpl implements RemoteObject {
   }
 
   public void set( final String name, final String value ) {
+    ParamCheck.notNullOrEmpty( name, "name" );
     checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
@@ -76,6 +81,7 @@ public class RemoteObjectImpl implements RemoteObject {
   }
 
   public void set( final String name, final Object value ) {
+    ParamCheck.notNullOrEmpty( name, "name" );
     checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
@@ -85,6 +91,7 @@ public class RemoteObjectImpl implements RemoteObject {
   }
 
   public void listen( final String eventType, final boolean listen ) {
+    ParamCheck.notNullOrEmpty( eventType, "eventType" );
     checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
@@ -94,6 +101,7 @@ public class RemoteObjectImpl implements RemoteObject {
   }
 
   public void call( final String method, final Map<String, Object> properties ) {
+    ParamCheck.notNullOrEmpty( method, "method" );
     checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
