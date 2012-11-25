@@ -15,9 +15,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -86,12 +86,28 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( 23 ) );
   }
 
+  public void testChecksStateForSetInt() {
+    RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
+
+    remoteObjectSpy.set( "property", 23 );
+
+    verify( remoteObjectSpy ).checkState();
+  }
+
   public void testSetDoubleIsRendered() {
     remoteObject.set( "property", 47.11 );
 
     remoteObject.render( writer );
 
     verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( 47.11 ) );
+  }
+
+  public void testChecksStateForSetDouble() {
+    RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
+
+    remoteObjectSpy.set( "property", 47.11 );
+
+    verify( remoteObjectSpy ).checkState();
   }
 
   public void testSetBooleanIsRendered() {
@@ -102,12 +118,28 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( true ) );
   }
 
+  public void testChecksStateForSetBoolean() {
+    RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
+
+    remoteObjectSpy.set( "property", true );
+
+    verify( remoteObjectSpy ).checkState();
+  }
+
   public void testSetStringIsRendered() {
     remoteObject.set( "property", "foo" );
 
     remoteObject.render( writer );
 
     verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( "foo" ) );
+  }
+
+  public void testChecksStateForSetString() {
+    RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
+
+    remoteObjectSpy.set( "property", "foo" );
+
+    verify( remoteObjectSpy ).checkState();
   }
 
   public void testSetObjectIsRendered() {
@@ -119,12 +151,28 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendSet( eq( objectId ), eq( "property" ), same( object ) );
   }
 
+  public void testChecksStateForSetObject() {
+    RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
+
+    remoteObjectSpy.set( "property", new Object() );
+
+    verify( remoteObjectSpy ).checkState();
+  }
+
   public void testListenIsRendered() {
     remoteObject.listen( "event", true );
 
     remoteObject.render( writer );
 
     verify( writer ).appendListen( eq( objectId ), eq( "event" ), eq( true ) );
+  }
+
+  public void testChecksStateForListen() {
+    RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
+
+    remoteObjectSpy.listen( "event", true );
+
+    verify( remoteObjectSpy ).checkState();
   }
 
   public void testCallIsRendered() {
@@ -136,12 +184,37 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendCall( eq( objectId ), eq( "method" ), same( properties ) );
   }
 
+  public void testChecksStateForCall() {
+    RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
+
+    remoteObjectSpy.call( "method", mockProperties() );
+
+    verify( remoteObjectSpy ).checkState();
+  }
+
   public void testDestroyIsRendered() {
     remoteObject.destroy();
 
     remoteObject.render( writer );
 
     verify( writer ).appendDestroy( eq( objectId ) );
+  }
+
+  public void testChecksStateForDestroy() {
+    RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
+
+    remoteObjectSpy.destroy();
+
+    verify( remoteObjectSpy ).checkState();
+  }
+
+  public void testRenderQueueIsClearedAfterRender() {
+    remoteObject.set( "property", 23 );
+
+    remoteObject.render( writer );
+    remoteObject.render( writer );
+
+    verify( writer, times( 1 ) ).appendSet( eq( objectId ), eq( "property" ), eq( 23 ) );
   }
 
   public void testIsNotDestroyedInitially() {
@@ -154,101 +227,36 @@ public class RemoteObjectImpl_Test extends TestCase {
     assertTrue( remoteObject.isDestroyed() );
   }
 
-  public void testPreventsSetIntWhenDestroyed() {
-    remoteObject.destroy();
-
-    assertFailsWithIsDestroyed( new Runnable() {
-      public void run() {
-        remoteObject.set( "properties", 23 );
-      }
-    } );
-  }
-
-  public void testPreventsSetDoubleWhenDestroyed() {
-    remoteObject.destroy();
-
-    assertFailsWithIsDestroyed( new Runnable() {
-      public void run() {
-        remoteObject.set( "properties", 47.11 );
-      }
-    } );
-  }
-
-  public void testPreventsSetBooleanWhenDestroyed() {
-    remoteObject.destroy();
-
-    assertFailsWithIsDestroyed( new Runnable() {
-      public void run() {
-        remoteObject.set( "properties", true );
-      }
-    } );
-  }
-
-  public void testPreventsSetStringWhenDestroyed() {
-    remoteObject.destroy();
-
-    assertFailsWithIsDestroyed( new Runnable() {
-      public void run() {
-        remoteObject.set( "properties", "foo" );
-      }
-    } );
-  }
-
-  public void testPreventsSetObjectWhenDestroyed() {
-    remoteObject.destroy();
-
-    assertFailsWithIsDestroyed( new Runnable() {
-      public void run() {
-        remoteObject.set( "properties", new Object() );
-      }
-    } );
-  }
-
-  public void testPreventsListenWhenDestroyed() {
-    remoteObject.destroy();
-
-    assertFailsWithIsDestroyed( new Runnable() {
-      public void run() {
-        remoteObject.listen( "event", true );
-      }
-    } );
-  }
-
   public void testPreventsCallWhenDestroyed() {
     remoteObject.destroy();
-
-    assertFailsWithIsDestroyed( new Runnable() {
-      public void run() {
-        remoteObject.call( "method", mockProperties() );
-      }
-    } );
-  }
-
-  public void testPreventsDestroyWhenDestroyed() {
-    remoteObject.destroy();
-
-    assertFailsWithIsDestroyed( new Runnable() {
-      public void run() {
-        remoteObject.destroy();
-      }
-    } );
-  }
-
-  public void testRenderQueueIsClearedAfterRender() {
-    remoteObject.set( "property", 23 );
-
-    remoteObject.render( writer );
-    remoteObject.render( writer );
-
-    verify( writer, times( 1 ) ).appendSet( eq( objectId ), eq( "property" ), eq( 23 ) );
-  }
-
-  private static void assertFailsWithIsDestroyed( Runnable runnable ) {
     try {
-      runnable.run();
+      remoteObject.call( "method", mockProperties() );
       fail();
     } catch( IllegalStateException exception ) {
       assertEquals( "Remote object is destroyed", exception.getMessage() );
+    }
+  }
+
+  public void testPreventsCallFromBackgroundThread() {
+    try {
+      runInBackgroundThread( new Runnable() {
+        public void run() {
+          remoteObject.call( "method", mockProperties() );
+        }
+      } );
+      fail();
+    } catch( IllegalStateException exception ) {
+      assertEquals( "Remote object called from wrong thread", exception.getMessage() );
+    }
+  }
+
+  private static void runInBackgroundThread( Runnable runnable ) {
+    try {
+      Fixture.runInThread( runnable );
+    } catch( RuntimeException exception ) {
+      throw exception;
+    } catch( Throwable exception ) {
+      throw new RuntimeException( exception );
     }
   }
 

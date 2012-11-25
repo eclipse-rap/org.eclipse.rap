@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 
 
 public class RemoteObjectImpl implements RemoteObject {
@@ -39,7 +40,7 @@ public class RemoteObjectImpl implements RemoteObject {
   }
 
   public void set( final String name, final int value ) {
-    checkDestroyed();
+    checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
         writer.appendSet( id, name, value );
@@ -48,7 +49,7 @@ public class RemoteObjectImpl implements RemoteObject {
   }
 
   public void set( final String name, final double value ) {
-    checkDestroyed();
+    checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
         writer.appendSet( id, name, value );
@@ -57,7 +58,7 @@ public class RemoteObjectImpl implements RemoteObject {
   }
 
   public void set( final String name, final boolean value ) {
-    checkDestroyed();
+    checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
         writer.appendSet( id, name, value );
@@ -66,7 +67,7 @@ public class RemoteObjectImpl implements RemoteObject {
   }
 
   public void set( final String name, final String value ) {
-    checkDestroyed();
+    checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
         writer.appendSet( id, name, value );
@@ -75,7 +76,7 @@ public class RemoteObjectImpl implements RemoteObject {
   }
 
   public void set( final String name, final Object value ) {
-    checkDestroyed();
+    checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
         writer.appendSet( id, name, value );
@@ -84,7 +85,7 @@ public class RemoteObjectImpl implements RemoteObject {
   }
 
   public void listen( final String eventType, final boolean listen ) {
-    checkDestroyed();
+    checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
         writer.appendListen( id, eventType, listen );
@@ -93,7 +94,7 @@ public class RemoteObjectImpl implements RemoteObject {
   }
 
   public void call( final String method, final Map<String, Object> properties ) {
-    checkDestroyed();
+    checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
         writer.appendCall( id, method, properties );
@@ -102,7 +103,7 @@ public class RemoteObjectImpl implements RemoteObject {
   }
 
   public void destroy() {
-    checkDestroyed();
+    checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
         writer.appendDestroy( id );
@@ -122,14 +123,20 @@ public class RemoteObjectImpl implements RemoteObject {
     renderQueue.clear();
   }
 
-  private void checkDestroyed() {
+  void checkState() {
+    // TODO [rst] Prevent calls with fake context as they break thread confinement
+    if( !ContextProvider.hasContext() ) {
+      throw new IllegalStateException( "Remote object called from wrong thread" );
+    }
     if( destroyed ) {
       throw new IllegalStateException( "Remote object is destroyed" );
     }
   }
 
   public interface RenderRunnable {
+
     void render( ProtocolMessageWriter writer );
+
   }
 
 }
