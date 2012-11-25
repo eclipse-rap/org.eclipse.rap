@@ -10,6 +10,8 @@
 *******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -37,7 +39,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
     objectId = "testId";
-    remoteObject = new RemoteObjectImpl( objectId );
+    remoteObject = new RemoteObjectImpl( objectId, "type" );
     writer = mock( ProtocolMessageWriter.class );
   }
 
@@ -47,22 +49,22 @@ public class RemoteObjectImpl_Test extends TestCase {
   }
 
   public void testDoesNotRenderOperationsImmediately() {
-    remoteObject.create( "type" );
+    remoteObject.call( "method", mockProperties() );
 
     assertEquals( 0, getMessage().getOperationCount() );
   }
 
+  @SuppressWarnings( "unchecked" )
   public void testOperationsAreRenderedDeferred() {
-    remoteObject.create( "type" );
+    remoteObject.call( "method", null );
 
-    remoteObject.render( getProtocolWriter() );
+    remoteObject.render( writer );
 
-    assertEquals( 1, getMessage().getOperationCount() );
+    verify( writer ).appendCreate( anyString(), anyString() );
+    verify( writer ).appendCall( anyString(), anyString(), anyMap() );
   }
 
   public void testCreateIsRendered() {
-    remoteObject.create( "type" );
-
     remoteObject.render( writer );
 
     verify( writer ).appendCreate( eq( objectId ), eq( "type" ) );
@@ -101,11 +103,12 @@ public class RemoteObjectImpl_Test extends TestCase {
   }
 
   public void testSetObjectIsRendered() {
-    remoteObject.set( "property", "foo" );
+    Object object = new Object();
+    remoteObject.set( "property", object );
 
     remoteObject.render( writer );
 
-    verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( "foo" ) );
+    verify( writer ).appendSet( eq( objectId ), eq( "property" ), same( object ) );
   }
 
   public void testListenIsRendered() {
@@ -133,6 +136,96 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendDestroy( eq( objectId ) );
   }
 
+  public void testIsNotDestroyedInitially() {
+    assertFalse( remoteObject.isDestroyed() );
+  }
+
+  public void testIsDestroyedAfterDestroy() {
+    remoteObject.destroy();
+
+    assertTrue( remoteObject.isDestroyed() );
+  }
+
+  public void testPreventsSetIntWhenDestroyed() {
+    remoteObject.destroy();
+
+    assertFailsWithIsDestroyed( new Runnable() {
+      public void run() {
+        remoteObject.set( "properties", 23 );
+      }
+    } );
+  }
+
+  public void testPreventsSetDoubleWhenDestroyed() {
+    remoteObject.destroy();
+
+    assertFailsWithIsDestroyed( new Runnable() {
+      public void run() {
+        remoteObject.set( "properties", 47.11 );
+      }
+    } );
+  }
+
+  public void testPreventsSetBooleanWhenDestroyed() {
+    remoteObject.destroy();
+
+    assertFailsWithIsDestroyed( new Runnable() {
+      public void run() {
+        remoteObject.set( "properties", true );
+      }
+    } );
+  }
+
+  public void testPreventsSetStringWhenDestroyed() {
+    remoteObject.destroy();
+
+    assertFailsWithIsDestroyed( new Runnable() {
+      public void run() {
+        remoteObject.set( "properties", "foo" );
+      }
+    } );
+  }
+
+  public void testPreventsSetObjectWhenDestroyed() {
+    remoteObject.destroy();
+
+    assertFailsWithIsDestroyed( new Runnable() {
+      public void run() {
+        remoteObject.set( "properties", new Object() );
+      }
+    } );
+  }
+
+  public void testPreventsListenWhenDestroyed() {
+    remoteObject.destroy();
+
+    assertFailsWithIsDestroyed( new Runnable() {
+      public void run() {
+        remoteObject.listen( "event", true );
+      }
+    } );
+  }
+
+  public void testPreventsCallWhenDestroyed() {
+    remoteObject.destroy();
+
+    assertFailsWithIsDestroyed( new Runnable() {
+      public void run() {
+        remoteObject.call( "method", mockProperties() );
+      }
+    } );
+  }
+
+  public void testPreventsDestroyWhenDestroyed() {
+    remoteObject.destroy();
+
+    assertFailsWithIsDestroyed( new Runnable() {
+      public void run() {
+        remoteObject.destroy();
+      }
+    } );
+  }
+
   public void testRenderQueueIsClearedAfterRender() {
     remoteObject.set( "property", 23 );
 
@@ -142,17 +235,22 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer, times( 1 ) ).appendSet( eq( objectId ), eq( "property" ), eq( 23 ) );
   }
 
+  private static void assertFailsWithIsDestroyed( Runnable runnable ) {
+    try {
+      runnable.run();
+      fail();
+    } catch( IllegalStateException exception ) {
+      assertEquals( "Remote object is destroyed", exception.getMessage() );
+    }
+  }
+
   @SuppressWarnings( "unchecked" )
   private static Map<String, Object> mockProperties() {
     return mock( Map.class );
   }
 
   private static Message getMessage() {
-    return new Message( getProtocolWriter().createMessage() );
-  }
-
-  private static ProtocolMessageWriter getProtocolWriter() {
-    return ContextProvider.getProtocolWriter();
+    return new Message( ContextProvider.getProtocolWriter().createMessage() );
   }
 
 }

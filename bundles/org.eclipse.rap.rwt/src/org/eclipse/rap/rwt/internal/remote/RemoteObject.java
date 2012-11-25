@@ -19,13 +19,6 @@ import java.util.Map;
 public interface RemoteObject {
 
   /**
-   * Creates the remote object with the given type.
-   *
-   * @param type the type of the remote object to be created
-   */
-  void create( String type );
-
-  /**
    * Sets the specified property of the remote object to the given value.
    *
    * @param name the name of the property to set
