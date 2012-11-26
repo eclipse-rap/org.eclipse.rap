@@ -23,16 +23,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.TabFolder", {
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
-  getDestroyableChildren : function( widget ) {
-    var controls = [];
-    var controlKeys = widget.getUserData( "controls" );
-    for( var i = 0; i < controlKeys.length; i++ ) {
-      controls.push( qx.core.Object.getDb()[ controlKeys[ i ] ] );
-    }
-    var result = widget.getBar().getChildren().concat( controls );
-    result = result.concat( rwt.protocol.AdapterUtil.getDragAndDropChildren( widget ) );
-    return result;
-  },
+  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "selection"

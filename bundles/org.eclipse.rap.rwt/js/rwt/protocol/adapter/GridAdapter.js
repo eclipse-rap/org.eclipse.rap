@@ -44,10 +44,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
 
   getDestroyableChildren : function( widget ) {
     var result = widget.getRootItem().getCachedChildren();
-    var columns = widget._columns;
-    for( var key in columns ) {
-      result.push( columns[ key ] );
-    }
     return result.concat( rwt.protocol.AdapterUtil.getDestroyableChildrenFinder()( widget ) );
   },
 

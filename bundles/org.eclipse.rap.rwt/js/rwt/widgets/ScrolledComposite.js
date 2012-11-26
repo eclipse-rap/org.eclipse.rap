@@ -28,7 +28,6 @@ qx.Class.define( "rwt.widgets.ScrolledComposite", {
     this._focusRoot = null;
     this.addEventListener( "changeParent", this._onChangeParent, this );
     this.setAppearance( "scrolledcomposite" );
-    this.setUserData( "controls", [] );
   },
 
   members : {

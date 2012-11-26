@@ -16,6 +16,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ExpandItem", {
     rwt.protocol.AdapterUtil.callWithTarget( properties.parent, function( parent ) {
       result = new rwt.widgets.ExpandItem( parent );
       parent.addWidget( result );
+      rwt.protocol.AdapterUtil.addDestroyableChild( parent, result );
+      result.setUserData( "protocolParent", parent );
     } );
     return result;
   },

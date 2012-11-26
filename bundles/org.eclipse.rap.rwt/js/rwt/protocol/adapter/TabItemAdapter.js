@@ -12,13 +12,24 @@
 rwt.protocol.AdapterRegistry.add( "rwt.widgets.TabItem", {
 
   factory : function( properties ) {
-    return org.eclipse.swt.TabUtil.createTabItem( properties.id,
-                                                  properties.parent,
-                                                  properties.index );
+    var result = org.eclipse.swt.TabUtil.createTabItem( properties.id,
+                                                        properties.parent,
+                                                        properties.index );
+
+    rwt.protocol.AdapterUtil.callWithTarget( properties.parent, function( parent ) {
+      rwt.protocol.AdapterUtil.addDestroyableChild( parent, result );
+      result.setUserData( "protocolParent", parent );
+    } );
+    return result;
   },
 
   destructor : function( widget ) {
     org.eclipse.swt.TabUtil.releaseTabItem( widget );
+    var parent = widget.getUserData( "protocolParent" );
+    if( parent ) {
+      rwt.protocol.AdapterUtil.removeDestroyableChild( parent, widget );
+    }
+
   },
 
   properties : [

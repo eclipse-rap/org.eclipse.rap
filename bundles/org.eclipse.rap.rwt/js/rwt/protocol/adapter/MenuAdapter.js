@@ -19,20 +19,16 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Menu", {
       result = new rwt.widgets.Menu();
     }
     rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
+    rwt.protocol.AdapterUtil.callWithTarget( properties.parent, function( parent ) {
+      rwt.protocol.AdapterUtil.addDestroyableChild( parent, result );
+      result.setUserData( "protocolParent", parent );
+    } );
     return result;
   },
 
   destructor : rwt.protocol.AdapterUtil.getWidgetDestructor(),
 
-  getDestroyableChildren : function( widget ) {
-    var children;
-    if( widget instanceof rwt.widgets.MenuBar ) {
-      children = widget.getChildren();
-    } else {
-      children = widget._layout.getChildren();
-    }
-    return rwt.protocol.AdapterUtil.filterUnregisteredObjects( children );
-  },
+  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
 
   properties : [
     "parent",

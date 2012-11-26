@@ -18,19 +18,14 @@ rwt.protocol.AdapterUtil = {
   },
 
   _childrenFinder : function( widget ) {
-    var children = widget.getChildren ? widget.getChildren() : null;
-    var result = rwt.protocol.AdapterUtil.filterUnregisteredObjects( children ? children : [] );
-    result = result.concat( rwt.protocol.AdapterUtil.getDragAndDropChildren( widget ) );
-    if( widget.getUserData( "serverGC" ) ) {
-      result.push( widget.getUserData( "serverGC" ) );
-    }
-    if( widget.getUserData( "toolTipWidget" ) ) {
-      result.push( widget.getUserData( "toolTipWidget" ) );
-    }
-    return result;
+    return rwt.protocol.AdapterUtil.getDestroyableChildren( widget );
   },
 
   _widgetDestructor : function( widget ) {
+    var parent = widget.getUserData( "protocolParent" );
+    if( parent ) {
+      rwt.protocol.AdapterUtil.removeDestroyableChild( parent, widget );
+    }
     widget.setToolTip( null );
     widget.setUserData( "toolTipText", null );
     widget.destroy();
@@ -379,15 +374,15 @@ rwt.protocol.AdapterUtil = {
       // [if] do nothing, parent is set in ScrolledComposite#setContent which is called from the
       // server-side - see bug 349161
       widget.setUserData( "scrolledComposite", parent ); // Needed by "bounds" handler
-      parent.getUserData( "controls" ).push( widget.getDbKey() );
     } else if ( parent instanceof rwt.widgets.TabFolder ) {
       widget.setUserData( "tabFolder", parent ); // Needed by "bounds" handler
-      parent.getUserData( "controls" ).push( widget.getDbKey() );
     } else if( parent instanceof rwt.widgets.ExpandBar ) {
       parent.addWidget( widget );
     } else {
       widget.setParent( parent );
     }
+    rwt.protocol.AdapterUtil.addDestroyableChild( parent, widget );
+    widget.setUserData( "protocolParent", parent );
   },
 
   callWithTarget : function( id, fun ) {
@@ -414,21 +409,38 @@ rwt.protocol.AdapterUtil = {
     return result;
   },
 
-  getDragAndDropChildren : function( widget ) {
-   var result = [];
-   if( widget.getUserData( "dragSource" ) ) {
-      result.push( widget.getUserData( "dragSource" ) );
-    }
-    if( widget.getUserData( "dropTarget" ) ) {
-      result.push( widget.getUserData( "dropTarget" ) );
-    }
-    return result;
-  },
-
   getShell : function( widget ) {
     var result = widget;
     while( result && !( result instanceof rwt.widgets.Shell ) ) {
       result = result.getParent();
+    }
+    return result;
+  },
+
+  addDestroyableChild : function( parent, child ) {
+    var list = parent.getUserData( "destroyableChildren" );
+    if( list == null ) {
+      list = {};
+      parent.setUserData( "destroyableChildren", list );
+    }
+    list[ qx.core.Object.toHashCode( child ) ] = child;
+  },
+
+  removeDestroyableChild : function( parent, child ) {
+    var list = parent.getUserData( "destroyableChildren" );
+    if( list != null ) {
+      delete list[ qx.core.Object.toHashCode( child ) ];
+    }
+  },
+
+  getDestroyableChildren : function( parent ) {
+    var list = parent.getUserData( "destroyableChildren" );
+    if( list == null ) {
+      list = {};
+    }
+    var result = [];
+    for( var key in list ) {
+      result.push( list[ key ] );
     }
     return result;
   }

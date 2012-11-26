@@ -12,9 +12,9 @@
 qx.Class.define( "org.eclipse.rwt.test.tests.AdapterUtilTest", {
 
   extend : qx.core.Object,
-  
+
   members : {
-    
+
     testGradientHandler : function() {
       var handler = rwt.protocol.AdapterUtil.getBackgroundGradientHandler();
       var widget = new rwt.widgets.Composite();
@@ -109,8 +109,68 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AdapterUtilTest", {
       handler( widget, "w3" );
       handler( widget, null );
       assertNull( widget.getContextMenu() );
+    },
+
+    testAddDestroyableChild : function() {
+      var parent = new rwt.widgets.Composite();
+      var childOne = new rwt.widgets.Composite();
+      var childTwo = new rwt.widgets.Composite();
+
+      rwt.protocol.AdapterUtil.addDestroyableChild( parent, childOne );
+      rwt.protocol.AdapterUtil.addDestroyableChild( parent, childTwo );
+
+      var result = rwt.protocol.AdapterUtil.getDestroyableChildren( parent );
+      assertEquals( 2, result.length );
+      assertTrue( result.indexOf( childOne ) !== -1 );
+      assertTrue( result.indexOf( childTwo ) !== -1 );
+    },
+
+    testRemoveDestroyableChild : function() {
+      var parent = new rwt.widgets.Composite();
+      var childOne = new rwt.widgets.Composite();
+      var childTwo = new rwt.widgets.Composite();
+
+      rwt.protocol.AdapterUtil.addDestroyableChild( parent, childOne );
+      rwt.protocol.AdapterUtil.addDestroyableChild( parent, childTwo );
+      rwt.protocol.AdapterUtil.removeDestroyableChild( parent, childOne );
+
+      var expected = [ childTwo ];
+      assertEquals( expected, rwt.protocol.AdapterUtil.getDestroyableChildren( parent ) );
+    },
+
+    testSetParent : function() {
+      var parent = new rwt.widgets.Composite();
+      var child = new rwt.widgets.Composite();
+      rwt.protocol.ObjectRegistry.add( "c", child );
+
+      rwt.protocol.AdapterUtil.setParent( child, "p" );
+      rwt.protocol.ObjectRegistry.add( "p", parent );
+
+      assertIdentical( parent, child.getParent() );
+      assertEquals( [ child ], rwt.protocol.AdapterUtil.getDestroyableChildren( parent ) );
+      parent.destroy();
+    },
+
+    testDestructor : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var parent = new rwt.widgets.Composite();
+      var widget = new rwt.widgets.Composite();
+      var child = new rwt.widgets.Composite();
+      rwt.protocol.ObjectRegistry.add( "p", parent );
+      rwt.protocol.ObjectRegistry.add( "w", widget );
+      rwt.protocol.ObjectRegistry.add( "c", child );
+      rwt.protocol.AdapterUtil.setParent( child, "w" );
+      rwt.protocol.AdapterUtil.setParent( widget, "p" );
+
+      rwt.protocol.AdapterUtil.getWidgetDestructor()( widget );
+      TestUtil.flush();
+
+      assertTrue( widget.isDisposed() );
+      assertTrue( child.isDisposed() );
+      assertEquals( [], rwt.protocol.AdapterUtil.getDestroyableChildren( parent ) );
+      parent.destroy();
     }
 
   }
-  
+
 } );

@@ -17,6 +17,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.CTabItem", {
       result = new rwt.widgets.CTabItem( parent, parent.hasState( "rwt_CLOSE" ) );
       parent.addAt( result, properties.index );
       rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
+      rwt.protocol.AdapterUtil.addDestroyableChild( parent, result );
+      result.setUserData( "protocolParent", parent );
     } );
     return result;
   },

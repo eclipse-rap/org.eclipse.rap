@@ -21,12 +21,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ExpandBar", {
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
-  getDestroyableChildren : function( widget ) {
-    var children =  widget._clientArea.getChildren();
-    children = rwt.protocol.AdapterUtil.filterUnregisteredObjects( children );
-    children = children.concat( rwt.protocol.AdapterUtil.getDragAndDropChildren( widget ) );
-    return children;
-  },
+  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "bottomSpacingBounds",

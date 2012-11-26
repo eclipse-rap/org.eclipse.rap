@@ -21,10 +21,17 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ScrollBar", {
     } else {
       result = parent.getVerticalBar();
     }
+    rwt.protocol.AdapterUtil.addDestroyableChild( parent, result );
+    result.setUserData( "protocolParent", parent );
     return result;
   },
 
-  destructor : function() {},
+  destructor : function( widget ) { 
+    var parent = widget.getUserData( "protocolParent" );
+    if( parent ) {
+      rwt.protocol.AdapterUtil.removeDestroyableChild( parent, widget );
+    }
+  },
 
   properties : [
     "visibility"

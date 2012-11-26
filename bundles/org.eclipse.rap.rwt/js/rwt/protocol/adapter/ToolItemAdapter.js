@@ -33,6 +33,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ToolItem", {
         result.setNoRadioGroup( toolbar.hasState( "rwt_NO_RADIO_GROUP" ) );
       }
       toolbar.addAt( result, properties.index );
+      rwt.protocol.AdapterUtil.addDestroyableChild( toolbar, result );
+      result.setUserData( "protocolParent", toolbar );
     } );
     rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     return result;

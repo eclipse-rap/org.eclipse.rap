@@ -61,7 +61,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       ] );
       var child  = ObjectRegistry.getObject( "w4" );
 
-      MessageProcessor.processOperationArray( [ "destroy", "w3"] );
+      MessageProcessor.processOperationArray( [ "destroy", "w3" ] );
       TestUtil.flush();
 
       assertTrue( ObjectRegistry.getObject( "w3" ) == null );
