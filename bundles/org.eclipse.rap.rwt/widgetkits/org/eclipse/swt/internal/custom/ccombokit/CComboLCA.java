@@ -123,10 +123,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
     renderListenModify( ccombo );
   }
 
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   ///////////////////////////////////////
   // Helping methods to read client state
 

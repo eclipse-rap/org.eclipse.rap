@@ -69,12 +69,6 @@ public final class CanvasLCA extends AbstractWidgetLCA {
     writeGCOperations( ( Canvas )widget );
   }
 
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-    ClientObjectFactory.getClientObject( getGC( widget ) ).destroy();
-  }
-
   private static void writeGCOperations( Canvas canvas ) {
     IGCAdapter adapter = canvas.getAdapter( IGCAdapter.class );
     GCOperation[] operations = adapter.getTrimmedGCOperations();

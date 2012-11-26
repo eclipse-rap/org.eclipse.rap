@@ -81,11 +81,6 @@ public class LinkLCA extends AbstractWidgetLCA {
     renderListener( link, PROP_SELECTION_LISTENER, link.isListening( SWT.Selection ), false );
   }
 
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   ///////////////////////////////////////////////////
   // Helping methods to render the changed properties
 

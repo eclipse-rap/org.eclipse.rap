@@ -13,16 +13,13 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Menu", {
 
   factory : function( properties ) {
     var result;
+    // TODO [tb] : split into Menu and MenuBar, or unify parent handling
     if( properties.style.indexOf( "BAR" ) != -1 ) {
       result = new rwt.widgets.MenuBar();
     } else {
       result = new rwt.widgets.Menu();
     }
     rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
-    rwt.protocol.AdapterUtil.callWithTarget( properties.parent, function( parent ) {
-      rwt.protocol.AdapterUtil.addDestroyableChild( parent, result );
-      result.setUserData( "protocolParent", parent );
-    } );
     return result;
   },
 

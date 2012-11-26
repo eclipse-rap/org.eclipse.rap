@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.lifecycle;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.Control;
@@ -80,7 +81,12 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * @param widget the widget to dispose
    * @throws IOException
    */
-  public abstract void renderDispose( Widget widget ) throws IOException;
+  public void renderDispose( Widget widget ) throws IOException {
+    IWidgetAdapter adapter = widget.getAdapter( IWidgetAdapter.class );
+    if( adapter.getParent() == null || !adapter.getParent().isDisposed() ) {
+      ClientObjectFactory.getClientObject( widget ).destroy();
+    }
+  }
 
   /**
    * <p>

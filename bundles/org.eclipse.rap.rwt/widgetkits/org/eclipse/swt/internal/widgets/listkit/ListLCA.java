@@ -122,11 +122,6 @@ public class ListLCA extends AbstractWidgetLCA {
     ScrollBarLCAUtil.renderChanges( list );
   }
 
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   ////////////////////////////////////////////
   // Helping methods to read client-side state
 

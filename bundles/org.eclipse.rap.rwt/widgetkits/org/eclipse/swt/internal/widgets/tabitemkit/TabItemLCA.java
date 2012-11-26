@@ -66,8 +66,4 @@ public class TabItemLCA extends AbstractWidgetLCA {
     renderProperty( tabItem, PROP_CONTROL, tabItem.getControl(), null );
   }
 
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
 }

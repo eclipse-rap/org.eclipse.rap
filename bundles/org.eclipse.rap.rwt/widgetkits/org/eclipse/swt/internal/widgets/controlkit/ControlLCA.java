@@ -24,11 +24,11 @@ public class ControlLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
   }
-  
+
   public void readData( Widget widget ) {
     // do nothing
   }
-  
+
   public void renderInitialization( Widget widget ) throws IOException {
     // do nothing
   }
@@ -37,7 +37,4 @@ public class ControlLCA extends AbstractWidgetLCA {
     // do nothing
   }
 
-  public void renderDispose( Widget widget ) throws IOException {
-    // do nothing
-  }
 }

@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.scrolledcompositekit;
 
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
@@ -102,11 +101,6 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
                     composite.getShowFocusedControl(),
                     false );
     ScrollBarLCAUtil.renderChanges( composite );
-  }
-
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   //////////////////

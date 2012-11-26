@@ -15,8 +15,13 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class ToolBarLCA extends AbstractWidgetLCA {
@@ -51,10 +56,6 @@ public class ToolBarLCA extends AbstractWidgetLCA {
     ToolBar toolBar = ( ToolBar )widget;
     ControlLCAUtil.renderChanges( toolBar );
     WidgetLCAUtil.renderCustomVariant( toolBar );
-  }
-
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
 }

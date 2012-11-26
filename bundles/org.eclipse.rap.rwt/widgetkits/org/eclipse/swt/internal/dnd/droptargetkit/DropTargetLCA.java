@@ -55,10 +55,6 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
     renderTransfer( dropTarget );
   }
 
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   private static void renderTransfer( DropTarget dropTarget ) {
     Transfer[] newValue = dropTarget.getTransfer();
     if( WidgetLCAUtil.hasChanged( dropTarget, PROP_TRANSFER, newValue, DEFAULT_TRANSFER ) ) {

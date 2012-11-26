@@ -13,7 +13,6 @@ package org.eclipse.swt.internal.widgets.labelkit;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
@@ -39,10 +38,6 @@ public class LabelLCA extends AbstractWidgetLCA {
 
   public void renderChanges( Widget widget ) throws IOException {
     getDelegate( widget ).renderChanges( ( Label )widget );
-  }
-
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   private static AbstractLabelLCADelegate getDelegate( Widget widget ) {

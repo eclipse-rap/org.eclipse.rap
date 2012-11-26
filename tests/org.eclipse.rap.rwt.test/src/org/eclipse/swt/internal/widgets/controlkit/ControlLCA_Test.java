@@ -30,6 +30,7 @@ import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
@@ -117,7 +118,7 @@ public class ControlLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( control );
     assertEquals( "some text", control.getToolTipText() );
   }
-  
+
   public void testMenuDetectListener() {
     Shell shell = new Shell( display );
     Label label = new Label( shell, SWT.NONE );
@@ -190,5 +191,23 @@ public class ControlLCA_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( "renderDispose", log.toString() );
   }
+
+  public void testRenderNoDisposeWhenParentDisposed() {
+    Shell shell = new Shell( display );
+    Label label = new Label( shell, SWT.NONE );
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeResponseWriter();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( label );
+
+    shell.dispose();
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findDestroyOperation( shell ) );
+    assertNull( message.findDestroyOperation( label ) );
+  }
+
 
 }

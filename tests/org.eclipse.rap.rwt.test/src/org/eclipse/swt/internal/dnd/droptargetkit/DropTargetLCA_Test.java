@@ -72,16 +72,16 @@ public class DropTargetLCA_Test extends TestCase {
     Fixture.markInitialized( target );
     Fixture.preserveWidgets();
 
-    target.setTransfer( new Transfer[]{ 
+    target.setTransfer( new Transfer[]{
       TextTransfer.getInstance(),
       HTMLTransfer.getInstance()
     } );
     lca.renderChanges( target );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation setOperation = message.findSetOperation( target, "transfer" );
     String result = ( ( JSONArray )setOperation.getProperty( "transfer" ) ).join( "," );
-    String expected = "\""; 
+    String expected = "\"";
     expected += TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
     expected += "\",\"";
     expected += HTMLTransfer.getInstance().getSupportedTypes()[ 0 ].type;
@@ -100,7 +100,7 @@ public class DropTargetLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findDestroyOperation( control ) );
-    assertNotNull( message.findDestroyOperation( target ) );
+    assertNull( message.findDestroyOperation( target ) );
   }
 
   public void testDisposeDroptargetAndControl() {
@@ -115,7 +115,7 @@ public class DropTargetLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findDestroyOperation( control ) );
-    assertNotNull( message.findDestroyOperation( target ) );
+    assertNull( message.findDestroyOperation( target ) );
   }
 
 }

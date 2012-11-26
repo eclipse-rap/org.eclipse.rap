@@ -43,6 +43,7 @@ public final class MenuLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
+    // TODO [tb] : The menu can currently not be destroyed automatically on the client
     ClientObjectFactory.getClientObject( widget ).destroy();
   }
 

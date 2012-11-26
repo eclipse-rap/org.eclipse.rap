@@ -127,10 +127,6 @@ public class ComboLCA extends AbstractWidgetLCA {
     renderListenModify( combo );
   }
 
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   ///////////////////////////////////////
   // Helping methods to read client state
 

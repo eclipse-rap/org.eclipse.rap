@@ -100,7 +100,4 @@ public class SliderLCA extends AbstractWidgetLCA {
     renderListener( slider, PROP_SELECTION_LISTENER, slider.isListening( SWT.Selection ), false );
   }
 
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
 }

@@ -88,9 +88,4 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
                     false );
   }
 
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
 }

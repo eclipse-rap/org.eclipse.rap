@@ -22,12 +22,18 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.ExpandBar;
+import org.eclipse.swt.widgets.ExpandItem;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class ExpandBarLCA extends AbstractWidgetLCA {
@@ -85,11 +91,6 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
     renderListener( expandBar, PROP_EXPAND_LISTENER, hasExpandListener( expandBar ), false );
     renderListener( expandBar, PROP_COLLAPSE_LISTENER, hasCollapseListener( expandBar ), false );
     ScrollBarLCAUtil.renderChanges( expandBar );
-  }
-
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   //////////////////

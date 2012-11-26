@@ -119,10 +119,6 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     renderListenSelection( spinner );
   }
 
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   ///////////////////////////////////////////////////
   // Helping methods to render the changed properties
 

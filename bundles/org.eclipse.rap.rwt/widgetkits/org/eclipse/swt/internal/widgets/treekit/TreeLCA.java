@@ -200,11 +200,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
   }
 
   @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
-  @Override
   public void doRedrawFake( Control control ) {
     Tree tree = ( Tree )control;
     getTreeAdapter( tree ).checkData();
