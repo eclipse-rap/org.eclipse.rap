@@ -70,11 +70,6 @@ public final class SashLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderCustomVariant( sash );
   }
 
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   private static void processSelection( Sash sash ) {
     String eventName = EVENT_SELECTION;
     if( WidgetLCAUtil.wasEventSent( sash, eventName ) ) {

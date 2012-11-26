@@ -88,10 +88,6 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
     renderListener( toolTip, PROP_SELECTION_LISTENER, toolTip.isListening( SWT.Selection ), false );
   }
 
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   private static void readVisible( ToolTip toolTip ) {
     String value = WidgetLCAUtil.readPropertyValue( toolTip, PROP_VISIBLE );
     if( value != null ) {

@@ -80,11 +80,6 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     renderProperty( item, PROP_SHOW_CLOSE, item.getShowClose(), false );
   }
 
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   ////////////////////////////////////////////
   // Helping methods to obtain item properties
 

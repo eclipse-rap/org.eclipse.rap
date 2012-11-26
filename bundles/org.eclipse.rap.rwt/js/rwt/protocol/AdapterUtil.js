@@ -17,7 +17,15 @@ rwt.protocol.AdapterUtil = {
     rwt.protocol.AdapterUtil._widgetDestructor( widget );
   },
 
+  _childrenFinder : function( widget ) {
+    return rwt.protocol.AdapterUtil.getDestroyableChildren( widget );
+  },
+
   _widgetDestructor : function( widget ) {
+    var parent = widget.getUserData( "protocolParent" );
+    if( parent ) {
+      rwt.protocol.AdapterUtil.removeDestroyableChild( parent, widget );
+    }
     widget.setToolTip( null );
     widget.setUserData( "toolTipText", null );
     widget.destroy();
@@ -296,6 +304,10 @@ rwt.protocol.AdapterUtil = {
     return this._controlDestructor;
   },
 
+  getDestroyableChildrenFinder : function( widget ) {
+    return this._childrenFinder;
+  },
+
   extendControlProperties : function( list ) {
     return list.concat( this._controlProperties );
   },
@@ -369,6 +381,8 @@ rwt.protocol.AdapterUtil = {
     } else {
       widget.setParent( parent );
     }
+    rwt.protocol.AdapterUtil.addDestroyableChild( parent, widget );
+    widget.setUserData( "protocolParent", parent );
   },
 
   callWithTarget : function( id, fun ) {
@@ -384,10 +398,49 @@ rwt.protocol.AdapterUtil = {
     }
   },
 
+  filterUnregisteredObjects : function( list ) {
+    var ObjectRegistry = rwt.protocol.ObjectRegistry;
+    var result = [];
+    for( var i = 0; i < list.length; i++ ) {
+      if( ObjectRegistry.getId( list[ i ] ) ) {
+        result.push( list[ i ] );
+      }
+    }
+    return result;
+  },
+
   getShell : function( widget ) {
     var result = widget;
     while( result && !( result instanceof rwt.widgets.Shell ) ) {
       result = result.getParent();
+    }
+    return result;
+  },
+
+  addDestroyableChild : function( parent, child ) {
+    var list = parent.getUserData( "destroyableChildren" );
+    if( list == null ) {
+      list = {};
+      parent.setUserData( "destroyableChildren", list );
+    }
+    list[ qx.core.Object.toHashCode( child ) ] = child;
+  },
+
+  removeDestroyableChild : function( parent, child ) {
+    var list = parent.getUserData( "destroyableChildren" );
+    if( list != null ) {
+      delete list[ qx.core.Object.toHashCode( child ) ];
+    }
+  },
+
+  getDestroyableChildren : function( parent ) {
+    var list = parent.getUserData( "destroyableChildren" );
+    if( list == null ) {
+      list = {};
+    }
+    var result = [];
+    for( var key in list ) {
+      result.push( list[ key ] );
     }
     return result;
   }

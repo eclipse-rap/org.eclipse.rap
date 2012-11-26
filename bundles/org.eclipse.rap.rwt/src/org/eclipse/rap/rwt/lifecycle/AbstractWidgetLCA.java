@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.lifecycle;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.Control;
@@ -54,7 +55,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
   public abstract void preserveValues( Widget widget );
 
   /**
-   * Writes JavaScript code to the response that creates a new widget instance
+   * Writes a message to the response that creates a new widget instance
    * and initializes it. This method is called only once for every widget,
    * before <code>renderChanges</code> is called for the first time.
    *
@@ -64,7 +65,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
   public abstract void renderInitialization( Widget widget ) throws IOException;
 
   /**
-   * Writes JavaScript code to the response that applies the state changes of
+   * Writes a message to the response that applies the state changes of
    * the widget to the client. Implementations must only render those properties
    * that have been changed during the processing of the current request.
    *
@@ -74,13 +75,18 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
   public abstract void renderChanges( Widget widget ) throws IOException;
 
   /**
-   * Writes JavaScript code to the response that renders the disposal of the
+   * Writes a message to the response that renders the disposal of the
    * widget.
    *
    * @param widget the widget to dispose
    * @throws IOException
    */
-  public abstract void renderDispose( Widget widget ) throws IOException;
+  public void renderDispose( Widget widget ) throws IOException {
+    IWidgetAdapter adapter = widget.getAdapter( IWidgetAdapter.class );
+    if( adapter.getParent() == null || !adapter.getParent().isDisposed() ) {
+      ClientObjectFactory.getClientObject( widget ).destroy();
+    }
+  }
 
   /**
    * <p>

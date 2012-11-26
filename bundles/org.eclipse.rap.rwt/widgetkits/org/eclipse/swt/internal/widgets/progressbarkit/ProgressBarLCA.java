@@ -11,16 +11,20 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.progressbarkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
-
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import org.eclipse.swt.widgets.ProgressBar;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class ProgressBarLCA extends AbstractWidgetLCA {
@@ -75,10 +79,6 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     renderProperty( pBar, PROP_MAXIMUM, new Integer( pBar.getMaximum() ), DEFAULT_MAXIMUM );
     renderProperty( pBar, PROP_SELECTION, new Integer( pBar.getSelection() ), DEFAULT_SELECTION );
     renderProperty( pBar, PROP_STATE, getState( pBar ), DEFAULT_STATE );
-  }
-
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   //////////////////

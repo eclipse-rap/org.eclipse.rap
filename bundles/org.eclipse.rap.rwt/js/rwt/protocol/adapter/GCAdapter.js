@@ -13,10 +13,13 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.GC", {
 
   factory : function( properties ) {
     var parent = rwt.protocol.ObjectRegistry.getObject( properties.parent );
-    return new org.eclipse.swt.graphics.GC( parent );
+    var result = new org.eclipse.swt.graphics.GC( parent );
+    rwt.protocol.AdapterUtil.addDestroyableChild( parent, result );
+    return result;
   },
 
   destructor : function( gc ) {
+    rwt.protocol.AdapterUtil.removeDestroyableChild( gc._control, gc );
     gc.dispose();
   },
 

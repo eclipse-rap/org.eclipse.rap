@@ -12,6 +12,8 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var MessageProcessor = rwt.protocol.MessageProcessor;
+var ObjectRegistry = rwt.protocol.ObjectRegistry;
 
 var shell;
 
@@ -42,6 +44,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       assertEquals( "tree-column", label.getAppearance() );
       column.dispose();
       tree.destroy();
+    },
+
+    testDestroyColumnWithGrid : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      MessageProcessor.processOperationArray( [ "destroy", "w3"] );
+      TestUtil.flush();
+
+      assertTrue( ObjectRegistry.getObject( "w3" ) == null );
+      assertTrue( tree.isDisposed() );
+      assertTrue( ObjectRegistry.getObject( "w4" ) == null );
+      assertTrue( column.isDisposed() );
+      shell.destroy();
     },
 
     testSetIndexByProtocol : function() {

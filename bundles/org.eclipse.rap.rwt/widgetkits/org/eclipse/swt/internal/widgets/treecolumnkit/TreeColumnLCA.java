@@ -124,11 +124,6 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     renderListener( column, PROP_SELECTION_LISTENER, column.isListening( SWT.Selection ), false );
   }
 
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   //////////////////////////////////////////////////
   // Helping methods to obtain calculated properties
 

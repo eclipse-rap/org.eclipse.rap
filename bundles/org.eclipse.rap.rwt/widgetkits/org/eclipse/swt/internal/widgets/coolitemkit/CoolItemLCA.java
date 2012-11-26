@@ -85,11 +85,6 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderCustomVariant( item );
   }
 
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   ///////////////////////////////
   // Methods for item re-ordering
 

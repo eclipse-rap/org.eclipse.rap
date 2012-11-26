@@ -92,11 +92,6 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderBackgroundGradient( clabel );
   }
 
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   ///////////////////////////////////////////////////
   // Helping methods to render the changed properties
 

@@ -97,7 +97,4 @@ public final class ScaleLCA extends AbstractWidgetLCA {
     renderListener( scale, PROP_SELECTION_LISTENER, scale.isListening( SWT.Selection ), false );
   }
 
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
 }

@@ -77,16 +77,16 @@ public class DragSourceLCA_Test extends TestCase {
     Fixture.markInitialized( source );
     Fixture.preserveWidgets();
 
-    source.setTransfer( new Transfer[]{ 
+    source.setTransfer( new Transfer[]{
       TextTransfer.getInstance(),
       HTMLTransfer.getInstance()
     } );
     lca.renderChanges( source );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation setOperation = message.findSetOperation( source, "transfer" );
     String result = ( ( JSONArray )setOperation.getProperty( "transfer" ) ).join( "," );
-    String expected = "\""; 
+    String expected = "\"";
     expected += TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
     expected += "\",\"";
     expected += HTMLTransfer.getInstance().getSupportedTypes()[ 0 ].type;
@@ -101,16 +101,16 @@ public class DragSourceLCA_Test extends TestCase {
     Fixture.markInitialized( source );
     Fixture.preserveWidgets();
     IDNDAdapter adapter = source.getAdapter( IDNDAdapter.class );
-    
+
     adapter.setDetailChanged( targetControl, DND.DROP_COPY );
     lca.renderChanges( source );
-    
+
     Message message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( source, "changeDetail" );
     assertEquals( WidgetUtil.getId( targetControl ), call.getProperty( "control" ) );
     assertEquals( "DROP_COPY", call.getProperty( "detail" ) );
   }
-  
+
   public void testRenderDetailNone() throws IOException {
     DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     Button targetControl = new Button( shell, SWT.PUSH );
@@ -118,10 +118,10 @@ public class DragSourceLCA_Test extends TestCase {
     Fixture.markInitialized( source );
     Fixture.preserveWidgets();
     IDNDAdapter adapter = source.getAdapter( IDNDAdapter.class );
-    
+
     adapter.setDetailChanged( targetControl, DND.DROP_NONE );
     lca.renderChanges( source );
-    
+
     Message message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( source, "changeDetail" );
     assertEquals( WidgetUtil.getId( targetControl ), call.getProperty( "control" ) );
@@ -136,11 +136,11 @@ public class DragSourceLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     int feedback = DND.FEEDBACK_SCROLL | DND.FEEDBACK_SELECT;
     IDNDAdapter adapter = source.getAdapter( IDNDAdapter.class );
-    
-    
+
+
     adapter.setFeedbackChanged( targetControl, feedback );
     lca.renderChanges( source );
-    
+
     Message message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( source, "changeFeedback" );
     assertEquals( WidgetUtil.getId( targetControl ), call.getProperty( "control" ) );
@@ -148,7 +148,7 @@ public class DragSourceLCA_Test extends TestCase {
     JSONArray feedbackArr = ( JSONArray )call.getProperty( "feedback" );
     assertEquals( "\"FEEDBACK_SCROLL\",\"FEEDBACK_SELECT\"", feedbackArr.join( "," ) );
   }
-  
+
   public void testRenderDataType() throws IOException {
     DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     Button targetControl = new Button( shell, SWT.PUSH );
@@ -157,10 +157,10 @@ public class DragSourceLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     IDNDAdapter adapter = source.getAdapter( IDNDAdapter.class );
     TransferData dataType = TextTransfer.getInstance().getSupportedTypes()[ 0 ];
-    
+
     adapter.setDataTypeChanged( targetControl, dataType );
     lca.renderChanges( source );
-    
+
     Message message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( source, "changeDataType" );
     assertEquals( WidgetUtil.getId( targetControl ), call.getProperty( "control" ) );
@@ -174,15 +174,15 @@ public class DragSourceLCA_Test extends TestCase {
     Fixture.markInitialized( source );
     Fixture.preserveWidgets();
     IDNDAdapter adapter = source.getAdapter( IDNDAdapter.class );
-    
+
     adapter.cancel();
     lca.renderChanges( source );
-    
+
     Message message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( source, "cancel" );
     assertNotNull( call );
   }
-  
+
   public void testDisposeDragControl() {
     DragSource dragSource = new DragSource( control, DND.DROP_MOVE );
     shell.open();
@@ -194,7 +194,7 @@ public class DragSourceLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findDestroyOperation( control ) );
-    assertNotNull( message.findDestroyOperation( dragSource ) );
+    assertNull( message.findDestroyOperation( dragSource ) );
   }
 
   public void testDisposeDragSourceAndControl() {
@@ -209,7 +209,7 @@ public class DragSourceLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findDestroyOperation( control ) );
-    assertNotNull( message.findDestroyOperation( dragSource ) );
+    assertNull( message.findDestroyOperation( dragSource ) );
   }
 
 }

@@ -32,6 +32,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.MenuItem", {
         result.setNoRadioGroup( menu.hasState( "rwt_NO_RADIO_GROUP" ) );
       }
       menu.addMenuItemAt( result, properties.index );
+      rwt.protocol.AdapterUtil.addDestroyableChild( menu, result );
+      result.setUserData( "protocolParent", menu );
     } );
     rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     return result;

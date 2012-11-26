@@ -79,11 +79,6 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     renderProperty( item, PROP_HEADER_HEIGHT, item.getHeaderHeight(), DEFAULT_HEADER_HEIGHT );
   }
 
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   //////////////////
   // Helping methods
 

@@ -23,7 +23,6 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -86,17 +85,6 @@ public class CanvasLCA_Test extends TestCase {
     CreateOperation gcCreate = message.findCreateOperation( getGcId( canvas ) );
     assertEquals( "rwt.widgets.GC", gcCreate.getType() );
     assertEquals( canvasId, gcCreate.getProperty( "parent" ) );
-  }
-
-  public void testRenderDestroy() throws IOException {
-    lca.renderDispose( canvas );
-
-    Message message = Fixture.getProtocolMessage();
-    DestroyOperation canvasDestroy = ( DestroyOperation )message.getOperation( 0 );
-    DestroyOperation gcDestroy = ( DestroyOperation )message.getOperation( 1 );
-    String canvasId = WidgetUtil.getId( canvas );
-    assertEquals( canvasId, canvasDestroy.getTarget() );
-    assertEquals( getGcId( canvas ), gcDestroy.getTarget() );
   }
 
   public void testWriqteSingleGCOperation() throws IOException, JSONException {

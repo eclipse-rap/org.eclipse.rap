@@ -48,10 +48,6 @@ public final class MenuItemLCA extends AbstractWidgetLCA {
     getDelegateLCA( item ).renderChanges( item );
   }
 
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   private static boolean isTopLevelMenuBarItem( MenuItem item ) {
     return ( item.getParent().getStyle() & SWT.BAR ) != 0;
   }

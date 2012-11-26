@@ -15,11 +15,13 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridColumnGroup", {
     var result;
     rwt.protocol.AdapterUtil.callWithTarget( properties.parent, function( parent ) {
       result = new rwt.widgets.GridColumn( parent, true );
+      rwt.protocol.AdapterUtil.addDestroyableChild( parent, result );
     } );
     return result;
   },
 
   destructor : function( column ) {
+    rwt.protocol.AdapterUtil.removeDestroyableChild( column._grid, column );
     column.dispose();
   },
 

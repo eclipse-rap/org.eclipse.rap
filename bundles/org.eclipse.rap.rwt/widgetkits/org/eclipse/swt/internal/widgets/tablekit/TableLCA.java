@@ -186,11 +186,6 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
   @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
-  @Override
   public void doRedrawFake( Control control ) {
     Table table = ( Table )control;
     getTableAdapter( table ).checkData();

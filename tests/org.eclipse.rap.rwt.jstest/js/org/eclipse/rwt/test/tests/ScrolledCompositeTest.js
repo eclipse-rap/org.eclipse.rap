@@ -39,6 +39,37 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       widget.destroy();
     },
 
+    testDestroyScrolledCompositeWithChildrenByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var MessageProcessor = rwt.protocol.MessageProcessor;
+      MessageProcessor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrolledComposite",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      var ObjectRegistry = rwt.protocol.ObjectRegistry;
+      var widget = ObjectRegistry.getObject( "w3" );
+      MessageProcessor.processOperationArray( [ "create", "w4", "rwt.widgets.Composite", {
+          "style" : [ "BORDER" ],
+          "parent" : "w3"
+        }
+      ] );
+      var child  = ObjectRegistry.getObject( "w4" );
+
+      MessageProcessor.processOperationArray( [ "destroy", "w3" ] );
+      TestUtil.flush();
+
+      assertTrue( ObjectRegistry.getObject( "w3" ) == null );
+      assertTrue( widget.isDisposed() );
+      assertTrue( ObjectRegistry.getObject( "w4" ) == null );
+      assertTrue( child.isDisposed() );
+    },
+
     testSetBoundsByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );

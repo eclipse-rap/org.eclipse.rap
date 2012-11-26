@@ -28,6 +28,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
+  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
+
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "showMinimize",
     "allowMinimize",

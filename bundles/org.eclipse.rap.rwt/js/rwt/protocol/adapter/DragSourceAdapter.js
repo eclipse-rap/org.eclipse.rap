@@ -15,10 +15,12 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.DragSource", {
     var control = rwt.protocol.ObjectRegistry.getObject( properties.control );
     var result = { "control" : control };
     org.eclipse.rwt.DNDSupport.getInstance().registerDragSource( control, properties.style );
+    rwt.protocol.AdapterUtil.addDestroyableChild( control, result );
     return result;
   },
 
   destructor : function( source ) {
+    rwt.protocol.AdapterUtil.removeDestroyableChild( source.control, source );
     org.eclipse.rwt.DNDSupport.getInstance().deregisterDragSource( source.control );
   },
 

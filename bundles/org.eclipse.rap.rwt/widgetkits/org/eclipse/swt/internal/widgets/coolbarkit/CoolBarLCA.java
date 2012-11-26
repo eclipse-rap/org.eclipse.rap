@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolbarkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
@@ -23,8 +25,6 @@ import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.Widget;
-
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 
 public class CoolBarLCA extends AbstractWidgetLCA {
@@ -65,9 +65,6 @@ public class CoolBarLCA extends AbstractWidgetLCA {
     ControlLCAUtil.renderChanges( coolBar );
     renderProperty( coolBar, PROP_LOCKED ,coolBar.getLocked(), false );
     WidgetLCAUtil.renderCustomVariant( coolBar );
-}
-
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
   }
+
 }

@@ -203,11 +203,6 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     renderListener( folder, PROP_FOLDER_LISTENER, hasFolderListener( folder ), false );
   }
 
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   /////////////////////////////////////////
   // Helping methods to preserve properties
 

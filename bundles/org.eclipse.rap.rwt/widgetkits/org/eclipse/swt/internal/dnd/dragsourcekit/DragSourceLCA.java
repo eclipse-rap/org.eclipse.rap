@@ -56,15 +56,11 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
   public void renderChanges( Widget widget ) throws IOException {
     DragSource dragSource = ( DragSource )widget;
     renderTransfer( dragSource );
-    // TODO [tb] : is there a better place to render these: ? 
-    renderDetail( dragSource ); 
+    // TODO [tb] : is there a better place to render these: ?
+    renderDetail( dragSource );
     renderFeedback( dragSource );
     renderDataType( dragSource );
     renderCancel( dragSource );
-  }
-
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   private static void renderTransfer( DragSource dragSource ) {
@@ -78,9 +74,9 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
   private void renderDetail( DragSource dragSource ) {
     IDNDAdapter dndAdapter = dragSource.getAdapter( IDNDAdapter.class  );
     // TODO [tb] : would be rendered by all DragSources:
-    if( dndAdapter.hasDetailChanged() ) { 
+    if( dndAdapter.hasDetailChanged() ) {
       String[] operations = DNDLCAUtil.convertOperations( dndAdapter.getDetailChangedValue() );
-      String detail = operations.length > 0 ? operations[ 0 ] : "DROP_NONE"; 
+      String detail = operations.length > 0 ? operations[ 0 ] : "DROP_NONE";
       IClientObject clientObject = ClientObjectFactory.getClientObject( dragSource );
       Map<String, Object> properties = new HashMap<String, Object>();
       properties.put( "detail", detail );

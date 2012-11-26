@@ -116,11 +116,6 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     renderListener( browser, PARAM_PROGRESS_LISTENER, hasProgressListener( browser ), false );
   }
 
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   private static void fireProgressEvent( Browser browser ) {
     if( WidgetLCAUtil.wasEventSent( browser, EVENT_PROGRESS ) ) {
       IBrowserAdapter browserAdapter = browser.getAdapter( IBrowserAdapter.class );

@@ -23,6 +23,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.CoolBar", {
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
+  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
+
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [ "locked"] ),
 
   propertyHandler : rwt.protocol.AdapterUtil.extendControlPropertyHandler( {} ),

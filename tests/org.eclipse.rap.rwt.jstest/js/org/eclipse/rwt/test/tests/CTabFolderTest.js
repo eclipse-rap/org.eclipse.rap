@@ -82,6 +82,36 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       shell.destroy();
     },
 
+    testDestroyWithChildrenByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var ObjectRegistry = rwt.protocol.ObjectRegistry;
+      var MessageProcessor = rwt.protocol.MessageProcessor;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var widget = this._createCTabFolderByProtocol( "w3", "w2" );
+      var processor = rwt.protocol.MessageProcessor;
+      var item = this._createCTabItemByProtocol( "w4", "w3" );
+      MessageProcessor.processOperationArray( [ "create", "w5", "rwt.widgets.Composite", {
+          "style" : [ "BORDER" ],
+          "parent" : "w3"
+        }
+      ] );
+      var control = ObjectRegistry.getObject( "w5" );
+
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "destroy"
+      } );
+      TestUtil.flush();
+
+      assertTrue( widget.isDisposed() );
+      assertTrue( item.isDisposed() );
+      assertTrue( control.isDisposed() );
+      assertTrue( ObjectRegistry.getObject( "w3" ) == null );
+      assertTrue( ObjectRegistry.getObject( "w4" ) == null );
+      assertTrue( ObjectRegistry.getObject( "w5" ) == null );
+      shell.destroy();
+    },
+
     testSetTabPositionByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );

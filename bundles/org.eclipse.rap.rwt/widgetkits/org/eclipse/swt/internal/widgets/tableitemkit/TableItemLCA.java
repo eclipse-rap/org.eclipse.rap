@@ -18,10 +18,21 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.widgets.ITableAdapter;
+import org.eclipse.swt.internal.widgets.ITableItemAdapter;
+import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
+import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class TableItemLCA extends AbstractWidgetLCA {
@@ -97,15 +108,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
           }
         } );
       }
-    }
-  }
-
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    TableItem item = ( TableItem )widget;
-    if( !isParentDisposed( item ) ) {
-      // The tree disposes the items itself on the client (faster)
-      ClientObjectFactory.getClientObject( widget ).destroy();
     }
   }
 
@@ -248,10 +250,5 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   private static void setInitialized( TableItem item, boolean initialized ) {
     WidgetAdapter adapter = ( WidgetAdapter )item.getAdapter( IWidgetAdapter.class );
     adapter.setInitialized( initialized );
-  }
-
-  private boolean isParentDisposed( TableItem item ) {
-    ITableItemAdapter adapter = item.getAdapter( ITableItemAdapter.class );
-    return adapter.isParentDisposed();
   }
 }

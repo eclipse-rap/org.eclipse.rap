@@ -20,6 +20,8 @@ rwt.protocol.AdapterRegistry.add( "forms.widgets.ToggleHyperlink", {
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
+  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
+
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "images",
     "expanded"

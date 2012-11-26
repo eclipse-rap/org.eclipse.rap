@@ -13,6 +13,7 @@
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var MessageProcessor = rwt.protocol.MessageProcessor;
+var ObjectRegistry = rwt.protocol.ObjectRegistry;
 
 qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
@@ -752,6 +753,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       assertFalse( shell.getVisibility() );
       TestUtil.flush();
       assertTrue( shell.isDisposed() );
+    },
+
+    testDisposeShellWithChildren : function() {
+      var shell = this._protocolCreateShell();
+      shell.setVisibility( true );
+      MessageProcessor.processOperationArray( [ "create", "w4", "rwt.widgets.Composite", {
+          "style" : [ "BORDER" ],
+          "parent" : "w3"
+        }
+      ] );
+      var child = ObjectRegistry.getObject( "w4" );
+
+      MessageProcessor.processOperationArray( [ "destroy", "w3" ] );
+      TestUtil.flush();
+
+      assertTrue( ObjectRegistry.getObject( "w3" ) == null );
+      assertTrue( shell.isDisposed() );
+      assertTrue( ObjectRegistry.getObject( "w4" ) == null );
+      assertTrue( child.isDisposed() );
     },
 
     /////////

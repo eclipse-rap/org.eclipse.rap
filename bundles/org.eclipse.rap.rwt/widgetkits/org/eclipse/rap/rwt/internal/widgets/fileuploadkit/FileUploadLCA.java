@@ -71,11 +71,6 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
     renderSubmit( fileUpload );
   }
 
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   /////////
   // Helper
 

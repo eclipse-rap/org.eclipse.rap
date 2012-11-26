@@ -14,16 +14,23 @@ package org.eclipse.swt.internal.widgets;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.rap.rwt.internal.lifecycle.*;
+import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
+import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class WidgetAdapter_Test extends TestCase {
@@ -225,4 +232,23 @@ public class WidgetAdapter_Test extends TestCase {
 
     assertEquals( id1, id2 );
   }
+
+  public void testGetParent() {
+    Composite shell = new Shell( display, SWT.NONE );
+
+    WidgetAdapter adapter = new WidgetAdapter();
+    adapter.setParent( shell );
+
+    assertSame( shell, adapter.getParent() );
+  }
+
+  public void testGetParentFromButton() {
+    Composite shell = new Shell( display, SWT.NONE );
+    Button button = new Button( shell, SWT.PUSH );
+
+    IWidgetAdapter adapter = button.getAdapter( IWidgetAdapter.class );
+
+    assertSame( shell, adapter.getParent() );
+  }
+
 }

@@ -13,6 +13,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Menu", {
 
   factory : function( properties ) {
     var result;
+    // TODO [tb] : split into Menu and MenuBar, or unify parent handling
     if( properties.style.indexOf( "BAR" ) != -1 ) {
       result = new rwt.widgets.MenuBar();
     } else {
@@ -23,6 +24,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Menu", {
   },
 
   destructor : rwt.protocol.AdapterUtil.getWidgetDestructor(),
+
+  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
 
   properties : [
     "parent",

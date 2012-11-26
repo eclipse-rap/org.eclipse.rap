@@ -12,7 +12,7 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var ObjectManager = rwt.protocol.ObjectRegistry;
+var ObjectRegistry = rwt.protocol.ObjectRegistry;
 var MessageProcessor = rwt.protocol.MessageProcessor;
 var Menu = rwt.widgets.Menu;
 var MenuItem = rwt.widgets.MenuItem;
@@ -40,7 +40,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
           "parent" : "w2"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.MenuBar );
       assertIdentical( shell, widget.getParent() );
       assertNull( widget.getUserData( "isControl") );
@@ -49,15 +49,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     },
 
     testCreatePopUpMenuByProtocol : function() {
+     TestUtil.createShellByProtocol( "w2" );
       MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Menu",
         "properties" : {
-          "style" : [ "POP_UP" ]
+          "style" : [ "POP_UP" ],
+          "parent" : "w2"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Menu );
       assertIdentical( rwt.widgets.base.ClientDocument.getInstance(), widget.getParent() );
       assertNull( widget.getUserData( "isControl") );
@@ -76,7 +78,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
           "bounds" : [ 1, 2, 3, 4 ]
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( 1, widget.getLeft() );
       assertEquals( 2, widget.getTop() );
       assertEquals( 3, widget.getWidth() );
@@ -97,7 +99,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
           "enabled" : false
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertFalse( widget.getEnabled() );
       shell.destroy();
       widget.destroy();
@@ -115,7 +117,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
           "customVariant" : "variant_blue"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget.hasState( "variant_blue" ) );
       shell.destroy();
       widget.destroy();
@@ -163,6 +165,42 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertNull( widget.getUserData( "isControl") );
       menu.destroy();
       widget.destroy();
+    },
+
+    testDestroyMenuItemWithPopupMenuByProtocol : function() {
+      var menu = createPopUpMenuByProtocol( "w3" );
+      var item = createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
+
+      MessageProcessor.processOperationArray( [ "destroy", "w3" ] );
+      TestUtil.flush();
+
+      assertTrue( menu.isDisposed() );
+      assertTrue( item.isDisposed() );
+      assertTrue( ObjectRegistry.getObject( "w3" ) == null );
+      assertTrue( ObjectRegistry.getObject( "w4" ) == null );
+    },
+
+    testDestroyMenuItemWithMenuBarByProtocol : function() {
+      TestUtil.createShellByProtocol( "w2" );
+      MessageProcessor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Menu",
+        "properties" : {
+          "style" : [ "BAR" ],
+          "parent" : "w2"
+        }
+      } );
+      var menu = ObjectRegistry.getObject( "w3" );
+      var item = createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
+
+      MessageProcessor.processOperationArray( [ "destroy", "w3" ] );
+      TestUtil.flush();
+
+      assertTrue( menu.isDisposed() );
+      assertTrue( item.isDisposed() );
+      assertTrue( ObjectRegistry.getObject( "w3" ) == null );
+      assertTrue( ObjectRegistry.getObject( "w4" ) == null );
     },
 
     testCreateMenuItemSeparatorByProtocol : function() {
@@ -1303,6 +1341,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
       menu.destroy();
       widget.destroy();
+    },
+
+    tearDown : function() {
+      if( ObjectRegistry.getObject( "w2" ) ) {
+        ObjectRegistry.getObject( "w2" ).destroy();
+      }
     }
 
   }
@@ -1328,12 +1372,14 @@ var createMenuWithItems = function( itemType, itemCount ) {
 };
 
 var createPopUpMenuByProtocol = function( id ) {
+  TestUtil.createShellByProtocol( "w2" );
   rwt.protocol.MessageProcessor.processOperation( {
     "target" : id,
     "action" : "create",
     "type" : "rwt.widgets.Menu",
     "properties" : {
-      "style" : [ "POP_UP" ]
+      "style" : [ "POP_UP" ],
+      "parent" : "w2"
     }
   } );
   return rwt.protocol.ObjectRegistry.getObject( id );

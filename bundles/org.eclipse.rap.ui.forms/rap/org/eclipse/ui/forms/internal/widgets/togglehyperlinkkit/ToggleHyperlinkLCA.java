@@ -85,11 +85,6 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderListener( hyperlink, PROP_DEFAULT_SELECTION_LISTENER, hasListener, false );
   }
 
-  @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
   //////////////////
   // Helping methods
 

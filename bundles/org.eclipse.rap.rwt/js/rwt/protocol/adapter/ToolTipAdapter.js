@@ -23,6 +23,9 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ToolTip", {
     }
     var result = new rwt.widgets.ToolTip( style );
     rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
+    rwt.protocol.AdapterUtil.callWithTarget( properties.parent, function( parent ) {
+      rwt.protocol.AdapterUtil.addDestroyableChild( parent, result );
+    } );
     return result;
   },
 

@@ -141,8 +141,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public void renderDispose( Widget widget ) throws IOException {
     TreeItem item = ( TreeItem )widget;
     ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
+    // The parent by the clients logic is the parent-item, not the tree (except for root layer)
     if( !itemAdapter.isParentDisposed() ) {
-      // The tree disposes the items itself on the client (faster)
       ClientObjectFactory.getClientObject( widget ).destroy();
     }
   }

@@ -27,6 +27,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
       widget.destroy();
     },
 
+    testDestroyToolTipWithParent : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var ObjectRegistry = rwt.protocol.ObjectRegistry;
+      var MessageProcessor = rwt.protocol.MessageProcessor;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
+
+      MessageProcessor.processOperationArray( [ "destroy", "w2"] );
+      TestUtil.flush();
+
+      assertTrue( ObjectRegistry.getObject( "w2" ) == null );
+      assertTrue( shell.isDisposed() );
+      assertTrue( ObjectRegistry.getObject( "w3" ) == null );
+      assertTrue( widget.isDisposed() );
+    },
+
     testCreateToolTipWithIconErrorByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );

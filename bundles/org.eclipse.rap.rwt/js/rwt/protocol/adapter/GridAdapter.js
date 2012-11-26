@@ -35,16 +35,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
   },
 
   destructor : function( widget ) {
-    // TODO [tb] : find a more general solution for this, see
-    // Bug 373357 - [Protocol] Consider to omit destroy operations for children of destroyed widget
-    var vBarId = rwt.protocol.ObjectRegistry.getId( widget.getVerticalBar() );
-    var hBarId = rwt.protocol.ObjectRegistry.getId( widget.getHorizontalBar() );
-    if( vBarId ) {
-      rwt.protocol.MessageProcessor.processOperationArray( [ "destroy", vBarId ] );
-    }
-    if( hBarId ) {
-      rwt.protocol.MessageProcessor.processOperationArray( [ "destroy", hBarId ] );
-    }
     var destroyItems = widget.getRootItem().getUncachedChildren();
     for( var i = 0; i < destroyItems.length; i++ ) {
       destroyItems[ i ].dispose();
@@ -53,7 +43,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
   },
 
   getDestroyableChildren : function( widget ) {
-    return widget.getRootItem().getCachedChildren();
+    var result = widget.getRootItem().getCachedChildren();
+    return result.concat( rwt.protocol.AdapterUtil.getDestroyableChildrenFinder()( widget ) );
   },
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
