@@ -9,12 +9,10 @@
  *    Frank Appel - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rap.rwt.lifecycle;
+package org.eclipse.rap.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
-import org.eclipse.rap.rwt.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 
 
@@ -68,14 +66,14 @@ public class DefaultEntryPointFactory_Test extends TestCase {
 
   public void testCreateTwice() {
     DefaultEntryPointFactory factory = new DefaultEntryPointFactory( TestEntryPoint.class );
-    
+
     IEntryPoint entryPoint1 = factory.create();
     IEntryPoint entryPoint2 = factory.create();
-    
+
     assertNotNull( entryPoint1 );
     assertNotSame( entryPoint1, entryPoint2 );
   }
-  
+
   public void testCreateWithInnerClass() {
     DefaultEntryPointFactory factory = new DefaultEntryPointFactory( EntryPoint.class );
 

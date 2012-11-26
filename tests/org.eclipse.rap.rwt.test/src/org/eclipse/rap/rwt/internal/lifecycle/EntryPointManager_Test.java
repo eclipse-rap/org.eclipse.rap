@@ -19,7 +19,6 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -240,4 +239,5 @@ public class EntryPointManager_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
+
 }

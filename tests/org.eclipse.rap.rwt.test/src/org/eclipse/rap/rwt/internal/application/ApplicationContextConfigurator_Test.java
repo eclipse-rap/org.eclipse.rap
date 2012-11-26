@@ -24,13 +24,13 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.internal.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.service.ServiceManager;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
-import org.eclipse.rap.rwt.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -46,7 +46,7 @@ import org.eclipse.swt.widgets.Composite;
 
 
 public class ApplicationContextConfigurator_Test extends TestCase {
-  
+
   private static final String TEST_RESOURCE = "test-resource";
   private static final Object ATTRIBUTE_VALUE = new Object();
   private static final String ATTRIBUTE_NAME = "name";
@@ -69,7 +69,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     testServiceHandler = new TestServiceHandler();
     testServiceHandlerId = "testServiceHandlerId";
   }
-  
+
   @Override
   protected void tearDown() throws Exception {
     Fixture.delete( tempDirectory );

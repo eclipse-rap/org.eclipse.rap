@@ -9,12 +9,14 @@
  *    Frank Appel - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rap.rwt.lifecycle;
+package org.eclipse.rap.rwt.internal.lifecycle;
 
 import java.lang.reflect.Modifier;
 
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 
 
 /**
@@ -61,4 +63,5 @@ public class DefaultEntryPointFactory implements IEntryPointFactory {
                                           + type.getName() );
     }
   }
+
 }
