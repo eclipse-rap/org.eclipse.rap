@@ -20,6 +20,8 @@ rwt.protocol.AdapterRegistry.add( "forms.widgets.FormText", {
 
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
+  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
+
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "text",
     "hyperlinkSettings"

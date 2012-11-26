@@ -11,7 +11,8 @@
 package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -84,10 +85,6 @@ public class FormTextLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderCustomVariant( formText );
     renderHyperlinkSettings( formText );
     renderText( formText );
-  }
-
-  public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   ////////////////////////////
