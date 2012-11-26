@@ -24,6 +24,7 @@ public class RemoteObjectImpl implements RemoteObject {
   private final String id;
   private final List<RenderRunnable> renderQueue;
   private boolean destroyed;
+  private RemoteOperationHandler handler;
 
   public RemoteObjectImpl( final String id, final String type ) {
     this.id = id;
@@ -124,13 +125,26 @@ public class RemoteObjectImpl implements RemoteObject {
     return destroyed;
   }
 
+  public void setHandler( RemoteOperationHandler handler ) {
+    this.handler = handler;
+  }
+
   public void handleSet( Map<String, Object> properties ) {
+    if( handler != null ) {
+      handler.handleSet( properties );
+    }
   }
 
   public void handleCall( String method, Map<String, Object> properties ) {
+    if( handler != null ) {
+      handler.handleCall( method, properties );
+    }
   }
 
   public void handleNotify( String event, Map<String, Object> properties ) {
+    if( handler != null ) {
+      handler.handleNotify( event, properties );
+    }
   }
 
   public void render( ProtocolMessageWriter writer ) {

@@ -84,4 +84,11 @@ public interface RemoteObject {
    */
   void destroy();
 
+  /**
+   * Set a handler to process incoming operations from the remote object.
+   *
+   * @param the handler that processes incoming operation
+   */
+  void setHandler( RemoteOperationHandler remoteOperationHandler );
+
 }

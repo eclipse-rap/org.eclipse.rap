@@ -306,6 +306,48 @@ public class RemoteObjectImpl_Test extends TestCase {
     }
   }
 
+  public void testHandleSetDelegatesToHandler() {
+    RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
+    remoteObject.setHandler( handler );
+    Map<String, Object> properties = mockProperties();
+
+    remoteObject.handleSet( properties );
+
+    verify( handler ).handleSet( eq( properties ) );
+  }
+
+  public void testHandleSetDoesNotFailWithoutHandler() {
+    remoteObject.handleSet( mockProperties() );
+  }
+
+  public void testHandleCallDelegatesToHandler() {
+    RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
+    remoteObject.setHandler( handler );
+    Map<String, Object> properties = mockProperties();
+
+    remoteObject.handleCall( "method", properties );
+
+    verify( handler ).handleCall( eq( "method" ), eq( properties ) );
+  }
+
+  public void testHandleCallDoesNotFailWithoutHandler() {
+    remoteObject.handleCall( "method", mockProperties() );
+  }
+
+  public void testHandleNotifyDelegatesToHandler() {
+    RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
+    remoteObject.setHandler( handler );
+    Map<String, Object> properties = mockProperties();
+
+    remoteObject.handleNotify( "event", properties );
+
+    verify( handler ).handleNotify( eq( "event" ), eq( properties ) );
+  }
+
+  public void testHandleNotifyDoesNotFailWithoutHandler() {
+    remoteObject.handleNotify( "event", mockProperties() );
+  }
+
   private static void runInBackgroundThread( Runnable runnable ) {
     try {
       Fixture.runInThread( runnable );
