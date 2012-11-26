@@ -53,7 +53,7 @@ public class RemoteObjectRegistry {
     return remoteObjects.get( id );
   }
 
-  public List<RemoteObjectImpl> getAllObjects() {
+  public List<RemoteObjectImpl> getRemoteObjects() {
     return new ArrayList<RemoteObjectImpl>( remoteObjects.values() );
   }
 

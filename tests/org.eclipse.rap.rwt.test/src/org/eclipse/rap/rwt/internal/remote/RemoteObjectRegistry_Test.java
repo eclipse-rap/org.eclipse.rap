@@ -81,7 +81,7 @@ public class RemoteObjectRegistry_Test extends TestCase {
       registry.register( new RemoteObjectImpl( "id" + i, "type" ) );
     }
 
-    List<RemoteObjectImpl> allObjects = registry.getAllObjects();
+    List<RemoteObjectImpl> allObjects = registry.getRemoteObjects();
 
     assertEquals( "id0 id1 id2 id3 id4 id5 id6 id7 id8 id9", join( getIds( allObjects ), " " ) );
   }
