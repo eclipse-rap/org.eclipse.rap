@@ -151,6 +151,8 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     this.style = style;
     display = parent.display;
     reskinWidget();
+    WidgetAdapter adapter = ( WidgetAdapter )getAdapter( IWidgetAdapter.class );
+    adapter.setParent( parent );
   }
 
   /**

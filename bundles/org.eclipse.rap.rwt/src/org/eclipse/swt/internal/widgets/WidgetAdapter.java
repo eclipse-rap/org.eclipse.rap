@@ -37,6 +37,7 @@ public final class WidgetAdapter
   private transient IRenderRunnable renderRunnable;
   private transient String cachedVariant;
   private ClientObjectAdapter gcObjectAdapter;
+  private Widget parent;
 
   public WidgetAdapter() {
     this( IdGenerator.getInstance().newId( "w" ) );
@@ -60,6 +61,14 @@ public final class WidgetAdapter
       result = id;
     }
     return result;
+  }
+
+  public void setParent( Widget parent ) {
+    this.parent = parent;
+  }
+
+  public Widget getParent() {
+    return parent;
   }
 
   public void setCustomId( String customId ) {
@@ -151,4 +160,5 @@ public final class WidgetAdapter
     initialize();
     return this;
   }
+
 }

@@ -32,6 +32,13 @@ public interface IWidgetAdapter {
   String getId();
 
   /**
+   * Returns the parent given to the widgets constructor
+   *
+   * @return the widget
+   */
+  Widget getParent();
+
+  /**
    * Indicates whether this widget has been initialized already. A widget is
    * considered initialized when the response that creates and initializes the
    * widget has been rendered.
