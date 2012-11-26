@@ -14,7 +14,10 @@ import java.util.Map;
 
 
 /**
- * Instances of this interface are used to transfer changes to the remote object.
+ * Instances of this interface are used to transfer changes to the remote object. To create a remote
+ * object, use {@link RemoteObjectFactory#createRemoteObject(String)}.
+ *
+ * @see RemoteObjectFactory
  */
 public interface RemoteObject {
 
