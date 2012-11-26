@@ -251,9 +251,4 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     WidgetAdapter adapter = ( WidgetAdapter )item.getAdapter( IWidgetAdapter.class );
     adapter.setInitialized( initialized );
   }
-
-  private boolean isParentDisposed( TableItem item ) {
-    ITableItemAdapter adapter = item.getAdapter( ITableItemAdapter.class );
-    return adapter.isParentDisposed();
-  }
 }
