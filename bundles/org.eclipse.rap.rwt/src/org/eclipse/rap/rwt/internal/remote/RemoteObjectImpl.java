@@ -124,13 +124,13 @@ public class RemoteObjectImpl implements RemoteObject {
     return destroyed;
   }
 
-  protected void handleSet( Map<String, Object> properties ) {
+  public void handleSet( Map<String, Object> properties ) {
   }
 
-  protected void handleCall( String method, Map<String, Object> properties ) {
+  public void handleCall( String method, Map<String, Object> properties ) {
   }
 
-  protected void handleNotify( String event, Map<String, Object> properties ) {
+  public void handleNotify( String event, Map<String, Object> properties ) {
   }
 
   public void render( ProtocolMessageWriter writer ) {

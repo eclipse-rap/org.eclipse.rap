@@ -27,6 +27,7 @@ import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
@@ -85,6 +86,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       }
     }
     DNDSupport.processEvents();
+    RemoteObjectLifeCycleAdapter.readData();
   }
 
   public void preserveValues( Display display ) {
@@ -120,6 +122,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     markInitialized( display );
     ActiveKeysUtil.renderActiveKeys( display );
     ActiveKeysUtil.renderCancelKeys( display );
+    RemoteObjectLifeCycleAdapter.render();
   }
 
   public void clearPreserved( Display display ) {

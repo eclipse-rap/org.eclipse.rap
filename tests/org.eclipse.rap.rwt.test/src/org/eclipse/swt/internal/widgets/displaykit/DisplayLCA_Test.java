@@ -14,13 +14,17 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 
 import junit.framework.TestCase;
 
@@ -34,6 +38,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -391,6 +398,29 @@ public class DisplayLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( JSONObject.NULL, message.findSetProperty( displayId, "exitConfirmation" ) );
+  }
+
+  public void testRendersRemoteObjects() throws IOException {
+    RemoteObjectImpl remoteObject = mock( RemoteObjectImpl.class );
+    when( remoteObject.getId() ).thenReturn( "id" );
+    RemoteObjectRegistry.getInstance().register( remoteObject );
+
+    displayLCA.render( display );
+
+    verify( remoteObject ).render( any( ProtocolMessageWriter.class ) );
+  }
+
+  public void testReadDataDelegatesToRemoteObjects() {
+    RemoteObjectImpl remoteObject = mock( RemoteObjectImpl.class );
+    when( remoteObject.getId() ).thenReturn( "id" );
+    RemoteObjectRegistry.getInstance().register( remoteObject );
+    HashMap<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "foo", "bar" );
+    Fixture.fakeCallOperation( "id", "method", properties );
+
+    displayLCA.readData( display );
+
+    verify( remoteObject ).handleCall( eq( "method" ), eq( properties ) );
   }
 
   private static void setEnableUiTests( boolean value ) {
