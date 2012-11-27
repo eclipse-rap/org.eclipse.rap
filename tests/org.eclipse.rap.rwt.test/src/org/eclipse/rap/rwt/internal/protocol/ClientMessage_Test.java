@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.internal.protocol;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
@@ -438,6 +439,31 @@ public class ClientMessage_Test extends TestCase {
     Integer[] extected = new Integer[] { Integer.valueOf( 1 ),  Integer.valueOf( 2 ) };
     assertTrue( Arrays.equals( extected, ( Object[] )map.get( "p1" ) ) );
     assertEquals( "bar", map.get( "p2" ) );
+  }
+
+  public void testOperationGetPropertyNames() {
+    Operation operation = createOperation( "[ \"set\", \"w3\", { \"foo\" : 23, \"bar\" : 42 } ]" );
+
+    List<String> names = operation.getPropertyNames();
+
+    assertEquals( 2, names.size() );
+    assertTrue( names.contains( "foo" ) );
+    assertTrue( names.contains( "bar" ) );
+  }
+
+  public void testOperationGetPropertyNamesWhenEmtpy() {
+    Operation operation = createOperation( "[ \"set\", \"w3\", {} ]" );
+
+    List<String> names = operation.getPropertyNames();
+
+    assertTrue( names.isEmpty() );
+  }
+
+  private static Operation createOperation( String operationJson ) {
+    String json = "{ " + ClientMessage.PROP_HEAD + " : {},"
+        + ClientMessage.PROP_OPERATIONS + " : [" + operationJson + "] }";
+    ClientMessage message = new ClientMessage( json );
+    return message.getAllOperations()[ 0 ];
   }
 
 }

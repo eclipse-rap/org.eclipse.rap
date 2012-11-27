@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.protocol;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -204,10 +205,11 @@ public class ClientMessage {
       return target;
     }
 
+    @SuppressWarnings( "unchecked" )
     public List<String> getPropertyNames() {
       JSONObject properties = getProperties();
       String[] names = JSONObject.getNames( properties );
-      return Arrays.asList( names );
+      return names == null ? Collections.EMPTY_LIST : Arrays.asList( names );
     }
 
     public Object getProperty( String key ) {
