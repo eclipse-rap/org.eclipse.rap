@@ -53,6 +53,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.remote.RemoteObject;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
@@ -322,6 +325,11 @@ public final class Fixture {
   public static void fakeClient( Client client ) {
     ContextProvider.getSessionStore().setAttribute( ClientSelector.SELECTED_CLIENT, client );
   }
+  
+  public static void fakeRemoteObjectFactory( RemoteObjectFactory factory ) {
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
+    sessionStore.setAttribute( RemoteObjectFactory.class.getName() + "#instance", factory );
+  }
 
   public static void fakeNewRequest( Display display ) {
     fakeNewRequest();
@@ -403,10 +411,31 @@ public final class Fixture {
       throw new RuntimeException( "Failed to add set operation", exception );
     }
   }
+  
+  public static void dispatchNotify( RemoteObject remoteObject,
+                                     String eventName,
+                                     Map<String, Object> properties )
+  {
+    RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
+    remoteObjectImpl.handleNotify( eventName, properties );
+  }
+  
+  public static void dispatchCall( RemoteObject remoteObject,
+                                   String methodName,
+                                   Map<String, Object> parameters )
+  {
+    RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
+    remoteObjectImpl.call( methodName, parameters );
+  }
+  
+  public static void dispatchSet( RemoteObject remoteObject, Map<String, Object> properties ) {
+    RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
+    remoteObjectImpl.handleSet( properties );
+  }
 
   public static void fakeNotifyOperation( String target,
                                           String eventName,
-                                          Map<String, Object> parameters )
+                                          Map<String, Object> properties )
   {
     checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
@@ -418,7 +447,7 @@ public final class Fixture {
       newOperation.put( ClientMessage.OPERATION_NOTIFY );
       newOperation.put( target );
       newOperation.put( eventName );
-      newOperation.put( new JSONObject( parameters ) );
+      newOperation.put( new JSONObject( properties ) );
       operations.put( newOperation );
       request.setBody( message.toString() );
     } catch( JSONException exception ) {
