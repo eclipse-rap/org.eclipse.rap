@@ -31,16 +31,23 @@ public class RemoteObjectFactory_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
+  
+  public void testReturnsSingletonInstance() {
+    RemoteObjectFactory factory = RemoteObjectFactory.getInstance();
+    
+    assertNotNull( factory );
+    assertSame( factory, RemoteObjectFactory.getInstance() );
+  }
 
   public void testCreatesRemoteObject() {
-    RemoteObject remoteObject = RemoteObjectFactory.createRemoteObject( "type" );
+    RemoteObject remoteObject = RemoteObjectFactory.getInstance().createRemoteObject( "type" );
 
     assertNotNull( remoteObject );
   }
 
   public void testCreateFailsWithNullType() {
     try {
-      RemoteObjectFactory.createRemoteObject( null );
+      RemoteObjectFactory.getInstance().createRemoteObject( null );
       fail();
     } catch( NullPointerException exception ) {
     }
@@ -48,27 +55,27 @@ public class RemoteObjectFactory_Test extends TestCase {
 
   public void testCreateFailsWithEmptyType() {
     try {
-      RemoteObjectFactory.createRemoteObject( "" );
+      RemoteObjectFactory.getInstance().createRemoteObject( "" );
       fail();
     } catch( IllegalArgumentException exception ) {
     }
   }
 
   public void testCreatedRemoteObjectHasGivenType() {
-    RemoteObject remoteObject = RemoteObjectFactory.createRemoteObject( "type" );
+    RemoteObject remoteObject = RemoteObjectFactory.getInstance().createRemoteObject( "type" );
 
     assertRendersCreateWithType( remoteObject, "type" );
   }
 
   public void testCreatedRemoteObjectsHaveDifferentIds() {
-    RemoteObject remoteObject1 = RemoteObjectFactory.createRemoteObject( "type" );
-    RemoteObject remoteObject2 = RemoteObjectFactory.createRemoteObject( "type" );
+    RemoteObject remoteObject1 = RemoteObjectFactory.getInstance().createRemoteObject( "type" );
+    RemoteObject remoteObject2 = RemoteObjectFactory.getInstance().createRemoteObject( "type" );
 
     assertFalse( getId( remoteObject2 ).equals( getId( remoteObject1 ) ) );
   }
 
   public void testCreatedRemoteObjectsAreRegistered() {
-    RemoteObject remoteObject = RemoteObjectFactory.createRemoteObject( "type" );
+    RemoteObject remoteObject = RemoteObjectFactory.getInstance().createRemoteObject( "type" );
 
     assertSame( remoteObject, RemoteObjectRegistry.getInstance().get( getId( remoteObject ) ) );
   }
