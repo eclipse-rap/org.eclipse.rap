@@ -284,7 +284,8 @@ public final class ClientResources {
     "rwt/protocol/adapter/JavaScriptExecutorAdapter.js",
     "rwt/client/JavaScriptLoader.js",
     "rwt/protocol/adapter/JavaScriptLoaderAdapter.js",
-    "rwt/runtime/System.js"
+    "rwt/runtime/System.js",
+    "rap.js"
   };
 
   private static final String[] WIDGET_IMAGES = new String[] {
