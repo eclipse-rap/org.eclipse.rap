@@ -82,6 +82,39 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
       }
     ],
 
+    testSendNavigatedWithUnknownEntry : [
+      function() {
+        var browserHistory = this._createBrowserHistoryByProtocol();
+        rwt.protocol.MessageProcessor.processOperation( {
+          "target" : "rwt.client.BrowserHistory",
+          "action" : "call",
+          "method" : "add",
+          "properties" : {
+            "entries" : [ [ "id1", "text1" ], [ "id2", "text2" ] ]
+          }
+        } );
+        rwt.protocol.MessageProcessor.processOperation( {
+          "target" : "rwt.client.BrowserHistory",
+          "action" : "listen",
+          "properties" : {
+            "Navigation" : true
+          }
+        } );
+        org.eclipse.rwt.test.fixture.TestUtil.store( browserHistory );
+        org.eclipse.rwt.test.fixture.TestUtil.delayTest( 200 );
+      },
+      function( browserHistory) {
+        browserHistory.__getState = function() { return "id3"; };
+        org.eclipse.rwt.test.fixture.TestUtil.forceInterval( browserHistory._timer );
+
+        var message = org.eclipse.rwt.test.fixture.TestUtil.getMessageObject();
+        var actual = message.findNotifyProperty( "rwt.client.BrowserHistory",
+                                                 "Navigation",
+                                                 "entryId" );
+        assertEquals( "id3", actual );
+      }
+    ],
+
     /////////
     // Helper
 
