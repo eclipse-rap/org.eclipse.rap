@@ -24,7 +24,7 @@ import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.rap.rwt.service.IApplicationStore;
 
 
-public class JavaScriptLoaderImpl implements JavaScriptLoader {
+public class JavaScriptModuleLoaderImpl implements JavaScriptModuleLoader {
 
   private static final String MODULES_KEY = JavaScriptModuleRegistry.class.getName() + "#instance";
 

@@ -17,8 +17,8 @@ import org.eclipse.rap.rwt.client.service.ClientService;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
-import org.eclipse.rap.rwt.internal.resources.JavaScriptLoader;
-import org.eclipse.rap.rwt.internal.resources.JavaScriptLoaderImpl;
+import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoader;
+import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoaderImpl;
 import org.eclipse.rap.rwt.internal.widgets.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.internal.widgets.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -66,8 +66,8 @@ public class WebClient_Test extends TestCase {
   }
 
   public void testGetJavaScriptLoaderService() {
-    ClientService service = client.getService( JavaScriptLoader.class );
-    assertTrue( service instanceof JavaScriptLoaderImpl );
+    ClientService service = client.getService( JavaScriptModuleLoader.class );
+    assertTrue( service instanceof JavaScriptModuleLoaderImpl );
   }
 
   //////////////////

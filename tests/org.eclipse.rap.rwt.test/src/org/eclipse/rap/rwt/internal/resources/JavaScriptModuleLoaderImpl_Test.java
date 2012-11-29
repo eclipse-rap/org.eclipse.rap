@@ -26,12 +26,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 
-public class JavaScriptLoaderImpl_Test extends TestCase {
+public class JavaScriptModuleLoaderImpl_Test extends TestCase {
 
   private static final String JS_FILE_1 = "resourcetest1.js";
   private static final String JS_FILE_2 = "utf-8-resource.js";
 
-  private JavaScriptLoader loader = new JavaScriptLoaderImpl();
+  private JavaScriptModuleLoader loader = new JavaScriptModuleLoaderImpl();
   private IResourceManager resourceManager;
   private Display display;
 

@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.resources;
 import org.eclipse.rap.rwt.client.service.ClientService;
 
 
-public interface JavaScriptLoader extends ClientService  {
+public interface JavaScriptModuleLoader extends ClientService  {
 
   void ensureModule( Class<? extends JavaScriptModule> type );
 
