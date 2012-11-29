@@ -13,6 +13,9 @@ package org.eclipse.rap.rwt.service;
 import org.eclipse.rap.rwt.client.service.ClientService;
 
 
+/**
+ * @since 2.0
+ */
 public interface JavaScriptLoader extends ClientService  {
 
   void ensure( String... url );
