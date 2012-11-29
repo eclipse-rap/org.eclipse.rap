@@ -15,15 +15,18 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
 import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 
@@ -335,6 +338,7 @@ public class RemoteObjectImpl_Test extends TestCase {
   }
 
   public void testHandleNotifyDelegatesToHandler() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
     remoteObject.setHandler( handler );
     Map<String, Object> properties = mockProperties();
@@ -342,6 +346,28 @@ public class RemoteObjectImpl_Test extends TestCase {
     remoteObject.handleNotify( "event", properties );
 
     verify( handler ).handleNotify( eq( "event" ), eq( properties ) );
+  }
+  
+  public void testHandleNotifyDelegatesToHandlerNotInReadData() {
+    Fixture.fakePhase( PhaseId.READ_DATA );
+    RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
+    remoteObject.setHandler( handler );
+    Map<String, Object> properties = mockProperties();
+    
+    remoteObject.handleNotify( "event", properties );
+    
+    verify( handler, never() ).handleNotify( eq( "event" ), eq( properties ) );
+  }
+  
+  public void testHandleNotifyDelegatesToHandlerNotInRender() {
+    Fixture.fakePhase( PhaseId.RENDER );
+    RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
+    remoteObject.setHandler( handler );
+    Map<String, Object> properties = mockProperties();
+    
+    remoteObject.handleNotify( "event", properties );
+    
+    verify( handler, never() ).handleNotify( eq( "event" ), eq( properties ) );
   }
 
   public void testHandleNotifyDoesNotFailWithoutHandler() {

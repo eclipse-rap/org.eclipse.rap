@@ -17,6 +17,7 @@ import java.util.Map;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 
 
 public class RemoteObjectImpl implements RemoteObject {
@@ -143,8 +144,16 @@ public class RemoteObjectImpl implements RemoteObject {
 
   public void handleNotify( String event, Map<String, Object> properties ) {
     if( handler != null ) {
-      handler.handleNotify( event, properties );
+      scheduleNotifyHandling( event, properties );
     }
+  }
+
+  private void scheduleNotifyHandling( final String event, final Map<String, Object> properties ) {
+    ProcessActionRunner.add( new Runnable() {
+      public void run() {
+        handler.handleNotify( event, properties );
+      }
+    } );
   }
 
   public void render( ProtocolMessageWriter writer ) {
