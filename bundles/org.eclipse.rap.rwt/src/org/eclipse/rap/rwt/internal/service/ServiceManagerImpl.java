@@ -13,14 +13,14 @@
 package org.eclipse.rap.rwt.internal.service;
 
 import org.eclipse.rap.rwt.service.ServiceHandler;
-import org.eclipse.rap.rwt.service.IServiceManager;
+import org.eclipse.rap.rwt.service.ServiceManager;
 
 
-public class ServiceManager implements IServiceManager {
+public class ServiceManagerImpl implements ServiceManager {
   private final ServiceHandler lifeCycleRequestHandler;
   private final ServiceHandlerRegistry customHandlers;
 
-  public ServiceManager( ServiceHandler lifeCycleRequestHandler ) {
+  public ServiceManagerImpl( ServiceHandler lifeCycleRequestHandler ) {
     this.lifeCycleRequestHandler = lifeCycleRequestHandler;
     customHandlers = new ServiceHandlerRegistry();
   }

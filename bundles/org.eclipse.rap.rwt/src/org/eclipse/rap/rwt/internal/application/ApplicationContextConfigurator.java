@@ -16,7 +16,7 @@ import javax.servlet.ServletContext;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.service.ApplicationStoreImpl;
-import org.eclipse.rap.rwt.internal.service.ServiceManager;
+import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
 import org.eclipse.rap.rwt.service.IApplicationStore;
@@ -90,7 +90,7 @@ class ApplicationContextConfigurator {
   }
 
   private void addInternalServiceHandlers( ApplicationContext applicationContext ) {
-    ServiceManager serviceManager = applicationContext.getServiceManager();
+    ServiceManagerImpl serviceManager = applicationContext.getServiceManager();
     String uiCallBackId = UICallBackServiceHandler.HANDLER_ID;
     serviceManager.registerServiceHandler( uiCallBackId, new UICallBackServiceHandler() );
   }

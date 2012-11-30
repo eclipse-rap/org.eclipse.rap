@@ -21,7 +21,7 @@ import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.client.ClientProvider;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rap.rwt.internal.service.ServiceManager;
+import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
@@ -107,7 +107,7 @@ public class ApplicationImpl implements Application, Adaptable {
     ParamCheck.notNull( serviceHandlerId, "serviceHandlerId" );
     ParamCheck.notNull( serviceHandler, "serviceHandler" );
 
-    ServiceManager serviceManager = applicationContext.getServiceManager();
+    ServiceManagerImpl serviceManager = applicationContext.getServiceManager();
     serviceManager.registerServiceHandler( serviceHandlerId, serviceHandler );
   }
 

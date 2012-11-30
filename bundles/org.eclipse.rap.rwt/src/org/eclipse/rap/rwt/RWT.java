@@ -41,7 +41,7 @@ import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.rap.rwt.service.IApplicationStore;
 import org.eclipse.rap.rwt.service.ServiceHandler;
-import org.eclipse.rap.rwt.service.IServiceManager;
+import org.eclipse.rap.rwt.service.ServiceManager;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.service.ISettingStore;
@@ -429,9 +429,9 @@ public final class RWT {
   /**
    * Returns a manager to add and remove {@link ServiceHandler}s.
    *
-   * @return the {@link IServiceManager}
+   * @return the {@link ServiceManager}
    */
-  public static IServiceManager getServiceManager() {
+  public static ServiceManager getServiceManager() {
     return RWTFactory.getServiceManager();
   }
 

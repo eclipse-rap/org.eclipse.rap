@@ -25,7 +25,7 @@ import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rap.rwt.internal.service.ApplicationStoreImpl;
 import org.eclipse.rap.rwt.internal.service.LifeCycleServiceHandler;
-import org.eclipse.rap.rwt.internal.service.ServiceManager;
+import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.SettingStoreManager;
 import org.eclipse.rap.rwt.internal.service.StartupPage;
 import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
@@ -59,7 +59,7 @@ public class ApplicationContext {
   private final EntryPointManager entryPointManager;
   private final LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private final SettingStoreManager settingStoreManager;
-  private final ServiceManager serviceManager;
+  private final ServiceManagerImpl serviceManager;
   private final ResourceRegistry resourceRegistry;
   private final JSLibraryConcatenator jsLibraryConcatenator;
   private final ApplicationStoreImpl applicationStore;
@@ -165,7 +165,7 @@ public class ApplicationContext {
     return resourceRegistry;
   }
 
-  public ServiceManager getServiceManager() {
+  public ServiceManagerImpl getServiceManager() {
     return serviceManager;
   }
 
@@ -255,8 +255,8 @@ public class ApplicationContext {
     contextConfigurator.reset( this );
   }
 
-  private ServiceManager createServiceManager() {
-    return new ServiceManager( new LifeCycleServiceHandler( lifeCycleFactory, startupPage ) );
+  private ServiceManagerImpl createServiceManager() {
+    return new ServiceManagerImpl( new LifeCycleServiceHandler( lifeCycleFactory, startupPage ) );
   }
 
 }

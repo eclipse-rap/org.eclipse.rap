@@ -27,7 +27,7 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
-import org.eclipse.rap.rwt.internal.service.ServiceManager;
+import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
@@ -193,7 +193,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   private void checkServiceHandlersHaveBeenAdded() {
-    ServiceManager serviceManager = applicationContext.getServiceManager();
+    ServiceManagerImpl serviceManager = applicationContext.getServiceManager();
     assertSame( testServiceHandler, serviceManager.getServiceHandler( testServiceHandlerId ) );
     assertNotNull( serviceManager.getServiceHandler( UICallBackServiceHandler.HANDLER_ID ) );
   }
@@ -247,7 +247,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   private void checkServiceHandlerHasBeenRemoved() {
-    ServiceManager serviceManager = applicationContext.getServiceManager();
+    ServiceManagerImpl serviceManager = applicationContext.getServiceManager();
     assertNull( serviceManager.getServiceHandler( testServiceHandlerId ) );
   }
 

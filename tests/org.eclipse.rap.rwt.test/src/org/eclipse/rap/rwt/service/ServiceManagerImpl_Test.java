@@ -15,22 +15,22 @@ package org.eclipse.rap.rwt.service;
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.service.ServiceManager;
+import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
-public class ServiceManager_Test extends TestCase {
+public class ServiceManagerImpl_Test extends TestCase {
   private static final String SERVICE_HANDLER_ID = "serviceHandlerId";
 
   private ServiceHandler lifeCycleServiceHandler;
-  private ServiceManager serviceManager;
+  private ServiceManagerImpl serviceManager;
 
   @Override
   protected void setUp() {
     Fixture.setUp();
     lifeCycleServiceHandler = mock( ServiceHandler.class );
-    serviceManager = new ServiceManager( lifeCycleServiceHandler );
+    serviceManager = new ServiceManagerImpl( lifeCycleServiceHandler );
   }
 
   @Override
