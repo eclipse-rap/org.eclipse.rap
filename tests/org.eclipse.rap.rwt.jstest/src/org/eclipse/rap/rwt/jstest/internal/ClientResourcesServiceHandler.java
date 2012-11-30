@@ -20,7 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -41,8 +40,9 @@ public class ClientResourcesServiceHandler implements ServiceHandler {
     return Activator.getContributions();
   }
 
-  public void service() throws IOException, ServletException {
-    HttpServletRequest request = RWT.getRequest();
+  public void service( HttpServletRequest request, HttpServletResponse response )
+    throws IOException
+  {
     String fileParameter = request.getParameter( PARAM_FILE );
     String contributionParameter = request.getParameter( PARAM_CONTRIBUTION );
     if( fileParameter != null ) {

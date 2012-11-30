@@ -16,31 +16,29 @@ import static org.mockito.Mockito.mock;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.lifecycle.DefaultEntryPointFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
-import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
-import org.eclipse.rap.rwt.service.ServiceHandler;
-import org.eclipse.rap.rwt.service.ISettingStore;
 import org.eclipse.rap.rwt.service.ISettingStoreFactory;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper.TestThemeManager;
-import org.eclipse.rap.rwt.testfixture.internal.service.MemorySettingStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
@@ -54,20 +52,20 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   private static final String STYLE_SHEET = "resources/theme/TestExample.css";
   private static final String STYLE_SHEET_CONTRIBUTION = "resources/theme/TestExample2.css";
 
-  private TestPhaseListener testPhaseListener;
-  private TestSettingStoreFactory testSettingStoreFactory;
-  private TestServiceHandler testServiceHandler;
-  private String testServiceHandlerId;
+  private PhaseListener phaseListener;
+  private ISettingStoreFactory settingStoreFactory;
+  private ServiceHandler serviceHandler;
+  private String serviceHandlerId;
   private ApplicationContext applicationContext;
   private File tempDirectory;
 
   @Override
   protected void setUp() throws IOException {
     tempDirectory = createTempDirectory();
-    testPhaseListener = new TestPhaseListener();
-    testSettingStoreFactory = new TestSettingStoreFactory();
-    testServiceHandler = new TestServiceHandler();
-    testServiceHandlerId = "testServiceHandlerId";
+    phaseListener = mock( PhaseListener.class );
+    settingStoreFactory = mock( ISettingStoreFactory.class );
+    serviceHandler = mock( ServiceHandler.class );
+    serviceHandlerId = "serviceHandlerId";
   }
 
   @Override
@@ -163,9 +161,9 @@ public class ApplicationContextConfigurator_Test extends TestCase {
         DefaultEntryPointFactory factory = new DefaultEntryPointFactory( TestEntryPoint.class );
         configuration.addEntryPoint( "/entryPointViaFactory", factory, null );
         configuration.addResource( TEST_RESOURCE, new TestResourceLoader() );
-        configuration.addPhaseListener( testPhaseListener );
-        configuration.setSettingStoreFactory( testSettingStoreFactory );
-        configuration.addServiceHandler( testServiceHandlerId, testServiceHandler );
+        configuration.addPhaseListener( phaseListener );
+        configuration.setSettingStoreFactory( settingStoreFactory );
+        configuration.addServiceHandler( serviceHandlerId, serviceHandler );
         configuration.addStyleSheet( THEME_ID, STYLE_SHEET );
         configuration.addStyleSheet( THEME_ID, STYLE_SHEET_CONTRIBUTION );
         configuration.addThemableWidget( TestWidget.class );
@@ -194,7 +192,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
 
   private void checkServiceHandlersHaveBeenAdded() {
     ServiceManagerImpl serviceManager = applicationContext.getServiceManager();
-    assertSame( testServiceHandler, serviceManager.getServiceHandler( testServiceHandlerId ) );
+    assertSame( serviceHandler, serviceManager.getServiceHandler( serviceHandlerId ) );
     assertNotNull( serviceManager.getServiceHandler( UICallBackServiceHandler.HANDLER_ID ) );
   }
 
@@ -211,9 +209,13 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   private void checkPhaseListenersHaveBeenAdded() {
-    assertEquals( 2, applicationContext.getPhaseListenerRegistry().getAll().length );
-    assertEquals( true, findPhaseListener( MeasurementListener.class ) );
-    assertEquals( true, findPhaseListener( TestPhaseListener.class ) );
+    PhaseListenerRegistry phaseListenerRegistry = applicationContext.getPhaseListenerRegistry();
+
+    List<PhaseListener> registeredPhaseListeners = Arrays.asList( phaseListenerRegistry.getAll() );
+
+    assertEquals( 2, registeredPhaseListeners.size() );
+    assertTrue( registeredPhaseListeners.contains( phaseListener ) );
+    assertTrue( containsType( registeredPhaseListeners, MeasurementListener.class ) );
   }
 
   private void checkContextDirectoryHasBeenSet() {
@@ -248,7 +250,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
 
   private void checkServiceHandlerHasBeenRemoved() {
     ServiceManagerImpl serviceManager = applicationContext.getServiceManager();
-    assertNull( serviceManager.getServiceHandler( testServiceHandlerId ) );
+    assertNull( serviceManager.getServiceHandler( serviceHandlerId ) );
   }
 
   private void checkSettingStoreFactoryHasBeenRemoved() {
@@ -265,38 +267,13 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     assertNull( attribute );
   }
 
-  private boolean findPhaseListener( Class phaseListenerClass ) {
-    boolean result = false;
-    PhaseListener[] phaseListeners = applicationContext.getPhaseListenerRegistry().getAll();
-    for( int i = 0; !result && i < phaseListeners.length; i++ ) {
-      if( phaseListeners[ i ].getClass().equals( phaseListenerClass  ) ) {
-        result = true;
+  private static boolean containsType( List<?> list, Class<?> type ) {
+    for( Object object : list ) {
+      if( object.getClass().equals( type ) ) {
+        return true;
       }
     }
-    return result;
-  }
-
-  private static class TestPhaseListener implements PhaseListener {
-    public void beforePhase( PhaseEvent event ) {
-    }
-
-    public void afterPhase( PhaseEvent event ) {
-    }
-
-    public PhaseId getPhaseId() {
-      return null;
-    }
-  }
-
-  private static class TestSettingStoreFactory implements ISettingStoreFactory {
-    public ISettingStore createSettingStore( String storeId ) {
-      return new MemorySettingStore( "" );
-    }
-  }
-
-  private static class TestServiceHandler implements ServiceHandler {
-    public void service() throws IOException, ServletException {
-    }
+    return false;
   }
 
   private static class TestWidget extends Composite {

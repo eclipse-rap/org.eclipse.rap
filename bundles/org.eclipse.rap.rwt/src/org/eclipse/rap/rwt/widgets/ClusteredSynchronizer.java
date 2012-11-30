@@ -15,6 +15,7 @@ import java.net.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.service.ServiceHandler;
@@ -116,7 +117,7 @@ public class ClusteredSynchronizer extends Synchronizer {
       return buffer.toString();
     }
 
-    public void service() {
+    public void service( HttpServletRequest request, HttpServletResponse response ) {
       // do nothing
     }
   }

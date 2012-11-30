@@ -18,6 +18,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
@@ -83,7 +84,7 @@ public class RWTServlet_Test extends TestCase {
     TestRequest request = createTestRequest( applicationContext );
     request.setParameter( ServiceManagerImpl.REQUEST_PARAM, "foo" );
     applicationContext.getServiceManager().registerServiceHandler( "foo", new ServiceHandler() {
-      public void service() throws IOException, ServletException {
+      public void service( HttpServletRequest request, HttpServletResponse response) {
         log.add( ContextProvider.getServiceStore() );
       }
     } );

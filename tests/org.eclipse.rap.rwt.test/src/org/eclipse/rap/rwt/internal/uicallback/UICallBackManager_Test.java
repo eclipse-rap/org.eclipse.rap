@@ -91,7 +91,8 @@ public class UICallBackManager_Test extends TestCase {
         UICallBackServiceHandler uiCallBackServiceHandler = new UICallBackServiceHandler();
         try {
           manager.activateUICallBacksFor( "foo" );
-          uiCallBackServiceHandler.service();
+          uiCallBackServiceHandler.service( ContextProvider.getRequest(),
+                                            ContextProvider.getResponse() );
         } catch( Throwable thr ) {
           uiCallBackServiceHandlerThrowable[ 0 ] = thr;
         }
@@ -625,7 +626,8 @@ public class UICallBackManager_Test extends TestCase {
           Fixture.fakeResponseWriter();
           try {
             manager.activateUICallBacksFor( "foo" );
-            uiCallBackServiceHandler.service();
+            uiCallBackServiceHandler.service( ContextProvider.getRequest(),
+                                              ContextProvider.getResponse() );
           } catch( Throwable thr ) {
             exception = thr;
           }
