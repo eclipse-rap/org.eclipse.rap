@@ -13,23 +13,23 @@ package org.eclipse.rap.rwt.internal.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 
 
 class ServiceHandlerRegistry {
-  private final Map<String, IServiceHandler> handlers;
+  private final Map<String, ServiceHandler> handlers;
 
   ServiceHandlerRegistry() {
-    handlers = new HashMap<String, IServiceHandler>();
+    handlers = new HashMap<String, ServiceHandler>();
   }
 
-  IServiceHandler get( String serviceHandlerId ) {
+  ServiceHandler get( String serviceHandlerId ) {
     synchronized( handlers ) {
       return handlers.get( serviceHandlerId );
     }
   }
 
-  void put( String serviceHandlerId, IServiceHandler serviceHandler ) {
+  void put( String serviceHandlerId, ServiceHandler serviceHandler ) {
     synchronized( handlers ) {
       handlers.put( serviceHandlerId, serviceHandler );
     }

@@ -12,24 +12,24 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.IServiceManager;
 
 
 public class ServiceManager implements IServiceManager {
-  private final IServiceHandler lifeCycleRequestHandler;
+  private final ServiceHandler lifeCycleRequestHandler;
   private final ServiceHandlerRegistry customHandlers;
 
-  public ServiceManager( IServiceHandler lifeCycleRequestHandler ) {
+  public ServiceManager( ServiceHandler lifeCycleRequestHandler ) {
     this.lifeCycleRequestHandler = lifeCycleRequestHandler;
     customHandlers = new ServiceHandlerRegistry();
   }
 
-  public IServiceHandler getServiceHandler( String customId ) {
+  public ServiceHandler getServiceHandler( String customId ) {
     return customHandlers.get( customId );
   }
 
-  public void registerServiceHandler( String id, IServiceHandler handler ) {
+  public void registerServiceHandler( String id, ServiceHandler handler ) {
     customHandlers.put( id, handler );
   }
 
@@ -41,8 +41,8 @@ public class ServiceManager implements IServiceManager {
     customHandlers.clear();
   }
 
-  public IServiceHandler getHandler() {
-    IServiceHandler result;
+  public ServiceHandler getHandler() {
+    ServiceHandler result;
     String customId = getCustomHandlerId();
     if( customId != null && customId.length() > 0 ) {
       result = getCustomHandlerChecked( customId );
@@ -52,8 +52,8 @@ public class ServiceManager implements IServiceManager {
     return result;
   }
 
-  private IServiceHandler getCustomHandlerChecked( String customId ) {
-    IServiceHandler customHandler = customHandlers.get( customId );
+  private ServiceHandler getCustomHandlerChecked( String customId ) {
+    ServiceHandler customHandler = customHandlers.get( customId );
     if( customHandler == null ) {
       throw new IllegalArgumentException( "No service handler registered with id " + customId );
     }
@@ -61,7 +61,7 @@ public class ServiceManager implements IServiceManager {
   }
 
   private static String getCustomHandlerId() {
-    return ContextProvider.getRequest().getParameter( IServiceHandler.REQUEST_PARAM );
+    return ContextProvider.getRequest().getParameter( ServiceHandler.REQUEST_PARAM );
   }
 
 }

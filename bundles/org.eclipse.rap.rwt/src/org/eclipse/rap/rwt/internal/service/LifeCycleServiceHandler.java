@@ -32,11 +32,11 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ISessionStore;
 
 
-public class LifeCycleServiceHandler implements IServiceHandler {
+public class LifeCycleServiceHandler implements ServiceHandler {
   private static final String PROP_ERROR = "error";
   private static final String PROP_MESSAGE = "message";
   private static final String SESSION_STARTED

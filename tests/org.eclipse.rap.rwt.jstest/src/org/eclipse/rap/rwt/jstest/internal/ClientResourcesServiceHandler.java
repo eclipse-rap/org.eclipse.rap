@@ -26,10 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.jstest.TestContribution;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 
 
-public class ClientResourcesServiceHandler implements IServiceHandler {
+public class ClientResourcesServiceHandler implements ServiceHandler {
 
   private static final String PARAM_CONTRIBUTION = "contribution";
   private static final String PARAM_FILE = "file";

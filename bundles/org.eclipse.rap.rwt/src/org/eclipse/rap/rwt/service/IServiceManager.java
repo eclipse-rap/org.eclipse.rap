@@ -14,9 +14,9 @@ package org.eclipse.rap.rwt.service;
 
 /**
  * An <code>IServiceManager</code> is responsible to manage existing
- * <code>IServiceHandler</code>s.
+ * <code>ServiceHandler</code>s.
  *
- * @see IServiceHandler
+ * @see ServiceHandler
  *
  * @since 2.0
  * @noimplement This interface is not intended to be implemented by clients.
@@ -29,19 +29,19 @@ public interface IServiceManager {
    * registered service handler.
    *
    * @param id the identifier of this service handler used in the URL
-   * @param serviceHandler the <code>IServiceHandler</code> implementation
+   * @param serviceHandler the <code>ServiceHandler</code> implementation
    *
-   * @see IServiceHandler
-   * @see IServiceHandler#REQUEST_PARAM
+   * @see ServiceHandler
+   * @see ServiceHandler#REQUEST_PARAM
    */
-  void registerServiceHandler( String id, IServiceHandler serviceHandler );
+  void registerServiceHandler( String id, ServiceHandler serviceHandler );
 
   /**
    * Unregisters a service handler.
    *
    * @param id the identifier of this service handler
    *
-   * @see IServiceHandler
+   * @see ServiceHandler
    */
   void unregisterServiceHandler( String id );
 }

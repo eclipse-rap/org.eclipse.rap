@@ -40,7 +40,7 @@ import org.eclipse.rap.rwt.internal.widgets.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.rap.rwt.service.IApplicationStore;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.IServiceManager;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.ISessionStore;
@@ -427,7 +427,7 @@ public final class RWT {
   }
 
   /**
-   * Returns a manager to add and remove {@link IServiceHandler}s.
+   * Returns a manager to add and remove {@link ServiceHandler}s.
    *
    * @return the {@link IServiceManager}
    */
@@ -483,7 +483,7 @@ public final class RWT {
    * service handlers obtain parameters of the request to process.
    * </p>
    * @return instance of {@link HttpServletRequest}
-   * @see IServiceHandler
+   * @see ServiceHandler
    */
   public static HttpServletRequest getRequest() {
     checkHasSessionContext();
@@ -500,7 +500,7 @@ public final class RWT {
    * certainly an error.
    * </p>
    * @return instance of {@link HttpServletResponse}
-   * @see IServiceHandler
+   * @see ServiceHandler
    */
   public static HttpServletResponse getResponse() {
     checkHasSessionContext();

@@ -44,7 +44,7 @@ import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ISettingStoreFactory;
 import org.eclipse.rap.ui.internal.application.EntryPointApplicationWrapper;
 import org.eclipse.rap.ui.internal.branding.AbstractBranding;
@@ -411,7 +411,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         String id = elements[ i ].getAttribute( "id" );
         if( id != null ) {
           Object extObject = elements[ i ].createExecutableExtension( "class" );
-          IServiceHandler handler = ( IServiceHandler )extObject;
+          ServiceHandler handler = ( ServiceHandler )extObject;
           application.addServiceHandler( id, handler );
         }
       } catch( final CoreException ce ) {

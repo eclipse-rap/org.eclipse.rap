@@ -17,7 +17,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Synchronizer;
 
@@ -95,7 +95,7 @@ public class ClusteredSynchronizer extends Synchronizer {
     return result;
   }
 
-  static class AsyncExecServiceHandler implements IServiceHandler {
+  static class AsyncExecServiceHandler implements ServiceHandler {
     static final String ID = "asyncExecServiceHandler";
 
     static void register() {
@@ -109,7 +109,7 @@ public class ClusteredSynchronizer extends Synchronizer {
       buffer.append( request.getServerPort() );
       buffer.append( request.getRequestURI() );
       buffer.append( "?" );
-      buffer.append( IServiceHandler.REQUEST_PARAM );
+      buffer.append( ServiceHandler.REQUEST_PARAM );
       buffer.append( "=" );
       buffer.append( ID );
       return buffer.toString();

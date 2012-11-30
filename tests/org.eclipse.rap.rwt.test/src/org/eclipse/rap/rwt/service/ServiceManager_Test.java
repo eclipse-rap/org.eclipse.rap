@@ -16,20 +16,20 @@ import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.service.ServiceManager;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class ServiceManager_Test extends TestCase {
   private static final String SERVICE_HANDLER_ID = "serviceHandlerId";
 
-  private IServiceHandler lifeCycleServiceHandler;
+  private ServiceHandler lifeCycleServiceHandler;
   private ServiceManager serviceManager;
 
   @Override
   protected void setUp() {
     Fixture.setUp();
-    lifeCycleServiceHandler = mock( IServiceHandler.class );
+    lifeCycleServiceHandler = mock( ServiceHandler.class );
     serviceManager = new ServiceManager( lifeCycleServiceHandler );
   }
 
@@ -39,7 +39,7 @@ public class ServiceManager_Test extends TestCase {
   }
 
   public void testRegisterServiceHandler() throws Exception {
-    IServiceHandler serviceHandler = mock( IServiceHandler.class );
+    ServiceHandler serviceHandler = mock( ServiceHandler.class );
 
     serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
 
@@ -47,8 +47,8 @@ public class ServiceManager_Test extends TestCase {
   }
 
   public void testRegisterServiceHandlerTwice() throws Exception {
-    IServiceHandler firstHandler = mock( IServiceHandler.class );
-    IServiceHandler secondHandler = mock( IServiceHandler.class );
+    ServiceHandler firstHandler = mock( ServiceHandler.class );
+    ServiceHandler secondHandler = mock( ServiceHandler.class );
 
     serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, firstHandler );
     serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, secondHandler );
@@ -57,7 +57,7 @@ public class ServiceManager_Test extends TestCase {
   }
 
   public void testUnregisterServiceHandler() throws Exception {
-    IServiceHandler serviceHandler = mock( IServiceHandler.class );
+    ServiceHandler serviceHandler = mock( ServiceHandler.class );
     serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
 
     serviceManager.unregisterServiceHandler( SERVICE_HANDLER_ID );
@@ -66,7 +66,7 @@ public class ServiceManager_Test extends TestCase {
   }
 
   public void testClear() throws Exception {
-    IServiceHandler serviceHandler = mock( IServiceHandler.class );
+    ServiceHandler serviceHandler = mock( ServiceHandler.class );
     serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
 
     serviceManager.clear();
@@ -79,17 +79,17 @@ public class ServiceManager_Test extends TestCase {
   }
 
   public void testGetHandler_custom() throws Exception {
-    IServiceHandler serviceHandler = mock( IServiceHandler.class );
+    ServiceHandler serviceHandler = mock( ServiceHandler.class );
     serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
 
-    Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, SERVICE_HANDLER_ID );
-    IServiceHandler handler = serviceManager.getHandler();
+    Fixture.fakeRequestParam( ServiceHandler.REQUEST_PARAM, SERVICE_HANDLER_ID );
+    ServiceHandler handler = serviceManager.getHandler();
 
     assertSame( serviceHandler, handler );
   }
 
   public void testGetHandler_unknownId() throws Exception {
-    Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, SERVICE_HANDLER_ID );
+    Fixture.fakeRequestParam( ServiceHandler.REQUEST_PARAM, SERVICE_HANDLER_ID );
 
     try {
       serviceManager.getHandler();

@@ -38,7 +38,7 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -77,7 +77,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     ContextProvider.getSessionStore();
     ServiceContext context = ContextProvider.getContext();
     for( int i = 0; i < THREAD_COUNT; i++ ) {
-      IServiceHandler syncHandler = new TestHandler( getLifeCycleFactory(), mockStartupPage() );
+      ServiceHandler syncHandler = new TestHandler( getLifeCycleFactory(), mockStartupPage() );
       Thread thread = new Thread( new Worker( context, syncHandler ) );
       thread.setDaemon( true );
       thread.start();
@@ -338,9 +338,9 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
   private static class Worker implements Runnable {
     private final ServiceContext context;
-    private final IServiceHandler serviceHandler;
+    private final ServiceHandler serviceHandler;
 
-    private Worker( ServiceContext context, IServiceHandler serviceHandler ) {
+    private Worker( ServiceContext context, ServiceHandler serviceHandler ) {
       this.context = context;
       this.serviceHandler = serviceHandler;
     }

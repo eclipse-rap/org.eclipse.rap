@@ -35,7 +35,7 @@ import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ISettingStore;
 import org.eclipse.rap.rwt.service.ISettingStoreFactory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -294,7 +294,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     }
   }
 
-  private static class TestServiceHandler implements IServiceHandler {
+  private static class TestServiceHandler implements ServiceHandler {
     public void service() throws IOException, ServletException {
     }
   }

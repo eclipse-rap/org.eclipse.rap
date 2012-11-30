@@ -14,13 +14,13 @@ import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 
 
 public class RapTestApplicationConfigurator implements ApplicationConfiguration {
 
   public void configure( Application application ) {
-    IServiceHandler serviceHandler = new ClientResourcesServiceHandler();
+    ServiceHandler serviceHandler = new ClientResourcesServiceHandler();
     application.addServiceHandler( ClientResourcesServiceHandler.ID, serviceHandler );
     IEntryPointFactory factory = new IEntryPointFactory() {
       public IEntryPoint create() {

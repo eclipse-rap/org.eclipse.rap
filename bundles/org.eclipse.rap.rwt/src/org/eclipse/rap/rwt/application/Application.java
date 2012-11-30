@@ -20,7 +20,7 @@ import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.rap.rwt.service.IApplicationStore;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ISettingStore;
 import org.eclipse.rap.rwt.service.ISettingStoreFactory;
 import org.eclipse.rap.rwt.widgets.DialogUtil;
@@ -211,15 +211,15 @@ public interface Application {
    * Adds a service handler to the application. A service handler is used to
    * handle requests with a certain parameter inside the application. You can
    * think of it like a lightweight servlet that has access to the user's
-   * session. Please see the documentation of {@link IServiceHandler} for the
+   * session. Please see the documentation of {@link ServiceHandler} for the
    * URL to access this service handler.
    *
    * @param serviceHandlerId the id for this servlet handler, used in the
    *          parameter
    * @param serviceHandler the servlet handler to register
-   * @see IServiceHandler
+   * @see ServiceHandler
    */
-  void addServiceHandler( String serviceHandlerId, IServiceHandler serviceHandler );
+  void addServiceHandler( String serviceHandlerId, ServiceHandler serviceHandler );
 
   void addResource( String resourceName, ResourceLoader resourceLoader );
 }

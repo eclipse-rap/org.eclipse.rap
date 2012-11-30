@@ -61,10 +61,10 @@ To invoke the service handler a developer needs to construct a URL. The URL must
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  An implementation of &lt;code&gt;IServiceHandler&lt;/code&gt;
+                  An implementation of &lt;code&gt;ServiceHandler&lt;/code&gt;
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.rap.rwt.service.IServiceHandler"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.rap.rwt.service.ServiceHandler"/>
                </appInfo>
             </annotation>
          </attribute>
