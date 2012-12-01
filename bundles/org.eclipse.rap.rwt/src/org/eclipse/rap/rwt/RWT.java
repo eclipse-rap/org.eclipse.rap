@@ -427,9 +427,12 @@ public final class RWT {
   }
 
   /**
-   * Returns a manager to add and remove {@link ServiceHandler}s.
+   * Returns the instance of the service manager for the current application context. The service
+   * manager is used to register and unregister service handlers.
    *
-   * @return the {@link ServiceManager}
+   * @return the service manager instance for the current application context
+   * @see ServiceHandler
+   * @see ServiceManager
    */
   public static ServiceManager getServiceManager() {
     return RWTFactory.getServiceManager();

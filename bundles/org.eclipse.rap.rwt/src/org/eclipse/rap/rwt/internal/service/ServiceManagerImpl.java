@@ -12,6 +12,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ServiceManager;
 import javax.servlet.http.HttpServletRequest;
@@ -23,11 +26,11 @@ public class ServiceManagerImpl implements ServiceManager {
 
   public static final String REQUEST_PARAM = "custom_service_handler";
 
-  private final ServiceHandler lifeCycleRequestHandler;
+  private final ServiceHandler defaultHandler;
   private final ServiceHandlerRegistry customHandlers;
 
-  public ServiceManagerImpl( ServiceHandler lifeCycleRequestHandler ) {
-    this.lifeCycleRequestHandler = lifeCycleRequestHandler;
+  public ServiceManagerImpl( ServiceHandler defaultServieHandler ) {
+    defaultHandler = defaultServieHandler;
     customHandlers = new ServiceHandlerRegistry();
   }
 
@@ -36,10 +39,16 @@ public class ServiceManagerImpl implements ServiceManager {
   }
 
   public void registerServiceHandler( String id, ServiceHandler handler ) {
-    customHandlers.put( id, handler );
+    ParamCheck.notNullOrEmpty( id, "id" );
+    ParamCheck.notNull( handler, "handler" );
+    if( !customHandlers.put( id, handler ) ) {
+      String message = "Already a service handler already registered with this id: " + id;
+      throw new IllegalArgumentException( message );
+    }
   }
 
   public void unregisterServiceHandler( String id ) {
+    ParamCheck.notNullOrEmpty( id, "id" );
     customHandlers.remove( id );
   }
 
@@ -52,7 +61,7 @@ public class ServiceManagerImpl implements ServiceManager {
     url.append( '?' );
     url.append( REQUEST_PARAM );
     url.append( '=' );
-    url.append( id );
+    url.append( encodeParameter( id ) );
     return ContextProvider.getResponse().encodeURL( url.toString() );
   }
 
@@ -66,7 +75,7 @@ public class ServiceManagerImpl implements ServiceManager {
     if( customId != null && customId.length() > 0 ) {
       result = getCustomHandlerChecked( customId );
     } else {
-      result = lifeCycleRequestHandler;
+      result = defaultHandler;
     }
     return result;
   }
@@ -81,6 +90,17 @@ public class ServiceManagerImpl implements ServiceManager {
 
   private static String getCustomHandlerId() {
     return ContextProvider.getRequest().getParameter( REQUEST_PARAM );
+  }
+
+  private static String encodeParameter( String id ) {
+    try {
+      // TODO [rst] Encode parameters according to URI spec (RFC 2396). URLEncoder is meant for form
+      //            encoding which is not the same, but better than nothing for the moment.
+      // See http://stackoverflow.com/questions/444112/how-do-i-encode-uri-parameter-values
+      return URLEncoder.encode( id, "UTF-8" ).replace( "+", "%20" );
+    } catch( UnsupportedEncodingException exception ) {
+      throw new RuntimeException( exception );
+    }
   }
 
 }

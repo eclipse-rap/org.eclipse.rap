@@ -16,55 +16,38 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+
 
 /**
+ * A service handler can be used to process custom requests, e.g. to deliver files, images or other
+ * content to the client. Service handlers are called in the user's session scope, i.e. they can access session
+ * information. They can be implemented like servlets, i.e. they can access headers and parameters
+ * from the request object and write the result into the reponse writer or output stream.
  * <p>
- * A service handler can be used to process requests that bypass the standard
- * request lifecycle. Clients are free to implement custom service handlers to
- * deliver custom content. Implementing a custom service handler involves three
- * steps:
+ * Implementations can be registered with the {@link ServiceManager} or in an
+ * {@link ApplicationConfiguration}. Once registered, a service handler can be accessed by a URL
+ * with a specific parameter. This URL can be obtained by
+ * {@link ServiceManager#getServiceHandlerUrl(String)}. Example:
  * </p>
- * <ul>
- * <li>Implementing the ServiceHandler interface, e.g.
- * <pre>
- * public class MyServiceHandler implements ServiceHandler {
- *   public void service() throws IOException, ServletException {
- *     HttpServletResponse response = RWT.getResponse();
- *     response.getWriter().write( &quot;Hello World&quot; );
- *   }
- * }
- * </pre>
- * </li>
- * <li>Registering the service handler and associating it with a request
- * parameter value.
- * <pre>
- * RWT.getServiceManager().registerServiceHandler( &quot;myServiceHandler&quot;,
- *                                                 new MyServiceHandler() );
- * </pre>
- * </li>
- * <li>Constructing the URL to invoke the service handler. The URL must contain
- * the agreed parameter value like this:
- * <code>http://localhost:9090/rap?custom_service_handler=myServiceHandler</code>.
- * The following example code snippet achieves this
- * <pre>
- * StringBuilder url = new StringBuilder();
- * url.append( RWT.getRequest().getContextPath() );
- * url.append( RWT.getRequest().getServletPath() );
- * url.append( &quot;?&quot; );
- * url.append( ServiceHandler.REQUEST_PARAM );
- * url.append( &quot;=myServiceHandler&quot; );
- * String encodedURL = RWT.getResponse().encodeURL( url.toString() );
- * </pre>
- * </li>
  *
+ * <pre>
+ * RWT.getServiceManager().registerServiceHandler( &quot;download&quot;, new MyServiceHandler() );
+ * String url = RWT.getServiceManager().getServiceHandlerUrl( &quot;download&quot; );
+ * </pre>
+ *
+ * @see ServiceManager
  * @since 2.0
  */
 public interface ServiceHandler {
 
   /**
-   * <p>This method is called by the request lifecycle to allow the service
-   * handler to respond to a request.</p>
+   * This method is called by the framework when a request for a service handler is received by the
+   * client. Implementations can access information of the request and write their output to the
+   * response object. Before writing content, the content type and encoding should be set.
    *
+   * @param request the request that has been received from the client
+   * @param response the response that will be sent to the client
    * @throws IOException
    * @throws ServletException
    */

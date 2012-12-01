@@ -17,22 +17,27 @@ import org.eclipse.rap.rwt.service.ServiceHandler;
 
 
 class ServiceHandlerRegistry {
+
   private final Map<String, ServiceHandler> handlers;
 
   ServiceHandlerRegistry() {
     handlers = new HashMap<String, ServiceHandler>();
   }
 
-  ServiceHandler get( String serviceHandlerId ) {
+  ServiceHandler get( String id ) {
     synchronized( handlers ) {
-      return handlers.get( serviceHandlerId );
+      return handlers.get( id );
     }
   }
 
-  void put( String serviceHandlerId, ServiceHandler serviceHandler ) {
+  boolean put( String id, ServiceHandler serviceHandler ) {
     synchronized( handlers ) {
-      handlers.put( serviceHandlerId, serviceHandler );
+      if( !handlers.containsKey( id ) ) {
+        handlers.put( id, serviceHandler );
+        return true;
+      }
     }
+    return false;
   }
 
   void remove( String id ) {
@@ -46,4 +51,5 @@ class ServiceHandlerRegistry {
       handlers.clear();
     }
   }
+
 }

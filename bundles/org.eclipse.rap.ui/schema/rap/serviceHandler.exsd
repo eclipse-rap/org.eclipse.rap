@@ -6,8 +6,9 @@
          <meta.schema plugin="org.eclipse.rap.ui" id="serviceHandler" name="ServiceHandler"/>
       </appInfo>
       <documentation>
-A service handler is responsible for taking a request and sending an appropriate response by bypassing the standard lifecycle. Clients are free to implement custom service handlers and register it as an extension. &lt;br&gt;
-To invoke the service handler a developer needs to construct a URL. The URL must contain the agreed on parameter value like this: &lt;code&gt;http://localhost:9090/rap?custom_service_handler=myServiceHandler&lt;/code&gt;.
+         A service handler can be used to process custom requests, e.g. to deliver files, images or other content to the client. Service handlers are called in the user&apos;s session scope, i.e. they can access session information. They can be implemented like servlets, i.e. they can access headers and parameters from the request object and write the result into the reponse writer or output stream.
+
+A service handler can be accessed by a URL with a specific parameter. This URL can be obtained from &lt;code&gt;RWT.getServiceManager().getServiceHandlerUrl( &amp;quot;download&amp;quot; )&lt;/code&gt;
 
       </documentation>
    </annotation>
@@ -54,14 +55,14 @@ To invoke the service handler a developer needs to construct a URL. The URL must
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  Represents the service handler&apos;s request parameter value.
+                  A unique ID for this service manager. This ID is used to obtain the URL to access the service manager.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  An implementation of &lt;code&gt;ServiceHandler&lt;/code&gt;
+                  The service handler implementation.
                </documentation>
                <appInfo>
                   <meta.attribute kind="java" basedOn=":org.eclipse.rap.rwt.service.ServiceHandler"/>
@@ -85,10 +86,9 @@ To invoke the service handler a developer needs to construct a URL. The URL must
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         The following is an example of a ServiceHandler extension definition: 
-&lt;p&gt;
+         Here&apos;s an example of an extension that registers two service handlers:
 &lt;pre&gt;
-  &lt;extension point=&quot;org.eclipse.rap.ui.serviceHandler&quot;&gt;
+   &lt;extension point=&quot;org.eclipse.rap.ui.serviceHandler&quot;&gt;
       &lt;serviceHandler
             class=&quot;org.eclipse.rap.ui.impl.ServiceHandler1&quot;
             id=&quot;myHandler1&quot;&gt;
@@ -99,7 +99,7 @@ To invoke the service handler a developer needs to construct a URL. The URL must
       &lt;/serviceHandler&gt;
    &lt;/extension&gt;
 &lt;/pre&gt;
-&lt;/p&gt;
+
       </documentation>
    </annotation>
 
@@ -110,9 +110,11 @@ To invoke the service handler a developer needs to construct a URL. The URL must
          <meta.section type="copyright"/>
       </appInfo>
       <documentation>
-Copyright (c) 2008 EclipseSource and others. &lt;br&gt;
-All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at &lt;a 
+         Copyright (c) 2008, 2012 EclipseSource and others.&lt;br&gt;
+All rights reserved.&lt;br/&gt;
+This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at &lt;a 
 href=&quot;http://www.eclipse.org/legal/epl-v10.html&quot;&gt;http://www.eclipse.org/legal/epl-v10.html&lt;/a&gt;
+
       </documentation>
    </annotation>
 

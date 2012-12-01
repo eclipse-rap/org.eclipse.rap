@@ -13,6 +13,9 @@
 package org.eclipse.rap.rwt.service;
 
 import static org.mockito.Mockito.mock;
+
+import java.util.Locale;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
@@ -22,16 +25,15 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class ServiceManagerImpl_Test extends TestCase {
-  private static final String SERVICE_HANDLER_ID = "serviceHandlerId";
 
-  private ServiceHandler lifeCycleServiceHandler;
+  private ServiceHandler defaultServiceHandler;
   private ServiceManagerImpl serviceManager;
 
   @Override
   protected void setUp() {
     Fixture.setUp();
-    lifeCycleServiceHandler = mock( ServiceHandler.class );
-    serviceManager = new ServiceManagerImpl( lifeCycleServiceHandler );
+    defaultServiceHandler = mock( ServiceHandler.class );
+    serviceManager = new ServiceManagerImpl( defaultServiceHandler );
   }
 
   @Override
@@ -39,74 +41,137 @@ public class ServiceManagerImpl_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testRegisterServiceHandler() throws Exception {
+  public void testRegisterServiceHandler() {
     ServiceHandler serviceHandler = mock( ServiceHandler.class );
 
-    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
+    serviceManager.registerServiceHandler( "id", serviceHandler );
 
-    assertSame( serviceHandler, serviceManager.getServiceHandler( SERVICE_HANDLER_ID ) );
+    assertSame( serviceHandler, serviceManager.getServiceHandler( "id" ) );
   }
 
-  public void testRegisterServiceHandlerTwice() throws Exception {
-    ServiceHandler firstHandler = mock( ServiceHandler.class );
-    ServiceHandler secondHandler = mock( ServiceHandler.class );
+  public void testRegisterServiceHandler_failsWhithSameId() {
+    serviceManager.registerServiceHandler( "foo", mock( ServiceHandler.class ) );
 
-    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, firstHandler );
-    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, secondHandler );
-
-    assertSame( secondHandler, serviceManager.getServiceHandler( SERVICE_HANDLER_ID ) );
+    try {
+      serviceManager.registerServiceHandler( "foo", mock( ServiceHandler.class ) );
+      fail();
+    } catch( IllegalArgumentException exception ) {
+      String message = exception.getMessage().toLowerCase( Locale.ENGLISH );
+      assertTrue( message.contains( "already registered" ) && message.contains( "foo" ) );
+    }
   }
 
-  public void testUnregisterServiceHandler() throws Exception {
-    ServiceHandler serviceHandler = mock( ServiceHandler.class );
-    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
-
-    serviceManager.unregisterServiceHandler( SERVICE_HANDLER_ID );
-
-    assertNull( serviceManager.getServiceHandler( SERVICE_HANDLER_ID ) );
+  public void testRegisterServiceHandler_failsWithNullId() {
+    try {
+      serviceManager.registerServiceHandler( null, mock( ServiceHandler.class ) );
+      fail();
+    } catch( NullPointerException exception ) {
+    }
   }
 
-  public void testClear() throws Exception {
-    ServiceHandler serviceHandler = mock( ServiceHandler.class );
-    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
+  public void testRegisterServiceHandler_failsWithEmptyId() {
+    try {
+      serviceManager.registerServiceHandler( "", mock( ServiceHandler.class ) );
+      fail();
+    } catch( IllegalArgumentException exception ) {
+    }
+  }
+
+  public void testRegisterServiceHandler_failsWithNullHandler() {
+    try {
+      serviceManager.registerServiceHandler( "id", null );
+      fail();
+    } catch( NullPointerException exception ) {
+    }
+  }
+
+  public void testUnregisterServiceHandler() {
+    serviceManager.registerServiceHandler( "id", mock( ServiceHandler.class ) );
+
+    serviceManager.unregisterServiceHandler( "id" );
+
+    assertNull( serviceManager.getServiceHandler( "id" ) );
+  }
+
+  public void testUnregisterServiceHandler_doesNotFailWithUnknownId() {
+    serviceManager.unregisterServiceHandler( "id" );
+  }
+
+  public void testUnregisterServiceHandler_failsWithNull() {
+    try {
+      serviceManager.unregisterServiceHandler( null );
+      fail();
+    } catch( NullPointerException exception ) {
+    }
+  }
+
+  public void testUnregisterServiceHandler_failsWithEmpty() {
+    try {
+      serviceManager.unregisterServiceHandler( "" );
+      fail();
+    } catch( IllegalArgumentException exception ) {
+    }
+  }
+
+  public void testClear_removesCustomHandler() {
+    serviceManager.registerServiceHandler( "id", mock( ServiceHandler.class ) );
 
     serviceManager.clear();
 
-    assertNull( serviceManager.getServiceHandler( SERVICE_HANDLER_ID ) );
+    assertNull( serviceManager.getServiceHandler( "id" ) );
   }
 
-  public void testGetHandler_default() throws Exception {
-    assertSame( lifeCycleServiceHandler, serviceManager.getHandler() );
+  public void testClear_retainsDefaultHandler() {
+    serviceManager.registerServiceHandler( "id", mock( ServiceHandler.class ) );
+
+    serviceManager.clear();
+
+    assertSame( defaultServiceHandler, serviceManager.getHandler() );
   }
 
-  public void testGetHandler_custom() throws Exception {
+  public void testGetHandler_returnsDefaultHandler() {
     ServiceHandler serviceHandler = mock( ServiceHandler.class );
-    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
+    serviceManager.registerServiceHandler( "id", serviceHandler );
 
-    Fixture.fakeRequestParam( ServiceManagerImpl.REQUEST_PARAM, SERVICE_HANDLER_ID );
+    ServiceHandler handler = serviceManager.getHandler();
+
+    assertSame( defaultServiceHandler, handler );
+  }
+
+  public void testGetHandler_returnsCustomHandler() {
+    ServiceHandler serviceHandler = mock( ServiceHandler.class );
+    serviceManager.registerServiceHandler( "id", serviceHandler );
+    Fixture.fakeRequestParam( ServiceManagerImpl.REQUEST_PARAM, "id" );
+
     ServiceHandler handler = serviceManager.getHandler();
 
     assertSame( serviceHandler, handler );
   }
 
-  public void testGetHandler_unknownId() throws Exception {
-    Fixture.fakeRequestParam( ServiceManagerImpl.REQUEST_PARAM, SERVICE_HANDLER_ID );
+  public void testGetHandler_failsWithUnknownId() {
+    Fixture.fakeRequestParam( ServiceManagerImpl.REQUEST_PARAM, "id" );
 
     try {
       serviceManager.getHandler();
       fail();
     } catch( IllegalArgumentException expected ) {
-      assertTrue( expected.getMessage().contains( SERVICE_HANDLER_ID ) );
+      assertTrue( expected.getMessage().contains( "id" ) );
     }
   }
 
-  public void testReturnsUrl() throws Exception {
+  public void testGetServiceHandlerUrl_returnsUrl() {
     String url = RWT.getServiceManager().getServiceHandlerUrl( "foo" );
 
     assertEquals( "/fooapp/rap?custom_service_handler=foo", url );
   }
 
-  public void testReturnsUrlWithNull() throws Exception {
+  public void testGetServiceHandlerUrl_returnsUrlWithCharactersEscaped() {
+    String url = RWT.getServiceManager().getServiceHandlerUrl( "Smørre brød" );
+
+    assertEquals( "/fooapp/rap?custom_service_handler=Sm%C3%B8rre%20br%C3%B8d", url );
+  }
+
+  public void testGetServiceHandlerUrl_failsWithNull() {
     try {
       RWT.getServiceManager().getServiceHandlerUrl( null );
       fail();
