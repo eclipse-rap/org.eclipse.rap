@@ -24,7 +24,7 @@ import org.eclipse.rap.rwt.internal.theme.QxAppearanceWriter;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 
 
 public final class ClientResources {
@@ -311,10 +311,10 @@ public final class ClientResources {
     "resource/widget/rap/scale/v_line.gif"
   };
 
-  private final IResourceManager resourceManager;
+  private final ResourceManager resourceManager;
   private final ThemeManager themeManager;
 
-  public ClientResources( IResourceManager resourceManager, ThemeManager themeManager ) {
+  public ClientResources( ResourceManager resourceManager, ThemeManager themeManager ) {
     this.resourceManager = resourceManager;
     this.themeManager = themeManager;
   }

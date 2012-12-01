@@ -38,13 +38,13 @@ import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.internal.widgets.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.service.IApplicationStore;
-import org.eclipse.rap.rwt.service.ServiceHandler;
-import org.eclipse.rap.rwt.service.ServiceManager;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.service.ISettingStore;
+import org.eclipse.rap.rwt.service.ServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Control;
@@ -66,7 +66,7 @@ import org.eclipse.swt.widgets.Widget;
  * @see IServiceStore
  * @see IApplicationStore
  * @see IBrowserHistory
- * @see IResourceManager
+ * @see ResourceManager
  * @see HttpServletRequest
  * @see HttpServletResponse
  */
@@ -418,11 +418,11 @@ public final class RWT {
 
   /**
    * Returns the instance of the currently available
-   * {@link IResourceManager}
+   * {@link ResourceManager}
    *
-   * @return instance of {@link IResourceManager}
+   * @return instance of {@link ResourceManager}
    */
-  public static IResourceManager getResourceManager() {
+  public static ResourceManager getResourceManager() {
     return RWTFactory.getResourceManager();
   }
 

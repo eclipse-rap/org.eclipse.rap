@@ -26,13 +26,13 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class ResourceManagerImpl_Test extends TestCase {
 
-  private IResourceManager resourceManager;
+  private ResourceManager resourceManager;
 
   public void testRegistration() throws Exception {
     String resource = "path/to/resource";

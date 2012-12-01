@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,15 +14,15 @@ package org.eclipse.swt.internal.graphics;
 import java.io.InputStream;
 
 import org.eclipse.rap.rwt.internal.util.StreamUtil;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.swt.graphics.ImageData;
 
 
 public class ImageDataFactory {
-  private final IResourceManager resourceManager;
+  private final ResourceManager resourceManager;
   private final ImageDataCache imageDataCache;
   
-  public ImageDataFactory( IResourceManager resourceManager ) {
+  public ImageDataFactory( ResourceManager resourceManager ) {
     this.resourceManager = resourceManager;
     this.imageDataCache = new ImageDataCache();
   }

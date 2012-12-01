@@ -18,16 +18,16 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.eclipse.rap.rwt.internal.util.StreamUtil;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
 
 
 public class ResourceRegistry {
 
   private final Collection<ResourceRegistration> resources;
-  private final IResourceManager resourceManager;
+  private final ResourceManager resourceManager;
 
-  public ResourceRegistry( IResourceManager resourceManager ) {
+  public ResourceRegistry( ResourceManager resourceManager ) {
     this.resourceManager = resourceManager;
     this.resources = new LinkedList<ResourceRegistration>();
   }

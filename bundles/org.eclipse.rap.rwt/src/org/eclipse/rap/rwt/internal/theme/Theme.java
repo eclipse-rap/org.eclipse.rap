@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.css.CssElementHolder;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 
 
 public class Theme {
@@ -106,7 +106,7 @@ public class Theme {
     return registeredLocation;
   }
 
-  public void registerResources( IResourceManager resourceManager ) {
+  public void registerResources( ResourceManager resourceManager ) {
     try {
       registerThemeResources( resourceManager );
       registerThemeStoreFile( resourceManager );
@@ -115,7 +115,7 @@ public class Theme {
     }
   }
 
-  private void registerThemeResources( IResourceManager resourceManager ) throws IOException {
+  private void registerThemeResources( ResourceManager resourceManager ) throws IOException {
     QxType[] values = valuesMap.getAllValues();
     for( QxType value : values ) {
       if( value instanceof ThemeResource ) {
@@ -124,14 +124,14 @@ public class Theme {
     }
   }
 
-  private void registerThemeStoreFile( IResourceManager resourceManager ) {
+  private void registerThemeStoreFile( ResourceManager resourceManager ) {
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( this, elements );
     String name = "rap-" + jsId + ".json";
     String code = storeWriter.createJson();
     registeredLocation = registerResource( resourceManager, name, code );
   }
 
-  private static void registerResource( IResourceManager resourceManager, ThemeResource value )
+  private static void registerResource( ResourceManager resourceManager, ThemeResource value )
     throws IOException
   {
     String registerPath = value.getResourcePath();
@@ -148,7 +148,7 @@ public class Theme {
     }
   }
 
-  private static String registerResource( IResourceManager resourceManager,
+  private static String registerResource( ResourceManager resourceManager,
                                           String name,
                                           String content )
   {

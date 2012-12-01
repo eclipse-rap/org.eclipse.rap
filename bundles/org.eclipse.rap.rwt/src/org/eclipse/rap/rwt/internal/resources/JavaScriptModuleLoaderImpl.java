@@ -20,7 +20,7 @@ import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.service.IApplicationStore;
 
 
@@ -61,7 +61,7 @@ public class JavaScriptModuleLoaderImpl implements JavaScriptModuleLoader {
     if( inputStream == null ) {
       throw new IOException( "File " + localPath + " does not exist." );
     }
-    IResourceManager resourceManager = RWT.getResourceManager();
+    ResourceManager resourceManager = RWT.getResourceManager();
     String publicPath = getPublicPath( module, fileName );
     try {
       // TODO [tb] : ensure that content is not concatenated to core js library

@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.StartupPage;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 
 
 public class ApplicationContextActivator_Test extends TestCase {
@@ -85,7 +85,7 @@ public class ApplicationContextActivator_Test extends TestCase {
     jsLibraryConcatenator = mock( JSLibraryConcatenator.class );
     when( applicationContext.getJSLibraryConcatenator() ).thenReturn( jsLibraryConcatenator );
 
-    IResourceManager resourceManager = mock( IResourceManager.class );
+    ResourceManager resourceManager = mock( ResourceManager.class );
     when( applicationContext.getResourceManager() ).thenReturn( resourceManager );
 
     startupPage = mock( StartupPage.class );

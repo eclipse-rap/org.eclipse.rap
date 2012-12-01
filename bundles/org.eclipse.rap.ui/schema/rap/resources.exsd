@@ -121,7 +121,7 @@
          <meta.section type="apiInfo"/>
       </appInfo>
       <documentation>
-         Besides registering resources with an extension you can dynamically register new resources with an &lt;code&gt;IResourceManager&lt;/code&gt;. Use &lt;code&gt;RWT.getResourceManager&lt;/code&gt; to obtain the currently active resource manager implemenation.
+         Besides registering resources with an extension you can dynamically register new resources with an &lt;code&gt;ResourceManager&lt;/code&gt;. Use &lt;code&gt;RWT.getResourceManager&lt;/code&gt; to obtain the currently active resource manager implemenation.
       </documentation>
    </annotation>
 

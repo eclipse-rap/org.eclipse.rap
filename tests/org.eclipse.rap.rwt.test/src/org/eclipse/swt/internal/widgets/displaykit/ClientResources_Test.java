@@ -19,14 +19,14 @@ import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.resources.TestUtil;
 import org.eclipse.rap.rwt.internal.theme.Theme;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class ClientResources_Test extends TestCase {
 
   private ClientResources clientResources;
-  private IResourceManager resourceManager;
+  private ResourceManager resourceManager;
 
   @Override
   protected void setUp() {

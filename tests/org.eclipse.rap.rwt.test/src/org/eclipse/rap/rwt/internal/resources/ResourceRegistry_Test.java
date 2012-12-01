@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.resources;
 
@@ -20,34 +21,34 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry.ResourceRegistration;
-import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 
 
 public class ResourceRegistry_Test extends TestCase {
 
-  private IResourceManager resourceManager;
+  private ResourceManager resourceManager;
   private ResourceRegistry resourceRegistry;
 
   public void testAdd() {
     String resourceName = "name";
     ResourceLoader resourceLoader = mock( ResourceLoader.class );
     resourceRegistry.add( resourceName, resourceLoader );
-    
+
     ResourceRegistration resourceRegistration = resourceRegistry.getResourceRegistrations()[ 0 ];
-    
+
     assertEquals( resourceName, resourceRegistration.getResourceName() );
     assertEquals( resourceLoader, resourceRegistration.getResourceLoader() );
   }
-  
+
   public void testClear() {
     resourceRegistry.add( "name", mock( ResourceLoader.class ) );
 
     resourceRegistry.clear();
-    
+
     assertEquals( 0, resourceRegistry.getResourceRegistrations().length );
   }
-  
+
   @SuppressWarnings( "resource" )
   public void testRegisterResources() throws IOException {
     String resourceName = "name";
@@ -57,11 +58,11 @@ public class ResourceRegistry_Test extends TestCase {
     resourceRegistry.add( resourceName, resourceLoader );
 
     resourceRegistry.registerResources();
-    
+
     verify( resourceManager ).register( resourceName, inputStream );
     assertEquals( 0, resourceRegistry.getResourceRegistrations().length );
   }
-  
+
   public void testRegisterResourcesWithCorruptResourceLoader() {
     String resourceName = "resource-name";
     ResourceLoader resourceLoader = mock( ResourceLoader.class );
@@ -76,7 +77,8 @@ public class ResourceRegistry_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    resourceManager = mock( IResourceManager.class );
+    resourceManager = mock( ResourceManager.class );
     resourceRegistry = new ResourceRegistry( resourceManager );
   }
+
 }

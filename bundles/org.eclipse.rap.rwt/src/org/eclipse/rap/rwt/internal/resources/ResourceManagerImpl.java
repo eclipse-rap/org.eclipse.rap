@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 
 
 /**
@@ -43,7 +43,7 @@ import org.eclipse.rap.rwt.resources.IResourceManager;
  * This class is not intended to be used by clients.
  * </p>
  */
-public class ResourceManagerImpl implements IResourceManager {
+public class ResourceManagerImpl implements ResourceManager {
 
   private final ResourceDirectory resourceDirectory;
   private final Set<String> resources;
@@ -54,7 +54,7 @@ public class ResourceManagerImpl implements IResourceManager {
   }
 
   /////////////////////////////
-  // interface IResourceManager
+  // interface ResourceManager
 
   public void register( String path, InputStream inputStream ) {
     ParamCheck.notNull( path, "name" );

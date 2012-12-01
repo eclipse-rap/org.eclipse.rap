@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -32,7 +32,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
   private static final String JS_FILE_2 = "utf-8-resource.js";
 
   private JavaScriptModuleLoader loader = new JavaScriptModuleLoaderImpl();
-  private IResourceManager resourceManager;
+  private ResourceManager resourceManager;
   private Display display;
 
   public void testRegisterOnce() {

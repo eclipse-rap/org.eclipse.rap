@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -101,7 +101,7 @@ public class Graphics_Test extends TestCase {
 
   public void testGetImage() {
     Fixture.useDefaultResourceManager();
-    IResourceManager resourceManager = RWT.getResourceManager();
+    ResourceManager resourceManager = RWT.getResourceManager();
     // only if you comment initial registration in
     // org.eclipse.swt.internal.widgets.displaykit.QooxdooResourcesUtil
     assertFalse( resourceManager.isRegistered( Fixture.IMAGE1 ) );

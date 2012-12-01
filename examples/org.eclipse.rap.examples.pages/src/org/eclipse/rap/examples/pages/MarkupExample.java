@@ -16,7 +16,7 @@ import java.io.InputStream;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -165,7 +165,7 @@ public class MarkupExample implements IExamplePage {
   }
 
   private static String registerImage( String resourceName ) throws IOException {
-    IResourceManager resourceManager = RWT.getResourceManager();
+    ResourceManager resourceManager = RWT.getResourceManager();
     if( !resourceManager.isRegistered( resourceName ) ) {
       InputStream inputStream = CLASSLOADER.getResourceAsStream( resourceName );
       if( inputStream == null ) {

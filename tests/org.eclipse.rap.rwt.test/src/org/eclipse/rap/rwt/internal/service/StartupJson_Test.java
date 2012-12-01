@@ -18,15 +18,15 @@ import static org.eclipse.rap.rwt.internal.service.StartupJson.THEME_STORE_TYPE;
 
 import java.io.IOException;
 
+import junit.framework.TestCase;
+
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.swt.internal.widgets.displaykit.ClientResources;
-
-import junit.framework.TestCase;
 
 
 public class StartupJson_Test extends TestCase {
@@ -37,7 +37,7 @@ public class StartupJson_Test extends TestCase {
   protected void setUp() {
     Fixture.setUp();
     Fixture.useDefaultResourceManager();
-    IResourceManager resourceManager = RWTFactory.getResourceManager();
+    ResourceManager resourceManager = RWTFactory.getResourceManager();
     clientResources = new ClientResources( resourceManager, RWTFactory.getThemeManager() );
   }
 

@@ -16,14 +16,9 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.theme.IThemeCssElement;
-import org.eclipse.rap.rwt.internal.theme.Theme;
-import org.eclipse.rap.rwt.internal.theme.ThemeCssElement;
-import org.eclipse.rap.rwt.internal.theme.ThemeCssValuesMap;
-import org.eclipse.rap.rwt.internal.theme.ThemeableWidget;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Button;
 
@@ -131,7 +126,7 @@ public class Theme_Test extends TestCase {
       ThemeableWidget[] widgets = new ThemeableWidget[] { createSimpleButtonWidget() };
       defaultTheme.initialize( widgets );
 
-      IResourceManager resourceManager = RWTFactory.getResourceManager();
+      ResourceManager resourceManager = RWTFactory.getResourceManager();
       defaultTheme.registerResources( resourceManager );
 
       assertTrue( resourceManager.isRegistered( "themes/images/9e78c44e.gif" ) );
@@ -151,4 +146,5 @@ public class Theme_Test extends TestCase {
     buttonWidget.elements = new IThemeCssElement[] { buttonElement };
     return buttonWidget;
   }
+
 }

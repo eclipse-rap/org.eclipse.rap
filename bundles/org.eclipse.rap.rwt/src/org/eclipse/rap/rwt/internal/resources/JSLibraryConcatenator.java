@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,15 +14,15 @@ package org.eclipse.rap.rwt.internal.resources;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 
 
 public class JSLibraryConcatenator {
-  private final IResourceManager resourceManager;
+  private final ResourceManager resourceManager;
   private ContentBuffer jsBuffer;
   private String location;
 
-  public JSLibraryConcatenator( IResourceManager resourceManager ) {
+  public JSLibraryConcatenator( ResourceManager resourceManager ) {
     this.resourceManager = resourceManager;
   }
 

@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.internal.service.StartupPage;
 import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.service.IApplicationStore;
 import org.eclipse.swt.internal.graphics.FontDataFactory;
 import org.eclipse.swt.internal.graphics.ImageDataFactory;
@@ -115,7 +115,7 @@ public class RWTFactory {
     return ApplicationContextUtil.getInstance().getResourceRegistry();
   }
 
-  public static IResourceManager getResourceManager() {
+  public static ResourceManager getResourceManager() {
     return ApplicationContextUtil.getInstance().getResourceManager();
   }
 

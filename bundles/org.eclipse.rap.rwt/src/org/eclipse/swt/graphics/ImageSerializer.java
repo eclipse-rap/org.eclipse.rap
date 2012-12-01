@@ -16,7 +16,7 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.engine.*;
 import org.eclipse.rap.rwt.internal.resources.ResourceUtil;
 import org.eclipse.rap.rwt.internal.util.StreamUtil;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
@@ -85,7 +85,7 @@ class ImageSerializer {
     return adapter.getSessionStore();
   }
 
-  private IResourceManager getResourceManager() {
+  private ResourceManager getResourceManager() {
     return ApplicationContextUtil.get( getSessionStore() ).getResourceManager();
   }
 }
