@@ -21,7 +21,7 @@ import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.client.ClientProvider;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rap.rwt.internal.service.ServiceManager;
+import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
@@ -31,7 +31,7 @@ import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ISettingStoreFactory;
 import org.eclipse.swt.widgets.Widget;
 
@@ -99,15 +99,15 @@ public class ApplicationImpl implements Application, Adaptable {
   public void addResource( String resourceName, ResourceLoader resourceLoader ) {
     ParamCheck.notNull( resourceName, "resourceName" );
     ParamCheck.notNull( resourceLoader, "resourceLoader" );
-    
+
     applicationContext.getResourceRegistry().add( resourceName, resourceLoader );
   }
 
-  public void addServiceHandler( String serviceHandlerId, IServiceHandler serviceHandler ) {
+  public void addServiceHandler( String serviceHandlerId, ServiceHandler serviceHandler ) {
     ParamCheck.notNull( serviceHandlerId, "serviceHandlerId" );
     ParamCheck.notNull( serviceHandler, "serviceHandler" );
 
-    ServiceManager serviceManager = applicationContext.getServiceManager();
+    ServiceManagerImpl serviceManager = applicationContext.getServiceManager();
     serviceManager.registerServiceHandler( serviceHandlerId, serviceHandler );
   }
 

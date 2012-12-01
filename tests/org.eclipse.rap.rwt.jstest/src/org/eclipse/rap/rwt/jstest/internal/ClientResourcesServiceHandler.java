@@ -20,16 +20,15 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.jstest.TestContribution;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 
 
-public class ClientResourcesServiceHandler implements IServiceHandler {
+public class ClientResourcesServiceHandler implements ServiceHandler {
 
   private static final String PARAM_CONTRIBUTION = "contribution";
   private static final String PARAM_FILE = "file";
@@ -41,8 +40,9 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     return Activator.getContributions();
   }
 
-  public void service() throws IOException, ServletException {
-    HttpServletRequest request = RWT.getRequest();
+  public void service( HttpServletRequest request, HttpServletResponse response )
+    throws IOException
+  {
     String fileParameter = request.getParameter( PARAM_FILE );
     String contributionParameter = request.getParameter( PARAM_CONTRIBUTION );
     if( fileParameter != null ) {
@@ -128,21 +128,15 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
   private static String getResourceLocation( TestContribution contribution, String resource )
     throws IOException
   {
-    StringBuilder url = new StringBuilder();
-    url.append( RWT.getRequest().getContextPath() );
-    url.append( RWT.getRequest().getServletPath() );
-    url.append( '?' );
-    appendParameter( url, REQUEST_PARAM, ID );
-    url.append( '&' );
+    StringBuilder url = new StringBuilder( RWT.getServiceManager().getServiceHandlerUrl( ID ) );
     appendParameter( url, PARAM_CONTRIBUTION, contribution.getName() );
-    url.append( '&' );
     appendParameter( url, PARAM_FILE, resource );
-    url.append( '&' );
     appendParameter( url, PARAM_NOCACHE, getResourceHash( contribution, resource ) );
-    return RWT.getResponse().encodeURL( url.toString() );
+    return url.toString();
   }
 
   private static void appendParameter( StringBuilder stringBuilder, String name, String value ) {
+    stringBuilder.append( '&' );
     stringBuilder.append( name );
     stringBuilder.append( '=' );
     stringBuilder.append( value );

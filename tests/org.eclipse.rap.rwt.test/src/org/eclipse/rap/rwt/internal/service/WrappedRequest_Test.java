@@ -21,6 +21,7 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.service.WrappedRequest;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.widgets.Display;
@@ -100,12 +101,13 @@ public class WrappedRequest_Test extends TestCase {
     RWTFactory.getEntryPointManager().register( "/rap", DefaultEntryPoint.class, null );
     Fixture.fakeNewGetRequest();
     Fixture.fakeRequestParam( "param", "value" );
-    RWTFactory.getServiceManager().getHandler().service();
+    ServiceHandler handler = RWTFactory.getServiceManager().getHandler();
+    handler.service( ContextProvider.getRequest(), ContextProvider.getResponse() );
 
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( "param", null );
     Fixture.fakeHeadParameter( RequestParams.RWT_INITIALIZE, "true" );
-    RWTFactory.getServiceManager().getHandler().service();
+    handler.service( ContextProvider.getRequest(), ContextProvider.getResponse() );
 
     assertEquals( "value", ContextProvider.getRequest().getParameter( "param" ) );
   }

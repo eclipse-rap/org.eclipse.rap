@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -38,7 +39,7 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -77,7 +78,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     ContextProvider.getSessionStore();
     ServiceContext context = ContextProvider.getContext();
     for( int i = 0; i < THREAD_COUNT; i++ ) {
-      IServiceHandler syncHandler = new TestHandler( getLifeCycleFactory(), mockStartupPage() );
+      ServiceHandler syncHandler = new TestHandler( getLifeCycleFactory(), mockStartupPage() );
       Thread thread = new Thread( new Worker( context, syncHandler ) );
       thread.setDaemon( true );
       thread.start();
@@ -95,19 +96,19 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     assertEquals( expected, log.toString() );
   }
 
-  public void testSessionStoreClearedOnSessionRestart() throws Exception {
+  public void testSessionStoreClearedOnSessionRestart() throws IOException {
     initializeSessionStore();
     ISessionStore sessionStore = ContextProvider.getSessionStore();
     sessionStore.setAttribute( SESSION_STORE_ATTRIBUTE, new Object() );
 
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
-    new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ).service();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
 
     assertNull( sessionStore.getAttribute( SESSION_STORE_ATTRIBUTE ) );
   }
 
-  public void testHttpSessionNotClearedOnSessionRestart() throws Exception {
+  public void testHttpSessionNotClearedOnSessionRestart() throws IOException {
     initializeSessionStore();
     HttpSession httpSession = ContextProvider.getSessionStore().getHttpSession();
     Object attribute = new Object();
@@ -115,19 +116,19 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
-    new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ).service();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
 
     assertSame( attribute, httpSession.getAttribute( HTTP_SESSION_ATTRIBUTE ) );
   }
 
-  public void testRequestCounterAfterSessionRestart() throws Exception {
+  public void testRequestCounterAfterSessionRestart() throws IOException {
     initializeSessionStore();
     RequestId.getInstance().nextRequestId();
     Integer versionBeforeRestart = RequestId.getInstance().nextRequestId();
 
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
-    new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ).service();
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
     Integer versionAfterRestart = RequestId.getInstance().getCurrentRequestId();
     assertEquals( versionBeforeRestart.intValue() + 1, versionAfterRestart.intValue() );
@@ -139,7 +140,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     ISessionStore sessionStore = ContextProvider.getSessionStore();
     ApplicationContext applicationContext = ApplicationContextUtil.getInstance();
 
-    new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ).service();
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
     sessionStore = ContextProvider.getSessionStore();
     assertSame( applicationContext, ApplicationContextUtil.get( sessionStore ) );
@@ -149,11 +150,11 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     initializeSessionStore();
     Fixture.fakeNewGetRequest();
     Fixture.fakeRequestParam( "foo", "bar" );
-    new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ).service();
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
-    new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ).service();
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
     assertEquals( "bar", ContextProvider.getRequest().getParameter( "foo" ) );
   }
@@ -168,11 +169,11 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     initializeSessionStore();
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
-    new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ).service();
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
     simulateInitialUiRequest();
     ContextProvider.getServiceStore().setAttribute( "foo", "bar" );
-    new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ).service();
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
     assertNull( ContextProvider.getServiceStore().getAttribute( "foo" ) );
   }
@@ -181,11 +182,11 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     initializeSessionStore();
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
-    new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ).service();
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
     simulateInitialUiRequest();
     ClientMessage message = ProtocolUtil.getClientMessage();
-    new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ).service();
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
     assertSame( message, ProtocolUtil.getClientMessage() );
   }
@@ -193,7 +194,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   public void testFinishesProtocolWriter() throws IOException {
     simulateUiRequest();
 
-    new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ).service();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
 
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertTrue( response.getContent().contains( "\"head\":" ) );
@@ -202,7 +203,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   public void testContentType() throws IOException {
     simulateUiRequest();
 
-    new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ).service();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
 
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
@@ -211,7 +212,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   public void testContentTypeForIllegalRequestCounter() throws IOException {
     simulateUiRequestWithIllegalCounter();
 
-    new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ).service();
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
@@ -223,7 +224,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setMethod( HTTP.METHOD_GET );
 
-    new LifeCycleServiceHandler( getLifeCycleFactory(), RWTFactory.getStartupPage() ).service();
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), RWTFactory.getStartupPage() ) );
 
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
@@ -234,8 +235,9 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     Fixture.fakeClient( mock( WebClient.class ) );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setMethod( HTTP.METHOD_GET );
+    StartupPage startupPage = RWTFactory.getStartupPage();
 
-    new LifeCycleServiceHandler( getLifeCycleFactory(), RWTFactory.getStartupPage() ).service();
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), startupPage ) );
 
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertEquals( "text/html; charset=UTF-8", response.getHeader( "Content-Type" ) );
@@ -246,8 +248,9 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     Fixture.fakeClient( mock( WebClient.class ) );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setMethod( "HEAD" );
+    StartupPage startupPage = RWTFactory.getStartupPage();
 
-    new LifeCycleServiceHandler( getLifeCycleFactory(), RWTFactory.getStartupPage() ).service();
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), startupPage ) );
 
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertEquals( "text/html; charset=UTF-8", response.getHeader( "Content-Type" ) );
@@ -256,7 +259,8 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   public void testHandleInvalidRequestCounter() throws IOException {
     LifeCycleServiceHandler.markSessionStarted();
     simulateUiRequestWithIllegalCounter();
-    new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ).service();
+
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
@@ -267,7 +271,8 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
   public void testHandleSessionTimeout() throws IOException {
     simulateUiRequest();
-    new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ).service();
+
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
@@ -318,6 +323,10 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     ApplicationContextUtil.set( sessionStore, applicationContext );
   }
 
+  private static void service( LifeCycleServiceHandler serviceHandler ) throws IOException {
+    serviceHandler.service( ContextProvider.getRequest(), ContextProvider.getResponse() );
+  }
+
   private class TestHandler extends LifeCycleServiceHandler {
 
     public TestHandler( LifeCycleFactory lifeCycleFactory, StartupPage startupPage ) {
@@ -325,7 +334,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     }
 
     @Override
-    void synchronizedService() {
+    void synchronizedService( HttpServletRequest request, HttpServletResponse response ) {
       log.append( ENTER );
       try {
         Thread.sleep( 2 );
@@ -338,9 +347,9 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
   private static class Worker implements Runnable {
     private final ServiceContext context;
-    private final IServiceHandler serviceHandler;
+    private final ServiceHandler serviceHandler;
 
-    private Worker( ServiceContext context, IServiceHandler serviceHandler ) {
+    private Worker( ServiceContext context, ServiceHandler serviceHandler ) {
       this.context = context;
       this.serviceHandler = serviceHandler;
     }
@@ -348,7 +357,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     public void run() {
       ContextProvider.setContext( context );
       try {
-        serviceHandler.service();
+        serviceHandler.service( context.getRequest(), context.getResponse() );
       } catch( ServletException e ) {
         throw new RuntimeException( e );
       } catch( IOException e ) {

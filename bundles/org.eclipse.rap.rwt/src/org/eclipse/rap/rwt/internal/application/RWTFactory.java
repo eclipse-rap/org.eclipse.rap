@@ -17,7 +17,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerRegistry;
 import org.eclipse.rap.rwt.internal.resources.JSLibraryConcatenator;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
-import org.eclipse.rap.rwt.internal.service.ServiceManager;
+import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.SettingStoreManager;
 import org.eclipse.rap.rwt.internal.service.StartupPage;
 import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
@@ -47,7 +47,7 @@ public class RWTFactory {
     return ApplicationContextUtil.getInstance().getEntryPointManager();
   }
 
-  public static ServiceManager getServiceManager() {
+  public static ServiceManagerImpl getServiceManager() {
     return ApplicationContextUtil.getInstance().getServiceManager();
   }
 

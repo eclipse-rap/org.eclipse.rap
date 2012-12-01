@@ -20,7 +20,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.resources.JSLibraryConcatenator;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
-import org.eclipse.rap.rwt.internal.service.ServiceManager;
+import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.StartupPage;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.resources.IResourceManager;
@@ -32,7 +32,7 @@ public class ApplicationContextActivator_Test extends TestCase {
   private LifeCycleFactory lifeCycleFactory;
   private ThemeManager themeManager;
   private JSLibraryConcatenator jsLibraryConcatenator;
-  private ServiceManager serviceManager;
+  private ServiceManagerImpl serviceManager;
   private ClientSelector clientSelector;
   private StartupPage startupPage;
 
@@ -79,7 +79,7 @@ public class ApplicationContextActivator_Test extends TestCase {
     ResourceDirectory resourceDirectory = mock( ResourceDirectory.class );
     when( applicationContext.getResourceDirectory() ).thenReturn( resourceDirectory );
 
-    serviceManager = mock( ServiceManager.class );
+    serviceManager = mock( ServiceManagerImpl.class );
     when( applicationContext.getServiceManager() ).thenReturn( serviceManager );
 
     jsLibraryConcatenator = mock( JSLibraryConcatenator.class );

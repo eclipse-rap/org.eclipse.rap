@@ -40,8 +40,8 @@ import org.eclipse.rap.rwt.internal.widgets.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.rap.rwt.service.IApplicationStore;
-import org.eclipse.rap.rwt.service.IServiceHandler;
-import org.eclipse.rap.rwt.service.IServiceManager;
+import org.eclipse.rap.rwt.service.ServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceManager;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.service.ISettingStore;
@@ -427,11 +427,14 @@ public final class RWT {
   }
 
   /**
-   * Returns a manager to add and remove {@link IServiceHandler}s.
+   * Returns the instance of the service manager for the current application context. The service
+   * manager is used to register and unregister service handlers.
    *
-   * @return the {@link IServiceManager}
+   * @return the service manager instance for the current application context
+   * @see ServiceHandler
+   * @see ServiceManager
    */
-  public static IServiceManager getServiceManager() {
+  public static ServiceManager getServiceManager() {
     return RWTFactory.getServiceManager();
   }
 
@@ -483,7 +486,7 @@ public final class RWT {
    * service handlers obtain parameters of the request to process.
    * </p>
    * @return instance of {@link HttpServletRequest}
-   * @see IServiceHandler
+   * @see ServiceHandler
    */
   public static HttpServletRequest getRequest() {
     checkHasSessionContext();
@@ -500,7 +503,7 @@ public final class RWT {
    * certainly an error.
    * </p>
    * @return instance of {@link HttpServletResponse}
-   * @see IServiceHandler
+   * @see ServiceHandler
    */
   public static HttpServletResponse getResponse() {
     checkHasSessionContext();

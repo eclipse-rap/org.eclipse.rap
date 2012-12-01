@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
+import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
-import org.eclipse.rap.rwt.service.IServiceHandler;
 import org.eclipse.swt.dnd.Transfer;
 
 
@@ -133,7 +133,7 @@ public class RWTClient {
 
   public Response sendUICallBackRequest( int timeout ) throws IOException {
     Map<String,String> parameters = new HashMap<String,String>();
-    parameters.put( IServiceHandler.REQUEST_PARAM, UICallBackServiceHandler.HANDLER_ID );
+    parameters.put( ServiceManagerImpl.REQUEST_PARAM, UICallBackServiceHandler.HANDLER_ID );
     URL url = createUrl( IServletEngine.SERVLET_NAME, parameters );
     HttpURLConnection connection = createConnection( "GET", url, timeout );
     return new Response( connection );

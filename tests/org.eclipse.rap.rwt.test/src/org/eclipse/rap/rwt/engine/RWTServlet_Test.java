@@ -18,6 +18,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
@@ -27,7 +28,8 @@ import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
@@ -80,9 +82,9 @@ public class RWTServlet_Test extends TestCase {
     final List<IServiceStore> log = new ArrayList<IServiceStore>();
     ApplicationContext applicationContext = createApplicationContext();
     TestRequest request = createTestRequest( applicationContext );
-    request.setParameter( IServiceHandler.REQUEST_PARAM, "foo" );
-    applicationContext.getServiceManager().registerServiceHandler( "foo", new IServiceHandler() {
-      public void service() throws IOException, ServletException {
+    request.setParameter( ServiceManagerImpl.REQUEST_PARAM, "foo" );
+    applicationContext.getServiceManager().registerServiceHandler( "foo", new ServiceHandler() {
+      public void service( HttpServletRequest request, HttpServletResponse response) {
         log.add( ContextProvider.getServiceStore() );
       }
     } );

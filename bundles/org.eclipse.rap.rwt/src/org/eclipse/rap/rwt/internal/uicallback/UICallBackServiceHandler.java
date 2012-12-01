@@ -13,18 +13,19 @@ package org.eclipse.rap.rwt.internal.uicallback;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 
 
-public class UICallBackServiceHandler implements IServiceHandler {
+public class UICallBackServiceHandler implements ServiceHandler {
 
   public final static String HANDLER_ID = "org.eclipse.rap.uicallback";
 
-  public void service() throws IOException {
-    HttpServletResponse response = ContextProvider.getResponse();
+  public void service( HttpServletRequest request, HttpServletResponse response )
+    throws IOException
+  {
     UICallBackManager.getInstance().processRequest( response );
   }
 

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Map;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,11 +33,11 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ISessionStore;
 
 
-public class LifeCycleServiceHandler implements IServiceHandler {
+public class LifeCycleServiceHandler implements ServiceHandler {
   private static final String PROP_ERROR = "error";
   private static final String PROP_MESSAGE = "message";
   private static final String SESSION_STARTED
@@ -50,31 +51,36 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     this.startupPage = startupPage;
   }
 
-  public void service() throws IOException {
+  public void service( HttpServletRequest request, HttpServletResponse response )
+    throws IOException
+  {
     // Do not use session store itself as a lock
     // see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=372946
     SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSessionStore();
     synchronized( sessionStore.getRequestLock() ) {
-      synchronizedService();
+      synchronizedService( request, response );
     }
   }
 
-  void synchronizedService() throws IOException {
-    if( HTTP.METHOD_POST.equals( ContextProvider.getRequest().getMethod() ) ) {
+  void synchronizedService( HttpServletRequest request, HttpServletResponse response )
+    throws IOException
+  {
+    if( HTTP.METHOD_POST.equals( request.getMethod() ) ) {
       try {
-        handlePostRequest();
+        handlePostRequest( request, response );
       } finally {
         markSessionStarted();
       }
     } else {
-      handleGetRequest();
+      handleGetRequest( request, response );
     }
   }
 
-  private void handleGetRequest() throws IOException {
-    Map<String, String[]> parameters = ContextProvider.getRequest().getParameterMap();
+  private void handleGetRequest( ServletRequest request, HttpServletResponse response )
+    throws IOException
+  {
+    Map<String, String[]> parameters = request.getParameterMap();
     RequestParameterBuffer.store( parameters );
-    HttpServletResponse response = ContextProvider.getResponse();
     if( RWT.getClient() instanceof WebClient ) {
       startupPage.send( response );
     } else {
@@ -82,21 +88,23 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     }
   }
 
-  private void handlePostRequest() throws IOException {
-    setJsonResponseHeaders();
+  private void handlePostRequest( HttpServletRequest request, HttpServletResponse response )
+    throws IOException
+  {
+    setJsonResponseHeaders( response );
     if( isSessionTimeout() ) {
-      handleSessionTimeout();
+      handleSessionTimeout( response );
     } else if( !isRequestCounterValid() ) {
-      handleInvalidRequestCounter();
+      handleInvalidRequestCounter( response );
     } else {
       if( isSessionRestart() ) {
-        reinitializeSessionStore();
+        reinitializeSessionStore( request );
         reinitializeServiceStore();
       }
       RequestParameterBuffer.merge();
       runLifeCycle();
     }
-    writeProtocolMessage();
+    writeProtocolMessage( response );
   }
 
   private void runLifeCycle() throws IOException {
@@ -111,18 +119,18 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     return hasInitializeParameter() || RequestId.getInstance().isValid();
   }
 
-  private static void handleInvalidRequestCounter() {
+  private static void handleInvalidRequestCounter( HttpServletResponse response ) {
     int statusCode = HttpServletResponse.SC_PRECONDITION_FAILED;
     String errorType = "invalid request counter";
     String errorMessage = RWTMessages.getMessage( "RWT_MultipleInstancesErrorMessage" );
-    renderError( statusCode, errorType, formatMessage( errorMessage ) );
+    renderError( response, statusCode, errorType, formatMessage( errorMessage ) );
   }
 
-  private static void handleSessionTimeout() {
+  private static void handleSessionTimeout( HttpServletResponse response ) {
     int statusCode = HttpServletResponse.SC_FORBIDDEN;
     String errorType = "session timeout";
     String errorMessage = RWTMessages.getMessage( "RWT_SessionTimeoutErrorMessage" );
-    renderError( statusCode, errorType, formatMessage( errorMessage ) );
+    renderError( response, statusCode, errorType, formatMessage( errorMessage ) );
   }
 
   private static String formatMessage( String message ) {
@@ -130,19 +138,22 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     return MessageFormat.format( message, arguments );
   }
 
-  private static void renderError( int statusCode, String errorType, String errorMessage) {
-    ContextProvider.getResponse().setStatus( statusCode );
+  private static void renderError( HttpServletResponse response,
+                                   int statusCode,
+                                   String errorType,
+                                   String errorMessage )
+  {
+    response.setStatus( statusCode );
     ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
     writer.appendHead( PROP_ERROR, JsonValue.valueOf( errorType ) );
     writer.appendHead( PROP_MESSAGE, JsonValue.valueOf( errorMessage ) );
   }
 
-  private static void reinitializeSessionStore() {
+  private static void reinitializeSessionStore( HttpServletRequest request ) {
     SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSessionStore();
     Map<String, String[]> bufferedParameters = RequestParameterBuffer.getBufferedParameters();
     ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
     sessionStore.valueUnbound( null );
-    HttpServletRequest request = ContextProvider.getRequest();
     SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
     sessionStore = ( SessionStoreImpl )builder.buildSessionStore();
     ContextProvider.getContext().setSessionStore( sessionStore );
@@ -184,16 +195,15 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     return "true".equals( ProtocolUtil.readHeadPropertyValue( RequestParams.RWT_INITIALIZE ) );
   }
 
-  private static void setJsonResponseHeaders() {
-    ServletResponse response = ContextProvider.getResponse();
+  private static void setJsonResponseHeaders( ServletResponse response ) {
     response.setContentType( HTTP.CONTENT_TYPE_JSON );
     response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
   }
 
-  private static void writeProtocolMessage() throws IOException {
-    HttpServletResponse response = ContextProvider.getResponse();
+  private static void writeProtocolMessage( ServletResponse response ) throws IOException {
     ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
     String message = protocolWriter.createMessage();
     response.getWriter().write( message );
   }
+
 }

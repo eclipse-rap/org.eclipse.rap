@@ -102,7 +102,7 @@ public class RWTServlet extends HttpServlet {
     ContextProvider.setContext( context );
     try {
       createSessionStore();
-      RWTFactory.getServiceManager().getHandler().service();
+      RWTFactory.getServiceManager().getHandler().service( request, response );
     } finally {
       ContextProvider.disposeContext();
     }
