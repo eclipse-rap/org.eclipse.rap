@@ -11,14 +11,23 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.resources;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 
+
 /**
+ * A resource loader is used to load the contents of a named resource.
+ *
  * @since 2.0
  */
 public interface ResourceLoader {
 
+  /**
+   * Returns an input stream to the resource contents.
+   *
+   * @param a name to identify the resource
+   * @return an input stream or <code>null</code> if the resource could not be found
+   */
   InputStream getResourceAsStream( String resourceName ) throws IOException;
+
 }

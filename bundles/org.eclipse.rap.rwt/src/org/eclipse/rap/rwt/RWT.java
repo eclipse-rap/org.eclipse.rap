@@ -417,10 +417,11 @@ public final class RWT {
   }
 
   /**
-   * Returns the instance of the currently available
-   * {@link ResourceManager}
+   * Returns the instance of the resource manager for the current application context. The resource
+   * manager is used to register static resources such as images of JavaScript files.
    *
-   * @return instance of {@link ResourceManager}
+   * @return the resource manager for the current application context
+   * @see ResourceManager
    */
   public static ResourceManager getResourceManager() {
     return RWTFactory.getResourceManager();

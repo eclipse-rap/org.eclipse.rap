@@ -6,7 +6,7 @@
          <meta.schema plugin="org.eclipse.rap.ui" id="resources" name="Resources"/>
       </appInfo>
       <documentation>
-         The &lt;code&gt;resources&lt;/code&gt; extension point is used to register additional resources which are used in the client application. This can be for example a javascript library, additional images used by the client or other documents which are then available on the client. The resource can be located locally or loaded from an external location.
+         The &lt;code&gt;resources&lt;/code&gt; extension point is used to register static resources such as images or JavaScript files in order to make them available at for the client. The resource can be accessed by a URL that can be obtained by &lt;code&gt;RWT.getResourceManager().getLocation( String )&lt;/code&gt;.
       </documentation>
    </annotation>
 
@@ -108,11 +108,12 @@
       <documentation>
          &lt;pre&gt;
 &lt;extension
-    id=&quot;org.eclipse.rap.gmaps.gmap&quot;
-    point=&quot;org.eclipse.rap.ui.resources&quot;&gt;
-  &lt;resource class=&quot;org.eclipse.rap.gmaps.GMapResource&quot;/&gt;
+      id=&quot;example.customwidget.customjs&quot;
+      point=&quot;org.eclipse.rap.ui.resources&quot;&gt;
+   &lt;resource class=&quot;example.customwidget.CustomJavaScriptResource&quot;/&gt;
 &lt;/extension&gt;
 &lt;/pre&gt;
+
       </documentation>
    </annotation>
 
@@ -121,7 +122,7 @@
          <meta.section type="apiInfo"/>
       </appInfo>
       <documentation>
-         Besides registering resources with an extension you can dynamically register new resources with an &lt;code&gt;ResourceManager&lt;/code&gt;. Use &lt;code&gt;RWT.getResourceManager&lt;/code&gt; to obtain the currently active resource manager implemenation.
+         Besides registering static resources with an extension you can also dynamically register new resources with the resource manager. Use &lt;code&gt;RWT.getResourceManager()&lt;/code&gt; to obtain the current resource manager instance.
       </documentation>
    </annotation>
 
@@ -131,11 +132,10 @@
          <meta.section type="copyright"/>
       </appInfo>
       <documentation>
-         Copyright (c) 2007 Innoopract Informationssysteme GmbH and others.&lt;br&gt;
-All rights reserved. This program and the accompanying materials are made
-available under the terms of the Eclipse Public License v1.0 which accompanies
-this distribution, and is available at &lt;a 
-href=&quot;http://www.eclipse.org/legal/epl-v10.html&quot;&gt;http://www.eclipse.org/legal/epl-v10.html&lt;/a&gt;
+         Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.&lt;br&gt;
+All rights reserved.&lt;br/&gt;
+This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at &lt;a href=&quot;http://www.eclipse.org/legal/epl-v10.html&quot;&gt;http://www.eclipse.org/legal/epl-v10.html&lt;/a&gt;
+
       </documentation>
    </annotation>
 
