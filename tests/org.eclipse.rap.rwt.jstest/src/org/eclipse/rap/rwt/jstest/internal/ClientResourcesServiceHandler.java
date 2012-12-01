@@ -33,7 +33,6 @@ public class ClientResourcesServiceHandler implements ServiceHandler {
   private static final String PARAM_CONTRIBUTION = "contribution";
   private static final String PARAM_FILE = "file";
   private static final String PARAM_NOCACHE = "nocache";
-
   public static final String ID = "clientResources";
 
   public Map<String, TestContribution> getContributions() {
@@ -46,23 +45,24 @@ public class ClientResourcesServiceHandler implements ServiceHandler {
     String fileParameter = request.getParameter( PARAM_FILE );
     String contributionParameter = request.getParameter( PARAM_CONTRIBUTION );
     if( fileParameter != null ) {
-      deliverResource( contributionParameter, fileParameter );
+      deliverResource( response, contributionParameter, fileParameter );
     } else {
-      deliverFilesList();
+      deliverFilesList( response );
     }
   }
 
-  private void deliverResource( String contributionName, String file ) throws IOException {
+  private void deliverResource( HttpServletResponse response, String contributionName, String file )
+    throws IOException
+  {
     TestContribution contribution = getContributions().get( contributionName );
     if( contribution != null ) {
-      deliverResource( contribution, file );
+      deliverResource( response, contribution, file );
     } else {
-      writeError( RWT.getResponse(), HttpServletResponse.SC_BAD_REQUEST, "Unknown contribution" );
+      writeError( response, HttpServletResponse.SC_BAD_REQUEST, "Unknown contribution" );
     }
   }
 
-  private void deliverFilesList() throws IOException {
-    HttpServletResponse response = RWT.getResponse();
+  private void deliverFilesList( HttpServletResponse response ) throws IOException {
     response.setContentType( "text/javascript" );
     response.setCharacterEncoding( "UTF-8" );
     PrintWriter writer = response.getWriter();
@@ -74,10 +74,10 @@ public class ClientResourcesServiceHandler implements ServiceHandler {
     writer.write( "} )();\n" );
   }
 
-  private void deliverResource( TestContribution contribution, String resource )
-    throws IOException
+  private void deliverResource( HttpServletResponse response,
+                                TestContribution contribution,
+                                String resource ) throws IOException
   {
-    HttpServletResponse response = RWT.getResponse();
     response.setContentType( "text/javascript" );
     response.setCharacterEncoding( "UTF-8" );
     InputStream inputStream = contribution.getResourceAsStream( resource );
