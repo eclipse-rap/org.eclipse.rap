@@ -128,21 +128,15 @@ public class ClientResourcesServiceHandler implements ServiceHandler {
   private static String getResourceLocation( TestContribution contribution, String resource )
     throws IOException
   {
-    StringBuilder url = new StringBuilder();
-    url.append( RWT.getRequest().getContextPath() );
-    url.append( RWT.getRequest().getServletPath() );
-    url.append( '?' );
-    appendParameter( url, REQUEST_PARAM, ID );
-    url.append( '&' );
+    StringBuilder url = new StringBuilder( RWT.getServiceManager().getServiceHandlerUrl( ID ) );
     appendParameter( url, PARAM_CONTRIBUTION, contribution.getName() );
-    url.append( '&' );
     appendParameter( url, PARAM_FILE, resource );
-    url.append( '&' );
     appendParameter( url, PARAM_NOCACHE, getResourceHash( contribution, resource ) );
-    return RWT.getResponse().encodeURL( url.toString() );
+    return url.toString();
   }
 
   private static void appendParameter( StringBuilder stringBuilder, String name, String value ) {
+    stringBuilder.append( '&' );
     stringBuilder.append( name );
     stringBuilder.append( '=' );
     stringBuilder.append( value );

@@ -60,12 +60,6 @@ import javax.servlet.ServletException;
 public interface ServiceHandler {
 
   /**
-   * <p>The request parameter name to hold the service handlers name as its
-   * value (value is custom_service_handler).</p>
-   */
-  static final String REQUEST_PARAM = "custom_service_handler";
-
-  /**
    * <p>This method is called by the request lifecycle to allow the service
    * handler to respond to a request.</p>
    *

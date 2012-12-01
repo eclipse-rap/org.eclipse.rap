@@ -104,12 +104,13 @@ public class ClusteredSynchronizer extends Synchronizer {
     }
 
     static String createRequestUrl( HttpServletRequest request ) {
+      // TODO [rst] Replace with ServiceManager#getServiceHandlerUrl()
       StringBuilder buffer = new StringBuilder();
       buffer.append( "http://127.0.0.1:" );
       buffer.append( request.getServerPort() );
       buffer.append( request.getRequestURI() );
       buffer.append( "?" );
-      buffer.append( ServiceHandler.REQUEST_PARAM );
+      buffer.append( "custom_service_handler" );
       buffer.append( "=" );
       buffer.append( ID );
       return buffer.toString();

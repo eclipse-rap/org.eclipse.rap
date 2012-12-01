@@ -32,7 +32,6 @@ public interface ServiceManager {
    * @param serviceHandler the <code>ServiceHandler</code> implementation
    *
    * @see ServiceHandler
-   * @see ServiceHandler#REQUEST_PARAM
    */
   void registerServiceHandler( String id, ServiceHandler serviceHandler );
 
@@ -44,4 +43,7 @@ public interface ServiceManager {
    * @see ServiceHandler
    */
   void unregisterServiceHandler( String id );
+
+  String getServiceHandlerUrl( String id );
+
 }

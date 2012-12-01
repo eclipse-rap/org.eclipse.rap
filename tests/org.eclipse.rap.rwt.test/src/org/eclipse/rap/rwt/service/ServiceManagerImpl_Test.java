@@ -15,6 +15,7 @@ package org.eclipse.rap.rwt.service;
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -82,14 +83,14 @@ public class ServiceManagerImpl_Test extends TestCase {
     ServiceHandler serviceHandler = mock( ServiceHandler.class );
     serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
 
-    Fixture.fakeRequestParam( ServiceHandler.REQUEST_PARAM, SERVICE_HANDLER_ID );
+    Fixture.fakeRequestParam( ServiceManagerImpl.REQUEST_PARAM, SERVICE_HANDLER_ID );
     ServiceHandler handler = serviceManager.getHandler();
 
     assertSame( serviceHandler, handler );
   }
 
   public void testGetHandler_unknownId() throws Exception {
-    Fixture.fakeRequestParam( ServiceHandler.REQUEST_PARAM, SERVICE_HANDLER_ID );
+    Fixture.fakeRequestParam( ServiceManagerImpl.REQUEST_PARAM, SERVICE_HANDLER_ID );
 
     try {
       serviceManager.getHandler();
@@ -98,4 +99,19 @@ public class ServiceManagerImpl_Test extends TestCase {
       assertTrue( expected.getMessage().contains( SERVICE_HANDLER_ID ) );
     }
   }
+
+  public void testReturnsUrl() throws Exception {
+    String url = RWT.getServiceManager().getServiceHandlerUrl( "foo" );
+
+    assertEquals( "/fooapp/rap?custom_service_handler=foo", url );
+  }
+
+  public void testReturnsUrlWithNull() throws Exception {
+    try {
+      RWT.getServiceManager().getServiceHandlerUrl( null );
+      fail();
+    } catch( NullPointerException exception ) {
+    }
+  }
+
 }

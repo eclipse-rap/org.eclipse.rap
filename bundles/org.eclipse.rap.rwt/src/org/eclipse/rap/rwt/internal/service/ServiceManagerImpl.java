@@ -14,9 +14,15 @@ package org.eclipse.rap.rwt.internal.service;
 
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ServiceManager;
+import javax.servlet.http.HttpServletRequest;
+
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
 public class ServiceManagerImpl implements ServiceManager {
+
+  public static final String REQUEST_PARAM = "custom_service_handler";
+
   private final ServiceHandler lifeCycleRequestHandler;
   private final ServiceHandlerRegistry customHandlers;
 
@@ -35,6 +41,19 @@ public class ServiceManagerImpl implements ServiceManager {
 
   public void unregisterServiceHandler( String id ) {
     customHandlers.remove( id );
+  }
+
+  public String getServiceHandlerUrl( String id ) {
+    ParamCheck.notNull( id, "id" );
+    StringBuilder url = new StringBuilder();
+    HttpServletRequest request = ContextProvider.getRequest();
+    url.append( request.getContextPath() );
+    url.append( request.getServletPath() );
+    url.append( '?' );
+    url.append( REQUEST_PARAM );
+    url.append( '=' );
+    url.append( id );
+    return ContextProvider.getResponse().encodeURL( url.toString() );
   }
 
   public void clear() {
@@ -61,7 +80,7 @@ public class ServiceManagerImpl implements ServiceManager {
   }
 
   private static String getCustomHandlerId() {
-    return ContextProvider.getRequest().getParameter( ServiceHandler.REQUEST_PARAM );
+    return ContextProvider.getRequest().getParameter( REQUEST_PARAM );
   }
 
 }
