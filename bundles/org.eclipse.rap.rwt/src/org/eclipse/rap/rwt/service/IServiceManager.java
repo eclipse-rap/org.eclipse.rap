@@ -17,6 +17,21 @@ package org.eclipse.rap.rwt.service;
  * @deprecated Use {@link ServiceManager} instead
  */
 @Deprecated
-public interface IServiceManager extends ServiceManager {
+public interface IServiceManager {
+
+  /**
+   * @deprecated Use {@link ServiceManager} instead of {@link IServiceManager}
+   */
+  void registerServiceHandler( String id, ServiceHandler serviceHandler );
+
+  /**
+   * @deprecated Use {@link ServiceManager} instead of {@link IServiceManager}
+   */
+  void unregisterServiceHandler( String id );
+
+  /**
+   * @deprecated Use {@link ServiceManager} instead of {@link IServiceManager}
+   */
+  String getServiceHandlerUrl( String id );
 
 }

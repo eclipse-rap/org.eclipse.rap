@@ -21,7 +21,8 @@ import java.io.InputStream;
  * @since 2.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
-public interface ResourceManager {
+@SuppressWarnings( "deprecation" )
+public interface ResourceManager extends IResourceManager {
 
   /**
    * Registers a given resource and makes it available for download. The URL for the registered

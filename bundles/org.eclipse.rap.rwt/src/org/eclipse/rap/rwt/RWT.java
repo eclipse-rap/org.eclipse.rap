@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.client.Client;
+import org.eclipse.rap.rwt.client.service.BrowserHistory;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
@@ -550,16 +551,15 @@ public final class RWT {
   }
 
   /**
-   * Returns an instance if <code>IBrowserHistory</code> that provides support
-   * for the browser's history.
+   * Returns an instance of the browser history for the current session.
    *
-   * @return the browser history support implementation
-   * @see IBrowserHistory
-   * @since 1.3
-   * @deprecated use BrowserHistory client service instead, see {@link Client#getService(Class)}
+   * @return the browser history instance for the current session
+   * @see BrowserHistory
+   * @deprecated use {@link BrowserHistory} client service instead, see
+   *             {@link Client#getService(Class)}
    */
   @Deprecated
-  public static IBrowserHistory getBrowserHistory() {
+  public static BrowserHistory getBrowserHistory() {
     return SingletonUtil.getSessionInstance( BrowserHistoryImpl.class );
   }
 

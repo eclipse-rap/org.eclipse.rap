@@ -11,52 +11,43 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.client.service;
 
+import org.eclipse.rap.rwt.IBrowserHistory;
 import org.eclipse.rap.rwt.events.BrowserHistoryListener;
 
 
 /**
- * <p>
- * This interface provides methods to use the browser's history for navigating
- * within the application. It is possible to create a history entry at the top
- * of the history stack and to handle a navigation change event.
- * </p>
- * <p>
- * Note that the browser history exists once per session, so using the
- * {@link BrowserHistory} is only possible within the session context.
- * </p>
- * <p>
- * This interface is not intended to be implemented by clients.
- * </p>
+ * The browser history provides methods to access a web browser's history for navigating within the
+ * application. It is possible to create a history entry at the top of the history stack and to
+ * handle a navigation change event.
  *
  * @since 2.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
-public interface BrowserHistory extends ClientService {
+@SuppressWarnings( "deprecation" )
+public interface BrowserHistory extends ClientService, IBrowserHistory {
 
   /**
    * Creates an entry in the browser history.
    *
-   * @param id Identifies the entry and should be unique among all entries.
-   *          It is usually visible for the user within the address bar of
-   *          the browser. Must neither be <code>null</code> not empty.
-   * @param text A text for the user to identify the entry in the browser's UI
-   *          or <code>null</code>.
+   * @param id a unique id to identify the entry, used in the fragment part of the URL. Must neither
+   *          be <code>null</code> nor empty
+   * @param text a human-readable text to identify the entry in the browser's UI or
+   *          <code>null</code>
    */
   void createEntry( String id, String text );
 
   /**
-   * Adds a {@link BrowserHistoryListener} to the history support.
+   * Adds a listener to the history support.
    *
-   * @param listener the {@link BrowserHistoryListener}. Must not be
-   *          <code>null</code>.
+   * @param listener the listener to add, must not be <code>null</code>
    */
   void addBrowserHistoryListener( BrowserHistoryListener listener );
 
   /**
-   * Removes a {@link BrowserHistoryListener} from the history support.
+   * Removes a listener from the history support.
    *
-   * @param listener the {@link BrowserHistoryListener}. Must not be
-   *          <code>null</code>.
+   * @param listener the listener to remove, must not be <code>null</code>
    */
   void removeBrowserHistoryListener( BrowserHistoryListener listener );
+
 }

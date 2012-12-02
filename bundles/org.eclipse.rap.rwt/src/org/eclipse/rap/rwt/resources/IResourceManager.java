@@ -11,11 +11,39 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.resources;
 
+import java.io.InputStream;
+
 
 /**
  * @since 2.0
  * @deprecated Use {@link ResourceManager} instead
  */
 @Deprecated
-public interface IResourceManager extends ResourceManager {
+public interface IResourceManager {
+
+  /**
+   * @deprecated Use {@link ResourceManager} instead of {@link IResourceManager}
+   */
+  void register( String name, InputStream inputStream );
+
+  /**
+   * @deprecated Use {@link ResourceManager} instead of {@link IResourceManager}
+   */
+  boolean unregister( String name );
+
+  /**
+   * @deprecated Use {@link ResourceManager} instead of {@link IResourceManager}
+   */
+  boolean isRegistered( String name );
+
+  /**
+   * @deprecated Use {@link ResourceManager} instead of {@link IResourceManager}
+   */
+  String getLocation( String name );
+
+  /**
+   * @deprecated Use {@link ResourceManager} instead of {@link IResourceManager}
+   */
+  InputStream getRegisteredContent( String name );
+
 }

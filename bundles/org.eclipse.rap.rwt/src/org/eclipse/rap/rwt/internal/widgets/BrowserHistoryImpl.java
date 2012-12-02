@@ -20,8 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.IBrowserHistory;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.BrowserHistory;
 import org.eclipse.rap.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rap.rwt.events.BrowserHistoryListener;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
@@ -39,9 +39,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
 
-@SuppressWarnings( "deprecation" )
 public final class BrowserHistoryImpl
-  implements IBrowserHistory, PhaseListener, SessionStoreListener
+  implements BrowserHistory, PhaseListener, SessionStoreListener
 {
 
   private final static String TYPE = "rwt.client.BrowserHistory";

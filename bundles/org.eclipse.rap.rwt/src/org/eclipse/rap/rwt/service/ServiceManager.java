@@ -24,7 +24,8 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
  * @since 2.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
-public interface ServiceManager {
+@SuppressWarnings( "deprecation" )
+public interface ServiceManager extends IServiceManager {
 
   /**
    * Registers a new service handler with the given unique id. The id is used to address the service

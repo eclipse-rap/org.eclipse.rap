@@ -12,26 +12,29 @@
 package org.eclipse.rap.rwt;
 
 import org.eclipse.rap.rwt.client.service.BrowserHistory;
+import org.eclipse.rap.rwt.events.BrowserHistoryListener;
 
 
 /**
- * <p>
- * This interface provides methods to use the browser's history for navigating
- * within the application. It is possible to create a history entry at the top
- * of the history stack and to handle a navigation change event.
- * </p>
- * <p>
- * Note that the browser history exists once per session, so using the
- * {@link IBrowserHistory} is only possible within the session context.
- * </p>
- * <p>
- * This interface is not intended to be implemented by clients.
- * </p>
- *
  * @since 2.0
- * @noimplement This interface is not intended to be implemented by clients.
- * @deprecated Use BrowserHistory interface instead
+ * @deprecated Use {@link BrowserHistory} instead
  */
-public interface IBrowserHistory extends BrowserHistory {
+@Deprecated
+public interface IBrowserHistory {
+
+  /**
+   * @deprecated Use {@link BrowserHistory} instead of {@link IBrowserHistory}
+   */
+  void createEntry( String id, String text );
+
+  /**
+   * @deprecated Use {@link BrowserHistory} instead of {@link IBrowserHistory}
+   */
+  void addBrowserHistoryListener( BrowserHistoryListener listener );
+
+  /**
+   * @deprecated Use {@link BrowserHistory} instead of {@link IBrowserHistory}
+   */
+  void removeBrowserHistoryListener( BrowserHistoryListener listener );
 
 }
