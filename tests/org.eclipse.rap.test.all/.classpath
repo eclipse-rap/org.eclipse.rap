@@ -7,6 +7,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.rap.rwt.themes.test"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.rap.ui.forms.test"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.rap.rwt.osgi.test"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.rap.rwt.supplemental.fileupload.test"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
