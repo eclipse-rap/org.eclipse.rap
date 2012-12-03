@@ -49,10 +49,8 @@ public interface IWidgetAdapter {
   boolean isInitialized();
 
   /**
-   * Preserves a specified value for a specified key. Used to preserve values in
-   * the LCA method
-   * {@link IWidgetLifeCycleAdapter#preserveValues(org.eclipse.swt.widgets.Widget)
-   * preserveValues}.
+   * Preserves a specified value for a specified key. Used to preserve values in the LCA method
+   * {@link WidgetLifeCycleAdapter#preserveValues(Widget) preserveValues}.
    *
    * @param propertyName the key to map the preserved value to
    * @param value the value to preserve

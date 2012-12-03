@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Widget;
  *
  * @since 2.0
  */
-public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
+public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
 
   public final void render( Widget widget ) throws IOException {
     WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );

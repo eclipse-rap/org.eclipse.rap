@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import java.text.MessageFormat;
 
-import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.widgets.Display;
 
@@ -24,11 +23,10 @@ public final class DisplayUtil {
     // prevent instance creation
   }
 
-  public static IDisplayLifeCycleAdapter getLCA( Display display ) {
-    Class<ILifeCycleAdapter> clazz = ILifeCycleAdapter.class;
-    IDisplayLifeCycleAdapter result = ( IDisplayLifeCycleAdapter )display.getAdapter( clazz );
+  public static DisplayLifeCycleAdapter getLCA( Display display ) {
+    DisplayLifeCycleAdapter result = display.getAdapter( DisplayLifeCycleAdapter.class );
     if( result == null ) {
-      throwAdapterException( clazz );
+      throwAdapterException( DisplayLifeCycleAdapter.class );
     }
     return result;
   }

@@ -30,7 +30,7 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -87,8 +87,8 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testDefaultEntryPoint() throws IOException {
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, 
-                                TestEntryPointWithLog.class, 
+    entryPointManager.register( EntryPointManager.DEFAULT_PATH,
+                                TestEntryPointWithLog.class,
                                 null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
 
@@ -226,8 +226,8 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testExceptionInPhaseListener() throws IOException {
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, 
-                                TestEntryPoint.class, 
+    entryPointManager.register( EntryPointManager.DEFAULT_PATH,
+                                TestEntryPoint.class,
                                 null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new ExceptionListenerTest() );
@@ -740,8 +740,8 @@ public class RWTLifeCycle_Test extends TestCase {
 
   public void testExceptionInRender() throws Exception {
     fakeServletPath( EntryPointManager.DEFAULT_PATH );
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, 
-                                ExceptionInRenderEntryPoint.class, 
+    entryPointManager.register( EntryPointManager.DEFAULT_PATH,
+                                ExceptionInRenderEntryPoint.class,
                                 null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     try {
@@ -1035,7 +1035,7 @@ public class RWTLifeCycle_Test extends TestCase {
       @Override
       public <T> T getAdapter( Class<T> adapter ) {
         Object result;
-        if( adapter.equals( ILifeCycleAdapter.class ) ) {
+        if( adapter.equals( WidgetLifeCycleAdapter.class ) ) {
           result = new AbstractWidgetLCA() {
             @Override
             public void preserveValues( Widget widget ) {

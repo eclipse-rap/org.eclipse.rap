@@ -31,7 +31,6 @@ public final class WidgetUtil {
 
   /**
    * @deprecated Use {@link RWT#CUSTOM_VARIANT} instead
-   * @since 1.1
    */
   @Deprecated
   public static final String CUSTOM_VARIANT = RWT.CUSTOM_VARIANT;
@@ -150,17 +149,17 @@ public final class WidgetUtil {
    * Returns the {@link AbstractWidgetLCA} instance for this widget.
    *
    * @param widget the widget to obtain the life cycle adapter from
-   * @return the life cycle adapter for the given <code>widget</code>
+   * @return the life cycle adapter for the given widget
    */
   // TODO [bm] why do we return AbstractWidgetLCA instead of pulling the interesting
-  // methods up to IWidgetLifeCycleAdapter and using this to talk to the outside
+  // methods up to WidgetLifeCycleAdapter and using this to talk to the outside
   // world
   public static AbstractWidgetLCA getLCA( Widget widget ) {
-    AbstractWidgetLCA result = ( AbstractWidgetLCA )widget.getAdapter( ILifeCycleAdapter.class );
-    if( result == null ) {
-      throwAdapterException( ILifeCycleAdapter.class );
+    AbstractWidgetLCA lca = ( AbstractWidgetLCA )widget.getAdapter( WidgetLifeCycleAdapter.class );
+    if( lca == null ) {
+      throwAdapterException( AbstractWidgetLCA.class );
     }
-    return result;
+    return lca;
   }
 
   /**

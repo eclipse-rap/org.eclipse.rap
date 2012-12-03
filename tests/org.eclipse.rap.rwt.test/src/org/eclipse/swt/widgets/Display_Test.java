@@ -30,11 +30,10 @@ import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
@@ -89,8 +88,8 @@ public class Display_Test extends TestCase {
 
   public void testGetAdapterWithLifeCycleAdapter() {
     Display display = new Display();
-    Object adapter = display.getAdapter( ILifeCycleAdapter.class );
-    assertTrue( adapter instanceof IDisplayLifeCycleAdapter );
+    Object adapter = display.getAdapter( DisplayLifeCycleAdapter.class );
+    assertTrue( adapter instanceof DisplayLifeCycleAdapter );
   }
 
   public void testSingleDisplayPerSession() {
@@ -836,7 +835,7 @@ public class Display_Test extends TestCase {
     assertSame( red, systemRed );
     assertSame( systemRed, display.getSystemColor( SWT.COLOR_RED ) );
   }
-  
+
   public void testAddFilterWithNullArgument() {
     Display display = new Display();
     try {
@@ -876,10 +875,10 @@ public class Display_Test extends TestCase {
     // remove filter for an event that was not added before -> do nothing
     display.removeFilter( SWT.FocusIn, listener );
   }
-  
+
   public void testRemoveFilterWithNullArgument() {
     Display display = new Display();
-    
+
     try {
       display .removeFilter( SWT.Dispose, null );
       fail();
@@ -1122,18 +1121,18 @@ public class Display_Test extends TestCase {
     SWTException swtException = ( SWTException )throwable[ 0 ];
     assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swtException.code );
   }
-  
+
   public void testFilterWithoutListener() {
     Display display = new Display();
     Listener filter = mock( Listener.class );
     display.addFilter( SWT.Resize, filter );
     Widget widget = new Shell( display );
-    
+
     widget.notifyListeners( SWT.Resize, new Event() );
-    
+
     verify( filter ).handleEvent( any( Event.class ) );
   }
-  
+
   public void testCloseEventFilter() {
     Display display = new Display();
     final StringBuilder order = new StringBuilder();
@@ -1151,9 +1150,9 @@ public class Display_Test extends TestCase {
         order.append( "listener" );
       }
     } );
-    
+
     display.close();
-    
+
     assertEquals( "filter, listener", order.toString() );
     assertEquals( 2, events.size() );
     Event filterEvent = events.get( 0 );
@@ -1442,7 +1441,7 @@ public class Display_Test extends TestCase {
       assertEquals( "Device is disposed", exception.getMessage() );
     }
   }
-  
+
   public void testReadAndDispatchIgnoresEventsFromDisposedWidgets() {
     Fixture.fakePhase( PhaseId.READ_DATA );
     Display display = new Display();
@@ -1450,16 +1449,16 @@ public class Display_Test extends TestCase {
     Listener listener = mock( Listener.class );
     widget.addListener( SWT.Activate, listener );
     widget.dispose();
-    
+
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display.readAndDispatch();
-    
+
     verify( listener, never() ).handleEvent( any( Event.class ) );
   }
-  
+
   public void testAddListenerWithNullArgument() {
     Display display = new Display();
-    
+
     try {
       display.addListener( 123, null );
       fail();
@@ -1469,76 +1468,76 @@ public class Display_Test extends TestCase {
 
   public void testRemoveListenerWithNullArgument() {
     Display display = new Display();
-    
+
     try {
       display.removeListener( 123, null );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
   public void testAddListener() {
     Display display = new Display();
     Listener listener = mock( Listener.class );
-    
+
     display.addListener( 123, listener );
     Event event = new Event();
     display.sendEvent( 123, event );
-    
+
     verify( listener ).handleEvent( event );
   }
-  
+
   public void testRemoveListener() {
     Display display = new Display();
     Listener listener = mock( Listener.class );
     display.addListener( 123, listener );
-    
+
     display.removeListener( 123, listener );
     display.sendEvent( 123, new Event() );
-    
+
     verifyZeroInteractions( listener );
   }
-  
+
   public void testSendEvent() {
     Display display = new Display();
     Listener listener = mock( Listener.class );
     display.addListener( 123, listener );
-    
+
     display.sendEvent( 123, new Event() );
-    
+
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
     verify( listener ).handleEvent( captor.capture() );
     assertEquals( 123, captor.getValue().type );
     assertEquals( display, captor.getValue().display );
     assertTrue( captor.getValue().time > 0 );
   }
-  
+
   public void testSendEventWithPredefinedTime() {
     Display display = new Display();
     Listener listener = mock( Listener.class );
     display.addListener( 123, listener );
-    
+
     Event event = new Event();
     event.time = 4;
     display.sendEvent( 123, event );
-    
+
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
     verify( listener ).handleEvent( captor.capture() );
     assertEquals( 123, captor.getValue().type );
     assertEquals( display, captor.getValue().display );
     assertEquals( event.time, captor.getValue().time );
   }
-  
+
   public void testRemoveListenerWithoutAddingListener() {
     Display display = new Display();
     Listener listener = mock( Listener.class );
-    
+
     display.removeListener( 123, listener );
     display.sendEvent( 123, new Event() );
-    
+
     verifyZeroInteractions( listener );
   }
-  
+
   private static void setCursorLocation( Display display, int x, int y ) {
     IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     adapter.setCursorLocation( x, y );

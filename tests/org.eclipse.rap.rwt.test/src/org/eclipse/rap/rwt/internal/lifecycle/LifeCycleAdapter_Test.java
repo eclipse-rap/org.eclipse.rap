@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
@@ -15,14 +15,18 @@ import java.util.Locale;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterException;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
-import org.eclipse.rap.rwt.lifecycle.IWidgetLifeCycleAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class LifeCycleAdapter_Test extends TestCase {
@@ -32,13 +36,13 @@ public class LifeCycleAdapter_Test extends TestCase {
       super( parent, SWT.NONE );
     }
   }
-  
+
   public static class TestControl extends Control {
     public TestControl( Composite parent ) {
       super( parent, SWT.NONE );
     }
   }
-  
+
   public static class TestWidget extends Widget {
     public TestWidget( Widget parent ) {
       super( parent, SWT.NONE );
@@ -47,65 +51,81 @@ public class LifeCycleAdapter_Test extends TestCase {
 
   public void testDisplayAdapter() {
     Display display = new Display();
-    Object adapter = display.getAdapter( ILifeCycleAdapter.class );
-    assertTrue( adapter instanceof IDisplayLifeCycleAdapter );
+
+    DisplayLifeCycleAdapter adapter = display.getAdapter( DisplayLifeCycleAdapter.class );
+
+    assertNotNull( adapter );
   }
-  
+
   public void testDisplayAdapterReturnsSameAdapterForEachInvocation() {
     Display display = new Display();
-    Object adapter1 = display.getAdapter( ILifeCycleAdapter.class );
-    Object adapter2 = display.getAdapter( ILifeCycleAdapter.class );
+
+    Object adapter1 = display.getAdapter( DisplayLifeCycleAdapter.class );
+    Object adapter2 = display.getAdapter( DisplayLifeCycleAdapter.class );
+
     assertSame( adapter1, adapter2 );
   }
-  
+
   public void testDisplayAdapterReturnsSameAdapterForDifferentDisplays() {
     Display display1 = new Display();
-    Object adapter1 = display1.getAdapter( ILifeCycleAdapter.class );
+    Object adapter1 = display1.getAdapter( DisplayLifeCycleAdapter.class );
     display1.dispose();
     Display display2 = new Display();
-    Object adapter2 = display2.getAdapter( ILifeCycleAdapter.class );
+
+    Object adapter2 = display2.getAdapter( DisplayLifeCycleAdapter.class );
+
     assertSame( adapter1, adapter2 );
   }
-  
+
   public void testDisplayAdapterIsApplicationScoped() {
     Display display1 = new Display();
-    Object adapter1 = display1.getAdapter( ILifeCycleAdapter.class );
+    Object adapter1 = display1.getAdapter( DisplayLifeCycleAdapter.class );
     newSession();
     Display display2 = new Display();
-    Object adapter2 = display2.getAdapter( ILifeCycleAdapter.class );
+
+    Object adapter2 = display2.getAdapter( DisplayLifeCycleAdapter.class );
+
     assertSame( adapter1, adapter2 );
   }
-  
+
   public void testWidgetAdapter() {
     Display display = new Display();
     Widget widget = new Shell( display );
-    Object adapter = widget.getAdapter( ILifeCycleAdapter.class );
-    assertTrue( adapter instanceof IWidgetLifeCycleAdapter );
+
+    Object adapter = widget.getAdapter( WidgetLifeCycleAdapter.class );
+
+    assertNotNull( adapter );
   }
-  
+
   public void testWidgetAdapterReturnsSameAdapterForEachInvocation() {
     Display display = new Display();
     Widget widget = new Shell( display );
-    Object adapter1 = widget.getAdapter( ILifeCycleAdapter.class );
-    Object adapter2 = widget.getAdapter( ILifeCycleAdapter.class );
+
+    Object adapter1 = widget.getAdapter( WidgetLifeCycleAdapter.class );
+    Object adapter2 = widget.getAdapter( WidgetLifeCycleAdapter.class );
+
     assertSame( adapter1, adapter2 );
   }
-  
+
   public void testWidgetAdapterReturnsSameAdapterForDifferentInstancesOfSameType() {
     Display display = new Display();
     Widget widget1 = new Shell( display );
-    Object adapter1 = widget1.getAdapter( ILifeCycleAdapter.class );
+    Object adapter1 = widget1.getAdapter( WidgetLifeCycleAdapter.class );
     Widget widget2 = new Shell( display );
-    Object adapter2 = widget2.getAdapter( ILifeCycleAdapter.class );
+
+    Object adapter2 = widget2.getAdapter( WidgetLifeCycleAdapter.class );
+
     assertSame( adapter1, adapter2 );
   }
-  
+
   public void testWidgetAdaptreReturnsDistinctAdapterForEachWidgetType() {
     Display display = new Display();
     Shell shell = new Shell( display );
-    Object shellAdapter = shell.getAdapter( ILifeCycleAdapter.class );
     Button button = new Button( shell, SWT.PUSH );
-    Object buttonAdapter = button.getAdapter( ILifeCycleAdapter.class );
+
+    Object shellAdapter = shell.getAdapter( WidgetLifeCycleAdapter.class );
+    Object buttonAdapter = button.getAdapter( WidgetLifeCycleAdapter.class );
+
     assertNotNull( shellAdapter );
     assertNotNull( buttonAdapter );
     assertNotSame( shellAdapter, buttonAdapter );
@@ -114,11 +134,12 @@ public class LifeCycleAdapter_Test extends TestCase {
   public void testWidgetAdapterIsApplicationScoped() {
     Display display1 = new Display();
     Widget widget1 = new Shell( display1 );
-    Object adapter1 = widget1.getAdapter( ILifeCycleAdapter.class );
+    Object adapter1 = widget1.getAdapter( WidgetLifeCycleAdapter.class );
     newSession();
     Display display2 = new Display();
     Widget widget2 = new Shell( display2 );
-    Object adapter2 = widget2.getAdapter( ILifeCycleAdapter.class );
+    Object adapter2 = widget2.getAdapter( WidgetLifeCycleAdapter.class );
+
     assertSame( adapter1, adapter2 );
   }
 
@@ -127,7 +148,7 @@ public class LifeCycleAdapter_Test extends TestCase {
     Shell shell = new Shell( display );
     Widget widget = new TestWidget( shell );
     try {
-      widget.getAdapter( ILifeCycleAdapter.class );
+      widget.getAdapter( WidgetLifeCycleAdapter.class );
       fail();
     } catch( LifeCycleAdapterException expected ) {
     }
@@ -141,18 +162,22 @@ public class LifeCycleAdapter_Test extends TestCase {
       Composite shell = new Shell( display, SWT.NONE );
       Tree tree = new Tree( shell, SWT.NONE );
       TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-      Object treeItemLCA = treeItem.getAdapter( ILifeCycleAdapter.class );
-      assertTrue( treeItemLCA instanceof IWidgetLifeCycleAdapter );
+
+      Object treeItemLCA = treeItem.getAdapter( WidgetLifeCycleAdapter.class );
+
+      assertTrue( treeItemLCA instanceof WidgetLifeCycleAdapter );
     } finally {
       Locale.setDefault( originalLocale );
     }
   }
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -161,4 +186,5 @@ public class LifeCycleAdapter_Test extends TestCase {
     ContextProvider.disposeContext();
     Fixture.createServiceContext();
   }
+
 }

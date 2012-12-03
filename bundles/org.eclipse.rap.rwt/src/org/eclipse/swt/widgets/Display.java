@@ -27,6 +27,7 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
+import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
@@ -40,7 +41,6 @@ import org.eclipse.rap.rwt.internal.theme.QxType;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
@@ -745,7 +745,7 @@ public class Display extends Device implements Adaptable {
         widgetAdapter = new WidgetAdapter( "w1" );
       }
       result = ( T )widgetAdapter;
-    } else if( adapter == ILifeCycleAdapter.class ) {
+    } else if( adapter == DisplayLifeCycleAdapter.class ) {
       result = ( T )getApplicationContext().getLifeCycleAdapterFactory().getAdapter( this );
     }
     return result;

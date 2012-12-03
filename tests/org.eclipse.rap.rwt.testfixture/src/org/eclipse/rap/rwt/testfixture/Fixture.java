@@ -46,7 +46,7 @@ import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
@@ -259,7 +259,7 @@ public final class Fixture {
   // LifeCycle helpers
 
   public static void readDataAndProcessAction( Display display ) {
-    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    DisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     fakePhase( PhaseId.READ_DATA );
     displayLCA.readData( display );
     Fixture.preserveWidgets();
@@ -291,7 +291,7 @@ public final class Fixture {
 
   public static void preserveWidgets() {
     Display display = LifeCycleUtil.getSessionDisplay();
-    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    DisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     PhaseId bufferedPhaseId = CurrentPhase.get();
     fakePhase( PhaseId.READ_DATA );
     displayLCA.preserveValues( display );
@@ -300,7 +300,7 @@ public final class Fixture {
 
   public static void clearPreserved() {
     Display display = LifeCycleUtil.getSessionDisplay();
-    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    DisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     PhaseId bufferedPhaseId = CurrentPhase.get();
     fakePhase( PhaseId.RENDER );
     displayLCA.clearPreserved( display );

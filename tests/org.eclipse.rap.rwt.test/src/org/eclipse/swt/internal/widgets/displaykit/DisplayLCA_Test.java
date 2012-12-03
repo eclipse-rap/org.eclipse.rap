@@ -34,7 +34,7 @@ import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
-import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
@@ -44,8 +44,8 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -198,7 +198,7 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, compositeInitState[ 0 ] );
   }
 
-  public void testRenderInitiallyDisposed() throws Exception {
+  public void testRenderInitiallyDisposed() {
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
                                                       TestRenderInitiallyDisposedEntryPoint.class,
                                                       null );
@@ -249,7 +249,7 @@ public class DisplayLCA_Test extends TestCase {
     WidgetAdapter widgetAdapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
     IRenderRunnable renderRunnable = mock( IRenderRunnable.class );
     widgetAdapter.setRenderRunnable( renderRunnable );
-    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    DisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
 
     displayLCA.render( display );
 
@@ -465,7 +465,7 @@ public class DisplayLCA_Test extends TestCase {
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result;
-      if( adapter == ILifeCycleAdapter.class ) {
+      if( adapter == WidgetLifeCycleAdapter.class ) {
         result = widgetLCA;
       } else {
         result = super.getAdapter( adapter );
@@ -488,7 +488,7 @@ public class DisplayLCA_Test extends TestCase {
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result;
-      if( adapter == ILifeCycleAdapter.class ) {
+      if( adapter == WidgetLifeCycleAdapter.class ) {
         result = widgetLCA;
       } else {
         result = super.getAdapter( adapter );

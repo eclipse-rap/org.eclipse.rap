@@ -32,8 +32,8 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -110,9 +110,9 @@ public class CTabFolderLCA_Test extends TestCase {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
     assertSame( CTabFolderLCA.class,
-                folder.getAdapter( ILifeCycleAdapter.class ).getClass() );
+                folder.getAdapter( WidgetLifeCycleAdapter.class ).getClass() );
     assertSame( CTabItemLCA.class,
-                item.getAdapter( ILifeCycleAdapter.class ).getClass() );
+                item.getAdapter( WidgetLifeCycleAdapter.class ).getClass() );
   }
 
   public void testPreserveValues() {
@@ -959,7 +959,7 @@ public class CTabFolderLCA_Test extends TestCase {
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result;
-      if( adapter == ILifeCycleAdapter.class ) {
+      if( adapter == WidgetLifeCycleAdapter.class ) {
         result = new AbstractWidgetLCA() {
           @Override
           public void preserveValues( Widget widget ) {
