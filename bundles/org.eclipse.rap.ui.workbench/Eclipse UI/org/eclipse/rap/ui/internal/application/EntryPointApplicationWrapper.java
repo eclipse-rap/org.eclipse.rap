@@ -12,10 +12,10 @@ package org.eclipse.rap.ui.internal.application;
 
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.application.EntryPoint;
 
 
-public final class EntryPointApplicationWrapper implements IEntryPoint {
+public final class EntryPointApplicationWrapper implements EntryPoint {
 
   private static final IApplicationContext context = new RAPApplicationContext();
 

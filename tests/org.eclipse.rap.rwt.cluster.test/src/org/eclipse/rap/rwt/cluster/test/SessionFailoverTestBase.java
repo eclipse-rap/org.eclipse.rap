@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.cluster.test.entrypoints.AsyncExecEntryPoint;
 import org.eclipse.rap.rwt.cluster.test.entrypoints.ButtonEntryPoint;
 import org.eclipse.rap.rwt.cluster.test.entrypoints.DNDEntryPoint;
@@ -35,7 +36,6 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.service.ISessionStore;
@@ -206,7 +206,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
     cluster.stop();
   }
 
-  private void initializeClient( Class<? extends IEntryPoint> entryPoint ) throws Exception {
+  private void initializeClient( Class<? extends EntryPoint> entryPoint ) throws Exception {
     cluster.start( entryPoint );
     client.sendStartupRequest();
     client.sendInitializationRequest();

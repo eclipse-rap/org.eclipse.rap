@@ -26,6 +26,7 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
@@ -37,7 +38,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.RequestId;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ISessionStore;
@@ -368,7 +368,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     }
   }
 
-  public static final class TestEntryPoint implements IEntryPoint {
+  public static final class TestEntryPoint implements EntryPoint {
     public int createUI() {
       Display display = new Display();
       Shell shell = new Shell( display );

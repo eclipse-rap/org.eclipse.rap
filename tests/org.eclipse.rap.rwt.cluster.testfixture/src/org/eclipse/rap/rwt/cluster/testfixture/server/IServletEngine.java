@@ -12,14 +12,14 @@ package org.eclipse.rap.rwt.cluster.testfixture.server;
 
 import javax.servlet.http.HttpSession;
 
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.application.EntryPoint;
 
 
 public interface IServletEngine {
   String SERVLET_NAME= "rwt";
   String SERVLET_PATH = "/" + SERVLET_NAME;
 
-  void start( Class<? extends IEntryPoint> entryPointClass ) throws Exception;
+  void start( Class<? extends EntryPoint> entryPointClass ) throws Exception;
   void stop( int timeout ) throws Exception;
   void stop() throws Exception;
   int getPort();

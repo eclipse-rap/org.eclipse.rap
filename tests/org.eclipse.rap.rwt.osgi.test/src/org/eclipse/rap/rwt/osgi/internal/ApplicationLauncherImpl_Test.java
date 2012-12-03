@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServlet;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.application.*;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.mockito.invocation.InvocationOnMock;
@@ -549,7 +548,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     return result;
   }
 
-  private static class TestEntryPoint implements IEntryPoint {
+  private static class TestEntryPoint implements EntryPoint {
 
     public int createUI() {
       return 0;

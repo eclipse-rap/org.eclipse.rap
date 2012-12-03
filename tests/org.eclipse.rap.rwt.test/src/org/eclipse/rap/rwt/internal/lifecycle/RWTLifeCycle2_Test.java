@@ -24,13 +24,13 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.service.ISessionStore;
@@ -93,7 +93,7 @@ public class RWTLifeCycle2_Test extends TestCase {
 
   public void testSessionRestartAfterExceptionInUIThread() throws Exception {
     TestRequest request;
-    Class<? extends IEntryPoint> entryPoint = ExceptionInReadAndDispatchEntryPoint.class;
+    Class<? extends EntryPoint> entryPoint = ExceptionInReadAndDispatchEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
     // send initial request - response is index.html
     request = newGetRequest();
@@ -106,7 +106,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertEquals( 0, eventLog.size() );
 
     // send 'application startup' request - response is JavaScript to create
-    // client-side representation of what was created in IEntryPoint#createUI
+    // client-side representation of what was created in EntryPoint#createUI
     request = newPostRequest( false );
     runRWTDelegate( request );
     assertNull( session.getAttribute( TEST_SESSION_ATTRIBUTE ) );
@@ -137,7 +137,7 @@ public class RWTLifeCycle2_Test extends TestCase {
 
   public void testSessionRestartAfterExceptionInInitialRequest() throws Exception {
     TestRequest request;
-    Class<? extends IEntryPoint> entryPoint = ExceptionInCreateUIEntryPoint.class;
+    Class<? extends EntryPoint> entryPoint = ExceptionInCreateUIEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
     // send initial request - response creates ui
     request = newPostRequest( true );
@@ -164,7 +164,7 @@ public class RWTLifeCycle2_Test extends TestCase {
    */
   public void testSessionRestartWithStringMeasurementInDisplayDispose() throws Exception {
     TestRequest request;
-    Class<? extends IEntryPoint> entryPoint = StringMeasurementInDisplayDisposeEntryPoint.class;
+    Class<? extends EntryPoint> entryPoint = StringMeasurementInDisplayDisposeEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
     // send initial request - response creates ui
     request = newPostRequest( true );
@@ -178,10 +178,10 @@ public class RWTLifeCycle2_Test extends TestCase {
 
   public void testEventProcessingOnSessionRestart() throws Exception {
     TestRequest request;
-    Class<? extends IEntryPoint> entryPoint = EventProcessingOnSessionRestartEntryPoint.class;
+    Class<? extends EntryPoint> entryPoint = EventProcessingOnSessionRestartEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
     // send 'application startup' request - response is JavaScript to create
-    // client-side representation of what was created in IEntryPoint#createUI
+    // client-side representation of what was created in EntryPoint#createUI
     request = newPostRequest( true );
     runRWTDelegate( request );
     assertTrue( createUIEntered );
@@ -200,7 +200,7 @@ public class RWTLifeCycle2_Test extends TestCase {
    */
   public void testSessionInvalidateWithDisposeInFinally() throws Exception {
     TestRequest request;
-    Class<? extends IEntryPoint> clazz = TestSessionInvalidateWithDisposeInFinallyEntryPoint.class;
+    Class<? extends EntryPoint> clazz = TestSessionInvalidateWithDisposeInFinallyEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", clazz, null );
     // send initial request - response creates ui
     request = newPostRequest( true );
@@ -221,7 +221,7 @@ public class RWTLifeCycle2_Test extends TestCase {
    */
   public void testClearSessionStoreOnSessionRestart() throws Exception {
     TestRequest request;
-    Class<? extends IEntryPoint> entryPointClass = TestEntryPoint.class;
+    Class<? extends EntryPoint> entryPointClass = TestEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPointClass, null );
     // send initial request - response creates ui
     request = newPostRequest( true );
@@ -243,7 +243,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   }
 
   public void testGetRequestDoesNotClearSessionStore() throws Exception {
-    Class<? extends IEntryPoint> entryPoint = TestEntryPoint.class;
+    Class<? extends EntryPoint> entryPoint = TestEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
     // inital GET request
     runRWTDelegate( newGetRequest() );
@@ -258,7 +258,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   }
 
   public void testGetRequestAlwaysReturnsHtml() throws Exception {
-    Class<? extends IEntryPoint> entryPoint = TestEntryPoint.class;
+    Class<? extends EntryPoint> entryPoint = TestEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
     // inital GET request
     runRWTDelegate( newGetRequest() );
@@ -272,7 +272,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   }
 
   public void testPostRequestReturnsJsonAfterSessionTimeout() throws Exception {
-    Class<? extends IEntryPoint> entryPoint = TestEntryPoint.class;
+    Class<? extends EntryPoint> entryPoint = TestEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
     // inital GET request
     runRWTDelegate( newGetRequest() );
@@ -291,7 +291,7 @@ public class RWTLifeCycle2_Test extends TestCase {
    * see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=372946
    */
   public void testGetLockOnSessionStore() throws Exception {
-    Class<? extends IEntryPoint> entryPoint = EntryPointWithSynchronizationOnSessionStore.class;
+    Class<? extends EntryPoint> entryPoint = EntryPointWithSynchronizationOnSessionStore.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
     // inital POST request starts the UI thread
     runRWTDelegate( newPostRequest( true ) );
@@ -363,7 +363,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     } );
   }
 
-  public static final class ExceptionInReadAndDispatchEntryPoint implements IEntryPoint {
+  public static final class ExceptionInReadAndDispatchEntryPoint implements EntryPoint {
     public int createUI() {
       createUIEntered = true;
       Display display = new Display();
@@ -400,7 +400,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     }
   }
 
-  public static final class ExceptionInCreateUIEntryPoint implements IEntryPoint {
+  public static final class ExceptionInCreateUIEntryPoint implements EntryPoint {
     @SuppressWarnings("unused")
     public int createUI() {
       createUIEntered = true;
@@ -431,7 +431,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     }
   }
 
-  public static final class StringMeasurementInDisplayDisposeEntryPoint implements IEntryPoint {
+  public static final class StringMeasurementInDisplayDisposeEntryPoint implements EntryPoint {
     public int createUI() {
       Display display = new Display();
       display.addListener( SWT.Dispose, new Listener() {
@@ -457,7 +457,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     }
   }
 
-  public static final class EventProcessingOnSessionRestartEntryPoint implements IEntryPoint {
+  public static final class EventProcessingOnSessionRestartEntryPoint implements EntryPoint {
     public int createUI() {
       createUIEntered = true;
       try {
@@ -489,7 +489,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     }
   }
 
-  public static final class EntryPointWithSynchronizationOnSessionStore implements IEntryPoint {
+  public static final class EntryPointWithSynchronizationOnSessionStore implements EntryPoint {
     public int createUI() {
       Display display = new Display();
       Shell shell = new Shell( display );
@@ -512,7 +512,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     }
   }
 
-  public static final class TestEntryPoint implements IEntryPoint {
+  public static final class TestEntryPoint implements EntryPoint {
 
     public int createUI() {
       createUIEntered = true;
@@ -536,7 +536,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   }
 
   public static final class TestSessionInvalidateWithDisposeInFinallyEntryPoint
-    implements IEntryPoint
+    implements EntryPoint
   {
     public int createUI() {
       createUIEntered = true;

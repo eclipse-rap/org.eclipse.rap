@@ -13,14 +13,14 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.application.EntryPoint;
 
 
 public class DefaultEntryPointFactory_Test extends TestCase {
 
   public void testConstructorWithNullParam() {
     try {
-      new DefaultEntryPointFactory( ( Class<? extends IEntryPoint> )null );
+      new DefaultEntryPointFactory( ( Class<? extends EntryPoint> )null );
       fail();
     } catch( NullPointerException expected ) {
     }
@@ -59,7 +59,7 @@ public class DefaultEntryPointFactory_Test extends TestCase {
   public void testCreate() {
     DefaultEntryPointFactory factory = new DefaultEntryPointFactory( TestEntryPoint.class );
 
-    IEntryPoint entryPoint = factory.create();
+    EntryPoint entryPoint = factory.create();
 
     assertTrue( entryPoint instanceof TestEntryPoint );
   }
@@ -67,26 +67,26 @@ public class DefaultEntryPointFactory_Test extends TestCase {
   public void testCreateTwice() {
     DefaultEntryPointFactory factory = new DefaultEntryPointFactory( TestEntryPoint.class );
 
-    IEntryPoint entryPoint1 = factory.create();
-    IEntryPoint entryPoint2 = factory.create();
+    EntryPoint entryPoint1 = factory.create();
+    EntryPoint entryPoint2 = factory.create();
 
     assertNotNull( entryPoint1 );
     assertNotSame( entryPoint1, entryPoint2 );
   }
 
   public void testCreateWithInnerClass() {
-    DefaultEntryPointFactory factory = new DefaultEntryPointFactory( EntryPoint.class );
+    DefaultEntryPointFactory factory = new DefaultEntryPointFactory( InnerEntryPoint.class );
 
-    IEntryPoint entryPoint = factory.create();
+    EntryPoint entryPoint = factory.create();
 
-    assertTrue( entryPoint instanceof EntryPoint );
+    assertTrue( entryPoint instanceof InnerEntryPoint );
   }
 
   public void testCreateWithPrivateConstructor() {
     DefaultEntryPointFactory factory
       = new DefaultEntryPointFactory( EntryPointWithPrivateConstructor.class );
 
-    IEntryPoint entryPoint = factory.create();
+    EntryPoint entryPoint = factory.create();
 
     assertTrue( entryPoint instanceof EntryPointWithPrivateConstructor );
   }
@@ -103,14 +103,14 @@ public class DefaultEntryPointFactory_Test extends TestCase {
     }
   }
 
-  private static class EntryPoint implements IEntryPoint {
+  private static class InnerEntryPoint implements EntryPoint {
 
     public int createUI() {
       return 0;
     }
   }
 
-  private static class EntryPointWithPrivateConstructor implements IEntryPoint {
+  private static class EntryPointWithPrivateConstructor implements EntryPoint {
 
     private EntryPointWithPrivateConstructor() {
     }
@@ -120,7 +120,7 @@ public class DefaultEntryPointFactory_Test extends TestCase {
     }
   }
 
-  private static class EntryPointWithFailingConstructor implements IEntryPoint {
+  private static class EntryPointWithFailingConstructor implements EntryPoint {
 
     @SuppressWarnings("unused")
     public EntryPointWithFailingConstructor() {
@@ -132,21 +132,21 @@ public class DefaultEntryPointFactory_Test extends TestCase {
     }
   }
 
-  private class NonStaticInnerClass implements IEntryPoint {
+  private class NonStaticInnerClass implements EntryPoint {
 
     public int createUI() {
       return 0;
     }
   }
 
-  private static abstract class AbstractClass implements IEntryPoint {
+  private static abstract class AbstractClass implements EntryPoint {
 
     public int createUI() {
       return 0;
     }
   }
 
-  private static interface Interface extends IEntryPoint {
+  private static interface Interface extends EntryPoint {
 
   }
 

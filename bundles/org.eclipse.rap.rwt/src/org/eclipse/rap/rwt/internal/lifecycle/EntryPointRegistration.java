@@ -14,19 +14,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
+import org.eclipse.rap.rwt.application.EntryPointFactory;
 
 
 public class EntryPointRegistration {
-  private final IEntryPointFactory factory;
+  private final EntryPointFactory factory;
   private final Map<String, String> properties;
 
-  public EntryPointRegistration( IEntryPointFactory factory, Map<String, String> properties ) {
+  public EntryPointRegistration( EntryPointFactory factory, Map<String, String> properties ) {
     this.factory = factory;
     this.properties = createPropertiesCopy( properties );
   }
 
-  public IEntryPointFactory getFactory() {
+  public EntryPointFactory getFactory() {
     return factory;
   }
 

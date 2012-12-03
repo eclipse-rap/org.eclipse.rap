@@ -29,6 +29,7 @@ import java.util.HashMap;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
@@ -43,7 +44,6 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
@@ -497,7 +497,7 @@ public class DisplayLCA_Test extends TestCase {
     }
   }
 
-  public static final class TestRenderInitiallyDisposedEntryPoint implements IEntryPoint {
+  public static final class TestRenderInitiallyDisposedEntryPoint implements EntryPoint {
     public int createUI() {
       Display display = new Display();
       display.dispose();
@@ -505,7 +505,7 @@ public class DisplayLCA_Test extends TestCase {
     }
   }
 
-  public static final class TestRenderDisposedEntryPoint implements IEntryPoint {
+  public static final class TestRenderDisposedEntryPoint implements EntryPoint {
     public int createUI() {
       Display display = new Display();
       Shell shell = new Shell( display );

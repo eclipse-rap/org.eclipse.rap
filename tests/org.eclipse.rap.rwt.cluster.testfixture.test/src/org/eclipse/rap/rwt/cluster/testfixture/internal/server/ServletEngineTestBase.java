@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.cluster.testfixture.ClusterTestHelper;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
@@ -27,7 +28,6 @@ import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.rap.rwt.cluster.testfixture.test.TestEntryPoint;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 
 
 public abstract class ServletEngineTestBase extends TestCase {
@@ -153,7 +153,7 @@ public abstract class ServletEngineTestBase extends TestCase {
     }
   }
 
-  private IServletEngine startServletEngine( Class<? extends IEntryPoint> entryPoint )
+  private IServletEngine startServletEngine( Class<? extends EntryPoint> entryPoint )
     throws Exception
   {
     IServletEngine result = getServletEngineFactory().createServletEngine();

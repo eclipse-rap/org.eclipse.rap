@@ -17,11 +17,11 @@ import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExampleContribution;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.client.service.BrowserHistory;
 import org.eclipse.rap.rwt.client.service.BrowserHistoryEvent;
 import org.eclipse.rap.rwt.client.service.BrowserHistoryListener;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseAdapter;
@@ -40,7 +40,7 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.Version;
 
 
-public class MainUi implements IEntryPoint {
+public class MainUi implements EntryPoint {
 
   private static final String RAP_PAGE_URL = "http://eclipse.org/rap/";
   private static final int CONTENT_MIN_HEIGHT = 800;

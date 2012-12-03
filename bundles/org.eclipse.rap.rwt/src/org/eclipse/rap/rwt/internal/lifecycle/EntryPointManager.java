@@ -19,9 +19,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.application.EntryPoint;
+import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 
 
 public class EntryPointManager {
@@ -35,7 +35,7 @@ public class EntryPointManager {
   }
 
   public void register( String path,
-                        Class<? extends IEntryPoint> type,
+                        Class<? extends EntryPoint> type,
                         Map<String, String> properties )
   {
     ParamCheck.notNull( path, "path" );
@@ -45,7 +45,7 @@ public class EntryPointManager {
 
 
   public void register( String path,
-                        IEntryPointFactory entryPointFactory,
+                        EntryPointFactory entryPointFactory,
                         Map<String, String> properties )
   {
     ParamCheck.notNull( path, "path" );
@@ -86,7 +86,7 @@ public class EntryPointManager {
     return result;
   }
 
-  private void doRegister( String path, IEntryPointFactory factory, Map<String, String> properties )
+  private void doRegister( String path, EntryPointFactory factory, Map<String, String> properties )
   {
     synchronized( entryPoints ) {
       checkPathAvailable( path );

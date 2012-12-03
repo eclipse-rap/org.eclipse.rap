@@ -12,10 +12,10 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -60,7 +60,7 @@ public class ReadDispose_Test extends TestCase {
     lifeCycle.execute();
   }
 
-  private static class WidgetDisposalEntryPoint implements IEntryPoint {
+  private static class WidgetDisposalEntryPoint implements EntryPoint {
     private static String buttonId;
 
     public int createUI() {

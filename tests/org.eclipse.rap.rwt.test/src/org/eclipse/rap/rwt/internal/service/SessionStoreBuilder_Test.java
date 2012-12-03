@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
@@ -31,7 +32,6 @@ import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
-import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestSession;
@@ -134,7 +134,7 @@ public class SessionStoreBuilder_Test extends TestCase {
 
   private void registerEntryPoint( HashMap<String, String> properties ) {
     EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
-    IEntryPointFactory factory = mock( IEntryPointFactory.class );
+    EntryPointFactory factory = mock( EntryPointFactory.class );
     entryPointManager.register( EntryPointManager.DEFAULT_PATH, factory, properties );
   }
 

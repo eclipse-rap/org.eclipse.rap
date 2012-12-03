@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -29,7 +30,7 @@ import org.eclipse.swt.widgets.*;
 
 public class PreserveWidgets_Test extends TestCase {
 
-  public static class TestEntryPointWithShell implements IEntryPoint {
+  public static class TestEntryPointWithShell implements EntryPoint {
     public int createUI() {
       Display display = new Display();
       new Shell( display, SWT.NONE );

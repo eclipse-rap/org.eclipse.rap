@@ -13,10 +13,10 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import java.lang.reflect.Modifier;
 
+import org.eclipse.rap.rwt.application.EntryPoint;
+import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 
 
 /**
@@ -26,24 +26,24 @@ import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
  *
  * @since 2.0
  */
-public class DefaultEntryPointFactory implements IEntryPointFactory {
+public class DefaultEntryPointFactory implements EntryPointFactory {
 
-  private final Class<? extends IEntryPoint> type;
+  private final Class<? extends EntryPoint> type;
 
   /**
    * Creates a new entrypoint factory for the given class.
    *
    * @param type the entrypoint class, must not be an abstract class or a non-static inner class
    */
-  public DefaultEntryPointFactory( Class<? extends IEntryPoint> type ) {
+  public DefaultEntryPointFactory( Class<? extends EntryPoint> type ) {
     ParamCheck.notNull( type, "type" );
 
     checkType( type );
     this.type = type;
   }
 
-  public IEntryPoint create() {
-    IEntryPoint instance;
+  public EntryPoint create() {
+    EntryPoint instance;
     try {
       instance = ClassUtil.newInstance( type );
     } catch( Exception exception ) {
@@ -53,7 +53,7 @@ public class DefaultEntryPointFactory implements IEntryPointFactory {
     return instance;
   }
 
-  private void checkType( Class<? extends IEntryPoint> type ) {
+  private void checkType( Class<? extends EntryPoint> type ) {
     if( type.isInterface() || Modifier.isAbstract( type.getModifiers() ) ) {
       throw new IllegalArgumentException( "Abstract class or interface given as entrypoint: "
                                           + type.getName() );

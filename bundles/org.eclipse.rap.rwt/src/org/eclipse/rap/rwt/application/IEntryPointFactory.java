@@ -9,21 +9,14 @@
  *    Frank Appel - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rap.rwt.lifecycle;
+package org.eclipse.rap.rwt.application;
 
 
 /**
- * Implementations of this interface can be used to register entrypoints with
- * the framework. It is also possible to register the class that implements
- * {@link IEntryPoint} directly, but using a factory provides greater
- * flexibility as it leaves the creation of the class to the application.
- *
  * @since 2.0
+ * @deprecated Use {@link EntryPointFactory} instead
  */
-public interface IEntryPointFactory {
+@Deprecated
+public interface IEntryPointFactory extends EntryPointFactory {
 
-  /**
-   * Creates a new entrypoint instance.
-   */
-  IEntryPoint create();
 }

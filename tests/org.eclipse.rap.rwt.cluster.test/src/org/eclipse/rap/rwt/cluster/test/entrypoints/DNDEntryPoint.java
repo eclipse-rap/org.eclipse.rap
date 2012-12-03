@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.cluster.test.entrypoints;
 import java.io.Serializable;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class DNDEntryPoint implements IEntryPoint {
+public class DNDEntryPoint implements EntryPoint {
 
   public static final String ID_SOURCE_LABEL = "sourceLabel";
   public static final String ID_TARGET_LABEL = "targetLabel";

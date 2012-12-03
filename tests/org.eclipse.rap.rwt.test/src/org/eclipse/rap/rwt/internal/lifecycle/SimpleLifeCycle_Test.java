@@ -17,12 +17,12 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -278,7 +278,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertSame( lifeCycle, beforePrepareUIRoot.source );
   }
 
-  private static void registerEntryPoint( Class<? extends IEntryPoint> type ) {
+  private static void registerEntryPoint( Class<? extends EntryPoint> type ) {
     RWTFactory.getEntryPointManager().register( "/rap", type, null );
   }
 
@@ -316,14 +316,14 @@ public class SimpleLifeCycle_Test extends TestCase {
     }
   }
 
-  private static class TestEntryPoint implements IEntryPoint {
+  private static class TestEntryPoint implements EntryPoint {
     public int createUI() {
       new Display();
       return 0;
     }
   }
 
-  private static class DefaultDisplayEntryPoint implements IEntryPoint {
+  private static class DefaultDisplayEntryPoint implements EntryPoint {
     public int createUI() {
       Display.getDefault();
       return 0;

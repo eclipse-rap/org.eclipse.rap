@@ -15,6 +15,7 @@ import java.util.Map;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.application.Application;
+import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.client.service.BrowserHistory;
 import org.eclipse.rap.rwt.client.service.ClientService;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
@@ -26,7 +27,6 @@ import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoader;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoaderImpl;
-import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 
 
 /**
@@ -45,7 +45,7 @@ public class WebClient implements Client {
    *
    * @see RWT#DEFAULT_THEME_ID
    * @see Application#addEntryPoint(String, Class, Map)
-   * @see Application#addEntryPoint(String, IEntryPointFactory, Map)
+   * @see Application#addEntryPoint(String, EntryPointFactory, Map)
    */
   public static final String THEME_ID = PREFIX + ".themeId";
 
@@ -63,7 +63,7 @@ public class WebClient implements Client {
    * </p>
    *
    * @see Application#addEntryPoint(String, Class, Map)
-   * @see Application#addEntryPoint(String, IEntryPointFactory, Map)
+   * @see Application#addEntryPoint(String, EntryPointFactory, Map)
    */
   public static final String HEAD_HTML = PREFIX + ".additionalHeaders";
 
@@ -79,8 +79,7 @@ public class WebClient implements Client {
    * </p>
    *
    * @see Application#addEntryPoint(String, Class, Map)
-   * @see Application#addEntryPoint(String, IEntryPointFactory,
-   *      Map)
+   * @see Application#addEntryPoint(String, EntryPointFactory, Map)
    */
   public static final String BODY_HTML = PREFIX + ".bodyHtml";
 
@@ -89,8 +88,7 @@ public class WebClient implements Client {
    * browser window. The value must be the title string without any HTML markup.
    *
    * @see Application#addEntryPoint(String, Class, Map)
-   * @see Application#addEntryPoint(String, IEntryPointFactory,
-   *      Map)
+   * @see Application#addEntryPoint(String, EntryPointFactory, Map)
    */
   public static final String PAGE_TITLE = PREFIX + ".pageTitle";
 
@@ -105,7 +103,7 @@ public class WebClient implements Client {
    *
    * @see Application#addResource(String,org.eclipse.rap.rwt.resources.ResourceLoader)
    * @see Application#addEntryPoint(String, Class, Map)
-   * @see Application#addEntryPoint(String, IEntryPointFactory, Map)
+   * @see Application#addEntryPoint(String, EntryPointFactory, Map)
    */
   public static final String FAVICON = PREFIX + ".favicon";
 

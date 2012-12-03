@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,21 +15,21 @@ import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 
 
-public class SessionTimeoutEntryPoint implements IEntryPoint {
+public class SessionTimeoutEntryPoint implements EntryPoint {
 
   public static int SESSION_SWEEP_INTERVAL = 3000;
-  
+
   private static volatile boolean sessionInvalidated;
-  
+
   public static boolean isSessionInvalidated() {
     return sessionInvalidated;
   }
-  
+
   @SuppressWarnings("unused")
   public int createUI() {
     sessionInvalidated = false;
@@ -41,14 +41,12 @@ public class SessionTimeoutEntryPoint implements IEntryPoint {
     return 0;
   }
 
-  private static class SessionInvalidationListener 
-    implements HttpSessionBindingListener
-  {
+  private static class SessionInvalidationListener implements HttpSessionBindingListener {
 
     public void valueUnbound( HttpSessionBindingEvent event ) {
       sessionInvalidated = true;
     }
-  
+
     public void valueBound( HttpSessionBindingEvent event ) {
     }
   }

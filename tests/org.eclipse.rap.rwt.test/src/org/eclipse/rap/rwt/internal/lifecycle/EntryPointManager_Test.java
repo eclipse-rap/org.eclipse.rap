@@ -19,8 +19,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
+import org.eclipse.rap.rwt.application.EntryPoint;
+import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 
@@ -31,8 +31,8 @@ public class EntryPointManager_Test extends TestCase {
   private static final Integer RETURN_VALUE = Integer.valueOf( 123 );
 
   private EntryPointManager entryPointManager;
-  private IEntryPointFactory entryPointFactory;
-  private IEntryPoint entryPoint;
+  private EntryPointFactory entryPointFactory;
+  private EntryPoint entryPoint;
 
   @Override
   protected void setUp() throws Exception {
@@ -43,12 +43,12 @@ public class EntryPointManager_Test extends TestCase {
   }
 
   private void mockEntryPointFactory() {
-    entryPointFactory = mock( IEntryPointFactory.class );
+    entryPointFactory = mock( EntryPointFactory.class );
     when( entryPointFactory.create() ).thenReturn( entryPoint );
   }
 
   private void mockEntryPoint() {
-    entryPoint = mock( IEntryPoint.class );
+    entryPoint = mock( EntryPoint.class );
     when( Integer.valueOf( entryPoint.createUI() ) ).thenReturn( RETURN_VALUE );
   }
 
@@ -67,7 +67,7 @@ public class EntryPointManager_Test extends TestCase {
 
   public void testRegisterEntryPointByPath_nullClass() {
     try {
-      entryPointManager.register( PATH, ( Class<? extends IEntryPoint> )null, null );
+      entryPointManager.register( PATH, ( Class<? extends EntryPoint> )null, null );
       fail();
     } catch( NullPointerException expected ) {
     }
@@ -94,7 +94,7 @@ public class EntryPointManager_Test extends TestCase {
   public void testRegisterEntryPointByPath() {
     entryPointManager.register( PATH, TestEntryPoint.class, null );
 
-    IEntryPointFactory factory = entryPointManager.getRegistrationByPath( PATH ).getFactory();
+    EntryPointFactory factory = entryPointManager.getRegistrationByPath( PATH ).getFactory();
     assertSame( DefaultEntryPointFactory.class, factory.getClass() );
     assertEquals( TestEntryPoint.class, factory.create().getClass() );
   }
@@ -135,7 +135,7 @@ public class EntryPointManager_Test extends TestCase {
 
   public void testRegisterFactoryByPath_nullFactory() {
     try {
-      entryPointManager.register( PATH, ( IEntryPointFactory )null, null );
+      entryPointManager.register( PATH, ( EntryPointFactory )null, null );
       fail();
     } catch( NullPointerException expected ) {
     }
@@ -224,7 +224,7 @@ public class EntryPointManager_Test extends TestCase {
     }
   }
 
-  private void assertRegisterByPathFails( String path, Class<? extends IEntryPoint> type ) {
+  private void assertRegisterByPathFails( String path, Class<? extends EntryPoint> type ) {
     try {
       entryPointManager.register( path, type, null );
       fail( "Exected to fail but succeeded" );
@@ -232,7 +232,7 @@ public class EntryPointManager_Test extends TestCase {
     }
   }
 
-  private void assertRegisterByPathFails( String path, IEntryPointFactory factory ) {
+  private void assertRegisterByPathFails( String path, EntryPointFactory factory ) {
     try {
       entryPointManager.register( path, factory, null );
       fail( "Exected to fail but succeeded" );

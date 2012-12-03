@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
@@ -29,7 +30,6 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -720,7 +720,7 @@ public class RWTLifeCycle_Test extends TestCase {
       }
     } );
     // Register and 'run' entry point with readAndDispatch/sleep loop
-    Class<? extends IEntryPoint> entryPointClass = SessionInvalidateWithEventLoopEntryPoint.class;
+    Class<? extends EntryPoint> entryPointClass = SessionInvalidateWithEventLoopEntryPoint.class;
     entryPointManager.register( EntryPointManager.DEFAULT_PATH, entryPointClass, null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
@@ -766,7 +766,7 @@ public class RWTLifeCycle_Test extends TestCase {
       }
     } );
     // Register and 'run' entry point with readAndDispatch/sleep loop
-    Class<? extends IEntryPoint> entryPoint = SessionInvalidateWithoutEventLoopEntryPoint.class;
+    Class<? extends EntryPoint> entryPoint = SessionInvalidateWithoutEventLoopEntryPoint.class;
     entryPointManager.register( EntryPointManager.DEFAULT_PATH, entryPoint, null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
@@ -793,7 +793,7 @@ public class RWTLifeCycle_Test extends TestCase {
   public void testDisposeDisplayOnSessionTimeout() throws Throwable {
     ISessionStore session = ContextProvider.getSessionStore();
     ContextProvider.getContext().getApplicationContext();
-    Class<? extends IEntryPoint> clazz = DisposeDisplayOnSessionTimeoutEntryPoint.class;
+    Class<? extends EntryPoint> clazz = DisposeDisplayOnSessionTimeoutEntryPoint.class;
     entryPointManager.register( EntryPointManager.DEFAULT_PATH, clazz, null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
@@ -803,7 +803,7 @@ public class RWTLifeCycle_Test extends TestCase {
 
   public void testOrderOfDisplayDisposeAndSessionUnbound() throws Throwable {
     ISessionStore session = ContextProvider.getSessionStore();
-    Class<? extends IEntryPoint> clazz = TestOrderOfDisplayDisposeAndSessionUnboundEntryPoint.class;
+    Class<? extends EntryPoint> clazz = TestOrderOfDisplayDisposeAndSessionUnboundEntryPoint.class;
     entryPointManager.register( EntryPointManager.DEFAULT_PATH, clazz, null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
@@ -920,14 +920,14 @@ public class RWTLifeCycle_Test extends TestCase {
     }
   }
 
-  public static final class MainStartup implements IEntryPoint {
+  public static final class MainStartup implements EntryPoint {
     public int createUI() {
       log.append( "createUI" );
       return 0;
     }
   }
 
-  public static final class ErrorStartup implements IEntryPoint {
+  public static final class ErrorStartup implements EntryPoint {
     public int createUI() {
       throw new RuntimeException( ERR_MSG );
     }
@@ -952,14 +952,14 @@ public class RWTLifeCycle_Test extends TestCase {
     }
   }
 
-  public static class TestEntryPoint implements IEntryPoint {
+  public static class TestEntryPoint implements EntryPoint {
     public int createUI() {
       new Display();
       return 0;
     }
   }
 
-  public static class TestPhasesEntryPoint implements IEntryPoint {
+  public static class TestPhasesEntryPoint implements EntryPoint {
     public int createUI() {
       Display display = new Display();
       while( !display.isDisposed() ) {
@@ -971,14 +971,14 @@ public class RWTLifeCycle_Test extends TestCase {
     }
   }
 
-  public static class TestErrorInLifeCycleEntryPoint implements IEntryPoint {
+  public static class TestErrorInLifeCycleEntryPoint implements EntryPoint {
     public int createUI() {
       String msg = TestErrorInLifeCycleEntryPoint.class.getName();
       throw new RuntimeException( msg );
     }
   }
 
-  public static class TestEntryPointWithLog implements IEntryPoint {
+  public static class TestEntryPointWithLog implements EntryPoint {
     public int createUI() {
       new Display();
       log.append( DISPLAY_CREATED );
@@ -986,7 +986,7 @@ public class RWTLifeCycle_Test extends TestCase {
     }
   }
 
-  public static class DisposeDisplayOnSessionTimeoutEntryPoint implements IEntryPoint
+  public static class DisposeDisplayOnSessionTimeoutEntryPoint implements EntryPoint
   {
     public int createUI() {
       Display display = new Display();
@@ -1000,7 +1000,7 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public static class SessionInvalidateWithEventLoopEntryPoint
-    implements IEntryPoint
+    implements EntryPoint
   {
     public int createUI() {
       Display display = new Display();
@@ -1017,7 +1017,7 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public static class SessionInvalidateWithoutEventLoopEntryPoint
-    implements IEntryPoint
+    implements EntryPoint
   {
     public int createUI() {
       new Display();
@@ -1025,7 +1025,7 @@ public class RWTLifeCycle_Test extends TestCase {
     }
   }
 
-  public static class ExceptionInRenderEntryPoint implements IEntryPoint {
+  public static class ExceptionInRenderEntryPoint implements EntryPoint {
     public static class BuggyShell extends Shell {
       private static final long serialVersionUID = 1L;
       public BuggyShell( Display display ) {
@@ -1082,7 +1082,7 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public static final class TestOrderOfDisplayDisposeAndSessionUnboundEntryPoint
-    implements IEntryPoint
+    implements EntryPoint
   {
     public int createUI() {
       Display display = new Display();

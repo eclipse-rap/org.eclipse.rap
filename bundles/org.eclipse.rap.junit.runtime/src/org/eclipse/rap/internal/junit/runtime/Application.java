@@ -13,10 +13,10 @@ package org.eclipse.rap.internal.junit.runtime;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -30,7 +30,7 @@ import org.eclipse.ui.testing.TestableObject;
  * contributed through the plugin.xml.
  */
 @SuppressWarnings("restriction")
-public class Application implements IEntryPoint, ITestHarness {
+public class Application implements EntryPoint, ITestHarness {
 
   private TestableObject fTestableObject;
 
@@ -46,7 +46,7 @@ public class Application implements IEntryPoint, ITestHarness {
     int result;
     String entryPointPath = getEntryPointPath();
     if( entryPointPath != null ) {
-      IEntryPoint entryPoint = getEntryPoint( entryPointPath );
+      EntryPoint entryPoint = getEntryPoint( entryPointPath );
       result = entryPoint.createUI();
     } else {
       result = createAndRunEmptyWorkbench();
@@ -74,7 +74,7 @@ public class Application implements IEntryPoint, ITestHarness {
     return result;
   }
 
-  private IEntryPoint getEntryPoint( String entryPointPath ) {
+  private EntryPoint getEntryPoint( String entryPointPath ) {
     EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
     EntryPointRegistration registration = entryPointManager.getRegistrationByPath( entryPointPath );
     if( registration == null ) {

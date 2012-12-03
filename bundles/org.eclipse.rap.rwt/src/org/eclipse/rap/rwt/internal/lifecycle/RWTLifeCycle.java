@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rap.rwt.internal.lifecycle.UIThread.UIThreadTerminatedError;
@@ -22,7 +23,6 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.IServiceStore;
@@ -182,7 +182,7 @@ public class RWTLifeCycle extends LifeCycle {
       EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
       HttpServletRequest request = ContextProvider.getRequest();
       EntryPointRegistration registration = entryPointManager.getEntryPointRegistration( request );
-      IEntryPoint entryPoint = registration.getFactory().create();
+      EntryPoint entryPoint = registration.getFactory().create();
       result = entryPoint.createUI();
     }
     return result;

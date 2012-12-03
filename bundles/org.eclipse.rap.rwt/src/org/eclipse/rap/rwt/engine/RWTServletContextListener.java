@@ -19,8 +19,8 @@ import javax.servlet.ServletContextListener;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.ApplicationRunner;
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 
 
 /**
@@ -93,7 +93,7 @@ public class RWTServletContextListener implements ServletContextListener {
     String className = context.getInitParameter( ENTRY_POINTS_PARAM );
     ClassLoader loader = getClassLoader();
     Class<?> entryPointClass = loader.loadClass( className );
-    return new EntryPointRunnerConfiguration( ( Class<? extends IEntryPoint> )entryPointClass );
+    return new EntryPointRunnerConfiguration( ( Class<? extends EntryPoint> )entryPointClass );
   }
 
   private ClassLoader getClassLoader() {
@@ -106,9 +106,9 @@ public class RWTServletContextListener implements ServletContextListener {
 
   private static class EntryPointRunnerConfiguration implements ApplicationConfiguration {
 
-    private final Class<? extends IEntryPoint> entryPointClass;
+    private final Class<? extends EntryPoint> entryPointClass;
 
-    private EntryPointRunnerConfiguration( Class<? extends IEntryPoint> entryPointClass ) {
+    private EntryPointRunnerConfiguration( Class<? extends EntryPoint> entryPointClass ) {
       this.entryPointClass = entryPointClass;
     }
 

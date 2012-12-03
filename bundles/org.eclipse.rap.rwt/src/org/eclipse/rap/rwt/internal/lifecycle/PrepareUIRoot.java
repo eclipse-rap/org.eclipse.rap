@@ -13,9 +13,9 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.widgets.Display;
 
@@ -35,7 +35,7 @@ final class PrepareUIRoot implements IPhase {
   public PhaseId execute( Display display ) {
     PhaseId result;
     if( LifeCycleUtil.isStartup() ) {
-      IEntryPoint entryPoint = createEntryPoint();
+      EntryPoint entryPoint = createEntryPoint();
       entryPoint.createUI();
       result = PhaseId.RENDER;
     } else {
@@ -44,7 +44,7 @@ final class PrepareUIRoot implements IPhase {
     return result;
   }
 
-  private IEntryPoint createEntryPoint() {
+  private EntryPoint createEntryPoint() {
     EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
     HttpServletRequest request = ContextProvider.getRequest();
     EntryPointRegistration registration = entryPointManager.getEntryPointRegistration( request );

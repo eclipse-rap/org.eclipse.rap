@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,11 +19,11 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.server.RWTStartup;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.engine.RWTServlet;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 
 
 public class JettyEngine implements IServletEngine {
@@ -48,7 +48,7 @@ public class JettyEngine implements IServletEngine {
     this.sessionTracker = new SessionTracker();
   }
   
-  public void start( Class<? extends IEntryPoint> entryPointClass ) throws Exception {
+  public void start( Class<? extends EntryPoint> entryPointClass ) throws Exception {
     addEntryPoint( entryPointClass );
     jettyController.start();
   }
@@ -69,7 +69,7 @@ public class JettyEngine implements IServletEngine {
     return sessionTracker.getSessions();
   }
 
-  private void addEntryPoint( Class<? extends IEntryPoint> entryPointClass ) {
+  private void addEntryPoint( Class<? extends EntryPoint> entryPointClass ) {
     ServletContextHandler context = jettyController.createServletContext( "/" );
     context.addServlet( new ServletHolder( new RWTServlet() ), IServletEngine.SERVLET_PATH );
     addServletContextFilter( context, sessionTracker );

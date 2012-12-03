@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,14 +13,14 @@ package org.eclipse.rap.rwt.cluster.test.entrypoints;
 import java.io.Serializable;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.widgets.ClusteredSynchronizer;
 import org.eclipse.swt.widgets.Display;
 
 
-public class AsyncExecEntryPoint implements IEntryPoint {
+public class AsyncExecEntryPoint implements EntryPoint {
 
   private static final String ATTRIBUTE_NAME = "foo";
   private static final Boolean ATTRIBUTE_VALUE = Boolean.TRUE;

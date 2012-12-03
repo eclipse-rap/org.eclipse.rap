@@ -15,8 +15,6 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.rap.rwt.service.IApplicationStore;
@@ -102,41 +100,38 @@ public interface Application {
   void setOperationMode( OperationMode operationMode );
 
   /**
-   * Registers an entry point at the given servlet path. A servlet path must
-   * begin with slash ('/') and must not end with a slash ('/'). The root path
-   * (&quot;/&quot;) is currently not supported, as well as nested paths (e.g.
-   * &quot;/path/subpath&quot;). Properties can be specified to control
-   * client-specific aspects of the entrypoint such as theme, icons, etc. The
-   * acceptable keys and values depend on the client implementation. The class
-   * {@link WebClient} provides constants for the default RAP client.
+   * Registers an entrypoint at the given servlet path. A servlet path must begin with slash ('/')
+   * and must not end with a slash. The root path (&quot;/&quot;) is currently not supported, as
+   * well as nested paths (e.g. &quot;/path/subpath&quot;). Properties can be specified to control
+   * client-specific aspects of the entrypoint such as theme, icons, etc. The acceptable keys and
+   * values depend on the client implementation. The class {@link WebClient} provides constants for
+   * the default RAP client.
    *
    * @param path a valid path to register the entry point at
-   * @param entryPointType the entry point class to be registered, must not be
-   *          <code>null</code>
-   * @param properties properties that control client-specific aspects of the
-   *          application, such as theme, icons, etc., may be <code>null</code>
+   * @param entryPointType the entry point class to be registered, must not be <code>null</code>
+   * @param properties properties that control client-specific aspects of the application, such as
+   *          theme, icons, etc., may be <code>null</code>
    */
   void addEntryPoint( String path,
-                      Class<? extends IEntryPoint> entryPointType,
+                      Class<? extends EntryPoint> entryPointType,
                       Map<String, String> properties );
 
   /**
-   * Registers an entry point factory at the given servlet path. A servlet path
-   * must begin with slash ('/') and must not end with slash ('/'). The root
-   * path (&quot;/&quot;) is currently not supported, as well as nested paths
-   * (e.g. &quot;/path/subpath&quot;). Properties can be specified to control
-   * client-specific aspects of the entrypoint such as theme, icons, etc. The
-   * acceptable keys and values depend on the client implementation. The class
-   * {@link WebClient} provides constants for the default RAP client.
+   * Registers an entrypoint factory at the given servlet path. A servlet path must begin with slash
+   * ('/') and must not end with a slash. The root path (&quot;/&quot;) is currently not supported,
+   * as well as nested paths (e.g. &quot;/path/subpath&quot;). Properties can be specified to
+   * control client-specific aspects of the entrypoint such as theme, icons, etc. The acceptable
+   * keys and values depend on the client implementation. The class {@link WebClient} provides
+   * constants for the default RAP client.
    *
    * @param path a valid path to register the entry point at
-   * @param entryPointFactory the entry point factory to be registered, must not
-   *          be <code>null</code>
-   * @param properties properties that control client-specific aspects of the
-   *          application, such as theme, icons, etc., may be <code>null</code>
+   * @param entryPointFactory the entry point factory to be registered, must not be
+   *          <code>null</code>
+   * @param properties properties that control client-specific aspects of the application, such as
+   *          theme, icons, etc., may be <code>null</code>
    */
   void addEntryPoint( String path,
-                      IEntryPointFactory entryPointFactory,
+                      EntryPointFactory entryPointFactory,
                       Map<String, String> properties );
 
   /**

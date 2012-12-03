@@ -14,9 +14,9 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Display;
@@ -60,7 +60,7 @@ public class PrepareUIRoot_Test extends TestCase {
     assertTrue( TestEntryPoint.wasInvoked );
   }
 
-  private static class TestEntryPoint implements IEntryPoint {
+  private static class TestEntryPoint implements EntryPoint {
     static boolean wasInvoked;
     public int createUI() {
       wasInvoked = true;

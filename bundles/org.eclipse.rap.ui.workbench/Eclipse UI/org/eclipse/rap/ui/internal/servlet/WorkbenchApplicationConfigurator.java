@@ -35,13 +35,13 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.rap.rwt.application.Application;
+import org.eclipse.rap.rwt.application.EntryPoint;
+import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationImpl;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
@@ -171,7 +171,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       String id = element.getAttribute( "id" );
       String brandingId = element.getAttribute( "brandingId" );
       try {
-        Class<? extends IEntryPoint> entryPointClass = loadClass( className, element );
+        Class<? extends EntryPoint> entryPointClass = loadClass( className, element );
         Map<String, String> properties = getBrandingProperties( brandingId );
         properties.put( BrandingUtil.ENTRY_POINT_BRANDING, brandingId );
         application.addEntryPoint( path, entryPointClass, properties );
@@ -199,7 +199,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       try {
         if( isVisible == null || Boolean.valueOf( isVisible ).booleanValue() ) {
           Class<? extends IApplication> applicationClass = loadClass( className, configElement );
-          IEntryPointFactory factory = createApplicationEntryPointFactory( applicationClass );
+          EntryPointFactory factory = createApplicationEntryPointFactory( applicationClass );
           Map<String, String> properties = getBrandingProperties( brandingId );
           properties.put( BrandingUtil.ENTRY_POINT_BRANDING, brandingId );
           application.addEntryPoint( servletPath, factory, properties );
@@ -313,11 +313,11 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     return result;
   }
 
-  private static IEntryPointFactory
+  private static EntryPointFactory
     createApplicationEntryPointFactory( final Class<? extends IApplication> applicationClass )
   {
-    return new IEntryPointFactory() {
-      public IEntryPoint create() {
+    return new EntryPointFactory() {
+      public EntryPoint create() {
         return new EntryPointApplicationWrapper( applicationClass );
       }
     };

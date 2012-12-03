@@ -15,10 +15,10 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -139,7 +139,7 @@ public class ExternalBrowser_Test extends TestCase {
     return result;
   }
 
-  public static final class TestExecutionOrderEntryPoint implements IEntryPoint {
+  public static final class TestExecutionOrderEntryPoint implements EntryPoint {
 
     public int createUI() {
       new Display();

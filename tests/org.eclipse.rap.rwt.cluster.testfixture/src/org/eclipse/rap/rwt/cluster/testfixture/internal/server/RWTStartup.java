@@ -16,24 +16,24 @@ import javax.servlet.ServletContextListener;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.ApplicationRunner;
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 
 
 public class RWTStartup {
 
   public static ServletContextListener createServletContextListener(
-    Class<? extends IEntryPoint> entryPointClass )
+    Class<? extends EntryPoint> entryPointClass )
   {
     return new TestApplicationController( entryPointClass );
   }
 
   private static class TestApplicationController implements ServletContextListener {
-    private final Class<? extends IEntryPoint> entryPointClass;
+    private final Class<? extends EntryPoint> entryPointClass;
     private ApplicationRunner applicationRunner;
 
-    private TestApplicationController( Class<? extends IEntryPoint> entryPointClass ) {
+    private TestApplicationController( Class<? extends EntryPoint> entryPointClass ) {
       this.entryPointClass = entryPointClass;
     }
 
@@ -49,9 +49,9 @@ public class RWTStartup {
   }
 
   private static class TestApplicationConfigurator implements ApplicationConfiguration {
-    private final Class<? extends IEntryPoint> entryPointClass;
+    private final Class<? extends EntryPoint> entryPointClass;
 
-    private TestApplicationConfigurator( Class<? extends IEntryPoint> entryPointClass ) {
+    private TestApplicationConfigurator( Class<? extends EntryPoint> entryPointClass ) {
       this.entryPointClass = entryPointClass;
     }
 

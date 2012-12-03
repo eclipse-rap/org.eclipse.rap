@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.cluster.test.entrypoints;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Shell;
 
 
 @SuppressWarnings("restriction")
-public class ImageEntryPoint implements IEntryPoint {
+public class ImageEntryPoint implements EntryPoint {
 
   public static String imagePath;
 

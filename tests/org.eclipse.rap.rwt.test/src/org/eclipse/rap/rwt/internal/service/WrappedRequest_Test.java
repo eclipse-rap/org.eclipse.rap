@@ -16,11 +16,11 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.service.WrappedRequest;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
@@ -112,7 +112,7 @@ public class WrappedRequest_Test extends TestCase {
     assertEquals( "value", ContextProvider.getRequest().getParameter( "param" ) );
   }
 
-  public static final class DefaultEntryPoint implements IEntryPoint {
+  public static final class DefaultEntryPoint implements EntryPoint {
     public int createUI() {
       Display display = new Display();
       if( display.readAndDispatch() ) {

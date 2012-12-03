@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
@@ -33,7 +34,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -1544,7 +1544,7 @@ public class Display_Test extends TestCase {
     adapter.setCursorLocation( x, y );
   }
 
-  public static class EnsureIdEntryPoint implements IEntryPoint {
+  public static class EnsureIdEntryPoint implements EntryPoint {
     public int createUI() {
       Display display = new Display();
       Shell shell = new Shell( display );

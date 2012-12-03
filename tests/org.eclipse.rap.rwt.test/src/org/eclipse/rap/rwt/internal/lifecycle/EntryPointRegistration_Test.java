@@ -17,12 +17,12 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
+import org.eclipse.rap.rwt.application.EntryPointFactory;
 
 
 public class EntryPointRegistration_Test extends TestCase {
   
-  private IEntryPointFactory factory;
+  private EntryPointFactory factory;
   private Map<String, String> properties;
 
   public void testConstructor() {
@@ -45,7 +45,7 @@ public class EntryPointRegistration_Test extends TestCase {
   
   @Override
   protected void setUp() throws Exception {
-    factory = mock( IEntryPointFactory.class );
+    factory = mock( EntryPointFactory.class );
     properties = new HashMap<String,String>();
   }
 }
