@@ -30,6 +30,7 @@ import org.eclipse.rap.rwt.client.service.BrowserHistory;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.client.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
@@ -37,7 +38,6 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.internal.widgets.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.service.IApplicationStore;
@@ -66,7 +66,7 @@ import org.eclipse.swt.widgets.Widget;
  * @see ISessionStore
  * @see IServiceStore
  * @see IApplicationStore
- * @see IBrowserHistory
+ * @see BrowserHistory
  * @see ResourceManager
  * @see HttpServletRequest
  * @see HttpServletResponse

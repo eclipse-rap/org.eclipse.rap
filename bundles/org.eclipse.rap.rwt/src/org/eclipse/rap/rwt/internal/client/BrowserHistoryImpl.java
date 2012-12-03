@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  *    Ralf Zahn (ARS) - browser history support (Bug 283291)
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.widgets;
+package org.eclipse.rap.rwt.internal.client;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValueAsString;
 
@@ -22,8 +22,8 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.BrowserHistory;
-import org.eclipse.rap.rwt.events.BrowserHistoryEvent;
-import org.eclipse.rap.rwt.events.BrowserHistoryListener;
+import org.eclipse.rap.rwt.client.service.BrowserHistoryEvent;
+import org.eclipse.rap.rwt.client.service.BrowserHistoryListener;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -63,7 +63,7 @@ public final class BrowserHistoryImpl
   }
 
   //////////////////
-  // IBrowserHistory
+  // BrowserHistory
 
   public void createEntry( String id, String text ) {
     if( id == null ) {

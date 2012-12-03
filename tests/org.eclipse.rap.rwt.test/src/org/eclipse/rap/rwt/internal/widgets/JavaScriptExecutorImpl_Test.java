@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;

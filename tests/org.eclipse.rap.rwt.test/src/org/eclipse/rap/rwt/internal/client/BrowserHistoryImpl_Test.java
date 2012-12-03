@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.widgets;
+package org.eclipse.rap.rwt.internal.client;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -19,8 +19,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.events.BrowserHistoryEvent;
-import org.eclipse.rap.rwt.events.BrowserHistoryListener;
+import org.eclipse.rap.rwt.client.service.BrowserHistoryEvent;
+import org.eclipse.rap.rwt.client.service.BrowserHistoryListener;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;

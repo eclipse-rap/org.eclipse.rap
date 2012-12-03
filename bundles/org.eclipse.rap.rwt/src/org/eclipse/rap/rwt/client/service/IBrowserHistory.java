@@ -9,10 +9,8 @@
  *    EclipseSource - initial API and implementation
  *    Ralf Zahn (ARS) - browser history support (Bug 283291)
  ******************************************************************************/
-package org.eclipse.rap.rwt;
+package org.eclipse.rap.rwt.client.service;
 
-import org.eclipse.rap.rwt.client.service.BrowserHistory;
-import org.eclipse.rap.rwt.events.BrowserHistoryListener;
 
 
 /**

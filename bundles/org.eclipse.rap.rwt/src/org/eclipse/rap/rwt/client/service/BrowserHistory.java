@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.client.service;
 
-import org.eclipse.rap.rwt.IBrowserHistory;
-import org.eclipse.rap.rwt.events.BrowserHistoryListener;
 
 
 /**

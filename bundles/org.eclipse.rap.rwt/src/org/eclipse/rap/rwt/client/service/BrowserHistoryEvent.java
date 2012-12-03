@@ -9,17 +9,16 @@
  *    EclipseSource - initial API and implementation
  *    Ralf Zahn (ARS) - browser history support (Bug 283291)
  ******************************************************************************/
-package org.eclipse.rap.rwt.events;
+package org.eclipse.rap.rwt.client.service;
 
 import org.eclipse.swt.internal.SWTEventObject;
 
 
 /**
- * Instances of this class provide information about a browser history
- * navigation event.
+ * Instances of this class provide information about a browser history navigation event.
  *
  * @see BrowserHistoryListener
- * @see org.eclipse.rap.rwt.IBrowserHistory
+ * @see BrowserHistory
  * @since 2.0
  * @noextend This class is not intended to be subclassed by clients.
  */

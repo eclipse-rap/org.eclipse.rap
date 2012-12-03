@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.widgets;
+package org.eclipse.rap.rwt.internal.client;
 
 import java.util.HashMap;
 import java.util.Map;
