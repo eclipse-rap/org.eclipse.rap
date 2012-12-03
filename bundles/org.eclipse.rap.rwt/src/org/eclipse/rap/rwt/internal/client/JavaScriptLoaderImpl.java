@@ -8,57 +8,42 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.service;
+package org.eclipse.rap.rwt.internal.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.eclipse.rap.rwt.SingletonUtil;
+import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
-import org.eclipse.rap.rwt.service.JavaScriptLoader;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 
 
 public class JavaScriptLoaderImpl implements JavaScriptLoader {
 
-  public void ensure( String... url ) {
-    List< String > files = new ArrayList< String >();
-    JavaScriptSessionFiles sessionFiles = getSessionFiles();
-    for( String file : url ) {
-      if( !sessionFiles.has( file ) ) {
-        files.add( file );
-        sessionFiles.add( file );
+  private final Set<String> loadedUrls = new HashSet<String>();
+
+  public void ensure( String... urls ) {
+    List<String> urlsToLoad = new ArrayList<String>();
+    for( String url : urls ) {
+      if( !loadedUrls.contains( url ) ) {
+        urlsToLoad.add( url );
+        loadedUrls.add( url );
       }
     }
-    load( files );
+    load( urlsToLoad );
   }
 
-  private void load( List<String> files ) {
-    if( files.size() > 0 ) {
+  private void load( List<String> urls ) {
+    if( !urls.isEmpty() ) {
       ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
       Map<String, Object> properties = new HashMap<String, Object>();
-      properties.put( "files", files.toArray() );
+      properties.put( "files", urls.toArray() );
       writer.appendCall( "rwt.client.JavaScriptLoader", "load", properties );
     }
-  }
-
-  private static JavaScriptSessionFiles getSessionFiles() {
-    return SingletonUtil.getSessionInstance( JavaScriptSessionFiles.class );
-  }
-
-  static private class JavaScriptSessionFiles {
-
-    private Map<String, Boolean> map = new HashMap<String, Boolean>();
-
-    public void add( String url ) {
-      map.put( url, Boolean.TRUE );
-    }
-
-    public boolean has( String url ) {
-      return map.containsKey( url );
-    }
-
   }
 
 }

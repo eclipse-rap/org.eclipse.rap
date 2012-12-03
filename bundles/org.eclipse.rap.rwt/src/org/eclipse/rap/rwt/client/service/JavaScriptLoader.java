@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.service;
+package org.eclipse.rap.rwt.client.service;
 
 import org.eclipse.rap.rwt.client.service.ClientService;
 

@@ -16,13 +16,13 @@ import org.eclipse.rap.rwt.client.service.BrowserHistory;
 import org.eclipse.rap.rwt.client.service.ClientService;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
+import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
+import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoader;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoaderImpl;
-import org.eclipse.rap.rwt.internal.service.JavaScriptLoaderImpl;
 import org.eclipse.rap.rwt.internal.widgets.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.internal.widgets.JavaScriptExecutorImpl;
-import org.eclipse.rap.rwt.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
@@ -77,9 +77,7 @@ public class WebClient_Test extends TestCase {
     assertTrue( service instanceof JavaScriptModuleLoaderImpl );
   }
 
-  //////////////////
-  // Helping classes
-
-  private class UnsupportedService implements ClientService {
+  private static class UnsupportedService implements ClientService {
   }
+
 }
