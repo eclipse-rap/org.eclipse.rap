@@ -65,8 +65,10 @@ import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
@@ -238,11 +240,11 @@ public final class Fixture {
   }
 
   public static void useDefaultResourceManager() {
-    ApplicationContextHelper.useDefaultResourceManager();
+    ApplicationContextHelper.fakeResourceManager( null );
   }
 
   public static void useTestResourceManager() {
-    ApplicationContextHelper.useTestResourceManager();
+    ApplicationContextHelper.fakeResourceManager( new TestResourceManager() );
   }
 
   public static void tearDown() {
@@ -325,7 +327,7 @@ public final class Fixture {
   public static void fakeClient( Client client ) {
     ContextProvider.getSessionStore().setAttribute( ClientSelector.SELECTED_CLIENT, client );
   }
-  
+
   public static void fakeRemoteObjectFactory( RemoteObjectFactory factory ) {
     ISessionStore sessionStore = ContextProvider.getSessionStore();
     sessionStore.setAttribute( RemoteObjectFactory.class.getName() + "#instance", factory );
@@ -411,7 +413,7 @@ public final class Fixture {
       throw new RuntimeException( "Failed to add set operation", exception );
     }
   }
-  
+
   public static void dispatchNotify( RemoteObject remoteObject,
                                      String eventName,
                                      Map<String, Object> properties )
@@ -419,7 +421,7 @@ public final class Fixture {
     RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
     remoteObjectImpl.handleNotify( eventName, properties );
   }
-  
+
   public static void dispatchCall( RemoteObject remoteObject,
                                    String methodName,
                                    Map<String, Object> parameters )
@@ -427,7 +429,7 @@ public final class Fixture {
     RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
     remoteObjectImpl.call( methodName, parameters );
   }
-  
+
   public static void dispatchSet( RemoteObject remoteObject, Map<String, Object> properties ) {
     RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
     remoteObjectImpl.handleSet( properties );
@@ -481,6 +483,10 @@ public final class Fixture {
     if( ProtocolUtil.isClientMessageProcessed() ) {
       throw new IllegalStateException( "Client message is already processed" );
     }
+  }
+
+  public static void fakeResourceManager( ResourceManager resourceManager ) {
+    ApplicationContextHelper.fakeResourceManager( resourceManager );
   }
 
   public static void fakeResponseWriter() {
