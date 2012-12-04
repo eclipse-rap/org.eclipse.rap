@@ -27,6 +27,8 @@ import java.util.Set;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.internal.util.StreamUtil;
+import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.rap.rwt.resources.ResourceManager;
 
 
@@ -55,6 +57,25 @@ public class ResourceManagerImpl implements ResourceManager {
 
   /////////////////////////////
   // interface ResourceManager
+
+  public void registerOnce( String resource, ResourceLoader loader ) {
+    ParamCheck.notNull( resource, "resource" );
+    ParamCheck.notNull( loader, "loader" );
+    if( !resources.contains( resource ) ) {
+      checkPath( resource );
+      InputStream stream = null;
+      try {
+        stream = loader.getResourceAsStream( resource );
+        internalRegister( resource, stream );
+      } catch( IOException ioe ) {
+        throw new RuntimeException( "Failed to register resource: " + resource, ioe );
+      } finally {
+        if( stream != null ) {
+          StreamUtil.close( stream );
+        }
+      }
+    }
+  }
 
   public void register( String path, InputStream inputStream ) {
     ParamCheck.notNull( path, "name" );

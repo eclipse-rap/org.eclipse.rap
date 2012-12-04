@@ -22,17 +22,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.resources.ResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class ResourceManagerImpl_Test extends TestCase {
 
-  private ResourceManager resourceManager;
+  private ResourceManagerImpl resourceManager;
 
   public void testRegistration() throws Exception {
     String resource = "path/to/resource";
@@ -108,7 +109,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     } catch( RuntimeException expected ) {
     }
   }
-  
+
   public void testGetLocationWithNullArgument() {
     try {
       resourceManager.getLocation( null );
@@ -127,11 +128,11 @@ public class ResourceManagerImpl_Test extends TestCase {
 
     assertNotNull( content );
   }
-  
+
   @SuppressWarnings( "resource" )
   public void testGetRegisteredContentForNonExistingResource() {
     InputStream content = resourceManager.getRegisteredContent( "not-there" );
-    
+
     assertNull( content );
   }
 
@@ -149,7 +150,7 @@ public class ResourceManagerImpl_Test extends TestCase {
 
     assertEquals( "rwt-resources/http$1//host$1port/path$$1", location );
   }
-  
+
   public void testRegisterWithEmptyPath() {
     try {
       resourceManager.register( "", mock( InputStream.class ) );
@@ -168,7 +169,7 @@ public class ResourceManagerImpl_Test extends TestCase {
 
     assertEquals( "rwt-resources//absolute/path/to/resource.txt", location );
   }
-  
+
   public void testRegisterWithTrailingSlash() {
     try {
       resourceManager.register( "/", createInputStream() );
@@ -184,7 +185,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
   @SuppressWarnings( "resource" )
   public void testRegisterDoesNotCloseStream() throws IOException {
     InputStream inputStream = mock( InputStream.class );
@@ -197,12 +198,12 @@ public class ResourceManagerImpl_Test extends TestCase {
   @SuppressWarnings( "resource" )
   public void testRegisterJavascriptDoesNotCloseStream() throws IOException {
     InputStream inputStream = mock( InputStream.class );
-    
+
     resourceManager.register( "lib.js", inputStream );
-    
+
     verify( inputStream, never() ).close();
   }
-  
+
   public void testConcatenation() throws IOException {
     JSLibraryConcatenator jsConcatenator = RWTFactory.getJSLibraryConcatenator();
 
@@ -214,10 +215,144 @@ public class ResourceManagerImpl_Test extends TestCase {
     assertEquals( "foo\nbar\n", new String( result ) );
   }
 
+  public void testCallRegisterOnce() throws Exception {
+    String resource = "path/to/resource";
+    final byte[] bytes = new byte[] { 1, 2, 3 };
+    ResourceLoader loader = new ResourceLoader() {
+      public InputStream getResourceAsStream( String resourceName ) throws IOException {
+        return new ByteArrayInputStream( bytes );
+      }
+    };
+    resourceManager.registerOnce( resource, loader );
+
+    File jarFile = getResourceCopyFile( resource );
+    assertTrue( resourceManager.isRegistered( resource ) );
+    assertTrue( jarFile.exists() );
+    assertEquals( bytes, read( jarFile ) );
+  }
+
+  public void testCallRegisterOnceTwice() {
+    String resource = "path/to/resource";
+    final byte[] bytes = new byte[] { 1, 2, 3 };
+    final ArrayList<Boolean> log = new ArrayList<Boolean>();
+    ResourceLoader loader = new ResourceLoader() {
+      public InputStream getResourceAsStream( String resourceName ) throws IOException {
+        log.add( Boolean.TRUE );
+        return new ByteArrayInputStream( bytes );
+      }
+    };
+
+    resourceManager.registerOnce( resource, loader );
+    resourceManager.registerOnce( resource, loader );
+
+    assertEquals( 1, log.size() );
+  }
+
+  public void testRegisterOnceCloseStream() throws IOException {
+    String resource = "path/to/resource";
+    final InputStream stream = mock( InputStream.class );
+    ResourceLoader loader = new ResourceLoader() {
+      public InputStream getResourceAsStream( String resourceName ) throws IOException {
+        return stream;
+      }
+    };
+
+    resourceManager.registerOnce( resource, loader );
+
+    verify( stream ).close();
+  }
+
+  public void testRegisterOnceWithNullParams() {
+    try {
+      resourceManager.registerOnce( "path", null );
+      fail( "Expected NullPointerException" );
+    } catch( NullPointerException expected ) {
+    }
+    try {
+      resourceManager.registerOnce( null, mock( ResourceLoader.class ) );
+      fail( "Expected NullPointerException" );
+    } catch( NullPointerException expected ) {
+    }
+  }
+
+  public void testRegisterOnceUnregister() {
+    String path = "path/to/resource";
+    resourceManager.registerOnce( path, createResourceLoader() );
+
+    boolean unregistered = resourceManager.unregister( path );
+
+    assertTrue( unregistered );
+    assertFalse( getResourceCopyFile( path ).exists() );
+  }
+
+  public void testRegisterOnceGetLocation() {
+    String path = "path/to/resource";
+    resourceManager.registerOnce( path, createResourceLoader() );
+
+    String location = resourceManager.getLocation( path );
+
+    assertEquals( "rwt-resources/" + path, location );
+  }
+
+  public void testRegisterOnceGetRegisteredContent() throws IOException {
+    resourceManager.registerOnce( "myfile", createResourceLoader() );
+
+    InputStream content = resourceManager.getRegisteredContent( "myfile" );
+    content.close();
+
+    assertNotNull( content );
+  }
+
+  /*
+   * 280582: resource registration fails when using ImageDescriptor.createFromURL
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=280582
+   */
+  public void testRegisterOnceWithInvalidPath() {
+    String path = "http://host:port/path$1";
+    resourceManager.registerOnce( path, createResourceLoader() );
+
+    String location = resourceManager.getLocation( path );
+
+    assertEquals( "rwt-resources/http$1//host$1port/path$$1", location );
+  }
+
+  public void testRegisterOnceWithEmptyPath() {
+    try {
+      resourceManager.registerOnce( "", mock( ResourceLoader.class ) );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRegisterOnceWithAbsolutePath() {
+    String path = "/absolute/path/to/resource.txt";
+    resourceManager.registerOnce( path, createResourceLoader() );
+
+    String location = resourceManager.getLocation( path );
+
+    assertEquals( "rwt-resources//absolute/path/to/resource.txt", location );
+  }
+
+  public void testRegisterOnceWithTrailingSlash() {
+    try {
+      resourceManager.registerOnce( "/", createResourceLoader() );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRegisterOnceWithTrailingBackslash() {
+    try {
+      resourceManager.registerOnce( "\\", createResourceLoader() );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    resourceManager = getResourceManager();
+    resourceManager = new ResourceManagerImpl( RWTFactory.getResourceDirectory() );
   }
 
   @Override
@@ -250,6 +385,15 @@ public class ResourceManagerImpl_Test extends TestCase {
     return new ByteArrayInputStream( new byte[] { 1, 2, 3 } );
   }
 
+  private ResourceLoader createResourceLoader() {
+    ResourceLoader loader = new ResourceLoader() {
+      public InputStream getResourceAsStream( String resourceName ) throws IOException {
+        return createInputStream();
+      }
+    };
+    return loader;
+  }
+
   private static byte[] read( InputStream input ) throws IOException {
     BufferedInputStream bis = new BufferedInputStream( input );
     byte[] result = null;
@@ -271,10 +415,6 @@ public class ResourceManagerImpl_Test extends TestCase {
                   + File.separator
                   + resourceName;
     return new File( path );
-  }
-
-  private static ResourceManagerImpl getResourceManager() {
-    return new ResourceManagerImpl( RWTFactory.getResourceDirectory() );
   }
 
   private static String getWebContextDirectory() {
