@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.client.service;
 
-import org.eclipse.rap.rwt.client.service.ClientService;
 
 
 /**
@@ -18,6 +17,6 @@ import org.eclipse.rap.rwt.client.service.ClientService;
  */
 public interface JavaScriptLoader extends ClientService  {
 
-  void require( String... url );
+  void require( String url );
 
 }

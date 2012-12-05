@@ -52,27 +52,6 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
     assertEquals( list( "url" ), getFiles( operation ) );
   }
 
-  public void testLoadsMultipleFilesInSingleOperation() {
-    loader.require( new String[]{ "url1", "url2" } );
-
-    assertEquals( 1, getProtocolMessage().getOperationCount() );
-  }
-
-  public void testLoadsMultipleFilesInOrder() {
-    loader.require( new String[]{ "url1", "url2", "url3" } );
-
-    assertEquals( list( "url1", "url2", "url3" ),
-                  getFiles( getProtocolMessage().getOperation( 0 ) ) );
-  }
-
-  public void testLoadsOnlyNewFiles() {
-    loader.require( new String[]{ "url2" } );
-
-    loader.require( new String[]{ "url1", "url2", "url3" } );
-
-    assertEquals( list( "url1", "url3" ), getFiles( getProtocolMessage().getOperation( 1 ) ) );
-  }
-
   public void testLoadsBeforeCreateWidget() {
     loader.require( "url" );
     Shell shell = new Shell( display );
@@ -82,13 +61,7 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
     assertNotNull( getProtocolMessage().findCreateOperation( shell ) );
   }
 
-  public void testEliminatesDuplicateUrls() {
-    loader.require( "url1", "url2", "url1" );
-
-    assertEquals( list( "url1", "url2" ), getFiles( getProtocolMessage().getOperation( 0 ) ) );
-  }
-
-  public void testDoesNotLoadSameUrlTwice() {
+  public void testDoesNotLoadUrlTwiceInSameRequest() {
     loader.require( "url" );
     loader.require( "url" );
 
@@ -96,15 +69,7 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
     assertEquals( 1, getProtocolMessage().getOperationCount() );
   }
 
-  public void testDoesNotLoadMultipleUrlsTwice() {
-    loader.require( new String[]{ "url1", "url2" } );
-    loader.require( new String[]{ "url1", "url2" } );
-
-    assertEquals( list( "url1", "url2" ), getFiles( getProtocolMessage().getOperation( 0 ) ) );
-    assertEquals( 1, getProtocolMessage().getOperationCount() );
-  }
-
-  public void testDoesNotLoadSameUrlAgain() {
+  public void testDoesNotLoadUrlTwiceInSameSession() {
     loader.require( "url" );
 
     Fixture.executeLifeCycleFromServerThread();

@@ -26,13 +26,11 @@ public class JavaScriptLoaderImpl implements JavaScriptLoader {
 
   private final Set<String> loadedUrls = new HashSet<String>();
 
-  public void require( String... urls ) {
+  public void require( String url ) {
     List<String> urlsToLoad = new ArrayList<String>();
-    for( String url : urls ) {
-      if( !loadedUrls.contains( url ) ) {
-        urlsToLoad.add( url );
-        loadedUrls.add( url );
-      }
+    if( !loadedUrls.contains( url ) ) {
+      urlsToLoad.add( url );
+      loadedUrls.add( url );
     }
     load( urlsToLoad );
   }
