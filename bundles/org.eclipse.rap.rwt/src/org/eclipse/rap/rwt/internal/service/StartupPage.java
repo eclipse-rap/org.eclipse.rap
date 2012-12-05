@@ -31,13 +31,13 @@ import org.eclipse.rap.rwt.internal.theme.QxImage;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
 public class StartupPage {
   private final ApplicationContext applicationContext;
   private final List<String> jsLibraries;
-  private StartupPageTemplate startupPageTemplate;
+  private String clientJsLibrary;
+  StartupPageTemplate startupPageTemplate;
 
   public StartupPage( ApplicationContext applicationContext ) {
     this.applicationContext = applicationContext;
@@ -45,15 +45,18 @@ public class StartupPage {
   }
 
   public void activate() {
-    startupPageTemplate = createStartupPageTemplate();
+    startupPageTemplate = new StartupPageTemplate();
   }
 
   public void deactivate() {
     startupPageTemplate = null;
   }
 
+  public void setClientJsLibrary( String location ) {
+    clientJsLibrary = location;
+  }
+
   public void addJsLibrary( String location ) {
-    ParamCheck.notNull( location, "location" );
     jsLibraries.add( location );
   }
 
@@ -72,10 +75,6 @@ public class StartupPage {
     //      whether the cached page can be used.
     //      fix for bug 220733: append no-store to the Cache-Control header
     response.addHeader( "Cache-Control", "max-age=0, no-cache, must-revalidate, no-store" );
-  }
-
-  protected StartupPageTemplate createStartupPageTemplate() {
-    return new StartupPageTemplate();
   }
 
   protected void writeTitle( PrintWriter printWriter ) {
@@ -97,7 +96,8 @@ public class StartupPage {
     writeEntryPointProperty( printWriter, WebClient.HEAD_HTML );
   }
 
-  protected void writeLibraries( PrintWriter printWriter ) {
+  private void writeLibraries( PrintWriter printWriter ) {
+    writeScriptTag( printWriter, clientJsLibrary );
     for( String location : jsLibraries ) {
       writeScriptTag( printWriter, location );
     }
