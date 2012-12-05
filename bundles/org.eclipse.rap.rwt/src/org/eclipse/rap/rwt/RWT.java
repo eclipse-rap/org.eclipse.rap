@@ -197,9 +197,9 @@ public final class RWT {
    * </p>
    * <p>
    * Valid strings for key sequences consist of one key and any number of modifier keys,
-   * separated by <code>+</code>. Keys can be identified by their character or by any of the
-   * keywords below. Special characters (not a letter or digit) should not be combined with any
-   * modifiers, and will issue events regardless of pressed modifiers.
+   * separated by <code>+</code>. Keys can be identified by their upper case character or by any
+   * of the keywords below. Special characters (not a letter or digit) should not be combined with
+   * any modifiers, and will issue events regardless of pressed modifiers.
    * </p>
    * <p>
    * The following keywords can be used to refer to special keys:
