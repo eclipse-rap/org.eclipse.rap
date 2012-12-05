@@ -26,7 +26,7 @@ public class JavaScriptLoaderImpl implements JavaScriptLoader {
 
   private final Set<String> loadedUrls = new HashSet<String>();
 
-  public void ensure( String... urls ) {
+  public void require( String... urls ) {
     List<String> urlsToLoad = new ArrayList<String>();
     for( String url : urls ) {
       if( !loadedUrls.contains( url ) ) {

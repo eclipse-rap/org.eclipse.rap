@@ -45,7 +45,7 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
   }
 
   public void testCreatesLoadOperation() {
-    loader.ensure( "url" );
+    loader.require( "url" );
 
     Operation operation = getProtocolMessage().getOperation( 0 );
     assertTrue( isLoadOperation( operation ) );
@@ -53,28 +53,28 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
   }
 
   public void testLoadsMultipleFilesInSingleOperation() {
-    loader.ensure( new String[]{ "url1", "url2" } );
+    loader.require( new String[]{ "url1", "url2" } );
 
     assertEquals( 1, getProtocolMessage().getOperationCount() );
   }
 
   public void testLoadsMultipleFilesInOrder() {
-    loader.ensure( new String[]{ "url1", "url2", "url3" } );
+    loader.require( new String[]{ "url1", "url2", "url3" } );
 
     assertEquals( list( "url1", "url2", "url3" ),
                   getFiles( getProtocolMessage().getOperation( 0 ) ) );
   }
 
   public void testLoadsOnlyNewFiles() {
-    loader.ensure( new String[]{ "url2" } );
+    loader.require( new String[]{ "url2" } );
 
-    loader.ensure( new String[]{ "url1", "url2", "url3" } );
+    loader.require( new String[]{ "url1", "url2", "url3" } );
 
     assertEquals( list( "url1", "url3" ), getFiles( getProtocolMessage().getOperation( 1 ) ) );
   }
 
   public void testLoadsBeforeCreateWidget() {
-    loader.ensure( "url" );
+    loader.require( "url" );
     Shell shell = new Shell( display );
     Fixture.executeLifeCycleFromServerThread();
 
@@ -83,33 +83,33 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
   }
 
   public void testEliminatesDuplicateUrls() {
-    loader.ensure( "url1", "url2", "url1" );
+    loader.require( "url1", "url2", "url1" );
 
     assertEquals( list( "url1", "url2" ), getFiles( getProtocolMessage().getOperation( 0 ) ) );
   }
 
   public void testDoesNotLoadSameUrlTwice() {
-    loader.ensure( "url" );
-    loader.ensure( "url" );
+    loader.require( "url" );
+    loader.require( "url" );
 
     assertEquals( list( "url" ), getFiles( getProtocolMessage().getOperation( 0 ) ) );
     assertEquals( 1, getProtocolMessage().getOperationCount() );
   }
 
   public void testDoesNotLoadMultipleUrlsTwice() {
-    loader.ensure( new String[]{ "url1", "url2" } );
-    loader.ensure( new String[]{ "url1", "url2" } );
+    loader.require( new String[]{ "url1", "url2" } );
+    loader.require( new String[]{ "url1", "url2" } );
 
     assertEquals( list( "url1", "url2" ), getFiles( getProtocolMessage().getOperation( 0 ) ) );
     assertEquals( 1, getProtocolMessage().getOperationCount() );
   }
 
   public void testDoesNotLoadSameUrlAgain() {
-    loader.ensure( "url" );
+    loader.require( "url" );
 
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest();
-    loader.ensure( "url" );
+    loader.require( "url" );
 
     assertEquals( 0, getProtocolMessage().getOperationCount() );
   }

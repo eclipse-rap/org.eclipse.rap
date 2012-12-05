@@ -18,6 +18,6 @@ import org.eclipse.rap.rwt.client.service.ClientService;
  */
 public interface JavaScriptLoader extends ClientService  {
 
-  void ensure( String... url );
+  void require( String... url );
 
 }
