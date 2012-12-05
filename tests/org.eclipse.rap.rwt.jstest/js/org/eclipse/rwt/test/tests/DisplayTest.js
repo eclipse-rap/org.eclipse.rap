@@ -92,6 +92,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       assertEquals( dpi, message.findSetProperty( "w1", "dpi" ) );
     },
 
+
+    testSendTimezoneOffset : function() {
+      display._appendTimezoneOffset();
+      rwt.remote.Server.getInstance().send();
+
+      var message = TestUtil.getMessageObject();
+      var expected = ( new Date() ).getTimezoneOffset();
+      assertEquals( expected, message.getHead().timezoneOffset );
+    },
+
     testSendColorDepth : function() {
       display._appendColorDepth();
       rwt.remote.Server.getInstance().send();

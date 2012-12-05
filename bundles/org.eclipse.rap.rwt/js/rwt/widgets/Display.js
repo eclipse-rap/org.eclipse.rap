@@ -41,6 +41,7 @@ rwt.widgets.Display.prototype = {
     this._appendSystemDPI();
     this._appendColorDepth();
     this._appendInitialHistoryEvent();
+    this._appendTimezoneOffset();
     this._attachListener();
     this._request.send();
     this._initialized = true;
@@ -182,6 +183,12 @@ rwt.widgets.Display.prototype = {
         "entryId" : entryId.substr( 1 )
       } );
     }
+  },
+
+  _appendTimezoneOffset : function() {
+    var offset = ( new Date() ).getTimezoneOffset();
+    var writer = rwt.remote.Server.getInstance().getMessageWriter();
+    writer.appendHead( "timezoneOffset", offset );
   }
 
 };
