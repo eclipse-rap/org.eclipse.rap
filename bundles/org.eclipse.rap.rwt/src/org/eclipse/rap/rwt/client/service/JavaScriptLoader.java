@@ -13,10 +13,22 @@ package org.eclipse.rap.rwt.client.service;
 
 
 /**
+ * The JavaScriptLoader service allows loading additional JavaScript files at runtime.
+ *
  * @since 2.0
  */
 public interface JavaScriptLoader extends ClientService  {
 
+  /**
+   * Instructs the client to immediately load and evaluate a JavaScript file from the given URL.
+   *
+   * If the file has already been loaded by the client, nothing happens.
+   * The URL has to be within the same domain as the RAP server.
+   * The {@link org.eclipse.rap.rwt.RWT#getResourceManager() ResourceManager} can be used to
+   * register a file that can be loaded by the JavaScriptLoader.
+   *
+   * @param url the URL from which to load the JavaScript file
+   */
   void require( String url );
 
 }
