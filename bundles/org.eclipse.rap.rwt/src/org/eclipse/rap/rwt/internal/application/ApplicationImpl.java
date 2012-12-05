@@ -166,6 +166,11 @@ public class ApplicationImpl implements Application, Adaptable {
     return result;
   }
 
+  public ApplicationContext getApplicationContext() {
+    return applicationContext;
+  }
+
+  // TODO [rst] Remove, used only by Tabris
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result = null;

@@ -2,241 +2,252 @@
 <?eclipse version="3.2"?>
 <plugin>
 
-  <extension
-      id="org.eclipse.rap.demo.demoentrypoint"
-      point="org.eclipse.rap.ui.entrypoint">
-    <entrypoint
-          class="org.eclipse.rap.demo.DemoWorkbench"
-          id="org.eclipse.rap.demo.workbench.default"
-          path="/workbench"/>
-    <entrypoint
-          brandingId="org.eclipse.rap.design.example.business.branding"
-          class="org.eclipse.rap.demo.DemoWorkbench"
-          id="org.eclipse.rap.demo.workbench.business"
-          path="/business">
-    </entrypoint>
-    <entrypoint
-          brandingId="org.eclipse.rap.design.example.fancy.branding"
-          class="org.eclipse.rap.demo.DemoWorkbench"
-          id="org.eclipse.rap.demo.workbench.fancy"
-          path="/fancy">
-    </entrypoint>
-  </extension>
-  <extension
-        id="org.eclipse.rap.demo.applicationEntryPoint"
-        point="org.eclipse.core.runtime.applications">
-     <application
-           cardinality="singleton-global"
-           thread="main"
-           visible="true">
-        <run
-              class="org.eclipse.rap.demo.DemoApplication">
-           <parameter
-                 name="path"
-                 value="/tea">
-           </parameter>
-           <parameter
-                 name="brandingId"
-                 value="org.eclipse.rap.demo.teaBranding">
-           </parameter>
-        </run>
-     </application>
-  </extension>
-  <extension
-        point="org.eclipse.rap.ui.branding">
-     <branding
-           body="body.html"
-           favicon="icons/favicon2.ico"
-           id="org.eclipse.rap.demo.teaBranding"
-           title="It&apos;s tea-time">
-     </branding>
-  </extension>
+   <extension
+         id="org.eclipse.rap.demo.demoentrypoint"
+         point="org.eclipse.rap.ui.entrypoint">
+      <entrypoint
+            class="org.eclipse.rap.demo.DemoWorkbench"
+            id="org.eclipse.rap.demo.workbench.default"
+            path="/workbench"/>
+      <entrypoint
+            brandingId="org.eclipse.rap.design.example.business.branding"
+            class="org.eclipse.rap.demo.DemoWorkbench"
+            id="org.eclipse.rap.demo.workbench.business"
+            path="/business">
+      </entrypoint>
+      <entrypoint
+            brandingId="org.eclipse.rap.design.example.fancy.branding"
+            class="org.eclipse.rap.demo.DemoWorkbench"
+            id="org.eclipse.rap.demo.workbench.fancy"
+            path="/fancy">
+      </entrypoint>
+   </extension>
 
-  <extension
-        point="org.eclipse.ui.perspectives">
-     <perspective
-           class="org.eclipse.rap.demo.Perspective"
-           icon="icons/search.gif"
-           id="org.eclipse.rap.demo.perspective"
-           name="Demo"/>
-     <perspective
-           class="org.eclipse.rap.demo.PlanningPerspective"
-           icon="icons/contact.gif"
-           id="org.eclipse.rap.demo.perspective.planning"
-           name="Planning">
-     </perspective>
-  </extension>
+   <extension
+         point="org.eclipse.rap.ui.branding">
+      <branding
+            body="body.html"
+            favicon="icons/favicon2.ico"
+            id="org.eclipse.rap.demo.teaBranding"
+            title="It&apos;s tea-time">
+      </branding>
+   </extension>
 
-  <extension point="org.eclipse.ui.views">
-      <view
-            class="org.eclipse.ui.ExtensionFactory:progressView"
-            icon= "icons/pview.gif"
-            id="org.eclipse.ui.views.ProgressView"
-            name="Progress">
-      </view>
-      <view
-            category="one"
-            class="org.eclipse.rap.demo.DemoChartViewPart"
-            icon="icons/contact.gif"
-            id="org.eclipse.rap.demo.DemoChartViewPart"
-            name="Chart"/>
-      <view
-            category="one"
-            class="org.eclipse.rap.demo.DemoTreeViewPart"
-            icon="icons/info.gif"
-            id="org.eclipse.rap.demo.DemoTreeViewPartII"
-            name="View II"/>
-      <view
-            category="one"
-            class="org.eclipse.rap.demo.DemoTreeViewPart"
-            icon="icons/login.gif"
-            id="org.eclipse.rap.demo.DemoTreeViewPart"
-            name="Tree"/>
-      <view
-            category="two"
-            class="org.eclipse.rap.demo.DemoFormViewPart"
-            icon="icons/register.gif"
-            id="org.eclipse.rap.demo.DemoFormViewPart"
-            name="Form"/>
-      <view
-            category="two"
-            class="org.eclipse.rap.demo.DemoTableViewPart"
+   <extension
+         point="org.eclipse.rap.ui.resources">
+      <resource
+            class="org.eclipse.rap.demo.resources.ImageResource">
+      </resource>
+      <resource
+            class="org.eclipse.rap.demo.resources.ExternalJsResource">
+      </resource>
+   </extension>
+
+   <extension
+         id="org.eclipse.rap.demo.applicationEntryPoint"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.eclipse.rap.demo.DemoApplication">
+            <parameter
+                  name="path"
+                  value="/tea">
+            </parameter>
+            <parameter
+                  name="brandingId"
+                  value="org.eclipse.rap.demo.teaBranding">
+            </parameter>
+         </run>
+      </application>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.eclipse.rap.demo.Perspective"
             icon="icons/search.gif"
-            id="org.eclipse.rap.demo.DemoTableViewPart"
-            name="Table"/>
-      <view
-            category="two"
-            class="org.eclipse.rap.demo.DemoSelectionViewPart"
+            id="org.eclipse.rap.demo.perspective"
+            name="Demo"/>
+      <perspective
+            class="org.eclipse.rap.demo.PlanningPerspective"
+            icon="icons/contact.gif"
+            id="org.eclipse.rap.demo.perspective.planning"
+            name="Planning">
+      </perspective>
+   </extension>
+
+   <extension point="org.eclipse.ui.views">
+       <view
+             class="org.eclipse.ui.ExtensionFactory:progressView"
+             icon= "icons/pview.gif"
+             id="org.eclipse.ui.views.ProgressView"
+             name="Progress">
+       </view>
+       <view
+             category="one"
+             class="org.eclipse.rap.demo.DemoChartViewPart"
+             icon="icons/contact.gif"
+             id="org.eclipse.rap.demo.DemoChartViewPart"
+             name="Chart"/>
+       <view
+             category="one"
+             class="org.eclipse.rap.demo.DemoTreeViewPart"
+             icon="icons/info.gif"
+             id="org.eclipse.rap.demo.DemoTreeViewPartII"
+             name="View II"/>
+       <view
+             category="one"
+             class="org.eclipse.rap.demo.DemoTreeViewPart"
+             icon="icons/login.gif"
+             id="org.eclipse.rap.demo.DemoTreeViewPart"
+             name="Tree"/>
+       <view
+             category="two"
+             class="org.eclipse.rap.demo.DemoFormViewPart"
+             icon="icons/register.gif"
+             id="org.eclipse.rap.demo.DemoFormViewPart"
+             name="Form"/>
+       <view
+             category="two"
+             class="org.eclipse.rap.demo.DemoTableViewPart"
+             icon="icons/search.gif"
+             id="org.eclipse.rap.demo.DemoTableViewPart"
+             name="Table"/>
+       <view
+             category="two"
+             class="org.eclipse.rap.demo.DemoSelectionViewPart"
+             icon="icons/status.gif"
+             id="org.eclipse.rap.demo.DemoSelectionViewPart"
+             name="Selection View"/>
+       <view
+             allowMultiple="true"
+             category="two"
+             class="org.eclipse.rap.demo.DemoBrowserViewPart"
+             icon="icons/internal_browser.gif"
+             id="org.eclipse.rap.demo.DemoBrowserViewPart"
+             name="Browser"/>
+       <category
+             id="one"
+             name="Category 1"/>
+       <category
+             id="two"
+             name="Category 2"/>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="org.eclipse.rap.demo.viewContribution2"
+            targetID="org.eclipse.rap.demo.DemoTreeViewPart">
+         <action
+               class="org.eclipse.rap.demo.DemoTreeViewActionDelegate"
+               enablesFor="*"
+               icon="icons/ttt.gif"
+               id="org.eclipse.rap.demo.filterAction"
+               label="Filter all leafs"
+               state="false"
+               style="toggle"
+               toolbarPath="filter"
+               tooltip="Filter all leafs">
+         </action>
+      </viewContribution>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.eclipse.rap.demo.actionSet"
+            label="Sample Action Set"
+            visible="false">
+         <menu
+               id="sampleMenu"
+               label="Sample &amp;Menu">
+            <separator
+                  name="sampleGroup">
+            </separator>
+         </menu>
+         <action
+               class="org.eclipse.rap.demo.actions.SampleAction"
+               icon="icons/sample.gif"
+               id="org.eclipse.rap.demo.actions.SampleAction"
+               label="&amp;Sample Action"
+               menubarPath="sampleMenu/sampleGroup"
+               toolbarPath="sampleGroup"
+               tooltip="Hello, Eclipse world">
+         </action>
+         <action
+               class="org.eclipse.rap.demo.actions.JobAction"
+               icon="icons/pview.gif"
+               id="org.eclipse.rap.demo.actions.JobAction"
+               label="&amp;Start Job"
+               menubarPath="sampleMenu/sampleGroup"
+               toolbarPath="sampleGroup"
+               tooltip="Start Job">
+         </action>
+         <action
+               class="org.eclipse.rap.demo.actions.JobActionWithDialog"
+               icon="icons/progress_ok.gif"
+               id="org.eclipse.rap.demo.actions.JobActionWithDialog"
+               label="&amp;Start Job with Dialog"
+               menubarPath="sampleMenu/sampleGroup"
+               toolbarPath="sampleGroup"
+               tooltip="Start Job with Dialog">
+         </action>
+      </actionSet>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.rap.demo.perspective.planning">
+         <actionSet
+               id="org.eclipse.rap.demo.actionSet">
+         </actionSet>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.rap.demo.editor.FooEditor"
+            contributorClass="org.eclipse.rap.demo.editor.FooEditorContributor"
+            extensions="*"
             icon="icons/status.gif"
-            id="org.eclipse.rap.demo.DemoSelectionViewPart"
-            name="Selection View"/>
-      <view
-            allowMultiple="true"
-            category="two"
-            class="org.eclipse.rap.demo.DemoBrowserViewPart"
-            icon="icons/internal_browser.gif"
-            id="org.eclipse.rap.demo.DemoBrowserViewPart"
-            name="Browser"/>
-      <category
-            id="one"
-            name="Category 1"/>
-      <category
-            id="two"
-            name="Category 2"/>
-  </extension>
+            id="org.eclipse.rap.demo.editor"
+            name="Foo Editor">
+      </editor>
+   </extension>
 
-  <extension
-        point="org.eclipse.ui.viewActions">
-     <viewContribution
-           id="org.eclipse.rap.demo.viewContribution2"
-           targetID="org.eclipse.rap.demo.DemoTreeViewPart">
-        <action
-              class="org.eclipse.rap.demo.DemoTreeViewActionDelegate"
-              enablesFor="*"
-              icon="icons/ttt.gif"
-              id="org.eclipse.rap.demo.filterAction"
-              label="Filter all leafs"
-              state="false"
-              style="toggle"
-              toolbarPath="filter"
-              tooltip="Filter all leafs">
-        </action>
-     </viewContribution>
-  </extension>
+   <extension
+       point="org.eclipse.ui.decorators">
+     <decorator
+         icon="icons/error-decorator.png"
+         id="org.eclipse.rap.demo.decorator"
+         label="Demo Decorator"
+         lightweight="true"
+         location="TOP_RIGHT"
+         state="true">
+        <enablement>
+           <objectClass
+                 name="org.eclipse.rap.demo.DemoTreeViewPart$BrokenTreeObject">
+           </objectClass>
+        </enablement>
+     </decorator>
+   </extension>
 
-  <extension
-        point="org.eclipse.ui.actionSets">
-     <actionSet
-           id="org.eclipse.rap.demo.actionSet"
-           label="Sample Action Set"
-           visible="false">
-        <menu
-              id="sampleMenu"
-              label="Sample &amp;Menu">
-           <separator
-                 name="sampleGroup">
-           </separator>
-        </menu>
-        <action
-              class="org.eclipse.rap.demo.actions.SampleAction"
-              icon="icons/sample.gif"
-              id="org.eclipse.rap.demo.actions.SampleAction"
-              label="&amp;Sample Action"
-              menubarPath="sampleMenu/sampleGroup"
-              toolbarPath="sampleGroup"
-              tooltip="Hello, Eclipse world">
-        </action>
-        <action
-              class="org.eclipse.rap.demo.actions.JobAction"
-              icon="icons/pview.gif"
-              id="org.eclipse.rap.demo.actions.JobAction"
-              label="&amp;Start Job"
-              menubarPath="sampleMenu/sampleGroup"
-              toolbarPath="sampleGroup"
-              tooltip="Start Job">
-        </action>
-        <action
-              class="org.eclipse.rap.demo.actions.JobActionWithDialog"
-              icon="icons/progress_ok.gif"
-              id="org.eclipse.rap.demo.actions.JobActionWithDialog"
-              label="&amp;Start Job with Dialog"
-              menubarPath="sampleMenu/sampleGroup"
-              toolbarPath="sampleGroup"
-              tooltip="Start Job with Dialog">
-        </action>
-     </actionSet>
-  </extension>
+   <extension
+         point="org.eclipse.ui.presentationFactories">
+      <factory
+            class="org.eclipse.rap.demo.presentation.PresentationFactory"
+            id="org.eclipse.rap.demo.presentation"
+            name="demoPresentation">
+      </factory>
+   </extension>
 
-  <extension
-        point="org.eclipse.ui.perspectiveExtensions">
-     <perspectiveExtension
-           targetID="org.eclipse.rap.demo.perspective.planning">
-        <actionSet
-              id="org.eclipse.rap.demo.actionSet">
-        </actionSet>
-     </perspectiveExtension>
-  </extension>
-  <extension
-        point="org.eclipse.ui.editors">
-     <editor
-           class="org.eclipse.rap.demo.editor.FooEditor"
-           contributorClass="org.eclipse.rap.demo.editor.FooEditorContributor"
-           extensions="*"
-           icon="icons/status.gif"
-           id="org.eclipse.rap.demo.editor"
-           name="Foo Editor">
-     </editor>
-  </extension>
-
-  <extension
-      point="org.eclipse.ui.decorators">
-    <decorator
-        icon="icons/error-decorator.png"
-        id="org.eclipse.rap.demo.decorator"
-        label="Demo Decorator"
-        lightweight="true"
-        location="TOP_RIGHT"
-        state="true">
-       <enablement>
-          <objectClass
-                name="org.eclipse.rap.demo.DemoTreeViewPart$BrokenTreeObject">
-          </objectClass>
-       </enablement>
-    </decorator>
-  </extension>
-
-
-  <extension
-        point="org.eclipse.ui.presentationFactories">
-     <factory
-           class="org.eclipse.rap.demo.presentation.PresentationFactory"
-           id="org.eclipse.rap.demo.presentation"
-           name="demoPresentation">
-     </factory>
-  </extension>
-
-  <extension
-        point="org.eclipse.ui.exportWizards">
+   <extension
+         point="org.eclipse.ui.exportWizards">
       <category
             name="Demo Export Category"
             id="org.eclipse.rap.democategory">
@@ -301,10 +312,10 @@
 
    <extension point="org.eclipse.ui.preferencePages">
       <page
-         id="org.eclipse.ui.demo.PreferencePage"
-         name="Demo Preference Page"
-         class="org.eclipse.rap.demo.presentation.DemoPreferencePage">
-           <keywordReference id="org.eclipse.ui.demo.preferenceKeywords"/>
+            id="org.eclipse.ui.demo.PreferencePage"
+            name="Demo Preference Page"
+            class="org.eclipse.rap.demo.presentation.DemoPreferencePage">
+         <keywordReference id="org.eclipse.ui.demo.preferenceKeywords"/>
       </page>
    </extension>
 

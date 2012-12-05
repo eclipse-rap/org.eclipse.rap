@@ -16,9 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +38,6 @@ import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationImpl;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
@@ -70,7 +67,6 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   private static final String ID_THEMEABLE_WIDGETS = "org.eclipse.rap.ui.themeableWidgets";
   private static final String ID_PHASE_LISTENER = "org.eclipse.rap.ui.phaselistener";
   private static final String ID_SERVICE_HANDLER = "org.eclipse.rap.ui.serviceHandler";
-  private static final String ID_RESOURCES = "org.eclipse.rap.ui.resources";
   private static final String ID_SETTING_STORES = "org.eclipse.rap.ui.settingstores";
 
   private static final String RUN = "run"; //$NON-NLS-1$
@@ -88,7 +84,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   }
 
   public void configure( Application application ) {
-	  application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
+    application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     registerPhaseListener( application );
     registerSettingStoreFactory( application );
     registerThemeableWidgets( application );
@@ -159,8 +155,8 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   }
 
   private static String getOSGiProperty( String name ) {
-	  Bundle systemBundle = Platform.getBundle( Constants.SYSTEM_BUNDLE_SYMBOLICNAME );
-	  return systemBundle.getBundleContext().getProperty( name );
+    Bundle systemBundle = Platform.getBundle( Constants.SYSTEM_BUNDLE_SYMBOLICNAME );
+    return systemBundle.getBundleContext().getProperty( name );
   }
 
   @SuppressWarnings( "unchecked" )
@@ -224,8 +220,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       String widgetClass = widgetExts[ i ].getAttribute( "class" );
       try {
         final Bundle bundle = Platform.getBundle( contributorName );
-        Class<? extends Widget> widget
-          = (Class<? extends Widget>)bundle.loadClass( widgetClass );
+        Class<? extends Widget> widget = (Class<? extends Widget>)bundle.loadClass( widgetClass );
         application.addThemableWidget( widget );
       } catch( final Throwable thr ) {
         String text = "Could not register themeable widget ''{0}''.";
@@ -250,7 +245,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
           application.addStyleSheet( themeId, themeFile, resourceLoader );
         } catch( final Exception e ) {
           String text = "Could not register custom theme ''{0}'' from file ''{1}''.";
-          Object[] param = new Object[]{ themeId, themeFile };
+          Object[] param = new Object[] { themeId, themeFile };
           logProblem( text, param, e, contributorName );
         }
       }
@@ -272,11 +267,16 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
           application.addStyleSheet( themeId, themeFile, loader );
         } catch( final Exception e ) {
           String text = "Could not register contribution for theme ''{0}'' from file ''{1}''.";
-          Object[] param = new Object[]{ themeId, themeFile };
+          Object[] param = new Object[] { themeId, themeFile };
           logProblem( text, param, e, contributorName );
         }
       }
     }
+  }
+
+  private static void registerResources( Application application ) {
+    List<IResource> resources = ResourceReader.readResources();
+    new ResourceRegisterer( application ).registerResources( resources );
   }
 
   private static ResourceLoader createThemeResourceLoader( final Bundle bundle ) {
@@ -294,16 +294,8 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     return result;
   }
 
-  private static void registerResources( Application application ) {
-    IExtensionRegistry registry = Platform.getExtensionRegistry();
-    IExtensionPoint point = registry.getExtensionPoint( ID_RESOURCES );
-    IConfigurationElement[] elements = point.getConfigurationElements();
-    DependentResource[] resources = loadResources( elements );
-    resources = sortResources( resources );
-    registerResources( application, resources );
-  }
-
-  private static String findParameter( IConfigurationElement[] paramElements, String parameterName ) {
+  private static String findParameter( IConfigurationElement[] paramElements, String parameterName )
+  {
     String result = null;
     for( IConfigurationElement paramElement : paramElements ) {
       if( parameterName.equals( paramElement.getAttribute( "name" ) ) ) {
@@ -321,85 +313,6 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         return new EntryPointApplicationWrapper( applicationClass );
       }
     };
-  }
-
-  private static DependentResource[] loadResources( IConfigurationElement[] elements ) {
-    DependentResource[] result = new DependentResource[ elements.length ];
-    for( int i = 0; i < elements.length; i++ ) {
-      try {
-        IResource resource = ( IResource )elements[ i ].createExecutableExtension( "class" );
-        String resourceId = elements[ i ].getAttribute( "id" );
-        IConfigurationElement[] dependsOn = elements[ i ].getChildren( "dependsOn" );
-        List<String> resourceDependencies = new ArrayList<String>();
-        for( int j = 0 ; j < dependsOn.length ; j++ ) {
-          String dependency = dependsOn[ j ].getAttribute( "resourceId" );
-          resourceDependencies.add( dependency );
-        }
-        result[ i ] = new DependentResource( resource, resourceId, resourceDependencies );
-      } catch( CoreException ce ) {
-        WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
-      }
-    }
-    return result;
-  }
-
-  private static DependentResource[] sortResources( DependentResource[] resources ) {
-    DependentResource[] result = new DependentResource[ resources.length ];
-    List<String> sortedResourceIds = new ArrayList<String>();
-    List<DependentResource> deferredResources = new ArrayList<DependentResource>();
-    int index = 0;
-    for( int i = 0; i < resources.length; i++ ) {
-      DependentResource resource = resources[ i ];
-      if( resource != null ) {
-        resource.dependencies.removeAll( sortedResourceIds );
-        boolean checkDeferredResources = false;
-        if( resource.dependencies.isEmpty() ) {
-          result[ index++ ] = resource;
-          sortedResourceIds.add( resource.id );
-          checkDeferredResources = true;
-        } else {
-          deferredResources.add( resource );
-        }
-        while( checkDeferredResources ) {
-          checkDeferredResources = false;
-          Iterator<DependentResource> iterator = deferredResources.iterator();
-          while( iterator.hasNext() ) {
-            DependentResource deferredResource = iterator.next();
-            deferredResource.dependencies.removeAll( sortedResourceIds );
-            if( deferredResource.dependencies.isEmpty() ) {
-              result[ index++ ] = deferredResource;
-              sortedResourceIds.add( deferredResource.id );
-              iterator.remove();
-              checkDeferredResources = true;
-            }
-          }
-        }
-      }
-    }
-    if( deferredResources.size() != 0 ) {
-      String pluginId = WorkbenchPlugin.getDefault().getBundle().getSymbolicName();
-      String message = "Dependencies could not be resolved for " + deferredResources;
-      WorkbenchPlugin.getDefault().getLog().log( new Status( IStatus.ERROR, pluginId, message ) );
-    }
-    return result;
-  }
-
-  private static void registerResources( Application application, DependentResource[] resources ) {
-    for( DependentResource dependentResource : resources ) {
-      if( dependentResource != null ) {
-        registerResource( application, dependentResource.resource );
-      }
-    }
-  }
-
-  private static void registerResource( Application application, final IResource resource ) {
-    ApplicationContext applicationContext = getApplicationContext( application );
-    if( resource.isExternal() ) {
-      applicationContext.getStartupPage().addJsLibrary( resource.getLocation() );
-    } else {
-      String location = resource.getLocation();
-      application.addResource( location, new WorkbenchResourceLoader( resource ) );
-    }
   }
 
   private void registerServiceHandlers( Application application ) {
@@ -427,7 +340,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       throw new RuntimeException( "Unable to read branding extension", ioe );
     }
   }
-  
+
   private static AbstractBranding findBrandingById( String id ) {
     AbstractBranding result = null;
     AbstractBranding[] brandings = BrandingManager.getInstance().getAll();
@@ -441,7 +354,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
 
   private Map<String, String> getBrandingProperties( String brandingId ) {
     AbstractBranding branding = findBrandingById( brandingId );
-    Map<String,String> result = new HashMap<String,String>();
+    Map<String, String> result = new HashMap<String, String>();
     if( branding != null ) {
       result.put( WebClient.THEME_ID, branding.getThemeId() );
       result.put( WebClient.BODY_HTML, branding.getBody() );
@@ -451,7 +364,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     }
     return result;
   }
-  
+
   private static IConfigurationElement[] getEntryPointExtensions() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint extensionPoint = registry.getExtensionPoint( ID_ENTRY_POINT );
@@ -466,12 +379,6 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     return extensionPoint.getExtensions();
   }
 
-  private static ApplicationContext getApplicationContext( Application application ) {
-    // TODO [rh] remove ApplicationImpl#getAdapter(), this is the only caller
-    ApplicationImpl applicationImpl = ( ApplicationImpl )application;
-    return applicationImpl.getAdapter( ApplicationContext.class );
-  }
-
   private static void logProblem( String text,
                                   Object[] textParams,
                                   Throwable problem,
@@ -482,41 +389,11 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     WorkbenchPlugin.getDefault().getLog().log( status );
   }
 
-
-  private static <T> T loadClass( String className, IConfigurationElement element ) 
-    throws ClassNotFoundException 
+  private static <T> T loadClass( String className, IConfigurationElement element )
+    throws ClassNotFoundException
   {
     Bundle bundle = Platform.getBundle( element.getContributor().getName() );
     return ( T )bundle.loadClass( className );
-  }
-
-  private static class WorkbenchResourceLoader implements ResourceLoader {
-    private final IResource resource;
-
-    private WorkbenchResourceLoader( IResource resource ) {
-      this.resource = resource;
-    }
-
-    public InputStream getResourceAsStream( String resourceName ) {
-      return resource.getLoader().getResourceAsStream( resource.getLocation() );
-    }
-  }
-
-  private static final class DependentResource {
-    public final IResource resource;
-    public final String id;
-    public final List<String> dependencies;
-
-    public DependentResource( IResource resource, String id, List<String> dependencies ) {
-      this.resource = resource;
-      this.id = id;
-      this.dependencies = dependencies;
-    }
-
-    @Override
-    public String toString() {
-      return id != null ? id : resource.getClass().getName();
-    }
   }
 
 }
