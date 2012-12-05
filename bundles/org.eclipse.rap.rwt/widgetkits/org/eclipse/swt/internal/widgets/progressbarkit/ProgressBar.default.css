@@ -14,7 +14,7 @@
 
 ProgressBar {
   background-color: #ffffff;
-  background-image: url( resource/widget/rap/progressbar/progressbar-background.png );
+  background-image: none;
   border: 1px solid #aaaaaa;
   border-radius: 0;
 }
