@@ -41,7 +41,7 @@ public class StartupPage {
 
   public StartupPage( ApplicationContext applicationContext ) {
     this.applicationContext = applicationContext;
-    this.jsLibraries = new ArrayList<String>();
+    jsLibraries = new ArrayList<String>();
   }
 
   public void activate() {
@@ -101,7 +101,6 @@ public class StartupPage {
     for( String location : jsLibraries ) {
       writeScriptTag( printWriter, location );
     }
-    writeScriptTag( printWriter, applicationContext.getJSLibraryConcatenator().getLocation() );
   }
 
   protected void writeScriptTag( PrintWriter printWriter, String libraryLocation ) {

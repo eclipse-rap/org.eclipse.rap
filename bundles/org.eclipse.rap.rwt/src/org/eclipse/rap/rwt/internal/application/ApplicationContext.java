@@ -19,7 +19,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerRegistry;
-import org.eclipse.rap.rwt.internal.resources.JSLibraryConcatenator;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
@@ -61,7 +60,6 @@ public class ApplicationContext {
   private final SettingStoreManager settingStoreManager;
   private final ServiceManagerImpl serviceManager;
   private final ResourceRegistry resourceRegistry;
-  private final JSLibraryConcatenator jsLibraryConcatenator;
   private final ApplicationStoreImpl applicationStore;
   private final ResourceFactory resourceFactory;
   private final ImageFactory imageFactory;
@@ -99,7 +97,6 @@ public class ApplicationContext {
     startupPage = new StartupPage( this );
     serviceManager = createServiceManager();
     displaysHolder = new DisplaysHolder();
-    jsLibraryConcatenator = new JSLibraryConcatenator( resourceManager );
     textSizeStorage = new TextSizeStorage();
     probeStore = new ProbeStore( textSizeStorage );
     contextConfigurator = new ApplicationContextConfigurator( applicationConfiguration,
@@ -167,10 +164,6 @@ public class ApplicationContext {
 
   public ServiceManagerImpl getServiceManager() {
     return serviceManager;
-  }
-
-  public JSLibraryConcatenator getJSLibraryConcatenator() {
-    return jsLibraryConcatenator;
   }
 
   public ThemeManager getThemeManager() {

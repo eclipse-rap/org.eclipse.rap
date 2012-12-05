@@ -77,9 +77,6 @@ public class ApplicationContext_Test extends TestCase {
     assertNotNull( context.getDisplaysHolder() );
     assertSame( context.getDisplaysHolder(), context.getDisplaysHolder() );
 
-    assertNotNull( context.getJSLibraryConcatenator() );
-    assertSame( context.getJSLibraryConcatenator(), context.getJSLibraryConcatenator() );
-
     assertNotNull( context.getTextSizeStorage() );
     assertSame( context.getTextSizeStorage(), context.getTextSizeStorage() );
 

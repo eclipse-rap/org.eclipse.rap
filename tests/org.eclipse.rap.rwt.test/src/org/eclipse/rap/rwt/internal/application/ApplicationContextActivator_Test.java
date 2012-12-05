@@ -17,7 +17,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
-import org.eclipse.rap.rwt.internal.resources.JSLibraryConcatenator;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
@@ -31,7 +30,6 @@ public class ApplicationContextActivator_Test extends TestCase {
   private ApplicationContext applicationContext;
   private LifeCycleFactory lifeCycleFactory;
   private ThemeManager themeManager;
-  private JSLibraryConcatenator jsLibraryConcatenator;
   private ServiceManagerImpl serviceManager;
   private ClientSelector clientSelector;
   private StartupPage startupPage;
@@ -48,8 +46,6 @@ public class ApplicationContextActivator_Test extends TestCase {
 
     verify( themeManager ).activate();
     verify( lifeCycleFactory ).activate();
-    verify( jsLibraryConcatenator ).activate();
-    verify( jsLibraryConcatenator ).startJSConcatenation();
     verify( clientSelector ).activate();
     verify( startupPage ).activate();
   }
@@ -59,7 +55,6 @@ public class ApplicationContextActivator_Test extends TestCase {
 
     activator.deactivate();
 
-    verify( jsLibraryConcatenator ).deactivate();
     verify( lifeCycleFactory ).deactivate();
     verify( serviceManager ).clear();
     verify( themeManager ).deactivate();
@@ -81,9 +76,6 @@ public class ApplicationContextActivator_Test extends TestCase {
 
     serviceManager = mock( ServiceManagerImpl.class );
     when( applicationContext.getServiceManager() ).thenReturn( serviceManager );
-
-    jsLibraryConcatenator = mock( JSLibraryConcatenator.class );
-    when( applicationContext.getJSLibraryConcatenator() ).thenReturn( jsLibraryConcatenator );
 
     ResourceManager resourceManager = mock( ResourceManager.class );
     when( applicationContext.getResourceManager() ).thenReturn( resourceManager );

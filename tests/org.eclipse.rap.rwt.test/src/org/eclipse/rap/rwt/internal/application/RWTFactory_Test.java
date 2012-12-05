@@ -77,9 +77,6 @@ public class RWTFactory_Test extends TestCase {
     assertNotNull( RWTFactory.getDisplaysHolder() );
     assertSame( RWTFactory.getDisplaysHolder(), RWTFactory.getDisplaysHolder() );
 
-    assertNotNull( RWTFactory.getJSLibraryConcatenator() );
-    assertSame( RWTFactory.getJSLibraryConcatenator(), RWTFactory.getJSLibraryConcatenator() );
-
     assertNotNull( RWTFactory.getTextSizeStorage() );
     assertSame( RWTFactory.getTextSizeStorage(), RWTFactory.getTextSizeStorage() );
 
