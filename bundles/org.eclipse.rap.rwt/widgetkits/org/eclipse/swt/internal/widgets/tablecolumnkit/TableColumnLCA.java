@@ -32,6 +32,8 @@ import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.widgets.Table;
@@ -55,10 +57,12 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   private static final int ZERO = 0;
   private static final String DEFAULT_ALIGNMENT = "left";
 
+  @Override
   public void preserveValues( Widget widget ) {
     TableColumn column = ( TableColumn )widget;
     WidgetLCAUtil.preserveToolTipText( column, column.getToolTipText() );
     WidgetLCAUtil.preserveCustomVariant( column );
+    WidgetLCAUtil.preserveFont( column, getFont( column ) );
     ItemLCAUtil.preserve( column );
     preserveProperty( column, PROP_INDEX, getIndex( column ) );
     preserveProperty( column, PROP_LEFT, getLeft( column ) );
@@ -99,6 +103,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processDefaultSelection( column, null );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     TableColumn column = ( TableColumn )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( column );
@@ -106,10 +111,12 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     clientObject.set( "parent", WidgetUtil.getId( column.getParent() ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     TableColumn column = ( TableColumn )widget;
     WidgetLCAUtil.renderToolTip( column, column.getToolTipText() );
     WidgetLCAUtil.renderCustomVariant( column );
+    WidgetLCAUtil.renderFont( column, getFont( column ) );
     ItemLCAUtil.renderChanges( column );
     renderProperty( column, PROP_INDEX, getIndex( column ), ZERO );
     renderProperty( column, PROP_LEFT, getLeft( column ), ZERO );
@@ -142,6 +149,12 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
       result = "right";
     }
     return result;
+  }
+
+  private static Font getFont( TableColumn column ) {
+    Table table = column.getParent();
+    IControlAdapter adapter = table.getAdapter( IControlAdapter.class );
+    return adapter.getUserFont();
   }
 
   private static boolean isFixed( TableColumn column ) {
