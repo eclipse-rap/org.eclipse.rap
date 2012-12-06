@@ -31,21 +31,21 @@ public class RemoteObjectFactory_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-  
+
   public void testReturnsSingletonInstance() {
     RemoteObjectFactory factory = RemoteObjectFactory.getInstance();
-    
+
     assertNotNull( factory );
     assertSame( factory, RemoteObjectFactory.getInstance() );
   }
 
-  public void testCreatesRemoteObject() {
+  public void testCreateRemoteObject_returnsAnObject() {
     RemoteObject remoteObject = RemoteObjectFactory.getInstance().createRemoteObject( "type" );
 
     assertNotNull( remoteObject );
   }
 
-  public void testCreateFailsWithNullType() {
+  public void testCreateRemoteObject_failsWithNullType() {
     try {
       RemoteObjectFactory.getInstance().createRemoteObject( null );
       fail();
@@ -53,7 +53,7 @@ public class RemoteObjectFactory_Test extends TestCase {
     }
   }
 
-  public void testCreateFailsWithEmptyType() {
+  public void testCreateRemoteObject_failsWithEmptyType() {
     try {
       RemoteObjectFactory.getInstance().createRemoteObject( "" );
       fail();
@@ -76,6 +76,40 @@ public class RemoteObjectFactory_Test extends TestCase {
 
   public void testCreatedRemoteObjectsAreRegistered() {
     RemoteObject remoteObject = RemoteObjectFactory.getInstance().createRemoteObject( "type" );
+
+    assertSame( remoteObject, RemoteObjectRegistry.getInstance().get( getId( remoteObject ) ) );
+  }
+
+  public void testCreateServiceObject_returnsAnObject() {
+    RemoteObject remoteObject = RemoteObjectFactory.getInstance().createServiceObject( "id" );
+
+    assertNotNull( remoteObject );
+  }
+
+  public void testCreateServiceObject_failsWithNullId() {
+    try {
+      RemoteObjectFactory.getInstance().createServiceObject( null );
+      fail();
+    } catch( NullPointerException exception ) {
+    }
+  }
+
+  public void testCreateServiceObject_failsWithEmptyId() {
+    try {
+      RemoteObjectFactory.getInstance().createServiceObject( "" );
+      fail();
+    } catch( IllegalArgumentException exception ) {
+    }
+  }
+
+  public void testCreatedServiceObjectHasGivenId() {
+    RemoteObject remoteObject = RemoteObjectFactory.getInstance().createServiceObject( "id" );
+
+    assertEquals( "id", getId( remoteObject ) );
+  }
+
+  public void testCreatedServiceObjectsAreRegistered() {
+    RemoteObject remoteObject = RemoteObjectFactory.getInstance().createServiceObject( "id" );
 
     assertSame( remoteObject, RemoteObjectRegistry.getInstance().get( getId( remoteObject ) ) );
   }
