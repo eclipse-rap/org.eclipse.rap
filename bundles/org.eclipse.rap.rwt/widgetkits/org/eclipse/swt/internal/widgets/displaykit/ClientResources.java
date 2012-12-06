@@ -285,6 +285,7 @@ public final class ClientResources {
     "rwt/client/JavaScriptLoader.js",
     "rwt/protocol/adapter/JavaScriptLoaderAdapter.js",
     "rwt/runtime/System.js",
+    "rwt/protocol/adapter/ClientInfoAdapter.js",
     "rap.js"
   };
 

@@ -100,6 +100,10 @@ qx.Class.define( "rwt.client.Client", {
       return this._engineQuirksMode;
     },
 
+    getTimezoneOffset : function() {
+      return ( new Date() ).getTimezoneOffset();
+    },
+
     getLocale : function() {
       return this._browserLocale;
     },

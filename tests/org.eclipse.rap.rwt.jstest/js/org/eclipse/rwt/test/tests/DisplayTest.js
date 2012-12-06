@@ -99,7 +99,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
 
       var message = TestUtil.getMessageObject();
       var expected = ( new Date() ).getTimezoneOffset();
-      assertEquals( expected, message.getHead().timezoneOffset );
+      var actual = message.findSetProperty( "rwt.client.ClientInfo", "timezoneOffset" );
+      assertEquals( expected, actual );
     },
 
     testSendColorDepth : function() {
