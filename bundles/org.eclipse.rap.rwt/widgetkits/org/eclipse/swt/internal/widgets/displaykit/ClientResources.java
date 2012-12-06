@@ -396,7 +396,7 @@ public final class ClientResources {
       inputStream.close();
     }
     String location = resourceManager.getLocation( name );
-    RWTFactory.getStartupPage().addJsLibrary( location );
+    RWTFactory.getStartupPage().setClientJsLibrary( location );
   }
 
   private String readResourceContent( String location ) throws IOException {

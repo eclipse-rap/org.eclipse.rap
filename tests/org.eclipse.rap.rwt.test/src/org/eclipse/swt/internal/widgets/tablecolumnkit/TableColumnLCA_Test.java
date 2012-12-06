@@ -37,6 +37,7 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
@@ -57,6 +58,7 @@ public class TableColumnLCA_Test extends TestCase {
   private Display display;
   private Shell shell;
   private Table table;
+  private TableColumn column;
   private TableColumnLCA lca;
 
   @Override
@@ -65,6 +67,7 @@ public class TableColumnLCA_Test extends TestCase {
     display = new Display();
     shell = new Shell( display );
     table = new Table( shell, SWT.NONE );
+    column = new TableColumn( table, SWT.NONE );
     lca = new TableColumnLCA();
     Fixture.fakeNewRequest( display );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -77,7 +80,7 @@ public class TableColumnLCA_Test extends TestCase {
 
   public void testPreserveValus() {
     table = new Table( shell, SWT.BORDER );
-    TableColumn column = new TableColumn( table, SWT.CENTER );
+    column = new TableColumn( table, SWT.CENTER );
     Fixture.markInitialized( display );
     //text
     Fixture.preserveWidgets();
@@ -139,7 +142,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testResizeEvent() {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( column );
     column.setWidth( 20 );
     ControlListener listener = mock( ControlListener.class );
@@ -159,14 +161,13 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testGetLeft() {
-    TableColumn column0 = new TableColumn( table, SWT.NONE );
-    column0.setWidth( 10 );
+    column.setWidth( 10 );
     TableColumn column1 = new TableColumn( table, SWT.NONE );
     column1.setWidth( 10 );
     TableColumn column2 = new TableColumn( table, SWT.NONE );
     column2.setWidth( 10 );
     // Test with natural column order
-    assertEquals( 0, getColumnLeft( column0 ) );
+    assertEquals( 0, getColumnLeft( column ) );
     assertEquals( 10, getColumnLeft( column1 ) );
     assertEquals( 20, getColumnLeft( column2 ) );
     // Test with reverted column order
@@ -175,13 +176,12 @@ public class TableColumnLCA_Test extends TestCase {
     } );
     assertEquals( 0, getColumnLeft( column2 ) );
     assertEquals( 10, getColumnLeft( column1 ) );
-    assertEquals( 20, getColumnLeft( column0 ) );
+    assertEquals( 20, getColumnLeft( column ) );
   }
 
   public void testMoveColumn() {
-    TableColumn column0 = new TableColumn( table, SWT.NONE );
-    column0.setText( "Col 0" );
-    column0.setWidth( 10 );
+    column.setText( "Col 0" );
+    column.setWidth( 10 );
     TableColumn column1 = new TableColumn( table, SWT.NONE );
     column1.setText( "Col 1" );
     column1.setWidth( 20 );
@@ -264,7 +264,7 @@ public class TableColumnLCA_Test extends TestCase {
     // Move Col 0 way right of Col 2, thereafter order should be:
     // Col 1, Col 2, Col 3, Col 0
     table.setColumnOrder( new int[] { 0, 1, 2, 3 } );
-    TableColumnLCA.moveColumn( column0, 100 );
+    TableColumnLCA.moveColumn( column, 100 );
     columnOrder = table.getColumnOrder();
     assertEquals( 1, columnOrder[ 0 ] );
     assertEquals( 2, columnOrder[ 1 ] );
@@ -284,7 +284,7 @@ public class TableColumnLCA_Test extends TestCase {
     // Move Col 0 over Col 2 (left half), order should be:
     // Col 1, Col 0, Col 2, Col 3
     table.setColumnOrder( new int[] { 0, 1, 2, 3 } );
-    TableColumnLCA.moveColumn( column0, 33 );
+    TableColumnLCA.moveColumn( column, 33 );
     columnOrder = table.getColumnOrder();
     assertEquals( 1, columnOrder[ 0 ] );
     assertEquals( 0, columnOrder[ 1 ] );
@@ -294,6 +294,7 @@ public class TableColumnLCA_Test extends TestCase {
 
   // see bug 336340
   public void testMoveColumn_ZeroWidth() {
+    column.dispose();
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
     for( int i = 1; i < 5; i++ ) {
@@ -354,8 +355,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderCreate() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     lca.renderInitialization( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -364,7 +363,7 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderCreateWithAligment() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.RIGHT );
+    column = new TableColumn( table, SWT.RIGHT );
 
     lca.render( column );
 
@@ -375,8 +374,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     lca.renderInitialization( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -385,8 +382,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderInitialIndex() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     lca.render( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -395,8 +390,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderIndex() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     new TableColumn( table, SWT.NONE, 0 );
     lca.renderChanges( column );
 
@@ -405,7 +398,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderIndexUnchanged() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
 
@@ -418,8 +410,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderInitialToolTip() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     lca.render( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -428,8 +418,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderToolTip() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     column.setToolTipText( "foo" );
     lca.renderChanges( column );
 
@@ -438,7 +426,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderToolTipUnchanged() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
 
@@ -451,8 +438,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderInitialCustomVariant() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     lca.render( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -461,8 +446,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderCustomVariant() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     column.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( column );
 
@@ -471,7 +454,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderCustomVariantUnchanged() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
 
@@ -484,8 +466,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderInitialText() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     lca.render( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -494,8 +474,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderText() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     column.setText( "foo" );
     lca.renderChanges( column );
 
@@ -504,7 +482,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderTextUnchanged() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
 
@@ -517,8 +494,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderInitialImage() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -526,7 +501,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderImage() throws IOException, JSONException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
     column.setImage( image );
@@ -540,7 +514,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderImageUnchanged() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
@@ -554,7 +527,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderImageReset() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
@@ -569,8 +541,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderInitialLeft() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     lca.render( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -579,8 +549,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderLeft() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     TableColumn col2 = new TableColumn( table, SWT.NONE, 0 );
     col2.setWidth( 50 );
     lca.renderChanges( column );
@@ -590,7 +558,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderLeftUnchanged() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
 
@@ -604,8 +571,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderInitialWidth() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     lca.render( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -614,8 +579,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderWidth() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     column.setWidth( 50 );
     lca.renderChanges( column );
 
@@ -624,7 +587,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderWidthUnchanged() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
 
@@ -637,8 +599,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderInitialResizable() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     lca.render( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -647,8 +607,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderResizable() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     column.setResizable( false );
     lca.renderChanges( column );
 
@@ -657,7 +615,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderResizableUnchanged() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
 
@@ -670,8 +627,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderInitialMoveable() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     lca.render( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -680,8 +635,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderMoveable() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     column.setMoveable( true );
     lca.renderChanges( column );
 
@@ -690,7 +643,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderMoveableUnchanged() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
 
@@ -703,8 +655,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderInitialAlignment() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     lca.render( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -713,8 +663,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderAlignment() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     column.setAlignment( SWT.RIGHT );
     lca.renderChanges( column );
 
@@ -723,7 +671,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderAlignmentUnchanged() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
 
@@ -736,8 +683,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderInitialFixed() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     lca.render( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -746,8 +691,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderFixed() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     table.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
     lca.renderChanges( column );
 
@@ -756,7 +699,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderFixedUnchanged() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
 
@@ -769,7 +711,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderAddSelectionListener() throws Exception {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
     Fixture.preserveWidgets();
@@ -782,7 +723,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Listener listener = mock( Listener.class );
     column.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
@@ -797,7 +737,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
     Fixture.preserveWidgets();
@@ -808,6 +747,53 @@ public class TableColumnLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( column, "selection" ) );
+  }
+
+  public void testRenderInitialFont() throws IOException {
+    lca.render( column );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertTrue( operation.getPropertyNames().indexOf( "font" ) == -1 );
+  }
+
+  public void testRenderFont() throws JSONException, IOException {
+    table.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
+
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray result = ( JSONArray )message.findSetProperty( column, "font" );
+    assertEquals( 4, result.length() );
+    assertEquals( "Arial", ( ( JSONArray )result.get( 0 ) ).getString( 0 ) );
+    assertEquals( 12, result.getInt( 1 ) );
+    assertEquals( false, result.getBoolean( 2 ) );
+    assertEquals( false, result.getBoolean( 3 ) );
+  }
+
+  public void testRenderFontUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+    table.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
+
+    Fixture.preserveWidgets();
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( column, "font" ) );
+  }
+
+  public void testResetFont() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+    table.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
+
+    Fixture.preserveWidgets();
+    table.setFont( null );
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( column, "font" ) );
   }
 
   private static int getColumnLeft( TableColumn column ) {

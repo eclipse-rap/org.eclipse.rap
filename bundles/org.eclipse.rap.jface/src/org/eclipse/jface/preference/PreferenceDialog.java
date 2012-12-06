@@ -128,7 +128,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	}
 
 	//The id of the last page that was selected
-	private static String lastPreferenceId = null;
+	private String lastPreferenceId = null;
 
 	//The last known tree width
 	private static int lastTreeWidth = 180;

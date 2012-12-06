@@ -14,7 +14,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerRegistry;
-import org.eclipse.rap.rwt.internal.resources.JSLibraryConcatenator;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
@@ -101,10 +100,6 @@ public class RWTFactory {
 
   public static DisplaysHolder getDisplaysHolder() {
     return ApplicationContextUtil.getInstance().getDisplaysHolder();
-  }
-
-  public static JSLibraryConcatenator getJSLibraryConcatenator() {
-    return ApplicationContextUtil.getInstance().getJSLibraryConcatenator();
   }
 
   public static LifeCycleAdapterFactory getLifeCycleAdapterFactory() {

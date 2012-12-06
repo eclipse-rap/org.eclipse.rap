@@ -32,6 +32,8 @@ import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.widgets.Tree;
@@ -60,6 +62,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     TreeColumn column = ( TreeColumn )widget;
     WidgetLCAUtil.preserveToolTipText( column, column.getToolTipText() );
     WidgetLCAUtil.preserveCustomVariant( column );
+    WidgetLCAUtil.preserveFont( column, getFont( column ) );
     ItemLCAUtil.preserve( column );
     preserveProperty( column, PROP_INDEX, getIndex( column ) );
     preserveProperty( column, PROP_LEFT, getLeft( column ) );
@@ -113,6 +116,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     TreeColumn column = ( TreeColumn )widget;
     WidgetLCAUtil.renderToolTip( column, column.getToolTipText() );
     WidgetLCAUtil.renderCustomVariant( column );
+    WidgetLCAUtil.renderFont( column, getFont( column ) );
     ItemLCAUtil.renderChanges( column );
     renderProperty( column, PROP_INDEX, getIndex( column ), ZERO );
     renderProperty( column, PROP_LEFT, getLeft( column ), ZERO );
@@ -145,6 +149,12 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
       result = "right";
     }
     return result;
+  }
+
+  private static Font getFont( TreeColumn column ) {
+    Tree tree = column.getParent();
+    IControlAdapter adapter = tree.getAdapter( IControlAdapter.class );
+    return adapter.getUserFont();
   }
 
   private static boolean isFixed( TreeColumn column ) {

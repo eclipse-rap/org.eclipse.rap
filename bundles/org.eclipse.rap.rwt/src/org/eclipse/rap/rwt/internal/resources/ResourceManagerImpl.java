@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.internal.util.StreamUtil;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
@@ -52,7 +51,7 @@ public class ResourceManagerImpl implements ResourceManager {
 
   public ResourceManagerImpl( ResourceDirectory resourceDirectory ) {
     this.resourceDirectory = resourceDirectory;
-    this.resources = Collections.synchronizedSet( new HashSet<String>() );
+    resources = Collections.synchronizedSet( new HashSet<String>() );
   }
 
   /////////////////////////////
@@ -139,14 +138,7 @@ public class ResourceManagerImpl implements ResourceManager {
     File location = getDiskLocation( name );
     try {
       createDirectories( location );
-      // TODO [rst] Explicitly register internal JavaScript files
-      if( isJavascriptResource( name ) ) {
-        byte[] content = ResourceUtil.readBinary( inputStream );
-        ResourceUtil.write( location, content );
-        RWTFactory.getJSLibraryConcatenator().appendJSLibrary( content );
-      } else {
-        writeResource( inputStream, location );
-      }
+      writeResource( inputStream, location );
     } catch ( IOException ioe ) {
       throw new RuntimeException( "Failed to register resource: " + name, ioe );
     }
@@ -168,10 +160,6 @@ public class ResourceManagerImpl implements ResourceManager {
     } finally {
       outputStream.close();
     }
-  }
-
-  private static boolean isJavascriptResource( String resourceName ) {
-    return resourceName.endsWith( ".js" ) && !resourceName.startsWith( "rap-" );
   }
 
   private static void createDirectories( File file ) throws IOException {

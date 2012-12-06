@@ -20,8 +20,8 @@ import org.eclipse.swt.internal.widgets.IdGenerator;
  * A factory used to create remote objects on the client.
  */
 public class RemoteObjectFactory {
-  
-  private static final String SESSION_STORE_KEY 
+
+  private static final String SESSION_STORE_KEY
     = RemoteObjectFactory.class.getName() + "#instance";
 
   public static RemoteObjectFactory getInstance() {
@@ -47,7 +47,24 @@ public class RemoteObjectFactory {
     RemoteObjectRegistry.getInstance().register( remoteObject );
     return remoteObject;
   }
-  
+
+  /**
+   * Creates an instance of RemoteObject for a given id that is agreed with the client, but does not
+   * create the remote object on the client. The returned <code>RemoteObject</code> can be used to
+   * receive messages from the client and to communicate with the remote object, provided that the
+   * client knows the id.
+   *
+   * @return a representation of the remote object with the given id
+   */
+  // TODO [rst] Before this API is published, we should rethink the concept of "service" objects,
+  //            i.e. remote objects that aren't created in the protocol, but used by agreed ids.
+  public RemoteObject createServiceObject( String id ) {
+    ParamCheck.notNullOrEmpty( id, "id" );
+    RemoteObjectImpl remoteObject = new RemoteObjectImpl( id, null );
+    RemoteObjectRegistry.getInstance().register( remoteObject );
+    return remoteObject;
+  }
+
   private RemoteObjectFactory() {
     // prevent instantiation
   }

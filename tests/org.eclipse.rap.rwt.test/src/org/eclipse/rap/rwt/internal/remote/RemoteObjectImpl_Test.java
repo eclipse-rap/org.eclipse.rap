@@ -81,6 +81,14 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendCreate( eq( objectId ), eq( "type" ) );
   }
 
+  public void testCreateIsNotRenderedIfCreateTypeIsNull() {
+    RemoteObjectImpl remoteObject = new RemoteObjectImpl( "id", null );
+
+    remoteObject.render( writer );
+
+    verify( writer, times( 0 ) ).appendCreate( anyString(), anyString() );
+  }
+
   public void testSetIntIsRendered() {
     remoteObject.set( "property", 23 );
 
@@ -347,26 +355,26 @@ public class RemoteObjectImpl_Test extends TestCase {
 
     verify( handler ).handleNotify( eq( "event" ), eq( properties ) );
   }
-  
+
   public void testHandleNotifyDelegatesToHandlerNotInReadData() {
     Fixture.fakePhase( PhaseId.READ_DATA );
     RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
     remoteObject.setHandler( handler );
     Map<String, Object> properties = mockProperties();
-    
+
     remoteObject.handleNotify( "event", properties );
-    
+
     verify( handler, never() ).handleNotify( eq( "event" ), eq( properties ) );
   }
-  
+
   public void testHandleNotifyDelegatesToHandlerNotInRender() {
     Fixture.fakePhase( PhaseId.RENDER );
     RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
     remoteObject.setHandler( handler );
     Map<String, Object> properties = mockProperties();
-    
+
     remoteObject.handleNotify( "event", properties );
-    
+
     verify( handler, never() ).handleNotify( eq( "event" ), eq( properties ) );
   }
 

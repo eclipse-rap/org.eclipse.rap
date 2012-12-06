@@ -27,15 +27,17 @@ public class RemoteObjectImpl implements RemoteObject {
   private boolean destroyed;
   private RemoteOperationHandler handler;
 
-  public RemoteObjectImpl( final String id, final String type ) {
+  public RemoteObjectImpl( final String id, final String createType ) {
     this.id = id;
     destroyed = false;
     renderQueue = new ArrayList<RenderRunnable>();
-    renderQueue.add( new RenderRunnable() {
-      public void render( ProtocolMessageWriter writer ) {
-        writer.appendCreate( id, type );
-      }
-    } );
+    if( createType != null ) {
+      renderQueue.add( new RenderRunnable() {
+        public void render( ProtocolMessageWriter writer ) {
+          writer.appendCreate( id, createType );
+        }
+      } );
+    }
   }
 
   public String getId() {

@@ -42,14 +42,12 @@ public class ApplicationContextActivator {
     applicationContext.getStartupPage().activate();
     applicationContext.getLifeCycleFactory().activate();
     // Note: order is crucial here
-    applicationContext.getJSLibraryConcatenator().startJSConcatenation();
     applicationContext.getThemeManager().activate();
     if( !skipResoureRegistration ) {
       new ClientResources( applicationContext.getResourceManager(),
                            applicationContext.getThemeManager() ).registerResources();
     }
     applicationContext.getResourceRegistry().registerResources();
-    applicationContext.getJSLibraryConcatenator().activate();
     applicationContext.getClientSelector().activate();
   }
 
@@ -63,7 +61,6 @@ public class ApplicationContextActivator {
 
   private void deactivateInstances() {
     applicationContext.getStartupPage().deactivate();
-    applicationContext.getJSLibraryConcatenator().deactivate();
     applicationContext.getLifeCycleFactory().deactivate();
     applicationContext.getServiceManager().clear();
     applicationContext.getThemeManager().deactivate();
