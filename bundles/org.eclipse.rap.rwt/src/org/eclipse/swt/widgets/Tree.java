@@ -2056,7 +2056,7 @@ public class Tree extends Composite {
     return result;
   }
 
-  private Font getHeaderFont() {
+  Font getHeaderFont() {
     IControlAdapter controlAdapter = getAdapter( IControlAdapter.class );
     Font result = controlAdapter.getUserFont();
     if( result == null ) {

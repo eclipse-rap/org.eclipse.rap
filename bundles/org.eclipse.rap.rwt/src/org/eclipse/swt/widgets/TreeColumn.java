@@ -19,6 +19,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.IColumnAdapter;
@@ -335,25 +336,30 @@ public class TreeColumn extends Item {
   }
 
   int getPreferredWidth() {
-    int contentWidth = 0;
+    int result = 0;
+    Font font = parent.getHeaderFont();
     if( text.length() > 0 ) {
-      contentWidth += Graphics.textExtent( parent.getFont(), text, 0 ).x;
+      if( text.indexOf( '\n' ) != -1 ) {
+        result = Graphics.textExtent( font, text, 0 ).x;
+      } else {
+        result = Graphics.stringExtent( font, text ).x;
+      }
     }
     if( image != null ) {
-      contentWidth += image.getBounds().width;
+      result += image.getBounds().width;
       if( text.length() > 0 ) {
-        contentWidth += MARGIN_IMAGE;
+        result += MARGIN_IMAGE;
       }
     }
     if( sort != SWT.NONE ) {
-      contentWidth += SORT_INDICATOR_WIDTH;
+      result += SORT_INDICATOR_WIDTH;
       if( text.length() > 0 || image != null ) {
-        contentWidth += MARGIN_IMAGE;
+        result += MARGIN_IMAGE;
       }
     }
     TreeThemeAdapter themeAdapter = ( TreeThemeAdapter )parent.getAdapter( IThemeAdapter.class );
-    contentWidth += themeAdapter.getHeaderPadding( parent ).width;
-    return contentWidth;
+    result += themeAdapter.getHeaderPadding( parent ).width;
+    return result;
   }
 
   /**

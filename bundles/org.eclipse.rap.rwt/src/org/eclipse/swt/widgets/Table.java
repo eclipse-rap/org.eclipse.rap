@@ -2631,7 +2631,7 @@ public class Table extends Composite {
     clearItemImageSize();
   }
 
-  private Font getHeaderFont() {
+  Font getHeaderFont() {
     IControlAdapter controlAdapter = getAdapter( IControlAdapter.class );
     Font result = controlAdapter.getUserFont();
     if( result == null ) {
