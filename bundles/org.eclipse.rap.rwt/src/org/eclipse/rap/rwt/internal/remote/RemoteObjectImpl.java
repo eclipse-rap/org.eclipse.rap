@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 
 
-public class RemoteObjectImpl implements RemoteObject {
+public class RemoteObjectImpl implements RemoteObject, Serializable {
 
   private final String id;
   private final List<RenderRunnable> renderQueue;

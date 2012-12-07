@@ -25,7 +25,7 @@ public class RemoteObjectRegistry_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    registry = RemoteObjectRegistry.getInstance();
+    registry = new RemoteObjectRegistry();
   }
 
   @Override
@@ -34,8 +34,11 @@ public class RemoteObjectRegistry_Test extends TestCase {
   }
 
   public void testReturnsSingletonInstance() {
-    assertNotNull( registry );
-    assertSame( registry, RemoteObjectRegistry.getInstance() );
+    Object registry1 = RemoteObjectRegistry.getInstance();
+    Object registry2 = RemoteObjectRegistry.getInstance();
+
+    assertNotNull( registry1 );
+    assertSame( registry1, registry2 );
   }
 
   public void testCanRegisterRemoteObject() {

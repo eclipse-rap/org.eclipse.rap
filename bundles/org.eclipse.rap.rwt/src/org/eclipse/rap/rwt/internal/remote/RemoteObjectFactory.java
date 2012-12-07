@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
+import java.io.Serializable;
+
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.ISessionStore;
@@ -19,7 +21,7 @@ import org.eclipse.swt.internal.widgets.IdGenerator;
 /**
  * A factory used to create remote objects on the client.
  */
-public class RemoteObjectFactory {
+public class RemoteObjectFactory implements Serializable {
 
   private static final String SESSION_STORE_KEY
     = RemoteObjectFactory.class.getName() + "#instance";

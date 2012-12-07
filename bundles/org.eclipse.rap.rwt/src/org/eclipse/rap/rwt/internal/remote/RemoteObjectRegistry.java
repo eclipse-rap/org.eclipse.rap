@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,11 +19,11 @@ import java.util.Map;
 import org.eclipse.rap.rwt.SingletonUtil;
 
 
-public class RemoteObjectRegistry {
+public class RemoteObjectRegistry implements Serializable {
 
   private final Map<String, RemoteObjectImpl> remoteObjects;
 
-  private RemoteObjectRegistry() {
+  RemoteObjectRegistry() {
     // TODO [rst] This is a linked list in order to provide an ordered list of remote objects to
     //            iterate in the render phase. Once messages are rendered directly, this doesn't
     //            have to be a linked list anymore.

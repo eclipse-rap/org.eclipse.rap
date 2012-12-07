@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
+import java.io.Serializable;
 import java.util.Map;
 
 
@@ -17,7 +18,7 @@ import java.util.Map;
  * NOTE: This class is PROVISIONAL and may be exchanged with another mechanism of processing
  * operations from a remote object.
  */
-public class RemoteOperationHandler {
+public class RemoteOperationHandler implements Serializable {
 
   public void handleSet( Map<String, Object> properties ) {
   }

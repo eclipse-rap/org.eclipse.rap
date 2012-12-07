@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.client.service.ClientInfo;
@@ -18,7 +19,7 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.remote.RemoteOperationHandler;
 
 
-public class ClientInfoImpl implements ClientInfo {
+public class ClientInfoImpl implements ClientInfo, Serializable {
 
   private Integer timezoneOffset;
   private RemoteObject remoteObject;
