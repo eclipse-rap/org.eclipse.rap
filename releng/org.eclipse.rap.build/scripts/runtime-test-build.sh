@@ -31,7 +31,7 @@ cvs -Q -d :local:/cvsroot/rt co -P -d source -r $CVS_TAG org.eclipse.rap || exit
 ######################################################################
 # Build RAP Runtime
 
-cd "$WORKSPACE/source/releng/org.eclipse.rap.releng/runtime"
+cd "$WORKSPACE/source/releng/org.eclipse.rap.build/runtime"
 echo "Running maven on $PWD, sign=$sign"
 $MVN -e clean package -Dsign=$sign
 exitcode=$?
@@ -70,6 +70,6 @@ fi
 # Include legal files in zip
 
 cd "$WORKSPACE"
-cp -f source/releng/org.eclipse.rap.releng/legal/notice.html .
-cp -f source/releng/org.eclipse.rap.releng/legal/epl-v10.html .
+cp -f source/releng/org.eclipse.rap.build/legal/notice.html .
+cp -f source/releng/org.eclipse.rap.build/legal/epl-v10.html .
 zip "$zipFileName" notice.html epl-v10.html
