@@ -31,6 +31,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
+import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
@@ -235,6 +236,7 @@ public class Tree extends Composite {
         items[ i ].clearPreferredWidthBuffers( true );
       }
     }
+    layoutCache.invalidateHeaderHeight();
     layoutCache.invalidateItemHeight();
     updateScrollBars();
   }
@@ -2031,8 +2033,7 @@ public class Tree extends Composite {
   private int computeHeaderHeight() {
     int result = 0;
     if( headerVisible ) {
-      TreeThemeAdapter themeAdapter = getThemeAdapter();
-      Font headerFont = themeAdapter.getHeaderFont( this );
+      Font headerFont = getHeaderFont();
       int textHeight = Graphics.getCharHeight( headerFont );
       int imageHeight = 0;
       for( int i = 0; i < getColumnCount(); i++ ) {
@@ -2048,8 +2049,18 @@ public class Tree extends Composite {
         }
       }
       result = Math.max( textHeight, imageHeight );
+      TreeThemeAdapter themeAdapter = getThemeAdapter();
       result += themeAdapter.getHeaderBorderBottomWidth( this );
       result += themeAdapter.getHeaderPadding( this ).height;
+    }
+    return result;
+  }
+
+  Font getHeaderFont() {
+    IControlAdapter controlAdapter = getAdapter( IControlAdapter.class );
+    Font result = controlAdapter.getUserFont();
+    if( result == null ) {
+      result = getThemeAdapter().getHeaderFont( this );
     }
     return result;
   }

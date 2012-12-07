@@ -19,6 +19,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.IColumnAdapter;
@@ -298,32 +299,6 @@ public class TreeColumn extends Item {
     return SWT.LEFT;
   }
 
-  /*
-   * Returns the width of the header's content (image + text + sort arrow +
-   * internal margins)
-   */
-  int getContentWidth() {
-    int contentWidth = 0;
-    if( text.length() > 0 ) {
-      contentWidth += Graphics.textExtent( parent.getFont(), text, 0 ).x;
-    }
-    if( image != null ) {
-      contentWidth += image.getBounds().width;
-      if( text.length() > 0 ) {
-        contentWidth += MARGIN_IMAGE;
-      }
-    }
-    if( sort != SWT.NONE ) {
-      contentWidth += SORT_INDICATOR_WIDTH;
-      if( text.length() > 0 || image != null ) {
-        contentWidth += MARGIN_IMAGE;
-      }
-    }
-    TreeThemeAdapter themeAdapter = ( TreeThemeAdapter )parent.getAdapter( IThemeAdapter.class );
-    contentWidth += themeAdapter.getHeaderPadding( parent ).width;
-    return contentWidth;
-  }
-
   /**
    * Gets the moveable attribute. A column that is not moveable cannot be
    * reordered by the user by dragging the header but may be reordered by the
@@ -361,7 +336,30 @@ public class TreeColumn extends Item {
   }
 
   int getPreferredWidth() {
-    return parent.getHeaderVisible() ? getContentWidth() : 0;
+    int result = 0;
+    Font font = parent.getHeaderFont();
+    if( text.length() > 0 ) {
+      if( text.indexOf( '\n' ) != -1 ) {
+        result = Graphics.textExtent( font, text, 0 ).x;
+      } else {
+        result = Graphics.stringExtent( font, text ).x;
+      }
+    }
+    if( image != null ) {
+      result += image.getBounds().width;
+      if( text.length() > 0 ) {
+        result += MARGIN_IMAGE;
+      }
+    }
+    if( sort != SWT.NONE ) {
+      result += SORT_INDICATOR_WIDTH;
+      if( text.length() > 0 || image != null ) {
+        result += MARGIN_IMAGE;
+      }
+    }
+    TreeThemeAdapter themeAdapter = ( TreeThemeAdapter )parent.getAdapter( IThemeAdapter.class );
+    result += themeAdapter.getHeaderPadding( parent ).width;
+    return result;
   }
 
   /**

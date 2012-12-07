@@ -34,13 +34,27 @@ public class TableColumn_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private Table table;
+  private TableColumn column;
+
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
+    table = new Table( shell, SWT.NONE );
+    column = new TableColumn( table, SWT.NONE );
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testCreation() {
-    Table table = new Table( shell, SWT.NONE );
-    // Add one item
-    TableColumn col1 = new TableColumn( table, SWT.NONE );
     assertEquals( 1, table.getColumnCount() );
-    assertSame( col1, table.getColumn( 0 ) );
+    assertSame( column, table.getColumn( 0 ) );
     // Insert an item before first item
     TableColumn col0 = new TableColumn( table, SWT.NONE, 0 );
     assertEquals( 2, table.getColumnCount() );
@@ -54,9 +68,7 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testParent() {
-    Table table = new Table( shell, SWT.NONE );
     // Test creating column with valid parent
-    TableColumn column = new TableColumn( table, SWT.NONE );
     assertSame( table, column.getParent() );
     // Test creating column without parent
     try {
@@ -68,14 +80,10 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testDisplay() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
     assertSame( display, column.getDisplay() );
   }
 
   public void testStyle() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
     assertTrue( ( column.getStyle() & SWT.LEFT ) != 0 );
     column = new TableColumn( table, SWT.LEFT | SWT.RIGHT | SWT.CENTER );
     assertTrue( ( column.getStyle() & SWT.LEFT ) != 0 );
@@ -84,8 +92,6 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testInitialValues() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
     assertEquals( 0, column.getWidth() );
     assertEquals( "", column.getText() );
     assertEquals( null, column.getToolTipText() );
@@ -96,10 +102,6 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testAlignment() {
-    Table table = new Table( shell, SWT.NONE );
-
-    TableColumn column;
-    column = new TableColumn( table, SWT.NONE );
     assertEquals( SWT.LEFT, column.getAlignment() );
     column = new TableColumn( table, SWT.LEFT );
     assertEquals( SWT.LEFT, column.getAlignment() );
@@ -113,25 +115,19 @@ public class TableColumn_Test extends TestCase {
     column.setAlignment( 4712 );
     assertEquals( SWT.LEFT, column.getAlignment() );
   }
-  
+
   public void testInitialWidth() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
     assertEquals( 0, column.getWidth() );
   }
 
   public void testWidth() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
     column.setWidth( 70 );
     assertEquals( 70, column.getWidth() );
     column.setWidth( 0 );
     assertEquals( 0, column.getWidth() );
   }
-  
+
   public void testWidthWithNegativeValue() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
     column.setWidth( 4711 );
     column.setWidth( -1 );
     assertEquals( 4711, column.getWidth() );
@@ -144,13 +140,12 @@ public class TableColumn_Test extends TestCase {
   public void testPack() {
     final java.util.List<Widget> log = new ArrayList<Widget>();
     ControlAdapter resizeListener = new ControlAdapter() {
+      @Override
       public void controlResized( ControlEvent e ) {
         log.add( e.widget );
       }
     };
-    Table table = new Table( shell, SWT.NONE );
     table.setHeaderVisible( true );
-    TableColumn column = new TableColumn( table, SWT.NONE );
     column.addControlListener( resizeListener );
 
     // Ensure that controlResized is fired when pack changes the width
@@ -192,14 +187,22 @@ public class TableColumn_Test extends TestCase {
     assertTrue( column.getWidth() >= item.getBounds().width );
   }
 
+  public void testGetPreferredWidthWithInvisibleHeader() {
+    table.setHeaderVisible( true );
+    column.setText( "column" );
+    int preferredWidth = column.getPreferredWidth();
+
+    table.setHeaderVisible( false );
+
+    assertEquals( preferredWidth, column.getPreferredWidth() );
+  }
+
   public void testGetPreferredWidthMultiLineHeader() {
-    Table result = new Table( shell, SWT.NONE );
     for( int i = 0; i < 3; i++ ) {
-      TableColumn column1 = new TableColumn( result, SWT.NONE );
+      TableColumn column1 = new TableColumn( table, SWT.NONE );
       column1.setWidth( 50 );
       column1.setText( "Column " + i );
     }
-    Table table = result;
     table.setHeaderVisible( true );
     TableColumn column = table.getColumn( 1 );
 
@@ -216,13 +219,11 @@ public class TableColumn_Test extends TestCase {
       }
     };
     ControlListener resizeListener = new ControlAdapter() {
+      @Override
       public void controlResized( ControlEvent event ) {
         log.add( event.widget );
       }
     };
-    Table table;
-    TableColumn column;
-
     // Must not try to access items if there aren't any
     log.clear();
     table = new Table( shell, SWT.VIRTUAL );
@@ -245,8 +246,6 @@ public class TableColumn_Test extends TestCase {
 
   public void testResizeEvent() {
     final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
     column.addControlListener( new ControlListener() {
       public void controlMoved( ControlEvent event ) {
         fail( "unexpected event: controlMoved" );
@@ -273,8 +272,6 @@ public class TableColumn_Test extends TestCase {
 
   public void testMoveEvent() {
     final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
-    Table table = new Table( shell, SWT.NONE );
-    final TableColumn column = new TableColumn( table, SWT.NONE );
     column.addControlListener( new ControlListener() {
       public void controlMoved( ControlEvent event ) {
         fail( "unexpected event: controlMoved" );
@@ -305,8 +302,6 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testDisposeLast() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column0 = new TableColumn( table, SWT.NONE );
     TableColumn column1 = new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( "itemText for column 0" );
@@ -316,7 +311,7 @@ public class TableColumn_Test extends TestCase {
     assertEquals( "", item.getText( 1 ) );
     assertEquals( "itemText for column 0", item.getText() );
 
-    column0.dispose();
+    column.dispose();
     assertEquals( 0, table.getColumnCount() );
     assertEquals( 1, table.getItemCount() );
     assertEquals( "itemText for column 0", item.getText() );
@@ -326,9 +321,7 @@ public class TableColumn_Test extends TestCase {
   // TableItems) results in an ArrayIndexOutOfBoundsException
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=323179
   public void testCreateDisposeColumnWithoutDataUpdate() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column1 = new TableColumn( table, SWT.NONE );
-    column1.setText( "First Column" );
+    column.setText( "First Column" );
     int number = 5;
     TableItem[] items = new TableItem[ number ];
     for( int i = 0; i < number; i++ ) {
@@ -353,31 +346,23 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testAddSelectionListener() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     column.addSelectionListener( mock( SelectionListener.class ) );
-    
+
     assertTrue( column.isListening( SWT.Selection ) );
     assertTrue( column.isListening( SWT.DefaultSelection ) );
   }
-  
+
   public void testRemoveSelectionListener() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     column.addSelectionListener( listener );
 
     column.removeSelectionListener( listener );
-    
+
     assertFalse( column.isListening( SWT.Selection ) );
     assertFalse( column.isListening( SWT.DefaultSelection ) );
   }
 
   public void testAddSelectionListenerWithNullArgument() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
-    
     try {
       column.addSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -385,9 +370,6 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testRemoveSelectionListenerWithNullArgument() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
-    
     try {
       column.removeSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -395,9 +377,6 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testAddControlListenerWithNullArgument() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
-    
     try {
       column.addControlListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -405,19 +384,13 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testAddControlListener() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     column.addControlListener( mock( ControlListener.class ) );
-    
+
     assertTrue( column.isListening( SWT.Move ) );
     assertTrue( column.isListening( SWT.Resize ) );
   }
 
   public void testRemoveControlListenerWithNullArgument() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
     try {
       column.removeControlListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -426,25 +399,12 @@ public class TableColumn_Test extends TestCase {
 
   public void testRemoveControlListener() {
     ControlListener listener = mock( ControlListener.class );
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
     column.addControlListener( listener );
-    
+
     column.removeControlListener( listener );
-    
+
     assertFalse( column.isListening( SWT.Move ) );
     assertFalse( column.isListening( SWT.Resize ) );
-  }
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display = new Display();
-    shell = new Shell( display );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 
   private Table createFixedColumnsTable( Shell shell ) {

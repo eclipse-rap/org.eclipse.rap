@@ -498,24 +498,24 @@ public class TableColumn extends Item {
 
   final int getPreferredWidth () {
     // Compute width from the column itself
-    int width = 0;
-    if( parent.getHeaderVisible() ) {
-      Font font = parent.getFont();
+    int result = 0;
+    Font font = parent.getHeaderFont();
+    if( text.length() > 0 ) {
       if( text.indexOf( '\n' ) != -1 ) {
-        width = Graphics.textExtent( font, text, 0 ).x;
+        result = Graphics.textExtent( font, text, 0 ).x;
       } else {
-        width = Graphics.stringExtent( font, text ).x;
+        result = Graphics.stringExtent( font, text ).x;
       }
-      Image image = getImage();
-      if( image != null ) {
-        width += image.getBounds().width + SPACING;
-      }
-      if( parent.getSortColumn() == this && parent.getSortDirection() != SWT.NONE ) {
-        width += SORT_INDICATOR_WIDTH + SPACING;
-      }
-      TableThemeAdapter adapter = ( TableThemeAdapter )parent.getAdapter( IThemeAdapter.class );
-      width += adapter.getHeaderPadding( parent ).width;
     }
+    Image image = getImage();
+    if( image != null ) {
+      result += image.getBounds().width + SPACING;
+    }
+    if( parent.getSortColumn() == this && parent.getSortDirection() != SWT.NONE ) {
+      result += SORT_INDICATOR_WIDTH + SPACING;
+    }
+    TableThemeAdapter adapter = ( TableThemeAdapter )parent.getAdapter( IThemeAdapter.class );
+    result += adapter.getHeaderPadding( parent ).width;
     // Mimic Windows behaviour that forces first item to resolve
     if( parent.getItemCount() > 0 && parent.getCachedItems().length == 0 ) {
       parent.checkData( parent.getItem( 0 ), 0 );
@@ -523,8 +523,8 @@ public class TableColumn extends Item {
     // Extend computed width if there are wider items
     int columnIndex = parent.indexOf( this );
     int itemsPreferredWidth = parent.getItemsPreferredWidth( columnIndex );
-    width = Math.max( width, itemsPreferredWidth );
-    return width;
+    result = Math.max( result, itemsPreferredWidth );
+    return result;
   }
 
   ////////////////////////////

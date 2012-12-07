@@ -700,6 +700,16 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, tree.getHeaderHeight() );
   }
 
+  public void testHeaderHeightWithCustomUserFont() {
+    Tree tree = new Tree( composite, SWT.SINGLE );
+    tree.setHeaderVisible( true );
+    int headerHeight = tree.getHeaderHeight();
+
+    tree.setFont( new Font( display, "Arial", 30, SWT.NORMAL ) );
+
+    assertTrue( headerHeight < tree.getHeaderHeight() );
+  }
+
   public void testMultiLineHeaderHeight() {
     Tree tree = new Tree( composite, SWT.SINGLE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );

@@ -30,7 +30,7 @@ done
 ######################################################################
 # Build RAP Runtime
 
-cd "$WORKSPACE/org.eclipse.rap/releng/org.eclipse.rap.releng"
+cd "$WORKSPACE/org.eclipse.rap/releng/org.eclipse.rap.build"
 echo "Running maven on $PWD, $SIGNPROFILE"
 ${MVN} -e clean package $SIGNPROFILE -Dmaven.repo.local=${MAVEN_LOCAL_REPO_PATH}
 exitcode=$?
@@ -54,7 +54,7 @@ test -n "$TIMESTAMP" || exit 1
 ######################################################################
 # Build Aggregation Repository
 
-cd "$WORKSPACE/org.eclipse.rap/releng/org.eclipse.rap.target.releng"
+cd "$WORKSPACE/org.eclipse.rap/releng/org.eclipse.rap.target.build"
 echo "Running maven on $PWD, sign=$sign"
 $MVN -e clean package -DruntimeRepo="file://$WORKSPACE/runtimeRepo" -Dmaven.repo.local=${MAVEN_LOCAL_REPO_PATH} -Dsign=$sign || exit 1
 
@@ -76,6 +76,6 @@ fi
 # Include legal files in zip
 
 cd "$WORKSPACE"
-cp -f org.eclipse.rap/releng/org.eclipse.rap.releng/legal/notice.html .
-cp -f org.eclipse.rap/releng/org.eclipse.rap.releng/legal/epl-v10.html .
+cp -f org.eclipse.rap/releng/org.eclipse.rap.build/legal/notice.html .
+cp -f org.eclipse.rap/releng/org.eclipse.rap.build/legal/epl-v10.html .
 zip "$zipFileName" notice.html epl-v10.html
