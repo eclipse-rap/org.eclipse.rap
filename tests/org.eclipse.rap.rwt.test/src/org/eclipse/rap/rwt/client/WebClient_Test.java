@@ -13,14 +13,17 @@ package org.eclipse.rap.rwt.client;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.client.service.BrowserHistory;
+import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.client.service.ClientService;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.internal.client.BrowserHistoryImpl;
+import org.eclipse.rap.rwt.internal.client.ClientInfoImpl;
 import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoader;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoaderImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -45,16 +48,30 @@ public class WebClient_Test extends TestCase {
     assertNull( client.getService( UnsupportedService.class ) );
   }
 
-  public void testGetJavaScriptExecutorService() {
-    ClientService service = client.getService( JavaScriptExecutor.class );
-    assertTrue( service instanceof JavaScriptExecutorImpl );
-  }
-
   public void testGetServiveTwice() {
     ClientService service1 = client.getService( JavaScriptExecutor.class );
     ClientService service2 = client.getService( JavaScriptExecutor.class );
 
     assertSame( service1, service2 );
+  }
+
+  public void testGetClienInfoService() {
+    ClientService service = client.getService( ClientInfo.class );
+    assertTrue( service instanceof ClientInfoImpl );
+  }
+
+  public void testRegistersClienInfoHandlerOnCreate() {
+    try {
+      RemoteObjectFactory.getInstance().createServiceObject( "rwt.client.ClientInfo" );
+      fail();
+    } catch( IllegalArgumentException ex ) {
+      // expected
+    }
+  }
+
+  public void testGetJavaScriptExecutorService() {
+    ClientService service = client.getService( JavaScriptExecutor.class );
+    assertTrue( service instanceof JavaScriptExecutorImpl );
   }
 
   public void testGetBrowserHistoryService() {

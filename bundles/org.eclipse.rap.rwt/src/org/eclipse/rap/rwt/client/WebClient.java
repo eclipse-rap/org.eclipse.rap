@@ -17,16 +17,19 @@ import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.client.service.BrowserHistory;
+import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.client.service.ClientService;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.internal.client.BrowserHistoryImpl;
+import org.eclipse.rap.rwt.internal.client.ClientInfoImpl;
 import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoader;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoaderImpl;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 
 
 /**
@@ -107,6 +110,10 @@ public class WebClient implements Client {
    */
   public static final String FAVICON = PREFIX + ".favicon";
 
+  public WebClient() {
+    initializeServices();
+  }
+
   @SuppressWarnings( "unchecked" )
   public <T extends ClientService> T getService( Class<T> type ) {
     T result = null;
@@ -120,6 +127,8 @@ public class WebClient implements Client {
       result = ( T )getServiceImpl( BrowserHistoryImpl.class );
     } else if( type == ExitConfirmation.class ) {
       result = ( T )getServiceImpl( ExitConfirmationImpl.class );
+    } else if( type == ClientInfo.class ) {
+      result = ( T )getServiceImpl( ClientInfoImpl.class );
     }
     return result;
   }
@@ -127,5 +136,12 @@ public class WebClient implements Client {
   private <T> T getServiceImpl( Class<T> impl ) {
     return SingletonUtil.getSessionInstance( impl );
   }
+
+  private void initializeServices() {
+    if( ContextProvider.hasContext() ) {
+      getServiceImpl( ClientInfoImpl.class );
+    }
+  }
+
 
 }

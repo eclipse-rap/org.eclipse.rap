@@ -31,10 +31,11 @@ import org.eclipse.rap.rwt.internal.lifecycle.RequestId;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 
 
 public class LifeCycleServiceHandler implements ServiceHandler {
@@ -108,6 +109,13 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   }
 
   private void runLifeCycle() throws IOException {
+    if( hasInitializeParameter() ) {
+      // TODO [tb] : This is usually done in DisplayLCA#readData, but the ReadData
+      // phase is omitted in the first POST request. Since RemoteObjects may already be registered
+      // at this point, this workaround is currently required. We should find a solution that
+      // does not require RemoteObjectLifeCycleAdapter.readData to be called in different places.
+      RemoteObjectLifeCycleAdapter.readData();
+    }
     LifeCycle lifeCycle = ( LifeCycle )lifeCycleFactory.getLifeCycle();
     lifeCycle.execute();
   }
