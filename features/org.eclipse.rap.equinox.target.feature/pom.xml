@@ -18,7 +18,7 @@
     <groupId>org.eclipse.rap</groupId>
     <artifactId>org.eclipse.rap.runtime.target-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
-    <relativePath>../../releng/org.eclipse.rap.target.releng/pom.xml</relativePath>
+    <relativePath>../../releng/org.eclipse.rap.target.build/pom.xml</relativePath>
   </parent>
 
   <artifactId>org.eclipse.rap.equinox.target.feature</artifactId>
