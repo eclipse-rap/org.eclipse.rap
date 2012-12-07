@@ -32,6 +32,7 @@ public class TreeColumn_Test extends TestCase {
   private Display display;
   private Shell shell;
   private Tree tree;
+  private TreeColumn column;
   private List<Event> eventLog;
 
   @Override
@@ -41,6 +42,7 @@ public class TreeColumn_Test extends TestCase {
     display = new Display();
     shell = new Shell( display );
     tree = new Tree( shell, SWT.NONE );
+    column = new TreeColumn( tree, SWT.NONE );
     eventLog = new ArrayList<Event>();
   }
 
@@ -50,10 +52,8 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testCreation() {
-    // Add one item
-    TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
     assertEquals( 1, tree.getColumnCount() );
-    assertSame( col1, tree.getColumn( 0 ) );
+    assertSame( column, tree.getColumn( 0 ) );
     // Insert an item before first item
     TreeColumn col0 = new TreeColumn( tree, SWT.NONE, 0 );
     assertEquals( 2, tree.getColumnCount() );
@@ -70,8 +70,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testParent() {
-    // Test creating column with valid parent
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
     assertSame( tree, column.getParent() );
     // Test creating column without parent
     try {
@@ -83,12 +81,10 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testDisplay() {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
     assertSame( display, column.getDisplay() );
   }
 
   public void testStyle() {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
     assertTrue( ( column.getStyle() & SWT.LEFT ) != 0 );
     column = new TreeColumn( tree, SWT.LEFT | SWT.RIGHT | SWT.CENTER );
     assertTrue( ( column.getStyle() & SWT.LEFT ) != 0 );
@@ -97,7 +93,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testInitialValues() {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
     assertEquals( 0, column.getWidth() );
     assertEquals( "", column.getText() );
     assertEquals( null, column.getToolTipText() );
@@ -108,7 +103,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testAlignment() {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
     assertEquals( SWT.LEFT, column.getAlignment() );
     column = new TreeColumn( tree, SWT.LEFT );
     assertEquals( SWT.LEFT, column.getAlignment() );
@@ -123,7 +117,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testWidth() {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
     // Initial value
     assertEquals( 0, column.getWidth() );
     // Setting 'normal' width
@@ -143,7 +136,6 @@ public class TreeColumn_Test extends TestCase {
 
   public void testPack() {
     tree.setHeaderVisible( true );
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
     column.addListener( SWT.Resize, new LoggingListener() );
     // Ensure that controlResized is fired when pack changes the width
     column.setWidth( 12312 );
@@ -181,7 +173,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testPackRespectSubItems() {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( "Item 0" );
     TreeItem subitem = new TreeItem( item, SWT.NONE );
@@ -198,7 +189,7 @@ public class TreeColumn_Test extends TestCase {
   public void testPackWithVirtual() {
     // Must not try to access items if there aren't any
     tree = new Tree( shell, SWT.VIRTUAL );
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+    column = new TreeColumn( tree, SWT.NONE );
     column.setWidth( 200 );
     column.addListener( SWT.Resize, new LoggingListener() );
     column.pack();
@@ -215,7 +206,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testResizeEvent() {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
     column.addListener( SWT.Resize, new LoggingListener() );
     // Changing column width leads to resize event
     column.setWidth( column.getWidth() + 1 );
@@ -230,7 +220,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testDisposeLast() {
-    TreeColumn column0 = new TreeColumn( tree, SWT.NONE );
     TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( "itemText for column 0" );
@@ -238,39 +227,36 @@ public class TreeColumn_Test extends TestCase {
     column1.dispose();
     assertEquals( "", item.getText( 1 ) );
     assertEquals( "itemText for column 0", item.getText() );
-    column0.dispose();
+    column.dispose();
     assertEquals( 0, tree.getColumnCount() );
     assertEquals( 1, tree.getItemCount() );
     assertEquals( "itemText for column 0", item.getText() );
   }
 
   public void testSetResizable() {
-    TreeColumn treeColumn = new TreeColumn( tree, SWT.NONE );
-    assertTrue( ":a:", treeColumn.getResizable() == true );
-    treeColumn.setResizable( false );
-    assertTrue( ":b:", treeColumn.getResizable() == false );
-    treeColumn.setResizable( false );
-    assertTrue( ":c:", treeColumn.getResizable() == false );
-    treeColumn.setResizable( true );
-    assertTrue( ":d:", treeColumn.getResizable() == true );
+    assertTrue( ":a:", column.getResizable() == true );
+    column.setResizable( false );
+    assertTrue( ":b:", column.getResizable() == false );
+    column.setResizable( false );
+    assertTrue( ":c:", column.getResizable() == false );
+    column.setResizable( true );
+    assertTrue( ":d:", column.getResizable() == true );
   }
 
   public void testSetToolTip() {
-    TreeColumn treeColumn = new TreeColumn( tree, SWT.NONE );
     String tooltip = "foobar";
-    assertEquals( null, treeColumn.getToolTipText() );
-    treeColumn.setToolTipText( tooltip );
-    assertEquals( tooltip, treeColumn.getToolTipText() );
-    treeColumn.setToolTipText( "" );
-    assertEquals( "", treeColumn.getToolTipText() );
+    assertEquals( null, column.getToolTipText() );
+    column.setToolTipText( tooltip );
+    assertEquals( tooltip, column.getToolTipText() );
+    column.setToolTipText( "" );
+    assertEquals( "", column.getToolTipText() );
   }
 
   public void testFireMoveEventOnColumnResize() {
-    TreeColumn column0 = new TreeColumn( tree, SWT.NONE );
     TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
     column1.addListener( SWT.Move, new LoggingListener() );
 
-    column0.setWidth( 100 );
+    column.setWidth( 100 );
 
     assertEquals( 1, eventLog.size() );
     Event event = eventLog.get( 0 );
@@ -279,28 +265,23 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testAddSelectionListener() {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
-
     column.addSelectionListener( mock( SelectionListener.class ) );
-    
+
     assertTrue( column.isListening( SWT.Selection ) );
     assertTrue( column.isListening( SWT.DefaultSelection ) );
   }
-  
+
   public void testRemoveSelectionListener() {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     column.addSelectionListener( listener );
 
     column.removeSelectionListener( listener );
-    
+
     assertFalse( column.isListening( SWT.Selection ) );
     assertFalse( column.isListening( SWT.DefaultSelection ) );
   }
 
   public void testAddSelectionListenerWithNullArgument() {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
-    
     try {
       column.addSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -308,8 +289,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testRemoveSelectionListenerWithNullArgument() {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
-    
     try {
       column.removeSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -317,8 +296,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testAddControlListenerWithNullArgument() {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
-    
     try {
       column.addControlListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -326,17 +303,13 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testAddControlListener() {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
-
     column.addControlListener( mock( ControlListener.class ) );
-    
+
     assertTrue( column.isListening( SWT.Move ) );
     assertTrue( column.isListening( SWT.Resize ) );
   }
 
   public void testRemoveControlListenerWithNullArgument() {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
-
     try {
       column.removeControlListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -345,13 +318,22 @@ public class TreeColumn_Test extends TestCase {
 
   public void testRemoveControlListener() {
     ControlListener listener = mock( ControlListener.class );
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
     column.addControlListener( listener );
-    
+
     column.removeControlListener( listener );
-    
+
     assertFalse( column.isListening( SWT.Move ) );
     assertFalse( column.isListening( SWT.Resize ) );
+  }
+
+  public void testGetPreferredWidthWithInvisibleHeader() {
+    tree.setHeaderVisible( true );
+    column.setText( "column" );
+    int preferredWidth = column.getPreferredWidth();
+
+    tree.setHeaderVisible( false );
+
+    assertEquals( preferredWidth, column.getPreferredWidth() );
   }
 
   //////////////////
