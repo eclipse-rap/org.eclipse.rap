@@ -27,6 +27,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
+import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
@@ -1885,8 +1886,7 @@ public class Table extends Composite {
     checkWidget();
     int result = 0;
     if( headerVisible ) {
-      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
-      Font headerFont = themeAdapter.getHeaderFont( this );
+      Font headerFont = getHeaderFont();
       int textHeight = Graphics.getCharHeight( headerFont );
       int imageHeight = 0;
       for( int i = 0; i < columnHolder.size(); i++ ) {
@@ -1902,6 +1902,7 @@ public class Table extends Composite {
         }
       }
       result = Math.max( textHeight, imageHeight );
+      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
       result += themeAdapter.getHeaderBorderBottomWidth( this );
       result += themeAdapter.getHeaderPadding( this ).height;
     }
@@ -2628,6 +2629,16 @@ public class Table extends Composite {
   private void setTableEmpty() {
     items = new TableItem[ 4 ];
     clearItemImageSize();
+  }
+
+  private Font getHeaderFont() {
+    IControlAdapter controlAdapter = getAdapter( IControlAdapter.class );
+    Font result = controlAdapter.getUserFont();
+    if( result == null ) {
+      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      result = themeAdapter.getHeaderFont( this );
+    }
+    return result;
   }
 
   private static int checkStyle( int style ) {

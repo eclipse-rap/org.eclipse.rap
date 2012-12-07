@@ -140,6 +140,16 @@ public class Table_Test extends TestCase {
     assertTrue( table.getHeaderHeight() > 0 );
   }
 
+  public void testHeaderHeightWithCustomUserFont() {
+    Table table = createTable( SWT.NONE, 1 );
+    table.setHeaderVisible( true );
+    int headerHeight = table.getHeaderHeight();
+
+    table.setFont( new Font( display, "Arial", 30, SWT.NORMAL ) );
+
+    assertTrue( headerHeight < table.getHeaderHeight() );
+  }
+
   public void testMultiLineHeaderHeight() {
     Table table = createMultiLineHeaderTable();
     TableColumn column = table.getColumn( 1 );
