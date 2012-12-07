@@ -22,6 +22,7 @@ import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 
 
@@ -32,8 +33,14 @@ public class ClientSelector_Test extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
+    Fixture.setUp();
     sessionStore = new SessionStoreImpl( new TestSession() );
     clientSelector = new ClientSelector();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
   }
 
   public void testNoClientSelectedByDefault() {

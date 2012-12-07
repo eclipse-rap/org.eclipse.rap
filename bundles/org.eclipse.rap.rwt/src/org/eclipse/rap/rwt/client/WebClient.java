@@ -29,7 +29,6 @@ import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoader;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoaderImpl;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
 
 
 /**
@@ -138,9 +137,7 @@ public class WebClient implements Client {
   }
 
   private void initializeServices() {
-    if( ContextProvider.hasContext() ) {
-      getServiceImpl( ClientInfoImpl.class );
-    }
+    getServiceImpl( ClientInfoImpl.class );
   }
 
 

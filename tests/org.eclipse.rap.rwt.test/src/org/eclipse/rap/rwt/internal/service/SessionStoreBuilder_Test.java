@@ -33,6 +33,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 
@@ -123,6 +124,7 @@ public class SessionStoreBuilder_Test extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
+    Fixture.setUp();
     httpSession = new TestSession();
     request = new TestRequest();
     request.setSession( httpSession );
@@ -130,6 +132,11 @@ public class SessionStoreBuilder_Test extends TestCase {
     configuration = mock( ApplicationConfiguration.class );
     applicationContext = new ApplicationContext( configuration, servletContext );
     applicationContext.getClientSelector().activate();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
   }
 
   private void registerEntryPoint( HashMap<String, String> properties ) {
