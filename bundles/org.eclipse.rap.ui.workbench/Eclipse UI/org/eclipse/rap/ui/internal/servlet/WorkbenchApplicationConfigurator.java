@@ -185,9 +185,6 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       IConfigurationElement configElement = extension.getConfigurationElements()[ 0 ];
       IConfigurationElement[] runElement = configElement.getChildren( RUN );
       String className = runElement[ 0 ].getAttribute( "class" ); //$NON-NLS-1$
-      String applicationId = extension.getUniqueIdentifier();
-      // [if] Use full qualified applicationParameter, see bug 321360
-      String applicationParameter = extension.getUniqueIdentifier();
       String isVisible = configElement.getAttribute( PT_APP_VISIBLE );
       IConfigurationElement[] paramElements = runElement[ 0 ].getChildren( "parameter" );
       String brandingId = findParameter( paramElements, "brandingId" );
@@ -199,7 +196,6 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
           Map<String, String> properties = getBrandingProperties( brandingId );
           properties.put( BrandingUtil.ENTRY_POINT_BRANDING, brandingId );
           application.addEntryPoint( servletPath, factory, properties );
-          EntryPointParameters.register( applicationId, applicationParameter );
         }
       } catch( ClassNotFoundException exception ) {
         String text =   "Could not register application ''{0}'' " //$NON-NLS-1$

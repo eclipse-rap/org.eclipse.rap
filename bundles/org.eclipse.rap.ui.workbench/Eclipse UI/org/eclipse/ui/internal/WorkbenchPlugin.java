@@ -36,7 +36,6 @@ import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.ui.internal.SessionLocaleProvider;
 import org.eclipse.rap.ui.internal.progress.JobManagerAdapter;
-import org.eclipse.rap.ui.internal.servlet.EntryPointParameters;
 import org.eclipse.rap.ui.internal.servlet.HttpServiceTracker;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -1333,7 +1332,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     		httpServiceTracker.close();
     		httpServiceTracker = null;
     	}
-        EntryPointParameters.clear();
         // RAPEND 
 
         // RAP [rh] unregister multi-session-aware LocaleProvider service

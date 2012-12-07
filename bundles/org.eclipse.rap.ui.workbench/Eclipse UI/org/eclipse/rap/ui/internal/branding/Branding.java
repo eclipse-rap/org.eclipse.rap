@@ -21,19 +21,14 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.ui.internal.servlet.EntryPointParameters;
 import org.osgi.framework.Bundle;
 
 
 public final class Branding extends AbstractBranding {
 
-  private static final String[] EMPTY_STRINGS = new String[ 0 ];
   private static final Header[] EMPTY_HEADERS = new Header[ 0 ];
 
   private final String contributor;
-  private String servletName;
-  private String defaultEntryPointId;
-  private List<String> entryPointIds;
   private String title;
   private String favIcon;
   private List<Header> headers;
@@ -47,21 +42,6 @@ public final class Branding extends AbstractBranding {
 
   /////////////////
   // Setter methods
-
-  public void setServletName( final String servletName ) {
-    this.servletName = servletName;
-  }
-
-  public void addEntryPointId( final String entryPointId ) {
-    if( entryPointIds == null ) {
-      entryPointIds = new ArrayList<String>();
-    }
-    entryPointIds.add( entryPointId );
-  }
-
-  public void setDefaultEntryPointId( final String defaultEntryPointId ) {
-    this.defaultEntryPointId = defaultEntryPointId;
-  }
 
   public void setTitle( final String title ) {
     this.title = title;
@@ -94,32 +74,6 @@ public final class Branding extends AbstractBranding {
   ///////////////////////////
   // AbstractBranding implementation
 
-  @Override
-  public String getServletName() {
-    return servletName;
-  }
-
-  @Override
-  public String getDefaultEntryPoint() {
-    return EntryPointParameters.getById( defaultEntryPointId );
-  }
-
-  @Override
-  public String[] getEntryPoints() {
-    String[] result;
-    if( entryPointIds == null ) {
-      result = EMPTY_STRINGS;
-    } else {
-      result = new String[ entryPointIds.size() ];
-      for( int i = 0; i < result.length; i++ ) {
-        String entryPointId = entryPointIds.get( i );
-        result[ i ] = EntryPointParameters.getById( entryPointId );
-      }
-    }
-    return result;
-  }
-
-  @Override
   public String getTitle() {
     return title;
   }
