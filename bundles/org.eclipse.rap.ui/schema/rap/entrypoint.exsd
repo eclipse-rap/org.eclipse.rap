@@ -67,21 +67,31 @@ As an alternative to registering an entrypoint, Eclipse applications can also us
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="class" type="string" use="required">
+         <attribute name="path" type="string" use="required">
             <annotation>
                <documentation>
-                  An implementation of &lt;code&gt;IEntryPoint&lt;/code&gt; which starts the application.
+                  The URL path to register the entry point at. Must start with a slash.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  An implementation of &lt;code&gt;IEntryPoint&lt;/code&gt; which starts the application. Either this attribute or applicationId must be specified.
                </documentation>
                <appInfo>
                   <meta.attribute kind="java" basedOn=":org.eclipse.rap.rwt.application.EntryPoint"/>
                </appInfo>
             </annotation>
          </attribute>
-         <attribute name="path" type="string" use="required">
+         <attribute name="applicationId" type="string">
             <annotation>
                <documentation>
-                  The URL path to register the entry point at. Must start with a slash.
+                  The id of an IApplication extension to start instead of an EntryPoint class.
                </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.core.runtime.applications/@id"/>
+               </appInfo>
             </annotation>
          </attribute>
          <attribute name="brandingId" type="string">
@@ -150,7 +160,6 @@ public class MyEntryPoint implements EntryPoint {
       path=&quot;/myapp&quot;/&gt;
 &lt;/extension&gt;
 &lt;/pre&gt;
-
       </documentation>
    </annotation>
 

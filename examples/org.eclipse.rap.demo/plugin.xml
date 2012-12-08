@@ -3,23 +3,30 @@
 <plugin>
 
    <extension
-         id="org.eclipse.rap.demo.demoentrypoint"
+         id="org.eclipse.rap.demo.demoentrypoints"
          point="org.eclipse.rap.ui.entrypoint">
       <entrypoint
-            class="org.eclipse.rap.demo.DemoWorkbench"
             id="org.eclipse.rap.demo.workbench.default"
-            path="/workbench"/>
-      <entrypoint
-            brandingId="org.eclipse.rap.design.example.business.branding"
-            class="org.eclipse.rap.demo.DemoWorkbench"
-            id="org.eclipse.rap.demo.workbench.business"
-            path="/business">
+            path="/workbench"
+            class="org.eclipse.rap.demo.DemoWorkbench">
       </entrypoint>
       <entrypoint
-            brandingId="org.eclipse.rap.design.example.fancy.branding"
+            id="org.eclipse.rap.demo.workbench.business"
+            path="/business"
             class="org.eclipse.rap.demo.DemoWorkbench"
+            brandingId="org.eclipse.rap.design.example.business.branding">
+      </entrypoint>
+      <entrypoint
             id="org.eclipse.rap.demo.workbench.fancy"
-            path="/fancy">
+            path="/fancy"
+            class="org.eclipse.rap.demo.DemoWorkbench"
+            brandingId="org.eclipse.rap.design.example.fancy.branding">
+      </entrypoint>
+      <entrypoint
+            id="org.eclipse.rap.demo.workbench.application"
+            path="/app"
+            applicationId="org.eclipse.rap.demo.application"
+            brandingId="org.eclipse.rap.demo.teaBranding">
       </entrypoint>
    </extension>
 
@@ -44,7 +51,7 @@
    </extension>
 
    <extension
-         id="org.eclipse.rap.demo.applicationEntryPoint"
+         id="org.eclipse.rap.demo.application"
          point="org.eclipse.core.runtime.applications">
       <application
             cardinality="singleton-global"
@@ -52,14 +59,6 @@
             visible="true">
          <run
                class="org.eclipse.rap.demo.DemoApplication">
-            <parameter
-                  name="path"
-                  value="/tea">
-            </parameter>
-            <parameter
-                  name="brandingId"
-                  value="org.eclipse.rap.demo.teaBranding">
-            </parameter>
          </run>
       </application>
    </extension>

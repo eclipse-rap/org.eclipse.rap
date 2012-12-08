@@ -38,7 +38,7 @@ import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.internal.application.ApplicationImpl;
+import org.eclipse.rap.rwt.internal.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
@@ -93,8 +93,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     registerResources( application );
     registerServiceHandlers( application );
     registerBrandings( application ); // [rh] brandings must be red before apps/entry points
-    registerWorkbenchEntryPoints( ( ApplicationImpl )application );
-    registerApplicationEntryPoints( ( ApplicationImpl )application );
+    registerEntryPoints( application );
   }
 
   private void registerPhaseListener( Application application ) {
@@ -160,17 +159,25 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   }
 
   @SuppressWarnings( "unchecked" )
-  private void registerWorkbenchEntryPoints( ApplicationImpl application ) {
+  private void registerEntryPoints( Application application ) {
     for( IConfigurationElement element : getEntryPointExtensions() ) {
-      String className = element.getAttribute( "class" );
-      String path = element.getAttribute( "path" );
       String id = element.getAttribute( "id" );
+      String path = element.getAttribute( "path" );
+      String className = element.getAttribute( "class" );
+      String applicationId = element.getAttribute( "applicationId" );
       String brandingId = element.getAttribute( "brandingId" );
       try {
-        Class<? extends EntryPoint> entryPointClass = loadClass( className, element );
+        EntryPointFactory entryPointFactory;
+        if( className != null ) {
+          Class<? extends EntryPoint> entryPointClass = loadClass( className, element );
+          entryPointFactory = new DefaultEntryPointFactory( entryPointClass );
+        } else if( applicationId != null ) {
+          entryPointFactory = createEntryPointFactoryForApplication( applicationId );
+        } else {
+          throw new IllegalArgumentException( "Neither class nor applicationId specified" );
+        }
         Map<String, String> properties = getBrandingProperties( brandingId );
-        properties.put( BrandingUtil.ENTRY_POINT_BRANDING, brandingId );
-        application.addEntryPoint( path, entryPointClass, properties );
+        application.addEntryPoint( path, entryPointFactory, properties );
       } catch( final Throwable thr ) {
         String text = "Could not register entry point ''{0}'' with id ''{1}''.";
         Object[] param = new Object[] { className, id };
@@ -180,30 +187,35 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   }
 
   @SuppressWarnings( "unchecked" )
-  private void registerApplicationEntryPoints( ApplicationImpl application ) {
-    for( IExtension extension : getApplicationExtensions() ) {
-      IConfigurationElement configElement = extension.getConfigurationElements()[ 0 ];
-      IConfigurationElement[] runElement = configElement.getChildren( RUN );
-      String className = runElement[ 0 ].getAttribute( "class" ); //$NON-NLS-1$
-      String isVisible = configElement.getAttribute( PT_APP_VISIBLE );
-      IConfigurationElement[] paramElements = runElement[ 0 ].getChildren( "parameter" );
-      String brandingId = findParameter( paramElements, "brandingId" );
-      String servletPath = findParameter( paramElements, "path" );
-      try {
-        if( isVisible == null || Boolean.valueOf( isVisible ).booleanValue() ) {
-          Class<? extends IApplication> applicationClass = loadClass( className, configElement );
-          EntryPointFactory factory = createApplicationEntryPointFactory( applicationClass );
-          Map<String, String> properties = getBrandingProperties( brandingId );
-          properties.put( BrandingUtil.ENTRY_POINT_BRANDING, brandingId );
-          application.addEntryPoint( servletPath, factory, properties );
-        }
-      } catch( ClassNotFoundException exception ) {
-        String text =   "Could not register application ''{0}'' " //$NON-NLS-1$
-                      + "with servlet path ''{1}''."; //$NON-NLS-1$
-        Object[] params = new Object[]{ className, servletPath };
-        logProblem( text, params, exception, configElement.getContributor().getName() );
-      }
+  private EntryPointFactory createEntryPointFactoryForApplication( String applicationId )
+    throws ClassNotFoundException
+  {
+    IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+    String extensionPointId = PI_RUNTIME + '.' + PT_APPLICATIONS;
+    IExtension extension = extensionRegistry.getExtension( extensionPointId, applicationId );
+    if( extension == null ) {
+      String message = "Application extension not found by id: " + applicationId;
+      throw new IllegalArgumentException( message );
     }
+    IConfigurationElement configElement = extension.getConfigurationElements()[ 0 ];
+    String isVisible = configElement.getAttribute( PT_APP_VISIBLE );
+    if( isVisible != null && !Boolean.valueOf( isVisible ).booleanValue() ) {
+      throw new IllegalArgumentException( "Application is not visible:" + applicationId );
+    }
+    IConfigurationElement[] runElement = configElement.getChildren( RUN );
+    String className = runElement[ 0 ].getAttribute( "class" ); //$NON-NLS-1$
+    Class<? extends IApplication> applicationClass = loadClass( className, configElement );
+    return createApplicationEntryPointFactory( applicationClass );
+  }
+
+  private static EntryPointFactory
+    createApplicationEntryPointFactory( final Class<? extends IApplication> applicationClass )
+  {
+    return new EntryPointFactory() {
+      public EntryPoint create() {
+        return new EntryPointApplicationWrapper( applicationClass );
+      }
+    };
   }
 
   @SuppressWarnings( "unchecked" )
@@ -290,27 +302,6 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     return result;
   }
 
-  private static String findParameter( IConfigurationElement[] paramElements, String parameterName )
-  {
-    String result = null;
-    for( IConfigurationElement paramElement : paramElements ) {
-      if( parameterName.equals( paramElement.getAttribute( "name" ) ) ) {
-        result = paramElement.getAttribute( "value" );
-      }
-    }
-    return result;
-  }
-
-  private static EntryPointFactory
-    createApplicationEntryPointFactory( final Class<? extends IApplication> applicationClass )
-  {
-    return new EntryPointFactory() {
-      public EntryPoint create() {
-        return new EntryPointApplicationWrapper( applicationClass );
-      }
-    };
-  }
-
   private void registerServiceHandlers( Application application ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_SERVICE_HANDLER );
@@ -351,6 +342,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   private Map<String, String> getBrandingProperties( String brandingId ) {
     AbstractBranding branding = findBrandingById( brandingId );
     Map<String, String> result = new HashMap<String, String>();
+    result.put( BrandingUtil.ENTRY_POINT_BRANDING, brandingId );
     if( branding != null ) {
       result.put( WebClient.THEME_ID, branding.getThemeId() );
       result.put( WebClient.BODY_HTML, branding.getBody() );
@@ -366,13 +358,6 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     IExtensionPoint extensionPoint = registry.getExtensionPoint( ID_ENTRY_POINT );
     IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
     return elements;
-  }
-
-  private static IExtension[] getApplicationExtensions() {
-    IExtensionRegistry registry = Platform.getExtensionRegistry();
-    String extensionPointId = PI_RUNTIME + '.' + PT_APPLICATIONS;
-    IExtensionPoint extensionPoint = registry.getExtensionPoint( extensionPointId );
-    return extensionPoint.getExtensions();
   }
 
   private static void logProblem( String text,
