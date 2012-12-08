@@ -27,8 +27,8 @@ import java.util.Set;
 
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.internal.util.StreamUtil;
-import org.eclipse.rap.rwt.resources.ResourceLoader;
-import org.eclipse.rap.rwt.resources.ResourceManager;
+import org.eclipse.rap.rwt.service.ResourceLoader;
+import org.eclipse.rap.rwt.service.ResourceManager;
 
 
 /**

@@ -13,7 +13,9 @@ package org.eclipse.swt.internal.dnd.dragsourcekit;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.dnd.*;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
 
 
 public final class DNDLCAUtil {

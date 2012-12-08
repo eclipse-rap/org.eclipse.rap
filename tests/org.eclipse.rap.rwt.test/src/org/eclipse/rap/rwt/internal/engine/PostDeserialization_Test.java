@@ -12,7 +12,6 @@ package org.eclipse.rap.rwt.internal.engine;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.engine.PostDeserialization;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.testfixture.TestSession;

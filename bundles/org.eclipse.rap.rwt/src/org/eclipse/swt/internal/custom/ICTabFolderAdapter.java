@@ -12,7 +12,9 @@
 package org.eclipse.swt.internal.custom;
 
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 
 

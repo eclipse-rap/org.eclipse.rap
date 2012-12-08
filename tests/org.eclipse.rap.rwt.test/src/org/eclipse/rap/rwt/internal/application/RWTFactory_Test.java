@@ -12,7 +12,6 @@ package org.eclipse.rap.rwt.internal.application;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 

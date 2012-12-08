@@ -13,9 +13,13 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
+import org.eclipse.swt.internal.widgets.IMenuAdapter;
+import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.MenuHolder;
 
 
 /**

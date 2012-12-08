@@ -17,9 +17,6 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.theme.Theme;
-import org.eclipse.rap.rwt.internal.theme.ThemeManager;
-import org.eclipse.rap.rwt.internal.theme.ThemeableWidget;
 import org.eclipse.rap.rwt.internal.theme.css.StyleRule;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.testfixture.Fixture;

@@ -12,8 +12,8 @@ package org.eclipse.swt.internal.dnd;
 
 
 import org.eclipse.swt.dnd.TransferData;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Event;
 
 public class DNDEvent extends Event {
 	public TransferData dataType;

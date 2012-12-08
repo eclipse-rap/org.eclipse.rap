@@ -14,8 +14,6 @@ package org.eclipse.rap.rwt.lifecycle;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
-
 import junit.framework.TestCase;
 
 

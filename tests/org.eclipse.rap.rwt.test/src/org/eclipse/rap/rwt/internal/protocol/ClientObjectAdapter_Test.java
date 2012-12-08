@@ -10,10 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectAdapter;
-import org.eclipse.rap.rwt.testfixture.Fixture;
-
 import junit.framework.TestCase;
+
+import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class ClientObjectAdapter_Test extends TestCase {

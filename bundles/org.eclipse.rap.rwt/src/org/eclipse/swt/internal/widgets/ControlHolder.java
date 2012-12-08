@@ -12,9 +12,9 @@
 package org.eclipse.swt.internal.widgets;
 
 import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.SerializableCompatibility;
-import org.eclipse.swt.internal.widgets.SlimList;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 

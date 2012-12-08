@@ -13,7 +13,9 @@ package org.eclipse.swt.graphics;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.graphics.*;
+import org.eclipse.swt.internal.graphics.FontUtil;
+import org.eclipse.swt.internal.graphics.GCAdapter;
+import org.eclipse.swt.internal.graphics.GCOperation;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawArc;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawImage;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawLine;
@@ -24,6 +26,7 @@ import org.eclipse.swt.internal.graphics.GCOperation.DrawRoundRectangle;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawText;
 import org.eclipse.swt.internal.graphics.GCOperation.FillGradientRectangle;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
+import org.eclipse.swt.internal.graphics.IGCAdapter;
 import org.eclipse.swt.widgets.Control;
 
 

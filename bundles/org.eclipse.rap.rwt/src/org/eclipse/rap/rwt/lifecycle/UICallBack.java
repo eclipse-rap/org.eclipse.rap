@@ -11,7 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
-import org.eclipse.rap.rwt.internal.lifecycle.*;
+import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
+import org.eclipse.rap.rwt.internal.lifecycle.FakeContextUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.swt.SWT;

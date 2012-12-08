@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.rap.rwt.internal.theme.QxAppearanceWriter;
-
 import junit.framework.TestCase;
 
 

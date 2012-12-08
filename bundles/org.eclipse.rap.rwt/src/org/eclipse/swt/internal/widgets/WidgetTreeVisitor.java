@@ -13,7 +13,12 @@
 package org.eclipse.swt.internal.widgets;
 
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.ToolTip;
+import org.eclipse.swt.widgets.Widget;
 
 
 /**

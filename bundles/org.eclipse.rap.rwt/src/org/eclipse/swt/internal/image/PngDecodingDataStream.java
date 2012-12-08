@@ -11,9 +11,10 @@
 package org.eclipse.swt.internal.image;
 
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
 
 public class PngDecodingDataStream extends InputStream {
 	InputStream stream;

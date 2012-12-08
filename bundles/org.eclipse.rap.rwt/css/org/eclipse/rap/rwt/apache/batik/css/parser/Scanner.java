@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
-import org.eclipse.rap.rwt.apache.batik.util.io.*;
+import org.eclipse.rap.rwt.apache.batik.util.io.NormalizingReader;
+import org.eclipse.rap.rwt.apache.batik.util.io.StreamNormalizingReader;
+import org.eclipse.rap.rwt.apache.batik.util.io.StringNormalizingReader;
 
 /**
  * This class represents a CSS scanner - an object which decodes CSS lexical

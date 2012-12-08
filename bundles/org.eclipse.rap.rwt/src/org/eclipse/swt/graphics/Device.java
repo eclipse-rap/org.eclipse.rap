@@ -13,7 +13,10 @@ package org.eclipse.swt.graphics;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.theme.*;
+import org.eclipse.rap.rwt.internal.theme.QxFont;
+import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
+import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;

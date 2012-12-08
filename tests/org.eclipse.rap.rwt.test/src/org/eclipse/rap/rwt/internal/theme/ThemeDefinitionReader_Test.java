@@ -16,8 +16,6 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.theme.IThemeCssElement;
-import org.eclipse.rap.rwt.internal.theme.ThemeDefinitionReader;
 import org.eclipse.swt.widgets.Widget;
 
 public class ThemeDefinitionReader_Test extends TestCase {

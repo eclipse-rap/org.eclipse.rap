@@ -11,9 +11,17 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
-import org.eclipse.rap.rwt.internal.theme.*;
+import org.eclipse.rap.rwt.internal.theme.QxBoxDimensions;
+import org.eclipse.rap.rwt.internal.theme.QxColor;
+import org.eclipse.rap.rwt.internal.theme.QxDimension;
+import org.eclipse.rap.rwt.internal.theme.QxFont;
+import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
+import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 
 

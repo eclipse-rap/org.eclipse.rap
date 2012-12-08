@@ -11,7 +11,8 @@
 package org.eclipse.swt.events;
 
 
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Touch;
 /**
  * Instances of this class are sent in response to
  * a touch-based input source being touched.

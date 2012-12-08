@@ -10,9 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.eclipse.rap.rwt.internal.util.*;
+import org.eclipse.rap.rwt.internal.util.ClassUtil;
+import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.SerializableCompatibility;

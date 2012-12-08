@@ -12,7 +12,12 @@
 package org.eclipse.rap.rwt;
 
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
 
 final class Utf8ResourceBundle {
   

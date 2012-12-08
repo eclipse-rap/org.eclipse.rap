@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.css.CssElementHolder;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
-import org.eclipse.rap.rwt.resources.ResourceManager;
+import org.eclipse.rap.rwt.service.ResourceManager;
 
 
 public class Theme {

@@ -12,7 +12,9 @@
 package org.eclipse.rap.rwt.theme;
 
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 
 

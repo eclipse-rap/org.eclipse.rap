@@ -10,7 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class ProtocolTestUtil {

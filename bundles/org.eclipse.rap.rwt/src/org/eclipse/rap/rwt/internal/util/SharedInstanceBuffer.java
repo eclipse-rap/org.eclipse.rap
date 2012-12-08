@@ -11,7 +11,8 @@
 package org.eclipse.rap.rwt.internal.util;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 
 

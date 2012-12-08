@@ -16,7 +16,6 @@ import java.util.Locale;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.testfixture.Fixture;

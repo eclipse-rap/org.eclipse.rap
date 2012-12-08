@@ -11,7 +11,7 @@
 package org.eclipse.swt.internal.image;
 
 
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
 
 abstract class JPEGVariableSizeSegment extends JPEGSegment {
 

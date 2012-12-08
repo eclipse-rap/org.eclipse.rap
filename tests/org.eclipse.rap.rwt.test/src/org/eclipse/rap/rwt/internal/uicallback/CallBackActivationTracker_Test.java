@@ -12,7 +12,6 @@ package org.eclipse.rap.rwt.internal.uicallback;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.uicallback.CallBackActivationTracker;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 

@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.widgets.buttonkit;
 
 import java.io.IOException;
+
 import org.eclipse.swt.widgets.Button;
 
 abstract class ButtonDelegateLCA {

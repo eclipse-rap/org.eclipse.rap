@@ -10,12 +10,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
+import junit.framework.TestCase;
+
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
-
-import junit.framework.TestCase;
 
 
 public class EventList_Test extends TestCase {

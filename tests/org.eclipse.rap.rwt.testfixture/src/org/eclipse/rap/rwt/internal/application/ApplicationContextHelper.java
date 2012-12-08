@@ -11,7 +11,7 @@
 package org.eclipse.rap.rwt.internal.application;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
-import org.eclipse.rap.rwt.resources.ResourceManager;
+import org.eclipse.rap.rwt.service.ResourceManager;
 
 
 public class ApplicationContextHelper {

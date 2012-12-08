@@ -11,7 +11,7 @@
 package org.eclipse.swt.accessibility;
 
 
-import org.eclipse.swt.internal.*;
+import org.eclipse.swt.internal.SWTEventListener;
 
 /**
  * Classes that implement this interface provide methods

@@ -11,12 +11,11 @@
 package org.eclipse.swt.widgets;
 
 import static org.mockito.Mockito.mock;
+import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
-
-import junit.framework.TestCase;
 
 
 public class ScrollBar_Test extends TestCase {

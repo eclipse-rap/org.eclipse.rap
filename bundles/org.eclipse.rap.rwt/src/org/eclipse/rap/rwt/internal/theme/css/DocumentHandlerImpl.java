@@ -11,9 +11,16 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme.css;
 
-import org.eclipse.rap.rwt.internal.theme.*;
-import org.eclipse.rap.rwt.resources.ResourceLoader;
-import org.w3c.css.sac.*;
+import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.StyleSheetBuilder;
+import org.eclipse.rap.rwt.service.ResourceLoader;
+import org.w3c.css.sac.CSSException;
+import org.w3c.css.sac.DocumentHandler;
+import org.w3c.css.sac.InputSource;
+import org.w3c.css.sac.LexicalUnit;
+import org.w3c.css.sac.SACMediaList;
+import org.w3c.css.sac.Selector;
+import org.w3c.css.sac.SelectorList;
 
 
 public class DocumentHandlerImpl implements DocumentHandler {

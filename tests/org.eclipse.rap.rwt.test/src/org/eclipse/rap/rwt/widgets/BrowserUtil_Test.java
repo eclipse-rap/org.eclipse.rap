@@ -14,8 +14,6 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.widgets.BrowserCallback;
-import org.eclipse.rap.rwt.widgets.BrowserUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;

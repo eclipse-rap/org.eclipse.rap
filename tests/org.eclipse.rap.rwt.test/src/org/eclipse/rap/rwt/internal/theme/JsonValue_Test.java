@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import org.eclipse.rap.rwt.internal.theme.JsonValue;
-
 import junit.framework.TestCase;
 
 

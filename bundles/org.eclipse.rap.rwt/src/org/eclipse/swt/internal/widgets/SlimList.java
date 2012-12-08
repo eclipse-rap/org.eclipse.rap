@@ -11,7 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 import org.eclipse.swt.internal.SerializableCompatibility;
 

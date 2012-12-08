@@ -11,9 +11,13 @@
 package org.eclipse.swt.internal.image;
 
 
-import java.io.*;
-import org.eclipse.swt.*;
-import org.eclipse.swt.graphics.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 
 /**
  * Abstract factory class for loading/unloading images from files or streams

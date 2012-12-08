@@ -11,7 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme.css;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.eclipse.rap.rwt.internal.theme.QxType;
 import org.w3c.css.sac.Selector;

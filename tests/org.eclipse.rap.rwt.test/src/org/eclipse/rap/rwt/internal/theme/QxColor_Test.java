@@ -15,7 +15,6 @@ import java.util.Locale;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.theme.QxColor;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Color;
 

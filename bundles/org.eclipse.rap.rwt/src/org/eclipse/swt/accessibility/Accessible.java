@@ -11,8 +11,8 @@
 package org.eclipse.swt.accessibility;
 
 
-import org.eclipse.swt.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.widgets.Control;
 
 /**
  * Instances of this class provide a bridge between application

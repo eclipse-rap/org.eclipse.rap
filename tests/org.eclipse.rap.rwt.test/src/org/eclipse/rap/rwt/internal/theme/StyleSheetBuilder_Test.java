@@ -13,7 +13,6 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.theme.StyleSheetBuilder;
 import org.eclipse.rap.rwt.internal.theme.css.StyleRule;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.w3c.css.sac.CSSException;

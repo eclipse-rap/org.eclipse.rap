@@ -14,7 +14,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.theme.QxColor;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
-import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
 
 
 public class SimpleSelector_Test extends TestCase {

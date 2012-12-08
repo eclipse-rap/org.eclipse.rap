@@ -17,7 +17,6 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.theme.QxCursor;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 

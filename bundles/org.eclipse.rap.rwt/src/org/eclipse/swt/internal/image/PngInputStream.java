@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.swt.internal.image;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 @SuppressWarnings("all")
 public class PngInputStream extends InputStream {

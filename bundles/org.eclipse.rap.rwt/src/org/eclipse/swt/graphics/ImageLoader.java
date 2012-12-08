@@ -11,11 +11,15 @@
 package org.eclipse.swt.graphics;
 
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Vector;
-import org.eclipse.swt.*;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.Compatibility;
-import org.eclipse.swt.internal.image.*;
+import org.eclipse.swt.internal.image.FileFormat;
 
 /**
  * Instances of this class are used to load images from,

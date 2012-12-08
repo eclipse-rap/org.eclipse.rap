@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.lifecycle.RequestId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 

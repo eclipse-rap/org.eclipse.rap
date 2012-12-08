@@ -11,7 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 class ThemeableWidgetHolder {

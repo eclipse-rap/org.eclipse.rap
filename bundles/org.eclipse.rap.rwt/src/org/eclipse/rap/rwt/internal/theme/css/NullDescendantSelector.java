@@ -11,7 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme.css;
 
-import org.w3c.css.sac.*;
+import org.w3c.css.sac.DescendantSelector;
+import org.w3c.css.sac.Selector;
+import org.w3c.css.sac.SimpleSelector;
 
 
 public class NullDescendantSelector implements DescendantSelector, SelectorExt {

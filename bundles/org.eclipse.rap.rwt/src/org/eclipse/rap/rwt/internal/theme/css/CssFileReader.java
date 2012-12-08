@@ -20,8 +20,12 @@ import java.util.List;
 import org.eclipse.rap.rwt.apache.batik.css.parser.ParseException;
 import org.eclipse.rap.rwt.internal.theme.ThemeManagerException;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.resources.ResourceLoader;
-import org.w3c.css.sac.*;
+import org.eclipse.rap.rwt.service.ResourceLoader;
+import org.w3c.css.sac.CSSException;
+import org.w3c.css.sac.CSSParseException;
+import org.w3c.css.sac.ErrorHandler;
+import org.w3c.css.sac.InputSource;
+import org.w3c.css.sac.Parser;
 
 
 public class CssFileReader {

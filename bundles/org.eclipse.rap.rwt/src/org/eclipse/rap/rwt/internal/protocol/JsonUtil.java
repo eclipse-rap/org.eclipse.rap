@@ -13,7 +13,9 @@ package org.eclipse.rap.rwt.internal.protocol;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.internal.theme.*;
+import org.eclipse.rap.rwt.internal.theme.JsonArray;
+import org.eclipse.rap.rwt.internal.theme.JsonObject;
+import org.eclipse.rap.rwt.internal.theme.JsonValue;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

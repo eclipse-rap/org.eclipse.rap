@@ -13,6 +13,8 @@ package org.eclipse.swt.internal.widgets.toolbarkit;
 import java.io.IOException;
 import java.util.Arrays;
 
+import junit.framework.TestCase;
+
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -22,8 +24,6 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
-
-import junit.framework.TestCase;
 
 
 public class ToolBarLCA_Test extends TestCase {

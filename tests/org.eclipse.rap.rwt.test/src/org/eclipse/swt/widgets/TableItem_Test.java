@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
@@ -23,7 +24,10 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ITableItemAdapter;
 import org.eclipse.swt.layout.FillLayout;

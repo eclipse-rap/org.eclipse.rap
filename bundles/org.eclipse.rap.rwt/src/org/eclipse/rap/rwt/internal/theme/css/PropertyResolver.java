@@ -11,10 +11,26 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme.css;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
-import org.eclipse.rap.rwt.internal.theme.*;
-import org.eclipse.rap.rwt.resources.ResourceLoader;
+import org.eclipse.rap.rwt.internal.theme.QxAnimation;
+import org.eclipse.rap.rwt.internal.theme.QxBorder;
+import org.eclipse.rap.rwt.internal.theme.QxBoxDimensions;
+import org.eclipse.rap.rwt.internal.theme.QxColor;
+import org.eclipse.rap.rwt.internal.theme.QxCursor;
+import org.eclipse.rap.rwt.internal.theme.QxDimension;
+import org.eclipse.rap.rwt.internal.theme.QxFloat;
+import org.eclipse.rap.rwt.internal.theme.QxFont;
+import org.eclipse.rap.rwt.internal.theme.QxIdentifier;
+import org.eclipse.rap.rwt.internal.theme.QxImage;
+import org.eclipse.rap.rwt.internal.theme.QxShadow;
+import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.w3c.css.sac.LexicalUnit;
 
 

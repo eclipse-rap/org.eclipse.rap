@@ -107,7 +107,7 @@ public abstract class AbstractBranding {
    * <p>The default behavior is to return <code>null</code>.</p>
    *
    * @return the favorites icon or <code>null</code>
-   * @see org.eclipse.rap.rwt.resources.ResourceManager
+   * @see org.eclipse.rap.rwt.service.ResourceManager
    * @see #registerResources()
    */
   public String getFavIcon() {

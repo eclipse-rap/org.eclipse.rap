@@ -15,6 +15,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 import java.util.Arrays;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;

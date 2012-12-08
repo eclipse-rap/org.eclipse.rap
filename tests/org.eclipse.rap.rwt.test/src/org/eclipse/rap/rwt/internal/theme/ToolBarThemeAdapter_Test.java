@@ -12,12 +12,13 @@ package org.eclipse.rap.rwt.internal.theme;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarThemeAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolBar;
 
 
 public class ToolBarThemeAdapter_Test extends TestCase {

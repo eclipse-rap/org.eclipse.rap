@@ -16,8 +16,6 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
-
 
 public class ResourceDirectory_Test extends TestCase {
 

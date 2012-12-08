@@ -11,7 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A type-safe enumeration that represents all standard life cycle phases. The

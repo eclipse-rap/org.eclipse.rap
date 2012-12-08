@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
+
 import org.eclipse.swt.widgets.ToolItem;
 
 

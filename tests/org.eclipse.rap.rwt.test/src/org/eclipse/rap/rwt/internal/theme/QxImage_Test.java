@@ -18,7 +18,6 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.theme.QxImage;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;

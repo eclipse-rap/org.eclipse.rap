@@ -16,16 +16,11 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.textsize.MeasurementItem;
-import org.eclipse.rap.rwt.internal.textsize.MeasurementOperator;
-import org.eclipse.rap.rwt.internal.textsize.Probe;
-import org.eclipse.rap.rwt.internal.textsize.ProbeResultStore;
-import org.eclipse.rap.rwt.internal.textsize.TextSizeEstimation;
-import org.eclipse.rap.rwt.internal.textsize.TextSizeStorageUtil;
-import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 
 

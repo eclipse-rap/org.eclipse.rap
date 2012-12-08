@@ -16,7 +16,9 @@ import javax.servlet.http.Cookie;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.service.*;
+import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.ISettingStore;
+import org.eclipse.rap.rwt.service.ISettingStoreFactory;
 
 
 public class SettingStoreManager {

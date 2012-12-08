@@ -16,11 +16,6 @@ import java.util.Enumeration;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.service.FileSettingStore;
-import org.eclipse.rap.rwt.service.ISettingStore;
-import org.eclipse.rap.rwt.service.ISettingStoreFactory;
-import org.eclipse.rap.rwt.service.RWTFileSettingStoreFactory;
-import org.eclipse.rap.rwt.service.SettingStoreEvent;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 

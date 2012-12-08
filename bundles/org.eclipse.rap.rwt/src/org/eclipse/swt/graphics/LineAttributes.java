@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
 
 /**
  * <code>LineAttributes</code> defines a set of line attributes that

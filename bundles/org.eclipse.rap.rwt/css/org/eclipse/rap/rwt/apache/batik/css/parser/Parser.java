@@ -17,11 +17,27 @@
  */
 package org.eclipse.rap.rwt.apache.batik.css.parser;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.StringTokenizer;
 
-import org.w3c.css.sac.*;
+import org.w3c.css.sac.CSSException;
+import org.w3c.css.sac.CSSParseException;
+import org.w3c.css.sac.Condition;
+import org.w3c.css.sac.ConditionFactory;
+import org.w3c.css.sac.DocumentHandler;
+import org.w3c.css.sac.ErrorHandler;
+import org.w3c.css.sac.InputSource;
+import org.w3c.css.sac.LexicalUnit;
+import org.w3c.css.sac.SACMediaList;
+import org.w3c.css.sac.Selector;
+import org.w3c.css.sac.SelectorFactory;
+import org.w3c.css.sac.SelectorList;
+import org.w3c.css.sac.SimpleSelector;
 
 /**
  * This class implements the {@link _org.w3c.css.sac.Parser} interface.

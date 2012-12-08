@@ -9,9 +9,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import org.eclipse.rap.rwt.internal.theme.QxColor;
-import org.eclipse.rap.rwt.internal.theme.QxShadow;
-
 import junit.framework.TestCase;
 
 

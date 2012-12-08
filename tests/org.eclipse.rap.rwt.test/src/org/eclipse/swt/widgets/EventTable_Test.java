@@ -13,8 +13,6 @@ package org.eclipse.swt.widgets;
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
-import org.eclipse.swt.widgets.Listener;
-
 
 public class EventTable_Test extends TestCase {
 

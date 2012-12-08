@@ -11,7 +11,8 @@
 package org.eclipse.swt.internal.image;
 
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 @SuppressWarnings("all")
 final class LEDataInputStream extends InputStream {

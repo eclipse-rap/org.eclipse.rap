@@ -11,8 +11,9 @@
 package org.eclipse.swt.internal.image;
 
 
-import org.eclipse.swt.*;
-import java.io.*;
+import java.io.IOException;
+
+import org.eclipse.swt.SWT;
 
 class PngChunk extends Object {
 	byte[] reference;

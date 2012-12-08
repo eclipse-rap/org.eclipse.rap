@@ -12,7 +12,7 @@ package org.eclipse.swt.accessibility;
 
 
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.*;
+import org.eclipse.swt.internal.SWTEventObject;
 
 /**
  * Instances of this class are sent as a result of

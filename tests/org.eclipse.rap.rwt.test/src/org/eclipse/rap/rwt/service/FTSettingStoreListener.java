@@ -12,8 +12,6 @@
 
 package org.eclipse.rap.rwt.service;
 
-import org.eclipse.rap.rwt.service.SettingStoreEvent;
-import org.eclipse.rap.rwt.service.SettingStoreListener;
 
 final class FTSettingStoreListener 
   implements SettingStoreListener

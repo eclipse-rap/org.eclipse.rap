@@ -12,7 +12,9 @@
 package org.eclipse.rap.rwt.internal.theme;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.swt.graphics.Color;

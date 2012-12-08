@@ -24,10 +24,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.textsize.MeasurementItem;
-import org.eclipse.rap.rwt.internal.textsize.MeasurementOperator;
-import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
-import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;

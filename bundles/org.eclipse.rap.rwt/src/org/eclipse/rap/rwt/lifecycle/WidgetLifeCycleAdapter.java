@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.lifecycle;
 
 import java.io.IOException;
+
 import org.eclipse.swt.widgets.Widget;
 
 

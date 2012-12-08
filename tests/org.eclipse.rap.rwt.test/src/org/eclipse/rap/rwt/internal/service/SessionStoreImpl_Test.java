@@ -12,7 +12,9 @@
 package org.eclipse.rap.rwt.internal.service;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
@@ -21,12 +23,13 @@ import javax.servlet.http.HttpSessionBindingListener;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.lifecycle.ISessionShutdownAdapter;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.service.SessionStoreEvent;
 import org.eclipse.rap.rwt.service.SessionStoreListener;
-import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestLogger;
+import org.eclipse.rap.rwt.testfixture.TestServletContext;
+import org.eclipse.rap.rwt.testfixture.TestSession;
 
 
 public class SessionStoreImpl_Test extends TestCase {

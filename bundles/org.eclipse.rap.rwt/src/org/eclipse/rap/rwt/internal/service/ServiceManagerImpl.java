@@ -15,11 +15,11 @@ package org.eclipse.rap.rwt.internal.service;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import org.eclipse.rap.rwt.service.ServiceHandler;
-import org.eclipse.rap.rwt.service.ServiceManager;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.service.ServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceManager;
 
 
 public class ServiceManagerImpl implements ServiceManager {

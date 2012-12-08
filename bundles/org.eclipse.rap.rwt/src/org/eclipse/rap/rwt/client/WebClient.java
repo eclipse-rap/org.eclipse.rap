@@ -29,6 +29,7 @@ import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoader;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoaderImpl;
+import org.eclipse.rap.rwt.service.ResourceLoader;
 
 
 /**
@@ -103,7 +104,7 @@ public class WebClient implements Client {
    * must be registered to be available.
    * </p>
    *
-   * @see Application#addResource(String,org.eclipse.rap.rwt.resources.ResourceLoader)
+   * @see Application#addResource(String, ResourceLoader)
    * @see Application#addEntryPoint(String, Class, Map)
    * @see Application#addEntryPoint(String, EntryPointFactory, Map)
    */

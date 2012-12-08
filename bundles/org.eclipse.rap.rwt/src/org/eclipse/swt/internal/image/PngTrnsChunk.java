@@ -11,8 +11,8 @@
 package org.eclipse.swt.internal.image;
 
 
-import org.eclipse.swt.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.RGB;
 
 public class PngTrnsChunk extends PngChunk {
 	static final int TRANSPARENCY_TYPE_PIXEL = 0;

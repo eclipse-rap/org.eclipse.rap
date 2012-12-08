@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.swt.layout;
 
-import org.eclipse.swt.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 /**

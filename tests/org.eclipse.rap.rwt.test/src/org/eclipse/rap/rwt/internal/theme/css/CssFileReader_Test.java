@@ -11,14 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme.css;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
-import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
-import org.eclipse.rap.rwt.internal.theme.css.StyleRule;
-import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.w3c.css.sac.CSSException;
 
 

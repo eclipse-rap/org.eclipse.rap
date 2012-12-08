@@ -12,7 +12,6 @@ package org.eclipse.rap.rwt.internal.util;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 
 

@@ -14,11 +14,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
 import junit.framework.TestCase;
+
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
 
 
 public class ClientMessage_Test extends TestCase {

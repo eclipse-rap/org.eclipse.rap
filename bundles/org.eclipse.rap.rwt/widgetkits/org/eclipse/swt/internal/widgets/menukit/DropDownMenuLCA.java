@@ -14,7 +14,7 @@ package org.eclipse.swt.internal.widgets.menukit;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Menu;
 
 
 final class DropDownMenuLCA extends MenuDelegateLCA {

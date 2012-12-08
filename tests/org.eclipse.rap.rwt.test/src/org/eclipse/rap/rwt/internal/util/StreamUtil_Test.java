@@ -19,8 +19,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.rap.rwt.internal.util.StreamUtil;
-
 import junit.framework.TestCase;
 
 

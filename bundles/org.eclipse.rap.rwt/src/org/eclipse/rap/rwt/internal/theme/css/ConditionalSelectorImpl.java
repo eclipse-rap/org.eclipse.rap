@@ -11,7 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme.css;
 
-import org.w3c.css.sac.*;
+import org.w3c.css.sac.Condition;
+import org.w3c.css.sac.ConditionalSelector;
+import org.w3c.css.sac.SimpleSelector;
 
 
 public class ConditionalSelectorImpl implements ConditionalSelector, SelectorExt {

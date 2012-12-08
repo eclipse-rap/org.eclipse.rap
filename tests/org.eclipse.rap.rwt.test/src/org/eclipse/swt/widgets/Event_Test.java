@@ -10,9 +10,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.swt.graphics.Rectangle;
-
 import junit.framework.TestCase;
+
+import org.eclipse.swt.graphics.Rectangle;
 
 
 public class Event_Test extends TestCase {

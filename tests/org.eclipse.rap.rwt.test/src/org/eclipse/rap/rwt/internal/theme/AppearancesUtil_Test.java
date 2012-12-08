@@ -12,8 +12,6 @@ package org.eclipse.rap.rwt.internal.theme;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.eclipse.rap.rwt.internal.theme.AppearancesUtil;
-
 import junit.framework.TestCase;
 
 

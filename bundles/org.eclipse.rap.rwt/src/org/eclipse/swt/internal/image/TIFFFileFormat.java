@@ -11,9 +11,11 @@
 package org.eclipse.swt.internal.image;
 
 
-import org.eclipse.swt.*;
-import org.eclipse.swt.graphics.*;
-import java.io.*;
+import java.io.IOException;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 
 /**
  * Baseline TIFF decoder revision 6.0

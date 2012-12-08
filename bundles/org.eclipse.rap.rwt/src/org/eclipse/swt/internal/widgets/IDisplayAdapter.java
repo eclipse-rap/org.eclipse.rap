@@ -13,7 +13,8 @@ package org.eclipse.swt.internal.widgets;
 
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
 
 
 public interface IDisplayAdapter {

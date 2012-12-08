@@ -12,7 +12,9 @@ package org.eclipse.rap.rwt.internal.protocol;
 
 import junit.framework.TestCase;
 
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class ProtocolTestUtil_Test extends TestCase {

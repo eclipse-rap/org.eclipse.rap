@@ -13,8 +13,6 @@ package org.eclipse.rap.rwt.service;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
-import org.eclipse.rap.rwt.service.ISessionStore;
-import org.eclipse.rap.rwt.service.SessionStoreEvent;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 
 

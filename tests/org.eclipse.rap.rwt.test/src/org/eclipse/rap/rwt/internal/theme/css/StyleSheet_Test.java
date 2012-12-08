@@ -15,10 +15,9 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.theme.*;
-import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
-import org.eclipse.rap.rwt.internal.theme.css.StyleRule;
-import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
+import org.eclipse.rap.rwt.internal.theme.QxBorder;
+import org.eclipse.rap.rwt.internal.theme.QxColor;
+import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 
 
 public class StyleSheet_Test extends TestCase {

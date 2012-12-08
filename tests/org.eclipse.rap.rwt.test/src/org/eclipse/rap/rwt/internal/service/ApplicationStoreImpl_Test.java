@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import org.eclipse.rap.rwt.internal.service.ApplicationStoreImpl;
-
 import junit.framework.TestCase;
 
 

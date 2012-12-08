@@ -18,8 +18,6 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.RequestParameterBuffer;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 

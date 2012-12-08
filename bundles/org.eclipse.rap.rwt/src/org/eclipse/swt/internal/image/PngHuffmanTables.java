@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.internal.image;
 
-import java.io.*;
+import java.io.IOException;
 
 public class PngHuffmanTables {
 	PngHuffmanTable literalTable;

@@ -12,10 +12,12 @@ package org.eclipse.rap.rwt.internal.protocol;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.protocol.StylesUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 public class StylesUtil_Test extends TestCase {
   

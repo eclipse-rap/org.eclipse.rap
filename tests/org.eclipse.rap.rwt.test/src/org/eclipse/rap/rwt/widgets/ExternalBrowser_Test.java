@@ -24,7 +24,6 @@ import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
-import org.eclipse.rap.rwt.widgets.ExternalBrowser;
 import org.eclipse.swt.widgets.Display;
 
 

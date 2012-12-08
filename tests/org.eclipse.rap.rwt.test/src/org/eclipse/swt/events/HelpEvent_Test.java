@@ -11,12 +11,11 @@
 package org.eclipse.swt.events;
 
 import static org.mockito.Mockito.mock;
+import junit.framework.TestCase;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
-
-import junit.framework.TestCase;
 
 
 public class HelpEvent_Test extends TestCase {

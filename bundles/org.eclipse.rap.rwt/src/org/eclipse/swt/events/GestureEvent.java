@@ -11,7 +11,7 @@
 package org.eclipse.swt.events;
 
 
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Event;
 
 /**
  * Instances of this class are sent in response to

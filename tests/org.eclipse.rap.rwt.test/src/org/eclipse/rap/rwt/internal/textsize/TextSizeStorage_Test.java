@@ -14,7 +14,6 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;

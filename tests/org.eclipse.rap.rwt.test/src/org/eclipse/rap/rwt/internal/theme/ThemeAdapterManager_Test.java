@@ -12,12 +12,11 @@ package org.eclipse.rap.rwt.internal.theme;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rap.rwt.internal.theme.ThemeAdapterManager;
-import org.eclipse.rap.rwt.internal.theme.ThemeManagerException;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class ThemeAdapterManager_Test extends TestCase {

@@ -11,7 +11,9 @@
 package org.eclipse.swt.dnd;
 
  
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
+import org.eclipse.swt.SWTException;
 
 /**
  * Class DND contains all the constants used in defining a 

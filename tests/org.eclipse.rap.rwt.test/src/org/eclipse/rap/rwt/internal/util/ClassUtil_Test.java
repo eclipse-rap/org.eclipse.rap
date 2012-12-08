@@ -13,9 +13,6 @@ package org.eclipse.rap.rwt.internal.util;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.util.ClassInstantiationException;
-import org.eclipse.rap.rwt.internal.util.ClassUtil;
-
 import junit.framework.TestCase;
 
 

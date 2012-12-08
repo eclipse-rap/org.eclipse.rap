@@ -10,10 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import junit.framework.TestCase;
+
 import org.eclipse.rap.rwt.internal.service.StartupPageTemplate.TemplateParser;
 import org.eclipse.rap.rwt.internal.service.StartupPageTemplate.Token;
-
-import junit.framework.TestCase;
 
 
 public class TemplateParser_Test extends TestCase {

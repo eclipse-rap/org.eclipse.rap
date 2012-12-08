@@ -11,19 +11,32 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme.css;
 
-import java.io.*;
+import static org.eclipse.rap.rwt.internal.theme.ThemeTestUtil.RESOURCE_LOADER;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.apache.batik.css.parser.Parser;
-import org.eclipse.rap.rwt.internal.theme.*;
+import org.eclipse.rap.rwt.internal.theme.QxAnimation;
 import org.eclipse.rap.rwt.internal.theme.QxAnimation.Animation;
-import org.eclipse.rap.rwt.internal.theme.css.PropertyResolver;
+import org.eclipse.rap.rwt.internal.theme.QxBorder;
+import org.eclipse.rap.rwt.internal.theme.QxBoxDimensions;
+import org.eclipse.rap.rwt.internal.theme.QxColor;
+import org.eclipse.rap.rwt.internal.theme.QxCursor;
+import org.eclipse.rap.rwt.internal.theme.QxDimension;
+import org.eclipse.rap.rwt.internal.theme.QxFloat;
+import org.eclipse.rap.rwt.internal.theme.QxFont;
+import org.eclipse.rap.rwt.internal.theme.QxImage;
+import org.eclipse.rap.rwt.internal.theme.QxShadow;
+import org.eclipse.rap.rwt.internal.theme.QxType;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.w3c.css.sac.*;
-
-import static org.eclipse.rap.rwt.internal.theme.ThemeTestUtil.*;
+import org.w3c.css.sac.CSSException;
+import org.w3c.css.sac.InputSource;
+import org.w3c.css.sac.LexicalUnit;
 
 
 public class PropertyResolver_Test extends TestCase {

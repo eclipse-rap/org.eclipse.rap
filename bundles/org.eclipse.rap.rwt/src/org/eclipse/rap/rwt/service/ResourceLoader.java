@@ -9,7 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rap.rwt.resources;
+package org.eclipse.rap.rwt.service;
 
 import java.io.IOException;
 import java.io.InputStream;

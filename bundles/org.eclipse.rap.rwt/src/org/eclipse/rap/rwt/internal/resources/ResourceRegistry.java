@@ -18,8 +18,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.eclipse.rap.rwt.internal.util.StreamUtil;
-import org.eclipse.rap.rwt.resources.ResourceManager;
-import org.eclipse.rap.rwt.resources.ResourceLoader;
+import org.eclipse.rap.rwt.service.ResourceLoader;
+import org.eclipse.rap.rwt.service.ResourceManager;
 
 
 public class ResourceRegistry {

@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.internal.theme.css.IStylePropertyMap;
 import org.eclipse.rap.rwt.internal.theme.css.SelectorExt;
 import org.eclipse.rap.rwt.internal.theme.css.StyleRule;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
-import org.eclipse.rap.rwt.resources.ResourceLoader;
+import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SelectorList;

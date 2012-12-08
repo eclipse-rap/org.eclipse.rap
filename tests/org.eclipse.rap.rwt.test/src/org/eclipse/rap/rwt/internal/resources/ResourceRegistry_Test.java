@@ -21,8 +21,8 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry.ResourceRegistration;
-import org.eclipse.rap.rwt.resources.ResourceLoader;
-import org.eclipse.rap.rwt.resources.ResourceManager;
+import org.eclipse.rap.rwt.service.ResourceLoader;
+import org.eclipse.rap.rwt.service.ResourceManager;
 
 
 public class ResourceRegistry_Test extends TestCase {

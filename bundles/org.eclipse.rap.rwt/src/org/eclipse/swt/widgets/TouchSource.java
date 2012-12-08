@@ -11,7 +11,7 @@
 package org.eclipse.swt.widgets;
 
 
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Rectangle;
 
 /**
  * Instances of this class represent sources of touch input that generate <code>Touch</code> objects.

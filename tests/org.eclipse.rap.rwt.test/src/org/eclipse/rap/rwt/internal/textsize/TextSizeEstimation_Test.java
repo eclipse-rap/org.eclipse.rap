@@ -14,9 +14,6 @@ package org.eclipse.rap.rwt.internal.textsize;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.textsize.Probe;
-import org.eclipse.rap.rwt.internal.textsize.ProbeResultStore;
-import org.eclipse.rap.rwt.internal.textsize.TextSizeEstimation;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;

@@ -19,8 +19,10 @@ import java.util.zip.CRC32;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.resources.ResourceLoader;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.rap.rwt.service.ResourceLoader;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Point;
 
 
 public class QxImage implements QxType, ThemeResource {

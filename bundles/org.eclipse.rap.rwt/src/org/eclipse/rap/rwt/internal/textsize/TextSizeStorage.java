@@ -14,7 +14,12 @@ package org.eclipse.rap.rwt.internal.textsize;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;

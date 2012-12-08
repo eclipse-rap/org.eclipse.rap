@@ -17,10 +17,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.theme.IThemeCssElement;
-import org.eclipse.rap.rwt.internal.theme.Theme;
-import org.eclipse.rap.rwt.internal.theme.ThemeCssElement;
-import org.eclipse.rap.rwt.internal.theme.ThemeStoreWriter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 

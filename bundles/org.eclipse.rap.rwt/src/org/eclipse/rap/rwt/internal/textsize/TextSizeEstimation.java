@@ -13,7 +13,9 @@ package org.eclipse.rap.rwt.internal.textsize;
 
 import org.eclipse.rap.rwt.internal.util.EncodingUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.FontUtil;
 
 public final class TextSizeEstimation {
