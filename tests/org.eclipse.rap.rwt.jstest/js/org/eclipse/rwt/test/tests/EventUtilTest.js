@@ -95,6 +95,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
       TestUtil.click( widget );
 
       assertEquals( 0, TestUtil.getRequestsSend() );
+    },
+
+    testMouseDownOnDisabledChildControlSendsNotify : function() {
+      widget.addEventListener( "mousedown", org.eclipse.swt.EventUtil.mouseDown );
+      var child = TestUtil.createWidgetByProtocol( "w12", "w11" );
+      child.setEnabled( false );
+      TestUtil.flush();
+
+      TestUtil.click( child );
+
+      assertNotNull( TestUtil.getLastMessage().findNotifyOperation( "w11", "MouseDown" ) );
+    },
+
+    testMouseDownOnDisabledGrandChildControlSendsNoNotify : function() {
+      widget.addEventListener( "mousedown", org.eclipse.swt.EventUtil.mouseDown );
+      var child = TestUtil.createWidgetByProtocol( "w12", "w11" );
+      var grandchild = TestUtil.createWidgetByProtocol( "w13", "w12" );
+      grandchild.setEnabled( false );
+      TestUtil.flush();
+
+      TestUtil.click( grandchild );
+
+      assertEquals( 0, TestUtil.getRequestsSend() );
     }
 
   }

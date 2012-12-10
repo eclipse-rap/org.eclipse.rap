@@ -120,6 +120,14 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       return parent;
     },
 
+    findEnabledControl : function( qxWidget ) {
+      var parent = qxWidget;
+      while( parent != null && !( this.isControl( parent ) && parent.getEnabled() ) ) {
+        parent = parent.getParent ? parent.getParent() : null;
+      }
+      return parent;
+    },
+
     /**
      * Adds the given widget to the children of the widget denoted by parentId
      */
