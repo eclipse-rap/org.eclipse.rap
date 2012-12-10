@@ -48,7 +48,7 @@ rwt.remote.Request.prototype = {
       var urlpar = null;
       var post = this._method === "POST";
       if( !post && this._data ) {
-        urlpar = "&" + this._data;
+        urlpar = this._data;
       }
       var url = this._url;
       if( urlpar ) {

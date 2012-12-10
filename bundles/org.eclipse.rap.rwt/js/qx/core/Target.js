@@ -267,8 +267,7 @@ qx.Class.define("qx.core.Target",
     {
       var listeners = this.__listeners;
 
-      if (listeners)
-      {
+      if( listeners && this._allowDispatch( evt ) ) {
         // Setup current target
         evt.setCurrentTarget(this);
 
@@ -298,13 +297,21 @@ qx.Class.define("qx.core.Target",
       {
         var parent = this.getParent();
 
-        if (parent && !parent.getDisposed() && parent.getEnabled()) {
+        if (parent && !parent.getDisposed() ) {
           parent._dispatchEvent(evt);
         }
       }
-    }
-  },
+    },
 
+    _allowDispatch : function( event ) {
+      var result = true;
+      if( this.getEnabled && event instanceof qx.event.type.DomEvent ) {
+        result = this.getEnabled();
+      }
+      return result;
+    }
+
+  },
 
 
   /*

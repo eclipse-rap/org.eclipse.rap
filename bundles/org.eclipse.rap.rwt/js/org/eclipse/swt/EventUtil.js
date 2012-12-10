@@ -230,7 +230,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         // parameter. Otherwise the mouse event is ignored.
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var target = evt.getOriginalTarget();
-        var control = widgetManager.findControl( target );
+        var control = widgetManager.findEnabledControl( target );
         result = widget === control;
       }
       return result;

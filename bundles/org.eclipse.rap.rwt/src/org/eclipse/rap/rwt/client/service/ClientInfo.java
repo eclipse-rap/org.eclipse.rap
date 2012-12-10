@@ -25,4 +25,11 @@ public interface ClientInfo extends ClientService {
    */
   public int getTimezoneOffset();
 
+  /**
+   * Returns the locale string given by the client
+   *
+   * @return the locale
+   */
+  public String getLocale();
+
 }

@@ -391,14 +391,16 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       if( vType !== "contextmenu" ) {
         qx.event.type.MouseEvent.storeEventState( vEventObject );
       }
-      if( vDispatchTarget.getEnabled() && !eventConsumed ) {
+      if( !eventConsumed ) {
         vDispatchTarget.dispatchEvent( vEventObject );
-        this._onmouseevent_special_post( vType,
-                                         vTarget,
-                                         vOriginalTarget,
-                                         vDispatchTarget,
-                                         vEventObject,
-                                         vDomEvent );
+        if( vDispatchTarget.getEnabled() ) {
+          this._onmouseevent_special_post( vType,
+                                           vTarget,
+                                           vOriginalTarget,
+                                           vDispatchTarget,
+                                           vEventObject,
+                                           vDomEvent );
+        }
       } else if( vType == "mouseover" ) {
         var toolTipManager = qx.ui.popup.ToolTipManager.getInstance();
         toolTipManager.handleMouseEvent( vEventObject );

@@ -927,13 +927,29 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   createShellByProtocol : function( id ) {
     org.eclipse.swt.EventUtil.setSuspended( true );
     rwt.protocol.MessageProcessor.processOperation( {
-      "target" : id,
+      "target" : id ? id : "w2",
       "action" : "create",
       "type" : "rwt.widgets.Shell",
       "properties" : {
         "style" : [ "BORDER" ],
         "visibility" : true,
         "bounds" : [ 10, 10, 100, 100 ]
+      }
+    } );
+    org.eclipse.swt.EventUtil.setSuspended( false );
+    return rwt.protocol.ObjectRegistry.getObject( id );
+  },
+
+  createWidgetByProtocol : function( id, parentId, type ) {
+    org.eclipse.swt.EventUtil.setSuspended( true );
+    rwt.protocol.MessageProcessor.processOperation( {
+      "target" : id,
+      "action" : "create",
+      "type" : type ? type : "rwt.widgets.Composite",
+      "properties" : {
+        "style" : [ "BORDER" ],
+        "parent" : parentId ? parentId : "w2",
+        "bounds" : [ 10, 10, 10, 10 ]
       }
     } );
     org.eclipse.swt.EventUtil.setSuspended( false );
