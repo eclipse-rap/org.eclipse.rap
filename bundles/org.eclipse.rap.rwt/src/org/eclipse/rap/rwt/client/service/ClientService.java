@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.client.service;
  * The generic interface for RWT client services.
  *
  * @since 2.0
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface ClientService {
 }

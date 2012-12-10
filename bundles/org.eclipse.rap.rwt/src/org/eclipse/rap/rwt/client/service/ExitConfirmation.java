@@ -19,6 +19,7 @@ package org.eclipse.rap.rwt.client.service;
  * if a message is set.
  *
  * @since 2.0
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface ExitConfirmation extends ClientService {
 
