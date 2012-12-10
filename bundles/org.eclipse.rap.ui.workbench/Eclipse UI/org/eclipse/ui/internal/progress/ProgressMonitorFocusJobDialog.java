@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * IBM - Initial API and implementation
+ *    IBM - Initial API and implementation
+ *    EclipseSource - adaptation for RAP
  *******************************************************************************/
 package org.eclipse.ui.internal.progress;
 
@@ -21,7 +22,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.ui.internal.progress.JobCanceler;
 import org.eclipse.rap.ui.internal.progress.ProgressUtil;
 import org.eclipse.swt.SWT;
@@ -425,7 +426,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
           // RAP [fappel]: Ensure that job changed listener is removed in case
 		  //               of session timeout before the job ends. Note that
 		  //               this is still under investigation
-          final ISessionStore session = RWT.getSessionStore();
+          final UISession uiSession = RWT.getUISession();
           final JobChangeAdapter doneListener[] = new JobChangeAdapter[ 1 ];
           final boolean[] isSessionAlive = { false };
           final HttpSessionBindingListener watchDog
@@ -447,11 +448,11 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
             public void done( final IJobChangeEvent event ) {
               job.removeJobChangeListener( this );
               isSessionAlive[ 0 ] = true;
-              session.removeAttribute( watchDogKey );
+              uiSession.removeAttribute( watchDogKey );
             }
           };
-          if( session.getAttribute( watchDogKey ) == null ) {
-        	  session.setAttribute( watchDogKey, watchDog );
+          if( uiSession.getAttribute( watchDogKey ) == null ) {
+        	  uiSession.setAttribute( watchDogKey, watchDog );
           }
           job.addJobChangeListener( doneListener[ 0 ] );
         }

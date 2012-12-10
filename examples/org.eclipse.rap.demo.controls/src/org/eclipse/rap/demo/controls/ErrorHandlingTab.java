@@ -61,7 +61,7 @@ public class ErrorHandlingTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         lblFeedback.setText( "The session will be invalidated shortly." );
         lblFeedback.getParent().layout();
-        final HttpSession session = RWT.getSessionStore().getHttpSession();
+        final HttpSession session = RWT.getUISession().getHttpSession();
         Thread thread = new Thread( new Runnable() {
           public void run() {
             try {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,8 +24,8 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
+import org.eclipse.rap.rwt.service.UISession;
 
 
 public class RWTClusterSupport implements Filter {
@@ -57,18 +57,18 @@ public class RWTClusterSupport implements Filter {
   }
 
   private static void beforeService( HttpSession httpSession ) {
-    SessionStoreImpl sessionStore = SessionStoreImpl.getInstanceFromSession( httpSession );
-    if( sessionStore != null ) {
-      sessionStore.attachHttpSession( httpSession );
-      attachApplicationContext( sessionStore );
-      PostDeserialization.runProcessors( sessionStore );
+    UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
+    if( uiSession != null ) {
+      uiSession.attachHttpSession( httpSession );
+      attachApplicationContext( uiSession );
+      PostDeserialization.runProcessors( uiSession );
     }
   }
 
-  private static void attachApplicationContext( ISessionStore sessionStore ) {
-    ServletContext servletContext = sessionStore.getHttpSession().getServletContext();
+  private static void attachApplicationContext( UISession uiSession ) {
+    ServletContext servletContext = uiSession.getHttpSession().getServletContext();
     ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    ApplicationContextUtil.set( sessionStore, applicationContext );
+    ApplicationContextUtil.set( uiSession, applicationContext );
   }
 
   private static void afterService( ServletRequest request ) {
@@ -83,7 +83,7 @@ public class RWTClusterSupport implements Filter {
   }
 
   private static void markSessionChanged( HttpSession httpSession ) {
-    SessionStoreImpl sessionStore = SessionStoreImpl.getInstanceFromSession( httpSession );
-    SessionStoreImpl.attachInstanceToSession( httpSession, sessionStore );
+    UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
+    UISessionImpl.attachInstanceToSession( httpSession, uiSession );
   }
 }

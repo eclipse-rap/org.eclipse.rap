@@ -194,7 +194,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
 
   private ApplicationContext getApplicationContext() {
     IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
-    return ApplicationContextUtil.get( displayAdapter.getSessionStore() );
+    return ApplicationContextUtil.get( displayAdapter.getUISession() );
   }
 
   /**

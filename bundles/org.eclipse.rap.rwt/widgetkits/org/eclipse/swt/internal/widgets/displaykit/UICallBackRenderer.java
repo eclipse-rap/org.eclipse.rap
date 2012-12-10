@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.widgets.displaykit;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 
 
 public class UICallBackRenderer {
@@ -23,11 +23,11 @@ public class UICallBackRenderer {
   private static final String ATTR_PRESERVED_ACTIVATION
     = UICallBackRenderer.class.getName() + ".preservedActivation";
 
-  private final ISessionStore sessionStore;
+  private final UISession uiSession;
   private final UICallBackManager callbackManager;
 
   UICallBackRenderer() {
-    sessionStore = ContextProvider.getSessionStore();
+    uiSession = ContextProvider.getUISession();
     callbackManager = UICallBackManager.getInstance();
   }
 
@@ -55,11 +55,11 @@ public class UICallBackRenderer {
   }
 
   private void preserveActivation( boolean activation ) {
-    sessionStore.setAttribute( ATTR_PRESERVED_ACTIVATION, Boolean.valueOf( activation ) );
+    uiSession.setAttribute( ATTR_PRESERVED_ACTIVATION, Boolean.valueOf( activation ) );
   }
 
   private boolean getPreservedActivation() {
-    Boolean preserved = ( Boolean )sessionStore.getAttribute( ATTR_PRESERVED_ACTIVATION );
+    Boolean preserved = ( Boolean )uiSession.getAttribute( ATTR_PRESERVED_ACTIVATION );
     return preserved != null ? preserved.booleanValue() : false;
   }
 

@@ -21,7 +21,7 @@ import java.io.ObjectOutputStream;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.SWTException;
@@ -442,8 +442,8 @@ public final class Image extends Resource {
   private ApplicationContext getApplicationContext() {
     Display display = ( Display )device;
     IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
-    ISessionStore sessionStore = adapter.getSessionStore();
-    return ApplicationContextUtil.get( sessionStore );
+    UISession uiSession = adapter.getUISession();
+    return ApplicationContextUtil.get( uiSession );
   }
 
   private static InternalImage findInternalImage( ImageData imageData ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2009 IBM Corporation and others.
+ * Copyright (c) 2005, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - adaptation for RAP
  *******************************************************************************/
 
 package org.eclipse.ui.internal;
@@ -26,8 +27,8 @@ import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.util.StatusHandler;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.service.SessionStoreEvent;
-import org.eclipse.rap.rwt.service.SessionStoreListener;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.ui.statushandlers.StatusAdapter;
 import org.eclipse.ui.statushandlers.StatusManager;
 
@@ -116,8 +117,8 @@ final class JFaceUtil {
 		};
     rootNode.addNodeChangeListener(listener);
 // RAP [rh] remove listener from application-scoped root preference node (see bug 285980)    
-    RWT.getSessionStore().addSessionStoreListener( new SessionStoreListener() {
-      public void beforeDestroy( final SessionStoreEvent event ) {
+    RWT.getUISession().addUISessionListener( new UISessionListener() {
+      public void beforeDestroy( final UISessionEvent event ) {
         rootNode.removeNodeChangeListener( listener );
       }
     } );

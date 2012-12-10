@@ -41,7 +41,7 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.service.IApplicationStore;
 import org.eclipse.rap.rwt.service.IServiceStore;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.ISettingStore;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.service.ServiceHandler;
@@ -58,12 +58,12 @@ import org.eclipse.swt.widgets.Widget;
  * This class provides access to aspects of RWT which are not
  * part of the SWT API as RAP needs some additions regarding
  * the server and client communication. It is responsible for
- * providing access to the {@link ISessionStore} and the
+ * providing access to the {@link UISession} and the
  * {@link HttpServletRequest}.
  *
  * @since 2.0
  * @see ILifeCycle
- * @see ISessionStore
+ * @see UISession
  * @see IServiceStore
  * @see IApplicationStore
  * @see BrowserHistory
@@ -461,13 +461,21 @@ public final class RWT {
   }
 
   /**
-   * Returns the <code>ISessionStore</code> of the <code>HttpSession</code>
+   * Returns the <code>UISession</code> of the <code>HttpSession</code>
    * to which the currently processed request belongs.
    *
-   * @return instance of {@link ISessionStore}
+   * @return instance of {@link UISession}
    */
-  public static ISessionStore getSessionStore() {
-    return ContextProvider.getSessionStore();
+  public static UISession getUISession() {
+    return ContextProvider.getUISession();
+  }
+
+  /**
+   * @deprecated Use getUISession instead
+   */
+  @Deprecated
+  public static UISession getSessionStore() {
+    return ContextProvider.getUISession();
   }
 
   /**
@@ -527,7 +535,7 @@ public final class RWT {
    */
   public static Locale getLocale() {
     checkHasSessionContext();
-    Locale result = ( Locale )ContextProvider.getSessionStore().getAttribute( LOCALE );
+    Locale result = ( Locale )ContextProvider.getUISession().getAttribute( LOCALE );
     if( result == null ) {
       result = ContextProvider.getRequest().getLocale();
     }
@@ -546,8 +554,8 @@ public final class RWT {
    */
   public static void setLocale( Locale locale ) {
     checkHasSessionContext();
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    sessionStore.setAttribute( LOCALE, locale );
+    UISession uiSession = ContextProvider.getUISession();
+    uiSession.setAttribute( LOCALE, locale );
   }
 
   /**
@@ -597,8 +605,8 @@ public final class RWT {
    */
   public static Client getClient() {
     ApplicationContext applicationContext = ApplicationContextUtil.getInstance();
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    return applicationContext.getClientSelector().getSelectedClient( sessionStore );
+    UISession uiSession = ContextProvider.getUISession();
+    return applicationContext.getClientSelector().getSelectedClient( uiSession );
   }
 
   private static void checkHasSessionContext() {

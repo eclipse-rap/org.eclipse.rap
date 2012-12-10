@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     Yves YANG <yves.yang@soyatec.com> - 
  *     		Initial Fix for Bug 138078 [Preferences] Preferences Store for i18n support
+ *     EclipseSource - adaptation for RAP
  *******************************************************************************/
 package org.eclipse.ui.preferences;
 
@@ -21,7 +22,7 @@ import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.ui.internal.preferences.SessionScope;
 
 /**
@@ -160,15 +161,15 @@ public class ScopedPreferenceStore extends EventManager implements
 	    // In case the scopeContext is of type SessionScope we need to reference
 	    // an own ScopedPreferenceStore for each session
 	    if( scopeContext instanceof SessionScope ) {
-	      ISessionStore sessionStore = RWT.getSessionStore();
+	      UISession uiSession = RWT.getUISession();
 	      String key
 	        = KEY_SCOPED_PREF_CORE + "/" + nodeQualifier + "/" + defaultQualifier;
-	      result = ( ScopedPreferenceStoreCore )sessionStore.getAttribute( key );
+	      result = ( ScopedPreferenceStoreCore )uiSession.getAttribute( key );
 	      if( result == null ) {
 	        result = new ScopedPreferenceStoreCore( scopeContext, 
 	                                                nodeQualifier, 
 	                                                defaultQualifier );
-	        sessionStore.setAttribute( key, result );
+	        uiSession.setAttribute( key, result );
 	      }
 	    }
 	    return result;

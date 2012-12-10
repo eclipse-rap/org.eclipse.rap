@@ -106,7 +106,7 @@ public class ThemesTestUtil {
     themeManager.initialize();
     themeManager.registerTheme( theme );
     themeManager.activate();
-    ThemeUtil.setCurrentThemeId( ContextProvider.getSessionStore(), themeId );
+    ThemeUtil.setCurrentThemeId( ContextProvider.getUISession(), themeId );
   }
 
   public static void cleanupThemes() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,9 @@ import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.eclipse.swt.widgets.Display;
@@ -83,7 +83,7 @@ public class LifeCycleUtil_Test extends TestCase {
   }
 
   public void testGetUIThreadForNewSession() {
-    IUIThreadHolder uiThread = LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() );
+    IUIThreadHolder uiThread = LifeCycleUtil.getUIThread( ContextProvider.getUISession() );
 
     assertNull( uiThread );
   }
@@ -91,14 +91,14 @@ public class LifeCycleUtil_Test extends TestCase {
   public void testGetUIThreadWithMultipleSessions() {
     IUIThreadHolder uiThread1 = mock( IUIThreadHolder.class );
     IUIThreadHolder uiThread2 = mock( IUIThreadHolder.class );
-    ISessionStore session1 = new SessionStoreImpl( new TestSession() );
-    ISessionStore session2 = new SessionStoreImpl( new TestSession() );
+    UISession uiSession1 = new UISessionImpl( new TestSession() );
+    UISession uiSession2 = new UISessionImpl( new TestSession() );
 
-    LifeCycleUtil.setUIThread( session1, uiThread1 );
-    LifeCycleUtil.setUIThread( session2, uiThread2 );
+    LifeCycleUtil.setUIThread( uiSession1, uiThread1 );
+    LifeCycleUtil.setUIThread( uiSession2, uiThread2 );
 
-    assertSame( uiThread1, LifeCycleUtil.getUIThread( session1 ) );
-    assertSame( uiThread2, LifeCycleUtil.getUIThread( session2 ) );
+    assertSame( uiThread1, LifeCycleUtil.getUIThread( uiSession1 ) );
+    assertSame( uiThread2, LifeCycleUtil.getUIThread( uiSession2 ) );
   }
 
   public void testIsStartup_withoutDisplayCreated() {

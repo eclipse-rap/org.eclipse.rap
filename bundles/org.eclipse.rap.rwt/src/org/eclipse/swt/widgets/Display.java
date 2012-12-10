@@ -46,7 +46,7 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Color;
@@ -197,7 +197,7 @@ public class Display extends Device implements Adaptable {
   private static boolean isUIThread() {
     boolean result = false;
     if( ContextProvider.hasContext() ) {
-      IUIThreadHolder uiThreadHolder = LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() );
+      IUIThreadHolder uiThreadHolder = LifeCycleUtil.getUIThread( ContextProvider.getUISession() );
       Thread uiThread = uiThreadHolder == null ? null : uiThreadHolder.getThread();
       result = uiThread == Thread.currentThread();
     }
@@ -206,7 +206,7 @@ public class Display extends Device implements Adaptable {
 
   private final List<Shell> shells;
   private transient Thread thread;
-  private final ISessionStore sessionStore;
+  private final UISession uiSession;
   private final Rectangle bounds;
   private final Point cursorLocation;
   private Shell activeShell;
@@ -257,7 +257,7 @@ public class Display extends Device implements Adaptable {
     }
     LifeCycleUtil.setSessionDisplay( this );
     attachThread();
-    sessionStore = ContextProvider.getSessionStore();
+    uiSession = ContextProvider.getUISession();
     shells = new ArrayList<Shell>();
     monitor = new Monitor( this );
     cursorLocation = new Point( 0, 0 );
@@ -752,7 +752,7 @@ public class Display extends Device implements Adaptable {
   }
 
   private ApplicationContext getApplicationContext() {
-    return ApplicationContextUtil.get( sessionStore );
+    return ApplicationContextUtil.get( uiSession );
   }
 
 
@@ -2061,7 +2061,7 @@ public class Display extends Device implements Adaptable {
    * @since 1.3
    */
   public static String getAppName() {
-    ISessionStore session = ContextProvider.getSessionStore();
+    UISession session = ContextProvider.getUISession();
     return ( String )session.getAttribute( APP_NAME );
   }
 
@@ -2075,7 +2075,7 @@ public class Display extends Device implements Adaptable {
    * @since 1.3
    */
   public static String getAppVersion() {
-    ISessionStore session = ContextProvider.getSessionStore();
+    UISession session = ContextProvider.getUISession();
     return ( String )session.getAttribute( APP_VERSION );
   }
 
@@ -2090,7 +2090,7 @@ public class Display extends Device implements Adaptable {
    * @since 1.3
    */
   public static void setAppName( String name ) {
-    ISessionStore session = ContextProvider.getSessionStore();
+    UISession session = ContextProvider.getUISession();
     session.setAttribute( APP_NAME, name );
   }
 
@@ -2102,7 +2102,7 @@ public class Display extends Device implements Adaptable {
    * @since 1.3
    */
   public static void setAppVersion( String version ) {
-    ISessionStore session = ContextProvider.getSessionStore();
+    UISession session = ContextProvider.getUISession();
     session.setAttribute( APP_VERSION, version );
   }
 
@@ -2351,8 +2351,8 @@ public class Display extends Device implements Adaptable {
       return result;
     }
 
-    public ISessionStore getSessionStore() {
-      return sessionStore;
+    public UISession getUISession() {
+      return uiSession;
     }
 
     public void attachThread() {

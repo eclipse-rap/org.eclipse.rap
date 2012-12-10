@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.IServiceStore;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 
 
 /**
@@ -130,24 +130,24 @@ public class ContextProvider {
   }
 
   /**
-   * Returns the <code>ISessionStore</code> of the <code>HttpSession</code>
+   * Returns the <code>UISession</code> of the <code>HttpSession</code>
    * to which the currently processed request belongs.
    */
-  public static ISessionStore getSessionStore() {
-    SessionStoreImpl result = ( SessionStoreImpl )getContext().getSessionStore();
-    if( result == null ) {
+  public static UISession getUISession() {
+    UISessionImpl uiSession = ( UISessionImpl )getContext().getUISession();
+    if( uiSession == null ) {
       HttpServletRequest request = getRequest();
       HttpSession httpSession = request.getSession( true );
-      result = SessionStoreImpl.getInstanceFromSession( httpSession );
-      if( result == null ) {
+      uiSession = UISessionImpl.getInstanceFromSession( httpSession );
+      if( uiSession == null ) {
         ServletContext servletContext = httpSession.getServletContext();
         ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-        SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
-        result = ( SessionStoreImpl )builder.buildSessionStore();
+        UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+        uiSession = ( UISessionImpl )builder.buildUISession();
       }
-      getContext().setSessionStore( result );
+      getContext().setUISession( uiSession );
     }
-    return result;
+    return uiSession;
   }
 
   /**

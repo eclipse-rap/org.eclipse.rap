@@ -14,7 +14,7 @@ import java.io.Serializable;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -24,8 +24,8 @@ public class TimerExecEntryPoint implements EntryPoint {
   private static final String ATTRIBUTE_NAME = "wasInvoked";
   private static final Boolean ATTRIBUTE_VALUE = Boolean.TRUE;
 
-  public static boolean wasRunnableExecuted( ISessionStore sessionStore ) {
-    return ATTRIBUTE_VALUE.equals( sessionStore.getAttribute( ATTRIBUTE_NAME ) ); 
+  public static boolean wasRunnableExecuted( UISession uiSession ) {
+    return ATTRIBUTE_VALUE.equals( uiSession.getAttribute( ATTRIBUTE_NAME ) ); 
   }
 
   public int createUI() {
@@ -37,7 +37,7 @@ public class TimerExecEntryPoint implements EntryPoint {
   private static class TimerExecRunnable implements Runnable, Serializable {
 
     public void run() {
-      RWT.getSessionStore().setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
+      RWT.getUISession().setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
     }
   }
 }

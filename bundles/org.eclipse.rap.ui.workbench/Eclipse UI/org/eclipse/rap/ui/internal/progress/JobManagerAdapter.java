@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,15 +31,13 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.internal.progress.ProgressManager;
 import org.eclipse.ui.progress.UIJob;
 
-public class JobManagerAdapter
-  extends ProgressProvider
-  implements IJobChangeListener
-{
+
+public class JobManagerAdapter extends ProgressProvider implements IJobChangeListener {
 
   private static JobManagerAdapter _instance;
   private final Map jobs;
@@ -228,7 +226,7 @@ public class JobManagerAdapter
 
   private void bindToSession( final Job job ) {
     final boolean[] jobDone = { false };
-	final ISessionStore session = RWT.getSessionStore();
+	final UISession uiSession = RWT.getUISession();
     final HttpSessionBindingListener watchDog = new HttpSessionBindingListener() {
       public void valueBound( final HttpSessionBindingEvent event ) {
       }
@@ -288,11 +286,11 @@ public class JobManagerAdapter
       }
     };
     final String watchDogHashCode = String.valueOf( watchDog.hashCode() );
-	session.setAttribute( watchDogHashCode, watchDog );
+	uiSession.setAttribute( watchDogHashCode, watchDog );
     job.addJobChangeListener( new JobChangeAdapter() {
       public void done( final IJobChangeEvent event ) {
         jobDone[ 0 ] = true;
-        session.removeAttribute( watchDogHashCode );
+        uiSession.removeAttribute( watchDogHashCode );
       }
     } );
   }

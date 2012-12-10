@@ -35,10 +35,10 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineCluster;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -74,9 +74,9 @@ public abstract class SessionFailoverTestBase extends TestCase {
     assertEquals( 1, primary.getSessions().length );
     assertEquals( 1, secondary.getSessions().length );
     // HttpSessions
-    HttpSession primarySession = ClusterTestHelper.getFirstSession( primary );
+    HttpSession primarySession = ClusterTestHelper.getFirstHttpSession( primary );
     assertSessionIsIntact( primarySession, client );
-    HttpSession secondarySession = ClusterTestHelper.getFirstSession( secondary );
+    HttpSession secondarySession = ClusterTestHelper.getFirstHttpSession( secondary );
     assertSessionIsIntact( secondarySession, client );
     assertEquals( primarySession.getId(), secondarySession.getId() );
     // Displays
@@ -129,8 +129,8 @@ public abstract class SessionFailoverTestBase extends TestCase {
     client.sendDisplayResizeRequest( 100, 100 );
 
     prepareExamination();
-    ISessionStore secondarySessionStore = ClusterTestHelper.getFirstSessionStore( secondary );
-    assertTrue( AsyncExecEntryPoint.wasRunnableExecuted( secondarySessionStore ) );
+    UISession secondaryUiSession = ClusterTestHelper.getFirstUISession( secondary );
+    assertTrue( AsyncExecEntryPoint.wasRunnableExecuted( secondaryUiSession ) );
   }
 
   public void testSyncExecEntryPoint() throws Exception {
@@ -142,8 +142,8 @@ public abstract class SessionFailoverTestBase extends TestCase {
     client.sendDisplayResizeRequest( 100, 100 );
 
     prepareExamination();
-    ISessionStore secondarySessionStore = ClusterTestHelper.getFirstSessionStore( secondary );
-    assertTrue( AsyncExecEntryPoint.wasRunnableExecuted( secondarySessionStore ) );
+    UISession secondaryUiSession = ClusterTestHelper.getFirstUISession( secondary );
+    assertTrue( AsyncExecEntryPoint.wasRunnableExecuted( secondaryUiSession ) );
   }
 
   public void testTimerExecEntryPoint() throws Exception {
@@ -157,10 +157,10 @@ public abstract class SessionFailoverTestBase extends TestCase {
     client.sendDisplayResizeRequest( 100, 100 );
 
     prepareExamination( secondary );
-    ISessionStore primarySessionStore = ClusterTestHelper.getFirstSessionStore( primary );
-    ISessionStore secondarySessionStore = ClusterTestHelper.getFirstSessionStore( secondary );
-    assertFalse( TimerExecEntryPoint.wasRunnableExecuted( primarySessionStore ) );
-    assertTrue( TimerExecEntryPoint.wasRunnableExecuted( secondarySessionStore ) );
+    UISession primaryUiSession = ClusterTestHelper.getFirstUISession( primary );
+    UISession secondaryUiSession = ClusterTestHelper.getFirstUISession( secondary );
+    assertFalse( TimerExecEntryPoint.wasRunnableExecuted( primaryUiSession ) );
+    assertTrue( TimerExecEntryPoint.wasRunnableExecuted( secondaryUiSession ) );
   }
 
   public void testDNDEntryPoint() throws Exception {
@@ -173,9 +173,9 @@ public abstract class SessionFailoverTestBase extends TestCase {
     client.sendDragFinishedRequest( DNDEntryPoint.ID_SOURCE_LABEL, DNDEntryPoint.ID_TARGET_LABEL );
 
     prepareExamination( secondary );
-    ISessionStore secondarySessionStore = ClusterTestHelper.getFirstSessionStore( secondary );
-    assertTrue( DNDEntryPoint.isDragFinished( secondarySessionStore ) );
-    assertTrue( DNDEntryPoint.isDropFinished( secondarySessionStore ) );
+    UISession secondaryUiSession = ClusterTestHelper.getFirstUISession( secondary );
+    assertTrue( DNDEntryPoint.isDragFinished( secondaryUiSession ) );
+    assertTrue( DNDEntryPoint.isDropFinished( secondaryUiSession ) );
   }
 
   public void testDialogEntryPoint() throws Exception {
@@ -189,9 +189,9 @@ public abstract class SessionFailoverTestBase extends TestCase {
     client.sendShellCloseRequest( dialogShellId );
 
     prepareExamination( secondary );
-    ISessionStore sessionStore = ClusterTestHelper.getFirstSessionStore( secondary );
+    UISession uiSession = ClusterTestHelper.getFirstUISession( secondary );
     assertEquals( 1, getFirstDisplay( secondary ).getShells().length );
-    assertEquals( SWT.CANCEL, DialogEntryPoint.getDialogReturnCode( sessionStore ) );
+    assertEquals( SWT.CANCEL, DialogEntryPoint.getDialogReturnCode( uiSession ) );
   }
 
   protected void setUp() throws Exception {
@@ -250,27 +250,27 @@ public abstract class SessionFailoverTestBase extends TestCase {
   }
 
   private static void attachApplicationContextToSession( IServletEngine servletEngine ) {
-    HttpSession session = ClusterTestHelper.getFirstSession( servletEngine );
-    SessionStoreImpl sessionStore = SessionStoreImpl.getInstanceFromSession( session );
+    HttpSession session = ClusterTestHelper.getFirstHttpSession( servletEngine );
+    UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( session );
     ServletContext servletContext = session.getServletContext();
     ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    ApplicationContextUtil.set( sessionStore, applicationContext );
+    ApplicationContextUtil.set( uiSession, applicationContext );
   }
 
   private static void attachCurrentThreadToDisplay( IServletEngine servletEngine ) {
-    HttpSession session = ClusterTestHelper.getFirstSession( servletEngine );
+    HttpSession session = ClusterTestHelper.getFirstHttpSession( servletEngine );
     Display display = ClusterTestHelper.getSessionDisplay( session );
     getDisplayAdapter( display ).attachThread();
   }
 
   private static void assertSessionIsIntact( HttpSession session, RWTClient client ) {
     assertTrue( client.getSessionId().startsWith( session.getId() ) );
-    ISessionStore sessionStore = ClusterTestHelper.getSessionStore( session );
+    UISession uiSession = ClusterTestHelper.getUISession( session );
     Display display = ClusterTestHelper.getSessionDisplay( session );
-    assertNotNull( sessionStore );
+    assertNotNull( uiSession );
     assertNotNull( display );
-    assertSame( sessionStore, getDisplayAdapter( display ).getSessionStore() );
-    assertNotNull( sessionStore.getHttpSession() );
+    assertSame( uiSession, getDisplayAdapter( display ).getUISession() );
+    assertNotNull( uiSession.getHttpSession() );
     ServletContext servletContext = session.getServletContext();
     ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
     assertNotNull( applicationContext );
@@ -281,12 +281,12 @@ public abstract class SessionFailoverTestBase extends TestCase {
   }
 
   private static Display getFirstDisplay( IServletEngine servletEngine ) {
-    HttpSession sessioin = ClusterTestHelper.getFirstSession( servletEngine );
+    HttpSession sessioin = ClusterTestHelper.getFirstHttpSession( servletEngine );
     return ClusterTestHelper.getSessionDisplay( sessioin );
   }
 
   private static Shell getFirstShell( IServletEngine servletEngine ) {
-    HttpSession session = ClusterTestHelper.getFirstSession( servletEngine );
+    HttpSession session = ClusterTestHelper.getFirstHttpSession( servletEngine );
     Display display = ClusterTestHelper.getSessionDisplay( session );
     return display.getShells()[ 0 ];
   }

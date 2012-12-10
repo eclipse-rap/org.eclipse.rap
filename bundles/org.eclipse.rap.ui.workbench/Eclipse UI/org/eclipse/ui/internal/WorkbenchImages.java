@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - adaptation for RAP
  *******************************************************************************/
 package org.eclipse.ui.internal;
 
@@ -540,10 +541,10 @@ public/*final*/class WorkbenchImages {
 //            initializeImageRegistry();
 //        }
 //        return descriptors;
-      Map descriptors = ( Map )RWT.getSessionStore().getAttribute( DESCRIPTORS );
+      Map descriptors = ( Map )RWT.getUISession().getAttribute( DESCRIPTORS );
       if( descriptors == null ) {
             initializeImageRegistry();
-            descriptors = ( Map )RWT.getSessionStore().getAttribute( DESCRIPTORS );
+            descriptors = ( Map )RWT.getUISession().getAttribute( DESCRIPTORS );
       }
       return descriptors;
     }
@@ -620,10 +621,10 @@ public/*final*/class WorkbenchImages {
 //            initializeImageRegistry();
 //        }
 //        return imageRegistry;
-      ImageRegistry imageRegistry = ( ImageRegistry )RWT.getSessionStore().getAttribute( IMAGE_REGISTRY );
+      ImageRegistry imageRegistry = ( ImageRegistry )RWT.getUISession().getAttribute( IMAGE_REGISTRY );
       if( imageRegistry == null ) {
         initializeImageRegistry();
-        imageRegistry = ( ImageRegistry )RWT.getSessionStore().getAttribute( IMAGE_REGISTRY ); 
+        imageRegistry = ( ImageRegistry )RWT.getUISession().getAttribute( IMAGE_REGISTRY ); 
       }
       return imageRegistry;
     }
@@ -660,9 +661,9 @@ public/*final*/class WorkbenchImages {
 //        imageRegistry = new ImageRegistry();
 //        descriptors = new HashMap();
         ImageRegistry imageRegistry = new ImageRegistry();
-        RWT.getSessionStore().setAttribute( IMAGE_REGISTRY, imageRegistry );
+        RWT.getUISession().setAttribute( IMAGE_REGISTRY, imageRegistry );
         Map descriptors = new HashMap();
-        RWT.getSessionStore().setAttribute( DESCRIPTORS, descriptors );
+        RWT.getUISession().setAttribute( DESCRIPTORS, descriptors );
 // End RAP specific        
         declareImages();
     }
@@ -678,11 +679,11 @@ public/*final*/class WorkbenchImages {
 //            imageRegistry = null;
 //            descriptors = null;
 //        }
-      ImageRegistry imageRegistry = ( ImageRegistry )RWT.getSessionStore().getAttribute( IMAGE_REGISTRY );
+      ImageRegistry imageRegistry = ( ImageRegistry )RWT.getUISession().getAttribute( IMAGE_REGISTRY );
       if (imageRegistry != null) {
           imageRegistry.dispose();
-          RWT.getSessionStore().setAttribute( IMAGE_REGISTRY, null );
-          RWT.getSessionStore().setAttribute( DESCRIPTORS, null );
+          RWT.getUISession().setAttribute( IMAGE_REGISTRY, null );
+          RWT.getUISession().setAttribute( DESCRIPTORS, null );
       }
     }
 	

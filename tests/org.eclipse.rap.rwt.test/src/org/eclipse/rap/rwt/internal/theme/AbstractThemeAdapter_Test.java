@@ -88,7 +88,7 @@ public class AbstractThemeAdapter_Test extends TestCase {
     assertNotNull( defaultColor );
     int defaultBorderWidth = adapter.getCssBorderWidth( "CustomWidget", "border", custom );
     // switch theme
-    ThemeUtil.setCurrentThemeId( ContextProvider.getSessionStore(), "customId" );
+    ThemeUtil.setCurrentThemeId( ContextProvider.getUISession(), "customId" );
     // color is redefined
     Color customColor = adapter.getCssColor( "CustomWidget", "color", custom );
     assertFalse( defaultColor.equals( customColor ) );

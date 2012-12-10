@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,39 +12,41 @@ package org.eclipse.rap.rwt.service;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 
 
-public class SessionStoreEvent_Test extends TestCase {
-  
-  private SessionStoreImpl sessionStore;
+public class UISessionEvent_Test extends TestCase {
+
+  private UISessionImpl uiSession;
+
+  @Override
+  protected void setUp() throws Exception {
+    uiSession = new UISessionImpl( new TestSession() );
+  }
 
   public void testConstructorWithNullArgument() {
     try {
-      new SessionStoreEvent( null );
+      new UISessionEvent( null );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
   public void testGetSource() {
-    SessionStoreEvent event = new SessionStoreEvent( sessionStore );
-    
+    UISessionEvent event = new UISessionEvent( uiSession );
+
     Object source = event.getSource();
-    
-    assertSame( sessionStore, source );
+
+    assertSame( uiSession, source );
   }
-  
-  public void testGetSessionStore() {
-    SessionStoreEvent event = new SessionStoreEvent( sessionStore );
-    
-    ISessionStore returnedSessionStore = event.getSessionStore();
-    
-    assertSame( sessionStore, returnedSessionStore );
+
+  public void testGetUISession() {
+    UISessionEvent event = new UISessionEvent( uiSession );
+
+    UISession result = event.getUISession();
+
+    assertSame( uiSession, result );
   }
-  
-  protected void setUp() throws Exception {
-    sessionStore = new SessionStoreImpl( new TestSession() );
-  }
+
 }

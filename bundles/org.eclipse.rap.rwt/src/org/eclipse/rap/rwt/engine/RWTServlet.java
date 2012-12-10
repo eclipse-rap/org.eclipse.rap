@@ -101,7 +101,7 @@ public class RWTServlet extends HttpServlet {
     ServiceContext context = createServiceContext( request, response );
     ContextProvider.setContext( context );
     try {
-      createSessionStore();
+      createUISession();
       RWTFactory.getServiceManager().getHandler().service( request, response );
     } finally {
       ContextProvider.disposeContext();
@@ -116,10 +116,10 @@ public class RWTServlet extends HttpServlet {
     return context;
   }
 
-  private void createSessionStore() {
-    // Ensure that there is exactly one ISessionStore per session created
+  private void createUISession() {
+    // Ensure that there is exactly one UISession per session created
     synchronized( RWTServlet.class ) {
-      ContextProvider.getSessionStore();
+      ContextProvider.getUISession();
     }
   }
 

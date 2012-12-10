@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,8 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Display;
 
 
 public class ImageSerialzation_Test extends TestCase {
-  
+
   private Display display;
   private ApplicationContext applicationContext;
 
@@ -44,14 +44,14 @@ public class ImageSerialzation_Test extends TestCase {
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream( Fixture.IMAGE1 );
     Image image = Graphics.getImage( "image", inputStream );
     inputStream.close();
-    
+
     try {
       Fixture.serialize( image );
       fail();
     } catch( NotSerializableException expected ) {
     }
   }
-  
+
   public void testSerializeSessionImage() throws Exception {
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream( Fixture.IMAGE1 );
     Image image = new Image( display, inputStream );
@@ -62,39 +62,41 @@ public class ImageSerialzation_Test extends TestCase {
     Image deserializedImage = Fixture.serializeAndDeserialize( image );
     createServiceContext( deserializedImage.getDevice() );
     runClusterSupportFilter();
-    
+
     assertEquals( image.isDisposed(), deserializedImage.isDisposed() );
     ImageData deserializedImageData = deserializedImage.getImageData();
     assertEquals( imageData, deserializedImageData );
   }
 
+  @Override
   protected void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
     Fixture.useDefaultResourceManager();
     applicationContext = ApplicationContextUtil.getInstance();
-    ApplicationContextUtil.set( ContextProvider.getSessionStore(), applicationContext );
+    ApplicationContextUtil.set( ContextProvider.getUISession(), applicationContext );
     display = new Display();
   }
 
+  @Override
   protected void tearDown() {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
   }
-  
+
   private void createServiceContext( Device device ) {
     Fixture.createServiceContext();
     TestSession session = ( TestSession )ContextProvider.getRequest().getSession();
     ApplicationContextUtil.set( session.getServletContext(), applicationContext );
-    SessionStoreImpl sessionStore = ( SessionStoreImpl )getSessionStore( device );
-    SessionStoreImpl.attachInstanceToSession( session, sessionStore );
-    sessionStore.attachHttpSession( session );
+    UISessionImpl uiSession = ( UISessionImpl )getUISession( device );
+    UISessionImpl.attachInstanceToSession( session, uiSession );
+    uiSession.attachHttpSession( session );
   }
 
-  private static ISessionStore getSessionStore( Device device ) {
+  private static UISession getUISession( Device device ) {
     Display display = ( Display )device;
     IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
-    return displayAdapter.getSessionStore();
+    return displayAdapter.getUISession();
   }
 
   private void runClusterSupportFilter() throws Exception {

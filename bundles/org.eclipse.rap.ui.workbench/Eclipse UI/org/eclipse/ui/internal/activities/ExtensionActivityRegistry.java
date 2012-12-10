@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - adaptation for RAP
  *******************************************************************************/
 
 package org.eclipse.ui.internal.activities;
@@ -29,8 +30,8 @@ import org.eclipse.core.runtime.IRegistryChangeListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.service.SessionStoreEvent;
-import org.eclipse.rap.rwt.service.SessionStoreListener;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
@@ -92,8 +93,8 @@ final class ExtensionActivityRegistry extends AbstractActivityRegistry {
           }
         };
         this.extensionRegistry.addRegistryChangeListener(listener);
-        RWT.getSessionStore().addSessionStoreListener( new SessionStoreListener() {
-          public void beforeDestroy( final SessionStoreEvent event ) {
+        RWT.getUISession().addUISessionListener( new UISessionListener() {
+          public void beforeDestroy( final UISessionEvent event ) {
             ExtensionActivityRegistry.this.extensionRegistry.removeRegistryChangeListener( listener );
           }
         } );

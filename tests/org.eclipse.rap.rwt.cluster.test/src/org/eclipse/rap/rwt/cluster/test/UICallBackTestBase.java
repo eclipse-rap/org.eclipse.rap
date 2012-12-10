@@ -40,7 +40,7 @@ public abstract class UICallBackTestBase extends TestCase {
     servletEngine.start( UICallbackEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
-    HttpSession session = ClusterTestHelper.getFirstSession( servletEngine );
+    HttpSession session = ClusterTestHelper.getFirstHttpSession( servletEngine );
     final Display display = ClusterTestHelper.getSessionDisplay( session );
 
     Thread thread = new Thread( new Runnable() {
@@ -125,7 +125,7 @@ public abstract class UICallBackTestBase extends TestCase {
 
   private UICallBackManager getUICallBackManager() {
     final UICallBackManager[] result = { null };
-    HttpSession session = ClusterTestHelper.getFirstSession( servletEngine );
+    HttpSession session = ClusterTestHelper.getFirstHttpSession( servletEngine );
     Display display = ClusterTestHelper.getSessionDisplay( session );
     UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
       public void run() {
@@ -157,7 +157,7 @@ public abstract class UICallBackTestBase extends TestCase {
   }
 
   private void configureCallbackRequestCheckInterval( final int interval ) {
-    HttpSession session = ClusterTestHelper.getFirstSession( servletEngine );
+    HttpSession session = ClusterTestHelper.getFirstHttpSession( servletEngine );
     Display display = ClusterTestHelper.getSessionDisplay( session );
     UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
       public void run() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     Teddy Walker <teddy.walker@googlemail.com> 
  *     	- Bug 188056 [Preferences] PreferencePages have to less indent in PreferenceDialog
+ *     EclipseSource - adaptation for RAP
  *******************************************************************************/
 package org.eclipse.jface.preference;
 
@@ -826,7 +827,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	protected String getSelectedNodePreference() {
 // RAP [if] Keep lastPreferenceId in the session store instead of static field
 //		return lastPreferenceId;
-	    return ( String )ContextProvider.getSessionStore().getAttribute( LAST_PREFERENCE_ID );
+	    return ( String )ContextProvider.getUISession().getAttribute( LAST_PREFERENCE_ID );
 	}
 
 	/**
@@ -1202,7 +1203,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	protected void setSelectedNodePreference(String pageId) {
 // RAP [if] Keep lastPreferenceId in the session store instead of static field
 //		lastPreferenceId = pageId;
-	    ContextProvider.getSessionStore().setAttribute( LAST_PREFERENCE_ID, pageId );
+	    ContextProvider.getUISession().setAttribute( LAST_PREFERENCE_ID, pageId );
 	}
 
 	/**

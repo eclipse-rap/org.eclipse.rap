@@ -14,7 +14,7 @@ import java.io.Serializable;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.internal.widgets.IdGenerator;
 
 
@@ -27,11 +27,11 @@ public class RemoteObjectFactory implements Serializable {
     = RemoteObjectFactory.class.getName() + "#instance";
 
   public static RemoteObjectFactory getInstance() {
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    Object result = sessionStore.getAttribute( SESSION_STORE_KEY );
+    UISession uiSession = ContextProvider.getUISession();
+    Object result = uiSession.getAttribute( SESSION_STORE_KEY );
     if( result == null ) {
       result = new RemoteObjectFactory();
-      sessionStore.setAttribute( SESSION_STORE_KEY, result );
+      uiSession.setAttribute( SESSION_STORE_KEY, result );
     }
     return ( RemoteObjectFactory )result;
   }

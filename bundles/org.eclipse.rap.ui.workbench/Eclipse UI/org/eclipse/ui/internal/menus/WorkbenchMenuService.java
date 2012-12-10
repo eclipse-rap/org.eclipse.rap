@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2010 IBM Corporation and others.
+ * Copyright (c) 2005, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - adaptation for RAP
  *******************************************************************************/
 
 package org.eclipse.ui.internal.menus;
@@ -45,8 +46,8 @@ import org.eclipse.jface.internal.provisional.action.IToolBarContributionItem;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.service.SessionStoreEvent;
-import org.eclipse.rap.rwt.service.SessionStoreListener;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISourceProvider;
@@ -270,9 +271,9 @@ public final class WorkbenchMenuService extends InternalMenuService {
 			}
 		};
 		registry.addRegistryChangeListener(registryChangeListener);
-		RWT.getSessionStore().addSessionStoreListener(new SessionStoreListener() {
+		RWT.getUISession().addUISessionListener(new UISessionListener() {
 
-			public void beforeDestroy(SessionStoreEvent event) {
+			public void beforeDestroy(UISessionEvent event) {
 			  // TODO [fappel]: check whether this should be moved into dispose method
 				registry.removeRegistryChangeListener(registryChangeListener);
 			}

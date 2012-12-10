@@ -15,30 +15,39 @@ import java.util.EventObject;
 
 
 /**
- * <code>SessionStoreListener</code>s are
+ * <code>UISessionListener</code>s are
  * used to get notifications before the session store is destroyed.
  *
  * @since 2.0
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class SessionStoreEvent extends EventObject {
+public class UISessionEvent extends EventObject {
   private static final long serialVersionUID = 1L;
 
   /**
-   * Creates a new instance of <code>SessionStoreEvent</code>.
+   * Creates a new instance of <code>UISessionEvent</code>.
    *
-   * @param sessionStore the session store which is about to be destroyed
+   * @param uiSession the session store which is about to be destroyed
    */
-  public SessionStoreEvent( ISessionStore sessionStore ) {
-    super( sessionStore );
+  public UISessionEvent( UISession uiSession ) {
+    super( uiSession );
   }
 
   /**
-   * Returns the <code>ISessionStore</code> that is about to be destroyed.
+   * Returns the <code>UISession</code> that is about to be destroyed.
    *
    * @return the session store that is about to be destroyed.
    */
-  public ISessionStore getSessionStore() {
-    return ( ISessionStore )getSource();
+  public UISession getUISession() {
+    return ( UISession )getSource();
   }
+
+  /**
+   * @deprecated Use getUISession instead
+   */
+  @Deprecated
+  public UISession getSessionStore() {
+    return ( UISession )getSource();
+  }
+
 }

@@ -15,18 +15,19 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 
 /**
- * <code>SessionStoreListener</code>s are
+ * <code>UISessionListener</code>s are
  * used to get notifications before the session store is destroyed.
  *
  * @since 2.0
  */
-public interface SessionStoreListener extends SerializableCompatibility {
+public interface UISessionListener extends SerializableCompatibility {
 
   /**
    * Notification callback before the session store of interest is
    * destroyed.
    *
-   * @param event the {@link SessionStoreEvent}
+   * @param event the {@link UISessionEvent}
    */
-  void beforeDestroy( SessionStoreEvent event );
+  void beforeDestroy( UISessionEvent event );
+
 }

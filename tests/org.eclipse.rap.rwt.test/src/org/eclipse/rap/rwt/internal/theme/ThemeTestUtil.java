@@ -76,7 +76,7 @@ public final class ThemeTestUtil {
 
   public static void setCustomTheme( String css ) throws IOException {
     registerTheme( "customTestTheme", css, null );
-    ThemeUtil.setCurrentThemeId( ContextProvider.getSessionStore(), "customTestTheme" );
+    ThemeUtil.setCurrentThemeId( ContextProvider.getUISession(), "customTestTheme" );
   }
 
   public static void registerTheme( String themeId, String cssCode, ResourceLoader loader )
@@ -104,6 +104,6 @@ public final class ThemeTestUtil {
   }
 
   public static void setCurrentThemeId( String themeId ) {
-    ThemeUtil.setCurrentThemeId( ContextProvider.getSessionStore(), themeId );
+    ThemeUtil.setCurrentThemeId( ContextProvider.getUISession(), themeId );
   }
 }

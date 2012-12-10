@@ -17,7 +17,7 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -28,7 +28,7 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
   }
 
   private ServiceContext serviceContext;
-  private ISessionStore sessionStore;
+  private UISession uiSession;
   private Runnable shutdownCallback;
   private volatile boolean uiThreadTerminating;
 
@@ -110,7 +110,7 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
   public void terminateThread() {
     // Prepare a service context to be used by the UI thread that may continue
     // to run as a result of the interrupt call
-    ServiceContext serviceContext = FakeContextUtil.createFakeContext( sessionStore );
+    ServiceContext serviceContext = FakeContextUtil.createFakeContext( uiSession );
     setServiceContext( serviceContext );
     uiThreadTerminating = true;
     // interrupt the UI thread that is expected to wait in switchThread or already be terminated
@@ -139,8 +139,8 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
   ////////////////////////////////////
   // interface ISessionShutdownAdapter
 
-  public void setSessionStore( ISessionStore sessionStore ) {
-    this.sessionStore = sessionStore;
+  public void setUISession( UISession uiSession ) {
+    this.uiSession = uiSession;
   }
 
   public void setShutdownCallback( Runnable shutdownCallback ) {
@@ -157,7 +157,7 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
       // Simulate PROCESS_ACTION phase if the session times out
       CurrentPhase.set( PhaseId.PROCESS_ACTION );
       // TODO [rh] find a better decoupled way to dispose of the display
-      Display display = LifeCycleUtil.getSessionDisplay( sessionStore );
+      Display display = LifeCycleUtil.getSessionDisplay( uiSession );
       // TODO [fappel]: Think about a better solution: isActivated() checks whether
       //                the applicationContext is still activated before starting
       //                cleanup. This is due to the missing possibility of OSGi HttpService
@@ -175,7 +175,7 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
   }
 
   private boolean isApplicationContextActive() {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
+    ApplicationContext applicationContext = ApplicationContextUtil.get( uiSession );
     return applicationContext != null && applicationContext.isActive();
   }
 

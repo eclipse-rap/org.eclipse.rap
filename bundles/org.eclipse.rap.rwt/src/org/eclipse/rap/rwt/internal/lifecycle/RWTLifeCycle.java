@@ -21,12 +21,12 @@ import org.eclipse.rap.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rap.rwt.internal.lifecycle.UIThread.UIThreadTerminatedError;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
-import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.IServiceStore;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -190,7 +190,7 @@ public class RWTLifeCycle extends LifeCycle {
 
   void executeUIThread() throws IOException {
     ServiceContext context = ContextProvider.getContext();
-    ISessionStore session = ContextProvider.getSessionStore();
+    UISession uiSession = ContextProvider.getUISession();
     IUIThreadHolder uiThread = getUIThreadHolder();
     if( uiThread == null ) {
       uiThread = createUIThread();
@@ -203,13 +203,13 @@ public class RWTLifeCycle extends LifeCycle {
     } else {
       uiThread.setServiceContext( context );
       // See bug 354368
-      if( !Boolean.TRUE.equals( session.getAttribute( UI_THREAD_WAITING_FOR_TERMINATION ) ) ) {
+      if( !Boolean.TRUE.equals( uiSession.getAttribute( UI_THREAD_WAITING_FOR_TERMINATION ) ) ) {
         uiThread.switchThread();
       }
     }
     // TODO [rh] consider moving this to UIThreadController#run
     if( !uiThread.getThread().isAlive() ) {
-      LifeCycleUtil.setUIThread( session, null );
+      LifeCycleUtil.setUIThread( uiSession, null );
     }
     handleUIThreadException();
   }
@@ -245,11 +245,11 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   private IUIThreadHolder createUIThread() {
-    ISessionStore session = ContextProvider.getSessionStore();
+    UISession uiSession = ContextProvider.getUISession();
     IUIThreadHolder result = new UIThread( uiRunnable );
     result.getThread().setDaemon( true );
-    result.getThread().setName( "UIThread [" + session.getId() + "]" );
-    LifeCycleUtil.setUIThread( session, result );
+    result.getThread().setName( "UIThread [" + uiSession.getId() + "]" );
+    LifeCycleUtil.setUIThread( uiSession, result );
     setShutdownAdapter( ( ISessionShutdownAdapter )result );
     return result;
   }
@@ -260,9 +260,9 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   private static void setShutdownAdapter( ISessionShutdownAdapter adapter ) {
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    SessionStoreImpl sessionStoreImpl = ( SessionStoreImpl )sessionStore;
-    sessionStoreImpl.setShutdownAdapter( adapter );
+    UISession uiSession = ContextProvider.getUISession();
+    UISessionImpl uiSessionImpl = ( UISessionImpl )uiSession;
+    uiSessionImpl.setShutdownAdapter( adapter );
   }
 
   public void setPhaseOrder( IPhase[] phaseOrder ) {
@@ -276,7 +276,7 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   public static IUIThreadHolder getUIThreadHolder() {
-    return LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() );
+    return LifeCycleUtil.getUIThread( ContextProvider.getUISession() );
   }
 
   private static final class PhaseExecutionError extends ThreadDeath {
@@ -307,8 +307,8 @@ public class RWTLifeCycle extends LifeCycle {
           // We have to prevent the ui thread from waking up at that point, otherwise
           // processShutdown would never be executed and session store would not be cleared.
           // See bug 354368
-          ISessionStore sessionStore = ContextProvider.getSessionStore();
-          sessionStore.setAttribute( UI_THREAD_WAITING_FOR_TERMINATION, Boolean.TRUE );
+          UISession uiSession = ContextProvider.getUISession();
+          uiSession.setAttribute( UI_THREAD_WAITING_FOR_TERMINATION, Boolean.TRUE );
           // In any case: wait for the thread to be terminated by session timeout
           uiThread.switchThread();
         }
