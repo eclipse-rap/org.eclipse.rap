@@ -11,13 +11,28 @@
 
 (function(){
 
+/**
+ * @namespace Holds all public API of the RAP WebClient.
+ */
 rap = {
 
+  /**
+   * @description Register a RAP protocol type-handler for a specific type of remote-objects.
+   * @param {String} type
+   * @param {TypeHandler} handler
+   */
   registerTypeHandler : function( type, handler ) {
     handler.isPublic = true;
     rwt.protocol.AdapterRegistry.add( type, handler );
   },
 
+  /**
+   * @description Returns the actual client object associated with the given id.
+   * If there is no object registered for the given id, null is returned.
+   * For RAP internal objects (e.g. RWT widgets) a wrapper is returned instead of the real object.
+   * @param {String} id
+   * @returns {Object}
+   */
   getObject : function( id ) {
     var entry = rwt.protocol.ObjectRegistry.getEntry( id );
     var result;
@@ -29,8 +44,15 @@ rap = {
     return result;
   },
 
-  getRemoteObject : function( obj ) {
-    return rwt.remote.Server.getInstance().getServerObject( obj );
+  /**
+   * @description Returns an instance of <code>RemoteObject</code> for the given client object.
+   * The object has to be one created by an <code>TypeHandler</code> factory method. Multiple calls
+   * for the same objects will return the same instance.
+   * @param {Object} object
+   * @returns {RemoteObject}
+   */
+  getRemoteObject : function( object ) {
+    return rwt.remote.Server.getInstance().getServerObject( object );
   }
 
 };
