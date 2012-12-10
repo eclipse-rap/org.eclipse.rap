@@ -12,6 +12,7 @@
 (function(){
 
 /**
+ * @public
  * @namespace Holds all public API of the RAP WebClient.
  */
 rap = {
@@ -65,7 +66,7 @@ function getWrapperFor( obj ) {
     var hash = qx.core.Object.toHashCode( obj );
     if( wrapperMap[ hash ] == null ) {
       if( obj instanceof rwt.widgets.Composite ) {
-        wrapperMap[ hash ] = new ParentWrapper( obj );
+        wrapperMap[ hash ] = new CompositeWrapper( obj );
       } else {
         wrapperMap[ hash ] = {};
       }
@@ -75,7 +76,13 @@ function getWrapperFor( obj ) {
   return result;
 }
 
-function ParentWrapper( widget ) {
+/**
+ * @private
+ * @class
+ * @name Composite
+ * @description Wrapper for RWT Composite widgets
+ */
+function CompositeWrapper( widget ) {
   var children = null;
   if( !widget.isCreated() ) {
     children = [];
@@ -87,6 +94,12 @@ function ParentWrapper( widget ) {
       children = null;
     } );
   }
+  /**
+   * @name append
+   * @memberOf Composite#
+   * @description Adds a given HTMLElement to the Composite.
+   * @param {HTMLElement} childElement
+   */
   this.append = function( childElement ) {
     if( children ) {
       children.push( childElement );
