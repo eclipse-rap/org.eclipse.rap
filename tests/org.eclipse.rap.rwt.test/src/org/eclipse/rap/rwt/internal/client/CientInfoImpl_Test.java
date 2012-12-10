@@ -24,7 +24,9 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.internal.remote.RemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.remote.RemoteOperationHandler;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.mockito.ArgumentCaptor;
 
 
@@ -40,7 +42,7 @@ public class CientInfoImpl_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testThrowsExceptionWhenValueNotSet() {
+  public void testThrowsExceptionWhenTimezoneOffsetNotSet() {
     fakeRemoteObjectFactory( mock( RemoteObject.class ) );
 
     ClientInfoImpl clientInfo = new ClientInfoImpl();
@@ -73,11 +75,40 @@ public class CientInfoImpl_Test extends TestCase {
     assertEquals( -90, clientInfo.getTimezoneOffset() );
   }
 
+  public void testThrowsExceptionWhenLocaleNotSet() {
+    Fixture.fakeNewGetRequest();
+    fakeRemoteObjectFactory();
+
+    ClientInfoImpl clientInfo = new ClientInfoImpl();
+
+    try {
+      clientInfo.getLocale();
+      fail();
+    } catch( IllegalStateException ex ) {
+      // expected
+    }
+  }
+
+  public void testReadsLocaleFromRequest() {
+    Fixture.fakeNewGetRequest();
+    fakeRemoteObjectFactory();
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+
+    request.setHeader( "Accept-Language", "en-US" );
+    ClientInfoImpl clientInfo = new ClientInfoImpl();
+
+    assertEquals( "en-US", clientInfo.getLocale() );
+  }
+
   private static RemoteOperationHandler getHandler( RemoteObject remoteObject ) {
     ArgumentCaptor<RemoteOperationHandler> captor
       = ArgumentCaptor.forClass( RemoteOperationHandler.class );
     verify( remoteObject ).setHandler( captor.capture() );
     return captor.getValue();
+  }
+
+  private void fakeRemoteObjectFactory() {
+    fakeRemoteObjectFactory( mock( RemoteObject.class ) );
   }
 
   private RemoteObjectFactory fakeRemoteObjectFactory( RemoteObject remoteObject ) {

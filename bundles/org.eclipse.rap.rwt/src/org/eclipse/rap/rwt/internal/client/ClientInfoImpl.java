@@ -17,12 +17,13 @@ import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.internal.remote.RemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.remote.RemoteOperationHandler;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 
 
 public class ClientInfoImpl implements ClientInfo, Serializable {
 
   private Integer timezoneOffset;
-  private RemoteObject remoteObject;
+  private String locale;
 
   private final class InfoOperationHandler extends RemoteOperationHandler {
     public void handleSet( Map<String, Object> properties ) {
@@ -34,9 +35,14 @@ public class ClientInfoImpl implements ClientInfo, Serializable {
   }
 
   public ClientInfoImpl() {
+    initialize();
+  }
+
+  private void initialize() {
     RemoteObjectFactory factory = RemoteObjectFactory.getInstance();
-    remoteObject = factory.createServiceObject( "rwt.client.ClientInfo" );
+    RemoteObject remoteObject = factory.createServiceObject( "rwt.client.ClientInfo" );
     remoteObject.setHandler( new InfoOperationHandler() );
+    locale = ContextProvider.getRequest().getHeader( "Accept-Language" );
   }
 
   public int getTimezoneOffset() {
@@ -44,6 +50,13 @@ public class ClientInfoImpl implements ClientInfo, Serializable {
       throw new IllegalStateException( "timezoneOffset is not set" );
     }
     return timezoneOffset.intValue();
+  }
+
+  public String getLocale() {
+    if( locale == null ) {
+      throw new IllegalStateException( "locale is not set" );
+    }
+    return locale;
   }
 
 }
