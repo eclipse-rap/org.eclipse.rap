@@ -72,6 +72,7 @@ public class StartupJson {
     ThemeManager themeManager = RWTFactory.getThemeManager();
     Theme fallbackTheme = themeManager.getTheme( ThemeManager.FALLBACK_THEME_ID );
     appendLoadTheme( writer, METHOD_LOAD_FALLBACK_THEME, fallbackTheme );
+    // Get current theme from the entry point registration - see bug 396065
     Theme currentTheme = themeManager.getTheme( getCurrentThemeId() );
     appendLoadTheme( writer, METHOD_LOAD_ACTIVE_THEME, currentTheme );
   }
