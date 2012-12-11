@@ -36,9 +36,9 @@ import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.service.IServiceStore;
-import org.eclipse.rap.rwt.service.ISessionStore;
-import org.eclipse.rap.rwt.service.SessionStoreEvent;
-import org.eclipse.rap.rwt.service.SessionStoreListener;
+import org.eclipse.rap.rwt.service.UISession;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
@@ -604,7 +604,7 @@ public class RWTLifeCycle_Test extends TestCase {
       }
     };
     uiThread[ 0 ] = new UIThread( runnable );
-    LifeCycleUtil.setUIThread( ContextProvider.getSessionStore(), uiThread[ 0 ] );
+    LifeCycleUtil.setUIThread( ContextProvider.getUISession(), uiThread[ 0 ] );
 
     uiThread[ 0 ].setServiceContext( ContextProvider.getContext() );
     synchronized( uiThread[ 0 ].getLock() ) {
@@ -708,12 +708,12 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testSessionInvalidateWithRunningEventLoop() throws Throwable {
-    final ISessionStore session = ContextProvider.getSessionStore();
+    final UISession uiSession = ContextProvider.getUISession();
     final String[] invalidateThreadName = { null };
     final boolean hasContext[] = new boolean[]{ false };
     final IServiceStore serviceStore[] =  { null };
-    session.addSessionStoreListener( new SessionStoreListener() {
-      public void beforeDestroy( SessionStoreEvent event ) {
+    uiSession.addUISessionListener( new UISessionListener() {
+      public void beforeDestroy( UISessionEvent event ) {
         invalidateThreadName[ 0 ] = Thread.currentThread().getName();
         hasContext[ 0 ] = ContextProvider.hasContext();
         serviceStore[ 0 ] = ContextProvider.getServiceStore();
@@ -725,13 +725,13 @@ public class RWTLifeCycle_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
     // Store some values for later comparison
-    IUIThreadHolder uiThreadHolder = LifeCycleUtil.getUIThread( session );
+    IUIThreadHolder uiThreadHolder = LifeCycleUtil.getUIThread( uiSession );
     String uiThreadName = uiThreadHolder.getThread().getName();
     // Invalidate session
-    invalidateSession( session );
+    invalidateSession( uiSession );
     //
     assertFalse( uiThreadHolder.getThread().isAlive() );
-    assertFalse( session.isBound() );
+    assertFalse( uiSession.isBound() );
     assertEquals( invalidateThreadName[ 0 ], uiThreadName );
     assertTrue( hasContext[ 0 ] );
     assertNotNull( serviceStore[ 0 ] );
@@ -753,13 +753,13 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testSessionInvalidateWithoutRunningEventLoop() throws Throwable {
-    final ISessionStore session = ContextProvider.getSessionStore();
+    final UISession uiSession = ContextProvider.getUISession();
     final String[] uiThreadName = { "unknown-ui-thread" };
     final String[] invalidateThreadName = { "unkown-invalidate-thread" };
     final boolean hasContext[] = new boolean[]{ false };
     final IServiceStore serviceStore[] = { null };
-    session.addSessionStoreListener( new SessionStoreListener() {
-      public void beforeDestroy( SessionStoreEvent event ) {
+    uiSession.addUISessionListener( new UISessionListener() {
+      public void beforeDestroy( UISessionEvent event ) {
         invalidateThreadName[ 0 ] = Thread.currentThread().getName();
         hasContext[ 0 ] = ContextProvider.hasContext();
         serviceStore[ 0 ] = ContextProvider.getServiceStore();
@@ -782,32 +782,32 @@ public class RWTLifeCycle_Test extends TestCase {
     } );
     lifeCycle.execute();
     // Invalidate session
-    invalidateSession( session );
+    invalidateSession( uiSession );
     //
-    assertFalse( session.isBound() );
+    assertFalse( uiSession.isBound() );
     assertEquals( uiThreadName[ 0 ], invalidateThreadName[ 0 ] );
     assertTrue( hasContext[ 0 ] );
     assertNotNull( serviceStore[ 0 ] );
   }
 
   public void testDisposeDisplayOnSessionTimeout() throws Throwable {
-    ISessionStore session = ContextProvider.getSessionStore();
+    UISession uiSession = ContextProvider.getUISession();
     ContextProvider.getContext().getApplicationContext();
     Class<? extends EntryPoint> clazz = DisposeDisplayOnSessionTimeoutEntryPoint.class;
     entryPointManager.register( EntryPointManager.DEFAULT_PATH, clazz, null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
-    invalidateSession( session );
+    invalidateSession( uiSession );
     assertEquals( "display disposed", log.toString() );
   }
 
   public void testOrderOfDisplayDisposeAndSessionUnbound() throws Throwable {
-    ISessionStore session = ContextProvider.getSessionStore();
+    UISession uiSession = ContextProvider.getUISession();
     Class<? extends EntryPoint> clazz = TestOrderOfDisplayDisposeAndSessionUnboundEntryPoint.class;
     entryPointManager.register( EntryPointManager.DEFAULT_PATH, clazz, null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
-    invalidateSession( session );
+    invalidateSession( uiSession );
     assertEquals( "disposeEvent, beforeDestroy", log.toString() );
   }
 
@@ -855,7 +855,7 @@ public class RWTLifeCycle_Test extends TestCase {
       }
       public void afterPhase( PhaseEvent event ) {
         currentThread[ 0 ] = Thread.currentThread();
-        uiThread[ 0 ] = LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() ).getThread();
+        uiThread[ 0 ] = LifeCycleUtil.getUIThread( ContextProvider.getUISession() ).getThread();
       }
     } );
 
@@ -869,15 +869,15 @@ public class RWTLifeCycle_Test extends TestCase {
     RWTLifeCycle lifeCycle = new RWTLifeCycle( ApplicationContextUtil.getInstance() );
     lifeCycle.execute();
 
-    Thread uiThread = LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() ).getThread();
+    Thread uiThread = LifeCycleUtil.getUIThread( ContextProvider.getUISession() ).getThread();
 
     assertNotNull( uiThread );
   }
 
-  private static void invalidateSession( final ISessionStore session ) throws Throwable {
+  private static void invalidateSession( final UISession uiSession ) throws Throwable {
     Runnable runnable = new Runnable() {
       public void run() {
-        session.getHttpSession().invalidate();
+        uiSession.getHttpSession().invalidate();
       }
     };
     Fixture.runInThread( runnable );
@@ -898,8 +898,8 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   private static UIThread getUIThread() {
-    ISessionStore session = ContextProvider.getSessionStore();
-    return ( UIThread )LifeCycleUtil.getUIThread( session );
+    UISession uiSession = ContextProvider.getUISession();
+    return ( UIThread )LifeCycleUtil.getUIThread( uiSession );
   }
 
   private static void fakeServletPath( String myEntryPoint ) {
@@ -1091,9 +1091,9 @@ public class RWTLifeCycle_Test extends TestCase {
           log.append( "disposeEvent, " );
         }
       } );
-      ISessionStore sessionStore = RWT.getSessionStore();
-      sessionStore.addSessionStoreListener( new SessionStoreListener() {
-        public void beforeDestroy( SessionStoreEvent event ) {
+      UISession uiSession = RWT.getUISession();
+      uiSession.addUISessionListener( new UISessionListener() {
+        public void beforeDestroy( UISessionEvent event ) {
           log.append( "beforeDestroy" );
         }
       } );

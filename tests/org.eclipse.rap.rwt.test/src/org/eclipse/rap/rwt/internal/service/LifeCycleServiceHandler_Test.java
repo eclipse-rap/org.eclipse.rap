@@ -39,7 +39,7 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -75,7 +75,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   public void testRequestSynchronization() throws InterruptedException {
     List<Thread> threads = new ArrayList<Thread>();
     // initialize session, see bug 344549
-    ContextProvider.getSessionStore();
+    ContextProvider.getUISession();
     ServiceContext context = ContextProvider.getContext();
     for( int i = 0; i < THREAD_COUNT; i++ ) {
       ServiceHandler syncHandler = new TestHandler( getLifeCycleFactory(), mockStartupPage() );
@@ -96,21 +96,21 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     assertEquals( expected, log.toString() );
   }
 
-  public void testSessionStoreClearedOnSessionRestart() throws IOException {
-    initializeSessionStore();
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    sessionStore.setAttribute( SESSION_STORE_ATTRIBUTE, new Object() );
+  public void testUISessionClearedOnSessionRestart() throws IOException {
+    initializeUISession();
+    UISession uiSession = ContextProvider.getUISession();
+    uiSession.setAttribute( SESSION_STORE_ATTRIBUTE, new Object() );
 
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
     service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
 
-    assertNull( sessionStore.getAttribute( SESSION_STORE_ATTRIBUTE ) );
+    assertNull( uiSession.getAttribute( SESSION_STORE_ATTRIBUTE ) );
   }
 
   public void testHttpSessionNotClearedOnSessionRestart() throws IOException {
-    initializeSessionStore();
-    HttpSession httpSession = ContextProvider.getSessionStore().getHttpSession();
+    initializeUISession();
+    HttpSession httpSession = ContextProvider.getUISession().getHttpSession();
     Object attribute = new Object();
     httpSession.setAttribute( HTTP_SESSION_ATTRIBUTE, attribute );
 
@@ -122,7 +122,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   }
 
   public void testRequestCounterAfterSessionRestart() throws IOException {
-    initializeSessionStore();
+    initializeUISession();
     RequestId.getInstance().nextRequestId();
     Integer versionBeforeRestart = RequestId.getInstance().nextRequestId();
 
@@ -137,17 +137,17 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   public void testApplicationContextAfterSessionRestart() throws IOException {
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
+    UISession uiSession = ContextProvider.getUISession();
     ApplicationContext applicationContext = ApplicationContextUtil.getInstance();
 
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
-    sessionStore = ContextProvider.getSessionStore();
-    assertSame( applicationContext, ApplicationContextUtil.get( sessionStore ) );
+    uiSession = ContextProvider.getUISession();
+    assertSame( applicationContext, ApplicationContextUtil.get( uiSession ) );
   }
 
   public void testRequestParametersAreBufferedAfterSessionRestart() throws IOException {
-    initializeSessionStore();
+    initializeUISession();
     Fixture.fakeNewGetRequest();
     Fixture.fakeRequestParam( "foo", "bar" );
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
@@ -166,7 +166,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
    * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=373084
    */
   public void testClearServiceStoreAfterSessionRestart() throws IOException {
-    initializeSessionStore();
+    initializeUISession();
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
@@ -179,7 +179,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   }
 
   public void testClearServiceStoreAfterSessionRestart_RestoreMessage() throws IOException {
-    initializeSessionStore();
+    initializeUISession();
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
@@ -316,11 +316,11 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     return mock( StartupPage.class );
   }
 
-  private void initializeSessionStore() {
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
+  private void initializeUISession() {
+    UISession uiSession = ContextProvider.getUISession();
     ServletContext servletContext = Fixture.getServletContext();
     ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    ApplicationContextUtil.set( sessionStore, applicationContext );
+    ApplicationContextUtil.set( uiSession, applicationContext );
   }
 
   private static void service( LifeCycleServiceHandler serviceHandler ) throws IOException {

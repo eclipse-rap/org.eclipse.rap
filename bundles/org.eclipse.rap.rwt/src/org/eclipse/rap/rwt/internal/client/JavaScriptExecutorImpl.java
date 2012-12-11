@@ -22,13 +22,13 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.service.SessionStoreEvent;
-import org.eclipse.rap.rwt.service.SessionStoreListener;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.swt.widgets.Display;
 
 
 public final class JavaScriptExecutorImpl implements
-  JavaScriptExecutor, PhaseListener, SessionStoreListener
+  JavaScriptExecutor, PhaseListener, UISessionListener
 {
 
   private static final String JSEXECUTOR_TYPE = "rwt.client.JavaScriptExecutor";
@@ -42,7 +42,7 @@ public final class JavaScriptExecutorImpl implements
     display = Display.getCurrent();
     codeBuilder = new StringBuilder();
     RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( this );
-    RWT.getSessionStore().addSessionStoreListener( this );
+    RWT.getUISession().addUISessionListener( this );
   }
 
   public void execute( String code ) {
@@ -71,10 +71,10 @@ public final class JavaScriptExecutorImpl implements
     return PhaseId.RENDER;
   }
 
-  ///////////////////////
-  // SessionStoreListener
+  ////////////////////
+  // UISessionListener
 
-  public void beforeDestroy( SessionStoreEvent event ) {
+  public void beforeDestroy( UISessionEvent event ) {
     RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
   }
 

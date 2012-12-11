@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
-import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
@@ -29,8 +29,8 @@ public class SingletonUtil_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
-    createSessionStore();
-    SingletonManager.install( ContextProvider.getSessionStore() );
+    createUISession();
+    SingletonManager.install( ContextProvider.getUISession() );
   }
 
   @Override
@@ -103,10 +103,10 @@ public class SingletonUtil_Test extends TestCase {
     }
   }
 
-  private static void createSessionStore() {
+  private static void createUISession() {
     ServiceContext serviceContext = ContextProvider.getContext();
     HttpSession session = serviceContext.getRequest().getSession();
-    serviceContext.setSessionStore( new SessionStoreImpl( session ) );
+    serviceContext.setUISession( new UISessionImpl( session ) );
   }
 
   private static class TestSingleton {

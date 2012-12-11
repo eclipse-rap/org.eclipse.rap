@@ -18,7 +18,7 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.swt.widgets.Widget;
 
@@ -47,20 +47,20 @@ public final class ThemeUtil {
    * @return the id of the current theme, never <code>null</code>
    */
   public static String getCurrentThemeId() {
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    return ( String )sessionStore.getAttribute( CURR_THEME_ATTR );
+    UISession uiSession = ContextProvider.getUISession();
+    return ( String )uiSession.getAttribute( CURR_THEME_ATTR );
   }
 
   /**
    * Sets the current theme to the theme identified by the given id.
-   * @param sessionStore TODO
+   * @param uiSession TODO
    * @param themeId the id of the theme to activate
    *
    * @throws IllegalArgumentException if no theme with the given id is
    *             registered
    */
-  public static void setCurrentThemeId( ISessionStore sessionStore, String themeId ) {
-    sessionStore.setAttribute( CURR_THEME_ATTR, themeId );
+  public static void setCurrentThemeId( UISession uiSession, String themeId ) {
+    uiSession.setAttribute( CURR_THEME_ATTR, themeId );
   }
 
   public static Theme getCurrentTheme() {

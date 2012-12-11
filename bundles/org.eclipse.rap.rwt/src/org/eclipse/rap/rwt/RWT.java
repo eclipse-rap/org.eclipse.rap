@@ -41,7 +41,7 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.service.IApplicationStore;
 import org.eclipse.rap.rwt.service.IServiceStore;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.ISettingStore;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.service.ServiceHandler;
@@ -55,18 +55,14 @@ import org.eclipse.swt.widgets.Widget;
 
 
 /**
- * This class provides access to aspects of RWT which are not
- * part of the SWT API as RAP needs some additions regarding
- * the server and client communication. It is responsible for
- * providing access to the {@link ISessionStore} and the
- * {@link HttpServletRequest}.
+ * This class provides access to those parts of RWT which are not covered by the SWT API. For
+ * example, it provides access to the current UI session and the request.
  *
  * @since 2.0
  * @see ILifeCycle
- * @see ISessionStore
+ * @see UISession
  * @see IServiceStore
  * @see IApplicationStore
- * @see BrowserHistory
  * @see ResourceManager
  * @see HttpServletRequest
  * @see HttpServletResponse
@@ -441,9 +437,9 @@ public final class RWT {
   }
 
   /**
-   * Returns the setting store instance for this session.
-   * @return a {@link ISettingStore}; never <code>null</code>
-   * @since 1.1
+   * Returns the setting store instance for the current UI session.
+   *
+   * @return the setting store, for the current session, never <code>null</code>
    */
   public static ISettingStore getSettingStore() {
     return RWTFactory.getSettingStoreManager().getStore();
@@ -461,13 +457,20 @@ public final class RWT {
   }
 
   /**
-   * Returns the <code>ISessionStore</code> of the <code>HttpSession</code>
-   * to which the currently processed request belongs.
+   * Returns the current UI session. This method must be executed from the UI thread.
    *
-   * @return instance of {@link ISessionStore}
+   * @return the current UI session instance, never <code>null</code>
    */
-  public static ISessionStore getSessionStore() {
-    return ContextProvider.getSessionStore();
+  public static UISession getUISession() {
+    return ContextProvider.getUISession();
+  }
+
+  /**
+   * @deprecated Use {@link #getUISession()} instead
+   */
+  @Deprecated
+  public static UISession getSessionStore() {
+    return ContextProvider.getUISession();
   }
 
   /**
@@ -484,11 +487,11 @@ public final class RWT {
   /**
    * Returns the <code>HttpServletRequest</code> that is currently processed.
    * <p>
-   * Typical application code rarely needs to call this method. It is meant mainly for
-   * service handlers obtain parameters of the request to process.
+   * Typical application code rarely needs to call this method. It can be used to obtain request
+   * details, e.g. certain request headers.
    * </p>
-   * @return instance of {@link HttpServletRequest}
-   * @see ServiceHandler
+   *
+   * @return the currently processed request
    */
   public static HttpServletRequest getRequest() {
     checkHasSessionContext();
@@ -496,16 +499,13 @@ public final class RWT {
   }
 
   /**
-   * Returns the <code>HttpServletResponse</code> that is mapped
-   * to the currently processed request.
+   * Returns the <code>HttpServletResponse</code> that will be sent to the client after processing
+   * the current request.
    * <p>
-   * Typical application code <em>never</em> needs to call this method. It is meant only for
-   * service handlers to be able to write output and control other aspects of the response.
-   * Calling this method from a UI request (e.g. in an  SWT event listener) is almost
-   * certainly an error.
+   * Typical application code <em>never</em> needs to call this method.
    * </p>
-   * @return instance of {@link HttpServletResponse}
-   * @see ServiceHandler
+   *
+   * @return the response object that will be sent to the client
    */
   public static HttpServletResponse getResponse() {
     checkHasSessionContext();
@@ -527,7 +527,7 @@ public final class RWT {
    */
   public static Locale getLocale() {
     checkHasSessionContext();
-    Locale result = ( Locale )ContextProvider.getSessionStore().getAttribute( LOCALE );
+    Locale result = ( Locale )ContextProvider.getUISession().getAttribute( LOCALE );
     if( result == null ) {
       result = ContextProvider.getRequest().getLocale();
     }
@@ -546,14 +546,14 @@ public final class RWT {
    */
   public static void setLocale( Locale locale ) {
     checkHasSessionContext();
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    sessionStore.setAttribute( LOCALE, locale );
+    UISession uiSession = ContextProvider.getUISession();
+    uiSession.setAttribute( LOCALE, locale );
   }
 
   /**
-   * Returns an instance of the browser history for the current session.
+   * Returns an instance of the browser history for the current UI session.
    *
-   * @return the browser history instance for the current session
+   * @return the browser history instance for the current UI session
    * @see BrowserHistory
    * @deprecated use {@link BrowserHistory} client service instead, see
    *             {@link Client#getService(Class)}
@@ -574,7 +574,6 @@ public final class RWT {
    * @throws SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the UI thread</li>
    * </ul>
-   * @since 1.3
    */
   public static void requestThreadExec( Runnable runnable ) {
     ParamCheck.notNull( runnable, "runnable" );
@@ -588,17 +587,16 @@ public final class RWT {
   }
 
   /**
-   * Returns a representation of the client that is connected with the server in the current
+   * Returns a representation of the client that is connected with the server in the current UI
    * session.
    *
-   * @return The client for the current session
+   * @return The client for the current UI session
    * @throws IllegalStateException when called outside of the request context
-   * @since 2.0
    */
   public static Client getClient() {
     ApplicationContext applicationContext = ApplicationContextUtil.getInstance();
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    return applicationContext.getClientSelector().getSelectedClient( sessionStore );
+    UISession uiSession = ContextProvider.getUISession();
+    return applicationContext.getClientSelector().getSelectedClient( uiSession );
   }
 
   private static void checkHasSessionContext() {

@@ -16,7 +16,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.client.Client;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 
 
 public class ClientSelector {
@@ -31,13 +31,13 @@ public class ClientSelector {
     clients.add( clientProvider );
   }
 
-  public void selectClient( HttpServletRequest request, ISessionStore sessionStore ) {
+  public void selectClient( HttpServletRequest request, UISession uiSession ) {
     ClientProvider provider = findClientProvider( request );
-    sessionStore.setAttribute( SELECTED_CLIENT, provider.getClient() );
+    uiSession.setAttribute( SELECTED_CLIENT, provider.getClient() );
   }
 
-  public Client getSelectedClient( ISessionStore sessionStore ) {
-    return ( Client )sessionStore.getAttribute( SELECTED_CLIENT );
+  public Client getSelectedClient( UISession uiSession ) {
+    return ( Client )uiSession.getAttribute( SELECTED_CLIENT );
   }
 
   public void activate() {

@@ -21,9 +21,9 @@ import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
 import org.eclipse.rap.rwt.service.IServiceStore;
-import org.eclipse.rap.rwt.service.ISessionStore;
-import org.eclipse.rap.rwt.service.SessionStoreEvent;
-import org.eclipse.rap.rwt.service.SessionStoreListener;
+import org.eclipse.rap.rwt.service.UISession;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 
@@ -180,8 +180,8 @@ public final class UICallBackManager implements SerializableCompatibility {
   }
 
   private static SessionTerminationListener attachSessionTerminationListener() {
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    SessionTerminationListener result = new SessionTerminationListener( sessionStore );
+    UISession uiSession = ContextProvider.getUISession();
+    SessionTerminationListener result = new SessionTerminationListener( uiSession );
     result.attach();
     return result;
   }
@@ -192,7 +192,7 @@ public final class UICallBackManager implements SerializableCompatibility {
 
   static boolean isSessionExpired( long requestStartTime, long currentTime ) {
     boolean result = false;
-    HttpSession httpSession = ContextProvider.getSessionStore().getHttpSession();
+    HttpSession httpSession = ContextProvider.getUISession().getHttpSession();
     int maxInactiveInterval = httpSession.getMaxInactiveInterval();
     if( maxInactiveInterval > 0 ) {
       result = currentTime > requestStartTime + maxInactiveInterval * 1000;
@@ -222,25 +222,25 @@ public final class UICallBackManager implements SerializableCompatibility {
   }
 
   private static class SessionTerminationListener
-    implements SessionStoreListener, SerializableCompatibility
+    implements UISessionListener, SerializableCompatibility
   {
     private transient final Thread currentThread;
-    private transient final ISessionStore sessionStore;
+    private transient final UISession uiSession;
 
-    private SessionTerminationListener( ISessionStore sessionStore ) {
-      this.sessionStore = sessionStore;
+    private SessionTerminationListener( UISession uiSession ) {
+      this.uiSession = uiSession;
       currentThread = Thread.currentThread();
     }
 
     public void attach() {
-      sessionStore.addSessionStoreListener( this );
+      uiSession.addUISessionListener( this );
     }
 
     public void detach() {
-      sessionStore.removeSessionStoreListener( this );
+      uiSession.removeUISessionListener( this );
     }
 
-    public void beforeDestroy( SessionStoreEvent event ) {
+    public void beforeDestroy( UISessionEvent event ) {
       currentThread.interrupt();
     }
   }

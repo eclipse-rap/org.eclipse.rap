@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Display;
 
 public class ServiceContext_Test extends TestCase {
 
-  private SessionStoreImpl sessionStore;
+  private UISessionImpl uiSession;
   private ApplicationContext applicationContext;
 
   @Override
@@ -43,7 +43,7 @@ public class ServiceContext_Test extends TestCase {
     when( servletContext.getRealPath( anyString() ) ).thenReturn( "" );
     applicationContext = new ApplicationContext( applicationConfiguration, servletContext );
     Fixture.setSkipResourceRegistration( true );
-    sessionStore = new SessionStoreImpl( new TestSession() );
+    uiSession = new UISessionImpl( new TestSession() );
   }
 
   @Override
@@ -58,13 +58,13 @@ public class ServiceContext_Test extends TestCase {
     ServiceContext context = createContext( applicationContext );
 
     ApplicationContext foundInContext = context.getApplicationContext();
-    ApplicationContext foundInSession = ApplicationContextUtil.get( sessionStore );
+    ApplicationContext foundInSession = ApplicationContextUtil.get( uiSession );
     assertSame( applicationContext, foundInContext );
     assertSame( applicationContext, foundInSession );
   }
 
-  public void testGetApplicationContextWithNullSessionStore() {
-    sessionStore = null;
+  public void testGetApplicationContextWithNullUISession() {
+    uiSession = null;
     ServiceContext context = createContext( applicationContext );
 
     ApplicationContext found = context.getApplicationContext();
@@ -72,19 +72,19 @@ public class ServiceContext_Test extends TestCase {
     assertSame( applicationContext, found );
   }
 
-  public void testGetApplicationContextFromSessionStore() {
+  public void testGetApplicationContextFromUISession() {
     ServiceContext context = createContext();
     applicationContext.activate();
-    ApplicationContextUtil.set( sessionStore, applicationContext );
+    ApplicationContextUtil.set( uiSession, applicationContext );
 
     ApplicationContext found = context.getApplicationContext();
 
     assertSame( applicationContext, found );
   }
 
-  public void testGetApplicationContextFromSessionStoreWithDeactivatedApplicationContext() {
+  public void testGetApplicationContextFromUISessionWithDeactivatedApplicationContext() {
     ServiceContext context = createContext();
-    ApplicationContextUtil.set( sessionStore, applicationContext );
+    ApplicationContextUtil.set( uiSession, applicationContext );
 
     ApplicationContext found = context.getApplicationContext();
 
@@ -134,15 +134,15 @@ public class ServiceContext_Test extends TestCase {
     request.setBody( Fixture.createEmptyMessage() );
     TestResponse response = new TestResponse();
     HttpSession session = new TestSession();
-    if( sessionStore != null ) {
-      session = sessionStore.getHttpSession();
+    if( uiSession != null ) {
+      session = uiSession.getHttpSession();
     }
     request.setSession( session );
     return createContext( request, response );
   }
 
   private ServiceContext createContext( TestRequest request, TestResponse response ) {
-    ServiceContext result = new ServiceContext( request, response, sessionStore );
+    ServiceContext result = new ServiceContext( request, response, uiSession );
     result.setServiceStore( new ServiceStore() );
     return result;
   }

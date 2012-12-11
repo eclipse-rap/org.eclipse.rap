@@ -133,7 +133,7 @@ public class Display_Test extends TestCase {
   public void testGetDefaultFromUIThread() {
     IUIThreadHolder uiThreadHolder = mock( IUIThreadHolder.class );
     when( uiThreadHolder.getThread() ).thenReturn( Thread.currentThread() );
-    LifeCycleUtil.setUIThread( RWT.getSessionStore(), uiThreadHolder );
+    LifeCycleUtil.setUIThread( RWT.getUISession(), uiThreadHolder );
 
     Display display = Display.getDefault();
 
@@ -144,7 +144,7 @@ public class Display_Test extends TestCase {
   public void testGetDefaultWithTerminatedUIThread() {
     IUIThreadHolder uiThreadHolder = mock( IUIThreadHolder.class );
     when( uiThreadHolder.getThread() ).thenReturn( Thread.currentThread() );
-    LifeCycleUtil.setUIThread( RWT.getSessionStore(), uiThreadHolder );
+    LifeCycleUtil.setUIThread( RWT.getUISession(), uiThreadHolder );
 
     Display display = Display.getDefault();
 
@@ -204,7 +204,7 @@ public class Display_Test extends TestCase {
   public void testGetDefaultWithDisposedDisplay() {
     IUIThreadHolder uiThreadHolder = mock( IUIThreadHolder.class );
     when( uiThreadHolder.getThread() ).thenReturn( Thread.currentThread() );
-    LifeCycleUtil.setUIThread( RWT.getSessionStore(), uiThreadHolder );
+    LifeCycleUtil.setUIThread( RWT.getUISession(), uiThreadHolder );
     Display display = new Display();
     display.dispose();
 

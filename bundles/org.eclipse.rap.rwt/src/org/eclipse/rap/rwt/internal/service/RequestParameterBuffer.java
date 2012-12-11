@@ -16,7 +16,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 
 
 /**
@@ -39,8 +39,8 @@ final class RequestParameterBuffer {
     //      Workaround for bug 265008
     // if( getBufferedParameters() == null ) {
     HashMap<String, String[]> buffer = new HashMap<String, String[]>( parameters );
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    sessionStore.setAttribute( BUFFER, buffer );
+    UISession uiSession = ContextProvider.getUISession();
+    uiSession.setAttribute( BUFFER, buffer );
     // }
   }
 
@@ -64,12 +64,12 @@ final class RequestParameterBuffer {
       ServiceContext context = ContextProvider.getContext();
       context.setRequest( wrappedRequest );
     }
-    ContextProvider.getSessionStore().removeAttribute( BUFFER );
+    ContextProvider.getUISession().removeAttribute( BUFFER );
   }
 
   @SuppressWarnings("unchecked")
   static Map<String, String[]> getBufferedParameters() {
-    return ( Map<String, String[]> )ContextProvider.getSessionStore().getAttribute( BUFFER );
+    return ( Map<String, String[]> )ContextProvider.getUISession().getAttribute( BUFFER );
   }
 
   private RequestParameterBuffer() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,8 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
-import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -32,23 +32,23 @@ public class ClusterTestHelper {
       field.set( null, Boolean.valueOf( enable ) );
     } catch( Exception e ) {
       throw new RuntimeException( "Failed to change enablement of UI Tests", e );
-    } 
+    }
   }
-  
-  public static HttpSession getFirstSession( IServletEngine servletEngine ) {
+
+  public static HttpSession getFirstHttpSession( IServletEngine servletEngine ) {
     return servletEngine.getSessions()[ 0 ];
   }
-  
-  public static ISessionStore getFirstSessionStore( IServletEngine servletEngine ) {
-    return getSessionStore( getFirstSession( servletEngine ) );
+
+  public static UISession getFirstUISession( IServletEngine servletEngine ) {
+    return getUISession( getFirstHttpSession( servletEngine ) );
   }
-  
-  public static ISessionStore getSessionStore( HttpSession httpSession ) {
-    return ( ISessionStore )httpSession.getAttribute( SessionStoreImpl.ATTR_SESSION_STORE );
+
+  public static UISession getUISession( HttpSession httpSession ) {
+    return ( UISession )httpSession.getAttribute( UISessionImpl.ATTR_SESSION_STORE );
   }
 
   public static Display getSessionDisplay( HttpSession httpSession ) {
-    return LifeCycleUtil.getSessionDisplay( getSessionStore( httpSession ) );
+    return LifeCycleUtil.getSessionDisplay( getUISession( httpSession ) );
   }
 
   private ClusterTestHelper() {

@@ -66,7 +66,7 @@ import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.service.IServiceStore;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
@@ -325,12 +325,12 @@ public final class Fixture {
   }
 
   public static void fakeClient( Client client ) {
-    ContextProvider.getSessionStore().setAttribute( ClientSelector.SELECTED_CLIENT, client );
+    ContextProvider.getUISession().setAttribute( ClientSelector.SELECTED_CLIENT, client );
   }
 
   public static void fakeRemoteObjectFactory( RemoteObjectFactory factory ) {
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    sessionStore.setAttribute( RemoteObjectFactory.class.getName() + "#instance", factory );
+    UISession uiSession = ContextProvider.getUISession();
+    uiSession.setAttribute( RemoteObjectFactory.class.getName() + "#instance", factory );
   }
 
   public static void fakeNewRequest( Display display ) {
@@ -717,8 +717,8 @@ public final class Fixture {
         return this;
       }
     };
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    LifeCycleUtil.setUIThread( sessionStore, result );
+    UISession uiSession = ContextProvider.getUISession();
+    LifeCycleUtil.setUIThread( uiSession, result );
     return result;
   }
 

@@ -25,7 +25,7 @@ public final class RequestId implements SerializableCompatibility {
   static final String REQUEST_COUNTER = "requestCounter";
 
   public static RequestId getInstance() {
-    HttpSession session = ContextProvider.getSessionStore().getHttpSession();
+    HttpSession session = ContextProvider.getUISession().getHttpSession();
     RequestId result = ( RequestId )session.getAttribute( ATTR_INSTANCE );
     if( result == null ) {
       result = new RequestId();

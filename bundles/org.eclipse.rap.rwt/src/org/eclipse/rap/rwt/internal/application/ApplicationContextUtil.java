@@ -19,7 +19,7 @@ import javax.servlet.ServletContext;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 
 
 public class ApplicationContextUtil {
@@ -52,14 +52,14 @@ public class ApplicationContextUtil {
     servletContext.removeAttribute( ATTR_APPLICATION_CONTEXT );
   }
 
-  public static void set( ISessionStore sessionStore, ApplicationContext applicationContext ) {
+  public static void set( UISession uiSession, ApplicationContext applicationContext ) {
     TransientValue transientValue = new TransientValue( applicationContext );
-    sessionStore.setAttribute( ATTR_APPLICATION_CONTEXT, transientValue );
+    uiSession.setAttribute( ATTR_APPLICATION_CONTEXT, transientValue );
   }
 
-  public static ApplicationContext get( ISessionStore sessionStore ) {
+  public static ApplicationContext get( UISession uiSession ) {
     ApplicationContext result = null;
-    TransientValue value = ( TransientValue )sessionStore.getAttribute( ATTR_APPLICATION_CONTEXT );
+    TransientValue value = ( TransientValue )uiSession.getAttribute( ATTR_APPLICATION_CONTEXT );
     if( value != null ) {
       result = ( ApplicationContext )value.getValue();
     }

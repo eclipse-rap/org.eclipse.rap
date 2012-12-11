@@ -24,30 +24,30 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 
 
-public class SessionStoreBuilder {
+public class UISessionBuilder {
 
   private final ApplicationContext applicationContext;
   private final HttpServletRequest request;
-  private final HttpSession session;
-  private final SessionStoreImpl sessionStore;
+  private final HttpSession httpSession;
+  private final UISessionImpl uiSession;
 
-  public SessionStoreBuilder( ApplicationContext applicationContext, HttpServletRequest request ) {
+  public UISessionBuilder( ApplicationContext applicationContext, HttpServletRequest request ) {
     this.applicationContext = applicationContext;
     this.request = request;
-    session = request.getSession( true );
-    sessionStore = new SessionStoreImpl( session );
+    httpSession = request.getSession( true );
+    uiSession = new UISessionImpl( httpSession );
   }
 
-  public ISessionStore buildSessionStore() {
-    SessionStoreImpl.attachInstanceToSession( session, sessionStore );
-    ApplicationContextUtil.set( sessionStore, applicationContext );
-    SingletonManager.install( sessionStore );
+  public UISession buildUISession() {
+    UISessionImpl.attachInstanceToSession( httpSession, uiSession );
+    ApplicationContextUtil.set( uiSession, applicationContext );
+    SingletonManager.install( uiSession );
     setCurrentTheme();
     selectClient();
-    return sessionStore;
+    return uiSession;
   }
 
   private void setCurrentTheme() {
@@ -55,14 +55,14 @@ public class SessionStoreBuilder {
     String themeId = properties.get( WebClient.THEME_ID );
     if( themeId != null && themeId.length() > 0 ) {
       verifyThemeId( themeId );
-      ThemeUtil.setCurrentThemeId( sessionStore, themeId );
+      ThemeUtil.setCurrentThemeId( uiSession, themeId );
     } else {
-      ThemeUtil.setCurrentThemeId( sessionStore, RWT.DEFAULT_THEME_ID );
+      ThemeUtil.setCurrentThemeId( uiSession, RWT.DEFAULT_THEME_ID );
     }
   }
 
   private void selectClient() {
-    applicationContext.getClientSelector().selectClient( request, sessionStore );
+    applicationContext.getClientSelector().selectClient( request, uiSession );
   }
 
   private void verifyThemeId( String themeId ) {

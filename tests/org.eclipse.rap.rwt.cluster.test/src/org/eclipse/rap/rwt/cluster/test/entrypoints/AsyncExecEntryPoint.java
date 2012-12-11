@@ -15,7 +15,7 @@ import java.io.Serializable;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.widgets.ClusteredSynchronizer;
 import org.eclipse.swt.widgets.Display;
 
@@ -40,8 +40,8 @@ public class AsyncExecEntryPoint implements EntryPoint {
     Thread.sleep( 400 );
   }
 
-  public static boolean wasRunnableExecuted( ISessionStore sessionStore ) {
-    return ATTRIBUTE_VALUE.equals( sessionStore.getAttribute( ATTRIBUTE_NAME ) ); 
+  public static boolean wasRunnableExecuted( UISession uiSession ) {
+    return ATTRIBUTE_VALUE.equals( uiSession.getAttribute( ATTRIBUTE_NAME ) ); 
   }
 
   public int createUI() {
@@ -60,7 +60,7 @@ public class AsyncExecEntryPoint implements EntryPoint {
     public void run() {
       UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
         public void run() {
-          RWT.getSessionStore().setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
+          RWT.getUISession().setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
         }
       } );
     }

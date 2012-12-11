@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2006 IBM Corporation and others.
+ * Copyright (c) 2002, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - adaptation for RAP
  *******************************************************************************/
 package org.eclipse.ui.internal.cheatsheets;
 
@@ -104,10 +105,10 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 	 */
 	public Image getImage(String key) {
       String attribute = CHEAT_SHEET_REGISTRY_INITIALIZED;
-      Boolean initialized = ( Boolean )RWT.getSessionStore().getAttribute( attribute );
+      Boolean initialized = ( Boolean )RWT.getUISession().getAttribute( attribute );
       if( initialized == null ) {
         initializeImageRegistry( getImageRegistry() );
-        RWT.getSessionStore().setAttribute( attribute, Boolean.TRUE );
+        RWT.getUISession().setAttribute( attribute, Boolean.TRUE );
       }
       Image image = getImageRegistry().get(key);
       return image;

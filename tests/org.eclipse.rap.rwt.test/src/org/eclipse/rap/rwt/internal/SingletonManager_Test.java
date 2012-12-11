@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,99 +21,71 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 
 
 public class SingletonManager_Test extends TestCase {
-  
-  private static class TestSingleton {
-  }
 
-  private static class OtherTestSingleton {
-  }
-  
-  private static class DependantTestSingleton {
-    
-    static ISessionStore currentSessionStore;
-    
-    private DependantTestSingleton() throws Throwable {
-      Runnable runnable = new Runnable() {
-        public void run() {
-          SingletonManager.getInstance( currentSessionStore ).getSingleton( TestSingleton.class );
-        }
-      };
-      Fixture.runInThread( runnable );
-    }
-  }
-  
-  private static class SerializableTestSingleton implements Serializable {
-    private static final long serialVersionUID = 1L;
-    Integer value;
-  }
-
-  private static class NonSerializableTestSingleton {
-  }
-  
-  private ISessionStore sessionStore;
+  private UISession uiSession;
 
   public void testInstallMultipleTimes() {
-    SingletonManager.install( sessionStore );
-    
+    SingletonManager.install( uiSession );
+
     try {
-      SingletonManager.install( sessionStore );
+      SingletonManager.install( uiSession );
       fail();
     } catch( IllegalStateException expected ) {
     }
   }
-  
+
   public void testGetInstanceAfterInstall() {
-    SingletonManager.install( sessionStore );
-    SingletonManager singletonManager = SingletonManager.getInstance( sessionStore );
-    
+    SingletonManager.install( uiSession );
+    SingletonManager singletonManager = SingletonManager.getInstance( uiSession );
+
     assertNotNull( singletonManager );
   }
-  
+
   public void testGetInstanceBeforeInstall() {
-    SingletonManager singletonManager = SingletonManager.getInstance( sessionStore );
+    SingletonManager singletonManager = SingletonManager.getInstance( uiSession );
     assertNull( singletonManager );
   }
-  
+
   public void testGetSingletonReturnsSameInstance() {
     SingletonManager instance1 = createSingletonManager();
-    SingletonManager instance2 = SingletonManager.getInstance( sessionStore );
+    SingletonManager instance2 = SingletonManager.getInstance( uiSession );
     assertSame( instance1, instance2 );
   }
-  
+
   public void testGetSingleton() {
     SingletonManager singletonManager = createSingletonManager();
-    
+
     Object singleton = singletonManager.getSingleton( TestSingleton.class );
-    
+
     assertNotNull( singleton );
   }
 
   public void testGetSingletonFromDifferentSessions() {
     SingletonManager singletonManager1 = createSingletonManager();
-    ISessionStore otherSessionStore = createSessionStore();
-    SingletonManager singletonManager2 = createSingletonManager( otherSessionStore );
-    
+    UISession otherUISession = createUISession();
+    SingletonManager singletonManager2 = createSingletonManager( otherUISession );
+
     Object singleton1 = singletonManager1.getSingleton( TestSingleton.class );
     Object singleton2 = singletonManager2.getSingleton( TestSingleton.class );
-    
+
     assertSame( TestSingleton.class, singleton1.getClass() );
     assertSame( TestSingleton.class, singleton2.getClass() );
     assertNotSame( singleton1, singleton2 );
   }
-  
+
   public void testGetSingletonWithSameType() {
     SingletonManager singletonManager = createSingletonManager();
     Object singleton1 = singletonManager.getSingleton( TestSingleton.class );
     Object singleton2 = singletonManager.getSingleton( TestSingleton.class );
-    
+
     assertSame( TestSingleton.class, singleton1.getClass() );
     assertSame( singleton1, singleton2 );
   }
@@ -122,20 +94,20 @@ public class SingletonManager_Test extends TestCase {
     SingletonManager singletonManager = createSingletonManager();
     Object singleton = singletonManager.getSingleton( TestSingleton.class );
     Object otherSingleton = singletonManager.getSingleton( OtherTestSingleton.class );
-    
+
     assertSame( TestSingleton.class, singleton.getClass() );
     assertSame( OtherTestSingleton.class, otherSingleton.getClass() );
     assertNotSame( singleton, otherSingleton );
   }
-  
+
   public void testGetSingletonFromConcurrentThreads() throws InterruptedException {
-    SingletonManager.install( sessionStore );
+    SingletonManager.install( uiSession );
     final Throwable[] problem = { null };
     final Set<Object> instances = Collections.synchronizedSet( new HashSet<Object>() );
     Runnable runnable = new Runnable() {
       public void run() {
         try {
-          SingletonManager singletonManager = SingletonManager.getInstance( sessionStore );
+          SingletonManager singletonManager = SingletonManager.getInstance( uiSession );
           Object singleton = singletonManager.getSingleton( TestSingleton.class );
           instances.add( singleton );
           Object otherSingleton = singletonManager.getSingleton( OtherTestSingleton.class );
@@ -147,37 +119,37 @@ public class SingletonManager_Test extends TestCase {
         }
       }
     };
-    
+
     Thread[] threads = Fixture.startThreads( 50, runnable );
     Fixture.joinThreads( threads );
-    
+
     assertNull( problem[ 0 ] );
     assertEquals( 2, instances.size() );
   }
-  
+
   public void testGetSingletonFromMultiThreadedNestedCalls() {
-    SingletonManager.install( sessionStore );
-    DependantTestSingleton.currentSessionStore = sessionStore;
-    SingletonManager singletonManager = SingletonManager.getInstance( sessionStore );
-    
+    SingletonManager.install( uiSession );
+    DependantTestSingleton.currentUISession = uiSession;
+    SingletonManager singletonManager = SingletonManager.getInstance( uiSession );
+
     Object singleton = singletonManager.getSingleton( DependantTestSingleton.class );
-    
+
     assertNotNull( singleton );
   }
-  
+
   public void testSerialize() throws Exception {
     SingletonManager singletonManager = createSingletonManager();
     Object instance = singletonManager.getSingleton( SerializableTestSingleton.class );
     SerializableTestSingleton singleton = ( SerializableTestSingleton )instance;
     singleton.value = new Integer( 4711 );
     SingletonManager deserialized = Fixture.serializeAndDeserialize( singletonManager );
-    
+
     instance = deserialized.getSingleton( SerializableTestSingleton.class );
     SerializableTestSingleton deserializedSingleton = ( SerializableTestSingleton )instance;
 
     assertEquals( singleton.value, deserializedSingleton.value );
   }
-  
+
   public void testSerializableWithNonSerializableSingleton() throws IOException {
     SingletonManager singletonManager = createSingletonManager();
     singletonManager.getSingleton( NonSerializableTestSingleton.class );
@@ -188,27 +160,57 @@ public class SingletonManager_Test extends TestCase {
     }
   }
 
+  @Override
   protected void setUp() throws Exception {
-    sessionStore = createSessionStore();
-  }
-  
-  protected void tearDown() throws Exception {
-    DependantTestSingleton.currentSessionStore = null;
+    uiSession = createUISession();
   }
 
-  private static ISessionStore createSessionStore() {
+  @Override
+  protected void tearDown() throws Exception {
+    DependantTestSingleton.currentUISession = null;
+  }
+
+  private static UISession createUISession() {
     TestRequest request = new TestRequest();
     HttpSession session = new TestSession();
     request.setSession( session );
-    return new SessionStoreImpl( session );
+    return new UISessionImpl( session );
   }
 
   private SingletonManager createSingletonManager() {
-    return createSingletonManager( sessionStore );
+    return createSingletonManager( uiSession );
   }
 
-  private static SingletonManager createSingletonManager( ISessionStore sessionStore ) {
-    SingletonManager.install( sessionStore );
-    return SingletonManager.getInstance( sessionStore );
+  private static SingletonManager createSingletonManager( UISession uiSession ) {
+    SingletonManager.install( uiSession );
+    return SingletonManager.getInstance( uiSession );
+  }
+
+  private static class TestSingleton {
+  }
+
+  private static class OtherTestSingleton {
+  }
+
+  private static class DependantTestSingleton {
+
+    static UISession currentUISession;
+
+    private DependantTestSingleton() throws Throwable {
+      Runnable runnable = new Runnable() {
+        public void run() {
+          SingletonManager.getInstance( currentUISession ).getSingleton( TestSingleton.class );
+        }
+      };
+      Fixture.runInThread( runnable );
+    }
+  }
+
+  private static class SerializableTestSingleton implements Serializable {
+    private static final long serialVersionUID = 1L;
+    Integer value;
+  }
+
+  private static class NonSerializableTestSingleton {
   }
 }

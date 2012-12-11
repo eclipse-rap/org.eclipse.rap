@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt;
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 
 
 /**
@@ -51,7 +51,7 @@ public final class SingletonUtil {
    */
   public static <T> T getSessionInstance( Class<T> type ) {
     ParamCheck.notNull( type, "type" );
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    return SingletonManager.getInstance( sessionStore ).getSingleton( type );
+    UISession uiSession = ContextProvider.getUISession();
+    return SingletonManager.getInstance( uiSession ).getSingleton( type );
   }
 }

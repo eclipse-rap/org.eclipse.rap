@@ -15,6 +15,7 @@ package org.eclipse.rap.rwt.client.service;
  * The JavaScriptExecuter service allows executing JavaScript code on the client.
  *
  * @since 2.0
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface JavaScriptExecutor extends ClientService {
 

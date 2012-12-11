@@ -47,15 +47,15 @@ public class ThemeUtil_Test extends TestCase {
   public void testSetCurrentTheme() throws Exception {
     Theme theme = createTheme( CUSTOM_THEME_ID );
     ThemeTestUtil.registerTheme( theme );
-    ThemeUtil.setCurrentThemeId( ContextProvider.getSessionStore(), CUSTOM_THEME_ID );
+    ThemeUtil.setCurrentThemeId( ContextProvider.getUISession(), CUSTOM_THEME_ID );
 
     assertEquals( CUSTOM_THEME_ID, ThemeUtil.getCurrentThemeId() );
     assertSame( RWTFactory.getThemeManager().getTheme( CUSTOM_THEME_ID ),
                 ThemeUtil.getCurrentTheme() );
   }
 
-  public void testSetCurrentThemeToUnknownId() throws Exception {
-    ThemeUtil.setCurrentThemeId( ContextProvider.getSessionStore(), "unknown.theme" );
+  public void testSetCurrentThemeToUnknownId() {
+    ThemeUtil.setCurrentThemeId( ContextProvider.getUISession(), "unknown.theme" );
 
     assertEquals( "unknown.theme", ThemeUtil.getCurrentThemeId() );
   }

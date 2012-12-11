@@ -33,14 +33,14 @@ import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.service.SessionStoreEvent;
-import org.eclipse.rap.rwt.service.SessionStoreListener;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
 
 public final class BrowserHistoryImpl
-  implements BrowserHistory, PhaseListener, SessionStoreListener
+  implements BrowserHistory, PhaseListener, UISessionListener
 {
 
   private final static String TYPE = "rwt.client.BrowserHistory";
@@ -59,7 +59,7 @@ public final class BrowserHistoryImpl
     entriesToAdd = new ArrayList<HistoryEntry>();
     listeners = new LinkedList<BrowserHistoryListener>();
     RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( this );
-    RWT.getSessionStore().addSessionStoreListener( this );
+    RWT.getUISession().addUISessionListener( this );
   }
 
   //////////////////
@@ -119,10 +119,10 @@ public final class BrowserHistoryImpl
     return PhaseId.ANY;
   }
 
-  ///////////////////////
-  // SessionStoreListener
+  ////////////////////
+  // UISessionListener
 
-  public void beforeDestroy( SessionStoreEvent event ) {
+  public void beforeDestroy( UISessionEvent event ) {
     RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
   }
 

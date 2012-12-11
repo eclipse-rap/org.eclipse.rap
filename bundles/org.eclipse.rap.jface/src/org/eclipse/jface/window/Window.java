@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - adaptation to RAP
  *******************************************************************************/
 package org.eclipse.jface.window;
 
@@ -19,7 +20,7 @@ import org.eclipse.jface.util.Geometry;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
@@ -1054,14 +1055,14 @@ public abstract class Window implements IShellProvider, Serializable {
 //			exceptionHandler = handler;
 //		}
 	    if( getExceptionHandler() instanceof DefaultExceptionHandler ) {
-	      ISessionStore session = ContextProvider.getSessionStore();
+	      UISession session = ContextProvider.getUISession();
 	      session.setAttribute( EXCEPTION_HANDLER, handler );
 	    }
 	}
 
 // RAP [if] Session scoped exceptionHandler
 	private static IExceptionHandler getExceptionHandler() {
-	  ISessionStore session = ContextProvider.getSessionStore();
+	  UISession session = ContextProvider.getUISession();
 	  IExceptionHandler result = ( IExceptionHandler )session.getAttribute( EXCEPTION_HANDLER );
       if( result == null ) {
         result = exceptionHandler;
@@ -1080,13 +1081,13 @@ public abstract class Window implements IShellProvider, Serializable {
     public static void setDefaultModalParent(IShellProvider provider) {
 // RAP [if] Session scoped defaultModalParent
 //        defaultModalParent = provider;
-        ISessionStore session = ContextProvider.getSessionStore();
+        UISession session = ContextProvider.getUISession();
         session.setAttribute( DEFAULT_MODAL_PARENT, provider );
     }
 
 // RAP [if] Session scoped defaultModalParent
     private static IShellProvider getDefaultModalParent() {
-        ISessionStore session = ContextProvider.getSessionStore();
+        UISession session = ContextProvider.getUISession();
         IShellProvider result = ( IShellProvider )session.getAttribute( DEFAULT_MODAL_PARENT );
         if( result == null ) {
           result = defaultModalParent;

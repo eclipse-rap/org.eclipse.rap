@@ -32,13 +32,13 @@ import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 
 
-public class SessionStoreBuilder_Test extends TestCase {
+public class UISessionBuilder_Test extends TestCase {
 
   private static final String CUSTOM_THEME_ID = "custom.theme.id";
 
@@ -48,41 +48,41 @@ public class SessionStoreBuilder_Test extends TestCase {
   private ApplicationConfiguration configuration;
   private ApplicationContext applicationContext;
 
-  public void testSessionStoreReferencesApplicationContext() {
+  public void testUISessionReferencesApplicationContext() {
     registerEntryPoint( null );
 
-    SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
-    ISessionStore sessionStore = builder.buildSessionStore();
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+    UISession uiSession = builder.buildUISession();
 
-    assertEquals( applicationContext, ApplicationContextUtil.get( sessionStore ) );
+    assertEquals( applicationContext, ApplicationContextUtil.get( uiSession ) );
   }
 
-  public void testSessionStoreIsAttachedToHttpSession() {
+  public void testUISessionIsAttachedToHttpSession() {
     registerEntryPoint( null );
 
-    SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
-    ISessionStore sessionStore = builder.buildSessionStore();
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+    UISession uiSession = builder.buildUISession();
 
-    assertSame( httpSession, sessionStore.getHttpSession() );
-    assertEquals( sessionStore, httpSession.getAttribute( SessionStoreImpl.ATTR_SESSION_STORE ) );
+    assertSame( httpSession, uiSession.getHttpSession() );
+    assertEquals( uiSession, httpSession.getAttribute( UISessionImpl.ATTR_SESSION_STORE ) );
   }
 
   public void testSingletonManagerIsInstalled() {
     registerEntryPoint( null );
 
-    SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
-    ISessionStore sessionStore = builder.buildSessionStore();
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+    UISession uiSession = builder.buildUISession();
 
-    assertSingletonManagerIsInstalled( sessionStore );
+    assertSingletonManagerIsInstalled( uiSession );
   }
 
   public void testDefaultThemeIsSelected() {
     registerEntryPoint( null );
 
-    SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
-    ISessionStore sessionStore = builder.buildSessionStore();
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+    UISession uiSession = builder.buildUISession();
 
-    assertEquals( RWT.DEFAULT_THEME_ID, sessionStore.getAttribute( ThemeUtil.CURR_THEME_ATTR ) );
+    assertEquals( RWT.DEFAULT_THEME_ID, uiSession.getAttribute( ThemeUtil.CURR_THEME_ATTR ) );
   }
 
   public void testCustomThemeIsSelected() {
@@ -93,10 +93,10 @@ public class SessionStoreBuilder_Test extends TestCase {
     properties.put( WebClient.THEME_ID, CUSTOM_THEME_ID );
     registerEntryPoint( properties );
 
-    SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
-    ISessionStore sessionStore = builder.buildSessionStore();
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+    UISession uiSession = builder.buildUISession();
 
-    assertEquals( CUSTOM_THEME_ID, sessionStore.getAttribute( ThemeUtil.CURR_THEME_ATTR ) );
+    assertEquals( CUSTOM_THEME_ID, uiSession.getAttribute( ThemeUtil.CURR_THEME_ATTR ) );
   }
 
   public void testFailsWithNonExistingThemeId() {
@@ -104,9 +104,9 @@ public class SessionStoreBuilder_Test extends TestCase {
     properties.put( WebClient.THEME_ID, "does.not.exist" );
     registerEntryPoint( properties );
 
-    SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
     try {
-      builder.buildSessionStore();
+      builder.buildUISession();
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -115,11 +115,11 @@ public class SessionStoreBuilder_Test extends TestCase {
   public void testClientIsSelected() {
     registerEntryPoint( null );
 
-    SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
-    ISessionStore sessionStore = builder.buildSessionStore();
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+    UISession uiSession = builder.buildUISession();
 
     ClientSelector clientSelector = applicationContext.getClientSelector();
-    assertNotNull( clientSelector.getSelectedClient( sessionStore ) );
+    assertNotNull( clientSelector.getSelectedClient( uiSession ) );
   }
 
   @Override
@@ -145,12 +145,12 @@ public class SessionStoreBuilder_Test extends TestCase {
     entryPointManager.register( EntryPointManager.DEFAULT_PATH, factory, properties );
   }
 
-  private void assertSingletonManagerIsInstalled( ISessionStore sessionStore ) {
-    Enumeration<String> attributeNames = sessionStore.getAttributeNames();
+  private void assertSingletonManagerIsInstalled( UISession uiSession ) {
+    Enumeration<String> attributeNames = uiSession.getAttributeNames();
     boolean found = false;
     while( !found && attributeNames.hasMoreElements() ) {
       String attributeName = attributeNames.nextElement();
-      if( sessionStore.getAttribute( attributeName ) instanceof SingletonManager ) {
+      if( uiSession.getAttribute( attributeName ) instanceof SingletonManager ) {
         found = true;
       }
     }

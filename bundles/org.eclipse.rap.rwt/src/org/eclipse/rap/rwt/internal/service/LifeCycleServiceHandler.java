@@ -34,7 +34,7 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 
 
@@ -57,8 +57,8 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   {
     // Do not use session store itself as a lock
     // see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=372946
-    SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSessionStore();
-    synchronized( sessionStore.getRequestLock() ) {
+    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    synchronized( uiSession.getRequestLock() ) {
       synchronizedService( request, response );
     }
   }
@@ -99,7 +99,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
       handleInvalidRequestCounter( response );
     } else {
       if( isSessionRestart() ) {
-        reinitializeSessionStore( request );
+        reinitializeUISession( request );
         reinitializeServiceStore();
       }
       RequestParameterBuffer.merge();
@@ -157,14 +157,14 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     writer.appendHead( PROP_MESSAGE, JsonValue.valueOf( errorMessage ) );
   }
 
-  private static void reinitializeSessionStore( HttpServletRequest request ) {
-    SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSessionStore();
+  private static void reinitializeUISession( HttpServletRequest request ) {
+    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
     Map<String, String[]> bufferedParameters = RequestParameterBuffer.getBufferedParameters();
-    ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
-    sessionStore.valueUnbound( null );
-    SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
-    sessionStore = ( SessionStoreImpl )builder.buildSessionStore();
-    ContextProvider.getContext().setSessionStore( sessionStore );
+    ApplicationContext applicationContext = ApplicationContextUtil.get( uiSession );
+    uiSession.valueUnbound( null );
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+    uiSession = ( UISessionImpl )builder.buildUISession();
+    ContextProvider.getContext().setUISession( uiSession );
     if( bufferedParameters != null ) {
       RequestParameterBuffer.store( bufferedParameters );
     }
@@ -190,13 +190,13 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   }
 
   static void markSessionStarted() {
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    sessionStore.setAttribute( SESSION_STARTED, Boolean.TRUE );
+    UISession uiSession = ContextProvider.getUISession();
+    uiSession.setAttribute( SESSION_STARTED, Boolean.TRUE );
   }
 
   private static boolean isSessionStarted() {
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    return Boolean.TRUE.equals( sessionStore.getAttribute( SESSION_STARTED ) );
+    UISession uiSession = ContextProvider.getUISession();
+    return Boolean.TRUE.equals( uiSession.getAttribute( SESSION_STARTED ) );
   }
 
   private static boolean hasInitializeParameter() {

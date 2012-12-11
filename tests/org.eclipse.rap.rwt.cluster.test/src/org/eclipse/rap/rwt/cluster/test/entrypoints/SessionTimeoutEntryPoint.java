@@ -35,7 +35,7 @@ public class SessionTimeoutEntryPoint implements EntryPoint {
     sessionInvalidated = false;
     UICallBack.activate( "foo" );
     new Display();
-    HttpSession httpSession = RWT.getSessionStore().getHttpSession();
+    HttpSession httpSession = RWT.getUISession().getHttpSession();
     httpSession.setAttribute( "listener", new SessionInvalidationListener() );
     httpSession.setMaxInactiveInterval( 1 );
     return 0;

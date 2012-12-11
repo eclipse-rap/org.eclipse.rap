@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ import javax.servlet.http.Cookie;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.ISettingStore;
 import org.eclipse.rap.rwt.service.ISettingStoreFactory;
 
@@ -26,16 +26,16 @@ public class SettingStoreManager {
   private static final int COOKIE_MAX_AGE_SEC = 3600 * 24 * 90; // 3 months
   private static long last = System.currentTimeMillis();
   private static int instanceCount;
-  
+
   private ISettingStoreFactory factory;
-  
+
   public synchronized ISettingStore getStore() {
-    ISessionStore session = ContextProvider.getSessionStore();
+    UISession uiSession = ContextProvider.getUISession();
     String storeId = getStoreId();
-    ISettingStore result = ( ISettingStore )session.getAttribute( storeId );
+    ISettingStore result = ( ISettingStore )uiSession.getAttribute( storeId );
     if( result == null ) {
       result = factory.createSettingStore( storeId );
-      session.setAttribute( storeId, result );
+      uiSession.setAttribute( storeId, result );
     }
     return result;
   }
@@ -74,9 +74,9 @@ public class SettingStoreManager {
   }
 
   private String getStoreId() {
-    ISessionStore session = ContextProvider.getSessionStore();
+    UISession uiSession = ContextProvider.getUISession();
     // 1. storeId stored in session? (implies cookie exists)
-    String result = ( String )session.getAttribute( COOKIE_NAME );
+    String result = ( String )uiSession.getAttribute( COOKIE_NAME );
     if( result == null ) {
       // 2. storeId stored in cookie?
       result = getStoreIdFromCookie();
@@ -92,7 +92,7 @@ public class SettingStoreManager {
       // (2+3) update storeId stored in session
       // Note: This attribute must be checked for validity to prevent attacks
       // like http://www.owasp.org/index.php/Cross-User_Defacement
-      session.setAttribute( COOKIE_NAME, result );
+      uiSession.setAttribute( COOKIE_NAME, result );
     }
     return result;
   }

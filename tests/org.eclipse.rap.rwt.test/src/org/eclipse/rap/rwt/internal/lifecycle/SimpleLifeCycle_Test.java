@@ -22,13 +22,13 @@ import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.service.ISessionStore;
-import org.eclipse.rap.rwt.service.SessionStoreEvent;
-import org.eclipse.rap.rwt.service.SessionStoreListener;
+import org.eclipse.rap.rwt.service.UISession;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener;
@@ -43,8 +43,8 @@ public class SimpleLifeCycle_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    ApplicationContextUtil.set( sessionStore, ApplicationContextUtil.getInstance() );
+    UISession uiSession = ContextProvider.getUISession();
+    ApplicationContextUtil.set( uiSession, ApplicationContextUtil.getInstance() );
     lifeCycle = new SimpleLifeCycle( ApplicationContextUtil.getInstance() );
   }
 
@@ -133,7 +133,7 @@ public class SimpleLifeCycle_Test extends TestCase {
 
     lifeCycle.execute();
 
-    assertNotNull( LifeCycleUtil.getSessionDisplay( ContextProvider.getSessionStore() ) );
+    assertNotNull( LifeCycleUtil.getSessionDisplay( ContextProvider.getUISession() ) );
   }
 
   public void testPhaseListenersHaveApplicationScope() throws Exception {
@@ -186,7 +186,7 @@ public class SimpleLifeCycle_Test extends TestCase {
       public void beforePhase( PhaseEvent event ) {
       }
       public void afterPhase( PhaseEvent event ) {
-        uiThread[ 0 ] = LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() ).getThread();
+        uiThread[ 0 ] = LifeCycleUtil.getUIThread( ContextProvider.getUISession() ).getThread();
       }
     } );
 
@@ -199,19 +199,19 @@ public class SimpleLifeCycle_Test extends TestCase {
     registerEntryPoint( TestEntryPoint.class );
     lifeCycle.execute();
 
-    IUIThreadHolder threadHolder = LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() );
+    IUIThreadHolder threadHolder = LifeCycleUtil.getUIThread( ContextProvider.getUISession() );
 
     assertNull( threadHolder );
   }
 
   public void testInvalidateDisposesDisplay() throws Throwable {
-    final ISessionStore sessionStore = ContextProvider.getSessionStore();
+    final UISession uiSession = ContextProvider.getUISession();
     Display display = new Display();
     lifeCycle.execute();
 
     Fixture.runInThread( new Runnable() {
       public void run() {
-        sessionStore.getHttpSession().invalidate();
+        uiSession.getHttpSession().invalidate();
       }
     } );
 
@@ -219,11 +219,11 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
 
   public void testSessionRestartDisposesDisplay() throws IOException {
-    final ISessionStore sessionStore = ContextProvider.getSessionStore();
+    final UISession uiSession = ContextProvider.getUISession();
     Display display = new Display();
     lifeCycle.execute();
 
-    sessionStore.getHttpSession().invalidate();
+    uiSession.getHttpSession().invalidate();
 
     assertTrue( display.isDisposed() );
   }
@@ -243,9 +243,9 @@ public class SimpleLifeCycle_Test extends TestCase {
     RWTFactory.getLifeCycleFactory().deactivate();
     RWTFactory.getLifeCycleFactory().activate();
     registerEntryPoint( TestEntryPoint.class );
-    final SessionStoreImpl sessionStore = ( SessionStoreImpl )RWT.getSessionStore();
-    sessionStore.addSessionStoreListener( new SessionStoreListener() {
-      public void beforeDestroy( SessionStoreEvent event ) {
+    final UISessionImpl uiSession = ( UISessionImpl )RWT.getUISession();
+    uiSession.addUISessionListener( new UISessionListener() {
+      public void beforeDestroy( UISessionEvent event ) {
         log[ 0 ] = ContextProvider.hasContext();
       }
     } );
@@ -254,9 +254,9 @@ public class SimpleLifeCycle_Test extends TestCase {
 
     Thread thread = new Thread( new Runnable() {
       public void run() {
-        sessionStore.getShutdownAdapter().interceptShutdown();
+        uiSession.getShutdownAdapter().interceptShutdown();
         // Prevents NPE in tearDown
-        sessionStore.setShutdownAdapter( null );
+        uiSession.setShutdownAdapter( null );
       }
     } );
     thread.setDaemon( true );

@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
@@ -20,13 +21,13 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 
 
 public final class FakeContextUtil {
-  
+
   private static final ClassLoader CLASS_LOADER = FakeContextUtil.class.getClassLoader();
   private static final HttpServletResponse RESPONSE_PROXY = newResponse();
   private static final Class<?> REQUEST_PROXY_CLASS = getRequestProxyClass();
@@ -34,7 +35,7 @@ public final class FakeContextUtil {
   private FakeContextUtil() {
     // prevent instantiation
   }
-  
+
   public static void runNonUIThreadWithFakeContext( Display display, Runnable runnable ) {
     // Don't replace local variables by method calls, since the context may
     // change during the methods execution.
@@ -56,8 +57,8 @@ public final class FakeContextUtil {
     boolean useFakeContext = !ContextProvider.hasContext();
     if( useFakeContext ) {
       IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
-      ISessionStore session = adapter.getSessionStore();
-      ContextProvider.setContext( createFakeContext( session ) );
+      UISession uiSession = adapter.getUISession();
+      ContextProvider.setContext( createFakeContext( uiSession ) );
     }
     try {
       runnable.run();
@@ -75,15 +76,15 @@ public final class FakeContextUtil {
     }
   }
 
-  public static ServiceContext createFakeContext( ISessionStore sessionStore ) {
-    HttpServletRequest request = newRequest( sessionStore );
-    ServiceContext result = new ServiceContext( request, RESPONSE_PROXY, sessionStore );
+  public static ServiceContext createFakeContext( UISession uiSession ) {
+    HttpServletRequest request = newRequest( uiSession );
+    ServiceContext result = new ServiceContext( request, RESPONSE_PROXY, uiSession );
     result.setServiceStore( new ServiceStore() );
     return result;
   }
 
-  private static HttpServletRequest newRequest( ISessionStore sessionStore ) {
-    InvocationHandler invocationHandler = new RequestInvocationHandler( sessionStore );
+  private static HttpServletRequest newRequest( UISession uiSession ) {
+    InvocationHandler invocationHandler = new RequestInvocationHandler( uiSession );
     Class[] paramTypes = new Class[] { InvocationHandler.class };
     Object[] paramValues = new Object[] { invocationHandler };
     Object proxy = ClassUtil.newInstance( REQUEST_PROXY_CLASS, paramTypes, paramValues );
@@ -108,16 +109,16 @@ public final class FakeContextUtil {
   }
 
   private static class RequestInvocationHandler implements InvocationHandler {
-    private final ISessionStore sessionStore;
-  
-    RequestInvocationHandler( ISessionStore sessionStore ) {
-      this.sessionStore = sessionStore;
+    private final UISession uiSession;
+
+    RequestInvocationHandler( UISession uiSession ) {
+      this.uiSession = uiSession;
     }
-  
+
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable {
       Object result;
       if( "getSession".equals( method.getName() ) ) {
-        result = sessionStore.getHttpSession();
+        result = uiSession.getHttpSession();
       } else if( "getLocale".equals( method.getName() ) ) {
         result = null;
       } else {
@@ -126,4 +127,5 @@ public final class FakeContextUtil {
       return result;
     }
   }
+
 }

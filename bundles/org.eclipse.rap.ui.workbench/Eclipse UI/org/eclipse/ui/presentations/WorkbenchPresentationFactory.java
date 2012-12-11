@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - adaptation for RAP
  *******************************************************************************/
 
 package org.eclipse.ui.presentations;
@@ -96,7 +97,7 @@ public class WorkbenchPresentationFactory extends AbstractPresentationFactory {
 //		new DefaultSimpleTabListener(result.getApiPreferences(),
 //				IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS,
 //				folder);
-//		TODO: needs SessionStoreListener too when activated
+//		TODO: needs UISessionListener too when activated
         // RAPEND: [bm] 
 		
         return result;

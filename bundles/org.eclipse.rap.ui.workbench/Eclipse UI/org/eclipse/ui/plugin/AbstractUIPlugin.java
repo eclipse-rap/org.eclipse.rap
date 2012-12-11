@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - adaptation for RAP
  *******************************************************************************/
 package org.eclipse.ui.plugin;
 
@@ -266,11 +267,11 @@ public abstract class AbstractUIPlugin extends Plugin {
     	    = AbstractUIPlugin.class.getName()
     	    + ".imageRegistry-"
     	    + getBundle().getSymbolicName();
-        ImageRegistry imageRegistry = ( ImageRegistry )RWT.getSessionStore().getAttribute( imageRegistryKey );
+        ImageRegistry imageRegistry = ( ImageRegistry )RWT.getUISession().getAttribute( imageRegistryKey );
         if( imageRegistry == null ) {
           imageRegistry = createImageRegistry();
           initializeImageRegistry( imageRegistry );
-          RWT.getSessionStore().setAttribute( imageRegistryKey, imageRegistry );
+          RWT.getUISession().setAttribute( imageRegistryKey, imageRegistry );
         }
         return imageRegistry;
     }

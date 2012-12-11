@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -23,7 +24,7 @@ import java.util.TimerTask;
 
 import org.eclipse.rap.rwt.internal.engine.PostDeserialization;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
@@ -158,17 +159,17 @@ final class TimerExecScheduler implements SerializableCompatibility {
 
   private class PostDeserializationValidation implements ObjectInputValidation {
     public void validateObject() throws InvalidObjectException {
-      ISessionStore sessionStore = getSessionStore();
-      PostDeserialization.addProcessor( sessionStore, new Runnable() {
+      UISession uiSession = getUISession();
+      PostDeserialization.addProcessor( uiSession, new Runnable() {
         public void run() {
           rescheduleTasks();
         }
       } );
     }
 
-    private ISessionStore getSessionStore() {
+    private UISession getUISession() {
       IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
-      return adapter.getSessionStore();
+      return adapter.getUISession();
     }
   }
 }

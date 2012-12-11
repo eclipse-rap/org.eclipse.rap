@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.preferences;
 
@@ -23,6 +24,7 @@ import org.eclipse.ui.internal.preferences.Base64;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
+
 /**
  * This node use the RWT setting store to persist its preferences.
  */
@@ -32,16 +34,16 @@ final class SessionPreferencesNode implements IEclipsePreferences {
   private static final String DOUBLE_PATH_SEPARATOR = "//"; //$NON-NLS-1$
   private static final String TRUE  = "true"; //$NON-NLS-1$
   private static final String FALSE = "false"; //$NON-NLS-1$
-  
+
   private final String name;
   private final IEclipsePreferences parent;
   private boolean isRemoved;
   /* cache the absolutePath once it has been computed */
   private String absolutePath;
-  
+
   private final Map children = new HashMap();    // !thread safe
-  
-  SessionPreferencesNode( final IEclipsePreferences parent, 
+
+  SessionPreferencesNode( final IEclipsePreferences parent,
                           final String name )
   {
     ParamCheck.notNull( parent, "parent" ); //$NON-NLS-1$
@@ -50,7 +52,7 @@ final class SessionPreferencesNode implements IEclipsePreferences {
     this.parent = parent;
     this.name = name;
   }
-  
+
   public void accept( final IPreferenceNodeVisitor visitor )
     throws BackingStoreException
   {
@@ -74,7 +76,7 @@ final class SessionPreferencesNode implements IEclipsePreferences {
     }
   }
 
-  public void addPreferenceChangeListener( 
+  public void addPreferenceChangeListener(
     final IPreferenceChangeListener listener )
   {
     checkRemoved();
@@ -92,7 +94,7 @@ final class SessionPreferencesNode implements IEclipsePreferences {
     } else if( path.indexOf( PATH_SEPARATOR ) > 0 ) { // "foo/bar/baz"
       int index = path.indexOf( PATH_SEPARATOR );
       String nodeName = path.substring( 0, index );
-      String rest = path.substring( index + 1, path.length() ); 
+      String rest = path.substring( index + 1, path.length() );
       result = getChild( nodeName, true ).node( rest );
     } else { // "foo"
       result = getChild( path, true );
@@ -103,7 +105,7 @@ final class SessionPreferencesNode implements IEclipsePreferences {
   public synchronized void removeNode() throws BackingStoreException {
     checkRemoved();
     // remove all preferences
-    clear(); 
+    clear();
     // remove all children
     Object[] childNodes = children.values().toArray();
     for( int i = 0; i < childNodes.length; i++ ) {
@@ -112,18 +114,18 @@ final class SessionPreferencesNode implements IEclipsePreferences {
         child.removeNode();
       }
     }
-    // remove from parent; this is ugly, because the interface 
+    // remove from parent; this is ugly, because the interface
     // Preference has no API for removing oneself from the parent.
     // In general the parent will be a SessionPreferencesNode.
     // The only case in the workbench where this is not true, is one level
     // below the root (i.e. at /session ), but the scope root must not
     // be removable (see IEclipsePreferences#removeNode())
     if( parent instanceof SessionPreferencesNode ) {
-      // this means: 
-      // (a) we know what kind of parent we have, and 
-      // (b) we are not the scope root, since that has a 
+      // this means:
+      // (a) we know what kind of parent we have, and
+      // (b) we are not the scope root, since that has a
       /// RootPreference as a parent
-      SessionPreferencesNode spnParent 
+      SessionPreferencesNode spnParent
         = ( ( SessionPreferencesNode ) parent );
       spnParent.children.remove( name );
       spnParent.fireNodeEvent( this, false );
@@ -142,7 +144,7 @@ final class SessionPreferencesNode implements IEclipsePreferences {
     }
   }
 
-  public void removePreferenceChangeListener( 
+  public void removePreferenceChangeListener(
     final IPreferenceChangeListener listener )
   {
     checkRemoved();
@@ -155,7 +157,7 @@ final class SessionPreferencesNode implements IEclipsePreferences {
         absolutePath = name;
       } else {
         String parentPath =  parent.absolutePath();
-        absolutePath = parentPath.endsWith( PATH_SEPARATOR ) 
+        absolutePath = parentPath.endsWith( PATH_SEPARATOR )
                      ? parentPath + name
                      : parentPath + PATH_SEPARATOR + name;
       }
@@ -179,7 +181,7 @@ final class SessionPreferencesNode implements IEclipsePreferences {
 
   public void flush() {
     checkRemoved();
-    // the current implementation persists everytime the preferences 
+    // the current implementation persists everytime the preferences
     // are modified, so there's nothing to do here
   }
 
@@ -273,8 +275,8 @@ final class SessionPreferencesNode implements IEclipsePreferences {
     return name;
   }
 
-  public synchronized boolean nodeExists( final String path ) 
-    throws BackingStoreException 
+  public synchronized boolean nodeExists( final String path )
+    throws BackingStoreException
   {
     boolean result;
     if( "".equals( path ) ) { //$NON-NLS-1$
@@ -287,7 +289,7 @@ final class SessionPreferencesNode implements IEclipsePreferences {
       } else if( path.indexOf( PATH_SEPARATOR ) > 0 ) { // "foo/bar/baz"
         int index = path.indexOf( PATH_SEPARATOR );
         String nodeName = path.substring( 0, index );
-        String rest = path.substring( index + 1, path.length() ); 
+        String rest = path.substring( index + 1, path.length() );
         SessionPreferencesNode child = getChild( nodeName, false );
         result = child == null ? false : child.nodeExists( rest );
       } else { // "foo"
@@ -392,14 +394,15 @@ final class SessionPreferencesNode implements IEclipsePreferences {
       throw new BackingStoreException( "Failed to sync() node", sse ); //$NON-NLS-1$
     }
   }
-  
+
+  @Override
   public String toString() {
     return absolutePath() + "@" + hashCode(); //$NON-NLS-1$
   }
-  
+
   //////////////////
   // helping methods
-  
+
   private void checkName( final String nodeName ) {
     if( nodeName.indexOf( PATH_SEPARATOR ) != -1 ) {
       String unboundMsg = "Name ''{0}'' cannot contain or end with ''{1}''"; //$NON-NLS-1$
@@ -420,42 +423,42 @@ final class SessionPreferencesNode implements IEclipsePreferences {
       throw new IllegalArgumentException( msg );
     }
   }
-  
+
   private synchronized void checkRemoved() {
     if( isRemoved ) {
       String msg = "node ''{0}'' has been removed"; //$NON-NLS-1$
-      throw new IllegalStateException( NLS.bind( msg, this.absolutePath() ) );
+      throw new IllegalStateException( NLS.bind( msg, absolutePath() ) );
     }
   }
-  
-  private synchronized SessionPreferencesNode createChild( 
+
+  private synchronized SessionPreferencesNode createChild(
     final String childName )
   {
-    SessionPreferencesNode result 
+    SessionPreferencesNode result
       = new SessionPreferencesNode( this, childName );
     children.put( childName, result );
     fireNodeEvent( result, true );
     return result;
   }
-  
-  private synchronized SessionPreferencesNode getChild( 
-    final String childName, 
-    final boolean doCreate ) 
+
+  private synchronized SessionPreferencesNode getChild(
+    final String childName,
+    final boolean doCreate )
   {
-    SessionPreferencesNode result 
+    SessionPreferencesNode result
       = ( SessionPreferencesNode )children.get( childName );
     if( result == null && doCreate ) {
       result = createChild( childName );
     }
     return result;
   }
-  
+
   private String[] internalGetKeys() {
     List result = new ArrayList();
 
     String prefix = absolutePath() + PATH_SEPARATOR;
     int prefixLength = prefix.length();
-    
+
     Enumeration attrNames = RWT.getSettingStore().getAttributeNames();
     while( attrNames.hasMoreElements() ) {
       String attr = ( String )attrNames.nextElement();
@@ -474,35 +477,35 @@ final class SessionPreferencesNode implements IEclipsePreferences {
     }
     return result;
   }
-  
+
   private String internalGet( final String key ) {
     ISettingStore store = RWT.getSettingStore();
     String uniqueKey = absolutePath() + PATH_SEPARATOR + key;
     return store.getAttribute( uniqueKey );
   }
 
-  private synchronized String internalPut( final String key, 
+  private synchronized String internalPut( final String key,
                                            final String value ) {
     String uniqueKey = absolutePath() + PATH_SEPARATOR + key;
     return getNodeCore().put( uniqueKey, value );
   }
-  
+
   private void fireNodeEvent( final Preferences child,
                               final boolean wasAdded ) {
     getNodeCore().fireNodeEvent( child, wasAdded, this );
   }
-  
+
   private SessionPreferenceNodeCore getNodeCore() {
     SessionPreferenceNodeCore result;
     final String key = absolutePath();
-    Object object = RWT.getSessionStore().getAttribute( key );
+    Object object = RWT.getUISession().getAttribute( key );
     if( object instanceof SessionPreferenceNodeCore ) {
       result = ( SessionPreferenceNodeCore )object;
     } else {
       result = new SessionPreferenceNodeCore( this );
-      RWT.getSessionStore().setAttribute( key, result );
+      RWT.getUISession().setAttribute( key, result );
     }
     return result;
   }
-  
+
 }

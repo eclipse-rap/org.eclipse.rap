@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,57 +16,58 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
-import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 
 
 public class FakeContextUtil_Test extends TestCase {
-  
-  private SessionStoreImpl sessionStore;
+
+  private UISessionImpl uiSession;
 
   public void testGetSessionOnFakedRequest() {
-    ServiceContext serviceContext = FakeContextUtil.createFakeContext( sessionStore );
-    
+    ServiceContext serviceContext = FakeContextUtil.createFakeContext( uiSession );
+
     HttpServletRequest request = serviceContext.getRequest();
-    
-    assertSame( request.getSession(), sessionStore.getHttpSession() );
-    assertSame( request.getSession( true ), sessionStore.getHttpSession() );
-    assertSame( request.getSession( false ), sessionStore.getHttpSession() );
+
+    assertSame( request.getSession(), uiSession.getHttpSession() );
+    assertSame( request.getSession( true ), uiSession.getHttpSession() );
+    assertSame( request.getSession( false ), uiSession.getHttpSession() );
   }
-  
+
   public void testGetLocaleOnFakedRequest() {
-    ServiceContext serviceContext = FakeContextUtil.createFakeContext( sessionStore );
-    
+    ServiceContext serviceContext = FakeContextUtil.createFakeContext( uiSession );
+
     HttpServletRequest request = serviceContext.getRequest();
-    
+
     assertNull( request.getLocale() );
   }
-  
-  public void testFakedRequest() throws Exception {
-    ServiceContext serviceContext = FakeContextUtil.createFakeContext( sessionStore );
+
+  public void testFakedRequest() {
+    ServiceContext serviceContext = FakeContextUtil.createFakeContext( uiSession );
     HttpServletRequest request = serviceContext.getRequest();
     try {
       request.getAuthType();
     } catch( UnsupportedOperationException expected ) {
     }
   }
-  
+
   public void testFakedResponse() throws Exception {
-    ServiceContext serviceContext = FakeContextUtil.createFakeContext( sessionStore );
+    ServiceContext serviceContext = FakeContextUtil.createFakeContext( uiSession );
     HttpServletResponse response = serviceContext.getResponse();
     try {
       response.flushBuffer();
     } catch( UnsupportedOperationException expected ) {
     }
   }
-  
+
   public void testFakedServiceStore() {
-    ServiceContext serviceContext = FakeContextUtil.createFakeContext( sessionStore );
+    ServiceContext serviceContext = FakeContextUtil.createFakeContext( uiSession );
 
     assertNotNull( serviceContext.getServiceStore() );
   }
-  
+
+  @Override
   protected void setUp() throws Exception {
-    sessionStore = new SessionStoreImpl( new TestSession() );
+    uiSession = new UISessionImpl( new TestSession() );
   }
 }

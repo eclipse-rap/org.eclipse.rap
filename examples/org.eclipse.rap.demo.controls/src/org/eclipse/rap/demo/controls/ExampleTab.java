@@ -462,7 +462,7 @@ abstract class ExampleTab implements Serializable {
               }
             }
             String newThemeId = availableThemeIds[ index ];
-            ThemeUtil.setCurrentThemeId( ContextProvider.getSessionStore(), newThemeId );
+            ThemeUtil.setCurrentThemeId( ContextProvider.getUISession(), newThemeId );
           }
         } );
         shell.pack();

@@ -17,7 +17,7 @@ import java.util.Map;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 
@@ -26,13 +26,13 @@ public class SingletonManager implements SerializableCompatibility {
   private static final String ATTR_SINGLETON_MANAGER
     = SingletonManager.class.getName() + "#instance";
 
-  public static void install( ISessionStore sessionStore ) {
-    checkNotInstalled( sessionStore );
-    sessionStore.setAttribute( ATTR_SINGLETON_MANAGER, new SingletonManager() );
+  public static void install( UISession uiSession ) {
+    checkNotInstalled( uiSession );
+    uiSession.setAttribute( ATTR_SINGLETON_MANAGER, new SingletonManager() );
   }
 
-  public static SingletonManager getInstance( ISessionStore sessionStore ) {
-    return ( SingletonManager )sessionStore.getAttribute( ATTR_SINGLETON_MANAGER );
+  public static SingletonManager getInstance( UISession uiSession ) {
+    return ( SingletonManager )uiSession.getAttribute( ATTR_SINGLETON_MANAGER );
   }
 
   private final Map<Class,Object> singletons;
@@ -68,9 +68,9 @@ public class SingletonManager implements SerializableCompatibility {
     return result;
   }
 
-  private static void checkNotInstalled( ISessionStore sessionStore ) {
-    if( getInstance( sessionStore ) != null ) {
-      String msg = "SingletonManager already installed for session: " + sessionStore.getId();
+  private static void checkNotInstalled( UISession uiSession ) {
+    if( getInstance( uiSession ) != null ) {
+      String msg = "SingletonManager already installed for session: " + uiSession.getId();
       throw new IllegalStateException( msg );
     }
   }

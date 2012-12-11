@@ -14,19 +14,20 @@ package org.eclipse.rap.rwt.service;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 
+
 /**
- * <code>SessionStoreListener</code>s are
- * used to get notifications before the session store is destroyed.
+ * <code>UISessionListener</code>s can be attached to a UI session to receive a notification before
+ * the UI session is destroyed.
  *
  * @since 2.0
  */
-public interface SessionStoreListener extends SerializableCompatibility {
+public interface UISessionListener extends SerializableCompatibility {
 
   /**
-   * Notification callback before the session store of interest is
-   * destroyed.
+   * Called <em>before</em> the related UI session is destroyed.
    *
-   * @param event the {@link SessionStoreEvent}
+   * @param event an event that provides access to the UI session
    */
-  void beforeDestroy( SessionStoreEvent event );
+  void beforeDestroy( UISessionEvent event );
+
 }

@@ -18,13 +18,16 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
-import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 
 
@@ -69,13 +72,31 @@ public class StartupJson {
     ThemeManager themeManager = RWTFactory.getThemeManager();
     Theme fallbackTheme = themeManager.getTheme( ThemeManager.FALLBACK_THEME_ID );
     appendLoadTheme( writer, METHOD_LOAD_FALLBACK_THEME, fallbackTheme );
-    appendLoadTheme( writer, METHOD_LOAD_ACTIVE_THEME, ThemeUtil.getCurrentTheme() );
+    // Get current theme from the entry point registration - see bug 396065
+    Theme currentTheme = themeManager.getTheme( getCurrentThemeId() );
+    appendLoadTheme( writer, METHOD_LOAD_ACTIVE_THEME, currentTheme );
   }
 
   private static void appendLoadTheme( ProtocolMessageWriter writer, String method, Theme theme ) {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "url", theme.getRegisteredLocation() );
     writer.appendCall( THEME_STORE_TYPE, method, properties );
+  }
+
+  private static String getCurrentThemeId() {
+    String result = RWT.DEFAULT_THEME_ID;
+    ThemeManager themeManager = RWTFactory.getThemeManager();
+    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
+    String servletPath = ContextProvider.getRequest().getServletPath();
+    EntryPointRegistration registration = entryPointManager.getRegistrationByPath( servletPath );
+    if( registration != null ) {
+      Map<String, String> properties = registration.getProperties();
+      String themeId = properties.get( WebClient.THEME_ID );
+      if( themeId != null && themeId.length() > 0 && themeManager.hasTheme( themeId ) ) {
+        result = themeId;
+      }
+    }
+    return result;
   }
 
   private static String getUrl() {

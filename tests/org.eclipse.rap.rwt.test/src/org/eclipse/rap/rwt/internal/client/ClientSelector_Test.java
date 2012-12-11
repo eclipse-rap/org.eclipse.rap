@@ -20,8 +20,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
-import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 
@@ -29,12 +29,12 @@ import org.eclipse.rap.rwt.testfixture.TestSession;
 public class ClientSelector_Test extends TestCase {
 
   private ClientSelector clientSelector;
-  private ISessionStore sessionStore;
+  private UISession uiSession;
 
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    sessionStore = new SessionStoreImpl( new TestSession() );
+    uiSession = new UISessionImpl( new TestSession() );
     clientSelector = new ClientSelector();
   }
 
@@ -44,21 +44,21 @@ public class ClientSelector_Test extends TestCase {
   }
 
   public void testNoClientSelectedByDefault() {
-    assertNull( clientSelector.getSelectedClient( sessionStore ) );
+    assertNull( clientSelector.getSelectedClient( uiSession ) );
   }
 
   public void testSelectsMatchingClient() {
     Client client = mock( Client.class );
     clientSelector.addClientProvider( mockClientProvider( true, client ) );
 
-    clientSelector.selectClient( mockRequest(), sessionStore );
+    clientSelector.selectClient( mockRequest(), uiSession );
 
-    assertSame( client, clientSelector.getSelectedClient( sessionStore ) );
+    assertSame( client, clientSelector.getSelectedClient( uiSession ) );
   }
 
   public void testSelectFailsWithoutClientProviders() {
     try {
-      clientSelector.selectClient( mockRequest(), sessionStore );
+      clientSelector.selectClient( mockRequest(), uiSession );
       fail();
     } catch( IllegalStateException exception ) {
       assertEquals( "No client provider found for request", exception.getMessage() );
@@ -69,7 +69,7 @@ public class ClientSelector_Test extends TestCase {
     clientSelector.addClientProvider( mockClientProvider( false, null ) );
 
     try {
-      clientSelector.selectClient( mockRequest(), sessionStore );
+      clientSelector.selectClient( mockRequest(), uiSession );
       fail();
     } catch( Exception exception ) {
       assertEquals( "No client provider found for request", exception.getMessage() );
@@ -82,17 +82,17 @@ public class ClientSelector_Test extends TestCase {
     clientSelector.addClientProvider( mockClientProvider( true, expected ) );
     clientSelector.addClientProvider( mockClientProvider( true, mock( Client.class ) ) );
 
-    clientSelector.selectClient( mockRequest(), sessionStore );
+    clientSelector.selectClient( mockRequest(), uiSession );
 
-    assertSame( expected, clientSelector.getSelectedClient( sessionStore ) );
+    assertSame( expected, clientSelector.getSelectedClient( uiSession ) );
   }
 
   public void testActivateInstallsWebClientProvider() {
     clientSelector.activate();
 
-    clientSelector.selectClient( mockRequest(), sessionStore );
+    clientSelector.selectClient( mockRequest(), uiSession );
 
-    assertTrue( clientSelector.getSelectedClient( sessionStore ) instanceof WebClient );
+    assertTrue( clientSelector.getSelectedClient( uiSession ) instanceof WebClient );
   }
 
   public void testWebClientDoesNotOverrideOthers() {
@@ -100,18 +100,18 @@ public class ClientSelector_Test extends TestCase {
     clientSelector.addClientProvider( mockClientProvider( true, client ) );
     clientSelector.activate();
 
-    clientSelector.selectClient( mockRequest(), sessionStore );
+    clientSelector.selectClient( mockRequest(), uiSession );
 
-    assertSame( client, clientSelector.getSelectedClient( sessionStore ) );
+    assertSame( client, clientSelector.getSelectedClient( uiSession ) );
   }
 
   public void testFallbackToWebClient() {
     clientSelector.addClientProvider( mockClientProvider( false, null ) );
     clientSelector.activate();
 
-    clientSelector.selectClient( mockRequest(), sessionStore );
+    clientSelector.selectClient( mockRequest(), uiSession );
 
-    assertTrue( clientSelector.getSelectedClient( sessionStore ) instanceof WebClient );
+    assertTrue( clientSelector.getSelectedClient( uiSession ) instanceof WebClient );
   }
 
   public void testCannotActivateTwice() {

@@ -33,9 +33,9 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.service.ISessionStore;
-import org.eclipse.rap.rwt.service.SessionStoreEvent;
-import org.eclipse.rap.rwt.service.SessionStoreListener;
+import org.eclipse.rap.rwt.service.UISession;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestLogger;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
@@ -219,7 +219,7 @@ public class RWTLifeCycle2_Test extends TestCase {
    * 354368: Occasional exception on refresh (F5)
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=354368
    */
-  public void testClearSessionStoreOnSessionRestart() throws Exception {
+  public void testClearUISessionOnSessionRestart() throws Exception {
     TestRequest request;
     Class<? extends EntryPoint> entryPointClass = TestEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPointClass, null );
@@ -242,19 +242,19 @@ public class RWTLifeCycle2_Test extends TestCase {
     // ensures that no exceptions has been thrown
   }
 
-  public void testGetRequestDoesNotClearSessionStore() throws Exception {
+  public void testGetRequestDoesNotClearUISession() throws Exception {
     Class<? extends EntryPoint> entryPoint = TestEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
     // inital GET request
     runRWTDelegate( newGetRequest() );
     // inital POST request starts the UI thread
     runRWTDelegate( newPostRequest( true ) );
-    ContextProvider.getSessionStore().setAttribute( "dummy", Boolean.TRUE );
+    ContextProvider.getUISession().setAttribute( "dummy", Boolean.TRUE );
 
     // subsequent GET request should not run the lifecycle
     runRWTDelegate( newGetRequest() );
 
-    assertEquals( Boolean.TRUE, ContextProvider.getSessionStore().getAttribute( "dummy" ) );
+    assertEquals( Boolean.TRUE, ContextProvider.getUISession().getAttribute( "dummy" ) );
   }
 
   public void testGetRequestAlwaysReturnsHtml() throws Exception {
@@ -290,8 +290,8 @@ public class RWTLifeCycle2_Test extends TestCase {
    * listener beforeDestroy method.
    * see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=372946
    */
-  public void testGetLockOnSessionStore() throws Exception {
-    Class<? extends EntryPoint> entryPoint = EntryPointWithSynchronizationOnSessionStore.class;
+  public void testGetLockOnUISession() throws Exception {
+    Class<? extends EntryPoint> entryPoint = EntryPointWithSynchronizationOnUISession.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
     // inital POST request starts the UI thread
     runRWTDelegate( newPostRequest( true ) );
@@ -351,7 +351,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   }
 
   private void registerTestLogger() {
-    session = ContextProvider.getSessionStore().getHttpSession();
+    session = ContextProvider.getUISession().getHttpSession();
     ServletContext servletContext = session.getServletContext();
     TestServletContext servletContextImpl = ( TestServletContext )servletContext;
     servletContextImpl.setLogger( new TestLogger() {
@@ -379,7 +379,7 @@ public class RWTLifeCycle2_Test extends TestCase {
         maliciousButton.addSelectionListener( new SelectionAdapter() {
           @Override
           public void widgetSelected( SelectionEvent e ) {
-            HttpSession httpSession = RWT.getSessionStore().getHttpSession();
+            HttpSession httpSession = RWT.getUISession().getHttpSession();
             httpSession.setAttribute( TEST_SESSION_ATTRIBUTE, new Object() );
             throw new RuntimeException( EXCEPTION_MSG );
           }
@@ -468,9 +468,9 @@ public class RWTLifeCycle2_Test extends TestCase {
             eventLog.add(  event );
           }
         } );
-        ISessionStore sessionStore = RWT.getSessionStore();
-        sessionStore.addSessionStoreListener( new SessionStoreListener() {
-          public void beforeDestroy( SessionStoreEvent event ) {
+        UISession uiSession = RWT.getUISession();
+        uiSession.addUISessionListener( new UISessionListener() {
+          public void beforeDestroy( UISessionEvent event ) {
             shell.dispose();
           }
         } );
@@ -489,15 +489,15 @@ public class RWTLifeCycle2_Test extends TestCase {
     }
   }
 
-  public static final class EntryPointWithSynchronizationOnSessionStore implements EntryPoint {
+  public static final class EntryPointWithSynchronizationOnUISession implements EntryPoint {
     public int createUI() {
       Display display = new Display();
       Shell shell = new Shell( display );
-      final ISessionStore sessionStore = RWT.getSessionStore();
-      sessionStore.addSessionStoreListener( new SessionStoreListener() {
-        public void beforeDestroy( SessionStoreEvent event ) {
-          synchronized( sessionStore ) {
-            sessionStore.removeAttribute( "foo" );
+      final UISession uiSession = RWT.getUISession();
+      uiSession.addUISessionListener( new UISessionListener() {
+        public void beforeDestroy( UISessionEvent event ) {
+          synchronized( uiSession ) {
+            uiSession.removeAttribute( "foo" );
           }
         }
       } );

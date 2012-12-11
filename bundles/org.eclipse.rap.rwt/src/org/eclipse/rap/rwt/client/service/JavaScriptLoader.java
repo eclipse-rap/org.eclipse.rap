@@ -16,6 +16,7 @@ package org.eclipse.rap.rwt.client.service;
  * The JavaScriptLoader service allows loading additional JavaScript files at runtime.
  *
  * @since 2.0
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface JavaScriptLoader extends ClientService  {
 

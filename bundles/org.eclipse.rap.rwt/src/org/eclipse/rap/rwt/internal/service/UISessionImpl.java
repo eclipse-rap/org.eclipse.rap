@@ -28,30 +28,29 @@ import org.eclipse.rap.rwt.internal.lifecycle.FakeContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
-import org.eclipse.rap.rwt.service.ISessionStore;
-import org.eclipse.rap.rwt.service.SessionStoreEvent;
-import org.eclipse.rap.rwt.service.SessionStoreListener;
+import org.eclipse.rap.rwt.service.UISession;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
-public final class SessionStoreImpl
-  implements ISessionStore, HttpSessionBindingListener, SerializableCompatibility
+public final class UISessionImpl
+  implements UISession, HttpSessionBindingListener, SerializableCompatibility
 {
 
-  public static final String ATTR_SESSION_STORE = SessionStoreImpl.class.getName();
+  public static final String ATTR_SESSION_STORE = UISessionImpl.class.getName();
 
-  public static SessionStoreImpl getInstanceFromSession( HttpSession httpSession ) {
-    return ( SessionStoreImpl )httpSession.getAttribute( ATTR_SESSION_STORE );
+  public static UISessionImpl getInstanceFromSession( HttpSession httpSession ) {
+    return ( UISessionImpl )httpSession.getAttribute( ATTR_SESSION_STORE );
   }
 
-  public static void attachInstanceToSession( HttpSession httpSession, ISessionStore sessionStore )
-  {
-    httpSession.setAttribute( ATTR_SESSION_STORE, sessionStore );
+  public static void attachInstanceToSession( HttpSession httpSession, UISession uiSession ) {
+    httpSession.setAttribute( ATTR_SESSION_STORE, uiSession );
   }
 
   private final SerializableLock requestLock;
   private final SerializableLock lock;
   private final Map<String,Object> attributes;
-  private final Set<SessionStoreListener> sessionStoreListeners;
+  private final Set<UISessionListener> uiSessionListeners;
   private final String id;
   private transient HttpSession httpSession;
   private boolean bound;
@@ -59,12 +58,12 @@ public final class SessionStoreImpl
   private transient ISessionShutdownAdapter shutdownAdapter;
 
 
-  public SessionStoreImpl( HttpSession httpSession ) {
+  public UISessionImpl( HttpSession httpSession ) {
     ParamCheck.notNull( httpSession, "httpSession" );
     requestLock = new SerializableLock();
     lock = new SerializableLock();
     attributes = new HashMap<String,Object>();
-    sessionStoreListeners = new HashSet<SessionStoreListener>();
+    uiSessionListeners = new HashSet<UISessionListener>();
     id = httpSession.getId();
     bound = true;
     this.httpSession = httpSession;
@@ -73,7 +72,7 @@ public final class SessionStoreImpl
   public void setShutdownAdapter( ISessionShutdownAdapter adapter ) {
     shutdownAdapter = adapter;
     if( shutdownAdapter != null ) {
-      shutdownAdapter.setSessionStore( this );
+      shutdownAdapter.setUISession( this );
       shutdownAdapter.setShutdownCallback( new Runnable() {
         public void run() {
           doValueUnbound();
@@ -86,8 +85,8 @@ public final class SessionStoreImpl
     return shutdownAdapter;
   }
 
-  //////////////////////////
-  // interface ISessionStore
+  //////////////////////
+  // interface UISession
 
   public Object getAttribute( String name ) {
     ParamCheck.notNull( name, "name" );
@@ -151,25 +150,33 @@ public final class SessionStoreImpl
     }
   }
 
-  public boolean addSessionStoreListener( SessionStoreListener listener ) {
+  public boolean addSessionStoreListener( UISessionListener listener ) {
+    return addUISessionListener( listener );
+  }
+
+  public boolean addUISessionListener( UISessionListener listener ) {
     ParamCheck.notNull( listener, "listener" );
     boolean result = false;
     synchronized( lock ) {
       if( bound && !aboutUnbound ) {
         result = true;
-        sessionStoreListeners.add( listener );
+        uiSessionListeners.add( listener );
       }
     }
     return result;
   }
 
-  public boolean removeSessionStoreListener( SessionStoreListener listener ) {
+  public boolean removeSessionStoreListener( UISessionListener listener ) {
+    return removeUISessionListener( listener );
+  }
+
+  public boolean removeUISessionListener( UISessionListener listener ) {
     ParamCheck.notNull( listener, "listener" );
     boolean result = false;
     synchronized( lock ) {
       if( bound && !aboutUnbound ) {
         result = true;
-        sessionStoreListeners.remove( listener );
+        uiSessionListeners.remove( listener );
       }
     }
     return result;
@@ -234,19 +241,19 @@ public final class SessionStoreImpl
     }
     synchronized( lock ) {
       attributes.clear();
-      sessionStoreListeners.clear();
+      uiSessionListeners.clear();
       bound = false;
       aboutUnbound = false;
     }
   }
 
   private void fireBeforeDestroy() {
-    SessionStoreListener[] listeners;
+    UISessionListener[] listeners;
     synchronized( lock ) {
-      int size = sessionStoreListeners.size();
-      listeners = sessionStoreListeners.toArray( new SessionStoreListener[ size ] );
+      int size = uiSessionListeners.size();
+      listeners = uiSessionListeners.toArray( new UISessionListener[ size ] );
     }
-    SessionStoreEvent event = new SessionStoreEvent( this );
+    UISessionEvent event = new UISessionEvent( this );
     for( int i = 0; i < listeners.length; i++ ) {
       try {
         listeners[ i ].beforeDestroy( event );
@@ -280,9 +287,9 @@ public final class SessionStoreImpl
     }
   }
 
-  private void handleExceptionInDestroy( SessionStoreListener listener, RuntimeException exception )
+  private void handleExceptionInDestroy( UISessionListener listener, RuntimeException exception )
   {
-    String txt = "Could not execute {0}.beforeDestroy(SessionStoreEvent).";
+    String txt = "Could not execute {0}.beforeDestroy(UISessionEvent).";
     Object[] param = new Object[] { listener.getClass().getName() };
     String msg = MessageFormat.format( txt, param );
     httpSession.getServletContext().log( msg, exception );
