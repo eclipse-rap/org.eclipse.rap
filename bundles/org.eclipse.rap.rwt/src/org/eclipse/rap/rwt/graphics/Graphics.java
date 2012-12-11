@@ -332,7 +332,7 @@ public final class Graphics {
    *              </ul>
    * @deprecated Application code should not need to use this method. If you need this information,
    *             you can use {@link GC#stringExtent(String)} with a string of your choice and get
-   *             the width of the result.
+   *             the height of the result.
    */
   @Deprecated
   public static int getCharHeight( Font font ) {
