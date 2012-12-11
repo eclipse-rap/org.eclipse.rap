@@ -15,12 +15,18 @@ import static org.eclipse.rap.rwt.internal.service.StartupJson.METHOD_LOAD_ACTIV
 import static org.eclipse.rap.rwt.internal.service.StartupJson.METHOD_LOAD_FALLBACK_THEME;
 import static org.eclipse.rap.rwt.internal.service.StartupJson.PROPERTY_URL;
 import static org.eclipse.rap.rwt.internal.service.StartupJson.THEME_STORE_TYPE;
-
+import static org.mockito.Mockito.mock;
 import java.io.IOException;
+import java.util.HashMap;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.application.EntryPointFactory;
+import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rap.rwt.internal.theme.Theme;
+import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -30,6 +36,8 @@ import org.eclipse.swt.internal.widgets.displaykit.ClientResources;
 
 
 public class StartupJson_Test extends TestCase {
+
+  private static final String CUSTOM_THEME_ID = "custom.theme.id";
 
   private ClientResources clientResources;
 
@@ -73,7 +81,7 @@ public class StartupJson_Test extends TestCase {
     assertEquals( expected, operation.getProperty( PROPERTY_URL ) );
   }
 
-  public void testStartupJsonContent_LoadActiveTheme() {
+  public void testStartupJsonContent_LoadActiveTheme_DefaultTheme() {
     clientResources.registerResources();
 
     String content = StartupJson.get();
@@ -86,6 +94,23 @@ public class StartupJson_Test extends TestCase {
     assertEquals( expected, operation.getProperty( PROPERTY_URL ) );
   }
 
+  public void testStartupJsonContent_LoadActiveTheme_CustomTheme() {
+    ThemeTestUtil.registerTheme( new Theme( CUSTOM_THEME_ID, null, null ) );
+    HashMap<String, String> properties = new HashMap<String,String>();
+    properties.put( WebClient.THEME_ID, CUSTOM_THEME_ID );
+    registerEntryPoint( properties );
+    clientResources.registerResources();
+
+    String content = StartupJson.get();
+
+    Message message = new Message( content );
+    CallOperation operation
+      = message.findCallOperation( THEME_STORE_TYPE, METHOD_LOAD_ACTIVE_THEME );
+    assertNotNull( operation );
+    String expected = "rwt-resources/rap-rwt.theme.Custom_1465393d.json";
+    assertEquals( expected, operation.getProperty( PROPERTY_URL ) );
+  }
+
   public void testSendStartupJson() throws IOException {
     Fixture.fakeNewGetRequest();
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
@@ -94,6 +119,12 @@ public class StartupJson_Test extends TestCase {
 
     assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
     assertTrue( response.getContent().indexOf( DISPLAY_TYPE ) != -1 );
+  }
+
+  private void registerEntryPoint( HashMap<String, String> properties ) {
+    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
+    EntryPointFactory factory = mock( EntryPointFactory.class );
+    entryPointManager.register( EntryPointManager.DEFAULT_PATH, factory, properties );
   }
 
 }
