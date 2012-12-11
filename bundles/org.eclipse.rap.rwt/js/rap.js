@@ -13,13 +13,14 @@
 
 /**
  * @public
+ * @since 2.0
  * @namespace Holds all public API of the RAP WebClient.
  */
 rap = {
 
   /**
    * @description Register a RAP protocol type-handler for a specific type of remote-objects.
-   * @param {String} type
+   * @param {string} type
    * @param {TypeHandler} handler
    */
   registerTypeHandler : function( type, handler ) {
@@ -31,7 +32,8 @@ rap = {
    * @description Returns the actual client object associated with the given id.
    * If there is no object registered for the given id, null is returned.
    * For RAP internal objects (e.g. RWT widgets) a wrapper is returned instead of the real object.
-   * @param {String} id
+   * See also {@link Composite}.
+   * @param {string} id
    * @returns {Object}
    */
   getObject : function( id ) {
@@ -46,8 +48,8 @@ rap = {
   },
 
   /**
-   * @description Returns an instance of <code>RemoteObject</code> for the given client object.
-   * The object has to be one created by an <code>TypeHandler</code> factory method. Multiple calls
+   * @description Returns an instance of {@link RemoteObject} for the given client object.
+   * The object has to be one created by an TypeHandler factory method. Multiple calls
    * for the same objects will return the same instance.
    * @param {Object} object
    * @returns {RemoteObject}
@@ -78,9 +80,9 @@ function getWrapperFor( obj ) {
 
 /**
  * @private
- * @class
+ * @class Wrapper for RWT Composite widgets
  * @name Composite
- * @description Wrapper for RWT Composite widgets
+ * @since 2.0
  */
 function CompositeWrapper( widget ) {
   var children = null;

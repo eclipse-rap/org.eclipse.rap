@@ -17,8 +17,9 @@ var server = rwt.remote.Server.getInstance();
  * @private
  * @class Instances of RemoteObject represents the server-side counterpart of a client object
  * and are used to write remote operations into the next protocol message. It can be obtained
- * by rap.getRemoteObject()
+ * by {@link rap.getRemoteObject}.
  * @exports rwt.protocol.ServerObject as RemoteObject
+ * @since 2.0
  * @param {}
  *
  */
