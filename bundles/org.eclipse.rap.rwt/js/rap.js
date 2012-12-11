@@ -21,7 +21,61 @@ rap = {
   /**
    * @description Register a RAP protocol type-handler for a specific type of remote-objects.
    * @param {string} type
-   * @param {TypeHandler} handler
+   *
+   * @param {Object} handler The handler object.
+   *
+   * @param {Function} handler.factory Called for create operations.
+   * Is given a properties object as the first argument, which may contain any number for
+   * properties/fields set by the server. Has to return a "client object" representing an instance
+   * of the type of this handler. <em>Required for all type handler</em>.
+   *
+   * @param {Function} handler.destructor Called for destroy operations with the client object as
+   * the first argument. <em>Optional</em>
+   *
+   * @param {string[]} handler.properties List of properties supported by this handler.
+   * The order in the list controls the order in which the properties are applied by the message
+   * processor. The client object has to implement a setter for each supported property, unless a
+   * custom property-handler is defined (see <b>handler.propertyHandler</b>). For example, if
+   * the property is "bounds", <code>setBounds</code> will be called on the client object.
+   * Properties given by the server that are not in this list will be ignored completely.
+   * <em>Optional.</em>
+   *
+   * @param {Object} handler.propertyHandler A map with functions.
+   * If a property is to be applied, the message processor will first look in this map for the name
+   * of the property. If a function is defined for the property, it is called with the client object
+   * as the first argument, and the property-value as the second. If no function is defined for the
+   * property, the message processor will try to call a setter on the client object directly.
+   * <em>If no property-handler are needed, this field is optional.</em>
+   *
+   * @param {string[]} handler.listeners List of listener supported by this handler.
+   * The order in the list controls the order in which the properties "listen" operations are
+   * processed by the message processor. A "listen" operations instructs the client object to start
+   * or stop notifying the server of events of the given event type. For each supported event a
+   * matching "has[Type]Listener" method has to be implemented by the client object, unless a custom
+   * listener handler is defined (see <b>handler.listenerHandler</b>). For example, if the
+   * listener/event type is "Modify", <code>setHasModifyListener</code> will be called on the client
+   * object. The value given will be <code>true</code> to start and <code>false</code> to stop
+   * sending events. A "listen" operation for a type not in this list will be ignored.
+   * <em>Optional.</em>
+   *
+   * @param {Object} handler.listenerHandler A map with functions.
+   * If a "listen" operation is processed, the message processor will first look in this map for the
+   * name of the event type. If a function is defined for the event-type, it is called with the
+   * client object as the first argument, and the boolean value as the second.
+   * <em>If no listener-handler are needed, this field is optional.</em>
+   *
+   * @param {string[]} handler.methods List of methods supported by this handler.
+   * The order in the list is meaningless, "call" operations are processed in the order in which
+   * they are given by the server. The client object has to implement a method of the same name,
+   * unless a custom method handler is defined (see <b<handler.methodHandler</b>). One argument
+   * will be given, which is a properties object with any number of properties/fields.
+   * A "call" operation for a method not in this list will be ignored. <em>Optional.</em>
+   *
+   * @param {Object} handler.methodHandler A map with functions.
+   * If a "call" operation is processed, the message processor will first look in this map for the
+   * name of the method. If a function is defined for the name of the method, it is called with the
+   * client object as the first argument, and the properties map as the second.
+   * <em>If no method-handler are needed, this field is optional.</em>
    */
   registerTypeHandler : function( type, handler ) {
     handler.isPublic = true;
@@ -32,7 +86,7 @@ rap = {
    * @description Returns the actual client object associated with the given id.
    * If there is no object registered for the given id, null is returned.
    * For RAP internal objects (e.g. RWT widgets) a wrapper is returned instead of the real object.
-   * See also {@link Composite}.
+   * @see Composite
    * @param {string} id
    * @returns {Object}
    */
@@ -49,8 +103,9 @@ rap = {
 
   /**
    * @description Returns an instance of {@link RemoteObject} for the given client object.
-   * The object has to be one created by an TypeHandler factory method. Multiple calls
+   * The object has to be one created by an type-handler factory method. Multiple calls
    * for the same objects will return the same instance.
+   * @see rap.registerTypeHandler
    * @param {Object} object
    * @returns {RemoteObject}
    */
