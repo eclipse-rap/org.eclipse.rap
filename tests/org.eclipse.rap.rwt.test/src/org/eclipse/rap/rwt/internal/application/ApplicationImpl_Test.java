@@ -99,38 +99,32 @@ public class ApplicationImpl_Test extends TestCase {
     } catch( IllegalStateException expected ) {
     }
   }
-  
+
   public void testAddResource() {
     String resourceName = "resource-name";
     ResourceLoader resourceLoader = mock( ResourceLoader.class );
-    
+
     application.addResource( resourceName, resourceLoader );
-    
+
     assertEquals( 1, applicationContext.getResourceRegistry().getResourceRegistrations().length );
   }
 
   public void testAddResourceWithNullResourceName() {
     ResourceLoader resourceLoader = mock( ResourceLoader.class );
-    
+
     try {
       application.addResource( null, resourceLoader );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
-  
+
   public void testAddResourceWithNullResourceLoader() {
     try {
       application.addResource( "resource-name", null );
       fail();
     } catch( NullPointerException expected ) {
     }
-  }
-  
-  public void testGetContextViaAdapter() {
-    ApplicationContextImpl context = application.getAdapter( ApplicationContextImpl.class );
-
-    assertSame( applicationContext, context );
   }
 
   @Override
