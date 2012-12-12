@@ -143,4 +143,13 @@ public interface UISession extends ISessionStore {
    */
   boolean isBound();
 
+  /**
+   * Executes the given runnable in the context of this UI session. This method allows background
+   * threads to access values that are stored in the UI session, including session singletons.
+   *
+   * @param runnable the runnable to execute in the context of this UI session
+   * @see org.eclipse.rap.rwt.SingletonUtil
+   */
+  void exec( Runnable runnable );
+
 }

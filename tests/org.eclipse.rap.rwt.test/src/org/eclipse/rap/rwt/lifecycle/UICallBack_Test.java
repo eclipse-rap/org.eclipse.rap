@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,9 +32,9 @@ public class UICallBack_Test extends TestCase {
         } );
       }
     };
-    
+
     Throwable exception = runInThread( runnable );
-    
+
     assertTrue( exception instanceof SWTException );
   }
 
@@ -54,21 +54,21 @@ public class UICallBack_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
-  public void testActivateFromNonUIThread() throws Exception {
+
+  public void testActivateFromNonUIThread() {
     Runnable runnable = new Runnable() {
       public void run() {
         UICallBack.activate( "someId" );
       }
     };
-    
+
     Throwable exception = runInThread( runnable );
-    
+
     assertTrue( exception instanceof SWTException );
     assertIsThreadInvalidAccess( exception );
   }
 
-  public void testActivateFromNonUIThreadWithFakeContext() throws Exception {
+  public void testActivateFromNonUIThreadWithFakeContext() {
     final Display display = new Display();
     Runnable runnable = new Runnable() {
       public void run() {
@@ -79,27 +79,27 @@ public class UICallBack_Test extends TestCase {
         } );
       }
     };
-    
+
     Throwable exception = runInThread( runnable );
-    
+
     assertTrue( exception instanceof SWTException );
     assertIsThreadInvalidAccess( exception );
   }
-  
-  public void testDeactivateFromNonUIThread() throws Exception {
+
+  public void testDeactivateFromNonUIThread() {
     Runnable runnable = new Runnable() {
       public void run() {
         UICallBack.deactivate( "someId" );
       }
     };
-    
+
     Throwable exception = runInThread( runnable );
 
     assertTrue( exception instanceof SWTException );
     assertIsThreadInvalidAccess( exception );
   }
 
-  public void testDeativateFromNonUIThreadWithFakeContext() throws Exception {
+  public void testDeativateFromNonUIThreadWithFakeContext() {
     final Display display = new Display();
     Runnable runnable = new Runnable() {
       public void run() {
@@ -110,12 +110,12 @@ public class UICallBack_Test extends TestCase {
         } );
       }
     };
-    
+
     Throwable exception = runInThread( runnable );
-    
+
     assertNull( exception );
   }
-  
+
   public void testRunNonUIThreadWithFakeContextWithNullDisplay() {
     try {
       UICallBack.runNonUIThreadWithFakeContext( null, new NoOpRunnable() );
@@ -132,10 +132,12 @@ public class UICallBack_Test extends TestCase {
     }
   }
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }

@@ -11,10 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.FakeContextUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
@@ -29,21 +31,18 @@ import org.eclipse.swt.widgets.Display;
 public final class UICallBack {
 
   /**
-   * Sometimes a background thread needs to access values that are stored
-   * in the session object that started the thread. In particular these
-   * values may be stored in session singletons. Accessing these singletons
-   * directly from the background thread would fail. This method fakes the
-   * missing request context and allows the runnable code to access those
-   * singletons.
-   *
-   * @param display The display that is bound to the session that contains the
-   *                data to which the current thread should get access.
-   * @param runnable The runnable that contains the critical code that
-   *                 needs to have access to a request context.
-   *
+   * Executes a given runnable in the context of the UI session that is associated with the given
+   * display. This allows background threads to access values that are stored in the UI session,
+   * including session singletons.
+   * 
+   * @param display the display that is bound to the UI session which the runnable needs to access
+   * @param runnable the runnable to execute in the UI session context of the given display
    * @see org.eclipse.rap.rwt.SingletonUtil
-   * @see org.eclipse.rap.rwt.internal.service.ContextProvider
+   * @deprecated Use {@link UISession#exec(Runnable)} instead. You can obtain a reference to the UI
+   *             session for a display by {@link RWT#getUISession(Display)}. Example:
+   *             <code>RWT.getUISession( display ).exec( runnable )</code>.
    */
+  @Deprecated
   public static void runNonUIThreadWithFakeContext( Display display, Runnable runnable ) {
     if( display == null || runnable == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );

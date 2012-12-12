@@ -11,10 +11,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
@@ -34,47 +38,6 @@ import org.eclipse.rap.rwt.testfixture.TestSession;
 
 public class UISessionImpl_Test extends TestCase {
 
-  private static class EmptyUISessionListener implements UISessionListener {
-    public void beforeDestroy( UISessionEvent event ) {
-    }
-  }
-
-  private static class LoggingSessionBindingListener implements HttpSessionBindingListener {
-
-    private String eventTypes;
-    private final List<HttpSessionBindingEvent> eventLog;
-
-    LoggingSessionBindingListener( ) {
-      eventTypes = "";
-      eventLog = new LinkedList<HttpSessionBindingEvent>();
-    }
-
-    public void valueBound( HttpSessionBindingEvent event ) {
-      eventLog.add( event );
-      eventTypes += VALUE_BOUND;
-    }
-
-    public void valueUnbound( HttpSessionBindingEvent event ) {
-      eventLog.add( event );
-      eventTypes += VALUE_UNBOUND;
-    }
-
-    void clearEvents() {
-      eventTypes = "";
-      eventLog.clear();
-    }
-
-    String getEventTypes() {
-      return eventTypes;
-    }
-
-    HttpSessionBindingEvent[] getEvents() {
-      HttpSessionBindingEvent[] result = new HttpSessionBindingEvent[ eventLog.size() ];
-      eventLog.toArray( result );
-      return result;
-    }
-  }
-
   private static final String BEFORE_DESTROY = "beforeDestroy|";
   private static final String VALUE_BOUND = "valueBound";
   private static final String VALUE_UNBOUND = "valueUnbound";
@@ -82,6 +45,27 @@ public class UISessionImpl_Test extends TestCase {
   private HttpSession httpSession;
   private UISessionImpl uiSession;
   private List<Throwable> servletLogEntries;
+
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    httpSession = new TestSession();
+    uiSession = new UISessionImpl( httpSession );
+    UISessionImpl.attachInstanceToSession( httpSession, uiSession );
+    ContextProvider.getContext().setUISession( uiSession );
+    servletLogEntries = new LinkedList<Throwable>();
+    TestServletContext servletContext = ( TestServletContext )httpSession.getServletContext();
+    servletContext.setLogger( new TestLogger() {
+      public void log( String message, Throwable throwable ) {
+        servletLogEntries.add( throwable );
+      }
+    } );
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testConstructorWithNullArgument() {
     try {
@@ -112,6 +96,7 @@ public class UISessionImpl_Test extends TestCase {
 
   public void testIsBoundAfterSessionWasInvalidated() {
     httpSession.invalidate();
+
     assertFalse( uiSession.isBound() );
   }
 
@@ -125,19 +110,17 @@ public class UISessionImpl_Test extends TestCase {
 
   public void testGetAttributeWithNonExistingName() {
     Object attribute = uiSession.getAttribute( "does.not.exist" );
+
     assertNull( attribute );
   }
 
   public void testGetAttribute() {
-    String attributeName = "name";
-    Object attributeValue = new Object();
-    uiSession.setAttribute( attributeName, attributeValue );
+    Object value = new Object();
+    uiSession.setAttribute( "name", value );
 
-    Object returnedAttributeValue = uiSession.getAttribute( attributeName );
-    Object otherAttributeValue = uiSession.getAttribute( "other.name" );
+    Object result = uiSession.getAttribute( "name" );
 
-    assertSame( attributeValue, returnedAttributeValue );
-    assertNull( otherAttributeValue );
+    assertSame( value, result );
   }
 
   public void testRemoveAttributeWithNullName() {
@@ -149,42 +132,37 @@ public class UISessionImpl_Test extends TestCase {
   }
 
   public void testRemoveAttributeWithExistingAttribute() {
-    String attributeName = "name";
-    uiSession.setAttribute( attributeName, new Object() );
+    uiSession.setAttribute( "name", new Object() );
 
-    uiSession.removeAttribute( attributeName );
+    uiSession.removeAttribute( "name" );
 
-    assertNull( uiSession.getAttribute( attributeName ) );
+    assertNull( uiSession.getAttribute( "name" ) );
   }
 
   public void testRemoveAttributeWithNonExistingAttribute() {
-    String attributeName = "does.not.exist";
+    uiSession.removeAttribute( "does.not.exist" );
 
-    uiSession.removeAttribute( attributeName );
-
-    assertNull( uiSession.getAttribute( attributeName ) );
+    assertNull( uiSession.getAttribute( "does.not.exist" ) );
   }
 
   public void testGetAttributeNames() {
-    String attributeName = "name";
-    uiSession.setAttribute( attributeName, new Object() );
+    uiSession.setAttribute( "name", new Object() );
 
     Enumeration attributeNames = uiSession.getAttributeNames();
 
     assertTrue( attributeNames.hasMoreElements() );
-    assertSame( attributeNames.nextElement(), attributeName );
+    assertEquals( "name", attributeNames.nextElement() );
     assertFalse( attributeNames.hasMoreElements() );
   }
 
   public void testGetAttributeNamesReturnsSnapshot() {
-    String attributeName = "name";
-    uiSession.setAttribute( attributeName, new Object() );
+    uiSession.setAttribute( "name", new Object() );
 
     Enumeration attributeNames = uiSession.getAttributeNames();
     uiSession.setAttribute( "other.name", new Object() );
 
     assertTrue( attributeNames.hasMoreElements() );
-    assertSame( attributeName, attributeNames.nextElement() );
+    assertEquals( "name", attributeNames.nextElement() );
     assertFalse( attributeNames.hasMoreElements() );
   }
 
@@ -352,35 +330,33 @@ public class UISessionImpl_Test extends TestCase {
     assertEquals( BEFORE_DESTROY + VALUE_UNBOUND, log.toString() );
   }
 
-  public void testSetAttributeForUnboundUISession() {
+  public void testSetAttributeReturnsFalseWhenUnbound() {
     httpSession.invalidate();
 
-    boolean setAttribute = uiSession.setAttribute( "name", null );
+    boolean result = uiSession.setAttribute( "name", null );
 
-    assertFalse( setAttribute );
+    assertFalse( result );
   }
 
-  public void testGetAttributeForUnboundUISession() {
-    String attributeName = "name";
-    uiSession.setAttribute( attributeName, null );
+  public void testGetAttributeReturnsNullWhenUnbound() {
+    uiSession.setAttribute( "name", null );
     httpSession.invalidate();
 
-    Object attributeValue = uiSession.getAttribute( attributeName );
+    Object result = uiSession.getAttribute( "name" );
 
-    assertNull( attributeValue );
+    assertNull( result );
   }
 
-  public void testRemoveAttributeForUnboundUISession() {
-    String attributeName = "name";
-    uiSession.setAttribute( attributeName, null );
+  public void testRemoveAttributeReturnsFalseWhenUnbound() {
+    uiSession.setAttribute( "name", null );
     httpSession.invalidate();
 
-    boolean removeAttribute = uiSession.removeAttribute( attributeName );
+    boolean result = uiSession.removeAttribute( "name" );
 
-    assertFalse( removeAttribute );
+    assertFalse( result );
   }
 
-  public void testGetAttributeNamesForUnboundUISession() {
+  public void testGetAttributeNamesIsEmptyWhenUnbound() {
     uiSession.setAttribute( "name", "value" );
     httpSession.invalidate();
 
@@ -390,7 +366,7 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( attributeNames.hasMoreElements() );
   }
 
-  public void testAddUISessionListenerWithNullArgument() {
+  public void testAddUISessionListenerFailsWithNullArgument() {
     try {
       uiSession.addUISessionListener( null );
       fail();
@@ -398,7 +374,7 @@ public class UISessionImpl_Test extends TestCase {
     }
   }
 
-  public void testRemoveUISessionListenerWithNullArgument() {
+  public void testRemoveUISessionListenerFailsWithNullArgument() {
     try {
       uiSession.removeUISessionListener( null );
       fail();
@@ -406,7 +382,7 @@ public class UISessionImpl_Test extends TestCase {
     }
   }
 
-  public void testAddUISessionListenerForUnboundUISession() {
+  public void testAddUISessionListenerWhenUnbound() {
     httpSession.invalidate();
     EmptyUISessionListener listener = new EmptyUISessionListener();
 
@@ -415,7 +391,7 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( added );
   }
 
-  public void testRemoveUISessionListenerForUnboundUISession() {
+  public void testRemoveUISessionListenerWhenUnbound() {
     httpSession.invalidate();
     EmptyUISessionListener listener = new EmptyUISessionListener();
 
@@ -641,17 +617,120 @@ public class UISessionImpl_Test extends TestCase {
     assertNull( result );
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    httpSession = new TestSession();
-    uiSession = new UISessionImpl( httpSession );
-    UISessionImpl.attachInstanceToSession( httpSession, uiSession );
-    servletLogEntries = new LinkedList<Throwable>();
-    TestServletContext servletContext = ( TestServletContext )httpSession.getServletContext();
-    servletContext.setLogger( new TestLogger() {
-      public void log( String message, Throwable throwable ) {
-        servletLogEntries.add( throwable );
+  public void testExec_failsWithNullArgument() {
+    try {
+      uiSession.exec( null );
+      fail();
+    } catch( NullPointerException exception ) {
+      assertTrue( exception.getMessage().contains( "runnable" ) );
+    }
+  }
+
+  public void testExec_executesRunnable() {
+    Runnable runnable = mock( Runnable.class );
+
+    uiSession.exec( runnable );
+
+    verify( runnable ).run();
+  }
+
+  public void testExec_executesRunnableWithSameContextInUIThread() {
+    ServiceContext context = ContextProvider.getContext();
+    ContextTrackerRunnable runnable = new ContextTrackerRunnable();
+
+    uiSession.exec( runnable );
+
+    assertSame( context, runnable.getContext() );
+  }
+
+  public void testExec_executesRunnableWithFakeContextInBGThread() throws Throwable {
+    ServiceContext context = ContextProvider.getContext();
+    final ContextTrackerRunnable runnable = new ContextTrackerRunnable();
+
+    Fixture.runInThread( new Runnable() {
+      public void run() {
+        uiSession.exec( runnable );
       }
     } );
+
+    assertNotSame( context, runnable.getContext() );
+    assertSame( uiSession, runnable.getUISession() );
   }
+
+  public void testExec_executesRunnableWithFakeContextInDifferentUIThread() throws Throwable {
+    ServiceContext context = ContextProvider.getContext();
+    final ContextTrackerRunnable runnable = new ContextTrackerRunnable();
+
+    Fixture.runInThread( new Runnable() {
+      public void run() {
+        Fixture.createServiceContext();
+        uiSession.exec( runnable );
+      }
+    } );
+
+    assertNotSame( context, runnable.getContext() );
+    assertSame( uiSession, runnable.getUISession() );
+  }
+
+  private static class EmptyUISessionListener implements UISessionListener {
+    public void beforeDestroy( UISessionEvent event ) {
+    }
+  }
+
+  private static class LoggingSessionBindingListener implements HttpSessionBindingListener {
+
+    private String eventTypes;
+    private final List<HttpSessionBindingEvent> eventLog;
+
+    LoggingSessionBindingListener( ) {
+      eventTypes = "";
+      eventLog = new LinkedList<HttpSessionBindingEvent>();
+    }
+
+    public void valueBound( HttpSessionBindingEvent event ) {
+      eventLog.add( event );
+      eventTypes += VALUE_BOUND;
+    }
+
+    public void valueUnbound( HttpSessionBindingEvent event ) {
+      eventLog.add( event );
+      eventTypes += VALUE_UNBOUND;
+    }
+
+    void clearEvents() {
+      eventTypes = "";
+      eventLog.clear();
+    }
+
+    String getEventTypes() {
+      return eventTypes;
+    }
+
+    HttpSessionBindingEvent[] getEvents() {
+      HttpSessionBindingEvent[] result = new HttpSessionBindingEvent[ eventLog.size() ];
+      eventLog.toArray( result );
+      return result;
+    }
+  }
+
+  private static class ContextTrackerRunnable implements Runnable {
+
+    private final AtomicReference<ServiceContext> context = new AtomicReference<ServiceContext>();
+    private final AtomicReference<UISession> uiSession = new AtomicReference<UISession>();
+
+    public void run() {
+      context.set( ContextProvider.getContext() );
+      uiSession.set( ContextProvider.getContext().getUISession() );
+    }
+
+    public ServiceContext getContext() {
+      return context.get();
+    }
+
+    public UISession getUISession() {
+      return uiSession.get();
+    }
+
+  }
+
 }

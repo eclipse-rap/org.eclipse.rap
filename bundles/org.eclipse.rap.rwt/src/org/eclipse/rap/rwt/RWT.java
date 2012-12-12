@@ -48,6 +48,7 @@ import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ServiceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
@@ -463,6 +464,16 @@ public final class RWT {
    */
   public static UISession getUISession() {
     return ContextProvider.getUISession();
+  }
+
+  /**
+   * Returns the UI session that is associated with the given display.
+   *
+   * @return the UI session instance for the given display, never <code>null</code>
+   */
+  public static UISession getUISession( Display display ) {
+    ParamCheck.notNull( display, "display" );
+    return display.getAdapter( IDisplayAdapter.class ).getUISession();
   }
 
   /**

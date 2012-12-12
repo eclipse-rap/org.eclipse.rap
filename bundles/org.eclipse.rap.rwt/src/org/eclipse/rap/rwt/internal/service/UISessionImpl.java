@@ -85,9 +85,6 @@ public final class UISessionImpl
     return shutdownAdapter;
   }
 
-  //////////////////////
-  // interface UISession
-
   public Object getAttribute( String name ) {
     ParamCheck.notNull( name, "name" );
     Object result = null;
@@ -150,6 +147,11 @@ public final class UISessionImpl
     }
   }
 
+  public void exec( Runnable runnable ) {
+    ParamCheck.notNull( runnable, "runnable" );
+    FakeContextUtil.runNonUIThreadWithFakeContext( this, runnable );
+  }
+
   public boolean addSessionStoreListener( UISessionListener listener ) {
     return addUISessionListener( listener );
   }
@@ -182,10 +184,6 @@ public final class UISessionImpl
     return result;
   }
 
-
-  ///////////////////////////////////////
-  // interface HttpSessionBindingListener
-
   public void valueBound( HttpSessionBindingEvent event ) {
     synchronized( lock ) {
       bound = true;
@@ -216,9 +214,6 @@ public final class UISessionImpl
   Object getRequestLock() {
     return requestLock;
   }
-
-  //////////////////
-  // helping methods
 
   private void removeAttributeInternal( String name ) {
     Object removed = attributes.remove( name );

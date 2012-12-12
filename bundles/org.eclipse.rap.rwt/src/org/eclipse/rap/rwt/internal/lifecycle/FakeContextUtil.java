@@ -29,18 +29,23 @@ import org.eclipse.swt.widgets.Display;
 public final class FakeContextUtil {
 
   private static final ClassLoader CLASS_LOADER = FakeContextUtil.class.getClassLoader();
-  private static final HttpServletResponse RESPONSE_PROXY = newResponse();
-  private static final Class<?> REQUEST_PROXY_CLASS = getRequestProxyClass();
+  private static final HttpServletResponse FAKE_RESPONSE = createFakeResponse();
+  private static final Class<?> FAKE_REQUEST_CLASS = getRequestProxyClass();
 
   private FakeContextUtil() {
     // prevent instantiation
   }
 
   public static void runNonUIThreadWithFakeContext( Display display, Runnable runnable ) {
+    UISession uiSession = display.getAdapter( IDisplayAdapter.class ).getUISession();
+    runNonUIThreadWithFakeContext( uiSession, runnable );
+  }
+
+  public static void runNonUIThreadWithFakeContext( UISession uiSession, Runnable runnable ) {
     // Don't replace local variables by method calls, since the context may
     // change during the methods execution.
-    Display sessionDisplay = LifeCycleUtil.getSessionDisplay();
-    boolean useDifferentContext =  ContextProvider.hasContext() && sessionDisplay != display;
+    boolean useDifferentContext = ContextProvider.hasContext()
+                                  && ContextProvider.getUISession() != uiSession;
     ServiceContext contextBuffer = null;
     // TODO [fappel]: The context handling's getting very awkward in case of
     //                having the context mapped instead of stored it in
@@ -56,8 +61,6 @@ public final class FakeContextUtil {
     }
     boolean useFakeContext = !ContextProvider.hasContext();
     if( useFakeContext ) {
-      IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
-      UISession uiSession = adapter.getUISession();
       ContextProvider.setContext( createFakeContext( uiSession ) );
     }
     try {
@@ -77,28 +80,28 @@ public final class FakeContextUtil {
   }
 
   public static ServiceContext createFakeContext( UISession uiSession ) {
-    HttpServletRequest request = newRequest( uiSession );
-    ServiceContext result = new ServiceContext( request, RESPONSE_PROXY, uiSession );
+    HttpServletRequest request = createFakeRequest( uiSession );
+    ServiceContext result = new ServiceContext( request, FAKE_RESPONSE, uiSession );
     result.setServiceStore( new ServiceStore() );
     return result;
   }
 
-  private static HttpServletRequest newRequest( UISession uiSession ) {
+  private static HttpServletRequest createFakeRequest( UISession uiSession ) {
     InvocationHandler invocationHandler = new RequestInvocationHandler( uiSession );
     Class[] paramTypes = new Class[] { InvocationHandler.class };
     Object[] paramValues = new Object[] { invocationHandler };
-    Object proxy = ClassUtil.newInstance( REQUEST_PROXY_CLASS, paramTypes, paramValues );
-    return ( HttpServletRequest )proxy;
+    Object fakeRequest = ClassUtil.newInstance( FAKE_REQUEST_CLASS, paramTypes, paramValues );
+    return ( HttpServletRequest )fakeRequest;
   }
 
   private static Class<?> getRequestProxyClass() {
     return Proxy.getProxyClass( CLASS_LOADER, new Class<?>[] { HttpServletRequest.class } );
   }
 
-  private static HttpServletResponse newResponse() {
+  private static HttpServletResponse createFakeResponse() {
     Class[] interfaces = new Class[] { HttpServletResponse.class };
     ResponseInvocationHandler invocationHandler = new ResponseInvocationHandler();
-    Object proxy = Proxy.newProxyInstance( CLASS_LOADER, interfaces , invocationHandler );
+    Object proxy = Proxy.newProxyInstance( CLASS_LOADER, interfaces, invocationHandler );
     return ( HttpServletResponse )proxy;
   }
 
