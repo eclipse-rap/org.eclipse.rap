@@ -606,6 +606,7 @@ qx.Class.define( "rwt.widgets.Grid", {
       event.stopPropagation();
       var change = event.getWheelDelta() * this._itemHeight * 2;
       this._vertScrollBar.setValue( this._vertScrollBar.getValue() - change );
+      this._vertScrollBar.setValue( this._vertScrollBar.getValue() ); // See Bug 396309
     },
 
     _onKeyPress : function( event ) {
