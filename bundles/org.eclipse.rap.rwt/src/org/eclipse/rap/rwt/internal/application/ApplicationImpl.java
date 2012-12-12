@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.EntryPoint;
@@ -36,7 +35,7 @@ import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class ApplicationImpl implements Application, Adaptable {
+public class ApplicationImpl implements Application {
 
   private final ApplicationContextImpl applicationContext;
   private final ApplicationConfiguration configuration;
@@ -168,16 +167,6 @@ public class ApplicationImpl implements Application, Adaptable {
 
   public ApplicationContextImpl getApplicationContext() {
     return applicationContext;
-  }
-
-  // TODO [rst] Remove, used only by Tabris
-  @SuppressWarnings("unchecked")
-  public <T> T getAdapter( Class<T> adapter ) {
-    T result = null;
-    if( adapter == ApplicationContextImpl.class ) {
-      result = ( T )applicationContext;
-    }
-    return result;
   }
 
   static class ResourceLoaderImpl implements ResourceLoader {
