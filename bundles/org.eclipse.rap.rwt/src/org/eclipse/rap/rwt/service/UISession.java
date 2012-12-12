@@ -34,12 +34,6 @@ public interface UISession extends ISessionStore {
    * Binds an object to this UI Session, using the name specified. If an object of the same name is
    * already bound to the UI session, the object is replaced.
    * <p>
-   * If the new object implements <code>HttpSessionBindingListener</code>, the UI session calls
-   * <code>HttpSessionBindingListener.valueBound</code>. If an object of the same name was already
-   * bound, and this object implements <code>HttpSessionBindingListener</code>, its
-   * <code>HttpSessionBindingListener.valueUnbound</code> method is called.
-   * </p>
-   * <p>
    * If the value is null, this has the same effect as calling <code>removeAttribute()<code>.
    * </p>
    *
@@ -63,10 +57,6 @@ public interface UISession extends ISessionStore {
   /**
    * Removes the object bound with the specified name from this UI session. If no object is bound
    * with the specified name, this method does nothing.
-   * <p>
-   * If the object implements <code>HttpSessionBindingListener</code>, the method
-   * <code>HttpSessionBindingListener.valueUnbound</code> is called.
-   * </p>
    *
    * @param name The name of the object to remove from this UI session, must not be
    *          <code>null</code>

@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
@@ -49,12 +48,12 @@ public final class UISessionImpl
 
   private final SerializableLock requestLock;
   private final SerializableLock lock;
-  private final Map<String,Object> attributes;
-  private final Set<UISessionListener> uiSessionListeners;
+  private final Map<String, Object> attributes;
+  private final Set<UISessionListener> listeners;
   private final String id;
   private transient HttpSession httpSession;
   private boolean bound;
-  private boolean aboutUnbound;
+  private boolean inDestroy;
   private transient ISessionShutdownAdapter shutdownAdapter;
 
 
@@ -62,8 +61,8 @@ public final class UISessionImpl
     ParamCheck.notNull( httpSession, "httpSession" );
     requestLock = new SerializableLock();
     lock = new SerializableLock();
-    attributes = new HashMap<String,Object>();
-    uiSessionListeners = new HashSet<UISessionListener>();
+    attributes = new HashMap<String, Object>();
+    listeners = new HashSet<UISessionListener>();
     id = httpSession.getId();
     bound = true;
     this.httpSession = httpSession;
@@ -75,7 +74,7 @@ public final class UISessionImpl
       shutdownAdapter.setUISession( this );
       shutdownAdapter.setShutdownCallback( new Runnable() {
         public void run() {
-          doValueUnbound();
+          destroy();
         }
       } );
     }
@@ -102,7 +101,6 @@ public final class UISessionImpl
         result = true;
         removeAttributeInternal( name );
         attributes.put( name, value );
-        fireValueBound( name, value );
       }
     }
     return result;
@@ -160,9 +158,9 @@ public final class UISessionImpl
     ParamCheck.notNull( listener, "listener" );
     boolean result = false;
     synchronized( lock ) {
-      if( bound && !aboutUnbound ) {
+      if( bound && !inDestroy ) {
         result = true;
-        uiSessionListeners.add( listener );
+        listeners.add( listener );
       }
     }
     return result;
@@ -176,9 +174,9 @@ public final class UISessionImpl
     ParamCheck.notNull( listener, "listener" );
     boolean result = false;
     synchronized( lock ) {
-      if( bound && !aboutUnbound ) {
+      if( bound && !inDestroy ) {
         result = true;
-        uiSessionListeners.remove( listener );
+        listeners.remove( listener );
       }
     }
     return result;
@@ -187,7 +185,7 @@ public final class UISessionImpl
   public void valueBound( HttpSessionBindingEvent event ) {
     synchronized( lock ) {
       bound = true;
-      aboutUnbound = false;
+      inDestroy = false;
     }
   }
 
@@ -202,7 +200,7 @@ public final class UISessionImpl
         ContextProvider.setContext( context );
       }
       try {
-        doValueUnbound();
+        destroy();
       } finally {
         if( fakeContext ) {
           ContextProvider.releaseContextHolder();
@@ -216,93 +214,42 @@ public final class UISessionImpl
   }
 
   private void removeAttributeInternal( String name ) {
-    Object removed = attributes.remove( name );
-    fireValueUnbound( name, removed );
+    attributes.remove( name );
   }
 
-  private void doValueUnbound() {
-    Map<String,Object> attributesCopy;
+  private void destroy() {
     synchronized( lock ) {
-      aboutUnbound = true;
-      attributesCopy = new HashMap<String,Object>( attributes );
+      inDestroy = true;
     }
     fireBeforeDestroy();
-    // leave all attributes in place while firing valueUnbound events to allow a defined shutdown
-    // of the application
-    Iterator iterator = attributesCopy.entrySet().iterator();
-    while( iterator.hasNext() ) {
-      Entry entry = ( Entry )iterator.next();
-      fireValueUnbound( ( String )entry.getKey(), entry.getValue() );
-    }
     synchronized( lock ) {
       attributes.clear();
-      uiSessionListeners.clear();
+      listeners.clear();
       bound = false;
-      aboutUnbound = false;
+      inDestroy = false;
     }
   }
 
   private void fireBeforeDestroy() {
-    UISessionListener[] listeners;
+    UISessionListener[] listenersCopy;
     synchronized( lock ) {
-      int size = uiSessionListeners.size();
-      listeners = uiSessionListeners.toArray( new UISessionListener[ size ] );
+      int size = listeners.size();
+      listenersCopy = listeners.toArray( new UISessionListener[ size ] );
     }
     UISessionEvent event = new UISessionEvent( this );
-    for( int i = 0; i < listeners.length; i++ ) {
+    for( UISessionListener listener : listenersCopy ) {
       try {
-        listeners[ i ].beforeDestroy( event );
-      } catch( RuntimeException re ) {
-        handleExceptionInDestroy( listeners[ i ], re );
+        listener.beforeDestroy( event );
+      } catch( RuntimeException exception ) {
+        handleBeforeDestroyException( listener, exception );
       }
     }
   }
 
-  private void fireValueBound( String name, Object value ) {
-    if( value instanceof HttpSessionBindingListener ) {
-      HttpSessionBindingListener listener = ( HttpSessionBindingListener )value;
-      HttpSessionBindingEvent event = new HttpSessionBindingEvent( httpSession, name, value );
-      try {
-        listener.valueBound( event );
-      } catch( RuntimeException re ) {
-        handleExceptionInValueBound( listener, re );
-      }
-    }
-  }
-
-  private void fireValueUnbound( String name, Object value ) {
-    if( value instanceof HttpSessionBindingListener ) {
-      HttpSessionBindingListener listener = ( HttpSessionBindingListener )value;
-      HttpSessionBindingEvent event = new HttpSessionBindingEvent( httpSession, name, value );
-      try {
-        listener.valueUnbound( event );
-      } catch( RuntimeException re ) {
-        handleExceptionInValueUnbound( listener, re );
-      }
-    }
-  }
-
-  private void handleExceptionInDestroy( UISessionListener listener, RuntimeException exception )
+  private void handleBeforeDestroyException( UISessionListener listener,
+                                             RuntimeException exception )
   {
     String txt = "Could not execute {0}.beforeDestroy(UISessionEvent).";
-    Object[] param = new Object[] { listener.getClass().getName() };
-    String msg = MessageFormat.format( txt, param );
-    httpSession.getServletContext().log( msg, exception );
-  }
-
-  private void handleExceptionInValueUnbound( HttpSessionBindingListener listener,
-                                              RuntimeException exception )
-  {
-    String txt = "Could not execute {0}.valueUnbound(HttpSessionBindingEvent).";
-    Object[] param = new Object[] { listener.getClass().getName() };
-    String msg = MessageFormat.format( txt, param );
-    httpSession.getServletContext().log( msg, exception );
-  }
-
-  private void handleExceptionInValueBound( HttpSessionBindingListener listener,
-                                            RuntimeException exception )
-  {
-    String txt = "Could not execute {0}.valueBound(HttpSessionBindingEvent).";
     Object[] param = new Object[] { listener.getClass().getName() };
     String msg = MessageFormat.format( txt, param );
     httpSession.getServletContext().log( msg, exception );
@@ -323,4 +270,5 @@ public final class UISessionImpl
       }
     };
   }
+
 }
