@@ -24,7 +24,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
-import org.eclipse.rap.rwt.internal.lifecycle.FakeContextUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.ContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
@@ -149,7 +149,7 @@ public final class UISessionImpl
 
   public void exec( Runnable runnable ) {
     ParamCheck.notNull( runnable, "runnable" );
-    FakeContextUtil.runNonUIThreadWithFakeContext( this, runnable );
+    ContextUtil.runNonUIThreadWithFakeContext( this, runnable );
   }
 
   public boolean addSessionStoreListener( UISessionListener listener ) {
@@ -198,7 +198,7 @@ public final class UISessionImpl
       boolean fakeContext = false;
       if( !ContextProvider.hasContext() ) {
         fakeContext = true;
-        ServiceContext context = FakeContextUtil.createFakeContext( this );
+        ServiceContext context = ContextUtil.createFakeContext( this );
         ContextProvider.setContext( context );
       }
       try {

@@ -162,7 +162,7 @@ public class SimpleLifeCycle extends LifeCycle {
 
     public void interceptShutdown() {
       final Display display = LifeCycleUtil.getSessionDisplay( uiSession );
-      FakeContextUtil.runNonUIThreadWithFakeContext( display, new Runnable() {
+      ContextUtil.runNonUIThreadWithFakeContext( uiSession, new Runnable() {
         public void run() {
           if( isDisplayActive( display ) && isApplicationContextActive() ) {
             attachThread( display, uiSession );

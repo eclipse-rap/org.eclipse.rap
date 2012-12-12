@@ -20,12 +20,12 @@ import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 
 
-public class FakeContextUtil_Test extends TestCase {
+public class ContextUtil_Test extends TestCase {
 
   private UISessionImpl uiSession;
 
   public void testGetSessionOnFakedRequest() {
-    ServiceContext serviceContext = FakeContextUtil.createFakeContext( uiSession );
+    ServiceContext serviceContext = ContextUtil.createFakeContext( uiSession );
 
     HttpServletRequest request = serviceContext.getRequest();
 
@@ -35,7 +35,7 @@ public class FakeContextUtil_Test extends TestCase {
   }
 
   public void testGetLocaleOnFakedRequest() {
-    ServiceContext serviceContext = FakeContextUtil.createFakeContext( uiSession );
+    ServiceContext serviceContext = ContextUtil.createFakeContext( uiSession );
 
     HttpServletRequest request = serviceContext.getRequest();
 
@@ -43,7 +43,7 @@ public class FakeContextUtil_Test extends TestCase {
   }
 
   public void testFakedRequest() {
-    ServiceContext serviceContext = FakeContextUtil.createFakeContext( uiSession );
+    ServiceContext serviceContext = ContextUtil.createFakeContext( uiSession );
     HttpServletRequest request = serviceContext.getRequest();
     try {
       request.getAuthType();
@@ -52,7 +52,7 @@ public class FakeContextUtil_Test extends TestCase {
   }
 
   public void testFakedResponse() throws Exception {
-    ServiceContext serviceContext = FakeContextUtil.createFakeContext( uiSession );
+    ServiceContext serviceContext = ContextUtil.createFakeContext( uiSession );
     HttpServletResponse response = serviceContext.getResponse();
     try {
       response.flushBuffer();
@@ -61,7 +61,7 @@ public class FakeContextUtil_Test extends TestCase {
   }
 
   public void testFakedServiceStore() {
-    ServiceContext serviceContext = FakeContextUtil.createFakeContext( uiSession );
+    ServiceContext serviceContext = ContextUtil.createFakeContext( uiSession );
 
     assertNotNull( serviceContext.getServiceStore() );
   }

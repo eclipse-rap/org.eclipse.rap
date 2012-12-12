@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.lifecycle;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rap.rwt.internal.lifecycle.FakeContextUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.ContextUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.service.UISession;
@@ -47,7 +47,7 @@ public final class UICallBack {
     if( display == null || runnable == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    FakeContextUtil.runNonUIThreadWithFakeContext( display, runnable );
+    ContextUtil.runNonUIThreadWithFakeContext( display, runnable );
   }
 
   /**

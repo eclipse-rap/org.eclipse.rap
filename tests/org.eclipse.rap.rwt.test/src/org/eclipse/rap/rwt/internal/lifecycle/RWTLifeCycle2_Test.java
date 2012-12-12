@@ -159,7 +159,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   }
 
   /*
-   * 353053: FakeContextUtil doesn't support getProperty on Request proxy
+   * 353053: ContextUtil doesn't support getProperty on Request proxy
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=353053
    */
   public void testSessionRestartWithStringMeasurementInDisplayDispose() throws Exception {

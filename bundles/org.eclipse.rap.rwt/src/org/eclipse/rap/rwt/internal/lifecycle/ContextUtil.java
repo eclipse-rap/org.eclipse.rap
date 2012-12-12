@@ -26,13 +26,13 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 
 
-public final class FakeContextUtil {
+public final class ContextUtil {
 
-  private static final ClassLoader CLASS_LOADER = FakeContextUtil.class.getClassLoader();
+  private static final ClassLoader CLASS_LOADER = ContextUtil.class.getClassLoader();
   private static final HttpServletResponse FAKE_RESPONSE = createFakeResponse();
   private static final Class<?> FAKE_REQUEST_CLASS = getRequestProxyClass();
 
-  private FakeContextUtil() {
+  private ContextUtil() {
     // prevent instantiation
   }
 
