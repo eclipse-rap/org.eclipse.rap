@@ -157,6 +157,7 @@ public class ControlsDemo implements EntryPoint, Serializable {
       new VariantsTab(),
       new ControlDecorationTab(),
       new ErrorHandlingTab(),
+      new ClientServicesTab(),
       new NLSTab(),
     };
   }
