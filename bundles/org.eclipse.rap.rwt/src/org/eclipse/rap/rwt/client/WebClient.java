@@ -22,11 +22,12 @@ import org.eclipse.rap.rwt.client.service.ClientService;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
+import org.eclipse.rap.rwt.client.service.URLLauncher;
 import org.eclipse.rap.rwt.internal.client.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.internal.client.ClientInfoImpl;
 import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
-import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
+import org.eclipse.rap.rwt.internal.client.URLLauncherImpl;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoader;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoaderImpl;
 import org.eclipse.rap.rwt.service.ResourceLoader;
@@ -120,7 +121,9 @@ public class WebClient implements Client {
     if( type == JavaScriptExecutor.class ) {
       result = ( T )getServiceImpl( JavaScriptExecutorImpl.class );
     } else if( type == JavaScriptLoader.class ) {
-      result = ( T )getServiceImpl( JavaScriptLoaderImpl.class );
+      result = ( T )getServiceImpl( JavaScriptExecutorImpl.class );
+    } else if( type == URLLauncher.class ) {
+      result = ( T )getServiceImpl( URLLauncherImpl.class );
     } else if( type == JavaScriptModuleLoader.class ) {
       result = ( T )getServiceImpl( JavaScriptModuleLoaderImpl.class );
     } else if( type == BrowserHistory.class ) {
