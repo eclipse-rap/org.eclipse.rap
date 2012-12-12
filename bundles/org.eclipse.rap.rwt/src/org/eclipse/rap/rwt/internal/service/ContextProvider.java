@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
@@ -191,7 +191,7 @@ public class ContextProvider {
       uiSession = UISessionImpl.getInstanceFromSession( httpSession );
       if( uiSession == null ) {
         ServletContext servletContext = httpSession.getServletContext();
-        ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+        ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
         UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
         uiSession = ( UISessionImpl )builder.buildUISession();
       }

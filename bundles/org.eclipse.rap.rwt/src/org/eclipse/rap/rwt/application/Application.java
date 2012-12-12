@@ -16,7 +16,7 @@ import java.util.Map;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.service.IApplicationStore;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.ISettingStore;
 import org.eclipse.rap.rwt.service.ISettingStoreFactory;
 import org.eclipse.rap.rwt.service.ResourceLoader;
@@ -175,11 +175,11 @@ public interface Application {
   void addPhaseListener( PhaseListener phaseListener );
 
   /**
-   * Set an initial attribute in the application store.
+   * Set an initial attribute in the application context.
    *
    * @param name the name of the attribute, must not be <code>null</code>
    * @param value the attribute value
-   * @see IApplicationStore
+   * @see ApplicationContext
    */
   void setAttribute( String name, Object value );
 

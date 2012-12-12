@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
@@ -175,7 +175,7 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
   }
 
   private boolean isApplicationContextActive() {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( uiSession );
+    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( uiSession );
     return applicationContext != null && applicationContext.isActive();
   }
 

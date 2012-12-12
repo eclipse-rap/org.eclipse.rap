@@ -12,7 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
@@ -175,7 +175,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       }
       result = ( T )widgetAdapter;
     } else if( adapter == IThemeAdapter.class ) {
-      ApplicationContext applicationContext = getApplicationContext();
+      ApplicationContextImpl applicationContext = getApplicationContext();
       ThemeManager themeManager = applicationContext.getThemeManager();
       result = ( T )themeManager.getThemeAdapterManager().getThemeAdapter( this );
     } else if( adapter == IWidgetGraphicsAdapter.class ) {
@@ -192,7 +192,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     return result;
   }
 
-  private ApplicationContext getApplicationContext() {
+  private ApplicationContextImpl getApplicationContext() {
     IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
     return ApplicationContextUtil.get( displayAdapter.getUISession() );
   }

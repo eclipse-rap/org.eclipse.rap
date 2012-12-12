@@ -15,11 +15,9 @@ import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.eclipse.rap.rwt.internal.service.ApplicationStoreImpl;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
-import org.eclipse.rap.rwt.service.IApplicationStore;
 import org.eclipse.rap.rwt.service.RWTFileSettingStoreFactory;
 
 
@@ -35,30 +33,29 @@ class ApplicationContextConfigurator {
     this.servletContext = servletContext;
   }
 
-  void configure( ApplicationContext applicationContext ) {
+  void configure( ApplicationContextImpl applicationContext ) {
     createDefaultTheme( applicationContext );
     configureCustomSettings( applicationContext );
     configureInternalSettings( applicationContext );
   }
 
-  void reset( ApplicationContext applicationContext ) {
+  void reset( ApplicationContextImpl applicationContext ) {
     resetSubSystems( applicationContext );
-    resetApplicationStore( applicationContext );
   }
 
-  private void configureCustomSettings( ApplicationContext applicationContext ) {
+  private void configureCustomSettings( ApplicationContextImpl applicationContext ) {
     Application application = new ApplicationImpl( applicationContext, configuration );
     configuration.configure( application );
   }
 
-  private void configureInternalSettings( ApplicationContext applicationContext ) {
+  private void configureInternalSettings( ApplicationContextImpl applicationContext ) {
     setContextDirectory( applicationContext );
     addInternalPhaseListeners( applicationContext );
     addInternalServiceHandlers( applicationContext );
     setInternalSettingStoreFactory( applicationContext );
   }
 
-  private void setContextDirectory( ApplicationContext applicationContext ) {
+  private void setContextDirectory( ApplicationContextImpl applicationContext ) {
     String location
       = ( String )servletContext.getAttribute( ApplicationConfiguration.RESOURCE_ROOT_LOCATION );
     if( location == null ) {
@@ -67,13 +64,7 @@ class ApplicationContextConfigurator {
     applicationContext.getResourceDirectory().configure( location );
   }
 
-  private void resetApplicationStore( ApplicationContext applicationContext ) {
-    IApplicationStore storeInstance = applicationContext.getApplicationStore();
-    ApplicationStoreImpl applicationStore = ( ApplicationStoreImpl )storeInstance;
-    applicationStore.reset();
-  }
-
-  private void resetSubSystems( ApplicationContext applicationContext ) {
+  private void resetSubSystems( ApplicationContextImpl applicationContext ) {
     applicationContext.getEntryPointManager().deregisterAll();
     applicationContext.getPhaseListenerRegistry().removeAll();
     applicationContext.getResourceRegistry().clear();
@@ -81,27 +72,27 @@ class ApplicationContextConfigurator {
     resetContextDirectory( applicationContext );
   }
 
-  private void resetContextDirectory( ApplicationContext applicationContext ) {
+  private void resetContextDirectory( ApplicationContextImpl applicationContext ) {
     applicationContext.getResourceDirectory().reset();
   }
 
-  private void addInternalPhaseListeners( ApplicationContext applicationContext ) {
+  private void addInternalPhaseListeners( ApplicationContextImpl applicationContext ) {
     applicationContext.getPhaseListenerRegistry().add( new MeasurementListener() );
   }
 
-  private void addInternalServiceHandlers( ApplicationContext applicationContext ) {
+  private void addInternalServiceHandlers( ApplicationContextImpl applicationContext ) {
     ServiceManagerImpl serviceManager = applicationContext.getServiceManager();
     String uiCallBackId = UICallBackServiceHandler.HANDLER_ID;
     serviceManager.registerServiceHandler( uiCallBackId, new UICallBackServiceHandler() );
   }
 
-  private void setInternalSettingStoreFactory( ApplicationContext applicationContext ) {
+  private void setInternalSettingStoreFactory( ApplicationContextImpl applicationContext ) {
     if( !applicationContext.getSettingStoreManager().hasFactory() ) {
       applicationContext.getSettingStoreManager().register( new RWTFileSettingStoreFactory() );
     }
   }
 
-  private void createDefaultTheme( ApplicationContext applicationContext ) {
+  private void createDefaultTheme( ApplicationContextImpl applicationContext ) {
     applicationContext.getThemeManager().initialize();
   }
 

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
@@ -751,7 +751,7 @@ public class Display extends Device implements Adaptable {
     return result;
   }
 
-  private ApplicationContext getApplicationContext() {
+  private ApplicationContextImpl getApplicationContext() {
     return ApplicationContextUtil.get( uiSession );
   }
 

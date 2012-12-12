@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.rap.rwt.application.Application;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationImpl;
 import org.eclipse.rap.rwt.internal.resources.ContentBuffer;
 import org.eclipse.rap.rwt.service.ResourceLoader;
@@ -24,7 +24,7 @@ import org.eclipse.rap.ui.resources.IResource;
 class ResourceRegisterer {
 
   private final Application application;
-  private final ApplicationContext applicationContext;
+  private final ApplicationContextImpl applicationContext;
   private final ContentBuffer concatenatedScript;
 
   public ResourceRegisterer( Application application ) {

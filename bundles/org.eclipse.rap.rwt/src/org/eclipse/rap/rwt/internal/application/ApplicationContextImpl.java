@@ -30,7 +30,7 @@ import org.eclipse.rap.rwt.internal.service.StartupPage;
 import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
-import org.eclipse.rap.rwt.service.IApplicationStore;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.swt.internal.graphics.FontDataFactory;
 import org.eclipse.swt.internal.graphics.ImageDataFactory;
@@ -40,7 +40,7 @@ import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.DisplaysHolder;
 
 
-public class ApplicationContext {
+public class ApplicationContextImpl implements ApplicationContext {
   // TODO [fappel]: this allows to set a fake double of the resource manager for testing purpose.
   //                Think about a less intrusive solution.
   // [rst] made public to allow access from testfixture in OSGi (bug 391510)
@@ -76,8 +76,8 @@ public class ApplicationContext {
   private final ClientSelector clientSelector;
   private boolean active;
 
-  public ApplicationContext( ApplicationConfiguration applicationConfiguration,
-                             ServletContext servletContext )
+  public ApplicationContextImpl( ApplicationConfiguration applicationConfiguration,
+                                 ServletContext servletContext )
   {
     applicationStore = new ApplicationStoreImpl();
     resourceDirectory = new ResourceDirectory();
@@ -104,6 +104,18 @@ public class ApplicationContext {
     contextActivator = new ApplicationContextActivator( this );
     clientSelector = new ClientSelector();
     this.servletContext = servletContext;
+  }
+
+  public void setAttribute( String name, Object value ) {
+    applicationStore.setAttribute( name, value );
+  }
+
+  public Object getAttribute( String name ) {
+    return applicationStore.getAttribute( name );
+  }
+
+  public void removeAttribute( String name ) {
+    applicationStore.removeAttribute( name );
   }
 
   public boolean isActive() {
@@ -182,10 +194,6 @@ public class ApplicationContext {
     return lifeCycleFactory;
   }
 
-  public IApplicationStore getApplicationStore() {
-    return applicationStore;
-  }
-
   public ResourceFactory getResourceFactory() {
     return resourceFactory;
   }
@@ -246,6 +254,7 @@ public class ApplicationContext {
   private void doDeactivate() {
     contextActivator.deactivate();
     contextConfigurator.reset( this );
+    applicationStore.reset();
   }
 
   private ServiceManagerImpl createServiceManager() {

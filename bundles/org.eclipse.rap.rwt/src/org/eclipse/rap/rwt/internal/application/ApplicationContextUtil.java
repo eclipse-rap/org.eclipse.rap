@@ -23,10 +23,10 @@ import org.eclipse.rap.rwt.service.UISession;
 
 
 public class ApplicationContextUtil {
-  private final static ThreadLocal<ApplicationContext> CONTEXT_HOLDER
-    = new ThreadLocal<ApplicationContext>();
+  private final static ThreadLocal<ApplicationContextImpl> CONTEXT_HOLDER
+    = new ThreadLocal<ApplicationContextImpl>();
   private final static String ATTR_APPLICATION_CONTEXT
-    = ApplicationContext.class.getName() + "#INSTANCE";
+    = ApplicationContextImpl.class.getName() + "#instance";
 
   private static class TransientValue implements Serializable {
     private final transient Object value;
@@ -40,34 +40,35 @@ public class ApplicationContextUtil {
     }
   }
 
-  public static void set( ServletContext servletContext, ApplicationContext applicationContext ) {
+  public static void set( ServletContext servletContext, ApplicationContextImpl applicationContext )
+  {
     servletContext.setAttribute( ATTR_APPLICATION_CONTEXT, applicationContext );
   }
 
-  public static ApplicationContext get( ServletContext servletContext ) {
-    return ( ApplicationContext )servletContext.getAttribute( ATTR_APPLICATION_CONTEXT );
+  public static ApplicationContextImpl get( ServletContext servletContext ) {
+    return ( ApplicationContextImpl )servletContext.getAttribute( ATTR_APPLICATION_CONTEXT );
   }
 
   public static void remove( ServletContext servletContext ) {
     servletContext.removeAttribute( ATTR_APPLICATION_CONTEXT );
   }
 
-  public static void set( UISession uiSession, ApplicationContext applicationContext ) {
+  public static void set( UISession uiSession, ApplicationContextImpl applicationContext ) {
     TransientValue transientValue = new TransientValue( applicationContext );
     uiSession.setAttribute( ATTR_APPLICATION_CONTEXT, transientValue );
   }
 
-  public static ApplicationContext get( UISession uiSession ) {
-    ApplicationContext result = null;
+  public static ApplicationContextImpl get( UISession uiSession ) {
+    ApplicationContextImpl result = null;
     TransientValue value = ( TransientValue )uiSession.getAttribute( ATTR_APPLICATION_CONTEXT );
     if( value != null ) {
-      result = ( ApplicationContext )value.getValue();
+      result = ( ApplicationContextImpl )value.getValue();
     }
     return result;
   }
 
-  public static ApplicationContext getInstance() {
-    ApplicationContext result = CONTEXT_HOLDER.get();
+  public static ApplicationContextImpl getInstance() {
+    ApplicationContextImpl result = CONTEXT_HOLDER.get();
     if( result == null  ) {
       ServiceContext context = ContextProvider.getContext();
       result = context.getApplicationContext();
@@ -76,7 +77,7 @@ public class ApplicationContextUtil {
     return result;
   }
 
-  public static void runWith( ApplicationContext applicationContext, Runnable runnable ) {
+  public static void runWith( ApplicationContextImpl applicationContext, Runnable runnable ) {
     ParamCheck.notNull( applicationContext, "applicationContext" );
     ParamCheck.notNull( runnable, "runnable" );
     checkNestedCall();
@@ -104,7 +105,7 @@ public class ApplicationContextUtil {
     }
   }
 
-  private static void checkApplicationContextExists( ApplicationContext applicationContext ) {
+  private static void checkApplicationContextExists( ApplicationContextImpl applicationContext ) {
     if( applicationContext == null ) {
       throw new IllegalStateException( "No ApplicationContext registered." );
     }

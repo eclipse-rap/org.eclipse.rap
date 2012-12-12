@@ -27,10 +27,10 @@ import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
 
 public class ApplicationContextUtil_Test extends TestCase {
 
-  private ApplicationContext applicationContext;
+  private ApplicationContextImpl applicationContext;
 
   public void setUp() {
-    applicationContext = new ApplicationContext( null, null );
+    applicationContext = new ApplicationContextImpl( null, null );
   }
 
   public void testSetToServletContext() {
@@ -52,7 +52,7 @@ public class ApplicationContextUtil_Test extends TestCase {
 
   public void testSetToUISession() {
     UISessionImpl uiSession = new UISessionImpl( new TestSession() );
-    ApplicationContext applicationContext = new ApplicationContext( null, null );
+    ApplicationContextImpl applicationContext = new ApplicationContextImpl( null, null );
 
     ApplicationContextUtil.set( uiSession, applicationContext );
 
@@ -60,7 +60,7 @@ public class ApplicationContextUtil_Test extends TestCase {
   }
 
   public void testRunWith() {
-    final ApplicationContext[] found = new ApplicationContext[ 1 ];
+    final ApplicationContextImpl[] found = new ApplicationContextImpl[ 1 ];
     Runnable runnable = new Runnable() {
       public void run() {
         found[ 0 ] = ApplicationContextUtil.getInstance();
@@ -128,7 +128,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     Fixture.createServiceContext();
     ApplicationContextUtil.set( servletContext, applicationContext );    
 
-    ApplicationContext found = ApplicationContextUtil.getInstance();
+    ApplicationContextImpl found = ApplicationContextUtil.getInstance();
 
     assertSame( applicationContext, found );
     Fixture.disposeOfServiceContext();
@@ -161,7 +161,7 @@ public class ApplicationContextUtil_Test extends TestCase {
 
     UISession deserializedUiSession = Fixture.serializeAndDeserialize( uiSession );
 
-    ApplicationContext appContext = ApplicationContextUtil.get( deserializedUiSession );
+    ApplicationContextImpl appContext = ApplicationContextUtil.get( deserializedUiSession );
 
     assertNull( appContext );
   }

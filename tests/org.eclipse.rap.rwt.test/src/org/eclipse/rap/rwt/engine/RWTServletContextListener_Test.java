@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
@@ -115,18 +115,18 @@ public class RWTServletContextListener_Test extends TestCase {
   }
 
   private void assertResourceManagerIsRegistered() {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
     assertNotNull( applicationContext.getResourceManager() );
   }
 
   private void assertEntryPointIsRegistered() {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
     EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
     assertEquals( 1, entryPointManager.getServletPaths().size() );
   }
 
   private void assertPhaseListenersAreRegistered() {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
     assertEquals( 2, applicationContext.getPhaseListenerRegistry().getAll().length );
   }
 

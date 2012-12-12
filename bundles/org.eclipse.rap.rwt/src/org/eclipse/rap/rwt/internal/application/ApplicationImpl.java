@@ -38,10 +38,10 @@ import org.eclipse.swt.widgets.Widget;
 
 public class ApplicationImpl implements Application, Adaptable {
 
-  private final ApplicationContext applicationContext;
+  private final ApplicationContextImpl applicationContext;
   private final ApplicationConfiguration configuration;
 
-  public ApplicationImpl( ApplicationContext applicationContext,
+  public ApplicationImpl( ApplicationContextImpl applicationContext,
                           ApplicationConfiguration configuration )
   {
     this.applicationContext = applicationContext;
@@ -146,7 +146,7 @@ public class ApplicationImpl implements Application, Adaptable {
   }
 
   public void setAttribute( String name, Object value ) {
-    applicationContext.getApplicationStore().setAttribute( name, value );
+    applicationContext.setAttribute( name, value );
   }
 
   private ClassLoader getClassLoader() {
@@ -166,7 +166,7 @@ public class ApplicationImpl implements Application, Adaptable {
     return result;
   }
 
-  public ApplicationContext getApplicationContext() {
+  public ApplicationContextImpl getApplicationContext() {
     return applicationContext;
   }
 
@@ -174,7 +174,7 @@ public class ApplicationImpl implements Application, Adaptable {
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result = null;
-    if( adapter == ApplicationContext.class ) {
+    if( adapter == ApplicationContextImpl.class ) {
       result = ( T )applicationContext;
     }
     return result;

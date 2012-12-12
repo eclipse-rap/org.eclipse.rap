@@ -28,14 +28,14 @@ import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
  * This class requires the servlet 3.0 API to be on the class path.
  */
 class SessionFailoverConfigurator {
-  private final ApplicationContext applicationContext;
+  private final ApplicationContextImpl applicationContext;
   private final ServletContext servletContext;
 
-  SessionFailoverConfigurator( ApplicationContext applicationContext ) {
+  SessionFailoverConfigurator( ApplicationContextImpl applicationContext ) {
     this.applicationContext = applicationContext;
-    this.servletContext = applicationContext.getServletContext();
+    servletContext = applicationContext.getServletContext();
   }
-  
+
   void configure() {
     checkServletVersion();
     ServletRegistration servletRegistration = findRWTServletRegistration();
@@ -72,7 +72,7 @@ class SessionFailoverConfigurator {
       throw new IllegalStateException( "Session failover support requires Servlet 3.0 or later." );
     }
   }
-  
+
   private void checkRWTServletRegistration( ServletRegistration servletRegistration ) {
     if( servletRegistration == null ) {
       throw new IllegalStateException( "The RWT servlet registration could not be found." );

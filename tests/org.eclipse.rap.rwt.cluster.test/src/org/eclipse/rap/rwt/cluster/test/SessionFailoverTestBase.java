@@ -33,7 +33,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineCluster;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
@@ -253,7 +253,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
     HttpSession session = ClusterTestHelper.getFirstHttpSession( servletEngine );
     UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( session );
     ServletContext servletContext = session.getServletContext();
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
     ApplicationContextUtil.set( uiSession, applicationContext );
   }
 
@@ -272,7 +272,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
     assertSame( uiSession, getDisplayAdapter( display ).getUISession() );
     assertNotNull( uiSession.getHttpSession() );
     ServletContext servletContext = session.getServletContext();
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
     assertNotNull( applicationContext );
   }
 

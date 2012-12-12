@@ -17,13 +17,13 @@ import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
-public class ApplicationContext_Test extends TestCase {
-  private ApplicationContext context;
+public class ApplicationContextImpl_Test extends TestCase {
+  private ApplicationContextImpl context;
 
 
   @Override
   protected void setUp() throws Exception {
-    context = new ApplicationContext( null, null );
+    context = new ApplicationContextImpl( null, null );
     ResourceDirectory resourceDirectory = context.getResourceDirectory();
     resourceDirectory.configure( Fixture.WEB_CONTEXT_DIR.getAbsolutePath() );
   }

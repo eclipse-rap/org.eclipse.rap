@@ -302,10 +302,10 @@ public final class ThemePropertyAdapterRegistry {
   public static ThemePropertyAdapterRegistry getInstance() {
     ThemePropertyAdapterRegistry result;
     synchronized( LOCK ) {
-      result = ( ThemePropertyAdapterRegistry )RWT.getApplicationStore().getAttribute( ATTR_NAME );
+      result = ( ThemePropertyAdapterRegistry )RWT.getApplicationContext().getAttribute( ATTR_NAME );
       if( result == null ) {
         result = new ThemePropertyAdapterRegistry();
-        RWT.getApplicationStore().setAttribute( ATTR_NAME, result );
+        RWT.getApplicationContext().setAttribute( ATTR_NAME, result );
       }
     }
     return result;

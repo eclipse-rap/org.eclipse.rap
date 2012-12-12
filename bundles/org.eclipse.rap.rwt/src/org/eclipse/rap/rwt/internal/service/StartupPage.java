@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.RWTMessages;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.internal.service.StartupPageTemplate.VariableWriter;
@@ -34,12 +34,12 @@ import org.eclipse.rap.rwt.internal.util.HTTP;
 
 
 public class StartupPage {
-  private final ApplicationContext applicationContext;
+  private final ApplicationContextImpl applicationContext;
   private final List<String> jsLibraries;
   private String clientJsLibrary;
   StartupPageTemplate startupPageTemplate;
 
-  public StartupPage( ApplicationContext applicationContext ) {
+  public StartupPage( ApplicationContextImpl applicationContext ) {
     this.applicationContext = applicationContext;
     jsLibraries = new ArrayList<String>();
   }

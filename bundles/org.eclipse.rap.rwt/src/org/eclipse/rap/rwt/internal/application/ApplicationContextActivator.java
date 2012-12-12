@@ -24,9 +24,9 @@ public class ApplicationContextActivator {
   // [rst] made public to allow access from testfixture in OSGi (bug 391510)
   public static boolean skipResoureDeletion;
 
-  private final ApplicationContext applicationContext;
+  private final ApplicationContextImpl applicationContext;
 
-  ApplicationContextActivator( ApplicationContext applicationContext ) {
+  ApplicationContextActivator( ApplicationContextImpl applicationContext ) {
     this.applicationContext = applicationContext;
   }
 

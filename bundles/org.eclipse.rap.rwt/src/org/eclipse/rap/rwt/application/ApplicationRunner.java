@@ -18,7 +18,7 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
@@ -54,7 +54,7 @@ public class ApplicationRunner {
 
   public final static String RESOURCES = ResourceDirectory.DIRNAME;
 
-  private final ApplicationContext applicationContext;
+  private final ApplicationContextImpl applicationContext;
 
   /**
    * Constructs a new instance of this class given an application configuration and
@@ -65,11 +65,12 @@ public class ApplicationRunner {
    * @param servletContext the servlet context this application is bound to.
    *          Must not be <code>null</code>.
    */
-  public ApplicationRunner( ApplicationConfiguration configuration, ServletContext servletContext ) {
+  public ApplicationRunner( ApplicationConfiguration configuration, ServletContext servletContext )
+  {
     ParamCheck.notNull( configuration, "configuration" );
     ParamCheck.notNull( servletContext, "servletContext" );
 
-    applicationContext = new ApplicationContext( configuration, servletContext );
+    applicationContext = new ApplicationContextImpl( configuration, servletContext );
   }
 
   /**

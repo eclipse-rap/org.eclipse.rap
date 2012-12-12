@@ -26,7 +26,7 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.SingletonManager;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
@@ -46,7 +46,7 @@ public class UISessionBuilder_Test extends TestCase {
   private HttpSession httpSession;
   private TestRequest request;
   private ApplicationConfiguration configuration;
-  private ApplicationContext applicationContext;
+  private ApplicationContextImpl applicationContext;
 
   public void testUISessionReferencesApplicationContext() {
     registerEntryPoint( null );
@@ -130,7 +130,7 @@ public class UISessionBuilder_Test extends TestCase {
     request.setSession( httpSession );
     servletContext = httpSession.getServletContext();
     configuration = mock( ApplicationConfiguration.class );
-    applicationContext = new ApplicationContext( configuration, servletContext );
+    applicationContext = new ApplicationContextImpl( configuration, servletContext );
     applicationContext.getClientSelector().activate();
   }
 

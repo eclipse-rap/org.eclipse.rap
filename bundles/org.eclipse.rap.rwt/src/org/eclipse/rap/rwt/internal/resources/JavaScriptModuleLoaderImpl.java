@@ -20,7 +20,7 @@ import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
-import org.eclipse.rap.rwt.service.IApplicationStore;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.ResourceManager;
 
 
@@ -103,11 +103,11 @@ public class JavaScriptModuleLoaderImpl implements JavaScriptModuleLoader {
   }
 
   private static JavaScriptModuleRegistry getApplicationModules() {
-    IApplicationStore store = RWT.getApplicationStore();
-    JavaScriptModuleRegistry result = ( JavaScriptModuleRegistry )store.getAttribute( MODULES_KEY );
+    ApplicationContext context = RWT.getApplicationContext();
+    JavaScriptModuleRegistry result = ( JavaScriptModuleRegistry )context.getAttribute( MODULES_KEY );
     if( result == null ) {
       result = new JavaScriptModuleRegistry();
-      store.setAttribute( MODULES_KEY, result );
+      context.setAttribute( MODULES_KEY, result );
     }
     return result;
   }
@@ -118,7 +118,7 @@ public class JavaScriptModuleLoaderImpl implements JavaScriptModuleLoader {
 
   static private class JavaScriptModuleRegistry {
 
-    private Map<Class< ? extends JavaScriptModule>, String[]> map
+    private final Map<Class< ? extends JavaScriptModule>, String[]> map
      = new HashMap<Class<? extends JavaScriptModule>, String[]>();
 
     public void put( Class<? extends JavaScriptModule> type, String[] files ) {

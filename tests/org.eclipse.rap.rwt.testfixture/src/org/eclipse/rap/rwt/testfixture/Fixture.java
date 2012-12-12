@@ -168,7 +168,7 @@ public final class Fixture {
   public static void disposeOfApplicationContext() {
     triggerServletContextDestroyed();
     disposeOfServletContext();
-    // TODO [ApplicationContext]: At the time beeing this improves RWTAllTestSuite performance by
+    // TODO [ApplicationContext]: At the time being this improves RWTAllTestSuite performance by
     //      50% on my machine without causing any test to fail. However this has a bad smell
     //      with it, so I introduced a flag that can be switch on for fast tests on local machines
     //      and switched of for the integration build tests. Think about a less intrusive solution.

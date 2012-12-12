@@ -16,7 +16,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rap.rwt.internal.lifecycle.UIThread.UIThreadTerminatedError;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -77,11 +77,11 @@ public class RWTLifeCycle extends LifeCycle {
     new Render()
   };
 
-  private final ApplicationContext applicationContext;
+  private final ApplicationContextImpl applicationContext;
   private final PhaseListenerManager phaseListenerManager;
   Runnable uiRunnable;
 
-  public RWTLifeCycle( ApplicationContext applicationContext ) {
+  public RWTLifeCycle( ApplicationContextImpl applicationContext ) {
     super( applicationContext );
     this.applicationContext = applicationContext;
     this.phaseListenerManager = new PhaseListenerManager( this );

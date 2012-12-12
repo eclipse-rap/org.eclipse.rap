@@ -18,7 +18,7 @@ import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.service.UISession;
@@ -344,7 +344,7 @@ public final class Image extends Resource {
     }
     ImageData result;
     if( device != null ) {
-      ApplicationContext applicationContext = getApplicationContext();
+      ApplicationContextImpl applicationContext = getApplicationContext();
       result = applicationContext.getImageDataFactory().findImageData( internalImage );
     } else {
       result = internalImage.getImageData();
@@ -439,7 +439,7 @@ public final class Image extends Resource {
     new ImageSerializer( this ).readObject( stream );
   }
 
-  private ApplicationContext getApplicationContext() {
+  private ApplicationContextImpl getApplicationContext() {
     Display display = ( Display )device;
     IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     UISession uiSession = adapter.getUISession();

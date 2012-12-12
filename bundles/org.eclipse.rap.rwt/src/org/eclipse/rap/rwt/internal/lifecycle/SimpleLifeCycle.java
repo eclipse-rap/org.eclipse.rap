@@ -12,7 +12,7 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
@@ -25,11 +25,11 @@ import org.eclipse.swt.widgets.Display;
 
 public class SimpleLifeCycle extends LifeCycle {
 
-  private final ApplicationContext applicationContext;
+  private final ApplicationContextImpl applicationContext;
   private final PhaseListenerManager phaseListenerManager;
   private final IPhase[] phases;
 
-  public SimpleLifeCycle( ApplicationContext applicationContext ) {
+  public SimpleLifeCycle( ApplicationContextImpl applicationContext ) {
     super( applicationContext );
     this.applicationContext = applicationContext;
     this.phaseListenerManager = new PhaseListenerManager( this );
@@ -144,11 +144,11 @@ public class SimpleLifeCycle extends LifeCycle {
   }
 
   private static class SimpleSessionShutdownAdapter implements ISessionShutdownAdapter {
-    private final ApplicationContext applicationContext;
+    private final ApplicationContextImpl applicationContext;
     private Runnable shutdownCallback;
     private UISession uiSession;
 
-    SimpleSessionShutdownAdapter( ApplicationContext applicationContext ) {
+    SimpleSessionShutdownAdapter( ApplicationContextImpl applicationContext ) {
       this.applicationContext = applicationContext;
     }
 

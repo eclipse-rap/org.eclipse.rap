@@ -31,7 +31,7 @@ import org.eclipse.rap.rwt.testfixture.TestServletContext;
 public class ApplicationImpl_Test extends TestCase {
 
   private TestServletContext servletContext;
-  private ApplicationContext applicationContext;
+  private ApplicationContextImpl applicationContext;
   private ApplicationImpl application;
   private ApplicationConfiguration applicationConfiguration;
 
@@ -127,8 +127,8 @@ public class ApplicationImpl_Test extends TestCase {
     }
   }
   
-  public void testGetContextViaAdapter() throws Exception {
-    ApplicationContext context = application.getAdapter( ApplicationContext.class );
+  public void testGetContextViaAdapter() {
+    ApplicationContextImpl context = application.getAdapter( ApplicationContextImpl.class );
 
     assertSame( applicationContext, context );
   }
@@ -137,7 +137,7 @@ public class ApplicationImpl_Test extends TestCase {
   protected void setUp() throws Exception {
     applicationConfiguration = mock( ApplicationConfiguration.class );
     servletContext = new TestServletContext();
-    applicationContext = new ApplicationContext( applicationConfiguration, servletContext );
+    applicationContext = new ApplicationContextImpl( applicationConfiguration, servletContext );
     application = new ApplicationImpl( applicationContext, applicationConfiguration );
   }
 

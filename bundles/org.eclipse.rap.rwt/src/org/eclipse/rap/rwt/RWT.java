@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.service.BrowserHistory;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.client.BrowserHistoryImpl;
@@ -39,7 +39,7 @@ import org.eclipse.rap.rwt.internal.service.ServletLog;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
-import org.eclipse.rap.rwt.service.IApplicationStore;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.ISettingStore;
@@ -63,7 +63,7 @@ import org.eclipse.swt.widgets.Widget;
  * @see ILifeCycle
  * @see UISession
  * @see IServiceStore
- * @see IApplicationStore
+ * @see ApplicationContext
  * @see ResourceManager
  * @see HttpServletRequest
  * @see HttpServletResponse
@@ -485,14 +485,21 @@ public final class RWT {
   }
 
   /**
-   * Returns the <code>IApplicationStore</code> instance that represents the web context's
+   * Returns the <code>ApplicationContext</code> instance that represents the web context's
    * global data storage area.
    *
-   * @return instance of {@link IApplicationStore}
-   * @since 1.4
+   * @return instance of {@link ApplicationContext}
    */
-  public static IApplicationStore getApplicationStore() {
-    return RWTFactory.getApplicationStore();
+  public static ApplicationContext getApplicationContext() {
+    return RWTFactory.getApplicationContext();
+  }
+
+  /**
+   * @deprecated Use {@link #getApplicationContext()} instead.
+   */
+  @Deprecated
+  public static ApplicationContext getApplicationStore() {
+    return getApplicationContext();
   }
 
   /**
@@ -605,7 +612,7 @@ public final class RWT {
    * @throws IllegalStateException when called outside of the request context
    */
   public static Client getClient() {
-    ApplicationContext applicationContext = ApplicationContextUtil.getInstance();
+    ApplicationContextImpl applicationContext = ApplicationContextUtil.getInstance();
     UISession uiSession = ContextProvider.getUISession();
     return applicationContext.getClientSelector().getSelectedClient( uiSession );
   }
