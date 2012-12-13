@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,13 +16,13 @@ import java.util.LinkedList;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
+import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
 
 
 public class TimerExecScheduler_Test extends TestCase {
-  
+
   private TimerExecScheduler scheduler;
   private Display display;
   private Collection<Throwable> exceptions;
@@ -37,13 +37,13 @@ public class TimerExecScheduler_Test extends TestCase {
         }
       }
     };
-    
+
     Thread[] threads = Fixture.startThreads( 10, runnable );
     for( int i = 0; i < 5; i++ ) {
       Fixture.serialize( scheduler );
     }
     Fixture.joinThreads( threads );
-    
+
     assertEquals( 0, exceptions.size() );
   }
 
@@ -51,10 +51,10 @@ public class TimerExecScheduler_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
-    scheduler = new TimerExecScheduler( display, UICallBackManager.getInstance() );
+    scheduler = new TimerExecScheduler( display, ServerPushManager.getInstance() );
     exceptions = Collections.synchronizedList( new LinkedList<Throwable>() );
   }
-  
+
   @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();

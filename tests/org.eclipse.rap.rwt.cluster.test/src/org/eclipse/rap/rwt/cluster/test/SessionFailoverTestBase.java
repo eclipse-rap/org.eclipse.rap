@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.cluster.test.entrypoints.AsyncExecEntryPoint;
 import org.eclipse.rap.rwt.cluster.test.entrypoints.ButtonEntryPoint;
@@ -36,7 +37,6 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
@@ -194,6 +194,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
     assertEquals( SWT.CANCEL, DialogEntryPoint.getDialogReturnCode( uiSession ) );
   }
 
+  @Override
   protected void setUp() throws Exception {
     ClusterTestHelper.enableUITests( true );
     cluster = getServletEngineFactory().createServletEngineCluster();
@@ -202,6 +203,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
     client = new RWTClient( primary );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     cluster.stop();
   }
@@ -241,7 +243,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
 
   private static void disposeDisplay( final Display display ) {
     if( display != null ) {
-      UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+      RWT.getUISession( display ).exec( new Runnable() {
         public void run() {
           display.dispose();
         }
@@ -300,4 +302,5 @@ public abstract class SessionFailoverTestBase extends TestCase {
       assertTrue( msg, response.getContentText().contains( expectedLabelPart ) );
     }
   }
+
 }

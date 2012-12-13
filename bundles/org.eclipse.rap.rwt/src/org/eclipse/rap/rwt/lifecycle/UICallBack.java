@@ -15,7 +15,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.ContextUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
+import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -113,7 +113,7 @@ public final class UICallBack {
     if( !ContextProvider.hasContext() || CurrentPhase.get() == null ) {
       SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
     }
-    UICallBackManager.getInstance().activateUICallBacksFor( id );
+    ServerPushManager.getInstance().activateServerPushFor( id );
   }
 
   /**
@@ -150,7 +150,7 @@ public final class UICallBack {
     if( !ContextProvider.hasContext() ) {
       SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
     }
-    UICallBackManager.getInstance().deactivateUICallBacksFor( id );
+    ServerPushManager.getInstance().deactivateServerPushFor( id );
   }
 
   private UICallBack() {

@@ -13,24 +13,24 @@ package org.eclipse.swt.internal.widgets.displaykit;
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
+import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.widgets.Display;
 
 
-public class UICallBackRenderer_Test extends TestCase {
+public class ServerPushRenderer_Test extends TestCase {
 
-  private static final String UI_CALLBACK_ID = "rwt.client.UICallBack";
+  private static final String REMOTE_OBJECT_ID = "rwt.client.UICallBack";
 
   private Display display;
-  private UICallBackRenderer renderer;
+  private ServerPushRenderer renderer;
 
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
-    renderer = new UICallBackRenderer();
+    renderer = new ServerPushRenderer();
     Fixture.fakeNewRequest();
   }
 
@@ -39,14 +39,14 @@ public class UICallBackRenderer_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testDoNotCreateUICallBackClientObject() throws Exception {
-    // UICallBack object is created by the client
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+  public void testDoNotCreateServerPushClientObject() {
+    // Server push object is created by the client
+    ServerPushManager.getInstance().activateServerPushFor( "id" );
 
     renderer.render();
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findCreateOperation( UICallBackRenderer.UI_CALLBACK_ID ) );
+    assertNull( message.findCreateOperation( REMOTE_OBJECT_ID ) );
   }
 
   public void testNothingRenderedIfNotActivated() {
@@ -57,49 +57,49 @@ public class UICallBackRenderer_Test extends TestCase {
   }
 
   public void testActivationIsRendered() {
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    ServerPushManager.getInstance().activateServerPushFor( "id" );
 
     renderer.render();
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( UI_CALLBACK_ID, "active" ) );
+    assertEquals( Boolean.TRUE, message.findSetProperty( REMOTE_OBJECT_ID, "active" ) );
   }
 
   public void testActivationIsPreserved() {
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    ServerPushManager.getInstance().activateServerPushFor( "id" );
     renderer.render();
 
     Fixture.fakeNewRequest();
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    ServerPushManager.getInstance().activateServerPushFor( "id" );
     renderer.render();
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( UI_CALLBACK_ID, "active" ) );
+    assertNull( message.findSetOperation( REMOTE_OBJECT_ID, "active" ) );
   }
 
   public void testDeactivationIsRendered() {
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    ServerPushManager.getInstance().activateServerPushFor( "id" );
     renderer.render();
 
     Fixture.fakeNewRequest();
-    UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
+    ServerPushManager.getInstance().deactivateServerPushFor( "id" );
     renderer.render();
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findSetProperty( UI_CALLBACK_ID, "active" ) );
+    assertEquals( Boolean.FALSE, message.findSetProperty( REMOTE_OBJECT_ID, "active" ) );
   }
 
   public void testDeactivationIsNotRenderedWhenRunnablesArePending() {
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    ServerPushManager.getInstance().activateServerPushFor( "id" );
     renderer.render();
     display.asyncExec( mock( Runnable.class ) );
 
     Fixture.fakeNewRequest();
-    UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
+    ServerPushManager.getInstance().deactivateServerPushFor( "id" );
     renderer.render();
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( UI_CALLBACK_ID, "active" ) );
+    assertNull( message.findSetOperation( REMOTE_OBJECT_ID, "active" ) );
   }
 
 }

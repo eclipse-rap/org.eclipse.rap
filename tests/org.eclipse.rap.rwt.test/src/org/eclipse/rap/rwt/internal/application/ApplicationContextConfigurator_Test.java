@@ -32,7 +32,7 @@ import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.theme.Theme;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
+import org.eclipse.rap.rwt.internal.uicallback.ServerPushServiceHandler;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.ISettingStoreFactory;
 import org.eclipse.rap.rwt.service.ResourceLoader;
@@ -193,7 +193,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   private void checkServiceHandlersHaveBeenAdded() {
     ServiceManagerImpl serviceManager = applicationContext.getServiceManager();
     assertSame( serviceHandler, serviceManager.getServiceHandler( serviceHandlerId ) );
-    assertNotNull( serviceManager.getServiceHandler( UICallBackServiceHandler.HANDLER_ID ) );
+    assertNotNull( serviceManager.getServiceHandler( ServerPushServiceHandler.HANDLER_ID ) );
   }
 
   private void checkResourceHasBeenAdded() {

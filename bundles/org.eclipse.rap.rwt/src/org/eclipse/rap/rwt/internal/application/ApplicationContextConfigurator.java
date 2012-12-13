@@ -17,7 +17,7 @@ import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
+import org.eclipse.rap.rwt.internal.uicallback.ServerPushServiceHandler;
 import org.eclipse.rap.rwt.service.RWTFileSettingStoreFactory;
 
 
@@ -82,8 +82,8 @@ class ApplicationContextConfigurator {
 
   private void addInternalServiceHandlers( ApplicationContextImpl applicationContext ) {
     ServiceManagerImpl serviceManager = applicationContext.getServiceManager();
-    String uiCallBackId = UICallBackServiceHandler.HANDLER_ID;
-    serviceManager.registerServiceHandler( uiCallBackId, new UICallBackServiceHandler() );
+    serviceManager.registerServiceHandler( ServerPushServiceHandler.HANDLER_ID,
+                                           new ServerPushServiceHandler() );
   }
 
   private void setInternalSettingStoreFactory( ApplicationContextImpl applicationContext ) {

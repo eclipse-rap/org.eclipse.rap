@@ -37,17 +37,20 @@ public class ImageEntryPoint implements EntryPoint {
   }
 
   private Image loadShellImage( Display display ) {
-    InputStream inputStream = getClass().getResourceAsStream( "browser.gif" );
-    Image image = new Image( display, inputStream );
-    closeInputStream( inputStream );
-    return image;
-  }
-
-  private static void closeInputStream( InputStream inputStream ) {
     try {
-      inputStream.close();
-    } catch( IOException e ) {
-      throw new RuntimeException( e );
+      return createImage( display, "browser.gif" );
+    } catch( IOException exception ) {
+      throw new RuntimeException( exception );
     }
   }
+
+  private Image createImage( Display display, String name ) throws IOException {
+    InputStream inputStream = getClass().getResourceAsStream( name );
+    try {
+      return new Image( display, inputStream );
+    } finally {
+      inputStream.close();
+    }
+  }
+
 }

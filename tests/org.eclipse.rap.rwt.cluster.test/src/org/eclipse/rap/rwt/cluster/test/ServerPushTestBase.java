@@ -16,28 +16,28 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.cluster.test.entrypoints.SessionTimeoutEntryPoint;
-import org.eclipse.rap.rwt.cluster.test.entrypoints.UICallbackEntryPoint;
+import org.eclipse.rap.rwt.cluster.test.entrypoints.ServerPushEntryPoint;
 import org.eclipse.rap.rwt.cluster.testfixture.ClusterTestHelper;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
 import org.eclipse.swt.widgets.Display;
 
 
 @SuppressWarnings("restriction")
-public abstract class UICallBackTestBase extends TestCase {
+public abstract class ServerPushTestBase extends TestCase {
 
   private IServletEngine servletEngine;
   private RWTClient client;
 
   abstract IServletEngineFactory getServletEngineFactory();
 
-  public void testUICallbackRequestResponse() throws Exception {
-    servletEngine.start( UICallbackEntryPoint.class );
+  public void testCallbackRequestResponse() throws Exception {
+    servletEngine.start( ServerPushEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
     HttpSession session = ClusterTestHelper.getFirstHttpSession( servletEngine );
@@ -46,12 +46,12 @@ public abstract class UICallBackTestBase extends TestCase {
     Thread thread = new Thread( new Runnable() {
       public void run() {
         sleep( 2000 );
-        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+        RWT.getUISession( display ).exec( new Runnable() {
           public void run() {
-            UICallBackManager uiCallBackManager = UICallBackManager.getInstance();
-            uiCallBackManager.setRequestCheckInterval( 500 );
-            uiCallBackManager.setHasRunnables( true );
-            uiCallBackManager.releaseBlockedRequest();
+            ServerPushManager pushManager = ServerPushManager.getInstance();
+            pushManager.setRequestCheckInterval( 500 );
+            pushManager.setHasRunnables( true );
+            pushManager.releaseBlockedRequest();
           }
         } );
       }
@@ -67,7 +67,7 @@ public abstract class UICallBackTestBase extends TestCase {
   }
 
   public void testAbortConnectionDuringUICallbackRequest() throws Exception {
-    servletEngine.start( UICallbackEntryPoint.class );
+    servletEngine.start( ServerPushEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
     configureCallbackRequestCheckInterval( 400 );
@@ -81,8 +81,8 @@ public abstract class UICallBackTestBase extends TestCase {
 
     Thread.sleep( 800 );
 
-    UICallBackManager uiCallBackManager = getUICallBackManager();
-    assertFalse( uiCallBackManager.isCallBackRequestBlocked() );
+    ServerPushManager pushManager = getUICallBackManager();
+    assertFalse( pushManager.isCallBackRequestBlocked() );
   }
 
   public void testUICallBackRequestDoesNotKeepSessionAlive() throws Exception {
@@ -101,9 +101,9 @@ public abstract class UICallBackTestBase extends TestCase {
     servletEngine.start( SessionTimeoutEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
-    UICallBackManager uiCallBackManager = getUICallBackManager();
+    ServerPushManager pushManager = getUICallBackManager();
     asyncSendUICallBackRequest();
-    while( !uiCallBackManager.isCallBackRequestBlocked() ) {
+    while( !pushManager.isCallBackRequestBlocked() ) {
       Thread.yield();
     }
 
@@ -123,13 +123,13 @@ public abstract class UICallBackTestBase extends TestCase {
     servletEngine.stop();
   }
 
-  private UICallBackManager getUICallBackManager() {
-    final UICallBackManager[] result = { null };
+  private ServerPushManager getUICallBackManager() {
+    final ServerPushManager[] result = { null };
     HttpSession session = ClusterTestHelper.getFirstHttpSession( servletEngine );
     Display display = ClusterTestHelper.getSessionDisplay( session );
-    UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+    RWT.getUISession( display ).exec( new Runnable() {
       public void run() {
-        result[ 0 ] = UICallBackManager.getInstance();
+        result[ 0 ] = ServerPushManager.getInstance();
       }
     } );
     return result[ 0 ];
@@ -159,10 +159,11 @@ public abstract class UICallBackTestBase extends TestCase {
   private void configureCallbackRequestCheckInterval( final int interval ) {
     HttpSession session = ClusterTestHelper.getFirstHttpSession( servletEngine );
     Display display = ClusterTestHelper.getSessionDisplay( session );
-    UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+    RWT.getUISession( display ).exec( new Runnable() {
       public void run() {
-        UICallBackManager.getInstance().setRequestCheckInterval( interval );
+        ServerPushManager.getInstance().setRequestCheckInterval( interval );
       }
     } );
   }
+
 }

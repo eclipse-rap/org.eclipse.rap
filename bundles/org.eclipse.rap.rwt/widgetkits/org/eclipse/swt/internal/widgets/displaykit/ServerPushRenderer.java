@@ -12,29 +12,29 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
+import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
 import org.eclipse.rap.rwt.service.UISession;
 
 
-public class UICallBackRenderer {
+public class ServerPushRenderer {
 
-  public static final String UI_CALLBACK_ID = "rwt.client.UICallBack";
+  public static final String REMOTE_OBJECT_ID = "rwt.client.UICallBack";
   private static final String PROP_ACTIVE = "active";
   private static final String ATTR_PRESERVED_ACTIVATION
-    = UICallBackRenderer.class.getName() + ".preservedActivation";
+    = ServerPushRenderer.class.getName() + ".preservedActivation";
 
   private final UISession uiSession;
-  private final UICallBackManager callbackManager;
+  private final ServerPushManager pushManager;
 
-  UICallBackRenderer() {
+  ServerPushRenderer() {
     uiSession = ContextProvider.getUISession();
-    callbackManager = UICallBackManager.getInstance();
+    pushManager = ServerPushManager.getInstance();
   }
 
   void render() {
-    boolean activation = callbackManager.needsActivation();
+    boolean activation = pushManager.needsActivation();
     if( mustRender( activation ) ) {
-      // Note [rst] UICallback activation can be changed at any time by a background thread.
+      // Note [rst] server push activation can be changed at any time by a background thread.
       //            Therefore we need to preserve the same value that is rendered to the client.
       renderActivation( activation );
       preserveActivation( activation );
@@ -44,7 +44,7 @@ public class UICallBackRenderer {
   private boolean mustRender( boolean activation ) {
     boolean result = hasChanged( activation );
     // do not render deactivation if there are pending runnables
-    if( result && !activation && callbackManager.hasRunnables() ) {
+    if( result && !activation && pushManager.hasRunnables() ) {
       result = false;
     }
     return result;
@@ -65,7 +65,7 @@ public class UICallBackRenderer {
 
   private static void renderActivation( boolean activation ) {
     ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
-    writer.appendSet( UI_CALLBACK_ID, PROP_ACTIVE, activation );
+    writer.appendSet( REMOTE_OBJECT_ID, PROP_ACTIVE, activation );
   }
 
 }

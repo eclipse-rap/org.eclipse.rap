@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,11 +20,12 @@ public class ClusterTestSuite {
     TestSuite result = new TestSuite( ClusterTestSuite.class.getName() );
     result.addTestSuite( JettySessionFailover_Test.class );
     result.addTestSuite( JettySessionCleanup_Test.class );
-    result.addTestSuite( JettyUICallBack_Test.class );
+    result.addTestSuite( JettyServerPush_Test.class );
     result.addTestSuite( TomcatSessionFailover_Test.class );
     result.addTestSuite( TomcatSessionCleanup_Test.class );
-    result.addTestSuite( TomcatUICallBack_Test.class );
+    result.addTestSuite( TomcatServerPush_Test.class );
     result.addTestSuite( SessionSerialization_Test.class );
     return result;
   }
+
 }

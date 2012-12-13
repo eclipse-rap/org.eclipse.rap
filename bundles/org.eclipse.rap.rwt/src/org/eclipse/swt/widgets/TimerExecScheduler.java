@@ -23,7 +23,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.eclipse.rap.rwt.internal.engine.PostDeserialization;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
+import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -32,14 +32,14 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 final class TimerExecScheduler implements SerializableCompatibility {
 
   private final Display display;
-  private final UICallBackManager uiCallBackManager;
+  private final ServerPushManager serverPushManager;
   private final Collection<TimerExecTask> tasks;
   private transient Timer timer;
 
-  TimerExecScheduler( Display display, UICallBackManager uiCallBackManager ) {
+  TimerExecScheduler( Display display, ServerPushManager serverPushManager ) {
     this.display = display;
-    this.uiCallBackManager = uiCallBackManager;
-    this.tasks = new LinkedList<TimerExecTask>();
+    this.serverPushManager = serverPushManager;
+    tasks = new LinkedList<TimerExecTask>();
   }
 
   void schedule( int milliseconds, Runnable runnable ) {
@@ -103,7 +103,7 @@ final class TimerExecScheduler implements SerializableCompatibility {
     // code is synchronized by caller
     tasks.remove( task );
   }
-  
+
   private void writeObject( ObjectOutputStream stream ) throws IOException {
     synchronized( display.getDeviceLock() ) {
       stream.defaultWriteObject();
@@ -115,20 +115,18 @@ final class TimerExecScheduler implements SerializableCompatibility {
     stream.registerValidation( new PostDeserializationValidation(), 0 );
   }
 
-  /////////////////
-  // Inner classes
-
   private class TimerExecTask extends TimerTask implements SerializableCompatibility {
-    
+
     private final Runnable runnable;
     private final Date time;
 
     TimerExecTask( Runnable runnable, long milliseconds ) {
       this.runnable = runnable;
-      this.time = new Date( System.currentTimeMillis() + milliseconds );
-      uiCallBackManager.activateUICallBacksFor( getUICallBackId() );
+      time = new Date( System.currentTimeMillis() + milliseconds );
+      serverPushManager.activateServerPushFor( getUICallBackId() );
     }
 
+    @Override
     public void run() {
       synchronized( display.getDeviceLock() ) {
         removeTask( this );
@@ -136,12 +134,13 @@ final class TimerExecScheduler implements SerializableCompatibility {
           display.asyncExec( runnable );
         }
       }
-      uiCallBackManager.deactivateUICallBacksFor( getUICallBackId() );
+      serverPushManager.deactivateServerPushFor( getUICallBackId() );
     }
-    
+
+    @Override
     public boolean cancel() {
-      uiCallBackManager.deactivateUICallBacksFor( getUICallBackId() );
-      return super.cancel();  
+      serverPushManager.deactivateServerPushFor( getUICallBackId() );
+      return super.cancel();
     }
 
     Runnable getRunnable() {

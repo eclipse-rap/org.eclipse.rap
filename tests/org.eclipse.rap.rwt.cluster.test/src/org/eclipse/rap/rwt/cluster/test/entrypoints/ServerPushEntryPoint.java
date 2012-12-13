@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,15 +8,20 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.cluster.test;
+package org.eclipse.rap.rwt.cluster.test.entrypoints;
 
-import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
-import org.eclipse.rap.rwt.cluster.testfixture.server.JettyFactory;
+import org.eclipse.rap.rwt.application.EntryPoint;
+import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.swt.widgets.Display;
 
 
-public class JettyUICallBack_Test extends UICallBackTestBase {
+public class ServerPushEntryPoint implements EntryPoint {
 
-  IServletEngineFactory getServletEngineFactory() {
-    return new JettyFactory();
+  @SuppressWarnings("unused")
+  public int createUI() {
+    UICallBack.activate( "x" );
+    new Display();
+    return 0;
   }
+
 }
