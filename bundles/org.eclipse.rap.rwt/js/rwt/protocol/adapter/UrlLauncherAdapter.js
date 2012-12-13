@@ -9,10 +9,10 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-rwt.protocol.AdapterRegistry.add( "rwt.client.URLLauncher", {
+rwt.protocol.AdapterRegistry.add( "rwt.client.UrlLauncher", {
 
   factory : function( properties ) {
-    return rwt.client.URLLauncher.getInstance();
+    return rwt.client.UrlLauncher.getInstance();
   },
 
   service : true,

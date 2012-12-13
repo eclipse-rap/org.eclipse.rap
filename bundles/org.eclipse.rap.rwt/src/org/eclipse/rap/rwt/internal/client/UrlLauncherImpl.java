@@ -13,14 +13,14 @@ package org.eclipse.rap.rwt.internal.client;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.client.service.URLLauncher;
+import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.eclipse.rap.rwt.internal.remote.RemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 
 
-public class URLLauncherImpl implements URLLauncher {
+public class UrlLauncherImpl implements UrlLauncher {
 
-  private static final String TYPE = "rwt.client.URLLauncher";
+  private static final String TYPE = "rwt.client.UrlLauncher";
   private static final String OPEN_URL = "openURL";
   private RemoteObject remoteObject = RemoteObjectFactory.getInstance().createServiceObject( TYPE );
 

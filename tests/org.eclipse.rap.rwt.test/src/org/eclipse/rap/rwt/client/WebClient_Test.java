@@ -18,13 +18,13 @@ import org.eclipse.rap.rwt.client.service.ClientService;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
-import org.eclipse.rap.rwt.client.service.URLLauncher;
+import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.eclipse.rap.rwt.internal.client.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.internal.client.ClientInfoImpl;
 import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
-import org.eclipse.rap.rwt.internal.client.URLLauncherImpl;
+import org.eclipse.rap.rwt.internal.client.UrlLauncherImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoader;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoaderImpl;
@@ -62,9 +62,9 @@ public class WebClient_Test extends TestCase {
     assertTrue( service instanceof ClientInfoImpl );
   }
 
-  public void testGetURLLauncherService() {
-    ClientService service = client.getService( URLLauncher.class );
-    assertTrue( service instanceof URLLauncherImpl );
+  public void testGetUrlLauncherService() {
+    ClientService service = client.getService( UrlLauncher.class );
+    assertTrue( service instanceof UrlLauncherImpl );
   }
 
   public void testRegistersClienInfoHandlerOnCreate() {

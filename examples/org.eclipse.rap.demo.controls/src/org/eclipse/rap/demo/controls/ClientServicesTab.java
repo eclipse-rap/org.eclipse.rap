@@ -18,7 +18,7 @@ import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
-import org.eclipse.rap.rwt.client.service.URLLauncher;
+import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -53,7 +53,7 @@ public class ClientServicesTab extends ExampleTab {
     registerResources();
     createClientInfoExample( parent );
     createExitConfirmationExample( parent );
-    createURLLauncherExample( parent );
+    createUrlLauncherExample( parent );
     createJavaScriptLoaderExample( parent );
     createJavaScriptExecuterExample( parent );
   }
@@ -88,16 +88,18 @@ public class ClientServicesTab extends ExampleTab {
     timezone.setText( "Timezone Offset: " + info.getTimezoneOffset() );
   }
 
-  private void createURLLauncherExample( Composite parent ) {
-    Group group = createGroup( parent, "URLLauncher", 2 );
+  private void createUrlLauncherExample( Composite parent ) {
+    Group group = createGroup( parent, "UrlLauncher", 2 );
     final Combo url = new Combo( group, SWT.NONE );
     url.add( "http://www.eclipse.org/" );
     url.add( RWT.getResourceManager().getLocation( MINI_PDF ) );
+    url.add( RWT.getResourceManager().getLocation( MINI_JS ) );
     url.add( "mailto:someone@nowhere.org" );
     url.add(    "mailto:otherone@nowhere.org?cc=third@nowhere.org"
              +  "&subject=Did%20you%20know%3F&body=RAP%20is%20awesome!" );
     url.add( "skype:echo123" );
     url.add( "tel:555-123456" );
+    url.select( 0 );
     GridData layoutData = new GridData( SWT.FILL, SWT.FILL, true, false );
     url.setLayoutData( layoutData );
     Button launch = new Button( group, SWT.PUSH );
@@ -105,7 +107,7 @@ public class ClientServicesTab extends ExampleTab {
     launch.setText( "Launch" );
     Listener executeListener = new Listener() {
       public void handleEvent( Event event ) {
-        URLLauncher launcher = RWT.getClient().getService( URLLauncher.class );
+        UrlLauncher launcher = RWT.getClient().getService( UrlLauncher.class );
         launcher.openURL( url.getText() );
       }
     };
@@ -153,8 +155,12 @@ public class ClientServicesTab extends ExampleTab {
 
   private void createJavaScriptExecuterExample( Composite parent ) {
     Group group = createGroup( parent, "JavaScriptExecuter", 2 );
-    final Text script = new Text( group, SWT.BORDER );
-    script.setText( "alert( typeof globalData === \"undefined\" ? null : globalData );" );
+    final Combo script = new Combo( group, SWT.NONE );
+    script.add( "alert( \"foo\" );" );
+    script.add( "document.title = \"bar\";" );
+    script.add( "window.location = \"http://www.eclipse.org/\";" );
+    script.add( "alert( typeof globalData === \"undefined\" ? null : globalData );" );
+    script.select( 0 );
     GridData layoutData = new GridData( SWT.FILL, SWT.FILL, true, false );
     script.setLayoutData( layoutData );
     Button execute = new Button( group, SWT.PUSH );

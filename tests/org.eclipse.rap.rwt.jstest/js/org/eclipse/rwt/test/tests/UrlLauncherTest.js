@@ -18,14 +18,14 @@ var launcher;
 var logger;
 var iframe;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.URLLauncherTest", {
+qx.Class.define( "org.eclipse.rwt.test.tests.UrlLauncherTest", {
 
   extend : qx.core.Object,
 
   members : {
 
     setUp : function() {
-      launcher = rwt.client.URLLauncher.getInstance();
+      launcher = rwt.client.UrlLauncher.getInstance();
       logger = TestUtil.getLogger();
       launcher._window = {
         open : function() {
@@ -40,8 +40,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.URLLauncherTest", {
       launcher._iframe = iframe;
     },
 
-    testCreateURLLauncherByProtocol : function() {
-      assertIdentical( launcher, ObjectRegistry.getObject( "rwt.client.URLLauncher" ) );
+    testCreateUrlLauncherByProtocol : function() {
+      assertIdentical( launcher, ObjectRegistry.getObject( "rwt.client.UrlLauncher" ) );
     },
 
     testCreatesIFrame : function() {

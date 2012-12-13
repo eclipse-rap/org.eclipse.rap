@@ -11,11 +11,11 @@
 
 namespace( "rwt.client" );
 
-rwt.client.URLLauncher = function() {
-  if( rwt.client.URLLauncher._instance !== undefined ) {
-    throw new Error( "URLLauncher can not be created twice" );
+rwt.client.UrlLauncher = function() {
+  if( rwt.client.UrlLauncher._instance !== undefined ) {
+    throw new Error( "UrlLauncher can not be created twice" );
   } else {
-    rwt.client.URLLauncher._instance = this;
+    rwt.client.UrlLauncher._instance = this;
   }
   this._window = window;
   var iframe = document.createElement( "iframe" );
@@ -28,14 +28,14 @@ rwt.client.URLLauncher = function() {
   this._iframe = iframe;
 };
 
-rwt.client.URLLauncher.getInstance = function() {
-  if( rwt.client.URLLauncher._instance === undefined ) {
-    new rwt.client.URLLauncher();
+rwt.client.UrlLauncher.getInstance = function() {
+  if( rwt.client.UrlLauncher._instance === undefined ) {
+    new rwt.client.UrlLauncher();
   }
-  return rwt.client.URLLauncher._instance;
+  return rwt.client.UrlLauncher._instance;
 };
 
-rwt.client.URLLauncher.prototype = {
+rwt.client.UrlLauncher.prototype = {
 
   openURL : function( url ) {
     var protocol = this.getProtocol( url );

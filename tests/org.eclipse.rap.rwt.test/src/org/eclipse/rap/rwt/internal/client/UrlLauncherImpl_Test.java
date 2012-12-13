@@ -21,7 +21,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.client.service.URLLauncher;
+import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.eclipse.rap.rwt.internal.remote.RemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Display;
 import org.mockito.ArgumentCaptor;
 
 
-public class URLLauncherImpl_Test extends TestCase {
+public class UrlLauncherImpl_Test extends TestCase {
 
   private static final String URL = "http://someurl.com/foo/bar";
 
@@ -48,17 +48,17 @@ public class URLLauncherImpl_Test extends TestCase {
   public void testCreatesRemoteObjectWithCorrectId() {
     RemoteObjectFactory factory = fakeRemoteObjectFactory( mock( RemoteObject.class ) );
 
-    URLLauncher launcher = new URLLauncherImpl();
+    UrlLauncher launcher = new UrlLauncherImpl();
     launcher.openURL( URL );
 
-    verify( factory ).createServiceObject( eq( "rwt.client.URLLauncher" ) );
+    verify( factory ).createServiceObject( eq( "rwt.client.UrlLauncher" ) );
   }
 
   public void testWritesCallOperation() {
     RemoteObject remoteObject = mock( RemoteObject.class );
     fakeRemoteObjectFactory( remoteObject );
 
-    URLLauncher launcher = new URLLauncherImpl();
+    UrlLauncher launcher = new UrlLauncherImpl();
     launcher.openURL( URL );
 
     assertEquals( URL, getURL( remoteObject ) );
