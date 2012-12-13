@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.client.service;
 
-import org.eclipse.swt.internal.SWTEventObject;
+import java.util.EventObject;
 
 
 /**
@@ -22,16 +22,22 @@ import org.eclipse.swt.internal.SWTEventObject;
  * @since 2.0
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class BrowserNavigationEvent extends SWTEventObject {
+public class BrowserNavigationEvent extends EventObject {
+
+  private final String state;
+
+  public BrowserNavigationEvent( Object source, String state ) {
+    super( source );
+    this.state = state;
+  }
 
   /**
-   * The browser history entry to which the user navigated.
+   * Return the browser history state to which the user navigated.
+   *
+   * @return the browser history state
    */
-  public String entryId;
-
-  public BrowserNavigationEvent( Object source, String entryId ) {
-    super( source );
-    this.entryId = entryId;
+  public String getState() {
+    return state;
   }
 
 }

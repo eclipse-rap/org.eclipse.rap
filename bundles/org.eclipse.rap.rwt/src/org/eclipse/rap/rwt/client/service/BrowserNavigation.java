@@ -25,12 +25,12 @@ public interface BrowserNavigation extends ClientService {
   /**
    * Creates an entry in the browser history.
    *
-   * @param id a unique id to identify the entry, used in the fragment part of the URL. Must neither
-   *          be <code>null</code> nor empty
-   * @param text a human-readable text to identify the entry in the browser's UI or
-   *          <code>null</code>
+   * @param state an unique id to identify the history entry, used in the fragment part of the
+   *        URL. Must neither be <code>null</code> nor empty
+   * @param title a human-readable text to identify the history entry in the browser's UI or
+   *        <code>null</code>
    */
-  void createHistoryEntry( String id, String text );
+  void pushState( String state, String title );
 
   /**
    * Adds a listener to the browser navigation. This listener is notified whenever the URL fragment

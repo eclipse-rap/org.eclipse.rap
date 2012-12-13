@@ -77,7 +77,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserNavigationTest", {
         var message = org.eclipse.rwt.test.fixture.TestUtil.getMessageObject();
         var actual = message.findNotifyProperty( "rwt.client.BrowserNavigation",
                                                  "Navigation",
-                                                 "entryId" );
+                                                 "state" );
         assertEquals( "id1", actual );
       }
     ],
@@ -110,7 +110,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserNavigationTest", {
         var message = org.eclipse.rwt.test.fixture.TestUtil.getMessageObject();
         var actual = message.findNotifyProperty( "rwt.client.BrowserNavigation",
                                                  "Navigation",
-                                                 "entryId" );
+                                                 "state" );
         assertEquals( "id3", actual );
       }
     ],

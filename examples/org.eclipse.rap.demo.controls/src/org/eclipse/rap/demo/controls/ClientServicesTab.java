@@ -43,7 +43,7 @@ public class ClientServicesTab extends ExampleTab {
 
   private BrowserNavigationListener navigationListener = new BrowserNavigationListener() {
     public void navigated( BrowserNavigationEvent event ) {
-      log( "Navigated to " + event.entryId );
+      log( "Navigated to " + event.getState() );
     }
   };
 
@@ -110,7 +110,7 @@ public class ClientServicesTab extends ExampleTab {
     add.addListener( SWT.Selection, new Listener() {
       public void handleEvent( Event event ) {
         final BrowserNavigation navigation = RWT.getClient().getService( BrowserNavigation.class );
-        navigation.createHistoryEntry( id.getText(), title.getText() );
+        navigation.pushState( id.getText(), title.getText() );
       }
     } );
     listen.addListener( SWT.Selection, new Listener() {

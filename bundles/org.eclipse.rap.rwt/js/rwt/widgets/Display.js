@@ -170,17 +170,17 @@ rwt.widgets.Display.prototype = {
   },
 
   _appendInitialHistoryEvent : function() {
-    var entryId = window.location.hash;
-    if( entryId !== "" ) {
+    var state = window.location.hash;
+    if( state !== "" ) {
       var server = rwt.remote.Server.getInstance();
       var history = rwt.client.BrowserNavigation.getInstance();
       // TODO: Temporary workaround for 388835
-      var type = "rwt.client.BrowserHistory";
+      var type = "rwt.client.BrowserNavigation";
       rwt.protocol.ObjectRegistry.add( type,
                                        history,
                                        rwt.protocol.AdapterRegistry.getAdapter( type ) );
       server.getServerObject( history ).notify( "Navigation", {
-        "entryId" : entryId.substr( 1 )
+        "state" : state.substr( 1 )
       } );
     }
   },

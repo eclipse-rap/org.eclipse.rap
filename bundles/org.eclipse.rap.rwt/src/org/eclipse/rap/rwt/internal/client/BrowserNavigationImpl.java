@@ -30,6 +30,7 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -47,7 +48,7 @@ public final class BrowserNavigationImpl
   private final static String PROP_NAVIGATION_LISTENER = "Navigation";
   private final static String PROP_ENTRIES = "entries";
   private final static String METHOD_ADD_TO_HISTORY = "addToHistory";
-  private static final String EVENT_HISTORY_NAVIGATED_ENTRY_ID = "entryId";
+  private static final String EVENT_HISTORY_NAVIGATED_STATE = "state";
 
   private final Display display;
   private final List<HistoryEntry> entriesToAdd;
@@ -65,14 +66,9 @@ public final class BrowserNavigationImpl
   //////////
   // History
 
-  public void createHistoryEntry( String id, String text ) {
-    if( id == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
-    if( id.length() == 0 ) {
-      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
-    }
-    entriesToAdd.add( new HistoryEntry( id, text ) );
+  public void pushState( String state, String text ) {
+    ParamCheck.notNullOrEmpty( state, "state" );
+    entriesToAdd.add( new HistoryEntry( state, text ) );
   }
 
   public void addBrowserNavigationListener( BrowserNavigationListener listener ) {
@@ -135,10 +131,10 @@ public final class BrowserNavigationImpl
 
   private void processNavigationEvent() {
     if( ProtocolUtil.wasEventSent( TYPE, PROP_NAVIGATION_LISTENER ) ) {
-      String entryId = readEventPropertyValueAsString( TYPE,
-                                                       PROP_NAVIGATION_LISTENER,
-                                                       EVENT_HISTORY_NAVIGATED_ENTRY_ID );
-      BrowserNavigationEvent event = new BrowserNavigationEvent( this, entryId );
+      String state = readEventPropertyValueAsString( TYPE,
+                                                     PROP_NAVIGATION_LISTENER,
+                                                     EVENT_HISTORY_NAVIGATED_STATE );
+      BrowserNavigationEvent event = new BrowserNavigationEvent( this, state );
       notifyListeners( event );
     }
   }
@@ -185,8 +181,8 @@ public final class BrowserNavigationImpl
     HistoryEntry[] entries = getEntries();
     Object[][] result = new Object[ entries.length ][ 2 ];
     for( int i = 0; i < result.length; i++ ) {
-      result[ i ][ 0 ] = entries[ i ].id;
-      result[ i ][ 1 ] = entries[ i ].text;
+      result[ i ][ 0 ] = entries[ i ].state;
+      result[ i ][ 1 ] = entries[ i ].title;
     }
     return result;
   }
@@ -199,12 +195,12 @@ public final class BrowserNavigationImpl
   // Inner classes
 
   final class HistoryEntry {
-    final String id;
-    final String text;
+    final String state;
+    final String title;
 
-    HistoryEntry( String id, String text ) {
-      this.id = id;
-      this.text = text;
+    HistoryEntry( String state, String title ) {
+      this.state = state;
+      this.title = title;
     }
   }
 

@@ -39,13 +39,13 @@ public class BrowserNavigationImpl_Test extends TestCase {
   private static final String TYPE = "rwt.client.BrowserNavigation";
 
   private Display display;
-  private BrowserNavigationImpl history;
+  private BrowserNavigationImpl navigation;
 
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
-    history = new BrowserNavigationImpl();
+    navigation = new BrowserNavigationImpl();
     Fixture.fakeNewRequest( display );
   }
 
@@ -55,24 +55,24 @@ public class BrowserNavigationImpl_Test extends TestCase {
   }
 
   public void testCreateHistoryEntry() {
-    history.createHistoryEntry( "id", "text" );
+    navigation.pushState( "state", "title" );
 
-    assertEquals( 1, history.getEntries().length );
-    assertEquals( "id", history.getEntries()[ 0 ].id );
-    assertEquals( "text", history.getEntries()[ 0 ].text );
+    assertEquals( 1, navigation.getEntries().length );
+    assertEquals( "state", navigation.getEntries()[ 0 ].state );
+    assertEquals( "title", navigation.getEntries()[ 0 ].title );
   }
 
   public void testCreateHistoryEntryWithNullText() {
-    history.createHistoryEntry( "id", null );
+    navigation.pushState( "state", null );
 
-    assertEquals( 1, history.getEntries().length );
-    assertEquals( "id", history.getEntries()[ 0 ].id );
-    assertNull( history.getEntries()[ 0 ].text );
+    assertEquals( 1, navigation.getEntries().length );
+    assertEquals( "state", navigation.getEntries()[ 0 ].state );
+    assertNull( navigation.getEntries()[ 0 ].title );
   }
 
   public void testCreateHistoryEntryWithEmptyId() {
     try {
-      history.createHistoryEntry( "", "name" );
+      navigation.pushState( "", "name" );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -80,15 +80,15 @@ public class BrowserNavigationImpl_Test extends TestCase {
 
   public void testCreateHistoryEntryWithNullId() {
     try {
-      history.createHistoryEntry( null, "name" );
+      navigation.pushState( null, "name" );
       fail();
-    } catch( IllegalArgumentException expected ) {
+    } catch( NullPointerException expected ) {
     }
   }
 
   public void testAddBrowserNavigationListener_failsWithNull() {
     try {
-      history.addBrowserNavigationListener( null );
+      navigation.addBrowserNavigationListener( null );
       fail();
     } catch( IllegalArgumentException e ) {
       // expected
@@ -98,8 +98,8 @@ public class BrowserNavigationImpl_Test extends TestCase {
   public void testAddBrowserNavigationListener_addsListenerToList() {
     BrowserNavigationListener listener = mock( BrowserNavigationListener.class );
 
-    history.addBrowserNavigationListener( listener );
-    history.notifyListeners( mock( BrowserNavigationEvent.class ) );
+    navigation.addBrowserNavigationListener( listener );
+    navigation.notifyListeners( mock( BrowserNavigationEvent.class ) );
 
     verify( listener ).navigated( any( BrowserNavigationEvent.class ) );
   }
@@ -107,16 +107,16 @@ public class BrowserNavigationImpl_Test extends TestCase {
   public void testAddBrowserNavigationListener_doesNotAddListenerTwice() {
     BrowserNavigationListener listener = mock( BrowserNavigationListener.class );
 
-    history.addBrowserNavigationListener( listener );
-    history.addBrowserNavigationListener( listener );
-    history.notifyListeners( mock( BrowserNavigationEvent.class ) );
+    navigation.addBrowserNavigationListener( listener );
+    navigation.addBrowserNavigationListener( listener );
+    navigation.notifyListeners( mock( BrowserNavigationEvent.class ) );
 
     verify( listener, times( 1 ) ).navigated( any( BrowserNavigationEvent.class ) );
   }
 
   public void testRemoveBrowserNavigationListener_failsWithNull() {
     try {
-      history.removeBrowserNavigationListener( null );
+      navigation.removeBrowserNavigationListener( null );
       fail();
     } catch( IllegalArgumentException e ) {
       // expected
@@ -125,20 +125,20 @@ public class BrowserNavigationImpl_Test extends TestCase {
 
   public void testRemoveBrowserNavigationListener_removesListener() {
     BrowserNavigationListener listener = mock( BrowserNavigationListener.class );
-    history.addBrowserNavigationListener( listener );
+    navigation.addBrowserNavigationListener( listener );
 
-    history.removeBrowserNavigationListener( listener );
-    history.notifyListeners( mock( BrowserNavigationEvent.class ) );
+    navigation.removeBrowserNavigationListener( listener );
+    navigation.notifyListeners( mock( BrowserNavigationEvent.class ) );
 
     verify( listener, times( 0 ) ).navigated( any( BrowserNavigationEvent.class ) );
   }
 
   public void testFireNavigationEvent() {
     BrowserNavigationListener listener = mock( BrowserNavigationListener.class );
-    history.addBrowserNavigationListener( listener );
+    navigation.addBrowserNavigationListener( listener );
 
     Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "entryId", "foo" );
+    parameters.put( "state", "foo" );
     Fixture.fakeNotifyOperation( TYPE, "Navigation", parameters  );
     Fixture.executeLifeCycleFromServerThread();
 
@@ -146,14 +146,14 @@ public class BrowserNavigationImpl_Test extends TestCase {
       = ArgumentCaptor.forClass( BrowserNavigationEvent.class );
     verify( listener, times( 1 ) ).navigated( captor.capture() );
     BrowserNavigationEvent event = captor.getValue();
-    assertEquals( "foo", event.entryId );
+    assertEquals( "foo", event.getState() );
   }
 
   public void testRenderAddNavigationListener() {
     Fixture.fakePhase( PhaseId.READ_DATA );
     ProcessActionRunner.add( new Runnable() {
       public void run() {
-        history.addBrowserNavigationListener( new BrowserNavigationListener() {
+        navigation.addBrowserNavigationListener( new BrowserNavigationListener() {
           public void navigated( BrowserNavigationEvent event ) {
           }
         } );
@@ -171,11 +171,11 @@ public class BrowserNavigationImpl_Test extends TestCase {
       public void navigated( BrowserNavigationEvent event ) {
       }
     };
-    history.addBrowserNavigationListener( listener );
+    navigation.addBrowserNavigationListener( listener );
     Fixture.fakePhase( PhaseId.READ_DATA );
     ProcessActionRunner.add( new Runnable() {
       public void run() {
-        history.removeBrowserNavigationListener( listener );
+        navigation.removeBrowserNavigationListener( listener );
       }
     } );
 
@@ -186,7 +186,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
   }
 
   public void testRenderNavigationListenerUnchanged() {
-    history.addBrowserNavigationListener( new BrowserNavigationListener() {
+    navigation.addBrowserNavigationListener( new BrowserNavigationListener() {
       public void navigated( BrowserNavigationEvent event ) {
       }
     } );
@@ -198,7 +198,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
   }
 
   public void testRenderAddToHistory() throws JSONException {
-    history.createHistoryEntry( "testId", "testText" );
+    navigation.pushState( "testId", "testText" );
 
     Fixture.executeLifeCycleFromServerThread();
 
@@ -210,7 +210,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
   }
 
   public void testRenderAddToHistory_NoEntries() {
-    history.createHistoryEntry( "testId", "testText" );
+    navigation.pushState( "testId", "testText" );
 
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest( display );
@@ -221,8 +221,8 @@ public class BrowserNavigationImpl_Test extends TestCase {
   }
 
   public void testRenderAddToHistoryOrder() throws JSONException {
-    history.createHistoryEntry( "testId1", "testText1" );
-    history.createHistoryEntry( "testId2", "testText2" );
+    navigation.pushState( "testId1", "testText1" );
+    navigation.pushState( "testId2", "testText2" );
 
     Fixture.executeLifeCycleFromServerThread();
 

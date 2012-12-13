@@ -375,10 +375,10 @@ qx.Class.define("rwt.client.BrowserNavigation",
     },
 
     _historyNavigated : function( event ) {
-      var entryId = event.getData();
+      var state = event.getData();
       var server = rwt.remote.Server.getInstance();
       server.getServerObject( this ).notify( "Navigation", {
-        "entryId" : entryId
+        "state" : state
       } );
     }
 

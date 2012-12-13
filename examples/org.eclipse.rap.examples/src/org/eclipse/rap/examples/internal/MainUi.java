@@ -82,7 +82,8 @@ public class MainUi implements EntryPoint {
     if( history != null ) {
       history.addBrowserNavigationListener( new BrowserNavigationListener() {
         public void navigated( BrowserNavigationEvent event ) {
-          IExampleContribution contribution = Examples.getInstance().getContribution( event.entryId );
+          Examples examples = Examples.getInstance();
+          IExampleContribution contribution = examples.getContribution( event.getState() );
           if( contribution != null ) {
             selectContribution( contribution );
           }
@@ -259,7 +260,7 @@ public class MainUi implements EntryPoint {
     if( examplePage != null ) {
       BrowserNavigation history = RWT.getClient().getService( BrowserNavigation.class );
       if( history != null ) {
-        history.createHistoryEntry( contribution.getId(), contribution.getTitle() );
+        history.pushState( contribution.getId(), contribution.getTitle() );
       }
       Control[] children = centerArea.getChildren();
       for( Control child : children ) {
