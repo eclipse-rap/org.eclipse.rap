@@ -168,13 +168,11 @@ public class WidgetAdapter_Test extends TestCase {
 
   public void testSerializableFields() throws Exception {
     WidgetAdapter adapter = new WidgetAdapter();
-    adapter.setJSParent( "jsParent" );
     adapter.setInitialized( true );
 
     WidgetAdapter deserializedAdapter = Fixture.serializeAndDeserialize( adapter );
 
     assertEquals( adapter.getId(), deserializedAdapter.getId() );
-    assertEquals( adapter.getJSParent(), deserializedAdapter.getJSParent() );
     assertEquals( adapter.isInitialized(), deserializedAdapter.isInitialized() );
   }
 
