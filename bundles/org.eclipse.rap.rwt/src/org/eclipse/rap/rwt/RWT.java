@@ -30,6 +30,7 @@ import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.client.BrowserNavigationImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
@@ -572,7 +573,7 @@ public final class RWT {
    *             {@link Client#getService(Class)}
    */
   public static BrowserNavigation getBrowserHistory() {
-    return getClient().getService( BrowserNavigation.class );
+    return SingletonUtil.getSessionInstance( BrowserNavigationImpl.class );
   }
 
   /**
