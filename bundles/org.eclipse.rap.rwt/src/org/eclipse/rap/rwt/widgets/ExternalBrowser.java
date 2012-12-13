@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Display;
  * Utility class to open and close an external browser window.
  *
  * @deprecated Use {@link UrlLauncher} instead
+ * @since 2.0
  */
 @Deprecated
 public final class ExternalBrowser {
@@ -89,6 +90,7 @@ public final class ExternalBrowser {
    *
    * @deprecated Use {@link UrlLauncher#openURL(String)} instead
    */
+  @Deprecated
   public static void open( String id, String url, int style ) {
     checkWidget();
     ensureInstance();
@@ -118,6 +120,7 @@ public final class ExternalBrowser {
    *
    * @deprecated
    */
+  @Deprecated
   public static void close( String id ) {
     checkWidget();
     ensureInstance();

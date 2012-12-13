@@ -15,9 +15,9 @@ import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.internal.serverpush.ServerPushServiceHandler;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
-import org.eclipse.rap.rwt.internal.uicallback.ServerPushServiceHandler;
 import org.eclipse.rap.rwt.service.RWTFileSettingStoreFactory;
 
 

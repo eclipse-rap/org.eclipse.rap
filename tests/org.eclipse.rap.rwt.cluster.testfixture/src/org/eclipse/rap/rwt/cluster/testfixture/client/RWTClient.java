@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
+import org.eclipse.rap.rwt.internal.serverpush.ServerPushServiceHandler;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
-import org.eclipse.rap.rwt.internal.uicallback.ServerPushServiceHandler;
 import org.eclipse.swt.dnd.Transfer;
 
 

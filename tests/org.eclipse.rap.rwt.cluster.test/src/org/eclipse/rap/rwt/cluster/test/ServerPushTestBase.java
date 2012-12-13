@@ -24,7 +24,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
-import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
+import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.swt.widgets.Display;
 
 

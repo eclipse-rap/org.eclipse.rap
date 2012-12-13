@@ -12,7 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
+import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;

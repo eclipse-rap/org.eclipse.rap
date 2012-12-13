@@ -14,7 +14,7 @@ package org.eclipse.rap.junit;
 import junit.framework.ComparisonFailure;
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
+import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.swt.widgets.Display;
 
 

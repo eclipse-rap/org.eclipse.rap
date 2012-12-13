@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.uicallback;
+package org.eclipse.rap.rwt.internal.serverpush;
 
 import java.util.HashSet;
 import java.util.Set;

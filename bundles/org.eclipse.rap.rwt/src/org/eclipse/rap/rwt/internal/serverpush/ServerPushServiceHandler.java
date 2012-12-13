@@ -9,7 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.uicallback;
+package org.eclipse.rap.rwt.internal.serverpush;
 
 import java.io.IOException;
 

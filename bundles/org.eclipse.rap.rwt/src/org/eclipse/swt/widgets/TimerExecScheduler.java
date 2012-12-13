@@ -23,7 +23,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.eclipse.rap.rwt.internal.engine.PostDeserialization;
-import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
+import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
