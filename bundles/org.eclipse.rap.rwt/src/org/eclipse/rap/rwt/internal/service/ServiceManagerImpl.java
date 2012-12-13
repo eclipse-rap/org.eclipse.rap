@@ -24,7 +24,7 @@ import org.eclipse.rap.rwt.service.ServiceManager;
 
 public class ServiceManagerImpl implements ServiceManager {
 
-  public static final String REQUEST_PARAM = "custom_service_handler";
+  public static final String REQUEST_PARAM = "servicehandler";
 
   private final ServiceHandler defaultHandler;
   private final ServiceHandlerRegistry customHandlers;

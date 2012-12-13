@@ -21,7 +21,7 @@ import org.eclipse.rap.rwt.service.ServiceHandler;
 
 public class ServerPushServiceHandler implements ServiceHandler {
 
-  public final static String HANDLER_ID = "org.eclipse.rap.uicallback";
+  public final static String HANDLER_ID = "org.eclipse.rap.serverpush";
 
   public void service( HttpServletRequest request, HttpServletResponse response )
     throws IOException

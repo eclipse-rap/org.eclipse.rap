@@ -112,7 +112,7 @@ public class ClusteredSynchronizer extends Synchronizer {
       buffer.append( request.getServerPort() );
       buffer.append( request.getRequestURI() );
       buffer.append( "?" );
-      buffer.append( "custom_service_handler" );
+      buffer.append( "servicehandler" );
       buffer.append( "=" );
       buffer.append( ID );
       return buffer.toString();

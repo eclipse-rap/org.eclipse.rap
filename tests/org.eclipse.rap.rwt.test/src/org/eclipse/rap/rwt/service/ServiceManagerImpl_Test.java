@@ -161,13 +161,13 @@ public class ServiceManagerImpl_Test extends TestCase {
   public void testGetServiceHandlerUrl_returnsUrl() {
     String url = RWT.getServiceManager().getServiceHandlerUrl( "foo" );
 
-    assertEquals( "/fooapp/rap?custom_service_handler=foo", url );
+    assertEquals( "/fooapp/rap?servicehandler=foo", url );
   }
 
   public void testGetServiceHandlerUrl_returnsUrlWithCharactersEscaped() {
     String url = RWT.getServiceManager().getServiceHandlerUrl( "Smørre brød" );
 
-    assertEquals( "/fooapp/rap?custom_service_handler=Sm%C3%B8rre%20br%C3%B8d", url );
+    assertEquals( "/fooapp/rap?servicehandler=Sm%C3%B8rre%20br%C3%B8d", url );
   }
 
   public void testGetServiceHandlerUrl_failsWithNull() {
