@@ -27,19 +27,12 @@ import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 
-public final class UICallBackManager implements SerializableCompatibility {
+public final class ServerPushManager implements SerializableCompatibility {
 
   private static final int DEFAULT_REQUEST_CHECK_INTERVAL = 30000;
+  private static final String FORCE_PUSH = ServerPushManager.class.getName() + "#forcePush";
 
-  private static final String FORCE_UI_CALLBACK
-    = UICallBackManager.class.getName() + "#forceUICallBack";
-
-  public static UICallBackManager getInstance() {
-    return SingletonUtil.getSessionInstance( UICallBackManager.class );
-  }
-
-  private final CallBackActivationTracker callBackActivationTracker;
-
+  private final ServerPushActivationTracker serverPushActivationTracker;
   private final SerializableLock lock;
   // Flag that indicates whether a request is processed. In that case no
   // notifications are sent to the client.
@@ -47,19 +40,23 @@ public final class UICallBackManager implements SerializableCompatibility {
   // indicates whether the display has runnables to execute
   private boolean hasRunnables;
   private int requestCheckInterval;
-  private transient CallBackRequestTracker callBackRequestTracker;
+  private transient ServerPushRequestTracker serverPushRequestTracker;
 
-  private UICallBackManager() {
+  private ServerPushManager() {
     lock = new SerializableLock();
-    callBackActivationTracker = new CallBackActivationTracker();
+    serverPushActivationTracker = new ServerPushActivationTracker();
     uiThreadRunning = false;
     requestCheckInterval = DEFAULT_REQUEST_CHECK_INTERVAL;
-    callBackRequestTracker = new CallBackRequestTracker();
+    serverPushRequestTracker = new ServerPushRequestTracker();
+  }
+
+  public static ServerPushManager getInstance() {
+    return SingletonUtil.getSessionInstance( ServerPushManager.class );
   }
 
   public boolean isCallBackRequestBlocked() {
     synchronized( lock ) {
-      return !callBackRequestTracker.hasActive();
+      return !serverPushRequestTracker.hasActive();
     }
   }
 
@@ -82,8 +79,8 @@ public final class UICallBackManager implements SerializableCompatibility {
       this.hasRunnables = hasRunnables;
     }
     IServiceStore serviceStore = ContextProvider.getServiceStore();
-    if( serviceStore != null && hasRunnables && isUICallBackActive() ) {
-      serviceStore.setAttribute( FORCE_UI_CALLBACK, Boolean.TRUE );
+    if( serviceStore != null && hasRunnables && isServerPushActive() ) {
+      serviceStore.setAttribute( FORCE_PUSH, Boolean.TRUE );
     }
   }
 
@@ -106,13 +103,13 @@ public final class UICallBackManager implements SerializableCompatibility {
     }
   }
 
-  public void activateUICallBacksFor( String id ) {
-    callBackActivationTracker.activate( id );
+  public void activateServerPushFor( String id ) {
+    serverPushActivationTracker.activate( id );
   }
 
-  public void deactivateUICallBacksFor( String id ) {
-    callBackActivationTracker.deactivate( id );
-    if( !callBackActivationTracker.isActive() ) {
+  public void deactivateServerPushFor( String id ) {
+    serverPushActivationTracker.deactivate( id );
+    if( !serverPushActivationTracker.isActive() ) {
       releaseBlockedRequest();
     }
   }
@@ -124,7 +121,7 @@ public final class UICallBackManager implements SerializableCompatibility {
   }
 
   public boolean needsActivation() {
-    return isUICallBackActive() || forceUICallBackForPendingRunnables();
+    return isServerPushActive() || forceServerPushForPendingRunnables();
   }
 
   void processRequest( HttpServletResponse response ) {
@@ -134,7 +131,7 @@ public final class UICallBackManager implements SerializableCompatibility {
       }
       if( mustBlockCallBackRequest() ) {
         long requestStartTime = System.currentTimeMillis();
-        callBackRequestTracker.activate( Thread.currentThread() );
+        serverPushRequestTracker.activate( Thread.currentThread() );
         SessionTerminationListener listener = attachSessionTerminationListener();
         try {
           boolean canRelease = false;
@@ -146,7 +143,7 @@ public final class UICallBackManager implements SerializableCompatibility {
           Thread.interrupted(); // Reset interrupted state, see bug 300254
         } finally {
           listener.detach();
-          callBackRequestTracker.deactivate( Thread.currentThread() );
+          serverPushRequestTracker.deactivate( Thread.currentThread() );
         }
       }
     }
@@ -160,22 +157,22 @@ public final class UICallBackManager implements SerializableCompatibility {
       result = true;
     } else if( !isConnectionAlive( response ) ) {
       result = true;
-    } else if( !callBackRequestTracker.isActive( Thread.currentThread() ) ) {
+    } else if( !serverPushRequestTracker.isActive( Thread.currentThread() ) ) {
       result = true;
     }
     return result;
   }
 
   boolean mustBlockCallBackRequest() {
-    return isUICallBackActive() && !hasRunnables;
+    return isServerPushActive() && !hasRunnables;
   }
 
-  boolean isUICallBackActive() {
-    return callBackActivationTracker.isActive();
+  boolean isServerPushActive() {
+    return serverPushActivationTracker.isActive();
   }
 
   private Object readResolve() {
-    callBackRequestTracker = new CallBackRequestTracker();
+    serverPushRequestTracker = new ServerPushRequestTracker();
     return this;
   }
 
@@ -212,11 +209,11 @@ public final class UICallBackManager implements SerializableCompatibility {
     return result;
   }
 
-  private static boolean forceUICallBackForPendingRunnables() {
+  private static boolean forceServerPushForPendingRunnables() {
     boolean result = false;
     IServiceStore serviceStore = ContextProvider.getServiceStore();
     if( serviceStore != null ) {
-      result = Boolean.TRUE.equals( serviceStore.getAttribute( FORCE_UI_CALLBACK ) );
+      result = Boolean.TRUE.equals( serviceStore.getAttribute( FORCE_PUSH ) );
     }
     return result;
   }
@@ -244,4 +241,5 @@ public final class UICallBackManager implements SerializableCompatibility {
       currentThread.interrupt();
     }
   }
+
 }

@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.jobs.ProgressProvider;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
+import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
@@ -128,7 +128,7 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
       display.asyncExec( new Runnable() {
         public void run() {
           String id = String.valueOf( event.getJob().hashCode() );
-          UICallBackManager.getInstance().deactivateUICallBacksFor( id );
+          ServerPushManager.getInstance().deactivateServerPushFor( id );
           manager[ 0 ].changeListener.done( event );
         }
       } );
@@ -155,7 +155,7 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
           public void run() {
             bindToSession( event.getJob() );
             String id = String.valueOf( event.getJob().hashCode() );
-            UICallBackManager.getInstance().activateUICallBacksFor( id );
+            ServerPushManager.getInstance().activateServerPushFor( id );
           }
         };
         RWT.getUISession( display ).exec( runnable );

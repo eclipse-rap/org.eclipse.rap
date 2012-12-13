@@ -42,7 +42,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
+import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
@@ -307,12 +307,12 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testUICallBackRendered() throws IOException {
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    ServerPushManager.getInstance().activateServerPushFor( "id" );
 
     displayLCA.render( display );
 
     Message message = Fixture.getProtocolMessage();
-    assertNotNull( message.findSetProperty( UICallBackRenderer.UI_CALLBACK_ID, "active" ) );
+    assertNotNull( message.findSetProperty( "rwt.client.UICallBack", "active" ) );
   }
 
   public void testRenderBeep() throws IOException {

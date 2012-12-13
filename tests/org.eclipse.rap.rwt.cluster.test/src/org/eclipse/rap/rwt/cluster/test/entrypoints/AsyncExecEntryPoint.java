@@ -14,7 +14,6 @@ import java.io.Serializable;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.widgets.ClusteredSynchronizer;
 import org.eclipse.swt.widgets.Display;
@@ -28,7 +27,7 @@ public class AsyncExecEntryPoint implements EntryPoint {
   public static void scheduleAsyncRunnable( Display display ) {
     display.asyncExec( new AsyncExecRunnable( display ) );
   }
-  
+
   public static void scheduleSyncRunnable( final Display display ) throws InterruptedException {
     Thread thread = new Thread( new Runnable() {
       public void run() {
@@ -41,7 +40,7 @@ public class AsyncExecEntryPoint implements EntryPoint {
   }
 
   public static boolean wasRunnableExecuted( UISession uiSession ) {
-    return ATTRIBUTE_VALUE.equals( uiSession.getAttribute( ATTRIBUTE_NAME ) ); 
+    return ATTRIBUTE_VALUE.equals( uiSession.getAttribute( ATTRIBUTE_NAME ) );
   }
 
   public int createUI() {
@@ -49,7 +48,7 @@ public class AsyncExecEntryPoint implements EntryPoint {
     display.setSynchronizer( new ClusteredSynchronizer( display ) );
     return 0;
   }
-  
+
   private static class AsyncExecRunnable implements Runnable, Serializable {
     private final Display display;
 
@@ -58,11 +57,12 @@ public class AsyncExecEntryPoint implements EntryPoint {
     }
 
     public void run() {
-      UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+      RWT.getUISession( display ).exec( new Runnable() {
         public void run() {
           RWT.getUISession().setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
         }
       } );
     }
   }
+
 }

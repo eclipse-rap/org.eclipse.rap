@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,17 +7,18 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - adaptation for RAP
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
-
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
+import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.Compatibility;
 import org.eclipse.swt.internal.SerializableCompatibility;
+
 
 /**
  * Instances of this class provide synchronization support
@@ -76,11 +77,11 @@ void addLast (RunnableLock lock) {
 			messages = newMessages;
 		}
 		messages [messageCount++] = lock;
-// RAP [rst] Notify UICallBack mechanism when runnable was added to empty queue
+// RAP [rst] Notify server push mechanism when runnable was added to empty queue
 		if( messageCount == 1 ) {
 		  RWT.getUISession( display ).exec( new Runnable() {
 		    public void run() {
-		      UICallBackManager.getInstance().setHasRunnables( true );
+		      ServerPushManager.getInstance().setHasRunnables( true );
 		    }
 		  } );
 		}
@@ -150,11 +151,11 @@ RunnableLock removeFirst () {
 		if (messageCount == 0) {
 			if (messages.length > MESSAGE_LIMIT) messages = null;
 		}
-// RAP [rst] Notify UICallBack mechanism when last runnable has been removed
+// RAP [rst] Notify server push mechanism when last runnable has been removed
 		if( messageCount == 0 ) {
 		  RWT.getUISession( display ).exec( new Runnable() {
 		    public void run() {
-		      UICallBackManager.getInstance().setHasRunnables( false );
+		      ServerPushManager.getInstance().setHasRunnables( false );
 		    }
 		  } );
 		}

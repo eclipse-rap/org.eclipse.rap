@@ -40,11 +40,10 @@ import org.eclipse.rap.rwt.internal.theme.QxImage;
 import org.eclipse.rap.rwt.internal.theme.QxType;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
+import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
@@ -1075,7 +1074,7 @@ public class Display extends Device implements Adaptable {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( scheduler == null ) {
-      scheduler = new TimerExecScheduler( this, UICallBackManager.getInstance() );
+      scheduler = new TimerExecScheduler( this, ServerPushManager.getInstance() );
     }
     if( milliseconds < 0 ) {
       scheduler.cancel( runnable );
@@ -1208,7 +1207,7 @@ public class Display extends Device implements Adaptable {
   protected void wakeThread() {
     uiSession.exec( new Runnable() {
       public void run() {
-        UICallBackManager.getInstance().wakeClient();
+        ServerPushManager.getInstance().wakeClient();
       }
     } );
   }

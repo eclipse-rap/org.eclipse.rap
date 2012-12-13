@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,12 @@ package org.eclipse.rap.rwt.internal.uicallback;
 import java.util.LinkedList;
 import java.util.List;
 
-class CallBackRequestTracker {
+
+class ServerPushRequestTracker {
+
   private transient List<Thread> callBackRequests;
 
-  CallBackRequestTracker() {
+  ServerPushRequestTracker() {
     callBackRequests = new LinkedList<Thread>();
   }
 
@@ -35,4 +37,5 @@ class CallBackRequestTracker {
   boolean isActive( Thread thread ) {
     return !hasActive() && callBackRequests.get( 0 ) == thread;
   }
+
 }

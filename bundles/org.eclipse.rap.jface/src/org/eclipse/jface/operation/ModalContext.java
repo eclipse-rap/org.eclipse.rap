@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - adaptation for RAP
  *******************************************************************************/
 package org.eclipse.jface.operation;
 
@@ -20,7 +21,7 @@ import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
+import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -166,7 +167,7 @@ public class ModalContext {
 						// RAP [fappel]: deactivate UI-Callback for this thread
 						String key 
 						  = String.valueOf( ModalContextThread.this.hashCode() );
-						UICallBackManager.getInstance().deactivateUICallBacksFor( key );
+						ServerPushManager.getInstance().deactivateServerPushFor( key );
 						
 					}
 				}
@@ -398,7 +399,7 @@ public class ModalContext {
 					}
 					// RAP [fappel]: start UI-Callback to enable UI-updates
 					String key = String.valueOf( t.hashCode() );
-					UICallBackManager.getInstance().activateUICallBacksFor( key );
+					ServerPushManager.getInstance().activateServerPushFor( key );
 					
 					if(listenerException == null){
 						t.start();

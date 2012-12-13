@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,88 +16,89 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class CallBackActivationTracker_Test extends TestCase {
-  
-  private CallBackActivationTracker callBackActivationTracker;
+
+  private ServerPushActivationTracker serverPushActivationTracker;
 
   public void testInitialActiveState() {
-    assertFalse( callBackActivationTracker.isActive() );
+    assertFalse( serverPushActivationTracker.isActive() );
   }
 
   public void testActivate() {
-    callBackActivationTracker.activate( "x" );
-    assertTrue( callBackActivationTracker.isActive() );
+    serverPushActivationTracker.activate( "x" );
+    assertTrue( serverPushActivationTracker.isActive() );
   }
 
   public void testActivateTwice() {
     String id = "id";
-    callBackActivationTracker.activate( id );
-    callBackActivationTracker.activate( id );
-    assertTrue( callBackActivationTracker.isActive() );
+    serverPushActivationTracker.activate( id );
+    serverPushActivationTracker.activate( id );
+    assertTrue( serverPushActivationTracker.isActive() );
   }
-  
+
   public void testIsActiveAfterActivate() {
-    callBackActivationTracker.activate( "x" );
-    assertTrue( callBackActivationTracker.isActive() );
+    serverPushActivationTracker.activate( "x" );
+    assertTrue( serverPushActivationTracker.isActive() );
   }
-  
+
   public void testDeactivateWithNonExistingId() {
-    callBackActivationTracker.deactivate( "does.not.exist" );
-    assertFalse( callBackActivationTracker.isActive() );
+    serverPushActivationTracker.deactivate( "does.not.exist" );
+    assertFalse( serverPushActivationTracker.isActive() );
   }
-  
+
   public void testDeactivateExistingActivation() {
     String id = "id";
-    callBackActivationTracker.activate( id );
-    callBackActivationTracker.deactivate( id );
-    assertFalse( callBackActivationTracker.isActive() );
+    serverPushActivationTracker.activate( id );
+    serverPushActivationTracker.deactivate( id );
+    assertFalse( serverPushActivationTracker.isActive() );
   }
-  
+
   public void testDeactivateSameActivationTwice() {
     String id = "id";
-    callBackActivationTracker.activate( id );
-    callBackActivationTracker.deactivate( id );
-    callBackActivationTracker.deactivate( id );
-    assertFalse( callBackActivationTracker.isActive() );
+    serverPushActivationTracker.activate( id );
+    serverPushActivationTracker.deactivate( id );
+    serverPushActivationTracker.deactivate( id );
+    assertFalse( serverPushActivationTracker.isActive() );
   }
-  
-  public void testActivateMultipleTimes() {
-    callBackActivationTracker.activate( "id1" );
-    callBackActivationTracker.activate( "id2" );
-    assertTrue( callBackActivationTracker.isActive() );
-  }
-  
-  public void testDeactivateOneFromMultipleActivations() {
-    callBackActivationTracker.activate( "id1" );
-    callBackActivationTracker.activate( "id2" );
-    callBackActivationTracker.deactivate( "id2" );
-    assertTrue( callBackActivationTracker.isActive() );
-  }
-  
-  public void testSerializeWhenEmpty() throws Exception {
-    byte[] bytes = Fixture.serialize( callBackActivationTracker );
 
-    CallBackActivationTracker deserializedIdManager = deserialize( bytes );
-    
-    assertEquals( callBackActivationTracker.isActive(), deserializedIdManager.isActive() );
+  public void testActivateMultipleTimes() {
+    serverPushActivationTracker.activate( "id1" );
+    serverPushActivationTracker.activate( "id2" );
+    assertTrue( serverPushActivationTracker.isActive() );
   }
-  
+
+  public void testDeactivateOneFromMultipleActivations() {
+    serverPushActivationTracker.activate( "id1" );
+    serverPushActivationTracker.activate( "id2" );
+    serverPushActivationTracker.deactivate( "id2" );
+    assertTrue( serverPushActivationTracker.isActive() );
+  }
+
+  public void testSerializeWhenEmpty() throws Exception {
+    byte[] bytes = Fixture.serialize( serverPushActivationTracker );
+
+    ServerPushActivationTracker deserializedIdManager = deserialize( bytes );
+
+    assertEquals( serverPushActivationTracker.isActive(), deserializedIdManager.isActive() );
+  }
+
   public void testSerializeWhenHoldingIds() throws Exception {
     String id = "id";
-    callBackActivationTracker.activate( id );
-    byte[] bytes = Fixture.serialize( callBackActivationTracker );
-    
-    CallBackActivationTracker deserializedIdManager = deserialize( bytes );
-    
-    assertEquals( callBackActivationTracker.isActive(), deserializedIdManager.isActive() );
+    serverPushActivationTracker.activate( id );
+    byte[] bytes = Fixture.serialize( serverPushActivationTracker );
+
+    ServerPushActivationTracker deserializedIdManager = deserialize( bytes );
+
+    assertEquals( serverPushActivationTracker.isActive(), deserializedIdManager.isActive() );
     deserializedIdManager.deactivate( id );
     assertFalse( deserializedIdManager.isActive() );
   }
 
+  @Override
   protected void setUp() throws Exception {
-    callBackActivationTracker = new CallBackActivationTracker();
+    serverPushActivationTracker = new ServerPushActivationTracker();
   }
 
-  private static CallBackActivationTracker deserialize( byte[] bytes ) throws Exception {
-    return ( CallBackActivationTracker )Fixture.deserialize( bytes );
+  private static ServerPushActivationTracker deserialize( byte[] bytes ) throws Exception {
+    return ( ServerPushActivationTracker )Fixture.deserialize( bytes );
   }
 }

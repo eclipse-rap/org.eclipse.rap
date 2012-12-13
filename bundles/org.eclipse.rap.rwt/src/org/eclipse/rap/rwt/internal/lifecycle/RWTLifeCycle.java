@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.UIThread.UIThreadTerminatedError;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
+import org.eclipse.rap.rwt.internal.uicallback.ServerPushManager;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.IServiceStore;
@@ -237,10 +237,10 @@ public class RWTLifeCycle extends LifeCycle {
   public void sleep() {
     continueLifeCycle();
     IUIThreadHolder uiThread = getUIThreadHolder();
-    UICallBackManager.getInstance().notifyUIThreadEnd();
+    ServerPushManager.getInstance().notifyUIThreadEnd();
     uiThread.switchThread();
     uiThread.updateServiceContext();
-    UICallBackManager.getInstance().notifyUIThreadStart();
+    ServerPushManager.getInstance().notifyUIThreadStart();
     continueLifeCycle();
   }
 
@@ -293,11 +293,11 @@ public class RWTLifeCycle extends LifeCycle {
         synchronized( uiThread.getLock() ) {
           try {
             uiThread.updateServiceContext();
-            UICallBackManager.getInstance().notifyUIThreadStart();
+            ServerPushManager.getInstance().notifyUIThreadStart();
             continueLifeCycle();
             createUI();
             continueLifeCycle();
-            UICallBackManager.getInstance().notifyUIThreadEnd();
+            ServerPushManager.getInstance().notifyUIThreadEnd();
           } catch( UIThreadTerminatedError thr ) {
             throw thr;
           } catch( Throwable thr ) {

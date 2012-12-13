@@ -8,19 +8,17 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.cluster.test.entrypoints;
+package org.eclipse.rap.rwt.cluster.test;
 
-import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
+import org.eclipse.rap.rwt.cluster.testfixture.server.JettyFactory;
 
 
-public class UICallbackEntryPoint implements EntryPoint {
+public class JettyServerPush_Test extends ServerPushTestBase {
 
-  @SuppressWarnings("unused")
-  public int createUI() {
-    UICallBack.activate( "x" );
-    new Display();
-    return 0;
+  @Override
+  IServletEngineFactory getServletEngineFactory() {
+    return new JettyFactory();
   }
+
 }

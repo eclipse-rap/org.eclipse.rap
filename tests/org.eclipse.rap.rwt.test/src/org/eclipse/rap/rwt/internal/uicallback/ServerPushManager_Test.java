@@ -41,7 +41,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 
 
-public class UICallBackManager_Test extends TestCase {
+public class ServerPushManager_Test extends TestCase {
   public static final String SYS_PROP_SLEEP_TIME = "sleepTime";
   public static final String SYS_PROP_TIMER_EXEC_DELAY = "timerExecDelay";
 
@@ -62,16 +62,16 @@ public class UICallBackManager_Test extends TestCase {
 
   private volatile String log = "";
   private Display display;
-  private UICallBackManager manager;
-  private UICallBackServiceHandler uiCallBackServiceHandler;
+  private ServerPushManager manager;
+  private ServerPushServiceHandler pushServiceHandler;
 
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     log = "";
     display  = new Display();
-    manager = UICallBackManager.getInstance();
-    uiCallBackServiceHandler = new UICallBackServiceHandler();
+    manager = ServerPushManager.getInstance();
+    pushServiceHandler = new ServerPushServiceHandler();
   }
 
   @Override
@@ -86,10 +86,10 @@ public class UICallBackManager_Test extends TestCase {
       public void run() {
         ContextProvider.setContext( context[ 0 ] );
         Fixture.fakeResponseWriter();
-        UICallBackServiceHandler uiCallBackServiceHandler = new UICallBackServiceHandler();
+        ServerPushServiceHandler pushServiceHandler = new ServerPushServiceHandler();
         try {
-          manager.activateUICallBacksFor( "foo" );
-          uiCallBackServiceHandler.service( ContextProvider.getRequest(),
+          manager.activateServerPushFor( "foo" );
+          pushServiceHandler.service( ContextProvider.getRequest(),
                                             ContextProvider.getResponse() );
         } catch( Throwable thr ) {
           uiCallBackServiceHandlerThrowable[ 0 ] = thr;
@@ -227,7 +227,7 @@ public class UICallBackManager_Test extends TestCase {
     httpSession.setAttribute( "listener", sessionListener );
     manager.setRequestCheckInterval( 10 );
 
-    manager.activateUICallBacksFor( "id" );
+    manager.activateServerPushFor( "id" );
 
     // must not block
     manager.processRequest( ContextProvider.getResponse() );
@@ -273,9 +273,9 @@ public class UICallBackManager_Test extends TestCase {
   }
 
   public void testAsyncExec() throws Throwable {
-    Throwable[] uiCallBackServiceHandlerThrowable = { null };
+    Throwable[] serverPushServiceHandlerThrowable = { null };
     ServiceContext context = ContextProvider.getContext();
-    // test runnables addition while no uiCallBack thread is not blocked
+    // test runnables addition while no server push thread is not blocked
     CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator( context );
     callBackRequestSimulator.sendRequest();
 
@@ -286,7 +286,7 @@ public class UICallBackManager_Test extends TestCase {
     // let request thread finish off and die
     callBackRequestSimulator.requestThread.join( 100 );
 
-    assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
+    assertNull( serverPushServiceHandlerThrowable[ 0 ] );
     assertFalse( manager.isCallBackRequestBlocked() );
     assertFalse( callBackRequestSimulator.isRequestRunning() );
     assertEquals( RUN_ASYNC_EXEC + RUN_ASYNC_EXEC, log );
@@ -343,18 +343,18 @@ public class UICallBackManager_Test extends TestCase {
     verifyZeroInteractions( runnable );
   }
 
-  public void testTimerExecActivatesUICallback() {
+  public void testTimerExecActivatesServerPush() {
     display.timerExec( TIMER_EXEC_DELAY, mock( Runnable.class ) );
 
-    assertTrue( UICallBackManager.getInstance().isUICallBackActive() );
+    assertTrue( ServerPushManager.getInstance().isServerPushActive() );
   }
 
-  public void testDispatchingTimerExecRunnableDeactivatesUICallback() throws Exception {
+  public void testDispatchingTimerExecRunnableDeactivatesServerPush() throws Exception {
     display.timerExec( TIMER_EXEC_DELAY, mock( Runnable.class ) );
 
     Thread.sleep( TIMER_EXEC_DELAY + 50 );
 
-    assertFalse( UICallBackManager.getInstance().isUICallBackActive() );
+    assertFalse( ServerPushManager.getInstance().isServerPushActive() );
   }
 
   // This test ensures that addSync doesn't cause deadlocks
@@ -439,12 +439,12 @@ public class UICallBackManager_Test extends TestCase {
   }
 
   public void testMustBlockCallBackRequestWhenActive() {
-    manager.activateUICallBacksFor( "foo" );
+    manager.activateServerPushFor( "foo" );
     assertTrue( manager.mustBlockCallBackRequest() );
   }
 
   public void testMustBlockCallBackRequestWhenActiveAndRunnablesPending() {
-    manager.activateUICallBacksFor( "foo" );
+    manager.activateServerPushFor( "foo" );
     manager.setHasRunnables( true );
     assertFalse( manager.mustBlockCallBackRequest() );
   }
@@ -456,57 +456,57 @@ public class UICallBackManager_Test extends TestCase {
 
   public void testNeedActivationFromDifferentSession() throws Throwable {
     // test that on/off switching is managed in session scope
-    manager.activateUICallBacksFor( ID_1 );
+    manager.activateServerPushFor( ID_1 );
     final boolean[] otherSession = new boolean[ 1 ];
     Runnable runnable = new Runnable() {
       public void run() {
         Fixture.createServiceContext();
         new Display();
-        otherSession[ 0 ] = UICallBackManager.getInstance().needsActivation();
+        otherSession[ 0 ] = ServerPushManager.getInstance().needsActivation();
       }
     };
     Fixture.runInThread( runnable );
     assertFalse( otherSession[ 0 ] );
   }
 
-  public void testNeedActivationWithoutActivateCall() throws Exception {
+  public void testNeedActivationWithoutActivateCall() {
     boolean needsActivation = manager.needsActivation();
     assertFalse( needsActivation );
   }
 
-  public void testNeedActivationAfterDeactivate() throws Exception {
-    manager.deactivateUICallBacksFor( ID_1 );
+  public void testNeedActivationAfterDeactivate() {
+    manager.deactivateServerPushFor( ID_1 );
     assertFalse( manager.needsActivation() );
   }
 
-  public void testNeedActivationWithDifferentIds() throws Exception {
-    manager.activateUICallBacksFor( ID_1 );
-    manager.activateUICallBacksFor( ID_2 );
+  public void testNeedActivationWithDifferentIds() {
+    manager.activateServerPushFor( ID_1 );
+    manager.activateServerPushFor( ID_2 );
     assertTrue( manager.needsActivation() );
   }
 
-  public void testNeedActivationAfterActivateTwoDeactivateOne() throws Exception {
-    manager.activateUICallBacksFor( ID_1 );
-    manager.activateUICallBacksFor( ID_2 );
-    manager.deactivateUICallBacksFor( ID_1 );
+  public void testNeedActivationAfterActivateTwoDeactivateOne() {
+    manager.activateServerPushFor( ID_1 );
+    manager.activateServerPushFor( ID_2 );
+    manager.deactivateServerPushFor( ID_1 );
     assertTrue( manager.needsActivation() );
   }
 
-  public void testNeedActivateTwice() throws Exception {
-    manager.activateUICallBacksFor( ID_1 );
-    manager.deactivateUICallBacksFor( ID_1 );
-    manager.activateUICallBacksFor( ID_2 );
+  public void testNeedActivateTwice() {
+    manager.activateServerPushFor( ID_1 );
+    manager.deactivateServerPushFor( ID_1 );
+    manager.activateServerPushFor( ID_2 );
     assertTrue( manager.needsActivation() );
   }
 
-  public void testNeedActivationWithActivateDeactivateAndPendingRunnables() throws Exception {
-    manager.activateUICallBacksFor( ID_1 );
+  public void testNeedActivationWithActivateDeactivateAndPendingRunnables() {
+    manager.activateServerPushFor( ID_1 );
     display.asyncExec( EMPTY_RUNNABLE );
-    manager.deactivateUICallBacksFor( ID_1 );
+    manager.deactivateServerPushFor( ID_1 );
     assertTrue( manager.needsActivation() );
   }
 
-  public void testNeedActivationWithPendingRunnablesDoesntEnableUICallback() throws Exception {
+  public void testNeedActivationWithPendingRunnablesDoesntEnableServerPush() {
     display.asyncExec( EMPTY_RUNNABLE );
     assertFalse( manager.needsActivation() );
   }
@@ -514,7 +514,7 @@ public class UICallBackManager_Test extends TestCase {
   public void testIsSessionExpiredWithInfiniteSessionTimeout() {
     ContextProvider.getUISession().getHttpSession().setMaxInactiveInterval( -1 );
 
-    boolean sessionExpired = UICallBackManager.isSessionExpired( 1, 2 );
+    boolean sessionExpired = ServerPushManager.isSessionExpired( 1, 2 );
 
     assertFalse( sessionExpired );
   }
@@ -522,7 +522,7 @@ public class UICallBackManager_Test extends TestCase {
   public void testIsSessionExpiredWhenSessionTimedOut() {
     ContextProvider.getUISession().getHttpSession().setMaxInactiveInterval( 10 );
 
-    boolean sessionExpired = UICallBackManager.isSessionExpired( 1, 20000 );
+    boolean sessionExpired = ServerPushManager.isSessionExpired( 1, 20000 );
 
     assertTrue( sessionExpired );
   }
@@ -530,14 +530,14 @@ public class UICallBackManager_Test extends TestCase {
   public void testIsSessionExpiredWhenSessionActive() {
     ContextProvider.getUISession().getHttpSession().setMaxInactiveInterval( 10 );
 
-    boolean sessionExpired = UICallBackManager.isSessionExpired( 1, 9000 );
+    boolean sessionExpired = ServerPushManager.isSessionExpired( 1, 9000 );
 
     assertFalse( sessionExpired );
   }
 
   public void testSetHasRunnablesWithoutStateInfo() {
     // Service handlers don't have a state info
-    manager.activateUICallBacksFor( "foo" );
+    manager.activateServerPushFor( "foo" );
     Fixture.replaceServiceStore( null );
 
     try {
@@ -623,8 +623,8 @@ public class UICallBackManager_Test extends TestCase {
           ContextProvider.setContext( serviceContext );
           Fixture.fakeResponseWriter();
           try {
-            manager.activateUICallBacksFor( "foo" );
-            uiCallBackServiceHandler.service( ContextProvider.getRequest(),
+            manager.activateServerPushFor( "foo" );
+            pushServiceHandler.service( ContextProvider.getRequest(),
                                               ContextProvider.getResponse() );
           } catch( Throwable thr ) {
             exception = thr;
