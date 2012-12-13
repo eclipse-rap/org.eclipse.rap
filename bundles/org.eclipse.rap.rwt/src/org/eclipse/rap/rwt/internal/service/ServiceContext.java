@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.UISession;
 
 
@@ -34,7 +33,7 @@ public final class ServiceContext {
 
   private HttpServletRequest request;
   private HttpServletResponse response;
-  private IServiceStore serviceStore;
+  private ServiceStore serviceStore;
   private boolean disposed;
   private UISession uiSession;
   private ApplicationContextImpl applicationContext;
@@ -95,10 +94,7 @@ public final class ServiceContext {
     return response;
   }
 
-  /**
-   * Returns the corresponding {@link IServiceStore} to the currently processed request.
-   */
-  public IServiceStore getServiceStore() {
+  public ServiceStore getServiceStore() {
     checkState();
     return serviceStore;
   }
@@ -114,10 +110,7 @@ public final class ServiceContext {
     protocolWriter = new ProtocolMessageWriter();
   }
 
-  /**
-   * Sets the corresponding {@link IServiceStore} to the currently processed request.
-   */
-  public void setServiceStore( IServiceStore serviceStore ) {
+  public void setServiceStore( ServiceStore serviceStore ) {
     checkState();
     ParamCheck.notNull( serviceStore, "serviceStore" );
     if( this.serviceStore != null ) {
@@ -201,4 +194,5 @@ public final class ServiceContext {
       throw new IllegalStateException( "The context has been disposed." );
     }
   }
+
 }

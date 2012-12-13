@@ -12,8 +12,8 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.service.IServiceStore;
 
 
 public final class CurrentPhase {
@@ -26,7 +26,7 @@ public final class CurrentPhase {
 
   public static PhaseId get() {
     PhaseId result = null;
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     if( serviceStore != null ) {
       result = ( PhaseId )serviceStore.getAttribute( ATTR_CURRENT_PHASE );
     }
@@ -34,7 +34,8 @@ public final class CurrentPhase {
   }
 
   static void set( PhaseId phaseId ) {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     serviceStore.setAttribute( ATTR_CURRENT_PHASE, phaseId );
   }
+
 }

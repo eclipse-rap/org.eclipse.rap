@@ -41,11 +41,11 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.IServiceStore;
-import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.ISettingStore;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ServiceManager;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -62,12 +62,12 @@ import org.eclipse.swt.widgets.Widget;
  * @since 2.0
  * @see ILifeCycle
  * @see UISession
- * @see IServiceStore
  * @see ApplicationContext
  * @see ResourceManager
  * @see HttpServletRequest
  * @see HttpServletResponse
  */
+@SuppressWarnings( "deprecation" )
 public final class RWT {
 
   private static final String LOCALE = RWT.class.getName() + ".LOCALE";
@@ -447,11 +447,16 @@ public final class RWT {
   }
 
   /**
-   * Returns the {@link IServiceStore} that is mapped
-   * to the currently processed request.
+   * Returns the service store that is mapped to the currently processed request.
    *
-   * @return {@link IServiceStore}
+   * @return the service store
+   * @deprecated The interface {@link IServiceStore} is deprecated and will be removed in a future
+   *             release without a replacement. If you need to store data in the scope of a request,
+   *             consider to use the request object (e.g.
+   *             {@link HttpServletRequest#setAttribute(String, Object)}).
+   * @see RWT#getRequest()
    */
+  @Deprecated
   public static IServiceStore getServiceStore() {
     checkHasPhase();
     return ContextProvider.getServiceStore();

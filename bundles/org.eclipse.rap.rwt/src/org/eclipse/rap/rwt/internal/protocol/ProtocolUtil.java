@@ -22,10 +22,10 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
-import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -55,7 +55,7 @@ public final class ProtocolUtil {
   }
 
   public static ClientMessage getClientMessage() {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     ClientMessage clientMessage = ( ClientMessage )serviceStore.getAttribute( CLIENT_MESSAGE );
     if( clientMessage == null ) {
       HttpServletRequest request = ContextProvider.getRequest();
@@ -81,12 +81,12 @@ public final class ProtocolUtil {
   }
 
   public static void setClientMessage( ClientMessage clientMessage ) {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     serviceStore.setAttribute( CLIENT_MESSAGE, clientMessage );
   }
 
   public static boolean isClientMessageProcessed() {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     return serviceStore.getAttribute( CLIENT_MESSAGE ) != null;
   }
 

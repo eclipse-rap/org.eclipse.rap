@@ -23,7 +23,6 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.UISession;
 
 
@@ -222,7 +221,7 @@ public class ContextProvider {
    * convenience method that delegates to
    * <code>ContextProvider.getContext().getServiceStore()</code>.
    */
-  public static IServiceStore getServiceStore() {
+  public static ServiceStore getServiceStore() {
     return getContext().getServiceStore();
   }
 

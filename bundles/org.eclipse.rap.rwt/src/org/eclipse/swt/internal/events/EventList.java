@@ -16,8 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -26,7 +26,7 @@ public class EventList {
   private static final String ATTR_EVENT_LIST = EventList.class.getName() + "#instance";
 
   public static EventList getInstance() {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     EventList result = ( EventList )serviceStore.getAttribute( ATTR_EVENT_LIST );
     if( result == null ) {
       result = new EventList();
@@ -43,10 +43,10 @@ public class EventList {
   }
 
   EventList( int[] eventOrder ) {
-    this.events = new LinkedList<Event>();
-    this.eventComparator = new EventComparator( eventOrder );
+    events = new LinkedList<Event>();
+    eventComparator = new EventComparator( eventOrder );
   }
-  
+
   public void add( Event event ) {
     events.add( event );
   }
@@ -63,7 +63,7 @@ public class EventList {
   }
 
   private static class EventComparator implements Comparator<Event> {
-  
+
     private final int[] eventOrder;
 
     public EventComparator( int[] eventOrder ) {
@@ -89,7 +89,7 @@ public class EventList {
       }
       return result;
     }
-    
+
   }
-  
+
 }

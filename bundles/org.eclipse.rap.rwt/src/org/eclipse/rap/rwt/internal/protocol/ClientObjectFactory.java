@@ -15,8 +15,8 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.service.IServiceStore;
 
 
 /**
@@ -72,7 +72,7 @@ public final class ClientObjectFactory {
 
   @SuppressWarnings("unchecked")
   private static Map<String, IClientObject> getClientObjectMap() {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     Map<String, IClientObject> result
       = ( Map<String, IClientObject> )serviceStore.getAttribute( CLIENT_OBJECT_MAP_KEY );
     if( result == null ) {
@@ -85,4 +85,5 @@ public final class ClientObjectFactory {
   private ClientObjectFactory() {
     // prevent instantiation
   }
+
 }

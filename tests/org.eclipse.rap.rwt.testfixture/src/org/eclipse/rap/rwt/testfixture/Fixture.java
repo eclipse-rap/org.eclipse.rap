@@ -45,8 +45,8 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
@@ -65,9 +65,8 @@ import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.service.IServiceStore;
-import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.ResourceManager;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -496,7 +495,7 @@ public final class Fixture {
   }
 
   public static void fakePhase( PhaseId phase ) {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     serviceStore.setAttribute( CurrentPhase.class.getName() + "#value", phase );
   }
 
@@ -510,7 +509,7 @@ public final class Fixture {
     lifeCycle.sleep();
   }
 
-  public static void replaceServiceStore( IServiceStore serviceStore ) {
+  public static void replaceServiceStore( ServiceStore serviceStore ) {
     HttpServletRequest request = ContextProvider.getRequest();
     HttpServletResponse response = ContextProvider.getResponse();
     ServiceContext context = new ServiceContext( request, response );

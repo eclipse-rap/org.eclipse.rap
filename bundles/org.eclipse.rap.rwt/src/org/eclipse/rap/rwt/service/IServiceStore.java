@@ -11,22 +11,24 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.service;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
- * The <code>IServiceStore</code> can be used to store and retrieve
- * information during a life cycle request.
- *
- * <p><strong>Note:</strong> the <code>IServiceStore</code> has request-scope,
- * meaning that all information stored here will be lost at the end of a
- * request.</p>
+ * The service store can be used to store and retrieve information in the scope of a request.
  *
  * @since 2.0
  * @see org.eclipse.rap.rwt.RWT
  * @noimplement This interface is not intended to be implemented by clients.
+ * @deprecated This interface will be removed in a future release without a replacement. If you need
+ *             to store data in the scope of a request, consider to use the request object (e.g.
+ *             {@link HttpServletRequest#setAttribute(String, Object)}).
  */
+@Deprecated
 public interface IServiceStore {
 
   Object getAttribute( String name );
   void setAttribute( String name, Object value );
   void removeAttribute( String name );
+
 }

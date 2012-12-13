@@ -17,9 +17,9 @@ import java.util.List;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.widgets.BrowserCallback;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
@@ -500,7 +500,7 @@ public class Browser extends Composite {
   }
 
   private void updateBrowserFunctions( String function, boolean create ) {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     String id = WidgetUtil.getId( this );
     String key = create ? FUNCTIONS_TO_CREATE + id : FUNCTIONS_TO_DESTROY + id;
     String[] funcList = ( String[] )serviceStore.getAttribute( key );
@@ -615,7 +615,7 @@ public class Browser extends Composite {
     }
 
     public void sendProgressCompletedEvent() {
-      Browser.this.sendProgressChangedEvent();
+      sendProgressChangedEvent();
       Browser.this.sendProgressCompletedEvent();
     }
 

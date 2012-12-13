@@ -18,6 +18,7 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.IServiceStore;
 
 
+@SuppressWarnings( "deprecation" )
 public final class ServiceStore implements IServiceStore {
 
   private final Map<String,Object> attributes;

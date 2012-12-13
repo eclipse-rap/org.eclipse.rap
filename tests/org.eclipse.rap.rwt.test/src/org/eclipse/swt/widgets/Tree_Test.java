@@ -23,8 +23,8 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -2026,7 +2026,7 @@ public class Tree_Test extends TestCase {
   }
 
   private void markTemporaryResize() {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     String key = "org.eclipse.rap.rwt.internal.textsize.TextSizeRecalculation#temporaryResize";
     serviceStore.setAttribute( key, Boolean.TRUE );
   }

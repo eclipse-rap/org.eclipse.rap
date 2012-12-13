@@ -22,10 +22,10 @@ import org.eclipse.rap.rwt.internal.lifecycle.UIThread.UIThreadTerminatedError;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
+import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.widgets.Display;
 
@@ -84,8 +84,8 @@ public class RWTLifeCycle extends LifeCycle {
   public RWTLifeCycle( ApplicationContextImpl applicationContext ) {
     super( applicationContext );
     this.applicationContext = applicationContext;
-    this.phaseListenerManager = new PhaseListenerManager( this );
-    this.uiRunnable = new UIThreadController();
+    phaseListenerManager = new PhaseListenerManager( this );
+    uiRunnable = new UIThreadController();
   }
 
   @Override
@@ -123,12 +123,12 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   private static void setRequestThreadRunnable( Runnable runnable ) {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     serviceStore.setAttribute( REQUEST_THREAD_RUNNABLE, runnable );
   }
 
   private static Runnable getRequestThreadRunnable() {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     return ( Runnable )serviceStore.getAttribute( REQUEST_THREAD_RUNNABLE );
   }
 
@@ -156,7 +156,7 @@ public class RWTLifeCycle extends LifeCycle {
         if( phase instanceof IInterruptible ) {
           // IInterruptible phases return control to the user code, thus they don't call
           // Phase#execute()
-          IServiceStore serviceStore = ContextProvider.getServiceStore();
+          ServiceStore serviceStore = ContextProvider.getServiceStore();
           serviceStore.setAttribute( CURRENT_PHASE, new Integer( i ) );
           interrupted = true;
         } else {
@@ -215,7 +215,7 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   private static void handleUIThreadException() throws IOException {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     Throwable throwable = ( Throwable )serviceStore.getAttribute( UI_THREAD_THROWABLE );
     if( throwable != null ) {
       if( throwable instanceof PhaseExecutionError ) {
@@ -255,7 +255,7 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   private static Integer getCurrentPhase() {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     return ( Integer )serviceStore.getAttribute( CURRENT_PHASE );
   }
 
@@ -266,12 +266,12 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   public void setPhaseOrder( IPhase[] phaseOrder ) {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     serviceStore.setAttribute( PHASE_ORDER, phaseOrder );
   }
 
   IPhase[] getPhaseOrder() {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     return ( IPhase[] )serviceStore.getAttribute( PHASE_ORDER );
   }
 
@@ -301,7 +301,7 @@ public class RWTLifeCycle extends LifeCycle {
           } catch( UIThreadTerminatedError thr ) {
             throw thr;
           } catch( Throwable thr ) {
-            IServiceStore serviceStore = ContextProvider.getServiceStore();
+            ServiceStore serviceStore = ContextProvider.getServiceStore();
             serviceStore.setAttribute( UI_THREAD_THROWABLE, thr );
           }
           // We have to prevent the ui thread from waking up at that point, otherwise

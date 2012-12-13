@@ -28,7 +28,7 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
-import org.eclipse.rap.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
@@ -78,7 +78,7 @@ public class RWTServlet_Test extends TestCase {
   }
 
   public void testServiceHandlerHasServiceStore() throws ServletException, IOException {
-    final List<IServiceStore> log = new ArrayList<IServiceStore>();
+    final List<ServiceStore> log = new ArrayList<ServiceStore>();
     ApplicationContextImpl applicationContext = createApplicationContext();
     TestRequest request = createTestRequest( applicationContext );
     request.setParameter( ServiceManagerImpl.REQUEST_PARAM, "foo" );

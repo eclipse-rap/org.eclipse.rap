@@ -35,7 +35,6 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
-import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
@@ -711,7 +710,7 @@ public class RWTLifeCycle_Test extends TestCase {
     final UISession uiSession = ContextProvider.getUISession();
     final String[] invalidateThreadName = { null };
     final boolean hasContext[] = new boolean[]{ false };
-    final IServiceStore serviceStore[] =  { null };
+    final ServiceStore serviceStore[] =  { null };
     uiSession.addUISessionListener( new UISessionListener() {
       public void beforeDestroy( UISessionEvent event ) {
         invalidateThreadName[ 0 ] = Thread.currentThread().getName();
@@ -738,7 +737,7 @@ public class RWTLifeCycle_Test extends TestCase {
     assertEquals( "", log.toString() );
   }
 
-  public void testExceptionInRender() throws Exception {
+  public void testExceptionInRender() {
     fakeServletPath( EntryPointManager.DEFAULT_PATH );
     entryPointManager.register( EntryPointManager.DEFAULT_PATH,
                                 ExceptionInRenderEntryPoint.class,
@@ -757,7 +756,7 @@ public class RWTLifeCycle_Test extends TestCase {
     final String[] uiThreadName = { "unknown-ui-thread" };
     final String[] invalidateThreadName = { "unkown-invalidate-thread" };
     final boolean hasContext[] = new boolean[]{ false };
-    final IServiceStore serviceStore[] = { null };
+    final ServiceStore serviceStore[] = { null };
     uiSession.addUISessionListener( new UISessionListener() {
       public void beforeDestroy( UISessionEvent event ) {
         invalidateThreadName[ 0 ] = Thread.currentThread().getName();

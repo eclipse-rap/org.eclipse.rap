@@ -19,8 +19,8 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
-import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
@@ -78,7 +78,7 @@ public final class ServerPushManager implements SerializableCompatibility {
     synchronized( lock ) {
       this.hasRunnables = hasRunnables;
     }
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     if( serviceStore != null && hasRunnables && isServerPushActive() ) {
       serviceStore.setAttribute( FORCE_PUSH, Boolean.TRUE );
     }
@@ -211,7 +211,7 @@ public final class ServerPushManager implements SerializableCompatibility {
 
   private static boolean forceServerPushForPendingRunnables() {
     boolean result = false;
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     if( serviceStore != null ) {
       result = Boolean.TRUE.equals( serviceStore.getAttribute( FORCE_PUSH ) );
     }

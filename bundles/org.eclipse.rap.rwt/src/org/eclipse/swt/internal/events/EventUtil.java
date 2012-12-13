@@ -12,7 +12,7 @@
 package org.eclipse.swt.internal.events;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -30,7 +30,7 @@ public final class EventUtil {
   public static int getLastEventTime() {
     Long eventTime;
     if( ContextProvider.hasContext() ) {
-      IServiceStore serviceStore = ContextProvider.getContext().getServiceStore();
+      ServiceStore serviceStore = ContextProvider.getContext().getServiceStore();
       eventTime = ( Long )serviceStore.getAttribute( ATTR_LAST_EVENT_TIME );
       if( eventTime == null ) {
         eventTime = Long.valueOf( System.currentTimeMillis() );

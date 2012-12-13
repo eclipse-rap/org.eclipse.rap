@@ -29,6 +29,7 @@ import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
@@ -37,7 +38,6 @@ import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
@@ -222,7 +222,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   // Helping methods for BrowserFunction
 
   private static void createBrowserFunctions( Browser browser ) {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     String id = WidgetUtil.getId( browser );
     String[] functions = ( String[] )serviceStore.getAttribute( FUNCTIONS_TO_CREATE + id );
     if( functions != null ) {
@@ -234,7 +234,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   }
 
   private static void destroyBrowserFunctions( Browser browser ) {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     String id = WidgetUtil.getId( browser );
     String[] functions = ( String[] )serviceStore.getAttribute( FUNCTIONS_TO_DESTROY + id );
     if( functions != null ) {
@@ -274,7 +274,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   }
 
   private static void renderFunctionResult( Browser browser ) {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     String id = WidgetUtil.getId( browser );
     String name = ( String )serviceStore.getAttribute( EXECUTED_FUNCTION_NAME + id );
     if( name != null ) {
@@ -289,19 +289,19 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   }
 
   private static void setExecutedFunctionName( Browser browser, String name ) {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     String id = WidgetUtil.getId( browser );
     serviceStore.setAttribute( EXECUTED_FUNCTION_NAME + id, name );
   }
 
   private static void setExecutedFunctionResult( Browser browser, Object result ) {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     String id = WidgetUtil.getId( browser );
     serviceStore.setAttribute( EXECUTED_FUNCTION_RESULT + id, result );
   }
 
   private static void setExecutedFunctionError( Browser browser, String error ) {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     String id = WidgetUtil.getId( browser );
     serviceStore.setAttribute( EXECUTED_FUNCTION_ERROR + id, error );
   }

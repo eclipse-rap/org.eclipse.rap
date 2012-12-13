@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.textsize;
 
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -112,11 +112,12 @@ class TextSizeRecalculation {
   }
 
   private void setTemporaryResize( boolean value ) {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     if( value ) {
       serviceStore.setAttribute( TEMPORARY_RESIZE, Boolean.TRUE );
     } else {
       serviceStore.removeAttribute( TEMPORARY_RESIZE );
     }
   }
+
 }

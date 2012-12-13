@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.internal.service.ServiceStore;
 
 
 /**
@@ -34,7 +34,7 @@ public class ProcessActionRunner {
       {
         runnable.run();
       } else {
-        IServiceStore serviceStore = ContextProvider.getServiceStore();
+        ServiceStore serviceStore = ContextProvider.getServiceStore();
         List<Runnable> list = ( List<Runnable> )serviceStore.getAttribute( ATTR_RUNNABLE_LIST );
         if( list == null ) {
           list = new ArrayList<Runnable>();
@@ -49,7 +49,7 @@ public class ProcessActionRunner {
 
   public static boolean executeNext() {
     boolean result = false;
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     List list = ( List )serviceStore.getAttribute( ATTR_RUNNABLE_LIST );
     if( list != null && list.size() > 0 ) {
       Runnable runnable = ( Runnable )list.remove( 0 );
@@ -61,7 +61,7 @@ public class ProcessActionRunner {
 
   @SuppressWarnings("unchecked")
   public static void execute() {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     List<Runnable> list = ( List<Runnable> )serviceStore.getAttribute( ATTR_RUNNABLE_LIST );
     if( list != null ) {
       Runnable[] runables = list.toArray( new Runnable[ list.size() ] );
