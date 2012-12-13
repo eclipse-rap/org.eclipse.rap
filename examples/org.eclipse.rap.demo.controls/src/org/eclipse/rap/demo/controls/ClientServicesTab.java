@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.BrowserNavigation;
+import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
+import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
@@ -38,6 +41,11 @@ public class ClientServicesTab extends ExampleTab {
   private static final String MINI_PDF = "clientservices/mini.pdf";
   private static final String MINI_JS = "clientservices/mini.js";
 
+  private BrowserNavigationListener navigationListener = new BrowserNavigationListener() {
+    public void navigated( BrowserNavigationEvent event ) {
+      log( "Navigated to " + event.entryId );
+    }
+  };
 
   public ClientServicesTab() {
     super( "Client Services" );
@@ -52,6 +60,7 @@ public class ClientServicesTab extends ExampleTab {
     parent.setLayout( new GridLayout( 1, false ) );
     registerResources();
     createClientInfoExample( parent );
+    createBrowserNavigationExample( parent );
     createExitConfirmationExample( parent );
     createUrlLauncherExample( parent );
     createJavaScriptLoaderExample( parent );
@@ -80,12 +89,40 @@ public class ClientServicesTab extends ExampleTab {
   private void createClientInfoExample( Composite parent ) {
     Group group = createGroup( parent, "ClientInfo", 2 );
     ClientInfo info = RWT.getClient().getService( ClientInfo.class );
-    final Label locale = new Label( group, SWT.NONE );
-    locale.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, false ) );
-    locale.setText( "Locale: " + info.getLocale() );
-    final Label timezone = new Label( group, SWT.NONE );
-    timezone.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, false ) );
-    timezone.setText( "Timezone Offset: " + info.getTimezoneOffset() );
+    createLabel( group, "Locale: " + info.getLocale() );
+    createLabel( group, "Timezone Offset: " + info.getTimezoneOffset() );
+  }
+
+  private void createBrowserNavigationExample( Composite parent ) {
+    Group group = createGroup( parent, "BrowserNavigation", 3 );
+    createLabel( group, "Id:" );
+    createLabel( group, "Title:" );
+    final Button listen = new Button( group, SWT.CHECK );
+    listen.setText( "Listener" );
+    final Text id = new Text( group, SWT.BORDER );
+    id.setText( "foo1" );
+    id.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, false ) );
+    final Text title = new Text( group, SWT.BORDER );
+    title.setText( "Title of foo1" );
+    title.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, false ) );
+    Button add = new Button( group, SWT.PUSH );
+    add.setText( "Add to History" );
+    add.addListener( SWT.Selection, new Listener() {
+      public void handleEvent( Event event ) {
+        final BrowserNavigation navigation = RWT.getClient().getService( BrowserNavigation.class );
+        navigation.createHistoryEntry( id.getText(), title.getText() );
+      }
+    } );
+    listen.addListener( SWT.Selection, new Listener() {
+      public void handleEvent( Event event ) {
+        final BrowserNavigation navigation = RWT.getClient().getService( BrowserNavigation.class );
+        if( listen.getSelection() ) {
+          navigation.addBrowserNavigationListener( navigationListener );
+        } else {
+          navigation.removeBrowserNavigationListener( navigationListener );
+        }
+      }
+    } );
   }
 
   private void createUrlLauncherExample( Composite parent ) {
@@ -184,4 +221,12 @@ public class ClientServicesTab extends ExampleTab {
     group.setText( title );
     return group;
   }
+
+  private void createLabel( Composite parent, String text ) {
+    final Label locale = new Label( parent, SWT.NONE );
+    locale.setLayoutData( new GridData( SWT.LEFT, SWT.FILL, true, false ) );
+    locale.setText( text );
+  }
+
+
 }
