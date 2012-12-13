@@ -16,7 +16,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventProper
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +57,7 @@ public final class BrowserNavigationImpl
   public BrowserNavigationImpl() {
     display = Display.getCurrent();
     entriesToAdd = new ArrayList<HistoryEntry>();
-    listeners = new LinkedList<BrowserNavigationListener>();
+    listeners = new LinkedHashSet<BrowserNavigationListener>();
     RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( this );
     RWT.getUISession().addUISessionListener( this );
   }
@@ -139,10 +139,14 @@ public final class BrowserNavigationImpl
                                                        PROP_NAVIGATION_LISTENER,
                                                        EVENT_HISTORY_NAVIGATED_ENTRY_ID );
       BrowserNavigationEvent event = new BrowserNavigationEvent( this, entryId );
-      BrowserNavigationListener[] listeners = getListeners();
-      for( BrowserNavigationListener listener : listeners ) {
-        listener.navigated( event );
-      }
+      notifyListeners( event );
+    }
+  }
+
+  void notifyListeners( BrowserNavigationEvent event ) {
+    BrowserNavigationListener[] listeners = getListeners();
+    for( BrowserNavigationListener listener : listeners ) {
+      listener.navigated( event );
     }
   }
 

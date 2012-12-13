@@ -12,7 +12,6 @@
 package org.eclipse.rap.rwt.client.service;
 
 
-
 /**
  * The browser navigation provides methods to access a web browser's history for navigating within
  * the application. It is possible to create a history entry at the top of the history stack and to
@@ -34,14 +33,16 @@ public interface BrowserNavigation extends ClientService {
   void createHistoryEntry( String id, String text );
 
   /**
-   * Adds a listener to the navigation support.
+   * Adds a listener to the browser navigation. This listener is notified whenever the URL fragment
+   * in the browser changes. If the listener has already been added, this method does nothing.
    *
    * @param listener the listener to add, must not be <code>null</code>
    */
   void addBrowserNavigationListener( BrowserNavigationListener listener );
 
   /**
-   * Removes a listener from the navigation support.
+   * Removes a listener from the navigation support. If the listener has not been added before, this
+   * method does nothing.
    *
    * @param listener the listener to remove, must not be <code>null</code>
    */

@@ -22,7 +22,7 @@ import org.eclipse.swt.internal.SWTEventObject;
  * @since 2.0
  * @noextend This class is not intended to be subclassed by clients.
  */
-public final class BrowserNavigationEvent extends SWTEventObject {
+public class BrowserNavigationEvent extends SWTEventObject {
 
   /**
    * The browser history entry to which the user navigated.

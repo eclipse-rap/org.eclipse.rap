@@ -15,18 +15,21 @@ import org.eclipse.swt.internal.SWTEventListener;
 
 
 /**
- * An event handler that is invoked after the user navigated to a previously
- * created history entry.
- * @see BrowserNavigationEvent
+ * An event handler that is invoked whenever the user navigates within the application, i.e. changes
+ * the fragment part of the URL. This can happen by pressing the browser's <em>back</em> button, by
+ * selecting an item from the browser's history, or by manually changing the fragment part of the
+ * URL in the browser's URL bar.
+ *
  * @see BrowserNavigation
  * @since 2.0
  */
 public interface BrowserNavigationListener extends SWTEventListener {
 
   /**
-   * The event handler method.
+   * Called when the user navigated within the application.
    *
-   * @param event the {@link BrowserNavigationEvent} object
+   * @param event the event that contains details of the navigation
    */
   void navigated( BrowserNavigationEvent event );
+
 }

@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -85,22 +86,51 @@ public class BrowserNavigationImpl_Test extends TestCase {
     }
   }
 
-  public void testAddBrowserNavigationListener() {
+  public void testAddBrowserNavigationListener_failsWithNull() {
     try {
       history.addBrowserNavigationListener( null );
-      fail( "BrowserNavigation#addBrowserNavigationListener must not allow null" );
+      fail();
     } catch( IllegalArgumentException e ) {
       // expected
     }
   }
 
-  public void testRemoveBrowserNavigationListener() {
+  public void testAddBrowserNavigationListener_addsListenerToList() {
+    BrowserNavigationListener listener = mock( BrowserNavigationListener.class );
+
+    history.addBrowserNavigationListener( listener );
+    history.notifyListeners( mock( BrowserNavigationEvent.class ) );
+
+    verify( listener ).navigated( any( BrowserNavigationEvent.class ) );
+  }
+
+  public void testAddBrowserNavigationListener_doesNotAddListenerTwice() {
+    BrowserNavigationListener listener = mock( BrowserNavigationListener.class );
+
+    history.addBrowserNavigationListener( listener );
+    history.addBrowserNavigationListener( listener );
+    history.notifyListeners( mock( BrowserNavigationEvent.class ) );
+
+    verify( listener, times( 1 ) ).navigated( any( BrowserNavigationEvent.class ) );
+  }
+
+  public void testRemoveBrowserNavigationListener_failsWithNull() {
     try {
       history.removeBrowserNavigationListener( null );
-      fail( "BrowserNavigation#removeBrowserNavigationListener must not allow null" );
+      fail();
     } catch( IllegalArgumentException e ) {
       // expected
     }
+  }
+
+  public void testRemoveBrowserNavigationListener_removesListener() {
+    BrowserNavigationListener listener = mock( BrowserNavigationListener.class );
+    history.addBrowserNavigationListener( listener );
+
+    history.removeBrowserNavigationListener( listener );
+    history.notifyListeners( mock( BrowserNavigationEvent.class ) );
+
+    verify( listener, times( 0 ) ).navigated( any( BrowserNavigationEvent.class ) );
   }
 
   public void testFireNavigationEvent() {
