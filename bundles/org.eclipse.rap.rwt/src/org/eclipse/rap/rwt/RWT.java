@@ -572,6 +572,7 @@ public final class RWT {
    * @deprecated use {@link BrowserNavigation} client service instead, see
    *             {@link Client#getService(Class)}
    */
+  @Deprecated
   public static BrowserNavigation getBrowserHistory() {
     return SingletonUtil.getSessionInstance( BrowserNavigationImpl.class );
   }
