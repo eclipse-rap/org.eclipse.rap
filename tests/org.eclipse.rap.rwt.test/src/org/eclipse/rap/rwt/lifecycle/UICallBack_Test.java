@@ -119,17 +119,17 @@ public class UICallBack_Test extends TestCase {
 
   public void testRunNonUIThreadWithFakeContextWithNullDisplay() {
     try {
-      RWT.getUISession( null ).exec( new NoOpRunnable() );
+      UICallBack.runNonUIThreadWithFakeContext( null, new NoOpRunnable() );
       fail( "must not accept null-argument" );
-    } catch( NullPointerException expected ) {
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testRunNonUIThreadWithFakeContextWithNullRunnable() {
     try {
-      RWT.getUISession( new Display() ).exec( null );
+      UICallBack.runNonUIThreadWithFakeContext( new Display(), null );
       fail( "must not accept null-argument" );
-    } catch( NullPointerException expected ) {
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
