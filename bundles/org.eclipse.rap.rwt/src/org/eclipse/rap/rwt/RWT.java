@@ -26,11 +26,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.client.Client;
-import org.eclipse.rap.rwt.client.service.BrowserHistory;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.client.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
@@ -566,19 +564,6 @@ public final class RWT {
     checkHasSessionContext();
     UISession uiSession = ContextProvider.getUISession();
     uiSession.setAttribute( LOCALE, locale );
-  }
-
-  /**
-   * Returns an instance of the browser history for the current UI session.
-   *
-   * @return the browser history instance for the current UI session
-   * @see BrowserHistory
-   * @deprecated use {@link BrowserHistory} client service instead, see
-   *             {@link Client#getService(Class)}
-   */
-  @Deprecated
-  public static BrowserHistory getBrowserHistory() {
-    return SingletonUtil.getSessionInstance( BrowserHistoryImpl.class );
   }
 
   /**

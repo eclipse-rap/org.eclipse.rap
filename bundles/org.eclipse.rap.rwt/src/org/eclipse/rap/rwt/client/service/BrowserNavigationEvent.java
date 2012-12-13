@@ -11,22 +11,27 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.client.service;
 
-import org.eclipse.swt.internal.SWTEventListener;
+import org.eclipse.swt.internal.SWTEventObject;
 
 
 /**
- * An event handler that is invoked after the user navigated to a previously
- * created history entry.
- * @see BrowserHistoryEvent
- * @see BrowserHistory
+ * Instances of this class provide information about a browser navigation event.
+ *
+ * @see BrowserNavigationListener
+ * @see BrowserNavigation
  * @since 2.0
+ * @noextend This class is not intended to be subclassed by clients.
  */
-public interface BrowserHistoryListener extends SWTEventListener {
+public final class BrowserNavigationEvent extends SWTEventObject {
 
   /**
-   * The event handler method.
-   *
-   * @param event the {@link BrowserHistoryEvent} object
+   * The browser history entry to which the user navigated.
    */
-  void navigated( BrowserHistoryEvent event );
+  public String entryId;
+
+  public BrowserNavigationEvent( Object source, String entryId ) {
+    super( source );
+    this.entryId = entryId;
+  }
+
 }
