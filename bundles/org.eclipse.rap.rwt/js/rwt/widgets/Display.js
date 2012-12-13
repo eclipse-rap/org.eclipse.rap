@@ -173,7 +173,7 @@ rwt.widgets.Display.prototype = {
     var entryId = window.location.hash;
     if( entryId !== "" ) {
       var server = rwt.remote.Server.getInstance();
-      var history = rwt.client.History.getInstance();
+      var history = rwt.client.BrowserNavigation.getInstance();
       // TODO: Temporary workaround for 388835
       var type = "rwt.client.BrowserHistory";
       rwt.protocol.ObjectRegistry.add( type,

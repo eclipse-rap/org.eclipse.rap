@@ -19,8 +19,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.client.service.BrowserHistoryEvent;
-import org.eclipse.rap.rwt.client.service.BrowserHistoryListener;
+import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
+import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
@@ -33,18 +33,18 @@ import org.json.JSONException;
 import org.mockito.ArgumentCaptor;
 
 
-public class BrowserHistoryImpl_Test extends TestCase {
+public class BrowserNavigationImpl_Test extends TestCase {
 
-  private static final String TYPE = "rwt.client.BrowserHistory";
+  private static final String TYPE = "rwt.client.BrowserNavigation";
 
   private Display display;
-  private BrowserHistoryImpl history;
+  private BrowserNavigationImpl history;
 
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
-    history = new BrowserHistoryImpl();
+    history = new BrowserNavigationImpl();
     Fixture.fakeNewRequest( display );
   }
 
@@ -53,69 +53,69 @@ public class BrowserHistoryImpl_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testCreateEntry() {
-    history.createEntry( "id", "text" );
+  public void testCreateHistoryEntry() {
+    history.createHistoryEntry( "id", "text" );
 
     assertEquals( 1, history.getEntries().length );
     assertEquals( "id", history.getEntries()[ 0 ].id );
     assertEquals( "text", history.getEntries()[ 0 ].text );
   }
 
-  public void testCreateEntryWithNullText() {
-    history.createEntry( "id", null );
+  public void testCreateHistoryEntryWithNullText() {
+    history.createHistoryEntry( "id", null );
 
     assertEquals( 1, history.getEntries().length );
     assertEquals( "id", history.getEntries()[ 0 ].id );
     assertNull( history.getEntries()[ 0 ].text );
   }
 
-  public void testCreateEntryWithEmptyId() {
+  public void testCreateHistoryEntryWithEmptyId() {
     try {
-      history.createEntry( "", "name" );
+      history.createHistoryEntry( "", "name" );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
 
-  public void testCreateEntryWithNullId() {
+  public void testCreateHistoryEntryWithNullId() {
     try {
-      history.createEntry( null, "name" );
+      history.createHistoryEntry( null, "name" );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
 
-  public void testAddBrowserHistoryListener() {
+  public void testAddBrowserNavigationListener() {
     try {
-      history.addBrowserHistoryListener( null );
-      fail( "BrowserHistory#addBrowserHistoryListener must not allow null" );
+      history.addBrowserNavigationListener( null );
+      fail( "BrowserNavigation#addBrowserNavigationListener must not allow null" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
   }
 
-  public void testRemoveBrowserHistoryListener() {
+  public void testRemoveBrowserNavigationListener() {
     try {
-      history.removeBrowserHistoryListener( null );
-      fail( "BrowserHistory#removeBrowserHistoryListener must not allow null" );
+      history.removeBrowserNavigationListener( null );
+      fail( "BrowserNavigation#removeBrowserNavigationListener must not allow null" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
   }
 
   public void testFireNavigationEvent() {
-    BrowserHistoryListener listener = mock( BrowserHistoryListener.class );
-    history.addBrowserHistoryListener( listener );
+    BrowserNavigationListener listener = mock( BrowserNavigationListener.class );
+    history.addBrowserNavigationListener( listener );
 
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( "entryId", "foo" );
     Fixture.fakeNotifyOperation( TYPE, "Navigation", parameters  );
     Fixture.executeLifeCycleFromServerThread();
 
-    ArgumentCaptor<BrowserHistoryEvent> captor
-      = ArgumentCaptor.forClass( BrowserHistoryEvent.class );
+    ArgumentCaptor<BrowserNavigationEvent> captor
+      = ArgumentCaptor.forClass( BrowserNavigationEvent.class );
     verify( listener, times( 1 ) ).navigated( captor.capture() );
-    BrowserHistoryEvent event = captor.getValue();
+    BrowserNavigationEvent event = captor.getValue();
     assertEquals( "foo", event.entryId );
   }
 
@@ -123,8 +123,8 @@ public class BrowserHistoryImpl_Test extends TestCase {
     Fixture.fakePhase( PhaseId.READ_DATA );
     ProcessActionRunner.add( new Runnable() {
       public void run() {
-        history.addBrowserHistoryListener( new BrowserHistoryListener() {
-          public void navigated( BrowserHistoryEvent event ) {
+        history.addBrowserNavigationListener( new BrowserNavigationListener() {
+          public void navigated( BrowserNavigationEvent event ) {
           }
         } );
       }
@@ -137,15 +137,15 @@ public class BrowserHistoryImpl_Test extends TestCase {
   }
 
   public void testRenderRemoveNavigationListener() {
-    final BrowserHistoryListener listener = new BrowserHistoryListener() {
-      public void navigated( BrowserHistoryEvent event ) {
+    final BrowserNavigationListener listener = new BrowserNavigationListener() {
+      public void navigated( BrowserNavigationEvent event ) {
       }
     };
-    history.addBrowserHistoryListener( listener );
+    history.addBrowserNavigationListener( listener );
     Fixture.fakePhase( PhaseId.READ_DATA );
     ProcessActionRunner.add( new Runnable() {
       public void run() {
-        history.removeBrowserHistoryListener( listener );
+        history.removeBrowserNavigationListener( listener );
       }
     } );
 
@@ -156,8 +156,8 @@ public class BrowserHistoryImpl_Test extends TestCase {
   }
 
   public void testRenderNavigationListenerUnchanged() {
-    history.addBrowserHistoryListener( new BrowserHistoryListener() {
-      public void navigated( BrowserHistoryEvent event ) {
+    history.addBrowserNavigationListener( new BrowserNavigationListener() {
+      public void navigated( BrowserNavigationEvent event ) {
       }
     } );
 
@@ -167,37 +167,37 @@ public class BrowserHistoryImpl_Test extends TestCase {
     assertNull( message.findListenOperation( TYPE, "navigation" ) );
   }
 
-  public void testRenderAdd() throws JSONException {
-    history.createEntry( "testId", "testText" );
+  public void testRenderAddToHistory() throws JSONException {
+    history.createHistoryEntry( "testId", "testText" );
 
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    CallOperation operation = message.findCallOperation( TYPE, "add" );
+    CallOperation operation = message.findCallOperation( TYPE, "addToHistory" );
     JSONArray entries = ( JSONArray )operation.getProperty( "entries" );
     JSONArray actual1 = entries.getJSONArray( 0 );
     assertTrue( ProtocolTestUtil.jsonEquals( "[\"testId\",\"testText\"]", actual1 ) );
   }
 
-  public void testRenderAdd_NoEntries() {
-    history.createEntry( "testId", "testText" );
+  public void testRenderAddToHistory_NoEntries() {
+    history.createHistoryEntry( "testId", "testText" );
 
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findCallOperation( TYPE, "add" ) );
+    assertNull( message.findCallOperation( TYPE, "addToHistory" ) );
   }
 
-  public void testRenderAddOrder() throws JSONException {
-    history.createEntry( "testId1", "testText1" );
-    history.createEntry( "testId2", "testText2" );
+  public void testRenderAddToHistoryOrder() throws JSONException {
+    history.createHistoryEntry( "testId1", "testText1" );
+    history.createHistoryEntry( "testId2", "testText2" );
 
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    CallOperation operation = message.findCallOperation( TYPE, "add" );
+    CallOperation operation = message.findCallOperation( TYPE, "addToHistory" );
     JSONArray entries = ( JSONArray )operation.getProperty( "entries" );
     JSONArray actual1 = entries.getJSONArray( 0 );
     assertTrue( ProtocolTestUtil.jsonEquals( "[\"testId1\",\"testText1\"]", actual1 ) );

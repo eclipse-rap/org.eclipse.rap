@@ -12,13 +12,13 @@ package org.eclipse.rap.rwt.client;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.client.service.BrowserHistory;
+import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.client.service.ClientService;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
-import org.eclipse.rap.rwt.internal.client.BrowserHistoryImpl;
+import org.eclipse.rap.rwt.internal.client.BrowserNavigationImpl;
 import org.eclipse.rap.rwt.internal.client.ClientInfoImpl;
 import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
@@ -75,8 +75,8 @@ public class WebClient_Test extends TestCase {
   }
 
   public void testGetBrowserHistoryService() {
-    ClientService service = client.getService( BrowserHistory.class );
-    assertTrue( service instanceof BrowserHistoryImpl );
+    ClientService service = client.getService( BrowserNavigation.class );
+    assertTrue( service instanceof BrowserNavigationImpl );
   }
 
   public void testGetExitConfirmationService() {
