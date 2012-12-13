@@ -181,7 +181,7 @@ qx.Class.define( "rwt.runtime.ErrorHandler", {
       } catch( ex ) {
         try {
           console.log( "_freezeApplication exception: " + ex );
-        } catch( ex ) {
+        } catch( exTwo ) {
           // ignore
         }
       }

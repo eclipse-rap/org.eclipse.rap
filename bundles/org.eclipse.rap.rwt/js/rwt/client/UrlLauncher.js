@@ -55,4 +55,4 @@ rwt.client.UrlLauncher.prototype = {
     return protocol.toLowerCase();
   }
 
-}
+};
