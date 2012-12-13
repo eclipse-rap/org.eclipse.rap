@@ -15,6 +15,7 @@ import java.io.InputStream;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
+import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.client.service.URLLauncher;
@@ -51,6 +52,7 @@ public class ClientServicesTab extends ExampleTab {
     parent.setLayout( new GridLayout( 1, false ) );
     registerResources();
     createClientInfoExample( parent );
+    createExitConfirmationExample( parent );
     createURLLauncherExample( parent );
     createJavaScriptLoaderExample( parent );
     createJavaScriptExecuterExample( parent );
@@ -109,6 +111,25 @@ public class ClientServicesTab extends ExampleTab {
     };
     url.addListener( SWT.DefaultSelection, executeListener );
     launch.addListener( SWT.Selection, executeListener );
+  }
+
+  private void createExitConfirmationExample( Composite parent ) {
+    Group group = createGroup( parent, "ExitConfirmation", 2 );
+    final Text text = new Text( group, SWT.BORDER );
+    text.setText( "Do you really want to exit?" );
+    GridData layoutData = new GridData( SWT.FILL, SWT.FILL, true, false );
+    text.setLayoutData( layoutData );
+    Button require = new Button( group, SWT.PUSH );
+    require.setLayoutData( new GridData( SWT.LEFT, SWT.FILL, false, false ) );
+    require.setText( "Set" );
+    Listener executeListener = new Listener() {
+      public void handleEvent( Event event ) {
+        ExitConfirmation conf = RWT.getClient().getService( ExitConfirmation.class );
+        conf.setMessage( text.getText() );
+      }
+    };
+    text.addListener( SWT.DefaultSelection, executeListener );
+    require.addListener( SWT.Selection, executeListener );
   }
 
   private void createJavaScriptLoaderExample( Composite parent ) {
