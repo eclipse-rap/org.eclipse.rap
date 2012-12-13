@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.SingletonUtil;
+import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
@@ -28,8 +29,9 @@ import org.eclipse.swt.widgets.Display;
 /**
  * Utility class to open and close an external browser window.
  *
- * @since 2.0
+ * @deprecated Use {@link UrlLauncher} instead
  */
+@Deprecated
 public final class ExternalBrowser {
 
   /**
@@ -84,6 +86,8 @@ public final class ExternalBrowser {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
    *      created the receiver</li>
    * </ul>
+   *
+   * @deprecated Use {@link UrlLauncher#openURL(String)} instead
    */
   public static void open( String id, String url, int style ) {
     checkWidget();
@@ -111,6 +115,8 @@ public final class ExternalBrowser {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
    *      created the receiver</li>
    * </ul>
+   *
+   * @deprecated
    */
   public static void close( String id ) {
     checkWidget();
