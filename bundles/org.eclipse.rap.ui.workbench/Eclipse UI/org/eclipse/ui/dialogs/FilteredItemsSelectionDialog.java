@@ -73,7 +73,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.ViewForm;
@@ -105,7 +105,6 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.ActiveShellExpression;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkbenchCommandConstants;
-import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
@@ -1016,7 +1015,7 @@ public abstract class FilteredItemsSelectionDialog extends
 	 */
 	public void scheduleRefresh() {
 // RAP [rh] fake context	  
-	  UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+	  RWT.getUISession( display ).exec( new Runnable() {
 	    public void run() {
 	      refreshCacheJob.cancelAll();
 	      refreshCacheJob.schedule();
@@ -1513,7 +1512,7 @@ public abstract class FilteredItemsSelectionDialog extends
 
 			if (FilteredItemsSelectionDialog.this != null) {
 // RAP [if] fake context
-			  UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+			  RWT.getUISession( display ).exec( new Runnable() {
 			    public void run() {
 				  GranualProgressMonitor wrappedMonitor = new GranualProgressMonitor(
 						  monitor);

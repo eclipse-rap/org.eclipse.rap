@@ -131,7 +131,7 @@ public class NLS_Test extends TestCase {
 
     Fixture.runInThread( new Runnable() {
       public void run() {
-        UICallBack.runNonUIThreadWithFakeContext( display, runnable );
+        RWT.getUISession( display ).exec( runnable );
       }
     } );
 
@@ -164,7 +164,7 @@ public class NLS_Test extends TestCase {
 
     Fixture.runInThread( new Runnable() {
       public void run() {
-        UICallBack.runNonUIThreadWithFakeContext( display, runnable );
+        RWT.getUISession( display ).exec( runnable );
       }
     } );
 

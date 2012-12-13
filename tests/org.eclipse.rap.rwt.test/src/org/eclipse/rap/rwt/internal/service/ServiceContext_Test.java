@@ -20,10 +20,10 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
@@ -109,7 +109,7 @@ public class ServiceContext_Test extends TestCase {
     final Display display = new Display();
     Runnable runnable = new Runnable() {
       public void run() {
-        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+        RWT.getUISession( display ).exec( new Runnable() {
           public void run() {
             backgroundApplicationContext[ 0 ] = ApplicationContextUtil.getInstance();
           }

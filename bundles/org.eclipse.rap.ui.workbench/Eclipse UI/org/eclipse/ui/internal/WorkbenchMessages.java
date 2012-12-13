@@ -14,7 +14,6 @@ package org.eclipse.ui.internal;
 
 //import org.eclipse.osgi.util.NLS;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -1146,7 +1145,7 @@ public class WorkbenchMessages {
 
     public static WorkbenchMessages get( Display display ) {
       final WorkbenchMessages[] result = { null };
-      UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+      RWT.getUISession( display ).exec( new Runnable() {
         public void run() {
           result[ 0 ] = get();
         }

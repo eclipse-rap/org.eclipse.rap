@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.util.Policy;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -118,7 +118,7 @@ public class ModalContext {
 		 */
 		public void run() {
 // RAP [rh] supply a fake-context for the entire execution of runnable and exception handling			
-			UICallBack.runNonUIThreadWithFakeContext(display, new Runnable() {
+		    RWT.getUISession( display ).exec( new Runnable() {
 
 				public void run() {
 					try {

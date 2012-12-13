@@ -12,6 +12,7 @@ package org.eclipse.rap.rwt.lifecycle;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
 import org.eclipse.swt.SWT;
@@ -25,7 +26,7 @@ public class UICallBack_Test extends TestCase {
     final Display display = new Display();
     Runnable runnable = new Runnable() {
       public void run() {
-        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+        RWT.getUISession( display ).exec( new Runnable() {
           public void run() {
             UICallBack.activate( "id" );
           }
@@ -72,7 +73,7 @@ public class UICallBack_Test extends TestCase {
     final Display display = new Display();
     Runnable runnable = new Runnable() {
       public void run() {
-        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+        RWT.getUISession( display ).exec( new Runnable() {
           public void run() {
             UICallBack.activate( "someId" );
           }
@@ -103,7 +104,7 @@ public class UICallBack_Test extends TestCase {
     final Display display = new Display();
     Runnable runnable = new Runnable() {
       public void run() {
-        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+        RWT.getUISession( display ).exec( new Runnable() {
           public void run() {
             UICallBack.deactivate( "someId" );
           }
@@ -118,17 +119,17 @@ public class UICallBack_Test extends TestCase {
 
   public void testRunNonUIThreadWithFakeContextWithNullDisplay() {
     try {
-      UICallBack.runNonUIThreadWithFakeContext( null, new NoOpRunnable() );
+      RWT.getUISession( null ).exec( new NoOpRunnable() );
       fail( "must not accept null-argument" );
-    } catch( IllegalArgumentException expected ) {
+    } catch( NullPointerException expected ) {
     }
   }
 
   public void testRunNonUIThreadWithFakeContextWithNullRunnable() {
     try {
-      UICallBack.runNonUIThreadWithFakeContext( new Display(), null );
+      RWT.getUISession( new Display() ).exec( null );
       fail( "must not accept null-argument" );
-    } catch( IllegalArgumentException expected ) {
+    } catch( NullPointerException expected ) {
     }
   }
 

@@ -26,7 +26,6 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
@@ -176,7 +175,7 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 					return;
 				}
 				// RAP [fappel]: ensure mapping to context
-				UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+				RWT.getUISession( display ).exec( new Runnable() {
 				  public void run() {
     				final WorkbenchJob closeJob = new WorkbenchJob(closeJobDialogMsg) {
     					/*

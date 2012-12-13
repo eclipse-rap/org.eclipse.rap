@@ -13,9 +13,9 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
@@ -71,7 +71,7 @@ public class LifeCycleUtil_Test extends TestCase {
     final Display[] sessionDisplay = { null };
     Runnable runnable = new Runnable() {
       public void run() {
-        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+        RWT.getUISession( display ).exec( new Runnable() {
           public void run() {
             sessionDisplay[ 0 ] = LifeCycleUtil.getSessionDisplay();
           }

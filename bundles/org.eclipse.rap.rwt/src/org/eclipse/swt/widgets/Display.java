@@ -1196,7 +1196,7 @@ public class Display extends Device implements Adaptable {
         error( SWT.ERROR_DEVICE_DISPOSED );
       }
       if( thread != Thread.currentThread() ) {
-        UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
+        uiSession.exec( new Runnable() {
           public void run() {
             synchronizer.asyncExec( new WakeRunnable() );
           }
@@ -1206,7 +1206,7 @@ public class Display extends Device implements Adaptable {
   }
 
   protected void wakeThread() {
-    UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
+    uiSession.exec( new Runnable() {
       public void run() {
         UICallBackManager.getInstance().wakeClient();
       }

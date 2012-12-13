@@ -2480,29 +2480,29 @@ public final class Workbench extends EventManager implements IWorkbench {
             protected IStatus run(final IProgressMonitor monitor) {
               final IStatus[] result = { Status.OK_STATUS };
 // RAP [rh] fake service context
-              UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
-          public void run() {
-            HashSet disabledPlugins = new HashSet(Arrays
-                                                  .asList(getDisabledEarlyActivatedPlugins()));
-                    monitor.beginTask(WorkbenchMessages.get().Workbench_startingPlugins,
-                            extensions.length);
-            for (int i = 0; i < extensions.length; ++i) {
-              if (monitor.isCanceled() || !isRunning()) {
-                result[ 0 ] = Status.CANCEL_STATUS;
-                return;
-              }
-              IExtension extension = extensions[i];
-
-              // if the plugin is not in the set of disabled plugins, then
-              // execute the code to start it
-              if (!disabledPlugins.contains(extension.getNamespace())) {
-                monitor.subTask(extension.getNamespace());
-                SafeRunner.run(new EarlyStartupRunnable(extension));
-              }
-              monitor.worked(1);
-            }
-            monitor.done();
-          }
+              RWT.getUISession( display ).exec( new Runnable() {
+                public void run() {
+                  HashSet disabledPlugins = new HashSet(Arrays
+                                                        .asList(getDisabledEarlyActivatedPlugins()));
+                          monitor.beginTask(WorkbenchMessages.get().Workbench_startingPlugins,
+                                  extensions.length);
+                  for (int i = 0; i < extensions.length; ++i) {
+                    if (monitor.isCanceled() || !isRunning()) {
+                      result[ 0 ] = Status.CANCEL_STATUS;
+                      return;
+                    }
+                    IExtension extension = extensions[i];
+      
+                    // if the plugin is not in the set of disabled plugins, then
+                    // execute the code to start it
+                    if (!disabledPlugins.contains(extension.getNamespace())) {
+                      monitor.subTask(extension.getNamespace());
+                      SafeRunner.run(new EarlyStartupRunnable(extension));
+                    }
+                    monitor.worked(1);
+                  }
+                  monitor.done();
+                }
               } );
                 return result[ 0 ];
             }

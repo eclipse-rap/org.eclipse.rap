@@ -32,7 +32,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.activities.ActivityEvent;
@@ -852,7 +852,7 @@ public final class MutableActivityManager extends AbstractActivityManager
             deferredIdentifiers.add(identifier);
             // RAP [fappel]: associate job to display
             Display display = Display.getCurrent();
-            UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+            RWT.getUISession( display ).exec( new Runnable() {
               public void run() {
                 getUpdateJob().schedule();
               }
@@ -952,7 +952,7 @@ public final class MutableActivityManager extends AbstractActivityManager
               // RAP [fappel]: map job execution to session context
               protected IStatus run(final IProgressMonitor monitor) {
                 final IStatus[] result = new IStatus[ 1 ];
-                UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+                RWT.getUISession( display ).exec( new Runnable() {
                   public void run() {
                     result[ 0 ] = doRun( monitor );
                   }
@@ -994,7 +994,7 @@ public final class MutableActivityManager extends AbstractActivityManager
                             };
                             notifyJob.setSystem(true);
                             // RAP [fappel]: associate job with session
-                            UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+                            RWT.getUISession( display ).exec( new Runnable() {
                               public void run() {
                                 notifyJob.schedule();
                               }
