@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.client.Client;
+import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
@@ -564,6 +565,14 @@ public final class RWT {
     checkHasSessionContext();
     UISession uiSession = ContextProvider.getUISession();
     uiSession.setAttribute( LOCALE, locale );
+  }
+
+  /**
+   * @deprecated use {@link BrowserNavigation} client service instead, see
+   *             {@link Client#getService(Class)}
+   */
+  public static BrowserNavigation getBrowserHistory() {
+    return getClient().getService( BrowserNavigation.class );
   }
 
   /**
