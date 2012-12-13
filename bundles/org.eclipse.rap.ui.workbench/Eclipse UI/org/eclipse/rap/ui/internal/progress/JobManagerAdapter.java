@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionBindingListener;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -30,8 +28,9 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.service.UISession;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.internal.progress.ProgressManager;
 import org.eclipse.ui.progress.UIJob;
@@ -51,9 +50,8 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
     return _instance;
   }
 
-
   private JobManagerAdapter() {
-    // To avoid deadlocks we have to use the same synchronisation lock.
+    // To avoid deadlocks we have to use the same synchronization lock.
     // If anyone has a better idea - you're welcome.
     IJobManager jobManager = Job.getJobManager();
     Class clazz = jobManager.getClass();
@@ -71,10 +69,10 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
     Job.getJobManager().addJobChangeListener( this );
   }
 
-
   ///////////////////
   // ProgressProvider
 
+  @Override
   public IProgressMonitor createMonitor( final Job job ) {
     IProgressMonitor result = null;
     ProgressManager manager = findSessionProgressManager( job );
@@ -84,6 +82,7 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
     return result;
   }
 
+  @Override
   public IProgressMonitor createMonitor( final Job job,
                                          final IProgressMonitor group,
                                          final int ticks )
@@ -96,10 +95,10 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
     return result;
   }
 
+  @Override
   public IProgressMonitor createProgressGroup() {
     return defaultProgressManager.createProgressGroup();
   }
-
 
   ///////////////////////////////
   // interface IJobChangeListener
@@ -152,19 +151,19 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
       if( display != null ) {
         jobs.put( event.getJob(), display );
         Runnable runnable = new Runnable() {
+
           public void run() {
             bindToSession( event.getJob() );
             String id = String.valueOf( event.getJob().hashCode() );
             UICallBackManager.getInstance().activateUICallBacksFor( id );
           }
         };
-        UICallBack.runNonUIThreadWithFakeContext( display, runnable );
+        RWT.getUISession( display ).exec( runnable );
       }
       manager = findProgressManager( event.getJob() );
     }
     manager.changeListener.scheduled( event );
   }
-
 
   public void sleeping( final IJobChangeEvent event ) {
     ProgressManager manager = findProgressManager( event.getJob() );
@@ -182,13 +181,12 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
     return result;
   }
 
-
   private ProgressManager findSessionProgressManager( final Job job ) {
     synchronized( lock ) {
       final ProgressManager result[] = new ProgressManager[ 1 ];
       Display display = ( Display )jobs.get( job );
       if( display != null ) {
-        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+        RWT.getUISession( display ).exec( new Runnable() {
           public void run() {
             result[ 0 ] = ProgressManager.getInstance();
           }
@@ -213,10 +211,9 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
         UIJob uiJob = ( UIJob )job;
         result = uiJob.getDisplay();
         if( result == null ) {
-          String msg 
-            = "UIJob "
-            + uiJob.getName()  
-            + " cannot be scheduled without an associated display.";
+          String msg = "UIJob "
+                     + uiJob.getName()
+                     + " cannot be scheduled without an associated display.";
           throw new IllegalStateException( msg );
         }
       }
@@ -225,24 +222,23 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
   }
 
   private void bindToSession( final Job job ) {
-    final boolean[] jobDone = { false };
-	final UISession uiSession = RWT.getUISession();
-    final HttpSessionBindingListener watchDog = new HttpSessionBindingListener() {
-      public void valueBound( final HttpSessionBindingEvent event ) {
-      }
-      public void valueUnbound( final HttpSessionBindingEvent event ) {
-        if( !jobDone[ 0 ] ) {
-       	  try {
-       		handleWatchDog( job );
-       	  } finally {
-       		synchronized( lock ) {
-       		  jobs.remove( job );
-       		}
-       	  }
+    final AtomicBoolean jobDone = new AtomicBoolean();
+    final UISession uiSession = RWT.getUISession();
+    final UISessionListener cleanupListener = new UISessionListener() {
+
+      public void beforeDestroy( UISessionEvent event ) {
+        if( !jobDone.get() ) {
+          try {
+            cleanup( job );
+          } finally {
+            synchronized( lock ) {
+              jobs.remove( job );
+            }
+          }
         }
       }
 
-      private void handleWatchDog( final Job jobToRemove ) {
+      private void cleanup( final Job jobToRemove ) {
         // ////////////////////////////////////////////////////////////////////
         // TODO [fappel]: Very ugly hack to avoid a memory leak.
         // As a job can not be removed from the
@@ -250,47 +246,46 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
         // can be catched in the set on session timeouts.
         // Don't know a proper solution yet.
         // Note that this is still under investigation.
-	    Display display = ( Display )jobs.get( jobToRemove );
-	    if( display != null ) {
-	      UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
-	        public void run() {
-	          jobToRemove.cancel();
-	          jobToRemove.addJobChangeListener( new JobCanceler() );
-	        }
-	      } );
-	    }
-	    try {
-	      IJobManager jobManager = Job.getJobManager();
-	      Class clazz = jobManager.getClass();
-	      Field running = clazz.getDeclaredField( "running" );
-	      running.setAccessible( true );
-	      Set set = ( Set )running.get( jobManager );
-	      synchronized( lock ) {
-	        set.remove( job );
-	        // still sometimes job get catched - use the job marker adapter
-	        // to check whether they can be eliminated
-	        Object[] runningJobs = set.toArray();
-	        for( int i = 0; i < runningJobs.length; i++ ) {
-	          Job toCheck = ( Job )runningJobs[ i ];
-	          IJobMarker marker
-	            = ( IJobMarker )toCheck.getAdapter( IJobMarker.class );
-	          if( marker != null && marker.canBeRemoved() ) {
-	            set.remove( toCheck );
-	          }
-	        }
-	      }
-	    } catch( final Throwable thr ) {
-	      // TODO [fappel]: exception handling
-	      thr.printStackTrace();
-  	    }
+        Display display = ( Display )jobs.get( jobToRemove );
+        if( display != null ) {
+          RWT.getUISession( display ).exec( new Runnable() {
+            public void run() {
+              jobToRemove.cancel();
+              jobToRemove.addJobChangeListener( new JobCanceler() );
+            }
+          } );
+        }
+        try {
+          IJobManager jobManager = Job.getJobManager();
+          Class clazz = jobManager.getClass();
+          Field running = clazz.getDeclaredField( "running" );
+          running.setAccessible( true );
+          Set set = ( Set )running.get( jobManager );
+          synchronized( lock ) {
+            set.remove( job );
+            // still sometimes job get catched - use the job marker adapter
+            // to check whether they can be eliminated
+            Object[] runningJobs = set.toArray();
+            for( int i = 0; i < runningJobs.length; i++ ) {
+              Job toCheck = ( Job )runningJobs[ i ];
+              IJobMarker marker = ( IJobMarker )toCheck.getAdapter( IJobMarker.class );
+              if( marker != null && marker.canBeRemoved() ) {
+                set.remove( toCheck );
+              }
+            }
+          }
+        } catch( final Throwable thr ) {
+          // TODO [fappel]: exception handling
+          thr.printStackTrace();
+        }
       }
     };
-    final String watchDogHashCode = String.valueOf( watchDog.hashCode() );
-	uiSession.setAttribute( watchDogHashCode, watchDog );
+    uiSession.addUISessionListener( cleanupListener );
     job.addJobChangeListener( new JobChangeAdapter() {
+      @Override
       public void done( final IJobChangeEvent event ) {
-        jobDone[ 0 ] = true;
-        uiSession.removeAttribute( watchDogHashCode );
+        jobDone.set( true );
+        uiSession.removeUISessionListener( cleanupListener );
       }
     } );
   }

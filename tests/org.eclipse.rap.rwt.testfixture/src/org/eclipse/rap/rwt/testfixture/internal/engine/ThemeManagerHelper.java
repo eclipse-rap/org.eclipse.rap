@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
@@ -123,8 +123,8 @@ public class ThemeManagerHelper {
   }
 
   public static void adaptApplicationContext( Object toAdapt ) {
-    if( toAdapt instanceof ApplicationContext ) {
-      ApplicationContext context = ( ApplicationContext )toAdapt;
+    if( toAdapt instanceof ApplicationContextImpl ) {
+      ApplicationContextImpl context = ( ApplicationContextImpl )toAdapt;
       context.setThemeManager( getInstance() );
     }
   }

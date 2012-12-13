@@ -27,7 +27,7 @@ import org.eclipse.rap.rwt.service.ResourceManager;
 
 public class ApplicationContextActivator_Test extends TestCase {
 
-  private ApplicationContext applicationContext;
+  private ApplicationContextImpl applicationContext;
   private LifeCycleFactory lifeCycleFactory;
   private ThemeManager themeManager;
   private ServiceManagerImpl serviceManager;
@@ -62,7 +62,7 @@ public class ApplicationContextActivator_Test extends TestCase {
   }
 
   private void mockApplicationContext() {
-    applicationContext = mock( ApplicationContext.class );
+    applicationContext = mock( ApplicationContextImpl.class );
 
     themeManager = mock( ThemeManager.class );
     when( themeManager.getRegisteredThemeIds() ).thenReturn( new String[ 0 ] );

@@ -31,7 +31,7 @@ import org.eclipse.jface.viewers.DecorationContext;
 import org.eclipse.jface.viewers.IDecorationContext;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -163,20 +163,20 @@ public class DecorationScheduler {
 			if (shutdown) {
 				return;
 			}
-      if (decorationJob.getState() == Job.SLEEPING) {
-        // RAP [rh] fake service context
-        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
-             public void run() {
-               decorationJob.wakeUp();
-             }
-           } );
-      }
-      // RAP [rh] fake service context
-      UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
-        public void run() {
-          decorationJob.schedule();
-        }
-      } );
+            if (decorationJob.getState() == Job.SLEEPING) {
+                // RAP [rh] fake service context
+                RWT.getUISession( display ).exec( new Runnable() {
+                  public void run() {
+                    decorationJob.wakeUp();
+                  }
+                } );
+            }
+            // RAP [rh] fake service context
+            RWT.getUISession( display ).exec( new Runnable() {
+              public void run() {
+                decorationJob.schedule();
+              }
+            } );
 		}
 
 	}
@@ -272,11 +272,11 @@ public class DecorationScheduler {
 		}
 
 		// RAP [rh] fake service context
-		UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
-      public void run() {
-        // Give it a bit of a lag for other updates to occur
-        updateJob.schedule(UPDATE_DELAY);
-      }
+		RWT.getUISession( display ).exec( new Runnable() {
+          public void run() {
+            // Give it a bit of a lag for other updates to occur
+            updateJob.schedule(UPDATE_DELAY);
+          }
 		} );
 	}
 
@@ -316,7 +316,7 @@ public class DecorationScheduler {
         public IStatus run(final IProgressMonitor monitor) {
           final IStatus[] result = { null };
           // RAP [rh] fake service context
-          UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+          RWT.getUISession( display ).exec( new Runnable() {
             public void run() {
               result[ 0 ] = doRun( monitor );
             }
@@ -338,7 +338,7 @@ public class DecorationScheduler {
           } catch (InterruptedException e) {
             // Cancel and try again if there was an error
             // RAP [rh] fake service context
-            UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+            RWT.getUISession( display ).exec( new Runnable() {
               public void run() {
                 decorationJob.schedule();
               }
@@ -457,7 +457,7 @@ public class DecorationScheduler {
 			public boolean shouldRun() {
         final boolean[] result = { false };
         // RAP [rh] fake service context
-        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+        RWT.getUISession( display ).exec( new Runnable() {
           public void run() {
             result[ 0 ] = PlatformUI.isWorkbenchRunning();
           }
@@ -523,7 +523,7 @@ public class DecorationScheduler {
 			public boolean shouldRun() {
         final boolean[] result = { false };
         // RAP [rh] fake service context
-        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+        RWT.getUISession( display ).exec( new Runnable() {
           public void run() {
             result[ 0 ] = PlatformUI.isWorkbenchRunning();
           }
@@ -609,11 +609,11 @@ public class DecorationScheduler {
 					listeners = EMPTY_LISTENER_LIST;
 				} else {
 				  // RAP [rh] fake service context
-          UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
-            public void run() {
-              schedule(UPDATE_DELAY);// Reschedule if we are not done
-            }
-          } );
+				  RWT.getUISession( display ).exec( new Runnable() {
+                    public void run() {
+                      schedule(UPDATE_DELAY);// Reschedule if we are not done
+                    }
+                  } );
 				}
 				return Status.OK_STATUS;
 			}
@@ -664,7 +664,7 @@ public class DecorationScheduler {
 			public boolean shouldRun() {
         final boolean[] result = { false };
         // RAP [rh] fake service context
-        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+        RWT.getUISession( display ).exec( new Runnable() {
           public void run() {
             result[ 0 ] = PlatformUI.isWorkbenchRunning();
           }

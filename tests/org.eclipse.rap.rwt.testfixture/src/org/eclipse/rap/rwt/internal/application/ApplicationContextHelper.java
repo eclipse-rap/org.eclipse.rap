@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.application;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.service.ResourceManager;
 
 
@@ -25,7 +25,7 @@ public class ApplicationContextHelper {
   }
 
   public static void fakeResourceManager( ResourceManager fake ) {
-    ApplicationContext.testResourceManager = fake;
+    ApplicationContextImpl.testResourceManager = fake;
   }
 
 }

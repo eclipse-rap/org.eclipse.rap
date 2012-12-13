@@ -16,14 +16,14 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
-import org.eclipse.rap.rwt.client.service.BrowserHistory;
+import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.client.service.ClientService;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
-import org.eclipse.rap.rwt.internal.client.BrowserHistoryImpl;
+import org.eclipse.rap.rwt.internal.client.BrowserNavigationImpl;
 import org.eclipse.rap.rwt.internal.client.ClientInfoImpl;
 import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
@@ -127,8 +127,8 @@ public class WebClient implements Client {
       result = ( T )getServiceImpl( UrlLauncherImpl.class );
     } else if( type == JavaScriptModuleLoader.class ) {
       result = ( T )getServiceImpl( JavaScriptModuleLoaderImpl.class );
-    } else if( type == BrowserHistory.class ) {
-      result = ( T )getServiceImpl( BrowserHistoryImpl.class );
+    } else if( type == BrowserNavigation.class ) {
+      result = ( T )getServiceImpl( BrowserNavigationImpl.class );
     } else if( type == ExitConfirmation.class ) {
       result = ( T )getServiceImpl( ExitConfirmationImpl.class );
     } else if( type == ClientInfo.class ) {

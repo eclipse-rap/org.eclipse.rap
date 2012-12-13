@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
@@ -67,7 +67,7 @@ public class DisplaySerialization_Test extends TestCase {
   }
 
   private Display display;
-  private ApplicationContext applicationContext;
+  private ApplicationContextImpl applicationContext;
 
   public void testDisposeIsSerializable() throws Exception {
     Display deserializedDisplay = serializeAndDeserialize( display );

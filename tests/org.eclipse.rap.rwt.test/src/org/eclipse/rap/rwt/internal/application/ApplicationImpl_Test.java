@@ -31,7 +31,7 @@ import org.eclipse.rap.rwt.testfixture.TestServletContext;
 public class ApplicationImpl_Test extends TestCase {
 
   private TestServletContext servletContext;
-  private ApplicationContext applicationContext;
+  private ApplicationContextImpl applicationContext;
   private ApplicationImpl application;
   private ApplicationConfiguration applicationConfiguration;
 
@@ -99,26 +99,26 @@ public class ApplicationImpl_Test extends TestCase {
     } catch( IllegalStateException expected ) {
     }
   }
-  
+
   public void testAddResource() {
     String resourceName = "resource-name";
     ResourceLoader resourceLoader = mock( ResourceLoader.class );
-    
+
     application.addResource( resourceName, resourceLoader );
-    
+
     assertEquals( 1, applicationContext.getResourceRegistry().getResourceRegistrations().length );
   }
 
   public void testAddResourceWithNullResourceName() {
     ResourceLoader resourceLoader = mock( ResourceLoader.class );
-    
+
     try {
       application.addResource( null, resourceLoader );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
-  
+
   public void testAddResourceWithNullResourceLoader() {
     try {
       application.addResource( "resource-name", null );
@@ -126,18 +126,12 @@ public class ApplicationImpl_Test extends TestCase {
     } catch( NullPointerException expected ) {
     }
   }
-  
-  public void testGetContextViaAdapter() throws Exception {
-    ApplicationContext context = application.getAdapter( ApplicationContext.class );
-
-    assertSame( applicationContext, context );
-  }
 
   @Override
   protected void setUp() throws Exception {
     applicationConfiguration = mock( ApplicationConfiguration.class );
     servletContext = new TestServletContext();
-    applicationContext = new ApplicationContext( applicationConfiguration, servletContext );
+    applicationContext = new ApplicationContextImpl( applicationConfiguration, servletContext );
     application = new ApplicationImpl( applicationContext, applicationConfiguration );
   }
 

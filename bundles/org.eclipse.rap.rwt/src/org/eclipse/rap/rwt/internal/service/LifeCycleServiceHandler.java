@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.RWTMessages;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
@@ -160,7 +160,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   private static void reinitializeUISession( HttpServletRequest request ) {
     UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
     Map<String, String[]> bufferedParameters = RequestParameterBuffer.getBufferedParameters();
-    ApplicationContext applicationContext = ApplicationContextUtil.get( uiSession );
+    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( uiSession );
     uiSession.valueUnbound( null );
     UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
     uiSession = ( UISessionImpl )builder.buildUISession();

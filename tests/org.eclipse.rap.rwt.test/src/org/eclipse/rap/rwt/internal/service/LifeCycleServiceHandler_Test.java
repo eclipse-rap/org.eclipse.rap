@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
@@ -138,7 +138,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
     UISession uiSession = ContextProvider.getUISession();
-    ApplicationContext applicationContext = ApplicationContextUtil.getInstance();
+    ApplicationContextImpl applicationContext = ApplicationContextUtil.getInstance();
 
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
@@ -319,7 +319,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   private void initializeUISession() {
     UISession uiSession = ContextProvider.getUISession();
     ServletContext servletContext = Fixture.getServletContext();
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
     ApplicationContextUtil.set( uiSession, applicationContext );
   }
 

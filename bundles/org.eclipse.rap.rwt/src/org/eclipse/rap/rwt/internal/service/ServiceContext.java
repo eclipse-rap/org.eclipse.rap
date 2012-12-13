@@ -15,7 +15,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
@@ -37,7 +37,7 @@ public final class ServiceContext {
   private IServiceStore serviceStore;
   private boolean disposed;
   private UISession uiSession;
-  private ApplicationContext applicationContext;
+  private ApplicationContextImpl applicationContext;
   private ProtocolMessageWriter protocolWriter;
 
   /**
@@ -152,9 +152,9 @@ public final class ServiceContext {
     disposed = true;
   }
 
-  public ApplicationContext getApplicationContext() {
+  public ApplicationContextImpl getApplicationContext() {
     checkState();
-    // TODO [ApplicationContext]: Revise performance improvement with buffering mechanism in place.
+    // TODO [ApplicationContextImpl]: Revise performance improvement with buffering mechanism in place.
     if( !isApplicationContextBuffered() ) {
       getApplicationContextFromSession();
       if( !isApplicationContextBuffered() ) {
@@ -181,7 +181,7 @@ public final class ServiceContext {
 
   private void getApplicationContextFromServletContext() {
     // Note [fappel]: Yourkit analysis showed that the following line is
-    //                expensive. Because of this the ApplicationContext is
+    //                expensive. Because of this the ApplicationContextImpl is
     //                buffered in a field.
     ServletContext servletContext = request.getSession().getServletContext();
     applicationContext = ApplicationContextUtil.get( servletContext );
@@ -189,7 +189,7 @@ public final class ServiceContext {
 
   private void getApplicationContextFromSession() {
     if( uiSession != null ) {
-      ApplicationContext fromSession = ApplicationContextUtil.get( uiSession );
+      ApplicationContextImpl fromSession = ApplicationContextUtil.get( uiSession );
       if( fromSession != null && fromSession.isActive() ) {
         applicationContext = fromSession;
       }

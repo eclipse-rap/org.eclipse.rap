@@ -18,11 +18,10 @@ import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionBindingListener;
 
 import junit.framework.TestCase;
 
@@ -37,10 +36,6 @@ import org.eclipse.rap.rwt.testfixture.TestSession;
 
 
 public class UISessionImpl_Test extends TestCase {
-
-  private static final String BEFORE_DESTROY = "beforeDestroy|";
-  private static final String VALUE_BOUND = "valueBound";
-  private static final String VALUE_UNBOUND = "valueUnbound";
 
   private HttpSession httpSession;
   private UISessionImpl uiSession;
@@ -67,7 +62,7 @@ public class UISessionImpl_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testConstructorWithNullArgument() {
+  public void testConstructor_failsWithWithNullArgument() {
     try {
       new UISessionImpl( null );
       fail();
@@ -75,11 +70,24 @@ public class UISessionImpl_Test extends TestCase {
     }
   }
 
+  public void testGetInstanceFromSession() {
+    UISessionImpl result = UISessionImpl.getInstanceFromSession( httpSession );
+
+    assertSame( result, uiSession );
+  }
+
+  public void testGetInstanceFromSession_returnsNullAfterInvalidate() {
+    httpSession.invalidate();
+    UISessionImpl result = UISessionImpl.getInstanceFromSession( httpSession );
+
+    assertNull( result );
+  }
+
   public void testGetId() {
     assertNotNull( uiSession.getId() );
   }
 
-  public void testGetIdAfterSessionWasInvalidated() {
+  public void testGetId_validAfterSessionWasInvalidated() {
     String id = uiSession.getId();
     httpSession.invalidate();
 
@@ -90,28 +98,52 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( httpSession, uiSession.getHttpSession() );
   }
 
-  public void testIsBound() {
-    assertTrue( uiSession.isBound() );
+  public void testAttachHttpSession() {
+    HttpSession anotherSession = new TestSession();
+    uiSession.attachHttpSession( anotherSession );
+
+    assertSame( anotherSession, uiSession.getHttpSession() );
   }
 
-  public void testIsBoundAfterSessionWasInvalidated() {
-    httpSession.invalidate();
-
-    assertFalse( uiSession.isBound() );
-  }
-
-  public void testGetAttributeWithNullName() {
+  public void testAttachHttpSession_failsWithNullArgument() {
     try {
-      uiSession.getAttribute( null );
+      uiSession.attachHttpSession( null );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
 
-  public void testGetAttributeWithNonExistingName() {
-    Object attribute = uiSession.getAttribute( "does.not.exist" );
+  public void testAttachHttpSession_doesNotChangeId() {
+    String initialId = uiSession.getId();
+    TestSession anotherSession = new TestSession();
+    anotherSession.setId( "some.other.id" );
+    uiSession.attachHttpSession( anotherSession );
 
-    assertNull( attribute );
+    String id = uiSession.getId();
+
+    assertEquals( initialId, id );
+  }
+
+  public void testAttachHttpSession_doesNotTriggerListener() {
+    final boolean[] wasCalled = { false };
+    uiSession.addUISessionListener( new UISessionListener() {
+      public void beforeDestroy( UISessionEvent event ) {
+        wasCalled[ 0 ] = true;
+      }
+    } );
+
+    uiSession.attachHttpSession( new TestSession() );
+    assertFalse( wasCalled[ 0 ] );
+  }
+
+  public void testIsBound() {
+    assertTrue( uiSession.isBound() );
+  }
+
+  public void testIsBound_isFalseAfterSessionWasInvalidated() {
+    httpSession.invalidate();
+
+    assertFalse( uiSession.isBound() );
   }
 
   public void testGetAttribute() {
@@ -123,7 +155,59 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( value, result );
   }
 
-  public void testRemoveAttributeWithNullName() {
+  public void testGetAttribute_failsWithNullName() {
+    try {
+      uiSession.getAttribute( null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+
+  public void testGetAttribute_returnsNullWithNonExistingName() {
+    Object attribute = uiSession.getAttribute( "does.not.exist" );
+
+    assertNull( attribute );
+  }
+
+  public void testGetAttribute_returnsNullWhenUnbound() {
+    uiSession.setAttribute( "name", null );
+    httpSession.invalidate();
+
+    Object result = uiSession.getAttribute( "name" );
+
+    assertNull( result );
+  }
+
+  public void testSetAttribute_failsWithNullName() {
+    try {
+      uiSession.setAttribute( null, new Object() );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+
+  public void testSetAttribute_returnsFalseWhenUnbound() {
+    httpSession.invalidate();
+
+    boolean result = uiSession.setAttribute( "name", null );
+
+    assertFalse( result );
+  }
+
+  public void testSetAttribute_whileDestroyingUISession() {
+    final AtomicBoolean resultCaptor = new AtomicBoolean();
+    uiSession.addUISessionListener( new UISessionListener() {
+      public void beforeDestroy( UISessionEvent event ) {
+        resultCaptor.set( uiSession.setAttribute( "name", new Object() ) );
+      }
+    } );
+
+    httpSession.invalidate();
+
+    assertTrue( resultCaptor.get() );
+  }
+
+  public void testRemoveAttribute_failsWithNullName() {
     try {
       uiSession.removeAttribute( null );
       fail();
@@ -131,7 +215,7 @@ public class UISessionImpl_Test extends TestCase {
     }
   }
 
-  public void testRemoveAttributeWithExistingAttribute() {
+  public void testRemoveAttribute_removesExistingAttribute() {
     uiSession.setAttribute( "name", new Object() );
 
     uiSession.removeAttribute( "name" );
@@ -139,10 +223,19 @@ public class UISessionImpl_Test extends TestCase {
     assertNull( uiSession.getAttribute( "name" ) );
   }
 
-  public void testRemoveAttributeWithNonExistingAttribute() {
+  public void testRemoveAttribute_returnsNullForNonExistingAttribute() {
     uiSession.removeAttribute( "does.not.exist" );
 
     assertNull( uiSession.getAttribute( "does.not.exist" ) );
+  }
+
+  public void testRemoveAttribute_returnsFalseWhenUnbound() {
+    uiSession.setAttribute( "name", null );
+    httpSession.invalidate();
+
+    boolean result = uiSession.removeAttribute( "name" );
+
+    assertFalse( result );
   }
 
   public void testGetAttributeNames() {
@@ -155,7 +248,7 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( attributeNames.hasMoreElements() );
   }
 
-  public void testGetAttributeNamesReturnsSnapshot() {
+  public void testGetAttributeNames_returnsSnapshot() {
     uiSession.setAttribute( "name", new Object() );
 
     Enumeration attributeNames = uiSession.getAttributeNames();
@@ -166,197 +259,7 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( attributeNames.hasMoreElements() );
   }
 
-  public void testSetAttributeWithNullName() {
-    try {
-      uiSession.setAttribute( null, new Object() );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  public void testSetAttributeWithSessionBindingListener() {
-    String attributeName = "name";
-    LoggingSessionBindingListener attributeValue = new LoggingSessionBindingListener();
-    uiSession.setAttribute( attributeName, attributeValue );
-
-    HttpSessionBindingEvent[] events = attributeValue.getEvents();
-    assertEquals( 1, events.length );
-    assertEquals( attributeName, events[ 0 ].getName() );
-    assertSame( httpSession, events[ 0 ].getSource() );
-    assertSame( httpSession, events[ 0 ].getSession() );
-    assertSame( attributeValue, events[ 0 ].getValue() );
-  }
-
-  public void testSetAttributeToNullWithSessionBindingListener() {
-    String attributeName = "name";
-    LoggingSessionBindingListener attributeValue = new LoggingSessionBindingListener();
-    uiSession.setAttribute( attributeName, attributeValue );
-    attributeValue.clearEvents();
-
-    uiSession.setAttribute( attributeName, null );
-
-    HttpSessionBindingEvent[] events = attributeValue.getEvents();
-    assertEquals( 1, events.length );
-    assertEquals( attributeName, events[ 0 ].getName() );
-    assertSame( httpSession, events[ 0 ].getSource() );
-    assertSame( httpSession, events[ 0 ].getSession() );
-    assertSame( attributeValue, events[ 0 ].getValue() );
-    assertEquals( VALUE_UNBOUND, attributeValue.getEventTypes() );
-  }
-
-  public void testOverrideAttributeWithExceptionInUnbound() {
-    String attributeName = "name";
-    uiSession.setAttribute( attributeName, new HttpSessionBindingListener() {
-      public void valueUnbound( HttpSessionBindingEvent event ) {
-        throw new RuntimeException();
-      }
-      public void valueBound( HttpSessionBindingEvent event ) {
-      }
-    } );
-    LoggingSessionBindingListener attributeValue = new LoggingSessionBindingListener();
-
-    uiSession.setAttribute( attributeName, attributeValue );
-
-    assertEquals( 1, attributeValue.getEvents().length );
-  }
-
-  public void testRemoveAttributeWithSessionBindingListener() {
-    String attributeName = "name";
-    LoggingSessionBindingListener attributeValue = new LoggingSessionBindingListener();
-    uiSession.setAttribute( attributeName, attributeValue );
-    attributeValue.clearEvents();
-
-    uiSession.removeAttribute( attributeName );
-
-    HttpSessionBindingEvent[] events = attributeValue.getEvents();
-    assertEquals( 1, events.length );
-    assertEquals( attributeName, events[ 0 ].getName() );
-    assertSame( httpSession, events[ 0 ].getSource() );
-    assertSame( httpSession, events[ 0 ].getSession() );
-    assertSame( attributeValue, events[ 0 ].getValue() );
-    assertEquals( VALUE_UNBOUND, attributeValue.getEventTypes() );
-  }
-
-  public void testOverrideSessionBindingListenerAttribute() {
-    String attributeName = "name";
-    LoggingSessionBindingListener attributeValue = new LoggingSessionBindingListener();
-    uiSession.setAttribute( attributeName, attributeValue );
-    attributeValue.clearEvents();
-
-    uiSession.setAttribute( attributeName, new Object() );
-
-    HttpSessionBindingEvent[] events = attributeValue.getEvents();
-    assertEquals( 1, events.length );
-    assertEquals( attributeName, events[ 0 ].getName() );
-    assertSame( httpSession, events[ 0 ].getSource() );
-    assertSame( httpSession, events[ 0 ].getSession() );
-    assertSame( attributeValue, events[ 0 ].getValue() );
-    assertEquals( VALUE_UNBOUND, attributeValue.getEventTypes() );
-  }
-
-  public void testOverrideListenerAttributeWithSessionBindingListener() {
-    String attributeName = "name";
-    LoggingSessionBindingListener attributeValue = new LoggingSessionBindingListener();
-    uiSession.setAttribute( attributeName, attributeValue );
-    attributeValue.clearEvents();
-
-    uiSession.setAttribute( attributeName, attributeValue );
-
-    assertEquals( VALUE_UNBOUND + VALUE_BOUND, attributeValue.getEventTypes() );
-    HttpSessionBindingEvent[] events = attributeValue.getEvents();
-    assertEquals( 2, events.length );
-    assertEquals( attributeName, events[ 0 ].getName() );
-    assertSame( httpSession, events[ 0 ].getSource() );
-    assertSame( httpSession, events[ 0 ].getSession() );
-    assertSame( attributeValue, events[ 0 ].getValue() );
-    assertEquals( attributeName, events[ 1 ].getName() );
-    assertSame( httpSession, events[ 1 ].getSource() );
-    assertSame( httpSession, events[ 1 ].getSession() );
-    assertSame( attributeValue, events[ 1 ].getValue() );
-  }
-
-  public void testGetAttributeInValueUnbound() {
-    final Object[] attributeValueInUnbound = { new Object() };
-    final String attributeName = "name";
-    HttpSessionBindingListener attributeValue = new HttpSessionBindingListener() {
-      public void valueUnbound( HttpSessionBindingEvent event ) {
-        attributeValueInUnbound[ 0 ] = uiSession.getAttribute( attributeName );
-      }
-      public void valueBound( HttpSessionBindingEvent event ) {
-      }
-    };
-    uiSession.setAttribute( attributeName, attributeValue );
-
-    uiSession.setAttribute( attributeName, "newValue" );
-
-    assertNull( attributeValueInUnbound[ 0 ] );
-  }
-
-  public void testGetAttributeInValueBound() {
-    final Object[] attributeValueInBound = { new Object() };
-    final String attributeName = "name";
-    HttpSessionBindingListener attributeValue = new HttpSessionBindingListener() {
-      public void valueUnbound( HttpSessionBindingEvent event ) {
-      }
-      public void valueBound( HttpSessionBindingEvent event ) {
-        attributeValueInBound[ 0 ] = uiSession.getAttribute( attributeName );
-      }
-    };
-    uiSession.setAttribute( attributeName, attributeValue );
-
-    assertSame( attributeValue, attributeValueInBound[ 0 ] );
-  }
-
-  public void testEventOrderOnInvalidate() {
-    final StringBuilder log = new StringBuilder();
-    HttpSessionBindingListener attributeValue = new HttpSessionBindingListener() {
-      public void valueUnbound( HttpSessionBindingEvent event ) {
-        log.append( VALUE_UNBOUND );
-      }
-      public void valueBound( HttpSessionBindingEvent event ) {
-        log.append( VALUE_BOUND );
-      }
-    };
-    uiSession.setAttribute( "name", attributeValue );
-    uiSession.addUISessionListener( new UISessionListener() {
-      public void beforeDestroy( UISessionEvent event ) {
-        log.append( BEFORE_DESTROY );
-      }
-    } );
-    log.setLength( 0 );
-
-    httpSession.invalidate();
-
-    assertEquals( BEFORE_DESTROY + VALUE_UNBOUND, log.toString() );
-  }
-
-  public void testSetAttributeReturnsFalseWhenUnbound() {
-    httpSession.invalidate();
-
-    boolean result = uiSession.setAttribute( "name", null );
-
-    assertFalse( result );
-  }
-
-  public void testGetAttributeReturnsNullWhenUnbound() {
-    uiSession.setAttribute( "name", null );
-    httpSession.invalidate();
-
-    Object result = uiSession.getAttribute( "name" );
-
-    assertNull( result );
-  }
-
-  public void testRemoveAttributeReturnsFalseWhenUnbound() {
-    uiSession.setAttribute( "name", null );
-    httpSession.invalidate();
-
-    boolean result = uiSession.removeAttribute( "name" );
-
-    assertFalse( result );
-  }
-
-  public void testGetAttributeNamesIsEmptyWhenUnbound() {
+  public void testGetAttributeNames_isEmptyWhenUnbound() {
     uiSession.setAttribute( "name", "value" );
     httpSession.invalidate();
 
@@ -366,7 +269,28 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( attributeNames.hasMoreElements() );
   }
 
-  public void testAddUISessionListenerFailsWithNullArgument() {
+  public void testGetAttributeNamesIsThreadSafe() throws InterruptedException {
+    final Throwable[] exception = { null };
+    Runnable runnable = new Runnable() {
+      public void run() {
+        try {
+          Object object = new Object();
+          uiSession.setAttribute( object.toString(), object );
+          Enumeration attributeNames = uiSession.getAttributeNames();
+          while( attributeNames.hasMoreElements() ) {
+            attributeNames.nextElement();
+          }
+        } catch( Throwable e ) {
+          exception[ 0 ] = e;
+        }
+      }
+    };
+    Thread[] threads = Fixture.startThreads( 100, runnable );
+    Fixture.joinThreads( threads );
+    assertNull( exception[ 0 ] );
+  }
+
+  public void testAddUISessionListener_failsWithNullArgument() {
     try {
       uiSession.addUISessionListener( null );
       fail();
@@ -374,15 +298,7 @@ public class UISessionImpl_Test extends TestCase {
     }
   }
 
-  public void testRemoveUISessionListenerFailsWithNullArgument() {
-    try {
-      uiSession.removeUISessionListener( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  public void testAddUISessionListenerWhenUnbound() {
+  public void testAddUISessionListener_returnsFalseWhenUnbound() {
     httpSession.invalidate();
     EmptyUISessionListener listener = new EmptyUISessionListener();
 
@@ -391,16 +307,7 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( added );
   }
 
-  public void testRemoveUISessionListenerWhenUnbound() {
-    httpSession.invalidate();
-    EmptyUISessionListener listener = new EmptyUISessionListener();
-
-    boolean removed = uiSession.removeUISessionListener( listener );
-
-    assertFalse( removed );
-  }
-
-  public void testAddUISessionListenerWhileDestroyingUISession() {
+  public void testAddUISessionListener_whileDestroyingUISession() {
     final boolean[] aboutUnboundListener = { true };
     uiSession.addUISessionListener( new UISessionListener() {
       public void beforeDestroy( UISessionEvent event ) {
@@ -414,44 +321,37 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( aboutUnboundListener[ 0 ] );
   }
 
-  public void testSetAttributeWhileDestroyingUISession() {
-    final boolean[] valueUnboundWasCalled = { false };
-    final HttpSessionBindingListener httpSessionBindingListener = new HttpSessionBindingListener() {
-      public void valueUnbound( HttpSessionBindingEvent event ) {
-        valueUnboundWasCalled[ 0 ] = true;
-      }
-      public void valueBound( HttpSessionBindingEvent event ) {
-      }
-    };
-    final boolean[] setAttribute = { false };
-    uiSession.setAttribute( "name", new HttpSessionBindingListener() {
-      public void valueUnbound( HttpSessionBindingEvent event ) {
-        setAttribute[ 0 ] = uiSession.setAttribute( "other.name", httpSessionBindingListener );
-      }
-      public void valueBound( HttpSessionBindingEvent event ) {
-      }
-    } );
-
-    httpSession.invalidate();
-
-    assertTrue( setAttribute[ 0 ] );
-    assertFalse( valueUnboundWasCalled[ 0 ] );
+  public void testRemoveUISessionListener_failsWithNullArgument() {
+    try {
+      uiSession.removeUISessionListener( null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
   }
 
-  public void testServiceContextAvailableInBeforeDestroyEvent() {
-    final boolean[] hasContext = { false };
+  public void testRemoveUISessionListener_returnsFalseWhenUnbound() {
+    httpSession.invalidate();
+    EmptyUISessionListener listener = new EmptyUISessionListener();
+
+    boolean removed = uiSession.removeUISessionListener( listener );
+
+    assertFalse( removed );
+  }
+
+  public void testBeforeDestroyEvent_hasServiceContext() {
+    final AtomicBoolean resultCaptor = new AtomicBoolean();
     uiSession.addUISessionListener( new UISessionListener() {
       public void beforeDestroy( UISessionEvent event ) {
-        hasContext[ 0 ] = ContextProvider.hasContext();
+        resultCaptor.set( ContextProvider.hasContext() );
       }
     } );
 
     httpSession.invalidate();
 
-    assertTrue( hasContext[ 0 ] );
+    assertTrue( resultCaptor.get() );
   }
 
-  public void testDestroyEventDetails() {
+  public void testBeforeDestroyEvent_details() {
     final List<UISessionEvent> eventLog = new LinkedList<UISessionEvent>();
     uiSession.addUISessionListener( new UISessionListener() {
       public void beforeDestroy( UISessionEvent event ) {
@@ -462,8 +362,24 @@ public class UISessionImpl_Test extends TestCase {
     httpSession.invalidate();
 
     assertEquals( 1, eventLog.size() );
-    UISessionEvent event = eventLog.get( 0 );
-    assertSame( uiSession, event.getUISession() );
+    assertSame( uiSession, eventLog.get( 0 ).getUISession() );
+  }
+
+  public void testExceptionHandlingInUISessionListeners() {
+    uiSession.addUISessionListener( new UISessionListener() {
+      public void beforeDestroy( UISessionEvent event ) {
+        throw new RuntimeException();
+      }
+    } );
+    uiSession.addUISessionListener( new UISessionListener() {
+      public void beforeDestroy( UISessionEvent event ) {
+        throw new RuntimeException();
+      }
+    } );
+
+    httpSession.invalidate();
+
+    assertEquals( 2, servletLogEntries.size() );
   }
 
   public void testShutdownCallback() {
@@ -498,23 +414,6 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( uiSession.isBound() );
   }
 
-  public void testExceptionHandlingInUISessionListeners() {
-    uiSession.addUISessionListener( new UISessionListener() {
-      public void beforeDestroy( UISessionEvent event ) {
-        throw new RuntimeException();
-      }
-    } );
-    uiSession.addUISessionListener( new UISessionListener() {
-      public void beforeDestroy( UISessionEvent event ) {
-        throw new RuntimeException();
-      }
-    } );
-
-    httpSession.invalidate();
-
-    assertEquals( 2, servletLogEntries.size() );
-  }
-
   public void testOverrideAtributeWithNull() {
     String attributeName = "name";
     uiSession.setAttribute( attributeName, new Object() );
@@ -544,77 +443,6 @@ public class UISessionImpl_Test extends TestCase {
     uiSession.setAttribute( attributeName, overridingAtribute );
 
     assertSame( overridingAtribute, uiSession.getAttribute( attributeName ) );
-  }
-
-  public void testGetAttributeNamesIsThreadSafe() throws InterruptedException {
-    final Throwable[] exception = { null };
-    Runnable runnable = new Runnable() {
-      public void run() {
-        try {
-          Object object = new Object();
-          uiSession.setAttribute( object.toString(), object );
-          Enumeration attributeNames = uiSession.getAttributeNames();
-          while( attributeNames.hasMoreElements() ) {
-            attributeNames.nextElement();
-          }
-        } catch( Throwable e ) {
-          exception[ 0 ] = e;
-        }
-      }
-    };
-    Thread[] threads = Fixture.startThreads( 100, runnable );
-    Fixture.joinThreads( threads );
-    assertNull( exception[ 0 ] );
-  }
-
-  public void testAttachHttpSessionWithNullArgument() {
-    try {
-      uiSession.attachHttpSession( null );
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  public void testAttachHttpSession() {
-    HttpSession anotherSession = new TestSession();
-    uiSession.attachHttpSession( anotherSession );
-
-    assertSame( anotherSession, uiSession.getHttpSession() );
-  }
-
-  public void testAttachSessionDoesNotChangeId() {
-    String initialId = uiSession.getId();
-    TestSession anotherSession = new TestSession();
-    anotherSession.setId( "some.other.id" );
-    uiSession.attachHttpSession( anotherSession );
-
-    String id = uiSession.getId();
-
-    assertEquals( initialId, id );
-  }
-
-  public void testAttachSessionDoesNotTriggerListener() {
-    final boolean[] wasCalled = { false };
-    uiSession.addUISessionListener( new UISessionListener() {
-      public void beforeDestroy( UISessionEvent event ) {
-        wasCalled[ 0 ] = true;
-      }
-    } );
-
-    uiSession.attachHttpSession( new TestSession() );
-    assertFalse( wasCalled[ 0 ] );
-  }
-
-  public void testGetInstanceFromSession() {
-    UISessionImpl result = UISessionImpl.getInstanceFromSession( httpSession );
-
-    assertSame( result, uiSession );
-  }
-
-  public void testGetInstanceFromSessionAfterInvalidate() {
-    httpSession.invalidate();
-    UISessionImpl result = UISessionImpl.getInstanceFromSession( httpSession );
-
-    assertNull( result );
   }
 
   public void testExec_failsWithNullArgument() {
@@ -674,42 +502,6 @@ public class UISessionImpl_Test extends TestCase {
 
   private static class EmptyUISessionListener implements UISessionListener {
     public void beforeDestroy( UISessionEvent event ) {
-    }
-  }
-
-  private static class LoggingSessionBindingListener implements HttpSessionBindingListener {
-
-    private String eventTypes;
-    private final List<HttpSessionBindingEvent> eventLog;
-
-    LoggingSessionBindingListener( ) {
-      eventTypes = "";
-      eventLog = new LinkedList<HttpSessionBindingEvent>();
-    }
-
-    public void valueBound( HttpSessionBindingEvent event ) {
-      eventLog.add( event );
-      eventTypes += VALUE_BOUND;
-    }
-
-    public void valueUnbound( HttpSessionBindingEvent event ) {
-      eventLog.add( event );
-      eventTypes += VALUE_UNBOUND;
-    }
-
-    void clearEvents() {
-      eventTypes = "";
-      eventLog.clear();
-    }
-
-    String getEventTypes() {
-      return eventTypes;
-    }
-
-    HttpSessionBindingEvent[] getEvents() {
-      HttpSessionBindingEvent[] result = new HttpSessionBindingEvent[ eventLog.size() ];
-      eventLog.toArray( result );
-      return result;
     }
   }
 

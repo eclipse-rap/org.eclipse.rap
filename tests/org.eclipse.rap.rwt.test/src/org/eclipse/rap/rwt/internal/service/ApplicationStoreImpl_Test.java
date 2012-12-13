@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,13 @@ public class ApplicationStoreImpl_Test extends TestCase {
   private static final String KEY = "key";
 
   private ApplicationStoreImpl applicationStore;
-  
-  public void testSetAttributeWithNullName() {
+
+  @Override
+  protected void setUp() throws Exception {
+    applicationStore = new ApplicationStoreImpl();
+  }
+
+  public void testSetAttribute_failsWithNullName() {
     try {
       applicationStore.setAttribute( null, new Object() );
       fail();
@@ -27,48 +32,50 @@ public class ApplicationStoreImpl_Test extends TestCase {
     }
   }
 
-  public void testGetAttributeWithNullName() {
+  public void testSetAttribute_succeedsWithNullValue() {
+    applicationStore.setAttribute( "name", null );
+
+    assertNull( applicationStore.getAttribute( "name" ) );
+  }
+
+  public void testGetAttribute() {
+    applicationStore.setAttribute( KEY, VALUE );
+
+    Object attribute = applicationStore.getAttribute( KEY );
+
+    assertSame( VALUE, attribute );
+  }
+
+  public void testGetAttribute_failsWithNullName() {
     try {
       applicationStore.getAttribute( null );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
-  
-  public void testGetAttribute() {
-    applicationStore.setAttribute( KEY, VALUE );
-    
-    Object attribute = applicationStore.getAttribute( KEY );
-    
-    assertSame( VALUE, attribute );
-  }
 
   public void testRemoveAttribute() {
     applicationStore.setAttribute( KEY, VALUE );
-    
+
     applicationStore.removeAttribute( KEY );
-    
+
     assertSame( null, applicationStore.getAttribute( KEY ) );
   }
-  
-  public void testRemoveAttributeWithNullArgument() {
+
+  public void testRemoveAttribute_failsWithNullName() {
     try {
       applicationStore.removeAttribute( null );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
-  
+
   public void testReset() {
     applicationStore.setAttribute( KEY, VALUE );
 
     applicationStore.reset();
-    
+
     assertSame( null, applicationStore.getAttribute( KEY ) );
   }
-  
-  @Override
-  protected void setUp() throws Exception {
-    applicationStore = new ApplicationStoreImpl();
-  }
+
 }

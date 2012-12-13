@@ -9,10 +9,10 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-rwt.protocol.AdapterRegistry.add( "rwt.client.BrowserHistory", {
+rwt.protocol.AdapterRegistry.add( "rwt.client.BrowserNavigation", {
 
   factory : function( properties ) {
-    return rwt.client.History.getInstance();
+    return rwt.client.BrowserNavigation.getInstance();
   },
 
   service : true,
@@ -22,11 +22,11 @@ rwt.protocol.AdapterRegistry.add( "rwt.client.BrowserHistory", {
   ],
 
   methods : [
-    "add"
+    "addToHistory"
   ],
 
   methodHandler : {
-    "add" : function( object, value ) {
+    "addToHistory" : function( object, value ) {
       var entries = value.entries;
       for( var i = 0; i < entries.length; i++) {
         object.addToHistory( entries[ i ][ 0 ], entries[ i ][ 1 ] );

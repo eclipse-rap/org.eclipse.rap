@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Display;
 public class ImageSerialzation_Test extends TestCase {
 
   private Display display;
-  private ApplicationContext applicationContext;
+  private ApplicationContextImpl applicationContext;
 
   public void testSerializedSharedImage() throws Exception {
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream( Fixture.IMAGE1 );

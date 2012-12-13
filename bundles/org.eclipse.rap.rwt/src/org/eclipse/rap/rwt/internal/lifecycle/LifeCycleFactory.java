@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -21,12 +21,12 @@ import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 public class LifeCycleFactory {
   private static final Class<? extends LifeCycle> DEFAULT_LIFE_CYCLE_CLASS = SimpleLifeCycle.class;
 
-  private final ApplicationContext applicationContext;
+  private final ApplicationContextImpl applicationContext;
   private Class<? extends LifeCycle> lifeCycleClass;
   private LifeCycle lifeCycle;
 
 
-  public LifeCycleFactory( ApplicationContext applicationContext ) {
+  public LifeCycleFactory( ApplicationContextImpl applicationContext ) {
     this.applicationContext = applicationContext;
     lifeCycleClass = DEFAULT_LIFE_CYCLE_CLASS;
   }
@@ -52,7 +52,7 @@ public class LifeCycleFactory {
   }
 
   private LifeCycle newLifeCycle() {
-    Class< ? >[] argumentTypes = new Class<?>[] { ApplicationContext.class };
+    Class<?>[] argumentTypes = new Class<?>[] { ApplicationContextImpl.class };
     Object[] arguments = new Object[] { applicationContext };
     return ClassUtil.newInstance( lifeCycleClass, argumentTypes, arguments );
   }

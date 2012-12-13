@@ -18,9 +18,9 @@ import org.eclipse.rap.examples.IExampleContribution;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.client.service.BrowserHistory;
-import org.eclipse.rap.rwt.client.service.BrowserHistoryEvent;
-import org.eclipse.rap.rwt.client.service.BrowserHistoryListener;
+import org.eclipse.rap.rwt.client.service.BrowserNavigation;
+import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
+import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -78,10 +78,10 @@ public class MainUi implements EntryPoint {
   }
 
   private void attachHistoryListener() {
-    BrowserHistory history = RWT.getClient().getService( BrowserHistory.class );
+    BrowserNavigation history = RWT.getClient().getService( BrowserNavigation.class );
     if( history != null ) {
-      history.addBrowserHistoryListener( new BrowserHistoryListener() {
-        public void navigated( BrowserHistoryEvent event ) {
+      history.addBrowserNavigationListener( new BrowserNavigationListener() {
+        public void navigated( BrowserNavigationEvent event ) {
           IExampleContribution contribution = Examples.getInstance().getContribution( event.entryId );
           if( contribution != null ) {
             selectContribution( contribution );
@@ -257,9 +257,9 @@ public class MainUi implements EntryPoint {
   private void activate( IExampleContribution contribution ) {
     IExamplePage examplePage = contribution.createPage();
     if( examplePage != null ) {
-      BrowserHistory history = RWT.getClient().getService( BrowserHistory.class );
+      BrowserNavigation history = RWT.getClient().getService( BrowserNavigation.class );
       if( history != null ) {
-        history.createEntry( contribution.getId(), contribution.getTitle() );
+        history.createHistoryEntry( contribution.getId(), contribution.getTitle() );
       }
       Control[] children = centerArea.getChildren();
       for( Control child : children ) {

@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.widgets.Display;
@@ -22,9 +22,9 @@ import org.eclipse.swt.widgets.Display;
 
 final class PrepareUIRoot implements IPhase {
 
-  private final ApplicationContext applicationContext;
+  private final ApplicationContextImpl applicationContext;
 
-  public PrepareUIRoot( ApplicationContext applicationContext ) {
+  public PrepareUIRoot( ApplicationContextImpl applicationContext ) {
     this.applicationContext = applicationContext;
   }
 

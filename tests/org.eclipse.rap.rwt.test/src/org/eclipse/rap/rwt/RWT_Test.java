@@ -15,13 +15,13 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.service.IApplicationStore;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
@@ -42,10 +42,12 @@ public class RWT_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testGetApplicationStore() {
-    IApplicationStore applicationStore = RWT.getApplicationStore();
+  public void testGetApplicationContext() {
+    ApplicationContext context = RWT.getApplicationContext();
 
-    assertSame( applicationStore, RWTFactory.getApplicationStore() );
+    ApplicationContext result = RWTFactory.getApplicationContext();
+
+    assertSame( context, result );
   }
 
   public void testRequestThreadExecFromBackgroundThread() throws Throwable {
@@ -265,7 +267,7 @@ public class RWT_Test extends TestCase {
 
     private String invocationLog = "";
 
-    public TestLifeCycle( ApplicationContext applicationContext ) {
+    public TestLifeCycle( ApplicationContextImpl applicationContext ) {
       super( applicationContext );
     }
 

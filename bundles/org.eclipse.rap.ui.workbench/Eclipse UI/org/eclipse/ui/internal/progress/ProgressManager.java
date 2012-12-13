@@ -49,8 +49,8 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.ui.internal.progress.ProgressUtil;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
@@ -262,7 +262,7 @@ public class ProgressManager extends ProgressProvider implements
 		public void done() {
 			final JobInfo info = getJobInfo(job);
 			// RAP [if]: ensure mapping to context
-            UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+			RWT.getUISession( display ).exec( new Runnable() {
               public void run() {
                 info.clearTaskInfo();
               }

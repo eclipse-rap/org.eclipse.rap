@@ -13,16 +13,16 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 
 
 public abstract class LifeCycle implements ILifeCycle {
 
-  public LifeCycle( ApplicationContext applicationContext ) {
+  public LifeCycle( ApplicationContextImpl applicationContext ) {
   }
-  
+
   public abstract void execute() throws IOException;
 
   public abstract void requestThreadExec( Runnable runnable );
@@ -31,4 +31,5 @@ public abstract class LifeCycle implements ILifeCycle {
   public abstract void removePhaseListener( PhaseListener phaseListener );
 
   public abstract void sleep();
+
 }

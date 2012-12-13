@@ -33,7 +33,6 @@ public final class WidgetAdapter
   private String customId;
   private boolean initialized;
   private transient Map<String,Object> preservedValues;
-  private String jsParent;
   private transient IRenderRunnable renderRunnable;
   private transient String cachedVariant;
   private ClientObjectAdapter gcObjectAdapter;
@@ -97,14 +96,6 @@ public final class WidgetAdapter
 
   public void clearPreserved() {
     preservedValues.clear();
-  }
-
-  public String getJSParent() {
-    return jsParent;
-  }
-
-  public void setJSParent( String jsParent ) {
-    this.jsParent = jsParent;
   }
 
   public void setRenderRunnable( IRenderRunnable renderRunnable ) {

@@ -36,7 +36,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
@@ -116,7 +115,7 @@ public class Display_Test extends TestCase {
     Runnable runnable = new Runnable() {
       public void run() {
         displayFromBgThread[ 0 ] = Display.getCurrent();
-        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+        RWT.getUISession( display ).exec( new Runnable() {
           public void run() {
             displayFromBgThreadWithFakeContext[ 0 ] = Display.getCurrent();
           }
@@ -188,7 +187,7 @@ public class Display_Test extends TestCase {
     final Display display = new Display();
     Runnable runnable = new Runnable() {
       public void run() {
-        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+        RWT.getUISession( display ).exec( new Runnable() {
           public void run() {
             backgroundDisplay[ 0 ] = Display.getDefault();
           }

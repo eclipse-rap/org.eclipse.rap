@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class LifeCycleFactory_Test extends TestCase {
-  private ApplicationContext applicationContext;
+  private ApplicationContextImpl applicationContext;
   private LifeCycleFactory lifeCycleFactory;
 
   @Override
@@ -102,9 +102,9 @@ public class LifeCycleFactory_Test extends TestCase {
   }
 
   private static class TestLifeCycle extends LifeCycle {
-    final ApplicationContext applicationContext;
+    final ApplicationContextImpl applicationContext;
     PhaseListener addedPhaseListener;
-    public TestLifeCycle( ApplicationContext applicationContext ) {
+    public TestLifeCycle( ApplicationContextImpl applicationContext ) {
       super( applicationContext );
       this.applicationContext = applicationContext;
     }

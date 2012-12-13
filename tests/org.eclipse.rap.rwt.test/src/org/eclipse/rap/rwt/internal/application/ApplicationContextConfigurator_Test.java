@@ -56,7 +56,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   private ISettingStoreFactory settingStoreFactory;
   private ServiceHandler serviceHandler;
   private String serviceHandlerId;
-  private ApplicationContext applicationContext;
+  private ApplicationContextImpl applicationContext;
   private File tempDirectory;
 
   @Override
@@ -128,7 +128,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   {
     ServletContext servletContext = Fixture.createServletContext();
     setContextDirectory( servletContext, contextDirectory );
-    applicationContext = new ApplicationContext( configuration, servletContext );
+    applicationContext = new ApplicationContextImpl( configuration, servletContext );
     ApplicationContextUtil.set( Fixture.getServletContext(), applicationContext );
     createDisplay();
     applicationContext.activate();
@@ -173,7 +173,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   private void checkAttributeHasBeenSet() {
-    Object attribute = applicationContext.getApplicationStore().getAttribute( ATTRIBUTE_NAME );
+    Object attribute = applicationContext.getAttribute( ATTRIBUTE_NAME );
     assertSame( ATTRIBUTE_VALUE, attribute );
   }
 
@@ -263,7 +263,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   private void checkApplicationStoreHasBeenResetted() {
-    Object attribute = applicationContext.getApplicationStore().getAttribute( ATTRIBUTE_NAME );
+    Object attribute = applicationContext.getAttribute( ATTRIBUTE_NAME );
     assertNull( attribute );
   }
 

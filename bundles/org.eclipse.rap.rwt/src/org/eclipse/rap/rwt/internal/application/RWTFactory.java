@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.internal.service.StartupPage;
 import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
-import org.eclipse.rap.rwt.service.IApplicationStore;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.swt.internal.graphics.FontDataFactory;
 import org.eclipse.swt.internal.graphics.ImageDataFactory;
@@ -34,8 +34,8 @@ import org.eclipse.swt.internal.widgets.DisplaysHolder;
 
 public class RWTFactory {
 
-  public static IApplicationStore getApplicationStore() {
-    return ApplicationContextUtil.getInstance().getApplicationStore();
+  public static ApplicationContext getApplicationContext() {
+    return ApplicationContextUtil.getInstance();
   }
 
   public static LifeCycleFactory getLifeCycleFactory() {

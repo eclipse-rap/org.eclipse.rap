@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.SingletonManager;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
@@ -29,12 +29,12 @@ import org.eclipse.rap.rwt.service.UISession;
 
 public class UISessionBuilder {
 
-  private final ApplicationContext applicationContext;
+  private final ApplicationContextImpl applicationContext;
   private final HttpServletRequest request;
   private final HttpSession httpSession;
   private final UISessionImpl uiSession;
 
-  public UISessionBuilder( ApplicationContext applicationContext, HttpServletRequest request ) {
+  public UISessionBuilder( ApplicationContextImpl applicationContext, HttpServletRequest request ) {
     this.applicationContext = applicationContext;
     this.request = request;
     httpSession = request.getSession( true );

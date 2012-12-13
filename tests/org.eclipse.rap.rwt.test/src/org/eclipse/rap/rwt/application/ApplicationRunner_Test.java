@@ -24,7 +24,7 @@ import javax.servlet.ServletContext;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
@@ -114,7 +114,7 @@ public class ApplicationRunner_Test extends TestCase {
   }
 
   private void checkApplicationContextHasBeenRegistered() {
-    verify( servletContext ).setAttribute( any( String.class ), any( ApplicationContext.class ) );
+    verify( servletContext ).setAttribute( any( String.class ), any( ApplicationContextImpl.class ) );
   }
 
   private void checkContexthasBeenConfigured() {
