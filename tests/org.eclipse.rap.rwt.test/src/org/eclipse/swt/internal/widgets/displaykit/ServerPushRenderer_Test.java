@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Display;
 
 public class ServerPushRenderer_Test extends TestCase {
 
-  private static final String REMOTE_OBJECT_ID = "rwt.client.UICallBack";
+  private static final String REMOTE_OBJECT_ID = "rwt.client.ServerPush";
 
   private Display display;
   private ServerPushRenderer renderer;

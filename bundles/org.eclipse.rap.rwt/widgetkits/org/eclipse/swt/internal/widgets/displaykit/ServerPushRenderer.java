@@ -18,7 +18,7 @@ import org.eclipse.rap.rwt.service.UISession;
 
 public class ServerPushRenderer {
 
-  public static final String REMOTE_OBJECT_ID = "rwt.client.UICallBack";
+  public static final String REMOTE_OBJECT_ID = "rwt.client.ServerPush";
   private static final String PROP_ACTIVE = "active";
   private static final String ATTR_PRESERVED_ACTIVATION
     = ServerPushRenderer.class.getName() + ".preservedActivation";

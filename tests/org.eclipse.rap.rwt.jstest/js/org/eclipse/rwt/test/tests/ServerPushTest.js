@@ -15,22 +15,22 @@ var Processor = rwt.protocol.MessageProcessor;
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var ObjectManager = rwt.protocol.ObjectRegistry;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.UICallBackTest", {
+qx.Class.define( "org.eclipse.rwt.test.tests.ServerPushTest", {
 
   extend : qx.core.Object,
 
   members : {
 
-    testCreateUICallBackByProtocol : function() {
+    testCreateServerPushByProtocol : function() {
       var uiCallBack = this._createUICallBack();
-      assertTrue( uiCallBack instanceof rwt.client.UICallBack );
-      assertIdentical( uiCallBack, rwt.client.UICallBack.getInstance() );
+      assertTrue( uiCallBack instanceof rwt.client.ServerPush );
+      assertIdentical( uiCallBack, rwt.client.ServerPush.getInstance() );
     },
 
     testSetActiveByProtocol : function() {
       var uiCallBack = this._createUICallBack();
       Processor.processOperation( {
-        "target" : "rwt.client.UICallBack",
+        "target" : "rwt.client.ServerPush",
         "action" : "set",
         "properties" : {
           "active" : true
@@ -51,7 +51,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.UICallBackTest", {
     },
 
     _createUICallBack : function() {
-      return ObjectManager.getObject( "rwt.client.UICallBack" );
+      return ObjectManager.getObject( "rwt.client.ServerPush" );
     }
 
   }

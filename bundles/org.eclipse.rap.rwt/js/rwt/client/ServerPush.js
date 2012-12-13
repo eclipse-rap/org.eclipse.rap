@@ -11,11 +11,11 @@
 
 namespace( "rwt.client" );
 
-rwt.client.UICallBack = function() {
-  if( rwt.client.UICallBack._instance !== undefined ) {
-    throw new Error( "UICallBack can not be created twice" );
+rwt.client.ServerPush = function() {
+  if( rwt.client.ServerPush._instance !== undefined ) {
+    throw new Error( "ServerPush can not be created twice" );
   } else {
-    rwt.client.UICallBack._instance = this;
+    rwt.client.ServerPush._instance = this;
   }
   this._retryInterval = 0;
   this._active = false;
@@ -24,14 +24,14 @@ rwt.client.UICallBack = function() {
   this._requestTimer.addEventListener( "interval", this._doSendUICallBackRequest, this );
 };
 
-rwt.client.UICallBack.getInstance = function() {
-  if( rwt.client.UICallBack._instance === undefined ) {
-    new rwt.client.UICallBack();
+rwt.client.ServerPush.getInstance = function() {
+  if( rwt.client.ServerPush._instance === undefined ) {
+    new rwt.client.ServerPush();
   }
-  return rwt.client.UICallBack._instance;
+  return rwt.client.ServerPush._instance;
 };
 
-rwt.client.UICallBack.prototype = {
+rwt.client.ServerPush.prototype = {
 
   setActive : function( active ) {
     this._active = active;
@@ -55,7 +55,7 @@ rwt.client.UICallBack.prototype = {
     var request = new rwt.remote.Request( url, "GET", "application/javascript" );
     request.setSuccessHandler( this._handleSuccess, this );
     request.setErrorHandler( this._handleError, this );
-    request.setData( "custom_service_handler=org.eclipse.rap.uicallback" );
+    request.setData( "servicehandler=org.eclipse.rap.serverpush" );
     request.send();
   },
 

@@ -312,7 +312,7 @@ public class DisplayLCA_Test extends TestCase {
     displayLCA.render( display );
 
     Message message = Fixture.getProtocolMessage();
-    assertNotNull( message.findSetProperty( "rwt.client.UICallBack", "active" ) );
+    assertNotNull( message.findSetProperty( "rwt.client.ServerPush", "active" ) );
   }
 
   public void testRenderBeep() throws IOException {
