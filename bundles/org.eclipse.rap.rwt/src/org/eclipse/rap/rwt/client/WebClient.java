@@ -27,6 +27,7 @@ import org.eclipse.rap.rwt.internal.client.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.internal.client.ClientInfoImpl;
 import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
+import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
 import org.eclipse.rap.rwt.internal.client.URLLauncherImpl;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoader;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoaderImpl;
@@ -121,7 +122,7 @@ public class WebClient implements Client {
     if( type == JavaScriptExecutor.class ) {
       result = ( T )getServiceImpl( JavaScriptExecutorImpl.class );
     } else if( type == JavaScriptLoader.class ) {
-      result = ( T )getServiceImpl( JavaScriptExecutorImpl.class );
+      result = ( T )getServiceImpl( JavaScriptLoaderImpl.class );
     } else if( type == URLLauncher.class ) {
       result = ( T )getServiceImpl( URLLauncherImpl.class );
     } else if( type == JavaScriptModuleLoader.class ) {

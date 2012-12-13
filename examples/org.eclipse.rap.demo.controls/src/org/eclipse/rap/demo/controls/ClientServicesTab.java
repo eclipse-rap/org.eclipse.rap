@@ -1,13 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Innoopract Informationssysteme GmbH - initial API and implementation
- *    EclipseSource - ongoing development
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
@@ -17,6 +16,7 @@ import java.io.InputStream;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
+import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.client.service.URLLauncher;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.swt.SWT;
@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Text;
 public class ClientServicesTab extends ExampleTab {
 
   private static final String MINI_PDF = "clientservices/mini.pdf";
+  private static final String MINI_JS = "clientservices/mini.js";
 
 
   public ClientServicesTab() {
@@ -51,15 +52,21 @@ public class ClientServicesTab extends ExampleTab {
     registerResources();
     createClientInfoExample( parent );
     createURLLauncherExample( parent );
+    createJavaScriptLoaderExample( parent );
     createJavaScriptExecuterExample( parent );
   }
 
   private void registerResources() {
+    register( MINI_PDF, "resources/mini.pdf" );
+    register( MINI_JS, "resources/mini.js" );
+  }
+
+  private void register( String url, String filepath ) {
     ResourceManager manager = RWT.getResourceManager();
     ClassLoader classLoader = this.getClass().getClassLoader();
-    if( !manager.isRegistered( MINI_PDF ) ) {
-      InputStream stream = classLoader.getResourceAsStream( "resources/mini.pdf" );
-      manager.register( MINI_PDF, stream );
+    if( !manager.isRegistered( url ) ) {
+      InputStream stream = classLoader.getResourceAsStream( filepath );
+      manager.register( url, stream );
       try {
         stream.close();
       } catch( IOException e ) {
@@ -104,10 +111,29 @@ public class ClientServicesTab extends ExampleTab {
     launch.addListener( SWT.Selection, executeListener );
   }
 
+  private void createJavaScriptLoaderExample( Composite parent ) {
+    Group group = createGroup( parent, "JavaScriptLoader", 2 );
+    final Text url = new Text( group, SWT.BORDER );
+    url.setText( RWT.getResourceManager().getLocation( MINI_JS ) );
+    GridData layoutData = new GridData( SWT.FILL, SWT.FILL, true, false );
+    url.setLayoutData( layoutData );
+    Button require = new Button( group, SWT.PUSH );
+    require.setLayoutData( new GridData( SWT.LEFT, SWT.FILL, false, false ) );
+    require.setText( "Require" );
+    Listener executeListener = new Listener() {
+      public void handleEvent( Event event ) {
+        JavaScriptLoader loader = RWT.getClient().getService( JavaScriptLoader.class );
+        loader.require( url.getText() );
+      }
+    };
+    url.addListener( SWT.DefaultSelection, executeListener );
+    require.addListener( SWT.Selection, executeListener );
+  }
+
   private void createJavaScriptExecuterExample( Composite parent ) {
     Group group = createGroup( parent, "JavaScriptExecuter", 2 );
     final Text script = new Text( group, SWT.BORDER );
-    script.setText( "alert( \"foo\" );" );
+    script.setText( "alert( typeof globalData === \"undefined\" ? null : globalData );" );
     GridData layoutData = new GridData( SWT.FILL, SWT.FILL, true, false );
     script.setLayoutData( layoutData );
     Button execute = new Button( group, SWT.PUSH );
@@ -115,8 +141,8 @@ public class ClientServicesTab extends ExampleTab {
     execute.setText( "Execute" );
     Listener executeListener = new Listener() {
       public void handleEvent( Event event ) {
-        JavaScriptExecutor jse = RWT.getClient().getService( JavaScriptExecutor.class );
-        jse.execute( script.getText() );
+        JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
+        executor.execute( script.getText() );
       }
     };
     script.addListener( SWT.DefaultSelection, executeListener );
