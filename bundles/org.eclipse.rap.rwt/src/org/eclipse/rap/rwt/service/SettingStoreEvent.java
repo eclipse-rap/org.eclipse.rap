@@ -17,23 +17,17 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
 /**
- * A SettingStoreEvent holds information regarding the change
- * of a single attribute inside the setting store. The change can be
- * one of the following:
+ * An event that contains the details of a single attribute change in the setting store. The change
+ * can be one of the following:
  * <ul>
- * <li>attribute added - {@link #getOldValue()} returns <code>null</code>,
- *                       {@link #getNewValue()} returns a String other
- *                       than <code>null</code></li>
- * <li>attribute modified - {@link #getOldValue()} and {@link #getNewValue()}
- *                       return a String other than <code>null</code></li>
- * <li>attribute removed - {@link #getOldValue()} returns a String other
- *                       than <code>null</code>, {@link #getNewValue()} returns
- *                       <code>null</code>
+ * <li>an attribute was added (in this case the old value is <code>null</code>)</li>
+ * <li>and attribute was modified</li>
+ * <li>an attribute was removed (in this case the new value is <code>null</code>)
  * </ul>
- * <strong>Note:</strong> Clients are responsible for using the
- * {@link #getAttributeName()} method, to check if the
- * changed attribute is of interest to them.
+ * <strong>Note:</strong> Clients are responsible for using the {@link #getAttributeName()} method
+ * to check if the changed attribute is of interest to them.
  * <p>
+ *
  * @since 2.0
  * @noextend This class is not intended to be subclassed by clients.
  */
@@ -41,45 +35,47 @@ public final class SettingStoreEvent extends EventObject {
 
   private static final long serialVersionUID = 1L;
 
-  private final String attribute;
+  private final String attributeName;
   private final String oldValue;
   private final String newValue;
 
-  public SettingStoreEvent( ISettingStore source, String attribute, String oldValue, String newValue )
+  public SettingStoreEvent( SettingStore source,
+                            String attributeName,
+                            String oldValue,
+                            String newValue )
   {
     super( source );
-    ParamCheck.notNull( attribute, "attribute" );
-    this.attribute = attribute;
+    ParamCheck.notNull( attributeName, "attributeName" );
+    this.attributeName = attributeName;
     this.oldValue = oldValue;
     this.newValue = newValue;
   }
 
-  ///////////////////////////////
-  // Interface ISettingStoreEvent
-
   /**
    * Returns the name of the changed attribute.
-   * @return a String; never <code>null</code>
+   *
+   * @return the attribute name, never <code>null</code>
    */
   public String getAttributeName() {
-    return attribute;
+    return attributeName;
   }
 
   /**
-   * Return the new value of the attribute
-   * @return a String; may be <code>null</code> if the attribute has been
-   *         removed from the store
+   * Return the value of the attribute after the change.
+   *
+   * @return the new attribute value, may be <code>null</code> if the attribute has been removed
    */
   public String getNewValue() {
     return newValue;
   }
 
   /**
-   * Returns the previous value of the attribute.
-   * @return a String; may be <code>null</code> if the attribute did not
-   *         exist previously
+   * Returns the value of the attribute before the change.
+   *
+   * @return the previous attribute value, may be <code>null</code> if the attribute has been added
    */
   public String getOldValue() {
     return oldValue;
   }
+
 }

@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture.internal.service;
 
@@ -17,25 +17,26 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.*;
 
+
 /**
- * This {@link ISettingStore} implementation "persists" all settings
+ * This {@link SettingStore} implementation "persists" all settings
  * in memory, for as long the application is running.
  * <p>
  * <b>This strategy results in an ever increasing memory
- * consuption over time</b>. We do <b>*not*</b> recommend using this 
+ * consumption over time</b>. We do <b>*not*</b> recommend using this
  * implementation in a production environment.
  */
-public final class MemorySettingStore implements ISettingStore {
+public final class MemorySettingStore implements SettingStore {
 
   private static final Map<String,String> VALUES = new HashMap<String,String>();
   private static final Set<SettingStoreListener> LISTENERS = new HashSet<SettingStoreListener>();
 
   private String id;
-  
+
   /**
    * Create a {@link MemorySettingStore} instance and containing the
    * attributes persisted under the given <code>id</code>.
-   * 
+   *
    * @param id a non-null; non-empty; non-whitespace-only String
    * @throws NullPointerException if id is <code>null</null>
    * @throws IllegalArgumentException if id is empty or composed
@@ -45,22 +46,22 @@ public final class MemorySettingStore implements ISettingStore {
     ParamCheck.notNullOrEmpty( id, "id" );
     this.id = id;
   }
-  
+
 
   ////////////////////////
-  // ISettingStore methods 
-  
+  // SettingStore methods
+
   public String getId() {
     return id;
   }
-  
+
   public synchronized void loadById( String id ) {
     ParamCheck.notNullOrEmpty( id, "id" );
     fakeRemoval();
     this.id = id;
     loadAttributes();
   }
-  
+
   public synchronized String getAttribute( String name ) {
     ParamCheck.notNull( name, "name" );
     String key = id + name;
@@ -97,7 +98,7 @@ public final class MemorySettingStore implements ISettingStore {
     }
   }
 
-  public synchronized void setAttribute( String name, String value ) 
+  public synchronized void setAttribute( String name, String value )
   {
     ParamCheck.notNull( name, "name" );
     if( value == null ) {
@@ -112,22 +113,22 @@ public final class MemorySettingStore implements ISettingStore {
     }
   }
 
-  public synchronized void addSettingStoreListener( SettingStoreListener listener ) 
+  public synchronized void addSettingStoreListener( SettingStoreListener listener )
   {
     ParamCheck.notNull( listener, "listener" );
     LISTENERS.add( listener );
   }
 
-  public synchronized void removeSettingStoreListener( SettingStoreListener listener ) 
+  public synchronized void removeSettingStoreListener( SettingStoreListener listener )
   {
     ParamCheck.notNull( listener, "listener" );
     LISTENERS.remove( listener );
   }
-  
-  
+
+
   //////////////////
   // helping methods
-  
+
   private void fakeRemoval() {
     Enumeration attributes = getAttributeNames();
     while( attributes.hasMoreElements() ) {
@@ -137,7 +138,7 @@ public final class MemorySettingStore implements ISettingStore {
       notifyListeners( name, value, null );
     }
   }
-  
+
   private synchronized void loadAttributes() {
     Enumeration attributes = getAttributeNames();
     while( attributes.hasMoreElements() ) {
@@ -147,13 +148,13 @@ public final class MemorySettingStore implements ISettingStore {
       notifyListeners( name, null, value );
     }
   }
-  
+
   private void log( String msg, Throwable throwable ) {
     RWT.getRequest().getSession().getServletContext().log( msg, throwable );
   }
-  
+
   private synchronized void notifyListeners( String attribute, String oldValue, String newValue ) {
-    SettingStoreEvent event 
+    SettingStoreEvent event
       = new SettingStoreEvent( this, attribute, oldValue, newValue );
     Iterator iter = LISTENERS.iterator();
     while( iter.hasNext() ) {
@@ -161,7 +162,7 @@ public final class MemorySettingStore implements ISettingStore {
       try {
         listener.settingChanged( event );
       } catch( Exception exc ) {
-        String msg =   "Exception when invoking listener " 
+        String msg =   "Exception when invoking listener "
                      + listener.getClass().getName();
         log( msg, exc );
       } catch( LinkageError le ) {

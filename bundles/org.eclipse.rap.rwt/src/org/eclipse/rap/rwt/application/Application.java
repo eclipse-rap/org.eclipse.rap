@@ -17,8 +17,8 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.ApplicationContext;
-import org.eclipse.rap.rwt.service.ISettingStore;
-import org.eclipse.rap.rwt.service.ISettingStoreFactory;
+import org.eclipse.rap.rwt.service.SettingStore;
+import org.eclipse.rap.rwt.service.SettingStoreFactory;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.widgets.DialogUtil;
@@ -187,9 +187,9 @@ public interface Application {
    * Configure this application to use a custom setting store implementation.
    *
    * @param the setting store implementation to use
-   * @see ISettingStore
+   * @see SettingStore
    */
-  void setSettingStoreFactory( ISettingStoreFactory settingStoreFactory );
+  void setSettingStoreFactory( SettingStoreFactory settingStoreFactory );
 
   /**
    * Register a themeable widget for this application. A themeable widget is a

@@ -30,12 +30,12 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
 /**
- * This {@link ISettingStore} implementation persists all settings on the
+ * This {@link SettingStore} implementation persists all settings on the
  * file system using Java {@link Properties}.
  * <p>
  * @since 2.0
  */
-public final class FileSettingStore implements ISettingStore {
+public final class FileSettingStore implements SettingStore {
 
   /**
    * This key (value "org.eclipse.rap.rwt.service.FileSettingStore.dir") can be

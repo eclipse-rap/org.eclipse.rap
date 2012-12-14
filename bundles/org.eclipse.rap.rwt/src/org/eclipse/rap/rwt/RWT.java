@@ -41,7 +41,7 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.IServiceStore;
-import org.eclipse.rap.rwt.service.ISettingStore;
+import org.eclipse.rap.rwt.service.SettingStore;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ServiceManager;
@@ -438,11 +438,12 @@ public final class RWT {
   }
 
   /**
-   * Returns the setting store instance for the current UI session.
+   * Returns the setting store instance for the current UI session. The setting store is a
+   * persistent store for user-specific data.
    *
-   * @return the setting store, for the current session, never <code>null</code>
+   * @return the setting store for the current session, never <code>null</code>
    */
-  public static ISettingStore getSettingStore() {
+  public static SettingStore getSettingStore() {
     return RWTFactory.getSettingStoreManager().getStore();
   }
 

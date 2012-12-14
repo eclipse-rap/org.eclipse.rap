@@ -13,23 +13,21 @@ package org.eclipse.rap.rwt.service;
 
 
 /**
- * Setting store listeners are notified by an {@link ISettingStore}, when
- * an attribute inside the store has been changed (i.e. added, modified,
- * removed).
+ * Setting store listeners are notified when an attribute in the setting store has been changed
+ * (i.e. added, modified, removed).
  * <p>
- * @see ISettingStore#addSettingStoreListener(SettingStoreListener)
- * @see ISettingStore#removeSettingStoreListener(SettingStoreListener)
- * <p>
+ *
+ * @see SettingStore#addSettingStoreListener(SettingStoreListener)
+ * @see SettingStore#removeSettingStoreListener(SettingStoreListener) <p>
  * @since 2.0
  */
 public interface SettingStoreListener {
 
   /**
-   * This method is invoked by the setting store, when an attribute inside
-   * the store has been changed (i.e. added, modified, removed).
+   * This method is invoked when an attribute in the setting store has been changed (i.e. added,
+   * modified, removed).
    *
-   * @param event a non-null {@link SettingStoreEvent} instance with
-   *                   specific information about the change
+   * @param event an event object that contains details about the attribute change
    */
   void settingChanged( SettingStoreEvent event );
 

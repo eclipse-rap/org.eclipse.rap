@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.preferences.IPreferenceNodeVisitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.service.ISettingStore;
+import org.eclipse.rap.rwt.service.SettingStore;
 import org.eclipse.rap.rwt.service.SettingStoreException;
 import org.eclipse.ui.internal.preferences.Base64;
 import org.osgi.service.prefs.BackingStoreException;
@@ -386,7 +386,7 @@ final class SessionPreferencesNode implements IEclipsePreferences {
 
   public void sync() throws BackingStoreException {
     checkRemoved();
-    ISettingStore store = RWT.getSettingStore();
+    SettingStore store = RWT.getSettingStore();
     String id = store.getId();
     try {
       store.loadById( id );
@@ -479,7 +479,7 @@ final class SessionPreferencesNode implements IEclipsePreferences {
   }
 
   private String internalGet( final String key ) {
-    ISettingStore store = RWT.getSettingStore();
+    SettingStore store = RWT.getSettingStore();
     String uniqueKey = absolutePath() + PATH_SEPARATOR + key;
     return store.getAttribute( uniqueKey );
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - adaptation for RAP
  *******************************************************************************/
 package org.eclipse.ui.internal;
 
@@ -19,7 +20,7 @@ import java.io.StringWriter;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.service.ISettingStore;
+import org.eclipse.rap.rwt.service.SettingStore;
 import org.eclipse.rap.rwt.service.SettingStoreException;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkingSet;
@@ -106,13 +107,13 @@ public class WorkingSetManager extends AbstractWorkingSetManager implements
 	public void restoreState() {
 // RAP [rh] reading from state-location does not work with multiple sessions	  
 //		File stateFile = getWorkingSetStateFile();
-	  ISettingStore settingStore = RWT.getSettingStore();
+	  SettingStore settingStore = RWT.getSettingStore();
 	  String state = settingStore.getAttribute( KEY_WORKING_SET_MANAGER_STATE );
 
 //		if (stateFile != null && stateFile.exists()) {
 	  if( state != null ) {
 			try {
-// RAP [rh] replaced InputStream/Reader with Reader that reads from ISettingStore attribute    
+// RAP [rh] replaced InputStream/Reader with Reader that reads from SettingStore attribute    
 //				FileInputStream input = new FileInputStream(stateFile);
 //        BufferedReader reader = new BufferedReader(
 //             new InputStreamReader(input, "utf-8")); //$NON-NLS-1$
@@ -160,12 +161,12 @@ public class WorkingSetManager extends AbstractWorkingSetManager implements
     XMLMemento memento = XMLMemento.createWriteRoot(IWorkbenchConstants.TAG_WORKING_SET_MANAGER);
     saveWorkingSetState(memento);
     saveMruList(memento);
-// RAP [rh] store state in ISettingStore instead
+// RAP [rh] store state in SettingStore instead
     try {
       StringWriter writer = new StringWriter();
       memento.save( writer );
       writer.close();
-      ISettingStore settingStore = RWT.getSettingStore();
+      SettingStore settingStore = RWT.getSettingStore();
       settingStore.setAttribute( KEY_WORKING_SET_MANAGER_STATE, writer.toString() );
     } catch ( IOException ioe ) {
       WorkbenchPlugin.log( WorkbenchMessages.get().ProblemSavingWorkingSetState_title, ioe );

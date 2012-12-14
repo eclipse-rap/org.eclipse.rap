@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
 package org.eclipse.rap.rwt.internal.service;
 
 import org.eclipse.rap.rwt.service.FileSettingStore_Test;
-import org.eclipse.rap.rwt.service.ISettingStoreFactory;
+import org.eclipse.rap.rwt.service.SettingStoreFactory;
 import org.eclipse.rap.rwt.testfixture.internal.service.MemorySettingStore;
 import org.eclipse.rap.rwt.testfixture.internal.service.MemorySettingStoreFactory;
 
@@ -22,13 +22,13 @@ import org.eclipse.rap.rwt.testfixture.internal.service.MemorySettingStoreFactor
  * and {@link MemorySettingStoreFactory}.
  */
 public class MemorySettingStore_Test extends FileSettingStore_Test {
-  
-  private ISettingStoreFactory factory = new MemorySettingStoreFactory();
 
-  protected ISettingStoreFactory getFactory() {
+  private SettingStoreFactory factory = new MemorySettingStoreFactory();
+
+  protected SettingStoreFactory getFactory() {
     return factory;
   }
-  
+
   public void testFactoryCreatesRightInstance() {
     String id = getClass().getName();
     assertTrue( factory.createSettingStore( id ) instanceof MemorySettingStore );

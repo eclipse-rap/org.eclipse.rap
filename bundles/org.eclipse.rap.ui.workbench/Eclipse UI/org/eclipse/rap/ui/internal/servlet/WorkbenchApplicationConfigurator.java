@@ -42,7 +42,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
-import org.eclipse.rap.rwt.service.ISettingStoreFactory;
+import org.eclipse.rap.rwt.service.SettingStoreFactory;
 import org.eclipse.rap.ui.internal.application.EntryPointApplicationWrapper;
 import org.eclipse.rap.ui.internal.branding.AbstractBranding;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
@@ -115,7 +115,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     // determine which factory to use via an environment setting / config.ini
     String settingStoreFactoryParam = "org.eclipse.rwt.settingStoreFactory";
     String factoryId = getOSGiProperty( settingStoreFactoryParam );
-    ISettingStoreFactory result = null;
+    SettingStoreFactory result = null;
     if( factoryId != null ) {
       result = loadSettingStoreFactory( factoryId );
     }
@@ -125,8 +125,8 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     application.setSettingStoreFactory( result );
   }
 
-  private ISettingStoreFactory loadSettingStoreFactory( String factoryId ) {
-    ISettingStoreFactory result = null;
+  private SettingStoreFactory loadSettingStoreFactory( String factoryId ) {
+    SettingStoreFactory result = null;
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_SETTING_STORES );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -143,10 +143,10 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     return result;
   }
 
-  private ISettingStoreFactory loadSettingStoreFactory( IConfigurationElement element ) {
-    ISettingStoreFactory result = null;
+  private SettingStoreFactory loadSettingStoreFactory( IConfigurationElement element ) {
+    SettingStoreFactory result = null;
     try {
-      result = ( ISettingStoreFactory )element.createExecutableExtension( "class" );
+      result = ( SettingStoreFactory )element.createExecutableExtension( "class" );
     } catch( CoreException cex ) {
       WorkbenchPlugin.log( cex.getStatus() );
     }

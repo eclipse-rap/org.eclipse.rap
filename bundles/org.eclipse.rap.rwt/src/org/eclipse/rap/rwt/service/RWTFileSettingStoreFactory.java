@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
 /**
- * {@link ISettingStoreFactory} that creates {@link FileSettingStore}
+ * A setting store factory that creates {@link FileSettingStore}
  * instances.
  * <p>
  * This particular implementation uses the following strategy to determine
@@ -49,11 +49,11 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
  *
  * @since 2.0
  */
-public final class RWTFileSettingStoreFactory implements ISettingStoreFactory {
+public final class RWTFileSettingStoreFactory implements SettingStoreFactory {
 
-  public ISettingStore createSettingStore( String storeId ) {
+  public SettingStore createSettingStore( String storeId ) {
     ParamCheck.notNullOrEmpty( storeId, "storeId" );
-    ISettingStore result = new FileSettingStore( getWorkDir() );
+    SettingStore result = new FileSettingStore( getWorkDir() );
     try {
       result.loadById( storeId );
     } catch( SettingStoreException sse ) {

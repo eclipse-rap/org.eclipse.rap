@@ -88,10 +88,10 @@ org.eclipse.rap.rwt.settingStoreFactory=file
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  a fully qualified name of the class implementing the &lt;code&gt;org.eclipse.rap.rwt.service.ISettingStoreFactory&lt;/code&gt; interface.
+                  a fully qualified name of the class implementing the &lt;code&gt;org.eclipse.rap.rwt.service.SettingStoreFactory&lt;/code&gt; interface.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.rap.rwt.service.ISettingStoreFactory"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.rap.rwt.service.SettingStoreFactory"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -133,7 +133,7 @@ org.eclipse.rap.rwt.settingStoreFactory=file
          <meta.section type="apiInfo"/>
       </appInfo>
       <documentation>
-         To obtain a setting store use &lt;code&gt;RWT.getSettingStore()&lt;/code&gt;. This will use the configured &lt;code&gt;org.eclipse.rap.rwt.service.ISettingStoreFactory&lt;/code&gt; to generate and return an appropriate &lt;code&gt;org.eclipse.rap.rwt.service.ISettingStore&lt;/code&gt; instance for this session.
+         To obtain a setting store use &lt;code&gt;RWT.getSettingStore()&lt;/code&gt;. This will use the configured &lt;code&gt;org.eclipse.rap.rwt.service.SettingStoreFactory&lt;/code&gt; to generate and return an appropriate &lt;code&gt;org.eclipse.rap.rwt.service.SettingStore&lt;/code&gt; instance for this session.
 &lt;p&gt;
 Developers wishing to provide their own setting store must implement &lt;code&gt;ISettingStore&lt;/code&gt; and &lt;code&gt;ISettingStoreFactory&lt;/code&gt; and contribute their factory using this extension point.
       </documentation>

@@ -29,7 +29,7 @@ import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.service.ISettingStoreFactory;
+import org.eclipse.rap.rwt.service.SettingStoreFactory;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.swt.widgets.Widget;
@@ -69,7 +69,7 @@ public class ApplicationImpl implements Application {
     applicationContext.getPhaseListenerRegistry().add( phaseListener );
   }
 
-  public void setSettingStoreFactory( ISettingStoreFactory settingStoreFactory ) {
+  public void setSettingStoreFactory( SettingStoreFactory settingStoreFactory ) {
     ParamCheck.notNull( settingStoreFactory, "settingStoreFactory" );
 
     applicationContext.getSettingStoreManager().register( settingStoreFactory );

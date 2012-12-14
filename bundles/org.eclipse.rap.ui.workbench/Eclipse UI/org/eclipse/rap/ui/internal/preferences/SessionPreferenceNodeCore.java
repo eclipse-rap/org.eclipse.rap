@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.preferences;
 
@@ -18,17 +19,17 @@ import org.eclipse.rap.rwt.service.*;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.service.prefs.Preferences;
 
+
 /**
- * This class is the link between the SessionPreferenceNode hierarchy 
+ * This class is the link between the SessionPreferenceNode hierarchy
  * (application global) the RWT setting store (session specific).
  */
 final class SessionPreferenceNodeCore {
-  
+
   private final SessionPreferencesNode node;
   private ListenerList prefListeners; // ListenerList is thread safe
-  private final ListenerList nodeListeners       
+  private final ListenerList nodeListeners
     = new ListenerList( ListenerList.IDENTITY ); // thread safe
-
 
   /* tracks changes in RWT setting store and notifies the prefListeners */
   private SettingStoreListener rwtListener;
@@ -36,12 +37,12 @@ final class SessionPreferenceNodeCore {
   private boolean trackChanges = true;
   /* ignore changes to this key for a short time */
   private String ignoreKey;
-  
+
   SessionPreferenceNodeCore( final SessionPreferencesNode node ) {
     ParamCheck.notNull( node, "node" ); //$NON-NLS-1$
     this.node = node;
   }
-  
+
   void addPreferenceChangeListener( IPreferenceChangeListener listener ) {
     if( listener != null ) {
       getListenerList().add( listener );
@@ -58,17 +59,17 @@ final class SessionPreferenceNodeCore {
       }
     }
   }
-  
-  void firePreferenceEvent( final String key, 
-                            final String oldValue, 
+
+  void firePreferenceEvent( final String key,
+                            final String oldValue,
                             final String newValue )
   {
     if( prefListeners != null ) {
-      final PreferenceChangeEvent event 
+      final PreferenceChangeEvent event
         = new PreferenceChangeEvent( node, key, oldValue, newValue );
       Object[] listeners = prefListeners.getListeners();
       for( int i = 0; i < listeners.length; i++ ) {
-        final IPreferenceChangeListener listener 
+        final IPreferenceChangeListener listener
           = ( IPreferenceChangeListener )listeners[ i ];
         ISafeRunnable op = new ISafeRunnable() {
           public void handleException( final Throwable exception ) {
@@ -82,7 +83,7 @@ final class SessionPreferenceNodeCore {
       }
     }
   }
-  
+
   void clear() {
     if( prefListeners != null ) {
       prefListeners.clear();
@@ -91,10 +92,10 @@ final class SessionPreferenceNodeCore {
     }
     nodeListeners.clear();
   }
-  
+
   synchronized String put( final String uniqueKey,
                            final String value ) {
-    ISettingStore store = RWT.getSettingStore();
+    SettingStore store = RWT.getSettingStore();
     String result = store.getAttribute( uniqueKey );
     try {
       ignoreKey = uniqueKey;
@@ -106,19 +107,19 @@ final class SessionPreferenceNodeCore {
     }
     return result;
   }
-  
+
   // helping methods
   //////////////////
-  
+
   private synchronized ListenerList getListenerList() {
     if( prefListeners == null ) {
       prefListeners = new ListenerList( ListenerList.IDENTITY );
     }
     return prefListeners;
   }
-  
+
   private synchronized void setTrackRWTChanges( final boolean doTrack ) {
-    this.trackChanges = doTrack;
+    trackChanges = doTrack;
     if( trackChanges ) {
       if( rwtListener == null ) {
        rwtListener = new SettingStoreListener() {
@@ -161,7 +162,7 @@ final class SessionPreferenceNodeCore {
     final NodeChangeEvent event = new NodeChangeEvent( spn, child );
     Object[] listeners = nodeListeners.getListeners();
     for( int i = 0; i < listeners.length; i++ ) {
-      final INodeChangeListener listener 
+      final INodeChangeListener listener
         = ( INodeChangeListener )listeners[ i ];
       ISafeRunnable op = new ISafeRunnable() {
         public void handleException( final Throwable exception ) {
@@ -179,5 +180,5 @@ final class SessionPreferenceNodeCore {
     }
 
   }
-  
+
 }

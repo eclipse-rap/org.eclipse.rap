@@ -1,15 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing devleopment
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.preferences;
-
 
 import java.io.File;
 
@@ -23,7 +23,7 @@ import org.osgi.framework.Bundle;
 
 
 /**
- * {@link ISettingStoreFactory} that creates {@link FileSettingStore}
+ * A setting store factory that creates {@link FileSettingStore}
  * instances.
  * <p>
  * This particular implementation uses the following strategy to determine
@@ -46,12 +46,12 @@ import org.osgi.framework.Bundle;
  *
  */
 public final class WorkbenchFileSettingStoreFactory
-  implements ISettingStoreFactory
+  implements SettingStoreFactory
 {
 
-  public ISettingStore createSettingStore( final String storeId ) {
+  public SettingStore createSettingStore( final String storeId ) {
     ParamCheck.notNullOrEmpty( storeId, "storeId" ); //$NON-NLS-1$
-    ISettingStore result = new FileSettingStore( getWorkDir() );
+    SettingStore result = new FileSettingStore( getWorkDir() );
     try {
       result.loadById( storeId );
     } catch( SettingStoreException sse ) {

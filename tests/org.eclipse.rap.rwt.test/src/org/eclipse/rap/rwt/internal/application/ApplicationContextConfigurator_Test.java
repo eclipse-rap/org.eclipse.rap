@@ -34,7 +34,7 @@ import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.service.ISettingStoreFactory;
+import org.eclipse.rap.rwt.service.SettingStoreFactory;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -53,7 +53,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   private static final String STYLE_SHEET_CONTRIBUTION = "resources/theme/TestExample2.css";
 
   private PhaseListener phaseListener;
-  private ISettingStoreFactory settingStoreFactory;
+  private SettingStoreFactory settingStoreFactory;
   private ServiceHandler serviceHandler;
   private String serviceHandlerId;
   private ApplicationContextImpl applicationContext;
@@ -63,7 +63,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   protected void setUp() throws IOException {
     tempDirectory = createTempDirectory();
     phaseListener = mock( PhaseListener.class );
-    settingStoreFactory = mock( ISettingStoreFactory.class );
+    settingStoreFactory = mock( SettingStoreFactory.class );
     serviceHandler = mock( ServiceHandler.class );
     serviceHandlerId = "serviceHandlerId";
   }

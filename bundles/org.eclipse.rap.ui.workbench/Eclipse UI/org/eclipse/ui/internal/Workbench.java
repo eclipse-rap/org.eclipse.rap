@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  *     		Fix for Bug 217777 [Workbench] Workbench event loop does not terminate if Display is closed
  *     Tasktop Technologies -  Bug 304716 -  [UX] [Progress] Show Eclipse startup progress in the Eclipse icon on the Windows 7 Task Bar
  *     Tom Schindl -  Bug 310153 -  Allow people to use CSS in 3.x plugins
+ *     EclipseSource - adaptation for RAP
  *******************************************************************************/
 
 package org.eclipse.ui.internal;
@@ -78,7 +79,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
-import org.eclipse.rap.rwt.service.ISettingStore;
+import org.eclipse.rap.rwt.service.SettingStore;
 import org.eclipse.rap.rwt.service.SettingStoreException;
 import org.eclipse.rap.ui.internal.branding.BrandingUtil;
 import org.eclipse.swt.SWT;
@@ -2097,7 +2098,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //          return new Status(IStatus.WARNING, WorkbenchPlugin.PI_WORKBENCH,
 //                  IWorkbenchConfigurer.RESTORE_CODE_RESET, msg, null);
 //      }
-        final ISettingStore settingStore = RWT.getSettingStore();
+        final SettingStore settingStore = RWT.getSettingStore();
         final String state = settingStore.getAttribute( KEY_WORKBENCH_STATE );
         if( state == null ) {
           String msg = WorkbenchMessages.get().Workbench_noStateToRestore;
@@ -2803,7 +2804,7 @@ public final class Workbench extends EventManager implements IWorkbench {
         try {
           StringWriter writer = new StringWriter();
           memento.save( writer );
-          ISettingStore settingStore = RWT.getSettingStore();
+          SettingStore settingStore = RWT.getSettingStore();
           settingStore.setAttribute( KEY_WORKBENCH_STATE, writer.toString() );
           result = true;
         } catch( final IOException ioe ) {

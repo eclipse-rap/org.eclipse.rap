@@ -13,32 +13,10 @@ package org.eclipse.rap.rwt.service;
 
 
 /**
- * A setting store factory is responsible for creating and initializing
- * a specific kind of setting store.
- * <p>
- * At runtime, RWT will use a single ISettingStoreFactory implementation
- * to create new {@link ISettingStore} instances. Refer to documentation
- * of the <code>org.eclipse.rap.ui.settingstores</code> for details on how
- * to configure which factory is used.
- * <p>
- * If nothing is specified the {@link RWTFileSettingStoreFactory} will be used
- * by default.
- * <p>
- * This interface must be implemented by clients who wish to use their own
- * implementation of an {@link ISettingStore}.
- * <p>
+ * @deprecated Use {@link SettingStoreFactory} instead.
  * @since 2.0
  */
-public interface ISettingStoreFactory {
+@Deprecated
+public interface ISettingStoreFactory extends SettingStoreFactory {
 
-  /**
-   * Create, initialize and return a specific ISettingStore instance.
-   *
-   * @param storeId a non-null, non-empty, non-whitespace-only String.
-   * @return an {@link ISettingStore} instance; never <code>null</code>
-   * @throws NullPointerException if storeId is <code>null</null>
-   * @throws IllegalArgumentException if storeId is empty or composed
-   *         entirely of whitespace
-   */
-  ISettingStore createSettingStore( String storeId );
 }

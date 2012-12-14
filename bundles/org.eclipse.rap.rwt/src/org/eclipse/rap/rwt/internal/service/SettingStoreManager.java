@@ -17,8 +17,8 @@ import javax.servlet.http.Cookie;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.UISession;
-import org.eclipse.rap.rwt.service.ISettingStore;
-import org.eclipse.rap.rwt.service.ISettingStoreFactory;
+import org.eclipse.rap.rwt.service.SettingStore;
+import org.eclipse.rap.rwt.service.SettingStoreFactory;
 
 
 public class SettingStoreManager {
@@ -27,12 +27,12 @@ public class SettingStoreManager {
   private static long last = System.currentTimeMillis();
   private static int instanceCount;
 
-  private ISettingStoreFactory factory;
+  private SettingStoreFactory factory;
 
-  public synchronized ISettingStore getStore() {
+  public synchronized SettingStore getStore() {
     UISession uiSession = ContextProvider.getUISession();
     String storeId = getStoreId();
-    ISettingStore result = ( ISettingStore )uiSession.getAttribute( storeId );
+    SettingStore result = ( SettingStore )uiSession.getAttribute( storeId );
     if( result == null ) {
       result = factory.createSettingStore( storeId );
       uiSession.setAttribute( storeId, result );
@@ -40,17 +40,17 @@ public class SettingStoreManager {
     return result;
   }
 
-  public synchronized void register( ISettingStoreFactory factory ) {
+  public synchronized void register( SettingStoreFactory factory ) {
     ParamCheck.notNull( factory, "factory" );
     if( hasFactory() ) {
-      throw new IllegalStateException( "There is already an ISettingStoreFactory registered." );
+      throw new IllegalStateException( "There is already a SettingStoreFactory registered." );
     }
     this.factory = factory;
   }
 
   public void deregisterFactory() {
     if( !hasFactory() ) {
-      throw new IllegalStateException( "There is no ISettingStoreFactory for deregistration." );
+      throw new IllegalStateException( "There is no SettingStoreFactory for deregistration." );
     }
     this.factory = null;
   }
