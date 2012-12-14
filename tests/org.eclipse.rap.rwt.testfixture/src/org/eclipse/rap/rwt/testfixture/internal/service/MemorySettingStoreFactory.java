@@ -15,14 +15,11 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.*;
 
 
-/**
- * {@link SettingStoreFactory} that creates {@link MemorySettingStore} 
- * instances.
- */
 public final class MemorySettingStoreFactory implements SettingStoreFactory {
 
-  public SettingStore createSettingStore( String storeId ) {
-    ParamCheck.notNullOrEmpty( storeId, "storeId" );
-    return new MemorySettingStore( storeId );
+  public SettingStore createSettingStore( String id ) {
+    ParamCheck.notNullOrEmpty( id, "id" );
+    return new MemorySettingStore( id );
   }
+
 }

@@ -18,7 +18,7 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushServiceHandler;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
-import org.eclipse.rap.rwt.service.RWTFileSettingStoreFactory;
+import org.eclipse.rap.rwt.service.FileSettingStoreFactory;
 
 
 class ApplicationContextConfigurator {
@@ -88,7 +88,7 @@ class ApplicationContextConfigurator {
 
   private void setInternalSettingStoreFactory( ApplicationContextImpl applicationContext ) {
     if( !applicationContext.getSettingStoreManager().hasFactory() ) {
-      applicationContext.getSettingStoreManager().register( new RWTFileSettingStoreFactory() );
+      applicationContext.getSettingStoreManager().register( new FileSettingStoreFactory() );
     }
   }
 

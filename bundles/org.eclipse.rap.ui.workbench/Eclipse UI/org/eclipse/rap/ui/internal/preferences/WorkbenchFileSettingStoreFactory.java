@@ -42,7 +42,7 @@ import org.osgi.framework.Bundle;
  * <p>
  * <b>Note:</b> This setting store factory should be used in a regular
  * RAP deployment. For an RWT only deployment use the
- * {@link RWTFileSettingStoreFactory}.
+ * {@link FileSettingStoreFactory}.
  *
  */
 public final class WorkbenchFileSettingStoreFactory

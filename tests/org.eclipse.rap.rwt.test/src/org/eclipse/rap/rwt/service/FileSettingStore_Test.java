@@ -18,17 +18,24 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
-/**
- * Tests for the classes {@link FileSettingStore} and
- * {@link RWTFileSettingStoreFactory}.
- */
 public class FileSettingStore_Test extends TestCase {
 
-  private final SettingStoreFactory factory = new RWTFileSettingStoreFactory();
+  private final SettingStoreFactory factory = new FileSettingStoreFactory();
   private static int instanceCount = 0;
-
   private String storeId;
   private SettingStore store;
+
+  @Override
+  protected void setUp() {
+    Fixture.setUp();
+    storeId = createUniqueId();
+    store = getFactory().createSettingStore( storeId );
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testGetAttributeNullKey() {
     try {
@@ -80,28 +87,22 @@ public class FileSettingStore_Test extends TestCase {
   public void testSetAttributeNullValue() throws Exception {
     store.setAttribute( "key", "value" );
     assertNotNull( store.getAttribute( "key" ) );
-
     // set null value removes the key
     store.setAttribute( "key", null );
     assertNull( store.getAttribute( "key" ) );
   }
 
-  public void testGetAttributeNames()throws Exception {
+  public void testGetAttributeNames() throws Exception {
     assertEquals( 0, countElements( store.getAttributeNames() ) );
-
     store.setAttribute( "key", "value" );
     assertEquals( 1, countElements( store.getAttributeNames() ) );
     assertEquals( "key", store.getAttributeNames().nextElement() );
-
     store.setAttribute( "key", "value" );
     assertEquals( 1, countElements( store.getAttributeNames() ) );
-
     store.setAttribute( "key2", "value2" );
     assertEquals( 2, countElements( store.getAttributeNames() ) );
-
     store.removeAttribute( "foo" );
     assertEquals( 2, countElements( store.getAttributeNames() ) );
-
     store.removeAttribute( "key2" );
     assertEquals( 1, countElements( store.getAttributeNames() ) );
   }
@@ -122,7 +123,6 @@ public class FileSettingStore_Test extends TestCase {
     } catch( IllegalArgumentException iae ) {
       // expected
     }
-
     try {
       store.loadById( "  " );
       fail();
@@ -134,10 +134,8 @@ public class FileSettingStore_Test extends TestCase {
   public void testLoadByIdDoesClear() throws Exception {
     store.setAttribute( "key", "value" );
     assertEquals( 1, countElements( store.getAttributeNames() ) );
-
     store.loadById( createUniqueId() );
     assertEquals( 0, countElements( store.getAttributeNames() ) );
-
     store.setAttribute( "key", "value" );
     assertEquals( 1, countElements( store.getAttributeNames() ) );
   }
@@ -145,19 +143,16 @@ public class FileSettingStore_Test extends TestCase {
   public void testLoadByIdDoesLoad() throws Exception {
     String currentId = store.getId();
     store.setAttribute( "key", "value" );
-
     // new store
     String newId = createUniqueId();
     SettingStore newStore = getFactory().createSettingStore( newId );
     assertNotSame( store, newStore );
     assertEquals( 0, countElements( newStore.getAttributeNames() ) );
     newStore.setAttribute( "key2", "value2" );
-
     // load currentId into new store
     newStore.loadById( currentId );
     assertEquals( 1, countElements( newStore.getAttributeNames() ) );
     assertEquals( "value", newStore.getAttribute( "key" ) );
-
     // load newId into new store
     newStore.loadById( newId );
     assertEquals( 1, countElements( newStore.getAttributeNames() ) );
@@ -186,29 +181,23 @@ public class FileSettingStore_Test extends TestCase {
     FTSettingStoreListener listener = new FTSettingStoreListener();
     store.addSettingStoreListener( listener );
     store.addSettingStoreListener( listener );
-
     assertEquals( 0, listener.getCount() );
     store.setAttribute( "key", "value" );
     assertEquals( 1, listener.getCount() );
-
     store.setAttribute( "key", "value2" );
     assertEquals( 2, listener.getCount() );
-
     store.setAttribute( "key", "value2" );
     assertEquals( 2, listener.getCount() );
-
     store.getAttribute( "key" );
     assertEquals( 2, listener.getCount() );
     store.getAttribute( "unknown_attribute" );
     assertEquals( 2, listener.getCount() );
-
     store.removeAttribute( "key" );
     assertEquals( 3, listener.getCount() );
     store.removeAttribute( "key" );
     assertEquals( 3, listener.getCount() );
     store.removeAttribute( "unknown_attribute" );
     assertEquals( 3, listener.getCount() );
-
     store.removeSettingStoreListener( listener );
     store.setAttribute( "key2", "value2" );
     assertEquals( 3, listener.getCount() );
@@ -217,26 +206,21 @@ public class FileSettingStore_Test extends TestCase {
   public void testSettingStoreListenerEvents() throws Exception {
     FTSettingStoreListener listener = new FTSettingStoreListener();
     store.addSettingStoreListener( listener );
-
     SettingStoreEvent event;
-
     store.setAttribute( "key", "value" );
     event = listener.getEvent();
     assertSame( store, event.getSource() );
     assertEquals( "key", event.getAttributeName() );
     assertNull( event.getOldValue() );
     assertEquals( "value", event.getNewValue() );
-
     store.setAttribute( "key", "value2" );
     event = listener.getEvent();
     assertSame( store, event.getSource() );
     assertEquals( "key", event.getAttributeName() );
     assertEquals( "value", event.getOldValue() );
     assertEquals( "value2", event.getNewValue() );
-
     store.removeAttribute( "foo" );
     assertSame( event, listener.getEvent() ); // no new event
-
     store.removeAttribute( "key" );
     event = listener.getEvent();
     assertSame( store, event.getSource() );
@@ -249,11 +233,9 @@ public class FileSettingStore_Test extends TestCase {
     store.setAttribute( "key1", "value1" );
     store.setAttribute( "key2", "value2" );
     assertEquals( 2, countElements( store.getAttributeNames() ) );
-
     FTSettingStoreListener listener = new FTSettingStoreListener();
     store.addSettingStoreListener( listener );
     store.loadById( "newId" );
-
     assertEquals( 2, listener.getCount() );
     SettingStoreEvent lastEvent = listener.getEvent();
     assertNotNull( lastEvent.getAttributeName() );
@@ -261,18 +243,15 @@ public class FileSettingStore_Test extends TestCase {
     assertNull( lastEvent.getNewValue() );
   }
 
- public void testListenerEventsOnLoadForLoadedKeys() throws Exception {
+  public void testListenerEventsOnLoadForLoadedKeys() throws Exception {
     store.setAttribute( "key1", "value1" );
     store.setAttribute( "key2", "value2" );
-
     store = getFactory().createSettingStore( "newId" );
     assertEquals( 0, countElements( store.getAttributeNames() ) );
-
     FTSettingStoreListener listener = new FTSettingStoreListener();
     store.addSettingStoreListener( listener );
     store.loadById( storeId );
     assertEquals( 2, countElements( store.getAttributeNames() ) );
-
     assertEquals( 2, listener.getCount() );
     SettingStoreEvent lastEvent = listener.getEvent();
     assertNotNull( lastEvent.getAttributeName() );
@@ -280,68 +259,26 @@ public class FileSettingStore_Test extends TestCase {
     assertNotNull( lastEvent.getNewValue() );
   }
 
- public void testGetId() {
-   assertNotNull( store.getId() );
-   assertEquals( storeId, store.getId() );
- }
-
- public void testFactoryWithNullId() {
-   try {
-     getFactory().createSettingStore( null );
-     fail();
-   } catch( NullPointerException npe ) {
-     // expected
-   }
- }
-
- public void testFactoryWithEmptyId() {
-   try {
-     getFactory().createSettingStore( "" );
-     fail();
-   } catch( IllegalArgumentException iae ) {
-     // expected
-   }
-   try {
-     getFactory().createSettingStore( " \t " );
-     fail();
-   } catch( IllegalArgumentException iae ) {
-     // expected
-   }
- }
-
-  @Override
-  protected void setUp() {
-    Fixture.setUp();
-    storeId = createUniqueId();
-    store = getFactory().createSettingStore( storeId );
+  public void testGetId() {
+    assertNotNull( store.getId() );
+    assertEquals( storeId, store.getId() );
   }
-
-  @Override
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
-
 
   private int countElements( Enumeration enu ) {
     int result = 0;
     while( enu.hasMoreElements() ) {
-      result++;
+      result++ ;
       enu.nextElement();
     }
     return result;
   }
 
   private String createUniqueId() {
-    return      String.valueOf( System.currentTimeMillis() )
-              + "_"
-              + ( ++instanceCount );
+    return String.valueOf( System.currentTimeMillis() ) + "_" + ( ++instanceCount );
   }
+
   protected SettingStoreFactory getFactory() {
     return factory;
   }
 
-  public void testFactoryCreatesRightInstance() {
-    String id = getClass().getName();
-    assertTrue( factory.createSettingStore( id ) instanceof FileSettingStore );
-  }
 }

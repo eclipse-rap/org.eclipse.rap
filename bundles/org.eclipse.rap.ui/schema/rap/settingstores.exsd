@@ -23,7 +23,7 @@ org.eclipse.rap.rwt.settingStoreFactory=file
 &lt;pre&gt;
 &amp;lt;init-param&amp;gt;
   &amp;lt;param-name&amp;gt;org.eclipse.rap.rwt.settingStoreFactory&amp;lt;/param-name&amp;gt;
-  &amp;lt;param-value&amp;gt;org.eclipse.rap.rwt.service.RWTFileSettingStoreFactory&amp;lt;/param-value&amp;gt;
+  &amp;lt;param-value&amp;gt;org.eclipse.rap.rwt.service.FileSettingStoreFactory&amp;lt;/param-value&amp;gt;
 &amp;lt;/init-param&amp;gt;
 &lt;/pre&gt;
 &lt;li&gt;If nothing is specified, the class &lt;code&gt;WorkbenchFileSettingStoreFactory&lt;/code&gt; will be used in a regular RAP deployment. In an RWT only deployment the class &lt;code&gt;RWTFileSettingStoreFactory&lt;/code&gt; will be used instead.&lt;/li&gt;
@@ -120,7 +120,7 @@ org.eclipse.rap.rwt.settingStoreFactory=file
             id=&quot;file&quot;&gt;
       &lt;/factory&gt;
       &lt;factory
-            class=&quot;org.eclipse.rap.rwt.service.RWTFileSettingStoreFactory&quot;
+            class=&quot;org.eclipse.rap.rwt.service.FileSettingStoreFactory&quot;
             id=&quot;rwtfile&quot;&gt;
       &lt;/factory&gt;
    &lt;/extension&gt;

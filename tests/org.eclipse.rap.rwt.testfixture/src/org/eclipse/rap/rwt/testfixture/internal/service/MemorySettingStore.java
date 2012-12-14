@@ -68,22 +68,22 @@ public final class MemorySettingStore implements SettingStore {
     return VALUES.get( key );
   }
 
-  public synchronized Enumeration getAttributeNames() {
+  public synchronized Enumeration<String> getAttributeNames() {
     List<String> result = new ArrayList<String>();
-    Iterator iter = VALUES.keySet().iterator();
+    Iterator<String> iterator = VALUES.keySet().iterator();
     int nameBeginIndex = id.length();
-    while( iter.hasNext() ) {
-      String key = ( String )iter.next();
+    while( iterator.hasNext() ) {
+      String key = iterator.next();
       if( key.startsWith( id ) ) {
         result.add( key.substring( nameBeginIndex ) );
       }
     }
-    final Iterator resultIterator = result.iterator();
-    return new Enumeration() {
+    final Iterator<String> resultIterator = result.iterator();
+    return new Enumeration<String>() {
       public boolean hasMoreElements() {
         return resultIterator.hasNext();
       }
-      public Object nextElement() {
+      public String nextElement() {
         return resultIterator.next();
       }
     };

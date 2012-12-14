@@ -30,18 +30,16 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
 /**
- * This {@link SettingStore} implementation persists all settings on the
- * file system using Java {@link Properties}.
- * <p>
+ * A setting store implementation that persists all settings on the file system using Java
+ * {@link Properties} files.
+ *
  * @since 2.0
  */
 public final class FileSettingStore implements SettingStore {
 
   /**
-   * This key (value "org.eclipse.rap.rwt.service.FileSettingStore.dir") can be
-   * used to configure the working directory for file settings stores.
-   * See {@link RWTFileSettingStoreFactory} and
-   * <code>WorkbenchFileSettingStoreFactory</code>.
+   * This key (value "org.eclipse.rap.rwt.service.FileSettingStore.dir") can be used to configure
+   * the working directory for file settings stores. See {@link FileSettingStoreFactory}.
    */
   public static final String FILE_SETTING_STORE_DIR
     = "org.eclipse.rap.rwt.service.FileSettingStore.dir";
@@ -54,21 +52,17 @@ public final class FileSettingStore implements SettingStore {
   private String id;
 
   /**
-   * Create a {@link FileSettingStore} instance. The store will be initialized
-   * with a unique random id and will contain no attributes. Use
-   * {@link #loadById(String)} to initialize an existing store with previously
-   * persisted attributes.
+   * Creates an empty instance with a random unique ID. Use {@link #loadById(String)} to initialize
+   * an existing store with previously persisted attributes.
    *
-   * @param workDir a non-null File instance denoting an existing directory,
-   *        which will be used by this class persist its settings.
-   * @throws NullPointerException if the argument workDir is <code>null</code>
-   * @throws IllegalArgumentException if the argument workDir is not a directory
+   * @param baseDirectory an existing directory to persist this store's settings in
+   * @throws IllegalArgumentException if the given <code>workDir</code> is not a directory
    * @see #loadById(String)
    */
-  public FileSettingStore( File workDir ) {
-    ParamCheck.notNull( workDir, "workDir" );
-    checkWorkDir( workDir );
-    this.workDir = workDir;
+  public FileSettingStore( File baseDirectory ) {
+    ParamCheck.notNull( baseDirectory, "baseDirectory" );
+    checkWorkDir( baseDirectory );
+    workDir = baseDirectory;
     props = new Properties();
     listeners = new HashSet<SettingStoreListener>();
     id = generateId();
@@ -96,8 +90,16 @@ public final class FileSettingStore implements SettingStore {
     }
   }
 
-  public synchronized Enumeration getAttributeNames() {
-    return props.keys();
+  public synchronized Enumeration<String> getAttributeNames() {
+    final Enumeration<Object> keys = props.keys();
+    return new Enumeration<String>() {
+      public boolean hasMoreElements() {
+        return keys.hasMoreElements();
+      }
+      public String nextElement() {
+        return ( String )keys.nextElement();
+      }
+    };
   }
 
   public synchronized void loadById( String id ) throws SettingStoreException {
@@ -105,7 +107,6 @@ public final class FileSettingStore implements SettingStore {
     this.id = id;
     notifyForEachAttribute( true );
     props.clear();
-
     BufferedInputStream inputStream = getInputStream( id );
     if( inputStream != null ) {
       try {
@@ -227,4 +228,5 @@ public final class FileSettingStore implements SettingStore {
   private static String generateId() {
     return String.valueOf( System.currentTimeMillis() ) + "_" + RANDOM.nextInt( Short.MAX_VALUE );
   }
+
 }

@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
  * {@link Application#setSettingStoreFactory(SettingStoreFactory)}).
  * <p>
  * At runtime, the framework will use a single factory implementation to create new setting store
- * instances. If no custom factory is specified, the {@link RWTFileSettingStoreFactory} will be used
+ * instances. If no custom factory is specified, the {@link FileSettingStoreFactory} will be used
  * as default.
  * </p>
  *
