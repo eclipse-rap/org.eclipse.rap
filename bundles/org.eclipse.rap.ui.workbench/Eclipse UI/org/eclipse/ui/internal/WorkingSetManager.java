@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.service.SettingStore;
-import org.eclipse.rap.rwt.service.SettingStoreException;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
@@ -170,8 +169,6 @@ public class WorkingSetManager extends AbstractWorkingSetManager implements
       settingStore.setAttribute( KEY_WORKING_SET_MANAGER_STATE, writer.toString() );
     } catch ( IOException ioe ) {
       WorkbenchPlugin.log( WorkbenchMessages.get().ProblemSavingWorkingSetState_title, ioe );
-    } catch( SettingStoreException sse ) {
-      WorkbenchPlugin.log( WorkbenchMessages.get().ProblemSavingWorkingSetState_title, sse );
     } 
 	}
 

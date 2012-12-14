@@ -11,7 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.preferences;
 
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferenceNodeVisitor;
@@ -19,7 +25,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.SettingStore;
-import org.eclipse.rap.rwt.service.SettingStoreException;
 import org.eclipse.ui.internal.preferences.Base64;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
@@ -390,7 +395,7 @@ final class SessionPreferencesNode implements IEclipsePreferences {
     String id = store.getId();
     try {
       store.loadById( id );
-    } catch( SettingStoreException sse ) {
+    } catch( IOException sse ) {
       throw new BackingStoreException( "Failed to sync() node", sse ); //$NON-NLS-1$
     }
   }

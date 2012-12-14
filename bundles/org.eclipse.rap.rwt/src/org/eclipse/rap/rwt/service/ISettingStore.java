@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.service;
 
+import java.io.IOException;
 import java.util.Enumeration;
 
 
@@ -37,19 +38,19 @@ public interface ISettingStore {
    * @deprecated Use {@link SettingStore} instead of {@link ISettingStore}.
    */
   @Deprecated
-  void setAttribute( String name, String value ) throws SettingStoreException;
+  void setAttribute( String name, String value ) throws IOException;
 
   /**
    * @deprecated Use {@link SettingStore} instead of {@link ISettingStore}.
    */
   @Deprecated
-  void removeAttribute( String name ) throws SettingStoreException;
+  void removeAttribute( String name ) throws IOException;
 
   /**
    * @deprecated Use {@link SettingStore} instead of {@link ISettingStore}.
    */
   @Deprecated
-  void loadById( String id ) throws SettingStoreException;
+  void loadById( String id ) throws IOException;
 
   /**
    * @deprecated Use {@link SettingStore} instead of {@link ISettingStore}.

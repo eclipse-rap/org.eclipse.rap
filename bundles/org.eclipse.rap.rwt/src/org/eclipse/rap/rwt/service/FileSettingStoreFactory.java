@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.service;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -48,7 +49,7 @@ public final class FileSettingStoreFactory implements SettingStoreFactory {
     SettingStore store = new FileSettingStore( getWorkingDir() );
     try {
       store.loadById( id );
-    } catch( SettingStoreException sse ) {
+    } catch( IOException sse ) {
       ServletLog.log( sse.getMessage(), sse );
     }
     return store;

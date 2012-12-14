@@ -78,9 +78,7 @@ import org.eclipse.jface.window.WindowManager;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.service.SettingStore;
-import org.eclipse.rap.rwt.service.SettingStoreException;
 import org.eclipse.rap.ui.internal.branding.BrandingUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -2204,8 +2202,9 @@ public final class Workbench extends EventManager implements IWorkbench {
 //                        stateFile.delete();
                         try {
                           settingStore.removeAttribute( KEY_WORKBENCH_STATE );
-                        } catch( final SettingStoreException sse ) {
-                          WorkbenchPlugin.log( WorkbenchMessages.get().Workbench_problemsRestoringMsg, sse );
+                        } catch( final IOException exception ) {
+                          WorkbenchPlugin.log( WorkbenchMessages.get().Workbench_problemsRestoringMsg,
+                                               exception );
                         }
                     }});
             }
@@ -2809,8 +2808,6 @@ public final class Workbench extends EventManager implements IWorkbench {
           result = true;
         } catch( final IOException ioe ) {
           WorkbenchPlugin.log( WorkbenchMessages.get().ProblemSavingState, ioe );
-        } catch( final SettingStoreException sse ) {
-          WorkbenchPlugin.log( WorkbenchMessages.get().ProblemSavingState, sse );
         }
         return result;
     }

@@ -12,12 +12,16 @@
 package org.eclipse.rap.ui.internal.preferences;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.service.*;
+import org.eclipse.rap.rwt.service.FileSettingStore;
+import org.eclipse.rap.rwt.service.FileSettingStoreFactory;
+import org.eclipse.rap.rwt.service.SettingStore;
+import org.eclipse.rap.rwt.service.SettingStoreFactory;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 
@@ -54,9 +58,9 @@ public final class WorkbenchFileSettingStoreFactory
     SettingStore result = new FileSettingStore( getWorkDir() );
     try {
       result.loadById( storeId );
-    } catch( SettingStoreException sse ) {
-      String msg = String.valueOf( sse.getMessage() );
-      RWT.getRequest().getSession().getServletContext().log( msg, sse );
+    } catch( IOException exception ) {
+      String message = String.valueOf( exception.getMessage() );
+      RWT.getRequest().getSession().getServletContext().log( message, exception );
     }
     return result;
   }

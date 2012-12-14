@@ -11,11 +11,20 @@
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.preferences;
 
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.*;
+import java.io.IOException;
+
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.INodeChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.NodeChangeEvent;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.service.*;
+import org.eclipse.rap.rwt.service.SettingStore;
+import org.eclipse.rap.rwt.service.SettingStoreEvent;
+import org.eclipse.rap.rwt.service.SettingStoreListener;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.service.prefs.Preferences;
 
@@ -101,9 +110,9 @@ final class SessionPreferenceNodeCore {
       ignoreKey = uniqueKey;
       store.setAttribute( uniqueKey, value );
       ignoreKey = null;
-    } catch( SettingStoreException exc ) {
+    } catch( IOException exception ) {
       String msg = "Could not persist preference: " + uniqueKey; //$NON-NLS-1$
-      WorkbenchPlugin.log( msg, exc );
+      WorkbenchPlugin.log( msg, exception );
     }
     return result;
   }

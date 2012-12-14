@@ -77,7 +77,7 @@ public final class FileSettingStore implements SettingStore {
     return props.getProperty( name );
   }
 
-  public synchronized void setAttribute( String name, String value ) throws SettingStoreException {
+  public synchronized void setAttribute( String name, String value ) throws IOException {
     ParamCheck.notNull( name, "name" );
     if( value == null ) {
       removeAttribute( name );
@@ -102,7 +102,7 @@ public final class FileSettingStore implements SettingStore {
     };
   }
 
-  public synchronized void loadById( String id ) throws SettingStoreException {
+  public synchronized void loadById( String id ) throws IOException {
     ParamCheck.notNullOrEmpty( id, "id" );
     this.id = id;
     notifyForEachAttribute( true );
@@ -110,20 +110,15 @@ public final class FileSettingStore implements SettingStore {
     BufferedInputStream inputStream = getInputStream( id );
     if( inputStream != null ) {
       try {
-        try {
-          props.load( inputStream );
-          notifyForEachAttribute( false );
-        } finally {
-          inputStream.close();
-        }
-      } catch( IOException ioe ) {
-        String msg = "Failed to load into file setting store; id= " + id;
-        throw new SettingStoreException( msg, ioe );
+        props.load( inputStream );
+        notifyForEachAttribute( false );
+      } finally {
+        inputStream.close();
       }
     }
   }
 
-  public synchronized void removeAttribute( String name ) throws SettingStoreException {
+  public synchronized void removeAttribute( String name ) throws IOException {
     String oldValue = ( String )props.remove( name );
     if( oldValue != null ) {
       notifyListeners( name, oldValue, null );
@@ -205,17 +200,12 @@ public final class FileSettingStore implements SettingStore {
     }
   }
 
-  private void persist() throws SettingStoreException {
+  private void persist() throws IOException {
+    BufferedOutputStream outputStream = getOutputStream( id );
     try {
-      BufferedOutputStream outputStream = getOutputStream( id );
-      try {
-        props.store( outputStream, FileSettingStore.class.getName() );
-      } finally {
-        outputStream.close();
-      }
-    } catch( IOException ioe ) {
-      String msg = "Failed to persist file setting store; id= " + id;
-      throw new SettingStoreException( msg, ioe );
+      props.store( outputStream, FileSettingStore.class.getName() );
+    } finally {
+      outputStream.close();
     }
   }
 

@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.service;
 
+import java.io.IOException;
 import java.util.Enumeration;
 
 
@@ -78,9 +79,9 @@ public interface SettingStore extends ISettingStore {
    *
    * @param name the name of the attribute, must not be <code>null</code> or empty
    * @param value the attribute to store, may be <code>null</code>
-   * @throws SettingStoreException if the load operation failed to complete normally
+   * @throws IOException if the load operation failed to complete normally
    */
-  void setAttribute( String name, String value ) throws SettingStoreException;
+  void setAttribute( String name, String value ) throws IOException;
 
   /**
    * Removes the attribute stored under the specified name from this setting store. If no attribute
@@ -91,9 +92,9 @@ public interface SettingStore extends ISettingStore {
    * </p>
    *
    * @param name the name of the attribute to remove, must not be <code>null</code>
-   * @throws SettingStoreException if the remove operation failed to complete normally
+   * @throws IOException if the remove operation failed to complete normally
    */
-  void removeAttribute( String name ) throws SettingStoreException;
+  void removeAttribute( String name ) throws IOException;
 
   /**
    * Replaces the contents of this setting store with the persisted contents associated with the
@@ -113,10 +114,10 @@ public interface SettingStore extends ISettingStore {
    * </p>
    *
    * @param id the ID of the settings to load, must not be <code>null</code> or empty
-   * @throws SettingStoreException if the load operation failed to complete normally
+   * @throws IOException if the load operation failed to complete normally
    * @throws IllegalArgumentException if the given id is empty
    */
-  void loadById( String id ) throws SettingStoreException;
+  void loadById( String id ) throws IOException;
 
   /**
    * Returns the unique identifier of this setting store.
