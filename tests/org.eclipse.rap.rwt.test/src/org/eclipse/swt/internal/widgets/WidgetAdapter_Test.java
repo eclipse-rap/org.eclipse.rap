@@ -86,6 +86,12 @@ public class WidgetAdapter_Test extends TestCase {
     assertEquals( adapter1.getId(), adapter2.getId() );
   }
 
+  public void testId_Widget() {
+    Shell shell = new Shell( display, SWT.NONE );
+
+    assertTrue(  WidgetUtil.getId( shell ).startsWith( "w" ) );
+  }
+
   public void testCustomIdWithoutUITestEnabled() {
     Shell shell = new Shell( display, SWT.NONE );
 

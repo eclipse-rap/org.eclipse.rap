@@ -39,7 +39,7 @@ public final class WidgetAdapter
   private Widget parent;
 
   public WidgetAdapter() {
-    this( IdGenerator.getInstance().newId( "w" ) );
+    this( IdGeneratorProvider.getIdGenerator().createId( "w" ) );
   }
 
   public WidgetAdapter( String id ) {

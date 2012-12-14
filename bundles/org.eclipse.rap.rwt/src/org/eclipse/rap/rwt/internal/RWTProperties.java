@@ -23,6 +23,8 @@ public final class RWTProperties {
    */
   public static final String ENABLE_UI_TESTS = "org.eclipse.rap.rwt.enableUITests";
 
+  public static final String ID_GENERATOR = "org.eclipse.rap.idGenerator";
+
   private RWTProperties() {
     // prevent instantiation
   }
@@ -34,6 +36,10 @@ public final class RWTProperties {
 
   public static boolean isDevelopmentMode() {
     return getBooleanProperty( DEVELOPMEMT_MODE, false );
+  }
+
+  public static String getIdGeneratorClassName() {
+    return System.getProperty( ID_GENERATOR );
   }
 
   private static boolean getBooleanProperty( String key, boolean defaultValue ) {

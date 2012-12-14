@@ -11,8 +11,10 @@
 package org.eclipse.swt.internal.widgets;
 
 
-public interface IdGenerator {
+public class CustomIdGenerator implements IdGenerator {
 
-  String createId( Object object );
+  public String createId( Object object ) {
+    return "customId";
+  }
 
 }

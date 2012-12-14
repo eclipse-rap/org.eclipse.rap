@@ -32,6 +32,7 @@ import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
+import org.eclipse.swt.internal.widgets.IdGeneratorProvider;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.WidgetGraphicsAdapter;
 
@@ -171,7 +172,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     T result = null;
     if( adapter == IClientObjectAdapter.class || adapter == IWidgetAdapter.class ) {
       if( widgetAdapter == null ) {
-        widgetAdapter = new WidgetAdapter();
+        widgetAdapter = new WidgetAdapter( IdGeneratorProvider.getIdGenerator().createId( this ) );
       }
       result = ( T )widgetAdapter;
     } else if( adapter == IThemeAdapter.class ) {

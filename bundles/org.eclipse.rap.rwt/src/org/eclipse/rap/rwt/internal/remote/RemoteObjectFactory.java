@@ -15,7 +15,7 @@ import java.io.Serializable;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.UISession;
-import org.eclipse.swt.internal.widgets.IdGenerator;
+import org.eclipse.swt.internal.widgets.IdGeneratorProvider;
 
 
 /**
@@ -44,7 +44,7 @@ public class RemoteObjectFactory implements Serializable {
    */
   public RemoteObject createRemoteObject( String remoteType ) {
     ParamCheck.notNullOrEmpty( remoteType, "type" );
-    String id = IdGenerator.getInstance().newId( "r" );
+    String id = IdGeneratorProvider.getIdGenerator().createId( "r" );
     RemoteObjectImpl remoteObject = new RemoteObjectImpl( id, remoteType );
     RemoteObjectRegistry.getInstance().register( remoteObject );
     return remoteObject;

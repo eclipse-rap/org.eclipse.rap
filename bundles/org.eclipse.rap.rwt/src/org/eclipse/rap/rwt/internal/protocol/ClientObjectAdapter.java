@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import org.eclipse.swt.internal.widgets.IdGenerator;
+import org.eclipse.swt.internal.widgets.IdGeneratorProvider;
 
 
 public class ClientObjectAdapter implements IClientObjectAdapter {
@@ -22,7 +22,7 @@ public class ClientObjectAdapter implements IClientObjectAdapter {
   }
 
   public ClientObjectAdapter( String customPrefix ) {
-    id = IdGenerator.getInstance().newId( customPrefix );
+    id = IdGeneratorProvider.getIdGenerator().createId( customPrefix );
   }
 
   public String getId() {
