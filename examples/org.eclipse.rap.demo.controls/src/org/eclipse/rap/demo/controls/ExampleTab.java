@@ -78,6 +78,7 @@ abstract class ExampleTab implements Serializable {
   private ColorChooser bgColorChooser;
   private int defaultStyle = SWT.NONE;
   private final Set<String> properties = new HashSet<String>();
+  private Object data;
 
   public static final Color BG_COLOR_GREEN = Graphics.getColor( 154, 205, 50 );
   public static final Color BG_COLOR_BLUE = Graphics.getColor( 105, 89, 205 );
@@ -124,6 +125,22 @@ abstract class ExampleTab implements Serializable {
 
   public String getName() {
     return name;
+  }
+
+  public String getId() {
+    String id = this.getClass().getSimpleName();
+    if( id.endsWith( "Tab" ) ) {
+      id = id.substring( 0, id.length() - 3 );
+    }
+    return id;
+  }
+
+  public Object getData() {
+    return data;
+  }
+
+  public void setData( Object data ) {
+    this.data = data;
   }
 
   public void createContents( Composite parent ) {

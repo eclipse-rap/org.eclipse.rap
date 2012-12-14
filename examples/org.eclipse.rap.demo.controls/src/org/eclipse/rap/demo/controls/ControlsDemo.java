@@ -12,9 +12,13 @@
 package org.eclipse.rap.demo.controls;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
+import org.eclipse.rap.rwt.client.service.BrowserNavigation;
+import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
+import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -72,15 +76,30 @@ public class ControlsDemo implements EntryPoint, Serializable {
   }
 
   private void fillTree( Composite parent ) {
+    final HashMap<String, ExampleTab> exampleMap = new HashMap< String, ExampleTab >();
+    final BrowserNavigation navigation = RWT.getClient().getService( BrowserNavigation.class );
     for( ExampleTab tab : createExampleTabs() ) {
       TreeItem item = new TreeItem( tree, SWT.NONE );
       item.setText( tab.getName() );
       item.setData( tab );
+      tab.setData( item );
+      exampleMap.put( tab.getId(), tab );
     }
     tree.addListener( SWT.Selection, new Listener() {
       public void handleEvent( Event event ) {
-        Object data = event.item.getData();
-        selectTab( ( ExampleTab )data );
+        ExampleTab tab = ( ExampleTab )event.item.getData();
+        selectTab( tab );
+        navigation.pushState( tab.getId(), null );
+      }
+    } );
+    navigation.addBrowserNavigationListener( new BrowserNavigationListener() {
+      public void navigated( BrowserNavigationEvent event ) {
+        ExampleTab tab = exampleMap.get( event.getState() );
+        if( tab != null ) {
+          tree.select( ( TreeItem )tab.getData() );
+          tree.showSelection();
+          selectTab( tab );
+        }
       }
     } );
     selectTab( ( ExampleTab )tree.getItem( 0 ).getData() );
