@@ -11,13 +11,16 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -25,12 +28,17 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.client.Client;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
+import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestLogger;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 
@@ -40,9 +48,12 @@ public class UISessionImpl_Test extends TestCase {
   private HttpSession httpSession;
   private UISessionImpl uiSession;
   private List<Throwable> servletLogEntries;
+  private Locale localeBuffer;
 
   @Override
   protected void setUp() throws Exception {
+    localeBuffer = Locale.getDefault();
+    Locale.setDefault( Locale.ENGLISH );
     Fixture.setUp();
     httpSession = new TestSession();
     uiSession = new UISessionImpl( httpSession );
@@ -60,6 +71,7 @@ public class UISessionImpl_Test extends TestCase {
   @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+    Locale.setDefault( localeBuffer );
   }
 
   public void testConstructor_failsWithWithNullArgument() {
@@ -443,6 +455,51 @@ public class UISessionImpl_Test extends TestCase {
     uiSession.setAttribute( attributeName, overridingAtribute );
 
     assertSame( overridingAtribute, uiSession.getAttribute( attributeName ) );
+  }
+
+  public void testGetClient() {
+    Client client = mock( Client.class );
+    ClientSelector clientSelector = mock( ClientSelector.class );
+    when( clientSelector.getSelectedClient( any( UISession.class ) ) ).thenReturn( client );
+    ApplicationContextImpl applicationContext = mock( ApplicationContextImpl.class );
+    when( applicationContext.getClientSelector() ).thenReturn( clientSelector );
+    ApplicationContextUtil.set( uiSession, applicationContext );
+
+    Client result = uiSession.getClient();
+
+    assertSame( client, result );
+  }
+
+  public void testSetLocale_failsWithNull() {
+    try {
+      uiSession.setLocale( null );
+      fail();
+    } catch( NullPointerException exception ) {
+      assertTrue( exception.getMessage().contains( "locale" ) );
+    }
+  }
+
+  public void testGetLocale_returnsSetLocale() {
+    uiSession.setLocale( Locale.UK );
+
+    Locale locale = uiSession.getLocale();
+
+    assertSame( Locale.UK, locale );
+  }
+
+  public void testGetLocale_fallsBackToRequestLocale() {
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setLocale( Locale.ITALIAN );
+
+    Locale locale = uiSession.getLocale();
+
+    assertSame( Locale.ITALIAN, locale );
+  }
+
+  public void testGetLocale_fallsBackToSystemLocale() {
+    Locale locale = uiSession.getLocale();
+
+    assertSame( Locale.getDefault(), locale );
   }
 
   public void testExec_failsWithNullArgument() {

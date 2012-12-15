@@ -12,8 +12,11 @@
 package org.eclipse.rap.rwt.service;
 
 import java.util.Enumeration;
+import java.util.Locale;
 
 import javax.servlet.http.HttpSession;
+
+import org.eclipse.rap.rwt.client.Client;
 
 
 /**
@@ -132,6 +135,34 @@ public interface UISession extends ISessionStore {
    * @return true if the session store is bound, false otherwise.
    */
   boolean isBound();
+
+  /**
+   * Returns a representation of the client that is connected with the server in this UI session.
+   *
+   * @return The client for this UI session
+   */
+  public Client getClient();
+
+  /**
+   * Returns the preferred <code>Locale</code> for this UI session. The result reflects the locale
+   * that has been set using {@link #setLocale(Locale)}. If no locale has been set on this
+   * UISession, the locale will be taken from the <code>Accept-Language</code> HTTP header of the
+   * current request. If the client request doesn't provide a preferred locale, then this method
+   * returns the default locale for the server.
+   *
+   * @return the preferred locale for the client, or the default system locale, never
+   *         <code>null</code>
+   * @see #setLocale(Locale)
+   */
+  public Locale getLocale();
+
+  /**
+   * Sets the preferred <code>Locale</code> for this UI session. The value set can be retrieved
+   * using {@link #getLocale()}.
+   *
+   * @see #getLocale()
+   */
+  public void setLocale( Locale locale );
 
   /**
    * Executes the given runnable in the context of this UI session. This method allows background

@@ -17,15 +17,56 @@ import java.util.Locale;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
-import org.eclipse.swt.widgets.Display;
 
 
 public class NLS_Test extends TestCase {
+
+  private Locale localeBuffer;
+
+  @Override
+  protected void setUp() throws Exception {
+    localeBuffer = Locale.getDefault();
+    Locale.setDefault( Locale.ENGLISH );
+    Fixture.setUp();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+    Locale.setDefault( localeBuffer );
+  }
+
+  public void testNLS() {
+    assertEquals( "My Message", TestMessages.get().MyMessage );
+
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setLocale( Locale.ITALIAN );
+    assertEquals( "Il mio messaggio", TestMessages.get().MyMessage );
+
+    RWT.setLocale( Locale.GERMAN );
+    assertEquals( "Meine Nachricht", TestMessages.get().MyMessage );
+
+    assertSame( TestMessages.get(), TestMessages.get() );
+  }
+
+  public void testNLS_UTF8() {
+    assertEquals( "My Message", TestMessagesUTF8.get().MyMessage );
+
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setLocale( Locale.ITALIAN );
+    assertEquals( "Il mio messaggio", TestMessagesUTF8.get().MyMessage );
+
+    RWT.setLocale( Locale.GERMAN );
+    assertEquals( "Meine Nachricht", TestMessagesUTF8.get().MyMessage );
+
+    assertSame( TestMessagesUTF8.get(), TestMessagesUTF8.get() );
+  }
+
+  public void testNLSWithIncompleteLocalization() {
+    assertEquals( "", TestIncompleteMessages.get().NoTranslationAvailable );
+  }
 
   final static class TestMessages {
     private static final String BUNDLE_NAME = "org.eclipse.rap.rwt.messages";
@@ -66,138 +107,4 @@ public class NLS_Test extends TestCase {
     }
   }
 
-  private Locale localeBuffer;
-
-  @Override
-  protected void setUp() throws Exception {
-    localeBuffer = Locale.getDefault();
-    Locale.setDefault( Locale.ENGLISH );
-    Fixture.setUp();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-    Locale.setDefault( localeBuffer );
-  }
-
-  public void testGetLocaleWithUnmodifiedLocale() {
-    Locale locale = RWT.getLocale();
-    assertSame( Locale.getDefault(), locale );
-  }
-
-  public void testGetLocaleWithRequestLocale() {
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.setLocale( Locale.ITALIAN );
-
-    Locale locale = RWT.getLocale();
-
-    assertSame( Locale.ITALIAN, locale );
-  }
-
-  public void testGetLocaleWithOverriddenLocale() {
-    RWT.setLocale( Locale.UK );
-
-    Locale locale = RWT.getLocale();
-
-    assertSame( Locale.UK, locale );
-  }
-
-  public void testGetLocaleFromBackgroundThread() throws Throwable {
-    Runnable runnable = new Runnable() {
-      public void run() {
-        RWT.getLocale();
-      }
-    };
-
-    try {
-      Fixture.runInThread( runnable );
-      fail();
-    } catch( SWTException expected ) {
-      assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, expected.code );
-    }
-  }
-
-  public void testGetLocaleFromSessionThread() throws Throwable {
-    Locale locale = Locale.FRENCH;
-    RWT.setLocale( locale );
-    final Display display = new Display();
-    final Locale[] returnedLocale = { null };
-    final Runnable runnable = new Runnable() {
-      public void run() {
-        returnedLocale[ 0 ] = RWT.getLocale();
-      }
-    };
-
-    Fixture.runInThread( new Runnable() {
-      public void run() {
-        RWT.getUISession( display ).exec( runnable );
-      }
-    } );
-
-    assertSame( locale, returnedLocale[ 0 ] );
-  }
-
-  public void testSetLocaleFromBackgroundThread() throws Throwable {
-    Runnable runnable = new Runnable() {
-      public void run() {
-        RWT.setLocale( Locale.JAPAN );
-      }
-    };
-
-    try {
-      Fixture.runInThread( runnable );
-      fail();
-    } catch( SWTException expected ) {
-      assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, expected.code );
-    }
-  }
-
-  public void testSetLocaleFromSessionThread() throws Throwable {
-    RWT.setLocale( Locale.FRENCH );
-    final Display display = new Display();
-    final Runnable runnable = new Runnable() {
-      public void run() {
-        RWT.setLocale( Locale.JAPAN );
-      }
-    };
-
-    Fixture.runInThread( new Runnable() {
-      public void run() {
-        RWT.getUISession( display ).exec( runnable );
-      }
-    } );
-
-    assertSame( Locale.JAPAN, RWT.getLocale() );
-  }
-
-  public void testNLS() {
-    assertEquals( "My Message", TestMessages.get().MyMessage );
-
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.setLocale( Locale.ITALIAN );
-    assertEquals( "Il mio messaggio", TestMessages.get().MyMessage );
-
-    RWT.setLocale( Locale.GERMAN );
-    assertEquals( "Meine Nachricht", TestMessages.get().MyMessage );
-
-    assertSame( TestMessages.get(), TestMessages.get() );
-  }
-
-  public void testNLS_UTF8() {
-    assertEquals( "My Message", TestMessagesUTF8.get().MyMessage );
-
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.setLocale( Locale.ITALIAN );
-    assertEquals( "Il mio messaggio", TestMessagesUTF8.get().MyMessage );
-
-    RWT.setLocale( Locale.GERMAN );
-    assertEquals( "Meine Nachricht", TestMessagesUTF8.get().MyMessage );
-
-    assertSame( TestMessagesUTF8.get(), TestMessagesUTF8.get() );
-  }
-
-  public void testNLSWithIncompleteLocalization() {
-    assertEquals( "", TestIncompleteMessages.get().NoTranslationAvailable );
-  }
 }

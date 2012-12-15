@@ -16,6 +16,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,6 +24,10 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
+import org.eclipse.rap.rwt.client.Client;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
+import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.ContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
@@ -37,14 +42,7 @@ public final class UISessionImpl
 {
 
   public static final String ATTR_SESSION_STORE = UISessionImpl.class.getName();
-
-  public static UISessionImpl getInstanceFromSession( HttpSession httpSession ) {
-    return ( UISessionImpl )httpSession.getAttribute( ATTR_SESSION_STORE );
-  }
-
-  public static void attachInstanceToSession( HttpSession httpSession, UISession uiSession ) {
-    httpSession.setAttribute( ATTR_SESSION_STORE, uiSession );
-  }
+  private static final String ATTR_LOCALE = UISessionImpl.class.getName() + "#locale";
 
   private final SerializableLock requestLock;
   private final SerializableLock lock;
@@ -145,6 +143,25 @@ public final class UISessionImpl
     }
   }
 
+  public Client getClient() {
+    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( this );
+    ClientSelector clientSelector = applicationContext.getClientSelector();
+    return clientSelector.getSelectedClient( this );
+  }
+
+  public Locale getLocale() {
+    Locale locale = ( Locale )getAttribute( ATTR_LOCALE );
+    if( locale == null ) {
+      locale = ContextProvider.getRequest().getLocale();
+    }
+    return locale;
+  }
+
+  public void setLocale( Locale locale ) {
+    ParamCheck.notNull( locale, "locale" );
+    setAttribute( ATTR_LOCALE, locale );
+  }
+
   public void exec( Runnable runnable ) {
     ParamCheck.notNull( runnable, "runnable" );
     ContextUtil.runNonUIThreadWithFakeContext( this, runnable );
@@ -207,6 +224,14 @@ public final class UISessionImpl
         }
       }
     }
+  }
+
+  public static UISessionImpl getInstanceFromSession( HttpSession httpSession ) {
+    return ( UISessionImpl )httpSession.getAttribute( ATTR_SESSION_STORE );
+  }
+
+  public static void attachInstanceToSession( HttpSession httpSession, UISession uiSession ) {
+    httpSession.setAttribute( ATTR_SESSION_STORE, uiSession );
   }
 
   Object getRequestLock() {

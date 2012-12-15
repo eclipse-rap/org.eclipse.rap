@@ -939,7 +939,7 @@ public class Display_Test extends TestCase {
       fail( "timerExec must throw exception when null-runnable is passed in " );
     } catch( Exception expected ) {
     }
-    // Further timerExec tests can be found in UICallbackManager_Test
+    // Further timerExec tests can be found in ServerPushManager_Test
   }
 
   public void testTimerExecFromBackgroundThread() throws Throwable {

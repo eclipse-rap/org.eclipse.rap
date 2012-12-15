@@ -11,10 +11,12 @@
 package org.eclipse.rap.rwt;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
@@ -156,7 +158,8 @@ public class RWT_Test extends TestCase {
     }
   }
 
-  public void testGetServiceStoreFromBackgroundThread() throws Throwable {
+  @SuppressWarnings( "deprecation" )
+  public void testGetServiceStore_failsFromBackgroundThread() throws Throwable {
     Runnable runnable = new Runnable() {
       public void run() {
         RWT.getServiceStore();
@@ -170,6 +173,7 @@ public class RWT_Test extends TestCase {
     }
   }
 
+  @SuppressWarnings( "deprecation" )
   public void testGetServiceStoreFromSessionThread() throws Throwable {
     final Display display = new Display();
     final Runnable runnable = new Runnable() {
@@ -192,7 +196,7 @@ public class RWT_Test extends TestCase {
   public void testGetUISession() {
     UISession result = RWT.getUISession();
 
-    assertSame( result, result );
+    assertSame( ContextProvider.getUISession(), result );
   }
 
   public void testGetUISession_failsInBackgroundThread() throws Throwable {
@@ -260,6 +264,28 @@ public class RWT_Test extends TestCase {
     UISession result = RWT.getUISession( display );
 
     assertSame( RWT.getUISession(), result );
+  }
+
+  public void testGetClient() {
+    Client client = RWT.getClient();
+
+    assertNotNull( client );
+  }
+
+  public void testGetLocale_getsLocaleFromUISession() {
+    ContextProvider.getUISession().setLocale( Locale.ITALY );
+
+    Locale result = RWT.getLocale();
+
+    assertSame( Locale.ITALY, result );
+  }
+
+  public void testSetLocale_setsLocaleOnUISession() {
+    RWT.setLocale( Locale.ITALY );
+
+    Locale result = ContextProvider.getUISession().getLocale();
+
+    assertSame( Locale.ITALY, result );
   }
 
   private static class TestLifeCycle extends LifeCycle {

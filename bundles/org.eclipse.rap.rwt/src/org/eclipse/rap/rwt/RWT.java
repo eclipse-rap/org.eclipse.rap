@@ -27,8 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.client.BrowserNavigationImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
@@ -68,8 +66,6 @@ import org.eclipse.swt.widgets.Widget;
  */
 @SuppressWarnings( "deprecation" )
 public final class RWT {
-
-  private static final String LOCALE = RWT.class.getName() + ".LOCALE";
 
   /**
    * <p>This utility class helps to provide a similar approach for compile safe
@@ -465,6 +461,7 @@ public final class RWT {
    * Returns the current UI session. This method must be executed from the UI thread.
    *
    * @return the current UI session instance, never <code>null</code>
+   * @throws IllegalStateException when called outside of the UI thread
    */
   public static UISession getUISession() {
     return ContextProvider.getUISession();
@@ -485,7 +482,7 @@ public final class RWT {
    */
   @Deprecated
   public static UISession getSessionStore() {
-    return ContextProvider.getUISession();
+    return getUISession();
   }
 
   /**
@@ -535,41 +532,25 @@ public final class RWT {
   }
 
   /**
-   * Returns the preferred <code>Locale</code> that the client will accept
-   * content in. This is either the <code>Locale</code> that was set in
-   * session-scope using the {@link #setLocale(Locale)} method or the locale
-   * based on the <code>Accept-Language</code> HTTP header of the current
-   * request. If neither the <code>Locale</code> was set programmatically, nor
-   * the client request provides an <code>Accept-Language</code> header, this
-   * method returns the default locale for the server.
+   * Returns the preferred <code>Locale</code> for the current UI session.
+   * This method is a shortcut for <code>RWT.getUISession().getLocale()</code>.
    *
-   * @return the preferred <code>Locale</code> for the client.
+   * @return the preferred <code>Locale</code> for the current UI session.
    *
-   * @see #setLocale(Locale)
+   * @see UISession#getLocale()
    */
   public static Locale getLocale() {
-    checkHasSessionContext();
-    Locale result = ( Locale )ContextProvider.getUISession().getAttribute( LOCALE );
-    if( result == null ) {
-      result = ContextProvider.getRequest().getLocale();
-    }
-    if( result == null ) {
-      result = Locale.getDefault();
-    }
-    return result;
+    return getUISession().getLocale();
   }
 
   /**
-   * Sets the preferred <code>Locale</code> that the client will accept
-   * content in to current session. The value set can be retrieved with
-   * the {@link #getLocale()} method.
+   * Sets the preferred <code>Locale</code> for the current UI session. This method is a shortcut
+   * for <code>RWT.getUISession().setLocale( locale )</code>.
    *
-   * @see #getLocale()
+   * @see UISession#setLocale(Locale)
    */
   public static void setLocale( Locale locale ) {
-    checkHasSessionContext();
-    UISession uiSession = ContextProvider.getUISession();
-    uiSession.setAttribute( LOCALE, locale );
+    getUISession().setLocale( locale );
   }
 
   /**
@@ -606,15 +587,13 @@ public final class RWT {
 
   /**
    * Returns a representation of the client that is connected with the server in the current UI
-   * session.
+   * session. This is a shortcut for <code>RWT.getUISession().getClient()</code>.
    *
    * @return The client for the current UI session
    * @throws IllegalStateException when called outside of the request context
    */
   public static Client getClient() {
-    ApplicationContextImpl applicationContext = ApplicationContextUtil.getInstance();
-    UISession uiSession = ContextProvider.getUISession();
-    return applicationContext.getClientSelector().getSelectedClient( uiSession );
+    return getUISession().getClient();
   }
 
   private static void checkHasSessionContext() {
