@@ -37,11 +37,12 @@ import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
+
 public final class UISessionImpl
   implements UISession, HttpSessionBindingListener, SerializableCompatibility
 {
 
-  public static final String ATTR_SESSION_STORE = UISessionImpl.class.getName();
+  private static final String ATTR_SESSION_STORE = UISessionImpl.class.getName();
   private static final String ATTR_LOCALE = UISessionImpl.class.getName() + "#locale";
 
   private final SerializableLock requestLock;
@@ -53,7 +54,6 @@ public final class UISessionImpl
   private boolean bound;
   private boolean inDestroy;
   private transient ISessionShutdownAdapter shutdownAdapter;
-
 
   public UISessionImpl( HttpSession httpSession ) {
     ParamCheck.notNull( httpSession, "httpSession" );

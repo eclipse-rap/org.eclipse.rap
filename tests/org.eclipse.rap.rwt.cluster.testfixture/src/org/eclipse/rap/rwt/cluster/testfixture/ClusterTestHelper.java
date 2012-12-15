@@ -44,7 +44,7 @@ public class ClusterTestHelper {
   }
 
   public static UISession getUISession( HttpSession httpSession ) {
-    return ( UISession )httpSession.getAttribute( UISessionImpl.ATTR_SESSION_STORE );
+    return UISessionImpl.getInstanceFromSession( httpSession );
   }
 
   public static Display getSessionDisplay( HttpSession httpSession ) {

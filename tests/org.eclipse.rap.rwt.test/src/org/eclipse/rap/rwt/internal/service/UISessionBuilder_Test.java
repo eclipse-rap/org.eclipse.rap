@@ -10,7 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Enumeration;
@@ -48,6 +51,23 @@ public class UISessionBuilder_Test extends TestCase {
   private ApplicationConfiguration configuration;
   private ApplicationContextImpl applicationContext;
 
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    httpSession = new TestSession();
+    request = new TestRequest();
+    request.setSession( httpSession );
+    servletContext = httpSession.getServletContext();
+    configuration = mock( ApplicationConfiguration.class );
+    applicationContext = new ApplicationContextImpl( configuration, servletContext );
+    applicationContext.getClientSelector().activate();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testUISessionReferencesApplicationContext() {
     registerEntryPoint( null );
 
@@ -59,12 +79,14 @@ public class UISessionBuilder_Test extends TestCase {
 
   public void testUISessionIsAttachedToHttpSession() {
     registerEntryPoint( null );
+    httpSession = mock( HttpSession.class );
+    request.setSession( httpSession );
 
     UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
     UISession uiSession = builder.buildUISession();
 
     assertSame( httpSession, uiSession.getHttpSession() );
-    assertEquals( uiSession, httpSession.getAttribute( UISessionImpl.ATTR_SESSION_STORE ) );
+    verify( httpSession ).setAttribute( anyString(), same( uiSession ) );
   }
 
   public void testSingletonManagerIsInstalled() {
@@ -120,23 +142,6 @@ public class UISessionBuilder_Test extends TestCase {
 
     ClientSelector clientSelector = applicationContext.getClientSelector();
     assertNotNull( clientSelector.getSelectedClient( uiSession ) );
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    httpSession = new TestSession();
-    request = new TestRequest();
-    request.setSession( httpSession );
-    servletContext = httpSession.getServletContext();
-    configuration = mock( ApplicationConfiguration.class );
-    applicationContext = new ApplicationContextImpl( configuration, servletContext );
-    applicationContext.getClientSelector().activate();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 
   private void registerEntryPoint( HashMap<String, String> properties ) {

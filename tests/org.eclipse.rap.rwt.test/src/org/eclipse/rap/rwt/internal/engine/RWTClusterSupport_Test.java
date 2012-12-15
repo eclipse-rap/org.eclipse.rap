@@ -11,6 +11,8 @@
 package org.eclipse.rap.rwt.internal.engine;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -53,7 +55,7 @@ public class RWTClusterSupport_Test extends TestCase {
   public void testUISessionIsAttached() throws Exception {
     HttpSession session = new TestSession();
     request.setSession( session );
-    session.setAttribute( UISessionImpl.ATTR_SESSION_STORE, new UISessionImpl( session ) );
+    UISessionImpl.attachInstanceToSession( session, new UISessionImpl( session ) );
 
     rwtClusterSupport.doFilter( request, response, chain );
 
@@ -63,25 +65,24 @@ public class RWTClusterSupport_Test extends TestCase {
   }
 
   public void testSessionIsMarkedAsChanged() throws Exception {
-    final StringBuilder log = new StringBuilder();
+    final List<Object> log = new ArrayList<Object>();
     HttpSession session = new TestSession() {
       @Override
       public void setAttribute( String name, Object value ) {
         super.setAttribute( name, value );
-        if( log.length() > 0 ) {
-          log.append( ", " );
-        }
-        log.append( name );
+        log.add( value );
       }
     };
     request.setSession( session );
     session.setAttribute( "foo", "bar" );
-    UISessionImpl.attachInstanceToSession( session, new UISessionImpl( session ) );
-    log.setLength( 0 );
+    UISessionImpl uiSession = new UISessionImpl( session );
+    UISessionImpl.attachInstanceToSession( session, uiSession );
+    log.clear();
 
     rwtClusterSupport.doFilter( request, response, chain );
 
-    assertEquals( UISessionImpl.ATTR_SESSION_STORE, log.toString() );
+    assertEquals( 1, log.size() );
+    assertEquals( uiSession, log.get( 0 ) );
   }
 
   @Override
