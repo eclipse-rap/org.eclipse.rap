@@ -43,7 +43,6 @@ import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.SettingStore;
 import org.eclipse.rap.rwt.service.ResourceManager;
-import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ServiceManager;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
@@ -415,26 +414,25 @@ public final class RWT {
   }
 
   /**
-   * Returns the instance of the resource manager for the current application context. The resource
-   * manager is used to register static resources such as images of JavaScript files.
+   * Returns the instance of the resource manager for the current application context. This is a
+   * shortcut for <code>RWT.getApplicationContext().getResourceManager()</code>.
    *
    * @return the resource manager for the current application context
-   * @see ResourceManager
+   * @see ApplicationContext#getResourceManager()
    */
   public static ResourceManager getResourceManager() {
-    return RWTFactory.getResourceManager();
+    return getApplicationContext().getResourceManager();
   }
 
   /**
-   * Returns the instance of the service manager for the current application context. The service
-   * manager is used to register and unregister service handlers.
+   * Returns the instance of the service manager for the current application context. This is a
+   * shortcut for <code>RWT.getApplicationContext().getServiceManager()</code>.
    *
    * @return the service manager instance for the current application context
-   * @see ServiceHandler
-   * @see ServiceManager
+   * @see ApplicationContext#getServiceManager()
    */
   public static ServiceManager getServiceManager() {
-    return RWTFactory.getServiceManager();
+    return getApplicationContext().getServiceManager();
   }
 
   /**

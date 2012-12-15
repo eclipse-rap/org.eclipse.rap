@@ -16,9 +16,9 @@ import javax.servlet.ServletContext;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushServiceHandler;
-import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.service.FileSettingStoreFactory;
+import org.eclipse.rap.rwt.service.ServiceManager;
 
 
 class ApplicationContextConfigurator {
@@ -81,7 +81,7 @@ class ApplicationContextConfigurator {
   }
 
   private void addInternalServiceHandlers( ApplicationContextImpl applicationContext ) {
-    ServiceManagerImpl serviceManager = applicationContext.getServiceManager();
+    ServiceManager serviceManager = applicationContext.getServiceManager();
     serviceManager.registerServiceHandler( ServerPushServiceHandler.HANDLER_ID,
                                            new ServerPushServiceHandler() );
   }

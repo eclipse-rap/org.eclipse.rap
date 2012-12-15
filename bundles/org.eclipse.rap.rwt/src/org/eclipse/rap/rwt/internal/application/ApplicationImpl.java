@@ -22,16 +22,16 @@ import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.internal.client.ClientProvider;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.service.SettingStoreFactory;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
+import org.eclipse.rap.rwt.service.ServiceManager;
+import org.eclipse.rap.rwt.service.SettingStoreFactory;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -106,7 +106,7 @@ public class ApplicationImpl implements Application {
     ParamCheck.notNull( serviceHandlerId, "serviceHandlerId" );
     ParamCheck.notNull( serviceHandler, "serviceHandler" );
 
-    ServiceManagerImpl serviceManager = applicationContext.getServiceManager();
+    ServiceManager serviceManager = applicationContext.getServiceManager();
     serviceManager.registerServiceHandler( serviceHandlerId, serviceHandler );
   }
 

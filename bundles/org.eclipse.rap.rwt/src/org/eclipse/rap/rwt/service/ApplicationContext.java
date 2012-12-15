@@ -15,18 +15,19 @@ import org.eclipse.rap.rwt.application.ApplicationRunner;
 
 
 /**
- * An application context represents an instance of a RAP application. This context is shared by all
- * users who access this application. The current application context can be acquired by
- * {@link RWT#getApplicationContext()}. It can be used to store data that are shared between all UI
- * sessions of an application.
+ * An application context represents a running instance of a RAP application. This context is shared
+ * by all users who access this application. The current application context can be acquired by
+ * {@link RWT#getApplicationContext()}. It can be used to store any data that is shared between all
+ * UI sessions of an application, and to acquire application-scoped instances of framework services
+ * such as the resource manager.
  * <p>
  * The application context is bound to the servlet context of the hosting web application. It is
- * destroyed when either the web application ends (i.e. the servlet context is destroyed) or when
- * {@link ApplicationRunner#stop()} is called.
+ * destroyed when the web application ends (i.e. the servlet context is destroyed) or when the
+ * application is explicitly stopped by calling {@link ApplicationRunner#stop()}.
  * </p>
  * <p>
- * The application context is <em>thread safe</em>, it can safely be accessed concurrently from
- * different threads.
+ * The application context is <em>thread safe</em>, it can be accessed concurrently from different
+ * threads.
  * </p>
  *
  * @see org.eclipse.rap.rwt.RWT
@@ -59,5 +60,24 @@ public interface ApplicationContext extends IApplicationStore {
    * value object was stored under the given name, this method does nothing.
    */
   void removeAttribute( String name );
+
+  /**
+   * Returns the instance of the resource manager for this application context. The resource manager
+   * is used to register static resources such as images of JavaScript files.
+   *
+   * @return the resource manager for this application context
+   * @see ResourceManager
+   */
+  ResourceManager getResourceManager();
+
+  /**
+   * Returns the instance of the service manager for this application context. The service manager
+   * is used to register and unregister service handlers.
+   *
+   * @return the service manager instance for this application context
+   * @see ServiceManager
+   * @see ServiceHandler
+   */
+  ServiceManager getServiceManager();
 
 }
