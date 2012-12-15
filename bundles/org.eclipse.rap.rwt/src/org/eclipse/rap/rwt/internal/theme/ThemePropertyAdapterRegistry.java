@@ -13,8 +13,9 @@ package org.eclipse.rap.rwt.internal.theme;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.theme.QxAnimation.Animation;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 
 
 public final class ThemePropertyAdapterRegistry {
@@ -301,11 +302,12 @@ public final class ThemePropertyAdapterRegistry {
 
   public static ThemePropertyAdapterRegistry getInstance() {
     ThemePropertyAdapterRegistry result;
+    ApplicationContext applicationContext = RWTFactory.getApplicationContext();
     synchronized( LOCK ) {
-      result = ( ThemePropertyAdapterRegistry )RWT.getApplicationContext().getAttribute( ATTR_NAME );
+      result = ( ThemePropertyAdapterRegistry )applicationContext.getAttribute( ATTR_NAME );
       if( result == null ) {
         result = new ThemePropertyAdapterRegistry();
-        RWT.getApplicationContext().setAttribute( ATTR_NAME, result );
+        applicationContext.setAttribute( ATTR_NAME, result );
       }
     }
     return result;

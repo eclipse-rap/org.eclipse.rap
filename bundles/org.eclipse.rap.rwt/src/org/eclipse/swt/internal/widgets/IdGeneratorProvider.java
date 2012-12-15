@@ -10,9 +10,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.RWTProperties;
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 
@@ -32,7 +32,7 @@ public class IdGeneratorProvider {
 
   @SuppressWarnings( "unchecked" )
   private static Class<? extends IdGenerator> getIdGeneratorClass() {
-    ApplicationContext applicationContext = RWT.getApplicationContext();
+    ApplicationContext applicationContext = RWTFactory.getApplicationContext();
     Object result = applicationContext.getAttribute( ATTR_ID_GENERATOR_CLASS );
     if( result == null ) {
       String className = RWTProperties.getIdGeneratorClassName();

@@ -28,7 +28,6 @@ import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.client.BrowserNavigationImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
@@ -44,7 +43,6 @@ import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.service.ServiceManager;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -453,7 +451,8 @@ public final class RWT {
    */
   @Deprecated
   public static IServiceStore getServiceStore() {
-    checkHasPhase();
+    checkContext();
+    checkPhase();
     return ContextProvider.getServiceStore();
   }
 
@@ -464,6 +463,7 @@ public final class RWT {
    * @throws IllegalStateException when called outside of the UI thread
    */
   public static UISession getUISession() {
+    checkContext();
     return ContextProvider.getUISession();
   }
 
@@ -492,6 +492,7 @@ public final class RWT {
    * @return instance of {@link ApplicationContext}
    */
   public static ApplicationContext getApplicationContext() {
+    checkContext();
     return RWTFactory.getApplicationContext();
   }
 
@@ -513,7 +514,7 @@ public final class RWT {
    * @return the currently processed request
    */
   public static HttpServletRequest getRequest() {
-    checkHasSessionContext();
+    checkContext();
     return ContextProvider.getRequest();
   }
 
@@ -527,7 +528,7 @@ public final class RWT {
    * @return the response object that will be sent to the client
    */
   public static HttpServletResponse getResponse() {
-    checkHasSessionContext();
+    checkContext();
     return ContextProvider.getResponse();
   }
 
@@ -559,7 +560,7 @@ public final class RWT {
    */
   @Deprecated
   public static BrowserNavigation getBrowserHistory() {
-    return SingletonUtil.getSessionInstance( BrowserNavigationImpl.class );
+    return getClient().getService( BrowserNavigation.class );
   }
 
   /**
@@ -570,13 +571,12 @@ public final class RWT {
    * further notice.
    * </p>
    * @param runnable the code to be executed on the request thread
-   * @throws SWTException <ul>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the UI thread</li>
-   * </ul>
+   * @throws IllegalStateException when called from a non-UI thread
    */
   public static void requestThreadExec( Runnable runnable ) {
     ParamCheck.notNull( runnable, "runnable" );
-    checkHasPhase();
+    checkContext();
+    checkPhase();
     Display display = LifeCycleUtil.getSessionDisplay();
     if( display == null || display.isDisposed() ) {
       SWT.error( SWT.ERROR_DEVICE_DISPOSED );
@@ -596,19 +596,20 @@ public final class RWT {
     return getUISession().getClient();
   }
 
-  private static void checkHasSessionContext() {
+  private static void checkContext() {
     if( !ContextProvider.hasContext() ) {
-      SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
+      throw new IllegalStateException( "Invalid thread access" );
     }
   }
 
-  private static void checkHasPhase() {
-    if( !ContextProvider.hasContext() || CurrentPhase.get() == null ) {
-      SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
+  private static void checkPhase() {
+    if( CurrentPhase.get() == null ) {
+      throw new IllegalStateException( "Invalid thread access" );
     }
   }
 
   private RWT() {
     // prevent instantiation
   }
+
 }

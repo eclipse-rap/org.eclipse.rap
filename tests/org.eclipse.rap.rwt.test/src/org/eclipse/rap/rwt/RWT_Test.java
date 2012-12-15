@@ -44,14 +44,6 @@ public class RWT_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testGetApplicationContext() {
-    ApplicationContext context = RWT.getApplicationContext();
-
-    ApplicationContext result = RWTFactory.getApplicationContext();
-
-    assertSame( context, result );
-  }
-
   public void testRequestThreadExecFromBackgroundThread() throws Throwable {
     Runnable runnable = new Runnable() {
       public void run() {
@@ -61,10 +53,8 @@ public class RWT_Test extends TestCase {
     try {
       Fixture.runInThread( runnable );
       fail();
-    } catch( Exception expected ) {
-      assertTrue( expected instanceof SWTException );
-      SWTException swtException = ( SWTException )expected;
-      assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swtException.code );
+    } catch( IllegalStateException exception ) {
+      assertEquals( "Invalid thread access", exception.getMessage() );
     }
   }
 
@@ -91,8 +81,8 @@ public class RWT_Test extends TestCase {
     try {
       RWT.requestThreadExec( runnable );
       fail();
-    } catch( SWTException expected ) {
-      assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, expected.code );
+    } catch( IllegalStateException exception ) {
+      assertEquals( "Invalid thread access", exception.getMessage() );
     }
   }
 
@@ -140,7 +130,8 @@ public class RWT_Test extends TestCase {
     try {
       Fixture.runInThread( runnable );
       fail();
-    } catch( SWTException expected ) {
+    } catch( IllegalStateException exception ) {
+      assertEquals( "Invalid thread access", exception.getMessage() );
     }
   }
 
@@ -154,7 +145,8 @@ public class RWT_Test extends TestCase {
     try {
       Fixture.runInThread( runnable );
       fail();
-    } catch( SWTException expected ) {
+    } catch( IllegalStateException exception ) {
+      assertEquals( "Invalid thread access", exception.getMessage() );
     }
   }
 
@@ -169,7 +161,8 @@ public class RWT_Test extends TestCase {
     try {
       Fixture.runInThread( runnable );
       fail();
-    } catch( SWTException expected ) {
+    } catch( IllegalStateException exception ) {
+      assertEquals( "Invalid thread access", exception.getMessage() );
     }
   }
 
@@ -189,8 +182,46 @@ public class RWT_Test extends TestCase {
         }
       } );
       fail();
-    } catch( SWTException expected ) {
+    } catch( IllegalStateException exception ) {
+      assertEquals( "Invalid thread access", exception.getMessage() );
     }
+  }
+
+  public void testGetApplicationContext() {
+    ApplicationContext context = RWT.getApplicationContext();
+
+    ApplicationContext result = RWTFactory.getApplicationContext();
+
+    assertSame( context, result );
+  }
+
+  public void testGetApplicationContext_failsInBackgroundThread() throws Throwable {
+    try {
+      Fixture.runInThread( new Runnable() {
+        public void run() {
+          RWT.getApplicationContext();
+        }
+      } );
+      fail();
+    } catch( IllegalStateException exception ) {
+      assertEquals( "Invalid thread access", exception.getMessage() );
+    }
+  }
+
+  public void testGetApplicationContext_succeedsInBackgroundThreadWithContext() throws Throwable {
+    final AtomicReference<ApplicationContext> result = new AtomicReference<ApplicationContext>();
+    ApplicationContext applicationContext = RWT.getApplicationContext();
+    final UISession currentUISession = RWT.getUISession();
+
+    Fixture.runInThread( new Runnable() {
+      public void run() {
+        Fixture.createServiceContext();
+        ContextProvider.getContext().setUISession( currentUISession );
+        result.set( RWT.getApplicationContext() );
+      }
+    } );
+
+    assertSame( applicationContext, result.get() );
   }
 
   public void testGetUISession() {
@@ -208,7 +239,7 @@ public class RWT_Test extends TestCase {
       } );
       fail();
     } catch( IllegalStateException exception ) {
-      assertTrue( exception.getMessage().startsWith( "No context available" ) );
+      assertEquals( "Invalid thread access", exception.getMessage() );
     }
   }
 
