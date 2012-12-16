@@ -19,7 +19,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -33,7 +33,7 @@ import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.IdGeneratorProvider;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.WidgetGraphicsAdapter;
 
 
@@ -108,7 +108,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   private Object data;
   private EventTable eventTable;
   private transient LifeCycleAdapterFactory lifeCycleAdapterFactory;
-  private IWidgetAdapter widgetAdapter;
+  private WidgetAdapter widgetAdapter;
   private IWidgetGraphicsAdapter widgetGraphicsAdapter;
 
   Widget() {
@@ -152,7 +152,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     this.style = style;
     display = parent.display;
     reskinWidget();
-    WidgetAdapter adapter = ( WidgetAdapter )getAdapter( IWidgetAdapter.class );
+    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( WidgetAdapter.class );
     adapter.setParent( parent );
   }
 
@@ -170,9 +170,9 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     // The adapters returned here are buffered for performance reasons. Don't change this without
     // good reason
     T result = null;
-    if( adapter == IClientObjectAdapter.class || adapter == IWidgetAdapter.class ) {
+    if( adapter == IClientObjectAdapter.class || adapter == WidgetAdapter.class ) {
       if( widgetAdapter == null ) {
-        widgetAdapter = new WidgetAdapter( IdGeneratorProvider.getIdGenerator().createId( this ) );
+        widgetAdapter = new WidgetAdapterImpl( IdGeneratorProvider.getIdGenerator().createId( this ) );
       }
       result = ( T )widgetAdapter;
     } else if( adapter == IThemeAdapter.class ) {
@@ -381,7 +381,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
 
   private void handleCustomId( String key, Object value ) {
     if( key.equals( WidgetUtil.CUSTOM_WIDGET_ID ) && value instanceof String ) {
-      WidgetAdapter adapter = ( WidgetAdapter )getAdapter( IWidgetAdapter.class );
+      WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( WidgetAdapter.class );
       adapter.setCustomId( ( String )value );
     }
   }
@@ -854,7 +854,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
         state |= RELEASED;
         releaseParent();
         releaseWidget();
-        IWidgetAdapter adapter = getAdapter( IWidgetAdapter.class );
+        WidgetAdapter adapter = getAdapter( WidgetAdapter.class );
         adapter.markDisposed( this );
       }
     }

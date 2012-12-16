@@ -18,7 +18,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -79,7 +79,7 @@ public class ExpandBarLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     // control: enabled
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( expandBar );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( expandBar );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     expandBar.setEnabled( false );

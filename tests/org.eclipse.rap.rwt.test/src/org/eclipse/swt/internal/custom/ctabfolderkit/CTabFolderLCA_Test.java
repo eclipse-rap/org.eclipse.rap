@@ -32,7 +32,7 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -124,7 +124,7 @@ public class CTabFolderLCA_Test extends TestCase {
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     folder.setBounds( rectangle );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( folder );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( folder );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
     // menu
@@ -964,7 +964,7 @@ public class CTabFolderLCA_Test extends TestCase {
           @Override
           public void preserveValues( Widget widget ) {
             Control control = ( Control )widget;
-            IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+            WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
             Boolean visible = Boolean.valueOf( control.isVisible() );
             adapter.preserve( "visible", visible );
           }

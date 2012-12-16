@@ -26,7 +26,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -93,7 +93,7 @@ public class ListLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     // control: enabled
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( list );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( list );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     list.setEnabled( false );

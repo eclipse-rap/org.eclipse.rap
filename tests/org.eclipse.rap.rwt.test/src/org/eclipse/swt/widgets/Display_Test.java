@@ -34,7 +34,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -81,8 +81,8 @@ public class Display_Test extends TestCase {
 
   public void testGetAdapterWithWidgetAdapter() {
     Display display = new Display();
-    Object adapter = display.getAdapter( IWidgetAdapter.class );
-    assertTrue( adapter instanceof IWidgetAdapter );
+    Object adapter = display.getAdapter( WidgetAdapter.class );
+    assertTrue( adapter instanceof WidgetAdapter );
   }
 
   public void testGetAdapterWithLifeCycleAdapter() {

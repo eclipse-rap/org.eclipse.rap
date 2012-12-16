@@ -15,7 +15,7 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.dnd.DropTarget;
@@ -34,7 +34,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
 
   public void preserveValues( Widget widget ) {
     DropTarget dropTarget = ( DropTarget )widget;
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( dropTarget );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( dropTarget );
     adapter.preserve( PROP_CONTROL, dropTarget.getControl() );
     adapter.preserve( PROP_TRANSFER, dropTarget.getTransfer() );
   }

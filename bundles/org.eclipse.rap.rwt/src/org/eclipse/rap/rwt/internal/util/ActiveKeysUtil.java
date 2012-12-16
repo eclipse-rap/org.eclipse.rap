@@ -18,7 +18,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -95,28 +95,28 @@ public final class ActiveKeysUtil {
   }
 
   public static void preserveActiveKeys( Display display ) {
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_ACTIVE_KEYS, getActiveKeys( display ) );
   }
 
   public static void preserveActiveKeys( Control control ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( PROP_ACTIVE_KEYS, getActiveKeys( control ) );
   }
 
   public static void preserveCancelKeys( Display display ) {
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_CANCEL_KEYS, getCancelKeys( display ) );
   }
 
   public static void preserveCancelKeys( Control control ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( PROP_CANCEL_KEYS, getCancelKeys( control ) );
   }
 
   public static void renderActiveKeys( Display display ) {
     if( !display.isDisposed() ) {
-      IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+      WidgetAdapter adapter = DisplayUtil.getAdapter( display );
       String[] newValue = getActiveKeys( display );
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_ACTIVE_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
@@ -129,7 +129,7 @@ public final class ActiveKeysUtil {
 
   public static void renderActiveKeys( Control control ) {
     if( !control.isDisposed() ) {
-      IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+      WidgetAdapter adapter = WidgetUtil.getAdapter( control );
       String[] newValue = getActiveKeys( control );
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_ACTIVE_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
@@ -142,7 +142,7 @@ public final class ActiveKeysUtil {
 
   public static void renderCancelKeys( Display display ) {
     if( !display.isDisposed() ) {
-      IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+      WidgetAdapter adapter = DisplayUtil.getAdapter( display );
       String[] newValue = getCancelKeys( display );
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_CANCEL_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
@@ -155,7 +155,7 @@ public final class ActiveKeysUtil {
 
   public static void renderCancelKeys( Control control ) {
     if( !control.isDisposed() ) {
-      IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+      WidgetAdapter adapter = WidgetUtil.getAdapter( control );
       String[] newValue = getCancelKeys( control );
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_CANCEL_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
@@ -165,7 +165,7 @@ public final class ActiveKeysUtil {
       }
     }
   }
-  
+
   private static String[] getActiveKeys( Display display ) {
     Object data = display.getData( RWT.ACTIVE_KEYS );
     String[] result = null;
@@ -200,7 +200,7 @@ public final class ActiveKeysUtil {
     System.arraycopy( activeKeys, 0, result, 0, activeKeys.length );
     return result;
   }
-  
+
   private static String[] getCancelKeys( Display display ) {
     String[] result = null;
     Object data = display.getData( RWT.CANCEL_KEYS );
@@ -214,7 +214,7 @@ public final class ActiveKeysUtil {
     }
     return result;
   }
-  
+
   private static String[] getCancelKeys( Control control ) {
     String[] result = null;
     Object data = control.getData( RWT.CANCEL_KEYS );
@@ -228,7 +228,7 @@ public final class ActiveKeysUtil {
     }
     return result;
   }
-  
+
   private static String[] translateKeySequences( String[] activeKeys ) {
     String[] result = new String[ 0 ];
     if( activeKeys != null ) {
@@ -289,7 +289,7 @@ public final class ActiveKeysUtil {
       result = ( ( Integer )value ).intValue();
     } else if( key.length() == 1 ) {
       if( Character.isLetterOrDigit( key.charAt( 0 ) ) ) {
-        // NOTE: This works only for A-Z and 0-9 where keycode matches charcode 
+        // NOTE: This works only for A-Z and 0-9 where keycode matches charcode
         result = key.toUpperCase().charAt( 0 );
       }
     } else {

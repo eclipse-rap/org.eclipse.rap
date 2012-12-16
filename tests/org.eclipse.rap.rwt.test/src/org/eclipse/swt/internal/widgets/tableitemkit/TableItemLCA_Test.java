@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -76,7 +76,7 @@ public class TableItemLCA_Test extends TestCase {
     TableItem item1 = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item1 );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( item1 );
     Image[] images1 = TableItemLCA.getImages( item1 );
     Image[] images2 = ( Image[] )adapter.getPreserved( TableItemLCA.PROP_IMAGES );
     assertEquals( images1[ 0 ], images2[ 0 ] );
@@ -158,7 +158,7 @@ public class TableItemLCA_Test extends TestCase {
     TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
     Object checked = adapter.getPreserved( TableItemLCA.PROP_CHECKED );
     assertEquals( Boolean.FALSE, checked );
     Object grayed = adapter.getPreserved( TableItemLCA.PROP_GRAYED );
@@ -256,7 +256,7 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.markInitialized( item );
     // Ensure that nothing else than the 'checked' property gets preserved
     lca.preserveValues( item );
-    IWidgetAdapter itemAdapter = WidgetUtil.getAdapter( item );
+    WidgetAdapter itemAdapter = WidgetUtil.getAdapter( item );
 
     assertEquals( Boolean.FALSE, itemAdapter.getPreserved( TableItemLCA.PROP_CACHED ) );
     assertNull( itemAdapter.getPreserved( TableItemLCA.PROP_TEXTS ) );

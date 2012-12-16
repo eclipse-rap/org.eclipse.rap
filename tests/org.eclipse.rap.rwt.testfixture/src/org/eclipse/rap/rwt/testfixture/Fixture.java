@@ -62,7 +62,7 @@ import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.service.ResourceManager;
@@ -70,7 +70,7 @@ import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import org.json.JSONArray;
@@ -268,14 +268,14 @@ public final class Fixture {
   }
 
   public static void markInitialized( Widget widget ) {
-    Object adapter = widget.getAdapter( IWidgetAdapter.class );
-    WidgetAdapter widgetAdapter = ( WidgetAdapter )adapter;
+    Object adapter = widget.getAdapter( WidgetAdapter.class );
+    WidgetAdapterImpl widgetAdapter = ( WidgetAdapterImpl )adapter;
     widgetAdapter.setInitialized( true );
   }
 
   public static void markInitialized( Display display ) {
-    Object adapter = display.getAdapter( IWidgetAdapter.class );
-    WidgetAdapter widgetAdapter = ( WidgetAdapter )adapter;
+    Object adapter = display.getAdapter( WidgetAdapter.class );
+    WidgetAdapterImpl widgetAdapter = ( WidgetAdapterImpl )adapter;
     widgetAdapter.setInitialized( true );
   }
 

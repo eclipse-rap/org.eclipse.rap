@@ -19,7 +19,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -67,7 +67,7 @@ public class CoolItemLCA_Test extends TestCase {
     item.setSize( 30, 20 );
     Rectangle rectangle = new Rectangle( 0, 0, item.getSize().x, item.getSize().y );
     lca.preserveValues( item );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
     assertEquals( button, adapter.getPreserved( CoolItemLCA.PROP_CONTROL ) );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     item.setControl( null );

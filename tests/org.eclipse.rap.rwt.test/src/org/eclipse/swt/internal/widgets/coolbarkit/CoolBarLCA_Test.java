@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -77,7 +77,7 @@ public final class CoolBarLCA_Test extends TestCase {
     Fixture.markInitialized( bar );
     AbstractWidgetLCA lca = WidgetUtil.getLCA( bar );
     lca.preserveValues( bar );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( bar );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( bar );
     assertEquals( Boolean.FALSE, adapter.getPreserved( CoolBarLCA.PROP_LOCKED ) );
     Fixture.clearPreserved();
     bar.setLocked( true );

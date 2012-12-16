@@ -20,7 +20,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
@@ -114,8 +114,8 @@ public class ScrollBarLCAUtil {
   //////////////////
   // Helping methods
 
-  private static WidgetAdapter getAdapter( ScrollBar scrollBar ) {
-    return ( WidgetAdapter )scrollBar.getAdapter( IWidgetAdapter.class );
+  private static WidgetAdapterImpl getAdapter( ScrollBar scrollBar ) {
+    return ( WidgetAdapterImpl )scrollBar.getAdapter( WidgetAdapter.class );
   }
 
 }

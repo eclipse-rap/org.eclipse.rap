@@ -15,62 +15,46 @@ import org.eclipse.swt.widgets.Widget;
 
 
 /**
- * Instances of this interface provide RWT specific operations on widgets.
- * They are used to preserve the state of a widget.
- *
- * <p>This interface is not intended to be implemented by clients.</p>
- *
+ * @deprecated Use {@link WidgetAdapter} instead.
  * @since 2.0
  */
+@Deprecated
 public interface IWidgetAdapter {
 
   /**
-   * Returns the id that identifies the widget on the client.
-   *
-   * @return the widget id
+   * @deprecated Use {@link WidgetAdapter} instead of {@link IWidgetAdapter}.
    */
+  @Deprecated
   String getId();
 
   /**
-   * Returns the parent given to the widgets constructor
-   *
-   * @return the widget
+   * @deprecated Use {@link WidgetAdapter} instead of {@link IWidgetAdapter}.
    */
+  @Deprecated
   Widget getParent();
 
   /**
-   * Indicates whether this widget has been initialized already. A widget is
-   * considered initialized when the response that creates and initializes the
-   * widget has been rendered.
-   *
-   * @return <code>true</code> if this widget has already been initialized,
-   *         <code>false</code> otherwise
+   * @deprecated Use {@link WidgetAdapter} instead of {@link IWidgetAdapter}.
    */
+  @Deprecated
   boolean isInitialized();
 
   /**
-   * Preserves a specified value for a specified key. Used to preserve values in the LCA method
-   * {@link WidgetLifeCycleAdapter#preserveValues(Widget) preserveValues}.
-   *
-   * @param propertyName the key to map the preserved value to
-   * @param value the value to preserve
+   * @deprecated Use {@link WidgetAdapter} instead of {@link IWidgetAdapter}.
    */
+  @Deprecated
   void preserve( String propertyName, Object value );
 
   /**
-   * Returns the preserved value for a specified key.
-   *
-   * @param propertyName the key for the preserved value
-   * @return the preserved value or <code>null</code> if there is no value
-   *         preserved for this key
+   * @deprecated Use {@link WidgetAdapter} instead of {@link IWidgetAdapter}.
    */
+  @Deprecated
   Object getPreserved( String propertyName );
 
   /**
-   * Notifies the receiver that the given <code>widget</code> has beend
-   * disposed of.
-   * @param widget the widget that has been disposed of
-   * @since 1.2
+   * @deprecated Use {@link WidgetAdapter} instead of {@link IWidgetAdapter}.
    */
+  @Deprecated
   void markDisposed( Widget widget );
+
 }

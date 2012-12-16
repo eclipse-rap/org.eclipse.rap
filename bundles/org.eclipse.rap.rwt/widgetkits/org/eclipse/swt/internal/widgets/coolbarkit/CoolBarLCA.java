@@ -19,7 +19,7 @@ import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Control;
@@ -39,7 +39,7 @@ public class CoolBarLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     CoolBar coolBar = ( CoolBar )widget;
     ControlLCAUtil.preserveValues( coolBar );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( coolBar );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( coolBar );
     adapter.preserve( PROP_LOCKED, Boolean.valueOf( coolBar.getLocked() ) );
     WidgetLCAUtil.preserveCustomVariant( coolBar );
   }

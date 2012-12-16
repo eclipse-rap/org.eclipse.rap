@@ -30,7 +30,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -812,7 +812,7 @@ public class TextLCA_Test extends TestCase {
   }
 
   private static Object getPreserved( Text text, String property ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( text );
     return adapter.getPreserved( property );
   }
 

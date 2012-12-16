@@ -24,7 +24,7 @@ import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -143,7 +143,7 @@ public class ComboLCA extends AbstractWidgetLCA {
             combo.setText( value );
             // since text is set in process action, preserved values have to be
             // replaced
-            IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
+            WidgetAdapter adapter = WidgetUtil.getAdapter( combo );
             adapter.preserve( PROP_TEXT, value );
             if( selection != null ) {
               combo.setSelection( selection );

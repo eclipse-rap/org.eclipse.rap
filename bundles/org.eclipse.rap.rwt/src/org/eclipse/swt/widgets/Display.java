@@ -41,7 +41,7 @@ import org.eclipse.rap.rwt.internal.theme.QxImage;
 import org.eclipse.rap.rwt.internal.theme.QxType;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -58,7 +58,7 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 
@@ -215,7 +215,7 @@ public class Display extends Device implements Adaptable {
   private EventTable eventTable;
   private transient Monitor monitor;
   private transient IDisplayAdapter displayAdapter;
-  private WidgetAdapter widgetAdapter;
+  private WidgetAdapterImpl widgetAdapter;
   private Runnable[] disposeList;
   private Composite[] layoutDeferred;
   private int layoutDeferredCount;
@@ -739,9 +739,9 @@ public class Display extends Device implements Adaptable {
         displayAdapter = new DisplayAdapter();
       }
       result = ( T )displayAdapter;
-    } else if( adapter == IClientObjectAdapter.class || adapter == IWidgetAdapter.class ) {
+    } else if( adapter == IClientObjectAdapter.class || adapter == WidgetAdapter.class ) {
       if( widgetAdapter == null ) {
-        widgetAdapter = new WidgetAdapter( "w1" );
+        widgetAdapter = new WidgetAdapterImpl( "w1" );
       }
       result = ( T )widgetAdapter;
     } else if( adapter == DisplayLifeCycleAdapter.class ) {

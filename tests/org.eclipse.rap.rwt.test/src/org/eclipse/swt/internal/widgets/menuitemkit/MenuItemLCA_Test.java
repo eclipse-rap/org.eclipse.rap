@@ -29,7 +29,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -243,7 +243,7 @@ public class MenuItemLCA_Test extends TestCase {
   }
 
   private void testPreserveText( MenuItem menuItem ) {
-    IWidgetAdapter adapter;
+    WidgetAdapter adapter;
     adapter = WidgetUtil.getAdapter( menuItem );
     Fixture.preserveWidgets();
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
@@ -255,7 +255,7 @@ public class MenuItemLCA_Test extends TestCase {
   }
 
   private void testPreserveEnabled( MenuItem menuItem ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     Fixture.preserveWidgets();
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();

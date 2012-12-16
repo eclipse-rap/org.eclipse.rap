@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -60,7 +60,7 @@ public class Widget_Test extends TestCase {
 
   public void testGetAdapterForDisposedWidget() {
     shell.dispose();
-    Object adapterOfDisposedWidget = shell.getAdapter( IWidgetAdapter.class );
+    Object adapterOfDisposedWidget = shell.getAdapter( WidgetAdapter.class );
     assertNotNull( adapterOfDisposedWidget );
   }
 

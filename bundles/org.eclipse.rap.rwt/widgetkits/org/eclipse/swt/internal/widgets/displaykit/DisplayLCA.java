@@ -31,7 +31,7 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.dnd.DragSource;
@@ -41,7 +41,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
@@ -90,7 +90,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   }
 
   public void preserveValues( Display display ) {
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_FOCUS_CONTROL, display.getFocusControl() );
     adapter.preserve( PROP_EXIT_CONFIRMATION, getExitConfirmation() );
     ActiveKeysUtil.preserveActiveKeys( display );
@@ -126,14 +126,14 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   }
 
   public void clearPreserved( Display display ) {
-    WidgetAdapter widgetAdapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
+    WidgetAdapterImpl widgetAdapter = ( WidgetAdapterImpl )DisplayUtil.getAdapter( display );
     widgetAdapter.clearPreserved();
     Composite[] shells = getShells( display );
     for( int i = 0; i < shells.length; i++ ) {
       WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
         @Override
         public boolean doVisit( Widget widget ) {
-          WidgetAdapter widgetAdapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
+          WidgetAdapterImpl widgetAdapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( widget );
           widgetAdapter.clearPreserved();
           return true;
         }
@@ -158,7 +158,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
 
   private static void renderExitConfirmation( Display display ) {
     String exitConfirmation = getExitConfirmation();
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
     Object oldExitConfirmation = adapter.getPreserved( PROP_EXIT_CONFIRMATION );
     boolean hasChanged = exitConfirmation == null
                        ? oldExitConfirmation != null
@@ -208,7 +208,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   private static void renderFocus( Display display ) {
     if( !display.isDisposed() ) {
       IDisplayAdapter displayAdapter = getDisplayAdapter( display );
-      IWidgetAdapter widgetAdapter = DisplayUtil.getAdapter( display );
+      WidgetAdapter widgetAdapter = DisplayUtil.getAdapter( display );
       Object oldValue = widgetAdapter.getPreserved( PROP_FOCUS_CONTROL );
       if(    !widgetAdapter.isInitialized()
           || oldValue != display.getFocusControl()
@@ -240,7 +240,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
 
   private static void renderEnableUiTests( Display display ) {
     if( UITestUtil.isEnabled() ) {
-      WidgetAdapter adapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
+      WidgetAdapterImpl adapter = ( WidgetAdapterImpl )DisplayUtil.getAdapter( display );
       if( !adapter.isInitialized() ) {
         IClientObject clientObject = ClientObjectFactory.getClientObject( display );
         clientObject.set( "enableUiTests", true );
@@ -249,7 +249,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   }
 
   private static void markInitialized( Display display ) {
-    WidgetAdapter adapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
+    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )DisplayUtil.getAdapter( display );
     adapter.setInitialized( true );
   }
 
@@ -338,7 +338,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     private static void runRenderRunnable( Widget widget )
       throws IOException
     {
-      WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
+      WidgetAdapterImpl adapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( widget );
       if( adapter.getRenderRunnable() != null ) {
         adapter.getRenderRunnable().afterRender();
         adapter.clearRenderRunnable();

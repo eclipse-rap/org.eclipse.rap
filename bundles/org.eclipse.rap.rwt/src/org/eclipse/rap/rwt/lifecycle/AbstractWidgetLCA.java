@@ -15,7 +15,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 
@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Widget;
 public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
 
   public final void render( Widget widget ) throws IOException {
-    WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
+    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( widget );
     if( !adapter.isInitialized() ) {
       renderInitialization( widget );
     }
@@ -82,7 +82,7 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
    * @throws IOException
    */
   public void renderDispose( Widget widget ) throws IOException {
-    IWidgetAdapter adapter = widget.getAdapter( IWidgetAdapter.class );
+    WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
     if( adapter.getParent() == null || !adapter.getParent().isDisposed() ) {
       ClientObjectFactory.getClientObject( widget ).destroy();
     }
@@ -91,7 +91,7 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
   /**
    * <p>
    * As a side effect to redraw calls some native widgets trigger events like
-   * resize for example. To simulate this behaviour subclasses may override
+   * resize for example. To simulate this behavior subclasses may override
    * this method. The method takes as parameter type <code>Control</code>,
    * since the redraw methods are only available at the <code>Control</code>
    * subclasses of <code>Widgets</code>.

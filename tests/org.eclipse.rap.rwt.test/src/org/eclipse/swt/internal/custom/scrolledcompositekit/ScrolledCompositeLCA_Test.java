@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -89,7 +89,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( sc );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( sc );
     assertEquals( null, adapter.getPreserved( PROP_SHOW_FOCUSED_CONTROL ) );
     hScroll.setSelection( 23 );
     vScroll.setSelection( 42 );

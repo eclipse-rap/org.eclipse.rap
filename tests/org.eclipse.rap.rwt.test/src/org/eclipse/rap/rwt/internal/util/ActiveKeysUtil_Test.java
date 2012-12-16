@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -44,7 +44,7 @@ public class ActiveKeysUtil_Test extends TestCase {
 
   public void testPreserveKeyBindingsEmpty() {
     Fixture.markInitialized( display );
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
 
     Fixture.preserveWidgets();
 
@@ -53,7 +53,7 @@ public class ActiveKeysUtil_Test extends TestCase {
 
   public void testPreserveKeyBindings() {
     Fixture.markInitialized( display );
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
 
     String[] keyBindings = new String[] { "CTRL+A" };
     display.setData( RWT.ACTIVE_KEYS, keyBindings );
@@ -67,7 +67,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     Shell shell = new Shell( display );
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( shell );
 
     String[] keyBindings = new String[] { "CTRL+A" };
     shell.setData( RWT.ACTIVE_KEYS, keyBindings );
@@ -79,7 +79,7 @@ public class ActiveKeysUtil_Test extends TestCase {
 
   public void testKeyBindingsSafeCopy() {
     Fixture.markInitialized( display );
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
 
     String[] keyBindings = new String[] { "CTRL+A" };
     display.setData( RWT.ACTIVE_KEYS, keyBindings );
@@ -92,7 +92,7 @@ public class ActiveKeysUtil_Test extends TestCase {
 
   public void testPreserveCancelKeysEmpty() {
     Fixture.markInitialized( display );
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
 
     Fixture.preserveWidgets();
 
@@ -101,7 +101,7 @@ public class ActiveKeysUtil_Test extends TestCase {
 
   public void testPreserveCancelKeys() {
     Fixture.markInitialized( display );
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
 
     String[] keyBindings = new String[] { "CTRL+A" };
     display.setData( RWT.CANCEL_KEYS, keyBindings );
@@ -115,7 +115,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     Shell shell = new Shell( display );
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( shell );
 
     String[] keyBindings = new String[] { "CTRL+A" };
     shell.setData( RWT.CANCEL_KEYS, keyBindings );
@@ -127,7 +127,7 @@ public class ActiveKeysUtil_Test extends TestCase {
 
   public void testCancelKeySafeCopy() {
     Fixture.markInitialized( display );
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
 
     String[] keyBindings = new String[] { "CTRL+A" };
     display.setData( RWT.CANCEL_KEYS, keyBindings );

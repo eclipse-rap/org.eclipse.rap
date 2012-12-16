@@ -26,7 +26,7 @@ import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -35,7 +35,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 
 
 public class DisplaySerialization_Test extends TestCase {
@@ -85,11 +85,11 @@ public class DisplaySerialization_Test extends TestCase {
   }
 
   public void testWidgetAdapterIsSerializable() throws Exception {
-    WidgetAdapter adapter = getWidgetAdapter( display );
+    WidgetAdapterImpl adapter = getWidgetAdapter( display );
     adapter.setInitialized( true );
 
     Display deserializedDisplay = serializeAndDeserialize( display );
-    WidgetAdapter deserializedAdapter = getWidgetAdapter( deserializedDisplay );
+    WidgetAdapterImpl deserializedAdapter = getWidgetAdapter( deserializedDisplay );
 
     assertNotNull( deserializedAdapter );
     assertEquals( adapter.isInitialized(), deserializedAdapter.isInitialized() );
@@ -284,7 +284,7 @@ public class DisplaySerialization_Test extends TestCase {
     return display.getAdapter( IDisplayAdapter.class );
   }
 
-  private static WidgetAdapter getWidgetAdapter( Display display ) {
-    return ( WidgetAdapter )display.getAdapter( IWidgetAdapter.class );
+  private static WidgetAdapterImpl getWidgetAdapter( Display display ) {
+    return ( WidgetAdapterImpl )display.getAdapter( WidgetAdapter.class );
   }
 }

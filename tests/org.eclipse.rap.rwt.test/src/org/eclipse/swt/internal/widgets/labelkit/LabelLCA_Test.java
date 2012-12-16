@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -78,7 +78,7 @@ public class LabelLCA_Test extends TestCase {
     testPreserveValues( display, label );
     //Text
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( label );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( label );
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
     Fixture.clearPreserved();
     label.setText( "xyz" );
@@ -123,7 +123,7 @@ public class LabelLCA_Test extends TestCase {
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     label.setBounds( rectangle );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( label );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( label );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
     //menu

@@ -15,7 +15,7 @@ import java.text.MessageFormat;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.RWTProperties;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
@@ -91,17 +91,17 @@ public final class WidgetUtil {
   }
 
   /**
-   * Returns the according {@link IWidgetAdapter} for a specified
+   * Returns the according {@link WidgetAdapter} for a specified
    * widget.
    *
    * @param widget the widget
-   * @return the {@link IWidgetAdapter} instance
+   * @return the {@link WidgetAdapter} instance
    */
-  public static IWidgetAdapter getAdapter( Widget widget ) {
-    IWidgetAdapter result;
-    result = widget.getAdapter( IWidgetAdapter.class );
+  public static WidgetAdapter getAdapter( Widget widget ) {
+    WidgetAdapter result;
+    result = widget.getAdapter( WidgetAdapter.class );
     if( result == null ) {
-      throwAdapterException( IWidgetAdapter.class );
+      throwAdapterException( WidgetAdapter.class );
     }
     return result;
   }
@@ -128,7 +128,7 @@ public final class WidgetUtil {
    */
   public static String getVariant( Widget widget ) {
     String result = null;
-    WidgetAdapter widgetAdapter = ( WidgetAdapter )getAdapter( widget );
+    WidgetAdapterImpl widgetAdapter = ( WidgetAdapterImpl )getAdapter( widget );
     Object data = widget.getData( RWT.CUSTOM_VARIANT );
     if( data instanceof String ) {
       result = ( String )data;

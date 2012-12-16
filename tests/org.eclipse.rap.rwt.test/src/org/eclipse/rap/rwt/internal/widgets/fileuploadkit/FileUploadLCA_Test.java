@@ -24,7 +24,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -83,7 +83,7 @@ public class FileUploadLCA_Test extends TestCase {
 
   public void testPreserveBounds() {
     Fixture.markInitialized( display );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( fileUpload );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( fileUpload );
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     fileUpload.setBounds( rectangle );
     Fixture.preserveWidgets();

@@ -42,7 +42,7 @@ public interface WidgetLifeCycleAdapter {
    * the current state of the widget, it is later possible to identify the properties that have been
    * modified during the processing of the request.
    * <p>
-   * Implementors can use the method {@link IWidgetAdapter#preserve(String, Object)}. As a rule of
+   * Implementors can use the method {@link WidgetAdapter#preserve(String, Object)}. As a rule of
    * thumb, every property that is written in <code>render</code> must be preserved in this method.
    * </p>
    *

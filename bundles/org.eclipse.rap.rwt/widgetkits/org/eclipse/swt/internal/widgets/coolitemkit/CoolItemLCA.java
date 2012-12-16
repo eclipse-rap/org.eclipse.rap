@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -48,7 +48,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   @Override
   public void preserveValues( Widget widget ) {
     CoolItem coolItem = ( CoolItem )widget;
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( coolItem );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( coolItem );
     adapter.preserve( PROP_CONTROL, coolItem.getControl() );
     adapter.preserve( Props.BOUNDS, coolItem.getBounds() );
     WidgetLCAUtil.preserveCustomVariant( coolItem );
@@ -123,7 +123,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
       //      changed' and that mark could be evaluated by writeBounds.
       //      A more flexible writeBounds implementation on WidgetLCAUtil is
       //      necessary therefore.
-      IWidgetAdapter adapter = WidgetUtil.getAdapter( coolItem );
+      WidgetAdapter adapter = WidgetUtil.getAdapter( coolItem );
       adapter.preserve( Props.BOUNDS, null );
     }
   }

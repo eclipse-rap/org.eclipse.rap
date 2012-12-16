@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -94,7 +94,7 @@ public class ComboLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     // Test preserving a combo with no items and (naturally) no selection
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( combo );
     String[] items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 0, items.length );
     assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION_INDEX ) );
@@ -156,7 +156,7 @@ public class ComboLCA_Test extends TestCase {
   public void testEditablePreserveValues() {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( combo );
     assertEquals( Boolean.TRUE , adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
     Fixture.clearPreserved();
     // textLimit

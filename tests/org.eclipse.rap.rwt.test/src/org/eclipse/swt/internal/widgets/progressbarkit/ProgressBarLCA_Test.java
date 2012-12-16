@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -58,7 +58,7 @@ public class ProgressBarLCA_Test extends TestCase {
   public void testPreserveValues() {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( progressBar );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( progressBar );
     Object preserved = adapter.getPreserved( ProgressBarLCA.PROP_STATE );
     assertNull( preserved );
   }

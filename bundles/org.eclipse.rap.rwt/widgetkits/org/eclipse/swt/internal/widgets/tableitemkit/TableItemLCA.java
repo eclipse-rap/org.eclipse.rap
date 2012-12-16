@@ -19,7 +19,7 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.graphics.Color;
@@ -29,7 +29,7 @@ import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ITableItemAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Widget;
@@ -229,7 +229,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   private static boolean wasCached( TableItem item ) {
     boolean wasCached;
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
     if( adapter.isInitialized() ) {
       Boolean preserved = ( Boolean )adapter.getPreserved( PROP_CACHED );
       wasCached = Boolean.TRUE.equals( preserved );
@@ -248,7 +248,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   private static void setInitialized( TableItem item, boolean initialized ) {
-    WidgetAdapter adapter = ( WidgetAdapter )item.getAdapter( IWidgetAdapter.class );
+    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )item.getAdapter( WidgetAdapter.class );
     adapter.setInitialized( initialized );
   }
 }

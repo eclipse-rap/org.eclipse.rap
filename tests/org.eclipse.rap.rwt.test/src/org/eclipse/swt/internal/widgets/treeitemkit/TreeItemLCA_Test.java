@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -81,7 +81,7 @@ public class TreeItemLCA_Test extends TestCase {
     treeItem.setImage( image );
     treeItem.setExpanded( true );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
     String[] texts = ( String[] )adapter.getPreserved( TreeItemLCA.PROP_TEXTS );
     assertEquals( "qwert", texts[ 0 ] );
     assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_EXPANDED ) );
@@ -159,7 +159,7 @@ public class TreeItemLCA_Test extends TestCase {
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
     assertEquals( Boolean.FALSE, adapter.getPreserved( TreeItemLCA.PROP_CHECKED ) );
     assertEquals( Boolean.FALSE, adapter.getPreserved( TreeItemLCA.PROP_GRAYED ) );
     Fixture.clearPreserved();
@@ -806,7 +806,7 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   private static Object getPreservedProperty( Widget widget, String property ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     return adapter.getPreserved( property );
   }
 

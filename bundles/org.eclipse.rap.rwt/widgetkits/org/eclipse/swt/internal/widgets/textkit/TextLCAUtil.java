@@ -21,7 +21,7 @@ import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -126,7 +126,7 @@ final class TextLCAUtil {
             textAdapter.setText( txt, selection );
             // since text is set in process action, preserved values have to be
             // replaced
-            IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
+            WidgetAdapter adapter = WidgetUtil.getAdapter( text );
             adapter.preserve( PROP_TEXT, txt );
             if( selection != null ) {
               adapter.preserve( PROP_SELECTION, selection );

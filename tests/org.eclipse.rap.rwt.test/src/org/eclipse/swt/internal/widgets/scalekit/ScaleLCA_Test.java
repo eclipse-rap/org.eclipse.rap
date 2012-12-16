@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.scalekit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -24,7 +23,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -73,7 +72,7 @@ public class ScaleLCA_Test extends TestCase {
     // Test preserved minimum, maximum,
     // selection, increment and ageIncrement
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( scale );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( scale );
     Integer minimum = ( Integer )adapter.getPreserved( ScaleLCA.PROP_MINIMUM );
     assertEquals( 0, minimum.intValue() );
     Integer maximum = ( Integer )adapter.getPreserved( ScaleLCA.PROP_MAXIMUM );
@@ -113,7 +112,7 @@ public class ScaleLCA_Test extends TestCase {
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     scale.setBounds( rectangle );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( scale );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( scale );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
     // enabled

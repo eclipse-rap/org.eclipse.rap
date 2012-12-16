@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -102,7 +102,7 @@ public class ButtonLCA_Test extends TestCase {
     testPreserveValues( display, button );
     button.setSelection( true );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
   }
 
@@ -113,7 +113,7 @@ public class ButtonLCA_Test extends TestCase {
     button.setSelection( true );
     button.setGrayed( true );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_GRAYED ) );
   }
@@ -124,14 +124,14 @@ public class ButtonLCA_Test extends TestCase {
     testPreserveValues( display, button );
     button.setSelection( true );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
   }
 
   private void testPreserveValues( Display display, Button button ) {
     Boolean hasListeners;
     // Text,Image
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( button );
     if( ( button.getStyle() & SWT.ARROW ) == 0 ) {
       button.setText( "abc" );
       Fixture.preserveWidgets();

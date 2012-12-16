@@ -8,7 +8,6 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.tabitemkit;
 
 import java.io.IOException;
@@ -17,7 +16,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -34,6 +33,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 @SuppressWarnings("deprecation")
 public class TabItemLCA_Test extends TestCase {
@@ -64,7 +64,7 @@ public class TabItemLCA_Test extends TestCase {
     new TabItem( folder, SWT.NONE );
 
     Fixture.markInitialized( display );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
     Fixture.preserveWidgets();
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
     assertEquals( null, adapter.getPreserved( Props.IMAGE ) );

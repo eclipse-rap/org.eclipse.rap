@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -32,7 +32,7 @@ import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawLine;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
@@ -323,7 +323,7 @@ public class CanvasLCA_Test extends TestCase {
   }
 
   static String getGcId( Widget widget ) {
-    WidgetAdapter adapter = ( WidgetAdapter )widget.getAdapter( IWidgetAdapter.class );
+    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )widget.getAdapter( WidgetAdapter.class );
     Adaptable gcForClient = adapter.getGCForClient();
     return gcForClient.getAdapter( IClientObjectAdapter.class ).getId();
   }

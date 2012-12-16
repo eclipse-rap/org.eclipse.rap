@@ -20,13 +20,13 @@ import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectAdapter;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class WidgetAdapter
-  implements IWidgetAdapter, IClientObjectAdapter, SerializableCompatibility
+public final class WidgetAdapterImpl
+  implements WidgetAdapter, IClientObjectAdapter, SerializableCompatibility
 {
 
   private final String id;
@@ -38,11 +38,11 @@ public final class WidgetAdapter
   private ClientObjectAdapter gcObjectAdapter;
   private Widget parent;
 
-  public WidgetAdapter() {
+  public WidgetAdapterImpl() {
     this( IdGeneratorProvider.getIdGenerator().createId( "w" ) );
   }
 
-  public WidgetAdapter( String id ) {
+  public WidgetAdapterImpl( String id ) {
     this.id = id;
     initialize();
   }

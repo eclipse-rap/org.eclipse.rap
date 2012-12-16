@@ -27,7 +27,7 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -183,13 +183,13 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
       // TODO [rh] HACK mark left as changed
       TableColumn[] columns = table.getColumns();
       for( int i = 0; i < columns.length; i++ ) {
-        IWidgetAdapter adapter = WidgetUtil.getAdapter( columns[ i ] );
+        WidgetAdapter adapter = WidgetUtil.getAdapter( columns[ i ] );
         adapter.preserve( PROP_LEFT, null );
       }
     } else {
       table.setColumnOrder( columnOrder );
       // [if] HACK mark left as changed - see bug 336340
-      IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
+      WidgetAdapter adapter = WidgetUtil.getAdapter( column );
       adapter.preserve( PROP_LEFT, null );
     }
   }

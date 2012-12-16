@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -71,7 +71,7 @@ public class ControlLCA_Test extends TestCase {
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     control.setBounds( rectangle );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( control );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
     //visible
@@ -208,6 +208,5 @@ public class ControlLCA_Test extends TestCase {
     assertNotNull( message.findDestroyOperation( shell ) );
     assertNull( message.findDestroyOperation( label ) );
   }
-
 
 }

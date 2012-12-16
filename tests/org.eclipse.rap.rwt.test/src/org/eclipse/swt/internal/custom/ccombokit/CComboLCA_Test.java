@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -95,7 +95,7 @@ public class CComboLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     // Test preserving a CCombo with no items and (naturally) no selection
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( ccombo );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( ccombo );
     String[] items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 0, items.length );
     assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION_INDEX ) );
@@ -161,7 +161,7 @@ public class CComboLCA_Test extends TestCase {
   public void testEditablePreserveValues() {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( ccombo );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( ccombo );
     assertEquals( Boolean.TRUE, adapter.getPreserved( CComboLCA.PROP_EDITABLE ) );
   }
 

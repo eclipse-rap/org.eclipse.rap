@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -81,7 +81,7 @@ public class TreeColumnLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     // text
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( column );
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
     Fixture.clearPreserved();
     column.setText( "some text" );

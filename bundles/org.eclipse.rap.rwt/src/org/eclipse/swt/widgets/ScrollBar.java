@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,13 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.scrollbarkit.ScrollBarThemeAdapter;
 
 /**
@@ -524,7 +524,7 @@ public class ScrollBar extends Widget {
   public void dispose() {
     // FIXME: [if] ScrollBar has no LCA. Quick fix that prevents Scrollbars to be added to
     // DisposedWidgets list. See DisplayLCA#disposeWidgets()
-    ( ( WidgetAdapter )getAdapter( IWidgetAdapter.class ) ).setInitialized( false );
+    ( ( WidgetAdapterImpl )getAdapter( WidgetAdapter.class ) ).setInitialized( false );
     super.dispose();
   }
 

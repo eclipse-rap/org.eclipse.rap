@@ -28,7 +28,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -254,7 +254,7 @@ public class TreeLCA_Test extends TestCase {
     // item metrics
     child1.setWidth( 150 );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( tree );
     // item height
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );

@@ -13,7 +13,7 @@ package org.eclipse.ui.forms.internal.widgets;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -44,7 +44,7 @@ public abstract class FormsControlLCA_AbstractTest extends TestCase {
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     control.setBounds( rectangle );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( control );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
     // enabled

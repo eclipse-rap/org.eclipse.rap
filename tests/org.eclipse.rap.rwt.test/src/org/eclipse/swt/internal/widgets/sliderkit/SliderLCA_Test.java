@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.sliderkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -24,7 +23,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -71,7 +70,7 @@ public class SliderLCA_Test extends TestCase {
     // Test preserved minimum, maximum,
     // selection, increment, pageIncrement and thumb
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( slider );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( slider );
     Integer minimum = ( Integer )adapter.getPreserved( SliderLCA.PROP_MINIMUM );
     assertEquals( 0, minimum.intValue() );
     Integer maximum = ( Integer )adapter.getPreserved( SliderLCA.PROP_MAXIMUM );
@@ -113,7 +112,7 @@ public class SliderLCA_Test extends TestCase {
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     slider.setBounds( rectangle );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( slider );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( slider );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
     // enabled

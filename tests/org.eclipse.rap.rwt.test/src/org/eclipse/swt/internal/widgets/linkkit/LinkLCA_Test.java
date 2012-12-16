@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -85,7 +85,7 @@ public class LinkLCA_Test extends TestCase {
   public void testPreserveValues() {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( link );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( link );
     assertEquals( "", adapter.getPreserved( LinkLCA.PROP_TEXT ) );
     Fixture.clearPreserved();
     link.setText( "some text" );

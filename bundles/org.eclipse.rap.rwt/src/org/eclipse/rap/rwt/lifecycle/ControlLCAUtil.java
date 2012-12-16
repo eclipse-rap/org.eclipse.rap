@@ -233,7 +233,7 @@ public class ControlLCAUtil {
    * @see #renderChanges(Control)
    */
   public static void preserveValues( Control control ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( control );
     WidgetLCAUtil.preserveBounds( control, control.getBounds() );
     adapter.preserve( PROP_CHILDREN, getChildren( control ) );
     adapter.preserve( PROP_TAB_INDEX, new Integer( getTabIndex( control ) ) );
@@ -277,7 +277,7 @@ public class ControlLCAUtil {
   public static void preserveBackgroundImage( Control control ) {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     Image image = controlAdapter.getUserBackgroundImage();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( PROP_BACKGROUND_IMAGE, image );
   }
 

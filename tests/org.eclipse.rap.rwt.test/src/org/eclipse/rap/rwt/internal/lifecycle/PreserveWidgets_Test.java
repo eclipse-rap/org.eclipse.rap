@@ -20,7 +20,7 @@ import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -154,7 +154,7 @@ public class PreserveWidgets_Test extends TestCase {
       private static final long serialVersionUID = 1L;
       public void beforePhase( PhaseEvent event ) {
         if( PhaseId.PROCESS_ACTION.equals( event.getPhaseId() ) ) {
-          IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
+          WidgetAdapter adapter = WidgetUtil.getAdapter( text );
           if( "hello".equals( adapter.getPreserved( Props.TEXT ) ) ) {
             log.append( "copy created" );
           }

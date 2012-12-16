@@ -44,7 +44,7 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -58,7 +58,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -99,7 +99,7 @@ public class DisplayLCA_Test extends TestCase {
 
     Fixture.preserveWidgets();
 
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
     assertEquals( shell, adapter.getPreserved( DisplayLCA.PROP_FOCUS_CONTROL ) );
     Object exitConfirmation = adapter.getPreserved( DisplayLCA.PROP_EXIT_CONFIRMATION );
     assertNull( exitConfirmation );
@@ -180,7 +180,7 @@ public class DisplayLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     final Composite composite = new Shell( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    WidgetAdapter controlAdapter = ( WidgetAdapter )WidgetUtil.getAdapter( control );
+    WidgetAdapterImpl controlAdapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( control );
     controlAdapter.setRenderRunnable( new IRenderRunnable() {
       public void afterRender() throws IOException {
         boolean initState = WidgetUtil.getAdapter( composite ).isInitialized();
@@ -246,7 +246,7 @@ public class DisplayLCA_Test extends TestCase {
 
   public void testRenderRunnableIsExecutedAndCleared() throws IOException {
     Widget widget = new Shell( display );
-    WidgetAdapter widgetAdapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
+    WidgetAdapterImpl widgetAdapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( widget );
     IRenderRunnable renderRunnable = mock( IRenderRunnable.class );
     widgetAdapter.setRenderRunnable( renderRunnable );
     DisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );

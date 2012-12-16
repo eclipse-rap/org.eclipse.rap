@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import java.text.MessageFormat;
 
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -35,10 +35,10 @@ public final class DisplayUtil {
     return getAdapter( display ).getId();
   }
 
-  public static IWidgetAdapter getAdapter( Display display ) {
-    IWidgetAdapter result = display.getAdapter( IWidgetAdapter.class );
+  public static WidgetAdapter getAdapter( Display display ) {
+    WidgetAdapter result = display.getAdapter( WidgetAdapter.class );
     if( result == null ) {
-      throwAdapterException( IWidgetAdapter.class );
+      throwAdapterException( WidgetAdapter.class );
     }
     return result;
   }

@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -291,7 +291,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     if( menuBar != null ) {
       IShellAdapter shellAdapter = shell.getAdapter( IShellAdapter.class );
       Rectangle menuBounds = shellAdapter.getMenuBounds();
-      IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( menuBar );
+      WidgetAdapter widgetAdapter = WidgetUtil.getAdapter( menuBar );
       widgetAdapter.preserve( Props.BOUNDS, menuBounds );
     }
   }

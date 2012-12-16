@@ -19,7 +19,7 @@ import java.util.Map;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.dnd.DND;
@@ -38,7 +38,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
 
   public void preserveValues( Widget widget ) {
     DragSource dragSource = ( DragSource )widget;
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( dragSource );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( dragSource );
     adapter.preserve( PROP_TRANSFER, dragSource.getTransfer() );
   }
 
