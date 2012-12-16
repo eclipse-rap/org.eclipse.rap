@@ -63,7 +63,7 @@ public class FileUploadLCA_Test extends TestCase {
     shell = new Shell( display );
     fileUpload = new FileUpload( shell, SWT.NONE );
     lca = new FileUploadLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -93,20 +93,20 @@ public class FileUploadLCA_Test extends TestCase {
   }
 
   public void testReadFileName() {
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( fileUpload ), "fileName", "foo" );
     Fixture.executeLifeCycleFromServerThread( );
 
     assertEquals( "foo", fileUpload.getFileName() );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.executeLifeCycleFromServerThread( );
 
     assertEquals( "foo", fileUpload.getFileName() );
   }
 
   public void testReadEmptyFileName() {
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( fileUpload ), "fileName", "" );
     Fixture.executeLifeCycleFromServerThread( );
 
@@ -117,7 +117,7 @@ public class FileUploadLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     fileUpload.addSelectionListener( listener );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( fileUpload ), "fileName", "foo" );
     Fixture.executeLifeCycleFromServerThread( );
 

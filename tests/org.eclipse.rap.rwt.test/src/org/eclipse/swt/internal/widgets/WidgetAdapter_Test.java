@@ -112,7 +112,7 @@ public class WidgetAdapter_Test extends TestCase {
   }
 
   public void testInitializedForShell() throws IOException {
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeResponseWriter();
     Composite shell = new Shell( display, SWT.NONE );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
@@ -124,10 +124,10 @@ public class WidgetAdapter_Test extends TestCase {
   public void testInitializedForDisplay() throws IOException {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     assertEquals( false, adapter.isInitialized() );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     DisplayUtil.getLCA( display ).render( display );
     assertEquals( true, adapter.isInitialized() );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     DisplayUtil.getLCA( display ).render( display );
     assertEquals( true, adapter.isInitialized() );
   }
@@ -154,7 +154,7 @@ public class WidgetAdapter_Test extends TestCase {
   }
 
   public void testMarkDisposed() {
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeResponseWriter();
 
     // dispose un-initialized widget: must not occur in list of disposed widgets

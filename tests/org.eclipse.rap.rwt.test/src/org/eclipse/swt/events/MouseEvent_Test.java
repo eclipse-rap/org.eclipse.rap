@@ -88,7 +88,7 @@ public class MouseEvent_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testUntypedEventConstructor() throws Exception {
+  public void testUntypedEventConstructor() {
     Event event = new Event();
     event.display = display;
     event.widget = mock( Widget.class );
@@ -99,20 +99,20 @@ public class MouseEvent_Test extends TestCase {
     event.y = 20;
     event.stateMask = 23;
     event.count = 8;
-    
+
     MouseEvent mouseEvent = new MouseEvent( event );
-    
+
     EventTestHelper.assertFieldsEqual( mouseEvent, event );
   }
 
   public void testAddListener() {
     MouseListener listener = mock( MouseListener.class );
-    
+
     shell.addMouseListener( listener );
     shell.notifyListeners( SWT.MouseDown, new Event() );
     shell.notifyListeners( SWT.MouseUp, new Event() );
     shell.notifyListeners( SWT.MouseDoubleClick, new Event() );
-    
+
     verify( listener ).mouseDown( any( MouseEvent.class ) );
     verify( listener ).mouseUp( any( MouseEvent.class ) );
     verify( listener ).mouseDoubleClick( any( MouseEvent.class ) );
@@ -124,7 +124,7 @@ public class MouseEvent_Test extends TestCase {
     shell.removeMouseListener( listener );
 
     shell.notifyListeners( SWT.MouseDown, new Event() );
-    
+
     verify( listener, never() ).mouseDown( any( MouseEvent.class ) );
   }
 
@@ -168,11 +168,11 @@ public class MouseEvent_Test extends TestCase {
     int eventY = shell.getLocation().y + shell.getClientArea().y + 1;
 
     // Simulate request that sends a mouseDown + mouseUp sequence
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeMouseDownRequest( shell, eventX, eventY );
     fakeMouseUpRequest( shell, eventX, eventY );
     Fixture.readDataAndProcessAction( display );
-    
+
     InOrder inOrder = inOrder( mouseListener );
     ArgumentCaptor<MouseEvent> downCaptor = ArgumentCaptor.forClass( MouseEvent.class );
     inOrder.verify( mouseListener ).mouseDown( downCaptor.capture() );
@@ -202,12 +202,12 @@ public class MouseEvent_Test extends TestCase {
     int eventY = shell.getLocation().y + shell.getClientArea().y + 1;
 
     // Simulate request that sends a mouseDown + mouseUp + dblClick sequence
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeMouseDownRequest( shell, eventX, eventY );
     fakeMouseUpRequest( shell, eventX, eventY );
     fakeMouseDoubleClickRequest( shell, eventX, eventY );
     Fixture.readDataAndProcessAction( display );
-    
+
     InOrder inOrder = inOrder( mouseListener );
     ArgumentCaptor<MouseEvent> downCaptor = ArgumentCaptor.forClass( MouseEvent.class );
     inOrder.verify( mouseListener ).mouseDown( downCaptor.capture() );
@@ -246,7 +246,7 @@ public class MouseEvent_Test extends TestCase {
     int eventX = shell.getLocation().x + shell.getClientArea().x + 1;
     int eventY = shell.getLocation().y + shell.getClientArea().y + 1;
     // Simulate request that sends a mouseDown + mouseUp sequence
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeMouseDownRequest( shell, eventX, eventY );
     fakeMouseUpRequest( shell, eventX, eventY );
     Fixture.readDataAndProcessAction( display );
@@ -274,7 +274,7 @@ public class MouseEvent_Test extends TestCase {
     int eventX = shell.getLocation().x + shell.getClientArea().x + 1;
     int eventY = shell.getLocation().y + shell.getClientArea().y + 1;
     // Simulate request that sends a mouseDown + mouseUp + dblClick sequence
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeMouseDownRequest( shell, eventX, eventY );
     fakeMouseUpRequest( shell, eventX, eventY );
     fakeMouseDoubleClickRequest( shell, eventX, eventY );
@@ -309,7 +309,7 @@ public class MouseEvent_Test extends TestCase {
     int shellX = shell.getLocation().x;
     int shellY = shell.getLocation().y;
     // Simulate request that sends a mouseDown + mouseUp on shell border
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeMouseDownRequest( shell, shellX + 1, shellY + 1 );
     fakeMouseUpRequest( shell, shellX + 1, shellY + 1 );
     Fixture.readDataAndProcessAction( display );
@@ -317,14 +317,14 @@ public class MouseEvent_Test extends TestCase {
     assertEquals( 0, events.size() );
     events.clear();
     // Simulate request that sends a mouseDown + mouseUp on shell titlebar
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeMouseDownRequest( shell, shellX + 10, shellY + 10 );
     fakeMouseUpRequest( shell, shellX + 10, shellY + 10 );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 0, events.size() );
     events.clear();
     // Simulate request that sends a mouseDown + mouseUp on shell menubar
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeMouseDownRequest( shell, shellX + 24, shellY + 24 );
     fakeMouseUpRequest( shell, shellX + 24, shellY + 24 );
     Fixture.readDataAndProcessAction( display );
@@ -335,7 +335,7 @@ public class MouseEvent_Test extends TestCase {
     Table table = createTableWithMouseListener();
     assertEquals( new Rectangle( 0, 0, 90, 100 ), table.getClientArea() );
     // Simulate request that sends a mouseDown + mouseUp on scrollbar
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeMouseDownRequest( table, 93, 50 );
     fakeMouseUpRequest( table, 93, 50 );
     Fixture.readDataAndProcessAction( display );
@@ -346,7 +346,7 @@ public class MouseEvent_Test extends TestCase {
     MouseListener mouseListener = mock( MouseListener.class );
     SelectionListener selectionListener = mock( SelectionListener.class );
     Table table = createTableWithMouseListener();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeMouseDownRequest( table, 30, 50 );
     fakeMouseDoubleClickRequest( table, 30, 50 );
     fakeMouseUpRequest( table, 30, 50 );
@@ -367,7 +367,7 @@ public class MouseEvent_Test extends TestCase {
     MouseListener mouseListener = mock( MouseListener.class );
     MenuDetectListener menuDetectListener = mock( MenuDetectListener.class );
     Table table = createTableWithMouseListener();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeMouseDownRequest( table, 30, 50 );
     fakeMouseUpRequest( table, 30, 50 );
     fakeMenuDetectRequest( table, 30, 50 );

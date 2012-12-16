@@ -56,7 +56,7 @@ public class ExpandBarLCA_Test extends TestCase {
     shell = new Shell( display );
     expandBar = new ExpandBar( shell, SWT.NONE );
     lca = new ExpandBarLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

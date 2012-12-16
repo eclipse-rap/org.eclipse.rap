@@ -73,7 +73,7 @@ public class ShellLCA_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
@@ -290,7 +290,7 @@ public class ShellLCA_Test extends TestCase {
     ShellListener listener = mock( ShellListener.class );
     shell.addShellListener( listener );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_ACTIVATE, null );
     Fixture.readDataAndProcessAction( display );
 
@@ -499,11 +499,11 @@ public class ShellLCA_Test extends TestCase {
     Button button = new Button( shell, SWT.PUSH );
     Text text = new Text( shell, SWT.NONE );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( display ), "focusControl", getId( button ) );
     Fixture.executeLifeCycleFromServerThread();
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( display ), "focusControl", getId( text ) );
     Fixture.executeLifeCycleFromServerThread();
 

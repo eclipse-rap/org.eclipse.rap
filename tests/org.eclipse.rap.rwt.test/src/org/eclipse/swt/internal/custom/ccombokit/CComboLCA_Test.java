@@ -72,7 +72,7 @@ public class CComboLCA_Test extends TestCase {
     shell = new Shell( display, SWT.NONE );
     ccombo = new CCombo( shell, SWT.NONE );
     lca = new CComboLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

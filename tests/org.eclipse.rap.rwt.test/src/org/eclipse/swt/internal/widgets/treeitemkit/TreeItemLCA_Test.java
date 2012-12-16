@@ -60,7 +60,7 @@ public class TreeItemLCA_Test extends TestCase {
     shell = new Shell( display );
     tree = new Tree( shell, SWT.NONE );
     lca = new TreeItemLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -192,7 +192,7 @@ public class TreeItemLCA_Test extends TestCase {
 
     assertEquals( true, treeItem.getExpanded() );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, Boolean.FALSE  );
     Fixture.readDataAndProcessAction( treeItem );
 
@@ -216,7 +216,7 @@ public class TreeItemLCA_Test extends TestCase {
     tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( treeItem ), "checked", "true" );
     Fixture.readDataAndProcessAction( display );
 
@@ -234,7 +234,7 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( 27, rootItem2.getBounds().y );
     assertEquals( 54, rootItem3.getBounds().y );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( tree ), "scrollLeft", "0" );
     Fixture.fakeSetParameter( getId( tree ), "topItemIndex", "2" );
     Fixture.readDataAndProcessAction( display );

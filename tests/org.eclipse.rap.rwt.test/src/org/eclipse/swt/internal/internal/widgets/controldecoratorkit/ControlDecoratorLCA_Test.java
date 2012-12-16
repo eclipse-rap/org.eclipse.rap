@@ -65,7 +65,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     control = new Button( shell, SWT.PUSH );
     decorator = new ControlDecorator( control, SWT.NONE, null );
     lca = new ControlDecoratorLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

@@ -59,7 +59,7 @@ public class ScaleLCA_Test extends TestCase {
     shell = new Shell( display, SWT.NONE );
     scale = new Scale( shell, SWT.NONE );
     lca = new ScaleLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

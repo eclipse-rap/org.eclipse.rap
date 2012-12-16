@@ -71,7 +71,7 @@ public class RWT_Test extends TestCase {
         } );
       }
     } );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.executeLifeCycleFromServerThread();
     assertNotNull( requestThread[ 0 ] );
   }

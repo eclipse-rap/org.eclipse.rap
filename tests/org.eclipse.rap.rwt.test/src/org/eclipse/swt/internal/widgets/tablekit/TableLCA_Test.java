@@ -87,7 +87,7 @@ public class TableLCA_Test extends TestCase {
     shell = new Shell( display );
     table = new Table( shell, SWT.NONE );
     lca = new TableLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -295,10 +295,10 @@ public class TableLCA_Test extends TestCase {
     //
     final int lastItemIndex = table.getItemCount() - 1;
     // fake one request that would initialize the UI
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.executeLifeCycleFromServerThread();
     // run actual request
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -364,7 +364,7 @@ public class TableLCA_Test extends TestCase {
     TableItem item = table.getItem( 0 );
     item.setText( "Item 1" );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     String[] selection = new String[]{ getId( item ), getId( table ) + "#2" };
     Fixture.fakeSetParameter( getId( table ), "selection", selection );
     Fixture.executeLifeCycleFromServerThread();
@@ -382,7 +382,7 @@ public class TableLCA_Test extends TestCase {
     new TableItem( table, SWT.NONE );
     item.dispose();
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( table ), "selection", new String[]{ getId( item ) } );
     Fixture.executeLifeCycleFromServerThread();
 
@@ -1596,7 +1596,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   private static void fakeCellToolTipRequest( Table table, String itemId, int column ) {
-    Fixture.fakeNewRequest( table.getDisplay() );
+    Fixture.fakeNewRequest();
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( "item", itemId );
     parameters.put( "column", Integer.valueOf( column ) );
@@ -1635,7 +1635,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   private void fakeWidgetDefaultSelected( Table table, TableItem item ) {
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
     Fixture.fakeNotifyOperation( getId( table ),

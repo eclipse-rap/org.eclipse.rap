@@ -34,7 +34,7 @@ public class ImageHyperlinkLCA_Test extends TestCase {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     lca = new ImageHyperlinkLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   protected void tearDown() throws Exception {

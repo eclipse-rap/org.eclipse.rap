@@ -59,7 +59,7 @@ public class MenuLCA_Test extends TestCase {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     lca = new MenuLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -78,14 +78,14 @@ public class MenuLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( menuBar, "parent" ) );
     // The contrary: an assigned menuBar has to be rendered with setParent
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.preserveWidgets();
     shell.setMenuBar( menuBar );
     lca.renderChanges( menuBar );
     message = Fixture.getProtocolMessage();
     assertEquals( shellId, message.findSetProperty( menuBar, "parent" ) );
     // Un-assigning a menuBar must result in setParent( null ) being rendered
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.preserveWidgets();
     shell.setMenuBar( null );
     lca.renderChanges( menuBar );

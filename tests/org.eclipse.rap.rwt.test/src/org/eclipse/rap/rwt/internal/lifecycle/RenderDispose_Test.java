@@ -48,7 +48,7 @@ public class RenderDispose_Test extends TestCase {
     // widget hierarchy (display, shell and button)
     Fixture.executeLifeCycleFromServerThread( );
     // create and dispose of the button
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;

@@ -61,7 +61,7 @@ public class ToolItemLCA_Test extends TestCase {
     shell = new Shell( display );
     toolbar = new ToolBar( shell, SWT.NONE );
     lca = new ToolItemLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -151,7 +151,7 @@ public class ToolItemLCA_Test extends TestCase {
 
     assertEquals( Boolean.TRUE, Boolean.valueOf( item.getSelection() ) );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( item ), "selection", Boolean.FALSE );
     Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, null );
     WidgetUtil.getLCA( item ).readData( item );

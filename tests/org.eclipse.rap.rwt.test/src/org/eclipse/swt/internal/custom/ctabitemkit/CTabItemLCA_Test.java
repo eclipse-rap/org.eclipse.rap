@@ -52,7 +52,7 @@ public class CTabItemLCA_Test extends TestCase {
     folder = new CTabFolder( shell, SWT.NONE );
     folder.setSize( 150, 150 );
     lca = new CTabItemLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

@@ -332,10 +332,6 @@ public final class Fixture {
     uiSession.setAttribute( RemoteObjectFactory.class.getName() + "#instance", factory );
   }
 
-  public static void fakeNewRequest( Display display ) {
-    fakeNewRequest();
-  }
-
   public static void fakeNewRequest() {
     fakeNewRequest( HTTP.METHOD_POST );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();

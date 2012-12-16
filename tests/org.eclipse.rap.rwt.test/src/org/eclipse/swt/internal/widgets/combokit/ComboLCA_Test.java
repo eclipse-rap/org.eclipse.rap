@@ -71,7 +71,7 @@ public class ComboLCA_Test extends TestCase {
     shell = new Shell( display, SWT.NONE );
     combo = new Combo( shell, SWT.NONE );
     lca = new ComboLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

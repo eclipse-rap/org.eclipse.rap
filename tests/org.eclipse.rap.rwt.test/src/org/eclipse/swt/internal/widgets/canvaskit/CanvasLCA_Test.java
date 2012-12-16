@@ -55,7 +55,7 @@ public class CanvasLCA_Test extends TestCase {
     display = new Display();
     shell = new Shell( display );
     lca = new CanvasLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     canvas = new Canvas( shell, SWT.NONE );
   }
 

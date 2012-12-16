@@ -56,7 +56,7 @@ public class ToolTipLCA_Test extends TestCase {
     toolTip = new ToolTip( shell, SWT.NONE );
     lca = new ToolTipLCA();
     Fixture.markInitialized( display );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

@@ -36,7 +36,7 @@ public class GroupLCA_Test extends TestCase {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     lca = new GroupLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   protected void tearDown() throws Exception {

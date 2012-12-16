@@ -38,7 +38,7 @@ public class ProgressBarLCA_Test extends TestCase {
     display = new Display();
     shell = new Shell( display );
     lca = new ProgressBarLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   protected void tearDown() throws Exception {

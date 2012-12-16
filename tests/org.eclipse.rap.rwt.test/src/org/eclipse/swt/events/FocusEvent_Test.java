@@ -44,7 +44,7 @@ public class FocusEvent_Test extends TestCase {
     shell = new Shell( display );
     shell.open();
     focusListener = mock( FocusListener.class );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 

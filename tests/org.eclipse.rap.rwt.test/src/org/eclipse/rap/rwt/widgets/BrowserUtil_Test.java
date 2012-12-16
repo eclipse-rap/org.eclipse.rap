@@ -107,7 +107,7 @@ public class BrowserUtil_Test extends TestCase {
       }
     };
     BrowserUtil.evaluate( browser, "return 5;", browserCallback );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( browser ), "executeResult", Boolean.TRUE );
     Fixture.fakeSetParameter( getId( browser ), "evaluateResult", new Double[]{ Double.valueOf( 5 ) } );
 
@@ -127,7 +127,7 @@ public class BrowserUtil_Test extends TestCase {
       }
     };
     BrowserUtil.evaluate( browser, "return 5/0;", browserCallback );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( browser ), "executeResult", Boolean.FALSE );
     Fixture.fakeSetParameter( getId( browser ), "evaluateResult", "devide by zero" );
 

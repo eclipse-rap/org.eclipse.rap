@@ -97,10 +97,10 @@ public class Message_Test extends TestCase {
   }
 
   public void testGetRequestCounter() {
-    Display display = new Display();
-    Fixture.fakeNewRequest( display );
+    new Display();
+    Fixture.fakeNewRequest();
     Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( 1, Fixture.getProtocolMessage().getRequestCounter() );
   }

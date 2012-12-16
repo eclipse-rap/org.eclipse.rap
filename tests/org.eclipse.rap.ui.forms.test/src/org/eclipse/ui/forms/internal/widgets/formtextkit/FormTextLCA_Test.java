@@ -32,7 +32,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     super.setUp();
     formText = new FormText( shell, SWT.NONE );
     lca = new FormTextLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   public void testRenderCreate() throws IOException {
@@ -131,7 +131,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     formText.setColor( "foo", display.getSystemColor( SWT.COLOR_RED ) );
     formText.setText( text, true, false );
     Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.preserveWidgets();
 
     formText.setColor( "foo", display.getSystemColor( SWT.COLOR_BLUE ) );
@@ -153,7 +153,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     formText.setSize( 300, 300 );
     formText.setText( text, true, false );
     Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.preserveWidgets();
 
     formText.setSize( 200, 400 );

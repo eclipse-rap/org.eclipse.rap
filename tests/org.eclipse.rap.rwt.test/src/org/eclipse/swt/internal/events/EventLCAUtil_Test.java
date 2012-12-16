@@ -42,7 +42,7 @@ public class EventLCAUtil_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 

@@ -57,7 +57,7 @@ public class DateTimeLCA_Test extends TestCase {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     lca = new DateTimeLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

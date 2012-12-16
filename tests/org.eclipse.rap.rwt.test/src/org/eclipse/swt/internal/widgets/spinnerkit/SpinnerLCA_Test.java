@@ -66,7 +66,7 @@ public class SpinnerLCA_Test extends TestCase {
     shell = new Shell( display, SWT.NONE );
     spinner = new Spinner( shell, SWT.NONE );
     lca = new SpinnerLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

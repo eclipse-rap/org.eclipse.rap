@@ -60,7 +60,7 @@ public class TableItemLCA_Test extends TestCase {
     shell = new Shell( display );
     table = new Table( shell, SWT.NONE );
     lca = new TableItemLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

@@ -222,7 +222,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
   public void setUp() {
     Fixture.setUp();
     display = new Display();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     resourceManager = RWT.getResourceManager();
   }
 
@@ -287,7 +287,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     Fixture.createServiceContext();
     Fixture.fakeClient( new WebClient() );
     display = new Display();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     resourceManager = RWT.getResourceManager();
   }
 

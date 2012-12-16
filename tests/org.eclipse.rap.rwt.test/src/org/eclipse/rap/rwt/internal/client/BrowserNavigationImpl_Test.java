@@ -46,7 +46,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     navigation = new BrowserNavigationImpl();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -213,7 +213,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     navigation.pushState( "testId", "testText" );
 
     Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();

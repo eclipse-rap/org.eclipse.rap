@@ -57,7 +57,7 @@ public class EventUtil_Test extends TestCase {
     display = new Display();
     shell = new Shell( display );
     shell.setLayout( new FillLayout() );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

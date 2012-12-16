@@ -283,7 +283,7 @@ public class PhaseListenerManager_Test extends TestCase {
   // see bug 372960
   public void testCurrentPhaseMatchPhaseEventPhase() {
     Display display = new Display();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     final List<PhaseId> log = new ArrayList<PhaseId>();
     RWT.getLifeCycle().addPhaseListener( new PhaseListener() {
       public PhaseId getPhaseId() {

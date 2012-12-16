@@ -73,7 +73,7 @@ public class TextLCA_Test extends TestCase {
     display = new Display();
     shell = new Shell( display );
     text = new Text( shell, SWT.NONE );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

@@ -52,7 +52,7 @@ public class MeasurementOperator_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     operator = MeasurementOperator.getInstance();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -223,7 +223,7 @@ public class MeasurementOperator_Test extends TestCase {
   }
 
   private void requestProbing( FontData fontData1 ) {
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     operator.addProbeToMeasure( fontData1 );
   }
 
@@ -286,4 +286,5 @@ public class MeasurementOperator_Test extends TestCase {
     Graphics.stringExtent( fonts[ 1 ], "SecondString" );
     Graphics.stringExtent( fonts[ 2 ], "Weird \" String \\" );
   }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,7 +101,7 @@ public class TypedEvent_Test extends TestCase {
         log.append( EVENT_FIRED );
       }
     } );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
@@ -147,7 +147,7 @@ public class TypedEvent_Test extends TestCase {
         eventLog.add( event );
       }
     } );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeMouseDownRequest( button, 1, 2 );
     Fixture.fakeSetParameter( getId( display ), "focusControl", getId( button ) );
 

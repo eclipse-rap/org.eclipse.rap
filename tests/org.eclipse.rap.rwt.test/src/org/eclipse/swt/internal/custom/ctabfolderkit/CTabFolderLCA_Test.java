@@ -88,7 +88,7 @@ public class CTabFolderLCA_Test extends TestCase {
     shell = new Shell( display );
     folder = new CTabFolder( shell, SWT.NONE );
     lca = new CTabFolderLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

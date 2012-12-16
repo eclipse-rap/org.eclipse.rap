@@ -75,7 +75,7 @@ public class MenuItemLCA_Test extends TestCase {
     menuBar = new Menu( shell, SWT.BAR );
     menu = new Menu( shell, SWT.POP_UP );
     lca = new MenuItemLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -233,7 +233,7 @@ public class MenuItemLCA_Test extends TestCase {
     ArmListener checkArmListener = mock( ArmListener.class );
     checkItem.addArmListener( checkArmListener );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeNotifyOperation( getId( menu ), ClientMessageConst.EVENT_SHOW, null );
     Fixture.readDataAndProcessAction( display );
 

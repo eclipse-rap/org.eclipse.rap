@@ -64,7 +64,7 @@ public class LinkLCA_Test extends TestCase {
     shell = new Shell( display );
     link = new Link( shell, SWT.NONE );
     lca = new LinkLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

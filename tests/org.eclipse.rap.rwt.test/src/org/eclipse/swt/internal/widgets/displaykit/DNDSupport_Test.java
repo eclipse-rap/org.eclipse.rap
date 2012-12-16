@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,7 +79,7 @@ public class DNDSupport_Test extends TestCase {
     targetControl = new Label( shell, SWT.NONE );
     events = new ArrayList<TypedEvent>();
     eventTypes = new ArrayList<Integer>();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     transfers = new Transfer[] {
       HTMLTransfer.getInstance(),
@@ -158,7 +158,7 @@ public class DNDSupport_Test extends TestCase {
       }
     } );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     createDragSourceEvent( "dragStart", 20, 30, "move", 1 );
     Fixture.executeLifeCycleFromServerThread();
 
@@ -174,7 +174,7 @@ public class DNDSupport_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
     addLogger( dropTarget );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeDropTargetEvent( "dragLeave", 2 );
     fakeDropTargetEvent( "dragEnter", 3 );
     fakeDropTargetEvent( "dragOver", 4 );
@@ -488,7 +488,7 @@ public class DNDSupport_Test extends TestCase {
     addLogger( dropTarget );
 
     Fixture.executeLifeCycleFromServerThread(); // clear pending message operations
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeDropTargetEvent( "dragEnter", 1 );
     fakeDropTargetEvent( "dragOver", 2 );
     fakeDropTargetEvent( "dropAccept", 3 );
@@ -528,7 +528,7 @@ public class DNDSupport_Test extends TestCase {
       }
     } );
     Fixture.executeLifeCycleFromServerThread(); // clear message
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
 
     fakeDropTargetEvent( "dragEnter", 1 );
     fakeDropTargetEvent( "dragOver", 2 );
@@ -553,7 +553,7 @@ public class DNDSupport_Test extends TestCase {
       }
     } );
     Fixture.executeLifeCycleFromServerThread(); // clear message
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
 
     fakeDropTargetEvent( "dragEnter", 1 );
     fakeDropTargetEvent( "dragOver", 2 );
@@ -582,7 +582,7 @@ public class DNDSupport_Test extends TestCase {
     dropTarget.setTransfer( types );
     Fixture.executeLifeCycleFromServerThread();
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeDropTargetEvent( "dragEnter", 1 );
     Fixture.executeLifeCycleFromServerThread();
 
@@ -602,7 +602,7 @@ public class DNDSupport_Test extends TestCase {
       }
     } );
     Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
 
     fakeDropTargetEvent( "dragEnter", 1 );
     fakeDropTargetEvent( "dragOver", 2 );
@@ -628,7 +628,7 @@ public class DNDSupport_Test extends TestCase {
       }
     } );
     Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
 
     fakeDropTargetEvent( "dragEnter", 1 );
     fakeDropTargetEvent( "dragOver", 2 );
@@ -658,7 +658,7 @@ public class DNDSupport_Test extends TestCase {
       }
     } );
     Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
 
     fakeDropTargetEvent( "dragOver", 1 );
     Fixture.executeLifeCycleFromServerThread();

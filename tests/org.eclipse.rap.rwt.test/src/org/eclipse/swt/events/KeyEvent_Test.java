@@ -46,7 +46,7 @@ public class KeyEvent_Test extends TestCase {
     display = new Display();
     shell = new Shell( display );
     events = new LinkedList<Object>();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -54,7 +54,7 @@ public class KeyEvent_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testUntypedEventConstructor() throws Exception {
+  public void testUntypedEventConstructor() {
     Event event = new Event();
     event.display = display;
     event.widget = mock( Widget.class );
@@ -74,7 +74,7 @@ public class KeyEvent_Test extends TestCase {
     KeyListener keyListener = mock( KeyListener.class );
     SelectionListener selectionListener = mock( SelectionListener.class );
     Tree tree = createTreeWithKeyListener();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeKeyDownRequest( tree, 65, 65 );
     fakeSelectionRequest( tree, tree.getItem( 1 ) );
 
@@ -92,7 +92,7 @@ public class KeyEvent_Test extends TestCase {
     KeyListener keyListener = mock( KeyListener.class );
     TreeListener treeListener = mock( TreeListener.class );
     Tree tree = createTreeWithKeyListener();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeKeyDownRequest( tree, 65, 65 );
     fakeTreeRequest( tree.getItem( 1 ) );
 
@@ -110,7 +110,7 @@ public class KeyEvent_Test extends TestCase {
     KeyListener keyListener = mock( KeyListener.class );
     HelpListener helpListener = mock( HelpListener.class );
     Tree tree = createTreeWithKeyListener();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeKeyDownRequest( tree, 65, 65 );
     fakeHelpRequest( tree );
 

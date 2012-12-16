@@ -52,7 +52,7 @@ public class TabItemLCA_Test extends TestCase {
     folder = new TabFolder( shell, SWT.NONE );
     item = new TabItem( folder, SWT.NONE );
     lca = new TabItemLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

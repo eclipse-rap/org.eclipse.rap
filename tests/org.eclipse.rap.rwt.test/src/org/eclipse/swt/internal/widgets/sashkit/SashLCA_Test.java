@@ -60,7 +60,7 @@ public class SashLCA_Test extends TestCase {
     shell = new Shell( display );
     sash = new Sash( shell, SWT.NONE );
     lca = new SashLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

@@ -70,7 +70,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     hScroll = sc.getHorizontalBar();
     vScroll = sc.getVerticalBar();
     lca = new ScrolledCompositeLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

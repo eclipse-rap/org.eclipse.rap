@@ -82,7 +82,7 @@ public class TreeLCA_Test extends TestCase {
     shell = new Shell( display );
     tree = new Tree( shell, SWT.NONE );
     lca = new TreeLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -359,7 +359,7 @@ public class TreeLCA_Test extends TestCase {
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     tree.addSelectionListener( new LoggingSelectionListener( events ) );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( tree ) + "#" + 50 );
     Fixture.fakeNotifyOperation( getId( tree ),
@@ -384,7 +384,7 @@ public class TreeLCA_Test extends TestCase {
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     tree.addSelectionListener( new LoggingSelectionListener( events ) );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) + "#" + 50 );
     Fixture.fakeNotifyOperation( getId( tree ),
@@ -467,7 +467,7 @@ public class TreeLCA_Test extends TestCase {
     ScrollBar hScroll = tree.getHorizontalBar();
     hScroll.addSelectionListener( listener );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( tree ), "scrollLeft", Integer.valueOf( 10 ) );
     Fixture.fakeNotifyOperation( getId( hScroll ), "Selection", null );
     Fixture.readDataAndProcessAction( tree );
@@ -479,7 +479,7 @@ public class TreeLCA_Test extends TestCase {
     ScrollBar vScroll = tree.getVerticalBar();
     vScroll.addSelectionListener( listener );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( tree ), "topItemIndex", Integer.valueOf( 10 ) );
     Fixture.fakeNotifyOperation( getId( vScroll ), "Selection", null );
     Fixture.readDataAndProcessAction( tree );
@@ -552,7 +552,7 @@ public class TreeLCA_Test extends TestCase {
     tree.setItemCount( 7 );
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
 
     Fixture.executeLifeCycleFromServerThread();
 
@@ -565,7 +565,7 @@ public class TreeLCA_Test extends TestCase {
     tree.setItemCount( 100 );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( tree ), "selection", new String[]{ getId( tree ) + "#" + 50 } );
     Fixture.readDataAndProcessAction( tree );
 
@@ -582,7 +582,7 @@ public class TreeLCA_Test extends TestCase {
     item.setItemCount( 100 );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( tree ), "selection", new String[]{ getId( item ) + "#" + 50 } );
     Fixture.readDataAndProcessAction( tree );
 
@@ -595,7 +595,7 @@ public class TreeLCA_Test extends TestCase {
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( tree ), "selection", new String[]{ getId( item1 ) } );
     Fixture.readDataAndProcessAction( tree );
 
@@ -609,7 +609,7 @@ public class TreeLCA_Test extends TestCase {
     new TreeItem( tree, SWT.NONE );
     item1.dispose();
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( tree ), "selection", new String[]{ getId( item1 ) } );
     Fixture.executeLifeCycleFromServerThread();
 
@@ -648,7 +648,7 @@ public class TreeLCA_Test extends TestCase {
   }
 
   private static void processCellToolTipRequest( Tree tree, String itemId, int column ) {
-    Fixture.fakeNewRequest( tree.getDisplay() );
+    Fixture.fakeNewRequest();
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( "item", itemId );
     parameters.put( "column", Integer.valueOf( column ) );
@@ -1603,7 +1603,7 @@ public class TreeLCA_Test extends TestCase {
 
     log.setLength( 0 );
 
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     fakeTreeEvent( treeItem, ClientMessageConst.EVENT_COLLAPSE );
     Fixture.readDataAndProcessAction( tree );
 

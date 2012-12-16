@@ -42,7 +42,6 @@ public class MeasurementListener_Test extends TestCase {
   private static final int EXPAND_AND_RESTORE = 2;
   private static final FontData FONT_DATA = new FontData( "arial", 12, SWT.BOLD );
 
-  private Display display;
   private MeasurementListener listener;
   private int resizeCount;
 
@@ -51,8 +50,8 @@ public class MeasurementListener_Test extends TestCase {
     listener = new MeasurementListener();
 
     Fixture.setUp();
-    display = new Display();
-    Fixture.fakeNewRequest( display );
+    new Display();
+    Fixture.fakeNewRequest();
     initResizeCount();
   }
 

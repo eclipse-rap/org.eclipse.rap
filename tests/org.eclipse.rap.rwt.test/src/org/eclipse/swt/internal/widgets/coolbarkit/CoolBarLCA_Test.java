@@ -56,7 +56,7 @@ public final class CoolBarLCA_Test extends TestCase {
     shell = new Shell( display, SWT.NONE );
     bar = new CoolBar( shell, SWT.FLAT );
     lca = new CoolBarLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -289,7 +289,7 @@ public final class CoolBarLCA_Test extends TestCase {
   }
 
   private void fakeMove( CoolItem coolItem, int x, int y ) {
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( "left", Integer.valueOf( x ) );
     Fixture.fakeCallOperation( getId( coolItem ), "move", parameters );

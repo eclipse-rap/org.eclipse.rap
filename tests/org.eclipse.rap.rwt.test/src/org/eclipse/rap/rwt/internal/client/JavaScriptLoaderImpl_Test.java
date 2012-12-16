@@ -36,7 +36,7 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -107,4 +107,3 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
   }
 
 }
-

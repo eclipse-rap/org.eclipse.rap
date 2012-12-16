@@ -587,7 +587,7 @@ public class ServerPushManager_Test extends TestCase {
   }
 
   private void fakeNewRequest() {
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     ContextProvider.getUISession().setAttribute( "org.eclipse.swt.display", display );
   }
 

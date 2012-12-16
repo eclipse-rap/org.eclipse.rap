@@ -36,7 +36,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   protected void setUp() {
     super.setUp();
     lca = new ToggleHyperlinkLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   public void testSelectionEvent() {

@@ -64,7 +64,7 @@ public class BrowserLCA_Test extends TestCase {
     shell = new Shell( display );
     browser = new Browser( shell, SWT.NONE );
     lca = new BrowserLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -178,7 +178,7 @@ public class BrowserLCA_Test extends TestCase {
         return new Object[ 0 ];
       }
     };
-    fakeNewRequest( display );
+    fakeNewRequest();
     fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_FUNCTION, "func" );
     Object[] args = new Object[] { "eclipse", Double.valueOf( 3.6 )};
     fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_ARGUMENTS, args );
@@ -318,7 +318,7 @@ public class BrowserLCA_Test extends TestCase {
 
     browser.setUrl( "http://eclipse.org/rap" );
     lca.renderChanges( browser );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     lca.renderChanges( browser );
 
     Message message = Fixture.getProtocolMessage();
@@ -350,7 +350,7 @@ public class BrowserLCA_Test extends TestCase {
 
     BrowserUtil.evaluate( browser, "alert('33');", browserCallback );
     Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( browser ), "executeResult", Boolean.TRUE );
     Object[] result = new Object[]{ Integer.valueOf( 27 ) };
     Fixture.fakeSetParameter( getId( browser ), "evaluateResult", result );
@@ -404,7 +404,7 @@ public class BrowserLCA_Test extends TestCase {
         };
       }
     };
-    fakeNewRequest( display );
+    fakeNewRequest();
     fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_FUNCTION, "func" );
     Object[] args = new Object[] { "eclipse", Double.valueOf( 3.6 )};
     fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_ARGUMENTS, args );

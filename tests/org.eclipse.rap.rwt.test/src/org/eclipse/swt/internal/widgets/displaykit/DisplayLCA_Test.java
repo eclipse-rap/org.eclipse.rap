@@ -81,7 +81,7 @@ public class DisplayLCA_Test extends TestCase {
     display = new Display();
     displayId = DisplayUtil.getId( display );
     displayLCA = new DisplayLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -219,9 +219,9 @@ public class DisplayLCA_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     LifeCycleUtil.setSessionDisplay( null );
     lifeCycle.execute();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     lifeCycle.execute();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     final Shell[] shell = new Shell[ 1 ];
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -269,7 +269,7 @@ public class DisplayLCA_Test extends TestCase {
 
     // Request parameter focusControl with value 'null' is ignored
     Control previousFocusControl = display.getFocusControl();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( display ), "focusControl", "null" );
     Fixture.readDataAndProcessAction( display );
     assertEquals( previousFocusControl, display.getFocusControl() );

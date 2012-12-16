@@ -77,7 +77,7 @@ public class ButtonLCA_Test extends TestCase {
     display = new Display();
     shell = new Shell( display );
     lca = new ButtonLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -236,7 +236,7 @@ public class ButtonLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     button.addSelectionListener( listener );
     shell.getAdapter( IShellAdapter.class ).setActiveControl( label );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     fakeActiveControl( button );
 

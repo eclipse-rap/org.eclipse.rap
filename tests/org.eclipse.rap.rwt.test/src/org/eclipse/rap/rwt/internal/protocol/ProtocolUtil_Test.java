@@ -217,7 +217,7 @@ public class ProtocolUtil_Test extends TestCase {
   }
 
   public void testReadPropertyValue_LastSetValue() {
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( "w3", "p1", "foo" );
     Fixture.fakeSetParameter( "w3", "p1", "bar" );
 
@@ -363,7 +363,7 @@ public class ProtocolUtil_Test extends TestCase {
   // Helping methods
 
   private void fakeNewJsonMessage() {
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeHeadParameter( "requestCounter", Integer.valueOf( 21 ) );
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( "p1", "foo" );

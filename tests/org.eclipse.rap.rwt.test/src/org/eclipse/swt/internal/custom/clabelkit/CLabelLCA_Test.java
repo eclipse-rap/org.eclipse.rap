@@ -48,7 +48,7 @@ public class CLabelLCA_Test extends TestCase {
     display = new Display();
     shell = new Shell( display );
     lca = new CLabelLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

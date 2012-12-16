@@ -68,7 +68,7 @@ public class TreeColumnLCA_Test extends TestCase {
     tree = new Tree( shell, SWT.NONE );
     column = new TreeColumn( tree, SWT.NONE );
     lca = new TreeColumnLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -164,7 +164,7 @@ public class TreeColumnLCA_Test extends TestCase {
     column.addControlListener( listener );
 
     int newWidth = column.getWidth() + 2;
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( "width", Integer.valueOf( newWidth ) );
     Fixture.fakeCallOperation( getId( column ), "resize", parameters );

@@ -78,7 +78,7 @@ public class ControlLCAUtil_Test extends TestCase {
     shell = new Shell( display );
     control = new Button( shell, SWT.PUSH );
     control.setSize( 10, 10 ); // Would be rendered as invisible otherwise
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 

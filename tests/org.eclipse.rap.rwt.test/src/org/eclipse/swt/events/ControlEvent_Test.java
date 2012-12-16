@@ -41,7 +41,7 @@ public class ControlEvent_Test extends TestCase {
     display = new Display();
     control = new Shell( display, SWT.NONE );
     control.setVisible( true );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 

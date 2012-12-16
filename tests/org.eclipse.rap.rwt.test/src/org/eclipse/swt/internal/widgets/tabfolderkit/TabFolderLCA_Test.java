@@ -62,7 +62,7 @@ public class TabFolderLCA_Test extends TestCase {
     shell = new Shell( display );
     folder = new TabFolder( shell, SWT.NONE );
     lca = new TabFolderLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override

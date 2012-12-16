@@ -69,7 +69,7 @@ public class TableColumnLCA_Test extends TestCase {
     table = new Table( shell, SWT.NONE );
     column = new TableColumn( table, SWT.NONE );
     lca = new TableColumnLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 

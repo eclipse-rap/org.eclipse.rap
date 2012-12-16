@@ -71,7 +71,7 @@ public class ListLCA_Test extends TestCase {
     hScroll = list.getHorizontalBar();
     vScroll = list.getVerticalBar();
     lca = new ListLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -585,17 +585,17 @@ public class ListLCA_Test extends TestCase {
   }
 
   private void fakeSelection( int[] values ) {
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( list ), "selection", values );
   }
 
   private void fakeFocusIndex( int value ) {
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( list ), "focusIndex", Integer.valueOf( value ) );
   }
 
   private void fakeTopIndex( int value ) {
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( list ), "topIndex", Integer.valueOf( value ) );
   }
 }

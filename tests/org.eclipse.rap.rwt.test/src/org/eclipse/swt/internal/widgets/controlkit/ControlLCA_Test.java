@@ -55,7 +55,7 @@ public class ControlLCA_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -179,7 +179,7 @@ public class ControlLCA_Test extends TestCase {
         return ( T )result;
       }
     };
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -195,7 +195,7 @@ public class ControlLCA_Test extends TestCase {
   public void testRenderNoDisposeWhenParentDisposed() {
     Shell shell = new Shell( display );
     Label label = new Label( shell, SWT.NONE );
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );

@@ -39,7 +39,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     super.setUp();
     hyperlink = new Hyperlink( shell, SWT.NONE );
     lca = new HyperlinkLCA();
-    Fixture.fakeNewRequest( display );
+    Fixture.fakeNewRequest();
   }
 
   public void testSelectionEvent() {
