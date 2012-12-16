@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 
 
 public class ServiceManagerImpl_Test extends TestCase {
@@ -140,7 +141,8 @@ public class ServiceManagerImpl_Test extends TestCase {
   public void testGetHandler_returnsCustomHandler() {
     ServiceHandler serviceHandler = mock( ServiceHandler.class );
     serviceManager.registerServiceHandler( "id", serviceHandler );
-    Fixture.fakeRequestParam( ServiceManagerImpl.REQUEST_PARAM, "id" );
+    TestRequest request = Fixture.fakeNewGetRequest();
+    request.setParameter( ServiceManagerImpl.REQUEST_PARAM, "id" );
 
     ServiceHandler handler = serviceManager.getHandler();
 
@@ -148,7 +150,8 @@ public class ServiceManagerImpl_Test extends TestCase {
   }
 
   public void testGetHandler_failsWithUnknownId() {
-    Fixture.fakeRequestParam( ServiceManagerImpl.REQUEST_PARAM, "id" );
+    TestRequest request = Fixture.fakeNewGetRequest();
+    request.setParameter( ServiceManagerImpl.REQUEST_PARAM, "id" );
 
     try {
       serviceManager.getHandler();

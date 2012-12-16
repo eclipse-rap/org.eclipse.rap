@@ -148,8 +148,8 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
   public void testRequestParametersAreBufferedAfterSessionRestart() throws IOException {
     initializeUISession();
-    Fixture.fakeNewGetRequest();
-    Fixture.fakeRequestParam( "foo", "bar" );
+    TestRequest request = Fixture.fakeNewGetRequest();
+    request.setParameter( "foo", "bar" );
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
     LifeCycleServiceHandler.markSessionStarted();

@@ -186,16 +186,7 @@ public final class Fixture {
     TestResponse response = new TestResponse();
     HttpSession session = createTestSession();
     request.setSession( session );
-    createServiceContext( response, request );
-  }
-
-  public static void createServiceContext( HttpServletResponse response,
-                                           HttpServletRequest request )
-  {
-    ServiceContext context = new ServiceContext( request, response );
-    ServiceStore serviceStore = new ServiceStore();
-    context.setServiceStore( serviceStore );
-    ContextProvider.setContext( context );
+    createNewServiceContext( request, response );
   }
 
   private static TestSession createTestSession() {
@@ -332,27 +323,34 @@ public final class Fixture {
     uiSession.setAttribute( RemoteObjectFactory.class.getName() + "#instance", factory );
   }
 
-  public static void fakeNewRequest() {
-    fakeNewRequest( HTTP.METHOD_POST );
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+  public static TestRequest fakeNewRequest() {
+    TestRequest request = createNewRequest( HTTP.METHOD_POST );
     request.setBody( createEmptyMessage() );
+    createNewServiceContext( request, new TestResponse() );
+    fakeResponseWriter();
+    return request;
   }
 
-  public static void fakeNewGetRequest() {
-    fakeNewRequest( HTTP.METHOD_GET );
+  public static TestRequest fakeNewGetRequest() {
+    TestRequest request = createNewRequest( HTTP.METHOD_GET );
+    createNewServiceContext( request, new TestResponse() );
+    return request;
   }
 
-  private static void fakeNewRequest( String method ) {
-    HttpSession session = ContextProvider.getRequest().getSession();
+  private static TestRequest createNewRequest( String method ) {
     TestRequest request = new TestRequest();
-    request.setSession( session );
     request.setMethod( method );
-    TestResponse response = new TestResponse();
+    request.setSession( ContextProvider.getRequest().getSession() );
+    return request;
+  }
+
+  private static void createNewServiceContext( HttpServletRequest request,
+                                               HttpServletResponse response )
+  {
     ServiceContext serviceContext = new ServiceContext( request, response );
     serviceContext.setServiceStore( new ServiceStore() );
     ContextProvider.disposeContext();
     ContextProvider.setContext( serviceContext );
-    fakeResponseWriter();
   }
 
   public static String createEmptyMessage() {
@@ -364,11 +362,6 @@ public final class Fixture {
       throw new IllegalStateException( "Failed to create json message", exception );
     }
     return result.toString();
-  }
-
-  public static void fakeRequestParam( String key, String value ) {
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.setParameter( key, value );
   }
 
   public static void fakeHeadParameter( String key, Object value ) {

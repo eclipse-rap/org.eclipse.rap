@@ -100,13 +100,13 @@ public class WrappedRequest_Test extends TestCase {
 
   public void testStartupRequestWithParameter() throws Exception {
     RWTFactory.getEntryPointManager().register( "/rap", DefaultEntryPoint.class, null );
-    Fixture.fakeNewGetRequest();
-    Fixture.fakeRequestParam( "param", "value" );
+    TestRequest getRequest = Fixture.fakeNewGetRequest();
+    getRequest.setParameter( "param", "value" );
     ServiceHandler handler = RWTFactory.getServiceManager().getHandler();
     handler.service( ContextProvider.getRequest(), ContextProvider.getResponse() );
 
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( "param", null );
+    TestRequest uiRequest = Fixture.fakeNewRequest();
+    uiRequest.setParameter( "param", null );
     Fixture.fakeHeadParameter( RequestParams.RWT_INITIALIZE, "true" );
     handler.service( ContextProvider.getRequest(), ContextProvider.getResponse() );
 

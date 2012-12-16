@@ -19,6 +19,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 
 
 public class RequestParameterBuffer_Test extends TestCase {
@@ -68,9 +69,9 @@ public class RequestParameterBuffer_Test extends TestCase {
     parameters.put( "key2", new String[] { "value2" } );
     RequestParameterBuffer.store( parameters );
 
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( "key2", "value2a" );
-    Fixture.fakeRequestParam( "key3", "value3" );
+    TestRequest request = Fixture.fakeNewRequest();
+    request.setParameter( "key2", "value2a" );
+    request.setParameter( "key3", "value3" );
     RequestParameterBuffer.merge();
 
     assertEquals( "value1", ContextProvider.getRequest().getParameter( "key1" ) );
