@@ -103,12 +103,12 @@ public final class ServerPushManager implements SerializableCompatibility {
     }
   }
 
-  public void activateServerPushFor( String id ) {
-    serverPushActivationTracker.activate( id );
+  public void activateServerPushFor( Object handle ) {
+    serverPushActivationTracker.activate( handle );
   }
 
-  public void deactivateServerPushFor( String id ) {
-    serverPushActivationTracker.deactivate( id );
+  public void deactivateServerPushFor( Object handle ) {
+    serverPushActivationTracker.deactivate( handle );
     if( !serverPushActivationTracker.isActive() ) {
       releaseBlockedRequest();
     }
@@ -167,7 +167,7 @@ public final class ServerPushManager implements SerializableCompatibility {
     return isServerPushActive() && !hasRunnables;
   }
 
-  boolean isServerPushActive() {
+  public boolean isServerPushActive() {
     return serverPushActivationTracker.isActive();
   }
 

@@ -18,29 +18,29 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 
 final class ServerPushActivationTracker implements SerializableCompatibility {
-  private final Set<String> ids;
+  private final Set<Object> handles;
   private final SerializableLock lock;
 
   ServerPushActivationTracker() {
-    ids = new HashSet<String>();
+    handles = new HashSet<Object>();
     lock = new SerializableLock();
   }
 
-  void activate( String id ) {
+  void activate( Object handle ) {
     synchronized( lock ) {
-      ids.add( id );
+      handles.add( handle );
     }
   }
 
-  void deactivate( String id ) {
+  void deactivate( Object handle ) {
     synchronized( lock ) {
-      ids.remove( id );
+      handles.remove( handle );
     }
   }
 
   boolean isActive() {
     synchronized( lock ) {
-      return !ids.isEmpty();
+      return !handles.isEmpty();
     }
   }
 
