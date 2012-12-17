@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.internal.remote.RemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.remote.RemoteOperationHandler;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.mockito.ArgumentCaptor;
@@ -43,18 +42,6 @@ public class CientInfoImpl_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testThrowsExceptionWhenTimezoneOffsetNotSet() {
-    fakeRemoteObjectFactory( mock( RemoteObject.class ) );
-
-    ClientInfoImpl clientInfo = new ClientInfoImpl();
-    try {
-      clientInfo.getTimezoneOffset();
-      fail();
-    } catch( IllegalStateException ex ) {
-      // expected
-    }
-  }
-
   public void testCreatesRemoteObjectWithCorrectId() {
     RemoteObjectFactory factory = fakeRemoteObjectFactory( mock( RemoteObject.class ) );
 
@@ -63,7 +50,19 @@ public class CientInfoImpl_Test extends TestCase {
     verify( factory ).createServiceObject( eq( "rwt.client.ClientInfo" ) );
   }
 
-  public void testReadsTimezoneOffsetFromHandler() {
+  public void testGetTimezoneOffset_failsWhenTimezoneOffsetNotSet() {
+    fakeRemoteObjectFactory( mock( RemoteObject.class ) );
+
+    ClientInfoImpl clientInfo = new ClientInfoImpl();
+    try {
+      clientInfo.getTimezoneOffset();
+      fail();
+    } catch( IllegalStateException exception ) {
+      // expected
+    }
+  }
+
+  public void testGetTimezoneOffset_readsTimezoneOffsetFromHandler() {
     RemoteObject remoteObject = mock( RemoteObject.class );
     fakeRemoteObjectFactory( remoteObject );
     ClientInfoImpl clientInfo = new ClientInfoImpl();
@@ -76,7 +75,7 @@ public class CientInfoImpl_Test extends TestCase {
     assertEquals( -90, clientInfo.getTimezoneOffset() );
   }
 
-  public void testReturnsNullWhenLocaleNotSet() {
+  public void testGetLocale_returnsNullWhenLocaleNotSet() {
     Fixture.fakeNewGetRequest();
     fakeRemoteObjectFactory();
 
@@ -85,7 +84,7 @@ public class CientInfoImpl_Test extends TestCase {
     assertNull( clientInfo.getLocale() );
   }
 
-  public void testReturnsEmptyArrayWhenLocaleNotSet() {
+  public void testGetLocales_returnsEmptyArrayWhenLocaleNotSet() {
     Fixture.fakeNewGetRequest();
     fakeRemoteObjectFactory();
 
@@ -94,24 +93,22 @@ public class CientInfoImpl_Test extends TestCase {
     assertEquals( 0, clientInfo.getLocales().length );
   }
 
-  public void testReadsLocaleFromRequest() {
-    Fixture.fakeNewGetRequest();
+  public void testGetLocale_readsLocaleFromRequest() {
+    TestRequest request = Fixture.fakeNewGetRequest();
     fakeRemoteObjectFactory();
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
 
-    request.setHeader( "Accept-Language", "en-US" );
+    request.setHeader( "Accept-Language", "anything" );
     request.setLocales( new Locale( "en-US" ) );
     ClientInfoImpl clientInfo = new ClientInfoImpl();
 
     assertEquals( new Locale( "en-US" ), clientInfo.getLocale() );
   }
 
-  public void testReadsLocalesFromRequest() {
-    Fixture.fakeNewGetRequest();
+  public void testGetLocales_readsLocalesFromRequest() {
+    TestRequest request = Fixture.fakeNewGetRequest();
     fakeRemoteObjectFactory();
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
 
-    request.setHeader( "Accept-Language", "en-US" );
+    request.setHeader( "Accept-Language", "anything" );
     request.setLocales( new Locale( "en-US" ), new Locale( "de-DE" ) );
     ClientInfoImpl clientInfo = new ClientInfoImpl();
 
@@ -121,11 +118,10 @@ public class CientInfoImpl_Test extends TestCase {
   }
 
   public void testReturnsSaveLocalesCopy() {
-    Fixture.fakeNewGetRequest();
+    TestRequest request = Fixture.fakeNewGetRequest();
     fakeRemoteObjectFactory();
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
 
-    request.setHeader( "Accept-Language", "en-US" );
+    request.setHeader( "Accept-Language", "anything" );
     request.setLocales( new Locale( "en-US" ) );
     ClientInfoImpl clientInfo = new ClientInfoImpl();
     clientInfo.getLocales()[ 0 ] = new Locale( "de-DE" );

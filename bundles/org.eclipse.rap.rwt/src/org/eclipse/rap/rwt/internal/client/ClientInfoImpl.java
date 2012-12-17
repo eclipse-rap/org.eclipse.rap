@@ -16,6 +16,8 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.internal.remote.RemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
@@ -28,15 +30,6 @@ public class ClientInfoImpl implements ClientInfo, Serializable {
   private Integer timezoneOffset;
   private Locale[] locales;
 
-  private final class InfoOperationHandler extends RemoteOperationHandler {
-    public void handleSet( Map<String, Object> properties ) {
-      if( properties.containsKey( "timezoneOffset" ) ) {
-        Integer offset = ( Integer )properties.get( "timezoneOffset" );
-        ClientInfoImpl.this.timezoneOffset = offset;
-      }
-    }
-  }
-
   public ClientInfoImpl() {
     initialize();
   }
@@ -45,8 +38,9 @@ public class ClientInfoImpl implements ClientInfo, Serializable {
     RemoteObjectFactory factory = RemoteObjectFactory.getInstance();
     RemoteObject remoteObject = factory.createServiceObject( "rwt.client.ClientInfo" );
     remoteObject.setHandler( new InfoOperationHandler() );
-    Enumeration< Locale > locales = ContextProvider.getRequest().getLocales();
-    if( ContextProvider.getRequest().getHeader( "Accept-Language" ) != null ) {
+    HttpServletRequest request = ContextProvider.getRequest();
+    if( request.getHeader( "Accept-Language" ) != null ) {
+      Enumeration<Locale> locales = request.getLocales();
       this.locales = Collections.list( locales ).toArray( new Locale[ 1 ] );
     }
   }
@@ -64,6 +58,15 @@ public class ClientInfoImpl implements ClientInfo, Serializable {
 
   public Locale[] getLocales() {
     return locales == null ? new Locale[ 0 ] : locales.clone();
+  }
+
+  private final class InfoOperationHandler extends RemoteOperationHandler {
+    @Override
+    public void handleSet( Map<String, Object> properties ) {
+      if( properties.containsKey( "timezoneOffset" ) ) {
+        timezoneOffset = ( Integer )properties.get( "timezoneOffset" );
+      }
+    }
   }
 
 }

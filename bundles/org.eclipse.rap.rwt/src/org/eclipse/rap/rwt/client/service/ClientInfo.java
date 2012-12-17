@@ -29,16 +29,20 @@ public interface ClientInfo extends ClientService {
   public int getTimezoneOffset();
 
   /**
-   * Returns the first locale given by the client. Is null when the client does not give a locale.
+   * Returns the preferred locale of the client, based on the Accept-Language HTTP header of the
+   * first client request. If the client does not provide this information, this method returns
+   * <code>null</code>.
    *
-   * @return the locale
+   * @return the client locale, or <code>null</code>
    */
   public Locale getLocale();
 
   /**
-   * Returns all locales given by the client. Has length zero when the client gives no locales.
+   * Returns the locales accepted by the client, based on the Accept-Language HTTP header. The
+   * locales are ordered by preference, beginning with the preferred locale. If the client does not
+   * provide this information, this method returns an empty array.
    *
-   * @return the locale
+   * @return an array containing the client locales, may be empty, but never <code>null</code>
    */
   public Locale[] getLocales();
 
