@@ -17,6 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -75,18 +76,22 @@ public class CientInfoImpl_Test extends TestCase {
     assertEquals( -90, clientInfo.getTimezoneOffset() );
   }
 
-  public void testThrowsExceptionWhenLocaleNotSet() {
+  public void testReturnsNullWhenLocaleNotSet() {
     Fixture.fakeNewGetRequest();
     fakeRemoteObjectFactory();
 
     ClientInfoImpl clientInfo = new ClientInfoImpl();
 
-    try {
-      clientInfo.getLocale();
-      fail();
-    } catch( IllegalStateException ex ) {
-      // expected
-    }
+    assertNull( clientInfo.getLocale() );
+  }
+
+  public void testReturnsEmptyArrayWhenLocaleNotSet() {
+    Fixture.fakeNewGetRequest();
+    fakeRemoteObjectFactory();
+
+    ClientInfoImpl clientInfo = new ClientInfoImpl();
+
+    assertEquals( 0, clientInfo.getLocales().length );
   }
 
   public void testReadsLocaleFromRequest() {
@@ -95,9 +100,37 @@ public class CientInfoImpl_Test extends TestCase {
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
 
     request.setHeader( "Accept-Language", "en-US" );
+    request.setLocales( new Locale( "en-US" ) );
     ClientInfoImpl clientInfo = new ClientInfoImpl();
 
-    assertEquals( "en-US", clientInfo.getLocale() );
+    assertEquals( new Locale( "en-US" ), clientInfo.getLocale() );
+  }
+
+  public void testReadsLocalesFromRequest() {
+    Fixture.fakeNewGetRequest();
+    fakeRemoteObjectFactory();
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+
+    request.setHeader( "Accept-Language", "en-US" );
+    request.setLocales( new Locale( "en-US" ), new Locale( "de-DE" ) );
+    ClientInfoImpl clientInfo = new ClientInfoImpl();
+
+    assertEquals( 2, clientInfo.getLocales().length );
+    assertEquals( new Locale( "en-US" ), clientInfo.getLocales()[ 0 ] );
+    assertEquals( new Locale( "de-DE" ), clientInfo.getLocales()[ 1 ] );
+  }
+
+  public void testReturnsSaveLocalesCopy() {
+    Fixture.fakeNewGetRequest();
+    fakeRemoteObjectFactory();
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+
+    request.setHeader( "Accept-Language", "en-US" );
+    request.setLocales( new Locale( "en-US" ) );
+    ClientInfoImpl clientInfo = new ClientInfoImpl();
+    clientInfo.getLocales()[ 0 ] = new Locale( "de-DE" );
+
+    assertEquals( new Locale( "en-US" ), clientInfo.getLocales()[ 0 ] );
   }
 
   private static RemoteOperationHandler getHandler( RemoteObject remoteObject ) {

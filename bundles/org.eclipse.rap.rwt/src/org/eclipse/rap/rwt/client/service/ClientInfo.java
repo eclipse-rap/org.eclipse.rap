@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.client.service;
 
+import java.util.Locale;
+
 
 /**
  * The ClientInfo service provides basic information about the client device.
@@ -27,10 +29,17 @@ public interface ClientInfo extends ClientService {
   public int getTimezoneOffset();
 
   /**
-   * Returns the locale string given by the client.
+   * Returns the first locale given by the client. Is null when the client does not give a locale.
    *
    * @return the locale
    */
-  public String getLocale();
+  public Locale getLocale();
+
+  /**
+   * Returns all locales given by the client. Has length zero when the client gives no locales.
+   *
+   * @return the locale
+   */
+  public Locale[] getLocales();
 
 }

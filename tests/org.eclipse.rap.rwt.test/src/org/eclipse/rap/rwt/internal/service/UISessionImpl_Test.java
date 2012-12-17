@@ -489,7 +489,7 @@ public class UISessionImpl_Test extends TestCase {
 
   public void testGetLocale_fallsBackToRequestLocale() {
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.setLocale( Locale.ITALIAN );
+    request.setLocales( Locale.ITALIAN );
 
     Locale locale = uiSession.getLocale();
 

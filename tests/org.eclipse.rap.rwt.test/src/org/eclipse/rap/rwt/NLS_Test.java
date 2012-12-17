@@ -42,7 +42,7 @@ public class NLS_Test extends TestCase {
     assertEquals( "My Message", TestMessages.get().MyMessage );
 
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.setLocale( Locale.ITALIAN );
+    request.setLocales( Locale.ITALIAN );
     assertEquals( "Il mio messaggio", TestMessages.get().MyMessage );
 
     RWT.setLocale( Locale.GERMAN );
@@ -55,7 +55,7 @@ public class NLS_Test extends TestCase {
     assertEquals( "My Message", TestMessagesUTF8.get().MyMessage );
 
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.setLocale( Locale.ITALIAN );
+    request.setLocales( Locale.ITALIAN );
     assertEquals( "Il mio messaggio", TestMessagesUTF8.get().MyMessage );
 
     RWT.setLocale( Locale.GERMAN );

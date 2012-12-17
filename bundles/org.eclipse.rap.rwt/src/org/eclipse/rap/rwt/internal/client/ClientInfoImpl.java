@@ -11,6 +11,9 @@
 package org.eclipse.rap.rwt.internal.client;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.client.service.ClientInfo;
@@ -23,7 +26,7 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 public class ClientInfoImpl implements ClientInfo, Serializable {
 
   private Integer timezoneOffset;
-  private String locale;
+  private Locale[] locales;
 
   private final class InfoOperationHandler extends RemoteOperationHandler {
     public void handleSet( Map<String, Object> properties ) {
@@ -42,7 +45,10 @@ public class ClientInfoImpl implements ClientInfo, Serializable {
     RemoteObjectFactory factory = RemoteObjectFactory.getInstance();
     RemoteObject remoteObject = factory.createServiceObject( "rwt.client.ClientInfo" );
     remoteObject.setHandler( new InfoOperationHandler() );
-    locale = ContextProvider.getRequest().getHeader( "Accept-Language" );
+    Enumeration< Locale > locales = ContextProvider.getRequest().getLocales();
+    if( ContextProvider.getRequest().getHeader( "Accept-Language" ) != null ) {
+      this.locales = Collections.list( locales ).toArray( new Locale[ 1 ] );
+    }
   }
 
   public int getTimezoneOffset() {
@@ -52,11 +58,12 @@ public class ClientInfoImpl implements ClientInfo, Serializable {
     return timezoneOffset.intValue();
   }
 
-  public String getLocale() {
-    if( locale == null ) {
-      throw new IllegalStateException( "locale is not set" );
-    }
-    return locale;
+  public Locale getLocale() {
+    return locales == null ? null : locales[ 0 ];
+  }
+
+  public Locale[] getLocales() {
+    return locales == null ? new Locale[ 0 ] : locales.clone();
   }
 
 }

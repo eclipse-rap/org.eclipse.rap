@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,33 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.security.Principal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.AsyncContext;
+import javax.servlet.DispatcherType;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 
@@ -48,10 +69,10 @@ public final class TestRequest implements HttpServletRequest {
   private final Map<String,String> headers;
   private final Map<String,Object> attributes;
   private final Collection<Cookie> cookies;
-  private Locale locale;
   private String contentType;
   private String body;
   private String method;
+  private Locale[] locales;
 
   public TestRequest() {
     requestURL = new StringBuffer();
@@ -339,15 +360,29 @@ public final class TestRequest implements HttpServletRequest {
   }
 
   public Locale getLocale() {
-    return locale == null ? Locale.getDefault() : locale ;
-  }
-
-  public void setLocale( Locale locale ) {
-    this.locale = locale;
+    return locales == null || locales.length == 0 ? Locale.getDefault() : locales[ 0 ] ;
   }
 
   public Enumeration<Locale> getLocales() {
-    return null;
+    Locale[] returnedLocales = locales;
+    if( locales == null || locales.length == 0 ) {
+      returnedLocales = new Locale[]{ Locale.getDefault() };
+    }
+    final Iterator<Locale> iterator = Arrays.asList( returnedLocales ).iterator();
+    return new Enumeration<Locale>() {
+
+      public Locale nextElement() {
+        return iterator.next();
+      }
+
+      public boolean hasMoreElements() {
+        return iterator.hasNext();
+      }
+    };
+  }
+
+  public void setLocales( Locale... locales ) {
+    this.locales = locales;
   }
 
   public boolean isSecure() {
