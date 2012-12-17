@@ -42,9 +42,9 @@ rwt.protocol.ServerObject.prototype = {
   },
 
   /**
-   * @description Notifies the remote object a event of the given type occured.
+   * @description Notifies the remote object a event of the given type occurred.
    * The properties object may contain any number of additional properties/fields.
-   * It may also be null or ommited. Sending an event of a type the server is currently not
+   * It may also be null or omitted. Sending an event of a type the server is currently not
    * listening for (see {@link rap.registerTypeHandler}, handler.listeners) is illegal usage of the
    * RAP protocol, but is not prevented. Calling this method causes the message to be sent to the
    * server within a few milliseconds.
@@ -53,7 +53,7 @@ rwt.protocol.ServerObject.prototype = {
    * @param {}
    */
   notify : function( event, properties, suppressSend ) {
-   // TODO [tb]: suppressSend should be a temporariy workaround for KeyEventSupport.js
+   // TODO [tb]: suppressSend should be a temporary workaround for KeyEventSupport.js
     var actualProps = properties ? properties : {};
     server.getMessageWriter().appendNotify( this._id, event, actualProps );
     if( suppressSend !== true ) {
@@ -62,9 +62,9 @@ rwt.protocol.ServerObject.prototype = {
   },
 
   /**
-   * @description Intructs the remote object to call the given method.
+   * @description Instructs the remote object to call the given method.
    * The properties object may contain any number of additional properties/fields. It may also be
-   * null or ommited. Calling this method causes the message to be sent to the server within a
+   * null or omitted. Calling this method causes the message to be sent to the server within a
    * few milliseconds.
    * @param {string} method
    * @param {Object} properties
