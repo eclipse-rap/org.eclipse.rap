@@ -45,17 +45,17 @@ import org.eclipse.swt.widgets.Display;
  * final ServerPushSession pushSession = new ServerPushSession();
  * Runnable bgRunnable = new Runnable() {
  *   public void run() {
- *   // do some background work ...
- *   // schedule the UI update
- *   display.asyncExec( new Runnable() {
- *     public void run() {
- *       if( !widget.isDisposed() ) {
- *         // update the UI
- *         label.setText( "updated" );
- *         // close push session when finished
- *         pushSession.stop();
+ *     // do some background work ...
+ *     // schedule the UI update
+ *     display.asyncExec( new Runnable() {
+ *       public void run() {
+ *         if( !widget.isDisposed() ) {
+ *           label.setText( "updated" );
+ *         }
  *       }
- *     }
+ *     } );
+ *     // close push session when finished
+ *     pushSession.stop();
  *   } );
  * };
  * pushSession.start();
