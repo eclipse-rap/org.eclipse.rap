@@ -16,8 +16,9 @@ var server = rwt.remote.Server.getInstance();
 /**
  * @private
  * @class Instances of RemoteObject represents the server-side counterpart of a client object
- * and are used to write remote operations into the next protocol message. It can be obtained
- * by {@link rap.getRemoteObject}.
+ * and are used to write remote operations into the next protocol message.
+ * @description This class is not available in the global namespace. Instances can only
+ * be obtained from {@link rap.getRemoteObject}.
  * @exports rwt.protocol.ServerObject as RemoteObject
  * @since 2.0
  * @param {}
@@ -31,7 +32,7 @@ rwt.protocol.ServerObject.prototype = {
 
   /**
    * @description Sets the specified property of the remote object to the given value.
-   * Calling this method multiple times for the same key will overwrite the previous value,
+   * Calling this method multiple times for the same property will overwrite the previous value,
    * the message will not become longer.
    * This method does not cause the message to be sent immediately.
    * @param {string} property
@@ -45,9 +46,9 @@ rwt.protocol.ServerObject.prototype = {
    * @description Notifies the remote object a event of the given type occurred.
    * The properties object may contain any number of additional properties/fields.
    * It may also be null or omitted. Sending an event of a type the server is currently not
-   * listening for (see {@link rap.registerTypeHandler}, handler.listeners) is illegal usage of the
-   * RAP protocol, but is not prevented. Calling this method causes the message to be sent to the
-   * server within a few milliseconds.
+   * listening for (see {@link rap.registerTypeHandler}, <b>handler.listeners</b>) is illegal usage
+   * of the RAP protocol, but currently not prevented. Calling this method causes the message to be
+   * sent to the server within a few milliseconds.
    * @param {string} event
    * @param {Object} properties
    * @param {}
