@@ -38,7 +38,6 @@
     <module>../../features/org.eclipse.rap.equinox.target.feature</module>
     <module>../../features/org.eclipse.rap.runtime.sdk</module>
     <module>repository</module>
-    <module>repository/runtime-feature</module>
     <module>compatibility-repository</module>
   </modules>
 
