@@ -54,6 +54,12 @@
       <url>${base-platform-repository}</url>
     </repository>
     <repository>
+      <id>base-platform-repository-with-ICU-bundle</id>
+      <layout>p2</layout>
+      <!-- This repository is required in order to pull in the base ICU bundle -->
+      <url>http://build.eclipse.org/rt/rap/base-platforms/2.0/M4/runtime-base</url>
+    </repository>    
+    <repository>
       <id>extra-dependencies-repository</id>
       <layout>p2</layout>
       <url>http://build.eclipse.org/rt/rap/base-platforms/1.5/extra-dependencies</url>
