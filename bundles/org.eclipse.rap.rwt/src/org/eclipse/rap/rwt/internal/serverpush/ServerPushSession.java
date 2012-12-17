@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.serverpush;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.service.UISession;
+import org.eclipse.swt.widgets.Display;
 
 
 /**
@@ -63,6 +64,9 @@ import org.eclipse.rap.rwt.service.UISession;
  * bgThread.start();
  * </pre>
  *
+ * @see Display#asyncExec
+ * @see Display#syncExec
+ * @see Display#wake
  * @since 2.0
  */
 public class ServerPushSession {
@@ -82,8 +86,8 @@ public class ServerPushSession {
 
   /**
    * Starts this server push session. If the framework's server push system is not yet active for
-   * the current UI session, it will be activated. If this server push session is already running,
-   * this method does nothing.
+   * the current UI session, it will be activated. Calling this method while this server push
+   * session is already running has no effect.
    * <p>
    * This method must be called from the UI thread.
    * </p>
@@ -97,8 +101,8 @@ public class ServerPushSession {
 
   /**
    * Stops this server push session. If no other server push sessions are currently running, the
-   * framework's server push system will be stopped for the current UI session. If this server push
-   * session is not running, this method does nothing.
+   * framework's server push system will be stopped for the current UI session. Calling this method
+   * while this server push session is not running has no effect.
    * <p>
    * This method may be called from a background thread.
    * </p>

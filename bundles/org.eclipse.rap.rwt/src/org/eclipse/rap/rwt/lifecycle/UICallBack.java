@@ -15,6 +15,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.ContextUtil;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
+import org.eclipse.rap.rwt.internal.serverpush.ServerPushSession;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
@@ -23,18 +24,21 @@ import org.eclipse.swt.widgets.Display;
 
 
 /**
- * A utility class that provides methods to perform tasks related
- * to UI updates from background threads.
+ * A utility class that provides methods to perform tasks related to UI updates from background
+ * threads.
  *
  * @since 2.0
+ * @deprecated This class will be removed in a future release. Use {@link ServerPushSession} instead
+ *             to enable/disable server push.
  */
+@Deprecated
 public final class UICallBack {
 
   /**
    * Executes a given runnable in the context of the UI session that is associated with the given
    * display. This allows background threads to access values that are stored in the UI session,
    * including session singletons.
-   * 
+   *
    * @param display the display that is bound to the UI session which the runnable needs to access
    * @param runnable the runnable to execute in the UI session context of the given display
    * @see org.eclipse.rap.rwt.SingletonUtil
@@ -105,7 +109,9 @@ public final class UICallBack {
    * @see Display#asyncExec
    * @see Display#getThread
    * @see Display#wake
+   * @deprecated Use {@link ServerPushSession#start()} instead.
    */
+  @Deprecated
   public static void activate( String id ) {
     if( id == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -142,7 +148,9 @@ public final class UICallBack {
    * @see Display#asyncExec
    * @see Display#getThread
    * @see Display#wake
+   * @deprecated Use {@link ServerPushSession#stop()} instead.
    */
+  @Deprecated
   public static void deactivate( String id ) {
     if( id == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
