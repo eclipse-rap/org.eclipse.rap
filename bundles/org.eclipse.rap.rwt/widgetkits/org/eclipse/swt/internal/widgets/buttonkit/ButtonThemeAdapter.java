@@ -14,11 +14,11 @@ package org.eclipse.swt.internal.widgets.buttonkit;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Button;
 
 
-public final class ButtonThemeAdapter extends ControlThemeAdapter {
+public final class ButtonThemeAdapter extends ControlThemeAdapterImpl {
 
   @Override
   protected void configureMatcher( WidgetMatcher matcher ) {

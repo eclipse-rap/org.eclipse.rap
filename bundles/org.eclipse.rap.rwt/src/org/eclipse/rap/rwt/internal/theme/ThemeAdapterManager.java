@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ import java.util.Map;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rap.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -26,7 +28,7 @@ public final class ThemeAdapterManager {
   public ThemeAdapterManager() {
     themeAdapters = new HashMap<Class, IThemeAdapter>();
   }
-  
+
   public void reset() {
     themeAdapters.clear();
   }
@@ -60,17 +62,21 @@ public final class ThemeAdapterManager {
 
   private static IThemeAdapter loadThemeAdapter( Class clazz ) {
     IThemeAdapter result = null;
-    String className = LifeCycleAdapterUtil.getSimpleClassName( clazz );
-    String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( clazz );
-    for( int i = 0; result == null && i < variants.length; i++ ) {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append( variants[ i ] );
-      buffer.append( "." );
-      buffer.append( className );
-      buffer.append( "ThemeAdapter" );
-      String classToLoad = buffer.toString();
-      ClassLoader loader = clazz.getClassLoader();
-      result = loadThemeAdapter( classToLoad, loader );
+    if( clazz == Control.class ) {
+      result = new ControlThemeAdapterImpl();
+    } else {
+      String className = LifeCycleAdapterUtil.getSimpleClassName( clazz );
+      String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( clazz );
+      for( int i = 0; result == null && i < variants.length; i++ ) {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append( variants[ i ] );
+        buffer.append( "." );
+        buffer.append( className );
+        buffer.append( "ThemeAdapter" );
+        String classToLoad = buffer.toString();
+        ClassLoader loader = clazz.getClassLoader();
+        result = loadThemeAdapter( classToLoad, loader );
+      }
     }
     return result;
   }

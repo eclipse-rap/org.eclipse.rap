@@ -11,10 +11,10 @@
 package org.eclipse.rap.rwt.internal.widgets.fileuploadkit;
 
 import org.eclipse.rap.rwt.widgets.FileUpload;
-import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 
 
-public final class FileUploadThemeAdapter extends ControlThemeAdapter {
+public final class FileUploadThemeAdapter extends ControlThemeAdapterImpl {
 
   public int getSpacing( FileUpload fileUpload ) {
     return getCssDimension( "FileUpload", "spacing", fileUpload );

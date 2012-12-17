@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rap.rwt.theme.IControlThemeAdapter;
+import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.accessibility.Accessible;
@@ -74,43 +74,43 @@ public abstract class Control extends Widget implements Drawable {
     }
 
     public Shell getShell() {
-      return Control.this.internalGetShell();
+      return internalGetShell();
     }
 
     public int getTabIndex() {
-      return Control.this.tabIndex;
+      return tabIndex;
     }
 
     public void setTabIndex( int index ) {
-      Control.this.tabIndex = index;
+      tabIndex = index;
     }
 
     public Font getUserFont() {
-      return Control.this.font;
+      return font;
     }
 
     public Color getUserForeground() {
       Color result = null;
       if( isEnabled() ) {
-        result = Control.this.foreground;
+        result = foreground;
       }
       return result;
     }
 
     public Color getUserBackground() {
-      return Control.this.background;
+      return background;
     }
 
     public Image getUserBackgroundImage() {
-      return Control.this.backgroundImage;
+      return backgroundImage;
     }
 
     public boolean getBackgroundTransparency() {
-      return Control.this.backgroundTransparency;
+      return backgroundTransparency;
     }
 
     public boolean isPacked() {
-      return Control.this.packed;
+      return packed;
     }
   }
 
@@ -452,8 +452,8 @@ public abstract class Control extends Widget implements Drawable {
     }
     Color result = control.background;
     if( result == null ) {
-      IControlThemeAdapter themeAdapter =
-        ( IControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
+      ControlThemeAdapter themeAdapter =
+        ( ControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
       result = themeAdapter.getBackground( control );
     }
     Shell shell = control.getShell();
@@ -562,8 +562,7 @@ public abstract class Control extends Widget implements Drawable {
     checkWidget();
     Color result = foreground;
     if( result == null ) {
-      IControlThemeAdapter themeAdapter
-        = ( IControlThemeAdapter )getAdapter( IThemeAdapter.class );
+      ControlThemeAdapter themeAdapter = ( ControlThemeAdapter )getAdapter( IThemeAdapter.class );
       result = themeAdapter.getForeground( this );
     }
     if( result == null ) {
@@ -671,8 +670,7 @@ public abstract class Control extends Widget implements Drawable {
     checkWidget();
     Font result = font;
     if( result == null ) {
-      IControlThemeAdapter themeAdapter
-        = ( IControlThemeAdapter )getAdapter( IThemeAdapter.class );
+      ControlThemeAdapter themeAdapter = ( ControlThemeAdapter )getAdapter( IThemeAdapter.class );
       result = themeAdapter.getFont( this );
     }
     return result;
@@ -1146,13 +1144,13 @@ public abstract class Control extends Widget implements Drawable {
    */
   public int getBorderWidth() {
     checkWidget();
-    IControlThemeAdapter themeAdapter = ( IControlThemeAdapter )getAdapter( IThemeAdapter.class );
+    ControlThemeAdapter themeAdapter = ( ControlThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getBorderWidth( this );
   }
 
   Rectangle getPadding() {
     if( bufferedPadding == null ) {
-      IControlThemeAdapter themeAdapter = ( IControlThemeAdapter )getAdapter( IThemeAdapter.class );
+      ControlThemeAdapter themeAdapter = ( ControlThemeAdapter )getAdapter( IThemeAdapter.class );
       bufferedPadding = themeAdapter.getPadding( this );
     }
     return bufferedPadding;
@@ -1461,6 +1459,7 @@ public abstract class Control extends Widget implements Drawable {
     }
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result = null;
@@ -2331,12 +2330,14 @@ public abstract class Control extends Widget implements Drawable {
   ////////////
   // Disposal
 
+  @Override
   void releaseParent() {
     if( parent != null ) {
       parent.removeControl( this );
     }
   }
 
+  @Override
   void releaseWidget() {
     if( menu != null ) {
       removeMenuDisposeListener();

@@ -29,7 +29,7 @@ import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.theme.IControlThemeAdapter;
+import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DragDetectListener;
@@ -998,7 +998,7 @@ public class Control_Test extends TestCase {
     shell.setBackground( color );
     assertEquals( color, shell.getBackground() );
     shell.setBackground( null );
-    IControlThemeAdapter themeAdapter = getThemeAdapter( shell );
+    ControlThemeAdapter themeAdapter = getThemeAdapter( shell );
     assertEquals( themeAdapter.getBackground( shell ), shell.getBackground() );
     Color color2 = new Color( display, 0, 0, 0 );
     color2.dispose();
@@ -1054,7 +1054,7 @@ public class Control_Test extends TestCase {
     shell.setFont( itemFont );
     assertSame( itemFont, shell.getFont() );
     shell.setFont( null );
-    IControlThemeAdapter themeAdapter = getThemeAdapter( shell );
+    ControlThemeAdapter themeAdapter = getThemeAdapter( shell );
     assertSame( themeAdapter.getFont( shell ), shell.getFont() );
     // Test with images, that should appear on unselected tabs
     Font font = new Font( display, "Testfont", 10, SWT.BOLD );
@@ -1072,7 +1072,7 @@ public class Control_Test extends TestCase {
     shell.setForeground( color );
     assertEquals( color, shell.getForeground() );
     shell.setForeground( null );
-    IControlThemeAdapter themeAdapter = getThemeAdapter( shell );
+    ControlThemeAdapter themeAdapter = getThemeAdapter( shell );
     assertEquals( themeAdapter.getForeground( shell ), shell.getForeground() );
     Color color2 = new Color( display, 255, 0, 0 );
     color2.dispose();
@@ -1184,8 +1184,8 @@ public class Control_Test extends TestCase {
     }
   }
 
-  private static IControlThemeAdapter getThemeAdapter( Control control ) {
-    return ( IControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
+  private static ControlThemeAdapter getThemeAdapter( Control control ) {
+    return ( ControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
   }
 
   public void testAddKeyListener() {

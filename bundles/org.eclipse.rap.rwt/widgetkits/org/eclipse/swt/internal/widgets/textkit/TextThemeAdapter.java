@@ -15,13 +15,13 @@ import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher.Constraint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class TextThemeAdapter extends ControlThemeAdapter {
+public final class TextThemeAdapter extends ControlThemeAdapterImpl {
 
   @Override
   protected void configureMatcher( WidgetMatcher matcher ) {

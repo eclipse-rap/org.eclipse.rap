@@ -19,7 +19,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -45,7 +45,7 @@ public class ControlThemeAdapter_Test extends TestCase {
 
   public void testValues() {
     Label label = new Label( shell, SWT.BORDER );
-    ControlThemeAdapter cta = ( ControlThemeAdapter )label.getAdapter( IThemeAdapter.class );
+    ControlThemeAdapterImpl cta = ( ControlThemeAdapterImpl )label.getAdapter( IThemeAdapter.class );
 
     assertEquals( 1, cta.getBorderWidth( label ) );
     assertEquals( Graphics.getColor( 74, 74, 74 ), cta.getForeground( label ) );
@@ -55,7 +55,7 @@ public class ControlThemeAdapter_Test extends TestCase {
   public void testForegroundWhenDisabled() {
     Label label = new Label( shell, SWT.BORDER );
     label.setEnabled( false );
-    ControlThemeAdapter cta = ( ControlThemeAdapter )label.getAdapter( IThemeAdapter.class );
+    ControlThemeAdapterImpl cta = ( ControlThemeAdapterImpl )label.getAdapter( IThemeAdapter.class );
 
     // even though the label is grayed out, getForeground() shows the original color in SWT
     assertEquals( Graphics.getColor( 74, 74, 74 ), cta.getForeground( label ) );

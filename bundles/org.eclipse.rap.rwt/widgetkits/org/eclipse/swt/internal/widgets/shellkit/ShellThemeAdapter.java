@@ -21,12 +21,12 @@ import org.eclipse.rap.rwt.internal.theme.WidgetMatcher.Constraint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class ShellThemeAdapter extends ControlThemeAdapter {
+public final class ShellThemeAdapter extends ControlThemeAdapterImpl {
 
   private static final int MENU_BAR_MIN_HEIGHT = 20;
 

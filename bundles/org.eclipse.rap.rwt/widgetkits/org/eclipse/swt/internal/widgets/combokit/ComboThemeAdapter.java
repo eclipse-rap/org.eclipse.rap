@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,11 @@
 package org.eclipse.swt.internal.widgets.combokit;
 
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 
 
-public final class ComboThemeAdapter extends ControlThemeAdapter {
+public final class ComboThemeAdapter extends ControlThemeAdapterImpl {
 
   public Rectangle getFieldPadding( Control control ) {
     return getCssBoxDimensions( "Combo-Field", "padding", control );

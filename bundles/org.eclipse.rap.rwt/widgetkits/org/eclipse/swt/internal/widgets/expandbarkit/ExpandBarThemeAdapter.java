@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying material
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.expandbarkit;
 
-import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.ExpandBar;
 
 
-public class ExpandBarThemeAdapter  extends ControlThemeAdapter {
+public class ExpandBarThemeAdapter extends ControlThemeAdapterImpl {
 
   public int getItemBorderWidth( ExpandBar bar ) {
     return getCssBorderWidth( "ExpandItem", "border", bar );
