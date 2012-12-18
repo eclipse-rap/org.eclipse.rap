@@ -270,20 +270,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     testGetWidgetWidgetRenderAdapter : function() {
       var widget = new rwt.widgets.base.Terminator();
-      var adapter1 = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
-      assertTrue( adapter1 instanceof org.eclipse.rwt.WidgetRenderAdapter );
-      var adapter2 = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
+      var adapter1 = widget.getAdapter( rwt.widgets.util.WidgetRenderAdapter );
+      assertTrue( adapter1 instanceof rwt.widgets.util.WidgetRenderAdapter );
+      var adapter2 = widget.getAdapter( rwt.widgets.util.WidgetRenderAdapter );
       assertIdentical( adapter1, adapter2 );
       widget.destroy();
     },
 
     testPreventMultipleWidgetRenderAdapter : function() {
       var widget = new rwt.widgets.base.Terminator();
-      var adapter1 = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
-      assertTrue( adapter1 instanceof org.eclipse.rwt.WidgetRenderAdapter );
+      var adapter1 = widget.getAdapter( rwt.widgets.util.WidgetRenderAdapter );
+      assertTrue( adapter1 instanceof rwt.widgets.util.WidgetRenderAdapter );
       var error = null;
       try {
-        var adapter2 = new org.eclipse.rwt.WidgetRenderAdapter( widget );
+        var adapter2 = new rwt.widgets.util.WidgetRenderAdapter( widget );
       } catch( ex ) {
         error = ex;
       }
@@ -293,7 +293,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     testDisposeWidgetRenderAdapterWithWidget : function() {
       var widget = new rwt.widgets.base.Terminator();
-      var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
+      var adapter = widget.getAdapter( rwt.widgets.util.WidgetRenderAdapter );
       widget.destroy();
       TestUtil.flush();
       assertTrue( adapter.isDisposed() );
@@ -301,7 +301,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     testRenderVisibilityListener : function() {
       var widget = this._createWidget();
-      var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
+      var adapter = widget.getAdapter( rwt.widgets.util.WidgetRenderAdapter );
       var log = [];
       var logger = function( args ) {
         log.push( args[ 0 ] );
@@ -316,7 +316,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     testAddMultipleRenderVisibilityListener : function() {
       var widget = this._createWidget();
-      var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
+      var adapter = widget.getAdapter( rwt.widgets.util.WidgetRenderAdapter );
       var log = [];
       var logger1 = function( event ) {
         log.push( 1 );
@@ -334,7 +334,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     testRenderListenerPreventDefault : function() {
       var widget = this._createWidget();
-      var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
+      var adapter = widget.getAdapter( rwt.widgets.util.WidgetRenderAdapter );
       var log = [];
       var logger = function( args ) {
         log.push( args[ 0 ] )
@@ -349,7 +349,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     testRenderAdapterForceRender : function() {
       var widget = this._createWidget();
-      var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
+      var adapter = widget.getAdapter( rwt.widgets.util.WidgetRenderAdapter );
       var log = [];
       var logger = function( args ) {
         log.push( args[ 0 ] )
@@ -367,7 +367,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     testRemoveRenderListener : function() {
       var widget = this._createWidget();
-      var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
+      var adapter = widget.getAdapter( rwt.widgets.util.WidgetRenderAdapter );
       var log = [];
       var logger = function( event ) {
         log.push( event );

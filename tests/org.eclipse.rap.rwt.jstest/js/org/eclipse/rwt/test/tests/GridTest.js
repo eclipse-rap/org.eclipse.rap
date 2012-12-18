@@ -175,7 +175,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       TestUtil.protocolSet( "w3", { "fixedColumns" : 3 } );
-      assertTrue( widget.getRowContainer() instanceof org.eclipse.rwt.GridRowContainerWrapper );
+      assertTrue( widget.getRowContainer() instanceof rwt.widgets.util.GridRowContainerWrapper );
       assertEquals( 3, widget.getRowContainer()._fixedColumns );
       shell.destroy();
       widget.destroy();
@@ -4259,7 +4259,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = new rwt.widgets.Grid( args );
       rwt.protocol.ObjectRegistry.add( "w3", tree );
       if( option === "fixedColumns" ) {
-        org.eclipse.rwt.GridUtil.setFixedColumns( tree, arg );
+        rwt.widgets.util.GridUtil.setFixedColumns( tree, arg );
       }
       if( option === "virtual" ) {
         tree.setHasSetDataListener( true );

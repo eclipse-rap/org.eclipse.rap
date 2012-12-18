@@ -194,7 +194,7 @@ qx.Class.define( "rwt.widgets.ProgressBar", {
       }
     },
 
-    // OVERWRITTEN FROM org.eclipse.rwt.GraphicsMixin
+    // OVERWRITTEN FROM rwt.widgets.util.GraphicsMixin
     _applyBackgroundGradient : function( value ) {
       if( this._gfxCanvasAppended ) {
         this._styleBackgroundFill();

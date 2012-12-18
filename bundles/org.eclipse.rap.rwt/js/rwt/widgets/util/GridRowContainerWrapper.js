@@ -12,7 +12,7 @@
 
 namespace( "org.eclipse.rwt" );
 
-org.eclipse.rwt.GridRowContainerWrapper = function() {
+rwt.widgets.util.GridRowContainerWrapper = function() {
   this._fixedColumns = 0;
   this._container = [];
   this._container[ 0 ] = new rwt.widgets.base.GridRowContainer();
@@ -25,7 +25,7 @@ org.eclipse.rwt.GridRowContainerWrapper = function() {
   this.addEventListener( "mouseout", this._onRowOver, this );
 };
 
-org.eclipse.rwt.GridRowContainerWrapper.createInstance = function() {
+rwt.widgets.util.GridRowContainerWrapper.createInstance = function() {
   if( !this.prototype._protoInit ) {
     for( var i = 0; i < this._CONTAINER_DELEGATES.length; i++ ) {
       this._createContainerDelegater( this._CONTAINER_DELEGATES[ i ] );
@@ -35,23 +35,23 @@ org.eclipse.rwt.GridRowContainerWrapper.createInstance = function() {
     }
     this.prototype._protoInit = true;
   }
-  return new org.eclipse.rwt.GridRowContainerWrapper();
+  return new rwt.widgets.util.GridRowContainerWrapper();
 };
 
-org.eclipse.rwt.GridRowContainerWrapper._createContainerDelegater = function( funcName ) {
+rwt.widgets.util.GridRowContainerWrapper._createContainerDelegater = function( funcName ) {
   this.prototype[ funcName ] = function() {
     this._container[ 0 ][ funcName ].apply( this._container[ 0 ], arguments );
     this._container[ 1 ][ funcName ].apply( this._container[ 1 ], arguments );
   };
 };
 
-org.eclipse.rwt.GridRowContainerWrapper._createContainerGetterDelegater = function( funcName ) {
+rwt.widgets.util.GridRowContainerWrapper._createContainerGetterDelegater = function( funcName ) {
   this.prototype[ funcName ] = function() {
     return this._container[ 0 ][ funcName ].apply( this._container[ 0 ], arguments );
   };
 };
 
-org.eclipse.rwt.GridRowContainerWrapper._CONTAINER_DELEGATES = [
+rwt.widgets.util.GridRowContainerWrapper._CONTAINER_DELEGATES = [
   "setParent",
   "destroy",
   "addEventListener",
@@ -69,7 +69,7 @@ org.eclipse.rwt.GridRowContainerWrapper._CONTAINER_DELEGATES = [
   "setBaseAppearance"
 ];
 
-org.eclipse.rwt.GridRowContainerWrapper._CONTAINER_GETTER_DELEGATES = [
+rwt.widgets.util.GridRowContainerWrapper._CONTAINER_GETTER_DELEGATES = [
   "getTop",
   "getHeight",
   "getHoverItem",
@@ -77,7 +77,7 @@ org.eclipse.rwt.GridRowContainerWrapper._CONTAINER_GETTER_DELEGATES = [
   "getChildrenLength"
 ];
 
-org.eclipse.rwt.GridRowContainerWrapper.prototype = {
+rwt.widgets.util.GridRowContainerWrapper.prototype = {
 
   _protoInit : false,
 

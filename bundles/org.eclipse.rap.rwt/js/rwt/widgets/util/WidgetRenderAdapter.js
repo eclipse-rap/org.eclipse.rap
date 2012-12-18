@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.WidgetRenderAdapter", {
+qx.Class.define( "rwt.widgets.util.WidgetRenderAdapter", {
 
   extend : qx.core.Target,
 

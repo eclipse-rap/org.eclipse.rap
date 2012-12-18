@@ -225,7 +225,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
         "appearance": "table",
         "splitContainer" : true
       } );
-      org.eclipse.rwt.GridUtil.setFixedColumns( tree, 3 );
+      rwt.widgets.util.GridUtil.setFixedColumns( tree, 3 );
       // first 3 columns fixed -> one extra contianer for first 3
       assertIdentical( tree, tree._rowContainer.getSubContainer( 0 ).getParent() );
       assertIdentical( tree, tree._rowContainer.getSubContainer( 1 ).getParent() );
@@ -240,7 +240,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       var tree = new rwt.widgets.Grid( {
         "appearance": "table"
       } );
-      org.eclipse.rwt.GridUtil.setFixedColumns( tree, 3 );
+      rwt.widgets.util.GridUtil.setFixedColumns( tree, 3 );
       tree.addToDocument();
       TestUtil.flush();
       assertTrue( tree._rowContainer instanceof rwt.widgets.base.GridRowContainer );
@@ -261,7 +261,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       assertEquals( 2, tree.getRowContainer().getFixedColumns() );
       var containerEl = tree.getRowContainer().getSubContainer( 0 ).getElement();
       var orgWidth = parseInt( containerEl.style.width, 10 );
-      org.eclipse.rwt.GridUtil.setFixedColumns( tree, 3 );
+      rwt.widgets.util.GridUtil.setFixedColumns( tree, 3 );
       assertEquals( 3, tree.getRowContainer().getFixedColumns() );
       TestUtil.flush();
       var newWidth = parseInt( containerEl.style.width, 10 );
@@ -469,7 +469,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       var offset2 = cont2.childNodes.length;
       tree.setLinesVisible( true );
       TestUtil.flush();
-      org.eclipse.rwt.GridUtil.setFixedColumns( tree, 0 );
+      rwt.widgets.util.GridUtil.setFixedColumns( tree, 0 );
       TestUtil.flush();
       assertEquals( offset1, cont1.childNodes.length );
       assertEquals( offset2 + 5, cont2.childNodes.length ); // column count is 5
@@ -483,7 +483,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       // column order: 2,0 - 1,3,4
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var argsMap = { "splitContainer" : true };
-      var result = org.eclipse.rwt.GridUtil.createTreeRowContainer( argsMap );
+      var result = rwt.widgets.util.GridUtil.createTreeRowContainer( argsMap );
       result.setFixedColumns( 2 );
       result.setBaseAppearance( "table" );
       result.setSelectionProvider( function(){ return true; }, {} );
@@ -521,7 +521,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       args[ "selectionPadding" ] = [ 2, 4 ];
       args[ "indentionWidth" ] = 16;
       var tree = new rwt.widgets.Grid( args );
-      org.eclipse.rwt.GridUtil.setFixedColumns( tree, 2 );
+      rwt.widgets.util.GridUtil.setFixedColumns( tree, 2 );
       tree.setTreeColumn( -1 );
       tree.setItemHeight( 20 );
       tree.setLeft( 0 );

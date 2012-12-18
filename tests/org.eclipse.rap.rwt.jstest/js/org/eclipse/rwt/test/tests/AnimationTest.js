@@ -504,7 +504,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
       var typeChange = rwt.animation.AnimationRenderer.ANIMATION_CHANGE;
-      var renderAdapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
+      var renderAdapter = widget.getAdapter( rwt.widgets.util.WidgetRenderAdapter );
       
       renderer.animate( widget, "opacity", typeChange );
       

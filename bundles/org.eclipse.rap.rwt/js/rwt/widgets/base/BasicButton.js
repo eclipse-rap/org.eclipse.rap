@@ -46,8 +46,8 @@ qx.Class.define( "rwt.widgets.base.BasicButton", {
         this._isSelectable = true;
         this._sendEvent = true;
         this.setNoRadioGroup( false );
-        org.eclipse.rwt.RadioButtonUtil.registerExecute( this );
-        org.eclipse.rwt.RadioButtonUtil.registerKeypress( this );
+        rwt.widgets.util.RadioButtonUtil.registerExecute( this );
+        rwt.widgets.util.RadioButtonUtil.registerKeypress( this );
       break;
     }
 

@@ -347,7 +347,7 @@ qx.Class.define( "rwt.widgets.Menu", {
     _beforeAppear : function() {
       // original qooxdoo code: (1 line)
       rwt.widgets.base.Parent.prototype._beforeAppear.call( this );
-      org.eclipse.rwt.MenuManager.getInstance().add( this );
+      rwt.widgets.util.MenuManager.getInstance().add( this );
       this.bringToFront();
       this._makeActive();
       this._menuShown();
@@ -356,7 +356,7 @@ qx.Class.define( "rwt.widgets.Menu", {
     _beforeDisappear : function() {
       // original qooxdoo code: (1 line)
       rwt.widgets.base.Parent.prototype._beforeDisappear.call( this );
-      org.eclipse.rwt.MenuManager.getInstance().remove( this );
+      rwt.widgets.util.MenuManager.getInstance().remove( this );
       if( this.getFocusRoot() ) {
         // if the menu is disposed while visible, it might not have a focusRoot
         this._makeInactive();
@@ -516,7 +516,7 @@ qx.Class.define( "rwt.widgets.Menu", {
         this._openItem.getMenu().hoverFirstItem();
       } else if( this._hoverItem ){
         this._hoverItem.execute();
-        org.eclipse.rwt.MenuManager.getInstance().update();
+        rwt.widgets.util.MenuManager.getInstance().update();
       }
       event.preventDefault();
       event.stopPropagation();

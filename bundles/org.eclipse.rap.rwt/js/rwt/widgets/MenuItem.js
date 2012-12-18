@@ -56,7 +56,7 @@ qx.Class.define("rwt.widgets.MenuItem",  {
        this._isSelectable = true;
        this._sendEvent = true;
        this.setNoRadioGroup( false );
-       org.eclipse.rwt.RadioButtonUtil.registerExecute( this );
+       rwt.widgets.util.RadioButtonUtil.registerExecute( this );
       break;
     }
     this._preferredCellWidths = [ 0, 0, 0, 13 ];

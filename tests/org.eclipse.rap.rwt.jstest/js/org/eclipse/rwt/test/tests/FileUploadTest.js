@@ -295,7 +295,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
 
     testShowFocusIndicator : function() {
       var isChrome = rwt.client.Client.getBrowser() === "chrome";
-      var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
+      var focusIndicator = rwt.widgets.util.FocusIndicator.getInstance();
       if( focusIndicator._frame == null ) {
         focusIndicator._createFrame();
       }

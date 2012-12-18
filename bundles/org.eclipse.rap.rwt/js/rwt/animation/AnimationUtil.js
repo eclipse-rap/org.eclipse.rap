@@ -57,7 +57,7 @@ rwt.animation.AnimationUtil = {
 
   _createRenderer : function( animation, widget, property ) {
     var converter = AnimationRenderer.converterByRenderType;
-    var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
+    var adapter = widget.getAdapter( rwt.widgets.util.WidgetRenderAdapter );
     var result = new AnimationRenderer( animation );
     result.setRenderFunction( adapter.getOriginalRenderer( property ), widget );
     result.setConverter( converter[ property ] );

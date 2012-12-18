@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
+qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
 
   destruct : function() {
     this._gfxProperties = null;
@@ -67,7 +67,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
 
     _applyShadow : rwt.util.Variant.select( "qx.client", {
       "default" : function( value, oldValue ) {
-        if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
+        if( rwt.widgets.util.GraphicsMixin.getSupportsShadows() ) {
           var isInset = value != null && value[ 0 ];
           var hasOpacity = this.getOpacity() !== 1 && this.getOpacity() !== null;
           var opacityBug = value != null && hasOpacity && rwt.client.Client.isMshtml();

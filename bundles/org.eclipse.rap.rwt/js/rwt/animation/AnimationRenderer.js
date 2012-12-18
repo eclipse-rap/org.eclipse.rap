@@ -248,7 +248,7 @@ qx.Class.define( "rwt.animation.AnimationRenderer", {
       {
         this.clearAnimation();
         this._context = widget;
-        this._renderAdapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
+        this._renderAdapter = widget.getAdapter( rwt.widgets.util.WidgetRenderAdapter );
         this._renderType = renderType;
         this._animationType = animationType;
         this._renderFunction = this._renderAdapter.getOriginalRenderer( this._renderType );

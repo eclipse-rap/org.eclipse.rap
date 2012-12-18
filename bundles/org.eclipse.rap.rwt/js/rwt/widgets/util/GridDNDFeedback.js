@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.GridDNDFeedback", {
+qx.Class.define( "rwt.widgets.util.GridDNDFeedback", {
   extend : qx.core.Object,
 
   construct : function( tree ) {

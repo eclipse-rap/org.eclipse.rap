@@ -391,7 +391,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _createFeedback : function( widget ) {
       if( this._dropFeedbackRenderer == null ) {
         if( widget instanceof rwt.widgets.Grid ) {
-          this._dropFeedbackRenderer = new org.eclipse.rwt.GridDNDFeedback( widget );
+          this._dropFeedbackRenderer = new rwt.widgets.util.GridDNDFeedback( widget );
         }
       }
     },

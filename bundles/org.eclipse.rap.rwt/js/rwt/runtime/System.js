@@ -32,7 +32,7 @@ qx.Class.define( "rwt.runtime.System", {
       org.eclipse.rwt.GraphicsUtil.init();
       var eventHandler = org.eclipse.rwt.EventHandler;
       eventHandler.setAllowContextMenu( rwt.widgets.Menu.getAllowContextMenu );
-      eventHandler.setMenuManager( org.eclipse.rwt.MenuManager.getInstance() );
+      eventHandler.setMenuManager( rwt.widgets.util.MenuManager.getInstance() );
     }
   },
 
@@ -65,12 +65,12 @@ qx.Class.define( "rwt.runtime.System", {
 
     _applyPatches : function() {
       if( !rwt.client.Client.supportsCss3() ) {
-        qx.Class.patch( rwt.widgets.base.Parent, org.eclipse.rwt.GraphicsMixin );
-        qx.Class.patch( rwt.widgets.base.BasicText, org.eclipse.rwt.GraphicsMixin );
-        qx.Class.patch( rwt.widgets.base.GridRow, org.eclipse.rwt.GraphicsMixin );
-        qx.Class.patch( rwt.widgets.base.MultiCellWidget, org.eclipse.rwt.GraphicsMixin );
+        qx.Class.patch( rwt.widgets.base.Parent, rwt.widgets.util.GraphicsMixin );
+        qx.Class.patch( rwt.widgets.base.BasicText, rwt.widgets.util.GraphicsMixin );
+        qx.Class.patch( rwt.widgets.base.GridRow, rwt.widgets.util.GraphicsMixin );
+        qx.Class.patch( rwt.widgets.base.MultiCellWidget, rwt.widgets.util.GraphicsMixin );
       } else {
-        qx.Class.patch( rwt.widgets.ProgressBar, org.eclipse.rwt.GraphicsMixin );
+        qx.Class.patch( rwt.widgets.ProgressBar, rwt.widgets.util.GraphicsMixin );
       }
       qx.Class.patch( qx.event.type.DomEvent, org.eclipse.rwt.DomEventPatch );
     },

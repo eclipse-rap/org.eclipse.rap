@@ -45,7 +45,7 @@ qx.Class.define( "rwt.widgets.Grid", {
     // Timer & Border
     this._mergeEventsTimer = new rwt.client.Timer( 50 );
     // Subwidgets
-    this._rowContainer = org.eclipse.rwt.GridUtil.createTreeRowContainer( argsMap );
+    this._rowContainer = rwt.widgets.util.GridUtil.createTreeRowContainer( argsMap );
     this._columns = {};
     this._horzScrollBar = new rwt.widgets.base.ScrollBar( true );
     this._vertScrollBar = new rwt.widgets.base.ScrollBar( false );
@@ -1399,7 +1399,7 @@ qx.Class.define( "rwt.widgets.Grid", {
         if( this._rowContainer.getHoverItem() ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           itemId = widgetManager.findIdByWidget( this._rowContainer.getHoverItem() );
-          columnIndex = org.eclipse.rwt.GridUtil.getColumnByPageX( this, evt.getPageX() );
+          columnIndex = rwt.widgets.util.GridUtil.getColumnByPageX( this, evt.getPageX() );
         }
         this._cellToolTip.setCell( itemId, columnIndex );
       }

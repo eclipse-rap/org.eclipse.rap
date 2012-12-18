@@ -12,7 +12,7 @@
 
 namespace( "org.eclipse.rwt" );
 
-org.eclipse.rwt.GridUtil = {
+rwt.widgets.util.GridUtil = {
 
   /////////////////
   // API for Server
@@ -31,7 +31,7 @@ org.eclipse.rwt.GridUtil = {
   createTreeRowContainer : function( argsmap ) {
     var result;
     if( argsmap.splitContainer ) {
-      result = org.eclipse.rwt.GridRowContainerWrapper.createInstance();
+      result = rwt.widgets.util.GridRowContainerWrapper.createInstance();
     } else {
       result = new rwt.widgets.base.GridRowContainer();
     }
@@ -40,7 +40,7 @@ org.eclipse.rwt.GridUtil = {
 
   getColumnByPageX : function( tree, pageX ) {
     var container = tree.getRowContainer();
-    var splitContainer = container instanceof org.eclipse.rwt.GridRowContainerWrapper;
+    var splitContainer = container instanceof rwt.widgets.util.GridRowContainerWrapper;
     if( splitContainer ) {
       container = tree.getRowContainer().getSubContainer( 0 );
     }

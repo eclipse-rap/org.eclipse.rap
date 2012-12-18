@@ -78,7 +78,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
       }
     },
     "fixedColumns" : function( widget, value ) {
-      org.eclipse.rwt.GridUtil.setFixedColumns( widget, value );
+      rwt.widgets.util.GridUtil.setFixedColumns( widget, value );
     },
     "focusItem" : function( widget, value ) {
       rwt.protocol.AdapterUtil.callWithTarget( value, function( item ) {
