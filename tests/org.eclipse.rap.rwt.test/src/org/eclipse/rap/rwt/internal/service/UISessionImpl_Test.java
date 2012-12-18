@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.service;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,6 +30,7 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.client.Client;
+import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
@@ -38,7 +40,6 @@ import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestLogger;
-import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 
@@ -470,13 +471,14 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( client, result );
   }
 
-  public void testSetLocale_failsWithNull() {
-    try {
-      uiSession.setLocale( null );
-      fail();
-    } catch( NullPointerException exception ) {
-      assertTrue( exception.getMessage().contains( "locale" ) );
-    }
+  public void testSetLocale_canBeResetWithNull() {
+    ApplicationContextUtil.set( uiSession, ApplicationContextUtil.getInstance() );
+    Fixture.fakeClient( mockClientWithLocale( null ) );
+    uiSession.setLocale( Locale.ITALIAN );
+
+    uiSession.setLocale( null );
+
+    assertSame( Locale.getDefault(), uiSession.getLocale() );
   }
 
   public void testGetLocale_returnsSetLocale() {
@@ -487,19 +489,45 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( Locale.UK, locale );
   }
 
-  public void testGetLocale_fallsBackToRequestLocale() {
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.setLocales( Locale.ITALIAN );
+  public void testGetLocale_fallsBackToClientLocale() {
+    ApplicationContextUtil.set( uiSession, ApplicationContextUtil.getInstance() );
+    Fixture.fakeClient( mockClientWithLocale( Locale.ITALIAN ) );
 
     Locale locale = uiSession.getLocale();
 
     assertSame( Locale.ITALIAN, locale );
   }
 
-  public void testGetLocale_fallsBackToSystemLocale() {
+  public void testGetLocale_fallsBackToSystemLocale_withoutClientInfo() {
+    ApplicationContextUtil.set( uiSession, ApplicationContextUtil.getInstance() );
+    Fixture.fakeClient( mock( Client.class ) );
+
     Locale locale = uiSession.getLocale();
 
     assertSame( Locale.getDefault(), locale );
+  }
+
+  public void testGetLocale_fallsBackToSystemLocale_withoutClientLocale() {
+    ApplicationContextUtil.set( uiSession, ApplicationContextUtil.getInstance() );
+    Fixture.fakeClient( mockClientWithLocale( null ) );
+
+    Locale locale = uiSession.getLocale();
+
+    assertSame( Locale.getDefault(), locale );
+  }
+
+  public void testGetLocale_worksInBackgroundThread() throws Throwable {
+    ApplicationContextUtil.set( uiSession, ApplicationContextUtil.getInstance() );
+    Fixture.fakeClient( mock( Client.class ) );
+    final AtomicReference<Locale> localeCaptor = new AtomicReference<Locale>();
+
+    Fixture.runInThread( new Runnable() {
+      public void run() {
+        localeCaptor.set( uiSession.getLocale() );
+      }
+    } );
+
+    assertNotNull( localeCaptor.get() );
   }
 
   public void testExec_failsWithNullArgument() {
@@ -555,6 +583,14 @@ public class UISessionImpl_Test extends TestCase {
 
     assertNotSame( context, runnable.getContext() );
     assertSame( uiSession, runnable.getUISession() );
+  }
+
+  private static Client mockClientWithLocale( Locale locale ) {
+    Client client = mock( Client.class );
+    ClientInfo clientInfo = mock( ClientInfo.class );
+    when( clientInfo.getLocale() ).thenReturn( locale );
+    when( client.getService( same( ClientInfo.class ) ) ).thenReturn( clientInfo  );
+    return client;
   }
 
   private static class EmptyUISessionListener implements UISessionListener {

@@ -17,6 +17,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.client.Client;
+import org.eclipse.rap.rwt.client.service.ClientInfo;
 
 
 /**
@@ -146,9 +147,9 @@ public interface UISession extends ISessionStore {
   /**
    * Returns the preferred <code>Locale</code> for this UI session. The result reflects the locale
    * that has been set using {@link #setLocale(Locale)}. If no locale has been set on this
-   * UISession, the locale will be taken from the <code>Accept-Language</code> HTTP header of the
-   * current request. If the client request doesn't provide a preferred locale, then this method
-   * returns the default locale for the server.
+   * UISession, the locale will be taken from client using the {@link ClientInfo} service. If the
+   * client request doesn't provide a preferred locale, then this method returns the default locale
+   * for the server.
    *
    * @return the preferred locale for the client, or the default system locale, never
    *         <code>null</code>
@@ -160,6 +161,7 @@ public interface UISession extends ISessionStore {
    * Sets the preferred <code>Locale</code> for this UI session. The value set can be retrieved
    * using {@link #getLocale()}.
    *
+   * @param locale the locale to set, or <code>null</code> to reset
    * @see #getLocale()
    */
   public void setLocale( Locale locale );

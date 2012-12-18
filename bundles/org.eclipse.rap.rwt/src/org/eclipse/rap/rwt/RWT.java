@@ -548,6 +548,7 @@ public final class RWT {
    * Sets the preferred <code>Locale</code> for the current UI session. This method is a shortcut
    * for <code>RWT.getUISession().setLocale( locale )</code>.
    *
+   * @param locale the locale to set, or <code>null</code> to reset
    * @see UISession#setLocale(Locale)
    */
   public static void setLocale( Locale locale ) {

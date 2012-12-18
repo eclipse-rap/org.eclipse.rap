@@ -16,9 +16,7 @@ import java.util.Locale;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.TestRequest;
 
 
 public class NLS_Test extends TestCase {
@@ -38,29 +36,43 @@ public class NLS_Test extends TestCase {
     Locale.setDefault( localeBuffer );
   }
 
-  public void testNLS() {
+  public void testNLS_default() {
     assertEquals( "My Message", TestMessages.get().MyMessage );
+  }
 
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.setLocales( Locale.ITALIAN );
+  public void testNLS_italian() {
+    RWT.setLocale( Locale.ITALIAN );
+
     assertEquals( "Il mio messaggio", TestMessages.get().MyMessage );
+  }
 
+  public void testNLS_german() {
     RWT.setLocale( Locale.GERMAN );
-    assertEquals( "Meine Nachricht", TestMessages.get().MyMessage );
 
+    assertEquals( "Meine Nachricht", TestMessages.get().MyMessage );
+  }
+
+  public void testNLS_sameInstance() {
     assertSame( TestMessages.get(), TestMessages.get() );
   }
 
-  public void testNLS_UTF8() {
+  public void testNLS_UTF8_default() {
     assertEquals( "My Message", TestMessagesUTF8.get().MyMessage );
+  }
 
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.setLocales( Locale.ITALIAN );
+  public void testNLS_UTF8_italian() {
+    RWT.setLocale( Locale.ITALIAN );
+
     assertEquals( "Il mio messaggio", TestMessagesUTF8.get().MyMessage );
+  }
 
+  public void testNLS_UTF8_german() {
     RWT.setLocale( Locale.GERMAN );
-    assertEquals( "Meine Nachricht", TestMessagesUTF8.get().MyMessage );
 
+    assertEquals( "Meine Nachricht", TestMessagesUTF8.get().MyMessage );
+  }
+
+  public void testNLS_UTF8_sameInstance() {
     assertSame( TestMessagesUTF8.get(), TestMessagesUTF8.get() );
   }
 

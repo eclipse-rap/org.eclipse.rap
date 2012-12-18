@@ -25,6 +25,7 @@ import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
 import org.eclipse.rap.rwt.client.Client;
+import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
@@ -152,13 +153,18 @@ public final class UISessionImpl
   public Locale getLocale() {
     Locale locale = ( Locale )getAttribute( ATTR_LOCALE );
     if( locale == null ) {
-      locale = ContextProvider.getRequest().getLocale();
+      ClientInfo clientInfo = getClient().getService( ClientInfo.class );
+      if( clientInfo != null ) {
+        locale = clientInfo.getLocale();
+      }
+      if( locale == null ) {
+        locale = Locale.getDefault();
+      }
     }
     return locale;
   }
 
   public void setLocale( Locale locale ) {
-    ParamCheck.notNull( locale, "locale" );
     setAttribute( ATTR_LOCALE, locale );
   }
 
