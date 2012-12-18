@@ -104,7 +104,7 @@ qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
       toolTip.setHideInterval( 15000 );
       toolTip.setMousePointerOffsetX( -35 );
       toolTip.setMousePointerOffsetY( -100 );
-      var manager = qx.ui.popup.ToolTipManager.getInstance();
+      var manager = rwt.widgets.util.ToolTipManager.getInstance();
       manager.handleMouseEvent = function( event ) {
         var type = event.getType();
         if( type === "mousedown" ) {
@@ -510,7 +510,7 @@ qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
 
     _postMouseEvent : function( type ) {
       if( type === "mouseup" ) {
-        qx.ui.popup.ToolTipManager.getInstance().setCurrentToolTip( null );
+        rwt.widgets.util.ToolTipManager.getInstance().setCurrentToolTip( null );
       }
     }
 

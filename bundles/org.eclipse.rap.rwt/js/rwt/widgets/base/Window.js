@@ -221,12 +221,12 @@ qx.Class.define("rwt.widgets.base.Window",
      * the manager is created.
      *
      * @type static
-     * @return {qx.ui.window.Manager} window manager instance
+     * @return {rwt.widgets.util.WindowManager} window manager instance
      */
     getDefaultWindowManager : function()
     {
       if (!rwt.widgets.base.Window._defaultWindowManager) {
-        rwt.widgets.base.Window._defaultWindowManager = new qx.ui.window.Manager();
+        rwt.widgets.base.Window._defaultWindowManager = new rwt.widgets.util.WindowManager();
       }
 
       return rwt.widgets.base.Window._defaultWindowManager;
@@ -255,13 +255,13 @@ qx.Class.define("rwt.widgets.base.Window",
     /** The windowManager to use for. */
     windowManager :
     {
-      check : "qx.ui.window.Manager",
+      check : "rwt.widgets.util.WindowManager",
       event : "changeWindowManager"
     },
 
 
     /**
-     * If the window is active, only one window in a single qx.ui.window.Manager could
+     * If the window is active, only one window in a single rwt.widgets.util.WindowManager could
      *  have set this to true at the same time.
      */
     active :
@@ -596,7 +596,7 @@ qx.Class.define("rwt.widgets.base.Window",
       rwt.widgets.base.Parent.prototype._beforeAppear.call(this);
 
       // Hide popups
-      qx.ui.popup.PopupManager.getInstance().update();
+      rwt.widgets.util.PopupManager.getInstance().update();
 
       // Configure the focus root to be the current opened window
       org.eclipse.rwt.EventHandler.setFocusRoot(this);

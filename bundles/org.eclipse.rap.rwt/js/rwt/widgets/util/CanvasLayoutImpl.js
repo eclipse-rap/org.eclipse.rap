@@ -11,9 +11,9 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define("qx.ui.layout.impl.CanvasLayoutImpl",
+qx.Class.define("rwt.widgets.util.CanvasLayoutImpl",
 {
-  extend : qx.ui.layout.impl.LayoutImpl,
+  extend : rwt.widgets.util.LayoutImpl,
 
 
 
@@ -59,7 +59,7 @@ qx.Class.define("qx.ui.layout.impl.CanvasLayoutImpl",
      *  [09] FLUSH LAYOUT QUEUES OF CHILDREN
      *  [10] LAYOUT CHILD
      *
-     *  Inherits from qx.ui.layout.impl.LayoutImpl:
+     *  Inherits from rwt.widgets.util.LayoutImpl:
      *  [03] COMPUTE NEEDED DIMENSIONS FOR ALL CHILDREN
      *  [04] UPDATE LAYOUT WHEN A CHILD CHANGES ITS OUTER DIMENSIONS
      *  [06] UPDATE LAYOUT ON JOB QUEUE FLUSH

@@ -216,8 +216,8 @@ qx.Class.define("rwt.widgets.base.Popup",
         }
       }
 
-      qx.ui.popup.PopupManager.getInstance().add(this);
-      qx.ui.popup.PopupManager.getInstance().update(this);
+      rwt.widgets.util.PopupManager.getInstance().add(this);
+      rwt.widgets.util.PopupManager.getInstance().update(this);
 
       this._showTimeStamp = (new Date()).valueOf();
       this.bringToFront();
@@ -235,7 +235,7 @@ qx.Class.define("rwt.widgets.base.Popup",
     {
       this.base(arguments);
 
-      qx.ui.popup.PopupManager.getInstance().remove(this);
+      rwt.widgets.util.PopupManager.getInstance().remove(this);
 
       this._hideTimeStamp = (new Date()).valueOf();
     },
@@ -386,7 +386,7 @@ qx.Class.define("rwt.widgets.base.Popup",
 
     /**
      * Resets the zIndex of all registered popups and menus
-     * (getting the instances via the {@link qx.ui.popup.PopupManager} and
+     * (getting the instances via the {@link rwt.widgets.util.PopupManager} and
      * the {@link qx.ui.menu.Manager}) one higher than the defined minimum zIndex.
      *
      * @type member
@@ -394,7 +394,7 @@ qx.Class.define("rwt.widgets.base.Popup",
      */
     _sendTo : function()
     {
-      var vPopups = rwt.util.Object.getValues(qx.ui.popup.PopupManager.getInstance().getAll());
+      var vPopups = rwt.util.Object.getValues(rwt.widgets.util.PopupManager.getInstance().getAll());
       var zIndexCompare = function(a, b) {
         return a.getZIndex() - b.getZIndex();
       };
@@ -513,7 +513,7 @@ qx.Class.define("rwt.widgets.base.Popup",
 
   destruct : function()
   {
-    qx.ui.popup.PopupManager.getInstance().remove(this);
+    rwt.widgets.util.PopupManager.getInstance().remove(this);
 
     this._disposeFields("_showTimeStamp", "_hideTimeStamp");
   }

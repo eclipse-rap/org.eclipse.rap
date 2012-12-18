@@ -16,9 +16,9 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Sash", {
     rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
     rwt.protocol.AdapterUtil.setParent( result, properties.parent );
-    var orientation = qx.constant.Layout.ORIENTATION_VERTICAL;
+    var orientation = rwt.widgets.util.Layout.ORIENTATION_VERTICAL;
     if( properties.style.indexOf( "HORIZONTAL" ) != -1 ) {
-      orientation = qx.constant.Layout.ORIENTATION_HORIZONTAL;
+      orientation = rwt.widgets.util.Layout.ORIENTATION_HORIZONTAL;
     }
     result.setOrientation( orientation );
     return result;

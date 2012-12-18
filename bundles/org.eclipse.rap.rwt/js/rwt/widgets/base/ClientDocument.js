@@ -541,7 +541,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
      * @return {void}
      */
     _onwindowresize : function(e) {
-      qx.ui.popup.PopupManager.getInstance().update();
+      rwt.widgets.util.PopupManager.getInstance().update();
       this._recomputeInnerWidth();
       this._recomputeInnerHeight();
       rwt.widgets.base.Widget.flushGlobalQueues();

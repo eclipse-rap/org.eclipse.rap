@@ -14,7 +14,7 @@
 /**
  * Each focus root delegates the focus handling to instances of the FocusHandler.
  */
-qx.Class.define("qx.event.handler.FocusHandler",
+qx.Class.define("rwt.widgets.util.FocusHandler",
 {
   extend : qx.core.Target,
 
@@ -96,7 +96,7 @@ qx.Class.define("qx.event.handler.FocusHandler",
       ev.stopPropagation();
       ev.preventDefault();
 
-      qx.event.handler.FocusHandler.mouseFocus = false;
+      rwt.widgets.util.FocusHandler.mouseFocus = false;
 
       var vCurrent = this.getAttachedWidget().getFocusedChild();
 

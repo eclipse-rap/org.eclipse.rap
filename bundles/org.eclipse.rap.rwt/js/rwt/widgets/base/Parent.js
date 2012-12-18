@@ -54,7 +54,7 @@ qx.Class.define("rwt.widgets.base.Parent",
     /** Individual focus handler for all child elements. */
     focusHandler :
     {
-      check : "qx.event.handler.FocusHandler",
+      check : "rwt.widgets.util.FocusHandler",
       apply : "_applyFocusHandler",
       nullable : true
     },
@@ -117,7 +117,7 @@ qx.Class.define("rwt.widgets.base.Parent",
      * Return the responsible focus handler
      *
      * @type member
-     * @return {qx.event.handler.FocusHandler} TODOC
+     * @return {rwt.widgets.util.FocusHandler} TODOC
      */
     getFocusRoot : function()
     {
@@ -145,7 +145,7 @@ qx.Class.define("rwt.widgets.base.Parent",
         return;
       }
 
-      this._focusHandler = new qx.event.handler.FocusHandler(this);
+      this._focusHandler = new rwt.widgets.util.FocusHandler(this);
       this.setFocusHandler(this._focusHandler);
     },
 
@@ -213,9 +213,9 @@ qx.Class.define("rwt.widgets.base.Parent",
       var vFocusValid = value != null;
       var vBlurValid = old != null;
 
-      if (qx.Class.isDefined("qx.ui.popup.PopupManager") && vFocusValid)
+      if (qx.Class.isDefined("rwt.widgets.util.PopupManager") && vFocusValid)
       {
-        var vMgr = qx.ui.popup.PopupManager.getInstance();
+        var vMgr = rwt.widgets.util.PopupManager.getInstance();
 
         if (vMgr) {
           vMgr.update(value);
@@ -271,7 +271,7 @@ qx.Class.define("rwt.widgets.base.Parent",
 
         old.dispatchEvent(vEventObject);
 
-        var vMgr = qx.ui.popup.ToolTipManager.getInstance();
+        var vMgr = rwt.widgets.util.ToolTipManager.getInstance();
 
         if (vMgr) {
           vMgr.handleBlur(vEventObject);
@@ -295,7 +295,7 @@ qx.Class.define("rwt.widgets.base.Parent",
 
         value.dispatchEvent(vEventObject);
 
-        var vMgr = qx.ui.popup.ToolTipManager.getInstance();
+        var vMgr = rwt.widgets.util.ToolTipManager.getInstance();
 
         if (vMgr) {
           vMgr.handleFocus(vEventObject);
@@ -328,14 +328,14 @@ qx.Class.define("rwt.widgets.base.Parent",
      * @return {rwt.widgets.base.BoxLayout} TODOC
      */
     _createLayoutImpl : function() {
-      return new qx.ui.layout.impl.CanvasLayoutImpl( this);
+      return new rwt.widgets.util.CanvasLayoutImpl( this);
     },
 
 
     /**
      * Return the layout implementation.
      *
-     * return {qx.ui.layout.impl.LayoutImpl}
+     * return {rwt.widgets.util.LayoutImpl}
      *
      * @type member
      * @return {var} TODOC

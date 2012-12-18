@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define("qx.constant.Layout", {
+qx.Class.define("rwt.widgets.util.Layout", {
   /*
   *****************************************************************************
      STATICS

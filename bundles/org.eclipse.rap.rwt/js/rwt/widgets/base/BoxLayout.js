@@ -186,7 +186,7 @@ qx.Class.define("rwt.widgets.base.BoxLayout",
      * @return {rwt.widgets.base.BoxLayout} TODOC
      */
     _createLayoutImpl : function() {
-      return this.getOrientation() == "vertical" ? new qx.ui.layout.impl.VerticalBoxLayoutImpl(this) : new qx.ui.layout.impl.HorizontalBoxLayoutImpl(this);
+      return this.getOrientation() == "vertical" ? new rwt.widgets.util.VerticalBoxLayoutImpl(this) : new rwt.widgets.util.HorizontalBoxLayoutImpl(this);
     },
 
 

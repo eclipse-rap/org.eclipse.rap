@@ -191,7 +191,7 @@ qx.Class.define( "rwt.widgets.Shell", {
     // an active shell (see bug 297167).
     _beforeAppear : function() {
       rwt.widgets.base.Parent.prototype._beforeAppear.call( this );
-      qx.ui.popup.PopupManager.getInstance().update();
+      rwt.widgets.util.PopupManager.getInstance().update();
       var activeWindow = this.getWindowManager().getActiveWindow();
       this.getWindowManager().add( this );
       this.getWindowManager().setActiveWindow( activeWindow );

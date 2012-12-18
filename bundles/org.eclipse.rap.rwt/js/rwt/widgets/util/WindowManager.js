@@ -12,7 +12,7 @@
  ******************************************************************************/
 
 /** This singleton manages rwt.widgets.base.Windows */
-qx.Class.define("qx.ui.window.Manager",
+qx.Class.define("rwt.widgets.util.WindowManager",
 {
   extend : rwt.util.ObjectManager,
 
@@ -66,7 +66,7 @@ qx.Class.define("qx.ui.window.Manager",
      */
     _applyActiveWindow : function(value, old)
     {
-      qx.ui.popup.PopupManager.getInstance().update();
+      rwt.widgets.util.PopupManager.getInstance().update();
 
       if (old) {
         old.setActive(false);

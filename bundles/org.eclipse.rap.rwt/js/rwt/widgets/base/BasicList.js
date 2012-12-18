@@ -18,7 +18,7 @@ qx.Class.define( "rwt.widgets.base.BasicList", {
     this.base( arguments, new rwt.widgets.base.VerticalBoxLayout() );
     this.setAppearance( "list" );
     this.setTabIndex( 1 );
-    this._manager = new qx.ui.selection.SelectionManager( this._clientArea );
+    this._manager = new rwt.widgets.util.SelectionManager( this._clientArea );
     this.addEventListener( "mouseover", this._onmouseover );
     this.addEventListener( "mousedown", this._onmousedown );
     this.addEventListener( "mouseup", this._onmouseup );

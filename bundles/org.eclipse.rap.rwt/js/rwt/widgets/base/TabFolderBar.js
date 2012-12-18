@@ -33,7 +33,7 @@ qx.Class.define("rwt.widgets.base.TabFolderBar",
 
     this.initZIndex();
     this.initHeight();
-    this._manager = new qx.ui.selection.RadioManager();
+    this._manager = new rwt.widgets.util.RadioManager();
   },
 
 
@@ -72,7 +72,7 @@ qx.Class.define("rwt.widgets.base.TabFolderBar",
      * Get the selection manager.
      *
      * @type member
-     * @return {qx.ui.selection.RadioManager} the selection manager of the bar.
+     * @return {rwt.widgets.util.RadioManager} the selection manager of the bar.
      */
     getManager : function() {
       return this._manager;

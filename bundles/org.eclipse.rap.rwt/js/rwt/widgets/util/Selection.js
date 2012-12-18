@@ -12,9 +12,9 @@
  ******************************************************************************/
 
 /**
- * Helper for qx.ui.selection.SelectionManager, contains data for selections
+ * Helper for rwt.widgets.util.SelectionManager, contains data for selections
  */
-qx.Class.define("qx.ui.selection.Selection",
+qx.Class.define("rwt.widgets.util.Selection",
 {
   extend : qx.core.Object,
 

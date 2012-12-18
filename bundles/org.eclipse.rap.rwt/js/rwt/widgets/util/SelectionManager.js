@@ -15,7 +15,7 @@
  * This class represents a selection and manage incoming events for widgets
  * which need selection support.
  */
-qx.Class.define("qx.ui.selection.SelectionManager",
+qx.Class.define("rwt.widgets.util.SelectionManager",
 {
   extend : qx.core.Target,
 
@@ -32,7 +32,7 @@ qx.Class.define("qx.ui.selection.SelectionManager",
   {
     this.base(arguments);
 
-    this._selectedItems = new qx.ui.selection.Selection(this);
+    this._selectedItems = new rwt.widgets.util.Selection(this);
 
     if (vBoundedWidget != null) {
       this.setBoundedWidget(vBoundedWidget);

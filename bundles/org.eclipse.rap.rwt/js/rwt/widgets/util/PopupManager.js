@@ -12,7 +12,7 @@
  ******************************************************************************/
 
 /** This singleton is used to manager multiple instances of popups and their state. */
-qx.Class.define("qx.ui.popup.PopupManager",
+qx.Class.define("rwt.widgets.util.PopupManager",
 {
   type : "singleton",
   extend : rwt.util.ObjectManager,

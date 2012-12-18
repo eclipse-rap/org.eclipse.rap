@@ -349,7 +349,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       if(    vDispatchTarget.getEnabled()
           && !( vDispatchTarget instanceof rwt.widgets.base.ClientDocument )
           && vType == "mousedown" ) {
-        qx.event.handler.FocusHandler.mouseFocus = true;
+        rwt.widgets.util.FocusHandler.mouseFocus = true;
         var vRoot = vDispatchTarget.getFocusRoot();
         if( vRoot ) {
           this.setFocusRoot( vRoot );
@@ -402,7 +402,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
                                            vDomEvent );
         }
       } else if( vType == "mouseover" ) {
-        var toolTipManager = qx.ui.popup.ToolTipManager.getInstance();
+        var toolTipManager = rwt.widgets.util.ToolTipManager.getInstance();
         toolTipManager.handleMouseEvent( vEventObject );
       }
       vEventObject.dispose();
@@ -443,7 +443,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     {
       switch( vType ) {
         case "mousedown":
-          qx.ui.popup.PopupManager.getInstance().update( vTarget );
+          rwt.widgets.util.PopupManager.getInstance().update( vTarget );
           if( this._menuManager != null ) {
             this._menuManager.update( vTarget, vType );
           }
@@ -460,7 +460,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           }
         break;
       }
-      qx.ui.popup.ToolTipManager.getInstance().handleMouseEvent( vEventObject );
+      rwt.widgets.util.ToolTipManager.getInstance().handleMouseEvent( vEventObject );
       this._ignoreWindowBlur = vType === "mousedown";
       if( qx.Class.isDefined("qx.event.handler.DragAndDropHandler" ) && vTarget ) {
         qx.event.handler.DragAndDropHandler.getInstance().handleMouseEvent( vEventObject );
@@ -508,8 +508,8 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         }
         this._focused = false;
         this.setCaptureWidget( null );
-        if( qx.Class.isDefined( "qx.ui.popup.PopupManager" ) ) {
-          qx.ui.popup.PopupManager.getInstance().update();
+        if( qx.Class.isDefined( "rwt.widgets.util.PopupManager" ) ) {
+          rwt.widgets.util.PopupManager.getInstance().update();
         }
         if ( this._menuManager ) {
           this._menuManager.update();

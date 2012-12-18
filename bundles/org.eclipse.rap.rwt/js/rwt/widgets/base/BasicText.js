@@ -560,7 +560,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
 
     _visualizeFocus : function() {
       this.base( arguments );
-      if( !qx.event.handler.FocusHandler.blockFocus ) {
+      if( !rwt.widgets.util.FocusHandler.blockFocus ) {
         try {
           this._inputElement.focus();
         } catch( ex ) {
@@ -656,7 +656,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
 
     _applyFocused : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
-      if( !qx.event.handler.FocusHandler.mouseFocus ) {
+      if( !rwt.widgets.util.FocusHandler.mouseFocus ) {
         this._renderSelection();
       }
     },

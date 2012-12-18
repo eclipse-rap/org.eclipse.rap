@@ -15,9 +15,9 @@
  * This is the main widget, all visible objects in the application extend this.
  *
  * @appearance widget
- * @state selected Set by {@link qx.ui.selection.SelectionManager#renderItemSelectionState}
- * @state anchor Set by {@link qx.ui.selection.SelectionManager#renderItemAnchorState}
- * @state lead Set by {@link qx.ui.selection.SelectionManager#renderItemLeadState}
+ * @state selected Set by {@link rwt.widgets.util.SelectionManager#renderItemSelectionState}
+ * @state anchor Set by {@link rwt.widgets.util.SelectionManager#renderItemAnchorState}
+ * @state lead Set by {@link rwt.widgets.util.SelectionManager#renderItemLeadState}
  *
  * @state disabled Set by {@link qx.core.Object#enabled}
  * @state focused Set by {@link #focused}
@@ -2966,7 +2966,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       "mshtml" : function(vStates) {},
       "default" : function(vStates) {
         if (vStates.focused) {
-          if (!qx.event.handler.FocusHandler.mouseFocus && !this.getHideFocus()) {
+          if (!rwt.widgets.util.FocusHandler.mouseFocus && !this.getHideFocus()) {
             this.setStyleProperty("outline", "1px dotted");
           }
         } else {
@@ -3270,7 +3270,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     },
 
     _visualizeFocus : function() {
-      var FocusHandler = qx.event.handler.FocusHandler;
+      var FocusHandler = rwt.widgets.util.FocusHandler;
       if (!FocusHandler.mouseFocus && !FocusHandler.blockFocus && this.getEnableElementFocus()) {
         try {
           this.getElement().focus();
@@ -3280,12 +3280,12 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     },
 
     focus : function() {
-      delete qx.event.handler.FocusHandler.mouseFocus;
+      delete rwt.widgets.util.FocusHandler.mouseFocus;
       this.setFocused(true);
     },
 
     blur : function() {
-      delete qx.event.handler.FocusHandler.mouseFocus;
+      delete rwt.widgets.util.FocusHandler.mouseFocus;
       this.setFocused(false);
     },
 

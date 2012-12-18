@@ -433,7 +433,7 @@ qx.Class.define("rwt.widgets.base.ToolTip",
 
   destruct : function()
   {
-    var mgr = qx.ui.popup.ToolTipManager.getInstance();
+    var mgr = rwt.widgets.util.ToolTipManager.getInstance();
     mgr.remove(this);
 
     if (mgr.getCurrentToolTip() == this) {

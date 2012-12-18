@@ -20,14 +20,14 @@ qx.Class.define( "rwt.widgets.CTabItem", {
     }
     this._parent = parent;
     this.setAppearance( "ctab-item" );
-    this.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_MIDDLE );
-    this.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT );
+    this.setVerticalChildrenAlign( rwt.widgets.util.Layout.ALIGN_MIDDLE );
+    this.setHorizontalChildrenAlign( rwt.widgets.util.Layout.ALIGN_LEFT );
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     this.setTabIndex( null );
     // Set the label part to 'html mode'
     this.setLabel( "(empty)" );
     this.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
-    this.getLabelObject().setVerticalAlign( qx.constant.Layout.ALIGN_MIDDLE );
+    this.getLabelObject().setVerticalAlign( rwt.widgets.util.Layout.ALIGN_MIDDLE );
     this.setLabel( "" );
     this._selected = false;
     this._showClose = false;
