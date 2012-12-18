@@ -16,8 +16,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -286,35 +286,6 @@ public class CanvasLCA_Test extends TestCase {
     assertNotNull( getGCOperation( canvas, "init" ) );
     assertNull( getGCOperation( canvas, "draw" ) );
   }
-
-//  TODO [tb] : re-enable
-//  public void testRenderOperations_DisposedFont() throws IOException {
-//    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-//    canvas.setSize( 50, 50 );
-//    canvas.setFont( new Font( display, "Arial", 11, SWT.NORMAL ) );
-//    Fixture.markInitialized( display );
-//    Fixture.markInitialized( canvas );
-//    Fixture.preserveWidgets();
-//
-//    canvas.addPaintListener( new PaintListener() {
-//      public void paintControl( PaintEvent event ) {
-//        Font font = new Font( display, "Verdana", 18, SWT.BOLD );
-//        event.gc.setFont( font );
-//        event.gc.drawLine( 1, 2, 3, 4 );
-//        font.dispose();
-//      }
-//    } );
-//
-//    Fixture.fakeResponseWriter();
-//    canvas.redraw();
-//    new CanvasLCA().renderChanges( canvas );
-//    String expected
-//      = "var gc = org.eclipse.rwt.protocol.ObjectRegistry.getObject( \"w2#gc\" );"
-//      + "gc.init( 50, 50, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );"
-//      + "gc.setProperty( \"font\", \"bold 18px Verdana\" );"
-//      + "gc.drawLine( 1, 2, 3, 4 );";
-//    assertTrue( Fixture.getAllMarkup().contains( expected ) );
-//  }
 
   private static CallOperation getGCOperation( Canvas canvas, String method ) {
     Message message = Fixture.getProtocolMessage();
