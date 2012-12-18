@@ -151,7 +151,7 @@ qx.Class.define( "rwt.widgets.ToolTip", {
       data[ 4 ] = this._messageFont.getBold();
       data[ 5 ] = this._messageFont.getItalic();
       data[ 6 ] = width;
-      var textSize = org.eclipse.swt.FontSizeCalculation._measureItem( data );
+      var textSize = rwt.widgets.util.FontSizeCalculation._measureItem( data );
       return {
         x : textSize[ 0 ],
         y : textSize[ 1 ]
@@ -176,7 +176,7 @@ qx.Class.define( "rwt.widgets.ToolTip", {
     },
 
     _getWidgetId : function() {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       return widgetManager.findIdByWidget( this );
     },
 

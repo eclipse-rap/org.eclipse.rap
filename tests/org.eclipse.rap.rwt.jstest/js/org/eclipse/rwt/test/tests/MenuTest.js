@@ -709,7 +709,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testMenuShowEvent : function() {
       createMenuBar( "push" );
-      org.eclipse.swt.WidgetManager.getInstance().add( menu, "w3" );
+      rwt.widgets.util.WidgetManager.getInstance().add( menu, "w3" );
       TestUtil.clearRequestLog();
       TestUtil.flush();
       TestUtil.click( menuBarItem );
@@ -744,7 +744,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testExecutePushItem : function() {
       createSimpleMenu( "push" );
-      org.eclipse.swt.WidgetManager.getInstance().add( menuItem, "w3" );
+      rwt.widgets.util.WidgetManager.getInstance().add( menuItem, "w3" );
       TestUtil.flush();
       TestUtil.clearRequestLog();
       TestUtil.click( menuItem );
@@ -762,7 +762,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testExecuteCheckItem: function() {
       createSimpleMenu( "check" );
-      org.eclipse.swt.WidgetManager.getInstance().add( menuItem, "w3" );
+      rwt.widgets.util.WidgetManager.getInstance().add( menuItem, "w3" );
       TestUtil.flush();
       TestUtil.clearRequestLog();
       TestUtil.click( menuItem );
@@ -787,7 +787,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testExecuteRadioButton : function() {
       createSimpleMenu( "radio" );
-      org.eclipse.swt.WidgetManager.getInstance().add( menuItem, "w3" );
+      rwt.widgets.util.WidgetManager.getInstance().add( menuItem, "w3" );
       TestUtil.flush();
       TestUtil.clearRequestLog();
       TestUtil.click( menuItem );
@@ -806,7 +806,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
       var item2 = new MenuItem( "radio" );
       menu.addMenuItemAt( item2, 0 );
-      org.eclipse.swt.WidgetManager.getInstance().add( item2, "w2" );
+      rwt.widgets.util.WidgetManager.getInstance().add( item2, "w2" );
       item2.setHasSelectionListener( true );
       TestUtil.clearRequestLog();
       TestUtil.flush();
@@ -830,12 +830,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testExecuteRadioButton_NoRadioGroup : function() {
       createSimpleMenu( "radio" );
-      org.eclipse.swt.WidgetManager.getInstance().add( menuItem, "w3" );
+      rwt.widgets.util.WidgetManager.getInstance().add( menuItem, "w3" );
       menuItem.setNoRadioGroup( true );
       menuItem.setHasSelectionListener( true );
       var menuItem2 = new MenuItem( "radio" );
       menu.addMenuItemAt( menuItem2, 0 );
-      org.eclipse.swt.WidgetManager.getInstance().add( menuItem2, "w2" );
+      rwt.widgets.util.WidgetManager.getInstance().add( menuItem2, "w2" );
       menuItem2.setNoRadioGroup( true );
       menuItem2.setHasSelectionListener( true );
       TestUtil.clearRequestLog();
@@ -946,7 +946,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( subMenu.isSeeable() );
       assertTrue( TestUtil.isActive( subMenu ) );
       assertTrue( subMenuItem.hasState( "over" ) );
-      org.eclipse.swt.WidgetManager.getInstance().add( subMenuItem, "w3" );
+      rwt.widgets.util.WidgetManager.getInstance().add( subMenuItem, "w3" );
       subMenuItem.setHasSelectionListener( true );
       rwt.remote.Server.getInstance().send();
       TestUtil.clearRequestLog();

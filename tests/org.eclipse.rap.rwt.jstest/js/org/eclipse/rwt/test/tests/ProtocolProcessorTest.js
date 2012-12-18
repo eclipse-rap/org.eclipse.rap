@@ -582,12 +582,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolProcessorTest", {
     },
 
     _getTargetById : function( id ) {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       return widgetManager.findWidgetById( id );
     },
 
     _isControl : function( target ) {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       return widgetManager.isControl( target );
     },
 
@@ -601,7 +601,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolProcessorTest", {
       result.setHeight( 20 );
       TestUtil.flush();
       if( typeof targetId === "string" ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         widgetManager.add( result, targetId, true, "dummyType" );
       }
       return result;

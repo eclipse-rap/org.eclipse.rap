@@ -575,7 +575,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       TestUtil.flush();
       var item = this._getItems( list )[ 1 ];
       list.setHasSelectionListener( true );
-      org.eclipse.swt.WidgetManager.getInstance().add( list, "w3" );
+      rwt.widgets.util.WidgetManager.getInstance().add( list, "w3" );
 
       TestUtil.click( item );
 
@@ -611,7 +611,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       TestUtil.flush();
       var item = this._getItems( list )[ 1 ];
       list.setHasDefaultSelectionListener( true );
-      org.eclipse.swt.WidgetManager.getInstance().add( list, "w3" );
+      rwt.widgets.util.WidgetManager.getInstance().add( list, "w3" );
 
       TestUtil.doubleClick( item );
 

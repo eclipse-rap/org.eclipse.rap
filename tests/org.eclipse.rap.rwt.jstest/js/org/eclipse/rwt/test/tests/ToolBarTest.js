@@ -366,7 +366,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.addToDocument();
       rwt.widgets.base.Widget.flushGlobalQueues();
       var lineStyle = item.getCellNode( 3 ).style;
-      org.eclipse.swt.WidgetManager.getInstance().add( item, "w1" );
+      rwt.widgets.util.WidgetManager.getInstance().add( item, "w1" );
       this.TestUtil.clearRequestLog();
       item.setHasSelectionListener( true );
       this.TestUtil.fakeMouseClick( item, 103, 103 );
@@ -601,7 +601,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.addToDocument();
       rwt.widgets.base.Widget.flushGlobalQueues();
       var lineStyle = item.getCellNode( 3 ).style;
-      org.eclipse.swt.WidgetManager.getInstance().add( item, "w1" );
+      rwt.widgets.util.WidgetManager.getInstance().add( item, "w1" );
       this.TestUtil.clearRequestLog();
       item.setHasSelectionListener( true );
       var log = 0;

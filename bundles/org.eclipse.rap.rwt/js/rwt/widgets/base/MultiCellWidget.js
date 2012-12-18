@@ -427,7 +427,7 @@ qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     __computeCellDimension : function( cellEntry, wrapWidth ) {
       var dimension;
       if( cellEntry[ 0 ] == "label" && cellEntry[ 1 ] != null ) {
-        var calc = org.eclipse.swt.FontSizeCalculation;
+        var calc = rwt.widgets.util.FontSizeCalculation;
         dimension = calc.computeTextDimensions( cellEntry[ 1 ], this.__fontCache, wrapWidth );
       } else {
         dimension = [ 0, 0 ];

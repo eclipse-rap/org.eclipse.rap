@@ -20,7 +20,7 @@ qx.Class.define( "rwt.widgets.ExpandBar", {
     this.setScrollBarsVisible( false, false );
     // This object is needed for proper scrolling behaviour
     this._bottomSpacing = new rwt.widgets.base.Parent();
-    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._bottomSpacing );
+    rwt.widgets.util.WidgetUtil.fixIEBoxHeight( this._bottomSpacing );
     this._clientArea.add( this._bottomSpacing );
     this._hasExpandListener = false;
     this._hasCollapseListener = false;

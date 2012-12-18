@@ -944,7 +944,7 @@ qx.Class.define( "rwt.widgets.Grid", {
     _sendItemCheckedChange : function( item ) { // TODO [tb] : item events should be send by item
       if( !this._inServerResponse() ) {
         var req = rwt.remote.Server.getInstance();
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
+        var wm = rwt.widgets.util.WidgetManager.getInstance();
         var itemId = wm.findIdByWidget( item );
         req.addParameter( itemId + ".checked", item.isChecked() );
         this._sendSelectionEvent( item, false, "check" );
@@ -967,7 +967,7 @@ qx.Class.define( "rwt.widgets.Grid", {
     _sendItemFocusChange : function() {
       if( !this._inServerResponse() ) {
         var req = rwt.remote.Server.getInstance();
-        var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( this );
+        var id = rwt.widgets.util.WidgetManager.getInstance().findIdByWidget( this );
         req.addParameter( id + ".focusItem", this._getItemId( this._focusItem ) );
       }
     },
@@ -1091,7 +1091,7 @@ qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _getItemId : function( item ) {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var wm = rwt.widgets.util.WidgetManager.getInstance();
       var result;
       if( item.isCached() ) {
         result = wm.findIdByWidget( item );
@@ -1397,7 +1397,7 @@ qx.Class.define( "rwt.widgets.Grid", {
         var itemId = null;
         var columnIndex = -1;
         if( this._rowContainer.getHoverItem() ) {
-          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+          var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
           itemId = widgetManager.findIdByWidget( this._rowContainer.getHoverItem() );
           columnIndex = rwt.widgets.util.GridUtil.getColumnByPageX( this, evt.getPageX() );
         }

@@ -250,9 +250,9 @@ qx.Class.define( "rwt.widgets.base.AbstractSlider", {
         this._maxButton.setWidth( "100%" );
         this._maxButton.setBottom( 0 );
       }
-      org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._thumb );
-      org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._minButton );
-      org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._maxButton );
+      rwt.widgets.util.WidgetUtil.fixIEBoxHeight( this._thumb );
+      rwt.widgets.util.WidgetUtil.fixIEBoxHeight( this._minButton );
+      rwt.widgets.util.WidgetUtil.fixIEBoxHeight( this._maxButton );
       this._minButton.setTabIndex( null );
       this._maxButton.setTabIndex( null );
       this._thumb.setTabIndex( null );

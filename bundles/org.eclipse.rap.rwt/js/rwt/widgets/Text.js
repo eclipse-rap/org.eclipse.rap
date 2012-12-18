@@ -153,8 +153,8 @@ qx.Class.define( "rwt.widgets.Text", {
     _handleSelectionChange : function( start, length ) {
       this.base( arguments, start, length );
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        org.eclipse.swt.WidgetUtil.setPropertyParam( this, "selectionStart", start );
-        org.eclipse.swt.WidgetUtil.setPropertyParam( this, "selectionLength", length );
+        rwt.widgets.util.WidgetUtil.setPropertyParam( this, "selectionStart", start );
+        rwt.widgets.util.WidgetUtil.setPropertyParam( this, "selectionLength", length );
       }
     },
 

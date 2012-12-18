@@ -170,7 +170,7 @@ qx.Class.define( "rwt.widgets.base.BasicButton", {
           this.removeState( "selected" );
         }
         if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+          var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( this );
           var req = rwt.remote.Server.getInstance();
           req.addParameter( id + ".selection", this._selected );

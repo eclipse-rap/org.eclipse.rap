@@ -19,7 +19,7 @@ qx.Class.define( "rwt.widgets.Separator", {
   construct : function() {
     this.base( arguments );
     // Fix IE Styling issues
-    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this );
+    rwt.widgets.util.WidgetUtil.fixIEBoxHeight( this );
     // the actual separator line
     this._line = new rwt.widgets.base.Parent();
     this._line.setAnonymous( true );

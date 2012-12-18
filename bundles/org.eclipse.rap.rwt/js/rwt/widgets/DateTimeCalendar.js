@@ -110,7 +110,7 @@ qx.Class.define( "rwt.widgets.DateTimeCalendar", {
 
     _sendChanges : function( date, month, year ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         var req = rwt.remote.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
         req.addParameter( id + ".day", date );

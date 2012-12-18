@@ -106,7 +106,7 @@ qx.Class.define( "rwt.widgets.Link", {
 
     addLink : function( text, index ) {
       var style = this._getHyperlinkStyle( false );
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this ) + "#" + index;
       this._text += "<span tabIndex=\"1\" ";
       this._text += "style=\"";

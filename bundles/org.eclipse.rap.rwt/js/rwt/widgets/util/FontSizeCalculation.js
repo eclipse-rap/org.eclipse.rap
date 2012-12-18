@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
+qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
 
   statics : {
 

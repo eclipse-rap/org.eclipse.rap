@@ -265,7 +265,7 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
         this._chevron.setAppearance( "ctabfolder-drop-down-button" );
         this._chevron.setShow( qx.constant.Style.BUTTON_SHOW_ICON );
         this._chevron.addEventListener( "execute", this._onChevronExecute, this );
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
+        var wm = rwt.widgets.util.WidgetManager.getInstance();
         wm.setToolTip( this._chevron, rwt.widgets.CTabFolder.CHEVRON_TOOLTIP );
         this.add( this._chevron );
       }
@@ -277,7 +277,7 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
 
     hideChevron : function() {
       if( this._chevron != null ) {
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
+        var wm = rwt.widgets.util.WidgetManager.getInstance();
         wm.setToolTip( this._chevron, null );
         this._chevron.removeEventListener( "execute", this._onChevronExecute, this );
         this.remove( this._chevron );
@@ -313,7 +313,7 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
           maxToolTip = rwt.widgets.CTabFolder.MAX_TOOLTIP;
           break;
       }
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var wm = rwt.widgets.util.WidgetManager.getInstance();
       if( this._minButton != null ) {
         this._minButton.setIcon( minIcon );
         wm.setToolTip( this._minButton, minToolTip );
@@ -352,7 +352,7 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
         this._maxButton.removeEventListener( "mousedown",
                                              this._onMinMaxExecute,
                                              this );
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
+        var wm = rwt.widgets.util.WidgetManager.getInstance();
         wm.setToolTip( this._maxButton, null );
         this.remove( this._maxButton );
         this._maxButton.dispose();
@@ -388,7 +388,7 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
         this._minButton.removeEventListener( "mousedown",
                                              this._onMinMaxExecute,
                                              this );
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
+        var wm = rwt.widgets.util.WidgetManager.getInstance();
         wm.setToolTip( this._minButton, null );
         this.remove( this._minButton );
         this._minButton.dispose();
@@ -475,7 +475,7 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
             detail = "restore";
           }
         }
-        var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( this );
+        var id = rwt.widgets.util.WidgetManager.getInstance().findIdByWidget( this );
         var server = rwt.remote.Server.getInstance();
         server.addParameter( id + ".minimized", this._minMaxState == "min" );
         server.addParameter( id + ".maximized", this._minMaxState == "max" );
@@ -515,7 +515,7 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
         if( !item.isSelected() ) {
           this.deselectAll();
           item.setSelected( true );
-          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+          var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
           var req = rwt.remote.Server.getInstance();
           var id = widgetManager.findIdByWidget( this );
           var itemId = widgetManager.findIdByWidget( item );
@@ -529,7 +529,7 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         if( this._hasDefaultSelectionListener ) {
           var item = evt.getTarget();
-          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+          var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
           var req = rwt.remote.Server.getInstance();
           var id = widgetManager.findIdByWidget( this );
           var itemId = widgetManager.findIdByWidget( item );

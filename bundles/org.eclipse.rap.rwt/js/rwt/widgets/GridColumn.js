@@ -150,7 +150,7 @@ qx.Class.define( "rwt.widgets.GridColumn", {
     },
 
     setFont : function( value ) {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var wm = rwt.widgets.util.WidgetManager.getInstance();
       this._font = value ? wm._createFont.apply( wm, value ) : null;
       this._update();
     },
@@ -178,7 +178,7 @@ qx.Class.define( "rwt.widgets.GridColumn", {
     },
 
     setFooterFont : function( value ) {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var wm = rwt.widgets.util.WidgetManager.getInstance();
       this._footerFont = value ? wm._createFont.apply( wm, value ) : null;
       this._update();
     },

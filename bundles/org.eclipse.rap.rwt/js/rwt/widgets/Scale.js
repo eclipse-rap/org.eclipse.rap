@@ -56,7 +56,7 @@ qx.Class.define( "rwt.widgets.Scale", {
     this._thumb.addEventListener( "mousemove", this._onThumbMouseMove, this );
     this._thumb.addEventListener( "mouseup", this._onThumbMouseUp, this );
     // Fix IE Styling issues
-    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._thumb );
+    rwt.widgets.util.WidgetUtil.fixIEBoxHeight( this._thumb );
     this.add( this._thumb );
     // Thumb offset
     this._thumbOffset = 0;
@@ -313,7 +313,7 @@ qx.Class.define( "rwt.widgets.Scale", {
 
     _sendChanges : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         var req = rwt.remote.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
         req.addParameter( id + ".selection", this._selection );

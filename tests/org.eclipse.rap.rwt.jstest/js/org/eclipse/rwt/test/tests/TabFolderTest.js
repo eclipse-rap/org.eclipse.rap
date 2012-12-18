@@ -169,7 +169,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
       var control =  new rwt.widgets.Button( "push" );
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       widgetManager.add( control, "w5", true, "rwt.widgets.Button" );
       rwt.protocol.MessageProcessor.processOperation( {
         "target" : "w4",

@@ -228,7 +228,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       {
         // find parent control and ensure that it is the same as the widget-
         // parameter. Otherwise the mouse event is ignored.
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         var target = evt.getOriginalTarget();
         var control = widgetManager.findEnabledControl( target );
         result = widget === control;
@@ -300,7 +300,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         evt.preventDefault();
         // send help request to server
         var widget = evt.getTarget();
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( widget );
         if( id === null ) {
           // find parent control for the widget that received the event in case
@@ -340,7 +340,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     sendMenuDetected : function( widget, x, y ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         // send menu detect request to server
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         // find parent control for the widget that received the event in case
         // it wasn't the control itself that received the event
         while( widget != null && !widgetManager.isControl( widget ) ) {

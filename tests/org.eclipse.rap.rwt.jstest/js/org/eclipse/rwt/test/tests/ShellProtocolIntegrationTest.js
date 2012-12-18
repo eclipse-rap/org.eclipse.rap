@@ -124,7 +124,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     testSetDefaultButton : function() {
       var shell = this._protocolCreateShell();
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       var button = new rwt.widgets.Button( "push" );
       widgetManager.add( button, "wButton", true );
       this._protocolSet( {
@@ -138,7 +138,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     testSetDefaultButtonToNull : function() {
       var shell = this._protocolCreateShell();
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       var button = new rwt.widgets.Button( "push" );
       widgetManager.add( button, "wButton", true );
       this._protocolSet( {
@@ -156,7 +156,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     testSetDefaultButtonBeforeCreate : function() {
       var shell = this._protocolCreateShell();
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       this._protocolSet( {
         "defaultButton" : "wButton"
       } );
@@ -170,7 +170,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     testSetActiveControl : function() {
       var shell = this._protocolCreateShell();
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       var button = new rwt.widgets.Button( "push" );
       widgetManager.add( button, "wButton", true );
       this._protocolSet( {
@@ -184,7 +184,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     testSetActiveControlBeforeCreate : function() {
       var shell = this._protocolCreateShell();
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       this._protocolSet( {
         "activeControl" : "wButton"
       } );
@@ -198,7 +198,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     testSetDefaultButtonAsActiveControlBeforeCreate : function() {
       var shell = this._protocolCreateShell();
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       this._protocolSet( {
         "defaultButton" : "wButton",
         "activeControl" : "wButton"
@@ -240,7 +240,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
     testSetMenu : function() {
       var shell = this._protocolCreateShell();
       var menu = new rwt.widgets.Menu();
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       widgetManager.add( menu, "wMenu", true );
       this._protocolSet( {
         "menu" : "wMenu"
@@ -254,7 +254,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
     testSetMenuBeforeCreate : function() {
       var shell = this._protocolCreateShell();
       var menu = new rwt.widgets.Menu();
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       this._protocolSet( {
         "menu" : "wMenu"
       } );
@@ -289,7 +289,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     testSetChildren : function() {
       var shell = this._protocolCreateShell();
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       var button1 = new rwt.widgets.Button( "push" );
       widgetManager.add( button1, "w11", true );
       var button2 = new rwt.widgets.Button( "push" );
@@ -779,7 +779,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     _disposeShell : function( id ) {
       TestUtil.flush(); // appear to call _beforeDisappear later
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       var shell = widgetManager.findWidgetById( id ? id : "w3" );
       shell.getWindowManager().setActiveWindow( null ); // remove shell without setting another
       widgetManager.dispose( id ? id : "w3" );
@@ -799,7 +799,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
         "type" : "rwt.widgets.Shell",
         "properties" : props
       } );
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       var result = widgetManager.findWidgetById( id ? id : "w3" );
       return result;
     },

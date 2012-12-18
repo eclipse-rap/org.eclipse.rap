@@ -29,8 +29,8 @@ qx.Class.define("rwt.widgets.TabFolder",
 
   construct : function() {
     this.base( arguments );
-    this.addEventListener( "changeFocused", org.eclipse.swt.TabUtil.onTabFolderChangeFocused );
-    this.addEventListener( "keypress", org.eclipse.swt.TabUtil.onTabFolderKeyPress );
+    this.addEventListener( "changeFocused", rwt.widgets.util.TabUtil.onTabFolderChangeFocused );
+    this.addEventListener( "keypress", rwt.widgets.util.TabUtil.onTabFolderKeyPress );
     this._bar = new rwt.widgets.base.TabFolderBar();
     this._pane = new rwt.widgets.base.TabFolderPane();
     this.add( this._bar, this._pane );

@@ -15,7 +15,7 @@
  * adding, removing and disposing of widgets and their id. In addition
  * the mapping of widgets and their respective id's can be queried.
  */
-qx.Class.define( "org.eclipse.swt.WidgetManager", {
+qx.Class.define( "rwt.widgets.util.WidgetManager", {
 
   type : "singleton",
   extend : qx.core.Object,
@@ -36,7 +36,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       var widget = this;
       widget.focus();
       widget.removeEventListener( "appear",
-                                  org.eclipse.swt.WidgetManager._onAppearFocus,
+                                  rwt.widgets.util.WidgetManager._onAppearFocus,
                                   widget );
     }
   },
@@ -163,7 +163,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       if( widget.isSeeable() ) {
         widget.focus();
       } else {
-        widget.addEventListener( "appear", org.eclipse.swt.WidgetManager._onAppearFocus, widget );
+        widget.addEventListener( "appear", rwt.widgets.util.WidgetManager._onAppearFocus, widget );
       }
     },
 

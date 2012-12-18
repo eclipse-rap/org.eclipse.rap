@@ -13,12 +13,12 @@
 /**
  * This class contains static helper functions for widgets.
  */
-qx.Class.define( "org.eclipse.swt.WidgetUtil", {
+qx.Class.define( "rwt.widgets.util.WidgetUtil", {
 
   statics : {
 
     setPropertyParam : function( widget, propertyName, propertyValue ) {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( widget );
       var req = rwt.remote.Server.getInstance();
       req.addParameter( id + "." + propertyName, propertyValue );
@@ -37,7 +37,7 @@ qx.Class.define( "org.eclipse.swt.WidgetUtil", {
     } ),
 
     getControl : function( widget ) {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       var result = widget;
       while( result != null && !widgetManager.isControl( result ) ) {
         result = result.getParent ? result.getParent() : null;

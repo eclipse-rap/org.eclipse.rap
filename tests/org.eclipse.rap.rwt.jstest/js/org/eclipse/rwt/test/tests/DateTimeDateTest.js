@@ -263,7 +263,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
                                                                this.weekdayShortNames,
                                                                this.dateSeparator,
                                                                this.datePattern);
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       widgetManager.add( dateTime, "w3", true );
       dateTime.setSpace( 3, 115, 3, 20 );
       dateTime.addToDocument();

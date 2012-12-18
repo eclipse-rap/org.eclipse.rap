@@ -70,7 +70,7 @@ rwt.widgets.Display.prototype = {
   },
 
   setFocusControl : function( widgetId ) {
-    org.eclipse.swt.WidgetManager.getInstance().focus( widgetId );
+    rwt.widgets.util.WidgetManager.getInstance().focus( widgetId );
   },
 
   setEnableUiTests : function( value ) {

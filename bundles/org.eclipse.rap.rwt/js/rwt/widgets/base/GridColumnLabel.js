@@ -150,7 +150,7 @@ qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
           this.setCapture( true );
           evt.stopPropagation();
           evt.preventDefault();
-          org.eclipse.swt.WidgetUtil._fakeMouseEvent( this, "mouseout" );
+          rwt.widgets.util.WidgetUtil._fakeMouseEvent( this, "mouseout" );
         } else if( this._allowMove() ) {
           this._inMove = true;
           this.setCapture( true );
@@ -158,7 +158,7 @@ qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
           this._initialLeft = evt.getPageX();
           evt.stopPropagation();
           evt.preventDefault();
-          org.eclipse.swt.WidgetUtil._fakeMouseEvent( this, "mouseout" );
+          rwt.widgets.util.WidgetUtil._fakeMouseEvent( this, "mouseout" );
         }
       }
     },
@@ -188,7 +188,7 @@ qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
     },
 
     _onMouseUp : function( evt ) {
-      var widgetUtil = org.eclipse.swt.WidgetUtil;
+      var widgetUtil = rwt.widgets.util.WidgetUtil;
       if( this._inResize ) {
         this.dispatchSimpleEvent( "hideResizeLine", null, true ); // bubbles: handled by grid
         this.getTopLevelWidget().setGlobalCursor( null );

@@ -10,11 +10,11 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.swt.TabUtil", {
+qx.Class.define( "rwt.widgets.util.TabUtil", {
 
   statics : {
     createTabItem : function( id, parentId, index ) {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       var tabFolder = widgetManager.findWidgetById( parentId );
       var tabItem = new rwt.widgets.TabItem();
       tabItem.setTabIndex( null );
@@ -22,9 +22,9 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
       tabItem.getLabelObject().setMode( "html" );
       tabItem.setLabel( "" );
       tabItem.setEnableElementFocus( false );
-      tabItem.addEventListener( "changeFocused", org.eclipse.swt.TabUtil._onTabItemChangeFocus );
-      tabItem.addEventListener( "changeChecked", org.eclipse.swt.TabUtil._onTabItemSelected );
-      tabItem.addEventListener( "click", org.eclipse.swt.TabUtil._onTabItemClick );
+      tabItem.addEventListener( "changeFocused", rwt.widgets.util.TabUtil._onTabItemChangeFocus );
+      tabItem.addEventListener( "changeChecked", rwt.widgets.util.TabUtil._onTabItemSelected );
+      tabItem.addEventListener( "click", rwt.widgets.util.TabUtil._onTabItemClick );
       tabFolder.getBar().addAt( tabItem, index );
       var tabViewPage = new rwt.widgets.base.TabFolderPage( tabItem );
       tabFolder.getPane().add( tabViewPage );
@@ -34,10 +34,10 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
 
     releaseTabItem : function( tabItem ) {
       var tabFolder = tabItem.getParent().getParent();
-      tabItem.removeEventListener( "changeFocused", org.eclipse.swt.TabUtil._onTabItemChangeFocus );
-      tabItem.removeEventListener( "changeChecked", org.eclipse.swt.TabUtil._onTabItemSelected );
-      tabItem.removeEventListener( "click", org.eclipse.swt.TabUtil._onTabItemClick );
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      tabItem.removeEventListener( "changeFocused", rwt.widgets.util.TabUtil._onTabItemChangeFocus );
+      tabItem.removeEventListener( "changeChecked", rwt.widgets.util.TabUtil._onTabItemSelected );
+      tabItem.removeEventListener( "click", rwt.widgets.util.TabUtil._onTabItemClick );
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       var itemId = widgetManager.findIdByWidget( tabItem );
       widgetManager.dispose( itemId + "pg" );
       widgetManager.dispose( itemId );
@@ -61,7 +61,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
     _onTabItemSelected : function( evt ) {
       var tab = evt.getTarget();
       if( !org.eclipse.swt.EventUtil.getSuspended() && tab.getChecked() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         var itemId = widgetManager.findIdByWidget( tab );
         var server = rwt.remote.Server.getInstance();
         var folder = tab.getParent().getParent();
@@ -80,12 +80,12 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
           switch( evt.getKeyIdentifier() ) {
             case "Left":
               manager.selectPrevious( item );
-              org.eclipse.swt.TabUtil.markTabItemFocused( folder, evt.getTarget() );
+              rwt.widgets.util.TabUtil.markTabItemFocused( folder, evt.getTarget() );
               evt.stopPropagation();
               break;
             case "Right":
               manager.selectNext( item );
-              org.eclipse.swt.TabUtil.markTabItemFocused( folder, evt.getTarget() );
+              rwt.widgets.util.TabUtil.markTabItemFocused( folder, evt.getTarget() );
               evt.stopPropagation();
               break;
           }
@@ -96,7 +96,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
     onTabFolderChangeFocused : function( evt ) {
       var folder = evt.getTarget();
       var item = folder.getBar().getManager().getSelected();
-      org.eclipse.swt.TabUtil.markTabItemFocused( folder, item );
+      rwt.widgets.util.TabUtil.markTabItemFocused( folder, item );
     },
 
     markTabItemFocused : function( folder, item ) {

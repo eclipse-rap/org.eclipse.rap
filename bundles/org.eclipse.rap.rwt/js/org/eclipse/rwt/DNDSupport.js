@@ -70,7 +70,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     },
 
     _dragStartHandler : function( event ) {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var wm = rwt.widgets.util.WidgetManager.getInstance();
       var target = event.getCurrentTarget();
       var control = wm.findControl( event.getTarget() );
       if( control == target && !this._blockDrag ) {
@@ -90,7 +90,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
           doc.addEventListener( "keyup", this._onKeyEvent, this );
           this.setCurrentTargetWidget( event.getOriginalTarget() );
           // fix for bug 296348
-          var widgetUtil = org.eclipse.swt.WidgetUtil;
+          var widgetUtil = rwt.widgets.util.WidgetUtil;
           widgetUtil._fakeMouseEvent( this._currentTargetWidget, "mouseout" );
           var sourceWidget = dndHandler.__dragCache.sourceWidget;
           var feedbackWidget = this._getFeedbackWidget( control, sourceWidget );
@@ -121,7 +121,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
 
     _sendDragSourceEvent : function( widget, type, qxDomEvent ) {
       var req = rwt.remote.Server.getInstance();
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var wm = rwt.widgets.util.WidgetManager.getInstance();
       var id = wm.findIdByWidget( widget );
       var x = 0;
       var y = 0;
@@ -220,7 +220,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     },
 
     _sendDropTargetEvent : function( widget, type, qxDomEvent, action ) {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var wm = rwt.widgets.util.WidgetManager.getInstance();
       var id = wm.findIdByWidget( widget );
       var item = this._getCurrentItemTarget();
       var itemId = item != null ? wm.findIdByWidget( item ) : null;
@@ -268,7 +268,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     },
 
     _setPropertyRetroactively : function( dropTarget, property, value ) {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var wm = rwt.widgets.util.WidgetManager.getInstance();
       for( var type in this._dropTargetEventQueue ) {
         var event = this._dropTargetEventQueue[ type ];
         if( event[ "id" ] == wm.findIdByWidget( dropTarget ) ) {
@@ -519,7 +519,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
 
     _cleanUp : function() {
       // fix for bug 296348
-      var widgetUtil = org.eclipse.swt.WidgetUtil;
+      var widgetUtil = rwt.widgets.util.WidgetUtil;
       widgetUtil._fakeMouseEvent( this._currentTargetWidget, "elementOver" );
       widgetUtil._fakeMouseEvent( this._currentTargetWidget, "mouseover" );
       this.setCurrentTargetWidget( null );

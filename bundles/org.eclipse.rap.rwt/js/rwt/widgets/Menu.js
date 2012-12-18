@@ -76,7 +76,7 @@ qx.Class.define( "rwt.widgets.Menu", {
     },
 
     contextMenuHandler : function( event ) {
-      var control = org.eclipse.swt.WidgetUtil.getControl( event.getTarget() );
+      var control = rwt.widgets.util.WidgetUtil.getControl( event.getTarget() );
       var contextMenu = control ? control.getContextMenu() : null;
       if( contextMenu != null ) {
         event.stopPropagation();

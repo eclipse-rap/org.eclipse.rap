@@ -402,7 +402,7 @@ qx.Class.define("rwt.widgets.base.Label",
      */
     _computeObjectNeededDimensions : function() {
       var fontProps = this._styleProperties;
-      var calc = org.eclipse.swt.FontSizeCalculation;
+      var calc = rwt.widgets.util.FontSizeCalculation;
       var dimensions = calc.computeTextDimensions( this._content, fontProps );
       this._cachedPreferredInnerWidth = dimensions[ 0 ];
       this._cachedPreferredInnerHeight = dimensions[ 1 ];

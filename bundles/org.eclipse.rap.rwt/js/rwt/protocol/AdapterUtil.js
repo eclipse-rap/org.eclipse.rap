@@ -136,7 +136,7 @@ rwt.protocol.AdapterUtil = {
         if( fontData === null ) {
           widget.resetFont();
         } else {
-          var wm = org.eclipse.swt.WidgetManager.getInstance();
+          var wm = rwt.widgets.util.WidgetManager.getInstance();
           // TODO [tb] : move helper
           var font = wm._createFont.apply( wm, fontData );
           widget.setFont( font );

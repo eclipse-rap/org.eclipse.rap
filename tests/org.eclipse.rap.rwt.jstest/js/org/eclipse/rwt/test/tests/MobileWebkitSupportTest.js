@@ -544,7 +544,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testIsDraggableScale : function() {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       var widget = new rwt.widgets.Scale( "horizontal" );
       widget.addToDocument();
       widgetManager.add( widget, "scale", true );
@@ -554,7 +554,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testIsDraggableSlider : function() {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       var widget = new rwt.widgets.Slider( "horizontal" );
       widget.addToDocument();
       widgetManager.add( widget, "slider", true );

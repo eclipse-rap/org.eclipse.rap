@@ -196,7 +196,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
 
     testSetParent : function() {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var wm = rwt.widgets.util.WidgetManager.getInstance();
       var composite = this._createComposite();
       wm.add( composite, "w3", true );
       var child = new rwt.widgets.base.Terminator();
@@ -399,7 +399,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = this._createComposite();
       this._setScrollDimension( composite, 200, 200 );
-      org.eclipse.swt.WidgetManager.getInstance().add( composite, "w3" );
+      rwt.widgets.util.WidgetManager.getInstance().add( composite, "w3" );
       this._createProtocolScrollBars( "w3" );
       // set directly, otherwise the changes are not sent
 
@@ -554,7 +554,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
 
     testSetContentLocationByProtocol : function() {
       var processor = rwt.protocol.MessageProcessor;
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       var composite = this._createComposite();
       widgetManager.add( composite, "w3", true );
       processor.processOperation( {

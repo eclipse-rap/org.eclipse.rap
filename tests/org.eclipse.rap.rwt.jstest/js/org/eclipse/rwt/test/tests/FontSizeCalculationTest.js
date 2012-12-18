@@ -70,7 +70,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
 
 
     testSizeWithSequentialWhitespacesNoWrap : function() {
-      var FontSizeCalculation = org.eclipse.swt.FontSizeCalculation;
+      var FontSizeCalculation = rwt.widgets.util.FontSizeCalculation;
       var item1 = [ "id1", "foo bar", "Arial", 12, false, false, -1 ];
       var item2 = [ "id2", "foo  bar", "Arial", 12, false, false, -1 ];
       var item3 = [ "id3", " foo bar", "Arial", 12, false, false, -1 ];
@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
     },
 
     testSizeWithSequentialWhitespacesWrap : function() {
-      var FontSizeCalculation = org.eclipse.swt.FontSizeCalculation;
+      var FontSizeCalculation = rwt.widgets.util.FontSizeCalculation;
       var item1 = [ "id1", "foo bar", "Arial", 12, false, false, -1 ];
       var item2 = [ "id2", "foo bar", "Arial", 12, false, false, 20 ];
       var item3 = [ "id3", "foo      bar", "Arial", 12, false, false, 20 ];

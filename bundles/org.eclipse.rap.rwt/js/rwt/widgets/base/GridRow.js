@@ -547,7 +547,7 @@ qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _getVisualTextWidth : function( item, cell, config ) {
-      var calc = org.eclipse.swt.FontSizeCalculation;
+      var calc = rwt.widgets.util.FontSizeCalculation;
       var result = 0;
       if( this._cellLabels[ cell ] ) {
         var font = this._getCellFont( item, cell, config );

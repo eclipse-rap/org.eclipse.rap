@@ -203,7 +203,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
         var focusRoot = org.eclipse.rwt.EventHandler.getFocusRoot();
         result = focusRoot === null ? null : focusRoot.getActiveChild();
       }
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       while( result !== null && !widgetManager.isControl( result ) ) {
         result = result.getParent ? result.getParent() : null;
       }

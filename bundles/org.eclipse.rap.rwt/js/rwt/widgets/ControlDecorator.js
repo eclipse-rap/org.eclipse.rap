@@ -33,7 +33,7 @@ qx.Class.define( "rwt.widgets.ControlDecorator", {
     },
 
     _updateToolTip : function() {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var wm = rwt.widgets.util.WidgetManager.getInstance();
       if( this._text === null || this._text === "" || !this._showHover ) {
         wm.setToolTip( this, null );
       } else {

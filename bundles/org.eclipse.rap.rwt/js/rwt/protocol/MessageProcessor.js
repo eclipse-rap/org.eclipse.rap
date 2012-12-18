@@ -208,7 +208,7 @@ rwt.protocol.MessageProcessor = {
   _addTarget : function( target, targetId, adapter ) {
     if( target instanceof rwt.widgets.base.Widget ) {
       // TODO [tb] : remove WidgetManager and then this if
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       widgetManager.add( target, targetId, false, adapter ); // uses ObjectManager internally
     } else {
       rwt.protocol.ObjectRegistry.add( targetId, target, adapter );

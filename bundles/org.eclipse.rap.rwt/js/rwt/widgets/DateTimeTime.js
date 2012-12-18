@@ -362,7 +362,7 @@ qx.Class.define( "rwt.widgets.DateTimeTime", {
 
     _sendChanges : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         var req = rwt.remote.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
         req.addParameter( id + ".hours",

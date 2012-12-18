@@ -12,7 +12,7 @@
 rwt.protocol.AdapterRegistry.add( "rwt.widgets.TabItem", {
 
   factory : function( properties ) {
-    var result = org.eclipse.swt.TabUtil.createTabItem( properties.id,
+    var result = rwt.widgets.util.TabUtil.createTabItem( properties.id,
                                                         properties.parent,
                                                         properties.index );
 
@@ -24,7 +24,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.TabItem", {
   },
 
   destructor : function( widget ) {
-    org.eclipse.swt.TabUtil.releaseTabItem( widget );
+    rwt.widgets.util.TabUtil.releaseTabItem( widget );
     var parent = widget.getUserData( "protocolParent" );
     if( parent ) {
       rwt.protocol.AdapterUtil.removeDestroyableChild( parent, widget );
@@ -56,7 +56,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.TabItem", {
     "control" : function( widget, value ) {
       if( value !== null ) {
         rwt.protocol.AdapterUtil.callWithTarget( value, function( control ) {
-          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+          var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( widget ) + "pg";
           rwt.protocol.AdapterUtil.callWithTarget( id, function( parent ) {
             control.setParent( parent );

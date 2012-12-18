@@ -12,7 +12,7 @@
 rwt.protocol.AdapterRegistry.add( "rwt.client.TextSizeMeasurement", {
 
   factory : function( properties ) {
-    return org.eclipse.swt.FontSizeCalculation;
+    return rwt.widgets.util.FontSizeCalculation;
   },
 
   service : true,

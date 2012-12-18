@@ -87,7 +87,7 @@ qx.Class.define( "rwt.widgets.List", {
 
     _onChangeLeadItem : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
+        var wm = rwt.widgets.util.WidgetManager.getInstance();
         var id = wm.findIdByWidget( this );
         var req = rwt.remote.Server.getInstance();
         var focusIndex = this._clientArea.indexOf( this.getManager().getLeadItem() );

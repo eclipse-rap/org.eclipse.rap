@@ -24,7 +24,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
 
     testSetFocusControlByProtocol : function() {
       var button = new rwt.widgets.Button( "push" );
-      org.eclipse.swt.WidgetManager.getInstance().add( button, "btn1" );
+      rwt.widgets.util.WidgetManager.getInstance().add( button, "btn1" );
       button.addToDocument();
       TestUtil.flush();
       assertFalse( button.getFocused() );
@@ -44,7 +44,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       shell.open();
       var button = new rwt.widgets.Button( "push" );
-      org.eclipse.swt.WidgetManager.getInstance().add( button, "btn1" );
+      rwt.widgets.util.WidgetManager.getInstance().add( button, "btn1" );
       button.setParent( shell );
       TestUtil.flush();
       shell.setActive( true );

@@ -347,7 +347,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
     testCellToolTipOnFixedColumns : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       widgetManager.add( tree, "w3", true );
       tree.setWidth( 300 );
       tree.setEnableCellToolTip( true );
@@ -384,7 +384,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
     testCellToolTipOnNonFixedColumns : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
       widgetManager.add( tree, "w3", true );
       tree.setWidth( 300 );
       tree.setEnableCellToolTip( true );
