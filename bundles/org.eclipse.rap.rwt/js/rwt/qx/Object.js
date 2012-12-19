@@ -22,10 +22,10 @@
  * * generic setter support
  * * user friendly OO interfaces like {@link #self} or {@link #base}
  */
-qx.Class.define("qx.core.Object",
+rwt.qx.Class.define("rwt.qx.Object",
 {
   extend : Object,
-  include : [ qx.core.MUserData ],
+  include : [ rwt.qx.MUserData ],
 
 
 
@@ -39,20 +39,20 @@ qx.Class.define("qx.core.Object",
 
   construct : function()
   {
-    this._hashCode = qx.core.Object.__availableHashCode++;
+    this._hashCode = rwt.qx.Object.__availableHashCode++;
 
     if (this._autoDispose)
     {
       // try to get a re-usable key
-      this.__dbKey=qx.core.Object.__freeAvailableDbKeys.pop();
+      this.__dbKey=rwt.qx.Object.__freeAvailableDbKeys.pop();
 
       if (!this.__dbKey) {
         // no re-usable key found ==> append to registry
-        this.__dbKey = qx.core.Object.__db.length;
-        qx.core.Object.__db.push(this);
+        this.__dbKey = rwt.qx.Object.__db.length;
+        rwt.qx.Object.__db.push(this);
       } else {
         // re-use key
-        qx.core.Object.__db[this.__dbKey] = this;
+        rwt.qx.Object.__db[this.__dbKey] = this;
       }
     }
   },
@@ -284,7 +284,7 @@ qx.Class.define("qx.core.Object",
      */
     set : function(data, value)
     {
-      var setter = qx.core.Property.$$method.set;
+      var setter = rwt.qx.Property.$$method.set;
 
       if (typeof data === "string")
       {
@@ -312,7 +312,7 @@ qx.Class.define("qx.core.Object",
      */
     get : function(prop)
     {
-      var getter = qx.core.Property.$$method.get;
+      var getter = rwt.qx.Property.$$method.get;
       return this[getter[prop]]();
     },
 
@@ -326,7 +326,7 @@ qx.Class.define("qx.core.Object",
      */
     reset : function(prop)
     {
-      var resetter = qx.core.Property.$$method.reset;
+      var resetter = rwt.qx.Property.$$method.reset;
       this[resetter[prop]]();
     },
 
@@ -483,7 +483,7 @@ qx.Class.define("qx.core.Object",
 
     /**
      * Disconnects and disposes given objects from instance.
-     * Only works with qx.core.Object based objects e.g. Widgets.
+     * Only works with rwt.qx.Object based objects e.g. Widgets.
      *
      * @type member
      * @param varargs {arguments} fields to dispose
@@ -555,7 +555,7 @@ qx.Class.define("qx.core.Object",
     __disposeObjectsDeepRecurser : function(obj, deep)
     {
       // qooxdoo
-      if (obj instanceof qx.core.Object)
+      if (obj instanceof rwt.qx.Object)
       {
         obj.dispose();
       }
@@ -625,7 +625,7 @@ qx.Class.define("qx.core.Object",
     // Cleanup properties
     var clazz = this.constructor;
     var properties;
-    var store = qx.core.Property.$$store;
+    var store = rwt.qx.Property.$$store;
     var storeUser = store.user;
     var storeTheme = store.theme;
     var storeInherit = store.inherit;
@@ -651,12 +651,12 @@ qx.Class.define("qx.core.Object",
     // Delete Entry from Object DB
     if (this.__dbKey != null)
     {
-      if (qx.core.Object.__disposeAll) {
-        qx.core.Object.__db[this.__dbKey] = null;
+      if (rwt.qx.Object.__disposeAll) {
+        rwt.qx.Object.__db[this.__dbKey] = null;
       } else {
-        delete qx.core.Object.__db[this.__dbKey];
+        delete rwt.qx.Object.__db[this.__dbKey];
       }
-      qx.core.Object.__freeAvailableDbKeys.push(this.__dbKey);
+      rwt.qx.Object.__freeAvailableDbKeys.push(this.__dbKey);
     }
   }
 });

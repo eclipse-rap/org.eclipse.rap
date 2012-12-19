@@ -9,9 +9,9 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.AdapterUtilTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.AdapterUtilTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

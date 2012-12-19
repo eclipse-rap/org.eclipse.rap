@@ -15,9 +15,9 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
 var server = rwt.remote.Server.getInstance();
 
-qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

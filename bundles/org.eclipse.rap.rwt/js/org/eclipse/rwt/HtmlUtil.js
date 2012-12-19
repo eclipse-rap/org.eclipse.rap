@@ -17,7 +17,7 @@
  * It generally accepts widgets or html-elements as targets.
  * In IE, vml-elements should work aswell.
  */
-qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
+rwt.qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
 
   statics : {
 

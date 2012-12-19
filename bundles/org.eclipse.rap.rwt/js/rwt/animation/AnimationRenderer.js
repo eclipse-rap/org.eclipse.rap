@@ -9,9 +9,9 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.animation.AnimationRenderer", {
+rwt.qx.Class.define( "rwt.animation.AnimationRenderer", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   construct : function( animation ) {
     // Animation is responsible for the dispose:

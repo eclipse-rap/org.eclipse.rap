@@ -121,7 +121,7 @@ var wrapperMap = {};
 function getWrapperFor( obj ) {
   var result = null;
   if( obj instanceof Object ) {
-    var hash = qx.core.Object.toHashCode( obj );
+    var hash = rwt.qx.Object.toHashCode( obj );
     if( wrapperMap[ hash ] == null ) {
       if( obj instanceof rwt.widgets.Composite ) {
         wrapperMap[ hash ] = new CompositeWrapper( obj );

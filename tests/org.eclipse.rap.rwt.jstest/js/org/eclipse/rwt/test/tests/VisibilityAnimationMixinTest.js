@@ -16,8 +16,8 @@ var Processor = rwt.protocol.MessageProcessor;
 
 var shell;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
-  extend : qx.core.Object,
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
+  extend : rwt.qx.Object,
 
   members : {
 

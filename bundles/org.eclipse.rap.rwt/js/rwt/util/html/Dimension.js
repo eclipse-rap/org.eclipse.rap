@@ -29,7 +29,7 @@
  * </pre>
  */
 
-qx.Class.define("rwt.util.html.Dimension",
+rwt.qx.Class.define("rwt.util.html.Dimension",
 {
   /*
   *****************************************************************************

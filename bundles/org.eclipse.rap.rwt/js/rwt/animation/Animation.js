@@ -9,9 +9,9 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.animation.Animation", {
+rwt.qx.Class.define( "rwt.animation.Animation", {
 
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
   construct : function() {
     this.base( arguments );

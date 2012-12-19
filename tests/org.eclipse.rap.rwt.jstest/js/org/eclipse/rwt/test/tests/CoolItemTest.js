@@ -13,9 +13,9 @@
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

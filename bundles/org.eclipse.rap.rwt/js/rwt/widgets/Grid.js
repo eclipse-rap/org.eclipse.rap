@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.Grid", {
+rwt.qx.Class.define( "rwt.widgets.Grid", {
 
   extend : rwt.widgets.base.Parent,
 

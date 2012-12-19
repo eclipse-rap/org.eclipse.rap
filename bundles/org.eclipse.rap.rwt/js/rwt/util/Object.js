@@ -14,7 +14,7 @@
 /**
  * Helper functions to handle Object as a Hash map.
  */
-qx.Class.define("rwt.util.Object",
+rwt.qx.Class.define("rwt.util.Object",
 {
   statics :
   {

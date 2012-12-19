@@ -16,9 +16,9 @@ var MessageProcessor = rwt.protocol.MessageProcessor;
 var ObjectRegistry = rwt.protocol.ObjectRegistry;
 var FakeServer = org.eclipse.rwt.test.fixture.FakeServer;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.JavaScriptLoaderTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.JavaScriptLoaderTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

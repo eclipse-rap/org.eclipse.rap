@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.Sash", {
+rwt.qx.Class.define( "rwt.widgets.Sash", {
   extend : rwt.widgets.base.Parent,
 
   construct : function() {

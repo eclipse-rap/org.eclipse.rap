@@ -10,7 +10,7 @@
  *   EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.base.AbstractSlider", {
+rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
 
   extend : rwt.widgets.base.Parent,
 

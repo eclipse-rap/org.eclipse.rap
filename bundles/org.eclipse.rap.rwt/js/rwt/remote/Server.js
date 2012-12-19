@@ -21,9 +21,9 @@ var ServerPush = rwt.client.ServerPush;
 var ClientDocument = rwt.widgets.base.ClientDocument;
 var Widget = rwt.widgets.base.Widget;
 
-qx.Class.define( "rwt.remote.Server", {
+rwt.qx.Class.define( "rwt.remote.Server", {
   type : "singleton",
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
   construct : function() {
     this.base( arguments );

@@ -18,9 +18,9 @@ var request;
 
 var URL = "http://127.0.0.1/";
 
-qx.Class.define( "org.eclipse.rwt.test.tests.RequestTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.RequestTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.ProgressBar", {
+rwt.qx.Class.define( "rwt.widgets.ProgressBar", {
   extend : rwt.widgets.base.Parent,
 
   construct : function() {

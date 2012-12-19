@@ -9,8 +9,8 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.fixture.FakeServer", {
-  extend : qx.core.Target,
+rwt.qx.Class.define( "org.eclipse.rwt.test.fixture.FakeServer", {
+  extend : rwt.qx.Target,
   type : "singleton",
 
   construct : function() {

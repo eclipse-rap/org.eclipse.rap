@@ -9,9 +9,9 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   construct : function() {
     this.base( arguments );

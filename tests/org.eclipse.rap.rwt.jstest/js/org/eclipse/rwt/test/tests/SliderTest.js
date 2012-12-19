@@ -9,9 +9,9 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   construct : function() {
     org.eclipse.rwt.test.fixture.TestUtil.prepareTimerUse();

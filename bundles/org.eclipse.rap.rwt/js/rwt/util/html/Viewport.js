@@ -27,7 +27,7 @@
 /**
  * Includes library functions to work with the client's viewport (window).
  */
-qx.Class.define("rwt.util.html.Viewport",
+rwt.qx.Class.define("rwt.util.html.Viewport",
 {
   statics :
   {

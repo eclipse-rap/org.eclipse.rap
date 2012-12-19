@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.MenuBar", {
+rwt.qx.Class.define( "rwt.widgets.MenuBar", {
   extend : rwt.widgets.base.HorizontalBoxLayout,
 
   construct : function() {

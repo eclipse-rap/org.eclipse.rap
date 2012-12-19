@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
+rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
 
   destruct : function() {
     this._gfxProperties = null;

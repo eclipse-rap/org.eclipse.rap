@@ -14,7 +14,7 @@
  * This class provides the client-side counterpart for
  * rwt.widgets.Slider.
  */
-qx.Class.define( "rwt.widgets.Slider", {
+rwt.qx.Class.define( "rwt.widgets.Slider", {
   extend : rwt.widgets.base.AbstractSlider,
 
   construct : function( isHorizontal ) {

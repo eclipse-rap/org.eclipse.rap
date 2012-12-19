@@ -29,7 +29,7 @@
  * @appearance window-captionbar {rwt.widgets.base.HorizontalBoxLayout}
  * @state active {window-captionbar}
  */
-qx.Class.define("rwt.widgets.base.Window",
+rwt.qx.Class.define("rwt.widgets.base.Window",
 {
   extend : rwt.widgets.base.ResizablePopup,
 

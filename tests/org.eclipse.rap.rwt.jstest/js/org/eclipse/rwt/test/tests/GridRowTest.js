@@ -16,9 +16,9 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var tree;
 var row;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   // TODO [tb] : Since TreeRow has been refactored to work without reference to Tree, the
   //             tests could also be refactored to not use the an tree instance anymore.

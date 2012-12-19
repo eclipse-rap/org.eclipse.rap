@@ -14,7 +14,7 @@
 /**
  * A key event instance contains all data for each occured key event
  */
-qx.Class.define("rwt.event.KeyEvent",
+rwt.qx.Class.define("rwt.event.KeyEvent",
 {
   extend : rwt.event.DomEvent,
 

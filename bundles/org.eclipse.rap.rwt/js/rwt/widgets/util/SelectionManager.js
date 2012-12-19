@@ -15,9 +15,9 @@
  * This class represents a selection and manage incoming events for widgets
  * which need selection support.
  */
-qx.Class.define("rwt.widgets.util.SelectionManager",
+rwt.qx.Class.define("rwt.widgets.util.SelectionManager",
 {
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
 
 

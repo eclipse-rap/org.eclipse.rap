@@ -9,9 +9,9 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   construct : function(){
     this.gfxBorder = new org.eclipse.rwt.Border( 1, "rounded", "black", 0 );

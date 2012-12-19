@@ -17,9 +17,9 @@ var ObjectRegistry = rwt.protocol.ObjectRegistry;
 
 var shell;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

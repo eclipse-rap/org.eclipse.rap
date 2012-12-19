@@ -16,9 +16,9 @@ var Message = org.eclipse.rwt.test.fixture.Message;
 
 var writer;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.MessageTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

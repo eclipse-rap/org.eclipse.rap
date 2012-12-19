@@ -29,7 +29,7 @@
  * @state today {calendar-day}
  * @state selected {calendar-day}
  */
-qx.Class.define("rwt.widgets.base.Calendar", {
+rwt.qx.Class.define("rwt.widgets.base.Calendar", {
   extend : rwt.widgets.base.BoxLayout,
 
   /*

@@ -10,9 +10,9 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.DNDSupport", {
+rwt.qx.Class.define( "org.eclipse.rwt.DNDSupport", {
   type : "singleton",
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   construct : function() {
     this.base( arguments );

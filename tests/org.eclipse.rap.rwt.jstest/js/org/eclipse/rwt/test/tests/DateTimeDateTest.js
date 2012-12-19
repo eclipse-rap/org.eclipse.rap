@@ -8,8 +8,8 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
-  extend : qx.core.Object,
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
+  extend : rwt.qx.Object,
 
   members : {
 

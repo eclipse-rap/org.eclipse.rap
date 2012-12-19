@@ -15,9 +15,9 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var ObjectManager = rwt.protocol.ObjectRegistry;
 var Processor = rwt.protocol.MessageProcessor;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

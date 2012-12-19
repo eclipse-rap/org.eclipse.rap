@@ -9,8 +9,8 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
-  extend : qx.core.Object,
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
+  extend : rwt.qx.Object,
 
   construct : function() {
     org.eclipse.rwt.test.fixture.TestUtil.prepareTimerUse();

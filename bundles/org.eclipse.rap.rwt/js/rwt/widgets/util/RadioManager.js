@@ -14,9 +14,9 @@
 /**
  * Each instance manages vItems set of radio options: qx.ui.form.RadioButton, qx.ui.toolbar.RadioButton, ...
  */
-qx.Class.define("rwt.widgets.util.RadioManager",
+rwt.qx.Class.define("rwt.widgets.util.RadioManager",
 {
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
 
 
@@ -74,7 +74,7 @@ qx.Class.define("rwt.widgets.util.RadioManager",
       nullable : true,
       apply : "_applySelected",
       event : "changeSelected",
-      check : "qx.core.Object"
+      check : "rwt.qx.Object"
     },
 
     name :

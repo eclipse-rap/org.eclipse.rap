@@ -8,9 +8,9 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

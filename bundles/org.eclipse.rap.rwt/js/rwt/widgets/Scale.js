@@ -14,7 +14,7 @@
  * This class provides the client-side counterpart for
  * rwt.widgets.Scale.
  */
-qx.Class.define( "rwt.widgets.Scale", {
+rwt.qx.Class.define( "rwt.widgets.Scale", {
   extend : rwt.widgets.base.Parent,
 
   construct : function( isHorizontal ) {

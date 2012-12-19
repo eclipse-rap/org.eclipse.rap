@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.graphics.SVG", {
+rwt.qx.Class.define( "rwt.graphics.SVG", {
 
   statics : {
 
@@ -176,7 +176,7 @@ qx.Class.define( "rwt.graphics.SVG", {
 
     setFillGradient : function( shape, gradient ) {
       if( gradient != null ) {
-        var id = "gradient_" + qx.core.Object.toHashCode( shape );
+        var id = "gradient_" + rwt.qx.Object.toHashCode( shape );
         var gradNode;
         var horizontal = gradient.horizontal === true;
         if( typeof shape.defNodes[ id ] == "undefined" ) {
@@ -211,7 +211,7 @@ qx.Class.define( "rwt.graphics.SVG", {
 
     setFillPattern : function( shape, source, width, height ) {
       if( source != null ) {
-        var hash = qx.core.Object.toHashCode( shape );
+        var hash = rwt.qx.Object.toHashCode( shape );
         var patternId = "pattern_" + hash;
         var patternNode;
         var imageNode;
@@ -301,7 +301,7 @@ qx.Class.define( "rwt.graphics.SVG", {
 
     setBlur : function( shape, blurRadius ) {
       if( blurRadius > 0 ) {
-        var id = "filter_" + qx.core.Object.toHashCode( shape );
+        var id = "filter_" + rwt.qx.Object.toHashCode( shape );
         var filterNode;
         if( typeof shape.defNodes[ id ] === "undefined" ) {
           filterNode = this._createNode( "filter" );
@@ -322,7 +322,7 @@ qx.Class.define( "rwt.graphics.SVG", {
       var result = 0;
       var filter = shape.node.getAttribute( "filter" );
       if( filter && filter !== "none" ) {
-        var id = "filter_" + qx.core.Object.toHashCode( shape );
+        var id = "filter_" + rwt.qx.Object.toHashCode( shape );
         var filterNode = shape.defNodes[ id ];
         result = filterNode.firstChild.getAttribute( "stdDeviation" ) * 2;
       }

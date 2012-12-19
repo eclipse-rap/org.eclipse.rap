@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "rwt.theme.AppearanceManager", {
+rwt.qx.Class.define( "rwt.theme.AppearanceManager", {
 
   type : "singleton",
   extend : rwt.util.ObjectManager,

@@ -10,9 +10,9 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.GridItem", {
+rwt.qx.Class.define( "rwt.widgets.GridItem", {
 
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
   construct : function( parent, index, placeholder ) {
     // Dispose is only needed to remove items from the tree and widget manager.

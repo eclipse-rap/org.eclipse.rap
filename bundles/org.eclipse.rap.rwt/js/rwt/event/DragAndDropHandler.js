@@ -12,9 +12,9 @@
  ******************************************************************************/
 
 /**
- * This manager (singleton) manage all drag and drop handling of a qx.core.Init instance.
+ * This manager (singleton) manage all drag and drop handling of a rwt.qx.Init instance.
  */
-qx.Class.define("rwt.event.DragAndDropHandler",
+rwt.qx.Class.define("rwt.event.DragAndDropHandler",
 {
   type : "singleton",
   extend : rwt.util.ObjectManager,

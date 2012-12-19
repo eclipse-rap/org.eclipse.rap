@@ -16,9 +16,9 @@
  *
  * @param vWidget {rwt.widgets.base.Parent} reference to the associated widget
  */
-qx.Class.define("rwt.widgets.util.LayoutImpl",
+rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
 {
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
 
 

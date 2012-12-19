@@ -15,10 +15,10 @@
  * adding, removing and disposing of widgets and their id. In addition
  * the mapping of widgets and their respective id's can be queried.
  */
-qx.Class.define( "rwt.widgets.util.WidgetManager", {
+rwt.qx.Class.define( "rwt.widgets.util.WidgetManager", {
 
   type : "singleton",
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   construct : function() {
     this.base( arguments );

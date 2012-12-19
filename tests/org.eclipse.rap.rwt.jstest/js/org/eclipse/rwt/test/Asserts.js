@@ -9,7 +9,7 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define("org.eclipse.rwt.test.Asserts", {
+rwt.qx.Class.define("org.eclipse.rwt.test.Asserts", {
   type : "static",
 
   statics : {

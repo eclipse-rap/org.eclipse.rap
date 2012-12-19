@@ -11,11 +11,11 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "rwt.runtime.System", {
+rwt.qx.Class.define( "rwt.runtime.System", {
 
   type : "singleton",
 
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
   construct : function() {
     if( this.isSupported() ) {
@@ -65,14 +65,14 @@ qx.Class.define( "rwt.runtime.System", {
 
     _applyPatches : function() {
       if( !rwt.client.Client.supportsCss3() ) {
-        qx.Class.patch( rwt.widgets.base.Parent, rwt.widgets.util.GraphicsMixin );
-        qx.Class.patch( rwt.widgets.base.BasicText, rwt.widgets.util.GraphicsMixin );
-        qx.Class.patch( rwt.widgets.base.GridRow, rwt.widgets.util.GraphicsMixin );
-        qx.Class.patch( rwt.widgets.base.MultiCellWidget, rwt.widgets.util.GraphicsMixin );
+        rwt.qx.Class.patch( rwt.widgets.base.Parent, rwt.widgets.util.GraphicsMixin );
+        rwt.qx.Class.patch( rwt.widgets.base.BasicText, rwt.widgets.util.GraphicsMixin );
+        rwt.qx.Class.patch( rwt.widgets.base.GridRow, rwt.widgets.util.GraphicsMixin );
+        rwt.qx.Class.patch( rwt.widgets.base.MultiCellWidget, rwt.widgets.util.GraphicsMixin );
       } else {
-        qx.Class.patch( rwt.widgets.ProgressBar, rwt.widgets.util.GraphicsMixin );
+        rwt.qx.Class.patch( rwt.widgets.ProgressBar, rwt.widgets.util.GraphicsMixin );
       }
-      qx.Class.patch( rwt.event.DomEvent, rwt.event.DomEventPatch );
+      rwt.qx.Class.patch( rwt.event.DomEvent, rwt.event.DomEventPatch );
     },
 
     getStartupTime : function() {
@@ -127,7 +127,7 @@ qx.Class.define( "rwt.runtime.System", {
       this.createDispatchEvent( "unload" );
       rwt.event.EventHandler.detachEvents();
       rwt.event.EventHandler.cleanUp();
-      qx.core.Object.dispose( true );
+      rwt.qx.Object.dispose( true );
     },
 
     _isBrowserSupported : function() {

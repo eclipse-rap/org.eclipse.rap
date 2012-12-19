@@ -15,9 +15,9 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
 var shell;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

@@ -13,7 +13,7 @@
 /**
  * This class represents SWT Labels with style SWT.SEPARATOR
  */
-qx.Class.define( "rwt.widgets.Separator", {
+rwt.qx.Class.define( "rwt.widgets.Separator", {
   extend : rwt.widgets.base.BoxLayout,
 
   construct : function() {

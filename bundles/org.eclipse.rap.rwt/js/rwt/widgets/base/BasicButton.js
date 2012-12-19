@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.base.BasicButton", {
+rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
 
   extend : rwt.widgets.base.MultiCellWidget,
 

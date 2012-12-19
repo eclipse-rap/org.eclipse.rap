@@ -15,9 +15,9 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
 var shell;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

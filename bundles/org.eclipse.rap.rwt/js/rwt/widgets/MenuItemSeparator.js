@@ -15,7 +15,7 @@
  * @appearance menu-separator
  * @appearance menu-separator-line {rwt.widgets.base.Terminator}
  */
-qx.Class.define( "rwt.widgets.MenuItemSeparator", {
+rwt.qx.Class.define( "rwt.widgets.MenuItemSeparator", {
 
   extend : rwt.widgets.base.Parent,
 

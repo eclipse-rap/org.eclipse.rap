@@ -16,9 +16,9 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var shell;
 var serverObject;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.ServerObjectTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerObjectTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

@@ -17,9 +17,9 @@
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

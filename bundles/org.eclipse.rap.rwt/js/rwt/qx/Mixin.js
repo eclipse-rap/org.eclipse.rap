@@ -19,7 +19,7 @@
  *
  * See the description of the {@link #define} method how a mixin is defined.
  */
-qx.Class.define("qx.Mixin",
+rwt.qx.Class.define("rwt.qx.Mixin",
 {
   statics :
   {
@@ -34,7 +34,7 @@ qx.Class.define("qx.Mixin",
      *
      * Example:
      * <pre class='javascript'>
-     * qx.Mixin.define("name",
+     * rwt.qx.Mixin.define("name",
      * {
      *   includes: [SuperMixins],
      *
@@ -132,7 +132,7 @@ qx.Class.define("qx.Mixin",
       mixin.toString = this.genericToString;
 
       // Assign to namespace
-      mixin.basename = qx.Class.createNamespace(name, mixin);
+      mixin.basename = rwt.qx.Class.createNamespace(name, mixin);
 
       // Store class reference in global mixin registry
       this.__registry[name] = mixin;
@@ -208,9 +208,9 @@ qx.Class.define("qx.Mixin",
      */
     isCompatible : function(mixin, clazz)
     {
-      var list = qx.Class.getMixins(clazz);
+      var list = rwt.qx.Class.getMixins(clazz);
       list.push(mixin);
-      return qx.Mixin.checkCompatibility(list);
+      return rwt.qx.Mixin.checkCompatibility(list);
     },
 
 

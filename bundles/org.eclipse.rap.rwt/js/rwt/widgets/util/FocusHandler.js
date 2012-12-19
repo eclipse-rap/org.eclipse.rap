@@ -14,9 +14,9 @@
 /**
  * Each focus root delegates the focus handling to instances of the FocusHandler.
  */
-qx.Class.define("rwt.widgets.util.FocusHandler",
+rwt.qx.Class.define("rwt.widgets.util.FocusHandler",
 {
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
 
 

@@ -9,14 +9,14 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   construct : function() {
     var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
     TestUtil.prepareTimerUse();
-    qx.Class.__initializeClass( rwt.widgets.base.ScrollBar );
+    rwt.qx.Class.__initializeClass( rwt.widgets.base.ScrollBar );
     rwt.widgets.base.ScrollBar.prototype._getMinThumbSize = function() { return 8; };
   },
 

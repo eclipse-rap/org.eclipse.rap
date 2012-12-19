@@ -10,11 +10,11 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.ExternalBrowser", {
+rwt.qx.Class.define( "rwt.widgets.ExternalBrowser", {
 
   type : "singleton",
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
     // maps id's (aka window names) to window instances

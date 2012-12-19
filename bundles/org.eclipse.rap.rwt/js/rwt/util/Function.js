@@ -14,7 +14,7 @@
 /**
  * Collection of helper methods operating on functions.
  */
-qx.Class.define("rwt.util.Function",
+rwt.qx.Class.define("rwt.util.Function",
 {
   statics :
   {

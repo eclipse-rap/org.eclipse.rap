@@ -15,9 +15,9 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var MessageProcessor = rwt.protocol.MessageProcessor;
 var ObjectRegistry = rwt.protocol.ObjectRegistry;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

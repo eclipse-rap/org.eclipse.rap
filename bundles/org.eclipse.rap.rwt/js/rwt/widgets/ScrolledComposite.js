@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.ScrolledComposite", {
+rwt.qx.Class.define( "rwt.widgets.ScrolledComposite", {
   extend : rwt.widgets.base.Scrollable,
 
   construct : function() {

@@ -14,9 +14,9 @@
 /**
  * Helper for rwt.widgets.util.SelectionManager, contains data for selections
  */
-qx.Class.define("rwt.widgets.util.Selection",
+rwt.qx.Class.define("rwt.widgets.util.Selection",
 {
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
 
 

@@ -19,7 +19,7 @@
  *
  * @appearance client-document
  */
-qx.Class.define("rwt.widgets.base.ClientDocument",
+rwt.qx.Class.define("rwt.widgets.base.ClientDocument",
 {
   type : "singleton",
   extend : rwt.widgets.base.Parent,
@@ -323,7 +323,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
     {
       this._getBlocker().show();
 
-      if (qx.Class.isDefined("rwt.widgets.base.Window") && vActiveChild instanceof rwt.widgets.base.Window)
+      if (rwt.qx.Class.isDefined("rwt.widgets.base.Window") && vActiveChild instanceof rwt.widgets.base.Window)
       {
         this._modalWidgets.push(vActiveChild);
 
@@ -331,7 +331,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
         this._getBlocker().setZIndex(vOrigIndex);
         vActiveChild.setZIndex(vOrigIndex + 1);
       }
-      else if (qx.Class.isDefined("qx.client.NativeWindow") && vActiveChild instanceof qx.client.NativeWindow)
+      else if (rwt.qx.Class.isDefined("qx.client.NativeWindow") && vActiveChild instanceof qx.client.NativeWindow)
       {
         this._modalNativeWindow = vActiveChild;
         this._getBlocker().setZIndex(1e7);
@@ -348,7 +348,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
      */
     release : function( vActiveChild ) {
       if( vActiveChild ) {
-        if(    qx.Class.isDefined( "qx.client.NativeWindow" )
+        if(    rwt.qx.Class.isDefined( "qx.client.NativeWindow" )
             && vActiveChild instanceof qx.client.NativeWindow )
         {
           this._modalNativeWindow = null;

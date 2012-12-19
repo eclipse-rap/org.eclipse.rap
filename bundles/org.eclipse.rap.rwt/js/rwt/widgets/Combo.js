@@ -13,7 +13,7 @@
  * This class provides the client-side counterpart for
  * org.eclipse.swt.widget.Combo and org.eclipse.swt.custom.CCombo.
  */
-qx.Class.define( "rwt.widgets.Combo", {
+rwt.qx.Class.define( "rwt.widgets.Combo", {
   extend : rwt.widgets.base.Parent,
 
   construct : function( isCCombo ) {
@@ -133,7 +133,7 @@ qx.Class.define( "rwt.widgets.Combo", {
     this._list.removeEventListener( "appear", this._onListAppear, this );
     // Solution taken from Qooxdoo implementation of ComboBox
     // in order to prevent memory leak and other problems.
-    if( this._list && !qx.core.Object.inGlobalDispose() ) {
+    if( this._list && !rwt.qx.Object.inGlobalDispose() ) {
       this._list.setParent( null );
     }
     this._disposeObjects( "_field",

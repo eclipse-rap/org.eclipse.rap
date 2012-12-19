@@ -9,8 +9,8 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
-  extend : qx.core.Object,
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
+  extend : rwt.qx.Object,
 
   members : {
 
@@ -67,7 +67,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       var parentNode = document.body;
       var canvas = GraphicsUtil.createCanvas();
       var shape = GraphicsUtil.createShape( "rect" );
-      var hash = qx.core.Object.toHashCode( shape );
+      var hash = rwt.qx.Object.toHashCode( shape );
       GraphicsUtil.addToCanvas( canvas, shape );
       GraphicsUtil.handleAppear( canvas );
       parentNode.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
@@ -96,7 +96,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       var parentNode = document.body;
       var canvas = GraphicsUtil.createCanvas();
       var shape = GraphicsUtil.createShape( "rect" );
-      var hash = qx.core.Object.toHashCode( shape );
+      var hash = rwt.qx.Object.toHashCode( shape );
       GraphicsUtil.addToCanvas( canvas, shape );
       GraphicsUtil.handleAppear( canvas );
       parentNode.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
@@ -122,7 +122,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       var parentNode = document.body;
       var canvas = GraphicsUtil.createCanvas();
       var shape = GraphicsUtil.createShape( "rect" );
-      var hash = qx.core.Object.toHashCode( shape );
+      var hash = rwt.qx.Object.toHashCode( shape );
       GraphicsUtil.addToCanvas( canvas, shape );
       GraphicsUtil.handleAppear( canvas );
       parentNode.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
@@ -269,7 +269,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       GraphicsUtil.addToCanvas( canvas, shape );
       parent.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
       GraphicsUtil.handleAppear( canvas );
-      var hash = qx.core.Object.toHashCode( shape );
+      var hash = rwt.qx.Object.toHashCode( shape );
       var expected = "url(#filter_" + hash + ")"; 
       assertEquals( expected, shape.node.getAttribute( "filter" ) );
       var filterNode = canvas.defsNode.firstChild;

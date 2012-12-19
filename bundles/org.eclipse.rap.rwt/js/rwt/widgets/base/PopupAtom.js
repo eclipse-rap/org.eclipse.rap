@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define("rwt.widgets.base.PopupAtom",
+rwt.qx.Class.define("rwt.widgets.base.PopupAtom",
 {
   extend : rwt.widgets.base.Popup,
 

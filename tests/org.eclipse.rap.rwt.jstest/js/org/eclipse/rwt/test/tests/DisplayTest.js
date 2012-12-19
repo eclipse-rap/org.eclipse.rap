@@ -16,9 +16,9 @@ var MessageProcessor = rwt.protocol.MessageProcessor;
 
 var display;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

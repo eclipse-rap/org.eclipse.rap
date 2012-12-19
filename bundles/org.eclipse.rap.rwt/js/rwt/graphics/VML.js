@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.graphics.VML", {
+rwt.qx.Class.define( "rwt.graphics.VML", {
 
   statics : {
 
@@ -86,7 +86,7 @@ qx.Class.define( "rwt.graphics.VML", {
     },
 
     addToCanvas : function( canvas, shape, beforeShape ) {
-      var hash = qx.core.Object.toHashCode( shape );
+      var hash = rwt.qx.Object.toHashCode( shape );
       canvas.children[ hash ] = shape;
       //canvas.node.appendChild( shape.node );
       if( beforeShape ) {
@@ -101,7 +101,7 @@ qx.Class.define( "rwt.graphics.VML", {
     },
 
     removeFromCanvas : function( canvas, shape ) {
-      var hash = qx.core.Object.toHashCode( shape );
+      var hash = rwt.qx.Object.toHashCode( shape );
       delete canvas.children[ hash ];
       canvas.node.removeChild( shape.node );
     },

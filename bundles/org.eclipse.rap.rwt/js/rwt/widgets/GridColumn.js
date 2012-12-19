@@ -10,9 +10,9 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.GridColumn", {
+rwt.qx.Class.define( "rwt.widgets.GridColumn", {
 
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
   construct : function( grid, isGroup ) {
     this.base( arguments );

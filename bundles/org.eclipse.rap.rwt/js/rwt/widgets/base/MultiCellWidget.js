@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
+rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
 
   extend : rwt.widgets.base.Terminator,
 

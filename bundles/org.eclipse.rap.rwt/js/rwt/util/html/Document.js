@@ -27,7 +27,7 @@
 /**
  * Includes library functions to work with the current document.
  */
-qx.Class.define("rwt.util.html.Document",
+rwt.qx.Class.define("rwt.util.html.Document",
 {
   statics :
   {

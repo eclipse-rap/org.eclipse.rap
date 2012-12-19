@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "rwt.event.EventHandlerUtil", {
+rwt.qx.Class.define( "rwt.event.EventHandlerUtil", {
   type : "static",
 
   statics : {

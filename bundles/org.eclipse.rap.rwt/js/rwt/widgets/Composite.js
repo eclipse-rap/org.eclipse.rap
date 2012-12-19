@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.Composite", {
+rwt.qx.Class.define( "rwt.widgets.Composite", {
 
   extend : rwt.widgets.base.Parent,
 

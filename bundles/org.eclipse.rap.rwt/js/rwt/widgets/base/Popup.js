@@ -14,7 +14,7 @@
 /**
  * @appearance popup
  */
-qx.Class.define("rwt.widgets.base.Popup",
+rwt.qx.Class.define("rwt.widgets.base.Popup",
 {
   extend : rwt.widgets.base.Parent,
 

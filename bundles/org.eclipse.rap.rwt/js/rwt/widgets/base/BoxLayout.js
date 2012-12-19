@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define("rwt.widgets.base.BoxLayout",
+rwt.qx.Class.define("rwt.widgets.base.BoxLayout",
 {
   extend : rwt.widgets.base.Parent,
 

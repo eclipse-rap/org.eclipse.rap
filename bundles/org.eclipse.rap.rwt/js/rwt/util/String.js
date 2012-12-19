@@ -25,7 +25,7 @@
  * The string/array generics introduced in JavaScript 1.6 are supported by
  * {@link qx.lang.Generics}.
  */
-qx.Class.define("rwt.util.String",
+rwt.qx.Class.define("rwt.util.String",
 {
   statics :
   {

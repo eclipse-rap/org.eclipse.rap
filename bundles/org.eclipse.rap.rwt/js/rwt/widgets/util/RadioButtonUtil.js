@@ -14,7 +14,7 @@
 /**
  * This class contains static functions for radio buttons
  */
-qx.Class.define( "rwt.widgets.util.RadioButtonUtil", {
+rwt.qx.Class.define( "rwt.widgets.util.RadioButtonUtil", {
 
   statics : {
 

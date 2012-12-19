@@ -12,7 +12,7 @@
  ******************************************************************************/
 
 /** Event object for property changes. */
-qx.Class.define("rwt.event.ChangeEvent",
+rwt.qx.Class.define("rwt.event.ChangeEvent",
 {
   extend : rwt.event.Event,
 

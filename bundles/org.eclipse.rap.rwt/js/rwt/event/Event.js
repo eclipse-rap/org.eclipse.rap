@@ -12,11 +12,11 @@
  ******************************************************************************/
 
 /**
- * The qooxdoo core event object. Each event object for qx.core.Targets should extend this class.
+ * The qooxdoo core event object. Each event object for rwt.qx.Targets should extend this class.
  */
-qx.Class.define("rwt.event.Event",
+rwt.qx.Class.define("rwt.event.Event",
 {
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
 
 

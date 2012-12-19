@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.Spinner", {
+rwt.qx.Class.define( "rwt.widgets.Spinner", {
   extend : rwt.widgets.base.Spinner,
 
   construct : function() {

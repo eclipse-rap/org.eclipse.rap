@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.ToolBar", {
+rwt.qx.Class.define( "rwt.widgets.ToolBar", {
 
   extend : rwt.widgets.base.Parent,
 

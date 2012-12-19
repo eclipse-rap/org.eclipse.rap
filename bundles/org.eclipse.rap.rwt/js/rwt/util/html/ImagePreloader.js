@@ -21,9 +21,9 @@
  * rwt.util.html.ImagePreloaderManager.getInstance().create(imageUrl)
  * </pre>
  */
-qx.Class.define("rwt.util.html.ImagePreloader",
+rwt.qx.Class.define("rwt.util.html.ImagePreloader",
 {
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
   events :
   {

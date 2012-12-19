@@ -15,7 +15,7 @@ var Animation = rwt.animation.Animation;
 var AnimationRenderer = rwt.animation.AnimationRenderer;
 var EventHandlerUtil = rwt.event.EventHandlerUtil;
 
-qx.Mixin.define( "rwt.animation.VisibilityAnimationMixin", {
+rwt.qx.Mixin.define( "rwt.animation.VisibilityAnimationMixin", {
 
   properties : {
 

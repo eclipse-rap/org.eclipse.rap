@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.graphics.GraphicsUtil", {
+rwt.qx.Class.define( "rwt.graphics.GraphicsUtil", {
 
   statics : {
     _renderClass : null,

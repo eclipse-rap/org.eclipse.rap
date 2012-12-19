@@ -9,9 +9,9 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.util.FocusIndicator", {
+rwt.qx.Class.define( "rwt.widgets.util.FocusIndicator", {
   type : "singleton",
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   construct : function() {
     this.base( arguments );

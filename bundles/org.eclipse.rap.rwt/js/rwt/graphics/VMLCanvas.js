@@ -9,9 +9,9 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.graphics.VMLCanvas", {
+rwt.qx.Class.define( "rwt.graphics.VMLCanvas", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   construct : function( canvas ) {
     this._autoDispose = false;

@@ -15,9 +15,9 @@
  * A wrapper for CSS font styles. Fond objects can be aplpied to widgets
  * or DOM elements.
  */
-qx.Class.define( "qx.ui.core.Font", {
+rwt.qx.Class.define( "qx.ui.core.Font", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   /**
    * @param size {String} The font size (Unit: pixel)

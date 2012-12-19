@@ -57,7 +57,7 @@
  * @appearance spinner-button-down {rwt.widgets.base.Image}
  * @state pressed {spinner-button-down}
  */
-qx.Class.define("rwt.widgets.base.Spinner",
+rwt.qx.Class.define("rwt.widgets.base.Spinner",
 {
   extend : rwt.widgets.base.HorizontalBoxLayout,
 

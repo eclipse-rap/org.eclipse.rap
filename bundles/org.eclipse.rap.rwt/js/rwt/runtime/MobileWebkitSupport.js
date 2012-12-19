@@ -13,7 +13,7 @@
 
 /*global alert:false, console:false */
 
-qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
+rwt.qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
 
   type : "static",
 

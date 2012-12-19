@@ -13,7 +13,7 @@
 /**
  * This class contains static listener functions for common events.
  */
-qx.Class.define( "org.eclipse.swt.EventUtil", {
+rwt.qx.Class.define( "org.eclipse.swt.EventUtil", {
 
   statics : {
     _suspended : false,

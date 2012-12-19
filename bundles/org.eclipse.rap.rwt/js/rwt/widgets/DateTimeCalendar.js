@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.DateTimeCalendar", {
+rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
   extend : rwt.widgets.base.Parent,
 
   construct : function( style, monthNames, weekdayNames ) {

@@ -9,9 +9,9 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.Presenter", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.Presenter", {
 
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
   type : "singleton",
 

@@ -15,9 +15,9 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
 var widget;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
 
   members : {

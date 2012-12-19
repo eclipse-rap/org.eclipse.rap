@@ -12,7 +12,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "rwt.event.EventHandler", {
+rwt.qx.Class.define( "rwt.event.EventHandler", {
   type : "static",
 
   statics : {
@@ -236,7 +236,7 @@ qx.Class.define( "rwt.event.EventHandler", {
           }
         }
         vTarget.dispatchEvent( vKeyEventObject );
-        if( qx.Class.isDefined("rwt.event.DragAndDropHandler") ) {
+        if( rwt.qx.Class.isDefined("rwt.event.DragAndDropHandler") ) {
           rwt.event.DragAndDropHandler.getInstance().handleKeyEvent( vKeyEventObject );
         }
       }
@@ -455,14 +455,14 @@ qx.Class.define( "rwt.event.EventHandler", {
           if( this._menuManager != null ) {
             this._menuManager.update( vTarget, vType );
           }
-          if( qx.Class.isDefined("rwt.widgets.base.IframeManager" ) ) {
+          if( rwt.qx.Class.isDefined("rwt.widgets.base.IframeManager" ) ) {
             rwt.widgets.base.IframeManager.getInstance().handleMouseUp( vEventObject );
           }
         break;
       }
       rwt.widgets.util.ToolTipManager.getInstance().handleMouseEvent( vEventObject );
       this._ignoreWindowBlur = vType === "mousedown";
-      if( qx.Class.isDefined("rwt.event.DragAndDropHandler" ) && vTarget ) {
+      if( rwt.qx.Class.isDefined("rwt.event.DragAndDropHandler" ) && vTarget ) {
         rwt.event.DragAndDropHandler.getInstance().handleMouseEvent( vEventObject );
       }
     },
@@ -508,13 +508,13 @@ qx.Class.define( "rwt.event.EventHandler", {
         }
         this._focused = false;
         this.setCaptureWidget( null );
-        if( qx.Class.isDefined( "rwt.widgets.util.PopupManager" ) ) {
+        if( rwt.qx.Class.isDefined( "rwt.widgets.util.PopupManager" ) ) {
           rwt.widgets.util.PopupManager.getInstance().update();
         }
         if ( this._menuManager ) {
           this._menuManager.update();
         }
-        if( qx.Class.isDefined( "rwt.event.DragAndDropHandler" ) ) {
+        if( rwt.qx.Class.isDefined( "rwt.event.DragAndDropHandler" ) ) {
           rwt.event.DragAndDropHandler.getInstance().globalCancelDrag();
         }
         rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowblur" );

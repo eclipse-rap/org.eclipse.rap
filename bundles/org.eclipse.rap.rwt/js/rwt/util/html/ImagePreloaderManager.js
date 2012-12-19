@@ -12,10 +12,10 @@
  ******************************************************************************/
 
 /** This singleton manage all rwt.util.html.ImagePreloader instances. */
-qx.Class.define("rwt.util.html.ImagePreloaderManager",
+rwt.qx.Class.define("rwt.util.html.ImagePreloaderManager",
 {
   type : "singleton",
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
 
 

@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "qx.constant.Style", {
+rwt.qx.Class.define( "qx.constant.Style", {
 
   statics : {
     POSITION_ABSOLUTE       : "absolute",

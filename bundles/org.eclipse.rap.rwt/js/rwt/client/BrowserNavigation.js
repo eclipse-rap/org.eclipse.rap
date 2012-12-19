@@ -42,10 +42,10 @@
  * The original code is licensed under a BSD license
  * (http://developer.yahoo.com/yui/license.txt).
  */
-qx.Class.define("rwt.client.BrowserNavigation",
+rwt.qx.Class.define("rwt.client.BrowserNavigation",
 {
   type : "singleton",
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
 
 

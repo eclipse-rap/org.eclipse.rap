@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define("rwt.widgets.util.VerticalBoxLayoutImpl",
+rwt.qx.Class.define("rwt.widgets.util.VerticalBoxLayoutImpl",
 {
   extend : rwt.widgets.util.LayoutImpl,
 

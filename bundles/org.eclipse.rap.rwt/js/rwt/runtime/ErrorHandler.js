@@ -11,7 +11,7 @@
 
 /*global console: false */
 
-qx.Class.define( "rwt.runtime.ErrorHandler", {
+rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
 
   statics : {
 
@@ -176,7 +176,7 @@ qx.Class.define( "rwt.runtime.ErrorHandler", {
         display.setExitConfirmation( null );
         //qx.io.remote.RequestQueue.getInstance().setEnabled( false );
         rwt.event.EventHandler.detachEvents();
-        qx.core.Target.prototype.dispatchEvent = function() {};
+        rwt.qx.Target.prototype.dispatchEvent = function() {};
         rwt.animation.Animation._stopLoop();
       } catch( ex ) {
         try {

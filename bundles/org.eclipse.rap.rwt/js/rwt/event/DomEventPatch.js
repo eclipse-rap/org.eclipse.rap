@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Mixin.define( "rwt.event.DomEventPatch", {
+rwt.qx.Mixin.define( "rwt.event.DomEventPatch", {
 
   "members" : {
 

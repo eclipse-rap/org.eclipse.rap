@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
+rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
   type : "singleton",
   extend : rwt.widgets.base.ToolTip,
   include : rwt.animation.VisibilityAnimationMixin,

@@ -20,7 +20,7 @@
  * assigned values are not disposed e.g. qooxdoo objects stored are not
  * disposed with the objects which contains the user data.
  */
-qx.Mixin.define("qx.core.MUserData",
+rwt.qx.Mixin.define("rwt.qx.MUserData",
 {
   /*
   *****************************************************************************

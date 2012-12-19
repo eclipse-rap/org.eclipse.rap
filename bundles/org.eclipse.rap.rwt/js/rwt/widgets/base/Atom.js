@@ -21,7 +21,7 @@
  *
  * @appearance atom
  */
-qx.Class.define("rwt.widgets.base.Atom",
+rwt.qx.Class.define("rwt.widgets.base.Atom",
 {
   extend : rwt.widgets.base.BoxLayout,
 
@@ -54,7 +54,7 @@ qx.Class.define("rwt.widgets.base.Atom",
     }
 
     // Simple flash wrapper
-    if (qx.Class.isDefined("qx.ui.embed.Flash") && vFlash != null && vIconWidth != null && vIconHeight != null && qx.ui.embed.Flash.getPlayerVersion().getMajor() > 0)
+    if (rwt.qx.Class.isDefined("qx.ui.embed.Flash") && vFlash != null && vIconWidth != null && vIconHeight != null && qx.ui.embed.Flash.getPlayerVersion().getMajor() > 0)
     {
       this._flashMode = true;
 
@@ -306,7 +306,7 @@ qx.Class.define("rwt.widgets.base.Atom",
      */
     _createIcon : function()
     {
-      if (this._flashMode && qx.Class.isDefined("qx.ui.embed.Flash")) {
+      if (this._flashMode && rwt.qx.Class.isDefined("qx.ui.embed.Flash")) {
         var i = this._iconObject = new qx.ui.embed.Flash(this.getIcon());
       } else {
         var i = this._iconObject = new rwt.widgets.base.Image();

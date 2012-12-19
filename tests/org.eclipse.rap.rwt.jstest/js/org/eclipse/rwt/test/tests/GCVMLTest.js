@@ -9,8 +9,8 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
-  extend : qx.core.Object,
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
+  extend : rwt.qx.Object,
 
   members : {
     // NOTE: Testing is only possible in a very limited way

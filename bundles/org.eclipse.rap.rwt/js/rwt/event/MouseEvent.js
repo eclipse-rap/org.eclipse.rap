@@ -13,7 +13,7 @@
 
 
 /** A mouse event instance contains all data for each occured mouse event */
-qx.Class.define("rwt.event.MouseEvent",
+rwt.qx.Class.define("rwt.event.MouseEvent",
 {
   extend : rwt.event.DomEvent,
 

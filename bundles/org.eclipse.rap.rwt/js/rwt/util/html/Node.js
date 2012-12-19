@@ -14,7 +14,7 @@
 /**
  * Basic node creation and type detection
  */
-qx.Class.define("rwt.util.html.Node",
+rwt.qx.Class.define("rwt.util.html.Node",
 {
   /*
   *****************************************************************************

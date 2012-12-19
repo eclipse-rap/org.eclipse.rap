@@ -423,13 +423,13 @@ rwt.protocol.AdapterUtil = {
       list = {};
       parent.setUserData( "destroyableChildren", list );
     }
-    list[ qx.core.Object.toHashCode( child ) ] = child;
+    list[ rwt.qx.Object.toHashCode( child ) ] = child;
   },
 
   removeDestroyableChild : function( parent, child ) {
     var list = parent.getUserData( "destroyableChildren" );
     if( list != null ) {
-      delete list[ qx.core.Object.toHashCode( child ) ];
+      delete list[ rwt.qx.Object.toHashCode( child ) ];
     }
   },
 

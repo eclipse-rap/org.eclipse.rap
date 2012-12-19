@@ -16,9 +16,9 @@
  * which are needed later. Once all images are pre loaded a "complete"
  * event is fired.
  */
-qx.Class.define("rwt.util.html.ImagePreloaderSystem",
+rwt.qx.Class.define("rwt.util.html.ImagePreloaderSystem",
 {
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
 
 

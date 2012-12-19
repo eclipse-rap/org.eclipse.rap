@@ -13,7 +13,7 @@
 
 /**
  * Internal class for handling of dynamic properties. Should only be used
- * through the methods provided by {@link qx.Class}.
+ * through the methods provided by {@link rwt.qx.Class}.
  *
  * For a complete documentation of properties take a
  * look at http://qooxdoo.org/documentation/developer_manual/properties.
@@ -21,7 +21,7 @@
  *
  * *Normal properties*
  *
- * The <code>properties</code> key in the class definition map of {@link qx.Class#define}
+ * The <code>properties</code> key in the class definition map of {@link rwt.qx.Class#define}
  * is used to generate the properties.
  *
  * Valid keys of a property definition are:
@@ -101,7 +101,7 @@
  *
  * @internal
  */
-qx.Class.define( "qx.core.Property", {
+rwt.qx.Class.define( "rwt.qx.Property", {
 
   statics : {
 
@@ -126,7 +126,7 @@ qx.Class.define( "qx.core.Property", {
 
       "Object"    : 'value !== null && typeof value === "object"',
       "Array"     : 'value instanceof Array',
-      "Map"       : 'value !== null && typeof value === "object" && !(value instanceof Array) && !(value instanceof qx.core.Object)',
+      "Map"       : 'value !== null && typeof value === "object" && !(value instanceof Array) && !(value instanceof rwt.qx.Object)',
 
       "Function"  : 'value instanceof Function',
       "Date"      : 'value instanceof Date',
@@ -239,7 +239,7 @@ qx.Class.define( "qx.core.Property", {
       themeable   : "boolean"   // Boolean
     },
 
-    /** Contains names of inheritable properties, filled by {@link qx.Class.define} */
+    /** Contains names of inheritable properties, filled by {@link rwt.qx.Class.define} */
     $$inheritable : {},
 
     /**
@@ -430,7 +430,7 @@ qx.Class.define( "qx.core.Property", {
 
       // Fill dispose value
       if( config.dispose === undefined && typeof config.check === "string" ) {
-        config.dispose = this.__dispose[config.check] || qx.Class.isDefined( config.check );
+        config.dispose = this.__dispose[config.check] || rwt.qx.Class.isDefined( config.check );
       }
 
       var method = this.$$method;
@@ -444,42 +444,42 @@ qx.Class.define( "qx.core.Property", {
 
       method.get[name] = prefix + "get" + postfix;
       members[method.get[name]] = function() {
-        return qx.core.Property.executeOptimizedGetter( this, clazz, name, "get" );
+        return rwt.qx.Property.executeOptimizedGetter( this, clazz, name, "get" );
       };
 
       method.set[name] = prefix + "set" + postfix;
       members[method.set[name]] = function( value ) {
-        return qx.core.Property.executeOptimizedSetter( this, clazz, name, "set", arguments );
+        return rwt.qx.Property.executeOptimizedSetter( this, clazz, name, "set", arguments );
       };
 
       method.reset[name] = prefix + "reset" + postfix;
       members[method.reset[name]] = function() {
-        return qx.core.Property.executeOptimizedSetter( this, clazz, name, "reset" );
+        return rwt.qx.Property.executeOptimizedSetter( this, clazz, name, "reset" );
       };
 
       if( config.inheritable || config.apply || config.event || config.deferredInit ) {
         method.init[name] = prefix + "init" + postfix;
         members[method.init[name]] = function(value) {
-          return qx.core.Property.executeOptimizedSetter( this, clazz, name, "init", arguments );
+          return rwt.qx.Property.executeOptimizedSetter( this, clazz, name, "init", arguments );
         };
       }
 
       if( config.inheritable ) {
         method.refresh[name] = prefix + "refresh" + postfix;
         members[method.refresh[name]] = function( value ) {
-          return qx.core.Property.executeOptimizedSetter( this, clazz, name, "refresh", arguments );
+          return rwt.qx.Property.executeOptimizedSetter( this, clazz, name, "refresh", arguments );
         };
       }
 
       if( config.themeable ) {
         method.style[name] = prefix + "style" + postfix;
         members[method.style[name]] = function( value ) {
-          return qx.core.Property.executeOptimizedSetter( this, clazz, name, "style", arguments );
+          return rwt.qx.Property.executeOptimizedSetter( this, clazz, name, "style", arguments );
         };
 
         method.unstyle[name] = prefix + "unstyle" + postfix;
         members[method.unstyle[name]] = function() {
-          return qx.core.Property.executeOptimizedSetter( this, clazz, name, "unstyle" );
+          return rwt.qx.Property.executeOptimizedSetter( this, clazz, name, "unstyle" );
         };
       }
 
@@ -504,7 +504,7 @@ qx.Class.define( "qx.core.Property", {
      *
      * @type static
      * @internal
-     * @param obj {qx.core.Object} Any qooxdoo object
+     * @param obj {rwt.qx.Object} Any qooxdoo object
      * @param id {Integer} Numeric error identifier
      * @param property {String} Name of the property
      * @param variant {String} Name of the method variant e.g. "set", "reset", ...
@@ -648,7 +648,7 @@ qx.Class.define( "qx.core.Property", {
       // [2] PRE CONDITIONS
 
       if( rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
-        code.push( 'var prop=qx.core.Property;' );
+        code.push( 'var prop=rwt.qx.Property;' );
         if( variant === "init" ) {
           code.push( 'if(this.$$initialized)prop.error(this,0,"' + name + '","' + variant + '",value);' );
         }
@@ -672,7 +672,7 @@ qx.Class.define( "qx.core.Property", {
       }
       else {
         if( !config.nullable || config.check || config.inheritable ) {
-          code.push( 'var prop=qx.core.Property;' );
+          code.push( 'var prop=rwt.qx.Property;' );
         }
 
         // Undefined check
@@ -735,7 +735,7 @@ qx.Class.define( "qx.core.Property", {
           if( this.__checks[config.check] !== undefined ) {
             code.push( '!(', this.__checks[config.check], ')' );
           }
-          else if( qx.Class.isDefined( config.check ) ) {
+          else if( rwt.qx.Class.isDefined( config.check ) ) {
             code.push( '!(value instanceof ', config.check, ')' );
           }
           else if( typeof config.check === "function" ) {

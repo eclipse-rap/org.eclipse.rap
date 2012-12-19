@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.Label", {
+rwt.qx.Class.define( "rwt.widgets.Label", {
 
   extend : rwt.widgets.base.MultiCellWidget,
 

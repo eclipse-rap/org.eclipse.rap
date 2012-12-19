@@ -8,8 +8,8 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
-  extend : qx.core.Object,
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
+  extend : rwt.qx.Object,
   
   members : {
 

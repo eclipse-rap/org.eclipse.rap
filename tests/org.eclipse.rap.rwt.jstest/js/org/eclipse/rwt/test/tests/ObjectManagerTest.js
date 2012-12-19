@@ -9,9 +9,9 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.ObjectManagerTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ObjectManagerTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
   
   members : {
 

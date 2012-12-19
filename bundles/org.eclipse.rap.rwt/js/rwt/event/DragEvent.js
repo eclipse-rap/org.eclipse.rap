@@ -12,7 +12,7 @@
  ******************************************************************************/
 
 /** The event object for drag and drop sessions */
-qx.Class.define("rwt.event.DragEvent",
+rwt.qx.Class.define("rwt.event.DragEvent",
 {
   extend : rwt.event.MouseEvent,
 

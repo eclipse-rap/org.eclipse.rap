@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.base.Scrollable", {
+rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
   extend : rwt.widgets.base.Parent,
 
   construct : function( clientArea ) {

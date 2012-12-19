@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.CoolBar", {
+rwt.qx.Class.define( "rwt.widgets.CoolBar", {
   extend : rwt.widgets.base.Parent,
 
   construct : function() {

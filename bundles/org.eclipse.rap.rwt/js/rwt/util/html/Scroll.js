@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define("rwt.util.html.Scroll",
+rwt.qx.Class.define("rwt.util.html.Scroll",
 {
   /*
   *****************************************************************************

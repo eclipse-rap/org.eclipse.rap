@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.ui.forms.widgets.ToggleHyperlink", {
+rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.ToggleHyperlink", {
   extend : rwt.widgets.base.Image,
 
   construct : function() {

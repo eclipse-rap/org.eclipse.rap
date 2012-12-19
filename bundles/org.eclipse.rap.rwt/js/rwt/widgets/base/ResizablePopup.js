@@ -14,7 +14,7 @@
 /**
  * A popup that can be resized.
  */
-qx.Class.define("rwt.widgets.base.ResizablePopup",
+rwt.qx.Class.define("rwt.widgets.base.ResizablePopup",
 {
   extend   : rwt.widgets.base.Popup,
   include  : qx.ui.resizer.MResizable,

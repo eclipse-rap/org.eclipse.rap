@@ -11,6 +11,6 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define("rwt.widgets.base.HorizontalBoxLayout", {
+rwt.qx.Class.define("rwt.widgets.base.HorizontalBoxLayout", {
   extend : rwt.widgets.base.BoxLayout
 });

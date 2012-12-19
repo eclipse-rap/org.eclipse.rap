@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.CTabFolder", {
+rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
   extend : rwt.widgets.base.Parent,
 
   construct : function() {

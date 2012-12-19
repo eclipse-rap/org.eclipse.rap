@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.ToolItemSeparator", {
+rwt.qx.Class.define( "rwt.widgets.ToolItemSeparator", {
   extend : rwt.widgets.base.Parent,
 
   construct : function( flat, vertical ) {

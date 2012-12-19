@@ -14,7 +14,7 @@
 /**
  * @appearance tab-view
  */
-qx.Class.define("rwt.widgets.TabFolder",
+rwt.qx.Class.define("rwt.widgets.TabFolder",
 {
   extend : rwt.widgets.base.BoxLayout,
 

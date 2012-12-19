@@ -15,9 +15,9 @@ var register = function( widget ) {
   rwt.protocol.ObjectRegistry.add( "w" + widget.toHashCode(), widget );
 };
 
-qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   // NOTE : Many of these tests use the Tree as an intermediate layer for tests.
   //        This is for historical reasons and should be adapted step by step.

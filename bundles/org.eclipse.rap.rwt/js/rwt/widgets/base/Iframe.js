@@ -18,7 +18,7 @@
  *
  * @appearance iframe
  */
-qx.Class.define("rwt.widgets.base.Iframe",
+rwt.qx.Class.define("rwt.widgets.base.Iframe",
 {
   extend : rwt.widgets.base.Terminator,
 

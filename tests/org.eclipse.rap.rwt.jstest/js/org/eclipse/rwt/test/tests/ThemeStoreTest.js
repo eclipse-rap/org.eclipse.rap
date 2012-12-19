@@ -18,9 +18,9 @@ var themeStore = rwt.theme.ThemeStore.getInstance();
 var originalTheme;
 var originalFallback;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.ThemeStoreTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ThemeStoreTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

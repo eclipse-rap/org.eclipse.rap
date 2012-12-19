@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define("rwt.widgets.base.HtmlEmbed",
+rwt.qx.Class.define("rwt.widgets.base.HtmlEmbed",
 {
   extend : rwt.widgets.base.Terminator,
 

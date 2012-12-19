@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.util.MenuManager", {
+rwt.qx.Class.define( "rwt.widgets.util.MenuManager", {
   type : "singleton",
   extend : rwt.util.ObjectManager,
 

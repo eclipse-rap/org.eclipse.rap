@@ -28,7 +28,7 @@
  * </table>
  *
  * Each method may access static members of the same class by using
- * <code>this.self(arguments)</code> ({@link qx.core.Object#self}):
+ * <code>this.self(arguments)</code> ({@link rwt.qx.Object#self}):
  * <pre class='javascript'>
  * statics : { FOO : "bar" },
  * members: {
@@ -40,7 +40,7 @@
  * </pre>
  *
  * Each overriding method may call the overridden method by using
- * <code>this.base(arguments [, ...])</code> ({@link qx.core.Object#base}). This is also true for calling
+ * <code>this.base(arguments [, ...])</code> ({@link rwt.qx.Object#base}). This is also true for calling
  * the constructor of the superclass.
  * <pre class='javascript'>
  * members: {
@@ -54,7 +54,7 @@
 
 /*global alert:false */
 
-qx.Class.define( "qx.Class", {
+rwt.qx.Class.define( "rwt.qx.Class", {
 
   statics : {
 
@@ -80,7 +80,7 @@ qx.Class.define( "qx.Class", {
      *
      * Example:
      * <pre class='javascript'>
-     * qx.Class.define("name",
+     * rwt.qx.Class.define("name",
      * {
      *   extend : Object, // superclass
      *   implement : [Interfaces],
@@ -130,10 +130,10 @@ qx.Class.define( "qx.Class", {
      *       <tr><th>construct</th><td>Function</td><td>The constructor of the class.</td></tr>
      *       <tr><th>statics</th><td>Map</td><td>Map of static members of the class.</td></tr>
      *       <tr><th>properties</th><td>Map</td><td>Map of property definitions. For a description of the format of a property definition see
-     *           {@link qx.core.Property} or the legacy version {@link qx.core.LegacyProperty}.</td></tr>
+     *           {@link rwt.qx.Property} or the legacy version {@link rwt.qx.LegacyProperty}.</td></tr>
      *       <tr><th>members</th><td>Map</td><td>Map of instance members of the class.</td></tr>
      *       <tr><th>settings</th><td>Map</td><td>Map of settings for this class. For a description of the format of a setting see
-     *           {@link qx.core.Setting}.</td></tr>
+     *           {@link rwt.qx.Setting}.</td></tr>
      *       <tr><th>variants</th><td>Map</td><td>Map of settings for this class. For a description of the format of a setting see
      *           {@link rwt.util.Variant}</td></tr>
      *       <tr><th>events</th><td>Map</td><td>
@@ -223,7 +223,7 @@ qx.Class.define( "qx.Class", {
             add : function( name, config ) {
               var properties = {};
               properties[name] = config;
-              qx.Class.__addProperties(clazz, properties, true);
+              rwt.qx.Class.__addProperties(clazz, properties, true);
             }
           } );
         }
@@ -314,7 +314,7 @@ qx.Class.define( "qx.Class", {
      */
     include : function(clazz, mixin)
     {
-      qx.Class.__addMixin(clazz, mixin, false);
+      rwt.qx.Class.__addMixin(clazz, mixin, false);
     },
 
 
@@ -334,7 +334,7 @@ qx.Class.define( "qx.Class", {
      */
     patch : function(clazz, mixin)
     {
-      qx.Class.__addMixin(clazz, mixin, true);
+      rwt.qx.Class.__addMixin(clazz, mixin, true);
     },
 
 
@@ -554,7 +554,7 @@ qx.Class.define( "qx.Class", {
      * Whether a given class directly includes a interface.
      *
      * This function will only return "true" if the interface was defined
-     * in the class declaration (@link qx.Class#define}) using the "implement"
+     * in the class declaration (@link rwt.qx.Class#define}) using the "implement"
      * key.
      *
      * @type static
@@ -628,7 +628,7 @@ qx.Class.define( "qx.Class", {
      * Whether a given class or any of its superclasses includes a given interface.
      *
      * This function will return "true" if the interface was defined
-     * in the class declaration (@link qx.Class#define}) of the class
+     * in the class declaration (@link rwt.qx.Class#define}) of the class
      * or any of its super classes using the "implement"
      * key.
      *
@@ -819,7 +819,7 @@ qx.Class.define( "qx.Class", {
         if (config.include)
         {
           try {
-            qx.Mixin.checkCompatibility(config.include);
+            rwt.qx.Mixin.checkCompatibility(config.include);
           } catch(ex) {
             throw new Error('Error in include definition of class "' + name + '"! ' + ex.message);
           }
@@ -922,22 +922,22 @@ qx.Class.define( "qx.Class", {
 
         // Remember inheritable properties
         if (config.inheritable) {
-          qx.core.Property.$$inheritable[name] = true;
+          rwt.qx.Property.$$inheritable[name] = true;
         }
 
         // If instances of this class were already created, we
         // need to attach the new style properties functions, directly.
         if (attach) {
-          qx.core.Property.attachMethods(clazz, name, config);
+          rwt.qx.Property.attachMethods(clazz, name, config);
         }
 
         // Create old style properties
         if (config._fast) {
-          qx.core.LegacyProperty.addFastProperty(config, clazz.prototype);
+          rwt.qx.LegacyProperty.addFastProperty(config, clazz.prototype);
         } else if (config._cached) {
-          qx.core.LegacyProperty.addCachedProperty(config, clazz.prototype);
+          rwt.qx.LegacyProperty.addCachedProperty(config, clazz.prototype);
         } else if (config._legacy) {
-          qx.core.LegacyProperty.addProperty(config, clazz.prototype);
+          rwt.qx.LegacyProperty.addProperty(config, clazz.prototype);
         }
       }
     },
@@ -997,7 +997,7 @@ qx.Class.define( "qx.Class", {
         }
 
         // Check 0.7 keys
-        var allowed = config.group ? qx.core.Property.$$allowedGroupKeys : qx.core.Property.$$allowedKeys;
+        var allowed = config.group ? rwt.qx.Property.$$allowedGroupKeys : rwt.qx.Property.$$allowedKeys;
         for (var key in config)
         {
           if (allowed[key] === undefined) {
@@ -1026,9 +1026,9 @@ qx.Class.define( "qx.Class", {
           }
         }
 
-        if (config.event != null && !this.isSubClassOf(clazz, qx.core.Target))
+        if (config.event != null && !this.isSubClassOf(clazz, rwt.qx.Target))
         {
-          throw new Error("Invalid property '"+name+"' in class '"+clazz.classname+"': Properties defining an event can only be defined in sub classes of 'qx.core.Target'!");
+          throw new Error("Invalid property '"+name+"' in class '"+clazz.classname+"': Properties defining an event can only be defined in sub classes of 'rwt.qx.Target'!");
         }
       },
 
@@ -1109,7 +1109,7 @@ qx.Class.define( "qx.Class", {
     {
 
       // Attach content
-      var list = qx.Mixin.flatten([mixin]);
+      var list = rwt.qx.Mixin.flatten([mixin]);
       var entry;
 
       for (var i=0, l=list.length; i<l; i++)
@@ -1216,7 +1216,7 @@ qx.Class.define( "qx.Class", {
 
         // Attach local properties
         if( !clazz.$$propertiesAttached ) {
-          qx.core.Property.attach( clazz );
+          rwt.qx.Property.attach( clazz );
         }
 
         // Execute default constructor

@@ -23,9 +23,9 @@ var shell;
 var text;
 var log;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

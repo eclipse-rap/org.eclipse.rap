@@ -9,8 +9,8 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
-  extend : qx.core.Target,
+rwt.qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
+  extend : rwt.qx.Target,
   type : "singleton",
 
   construct : function() {
@@ -33,12 +33,12 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     this._asserts = 0;
     this._loopWrapper = null;
     var testScripts = this._getTestScripts();
-    var classes = qx.Class.__registry;
+    var classes = rwt.qx.Class.__registry;
     var filter = this._createTestClassFilter();
     var shortName;
     for( var clazz in classes ) {
       if( clazz.substr( clazz.length - 4 ) == "Test" ) {
-        qx.Class.__initializeClass( classes[ clazz ] );
+        rwt.qx.Class.__initializeClass( classes[ clazz ] );
         shortName = this._getShortClassName( clazz );
         if( testScripts[ shortName ] ) {
           delete testScripts[ shortName ];
@@ -302,7 +302,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
         if( value instanceof Array ) {
           result = value.join();
         } else if(    value instanceof Object
-                   && !( value instanceof qx.core.Object ) )
+                   && !( value instanceof rwt.qx.Object ) )
         {
           var arr = [];
           for( var key in value ) {
@@ -365,7 +365,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     _freezeQooxdoo : function() {
       rwt.widgets.base.Widget.__allowFlushs = false;
       rwt.event.EventHandler.detachEvents();
-      qx.core.Target.prototype.dispatchEvent = function(){};
+      rwt.qx.Target.prototype.dispatchEvent = function(){};
       rwt.animation.Animation._stopLoop();
       rwt.runtime.MobileWebkitSupport._removeListeners();
     },
@@ -433,7 +433,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     },
 
     _createTestClassFilter : function() {
-      var classes = qx.Class.__registry;
+      var classes = rwt.qx.Class.__registry;
       var engine = rwt.client.Client.getEngine();
       var platform = rwt.client.Client.getPlatform();
       var param = this._getFilterParam();

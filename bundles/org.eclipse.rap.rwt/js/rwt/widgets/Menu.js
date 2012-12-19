@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.Menu", {
+rwt.qx.Class.define( "rwt.widgets.Menu", {
   extend : rwt.widgets.base.Popup,
   include : rwt.animation.VisibilityAnimationMixin,
 

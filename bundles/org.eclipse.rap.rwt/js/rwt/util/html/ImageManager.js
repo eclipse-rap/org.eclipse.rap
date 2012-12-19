@@ -12,10 +12,10 @@
  ******************************************************************************/
 
 /** This singleton manage stuff around image handling. */
-qx.Class.define("rwt.util.html.ImageManager",
+rwt.qx.Class.define("rwt.util.html.ImageManager",
 {
   type : "singleton",
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
 
 

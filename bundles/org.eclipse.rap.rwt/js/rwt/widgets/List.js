@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.List", {
+rwt.qx.Class.define( "rwt.widgets.List", {
   extend : rwt.widgets.base.BasicList,
 
   construct : function( multiSelection ) {

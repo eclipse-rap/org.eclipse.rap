@@ -17,7 +17,7 @@
  * Version names follow the wikipedia scheme: major.minor[.revision[.build]] at
  * http://en.wikipedia.org/wiki/Software_version
  */
-qx.Class.define( "rwt.client.Client", {
+rwt.qx.Class.define( "rwt.client.Client", {
 
   statics : {
 

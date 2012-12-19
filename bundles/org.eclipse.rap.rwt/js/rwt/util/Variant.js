@@ -32,7 +32,7 @@
 
 /*global qxvariants:false*/
 
-qx.Class.define("rwt.util.Variant",
+rwt.qx.Class.define("rwt.util.Variant",
 {
   statics :
   {

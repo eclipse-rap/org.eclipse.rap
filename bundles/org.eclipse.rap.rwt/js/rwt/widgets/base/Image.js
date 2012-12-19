@@ -16,7 +16,7 @@
  *
  * @appearance image
  */
-qx.Class.define("rwt.widgets.base.Image",
+rwt.qx.Class.define("rwt.widgets.base.Image",
 {
   extend : rwt.widgets.base.Terminator,
 

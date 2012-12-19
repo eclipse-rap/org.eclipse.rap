@@ -8,9 +8,9 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   construct : function() {
     this.base( arguments );

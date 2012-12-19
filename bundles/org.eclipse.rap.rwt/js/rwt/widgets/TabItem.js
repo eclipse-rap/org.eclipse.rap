@@ -16,7 +16,7 @@
  * @state checked Set by {@link #checked}
  * @state over
  */
-qx.Class.define( "rwt.widgets.TabItem", {
+rwt.qx.Class.define( "rwt.widgets.TabItem", {
 
   extend : rwt.widgets.base.Atom,
 

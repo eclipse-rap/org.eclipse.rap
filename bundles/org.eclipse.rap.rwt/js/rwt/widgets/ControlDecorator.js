@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.ControlDecorator", {
+rwt.qx.Class.define( "rwt.widgets.ControlDecorator", {
   extend : rwt.widgets.base.Image,
 
   construct : function() {

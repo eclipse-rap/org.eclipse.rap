@@ -14,7 +14,7 @@
 /**
  * @appearance tab-view-bar
  */
-qx.Class.define("rwt.widgets.base.TabFolderBar",
+rwt.qx.Class.define("rwt.widgets.base.TabFolderBar",
 {
   extend : rwt.widgets.base.BoxLayout,
 

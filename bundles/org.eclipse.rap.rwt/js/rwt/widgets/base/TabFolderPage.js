@@ -14,7 +14,7 @@
 /**
  * @appearance tab-view-page
  */
-qx.Class.define("rwt.widgets.base.TabFolderPage",
+rwt.qx.Class.define("rwt.widgets.base.TabFolderPage",
 {
   extend : rwt.widgets.base.Parent,
 

@@ -9,8 +9,8 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.PerformanceTest", {
-  extend : qx.core.Object,
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.PerformanceTest", {
+  extend : rwt.qx.Object,
   
   members : {
     

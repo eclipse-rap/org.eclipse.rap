@@ -23,9 +23,9 @@ var menuBar;
 var menu;
 var menuBarItem;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

@@ -12,9 +12,9 @@
  ******************************************************************************/
 
 /** This class allows basic managment of assigned objects. */
-qx.Class.define("rwt.util.ObjectManager",
+rwt.qx.Class.define("rwt.util.ObjectManager",
 {
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
 
 

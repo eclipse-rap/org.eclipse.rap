@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
+rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
   extend : rwt.widgets.base.Parent,
 
   construct : function() {

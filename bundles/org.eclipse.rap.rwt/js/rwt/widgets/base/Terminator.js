@@ -18,7 +18,7 @@
  * If used directly it represents an rectangular area, which can be positioned
  * and sized using the layout managers.
  */
-qx.Class.define("rwt.widgets.base.Terminator",
+rwt.qx.Class.define("rwt.widgets.base.Terminator",
 {
   extend : rwt.widgets.base.Widget,
 

@@ -17,9 +17,9 @@ var getMessage = function() {
   return JSON.parse( writer.createMessage() );
 };
 
-qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolWriterTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolWriterTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

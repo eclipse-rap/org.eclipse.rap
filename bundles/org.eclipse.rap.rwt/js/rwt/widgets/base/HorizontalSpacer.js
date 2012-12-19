@@ -19,7 +19,7 @@
  * By default it tries to occupy the all the remaining space by setting
  * a flex width of <code>1*</code>.
  */
-qx.Class.define("rwt.widgets.base.HorizontalSpacer",
+rwt.qx.Class.define("rwt.widgets.base.HorizontalSpacer",
 {
   extend : rwt.widgets.base.Terminator,
 

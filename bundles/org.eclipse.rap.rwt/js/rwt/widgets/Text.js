@@ -11,7 +11,7 @@
 
 (function(){
 
-qx.Class.define( "rwt.widgets.Text", {
+rwt.qx.Class.define( "rwt.widgets.Text", {
 
   extend : rwt.widgets.base.BasicText,
 

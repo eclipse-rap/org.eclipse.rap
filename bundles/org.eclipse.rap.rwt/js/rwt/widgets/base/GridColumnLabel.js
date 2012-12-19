@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
+rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
   extend : rwt.widgets.base.MultiCellWidget,
 
   construct : function( baseAppearance ) {

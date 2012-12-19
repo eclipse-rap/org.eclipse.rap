@@ -14,7 +14,7 @@
 /**
  * Cross browser abstractions to work with iframes.
  */
-qx.Class.define("rwt.util.html.Iframe",
+rwt.qx.Class.define("rwt.util.html.Iframe",
 {
   /*
   *****************************************************************************

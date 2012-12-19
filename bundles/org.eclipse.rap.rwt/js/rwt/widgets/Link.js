@@ -13,7 +13,7 @@
  * This class provides the client-side implementation for
  * rwt.widgets.Link
  */
-qx.Class.define( "rwt.widgets.Link", {
+rwt.qx.Class.define( "rwt.widgets.Link", {
   extend : rwt.widgets.base.Parent,
 
   construct : function() {

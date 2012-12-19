@@ -15,11 +15,11 @@
  * Internal class for handling dynamic properties.
  *
  * WARNING: This is a legacy class to support the old-style dynamic properties
- * in 0.6.x. Its much improved successor is {@link qx.core.Property}.
+ * in 0.6.x. Its much improved successor is {@link rwt.qx.Property}.
  *
  * @deprecated This class is supposed to be removed in qooxdoo 0.7
  */
-qx.Class.define("qx.core.LegacyProperty",
+rwt.qx.Class.define("rwt.qx.LegacyProperty",
 {
   statics :
   {
@@ -31,7 +31,7 @@ qx.Class.define("qx.core.LegacyProperty",
      * @return {String} name of the setter for this property
      */
     getSetterName : function(name) {
-      return qx.core.Property.$$method.set[name];
+      return rwt.qx.Property.$$method.set[name];
     },
 
 
@@ -43,7 +43,7 @@ qx.Class.define("qx.core.LegacyProperty",
      * @return {String} name of the setter for this property
      */
     getGetterName : function(name) {
-      return qx.core.Property.$$method.get[name];
+      return rwt.qx.Property.$$method.get[name];
     },
 
 
@@ -55,7 +55,7 @@ qx.Class.define("qx.core.LegacyProperty",
      * @return {String} name of the setter for this property
      */
     getResetterName : function(name) {
-      return qx.core.Property.$$method.reset[name];
+      return rwt.qx.Property.$$method.reset[name];
     },
 
 
@@ -270,15 +270,15 @@ qx.Class.define("qx.core.LegacyProperty",
       // upper-case name
       config.up = config.name.toUpperCase();
 
-      // new style keys (compatible to qx.core.Property)
-      var valueKey = qx.core.Property.$$store.user[config.name] = "__user$" + config.name;
+      // new style keys (compatible to rwt.qx.Property)
+      var valueKey = rwt.qx.Property.$$store.user[config.name] = "__user$" + config.name;
 
       // old style keys
       var changeKey = "change" + config.method;
       var modifyKey = "_modify" + config.implMethod;
       var checkKey = "_check" + config.implMethod;
 
-      var method = qx.core.Property.$$method;
+      var method = rwt.qx.Property.$$method;
       if (!method.set[config.name])
       {
         method.set[config.name] = "set" + config.method;
@@ -344,9 +344,9 @@ qx.Class.define("qx.core.LegacyProperty",
               throw new Error("Attention! The value \"" + newValue + "\" is an invalid value for the property \"" + config.name + "\" which must be typeof \"" + config.type + "\" but is typeof \"" + typeof newValue + "\"!");
             }
 
-            if (qx.Class.getByName(config.instance))
+            if (rwt.qx.Class.getByName(config.instance))
             {
-              if (config.hasInstance && !(newValue instanceof qx.Class.getByName(config.instance))) {
+              if (config.hasInstance && !(newValue instanceof rwt.qx.Class.getByName(config.instance))) {
                 throw new Error("Attention! The value \"" + newValue + "\" is an invalid value for the property \"" + config.name + "\" which must be an instance of \"" + config.instance + "\"!");
               }
             }

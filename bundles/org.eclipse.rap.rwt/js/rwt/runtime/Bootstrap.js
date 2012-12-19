@@ -11,19 +11,21 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-/*global qx:true, namespace:true*/
+/*global rwt:true, namespace:true*/
 
-qx = {
+rwt = {};
+
+rwt.qx = {
 
   /**
-   * Bootstrap qx.Class to create myself later
+   * Bootstrap rwt.qx.Class to create myself later
    * This is needed for the API browser etc. to let them detect me
    */
   Class : {
 
     /**
      * Create namespace.
-     * Replaced after bootstrapping phase by {@link qx.Class#createNamespace}.
+     * Replaced after bootstrapping phase by {@link rwt.qx.Class#createNamespace}.
      *
      * @type map
      * @param name {var} TODOC
@@ -52,7 +54,7 @@ qx = {
 
     /**
      * Define class.
-     * Replaced after bootstrapping phase by {@link qx.Class#define}.
+     * Replaced after bootstrapping phase by {@link rwt.qx.Class#define}.
      *
      * @type map
      * @param name {var} TODOC
@@ -83,7 +85,7 @@ qx = {
  * Automatically loads JavaScript language fixes, core logging possibilities
  * and language addons for arrays, strings, etc.
  */
-qx.Class.define( "rwt.runtime.Bootstrap", {
+rwt.qx.Class.define( "rwt.runtime.Bootstrap", {
 
   statics : {
 
@@ -116,5 +118,5 @@ qx.Class.define( "rwt.runtime.Bootstrap", {
 } );
 
 var namespace = function( value ) {
-  qx.Class.createNamespace( value, {} );
+  rwt.qx.Class.createNamespace( value, {} );
 };

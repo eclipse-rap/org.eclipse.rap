@@ -16,9 +16,9 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = rwt.protocol.MessageProcessor;
 var ObjectManager = rwt.protocol.ObjectRegistry;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   construct : function() {
     // Eventlistener are detached by TestRunner to prevent user-interference,

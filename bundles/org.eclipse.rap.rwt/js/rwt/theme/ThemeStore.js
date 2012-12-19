@@ -15,11 +15,11 @@
  * Store for theme values that cannot be kept in a qooxdoo theme. The store is
  * filled from the server at startup.
  */
-qx.Class.define( "rwt.theme.ThemeStore", {
+rwt.qx.Class.define( "rwt.theme.ThemeStore", {
 
   type : "singleton",
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   construct : function() {
     this._values = {

@@ -13,7 +13,7 @@
 /**
  * This class contains static helper functions for widgets.
  */
-qx.Class.define( "rwt.widgets.util.WidgetUtil", {
+rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
 
   statics : {
 

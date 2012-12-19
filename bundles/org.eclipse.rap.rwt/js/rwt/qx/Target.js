@@ -19,9 +19,9 @@
  * form of an identification string. This type could be the name of a regular dom event like "click" or
  * something self-defined like "ready".
  */
-qx.Class.define("qx.core.Target",
+rwt.qx.Class.define("rwt.qx.Target",
 {
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
 
 
@@ -75,7 +75,7 @@ qx.Class.define("qx.core.Target",
       }
 
       // Create a special key string to allow identification of each bound action
-      var key = "event" + qx.core.Object.toHashCode(func) + (obj ? "$" + qx.core.Object.toHashCode(obj) : "");
+      var key = "event" + rwt.qx.Object.toHashCode(func) + (obj ? "$" + rwt.qx.Object.toHashCode(obj) : "");
 
       // Finally set up the listeners object
       this.__listeners[type][key] =
@@ -109,11 +109,11 @@ qx.Class.define("qx.core.Target",
       }
 
       if (typeof func !== "function") {
-        throw new Error("qx.core.Target: removeEventListener(" + type + "): '" + func + "' is not a function!");
+        throw new Error("rwt.qx.Target: removeEventListener(" + type + "): '" + func + "' is not a function!");
       }
 
       // Create a special key string to allow identification of each bound action
-      var key = "event" + qx.core.Object.toHashCode(func) + (obj ? "$" + qx.core.Object.toHashCode(obj) : "");
+      var key = "event" + rwt.qx.Object.toHashCode(func) + (obj ? "$" + rwt.qx.Object.toHashCode(obj) : "");
 
       // Delete object entry for this action
       delete this.__listeners[type][key];

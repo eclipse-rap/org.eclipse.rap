@@ -14,9 +14,9 @@
 /**
  * This manager is used by all objects which needs ranges like rwt.widgets.base.Spinner, ...
  */
-qx.Class.define( "rwt.util.Range", {
+rwt.qx.Class.define( "rwt.util.Range", {
 
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
   events: {
     "change" : "rwt.event.Event"

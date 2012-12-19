@@ -14,7 +14,7 @@
  * The parameter orientation must be one of "vertical" or "horizontal".
  * Note that updateHandleBounds must be called after each size manipulation.
  */
-qx.Class.define( "rwt.widgets.CoolItem", {
+rwt.qx.Class.define( "rwt.widgets.CoolItem", {
   extend : rwt.widgets.base.Parent,
 
   construct : function( orientation ) {

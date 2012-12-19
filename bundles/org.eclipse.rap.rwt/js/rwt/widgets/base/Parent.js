@@ -16,7 +16,7 @@
  *
  * Don't instantiate this class directly.
  */
-qx.Class.define("rwt.widgets.base.Parent",
+rwt.qx.Class.define("rwt.widgets.base.Parent",
 {
   extend : rwt.widgets.base.Widget,
 
@@ -213,7 +213,7 @@ qx.Class.define("rwt.widgets.base.Parent",
       var vFocusValid = value != null;
       var vBlurValid = old != null;
 
-      if (qx.Class.isDefined("rwt.widgets.util.PopupManager") && vFocusValid)
+      if (rwt.qx.Class.isDefined("rwt.widgets.util.PopupManager") && vFocusValid)
       {
         var vMgr = rwt.widgets.util.PopupManager.getInstance();
 

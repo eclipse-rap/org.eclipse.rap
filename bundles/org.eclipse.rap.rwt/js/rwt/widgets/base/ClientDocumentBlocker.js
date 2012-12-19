@@ -17,7 +17,7 @@
  *
  * @appearance blocker
  */
-qx.Class.define("rwt.widgets.base.ClientDocumentBlocker",
+rwt.qx.Class.define("rwt.widgets.base.ClientDocumentBlocker",
 {
   extend : rwt.widgets.base.Terminator,
   include : rwt.animation.VisibilityAnimationMixin,

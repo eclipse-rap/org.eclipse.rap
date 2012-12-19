@@ -9,9 +9,9 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.util.WidgetRenderAdapter", {
+rwt.qx.Class.define( "rwt.widgets.util.WidgetRenderAdapter", {
 
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
   construct : function( widget ) {
     // Widget is responsible for the dispose:

@@ -21,7 +21,7 @@
 /**
  * Functions to scroll DOM elements into the visible area of the parent element
  */
-qx.Class.define("rwt.util.html.ScrollIntoView",
+rwt.qx.Class.define("rwt.util.html.ScrollIntoView",
 {
   /*
   *****************************************************************************

@@ -33,7 +33,7 @@
  * Automatically normalizes cross-browser differences. Optimized for
  * performance.
  */
-qx.Class.define("rwt.util.html.Style",
+rwt.qx.Class.define("rwt.util.html.Style",
 {
   /*
   *****************************************************************************

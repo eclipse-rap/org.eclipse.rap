@@ -14,7 +14,7 @@
 /**
  * Methods to convert colors between different color spaces.
  */
-qx.Class.define("rwt.util.ColorUtil",
+rwt.qx.Class.define("rwt.util.ColorUtil",
 {
   statics :
   {

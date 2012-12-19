@@ -17,7 +17,7 @@
  * {@link rwt.util.html.String} for (un)escaping of HTML strings.
  * {@link qx.xml.String} for (un)escaping of XML strings.
  */
-qx.Class.define("rwt.util.html.String",
+rwt.qx.Class.define("rwt.util.html.String",
 {
   statics :
   {

@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.DateTimeDate", {
+rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
   extend : rwt.widgets.base.Parent,
 
   construct : function( style,
@@ -214,7 +214,7 @@ qx.Class.define( "rwt.widgets.DateTimeDate", {
       this.removeEventListener( "mouseout", this._onMouseOut, this );
       this._dropDownButton.dispose();
       this._dropDownButton = null;
-      if( !qx.core.Object.inGlobalDispose() ) {
+      if( !rwt.qx.Object.inGlobalDispose() ) {
         this._calendar.setParent( null );
       }
       this._calendar.dispose();

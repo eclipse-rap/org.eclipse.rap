@@ -12,9 +12,9 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.Border", {
+rwt.qx.Class.define( "org.eclipse.rwt.Border", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   /**
    * All arguments can be either a single value, or an array of four values in the order of

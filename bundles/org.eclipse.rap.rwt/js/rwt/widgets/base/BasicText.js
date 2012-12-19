@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.base.BasicText", {
+rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
 
   extend : rwt.widgets.base.Terminator,
 

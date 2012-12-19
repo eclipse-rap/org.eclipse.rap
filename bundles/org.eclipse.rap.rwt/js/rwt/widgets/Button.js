@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.Button", {
+rwt.qx.Class.define( "rwt.widgets.Button", {
 
   extend : rwt.widgets.base.BasicButton,
 

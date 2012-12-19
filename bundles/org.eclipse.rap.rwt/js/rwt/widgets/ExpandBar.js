@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.ExpandBar", {
+rwt.qx.Class.define( "rwt.widgets.ExpandBar", {
   extend : rwt.widgets.base.Scrollable,
 
   construct : function() {

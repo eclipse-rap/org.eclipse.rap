@@ -12,7 +12,7 @@
  ******************************************************************************/
 
 /** This manages ToolTip instances */
-qx.Class.define("rwt.widgets.util.ToolTipManager",
+rwt.qx.Class.define("rwt.widgets.util.ToolTipManager",
 {
   type : "singleton",
   extend : rwt.util.ObjectManager,

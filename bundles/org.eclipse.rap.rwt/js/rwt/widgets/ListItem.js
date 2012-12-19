@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define("rwt.widgets.ListItem", {
+rwt.qx.Class.define("rwt.widgets.ListItem", {
 
   extend : rwt.widgets.base.MultiCellWidget,
 

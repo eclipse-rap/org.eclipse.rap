@@ -12,7 +12,7 @@
  ******************************************************************************/
 
 /** This singleton is used to manager multiple instances of popups and their state. */
-qx.Class.define("rwt.widgets.util.PopupManager",
+rwt.qx.Class.define("rwt.widgets.util.PopupManager",
 {
   type : "singleton",
   extend : rwt.util.ObjectManager,
@@ -72,7 +72,7 @@ qx.Class.define("rwt.widgets.util.PopupManager",
           continue;
         }
 
-        if (qx.Class.isDefined("rwt.widgets.base.ToolTip") && vTarget instanceof rwt.widgets.base.ToolTip && !(vPopup instanceof rwt.widgets.base.ToolTip)) {
+        if (rwt.qx.Class.isDefined("rwt.widgets.base.ToolTip") && vTarget instanceof rwt.widgets.base.ToolTip && !(vPopup instanceof rwt.widgets.base.ToolTip)) {
           continue;
         }
 

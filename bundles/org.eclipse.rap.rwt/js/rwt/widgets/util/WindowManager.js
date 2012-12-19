@@ -12,7 +12,7 @@
  ******************************************************************************/
 
 /** This singleton manages rwt.widgets.base.Windows */
-qx.Class.define("rwt.widgets.util.WindowManager",
+rwt.qx.Class.define("rwt.widgets.util.WindowManager",
 {
   extend : rwt.util.ObjectManager,
 

@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define("rwt.widgets.MenuItem",  {
+rwt.qx.Class.define("rwt.widgets.MenuItem",  {
   extend : rwt.widgets.base.MultiCellWidget,
 
   construct : function( menuItemType ) {

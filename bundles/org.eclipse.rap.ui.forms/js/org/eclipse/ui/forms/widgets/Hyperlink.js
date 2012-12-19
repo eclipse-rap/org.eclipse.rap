@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
+rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
   extend : rwt.widgets.base.Atom,
 
   construct : function( style ) {

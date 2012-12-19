@@ -14,7 +14,7 @@
 /**
  * @appearance tool-tip
  */
-qx.Class.define("rwt.widgets.base.ToolTip",
+rwt.qx.Class.define("rwt.widgets.base.ToolTip",
 {
   extend : rwt.widgets.base.PopupAtom,
 

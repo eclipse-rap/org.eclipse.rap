@@ -19,9 +19,9 @@
  * {@link #once} is a special case. It will call a function deferred after a
  * given timeout.
  */
-qx.Class.define("rwt.client.Timer",
+rwt.qx.Class.define("rwt.client.Timer",
 {
-  extend : qx.core.Target,
+  extend : rwt.qx.Target,
 
 
 

@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.util.TabUtil", {
+rwt.qx.Class.define( "rwt.widgets.util.TabUtil", {
 
   statics : {
     createTabItem : function( id, parentId, index ) {

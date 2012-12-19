@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.Shell", {
+rwt.qx.Class.define( "rwt.widgets.Shell", {
 
   extend : rwt.widgets.base.Window,
 

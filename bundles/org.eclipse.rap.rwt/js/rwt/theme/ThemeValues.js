@@ -14,9 +14,9 @@
  * An adapter class for accessing theme values.
  * Values for the widget state given in the construtor are selected if available.
  */
-qx.Class.define( "rwt.theme.ThemeValues", {
+rwt.qx.Class.define( "rwt.theme.ThemeValues", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   /**
    * Creates a new ThemeValues instance for the variant defined in the given

@@ -9,9 +9,9 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.swt.graphics.GC", {
+rwt.qx.Class.define( "org.eclipse.swt.graphics.GC", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   construct : function( control ) {
     this.base( arguments );

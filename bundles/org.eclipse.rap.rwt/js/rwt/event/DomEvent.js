@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define("rwt.event.DomEvent",
+rwt.qx.Class.define("rwt.event.DomEvent",
 {
   extend : rwt.event.Event,
 

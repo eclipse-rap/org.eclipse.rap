@@ -37,7 +37,7 @@
  * * Opera 9.2
  * * Safari 3.0 beta
  */
-qx.Class.define("rwt.util.html.Location",
+rwt.qx.Class.define("rwt.util.html.Location",
 {
   statics :
   {

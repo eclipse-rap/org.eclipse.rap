@@ -14,7 +14,7 @@
 /**
  * Contains methods to control and query the element's overflow properties.
  */
-qx.Class.define("rwt.util.html.Overflow",
+rwt.qx.Class.define("rwt.util.html.Overflow",
 {
   /*
   *****************************************************************************

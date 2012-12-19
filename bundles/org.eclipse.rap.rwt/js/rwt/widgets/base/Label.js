@@ -19,7 +19,7 @@
  *
  * @appearance label
  */
-qx.Class.define("rwt.widgets.base.Label",
+rwt.qx.Class.define("rwt.widgets.base.Label",
 {
   extend : rwt.widgets.base.Terminator,
 

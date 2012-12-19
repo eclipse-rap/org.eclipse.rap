@@ -9,7 +9,7 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.base.GridRowContainer", {
+rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
   extend : rwt.widgets.base.VerticalBoxLayout,
 
   construct : function() {

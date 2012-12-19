@@ -14,9 +14,9 @@
 var Processor = rwt.protocol.MessageProcessor;
 var ObjectManager = rwt.protocol.ObjectRegistry;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.JavaScriptExecutorTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.JavaScriptExecutorTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 

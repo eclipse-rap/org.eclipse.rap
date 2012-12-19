@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "rwt.widgets.FileUpload", {
+rwt.qx.Class.define( "rwt.widgets.FileUpload", {
 
   extend : rwt.widgets.Button,
 

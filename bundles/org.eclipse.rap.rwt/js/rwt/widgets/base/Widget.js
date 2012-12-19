@@ -19,11 +19,11 @@
  * @state anchor Set by {@link rwt.widgets.util.SelectionManager#renderItemAnchorState}
  * @state lead Set by {@link rwt.widgets.util.SelectionManager#renderItemLeadState}
  *
- * @state disabled Set by {@link qx.core.Object#enabled}
+ * @state disabled Set by {@link rwt.qx.Object#enabled}
  * @state focused Set by {@link #focused}
  */
-qx.Class.define( "rwt.widgets.base.Widget", {
-  extend : qx.core.Target,
+rwt.qx.Class.define( "rwt.widgets.base.Widget", {
+  extend : rwt.qx.Target,
   type : "abstract",
 
   construct : function() {
@@ -122,7 +122,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     _autoFlushHelper : function() {
       try {
         rwt.widgets.base.Widget._autoFlushTimeout = null;
-        if( !qx.core.Object.inGlobalDispose() ) {
+        if( !rwt.qx.Object.inGlobalDispose() ) {
           rwt.widgets.base.Widget.flushGlobalQueues();
         }
       }catch( ex ) {
@@ -1617,7 +1617,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       } else {
         this._hasParent = false;
       }
-      qx.core.Property.refresh(this);
+      rwt.qx.Property.refresh(this);
       return this._handleDisplayable("parent");
     },
 
@@ -1759,7 +1759,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       // Remove any hover/pressed styles
       this.removeState("over");
 
-      if (qx.Class.isDefined("rwt.widgets.base.Button"))
+      if (rwt.qx.Class.isDefined("rwt.widgets.base.Button"))
       {
         this.removeState("pressed");
         this.removeState("abandoned");
@@ -2893,8 +2893,8 @@ qx.Class.define( "rwt.widgets.base.Widget", {
      */
     _styleFromMap : function( data ) {
       this._prepareStyleMap( data );
-      var styler = qx.core.Property.$$method.style;
-      var unstyler = qx.core.Property.$$method.unstyle;
+      var styler = rwt.qx.Property.$$method.style;
+      var unstyler = rwt.qx.Property.$$method.unstyle;
       var value;
       for( var prop in data ) {
         value = data[prop];
@@ -2907,7 +2907,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     },
 
     _unstyleFromArray : function(data) {
-      var unstyler = qx.core.Property.$$method.unstyle;
+      var unstyler = rwt.qx.Property.$$method.unstyle;
       for (var i=0, l=data.length; i<l; i++) {
         this[unstyler[data[i]]]();
       }
@@ -3188,7 +3188,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
         this.addState("disabled");
         // Also reset some states to be sure a pressed/hovered button gets reset
         this.removeState("over");
-        if (qx.Class.isDefined("rwt.widgets.base.Button")) {
+        if (rwt.qx.Class.isDefined("rwt.widgets.base.Button")) {
           this.removeState("abandoned");
           this.removeState("pressed");
         }

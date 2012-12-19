@@ -14,7 +14,7 @@
 /**
  * @appearance tab-view-pane
  */
-qx.Class.define("rwt.widgets.base.TabFolderPane",
+rwt.qx.Class.define("rwt.widgets.base.TabFolderPane",
 {
   extend : rwt.widgets.base.Parent,
 

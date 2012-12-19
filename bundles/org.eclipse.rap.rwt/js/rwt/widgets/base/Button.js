@@ -19,7 +19,7 @@
  * @state over
  * @state pressed
  */
-qx.Class.define("rwt.widgets.base.Button",
+rwt.qx.Class.define("rwt.widgets.base.Button",
 {
   extend : rwt.widgets.base.Atom,
 

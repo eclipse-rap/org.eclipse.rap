@@ -15,9 +15,9 @@
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
 
-  extend : qx.core.Object,
+  extend : rwt.qx.Object,
 
   members : {
 
