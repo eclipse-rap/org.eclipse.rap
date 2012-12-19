@@ -16,7 +16,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectInputValidation;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -29,10 +28,10 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
 
-final class TimerExecScheduler implements SerializableCompatibility {
+class TimerExecScheduler implements SerializableCompatibility {
 
-  private final Display display;
-  private final ServerPushManager serverPushManager;
+  final Display display;
+  final ServerPushManager serverPushManager;
   private final Collection<TimerExecTask> tasks;
   private transient Timer timer;
 
@@ -43,7 +42,7 @@ final class TimerExecScheduler implements SerializableCompatibility {
   }
 
   void schedule( int milliseconds, Runnable runnable ) {
-    TimerExecTask task = new TimerExecTask( runnable, milliseconds );
+    TimerExecTask task = new TimerExecTask( this, runnable, milliseconds );
     synchronized( display.getDeviceLock() ) {
       initializeTimer();
       tasks.add( task );
@@ -99,7 +98,7 @@ final class TimerExecScheduler implements SerializableCompatibility {
     return result;
   }
 
-  private void removeTask( TimerTask task ) {
+  void removeTask( TimerTask task ) {
     // code is synchronized by caller
     tasks.remove( task );
   }
@@ -113,47 +112,6 @@ final class TimerExecScheduler implements SerializableCompatibility {
   private void readObject( ObjectInputStream stream ) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
     stream.registerValidation( new PostDeserializationValidation(), 0 );
-  }
-
-  private class TimerExecTask extends TimerTask implements SerializableCompatibility {
-
-    private final Runnable runnable;
-    private final Date time;
-
-    TimerExecTask( Runnable runnable, long milliseconds ) {
-      this.runnable = runnable;
-      time = new Date( System.currentTimeMillis() + milliseconds );
-      serverPushManager.activateServerPushFor( getUICallBackId() );
-    }
-
-    @Override
-    public void run() {
-      synchronized( display.getDeviceLock() ) {
-        removeTask( this );
-        if( !display.isDisposed() ) {
-          display.asyncExec( runnable );
-        }
-      }
-      serverPushManager.deactivateServerPushFor( getUICallBackId() );
-    }
-
-    @Override
-    public boolean cancel() {
-      serverPushManager.deactivateServerPushFor( getUICallBackId() );
-      return super.cancel();
-    }
-
-    Runnable getRunnable() {
-      return runnable;
-    }
-
-    Date getTime() {
-      return time;
-    }
-
-    private String getUICallBackId() {
-      return getClass().getName() + "-" + System.identityHashCode( this );
-    }
   }
 
   private class PostDeserializationValidation implements ObjectInputValidation {
