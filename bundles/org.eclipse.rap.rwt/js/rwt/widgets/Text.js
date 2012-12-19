@@ -90,7 +90,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     hasSelectionListener : function() {
       // Emulate SWT (on Windows) where a default button takes precedence over
       // a SelectionListener on a text field when both are on the same shell.
-      var shell = rwt.protocol.AdapterUtil.getShell( this );
+      var shell = rwt.protocol.HandlerUtil.getShell( this );
       var defButton = shell ? shell.getDefaultButton() : null;
       // TODO [rst] On GTK, the SelectionListener is also off when the default
       //      button is invisible or disabled. Check with Windows and repair.

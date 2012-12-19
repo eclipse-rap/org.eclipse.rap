@@ -9,25 +9,25 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-rwt.protocol.AdapterRegistry.add( "forms.widgets.FormText", {
+rwt.protocol.HandlerRegistry.add( "forms.widgets.FormText", {
 
   factory : function( properties ) {
     var result = new org.eclipse.ui.forms.widgets.FormText();
     result.setUserData( "isControl", true );
-    rwt.protocol.AdapterUtil.setParent( result, properties.parent );
+    rwt.protocol.HandlerUtil.setParent( result, properties.parent );
     return result;
   },
 
-  destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
+  destructor : rwt.protocol.HandlerUtil.getControlDestructor(),
 
-  getDestroyableChildren : rwt.protocol.AdapterUtil.getDestroyableChildrenFinder(),
+  getDestroyableChildren : rwt.protocol.HandlerUtil.getDestroyableChildrenFinder(),
 
-  properties : rwt.protocol.AdapterUtil.extendControlProperties( [
+  properties : rwt.protocol.HandlerUtil.extendControlProperties( [
     "text",
     "hyperlinkSettings"
   ] ),
 
-  propertyHandler : rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
+  propertyHandler : rwt.protocol.HandlerUtil.extendControlPropertyHandler( {
     "text" : function( widget, value ) {
       widget.clearContent();
       for( var i = 0; i < value.length; i++ ) {
@@ -61,9 +61,9 @@ rwt.protocol.AdapterRegistry.add( "forms.widgets.FormText", {
     }
   } ),
 
-  listeners : rwt.protocol.AdapterUtil.extendControlListeners( [] ),
+  listeners : rwt.protocol.HandlerUtil.extendControlListeners( [] ),
 
-  listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
+  listenerHandler : rwt.protocol.HandlerUtil.extendControlListenerHandler( {} ),
 
   methods : []
 

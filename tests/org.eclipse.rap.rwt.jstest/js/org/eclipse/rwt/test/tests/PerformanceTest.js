@@ -110,7 +110,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.PerformanceTest", {
     _createDummyTarget : function( fakeProperties ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
-      var registry = rwt.protocol.AdapterRegistry;
+      var registry = rwt.protocol.HandlerRegistry;
       var processor = rwt.protocol.MessageProcessor;
       var dummy = new rwt.widgets.base.Atom();
       dummy.setLocation( 30, 10 );

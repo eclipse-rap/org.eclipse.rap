@@ -12,7 +12,7 @@
 (function(){
 
 var ObjectRegistry = rwt.protocol.ObjectRegistry;
-var AdapterRegistry = rwt.protocol.AdapterRegistry;
+var AdapterRegistry = rwt.protocol.HandlerRegistry;
 var MessageProcessor = rwt.protocol.MessageProcessor;
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
@@ -27,7 +27,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
 
       rap.registerTypeHandler( "myTestType", handler );
 
-      assertIdentical( handler, AdapterRegistry.getAdapter( "myTestType" ) );
+      assertIdentical( handler, AdapterRegistry.getHandler( "myTestType" ) );
       AdapterRegistry.remove( "myTestType" );
     },
 

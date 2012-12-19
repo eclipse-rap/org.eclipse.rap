@@ -178,7 +178,7 @@ rwt.widgets.Display.prototype = {
       var type = "rwt.client.BrowserNavigation";
       rwt.protocol.ObjectRegistry.add( type,
                                        history,
-                                       rwt.protocol.AdapterRegistry.getAdapter( type ) );
+                                       rwt.protocol.HandlerRegistry.getHandler( type ) );
       server.getServerObject( history ).notify( "Navigation", {
         "state" : state.substr( 1 )
       } );

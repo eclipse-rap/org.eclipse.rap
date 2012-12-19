@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,11 +9,10 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-rwt.protocol.HandlerRegistry.add( "forms.widgets.Hyperlink", {
+rwt.protocol.HandlerRegistry.add( "rwt.widgets.Link", {
 
   factory : function( properties ) {
-    var wrap = properties.style.indexOf( "WRAP" ) !== -1 ? "wrap" : "";
-    var result = new org.eclipse.ui.forms.widgets.Hyperlink( wrap );
+    var result = new rwt.widgets.Link();
     rwt.protocol.HandlerUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
     rwt.protocol.HandlerUtil.setParent( result, properties.parent );
@@ -25,49 +24,31 @@ rwt.protocol.HandlerRegistry.add( "forms.widgets.Hyperlink", {
   getDestroyableChildren : rwt.protocol.HandlerUtil.getDestroyableChildrenFinder(),
 
   properties : rwt.protocol.HandlerUtil.extendControlProperties( [
-    "text",
-    "image",
-    "underlined",
-    "underlineMode",
-    "activeForeground",
-    "activeBackground"
+    "text"
   ] ),
 
   propertyHandler : rwt.protocol.HandlerUtil.extendControlPropertyHandler( {
     "text" : function( widget, value ) {
       var EncodingUtil = rwt.protocol.EncodingUtil;
-      var text = EncodingUtil.escapeText( value, false );
-      widget.setText( text );
-    },
-    "image" : function( widget, value ) {
-      if( value === null ) {
-        widget.setIcon( null );
-      } else {
-        widget.setIcon( value[ 0 ] );
+      widget.clear();
+      for (var i = 0; i < value.length; i++ ) {
+        var text = EncodingUtil.escapeText( value[ i ][ 0 ], false );
+        text = EncodingUtil.replaceNewLines( text, "<br/>" );
+        var index = value[ i ][ 1 ];
+        if( index !== null ) {
+          widget.addLink( text, index );
+        } else {
+          widget.addText( text );
+        }
       }
-    },
-    "activeForeground" : function( widget, value ) {
-      if( value === null ) {
-        widget.setActiveTextColor( null );
-      } else {
-        widget.setActiveTextColor( rwt.util.ColorUtil.rgbToRgbString( value ) );
-      }
-    },
-    "activeBackground" : function( widget, value ) {
-      if( value === null ) {
-        widget.setActiveBackgroundColor( null );
-      } else {
-        widget.setActiveBackgroundColor( rwt.util.ColorUtil.rgbToRgbString( value ) );
-      }
+      widget.applyText();
     }
   } ),
 
   listeners : rwt.protocol.HandlerUtil.extendControlListeners( [
-    "DefaultSelection"
+    "Selection"
   ] ),
 
-  listenerHandler : rwt.protocol.HandlerUtil.extendControlListenerHandler( {} ),
-
-  methods : []
+  listenerHandler : rwt.protocol.HandlerUtil.extendControlListenerHandler( {} )
 
 } );

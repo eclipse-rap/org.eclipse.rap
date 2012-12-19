@@ -80,7 +80,7 @@ rap = {
    */
   registerTypeHandler : function( type, handler ) {
     handler.isPublic = true;
-    rwt.protocol.AdapterRegistry.add( type, handler );
+    rwt.protocol.HandlerRegistry.add( type, handler );
   },
 
   /**
@@ -94,7 +94,7 @@ rap = {
   getObject : function( id ) {
     var entry = rwt.protocol.ObjectRegistry.getEntry( id );
     var result;
-    if( entry && entry.adapter.isPublic ) {
+    if( entry && entry.handler.isPublic ) {
       result = entry.object;
     } else {
       result = getWrapperFor( entry.object );

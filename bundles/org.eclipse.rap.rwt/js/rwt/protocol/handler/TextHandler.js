@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,14 +9,20 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-rwt.protocol.HandlerRegistry.add( "forms.widgets.Hyperlink", {
+rwt.protocol.HandlerRegistry.add( "rwt.widgets.Text", {
 
   factory : function( properties ) {
-    var wrap = properties.style.indexOf( "WRAP" ) !== -1 ? "wrap" : "";
-    var result = new org.eclipse.ui.forms.widgets.Hyperlink( wrap );
+    var styleMap = rwt.protocol.HandlerUtil.createStyleMap( properties.style );
+    var result = new rwt.widgets.Text( styleMap.MULTI );
     rwt.protocol.HandlerUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
     rwt.protocol.HandlerUtil.setParent( result, properties.parent );
+    if( styleMap.RIGHT ) {
+      result.setTextAlign( "right" );
+    } else if( styleMap.CENTER ) {
+      result.setTextAlign( "center" );
+    }
+    result.setWrap( styleMap.WRAP !== undefined );
     return result;
   },
 
@@ -26,48 +32,40 @@ rwt.protocol.HandlerRegistry.add( "forms.widgets.Hyperlink", {
 
   properties : rwt.protocol.HandlerUtil.extendControlProperties( [
     "text",
-    "image",
-    "underlined",
-    "underlineMode",
-    "activeForeground",
-    "activeBackground"
+    "message",
+    "echoChar",
+    "editable",
+    "selection",
+    "textLimit"
   ] ),
 
   propertyHandler : rwt.protocol.HandlerUtil.extendControlPropertyHandler( {
     "text" : function( widget, value ) {
       var EncodingUtil = rwt.protocol.EncodingUtil;
-      var text = EncodingUtil.escapeText( value, false );
-      widget.setText( text );
+      var text = EncodingUtil.truncateAtZero( value );
+      if( !widget.hasState( "rwt_MULTI" ) ) {
+        text = EncodingUtil.replaceNewLines( text, " " );
+      }
+      widget.setValue( text );
     },
-    "image" : function( widget, value ) {
-      if( value === null ) {
-        widget.setIcon( null );
-      } else {
-        widget.setIcon( value[ 0 ] );
+    "echoChar" : function( widget, value ) {
+      if( !widget.hasState( "rwt_MULTI" ) ) {
+        widget.setPasswordMode( value !== null );
       }
     },
-    "activeForeground" : function( widget, value ) {
-      if( value === null ) {
-        widget.setActiveTextColor( null );
-      } else {
-        widget.setActiveTextColor( rwt.util.ColorUtil.rgbToRgbString( value ) );
-      }
+    "editable" : function( widget, value ) {
+      widget.setReadOnly( !value );
     },
-    "activeBackground" : function( widget, value ) {
-      if( value === null ) {
-        widget.setActiveBackgroundColor( null );
-      } else {
-        widget.setActiveBackgroundColor( rwt.util.ColorUtil.rgbToRgbString( value ) );
-      }
+    "textLimit" : function( widget, value ) {
+      widget.setMaxLength( value );
     }
   } ),
 
   listeners : rwt.protocol.HandlerUtil.extendControlListeners( [
-    "DefaultSelection"
+    "DefaultSelection",
+    "Modify"
   ] ),
 
-  listenerHandler : rwt.protocol.HandlerUtil.extendControlListenerHandler( {} ),
-
-  methods : []
+  listenerHandler : rwt.protocol.HandlerUtil.extendControlListenerHandler( {} )
 
 } );

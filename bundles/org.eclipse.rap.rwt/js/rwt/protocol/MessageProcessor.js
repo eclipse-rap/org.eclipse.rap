@@ -83,24 +83,24 @@ rwt.protocol.MessageProcessor = {
   // Internals
 
   _processCreate : function( targetId, type, properties ) {
-    var adapter = rwt.protocol.AdapterRegistry.getAdapter( type );
-    if( adapter.service === true ) {
+    var handler = rwt.protocol.HandlerRegistry.getHandler( type );
+    if( handler.service === true ) {
       throw new Error( "Objects of type " + type + " can not be created" );
     }
-    var targetObject = adapter.factory( properties );
-    this._addTarget( targetObject, targetId, adapter );
-    this._processSetImpl( targetObject, adapter, properties );
+    var targetObject = handler.factory( properties );
+    this._addTarget( targetObject, targetId, handler );
+    this._processSetImpl( targetObject, handler, properties );
   },
 
   _processDestroy : function( targetId ) {
     var objectEntry = rwt.protocol.ObjectRegistry.getEntry( targetId );
-    var adapter = objectEntry.adapter;
+    var handler = objectEntry.handler;
     var targetObject = objectEntry.object;
-    var children =   adapter.getDestroyableChildren
-                   ? adapter.getDestroyableChildren( targetObject )
+    var children =   handler.getDestroyableChildren
+                   ? handler.getDestroyableChildren( targetObject )
                    : null;
-    if( adapter.destructor ) {
-      adapter.destructor( targetObject );
+    if( handler.destructor ) {
+      handler.destructor( targetObject );
     }
     rwt.protocol.ObjectRegistry.remove( targetId );
     rwt.protocol.ServerObjectFactory.remove( targetId );
@@ -113,17 +113,17 @@ rwt.protocol.MessageProcessor = {
 
   _processSet : function( targetId, properties ) {
     var objectEntry = rwt.protocol.ObjectRegistry.getEntry( targetId );
-    this._processSetImpl( objectEntry.object, objectEntry.adapter, properties );
+    this._processSetImpl( objectEntry.object, objectEntry.handler, properties );
   },
 
-  _processSetImpl : function( targetObject, adapter, properties ) {
-    if( properties && adapter.properties  instanceof Array ) {
-      for( var i = 0; i < adapter.properties.length; i++ ) {
-        var property = adapter.properties [ i ];
+  _processSetImpl : function( targetObject, handler, properties ) {
+    if( properties && handler.properties  instanceof Array ) {
+      for( var i = 0; i < handler.properties.length; i++ ) {
+        var property = handler.properties [ i ];
         var value = properties[ property ];
         if( value !== undefined ) {
-          if( adapter.propertyHandler && adapter.propertyHandler[ property ] ) {
-            adapter.propertyHandler[ property ].call( window, targetObject, value );
+          if( handler.propertyHandler && handler.propertyHandler[ property ] ) {
+            handler.propertyHandler[ property ].call( window, targetObject, value );
           } else {
             var setterName = this._getSetterName( property );
             targetObject[ setterName ]( value );
@@ -135,11 +135,11 @@ rwt.protocol.MessageProcessor = {
 
   _processCall : function( targetId, method, properties ) {
     var objectEntry = rwt.protocol.ObjectRegistry.getEntry( targetId );
-    var adapter = objectEntry.adapter;
+    var handler = objectEntry.handler;
     var targetObject = objectEntry.object;
-    if( adapter.methods instanceof Array && adapter.methods.indexOf( method ) !== -1 ) {
-      if( adapter.methodHandler && adapter.methodHandler[ method ] ) {
-        adapter.methodHandler[ method ]( targetObject, properties );
+    if( handler.methods instanceof Array && handler.methods.indexOf( method ) !== -1 ) {
+      if( handler.methodHandler && handler.methodHandler[ method ] ) {
+        handler.methodHandler[ method ]( targetObject, properties );
       } else {
         targetObject[ method ]( properties );
       }
@@ -148,15 +148,15 @@ rwt.protocol.MessageProcessor = {
 
   _processListen : function( targetId, properties ) {
     var objectEntry = rwt.protocol.ObjectRegistry.getEntry( targetId );
-    var adapter = objectEntry.adapter;
+    var handler = objectEntry.handler;
     var targetObject = objectEntry.object;
-    if( adapter.listeners instanceof Array ) {
-      for( var i = 0; i < adapter.listeners.length; i++ ) {
-        var type = adapter.listeners[ i ];
+    if( handler.listeners instanceof Array ) {
+      for( var i = 0; i < handler.listeners.length; i++ ) {
+        var type = handler.listeners[ i ];
         if( properties[ type ] === true ) {
-          this._addListener( adapter, targetObject, type );
+          this._addListener( handler, targetObject, type );
         } if( properties[ type ] === false ) {
-          this._removeListener( adapter, targetObject, type );
+          this._removeListener( handler, targetObject, type );
         }
       }
     }
@@ -205,28 +205,28 @@ rwt.protocol.MessageProcessor = {
     return result;
   },
 
-  _addTarget : function( target, targetId, adapter ) {
+  _addTarget : function( target, targetId, handler ) {
     if( target instanceof rwt.widgets.base.Widget ) {
       // TODO [tb] : remove WidgetManager and then this if
       var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
-      widgetManager.add( target, targetId, false, adapter ); // uses ObjectManager internally
+      widgetManager.add( target, targetId, false, handler ); // uses ObjectManager internally
     } else {
-      rwt.protocol.ObjectRegistry.add( targetId, target, adapter );
+      rwt.protocol.ObjectRegistry.add( targetId, target, handler );
     }
   },
 
-  _addListener : function( adapter, targetObject, eventType ) {
-    if( adapter.listenerHandler &&  adapter.listenerHandler[ eventType ] ) {
-      adapter.listenerHandler[ eventType ]( targetObject, true );
+  _addListener : function( handler, targetObject, eventType ) {
+    if( handler.listenerHandler &&  handler.listenerHandler[ eventType ] ) {
+      handler.listenerHandler[ eventType ]( targetObject, true );
     } else {
       var setterName = this._getListenerSetterName( eventType );
       targetObject[ setterName ]( true );
     }
   },
 
-  _removeListener : function( adapter, targetObject, eventType ) {
-    if( adapter.listenerHandler &&  adapter.listenerHandler[ eventType ] ) {
-      adapter.listenerHandler[ eventType ]( targetObject, false );
+  _removeListener : function( handler, targetObject, eventType ) {
+    if( handler.listenerHandler &&  handler.listenerHandler[ eventType ] ) {
+      handler.listenerHandler[ eventType ]( targetObject, false );
     } else {
       var setterName = this._getListenerSetterName( eventType );
       targetObject[ setterName ]( false );

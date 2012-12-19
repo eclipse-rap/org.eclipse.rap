@@ -16,10 +16,10 @@ rwt.protocol.ObjectRegistry = {
   _map : {},
   _callbacks : {},
 
-  add : function( id, object, adapter ) {
+  add : function( id, object, handler ) {
     this._map[ id ] = {
       "object" : object,
-      "adapter" : adapter
+      "handler" : handler
     };
     object._rwtId = id;
     if( typeof object.applyObjectId === "function" ) {
@@ -54,10 +54,10 @@ rwt.protocol.ObjectRegistry = {
 
   getEntry : function( id ) {
     var result = this._map[ id ];
-    if( result == null && rwt.protocol.AdapterRegistry.hasAdapter( id ) ) {
-      var adapter = rwt.protocol.AdapterRegistry.getAdapter( id );
-      if( adapter.service === true ) {
-        this.add( id, adapter.factory(), adapter );
+    if( result == null && rwt.protocol.HandlerRegistry.hasHandler( id ) ) {
+      var handler = rwt.protocol.HandlerRegistry.getHandler( id );
+      if( handler.service === true ) {
+        this.add( id, handler.factory(), handler );
         result = this._map[ id ];
       }
     }
