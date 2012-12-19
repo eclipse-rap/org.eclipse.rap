@@ -251,7 +251,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       var lastMouseDown = org.eclipse.swt.EventUtil._lastMouseDown;
       return    lastMouseDown.mouseUpCount === 1
              && lastMouseDown.widget === widget
-             && lastMouseDown.button === qx.event.type.MouseEvent.C_BUTTON_LEFT
+             && lastMouseDown.button === rwt.event.MouseEvent.C_BUTTON_LEFT
              && lastMouseDown.button === evt.getButton();
     },
 
@@ -280,13 +280,13 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     _determineMouseButton : function( evt ) {
       var result = 0;
       switch( evt.getButton() ) {
-        case qx.event.type.MouseEvent.C_BUTTON_LEFT:
+        case rwt.event.MouseEvent.C_BUTTON_LEFT:
           result = 1;
           break;
-        case qx.event.type.MouseEvent.C_BUTTON_MIDDLE:
+        case rwt.event.MouseEvent.C_BUTTON_MIDDLE:
           result = 2;
           break;
-        case qx.event.type.MouseEvent.C_BUTTON_RIGHT:
+        case rwt.event.MouseEvent.C_BUTTON_RIGHT:
           result = 3;
           break;
       }
@@ -320,14 +320,14 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         // stop further handling and default handling by the browser
         evt.stopPropagation();
         evt.preventDefault();
-        var x = qx.event.type.MouseEvent.getPageX();
-        var y = qx.event.type.MouseEvent.getPageY();
+        var x = rwt.event.MouseEvent.getPageX();
+        var y = rwt.event.MouseEvent.getPageY();
         org.eclipse.swt.EventUtil.sendMenuDetected( evt.getTarget(), x, y );
       }
     },
 
     menuDetectedByMouse : function( evt ) {
-      if( evt.getButton() === qx.event.type.MouseEvent.C_BUTTON_RIGHT ) {
+      if( evt.getButton() === rwt.event.MouseEvent.C_BUTTON_RIGHT ) {
         // stop further handling and default handling by the browser
         evt.stopPropagation();
         evt.preventDefault();

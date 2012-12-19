@@ -398,9 +398,9 @@ qx.Class.define("rwt.widgets.base.Popup",
       var zIndexCompare = function(a, b) {
         return a.getZIndex() - b.getZIndex();
       };
-      if (org.eclipse.rwt.EventHandler.getMenuManager() != null)
+      if (rwt.event.EventHandler.getMenuManager() != null)
       {
-        var manager = org.eclipse.rwt.EventHandler.getMenuManager();
+        var manager = rwt.event.EventHandler.getMenuManager();
         var vMenus = rwt.util.Object.getValues(manager.getAll());
         var vAll = vPopups.concat(vMenus).sort(zIndexCompare);
       }

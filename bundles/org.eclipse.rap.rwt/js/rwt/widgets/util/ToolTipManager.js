@@ -109,7 +109,7 @@ qx.Class.define("rwt.widgets.util.ToolTipManager",
      * set as {@link #currentToolTip}
      *
      * @type member
-     * @param e {qx.event.type.MouseEvent} mouseOver event
+     * @param e {rwt.event.MouseEvent} mouseOver event
      * @return {void}
      */
     _handleMouseOver : function( e ) {
@@ -118,7 +118,7 @@ qx.Class.define("rwt.widgets.util.ToolTipManager",
 
       // Allows us to use DOM Nodes as tooltip target :)
       if (!(vTarget instanceof rwt.widgets.base.Widget) && vTarget.nodeType == 1) {
-        vTarget = org.eclipse.rwt.EventHandlerUtil.getTargetObject(vTarget);
+        vTarget = rwt.event.EventHandlerUtil.getTargetObject(vTarget);
       }
 
       // Search first parent which has a tooltip
@@ -141,7 +141,7 @@ qx.Class.define("rwt.widgets.util.ToolTipManager",
      * tooltip and no new one is created.
      *
      * @type member
-     * @param e {qx.event.type.MouseEvent} mouseOut event
+     * @param e {rwt.event.MouseEvent} mouseOut event
      * @return {void}
      */
     _handleMouseOut : function( e ) {
@@ -188,7 +188,7 @@ qx.Class.define("rwt.widgets.util.ToolTipManager",
      * current tooltip is the tooltip of the target widget.
      *
      * @type member
-     * @param e {qx.event.type.FocusEvent} blur event
+     * @param e {rwt.event.FocusEvent} blur event
      * @return {void}
      */
     handleBlur : function(e)

@@ -12,9 +12,9 @@
  ******************************************************************************/
 
 /** Event object for data transfers. */
-qx.Class.define("qx.event.type.DataEvent",
+qx.Class.define("rwt.event.DataEvent",
 {
-  extend : qx.event.type.Event,
+  extend : rwt.event.Event,
 
 
 

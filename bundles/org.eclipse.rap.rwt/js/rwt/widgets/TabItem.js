@@ -32,7 +32,7 @@ qx.Class.define( "rwt.widgets.TabItem", {
   },
 
   events: {
-    "closetab" : "qx.event.type.Event"
+    "closetab" : "rwt.event.Event"
   },
 
   properties : {

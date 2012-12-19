@@ -549,7 +549,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       slider.setSelection( 2 );
       assertEquals( 2, slider._selection );
       var node = slider.getElement();
-      var left = qx.event.type.MouseEvent.buttons.left;
+      var left = rwt.event.MouseEvent.buttons.left;
       TestUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 10 + 16 + 50 );
       TestUtil.fakeMouseEventDOM( node, "mouseup", left, 11, 10 + 16 + 50 );
       assertEquals( 12, slider._selection );
@@ -572,7 +572,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       slider.setSelection( 2 );
       assertEquals( 2, slider._selection );
       var node = slider.getElement();
-      var left = qx.event.type.MouseEvent.buttons.left;
+      var left = rwt.event.MouseEvent.buttons.left;
       TestUtil.fakeMouseEventDOM( node, "mousedown", left, 10 + 16 + 50, 11 );
       TestUtil.fakeMouseEventDOM( node, "mouseup", left, 10 + 16 + 50, 11 );
       assertEquals( 12, slider._selection );
@@ -593,7 +593,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var node = slider.getElement();
-      var left = qx.event.type.MouseEvent.buttons.left;
+      var left = rwt.event.MouseEvent.buttons.left;
       var thumb = slider._thumb.getHeight();
       // scale is 100 - 32 = 68 : 100 => thumb is 6.8
       // last page-increment occured when distance between thumb middle
@@ -624,7 +624,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var node = slider.getElement();
-      var left = qx.event.type.MouseEvent.buttons.left;
+      var left = rwt.event.MouseEvent.buttons.left;
       var thumb = slider._thumb.getHeight();
       TestUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 50 );
       assertEquals( 10, slider._selection );
@@ -642,7 +642,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var node = slider.getElement();
-      var left = qx.event.type.MouseEvent.buttons.left;
+      var left = rwt.event.MouseEvent.buttons.left;
       var thumb = slider._thumb.getElement();
       TestUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 50 );
       assertEquals( 10, slider._selection );
@@ -660,7 +660,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var node = slider.getElement();
-      var left = qx.event.type.MouseEvent.buttons.left;
+      var left = rwt.event.MouseEvent.buttons.left;
       var thumb = slider._thumb.getHeight();
       TestUtil.fakeMouseEventDOM( node, "mouseover", left, 11, 90 );
       TestUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 90 );
@@ -680,7 +680,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var node = slider.getElement();
-      var left = qx.event.type.MouseEvent.buttons.left;
+      var left = rwt.event.MouseEvent.buttons.left;
       var thumb = slider._thumb.getHeight();
       TestUtil.fakeMouseEventDOM( node, "mouseover", left, 11, 90 );
       TestUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 90 );
@@ -772,7 +772,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
 
     testDragThumb : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var left = qx.event.type.MouseEvent.buttons.left;
+      var left = rwt.event.MouseEvent.buttons.left;
       var slider = this._createSlider( true );
       var node = slider._thumb.getElement();
       assertEquals( 0, slider._selection );
@@ -795,7 +795,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
 
     testDragThumbMouseOut : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var left = qx.event.type.MouseEvent.buttons.left;
+      var left = rwt.event.MouseEvent.buttons.left;
       var slider = this._createSlider( true );
       var node = slider._thumb.getElement();
       assertEquals( 0, slider._selection );
@@ -815,7 +815,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
 
     testDragThumbLimit : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var left = qx.event.type.MouseEvent.buttons.left;
+      var left = rwt.event.MouseEvent.buttons.left;
       var slider = this._createSlider( true );
       var node = slider._thumb.getElement();
       assertEquals( 0, slider._selection );

@@ -59,7 +59,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
     /**
      * The "load" event is fired after the iframe content has successfully been loaded.
      */
-    "load" : "qx.event.type.Event"
+    "load" : "rwt.event.Event"
   },
 
 

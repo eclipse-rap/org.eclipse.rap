@@ -73,7 +73,7 @@ qx.Class.define("rwt.widgets.base.Image",
 
   events : {
     /** Fires if an image could not be preloaded  */
-    "error" : "qx.event.type.Event"
+    "error" : "rwt.event.Event"
   },
 
 

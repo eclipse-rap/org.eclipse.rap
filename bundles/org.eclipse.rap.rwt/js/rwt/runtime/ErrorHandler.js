@@ -175,7 +175,7 @@ qx.Class.define( "rwt.runtime.ErrorHandler", {
         var display = rwt.widgets.Display.getCurrent();
         display.setExitConfirmation( null );
         //qx.io.remote.RequestQueue.getInstance().setEnabled( false );
-        org.eclipse.rwt.EventHandler.detachEvents();
+        rwt.event.EventHandler.detachEvents();
         qx.core.Target.prototype.dispatchEvent = function() {};
         rwt.animation.Animation._stopLoop();
       } catch( ex ) {
@@ -191,7 +191,7 @@ qx.Class.define( "rwt.runtime.ErrorHandler", {
       var doc = rwt.widgets.base.ClientDocument.getInstance();
       doc.setSelectable( true );
       if( rwt.client.Client.isGecko() ) {
-        var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+        var EventHandlerUtil = rwt.event.EventHandlerUtil;
         qx.html.EventRegistration.removeEventListener( document.documentElement,
                                                        "mousedown",
                                                        EventHandlerUtil._ffMouseFixListener );

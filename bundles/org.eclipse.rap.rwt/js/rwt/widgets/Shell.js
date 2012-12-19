@@ -168,8 +168,8 @@ qx.Class.define( "rwt.widgets.Shell", {
   },
 
   events : {
-    "close" : "qx.event.type.DataEvent",
-    "parentShellChanged" : "qx.event.type.Event"
+    "close" : "rwt.event.DataEvent",
+    "parentShellChanged" : "rwt.event.Event"
   },
 
   members : {
@@ -331,7 +331,7 @@ qx.Class.define( "rwt.widgets.Shell", {
       if( !this.isDisposed() ) {
         this.hide();
         if( this.hasEventListeners( "close" ) ) {
-          var event = new qx.event.type.DataEvent( "close", this );
+          var event = new rwt.event.DataEvent( "close", this );
           this.dispatchEvent( event, true );
         }
         var wm = this.getWindowManager();

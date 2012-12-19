@@ -227,7 +227,7 @@ qx.Class.define("rwt.widgets.base.Parent",
         // Dispatch FocusOut
         if (old.hasEventListeners("focusout"))
         {
-          var vEventObject = new qx.event.type.FocusEvent("focusout", old);
+          var vEventObject = new rwt.event.FocusEvent("focusout", old);
 
           if (vFocusValid) {
             vEventObject.setRelatedTarget(value);
@@ -243,7 +243,7 @@ qx.Class.define("rwt.widgets.base.Parent",
         if (value.hasEventListeners("focusin"))
         {
           // Dispatch FocusIn
-          var vEventObject = new qx.event.type.FocusEvent("focusin", value);
+          var vEventObject = new rwt.event.FocusEvent("focusin", value);
 
           if (vBlurValid) {
             vEventObject.setRelatedTarget(old);
@@ -263,7 +263,7 @@ qx.Class.define("rwt.widgets.base.Parent",
         old.setFocused(false);
 
         // Dispatch Blur
-        var vEventObject = new qx.event.type.FocusEvent("blur", old);
+        var vEventObject = new rwt.event.FocusEvent("blur", old);
 
         if (vFocusValid) {
           vEventObject.setRelatedTarget(value);
@@ -284,10 +284,10 @@ qx.Class.define("rwt.widgets.base.Parent",
       {
         this.setActiveChild(value);
         value.setFocused(true);
-        org.eclipse.rwt.EventHandler.setFocusRoot(this);
+        rwt.event.EventHandler.setFocusRoot(this);
 
         // Dispatch Focus
-        var vEventObject = new qx.event.type.FocusEvent("focus", value);
+        var vEventObject = new rwt.event.FocusEvent("focus", value);
 
         if (vBlurValid) {
           vEventObject.setRelatedTarget(old);

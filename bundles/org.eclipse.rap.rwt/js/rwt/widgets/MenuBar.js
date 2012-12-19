@@ -32,7 +32,7 @@ qx.Class.define( "rwt.widgets.MenuBar", {
   },
 
   events : {
-    "changeOpenItem" : "qx.event.type.Event"
+    "changeOpenItem" : "rwt.event.Event"
   },
 
   members : {

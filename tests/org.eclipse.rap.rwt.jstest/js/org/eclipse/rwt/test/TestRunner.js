@@ -118,7 +118,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
       org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();
       org.eclipse.rwt.test.fixture.TestUtil.prepareTimerUse();
       // prevent actual dom-events
-      org.eclipse.rwt.EventHandler.detachEvents();
+      rwt.event.EventHandler.detachEvents();
       org.eclipse.rwt.test.fixture.TestUtil.initErrorPageLog();
       var that = this;
       this._loopWrapper = function(){ that._loop(); };
@@ -249,7 +249,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
         org.eclipse.rwt.test.fixture.TestUtil.clearErrorPage();
         org.eclipse.rwt.test.fixture.TestUtil.resetObjectManager();
         org.eclipse.rwt.test.fixture.TestUtil.clearXMLHttpRequests();
-        org.eclipse.rwt.EventHandler.setFocusRoot(
+        rwt.event.EventHandler.setFocusRoot(
           rwt.widgets.base.ClientDocument.getInstance()
         );
       }
@@ -364,7 +364,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
 
     _freezeQooxdoo : function() {
       rwt.widgets.base.Widget.__allowFlushs = false;
-      org.eclipse.rwt.EventHandler.detachEvents();
+      rwt.event.EventHandler.detachEvents();
       qx.core.Target.prototype.dispatchEvent = function(){};
       rwt.animation.Animation._stopLoop();
       rwt.runtime.MobileWebkitSupport._removeListeners();

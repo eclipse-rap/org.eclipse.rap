@@ -118,7 +118,7 @@ qx.Class.define("rwt.client.BrowserNavigation",
      * Fired when the user moved in the history. The data property of the event
      * holds the state, which was passed to {@link #addToHistory}.
      */
-    "request" : "qx.event.type.DataEvent"
+    "request" : "rwt.event.DataEvent"
   },
 
 

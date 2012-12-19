@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
+qx.Class.define( "rwt.event.EventHandlerUtil", {
   type : "static",
 
   statics : {
@@ -131,7 +131,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
     ],
 
     _domEventBlocker : function( event ) {
-      org.eclipse.rwt.EventHandlerUtil.stopDomEvent( event );
+      rwt.event.EventHandlerUtil.stopDomEvent( event );
       event.cancelBubble = true; // MSIE
       if( event.stopPropagation ) {
         event.stopPropagation();
@@ -177,7 +177,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
     },
 
     getRelatedTargetObjectFromEvent : function( vDomEvent ) {
-      var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+      var EventHandlerUtil = rwt.event.EventHandlerUtil;
       var target = vDomEvent.relatedTarget;
       if( !target ) {
         if( vDomEvent.type == "mouseover" ) {

@@ -42,7 +42,7 @@ qx.Class.define( "rwt.widgets.base.Scrollable", {
   },
 
   events : {
-    "userScroll" : "qx.event.type.Event"
+    "userScroll" : "rwt.event.Event"
   },
 
   statics : {
@@ -251,7 +251,7 @@ qx.Class.define( "rwt.widgets.base.Scrollable", {
 
     _onscroll : function( evt ) {
       if( !this._internalChangeFlag ) {
-        org.eclipse.rwt.EventHandlerUtil.stopDomEvent( evt );
+        rwt.event.EventHandlerUtil.stopDomEvent( evt );
         var blockH = this._blockScrolling || !this._horzScrollBar.getDisplay();
         var blockV = this._blockScrolling || !this._vertScrollBar.getDisplay();
         this._internalChangeFlag = true;

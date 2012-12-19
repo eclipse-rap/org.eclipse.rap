@@ -1121,12 +1121,12 @@ qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _multiSelectItem : function( event, item ) {
-      if( event instanceof qx.event.type.MouseEvent && event.isRightButtonPressed() ) {
+      if( event instanceof rwt.event.MouseEvent && event.isRightButtonPressed() ) {
         if( !this.isItemSelected( item ) ) {
           this._exclusiveSelectItem( item );
         }
       } else if( event.isCtrlPressed() ) {
-        if( event instanceof qx.event.type.KeyEvent && item != this._focusItem  ) {
+        if( event instanceof rwt.event.KeyEvent && item != this._focusItem  ) {
           this.setFocusItem( item );
         } else {
           this._ctrlSelectItem( item );

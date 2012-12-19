@@ -144,8 +144,8 @@ qx.Class.define( "rwt.widgets.Combo", {
   },
 
   events : {
-    "itemsChanged" : "qx.event.type.Event",
-    "selectionChanged" : "qx.event.type.Event"
+    "itemsChanged" : "rwt.event.Event",
+    "selectionChanged" : "rwt.event.Event"
   },
 
   members : {

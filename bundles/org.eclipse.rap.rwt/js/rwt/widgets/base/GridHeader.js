@@ -38,7 +38,7 @@ qx.Class.define( "rwt.widgets.base.GridHeader", {
   },
 
   events: {
-    "columnLayoutChanged" : "qx.event.type.Event"
+    "columnLayoutChanged" : "rwt.event.Event"
   },
 
   members : {

@@ -182,7 +182,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
      * The "data" property of the event is set to the new value
      * of the spinner.
      */
-    "change" : "qx.event.type.DataEvent"
+    "change" : "rwt.event.DataEvent"
   },
 
 
@@ -427,7 +427,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
      * events without modifiers.
      *
      * @type member
-     * @param e {qx.event.type.KeyEvent} keyPress event
+     * @param e {rwt.event.KeyEvent} keyPress event
      * @return {void}
      */
     _onkeypress : function(e)
@@ -488,7 +488,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
      * spinner value.
      *
      * @type member
-     * @param e {qx.event.type.KeyEvent} keyDown event
+     * @param e {rwt.event.KeyEvent} keyDown event
      * @return {void}
      */
     _onkeydown : function(e)
@@ -537,7 +537,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
      * gets stopped.
      *
      * @type member
-     * @param e {qx.event.type.KeyEvent} keyUp event
+     * @param e {rwt.event.KeyEvent} keyUp event
      * @return {void}
      */
     _onkeyup : function(e)
@@ -573,7 +573,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
      * invoking the increment management (resets increments, setup and start timer etc.).
      *
      * @type member
-     * @param e {qx.event.type.MouseEvent} mouseDown event
+     * @param e {rwt.event.MouseEvent} mouseDown event
      * @return {void}
      */
     _onmousedown : function(e)
@@ -611,7 +611,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
      * resetting interval increase).
      *
      * @type member
-     * @param e {qx.event.type.MouseEvent} mouseUp event
+     * @param e {rwt.event.MouseEvent} mouseUp event
      * @return {void}
      */
     _onmouseup : function(e)
@@ -639,7 +639,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
      * selects the text field.
      *
      * @type member
-     * @param e {qx.event.type.MouseEvent} mouseWheel event
+     * @param e {rwt.event.MouseEvent} mouseWheel event
      * @return {void}
      */
     _onmousewheel : function(e)
@@ -678,7 +678,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
      * Event handler method for text changes
      *
      * @type member
-     * @param e {qx.event.type.ChangeEvent} change event
+     * @param e {rwt.event.ChangeEvent} change event
      * @return {void}
      */
     _ontextchange : function(e) {
@@ -691,7 +691,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
      * hold by the "checkValue" property.
      *
      * @type member
-     * @param e {qx.event.type.DataEvent} input event
+     * @param e {rwt.event.DataEvent} input event
      * @return {void}
      */
     _oninput : function(e) {
@@ -707,7 +707,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
      * Dispatched the "change" event.
      *
      * @type member
-     * @param e {qx.event.type.ChangeEvent} change event
+     * @param e {rwt.event.ChangeEvent} change event
      * @return {void}
      */
     _onchange : function(e)
@@ -746,7 +746,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
      * Calls the method of the "checkValueFunction" property
      *
      * @type member
-     * @param e {qx.event.type.FocusEvent} blur event
+     * @param e {rwt.event.FocusEvent} blur event
      * @return {void}
      */
     _onblur : function(e) {
@@ -861,7 +861,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
      * the new interval.
      *
      * @type member
-     * @param e {qx.event.type.Event} interval event
+     * @param e {rwt.event.Event} interval event
      * @return {void}
      */
     _oninterval : function(e)

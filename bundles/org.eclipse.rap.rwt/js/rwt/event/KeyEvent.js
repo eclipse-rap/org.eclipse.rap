@@ -14,9 +14,9 @@
 /**
  * A key event instance contains all data for each occured key event
  */
-qx.Class.define("qx.event.type.KeyEvent",
+qx.Class.define("rwt.event.KeyEvent",
 {
-  extend : qx.event.type.DomEvent,
+  extend : rwt.event.DomEvent,
 
   /**
    * @param vType {String} event type (keydown, keypress, keyup)

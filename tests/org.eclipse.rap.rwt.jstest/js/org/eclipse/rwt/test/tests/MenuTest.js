@@ -529,7 +529,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       text.setContextMenu( menu );
       addContextMenuListener( text );
       TestUtil.flush();
-      var right = qx.event.type.MouseEvent.buttons.right;
+      var right = rwt.event.MouseEvent.buttons.right;
       var node = text._inputElement;
 
       TestUtil.fakeMouseEventDOM( node, "mousedown", right );

@@ -15,8 +15,8 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
 
   construct : function() {
     this.base( arguments );
-    org.eclipse.rwt.EventHandler.setKeyDomEventFilter( this._onKeyDomEvent, this );
-    org.eclipse.rwt.EventHandler.setKeyEventFilter( this._onKeyEvent, this );
+    rwt.event.EventHandler.setKeyDomEventFilter( this._onKeyDomEvent, this );
+    rwt.event.EventHandler.setKeyEventFilter( this._onKeyEvent, this );
     this._keyBindings = {};
     this._cancelKeys = {};
     this._currentKeyCode = -1;
@@ -54,7 +54,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
       }
       var control = this._getTargetControl();
       if( this._shouldCancel( this._currentKeyCode, charCode, domEvent, control ) ) {
-        org.eclipse.rwt.EventHandlerUtil.stopDomEvent( domEvent );
+        rwt.event.EventHandlerUtil.stopDomEvent( domEvent );
         domEvent._noProcess = true;
       }
     },
@@ -111,7 +111,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
         // NOTE : Prefered when keypress might not be fired, e.g. browser shortcuts that
         //        are not or can not be prevented/canceled. Key might not repeat in that case.
         //        Not to be used when charcode might be unkown (e.g. shift + char, special char)-
-        var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+        var EventHandlerUtil = rwt.event.EventHandlerUtil;
         result =    EventHandlerUtil.isNonPrintableKeyCode( keyCode )
                  || EventHandlerUtil.isSpecialKeyCode( keyCode );
         if( !result && ( domEvent.altKey || domEvent.ctrlKey ) ) {
@@ -198,9 +198,9 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
     // helper
 
     _getTargetControl : function() {
-      var result = org.eclipse.rwt.EventHandler.getCaptureWidget();
+      var result = rwt.event.EventHandler.getCaptureWidget();
       if( !result ) {
-        var focusRoot = org.eclipse.rwt.EventHandler.getFocusRoot();
+        var focusRoot = rwt.event.EventHandler.getFocusRoot();
         result = focusRoot === null ? null : focusRoot.getActiveChild();
       }
       var widgetManager = rwt.widgets.util.WidgetManager.getInstance();

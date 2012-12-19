@@ -90,9 +90,9 @@ qx.Class.define( "rwt.widgets.Scale", {
   },
 
   events : {
-    "selectionChanged" : "qx.event.type.Event",
-    "minimumChanged" : "qx.event.type.Event",
-    "maximumChanged" : "qx.event.type.Event"
+    "selectionChanged" : "rwt.event.Event",
+    "minimumChanged" : "rwt.event.Event",
+    "maximumChanged" : "rwt.event.Event"
   },
 
   statics : {

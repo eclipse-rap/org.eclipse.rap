@@ -30,8 +30,8 @@ qx.Class.define( "rwt.widgets.base.GridCellToolTip", {
     setText : function( text ) {
       if( this._isValidToolTip( text ) ) {
         this.getAtom().setLabel( text );
-        this.setLeft( qx.event.type.MouseEvent.getPageX() + this.getMousePointerOffsetX() );
-        this.setTop( qx.event.type.MouseEvent.getPageY() + this.getMousePointerOffsetY() );
+        this.setLeft( rwt.event.MouseEvent.getPageX() + this.getMousePointerOffsetX() );
+        this.setTop( rwt.event.MouseEvent.getPageY() + this.getMousePointerOffsetY() );
         this.show();
       }
     },

@@ -82,7 +82,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
           }
           this._actionOverwrite = null;
           this._currentDragSource = target;
-          var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
+          var dndHandler = rwt.event.DragAndDropHandler.getInstance();
           dndHandler.clearActions();
           var doc = rwt.widgets.base.ClientDocument.getInstance();
           doc.addEventListener( "mouseover", this._onMouseOver, this );
@@ -125,7 +125,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       var id = wm.findIdByWidget( widget );
       var x = 0;
       var y = 0;
-      if( qxDomEvent instanceof qx.event.type.MouseEvent ) {
+      if( qxDomEvent instanceof rwt.event.MouseEvent ) {
         x = qxDomEvent.getPageX();
         y = qxDomEvent.getPageY();
       }
@@ -196,7 +196,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       if( this._currentTargetWidget !== mouseEvent.getTarget() ) {
         this._onMouseOver( mouseEvent );
       }
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       dndHandler.clearActions();
       this.setFeedback( target, null, 0 );
       this._currentDropTarget = null;
@@ -226,7 +226,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       var itemId = item != null ? wm.findIdByWidget( item ) : null;
       var x = 0;
       var y = 0;
-      if( qxDomEvent instanceof qx.event.type.MouseEvent ) {
+      if( qxDomEvent instanceof rwt.event.MouseEvent ) {
         x = qxDomEvent.getPageX();
         y = qxDomEvent.getPageY();
       } else {
@@ -308,7 +308,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
 
     _setAction : function( newAction, sourceEvent ) {
       // NOTE: using setCurrentAction would conflict with key events
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       var oldAction = dndHandler.getCurrentAction();
       if( oldAction != newAction ) {
         dndHandler.clearActions();
@@ -507,7 +507,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
                                    event );
         this.cancel();
       } else if( this._currentDropTarget != null ) {
-        var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
+        var dndHandler = rwt.event.DragAndDropHandler.getInstance();
         var action = this._computeCurrentAction( event, this._currentDropTarget );
         this._setAction( action, event );
         dndHandler._renderCursor();
@@ -527,7 +527,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         this.setFeedback( this._currentDropTarget, null, 0 );
         this._currentDropTarget = null;
       }
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       dndHandler.setFeedbackWidget( null );
       this._resetFeedbackWidget();
       this._currentDragSource = null;
@@ -545,7 +545,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
 
     cancel : function() {
       if( this._currentDragSource != null ) {
-        var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
+        var dndHandler = rwt.event.DragAndDropHandler.getInstance();
         dndHandler.globalCancelDrag();
         this._cleanUp();
       }
@@ -554,7 +554,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     setOperationOverwrite : function( widget, operation ) {
       if( widget == this._currentDropTarget ) {
         var action = this._toAction( operation );
-        var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
+        var dndHandler = rwt.event.DragAndDropHandler.getInstance();
         this._actionOverwrite = action;
         this._setAction( action, null );
         dndHandler._renderCursor();

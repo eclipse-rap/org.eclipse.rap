@@ -14,7 +14,7 @@
 /**
  * This manager (singleton) manage all drag and drop handling of a qx.core.Init instance.
  */
-qx.Class.define("qx.event.handler.DragAndDropHandler",
+qx.Class.define("rwt.event.DragAndDropHandler",
 {
   type : "singleton",
   extend : rwt.util.ObjectManager,
@@ -137,7 +137,7 @@ qx.Class.define("qx.event.handler.DragAndDropHandler",
     {
       if (value)
       {
-        value.dispatchEvent(new qx.event.type.DragEvent("dragdrop", this.__lastDestinationEvent, value, this.getSourceWidget()));
+        value.dispatchEvent(new rwt.event.DragEvent("dragdrop", this.__lastDestinationEvent, value, this.getSourceWidget()));
         this.__lastDestinationEvent = null;
       }
     },
@@ -244,9 +244,9 @@ qx.Class.define("qx.event.handler.DragAndDropHandler",
         // a valid event target. The target is always the element
         // which was the one with the mousedown event before.
         if (vCurrent == this.__dragCache.sourceWidget) {
-          vCurrent = org.eclipse.rwt.EventHandlerUtil.getTargetObject(qx.html.ElementFromPoint.getElementFromPoint(e.getPageX(), e.getPageY()));
+          vCurrent = rwt.event.EventHandlerUtil.getTargetObject(qx.html.ElementFromPoint.getElementFromPoint(e.getPageX(), e.getPageY()));
         } else {
-          vCurrent = org.eclipse.rwt.EventHandlerUtil.getTargetObject(null, vCurrent);
+          vCurrent = rwt.event.EventHandlerUtil.getTargetObject(null, vCurrent);
         }
 
         while (vCurrent != null)
@@ -348,17 +348,17 @@ qx.Class.define("qx.event.handler.DragAndDropHandler",
     _fireUserEvents : function(fromWidget, toWidget, e)
     {
       if (fromWidget && fromWidget != toWidget && fromWidget.hasEventListeners("dragout")) {
-        fromWidget.dispatchEvent(new qx.event.type.DragEvent("dragout", e, fromWidget, toWidget), true);
+        fromWidget.dispatchEvent(new rwt.event.DragEvent("dragout", e, fromWidget, toWidget), true);
       }
 
       if (toWidget)
       {
         if (fromWidget != toWidget && toWidget.hasEventListeners("dragover")) {
-          toWidget.dispatchEvent(new qx.event.type.DragEvent("dragover", e, toWidget, fromWidget), true);
+          toWidget.dispatchEvent(new rwt.event.DragEvent("dragover", e, toWidget, fromWidget), true);
         }
 
         if (toWidget.hasEventListeners("dragmove")) {
-          toWidget.dispatchEvent(new qx.event.type.DragEvent("dragmove", e, toWidget, null), true);
+          toWidget.dispatchEvent(new rwt.event.DragEvent("dragmove", e, toWidget, null), true);
         }
       }
     },
@@ -482,7 +482,7 @@ qx.Class.define("qx.event.handler.DragAndDropHandler",
         if (Math.abs(e.getScreenX() - this.__dragCache.startScreenX) > 5 || Math.abs(e.getScreenY() - this.__dragCache.startScreenY) > 5)
         {
           // Fire dragstart event to finally allow the above if to handle next events
-          this.__dragCache.sourceWidget.dispatchEvent(new qx.event.type.DragEvent("dragstart", e, this.__dragCache.sourceWidget), true);
+          this.__dragCache.sourceWidget.dispatchEvent(new rwt.event.DragEvent("dragstart", e, this.__dragCache.sourceWidget), true);
 
           // Update status flag
           this.__dragCache.hasFiredDragStart = true;
@@ -688,7 +688,7 @@ qx.Class.define("qx.event.handler.DragAndDropHandler",
       }
 
       // Dispatch dragend event
-      this.getSourceWidget().dispatchEvent(new qx.event.type.DragEvent("dragend", e, this.getSourceWidget(), currentDestinationWidget), true);
+      this.getSourceWidget().dispatchEvent(new rwt.event.DragEvent("dragend", e, this.getSourceWidget(), currentDestinationWidget), true);
 
       // Fire dragout event
       // RAP : We create this event on the server-side:

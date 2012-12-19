@@ -48,9 +48,9 @@ qx.Class.define( "rwt.animation.Animation", {
   },
 
   events: {
-    "init" : "qx.event.type.DataEvent",
-    "finish" : "qx.event.type.DataEvent",
-    "cancel" : "qx.event.type.DataEvent"
+    "init" : "rwt.event.DataEvent",
+    "finish" : "rwt.event.DataEvent",
+    "cancel" : "rwt.event.DataEvent"
   },
 
   members : {

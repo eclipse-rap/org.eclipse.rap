@@ -23,7 +23,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
   construct : function() {
     // Eventlistener are detached by TestRunner to prevent user-interference,
     // but we need them here...
-    org.eclipse.rwt.EventHandler.attachEvents();
+    rwt.event.EventHandler.attachEvents();
     if( rwt.client.Client.isAndroidBrowser() ) {
       rwt.runtime.MobileWebkitSupport._getTouch = function( event ) {
         // touches is always null on faked TouchEvent, use fakedTouches instead
@@ -38,7 +38,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
   },
 
   destruct : function() {
-    org.eclipse.rwt.EventHandler.detachEvents();
+    rwt.event.EventHandler.detachEvents();
   },
 
   members : {

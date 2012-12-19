@@ -31,13 +31,13 @@ qx.Class.define( "rwt.widgets.util.WidgetRenderAdapter", {
   },
 
   events: {
-    "visibility" : "qx.event.type.DataEvent",
-    "height" : "qx.event.type.DataEvent",
-    "top" : "qx.event.type.DataEvent",
-    "left" : "qx.event.type.DataEvent",
-    "opacity" : "qx.event.type.DataEvent",
-    "backgroundColor" : "qx.event.type.DataEvent",
-    "backgroundGradient" : "qx.event.type.DataEvent"
+    "visibility" : "rwt.event.DataEvent",
+    "height" : "rwt.event.DataEvent",
+    "top" : "rwt.event.DataEvent",
+    "left" : "rwt.event.DataEvent",
+    "opacity" : "rwt.event.DataEvent",
+    "backgroundColor" : "rwt.event.DataEvent",
+    "backgroundGradient" : "rwt.event.DataEvent"
   },
 
   members : {

@@ -14,7 +14,7 @@
 /**
  * The qooxdoo core event object. Each event object for qx.core.Targets should extend this class.
  */
-qx.Class.define("qx.event.type.Event",
+qx.Class.define("rwt.event.Event",
 {
   extend : qx.core.Object,
 

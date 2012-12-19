@@ -65,7 +65,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
     this.initSelectable();
 
     // Register as current focus root
-    org.eclipse.rwt.EventHandler.setFocusRoot(this);
+    rwt.event.EventHandler.setFocusRoot(this);
 
     // Gecko-specific settings
     if( rwt.client.Client.isGecko() ) {
@@ -86,17 +86,17 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
 
   events:
   {
-    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
-    "focus"         : "qx.event.type.Event",
+    /** (Fired by {@link rwt.event.EventHandler}) */
+    "focus"         : "rwt.event.Event",
 
-    /** Fired when the window looses the focus (Fired by {@link org.eclipse.rwt.EventHandler}) */
-    "windowblur"    : "qx.event.type.Event",
+    /** Fired when the window looses the focus (Fired by {@link rwt.event.EventHandler}) */
+    "windowblur"    : "rwt.event.Event",
 
-    /**  Fired when the window gets the focus (Fired by {@link org.eclipse.rwt.EventHandler}) */
-    "windowfocus"   : "qx.event.type.Event",
+    /**  Fired when the window gets the focus (Fired by {@link rwt.event.EventHandler}) */
+    "windowfocus"   : "rwt.event.Event",
 
-    /** Fired when the window has been resized (Fired by {@link org.eclipse.rwt.EventHandler}) */
-    "windowresize"  : "qx.event.type.Event"
+    /** Fired when the window has been resized (Fired by {@link rwt.event.EventHandler}) */
+    "windowresize"  : "rwt.event.Event"
   },
 
 

@@ -70,7 +70,7 @@ qx.Class.define( "rwt.widgets.Menu", {
     },
 
     menuDetectedByMouse : function( evt ) {
-      if( evt.getButton() === qx.event.type.MouseEvent.C_BUTTON_RIGHT ) {
+      if( evt.getButton() === rwt.event.MouseEvent.C_BUTTON_RIGHT ) {
         rwt.widgets.Menu.contextMenuHandler( evt );
       }
     },
@@ -81,8 +81,8 @@ qx.Class.define( "rwt.widgets.Menu", {
       if( contextMenu != null ) {
         event.stopPropagation();
         event.preventDefault();
-        var pageX = qx.event.type.MouseEvent.getPageX();
-        var pageY = qx.event.type.MouseEvent.getPageY();
+        var pageX = rwt.event.MouseEvent.getPageX();
+        var pageY = rwt.event.MouseEvent.getPageY();
         contextMenu.setLocation( pageX, pageY );
         contextMenu.setOpener( control );
         contextMenu.show();
@@ -123,7 +123,7 @@ qx.Class.define( "rwt.widgets.Menu", {
   },
 
   events : {
-    "changeHoverItem" : "qx.event.type.Event"
+    "changeHoverItem" : "rwt.event.Event"
   },
 
   members : {

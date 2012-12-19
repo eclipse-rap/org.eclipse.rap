@@ -13,9 +13,9 @@
 
 
 /** A mouse event instance contains all data for each occured mouse event */
-qx.Class.define("qx.event.type.MouseEvent",
+qx.Class.define("rwt.event.MouseEvent",
 {
-  extend : qx.event.type.DomEvent,
+  extend : rwt.event.DomEvent,
 
 
 
@@ -319,12 +319,12 @@ qx.Class.define("qx.event.type.MouseEvent",
         if (this.getType() == "click") {
           return true;
         } else {
-          return this.getButton() === qx.event.type.MouseEvent.C_BUTTON_LEFT;
+          return this.getButton() === rwt.event.MouseEvent.C_BUTTON_LEFT;
         }
       },
 
      "default": function() {
-        return this.getButton() === qx.event.type.MouseEvent.C_BUTTON_LEFT;
+        return this.getButton() === rwt.event.MouseEvent.C_BUTTON_LEFT;
       }
     }),
 
@@ -335,7 +335,7 @@ qx.Class.define("qx.event.type.MouseEvent",
      * @return {var} TODOC
      */
     isMiddleButtonPressed : function() {
-      return this.getButton() === qx.event.type.MouseEvent.C_BUTTON_MIDDLE;
+      return this.getButton() === rwt.event.MouseEvent.C_BUTTON_MIDDLE;
     },
 
 
@@ -346,7 +346,7 @@ qx.Class.define("qx.event.type.MouseEvent",
      * @return {var} TODOC
      */
     isRightButtonPressed : function() {
-      return this.getButton() === qx.event.type.MouseEvent.C_BUTTON_RIGHT;
+      return this.getButton() === rwt.event.MouseEvent.C_BUTTON_RIGHT;
     },
 
 

@@ -106,7 +106,7 @@ qx.Class.define( "rwt.widgets.GridItem", {
   },
 
   events: {
-    "update" : "qx.event.type.Event"
+    "update" : "rwt.event.Event"
   },
 
   members : {

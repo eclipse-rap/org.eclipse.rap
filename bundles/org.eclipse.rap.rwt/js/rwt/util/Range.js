@@ -19,7 +19,7 @@ qx.Class.define( "rwt.util.Range", {
   extend : qx.core.Target,
 
   events: {
-    "change" : "qx.event.type.Event"
+    "change" : "rwt.event.Event"
   },
 
   properties : {

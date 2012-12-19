@@ -367,7 +367,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testDragStartAndFinish : function() {
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
       var source = this.createSource();
       var node = source._getTargetNode();
@@ -392,7 +392,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testDragEndPropagation : function() {
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       var log = [];
       TestUtil.getDocument().addEventListener( "dragend", function( event ) {
         log.push( event );
@@ -413,8 +413,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testDragStartAndCancel : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
       var source = this.createSource();
       var node = source._getTargetNode();
@@ -438,7 +438,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testDragEnterOverLeave : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var source = this.createSource();
@@ -508,7 +508,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testEnterEventOnDragStart: function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       // request uses SWT-like event-names:
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
@@ -540,7 +540,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testSetPropertyRetroactively : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var source = this.createSource();
@@ -590,7 +590,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testStopDropEventPropagation : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       var actions = [ "copy", "move", "alias" ];
       var source = this.createSource();
       var target = this.createTarget();
@@ -656,7 +656,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testIgnorePassOverTarget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var source = this.createSource();
@@ -698,7 +698,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testIgnorePassOverTargetAfterLeave : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var source = this.createSource();
@@ -756,7 +756,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testDragStartAndDrop : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var source = this.createSource();
@@ -807,7 +807,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testFakeMouseEvents : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var source = this.createSource();
@@ -825,7 +825,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
       TestUtil.fakeMouseEventDOM( sourceNode, "mousemove", leftButton, 25, 15 );
       assertEquals( 1, log.length );
-      assertTrue( log[ 0 ] instanceof qx.event.type.MouseEvent );
+      assertTrue( log[ 0 ] instanceof rwt.event.MouseEvent );
       assertEquals( "mouseout", log[ 0 ].getType() );
       // Over
       TestUtil.fakeMouseEventDOM( sourceNode, "mouseout", leftButton, 31, 15 );
@@ -834,7 +834,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       // drop
       TestUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
       assertEquals( 2, log.length );
-      assertTrue( log[ 1 ] instanceof qx.event.type.MouseEvent );
+      assertTrue( log[ 1 ] instanceof rwt.event.MouseEvent );
       assertEquals( "mouseover", log[ 1 ].getType() );
       dndSupport.cancel();
       dndSupport.deregisterDragSource( source );
@@ -849,7 +849,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testMouseupOutOfDocument : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var source = this.createSource();
@@ -894,8 +894,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testTreeInsertAfterIndicator : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var tree = this.createTreeTarget();
@@ -951,8 +951,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testTreeInsertBeforeIndicator : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var tree = this.createTreeTarget();
@@ -1008,8 +1008,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testTreeFeedbackSelect : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var tree = this.createTreeTarget();
@@ -1058,8 +1058,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testTreeFeedbackExpand : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var tree = this.createTreeTarget();
@@ -1106,8 +1106,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testTreeFeedbackScroll : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var tree = this.createTreeTarget();
@@ -1170,8 +1170,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testTreeRequestItem : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var tree = this.createTreeTarget();
@@ -1204,8 +1204,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testTreeRequestItemOutsideRow : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var tree = this.createTreeTarget();
@@ -1240,8 +1240,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testTreeRequestItemOutsideRow_Bug_345692 : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var tree = this.createTreeTarget();
@@ -1280,8 +1280,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testTreeRequestItemIsSourceItem: function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       var tree = this.createTreeTarget();
       // Target is also source:
@@ -1323,8 +1323,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testTreeDragEmptyRow: function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       var tree = this.createTreeTarget();
       // Target is also source:
@@ -1357,8 +1357,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testFeedbackWidgetTree : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       var argsMap = {
         "appearance" : "tree",
         "selectionPadding" : [ 2, 2 ]
@@ -1397,8 +1397,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testFeedbackWidgetTreeWithImage : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       var argsMap = {
         "appearance" : "tree",
         "selectionPadding" : [ 2, 2 ]
@@ -1440,9 +1440,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testOperationChanged : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       dndHandler.__dragCache = null;
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var source = this.createSource();
@@ -1500,9 +1500,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testCancelDragFromServerSide : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       dndHandler.__dragCache = null;
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       var source = this.createSource();
@@ -1517,7 +1517,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertNotNull( message.findNotifyOperation( "w11", "dragStart" ) );
 
       TestUtil.protocolCall( "w123", "cancel", {} );
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       assertNull( dndHandler.__dragCache );
 
       rwt.protocol.MessageProcessor.processOperation( {

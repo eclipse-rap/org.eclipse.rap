@@ -48,7 +48,7 @@ qx.Class.define( "rwt.widgets.ToolItem", {
   },
 
   events : {
-    "dropDownClicked" : "qx.event.type.Event"
+    "dropDownClicked" : "rwt.event.Event"
   },
 
   members : {

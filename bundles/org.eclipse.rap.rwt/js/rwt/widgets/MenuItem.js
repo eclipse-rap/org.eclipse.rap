@@ -96,7 +96,7 @@ qx.Class.define("rwt.widgets.MenuItem",  {
   },
 
   events : {
-    "subMenuChanged" : "qx.event.type.Event"
+    "subMenuChanged" : "rwt.event.Event"
   },
 
   members : {

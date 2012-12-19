@@ -11,9 +11,9 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define("qx.event.type.DomEvent",
+qx.Class.define("rwt.event.DomEvent",
 {
-  extend : qx.event.type.Event,
+  extend : rwt.event.Event,
 
 
 
@@ -132,16 +132,16 @@ qx.Class.define("qx.event.type.DomEvent",
       var mask = 0;
       var evt = this.getDomEvent();
       if( evt.shiftKey ) {
-        mask |= qx.event.type.DomEvent.SHIFT_MASK;
+        mask |= rwt.event.DomEvent.SHIFT_MASK;
       }
       if( evt.ctrlKey ) {
-        mask |= qx.event.type.DomEvent.CTRL_MASK;
+        mask |= rwt.event.DomEvent.CTRL_MASK;
       }
       if( evt.altKey ) {
-        mask |= qx.event.type.DomEvent.ALT_MASK;
+        mask |= rwt.event.DomEvent.ALT_MASK;
       }
       if( evt.metaKey ) {
-        mask |= qx.event.type.DomEvent.META_MASK;
+        mask |= rwt.event.DomEvent.META_MASK;
       }
       return mask;
     },
@@ -235,7 +235,7 @@ qx.Class.define("qx.event.type.DomEvent",
       if( !vValue ) {
         throw new Error( "It is not possible to set preventDefault to false if it was true before!" );
       }
-      org.eclipse.rwt.EventHandlerUtil.stopDomEvent( this.getDomEvent() );
+      rwt.event.EventHandlerUtil.stopDomEvent( this.getDomEvent() );
       this.base(arguments, vValue);
     }
 

@@ -140,7 +140,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
         widget.addEventListener( "mousedown", handler );
         widget.addEventListener( "mouseup", handler );
         widget.addEventListener( "click", handler );
-        var left = qx.event.type.MouseEvent.buttons.left;
+        var left = rwt.event.MouseEvent.buttons.left;
         TestUtil.fakeMouseEventDOM( node1, "mousedown", left );
         TestUtil.fakeMouseEventDOM( node2, "mouseup", left );
         var expected = [ "mousedown", "mouseup", "click" ];
@@ -159,7 +159,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
           log.push( event.getType() );
         };
         widget.addEventListener( "dblclick", handler );
-        var right = qx.event.type.MouseEvent.buttons.right;
+        var right = rwt.event.MouseEvent.buttons.right;
         TestUtil.fakeMouseEventDOM( node, "mousedown", right );
         TestUtil.fakeMouseEventDOM( node, "mouseup", right );
         TestUtil.fakeMouseEventDOM( node, "click", right );
@@ -514,7 +514,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget2.addToDocument();
       TestUtil.flush();
       var node = widget2._getTargetNode();
-      var right = qx.event.type.MouseEvent.buttons.right;
+      var right = rwt.event.MouseEvent.buttons.right;
       TestUtil.fakeMouseEventDOM( node, "mousedown", right );
       assertTrue( widget2.getFocused() );
       widget1.destroy();
@@ -532,7 +532,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
       assertTrue( shell.getFocused() );
       assertFalse( rwt.widgets.base.ClientDocument.getInstance().getFocused() );
-      assertEquals( shell, org.eclipse.rwt.EventHandler.getFocusRoot() );
+      assertEquals( shell, rwt.event.EventHandler.getFocusRoot() );
       shell.destroy();
     },
 
@@ -548,7 +548,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget2.addToDocument();
       TestUtil.flush();
       var node = widget2._getTargetNode();
-      var right = qx.event.type.MouseEvent.buttons.right;
+      var right = rwt.event.MouseEvent.buttons.right;
       TestUtil.fakeMouseEventDOM( node, "mousedown", right );
       assertFalse( widget2.getFocused() );
       widget1.destroy();
@@ -566,7 +566,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       text.addEventListener( "contextmenu", function( event ) {
         log.push( event );
       } );
-      var right = qx.event.type.MouseEvent.buttons.right;
+      var right = rwt.event.MouseEvent.buttons.right;
       TestUtil.fakeMouseEventDOM( text.getElement(), "contextmenu", right );
       assertEquals( 1, log.length );
 
@@ -584,14 +584,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       TestUtil.flush();
       text.focus();
       var log = [];
-      var left = qx.event.type.MouseEvent.buttons.left;
-      var right = qx.event.type.MouseEvent.buttons.right;
+      var left = rwt.event.MouseEvent.buttons.left;
+      var right = rwt.event.MouseEvent.buttons.right;
 
       TestUtil.fakeMouseEventDOM( text.getElement(), "mousemove", left, 10, 20 );
       //TestUtil.fakeMouseEventDOM( text._inputElement, "contextmenu", right );
 
-      assertEquals( 10, qx.event.type.MouseEvent.getPageX() );
-      assertEquals( 20, qx.event.type.MouseEvent.getPageY() );
+      assertEquals( 10, rwt.event.MouseEvent.getPageX() );
+      assertEquals( 20, rwt.event.MouseEvent.getPageY() );
       text.destroy();
     },
 
@@ -603,14 +603,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       TestUtil.flush();
       text.focus();
       var log = [];
-      var left = qx.event.type.MouseEvent.buttons.left;
-      var right = qx.event.type.MouseEvent.buttons.right;
+      var left = rwt.event.MouseEvent.buttons.left;
+      var right = rwt.event.MouseEvent.buttons.right;
 
       TestUtil.fakeMouseEventDOM( text.getElement(), "mousemove", left, 10, 20 );
       TestUtil.fakeMouseEventDOM( text._inputElement, "contextmenu", right, 0, 0 );
 
-      assertEquals( 10, qx.event.type.MouseEvent.getPageX() );
-      assertEquals( 20, qx.event.type.MouseEvent.getPageY() );
+      assertEquals( 10, rwt.event.MouseEvent.getPageX() );
+      assertEquals( 20, rwt.event.MouseEvent.getPageY() );
       text.destroy();
     },
 

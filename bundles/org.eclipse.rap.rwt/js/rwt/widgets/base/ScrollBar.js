@@ -46,7 +46,7 @@ qx.Class.define( "rwt.widgets.base.ScrollBar", {
   },
 
   events: {
-    "changeValue" : "qx.event.type.Event"
+    "changeValue" : "rwt.event.Event"
   },
 
   members : {

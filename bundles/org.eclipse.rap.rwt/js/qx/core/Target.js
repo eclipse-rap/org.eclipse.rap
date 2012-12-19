@@ -12,7 +12,7 @@
  ******************************************************************************/
 
 /**
- * This is the main constructor for all objects that need to be connected to qx.event.type.Event objects.
+ * This is the main constructor for all objects that need to be connected to rwt.event.Event objects.
  *
  * In objects created with this constructor, you find functions to addEventListener or
  * removeEventListener to or from the created object. Each event to connect to has a type in
@@ -150,7 +150,7 @@ qx.Class.define("qx.core.Target",
     createDispatchEvent : function(type)
     {
       if (this.hasEventListeners(type)) {
-        this.dispatchEvent(new qx.event.type.Event(type), true);
+        this.dispatchEvent(new rwt.event.Event(type), true);
       }
     },
 
@@ -166,7 +166,7 @@ qx.Class.define("qx.core.Target",
     createDispatchDataEvent : function(type, data)
     {
       if (this.hasEventListeners(type)) {
-        this.dispatchEvent(new qx.event.type.DataEvent(type, data), true);
+        this.dispatchEvent(new rwt.event.DataEvent(type, data), true);
       }
     },
 
@@ -183,7 +183,7 @@ qx.Class.define("qx.core.Target",
     createDispatchChangeEvent : function(type, value, old)
     {
       if (this.hasEventListeners(type)) {
-        this.dispatchEvent(new qx.event.type.ChangeEvent(type, value, old), true);
+        this.dispatchEvent(new rwt.event.ChangeEvent(type, value, old), true);
       }
     },
 
@@ -200,7 +200,7 @@ qx.Class.define("qx.core.Target",
      * Dispatch an event
      *
      * @type member
-     * @param evt {qx.event.type.Event} event to dispatch
+     * @param evt {rwt.event.Event} event to dispatch
      * @param dispose {Boolean} whether the event object should be disposed after all event handlers run.
      * @return {Boolean} whether the event default was prevented or not. Returns true, when the event was NOT prevented.
      */
@@ -260,7 +260,7 @@ qx.Class.define("qx.core.Target",
      * Internal event dispatch method
      *
      * @type member
-     * @param evt {qx.event.type.Event} event to dispatch
+     * @param evt {rwt.event.Event} event to dispatch
      * @return {void}
      */
     _dispatchEvent : function(evt)
@@ -305,7 +305,7 @@ qx.Class.define("qx.core.Target",
 
     _allowDispatch : function( event ) {
       var result = true;
-      if( this.getEnabled && event instanceof qx.event.type.DomEvent ) {
+      if( this.getEnabled && event instanceof rwt.event.DomEvent ) {
         result = this.getEnabled();
       }
       return result;

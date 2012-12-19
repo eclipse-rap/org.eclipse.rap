@@ -150,7 +150,7 @@ qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
     },
 
     _registerFilter : function() {
-      var eventHandler = org.eclipse.rwt.EventHandler;
+      var eventHandler = rwt.event.EventHandler;
       eventHandler.setMouseEventFilter( this._filterMouseEvents, this );
     },
 
@@ -221,7 +221,7 @@ qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
     _handleTouchStart : function( domEvent ) {
       var touch = this._getTouch( domEvent );
       var target = domEvent.target;
-      var widgetTarget = org.eclipse.rwt.EventHandlerUtil.getOriginalTargetObject( target );
+      var widgetTarget = rwt.event.EventHandlerUtil.getOriginalTargetObject( target );
       var pos = [ touch.clientX, touch.clientY ];
       this._touchSession = {
        "type" : this._getSessionType( widgetTarget ),
@@ -502,7 +502,7 @@ qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
                             false, //altKey
                             false, //shiftKey
                             false, //metaKey
-                            qx.event.type.MouseEvent.buttons.left,
+                            rwt.event.MouseEvent.buttons.left,
                             null );
       event.originalEvent = originalEvent;
       target.dispatchEvent( event );

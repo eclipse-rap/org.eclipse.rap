@@ -330,7 +330,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
         log.push( evt.getModifiers() );
       } );
       var node = widget._getTargetNode();
-      var left = qx.event.type.MouseEvent.buttons.left;
+      var left = rwt.event.MouseEvent.buttons.left;
       TestUtil.fakeMouseEventDOM( node, "mousedown", left, 0, 0, 0 );
       TestUtil.fakeMouseEventDOM( node, "mousedown", left, 0, 0, 1 );
       TestUtil.fakeMouseEventDOM( node, "mousedown", left, 0, 0, 2 );
@@ -542,7 +542,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       TestUtil.flush();
       var log = this._addKeyLogger( widget, false, false, true );
       TestUtil.shiftPress( widget, "x" );
-      var shift = qx.event.type.DomEvent.SHIFT_MASK;
+      var shift = rwt.event.DomEvent.SHIFT_MASK;
       var expected = [ shift, shift, shift ];
       assertEquals( expected, log );
       widget.destroy();
@@ -554,7 +554,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       TestUtil.flush();
       var log = this._addKeyLogger( widget, false, false, true );
       TestUtil.ctrlPress( widget, "x" );
-      var ctrl = qx.event.type.DomEvent.CTRL_MASK;
+      var ctrl = rwt.event.DomEvent.CTRL_MASK;
       var expected = [ ctrl, ctrl, ctrl ];
       assertEquals( expected, log );
       widget.destroy();
@@ -566,7 +566,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       TestUtil.flush();
       var log = this._addKeyLogger( widget, false, false, true );
       TestUtil.altPress( widget, "x" );
-      var alt = qx.event.type.DomEvent.ALT_MASK;
+      var alt = rwt.event.DomEvent.ALT_MASK;
       var expected = [ alt, alt, alt ];
       assertEquals( expected, log );
       widget.destroy();

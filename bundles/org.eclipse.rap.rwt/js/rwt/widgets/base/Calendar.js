@@ -226,7 +226,7 @@ qx.Class.define("rwt.widgets.base.Calendar", {
 
   events: {
     /** Fired when a date was selected. The event holds the new selected date in its data property.*/
-    "select"     : "qx.event.type.DataEvent"
+    "select"     : "rwt.event.DataEvent"
   },
 
   /*

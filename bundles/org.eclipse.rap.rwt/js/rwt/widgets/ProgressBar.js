@@ -56,9 +56,9 @@ qx.Class.define( "rwt.widgets.ProgressBar", {
   },
 
   events : {
-    "minimumChanged" : "qx.event.type.Event",
-    "maximumChanged" : "qx.event.type.Event",
-    "selectionChanged" : "qx.event.type.Event"
+    "minimumChanged" : "rwt.event.Event",
+    "maximumChanged" : "rwt.event.Event",
+    "selectionChanged" : "rwt.event.Event"
   },
 
   properties : {

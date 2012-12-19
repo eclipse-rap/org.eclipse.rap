@@ -154,31 +154,31 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       "type" : type,
       "target" : target,
       "relatedTarget" : null,
-      "ctrlKey" : ( qx.event.type.DomEvent.CTRL_MASK & mod ) != 0,
-      "altKey" :  ( qx.event.type.DomEvent.ALT_MASK  & mod ) != 0,
-      "shiftKey" : ( qx.event.type.DomEvent.SHIFT_MASK  & mod ) != 0
+      "ctrlKey" : ( rwt.event.DomEvent.CTRL_MASK & mod ) != 0,
+      "altKey" :  ( rwt.event.DomEvent.ALT_MASK  & mod ) != 0,
+      "shiftKey" : ( rwt.event.DomEvent.SHIFT_MASK  & mod ) != 0
     };
     return result;
   },
 
   clickDOM : function( node, left, top ) {
-    var button = qx.event.type.MouseEvent.buttons.left;
+    var button = rwt.event.MouseEvent.buttons.left;
     this.fakeMouseEventDOM( node, "mousedown", button, left, top );
     this.fakeMouseEventDOM( node, "mouseup", button, left, top );
     this.fakeMouseEventDOM( node, "click", button, left, top );
   },
 
   shiftClickDOM : function( node ) {
-    var left = qx.event.type.MouseEvent.buttons.left;
-    var mod = qx.event.type.DomEvent.SHIFT_MASK;
+    var left = rwt.event.MouseEvent.buttons.left;
+    var mod = rwt.event.DomEvent.SHIFT_MASK;
     this.fakeMouseEventDOM( node, "mousedown", left, 0, 0, mod );
     this.fakeMouseEventDOM( node, "mouseup", left, 0, 0, mod );
     this.fakeMouseEventDOM( node, "click", left, 0, 0, mod );
   },
 
   ctrlClickDOM : function( node ) {
-    var left = qx.event.type.MouseEvent.buttons.left;
-    var mod = qx.event.type.DomEvent.CTRL_MASK;
+    var left = rwt.event.MouseEvent.buttons.left;
+    var mod = rwt.event.DomEvent.CTRL_MASK;
     this.fakeMouseEventDOM( node, "mousedown", left, 0, 0, mod );
     this.fakeMouseEventDOM( node, "mouseup", left, 0, 0, mod );
     this.fakeMouseEventDOM( node, "click", left, 0, 0, mod );
@@ -210,7 +210,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       left = 0;
     }
     if( typeof button === "undefined" ) {
-      button = qx.event.type.MouseEvent.buttons.left;
+      button = rwt.event.MouseEvent.buttons.left;
     }
     if( typeof top === "undefined" ) {
       top = 0;
@@ -226,13 +226,13 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     }
     var which = null;
     switch( button ) {
-      case qx.event.type.MouseEvent.buttons.left:
+      case rwt.event.MouseEvent.buttons.left:
         which = 1;
       break;
-      case qx.event.type.MouseEvent.buttons.middle:
+      case rwt.event.MouseEvent.buttons.middle:
         which = 2;
       break;
-      case qx.event.type.MouseEvent.buttons.right:
+      case rwt.event.MouseEvent.buttons.right:
         which = 3;
       break;
     }
@@ -245,9 +245,9 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     domEvent.clientY = clientY;
     domEvent.screenX = left;
     domEvent.screenY = top;
-    domEvent.ctrlKey = ( qx.event.type.DomEvent.CTRL_MASK & mod ) != 0;
-    domEvent.altKey = ( qx.event.type.DomEvent.ALT_MASK & mod ) != 0;
-    domEvent.shiftKey = ( qx.event.type.DomEvent.SHIFT_MASK & mod ) != 0;
+    domEvent.ctrlKey = ( rwt.event.DomEvent.CTRL_MASK & mod ) != 0;
+    domEvent.altKey = ( rwt.event.DomEvent.ALT_MASK & mod ) != 0;
+    domEvent.shiftKey = ( rwt.event.DomEvent.SHIFT_MASK & mod ) != 0;
     if( this.isMobileWebkit() ) {
       domEvent.originalEvent = {};
     }
@@ -256,7 +256,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
 
   fireFakeDomEvent : function( domEvent ) {
     var type = domEvent.type;
-    var handler = org.eclipse.rwt.EventHandler;
+    var handler = rwt.event.EventHandler;
     switch( type ) {
       case "mousedown":
       case "mouseup":
@@ -372,7 +372,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     },
     "default" : function( key, keyDownEvent ) {
       var wasStopped =   keyDownEvent
-                       ? org.eclipse.rwt.EventHandlerUtil.wasStopped( keyDownEvent )
+                       ? rwt.event.EventHandlerUtil.wasStopped( keyDownEvent )
                        : false;
       return this._isPrintable( key ) && !wasStopped;
     }
@@ -437,7 +437,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   } ),
 
   _isPrintable : function( stringOrKeyCode ) {
-    var util = org.eclipse.rwt.EventHandlerUtil;
+    var util = rwt.event.EventHandlerUtil;
     var keyCodeMap = util._keyCodeToIdentifierMap;
     var idMap = this._printableIdentifierToKeycodeMap;
     var isChar =    typeof stringOrKeyCode === "string"
@@ -522,7 +522,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     var node = widget._getTargetNode();
     this.clickDOM( node );
     this.clickDOM( node );
-    var left = qx.event.type.MouseEvent.buttons.left;
+    var left = rwt.event.MouseEvent.buttons.left;
     this.fakeMouseEventDOM( node, "dblclick", left );
   },
 
@@ -537,7 +537,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   rightClick : function( widget ) {
-    var right = qx.event.type.MouseEvent.buttons.right;
+    var right = rwt.event.MouseEvent.buttons.right;
     var node = widget._getTargetNode();
     // TODO [tb] : Event order differs on MAC OS
     this.fakeMouseEventDOM( node, "mousedown", right );
@@ -598,7 +598,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     if( !widget._isCreated ) {
       throw( "Error in TestUtil.fakeMouseEvent: widget is not created" );
     }
-    var button = qx.event.type.MouseEvent.buttons.left;
+    var button = rwt.event.MouseEvent.buttons.left;
     var target = widget._getTargetNode();
     this.fakeMouseEventDOM( target, type, button, left, top, 0 );
   },
@@ -612,17 +612,17 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   shiftPress : function( widget, key, checkActive ) {
-    var mod = qx.event.type.DomEvent.SHIFT_MASK;
+    var mod = rwt.event.DomEvent.SHIFT_MASK;
     this.press( widget, key, checkActive, mod );
   },
 
   ctrlPress : function( widget, key, checkActive ) {
-    var mod = qx.event.type.DomEvent.CTRL_MASK;
+    var mod = rwt.event.DomEvent.CTRL_MASK;
     this.press( widget, key, checkActive, mod );
   },
 
   altPress : function( widget, key, checkActive ) {
-    var mod = qx.event.type.DomEvent.ALT_MASK;
+    var mod = rwt.event.DomEvent.ALT_MASK;
     this.press( widget, key, checkActive, mod );
   },
 
@@ -636,12 +636,12 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       }
       var domEv = {
         "type" : type,
-        "ctrlKey" : ( qx.event.type.DomEvent.CTRL_MASK & mod ) != 0,
-        "altKey" :  ( qx.event.type.DomEvent.ALT_MASK  & mod ) != 0,
-        "shiftKey" : ( qx.event.type.DomEvent.SHIFT_MASK  & mod ) != 0,
+        "ctrlKey" : ( rwt.event.DomEvent.CTRL_MASK & mod ) != 0,
+        "altKey" :  ( rwt.event.DomEvent.ALT_MASK  & mod ) != 0,
+        "shiftKey" : ( rwt.event.DomEvent.SHIFT_MASK  & mod ) != 0,
         preventDefault : function(){}
       };
-      var ev = new qx.event.type.KeyEvent(
+      var ev = new rwt.event.KeyEvent(
         type,
         domEv,
         widget._getTargetNode(),
@@ -658,10 +658,10 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   resetEventHandler : function() {
-    var keyHandler = org.eclipse.rwt.EventHandlerUtil;
+    var keyHandler = rwt.event.EventHandlerUtil;
     keyHandler._lastKeyCode = null;
     keyHandler._lastUpDownType = {};
-    org.eclipse.rwt.EventHandler.setCaptureWidget( null );
+    rwt.event.EventHandler.setCaptureWidget( null );
   },
 
   ////////////////
@@ -834,11 +834,11 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   isFocused : function( widget ) {
-    return widget == org.eclipse.rwt.EventHandler.getFocusRoot().getFocusedChild();
+    return widget == rwt.event.EventHandler.getFocusRoot().getFocusedChild();
   },
 
   isActive: function( widget ) {
-    return widget == org.eclipse.rwt.EventHandler.getFocusRoot().getActiveChild();
+    return widget == rwt.event.EventHandler.getFocusRoot().getActiveChild();
   },
 
   flush : function( inResponse ) {
@@ -866,7 +866,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   emptyDragCache : function() {
-    qx.event.handler.DragAndDropHandler.__dragCache = null;
+    rwt.event.DragAndDropHandler.__dragCache = null;
   },
 
   cleanUpKeyUtil : function() {

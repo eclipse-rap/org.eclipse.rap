@@ -53,7 +53,7 @@ qx.Class.define( "rwt.widgets.base.GridRow", {
   },
 
   events : {
-    "itemRendered" : "qx.event.type.Event"
+    "itemRendered" : "rwt.event.Event"
   },
 
   members : {

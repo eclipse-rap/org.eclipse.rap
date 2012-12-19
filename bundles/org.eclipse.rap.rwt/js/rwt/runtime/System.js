@@ -30,16 +30,16 @@ qx.Class.define( "rwt.runtime.System", {
       qx.html.EventRegistration.addEventListener( window, "unload", this._onunloadWrapped );
       this._applyPatches();
       rwt.graphics.GraphicsUtil.init();
-      var eventHandler = org.eclipse.rwt.EventHandler;
+      var eventHandler = rwt.event.EventHandler;
       eventHandler.setAllowContextMenu( rwt.widgets.Menu.getAllowContextMenu );
       eventHandler.setMenuManager( rwt.widgets.util.MenuManager.getInstance() );
     }
   },
 
   events : {
-    "beforeunload" : "qx.event.type.DomEvent",
-    "unload" : "qx.event.type.Event",
-    "uiready" : "qx.event.type.Event"
+    "beforeunload" : "rwt.event.DomEvent",
+    "unload" : "rwt.event.Event",
+    "uiready" : "rwt.event.Event"
   },
 
   members : {
@@ -72,7 +72,7 @@ qx.Class.define( "rwt.runtime.System", {
       } else {
         qx.Class.patch( rwt.widgets.ProgressBar, rwt.widgets.util.GraphicsMixin );
       }
-      qx.Class.patch( qx.event.type.DomEvent, org.eclipse.rwt.DomEventPatch );
+      qx.Class.patch( rwt.event.DomEvent, rwt.event.DomEventPatch );
     },
 
     getStartupTime : function() {
@@ -97,8 +97,8 @@ qx.Class.define( "rwt.runtime.System", {
     _preloaderDone : function() {
       this.__preloader.dispose();
       this.__preloader = null;
-      org.eclipse.rwt.EventHandler.init();
-      org.eclipse.rwt.EventHandler.attachEvents();
+      rwt.event.EventHandler.init();
+      rwt.event.EventHandler.attachEvents();
       this.setUiReady( true );
       rwt.widgets.base.Widget.flushGlobalQueues();
       rwt.client.Timer.once( this._postload, this, 100 );
@@ -116,7 +116,7 @@ qx.Class.define( "rwt.runtime.System", {
     },
 
     _onbeforeunload : function( e ) {
-      var event = new qx.event.type.DomEvent( "beforeunload", e, window, this );
+      var event = new rwt.event.DomEvent( "beforeunload", e, window, this );
       this.dispatchEvent( event, false );
       var msg = event.getUserData( "returnValue" );
       event.dispose();
@@ -125,8 +125,8 @@ qx.Class.define( "rwt.runtime.System", {
 
     _onunload : function( e ) {
       this.createDispatchEvent( "unload" );
-      org.eclipse.rwt.EventHandler.detachEvents();
-      org.eclipse.rwt.EventHandler.cleanUp();
+      rwt.event.EventHandler.detachEvents();
+      rwt.event.EventHandler.cleanUp();
       qx.core.Object.dispose( true );
     },
 

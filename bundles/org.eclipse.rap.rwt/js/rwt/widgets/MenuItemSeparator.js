@@ -91,7 +91,7 @@ qx.Class.define( "rwt.widgets.MenuItemSeparator", {
      * Simply stops the propagation of the event
      *
      * @type member
-     * @param e {qx.event.type.MouseEvent} mouseDown event
+     * @param e {rwt.event.MouseEvent} mouseDown event
      * @return {void}
      */
     _onmousedown : function(e) {

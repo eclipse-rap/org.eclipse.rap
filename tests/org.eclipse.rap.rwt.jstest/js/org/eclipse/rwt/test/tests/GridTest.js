@@ -910,7 +910,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testScrollBarsPreventDragStart : function() {
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       var tree = this._createDefaultTree();
       var log = [];
       var loghandler = function( event ) { log.push( event ); };
@@ -1510,7 +1510,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var node2 = tree._rowContainer._getTargetNode().childNodes[ 2 ];
       TestUtil.clickDOM( node0 );
       assertTrue( tree.isItemSelected( item0 ) );
-      var left = qx.event.type.MouseEvent.buttons.left;
+      var left = rwt.event.MouseEvent.buttons.left;
       TestUtil.fakeMouseEventDOM( node2, "mousedown", left, 0, 0, 7 );
       assertFalse( tree.isItemSelected( item0 ) );
       assertFalse( tree.isItemSelected( item1 ) );
@@ -1691,7 +1691,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var node0 = tree._rowContainer._getTargetNode().childNodes[ 0 ];
       var node2 = tree._rowContainer._getTargetNode().childNodes[ 2 ];
       var node4 = tree._rowContainer._getTargetNode().childNodes[ 4 ];
-      var left = qx.event.type.MouseEvent.buttons.left;
+      var left = rwt.event.MouseEvent.buttons.left;
       TestUtil.fakeMouseEventDOM( node0, "mousedown", left, 0, 0, 0 );
       TestUtil.fakeMouseEventDOM( node2, "mousedown", left, 0, 0, 2 );
       TestUtil.fakeMouseEventDOM( node4, "mousedown", left, 0, 0, 3 );
@@ -2766,7 +2766,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       org.eclipse.swt.EventUtil.setSuspended( false );
       TestUtil.flush();
       TestUtil.initRequestLog();
-      var left = qx.event.type.MouseEvent.buttons.left;
+      var left = rwt.event.MouseEvent.buttons.left;
       var node = this._getColumnLabel( tree, column )._getTargetNode();
 
       TestUtil.fakeMouseEventDOM( node, "mousedown", left, 0, 0 );
@@ -2792,7 +2792,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       org.eclipse.swt.EventUtil.setSuspended( false );
       TestUtil.flush();
       TestUtil.initRequestLog();
-      var left = qx.event.type.MouseEvent.buttons.left;
+      var left = rwt.event.MouseEvent.buttons.left;
       var node = this._getColumnLabel( tree, column )._getTargetNode();
 
       TestUtil.fakeMouseEventDOM( node, "mousedown", left, 200, 0 );
@@ -3321,7 +3321,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var item2 = this._createItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       TestUtil.click( tree._rowContainer._children[ 0 ] );
-      TestUtil.pressOnce( tree, "Down", qx.event.type.DomEvent.CTRL_MASK );
+      TestUtil.pressOnce( tree, "Down", rwt.event.DomEvent.CTRL_MASK );
       assertFalse( tree.isItemSelected( item0 ) );
       assertTrue( tree.isItemSelected( item1 ) );
       assertFalse( tree.isItemSelected( item2 ) );
@@ -4133,7 +4133,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       var node = tree._rowContainer.getChildren()[ 0 ].getElement();
 
       TestUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 450, 11 );

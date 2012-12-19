@@ -365,7 +365,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       tree.setScrollLeft( 20 );
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       var node = tree._rowContainer.getSubContainer( 1 ).getChildren()[ 0 ].getElement();
 
       TestUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 6, 11 );
@@ -402,7 +402,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
       tree.setScrollLeft( 20 );
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var leftButton = rwt.event.MouseEvent.buttons.left;
       var node = tree._rowContainer.getSubContainer( 1 ).getChildren()[ 0 ].getElement();
 
       TestUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 16, 11 );

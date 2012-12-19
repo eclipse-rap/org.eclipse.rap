@@ -57,7 +57,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
   },
 
   events: {
-    "input" : "qx.event.type.DataEvent"
+    "input" : "rwt.event.DataEvent"
   },
 
   properties : {
@@ -636,7 +636,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
         var newValue = this.getComputedValue().toString();
         var doit = true;
         if( this.hasEventListeners( "input" ) ) {
-          doit = this.dispatchEvent( new qx.event.type.DataEvent( "input", this._typed ), true );
+          doit = this.dispatchEvent( new rwt.event.DataEvent( "input", this._typed ), true );
         }
         if( doit ) {
           this.setValue( newValue ); // if doit is false, the listener has to do this

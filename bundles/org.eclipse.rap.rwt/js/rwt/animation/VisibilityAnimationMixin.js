@@ -13,7 +13,7 @@
 
 var Animation = rwt.animation.Animation;
 var AnimationRenderer = rwt.animation.AnimationRenderer;
-var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+var EventHandlerUtil = rwt.event.EventHandlerUtil;
 
 qx.Mixin.define( "rwt.animation.VisibilityAnimationMixin", {
 

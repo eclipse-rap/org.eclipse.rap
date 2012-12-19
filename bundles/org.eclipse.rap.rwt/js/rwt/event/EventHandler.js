@@ -12,7 +12,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.EventHandler", {
+qx.Class.define( "rwt.event.EventHandler", {
   type : "static",
 
   statics : {
@@ -40,7 +40,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       this.__onwindowfocus = functionUtil.bind( this._onwindowfocus, this );
       this.__onwindowresize = functionUtil.bind( this._onwindowresize, this );
       this.__onKeyEvent = rwt.util.Function.bind( this._onKeyEvent, this );
-      org.eclipse.rwt.EventHandlerUtil.applyBrowserFixes();
+      rwt.event.EventHandlerUtil.applyBrowserFixes();
     },
 
     cleanUp : function() {
@@ -56,7 +56,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       delete this._lastMouseEventDate;
       delete this._lastMouseDownDomTarget;
       delete this._lastMouseDownDispatchTarget;
-      org.eclipse.rwt.EventHandlerUtil.cleanUp();
+      rwt.event.EventHandlerUtil.cleanUp();
     },
 
     attachEvents : function() {
@@ -156,7 +156,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
 
     _onKeyEvent : function() {
       try {
-        var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+        var EventHandlerUtil = rwt.event.EventHandlerUtil;
         var event = EventHandlerUtil.getDomEvent( arguments );
         var keyCode = EventHandlerUtil.getKeyCode( event );
         var charCode = EventHandlerUtil.getCharCode( event );
@@ -197,7 +197,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     },
 
     _processKeyEvent : function( vDomEvent, vType, vKeyCode, vCharCode ) {
-      var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+      var EventHandlerUtil = rwt.event.EventHandlerUtil;
       var keyIdentifier;
       if( !isNaN( vKeyCode ) && vKeyCode !== 0 ) {
         keyIdentifier = EventHandlerUtil.keyCodeToIdentifier( vKeyCode );
@@ -206,7 +206,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       }
       var vDomTarget = EventHandlerUtil.getDomTarget( vDomEvent );
       var vTarget = this._getKeyEventTarget();
-      var vKeyEventObject = new qx.event.type.KeyEvent( vType,
+      var vKeyEventObject = new rwt.event.KeyEvent( vType,
                                                         vDomEvent,
                                                         vDomTarget,
                                                         vTarget,
@@ -236,8 +236,8 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           }
         }
         vTarget.dispatchEvent( vKeyEventObject );
-        if( qx.Class.isDefined("qx.event.handler.DragAndDropHandler") ) {
-          qx.event.handler.DragAndDropHandler.getInstance().handleKeyEvent( vKeyEventObject );
+        if( qx.Class.isDefined("rwt.event.DragAndDropHandler") ) {
+          rwt.event.DragAndDropHandler.getInstance().handleKeyEvent( vKeyEventObject );
         }
       }
       vKeyEventObject.dispose();
@@ -264,7 +264,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     // TODO [tb] : refactor to work like _onKeyEvent
     _processMouseEvent : rwt.util.Variant.select("qx.client",  {
       "mshtml" : function() {
-        var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+        var EventHandlerUtil = rwt.event.EventHandlerUtil;
         var vDomEvent = EventHandlerUtil.getDomEvent( arguments );
         var vDomTarget = EventHandlerUtil.getDomTarget( vDomEvent );
         var vType = vDomEvent.type;
@@ -310,7 +310,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       },
 
       "default" : function( vDomEvent ) {
-        var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+        var EventHandlerUtil = rwt.event.EventHandlerUtil;
         var vDomTarget = EventHandlerUtil.getDomTarget( vDomEvent );
         var vType = vDomEvent.type;
         switch(vType) {
@@ -330,7 +330,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
 
     _onmouseevent_post : function( vDomEvent, vType, vDomTarget ) {
       var eventConsumed = false;
-      var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+      var EventHandlerUtil = rwt.event.EventHandlerUtil;
       var vCaptureTarget = this.getCaptureWidget();
       var vOriginalTarget = EventHandlerUtil.getOriginalTargetObject( vDomTarget );
       var vTarget = EventHandlerUtil.getTargetObject( null, vOriginalTarget, true );
@@ -381,7 +381,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           return;
         }
       }
-      var vEventObject = new qx.event.type.MouseEvent( vType,
+      var vEventObject = new rwt.event.MouseEvent( vType,
                                                        vDomEvent,
                                                        vDomTarget,
                                                        vTarget,
@@ -389,7 +389,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
                                                        vRelatedTarget );
       // Store last Event in MouseEvent Constructor. Needed for Tooltips, ...
       if( vType !== "contextmenu" ) {
-        qx.event.type.MouseEvent.storeEventState( vEventObject );
+        rwt.event.MouseEvent.storeEventState( vEventObject );
       }
       if( !eventConsumed ) {
         vDispatchTarget.dispatchEvent( vEventObject );
@@ -424,7 +424,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
                                         dispatchTarget )
     {
       if( dispatchTarget.getEnabled() ) {
-        var eventObject = new qx.event.type.MouseEvent( type,
+        var eventObject = new rwt.event.MouseEvent( type,
                                                         domEvent,
                                                         domTarget,
                                                         target,
@@ -462,14 +462,14 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       }
       rwt.widgets.util.ToolTipManager.getInstance().handleMouseEvent( vEventObject );
       this._ignoreWindowBlur = vType === "mousedown";
-      if( qx.Class.isDefined("qx.event.handler.DragAndDropHandler" ) && vTarget ) {
-        qx.event.handler.DragAndDropHandler.getInstance().handleMouseEvent( vEventObject );
+      if( qx.Class.isDefined("rwt.event.DragAndDropHandler" ) && vTarget ) {
+        rwt.event.DragAndDropHandler.getInstance().handleMouseEvent( vEventObject );
       }
     },
 
     _ondragevent : function( vEvent ) {
       try {
-        var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+        var EventHandlerUtil = rwt.event.EventHandlerUtil;
         if( !vEvent ) {
           vEvent = window.event;
         }
@@ -484,7 +484,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
 
     _onselectevent : function( ) {
       try {
-        var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+        var EventHandlerUtil = rwt.event.EventHandlerUtil;
         var e = EventHandlerUtil.getDomEvent( arguments );
         var target = EventHandlerUtil.getOriginalTargetObjectFromEvent( e );
         while( target ) {
@@ -514,8 +514,8 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         if ( this._menuManager ) {
           this._menuManager.update();
         }
-        if( qx.Class.isDefined( "qx.event.handler.DragAndDropHandler" ) ) {
-          qx.event.handler.DragAndDropHandler.getInstance().globalCancelDrag();
+        if( qx.Class.isDefined( "rwt.event.DragAndDropHandler" ) ) {
+          rwt.event.DragAndDropHandler.getInstance().globalCancelDrag();
         }
         rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowblur" );
       } catch( ex ) {

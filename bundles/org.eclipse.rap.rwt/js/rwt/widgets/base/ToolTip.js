@@ -240,8 +240,8 @@ qx.Class.define("rwt.widgets.base.ToolTip",
         var width  = this.getBoxWidth();
         var height = this.getBoxHeight();
 
-        var mouseX = qx.event.type.MouseEvent.getPageX();
-        var mouseY = qx.event.type.MouseEvent.getPageY();
+        var mouseX = rwt.event.MouseEvent.getPageX();
+        var mouseY = rwt.event.MouseEvent.getPageY();
 
         var oldLeft = this.getLeft();
         var oldTop = top;
@@ -382,7 +382,7 @@ qx.Class.define("rwt.widgets.base.ToolTip",
      * If property {@link #hideOnOver} is enabled the tooltip gets hidden
      *
      * @type member
-     * @param e {qx.event.type.MouseEvent} mouseOver event
+     * @param e {rwt.event.MouseEvent} mouseOver event
      * @return {void}
      */
     _onmouseover : function(e)
@@ -399,12 +399,12 @@ qx.Class.define("rwt.widgets.base.ToolTip",
      * {@link #show} method.
      *
      * @type member
-     * @param e {qx.event.type.Event} interval event
+     * @param e {rwt.event.Event} interval event
      */
     _onshowtimer : function(e)
     {
-      this.setLeft(qx.event.type.MouseEvent.getPageX() + this.getMousePointerOffsetX());
-      this.setTop(qx.event.type.MouseEvent.getPageY() + this.getMousePointerOffsetY());
+      this.setLeft(rwt.event.MouseEvent.getPageX() + this.getMousePointerOffsetX());
+      this.setTop(rwt.event.MouseEvent.getPageY() + this.getMousePointerOffsetY());
       this.show();
     },
 
@@ -414,7 +414,7 @@ qx.Class.define("rwt.widgets.base.ToolTip",
      * Hides the tooltip by calling the corresponding {@link #hide} method.
      *
      * @type member
-     * @param e {qx.event.type.Event} interval event
+     * @param e {rwt.event.Event} interval event
      * @return {var} TODOC
      */
     _onhidetimer : function(e) {

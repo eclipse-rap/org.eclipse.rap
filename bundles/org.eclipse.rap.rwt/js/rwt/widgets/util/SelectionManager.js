@@ -53,7 +53,7 @@ qx.Class.define("rwt.widgets.util.SelectionManager",
      * Fired on a selection change. The "data" proeprty is set to an array of
      * selected items as returned by {@link #getSelectedItems}.
      **/
-    "changeSelection" : "qx.event.type.DataEvent"
+    "changeSelection" : "rwt.event.DataEvent"
   },
 
 
@@ -1324,7 +1324,7 @@ qx.Class.define("rwt.widgets.util.SelectionManager",
      * Handles key event to perform selection and navigation
      *
      * @type member
-     * @param vDomEvent {qx.event.type.KeyEvent} event object
+     * @param vDomEvent {rwt.event.KeyEvent} event object
      * @return {void}
      */
     handleKeyPress : function(vDomEvent)
@@ -1508,7 +1508,7 @@ qx.Class.define("rwt.widgets.util.SelectionManager",
       }
 
       if (this.hasEventListeners("changeSelection")) {
-        this.dispatchEvent(new qx.event.type.DataEvent("changeSelection", this.getSelectedItems()), true);
+        this.dispatchEvent(new rwt.event.DataEvent("changeSelection", this.getSelectedItems()), true);
       }
     },
 

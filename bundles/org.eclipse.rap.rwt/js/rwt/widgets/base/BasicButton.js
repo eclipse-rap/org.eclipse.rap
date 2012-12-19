@@ -61,7 +61,7 @@ qx.Class.define( "rwt.widgets.base.BasicButton", {
   },
 
   events: {
-    "stateOverChanged" : "qx.event.type.Event"
+    "stateOverChanged" : "rwt.event.Event"
   },
 
   properties : {

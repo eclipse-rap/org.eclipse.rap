@@ -75,7 +75,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "CTRL+SHIFT+#66" : true } );
-      var dom = qx.event.type.DomEvent;
+      var dom = rwt.event.DomEvent;
       var mod = dom.CTRL_MASK | dom.SHIFT_MASK;
 
       TestUtil.fireFakeKeyDomEvent( widget.getElement(), "keydown", "B", mod );
@@ -93,7 +93,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "CTRL+#66" : true } );
-      var dom = qx.event.type.DomEvent;
+      var dom = rwt.event.DomEvent;
 
       TestUtil.fireFakeKeyDomEvent( widget.getElement(), "keydown", "b", dom.CTRL_MASK );
 
@@ -241,7 +241,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       keyUtil.setKeyBindings( {
         "66" : true
       } );
-      var dom = qx.event.type.DomEvent;
+      var dom = rwt.event.DomEvent;
       TestUtil.press( widget, "b", false, dom.CTRL_MASK );
       TestUtil.press( widget, "b", false, dom.ALT_MASK );
       TestUtil.press( widget, "b", false, dom.SHIFT_MASK );
@@ -258,7 +258,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       keyUtil.setKeyBindings( {
         "SHIFT+#66" : true
       } );
-      var dom = qx.event.type.DomEvent;
+      var dom = rwt.event.DomEvent;
       TestUtil.press( widget, "b", false, 0 );
       TestUtil.press( widget, "b", false, dom.ALT_MASK );
       assertEquals( 0, TestUtil.getRequestsSend() );
@@ -272,7 +272,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "ALT+CTRL+SHIFT+#66" : true } );
-      var dom = qx.event.type.DomEvent;
+      var dom = rwt.event.DomEvent;
       TestUtil.press( widget, "b", false, 0 );
       TestUtil.press( widget, "b", false, dom.CTRL_MASK );
       TestUtil.press( widget, "b", false, dom.ALT_MASK );
@@ -290,7 +290,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "SHIFT+#53" : true } );
-      var dom = qx.event.type.DomEvent;
+      var dom = rwt.event.DomEvent;
 
       TestUtil.fireFakeKeyDomEvent( widget.getElement(), "keydown", 53, dom.SHIFT_MASK );
       assertEquals( 0, TestUtil.getRequestsSend() );
@@ -480,7 +480,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     testSendModifier : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
-      var shift = qx.event.type.DomEvent.SHIFT_MASK;
+      var shift = rwt.event.DomEvent.SHIFT_MASK;
 
       TestUtil.keyDown( text.getElement(), "Shift", shift );
       TestUtil.keyHold( text.getElement(), "Shift", shift );
@@ -494,7 +494,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     testShiftCharacter : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
-      var shift = qx.event.type.DomEvent.SHIFT_MASK;
+      var shift = rwt.event.DomEvent.SHIFT_MASK;
       TestUtil.keyDown( text.getElement(), "Shift", shift );
       TestUtil.keyDown( text.getElement(), "A", shift );
 
@@ -575,7 +575,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "CTRL+#9", "CTRL+SHIFT+#9" ] );
-      var dom = qx.event.type.DomEvent;
+      var dom = rwt.event.DomEvent;
 
       TestUtil.press( text, 9, false, dom.CTRL_MASK );
       TestUtil.press( text, 9, false, dom.CTRL_MASK | dom.SHIFT_MASK );
@@ -602,7 +602,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "ALT+CTRL+#90" ] );
-      var dom = qx.event.type.DomEvent;
+      var dom = rwt.event.DomEvent;
       TestUtil.press( text, "z", false, 0 );
       TestUtil.press( text, "z", false, dom.CTRL_MASK );
       TestUtil.press( text, "z", false, dom.ALT_MASK );
@@ -633,7 +633,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       text.addEventListener( "keydown", listener );
       text.addEventListener( "keypress", listener );
       text.addEventListener( "keyup", listener );
-      var dom = qx.event.type.DomEvent;
+      var dom = rwt.event.DomEvent;
       TestUtil.press( text, "z", false, 0 );
       TestUtil.press( text, "z", false, dom.CTRL_MASK );
       TestUtil.press( text, "z", false, dom.ALT_MASK );
@@ -656,7 +656,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
         "SHIFT+#90"
       ] );
 
-      var dom = qx.event.type.DomEvent;
+      var dom = rwt.event.DomEvent;
 
       TestUtil.press( text, "z", false, 0 );
       TestUtil.press( text, "z", false, dom.CTRL_MASK );

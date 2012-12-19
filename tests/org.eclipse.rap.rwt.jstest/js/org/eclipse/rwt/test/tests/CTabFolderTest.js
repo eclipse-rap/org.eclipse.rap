@@ -574,10 +574,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       TestUtil.fakeMouseEventDOM(
           widget.getElement(),
           "dblclick",
-          qx.event.type.MouseEvent.buttons.left,
+          rwt.event.MouseEvent.buttons.left,
           0,
           0,
-          qx.event.type.DomEvent.CTRL_MASK
+          rwt.event.DomEvent.CTRL_MASK
        );
 
       var message = TestUtil.getLastMessage();

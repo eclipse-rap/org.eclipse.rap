@@ -34,44 +34,44 @@ qx.Class.define( "rwt.widgets.base.Widget", {
   },
 
   events: {
-    "beforeAppear"    : "qx.event.type.Event",
-    "appear"          : "qx.event.type.Event",
-    "beforeDisappear" : "qx.event.type.Event",
-    "disappear"       : "qx.event.type.Event",
-    "insertDom"       : "qx.event.type.Event",
-    "create"          : "qx.event.type.Event",
-    "execute"         : "qx.event.type.Event",
-    "flush"           : "qx.event.type.DataEvent",
+    "beforeAppear"    : "rwt.event.Event",
+    "appear"          : "rwt.event.Event",
+    "beforeDisappear" : "rwt.event.Event",
+    "disappear"       : "rwt.event.Event",
+    "insertDom"       : "rwt.event.Event",
+    "create"          : "rwt.event.Event",
+    "execute"         : "rwt.event.Event",
+    "flush"           : "rwt.event.DataEvent",
 
-    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
-    "mouseover"       : "qx.event.type.MouseEvent",
-    "mousemove"       : "qx.event.type.MouseEvent",
-    "mouseout"        : "qx.event.type.MouseEvent",
-    "mousedown"       : "qx.event.type.MouseEvent",
-    "mouseup"         : "qx.event.type.MouseEvent",
-    "mousewheel"      : "qx.event.type.MouseEvent",
-    "click"           : "qx.event.type.MouseEvent",
-    "dblclick"        : "qx.event.type.MouseEvent",
-    "contextmenu"     : "qx.event.type.MouseEvent",
-    "elementOver"     : "qx.event.type.MouseEvent",
-    "elementOut"      : "qx.event.type.MouseEvent",
-    "keydown"         : "qx.event.type.KeyEvent",
-    "keypress"        : "qx.event.type.KeyEvent",
-    "keyup"           : "qx.event.type.KeyEvent",
+    /** (Fired by {@link rwt.event.EventHandler}) */
+    "mouseover"       : "rwt.event.MouseEvent",
+    "mousemove"       : "rwt.event.MouseEvent",
+    "mouseout"        : "rwt.event.MouseEvent",
+    "mousedown"       : "rwt.event.MouseEvent",
+    "mouseup"         : "rwt.event.MouseEvent",
+    "mousewheel"      : "rwt.event.MouseEvent",
+    "click"           : "rwt.event.MouseEvent",
+    "dblclick"        : "rwt.event.MouseEvent",
+    "contextmenu"     : "rwt.event.MouseEvent",
+    "elementOver"     : "rwt.event.MouseEvent",
+    "elementOut"      : "rwt.event.MouseEvent",
+    "keydown"         : "rwt.event.KeyEvent",
+    "keypress"        : "rwt.event.KeyEvent",
+    "keyup"           : "rwt.event.KeyEvent",
 
     /** (Fired by {@link rwt.widgets.base.Parent}) */
-    "focusout"        : "qx.event.type.FocusEvent",
-    "focusin"         : "qx.event.type.FocusEvent",
-    "blur"            : "qx.event.type.FocusEvent",
-    "focus"           : "qx.event.type.FocusEvent",
+    "focusout"        : "rwt.event.FocusEvent",
+    "focusin"         : "rwt.event.FocusEvent",
+    "blur"            : "rwt.event.FocusEvent",
+    "focus"           : "rwt.event.FocusEvent",
 
-    /** (Fired by {@link qx.event.handler.DragAndDropHandler}) */
-    "dragdrop"        : "qx.event.type.DragEvent",
-    "dragout"         : "qx.event.type.DragEvent",
-    "dragover"        : "qx.event.type.DragEvent",
-    "dragmove"        : "qx.event.type.DragEvent",
-    "dragstart"       : "qx.event.type.DragEvent",
-    "dragend"         : "qx.event.type.DragEvent"
+    /** (Fired by {@link rwt.event.DragAndDropHandler}) */
+    "dragdrop"        : "rwt.event.DragEvent",
+    "dragout"         : "rwt.event.DragEvent",
+    "dragover"        : "rwt.event.DragEvent",
+    "dragmove"        : "rwt.event.DragEvent",
+    "dragstart"       : "rwt.event.DragEvent",
+    "dragend"         : "rwt.event.DragEvent"
   },
 
   statics : {
@@ -3293,7 +3293,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     // CAPTURING SUPPORT
 
     _applyCapture : function(value, old) {
-      var vMgr = org.eclipse.rwt.EventHandler;
+      var vMgr = rwt.event.EventHandler;
       if (old) {
         vMgr.setCaptureWidget(null);
       }

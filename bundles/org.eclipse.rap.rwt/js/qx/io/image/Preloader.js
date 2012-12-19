@@ -28,10 +28,10 @@ qx.Class.define("qx.io.image.Preloader",
   events :
   {
     /** Dispatched after the images has successfully been loaded */
-    "load" : "qx.event.type.Event",
+    "load" : "rwt.event.Event",
 
     /** Dispatched if the image could not be loaded */
-    "error" : "qx.event.type.Event"
+    "error" : "rwt.event.Event"
   },
 
 
@@ -223,7 +223,7 @@ qx.Class.define("qx.io.image.Preloader",
       this._isErroneous = false;
 
       if (this.hasEventListeners("load")) {
-        this.dispatchEvent(new qx.event.type.Event("load"), true);
+        this.dispatchEvent(new rwt.event.Event("load"), true);
       }
     },
 
@@ -244,7 +244,7 @@ qx.Class.define("qx.io.image.Preloader",
       this._isErroneous = true;
 
       if (this.hasEventListeners("error")) {
-        this.dispatchEvent(new qx.event.type.Event("error"), true);
+        this.dispatchEvent(new rwt.event.Event("error"), true);
       }
     }
   },

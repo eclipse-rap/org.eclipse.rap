@@ -1110,7 +1110,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         text.addEventListener( "input", function( event ) {
           log.push( event );
         }, this );
-        var mod = qx.event.type.DomEvent.CTRL_MASK;
+        var mod = rwt.event.DomEvent.CTRL_MASK;
 
         // Important: Fire no keypress:
         TestUtil.fireFakeKeyDomEvent( text.getInputElement(), "keydown", "X", mod );
@@ -1151,7 +1151,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         var event = TestUtil.createFakeDomKeyEvent( text._inputElement, "keypress", "Enter" );
         TestUtil.fireFakeDomEvent( event );
 
-        assertTrue( org.eclipse.rwt.EventHandlerUtil.wasStopped( event ) );
+        assertTrue( rwt.event.EventHandlerUtil.wasStopped( event ) );
       }
     } ),
 
@@ -1163,7 +1163,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         var event = TestUtil.createFakeDomKeyEvent( text._inputElement, "keypress", "Enter" );
         TestUtil.fireFakeDomEvent( event );
 
-        assertFalse( org.eclipse.rwt.EventHandlerUtil.wasStopped( event ) );
+        assertFalse( rwt.event.EventHandlerUtil.wasStopped( event ) );
       }
     } ),
 

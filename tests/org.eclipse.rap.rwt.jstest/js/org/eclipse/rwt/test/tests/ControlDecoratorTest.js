@@ -110,10 +110,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
       TestUtil.fakeMouseEventDOM(
           widget.getElement(),
           "dblclick",
-          qx.event.type.MouseEvent.buttons.left,
+          rwt.event.MouseEvent.buttons.left,
           0,
           0,
-          qx.event.type.DomEvent.SHIFT_MASK
+          rwt.event.DomEvent.SHIFT_MASK
        );
 
       var message = TestUtil.getLastMessage();
