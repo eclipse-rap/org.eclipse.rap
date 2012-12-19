@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.util.Date;
 import java.util.TimerTask;
 
 import org.eclipse.swt.internal.SerializableCompatibility;
@@ -20,12 +19,10 @@ class TimerExecTask extends TimerTask implements SerializableCompatibility {
 
   private final TimerExecScheduler scheduler;
   private final Runnable runnable;
-  private final Date time;
 
-  TimerExecTask( TimerExecScheduler scheduler, Runnable runnable, long milliseconds ) {
+  TimerExecTask( TimerExecScheduler scheduler, Runnable runnable ) {
     this.scheduler = scheduler;
     this.runnable = runnable;
-    time = new Date( System.currentTimeMillis() + milliseconds );
     scheduler.serverPushManager.activateServerPushFor( this );
   }
 
@@ -48,10 +45,6 @@ class TimerExecTask extends TimerTask implements SerializableCompatibility {
 
   Runnable getRunnable() {
     return runnable;
-  }
-
-  Date getTime() {
-    return time;
   }
 
 }

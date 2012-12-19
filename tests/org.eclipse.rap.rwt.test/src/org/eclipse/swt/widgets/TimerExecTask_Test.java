@@ -32,7 +32,7 @@ public class TimerExecTask_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = spy( new Display() );
-    scheduler = spy( new TimerExecScheduler( display, ServerPushManager.getInstance() ) );
+    scheduler = spy( new TimerExecScheduler( display ) );
   }
 
   @Override
@@ -42,25 +42,23 @@ public class TimerExecTask_Test extends TestCase {
 
   public void testCreation() {
     Runnable runnable = mock( Runnable.class );
-    long now = System.currentTimeMillis();
 
-    TimerExecTask task = new TimerExecTask( scheduler, runnable, 23 );
+    TimerExecTask task = new TimerExecTask( scheduler, runnable );
 
     assertEquals( runnable, task.getRunnable() );
-    assertTrue( task.getTime().getTime() >= now + 23 );
   }
 
   public void testCreation_activatesServerPush() {
     Runnable runnable = mock( Runnable.class );
 
-    new TimerExecTask( scheduler, runnable, 23 );
+    new TimerExecTask( scheduler, runnable );
 
     assertTrue( ServerPushManager.getInstance().isServerPushActive() );
   }
 
   public void testRun_removesIselfFromScheduler() {
     Runnable runnable = mock( Runnable.class );
-    TimerExecTask task = new TimerExecTask( scheduler, runnable, 23 );
+    TimerExecTask task = new TimerExecTask( scheduler, runnable );
 
     task.run();
 
@@ -69,7 +67,7 @@ public class TimerExecTask_Test extends TestCase {
 
   public void testRun_addsRunnableToQueue() {
     Runnable runnable = mock( Runnable.class );
-    TimerExecTask task = new TimerExecTask( scheduler, runnable, 23 );
+    TimerExecTask task = new TimerExecTask( scheduler, runnable );
 
     task.run();
 
@@ -78,7 +76,7 @@ public class TimerExecTask_Test extends TestCase {
 
   public void testRun_doesNotAddRunnableWhenDisplayDisposed() {
     Runnable runnable = mock( Runnable.class );
-    TimerExecTask task = new TimerExecTask( scheduler, runnable, 23 );
+    TimerExecTask task = new TimerExecTask( scheduler, runnable );
     display.dispose();
 
     task.run();
@@ -88,7 +86,7 @@ public class TimerExecTask_Test extends TestCase {
 
   public void testRun_deactivatesServerPush() {
     Runnable runnable = mock( Runnable.class );
-    TimerExecTask task = new TimerExecTask( scheduler, runnable, 23 );
+    TimerExecTask task = new TimerExecTask( scheduler, runnable );
 
     task.run();
 
@@ -97,7 +95,7 @@ public class TimerExecTask_Test extends TestCase {
 
   public void testCancel_deactivatesServerPush() {
     Runnable runnable = mock( Runnable.class );
-    TimerExecTask task = new TimerExecTask( scheduler, runnable, 23 );
+    TimerExecTask task = new TimerExecTask( scheduler, runnable );
 
     task.cancel();
 

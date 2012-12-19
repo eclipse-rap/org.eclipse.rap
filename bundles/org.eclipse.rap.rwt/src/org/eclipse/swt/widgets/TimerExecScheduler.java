@@ -16,6 +16,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectInputValidation;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -35,14 +36,14 @@ class TimerExecScheduler implements SerializableCompatibility {
   private final Collection<TimerExecTask> tasks;
   private transient Timer timer;
 
-  TimerExecScheduler( Display display, ServerPushManager serverPushManager ) {
+  TimerExecScheduler( Display display ) {
     this.display = display;
-    this.serverPushManager = serverPushManager;
+    serverPushManager = ServerPushManager.getInstance();
     tasks = new LinkedList<TimerExecTask>();
   }
 
   void schedule( int milliseconds, Runnable runnable ) {
-    TimerExecTask task = new TimerExecTask( this, runnable, milliseconds );
+    TimerExecTask task = new TimerExecTask( this, runnable );
     synchronized( display.getDeviceLock() ) {
       initializeTimer();
       tasks.add( task );
@@ -68,8 +69,12 @@ class TimerExecScheduler implements SerializableCompatibility {
 
   private void initializeTimer() {
     if( timer == null ) {
-      timer = new Timer( "RWT timerExec scheduler", true );
+      timer = createTimer();
     }
+  }
+
+  Timer createTimer() {
+    return new Timer( "RWT timerExec scheduler", true );
   }
 
   private void rescheduleTasks() {
@@ -77,7 +82,7 @@ class TimerExecScheduler implements SerializableCompatibility {
       if( tasks.size() > 0 ) {
         initializeTimer();
         for( TimerExecTask task : tasks ) {
-          timer.schedule( task, task.getTime() );
+          timer.schedule( task, new Date( task.scheduledExecutionTime() ) );
         }
       }
     }
@@ -99,8 +104,9 @@ class TimerExecScheduler implements SerializableCompatibility {
   }
 
   void removeTask( TimerTask task ) {
-    // code is synchronized by caller
-    tasks.remove( task );
+    synchronized( display.getDeviceLock() ) {
+      tasks.remove( task );
+    }
   }
 
   private void writeObject( ObjectOutputStream stream ) throws IOException {
