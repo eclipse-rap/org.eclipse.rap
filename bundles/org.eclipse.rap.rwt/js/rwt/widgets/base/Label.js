@@ -545,7 +545,7 @@ qx.Class.define("rwt.widgets.base.Label",
       else
       {
         element.innerHTML = "";
-        qx.dom.Element.setTextContent(element, html);
+        rwt.util.html.Element.setTextContent(element, html);
       }
     }
       */

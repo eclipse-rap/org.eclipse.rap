@@ -260,8 +260,8 @@ qx.Class.define("rwt.widgets.base.Popup",
         var docWidth = doc.getClientWidth();
         var docHeight = doc.getClientHeight();
 
-        var scrollTop = qx.bom.Viewport.getScrollTop();
-        var scrollLeft = qx.bom.Viewport.getScrollLeft();
+        var scrollTop = rwt.util.html.Viewport.getScrollTop();
+        var scrollLeft = rwt.util.html.Viewport.getScrollLeft();
 
         var restrictToPageLeft = this.getRestrictToPageLeft() + scrollLeft;
         var restrictToPageRight = this.getRestrictToPageRight() - scrollLeft;
@@ -472,7 +472,7 @@ qx.Class.define("rwt.widgets.base.Popup",
 
       if (el)
       {
-       var elementPos = qx.bom.element.Location.get(el);
+       var elementPos = rwt.util.html.Location.get(el);
        this.setLocation(
          elementPos.left + (offsetX || 0),
          elementPos.top + (offsetY || 0)

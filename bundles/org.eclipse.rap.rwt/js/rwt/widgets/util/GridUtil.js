@@ -60,7 +60,7 @@ rwt.widgets.util.GridUtil = {
     var columnCount = config.columnCount;
     var columnIndex = columnCount === 0 ? 0 : -1;
     var element = container.getFirstChild().getElement();
-    var leftOffset = qx.bom.element.Location.getLeft( element );
+    var leftOffset = rwt.util.html.Location.getLeft( element );
     for( var i = 0; columnIndex == -1 && i < columnCount; i++ ) {
       var pageLeft = leftOffset + config.itemLeft[ i ];
       if( pageX >= pageLeft && pageX < pageLeft + config.itemWidth[ i ] ) {

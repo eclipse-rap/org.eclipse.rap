@@ -219,10 +219,10 @@ qx.Class.define( "rwt.widgets.Scale", {
       if( evt.isLeftButtonPressed() ){
         if( this._horizontal ) {
           pxSel = this._thumb.getLeft() + rwt.widgets.Scale.HALF_THUMB;
-          mousePos = evt.getPageX() - qx.bom.element.Location.getLeft( this.getElement() );
+          mousePos = evt.getPageX() - rwt.util.html.Location.getLeft( this.getElement() );
         } else {
           pxSel = this._thumb.getTop() + rwt.widgets.Scale.HALF_THUMB;
-          mousePos = evt.getPageY() - qx.bom.element.Location.getTop( this.getElement() );
+          mousePos = evt.getPageY() - rwt.util.html.Location.getTop( this.getElement() );
         }
         if( mousePos > pxSel ) {
           sel = this._selection + this._pageIncrement;
@@ -238,10 +238,10 @@ qx.Class.define( "rwt.widgets.Scale", {
       var mousePos;
       if( evt.isLeftButtonPressed() ) {
         if( this._horizontal ) {
-          mousePos = evt.getPageX() - qx.bom.element.Location.getLeft( this.getElement() );
+          mousePos = evt.getPageX() - rwt.util.html.Location.getLeft( this.getElement() );
           this._thumbOffset = mousePos - this._thumb.getLeft();
         } else {
-          mousePos = evt.getPageY() - qx.bom.element.Location.getTop( this.getElement() );
+          mousePos = evt.getPageY() - rwt.util.html.Location.getTop( this.getElement() );
           this._thumbOffset = mousePos - this._thumb.getTop();
         }
         this._thumb.setCapture(true);
@@ -252,9 +252,9 @@ qx.Class.define( "rwt.widgets.Scale", {
       var mousePos;
       if( this._thumb.getCapture() ) {
         if( this._horizontal ) {
-          mousePos = evt.getPageX() - qx.bom.element.Location.getLeft( this.getElement() );
+          mousePos = evt.getPageX() - rwt.util.html.Location.getLeft( this.getElement() );
         } else {
-          mousePos = evt.getPageY() - qx.bom.element.Location.getTop( this.getElement() );
+          mousePos = evt.getPageY() - rwt.util.html.Location.getTop( this.getElement() );
         }
         var sel = this._getSelectionFromThumbPosition( mousePos - this._thumbOffset );
         if( this._selection != sel ) {

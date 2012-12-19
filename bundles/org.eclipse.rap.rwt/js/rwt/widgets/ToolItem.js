@@ -81,7 +81,7 @@ qx.Class.define( "rwt.widgets.ToolItem", {
       var result = false;
       var node = this.getCellNode( 3 );
       if( node != null ) {
-        var nodeLeft = qx.bom.element.Location.getLeft( node );
+        var nodeLeft = rwt.util.html.Location.getLeft( node );
         var clickLeft = event.getClientX();
         result = clickLeft > nodeLeft;
       }

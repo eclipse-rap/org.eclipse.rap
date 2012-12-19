@@ -14,7 +14,7 @@
 /**
  * Basic node creation and type detection
  */
-qx.Class.define("qx.dom.Node",
+qx.Class.define("rwt.util.html.Node",
 {
   /*
   *****************************************************************************
@@ -69,7 +69,7 @@ qx.Class.define("qx.dom.Node",
      * @return {Boolean} true when the node is a document
      */
     isDocument : function(node) {
-      return !!(node && node.nodeType === qx.dom.Node.DOCUMENT);
+      return !!(node && node.nodeType === rwt.util.html.Node.DOCUMENT);
     },
 
 

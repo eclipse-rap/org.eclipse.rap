@@ -294,7 +294,7 @@ qx.Class.define( "rwt.widgets.Combo", {
 
     _setListBounds : function() {
       if( this.getElement() ){
-        var elementPos = qx.bom.element.Location.get( this.getElement() );
+        var elementPos = rwt.util.html.Location.get( this.getElement() );
         var listLeft = elementPos.left;
         var comboTop = elementPos.top;
         var listTop = comboTop + this.getHeight();

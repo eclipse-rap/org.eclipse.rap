@@ -383,7 +383,7 @@ qx.Class.define( "rwt.widgets.base.AbstractSlider", {
     },
 
     _getMouseOffset : function( mouseEvent ) {
-      var location = qx.bom.element.Location;
+      var location = rwt.util.html.Location;
       var result;
       if( this._horizontal ) {
         result = mouseEvent.getPageX() - location.getLeft( this.getElement() );

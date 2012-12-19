@@ -72,7 +72,7 @@ qx.Class.define( "rwt.event.EventHandlerUtil", {
       "webkit" : function( vDomEvent ) {
         var vNode = vDomEvent.target || vDomEvent.srcElement;
         // Safari takes text nodes as targets for events
-        if( vNode && ( vNode.nodeType == qx.dom.Node.TEXT ) ) {
+        if( vNode && ( vNode.nodeType == rwt.util.html.Node.TEXT ) ) {
           vNode = vNode.parentNode;
         }
         return vNode;

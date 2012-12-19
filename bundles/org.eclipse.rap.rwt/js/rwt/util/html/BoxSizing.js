@@ -19,7 +19,7 @@
  * * "content-box" = W3C model (dimensions are content specific)
  * * "border-box" = Microsoft model (dimensions are box specific incl. border and padding)
  */
-qx.Class.define("qx.bom.element.BoxSizing",
+qx.Class.define("rwt.util.html.BoxSizing",
 {
   /*
   *****************************************************************************
@@ -84,7 +84,7 @@ qx.Class.define("qx.bom.element.BoxSizing",
     {
       "mshtml" : function(element)
       {
-        if (qx.bom.Document.isStandardMode(qx.dom.Node.getDocument(element)))
+        if (rwt.util.html.Document.isStandardMode(rwt.util.html.Node.getDocument(element)))
         {
           if (!this.__usesNativeBorderBox(element)) {
             return "content-box";
@@ -103,7 +103,7 @@ qx.Class.define("qx.bom.element.BoxSizing",
         {
           for (var i=0, l=props.length; i<l; i++)
           {
-            value = qx.bom.element.Style.get(element, props[i], null, false);
+            value = rwt.util.html.Style.get(element, props[i], null, false);
             if (value != null && value !== "") {
               return value;
             }

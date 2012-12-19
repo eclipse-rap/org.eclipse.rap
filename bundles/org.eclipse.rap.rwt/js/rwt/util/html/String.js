@@ -17,7 +17,7 @@
  * {@link qx.html.String} for (un)escaping of HTML strings.
  * {@link qx.xml.String} for (un)escaping of XML strings.
  */
-qx.Class.define("qx.dom.String",
+qx.Class.define("rwt.util.html.String",
 {
   statics :
   {
@@ -131,7 +131,7 @@ qx.Class.define("qx.dom.String",
     /**
      * Remove HTML/XML tags from a string
      * Example:
-     * <pre class='javascript'>qx.dom.String.stripTags("&lt;h1>Hello&lt;/h1>") == "Hello"</pre>
+     * <pre class='javascript'>rwt.util.html.String.stripTags("&lt;h1>Hello&lt;/h1>") == "Hello"</pre>
      *
      * @type static
      * @param str {String} string containing tags

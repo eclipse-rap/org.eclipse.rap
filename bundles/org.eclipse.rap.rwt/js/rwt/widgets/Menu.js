@@ -412,8 +412,8 @@ qx.Class.define( "rwt.widgets.Menu", {
         var itemNode = item.getElement();
         var thisNode = this.getElement();
         // the position is relative to the document, therefore we need helper
-        subMenu.setTop( qx.bom.element.Location.getTop( itemNode ) - 2 );
-        subMenu.setLeft(   qx.bom.element.Location.getLeft( thisNode )
+        subMenu.setTop( rwt.util.html.Location.getTop( itemNode ) - 2 );
+        subMenu.setLeft(   rwt.util.html.Location.getLeft( thisNode )
                          + qx.html.Dimension.getBoxWidth( thisNode )
                          - 3 );
         subMenu.show();

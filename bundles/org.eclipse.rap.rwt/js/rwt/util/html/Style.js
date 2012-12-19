@@ -33,7 +33,7 @@
  * Automatically normalizes cross-browser differences. Optimized for
  * performance.
  */
-qx.Class.define("qx.bom.element.Style",
+qx.Class.define("rwt.util.html.Style",
 {
   /*
   *****************************************************************************
@@ -210,7 +210,7 @@ qx.Class.define("qx.bom.element.Style",
             // when working with frames and access an element of another frame.
             // Then we must use the <code>getComputedStyle</code> of the document
             // where the element is defined.
-            var doc = qx.dom.Node.getDocument(element);
+            var doc = rwt.util.html.Node.getDocument(element);
             var computed = doc.defaultView.getComputedStyle(element, null);
 
             // All relevant browsers expose the configured style properties to

@@ -27,7 +27,7 @@
 /**
  * Includes library functions to work with the current document.
  */
-qx.Class.define("qx.bom.Document",
+qx.Class.define("rwt.util.html.Document",
 {
   statics :
   {
@@ -81,7 +81,7 @@ qx.Class.define("qx.bom.Document",
     getWidth : function(win)
     {
       var doc = (win||window).document;
-      var view = qx.bom.Viewport.getWidth(win);
+      var view = rwt.util.html.Viewport.getWidth(win);
       var scroll = doc.compatMode === "CSS1Compat" ? doc.documentElement.scrollWidth : doc.body.scrollWidth;
       return Math.max(scroll, view);
     },
@@ -113,7 +113,7 @@ qx.Class.define("qx.bom.Document",
     getHeight : function(win)
     {
       var doc = (win||window).document;
-      var view = qx.bom.Viewport.getHeight(win);
+      var view = rwt.util.html.Viewport.getHeight(win);
       var scroll = doc.compatMode === "CSS1Compat" ? doc.documentElement.scrollHeight : doc.body.scrollHeight;
       return Math.max(scroll, view);
     }

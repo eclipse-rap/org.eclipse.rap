@@ -1379,8 +1379,8 @@ qx.Class.define("rwt.widgets.base.Window",
       var pl = pa.getElement();
 
       // compute locations
-      var paLoc = qx.bom.element.Location.get(pl, "scroll");
-      var elLoc = qx.bom.element.Location.get(el);
+      var paLoc = rwt.util.html.Location.get(pl, "scroll");
+      var elLoc = rwt.util.html.Location.get(el);
 
       this._dragSession =
       {

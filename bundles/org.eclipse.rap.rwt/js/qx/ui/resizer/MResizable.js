@@ -163,8 +163,8 @@ qx.Mixin.define("qx.ui.resizer.MResizable",
         var pl = pa.getElement();
 
         // compute locations
-        var paLoc = qx.bom.element.Location.get(pl, "scroll");
-        var elLoc = qx.bom.element.Location.get(el);
+        var paLoc = rwt.util.html.Location.get(pl, "scroll");
+        var elLoc = rwt.util.html.Location.get(el);
 
         // handle frame and translucently
         switch(this.getResizeMethod())
@@ -400,7 +400,7 @@ qx.Mixin.define("qx.ui.resizer.MResizable",
 
         this._resizeNorth = this._resizeSouth = this._resizeWest = this._resizeEast = false;
 
-        var elLoc = qx.bom.element.Location.get(el);
+        var elLoc = rwt.util.html.Location.get(el);
 
         if (this._near(elLoc.top, e.getPageY()))
         {
