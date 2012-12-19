@@ -11,8 +11,8 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-/** This singleton manage all qx.io.image.Preloader instances. */
-qx.Class.define("qx.io.image.PreloaderManager",
+/** This singleton manage all rwt.util.html.ImagePreloader instances. */
+qx.Class.define("rwt.util.html.ImagePreloaderManager",
 {
   type : "singleton",
   extend : qx.core.Object,
@@ -45,10 +45,10 @@ qx.Class.define("qx.io.image.PreloaderManager",
   members :
   {
     /**
-     * Adds a qx.io.image.Preloader instance to the manager
+     * Adds a rwt.util.html.ImagePreloader instance to the manager
      *
      * @type member
-     * @param vObject {Preloader} qx.io.image.Preloader instance
+     * @param vObject {Preloader} rwt.util.html.ImagePreloader instance
      * @return {void}
      */
     add : function(vObject) {
@@ -57,10 +57,10 @@ qx.Class.define("qx.io.image.PreloaderManager",
 
 
     /**
-     * Removes a qx.io.image.Preloader instance from the manager
+     * Removes a rwt.util.html.ImagePreloader instance from the manager
      *
      * @type member
-     * @param vObject {Preloader} qx.io.image.Preloader instance
+     * @param vObject {Preloader} rwt.util.html.ImagePreloader instance
      * @return {void}
      */
     remove : function(vObject) {
@@ -85,7 +85,7 @@ qx.Class.define("qx.io.image.PreloaderManager",
      *
      * @type member
      * @param vSource {String} Source of preloader image instance
-     * @return {Preloader} qx.io.image.Preloader instance
+     * @return {Preloader} rwt.util.html.ImagePreloader instance
      */
     get : function(vSource) {
       return this._objects[vSource];
@@ -97,7 +97,7 @@ qx.Class.define("qx.io.image.PreloaderManager",
      *
      * @type member
      * @param vSource {String} Source of preloader image instance
-     * @return {Preloader} new qx.io.image.Preloader instance
+     * @return {Preloader} new rwt.util.html.ImagePreloader instance
      */
     create : function(vSource)
     {
@@ -105,7 +105,7 @@ qx.Class.define("qx.io.image.PreloaderManager",
         return this._objects[vSource];
       }
 
-      return new qx.io.image.Preloader(vSource);
+      return new rwt.util.html.ImagePreloader(vSource);
     }
   },
 

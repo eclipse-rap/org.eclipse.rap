@@ -89,8 +89,8 @@ qx.Class.define( "rwt.runtime.System", {
     },
 
     _preload : function() {
-      var visibleImages = qx.io.image.Manager.getInstance().getVisibleImages();
-      this.__preloader = new qx.io.image.PreloaderSystem( visibleImages, this._preloaderDone, this );
+      var visibleImages = rwt.util.html.ImageManager.getInstance().getVisibleImages();
+      this.__preloader = new rwt.util.html.ImagePreloaderSystem( visibleImages, this._preloaderDone, this );
       this.__preloader.start();
     },
 
@@ -105,8 +105,8 @@ qx.Class.define( "rwt.runtime.System", {
     },
 
     _postload : function() {
-      var hiddenImages = qx.io.image.Manager.getInstance().getHiddenImages();
-      this.__postloader = new qx.io.image.PreloaderSystem( hiddenImages, this._postloaderDone, this );
+      var hiddenImages = rwt.util.html.ImageManager.getInstance().getHiddenImages();
+      this.__postloader = new rwt.util.html.ImagePreloaderSystem( hiddenImages, this._postloaderDone, this );
       this.__postloader.start();
     },
 

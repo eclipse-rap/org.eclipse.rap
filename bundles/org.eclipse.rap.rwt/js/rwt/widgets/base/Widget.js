@@ -3524,7 +3524,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     // BACKGROUND IMAGE SUPPORT
 
     _applyBackgroundImage : function(value, old) {
-      var imageMgr = qx.io.image.Manager.getInstance();
+      var imageMgr = rwt.util.html.ImageManager.getInstance();
       if (old) {
         imageMgr.hide(old);
       }
