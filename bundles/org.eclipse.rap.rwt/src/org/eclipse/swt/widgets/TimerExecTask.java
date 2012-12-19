@@ -26,7 +26,7 @@ class TimerExecTask extends TimerTask implements SerializableCompatibility {
     this.scheduler = scheduler;
     this.runnable = runnable;
     time = new Date( System.currentTimeMillis() + milliseconds );
-    scheduler.serverPushManager.activateServerPushFor( getUICallBackId() );
+    scheduler.serverPushManager.activateServerPushFor( this );
   }
 
   @Override
@@ -37,12 +37,12 @@ class TimerExecTask extends TimerTask implements SerializableCompatibility {
         scheduler.display.asyncExec( runnable );
       }
     }
-    scheduler.serverPushManager.deactivateServerPushFor( getUICallBackId() );
+    scheduler.serverPushManager.deactivateServerPushFor( this );
   }
 
   @Override
   public boolean cancel() {
-    scheduler.serverPushManager.deactivateServerPushFor( getUICallBackId() );
+    scheduler.serverPushManager.deactivateServerPushFor( this );
     return super.cancel();
   }
 
@@ -54,7 +54,4 @@ class TimerExecTask extends TimerTask implements SerializableCompatibility {
     return time;
   }
 
-  private String getUICallBackId() {
-    return getClass().getName() + "-" + System.identityHashCode( this );
-  }
 }

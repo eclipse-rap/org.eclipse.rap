@@ -50,8 +50,8 @@ public class ServerPushManager_Test extends TestCase {
   private static final int SLEEP_TIME;
   private static final int TIMER_EXEC_DELAY;
 
-  private static final String ID_1 = "id_1";
-  private static final String ID_2 = "id_2";
+  private static final Object HANDLE_1 = new Object();
+  private static final Object HANDLE_2 = new Object();
   private static final String RUN_ASYNC_EXEC = "run async exec|";
   private static final Runnable EMPTY_RUNNABLE = new NoOpRunnable();
 
@@ -82,7 +82,7 @@ public class ServerPushManager_Test extends TestCase {
   }
 
   public void testWakeClient() throws InterruptedException {
-    final Throwable[] uiCallBackServiceHandlerThrowable = { null };
+    final Throwable[] serverPushServiceHandlerThrowable = { null };
     final ServiceContext context[] = { ContextProvider.getContext() };
     Thread thread = new Thread( new Runnable() {
       public void run() {
@@ -90,20 +90,19 @@ public class ServerPushManager_Test extends TestCase {
         Fixture.fakeResponseWriter();
         ServerPushServiceHandler pushServiceHandler = new ServerPushServiceHandler();
         try {
-          manager.activateServerPushFor( "foo" );
-          pushServiceHandler.service( ContextProvider.getRequest(),
-                                            ContextProvider.getResponse() );
+          manager.activateServerPushFor( HANDLE_1 );
+          pushServiceHandler.service( ContextProvider.getRequest(), ContextProvider.getResponse() );
         } catch( Throwable thr ) {
-          uiCallBackServiceHandlerThrowable[ 0 ] = thr;
+          serverPushServiceHandlerThrowable[ 0 ] = thr;
         }
       }
     } );
     thread.start();
     Thread.sleep( SLEEP_TIME );
-    if( uiCallBackServiceHandlerThrowable[ 0 ] != null ) {
-      uiCallBackServiceHandlerThrowable[ 0 ].printStackTrace();
+    if( serverPushServiceHandlerThrowable[ 0 ] != null ) {
+      serverPushServiceHandlerThrowable[ 0 ].printStackTrace();
     }
-    assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
+    assertNull( serverPushServiceHandlerThrowable[ 0 ] );
     assertTrue( manager.isCallBackRequestBlocked() );
 
     manager.setHasRunnables( true );
@@ -229,7 +228,7 @@ public class ServerPushManager_Test extends TestCase {
     httpSession.setAttribute( "listener", sessionListener );
     manager.setRequestCheckInterval( 10 );
 
-    manager.activateServerPushFor( "id" );
+    manager.activateServerPushFor( HANDLE_1 );
 
     // must not block
     manager.processRequest( ContextProvider.getResponse() );
@@ -441,12 +440,12 @@ public class ServerPushManager_Test extends TestCase {
   }
 
   public void testMustBlockCallBackRequestWhenActive() {
-    manager.activateServerPushFor( "foo" );
+    manager.activateServerPushFor( HANDLE_1 );
     assertTrue( manager.mustBlockCallBackRequest() );
   }
 
   public void testMustBlockCallBackRequestWhenActiveAndRunnablesPending() {
-    manager.activateServerPushFor( "foo" );
+    manager.activateServerPushFor( HANDLE_1 );
     manager.setHasRunnables( true );
     assertFalse( manager.mustBlockCallBackRequest() );
   }
@@ -458,7 +457,7 @@ public class ServerPushManager_Test extends TestCase {
 
   public void testNeedActivationFromDifferentSession() throws Throwable {
     // test that on/off switching is managed in session scope
-    manager.activateServerPushFor( ID_1 );
+    manager.activateServerPushFor( HANDLE_1 );
     final boolean[] otherSession = new boolean[ 1 ];
     Runnable runnable = new Runnable() {
       public void run() {
@@ -477,34 +476,34 @@ public class ServerPushManager_Test extends TestCase {
   }
 
   public void testNeedActivationAfterDeactivate() {
-    manager.deactivateServerPushFor( ID_1 );
+    manager.deactivateServerPushFor( HANDLE_1 );
     assertFalse( manager.needsActivation() );
   }
 
   public void testNeedActivationWithDifferentIds() {
-    manager.activateServerPushFor( ID_1 );
-    manager.activateServerPushFor( ID_2 );
+    manager.activateServerPushFor( HANDLE_1 );
+    manager.activateServerPushFor( HANDLE_2 );
     assertTrue( manager.needsActivation() );
   }
 
   public void testNeedActivationAfterActivateTwoDeactivateOne() {
-    manager.activateServerPushFor( ID_1 );
-    manager.activateServerPushFor( ID_2 );
-    manager.deactivateServerPushFor( ID_1 );
+    manager.activateServerPushFor( HANDLE_1 );
+    manager.activateServerPushFor( HANDLE_2 );
+    manager.deactivateServerPushFor( HANDLE_1 );
     assertTrue( manager.needsActivation() );
   }
 
   public void testNeedActivateTwice() {
-    manager.activateServerPushFor( ID_1 );
-    manager.deactivateServerPushFor( ID_1 );
-    manager.activateServerPushFor( ID_2 );
+    manager.activateServerPushFor( HANDLE_1 );
+    manager.deactivateServerPushFor( HANDLE_1 );
+    manager.activateServerPushFor( HANDLE_2 );
     assertTrue( manager.needsActivation() );
   }
 
   public void testNeedActivationWithActivateDeactivateAndPendingRunnables() {
-    manager.activateServerPushFor( ID_1 );
+    manager.activateServerPushFor( HANDLE_1 );
     display.asyncExec( EMPTY_RUNNABLE );
-    manager.deactivateServerPushFor( ID_1 );
+    manager.deactivateServerPushFor( HANDLE_1 );
     assertTrue( manager.needsActivation() );
   }
 
@@ -539,7 +538,7 @@ public class ServerPushManager_Test extends TestCase {
 
   public void testSetHasRunnablesWithoutStateInfo() {
     // Service handlers don't have a state info
-    manager.activateServerPushFor( "foo" );
+    manager.activateServerPushFor( HANDLE_1 );
     Fixture.replaceServiceStore( null );
 
     try {
@@ -625,9 +624,9 @@ public class ServerPushManager_Test extends TestCase {
           ContextProvider.setContext( serviceContext );
           Fixture.fakeResponseWriter();
           try {
-            manager.activateServerPushFor( "foo" );
+            manager.activateServerPushFor( HANDLE_1 );
             pushServiceHandler.service( ContextProvider.getRequest(),
-                                              ContextProvider.getResponse() );
+                                        ContextProvider.getResponse() );
           } catch( Throwable thr ) {
             exception = thr;
           }

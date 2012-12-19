@@ -165,9 +165,8 @@ public class ModalContext {
 						display.asyncExec(null);
 						
 						// RAP [fappel]: deactivate UI-Callback for this thread
-						String key 
-						  = String.valueOf( ModalContextThread.this.hashCode() );
-						ServerPushManager.getInstance().deactivateServerPushFor( key );
+						Object pushHandle = ModalContextThread.this;
+						ServerPushManager.getInstance().deactivateServerPushFor( pushHandle );
 						
 					}
 				}
@@ -398,8 +397,8 @@ public class ModalContext {
 						listenerException = invokeThreadListener((IThreadListener) operation, t);
 					}
 					// RAP [fappel]: start UI-Callback to enable UI-updates
-					String key = String.valueOf( t.hashCode() );
-					ServerPushManager.getInstance().activateServerPushFor( key );
+					Object pushHandle = t;
+					ServerPushManager.getInstance().activateServerPushFor( pushHandle );
 					
 					if(listenerException == null){
 						t.start();
