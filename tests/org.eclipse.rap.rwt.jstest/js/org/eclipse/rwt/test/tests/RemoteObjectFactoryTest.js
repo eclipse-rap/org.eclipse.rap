@@ -11,26 +11,26 @@
 
 (function(){
 
-var ServerObjectFactory = rwt.protocol.ServerObjectFactory;
+var RemoteObjectFactory = rwt.protocol.RemoteObjectFactory;
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
 var shell;
 
-rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerObjectFactoryTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.RemoteObjectFactoryTest", {
 
   extend : rwt.qx.Object,
 
   members : {
 
     testCreate : function() {
-      var serverObject = ServerObjectFactory.getServerObject( shell );
+      var remoteObject = RemoteObjectFactory.getRemoteObject( shell );
 
-      assertNotNull( serverObject );
+      assertNotNull( remoteObject );
     },
 
     testCreateWithNullParameter : function() {
       try {
-        ServerObjectFactory.getServerObject( null );
+        RemoteObjectFactory.getRemoteObject( null );
         fail();
       } catch( expected ) {
       }
@@ -39,26 +39,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerObjectFactoryTest", {
     testCreateWithInvalidTarget : function() {
       var target = {};
       try {
-        ServerObjectFactory.getServerObject( target );
+        RemoteObjectFactory.getRemoteObject( target );
         fail();
       } catch( expected ) {
       }
     },
 
     testSameInstance : function() {
-      var serverObject = ServerObjectFactory.getServerObject( shell );
+      var remoteObject = RemoteObjectFactory.getRemoteObject( shell );
 
-      assertIdentical( serverObject, ServerObjectFactory.getServerObject( shell ) );
+      assertIdentical( remoteObject, RemoteObjectFactory.getRemoteObject( shell ) );
     },
 
     testGetServerObjectForDisplay: function() {
-      var serverObject = ServerObjectFactory.getServerObject( rwt.widgets.Display.getCurrent() );
+      var remoteObject = RemoteObjectFactory.getRemoteObject( rwt.widgets.Display.getCurrent() );
 
-      assertNotNull( serverObject );
+      assertNotNull( remoteObject );
     },
 
     testDisposeWithTarget : function() {
-      var serverObject = ServerObjectFactory.getServerObject( shell );
+      var remoteObject = RemoteObjectFactory.getRemoteObject( shell );
 
       rwt.protocol.MessageProcessor.processOperation( {
         "target" : "w2",
@@ -66,7 +66,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerObjectFactoryTest", {
       } );
 
       shell = TestUtil.createShellByProtocol( "w2" );
-      assertTrue( serverObject !== ServerObjectFactory.getServerObject( shell ) );
+      assertTrue( remoteObject !== RemoteObjectFactory.getRemoteObject( shell ) );
     },
 
 

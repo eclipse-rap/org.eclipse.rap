@@ -160,11 +160,11 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
 
     _attachKeyEvent : function( widget, keyCode, charCode, domEvent ) {
       var server = rwt.remote.Server.getInstance();
-      var serverObject;
+      var remoteObject;
       if( widget === null ) {
-        serverObject = server.getServerObject( rwt.widgets.Display.getCurrent() );
+        remoteObject = server.getRemoteObject( rwt.widgets.Display.getCurrent() );
       } else {
-        serverObject = server.getServerObject( widget );
+        remoteObject = server.getRemoteObject( widget );
       }
       var finalCharCode = this._getCharCode( keyCode, charCode, domEvent );
       var properties = {
@@ -173,10 +173,10 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
       };
       rwt.remote.EventUtil.addModifierToProperties( properties );
       if( this._shouldSendTraverse( keyCode, charCode, domEvent, widget ) ) {
-        serverObject.notify( "Traverse", properties, true );
+        remoteObject.notify( "Traverse", properties, true );
       }
       if( this._shouldSendKeyDown( keyCode, charCode, domEvent, widget ) ) {
-        serverObject.notify( "KeyDown", properties, true );
+        remoteObject.notify( "KeyDown", properties, true );
       }
     },
 

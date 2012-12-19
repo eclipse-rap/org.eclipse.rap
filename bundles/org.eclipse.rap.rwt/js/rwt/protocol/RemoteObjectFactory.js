@@ -13,25 +13,25 @@
 
 var ObjectManager = rwt.protocol.ObjectRegistry;
 
-rwt.protocol.ServerObjectFactory = { // TODO [tb] : merge with Server.js? (not a factory)
+rwt.protocol.RemoteObjectFactory = { // TODO [tb] : merge with Server.js? (not a factory)
 
   _db : {},
 
-  getServerObject : function( target ) {
+  getRemoteObject : function( target ) {
     var id = ObjectManager.getId( target );
     if( id === null ){
       throw new Error( "Invalid target for ServerObject, or target not in ObjectManager" );
     }
-    return this._getServerObject( id );
+    return this._getRemoteObject( id );
   },
 
   remove : function( id ) {
     delete this._db[ id ];
   },
 
-  _getServerObject : function( id ) {
+  _getRemoteObject : function( id ) {
     if( this._db[ id ] == null ) {
-      this._db[ id ] = new rwt.protocol.ServerObject( id );
+      this._db[ id ] = new rwt.protocol.RemoteObject( id );
     }
     return this._db[ id ];
   }

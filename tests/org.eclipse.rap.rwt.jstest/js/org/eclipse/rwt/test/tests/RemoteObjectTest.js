@@ -14,20 +14,20 @@
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
 var shell;
-var serverObject;
+var remoteObject;
 
-rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerObjectTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.RemoteObjectTest", {
 
   extend : rwt.qx.Object,
 
   members : {
 
     testSetProperty : function() {
-      serverObject.set( "key", "value" );
-      serverObject.set( "key2", 2 );
-      serverObject.set( "key3", 3.5 );
-      serverObject.set( "key4", true );
-      serverObject.set( "key5", "aString" );
+      remoteObject.set( "key", "value" );
+      remoteObject.set( "key2", 2 );
+      remoteObject.set( "key3", 3.5 );
+      remoteObject.set( "key4", true );
+      remoteObject.set( "key5", "aString" );
       rwt.remote.Server.getInstance().send();
 
       var operation = TestUtil.getMessageObject().getOperation( 0 );
@@ -41,7 +41,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerObjectTest", {
     },
 
     testNotify : function() {
-      serverObject.notify( "method", { "key" : "a" } );
+      remoteObject.notify( "method", { "key" : "a" } );
 
       var operation = TestUtil.getMessageObject().getOperation( 0 );
       assertEquals( "notify", operation.type );
@@ -51,7 +51,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerObjectTest", {
     },
 
     testNotifyWithoutProperties : function() {
-      serverObject.notify( "method" );
+      remoteObject.notify( "method" );
 
       var operation = TestUtil.getMessageObject().getOperation( 0 );
       assertEquals( "notify", operation.type );
@@ -61,7 +61,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerObjectTest", {
     },
 
     testCall : function() {
-      serverObject.call( "method", { "key" : "a" } );
+      remoteObject.call( "method", { "key" : "a" } );
 
       var operation = TestUtil.getMessageObject().getOperation( 0 );
       assertEquals( "call", operation.type );
@@ -71,7 +71,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerObjectTest", {
     },
 
     testCallWithoutProperties : function() {
-      serverObject.call( "method" );
+      remoteObject.call( "method" );
 
       var operation = TestUtil.getMessageObject().getOperation( 0 );
       assertEquals( "call", operation.type );
@@ -82,7 +82,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerObjectTest", {
 
     setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );
-      serverObject = rwt.protocol.ServerObjectFactory.getServerObject( shell );
+      remoteObject = rwt.protocol.RemoteObjectFactory.getRemoteObject( shell );
     },
 
     tearDown : function() {

@@ -126,7 +126,7 @@ rwt.widgets.Display.prototype = {
     var pageX = rwt.event.MouseEvent.getPageX();
     var pageY = rwt.event.MouseEvent.getPageY();
     var location = [ pageX, pageY ];
-    rwt.remote.Server.getInstance().getServerObject( this ).set( "cursorLocation", location );
+    rwt.remote.Server.getInstance().getRemoteObject( this ).set( "cursorLocation", location );
   },
 
   _onBeforeUnload : function( event ) {
@@ -149,12 +149,12 @@ rwt.widgets.Display.prototype = {
     var width = rwt.util.html.Window.getInnerWidth( window );
     var height = rwt.util.html.Window.getInnerHeight( window );
     var bounds = [ 0, 0, width, height ];
-    rwt.remote.Server.getInstance().getServerObject( this ).set( "bounds", bounds );
+    rwt.remote.Server.getInstance().getRemoteObject( this ).set( "bounds", bounds );
   },
 
   _appendSystemDPI : function() {
     var dpi = this.getDPI();
-    rwt.remote.Server.getInstance().getServerObject( this ).set( "dpi", dpi );
+    rwt.remote.Server.getInstance().getRemoteObject( this ).set( "dpi", dpi );
   },
 
   _appendColorDepth : function() {
@@ -166,7 +166,7 @@ rwt.widgets.Display.prototype = {
       // Firefox detects 24bit and 32bit as 24bit, but 32bit is more likely
       depth = depth == 24 ? 32 : depth;
     }
-    rwt.remote.Server.getInstance().getServerObject( this ).set( "colorDepth", depth );
+    rwt.remote.Server.getInstance().getRemoteObject( this ).set( "colorDepth", depth );
   },
 
   _appendInitialHistoryEvent : function() {
@@ -179,7 +179,7 @@ rwt.widgets.Display.prototype = {
       rwt.protocol.ObjectRegistry.add( type,
                                        history,
                                        rwt.protocol.HandlerRegistry.getHandler( type ) );
-      server.getServerObject( history ).notify( "Navigation", {
+      server.getRemoteObject( history ).notify( "Navigation", {
         "state" : state.substr( 1 )
       } );
     }
@@ -188,7 +188,7 @@ rwt.widgets.Display.prototype = {
   _appendTimezoneOffset : function() {
     // NOTE : using ObjectRegistry implicitly registers the ClientInfo service
     var clientObject = rwt.protocol.ObjectRegistry.getObject( "rwt.client.ClientInfo" );
-    var remoteObject = rwt.remote.Server.getInstance().getServerObject( clientObject );
+    var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( clientObject );
     remoteObject.set( "timezoneOffset", clientObject.getTimezoneOffset() );
   }
 

@@ -116,9 +116,9 @@ rwt.qx.Class.define( "rwt.widgets.ScrolledComposite", {
     _onUserScroll : function( horizontal ) {
       var server = rwt.remote.Server.getInstance();
       var scrollbar = horizontal ? this._horzScrollBar : this._vertScrollBar;
-      var serverObject = server.getServerObject( this );
+      var remoteObject = server.getRemoteObject( this );
       var prop = horizontal ? "horizontalBar.selection" : "verticalBar.selection";
-      serverObject.set( prop, scrollbar.getValue() );
+      remoteObject.set( prop, scrollbar.getValue() );
       if( scrollbar.getHasSelectionListener() ) {
         if( horizontal ) {
           server.onNextSend( this._sendHorizontalScrolled, this );
@@ -131,12 +131,12 @@ rwt.qx.Class.define( "rwt.widgets.ScrolledComposite", {
 
     _sendVerticalScrolled : function() {
       var server = rwt.remote.Server.getInstance();
-      server.getServerObject( this._vertScrollBar ).notify( "Selection" );
+      server.getRemoteObject( this._vertScrollBar ).notify( "Selection" );
     },
 
     _sendHorizontalScrolled : function() {
       var server = rwt.remote.Server.getInstance();
-      server.getServerObject( this._horzScrollBar ).notify( "Selection" );
+      server.getRemoteObject( this._horzScrollBar ).notify( "Selection" );
     },
 
     _onChangeFocusedChild : function( evt ) {

@@ -259,12 +259,12 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
         var isTreeEvent = this._isGroup && event.chevron;
         if( this._hasSelectionListener || isTreeEvent ) {
           if( isTreeEvent ) {
-            var serverObject = rwt.remote.Server.getInstance().getServerObject( this );
-            serverObject.set( "expanded", !this._expanded );
+            var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+            remoteObject.set( "expanded", !this._expanded );
             if(    ( this._hasCollapseListener && this._expanded )
                 || ( this._hasExpandListener && !this._expanded )  )
             {
-              serverObject.notify( this._expanded ? "Collapse" : "Expand" );
+              remoteObject.notify( this._expanded ? "Collapse" : "Expand" );
             }
           } else {
             rwt.remote.EventUtil.notifySelected( this );
@@ -311,7 +311,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
 
     _sendResize : function( width ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var serverColumn = rwt.remote.Server.getInstance().getServerObject( this );
+        var serverColumn = rwt.remote.Server.getInstance().getRemoteObject( this );
         serverColumn.call( "resize", {
           "width" : width
         } );
@@ -320,7 +320,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
 
     _sendMove : function( left ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var serverColumn = rwt.remote.Server.getInstance().getServerObject( this );
+        var serverColumn = rwt.remote.Server.getInstance().getRemoteObject( this );
         serverColumn.call( "move", {
           "left" : left
         } );

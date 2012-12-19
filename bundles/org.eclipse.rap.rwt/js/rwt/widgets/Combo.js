@@ -691,7 +691,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     _sendModifyText : function() {
       var server = rwt.remote.Server.getInstance();
-      server.getServerObject( this ).notify( "Modify" );
+      server.getRemoteObject( this ).notify( "Modify" );
       this._isModified = false;
     },
 

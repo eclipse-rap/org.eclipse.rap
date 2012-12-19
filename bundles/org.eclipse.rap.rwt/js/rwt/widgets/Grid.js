@@ -936,7 +936,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     _sendSelectionChange : function( item ) {
       if( !this._inServerResponse() ) {
         var selection = this._getSelectionList();
-        rwt.remote.Server.getInstance().getServerObject( this ).set( "selection", selection );
+        rwt.remote.Server.getInstance().getRemoteObject( this ).set( "selection", selection );
         this._sendSelectionEvent( item, false, null );
       }
     },
@@ -959,7 +959,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         for( var i = 0; i < this._config.columnCount; i++ ) {
           sendArr[ i ] = arr[ i ] === true;
         }
-        server.getServerObject( item ).set( "cellChecked", sendArr );
+        server.getRemoteObject( item ).set( "cellChecked", sendArr );
         this._sendSelectionEvent( item, false, "check", cell );
       }
     },
@@ -974,8 +974,8 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _sendTopItemIndexChange : function() {
       var server = rwt.remote.Server.getInstance();
-      var serverObject = server.getServerObject( this );
-      serverObject.set( "topItemIndex", this._topItemIndex );
+      var remoteObject = server.getRemoteObject( this );
+      remoteObject.set( "topItemIndex", this._topItemIndex );
       if( this._hasSetDataListener || this._vertScrollBar.getHasSelectionListener() ) {
         this._startScrollBarChangesTimer( false );
       }
@@ -986,8 +986,8 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       // but currently this is needed to sync the value with the
       // server when the scrollbars are hidden by the server.
       var server = rwt.remote.Server.getInstance();
-      var serverObject = server.getServerObject( this );
-      serverObject.set( "scrollLeft", this._horzScrollBar.getValue() );
+      var remoteObject = server.getRemoteObject( this );
+      remoteObject.set( "scrollLeft", this._horzScrollBar.getValue() );
       if( this._hasSetDataListener || this._horzScrollBar.getHasSelectionListener() ) {
         this._startScrollBarChangesTimer( true );
       }
@@ -1010,30 +1010,30 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _sendVerticalScrolled : function() {
       var server = rwt.remote.Server.getInstance();
-      server.getServerObject( this._vertScrollBar ).notify( "Selection" );
+      server.getRemoteObject( this._vertScrollBar ).notify( "Selection" );
     },
 
     _sendHorizontalScrolled : function() {
       var server = rwt.remote.Server.getInstance();
-      server.getServerObject( this._horzScrollBar ).notify( "Selection" );
+      server.getRemoteObject( this._horzScrollBar ).notify( "Selection" );
     },
 
     _sendSetData : function() {
       var server = rwt.remote.Server.getInstance();
-      server.getServerObject( this ).notify( "SetData" );
+      server.getRemoteObject( this ).notify( "SetData" );
     },
 
     _sendItemUpdate : function( item, event ) {
       if( !this._inServerResponse() ) {
         if( event.msg === "expanded" || event.msg === "collapsed" ) {
           var expanded = event.msg === "expanded";
-          rwt.remote.Server.getInstance().getServerObject( item ).set( "expanded", expanded );
+          rwt.remote.Server.getInstance().getRemoteObject( item ).set( "expanded", expanded );
           if( expanded && this._hasExpandListener ) {
-            rwt.remote.Server.getInstance().getServerObject( this ).notify( "Expand", {
+            rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Expand", {
               "item" : rwt.protocol.ObjectRegistry.getId( item )
             } );
           } else if( !expanded && this._hasCollapseListener ) {
-            rwt.remote.Server.getInstance().getServerObject( this ).notify( "Collapse", {
+            rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Collapse", {
               "item" : rwt.protocol.ObjectRegistry.getId( item )
             } );
           }

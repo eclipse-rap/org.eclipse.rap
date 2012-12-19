@@ -112,14 +112,14 @@ rwt.qx.Class.define( "rwt.widgets.List", {
         var index = this._clientArea.indexOf( selectedItems[ i ] );
         selection.push( index );
       }
-      rwt.remote.Server.getInstance().getServerObject( this ).set( "selection", selection );
+      rwt.remote.Server.getInstance().getRemoteObject( this ).set( "selection", selection );
     },
 
     _onUserScroll : function( horizontal ) {
       var topIndex = this._isCreated ? this._getTopIndex() : 0;
       var server = rwt.remote.Server.getInstance();
-      var serverObject = server.getServerObject( this );
-      serverObject.set( "topIndex", topIndex );
+      var remoteObject = server.getRemoteObject( this );
+      remoteObject.set( "topIndex", topIndex );
     },
 
     _onDblClick : function( evt ) {

@@ -165,13 +165,13 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
         server.sendDelayed( 500 );
         server.onNextSend( this._onSend, this );
       }
-      server.getServerObject( this ).set( "text", this.getComputedValue() );
+      server.getRemoteObject( this ).set( "text", this.getComputedValue() );
       this._detectSelectionChange();
     },
 
     _onSend : function() {
       if( this._modifyScheduled ) {
-        rwt.remote.Server.getInstance().getServerObject( this ).notify( "Modify", null, true );
+        rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Modify", null, true );
         this._modifyScheduled = false;
       }
     },

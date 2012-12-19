@@ -134,7 +134,7 @@ rwt.qx.Class.define( "rwt.widgets.CoolItem", {
       this.getTopLevelWidget().setGlobalCursor( null );
       // Send request that informs about dragged CoolItem
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        rwt.remote.Server.getInstance().getServerObject( this ).call( "move", {
+        rwt.remote.Server.getInstance().getRemoteObject( this ).call( "move", {
           "left" : this.getLeft()
         } );
       }

@@ -103,7 +103,7 @@ rwt.protocol.MessageProcessor = {
       handler.destructor( targetObject );
     }
     rwt.protocol.ObjectRegistry.remove( targetId );
-    rwt.protocol.ServerObjectFactory.remove( targetId );
+    rwt.protocol.RemoteObjectFactory.remove( targetId );
     for( var i = 0; children != null && i < children.length; i++ ) {
       if( children[ i ] ) {
         this._processDestroy( rwt.protocol.ObjectRegistry.getId( children[ i ] ) );

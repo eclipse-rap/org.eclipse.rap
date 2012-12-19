@@ -123,8 +123,8 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
     },
 
     _storeMeasurements : function( id, results ) {
-      var serverObject = rwt.remote.Server.getInstance().getServerObject( this );
-      serverObject.call( "storeMeasurements", {
+      var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+      remoteObject.call( "storeMeasurements", {
         "results" : results
       } );
     },

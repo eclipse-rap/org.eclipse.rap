@@ -317,7 +317,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
      */
     close : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        rwt.remote.Server.getInstance().getServerObject( this ).notify( "Close" );
+        rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Close" );
       }
     },
 
@@ -349,8 +349,8 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       {
         this._notifyDeactivate( this._activeControl, widget );
         var id = rwt.widgets.util.WidgetManager.getInstance().findIdByWidget( widget );
-        var serverObject = rwt.remote.Server.getInstance().getServerObject( this );
-        serverObject.set( "activeControl", id );
+        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+        remoteObject.set( "activeControl", id );
         this._notifyActivate( this._activeControl, widget );
         this._activeControl = widget;
       }
@@ -366,8 +366,8 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
         }
       }
       if( target != null && !target.contains( newActive ) ) {
-        var serverObject = rwt.remote.Server.getInstance().getServerObject( target );
-        serverObject.notify( "Deactivate" );
+        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( target );
+        remoteObject.notify( "Deactivate" );
       }
     },
 
@@ -381,8 +381,8 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
         }
       }
       if( target != null && !target.contains( oldActive ) ) {
-        var serverObject = rwt.remote.Server.getInstance().getServerObject( target );
-        serverObject.notify( "Activate" );
+        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( target );
+        remoteObject.notify( "Activate" );
       }
     },
 
@@ -409,7 +409,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       }
       // end of workaround
       if( !rwt.remote.EventUtil.getSuspended() && this.getActive() ) {
-        rwt.remote.Server.getInstance().getServerObject( this ).notify( "Activate" );
+        rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Activate" );
       }
       var active = evt.getValue();
       if( active ) {
@@ -436,7 +436,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
         this._sendBounds();
         if( this._hasResizeListener ) {
           var server = rwt.remote.Server.getInstance();
-          server.getServerObject( this ).notify( "Resize", {} );
+          server.getRemoteObject( this ).notify( "Resize", {} );
         }
       }
     },
@@ -446,7 +446,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
         this._sendBounds();
         if( this._hasMoveListener ) {
           var server = rwt.remote.Server.getInstance();
-          server.getServerObject( this ).notify( "Move", {} );
+          server.getRemoteObject( this ).notify( "Move", {} );
         }
       }
     },
@@ -457,7 +457,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       var top = this._parseNumber( this.getTop() );
       var height = this._parseNumber( this.getHeightValue() );
       var width = this._parseNumber( this.getWidthValue() );
-      server.getServerObject( this ).set( "bounds", [ left, top, width, height ] );
+      server.getRemoteObject( this ).set( "bounds", [ left, top, width, height ] );
     },
 
     _parseNumber : function( value ) {
@@ -490,7 +490,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
           var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
           var focusedChildId = widgetManager.findIdByWidget( focusedChild );
           var server = rwt.remote.Server.getInstance();
-          var serverDisplay = server.getServerObject( rwt.widgets.Display.getCurrent() );
+          var serverDisplay = server.getRemoteObject( rwt.widgets.Display.getCurrent() );
           serverDisplay.set( "focusControl", focusedChildId );
         }
       }

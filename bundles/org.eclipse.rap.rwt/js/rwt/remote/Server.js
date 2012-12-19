@@ -163,8 +163,8 @@ rwt.qx.Class.define( "rwt.remote.Server", {
       return this._writer;
     },
 
-    getServerObject : function( target ) {
-      return rwt.protocol.ServerObjectFactory.getServerObject( target );
+    getRemoteObject : function( target ) {
+      return rwt.protocol.RemoteObjectFactory.getRemoteObject( target );
     },
 
     onNextSend : function( func, context ) {

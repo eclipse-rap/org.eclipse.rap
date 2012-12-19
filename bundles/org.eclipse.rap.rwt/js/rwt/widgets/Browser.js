@@ -122,7 +122,7 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
 
     _sendProgressEvent : function() {
       if( this._hasProgressListener ) {
-        rwt.remote.Server.getInstance().getServerObject( this ).notify( "Progress" );
+        rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Progress" );
       }
     },
 
@@ -142,9 +142,9 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
         success = false;
       }
       var req = rwt.remote.Server.getInstance();
-      var serverObject = rwt.remote.Server.getInstance().getServerObject( this );
-      serverObject.set( "executeResult", success );
-      serverObject.set( "evaluateResult", result );
+      var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+      remoteObject.set( "executeResult", success );
+      remoteObject.set( "evaluateResult", result );
       if( this.getExecutedFunctionPending() ) {
         req.sendImmediate( false );
       } else {
@@ -254,7 +254,7 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
     _createFunctionImpl : function( name ) {
       var win = this.getContentWindow();
       var server = rwt.remote.Server.getInstance();
-      var serverObject = server.getServerObject( this );
+      var remoteObject = server.getRemoteObject( this );
       var that = this;
       win[ name + "_impl" ] = function() {
         var result = {};
@@ -265,8 +265,8 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
               + "\". Another browser function is still pending.";
           } else {
             var args = that.toJSON( arguments );
-            serverObject.set( "executeFunction", name );
-            serverObject.set( "executeArguments", args );
+            remoteObject.set( "executeFunction", name );
+            remoteObject.set( "executeArguments", args );
             that.setExecutedFunctionResult( null );
             that.setExecutedFunctionError( null );
             that.setExecutedFunctionPending( true );

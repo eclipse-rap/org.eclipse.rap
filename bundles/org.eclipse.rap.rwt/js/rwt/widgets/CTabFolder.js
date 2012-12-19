@@ -448,7 +448,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
       if( this._chevronMenu == null || !this._chevronMenu.isSeeable() ) {
         if( !rwt.remote.EventUtil.getSuspended() ) {
           var server = rwt.remote.Server.getInstance();
-          server.getServerObject( this ).notify( "Folder", { "detail" : "showList" } );
+          server.getRemoteObject( this ).notify( "Folder", { "detail" : "showList" } );
         }
       }
     },
@@ -480,7 +480,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
         server.addParameter( id + ".minimized", this._minMaxState == "min" );
         server.addParameter( id + ".maximized", this._minMaxState == "max" );
         if( this._hasFolderListener ) {
-          server.getServerObject( this ).notify( "Folder", { "detail" : detail } );
+          server.getRemoteObject( this ).notify( "Folder", { "detail" : detail } );
         }
       }
     },

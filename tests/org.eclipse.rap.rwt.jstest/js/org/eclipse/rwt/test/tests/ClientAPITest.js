@@ -39,7 +39,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
 
       var result = rap.getRemoteObject( obj );
 
-      assertIdentical( result, rwt.remote.Server.getInstance().getServerObject( obj ) );
+      assertIdentical( result, rwt.remote.Server.getInstance().getRemoteObject( obj ) );
       AdapterRegistry.remove( "myTestType" );
     },
 

@@ -19,16 +19,16 @@ var server = rwt.remote.Server.getInstance();
  * and are used to write remote operations into the next protocol message.
  * @description This class is not available in the global namespace. Instances can only
  * be obtained from {@link rap.getRemoteObject}.
- * @exports rwt.protocol.ServerObject as RemoteObject
+ * @exports rwt.protocol.RemoteObject as RemoteObject
  * @since 2.0
  * @param {}
  *
  */
-rwt.protocol.ServerObject = function( id ) {
+rwt.protocol.RemoteObject = function( id ) {
   this._id = id;
 };
 
-rwt.protocol.ServerObject.prototype = {
+rwt.protocol.RemoteObject.prototype = {
 
   /**
    * @description Sets the specified property of the remote object to the given value.

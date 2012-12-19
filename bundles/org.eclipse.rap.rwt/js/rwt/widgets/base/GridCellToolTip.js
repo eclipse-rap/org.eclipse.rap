@@ -53,7 +53,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridCellToolTip", {
       if( this._isValidCell() ) {
         var server = rwt.remote.Server.getInstance();
         this._requestedCell = this._itemId + "," + this._columnIndex;
-        server.getServerObject( this._grid ).call( "renderToolTipText", {
+        server.getRemoteObject( this._grid ).call( "renderToolTipText", {
           "item" : this._itemId,
           "column" : this._columnIndex
         } );

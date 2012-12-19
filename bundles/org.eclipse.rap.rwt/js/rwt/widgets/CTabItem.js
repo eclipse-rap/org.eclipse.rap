@@ -217,7 +217,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     _onClose : function( evt ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         var server = rwt.remote.Server.getInstance();
-        server.getServerObject( this.getParent() ).notify( "Folder", {
+        server.getRemoteObject( this.getParent() ).notify( "Folder", {
           "detail" : "close",
           "item" : rwt.protocol.ObjectRegistry.getId( this )
         } );

@@ -377,7 +377,7 @@ rwt.qx.Class.define("rwt.client.BrowserNavigation",
     _historyNavigated : function( event ) {
       var state = event.getData();
       var server = rwt.remote.Server.getInstance();
-      server.getServerObject( this ).notify( "Navigation", {
+      server.getRemoteObject( this ).notify( "Navigation", {
         "state" : state
       } );
     }

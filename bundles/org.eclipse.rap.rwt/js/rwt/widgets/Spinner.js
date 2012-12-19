@@ -123,7 +123,7 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
     _onChangeValue : function( evt ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         var server = rwt.remote.Server.getInstance();
-        server.getServerObject( this ).set( "selection", this.getManager().getValue() );
+        server.getRemoteObject( this ).set( "selection", this.getManager().getValue() );
         if( this._hasSelectionListener ) {
           server.onNextSend( this._sendWidgetSelected, this );
           server.sendDelayed( 500 );
