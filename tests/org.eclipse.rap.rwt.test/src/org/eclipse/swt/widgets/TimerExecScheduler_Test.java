@@ -92,6 +92,10 @@ public class TimerExecScheduler_Test extends TestCase {
     verify( taskCaptor.getValue() ).cancel();
   }
 
+  public void testCancel_cancelNonExistingTaskDoesNotFail() {
+    scheduler.cancel( mock( Runnable.class ) );
+  }
+
   public void testCancel_removesTask() {
     Runnable runnable = mock( Runnable.class );
     scheduler.schedule( 23, runnable );

@@ -12,8 +12,6 @@
 package org.eclipse.rap.rwt.internal.serverpush;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -45,10 +43,8 @@ import org.eclipse.swt.widgets.Display;
 
 public class ServerPushManager_Test extends TestCase {
   public static final String SYS_PROP_SLEEP_TIME = "sleepTime";
-  public static final String SYS_PROP_TIMER_EXEC_DELAY = "timerExecDelay";
 
   private static final int SLEEP_TIME;
-  private static final int TIMER_EXEC_DELAY;
 
   private static final Object HANDLE_1 = new Object();
   private static final Object HANDLE_2 = new Object();
@@ -58,8 +54,6 @@ public class ServerPushManager_Test extends TestCase {
   static {
     String sleepTimeProp = System.getProperty( SYS_PROP_SLEEP_TIME );
     SLEEP_TIME = sleepTimeProp == null ? 200 : Integer.parseInt( sleepTimeProp );
-    String timerExecDelayProp = System.getProperty( SYS_PROP_TIMER_EXEC_DELAY );
-    TIMER_EXEC_DELAY = timerExecDelayProp == null ? 5000 :Integer.parseInt( timerExecDelayProp );
   }
 
   private volatile String log = "";
@@ -312,50 +306,6 @@ public class ServerPushManager_Test extends TestCase {
       assertEquals( SWT.ERROR_FAILED_EXEC, e.code );
       assertSame( exception, e.throwable );
     }
-  }
-
-  public void testTimerExec() throws Exception {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Runnable runnable = mock( Runnable.class );
-    display.timerExec( TIMER_EXEC_DELAY, runnable );
-    Thread.sleep( TIMER_EXEC_DELAY + 50 );
-
-    display.readAndDispatch();
-
-    verify( runnable ).run();
-  }
-
-  // Ensure that runnables that were added via timerExec but should be executed
-  // in the future are *not* executed on session shutdown
-  public void testNoTimerExecAfterSessionShutdown() throws Exception {
-    Runnable runnable = mock( Runnable.class );
-    display.timerExec( TIMER_EXEC_DELAY, runnable );
-    display.dispose();
-    Thread.sleep( SLEEP_TIME );
-    verifyZeroInteractions( runnable );
-  }
-
-  public void testRemoveAddedTimerExec() throws Exception {
-    Runnable runnable = mock( Runnable.class );
-    display.timerExec( TIMER_EXEC_DELAY, runnable );
-    display.timerExec( -1, runnable );
-    Thread.sleep( SLEEP_TIME );
-    assertFalse( manager.hasRunnables() );
-    verifyZeroInteractions( runnable );
-  }
-
-  public void testTimerExecActivatesServerPush() {
-    display.timerExec( TIMER_EXEC_DELAY, mock( Runnable.class ) );
-
-    assertTrue( ServerPushManager.getInstance().isServerPushActive() );
-  }
-
-  public void testDispatchingTimerExecRunnableDeactivatesServerPush() throws Exception {
-    display.timerExec( TIMER_EXEC_DELAY, mock( Runnable.class ) );
-
-    Thread.sleep( TIMER_EXEC_DELAY + 50 );
-
-    assertFalse( ServerPushManager.getInstance().isServerPushActive() );
   }
 
   // This test ensures that addSync doesn't cause deadlocks

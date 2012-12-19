@@ -16,7 +16,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
@@ -75,6 +74,7 @@ public class TimerExecTask_Test extends TestCase {
   }
 
   public void testRun_doesNotAddRunnableWhenDisplayDisposed() {
+    // Ensure that runnables that were added via timerExec are *not* executed on session shutdown
     Runnable runnable = mock( Runnable.class );
     TimerExecTask task = new TimerExecTask( scheduler, runnable );
     display.dispose();
