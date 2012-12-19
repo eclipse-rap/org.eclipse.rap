@@ -14,14 +14,14 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.DragSource", {
   factory : function( properties ) {
     var control = rwt.protocol.ObjectRegistry.getObject( properties.control );
     var result = { "control" : control };
-    org.eclipse.rwt.DNDSupport.getInstance().registerDragSource( control, properties.style );
+    rwt.remote.DNDSupport.getInstance().registerDragSource( control, properties.style );
     rwt.protocol.AdapterUtil.addDestroyableChild( control, result );
     return result;
   },
 
   destructor : function( source ) {
     rwt.protocol.AdapterUtil.removeDestroyableChild( source.control, source );
-    org.eclipse.rwt.DNDSupport.getInstance().deregisterDragSource( source.control );
+    rwt.remote.DNDSupport.getInstance().deregisterDragSource( source.control );
   },
 
   properties : [ "transfer" ],
@@ -29,7 +29,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.DragSource", {
   propertyHandler : {
     "transfer" : function( source, value ) {
       var control = source.control;
-      org.eclipse.rwt.DNDSupport.getInstance().setDragSourceTransferTypes( control, value );
+      rwt.remote.DNDSupport.getInstance().setDragSourceTransferTypes( control, value );
     }
   },
 
@@ -37,26 +37,26 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.DragSource", {
 
   methodHandler : {
     "changeFeedback" : function( source, properties ) {
-      var dnd = org.eclipse.rwt.DNDSupport.getInstance();
+      var dnd = rwt.remote.DNDSupport.getInstance();
       var control = rwt.protocol.ObjectRegistry.getObject( properties.control );
       var feedback = properties.feedback;
       var flags = properties.flags;
       dnd.setFeedback( control, feedback, flags );
     },
     "changeDetail" : function( source, properties ) {
-      var dnd = org.eclipse.rwt.DNDSupport.getInstance();
+      var dnd = rwt.remote.DNDSupport.getInstance();
       var control = rwt.protocol.ObjectRegistry.getObject( properties.control );
       var detail = properties.detail;
       dnd.setOperationOverwrite( control, detail );
     },
     "changeDataType" : function( source, properties ) {
-      var dnd = org.eclipse.rwt.DNDSupport.getInstance();
+      var dnd = rwt.remote.DNDSupport.getInstance();
       var control = rwt.protocol.ObjectRegistry.getObject( properties.control );
       var dataType = properties.dataType;
       dnd.setDataType( control, dataType );
     },
     "cancel" : function( source, properties ) {
-      var dnd = org.eclipse.rwt.DNDSupport.getInstance();
+      var dnd = rwt.remote.DNDSupport.getInstance();
       dnd.cancel();
     }
   }

@@ -109,7 +109,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
     },
 
     _sendChanges : function( date, month, year ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         var req = rwt.remote.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
@@ -117,7 +117,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
         req.addParameter( id + ".month", month );
         req.addParameter( id + ".year", year );
         if( this._hasSelectionListener ) {
-          org.eclipse.swt.EventUtil.notifySelected( this );
+          rwt.remote.EventUtil.notifySelected( this );
         }
       }
     },

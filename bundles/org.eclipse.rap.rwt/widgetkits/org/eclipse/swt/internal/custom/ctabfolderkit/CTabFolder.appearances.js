@@ -37,9 +37,9 @@ var appearances = {
         } else {
           borderRadii = [ 0, 0, radii[ 2 ], radii[ 3 ] ];
         }
-        result.border = new org.eclipse.rwt.Border( borderWidth, "rounded", color, borderRadii );
+        result.border = new rwt.util.html.Border( borderWidth, "rounded", color, borderRadii );
       } else {
-        result.border = new org.eclipse.rwt.Border( borderWidth, "solid", color );
+        result.border = new rwt.util.html.Border( borderWidth, "solid", color );
       }
       return result;
     }
@@ -56,7 +56,7 @@ var appearances = {
         }
         var tv = new rwt.theme.ThemeValues( statesWithSelected );
         var color = tv.getCssColor( "CTabItem", "background-color" );
-        result.border = new org.eclipse.rwt.Border( 2, "solid", color );
+        result.border = new rwt.util.html.Border( 2, "solid", color );
       } else {
         result.border = "undefined";
       }
@@ -72,9 +72,9 @@ var appearances = {
       var color = tv.getCssColor( "CTabFolder", "border-color" );
       var border;
       if( states.barTop ) {
-        border = new org.eclipse.rwt.Border( [ 0, 0, 1, 0 ], "solid", color );
+        border = new rwt.util.html.Border( [ 0, 0, 1, 0 ], "solid", color );
       } else {
-        border = new org.eclipse.rwt.Border( [ 1, 0, 0, 0 ], "solid", color );
+        border = new rwt.util.html.Border( [ 1, 0, 0, 0 ], "solid", color );
       }
       result.border = border;
       return result;
@@ -121,10 +121,10 @@ var appearances = {
         borderWidths[ 3 ] = 1;
       }
       if( rounded && states.selected ) {
-        result.border = new org.eclipse.rwt.Border( borderWidths, "rounded", color, radii );
+        result.border = new rwt.util.html.Border( borderWidths, "rounded", color, radii );
         result.containerOverflow = false;
       } else {
-        result.border = new org.eclipse.rwt.Border( borderWidths, "solid", color );
+        result.border = new rwt.util.html.Border( borderWidths, "solid", color );
       }
       if( states.selected ) {
         result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
@@ -147,7 +147,7 @@ var appearances = {
       if( states.over ) {
         result.backgroundColor = "white";
         var color = tv.getCssColor( "CTabFolder", "border-color" );
-        result.border = new org.eclipse.rwt.Border( 1, "solid", color );
+        result.border = new rwt.util.html.Border( 1, "solid", color );
       } else {
         result.backgroundColor = "undefined";
         result.border = "undefined";

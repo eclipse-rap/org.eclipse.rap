@@ -318,9 +318,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       assertFalse( tree.isItemSelected( item ) );
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree.selectItem( item );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       assertTrue( tree.isItemSelected( item ) );
       tree.destroy();

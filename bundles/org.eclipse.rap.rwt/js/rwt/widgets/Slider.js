@@ -190,7 +190,7 @@ rwt.qx.Class.define( "rwt.widgets.Slider", {
 
     // TODO [tb] : refactor to use only this for scheduling
     _scheduleSendChanges : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         if( !this._requestScheduled ) {
           this._requestScheduled = true;
           // Send changes
@@ -208,7 +208,7 @@ rwt.qx.Class.define( "rwt.widgets.Slider", {
       var id = widgetManager.findIdByWidget( this );
       req.addParameter( id + ".selection", this._selection );
       if( this._hasSelectionListener ) {
-        org.eclipse.swt.EventUtil.notifySelected( this );
+        rwt.remote.EventUtil.notifySelected( this );
       }
       this._requestScheduled = false;
     }

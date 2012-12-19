@@ -89,11 +89,11 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
     },
 
     _onDropDownClick : function() {
-      if(    !org.eclipse.swt.EventUtil.getSuspended()
+      if(    !rwt.remote.EventUtil.getSuspended()
           && this._hasSelectionListener
           && this._sendEvent )
       {
-        org.eclipse.swt.EventUtil.notifySelected( this, 0, 0, 0, 0, "arrow" );
+        rwt.remote.EventUtil.notifySelected( this, 0, 0, 0, 0, "arrow" );
       }
       this.dispatchSimpleEvent( "dropDownClicked" );
     },

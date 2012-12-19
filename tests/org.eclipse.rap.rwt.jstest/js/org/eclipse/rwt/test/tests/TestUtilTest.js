@@ -681,7 +681,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testCleanUpKeyUtil : function() {
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
+      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       widget.setUserData( "isControl", true );
       widget.setUserData( "keyListener", true );

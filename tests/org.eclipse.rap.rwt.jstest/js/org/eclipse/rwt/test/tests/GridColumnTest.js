@@ -145,9 +145,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.protocolSet( "w4", { "text" : "foo" } );
       TestUtil.flush();
 
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       shell.setDisplay( true );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
 
       var label = this._getColumnLabel( tree, column );
@@ -785,11 +785,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.fakeMouseEventDOM( label.getElement(), "mouseup", button, 20, 3 );
       TestUtil.flush();
       var feedbackLabel = this._getColumnDragFeedback( tree );
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       TestUtil.protocolSet( "w4", { "left" : 3 } );
       TestUtil.flush();
       assertTrue( feedbackLabel.isSeeable() );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.skipAnimations();
 
       assertFalse( feedbackLabel.isSeeable() );
@@ -817,12 +817,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.fakeMouseEventDOM( label.getElement(), "mouseup", button, 20, 3 );
       TestUtil.flush();
       var feedbackLabel = this._getColumnDragFeedback( tree );
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       TestUtil.protocolSet( "w4", { "left" : 3 } );
       TestUtil.flush();
       var animation = rwt.animation.Animation._queue[ 0 ];
       assertTrue( feedbackLabel.isSeeable() );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.skipAnimations();
       TestUtil.forceTimerOnce();
 
@@ -852,10 +852,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.fakeMouseEventDOM( label.getElement(), "mouseup", button, 70, 3 );
       TestUtil.flush();
       var dummyLabel = this._getDummyLabel( tree );
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       TestUtil.protocolSet( "w4", { "left" : 30 } );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
 
       assertEquals( 50, dummyLabel.getLeft() );
       column.dispose();
@@ -899,10 +899,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.fakeMouseEventDOM( label.getElement(), "mouseup", button, 70, 3 );
       TestUtil.flush();
       var feedbackLabel = this._getColumnDragFeedback( tree );
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       TestUtil.protocolSet( "w4", { "left" : 30 } );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       assertTrue( feedbackLabel.isSeeable() );
       rwt.animation.Animation._mainLoop();
       var animation = rwt.animation.Animation._queue[ 0 ];
@@ -933,10 +933,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.fakeMouseEventDOM( label.getElement(), "mouseup", button, 70, 3 );
       TestUtil.flush();
       var feedbackLabel = this._getColumnDragFeedback( tree );
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       TestUtil.protocolSet( "w4", { "left" : 3 } );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       assertTrue( feedbackLabel.isSeeable() );
       rwt.animation.Animation._mainLoop();
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 13, 3 );

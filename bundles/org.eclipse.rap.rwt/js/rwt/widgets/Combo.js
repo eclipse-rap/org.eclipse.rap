@@ -188,7 +188,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     _onFocusIn : function( evt ) {
       if(    this._field.isCreated()
-          && !org.eclipse.swt.EventUtil.getSuspended() )
+          && !rwt.remote.EventUtil.getSuspended() )
       {
         this._handleSelectionChange();
       }
@@ -392,7 +392,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         var fieldValue = value.getLabel().toString();
         this.setText( this._formatText( fieldValue ) );
         if( this._field.isCreated() ) {
-          if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+          if( !rwt.remote.EventUtil.getSuspended() ) {
             this._field.selectAll();
             this._handleSelectionChange();
           }
@@ -480,7 +480,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         this.setCapture( false );
       }
       if(    evt.getTarget() == this._field
-          && !org.eclipse.swt.EventUtil.getSuspended() )
+          && !rwt.remote.EventUtil.getSuspended() )
       {
         this._handleSelectionChange();
       } else if( this._dropped ) {
@@ -590,7 +590,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
           }
         break;
       }
-      if( this._field.isCreated() && !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( this._field.isCreated() && !rwt.remote.EventUtil.getSuspended() ) {
         this._handleSelectionChange();
       }
     },
@@ -633,7 +633,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
           evt.preventDefault();
         break;
       }
-      if( this._field.isCreated() && !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( this._field.isCreated() && !rwt.remote.EventUtil.getSuspended() ) {
         this._handleSelectionChange();
       }
       if( evt.getCharCode() !== 0 ) {
@@ -659,7 +659,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         this._isModified = true;
         this._selected = null;
         this._resetListSelection();
-        if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+        if( !rwt.remote.EventUtil.getSuspended() ) {
           var req = rwt.remote.Server.getInstance();
           req.addEventListener( "send", this._onSend, this );
           if( this._hasModifyListener ) {
@@ -673,7 +673,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     // Actions, connected with server communication
 
     _onTextBlur : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() && this._isModified ) {
+      if( !rwt.remote.EventUtil.getSuspended() && this._isModified ) {
         var req = rwt.remote.Server.getInstance();
         req.send();
       }
@@ -696,7 +696,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     },
 
     _sendWidgetSelected : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         var req = rwt.remote.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
@@ -704,7 +704,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         var listItem = this._list.getSelectedItem();
         req.addParameter( id + ".selectionIndex", list.getItemIndex( listItem ) );
         if( this._hasSelectionListener ) {
-          org.eclipse.swt.EventUtil.notifySelected( this );
+          rwt.remote.EventUtil.notifySelected( this );
         }
         if( this._hasModifyListener ) {
           this._sendModifyText();
@@ -713,13 +713,13 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     },
 
     _sendWidgetDefaultSelected : function() {
-      if( this._hasDefaultSelectionListener && !org.eclipse.swt.EventUtil.getSuspended() ) {
-        org.eclipse.swt.EventUtil.notifyDefaultSelected( this );
+      if( this._hasDefaultSelectionListener && !rwt.remote.EventUtil.getSuspended() ) {
+        rwt.remote.EventUtil.notifyDefaultSelected( this );
       }
     },
 
     _updateListVisibleRequestParam : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         var req = rwt.remote.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );

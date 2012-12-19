@@ -15,10 +15,10 @@ rwt.qx.Mixin.define( "rwt.event.DomEventPatch", {
 
     setDomEvent : function( domEvent ) {
       this.base( arguments, domEvent );
-      org.eclipse.swt.EventUtil._shiftKey = domEvent.shiftKey;
-      org.eclipse.swt.EventUtil._ctrlKey = domEvent.ctrlKey;
-      org.eclipse.swt.EventUtil._altKey = domEvent.altKey;
-      org.eclipse.swt.EventUtil._metaKey = domEvent.metaKey;
+      rwt.remote.EventUtil._shiftKey = domEvent.shiftKey;
+      rwt.remote.EventUtil._ctrlKey = domEvent.ctrlKey;
+      rwt.remote.EventUtil._altKey = domEvent.altKey;
+      rwt.remote.EventUtil._metaKey = domEvent.metaKey;
     }
 
   }

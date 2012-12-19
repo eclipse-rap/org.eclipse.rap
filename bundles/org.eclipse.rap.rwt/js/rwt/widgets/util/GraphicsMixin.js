@@ -188,7 +188,7 @@ rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
       "newmshtml" : function( radii ) {
         // NOTE : While the actual border is rendred with vector graphics, CSS radii
         //        are set anyway to provide clipping and rounded CSS-shadows
-        var props = org.eclipse.rwt.Border._BORDERRADII;
+        var props = rwt.util.html.Border._BORDERRADII;
         for( var i = 0; i < 4; i++ ) {
           this._style[ props[ i ] ] = radii ? radii[ i ] + "px" : "";
         }
@@ -586,7 +586,7 @@ rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
           if( this._gfxData.shadowShape === undefined ) {
             this._createShadowShape();
             var canvasNode = GraphicsUtil.getCanvasNode( this._gfxCanvas );
-            org.eclipse.rwt.HtmlUtil.setPointerEvents( canvasNode, "none" );
+            rwt.util.html.HtmlUtil.setPointerEvents( canvasNode, "none" );
           }
           var shape = this._gfxData.shadowShape;
           if( !this._gfxData.shadowInsert ) {

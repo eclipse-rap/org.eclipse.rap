@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-rwt.qx.Class.define( "org.eclipse.swt.graphics.GC", {
+rwt.qx.Class.define( "rwt.widgets.GC", {
 
   extend : rwt.qx.Object,
 

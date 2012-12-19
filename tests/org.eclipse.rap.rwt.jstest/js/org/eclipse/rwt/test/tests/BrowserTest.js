@@ -323,14 +323,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         TestUtil.store( browser );
       },
       function( browser ) {
-        org.eclipse.swt.EventUtil.setSuspended( true );
+        rwt.remote.EventUtil.setSuspended( true );
         var error = null;
         try {
           browser.createFunction( "abc" );
         } catch( ex ) {
           error = ex;
         }
-        org.eclipse.swt.EventUtil.setSuspended( false );
+        rwt.remote.EventUtil.setSuspended( false );
         assertTrue( error !== null );
       }
     ],

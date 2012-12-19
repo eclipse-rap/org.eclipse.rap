@@ -121,7 +121,7 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
     },
 
     _onChangeValue : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var server = rwt.remote.Server.getInstance();
         server.getServerObject( this ).set( "selection", this.getManager().getValue() );
         if( this._hasSelectionListener ) {
@@ -139,7 +139,7 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
     },
 
     _onKeyDown : function( event ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         if(    event.getKeyIdentifier() == "Enter"
             && !event.isShiftPressed()
             && !event.isAltPressed()
@@ -160,11 +160,11 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
     },
 
     _sendWidgetSelected : function() {
-      org.eclipse.swt.EventUtil.notifySelected( this );
+      rwt.remote.EventUtil.notifySelected( this );
     },
 
     _sendWidgetDefaultSelected : function() {
-      org.eclipse.swt.EventUtil.notifyDefaultSelected( this );
+      rwt.remote.EventUtil.notifyDefaultSelected( this );
     },
 
     /////////////////

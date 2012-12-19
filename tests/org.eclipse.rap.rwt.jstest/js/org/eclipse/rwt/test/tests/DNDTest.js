@@ -21,7 +21,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testCreateDragSourceByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var ObjectManager = rwt.protocol.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
@@ -58,7 +58,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testDisposeDragSourceByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var ObjectManager = rwt.protocol.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
@@ -94,7 +94,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testDisposeDragSourceWithControlByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var ObjectManager = rwt.protocol.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
@@ -129,7 +129,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testSetDragSourceTransferByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var ObjectManager = rwt.protocol.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
@@ -164,7 +164,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testCreateDropTargetByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var ObjectManager = rwt.protocol.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
@@ -201,7 +201,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testDisposeDropTargetByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var ObjectManager = rwt.protocol.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
@@ -237,7 +237,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testDisposeDropTargetWithControlByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var ObjectManager = rwt.protocol.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
@@ -272,7 +272,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testSetDropTargetTransferByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var ObjectManager = rwt.protocol.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
@@ -308,7 +308,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testEventListener : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var source = this.createSource();
       var target = this.createTarget();
       assertTrue( source.hasEventListeners( "dragstart" ) );
@@ -334,7 +334,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testHashMaps : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var source = this.createSource();
       var target = this.createTarget();
       var sourceHash = source.toHashCode();
@@ -365,7 +365,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     // TODO [tb] : fix order within tests (asserts at end)
     testDragStartAndFinish : function() {
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
@@ -390,7 +390,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     },
 
     testDragEndPropagation : function() {
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var leftButton = rwt.event.MouseEvent.buttons.left;
       var log = [];
@@ -412,7 +412,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testDragStartAndCancel : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
@@ -437,7 +437,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testDragEnterOverLeave : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
@@ -507,7 +507,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     // See Bug 301434
     testEnterEventOnDragStart: function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       // request uses SWT-like event-names:
       TestUtil.prepareTimerUse();
@@ -539,7 +539,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     // See Bug 301276
     testSetPropertyRetroactively : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
@@ -589,7 +589,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     // for Bug 299034
     testStopDropEventPropagation : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       var actions = [ "copy", "move", "alias" ];
       var source = this.createSource();
@@ -655,7 +655,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testIgnorePassOverTarget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
@@ -697,7 +697,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testIgnorePassOverTargetAfterLeave : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
@@ -755,7 +755,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testDragStartAndDrop : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
@@ -806,7 +806,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testFakeMouseEvents : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
@@ -848,7 +848,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testMouseupOutOfDocument : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
       TestUtil.initRequestLog();
@@ -893,7 +893,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testTreeInsertAfterIndicator : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
@@ -950,7 +950,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testTreeInsertBeforeIndicator : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
@@ -1007,7 +1007,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testTreeFeedbackSelect : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
@@ -1057,7 +1057,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testTreeFeedbackExpand : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
@@ -1105,7 +1105,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     // NOTE [tb] : this tests can fail if when its DNDTest is executed on its own. Reason unkown.
     testTreeFeedbackScroll : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
@@ -1239,7 +1239,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testTreeRequestItemOutsideRow_Bug_345692 : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
@@ -1279,7 +1279,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testTreeRequestItemIsSourceItem: function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
@@ -1322,7 +1322,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testTreeDragEmptyRow: function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       TestUtil.prepareTimerUse();
@@ -1356,7 +1356,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testFeedbackWidgetTree : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       var argsMap = {
@@ -1396,7 +1396,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testFeedbackWidgetTreeWithImage : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       var argsMap = {
@@ -1439,7 +1439,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testOperationChanged : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       dndHandler.__dragCache = null;
       var leftButton = rwt.event.MouseEvent.buttons.left;
@@ -1499,7 +1499,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     testCancelDragFromServerSide : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       dndHandler.__dragCache = null;
       var leftButton = rwt.event.MouseEvent.buttons.left;
@@ -1555,7 +1555,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       result.addToDocument();
       rwt.widgets.util.WidgetManager.getInstance().add( result, "w11" );
       result.setUserData( "isControl", true );
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var actions = [ "copy", "move", "alias" ];
       dndSupport.registerDragSource( result, actions );
       dndSupport.setDragSourceTransferTypes( result, [ "default" ] );
@@ -1570,7 +1570,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       result.addToDocument();
       rwt.widgets.util.WidgetManager.getInstance().add( result, "w2" );
       result.setUserData( "isControl", true );
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var actions = [ "copy", "move", "alias" ];
       dndSupport.registerDropTarget( result, actions );
       dndSupport.setDropTargetTransferTypes( result, [ "default" ] );
@@ -1580,7 +1580,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     createTreeTarget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var argsMap = {
         "appearance" : "tree",
         "selectionPadding" : [ 2, 2 ]

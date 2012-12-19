@@ -236,7 +236,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
         } else {
           this.removeState( "selected" );
         }
-        if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+        if( !rwt.remote.EventUtil.getSuspended() ) {
           var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( this );
           var req = rwt.remote.Server.getInstance();
@@ -247,11 +247,11 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
 
     // Not using EventUtil since no event should be sent (for radio at least)
     _sendChanges : function() {
-      if(    !org.eclipse.swt.EventUtil.getSuspended()
+      if(    !rwt.remote.EventUtil.getSuspended()
           && this._hasSelectionListener
           && this._sendEvent )
       {
-        org.eclipse.swt.EventUtil.notifySelected( this );
+        rwt.remote.EventUtil.notifySelected( this );
       }
     },
 

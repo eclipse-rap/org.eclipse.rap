@@ -17,7 +17,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
     
     testSetStylePropertyOnWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
+      var HtmlUtil = rwt.util.html.HtmlUtil;
       var red = "red";
       var widget = this._createWidget();
       HtmlUtil.setStyleProperty( widget, "backgroundColor", red);
@@ -27,7 +27,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
     
     testSetStylePropertyOnElement : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
+      var HtmlUtil = rwt.util.html.HtmlUtil;
       var red = "red";
       var element = document.createElement( "div" );
       HtmlUtil.setStyleProperty( element, "backgroundColor", red );
@@ -36,7 +36,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
     
     testRemoveStylePropertyOnWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
+      var HtmlUtil = rwt.util.html.HtmlUtil;
       var red = "red";
       var widget = this._createWidget();
       HtmlUtil.setStyleProperty( widget, "backgroundColor", red );
@@ -47,7 +47,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
 
     testRemoveStylePropertyOnElement : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
+      var HtmlUtil = rwt.util.html.HtmlUtil;
       var red = "red";
       var element = document.createElement( "div" );
       HtmlUtil.setStyleProperty( element, "backgroundColor", red );
@@ -57,7 +57,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
     
     testSetStylePropertyOnWidgetBeforeCreate : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
+      var HtmlUtil = rwt.util.html.HtmlUtil;
       var widget = this._createWidget( true );
       var red = "red";
       HtmlUtil.setStyleProperty( widget, "color", red );
@@ -68,7 +68,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
     
     testRemoveStylePropertyOnWidgetBeforeCreate : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
+      var HtmlUtil = rwt.util.html.HtmlUtil;
       var red = "red";
       var widget = this._createWidget( true );
       HtmlUtil.setStyleProperty( widget, "color", red );
@@ -80,7 +80,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
 
     testSetOpacity : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
+      var HtmlUtil = rwt.util.html.HtmlUtil;
       var element = document.createElement( "div" );
       var widget = this._createWidget();
       HtmlUtil.setOpacity( element, 0.5 );
@@ -118,7 +118,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
 
     testSetOpacityOnOuterElement : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
+      var HtmlUtil = rwt.util.html.HtmlUtil;
       var element = document.createElement( "div" );
       var widget = this._createWidget();
       widget.prepareEnhancedBorder();

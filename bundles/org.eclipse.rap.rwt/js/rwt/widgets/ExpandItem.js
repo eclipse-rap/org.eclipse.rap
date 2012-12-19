@@ -109,7 +109,7 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
     },
 
     _onClick : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         this.setExpanded( !this._expanded );
         var serverObject = rwt.remote.Server.getInstance().getServerObject( this );
         serverObject.set( "expanded", this._expanded );

@@ -526,7 +526,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
     },
 
     testNotifyFocusIn : function() {
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var shell = this._protocolCreateShell();
       this._protocolListen( { "FocusIn" : true } );
       shell.open();
@@ -534,7 +534,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
       otherShell.open();
       TestUtil.flush();
       otherShell.setFocused( true );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
 
       shell.setFocused( true );
 
@@ -545,7 +545,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
     },
 
     testNotifyFocusOut : function() {
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var shell = this._protocolCreateShell();
       this._protocolListen( { "FocusOut" : true } );
       shell.open();
@@ -553,7 +553,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
       otherShell.open();
       TestUtil.flush();
       shell.setFocused( true );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
 
       otherShell.setFocused( true );
 
@@ -591,12 +591,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
     },
 
     testNotifyMouseDown : function() {
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var shell = this._protocolCreateShell();
       this._protocolListen( { "MouseDown" : true } );
       this._protocolSet( { "visibility" : true } );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
 
       TestUtil.click( shell, 10, 20 );
 
@@ -612,12 +612,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
     },
 
     testNotifyMouseUp : function() {
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var shell = this._protocolCreateShell();
       this._protocolListen( { "MouseUp" : true } );
       this._protocolSet( { "visibility" : true } );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
 
       TestUtil.ctrlClick( shell );
 
@@ -633,12 +633,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
     },
 
     testNotifyMouseDoubleClick : function() {
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var shell = this._protocolCreateShell();
       this._protocolListen( { "MouseDoubleClick" : true } );
       this._protocolSet( { "visibility" : true } );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
 
       TestUtil.doubleClick( shell );
 
@@ -654,14 +654,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
     },
 
     testNotifyMouseDoubleClickWithAllListeners : function() {
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var shell = this._protocolCreateShell();
       this._protocolListen( { "MouseDown" : true } );
       this._protocolListen( { "MouseDoubleClick" : true } );
       this._protocolListen( { "MouseUp" : true } );
       this._protocolSet( { "visibility" : true } );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
 
       TestUtil.doubleClick( shell );
 
@@ -703,12 +703,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
     },
 
     testNotifyMenuDetect : function() {
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var shell = this._protocolCreateShell();
       this._protocolListen( { "MenuDetect" : true } );
       this._protocolSet( { "visibility" : true } );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
 
       TestUtil.press( shell, "Apps", false, 0 );
 
@@ -726,12 +726,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
     },
 
     testNotifyHelp : function() {
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var shell = this._protocolCreateShell();
       this._protocolListen( { "Help" : true } );
       this._protocolSet( { "visibility" : true } );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
 
       TestUtil.press( shell, "F1", false, 0 );
 

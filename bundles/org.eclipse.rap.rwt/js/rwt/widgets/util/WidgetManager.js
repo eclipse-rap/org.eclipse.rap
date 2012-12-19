@@ -263,7 +263,7 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetManager", {
           && bottomLeftRaduis >= 0 )
       {
         var radii = [ topLeftRadius, topRightRaduis, bottomRightRaduis, bottomLeftRaduis ];
-        var border = new org.eclipse.rwt.Border( width, "rounded", color, radii );
+        var border = new rwt.util.html.Border( width, "rounded", color, radii );
         widget.setBorder( border );
       } else {
         widget.resetBorder();
@@ -322,31 +322,31 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetManager", {
         {
           nativeType : "focusin",
           context : undefined,
-          listener : org.eclipse.swt.EventUtil.focusGained
+          listener : rwt.remote.EventUtil.focusGained
         },
         {
           nativeType : "focusout",
           context : undefined,
-          listener : org.eclipse.swt.EventUtil.focusLost
+          listener : rwt.remote.EventUtil.focusLost
         }
       ],
       "mouse" : [
         {
           nativeType : "mousedown",
           context : undefined,
-          listener : org.eclipse.swt.EventUtil.mouseDown
+          listener : rwt.remote.EventUtil.mouseDown
         },
         {
           nativeType : "mouseup",
           context : undefined,
-          listener : org.eclipse.swt.EventUtil.mouseUp
+          listener : rwt.remote.EventUtil.mouseUp
         }
       ],
       "help" : [
         {
           nativeType : "keydown",
           context : undefined,
-          listener : org.eclipse.swt.EventUtil.helpRequested
+          listener : rwt.remote.EventUtil.helpRequested
         }
       ],
       "contextMenu" : [
@@ -365,12 +365,12 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetManager", {
         {
           nativeType : "keydown",
           context : undefined,
-          listener : org.eclipse.swt.EventUtil.menuDetectedByKey
+          listener : rwt.remote.EventUtil.menuDetectedByKey
         },
         {
           nativeType : "mouseup",
           context : undefined,
-          listener : org.eclipse.swt.EventUtil.menuDetectedByMouse
+          listener : rwt.remote.EventUtil.menuDetectedByMouse
         }
       ]
     }

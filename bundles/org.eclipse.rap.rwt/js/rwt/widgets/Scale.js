@@ -312,13 +312,13 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
     },
 
     _sendChanges : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         var req = rwt.remote.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
         req.addParameter( id + ".selection", this._selection );
         if( this._hasSelectionListener ) {
-          org.eclipse.swt.EventUtil.notifySelected( this );
+          rwt.remote.EventUtil.notifySelected( this );
         }
         this._readyToSendChanges = true;
       }

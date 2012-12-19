@@ -354,9 +354,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       widget.addEventListener( "mousedown", logger );
       var node = widget._getTargetNode();
 
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       this.touch( node, "touchstart" );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
 
       assertEquals( [], log ); // should also call prevent default, but that cant be tested
       widget.destroy();
@@ -961,7 +961,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testScrollGridVerticalLimit : function() {
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var grid = this._createGridByProtocol();
       grid.setScrollBarsVisible( false, true );
       grid.setItemCount( 50 );
@@ -972,7 +972,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       TestUtil.flush();
       grid.setTopItemIndex( 20 );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
 
       this.touchAt( node, "touchstart", 0, 500 );
@@ -986,7 +986,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
 
     testScrollGridVerticalLimitAndBack : function() {
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var grid = this._createGridByProtocol();
       grid.setScrollBarsVisible( false, true );
       grid.setItemCount( 50 );
@@ -997,7 +997,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       TestUtil.flush();
       grid.setTopItemIndex( 20 );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
 
       this.touchAt( node, "touchstart", 0, 500 );
@@ -1012,7 +1012,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testScrollGridHorizontal : function() {
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var grid = this._createGridByProtocol();
       grid.setScrollBarsVisible( false, true );
       grid.setItemCount( 50 );
@@ -1025,7 +1025,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       grid.setItemMetrics( 0, 0, 1000, 0, 0, 0, 1000 );
       grid.setScrollBarsVisible( true, true );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       var node = grid._rowContainer._getTargetNode().childNodes[ 10 ];
 
       this.touchAt( node, "touchstart", 500, 0 );

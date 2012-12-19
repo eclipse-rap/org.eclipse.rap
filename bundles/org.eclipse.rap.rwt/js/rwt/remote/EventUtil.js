@@ -13,7 +13,7 @@
 /**
  * This class contains static listener functions for common events.
  */
-rwt.qx.Class.define( "org.eclipse.swt.EventUtil", {
+rwt.qx.Class.define( "rwt.remote.EventUtil", {
 
   statics : {
     _suspended : false,
@@ -47,10 +47,10 @@ rwt.qx.Class.define( "org.eclipse.swt.EventUtil", {
     },
 
     widgetDefaultSelected : function( evt, target ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var server = rwt.remote.Server.getInstance();
         var properties = {};
-        org.eclipse.swt.EventUtil.addModifierToProperties( properties );
+        rwt.remote.EventUtil.addModifierToProperties( properties );
         var serverObject = server.getServerObject( target ? target : evt.getTarget() );
         serverObject.notify( "DefaultSelection", properties );
       }
@@ -61,11 +61,11 @@ rwt.qx.Class.define( "org.eclipse.swt.EventUtil", {
       var top = evt.getTarget().getTop();
       var width = evt.getTarget().getWidth();
       var height = evt.getTarget().getHeight();
-      org.eclipse.swt.EventUtil.notifySelected( evt.getTarget(), left, top, width, height );
+      rwt.remote.EventUtil.notifySelected( evt.getTarget(), left, top, width, height );
     },
 
     notifySelected : function( target, left, top, width, height, detail ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var server = rwt.remote.Server.getInstance();
         var properties;
         if( arguments.length === 2 ) {
@@ -79,13 +79,13 @@ rwt.qx.Class.define( "org.eclipse.swt.EventUtil", {
               "detail" : detail
           };
         }
-        org.eclipse.swt.EventUtil.addModifierToProperties( properties );
+        rwt.remote.EventUtil.addModifierToProperties( properties );
         server.getServerObject( target ).notify( "Selection", properties );
       }
     },
 
     notifyDefaultSelected : function( target, left, top, width, height, detail ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var server = rwt.remote.Server.getInstance();
         var properties;
         if( arguments.length === 2 ) {
@@ -99,44 +99,44 @@ rwt.qx.Class.define( "org.eclipse.swt.EventUtil", {
               "detail" : detail
           };
         }
-        org.eclipse.swt.EventUtil.addModifierToProperties( properties );
+        rwt.remote.EventUtil.addModifierToProperties( properties );
         server.getServerObject( target ).notify( "DefaultSelection", properties );
       }
     },
 
     addModifierToProperties : function( properties ) {
       var commandKey
-        = rwt.client.Client.getPlatform() === "mac" && org.eclipse.swt.EventUtil._metaKey;
-      properties.shiftKey = org.eclipse.swt.EventUtil._shiftKey;
-      properties.ctrlKey = org.eclipse.swt.EventUtil._ctrlKey || commandKey;
-      properties.altKey = org.eclipse.swt.EventUtil._altKey;
+        = rwt.client.Client.getPlatform() === "mac" && rwt.remote.EventUtil._metaKey;
+      properties.shiftKey = rwt.remote.EventUtil._shiftKey;
+      properties.ctrlKey = rwt.remote.EventUtil._ctrlKey || commandKey;
+      properties.altKey = rwt.remote.EventUtil._altKey;
     },
 
     _getKeyModifier : function() {
       var modifier = ""; // TODO [tb] : use real array for json protocol
       var commandKey
-        = rwt.client.Client.getPlatform() === "mac" && org.eclipse.swt.EventUtil._metaKey;
-      if( org.eclipse.swt.EventUtil._shiftKey ) {
+        = rwt.client.Client.getPlatform() === "mac" && rwt.remote.EventUtil._metaKey;
+      if( rwt.remote.EventUtil._shiftKey ) {
         modifier += "shift,";
       }
-      if( org.eclipse.swt.EventUtil._ctrlKey || commandKey ) {
+      if( rwt.remote.EventUtil._ctrlKey || commandKey ) {
         modifier += "ctrl,";
       }
-      if( org.eclipse.swt.EventUtil._altKey ) {
+      if( rwt.remote.EventUtil._altKey ) {
         modifier += "alt,";
       }
       return modifier;
     },
 
     focusGained : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var serverObject = rwt.remote.Server.getInstance().getServerObject( evt.getTarget() );
         serverObject.notify( "FocusIn" );
       }
     },
 
     focusLost : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var serverObject = rwt.remote.Server.getInstance().getServerObject( evt.getTarget() );
         serverObject.notify( "FocusOut" );
       }
@@ -146,72 +146,72 @@ rwt.qx.Class.define( "org.eclipse.swt.EventUtil", {
     // Mouse event handling
 
     mouseDown : function( evt ) {
-      if(    !org.eclipse.swt.EventUtil.getSuspended()
-          && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) )
+      if(    !rwt.remote.EventUtil.getSuspended()
+          && rwt.remote.EventUtil._isRelevantMouseEvent( this, evt ) )
       {
         // disabled capturing as it interferes with Combo capturing
         // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
         // from now on, redirect mouse event to this widget
         // this.setCapture( true );
-        org.eclipse.swt.EventUtil._capturingWidget = this;
+        rwt.remote.EventUtil._capturingWidget = this;
         // Collect request parameters and send
-        org.eclipse.swt.EventUtil._notifyMouseListeners( this, evt, "MouseDown" );
+        rwt.remote.EventUtil._notifyMouseListeners( this, evt, "MouseDown" );
       }
     },
 
     mouseUp : function( evt ) {
-      if(    !org.eclipse.swt.EventUtil.getSuspended()
-          && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) )
+      if(    !rwt.remote.EventUtil.getSuspended()
+          && rwt.remote.EventUtil._isRelevantMouseEvent( this, evt ) )
       {
         // disabled capturing as it interferes with Combo capturing
         // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
         // release mouse event capturing
         // this.setCapture( false );
-        org.eclipse.swt.EventUtil._capturingWidget = null;
+        rwt.remote.EventUtil._capturingWidget = null;
         // Add mouse-up request parameter
-        org.eclipse.swt.EventUtil._notifyMouseListeners( this, evt, "MouseUp" );
+        rwt.remote.EventUtil._notifyMouseListeners( this, evt, "MouseUp" );
       }
     },
 
     mouseDoubleClick : function( evt ) {
-      if(    !org.eclipse.swt.EventUtil.getSuspended()
-          && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) )
+      if(    !rwt.remote.EventUtil.getSuspended()
+          && rwt.remote.EventUtil._isRelevantMouseEvent( this, evt ) )
       {
         // disabled capturing as it interferes with Combo capturing
         // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
         // from now on, redirect mouse event to this widget
         // this.setCapture( true );
-        org.eclipse.swt.EventUtil._capturingWidget = this;
+        rwt.remote.EventUtil._capturingWidget = this;
         // Add parameters for double-click event
-        if( org.eclipse.swt.EventUtil._isDoubleClick( this, evt ) ) {
-          org.eclipse.swt.EventUtil._clearLastMouseDown();
-          org.eclipse.swt.EventUtil._notifyMouseListeners( this, evt, "MouseDoubleClick" );
+        if( rwt.remote.EventUtil._isDoubleClick( this, evt ) ) {
+          rwt.remote.EventUtil._clearLastMouseDown();
+          rwt.remote.EventUtil._notifyMouseListeners( this, evt, "MouseDoubleClick" );
         } else {
           // Store relevant data of current event to detect double-clicks
-          var lastMouseDown = org.eclipse.swt.EventUtil._lastMouseDown;
+          var lastMouseDown = rwt.remote.EventUtil._lastMouseDown;
           lastMouseDown.widget = this;
           lastMouseDown.button = evt.getButton();
           lastMouseDown.x = evt.getPageX();
           lastMouseDown.y = evt.getPageY();
           lastMouseDown.mouseUpCount = 0;
-          rwt.client.Timer.once( org.eclipse.swt.EventUtil._clearLastMouseDown,
+          rwt.client.Timer.once( rwt.remote.EventUtil._clearLastMouseDown,
                                 this,
-                                org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME );
+                                rwt.remote.EventUtil.DOUBLE_CLICK_TIME );
         }
       }
     },
 
     mouseUpCounter : function( evt ) {
-      if(    !org.eclipse.swt.EventUtil.getSuspended()
-          && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) )
+      if(    !rwt.remote.EventUtil.getSuspended()
+          && rwt.remote.EventUtil._isRelevantMouseEvent( this, evt ) )
       {
         // disabled capturing as it interferes with Combo capturing
         // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
         // release mouse event capturing
         // this.setCapture( false );
-        org.eclipse.swt.EventUtil._capturingWidget = null;
+        rwt.remote.EventUtil._capturingWidget = null;
         // increase number of mouse-up events since last stored mouse down
-        org.eclipse.swt.EventUtil._lastMouseDown.mouseUpCount += 1;
+        rwt.remote.EventUtil._lastMouseDown.mouseUpCount += 1;
       }
     },
 
@@ -223,7 +223,7 @@ rwt.qx.Class.define( "org.eclipse.swt.EventUtil", {
      */
     _isRelevantMouseEvent : function( widget, evt ) {
       var result = true;
-      if(    widget !== org.eclipse.swt.EventUtil._capturingWidget
+      if(    widget !== rwt.remote.EventUtil._capturingWidget
           && widget !== evt.getOriginalTarget() )
       {
         // find parent control and ensure that it is the same as the widget-
@@ -237,7 +237,7 @@ rwt.qx.Class.define( "org.eclipse.swt.EventUtil", {
     },
 
     _clearLastMouseDown : function() {
-      var lastMouseDown = org.eclipse.swt.EventUtil._lastMouseDown;
+      var lastMouseDown = rwt.remote.EventUtil._lastMouseDown;
       lastMouseDown.widget = null;
       lastMouseDown.button = "";
       lastMouseDown.mouseUpCount = 0;
@@ -248,7 +248,7 @@ rwt.qx.Class.define( "org.eclipse.swt.EventUtil", {
     _isDoubleClick : function( widget, evt ) {
       // TODO [rh] compare last position with current position and don't
       //      report double-click if deviation is too big
-      var lastMouseDown = org.eclipse.swt.EventUtil._lastMouseDown;
+      var lastMouseDown = rwt.remote.EventUtil._lastMouseDown;
       return    lastMouseDown.mouseUpCount === 1
              && lastMouseDown.widget === widget
              && lastMouseDown.button === rwt.event.MouseEvent.C_BUTTON_LEFT
@@ -256,8 +256,8 @@ rwt.qx.Class.define( "org.eclipse.swt.EventUtil", {
     },
 
     _notifyMouseListeners : function( widget, evt, eventType ) {
-      var button = org.eclipse.swt.EventUtil._determineMouseButton( evt );
-      var modifier = org.eclipse.swt.EventUtil._getKeyModifier();
+      var button = rwt.remote.EventUtil._determineMouseButton( evt );
+      var modifier = rwt.remote.EventUtil._getKeyModifier();
       var serverObject = rwt.remote.Server.getInstance().getServerObject( widget );
       var properties = {
         "button" : button,
@@ -265,7 +265,7 @@ rwt.qx.Class.define( "org.eclipse.swt.EventUtil", {
         "y" : evt.getPageY(),
         "time" : this.eventTimestamp()
       };
-      org.eclipse.swt.EventUtil.addModifierToProperties( properties );
+      rwt.remote.EventUtil.addModifierToProperties( properties );
       serverObject.notify( eventType, properties );
     },
 
@@ -322,7 +322,7 @@ rwt.qx.Class.define( "org.eclipse.swt.EventUtil", {
         evt.preventDefault();
         var x = rwt.event.MouseEvent.getPageX();
         var y = rwt.event.MouseEvent.getPageY();
-        org.eclipse.swt.EventUtil.sendMenuDetected( evt.getTarget(), x, y );
+        rwt.remote.EventUtil.sendMenuDetected( evt.getTarget(), x, y );
       }
     },
 
@@ -333,12 +333,12 @@ rwt.qx.Class.define( "org.eclipse.swt.EventUtil", {
         evt.preventDefault();
         var x = evt.getPageX();
         var y = evt.getPageY();
-        org.eclipse.swt.EventUtil.sendMenuDetected( evt.getTarget(), x, y );
+        rwt.remote.EventUtil.sendMenuDetected( evt.getTarget(), x, y );
       }
     },
 
     sendMenuDetected : function( widget, x, y ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         // send menu detect request to server
         var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         // find parent control for the widget that received the event in case

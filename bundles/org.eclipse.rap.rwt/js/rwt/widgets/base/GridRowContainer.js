@@ -218,7 +218,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
       } else if( state.vertical ) {
         borderWidths[ 1 ] = 1;
       }
-      return new org.eclipse.rwt.Border( borderWidths, "solid", gridColor );
+      return new rwt.util.html.Border( borderWidths, "solid", gridColor );
     },
 
     _getRowAppearance : function() {

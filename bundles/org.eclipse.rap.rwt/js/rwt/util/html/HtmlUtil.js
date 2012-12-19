@@ -17,7 +17,7 @@
  * It generally accepts widgets or html-elements as targets.
  * In IE, vml-elements should work aswell.
  */
-rwt.qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
+rwt.qx.Class.define( "rwt.util.html.HtmlUtil", {
 
   statics : {
 
@@ -261,11 +261,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
           && type !== "mouseout" )
       {
         if( type === "mousedown" ) {
-          org.eclipse.rwt.HtmlUtil._refireEvent( newTarget, "mouseover", domEvent );
+          rwt.util.html.HtmlUtil._refireEvent( newTarget, "mouseover", domEvent );
         }
-        org.eclipse.rwt.HtmlUtil._refireEvent( newTarget, type, domEvent );
+        rwt.util.html.HtmlUtil._refireEvent( newTarget, type, domEvent );
         if( type === "mouseup" ) {
-          org.eclipse.rwt.HtmlUtil._refireEvent( newTarget, "mouseout", domEvent );
+          rwt.util.html.HtmlUtil._refireEvent( newTarget, "mouseout", domEvent );
         }
       }
       domTarget.style.display = "";

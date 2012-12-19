@@ -21,7 +21,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       canvas.addToDocument();
       TestUtil.flush();
       assertTrue( canvas.isCreated() );
-      var gc = new org.eclipse.swt.graphics.GC( canvas );
+      var gc = new rwt.widgets.GC( canvas );
       var context = gc._context;
       assertNotNull( context );
       assertEquals( "function", typeof context.beginPath );
@@ -45,7 +45,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
-      var gc = new org.eclipse.swt.graphics.GC( canvas );
+      var gc = new rwt.widgets.GC( canvas );
 
       assertIdentical( gc, gc._canvas.rwtObject );
       assertIdentical( gc, gc._textCanvas.rwtObject );
@@ -59,7 +59,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       var canvas = ObjectManager.getObject( "w3" );
       var gc = ObjectManager.getObject( "w4" );
       assertTrue( canvas instanceof rwt.widgets.Composite );
-      assertTrue( gc instanceof org.eclipse.swt.graphics.GC );
+      assertTrue( gc instanceof rwt.widgets.GC );
       assertIdentical( shell, canvas.getParent() );
       assertIdentical( canvas, gc._control );
       assertTrue( canvas.getUserData( "isControl") );
@@ -76,7 +76,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       var shell = ObjectManager.getObject( "w2" );
       var canvas = ObjectManager.getObject( "w3" );
       var gc = ObjectManager.getObject( "w4" );
-      assertTrue( gc instanceof org.eclipse.swt.graphics.GC );
+      assertTrue( gc instanceof rwt.widgets.GC );
       var node = canvas._getTargetNode();
       assertTrue( node.childNodes.length > 1 );
 
@@ -100,7 +100,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 //      "mshtml" : function() {
 //        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 //        var graphicsUtil = rwt.graphics.GraphicsUtil;
-//        var border = new org.eclipse.rwt.Border( 3, "rounded", "#FF00F0", [ 0, 1, 2, 3 ] );
+//        var border = new rwt.util.html.Border( 3, "rounded", "#FF00F0", [ 0, 1, 2, 3 ] );
 //        var parent = new rwt.widgets.Composite();
 //        parent.addToDocument();
 //        var canvas = new rwt.widgets.Composite();
@@ -130,7 +130,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       assertFalse( canvas.isCreated() );
-      var gc = new org.eclipse.swt.graphics.GC( canvas );
+      var gc = new rwt.widgets.GC( canvas );
       assertNotNull( gc );
       assertNotNull( gc._canvas );
       var context = gc._context;
@@ -155,7 +155,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       assertTrue( canvas.isCreated() );
       var node = canvas._getTargetNode();
       assertIdentical( node.childNodes[ 0 ], widget.getElement() );
-      var gc = new org.eclipse.swt.graphics.GC( canvas );
+      var gc = new rwt.widgets.GC( canvas );
       assertIdentical( node.childNodes[ 0 ], gc._canvas );
       assertIdentical( node.childNodes[ 1 ], gc._textCanvas );
       assertIdentical( node.childNodes[ 2 ], widget.getElement() );
@@ -169,7 +169,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
-      var gc = new org.eclipse.swt.graphics.GC( canvas );
+      var gc = new rwt.widgets.GC( canvas );
       this._setProperty( gc, "strokeStyle", [ 1, 2, 3 ] );
       this._setProperty( gc, "fillStyle", [ 4, 5, 6 ] );
       this._setProperty( gc, "globalAlpha", 0.128 );
@@ -207,7 +207,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
-      var gc = new org.eclipse.swt.graphics.GC( canvas );
+      var gc = new rwt.widgets.GC( canvas );
       this._setProperty( gc, "strokeStyle", [ 1,2,3, 255 ] );
       this._setProperty( gc, "fillStyle", [ 4, 5, 6, 255 ] );
       this._setProperty( gc, "globalAlpha", 0.128 );
@@ -245,7 +245,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
-      var gc = new org.eclipse.swt.graphics.GC( canvas );
+      var gc = new rwt.widgets.GC( canvas );
       gc.init( 300, 300,
                [ [ "Arial" ], 10, false, false ],
                [ 255, 255, 255, 255 ], [ 0, 0, 0, 255 ] );

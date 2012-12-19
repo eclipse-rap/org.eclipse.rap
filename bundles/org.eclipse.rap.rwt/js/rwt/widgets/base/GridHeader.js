@@ -52,7 +52,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
             this._renderLabelLeft( this._children[ i ], column );
           }
         }
-        if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+        if( !rwt.remote.EventUtil.getSuspended() ) {
           rwt.widgets.base.Widget.flushGlobalQueues();
         }
       }

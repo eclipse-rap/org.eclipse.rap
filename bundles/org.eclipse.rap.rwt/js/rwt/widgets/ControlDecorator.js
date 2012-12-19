@@ -42,7 +42,7 @@ rwt.qx.Class.define( "rwt.widgets.ControlDecorator", {
     },
 
     setHasSelectionListener : function( value ) {
-      var eventUtil = org.eclipse.swt.EventUtil;
+      var eventUtil = rwt.remote.EventUtil;
       if( value ) {
         this.addEventListener( "mousedown", eventUtil.widgetSelected, this );
       } else {
@@ -51,7 +51,7 @@ rwt.qx.Class.define( "rwt.widgets.ControlDecorator", {
     },
 
     setHasDefaultSelectionListener : function( value ) {
-      var eventUtil = org.eclipse.swt.EventUtil;
+      var eventUtil = rwt.remote.EventUtil;
       if( value ) {
         this.addEventListener( "dblclick", eventUtil.widgetDefaultSelected, this );
       } else {

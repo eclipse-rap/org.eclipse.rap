@@ -34,11 +34,11 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Display", {
   propertyHandler : {
     "activeKeys" : function( object, value ) {
       var map = rwt.util.Object.fromArray( value );
-      org.eclipse.rwt.KeyEventSupport.getInstance().setKeyBindings( map );
+      rwt.remote.KeyEventSupport.getInstance().setKeyBindings( map );
     },
     "cancelKeys" : function( object, value ) {
       var map = rwt.util.Object.fromArray( value );
-      org.eclipse.rwt.KeyEventSupport.getInstance().setCancelKeys( map );
+      rwt.remote.KeyEventSupport.getInstance().setCancelKeys( map );
     }
   }
 

@@ -189,8 +189,8 @@ rwt.protocol.AdapterUtil = {
       widget.setUserData( "traverseListener", value ? true : null );
     },
     "FocusIn" : function( widget, value ) {
-      var context = org.eclipse.swt.EventUtil;
-      var focusGained = org.eclipse.swt.EventUtil.focusGained;
+      var context = rwt.remote.EventUtil;
+      var focusGained = rwt.remote.EventUtil.focusGained;
       if( value ) {
         widget.addEventListener( "focusin", focusGained, context );
       } else {
@@ -198,8 +198,8 @@ rwt.protocol.AdapterUtil = {
       }
     },
     "FocusOut" : function( widget, value ) {
-      var context = org.eclipse.swt.EventUtil;
-      var focusLost = org.eclipse.swt.EventUtil.focusLost;
+      var context = rwt.remote.EventUtil;
+      var focusLost = rwt.remote.EventUtil.focusLost;
       if( value ) {
         widget.addEventListener( "focusout", focusLost, context );
       } else {
@@ -208,7 +208,7 @@ rwt.protocol.AdapterUtil = {
     },
     "MouseDown" : function( widget, value ) {
       var context;
-      var mouseDown = org.eclipse.swt.EventUtil.mouseDown;
+      var mouseDown = rwt.remote.EventUtil.mouseDown;
       if( value ) {
         widget.addEventListener( "mousedown", mouseDown, context );
       } else {
@@ -217,7 +217,7 @@ rwt.protocol.AdapterUtil = {
     },
     "MouseUp" : function( widget, value ) {
       var context;
-      var mouseUp = org.eclipse.swt.EventUtil.mouseUp;
+      var mouseUp = rwt.remote.EventUtil.mouseUp;
       if( value ) {
         widget.addEventListener( "mouseup", mouseUp, context );
       } else {
@@ -226,8 +226,8 @@ rwt.protocol.AdapterUtil = {
     },
     "MouseDoubleClick" : function( widget, value ) {
       var context;
-      var mouseDoubleClick = org.eclipse.swt.EventUtil.mouseDoubleClick;
-      var mouseUpCounter = org.eclipse.swt.EventUtil.mouseUpCounter;
+      var mouseDoubleClick = rwt.remote.EventUtil.mouseDoubleClick;
+      var mouseUpCounter = rwt.remote.EventUtil.mouseUpCounter;
       if( value ) {
         widget.addEventListener( "mousedown", mouseDoubleClick, context );
         widget.addEventListener( "mouseup", mouseUpCounter, context );
@@ -238,8 +238,8 @@ rwt.protocol.AdapterUtil = {
     },
     "MenuDetect" : function( widget, value ) {
       var context;
-      var detectByKey = org.eclipse.swt.EventUtil.menuDetectedByKey;
-      var detectByMouse = org.eclipse.swt.EventUtil.menuDetectedByMouse;
+      var detectByKey = rwt.remote.EventUtil.menuDetectedByKey;
+      var detectByMouse = rwt.remote.EventUtil.menuDetectedByMouse;
       if( value ) {
         widget.addEventListener( "keydown", detectByKey, context );
         widget.addEventListener( "mouseup", detectByMouse, context );
@@ -250,7 +250,7 @@ rwt.protocol.AdapterUtil = {
     },
     "Help" : function( widget, value ) {
       var context;
-      var helpRequested = org.eclipse.swt.EventUtil.helpRequested;
+      var helpRequested = rwt.remote.EventUtil.helpRequested;
       if( value ) {
         widget.addEventListener( "keydown", helpRequested, context );
       } else {
@@ -285,7 +285,7 @@ rwt.protocol.AdapterUtil = {
         var width = value[ 0 ];
         var color = rwt.util.ColorUtil.rgbToRgbString( value[ 1 ] );
         var radii = value.slice( -4 );
-        var border = new org.eclipse.rwt.Border( width, "rounded", color, radii );
+        var border = new rwt.util.html.Border( width, "rounded", color, radii );
         widget.setBorder( border );
       } else {
         widget.resetBorder();

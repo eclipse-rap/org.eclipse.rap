@@ -201,7 +201,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     },
 
     _onClick : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         if( evt.getTarget() != this._closeButton ) {
           evt.getTarget().getParent()._notifyItemClick( evt.getTarget() );
         }
@@ -215,7 +215,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     },
 
     _onClose : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var server = rwt.remote.Server.getInstance();
         server.getServerObject( this.getParent() ).notify( "Folder", {
           "detail" : "close",

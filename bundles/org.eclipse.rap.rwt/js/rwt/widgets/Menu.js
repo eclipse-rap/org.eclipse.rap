@@ -538,7 +538,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
     },
 
    _menuShown : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         if( this._hasShowListener ) {
           // create preliminary item
           if( this._preItem == null ) {
@@ -575,7 +575,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
     },
 
     _menuHidden : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         if( this._hasHideListener ) {
           rwt.remote.Server.getInstance().getServerObject( this ).notify( "Hide" );
         }

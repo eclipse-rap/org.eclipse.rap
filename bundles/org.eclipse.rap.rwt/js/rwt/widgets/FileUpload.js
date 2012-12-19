@@ -91,7 +91,7 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
       this._inputElement.setAttribute( "size", "1" );
       this._inputElement.style.cursor = this._cursor;
       this._inputElement.onchange = this.__onValueChange;
-      org.eclipse.rwt.HtmlUtil.setOpacity( this._inputElement, 0 );
+      rwt.util.html.HtmlUtil.setOpacity( this._inputElement, 0 );
       this._formElement.appendChild( this._inputElement );
     },
 
@@ -109,7 +109,7 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
     _onValueChange : function( event ) {
       // TODO [tb] : implement setHasValueChangedListener?
       var fileName = this._formatFileName( this._getFileName() );
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var req = rwt.remote.Server.getInstance();
         var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );

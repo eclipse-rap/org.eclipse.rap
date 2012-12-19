@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-rwt.qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
+rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
   type : "singleton",
   extend : rwt.qx.Object,
 
@@ -171,7 +171,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
         "keyCode" : keyCode,
         "charCode" : finalCharCode
       };
-      org.eclipse.swt.EventUtil.addModifierToProperties( properties );
+      rwt.remote.EventUtil.addModifierToProperties( properties );
       if( this._shouldSendTraverse( keyCode, charCode, domEvent, widget ) ) {
         serverObject.notify( "Traverse", properties, true );
       }
@@ -284,4 +284,4 @@ rwt.qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
 } );
 
 // force instance:
-org.eclipse.rwt.KeyEventSupport.getInstance();
+rwt.remote.KeyEventSupport.getInstance();

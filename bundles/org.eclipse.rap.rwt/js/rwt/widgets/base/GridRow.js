@@ -16,7 +16,7 @@
 
 (function() {
 
-var HtmlUtil = org.eclipse.rwt.HtmlUtil;
+var HtmlUtil = rwt.util.html.HtmlUtil;
 var Variant = rwt.util.Variant;
 
 rwt.qx.Class.define( "rwt.widgets.base.GridRow", {

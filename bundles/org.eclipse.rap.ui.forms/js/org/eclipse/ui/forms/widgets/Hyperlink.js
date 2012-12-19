@@ -80,9 +80,9 @@ rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
 
     setHasDefaultSelectionListener : function( value ) {
       if( value ) {
-        this.addEventListener( "click", org.eclipse.swt.EventUtil.widgetDefaultSelected, this );
+        this.addEventListener( "click", rwt.remote.EventUtil.widgetDefaultSelected, this );
       } else {
-        this.removeEventListener( "click", org.eclipse.swt.EventUtil.widgetDefaultSelected, this );
+        this.removeEventListener( "click", rwt.remote.EventUtil.widgetDefaultSelected, this );
       }
     },
 

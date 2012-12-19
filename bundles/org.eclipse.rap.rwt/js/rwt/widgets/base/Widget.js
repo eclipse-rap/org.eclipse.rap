@@ -2919,7 +2919,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
           var width = map.border.getWidthTop();
           var color = map.border.getColorTop();
           var radii = [ 0, 0, 0, 0 ];
-          map.border = new org.eclipse.rwt.Border( width, "rounded", color, radii );
+          map.border = new rwt.util.html.Border( width, "rounded", color, radii );
         }
       },
       "default" : function( map ) {
@@ -3418,7 +3418,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
      * inclusive, where 1 means totally opaque and 0 invisible.
      */
     _applyOpacity : function( value, old ) {
-      org.eclipse.rwt.HtmlUtil.setOpacity( this, value );
+      rwt.util.html.HtmlUtil.setOpacity( this, value );
     },
 
     /////////////////
@@ -3712,7 +3712,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     },
 
     _applyBackgroundGradient : function( value, oldValue ) {
-      org.eclipse.rwt.HtmlUtil.setBackgroundGradient( this, value );
+      rwt.util.html.HtmlUtil.setBackgroundGradient( this, value );
       if( value === null ) {
         this.setStyleProperty( "backgroundImage", this.getStyleProperty( "backgroundImage" ) );
         this.setStyleProperty( "backgroundColor", this.getStyleProperty( "backgroundColor" ) );
@@ -3720,11 +3720,11 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     },
 
     _applyShadow : function( value, oldValue ) {
-      org.eclipse.rwt.HtmlUtil.setBoxShadow( this, value );
+      rwt.util.html.HtmlUtil.setBoxShadow( this, value );
     },
 
     _applyTextShadow : function( value, oldValue ) {
-      org.eclipse.rwt.HtmlUtil.setTextShadow( this, value );
+      rwt.util.html.HtmlUtil.setTextShadow( this, value );
     },
 
     _styleBackgroundColor : function( value ) {
@@ -3824,7 +3824,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       if( value ) {
         value.renderWidget( this );
       } else {
-        org.eclipse.rwt.Border.resetWidget( this );
+        rwt.util.html.Border.resetWidget( this );
       }
       // RAP: Fix for Bug 301709, 380878
       this._outerFrame = this._computeOuterFrame();

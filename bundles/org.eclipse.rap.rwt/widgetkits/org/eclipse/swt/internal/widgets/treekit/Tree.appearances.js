@@ -105,7 +105,7 @@ var appearances = {
         borderStyles[ 2 ] = borderBottom.getStyleBottom();
         borderColors[ 2 ] = borderBottom.getColorBottom();
       }
-      result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
+      result.border = new rwt.util.html.Border( borderWidths, borderStyles, borderColors );
       result.textShadow = tv.getCssShadow( "TreeColumn", "text-shadow" );
       return result;
     }

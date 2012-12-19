@@ -429,7 +429,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
 
     testDropDownLineBorder : function() {
       var item = new rwt.widgets.ToolItem( "dropDown" );
-      var border = new org.eclipse.rwt.Border( 1, "outset", "black");
+      var border = new rwt.util.html.Border( 1, "outset", "black");
       this.item = item;
       item.setText( "hallo" );
       item.setSeparatorBorder( border );

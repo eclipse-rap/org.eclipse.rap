@@ -244,7 +244,7 @@ rwt.qx.Class.define( "rwt.widgets.util.GridDNDFeedback", {
         // TODO [tb] : this is not a good way to check for scrolling, as the tree can theoretically
         //             scroll without changing the row order.
         if( newRow != this._currentRow && oldRow == this._currentRow ) {
-          var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+          var dndSupport = rwt.remote.DNDSupport.getInstance();
           dndSupport.setCurrentTargetWidget( newRow );
         }
       }

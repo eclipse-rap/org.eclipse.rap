@@ -394,7 +394,7 @@ rwt.qx.Class.define( "rwt.graphics.VML", {
       if( filterStr.length > 0 ) {
         shape.node.style.filter = filterStr.join( "" );
       } else {
-        org.eclipse.rwt.HtmlUtil.removeCssFilter( shape.node );
+        rwt.util.html.HtmlUtil.removeCssFilter( shape.node );
       }
     },
 

@@ -53,7 +53,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
   members : {
 
     setLeft : function( value ) {
-      if( org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( rwt.remote.EventUtil.getSuspended() ) {
         this._left = value;
         this._update();
       } else {
@@ -66,7 +66,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
     },
 
     setWidth : function( value ) {
-      if( org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( rwt.remote.EventUtil.getSuspended() ) {
         this._width = value;
         this._update();
       } else {
@@ -255,7 +255,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
     },
 
     handleSelectionEvent : function( event ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var isTreeEvent = this._isGroup && event.chevron;
         if( this._hasSelectionListener || isTreeEvent ) {
           if( isTreeEvent ) {
@@ -267,7 +267,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
               serverObject.notify( this._expanded ? "Collapse" : "Expand" );
             }
           } else {
-            org.eclipse.swt.EventUtil.notifySelected( this );
+            rwt.remote.EventUtil.notifySelected( this );
           }
         }
       }
@@ -310,7 +310,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
     },
 
     _sendResize : function( width ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var serverColumn = rwt.remote.Server.getInstance().getServerObject( this );
         serverColumn.call( "resize", {
           "width" : width
@@ -319,7 +319,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
     },
 
     _sendMove : function( left ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var serverColumn = rwt.remote.Server.getInstance().getServerObject( this );
         serverColumn.call( "move", {
           "left" : left

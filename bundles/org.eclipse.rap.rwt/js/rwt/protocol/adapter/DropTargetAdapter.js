@@ -14,14 +14,14 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.DropTarget", {
   factory : function( properties ) {
     var control = rwt.protocol.ObjectRegistry.getObject( properties.control );
     var result = { "control" : control };
-    org.eclipse.rwt.DNDSupport.getInstance().registerDropTarget( control, properties.style );
+    rwt.remote.DNDSupport.getInstance().registerDropTarget( control, properties.style );
     rwt.protocol.AdapterUtil.addDestroyableChild( control, result );
     return result;
   },
 
   destructor : function( source ) {
     rwt.protocol.AdapterUtil.removeDestroyableChild( source.control, source );
-    org.eclipse.rwt.DNDSupport.getInstance().deregisterDropTarget( source.control );
+    rwt.remote.DNDSupport.getInstance().deregisterDropTarget( source.control );
   },
 
   properties : [ "transfer" ],
@@ -29,7 +29,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.DropTarget", {
   propertyHandler : {
     "transfer" : function( source, value ) {
       var control = source.control;
-      org.eclipse.rwt.DNDSupport.getInstance().setDropTargetTransferTypes( control, value );
+      rwt.remote.DNDSupport.getInstance().setDropTargetTransferTypes( control, value );
     }
   }
 

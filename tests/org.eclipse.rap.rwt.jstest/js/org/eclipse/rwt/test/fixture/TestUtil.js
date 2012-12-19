@@ -843,16 +843,16 @@ org.eclipse.rwt.test.fixture.TestUtil = {
 
   flush : function( inResponse ) {
     if( inResponse ) {
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       rwt.widgets.base.Widget.flushGlobalQueues();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
     } else {
       rwt.widgets.base.Widget.flushGlobalQueues();
     }
   },
 
  fakeResponse : function( value ) {
-    org.eclipse.swt.EventUtil.setSuspended( value );
+    rwt.remote.EventUtil.setSuspended( value );
   },
 
   getDocument : function() {
@@ -870,7 +870,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   cleanUpKeyUtil : function() {
-    var support =  org.eclipse.rwt.KeyEventSupport.getInstance();
+    var support =  rwt.remote.KeyEventSupport.getInstance();
     support.setKeyBindings( {} );
     support.setCancelKeys( {} );
     support._currentKeyCode = -1;
@@ -925,7 +925,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   // Protocol ralated
 
   createShellByProtocol : function( id ) {
-    org.eclipse.swt.EventUtil.setSuspended( true );
+    rwt.remote.EventUtil.setSuspended( true );
     rwt.protocol.MessageProcessor.processOperation( {
       "target" : id ? id : "w2",
       "action" : "create",
@@ -936,12 +936,12 @@ org.eclipse.rwt.test.fixture.TestUtil = {
         "bounds" : [ 10, 10, 100, 100 ]
       }
     } );
-    org.eclipse.swt.EventUtil.setSuspended( false );
+    rwt.remote.EventUtil.setSuspended( false );
     return rwt.protocol.ObjectRegistry.getObject( id );
   },
 
   createWidgetByProtocol : function( id, parentId, type ) {
-    org.eclipse.swt.EventUtil.setSuspended( true );
+    rwt.remote.EventUtil.setSuspended( true );
     rwt.protocol.MessageProcessor.processOperation( {
       "target" : id,
       "action" : "create",
@@ -952,7 +952,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
         "bounds" : [ 10, 10, 10, 10 ]
       }
     } );
-    org.eclipse.swt.EventUtil.setSuspended( false );
+    rwt.remote.EventUtil.setSuspended( false );
     return rwt.protocol.ObjectRegistry.getObject( id );
   },
 
@@ -976,14 +976,14 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   protocolSet : function( id, properties ) {
-    org.eclipse.swt.EventUtil.setSuspended( true );
+    rwt.remote.EventUtil.setSuspended( true );
     var processor = rwt.protocol.MessageProcessor;
     processor.processOperation( {
       "target" : id,
       "action" : "set",
       "properties" : properties
     } );
-    org.eclipse.swt.EventUtil.setSuspended( false );
+    rwt.remote.EventUtil.setSuspended( false );
   },
 
   resetObjectManager : function() {

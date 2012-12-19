@@ -372,12 +372,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     },
 
     testNotifyShellActivate : function() {
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var shell = new rwt.widgets.Shell( {} );
       rwt.protocol.ObjectRegistry.add( "w222", shell );
       shell.initialize();
       shell.open();
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
 
       shell.setActive( true );
 
@@ -387,12 +387,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     },
 
     testNotifyShellClose : function() {
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var shell = new rwt.widgets.Shell( {} );
       rwt.protocol.ObjectRegistry.add( "w222", shell );
       shell.initialize();
       shell.open();
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
 
       shell.close();
 

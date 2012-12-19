@@ -49,11 +49,11 @@ rwt.widgets.Display.prototype = {
 
   allowEvent : function() {
     // NOTE : in the future might need a parameter if there are multiple types of cancelable events
-    org.eclipse.rwt.KeyEventSupport.getInstance().allowEvent();
+    rwt.remote.KeyEventSupport.getInstance().allowEvent();
   },
 
   cancelEvent : function() {
-    org.eclipse.rwt.KeyEventSupport.getInstance().cancelEvent();
+    rwt.remote.KeyEventSupport.getInstance().cancelEvent();
   },
 
   beep : function() {
@@ -102,7 +102,7 @@ rwt.widgets.Display.prototype = {
     this._document.addEventListener( "windowresize", this._onResize, this );
     this._document.addEventListener( "keypress", this._onKeyPress, this );
     this._request.addEventListener( "send", this._onSend, this );
-    org.eclipse.rwt.KeyEventSupport.getInstance(); // adds global KeyListener
+    rwt.remote.KeyEventSupport.getInstance(); // adds global KeyListener
     rwt.runtime.System.getInstance().addEventListener( "beforeunload", this._onBeforeUnload, this );
     rwt.runtime.System.getInstance().addEventListener( "unload", this._onUnload, this );
   },

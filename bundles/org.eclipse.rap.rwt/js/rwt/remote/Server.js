@@ -16,7 +16,7 @@ var Client = rwt.client.Client;
 var Timer = rwt.client.Timer;
 var Processor = rwt.protocol.MessageProcessor;
 var ErrorHandler = rwt.runtime.ErrorHandler;
-var EventUtil = org.eclipse.swt.EventUtil;
+var EventUtil = rwt.remote.EventUtil;
 var ServerPush = rwt.client.ServerPush;
 var ClientDocument = rwt.widgets.base.ClientDocument;
 var Widget = rwt.widgets.base.Widget;
@@ -216,7 +216,7 @@ rwt.qx.Class.define( "rwt.remote.Server", {
     _handleSuccess : function( event ) {
       try {
         var messageObject = JSON.parse( event.responseText );
-        org.eclipse.swt.EventUtil.setSuspended( true );
+        rwt.remote.EventUtil.setSuspended( true );
         Processor.processMessage( messageObject );
         Widget.flushGlobalQueues();
         EventUtil.setSuspended( false );

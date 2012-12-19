@@ -15,9 +15,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
 
   construct : function() {
     this.base( arguments );
-    this._gfxBorder = new org.eclipse.rwt.Border( 2, "rounded", "black", [ 7, 7, 7, 7 ] );
-    this._gfxBorder2 = new org.eclipse.rwt.Border( 2, "rounded", "black", [ 0, 4, 6, 8 ] );
-    this._cssBorder = new org.eclipse.rwt.Border( 2, "outset", null );
+    this._gfxBorder = new rwt.util.html.Border( 2, "rounded", "black", [ 7, 7, 7, 7 ] );
+    this._gfxBorder2 = new rwt.util.html.Border( 2, "rounded", "black", [ 0, 4, 6, 8 ] );
+    this._cssBorder = new rwt.util.html.Border( 2, "outset", null );
     this._gradient = [ [ 0, "red" ], [ 1, "yellow" ] ];
   },
 
@@ -274,7 +274,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertFalse( bar._isVertical() );
       bar.setDimension( 200, 30 );
       bar.addToDocument();
-      bar.setBorder( new org.eclipse.rwt.Border( 2, "inset", null ) );
+      bar.setBorder( new rwt.util.html.Border( 2, "inset", null ) );
       bar.setSelection( 50 );
       rwt.widgets.base.Widget.flushGlobalQueues();
       assertNotNull( bar._getTargetNode() );
@@ -340,7 +340,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( 1, log.length );
       if( !rwt.client.Client.supportsCss3() ) {
         shell.setBackgroundColor( "green" );
-        shell.setBorder( new org.eclipse.rwt.Border( 1, "rounded", "black", 2 ) );
+        shell.setBorder( new rwt.util.html.Border( 1, "rounded", "black", 2 ) );
         TestUtil.flush();
         assertEquals( 2, log.length );
       }

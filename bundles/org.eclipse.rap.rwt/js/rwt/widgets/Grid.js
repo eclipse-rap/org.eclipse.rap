@@ -1051,9 +1051,9 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
           "index" : !isNaN( index ) ? index : undefined
         };
         if( defaultSelected ) {
-          org.eclipse.swt.EventUtil.notifyDefaultSelected( this, properties );
+          rwt.remote.EventUtil.notifyDefaultSelected( this, properties );
         } else {
-          org.eclipse.swt.EventUtil.notifySelected( this, properties );
+          rwt.remote.EventUtil.notifySelected( this, properties );
         }
       }
     },
@@ -1065,7 +1065,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       if( leftClick && mousedown && this.isFocusItem( item ) && this._selectionTimestamp != null ) {
         var stamp = new Date();
         var offset = event.getPageX();
-        var timeDiff = org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME;
+        var timeDiff = rwt.remote.EventUtil.DOUBLE_CLICK_TIME;
         var offsetDiff = 8;
         if (    stamp.getTime() - this._selectionTimestamp.getTime() < timeDiff
              && Math.abs( this._selectionOffsetX - offset ) < offsetDiff )
@@ -1362,7 +1362,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     // helper
 
     _inServerResponse : function() {
-      return org.eclipse.swt.EventUtil.getSuspended();
+      return rwt.remote.EventUtil.getSuspended();
     },
 
     _isDragSource : function() {

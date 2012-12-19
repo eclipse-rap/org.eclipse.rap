@@ -72,7 +72,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     ],
 
     _onParentClose : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         this.doClose();
       }
     },
@@ -316,7 +316,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
      * Called when user tries to close the shell.
      */
     close : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         rwt.remote.Server.getInstance().getServerObject( this ).notify( "Close" );
       }
     },
@@ -343,7 +343,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       // Work around qooxdoo bug #254: the changeActiveChild is fired twice when
       // a widget was activated by keyboard (getData() is null in this case)
       var widget = this._getParentControl( evt.getValue() );
-      if(    !org.eclipse.swt.EventUtil.getSuspended()
+      if(    !rwt.remote.EventUtil.getSuspended()
           && widget != null
           && widget !== this._activeControl )
       {
@@ -395,7 +395,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     },
 
     _onChangeFocusedChild : function( evt ) {
-      if( org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( rwt.remote.EventUtil.getSuspended() ) {
         this._focusControl = this.getFocusedChild();
       }
     },
@@ -408,7 +408,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
         this.setZIndex( 1e8 );
       }
       // end of workaround
-      if( !org.eclipse.swt.EventUtil.getSuspended() && this.getActive() ) {
+      if( !rwt.remote.EventUtil.getSuspended() && this.getActive() ) {
         rwt.remote.Server.getInstance().getServerObject( this ).notify( "Activate" );
       }
       var active = evt.getValue();
@@ -432,7 +432,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     },
 
     _onChangeSize : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         this._sendBounds();
         if( this._hasResizeListener ) {
           var server = rwt.remote.Server.getInstance();
@@ -442,7 +442,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     },
 
     _onChangeLocation : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         this._sendBounds();
         if( this._hasMoveListener ) {
           var server = rwt.remote.Server.getInstance();

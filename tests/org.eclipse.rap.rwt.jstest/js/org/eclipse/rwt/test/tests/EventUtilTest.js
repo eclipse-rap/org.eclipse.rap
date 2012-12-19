@@ -33,7 +33,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
     },
 
     testMouseDownSendsNotify : function() {
-      widget.addEventListener( "mousedown", org.eclipse.swt.EventUtil.mouseDown );
+      widget.addEventListener( "mousedown", rwt.remote.EventUtil.mouseDown );
 
       TestUtil.click( widget );
 
@@ -41,7 +41,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
     },
 
     testMouseUpSendsNotify : function() {
-      widget.addEventListener( "mouseup", org.eclipse.swt.EventUtil.mouseUp );
+      widget.addEventListener( "mouseup", rwt.remote.EventUtil.mouseUp );
 
       TestUtil.click( widget );
 
@@ -49,8 +49,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
     },
 
     testMouseDoubleClickSendsNotify : function() {
-      widget.addEventListener( "mousedown", org.eclipse.swt.EventUtil.mouseDoubleClick );
-      widget.addEventListener( "mouseup", org.eclipse.swt.EventUtil.mouseUpCounter );
+      widget.addEventListener( "mousedown", rwt.remote.EventUtil.mouseDoubleClick );
+      widget.addEventListener( "mouseup", rwt.remote.EventUtil.mouseUpCounter );
 
       TestUtil.doubleClick( widget );
 
@@ -58,7 +58,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
     },
 
     testMouseDownOnChildElementSendsNotify : function() {
-      widget.addEventListener( "mousedown", org.eclipse.swt.EventUtil.mouseDown );
+      widget.addEventListener( "mousedown", rwt.remote.EventUtil.mouseDown );
       var element = document.createElement( "div" );
       widget.getElement().appendChild( element );
 
@@ -68,7 +68,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
     },
 
     testMouseDownOnSubWidgetSendsNotify : function() {
-      widget.addEventListener( "mousedown", org.eclipse.swt.EventUtil.mouseDown );
+      widget.addEventListener( "mousedown", rwt.remote.EventUtil.mouseDown );
       var child = new rwt.widgets.base.Terminator();
       child.setParent( widget );
       TestUtil.flush();
@@ -79,7 +79,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
     },
 
     testMouseDownOnChildControlSendsNoNotify : function() {
-      widget.addEventListener( "mousedown", org.eclipse.swt.EventUtil.mouseDown );
+      widget.addEventListener( "mousedown", rwt.remote.EventUtil.mouseDown );
       var child = TestUtil.createWidgetByProtocol( "w12", "w11" );
       TestUtil.flush();
 
@@ -89,7 +89,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
     },
 
     testMouseDownOnDisabledControlSendsNoNotify : function() {
-      widget.addEventListener( "mousedown", org.eclipse.swt.EventUtil.mouseDown );
+      widget.addEventListener( "mousedown", rwt.remote.EventUtil.mouseDown );
       widget.setEnabled( false );
 
       TestUtil.click( widget );
@@ -98,7 +98,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
     },
 
     testMouseDownOnDisabledChildControlSendsNotify : function() {
-      widget.addEventListener( "mousedown", org.eclipse.swt.EventUtil.mouseDown );
+      widget.addEventListener( "mousedown", rwt.remote.EventUtil.mouseDown );
       var child = TestUtil.createWidgetByProtocol( "w12", "w11" );
       child.setEnabled( false );
       TestUtil.flush();
@@ -109,7 +109,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
     },
 
     testMouseDownOnDisabledGrandChildControlSendsNoNotify : function() {
-      widget.addEventListener( "mousedown", org.eclipse.swt.EventUtil.mouseDown );
+      widget.addEventListener( "mousedown", rwt.remote.EventUtil.mouseDown );
       var child = TestUtil.createWidgetByProtocol( "w12", "w11" );
       var grandchild = TestUtil.createWidgetByProtocol( "w13", "w12" );
       grandchild.setEnabled( false );

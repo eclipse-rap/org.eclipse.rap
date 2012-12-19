@@ -561,7 +561,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHeight( 500 );
       tree.setWidth( 600 );
       TestUtil.flush();
-      var border = new org.eclipse.rwt.Border( 4, "solid", null );
+      var border = new rwt.util.html.Border( 4, "solid", null );
       tree.setBorder( border );
       TestUtil.flush();
       var node = tree._rowContainer.getElement();
@@ -807,9 +807,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       this._fillTree( tree, 100 );
 
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree.setTopItemIndex( 55 );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
 
       var area = tree._rowContainer._getTargetNode();
@@ -825,9 +825,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fillTree( tree, 100 );
       tree.getRootItem().getChild( 0 ).setHeight( 40 );
 
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree.setTopItemIndex( 55 );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
 
       var area = tree._rowContainer._getTargetNode();
@@ -845,9 +845,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         tree.getRootItem().getChild( i ).setHeight( 40 );
       }
 
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree.setTopItemIndex( 55 );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
 
       var area = tree._rowContainer._getTargetNode();
@@ -889,9 +889,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       topItem.setItemCount( 1 );
       var child = this._createItem( topItem, 0 );
       child.setTexts( [ "subitem" ] );
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree.setTopItemIndex( 55 );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var area = tree._rowContainer._getTargetNode();
       TestUtil.clickDOM( area.childNodes[ 0 ].childNodes[ 0 ] );
@@ -946,9 +946,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree._horzScrollBar.setValue( 10 );
       tree._vertScrollBar.setValue( 10 );
       TestUtil.initRequestLog();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree.setScrollBarsVisible( false, false );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       assertEquals( 0, tree._horzScrollBar.getValue() );
       assertEquals( 0, tree._vertScrollBar.getValue() );
       var req = rwt.remote.Server.getInstance();
@@ -1068,9 +1068,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       this._fillTree( tree, 100 );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( 1000 );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var itemNode = tree._rowContainer._getTargetNode().firstChild;
       assertEquals( "Test50", itemNode.firstChild.innerHTML );
@@ -1086,9 +1086,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
       var maxScroll = tree._vertScrollBar.getMaximum() - tree._vertScrollBar.getHeight();
 
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( maxScroll );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
 
       var itemNode = tree._rowContainer._getTargetNode().firstChild;
@@ -1101,9 +1101,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       this._fillTree( tree, 100, true, true );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( 1020 ); // 1020 / 20 = 51
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var itemNode = tree._rowContainer._getTargetNode().firstChild;
       assertEquals( "Test51", itemNode.firstChild.innerHTML );
@@ -1114,10 +1114,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       this._fillTree( tree, 100, true, true );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( 1400 );
       tree._vertScrollBar.setValue( 1020 );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var itemNode = tree._rowContainer._getTargetNode().firstChild;
       assertEquals( "Test51", itemNode.firstChild.innerHTML );
@@ -1128,10 +1128,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       this._fillTree( tree, 100, true, true );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( 1040 );
       tree._vertScrollBar.setValue( 1020 );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var itemNode = tree._rowContainer._getTargetNode().firstChild;
       assertEquals( "Test51", itemNode.firstChild.innerHTML );
@@ -1142,9 +1142,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       this._fillTree( tree, 100, true, true );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( 100 );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var itemNode = tree._rowContainer._children[ 0 ]._getTargetNode();
       assertEquals( "Test5", itemNode.firstChild.innerHTML );
@@ -1155,9 +1155,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       this._fillTree( tree, 100, true );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( 100 );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var itemNode = tree._rowContainer._children[ 0 ]._getTargetNode();
       assertEquals( "Test5", itemNode.firstChild.innerHTML );
@@ -1844,10 +1844,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._createItem( child1, 0 );
       wm.add( child1, "wtest", false );
 
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       child1.setExpanded( true );
       child1.setExpanded( false );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
 
       assertEquals( 0, TestUtil.getRequestsSend() );
       wm.remove( child1 );
@@ -1952,7 +1952,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testSendDefaultSelectionEventOnDragSource : function() {
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var wm = rwt.widgets.util.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setHasSelectionListener( true );
@@ -2545,13 +2545,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testShowDummyColumn : function() {
       var tree = this._createDefaultTree();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var column = new rwt.widgets.GridColumn( tree );
       column.setLeft( 0 );
       column.setWidth( 500 );
       tree.setWidth( 600 );
       tree.setHeaderVisible( true );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var dummy = tree._header._dummyColumn;
       assertEquals( tree._header, this._getColumnLabel( tree, column ).getParent() );
@@ -2566,14 +2566,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testShowDummyFooter : function() {
       var tree = this._createDefaultTree();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var column = new rwt.widgets.GridColumn( tree );
       column.setLeft( 0 );
       column.setWidth( 500 );
       tree.setWidth( 600 );
       tree.setFooterVisible( true );
       tree.setFooterHeight( 30 );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var dummy = tree._footer._dummyColumn;
       assertEquals( tree._footer, this._getColumnLabel( tree, column, true ).getParent() );
@@ -2588,13 +2588,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testDummyColumnAppearance : function() {
       var tree = this._createDefaultTree( false, true );
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var column = new rwt.widgets.GridColumn( tree );
       column.setLeft( 0 );
       column.setWidth( 500 );
       tree.setWidth( 600 );
       tree.setHeaderVisible( true );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var dummy = tree._header._dummyColumn;
       assertEquals( "table-column", dummy.getAppearance() );
@@ -2603,13 +2603,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testDontShowDummyColumn : function() {
       var tree = this._createDefaultTree();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var column = new rwt.widgets.GridColumn( tree );
       column.setLeft( 0 );
       column.setWidth( 500 );
       tree.setHeaderVisible( true );
       tree.setWidth( 490 );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var dummy = tree._header._dummyColumn;
       assertEquals( tree._header, dummy.getParent() );
@@ -2620,7 +2620,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testShowMinimalDummyColumn : function() {
       var tree = this._createDefaultTree();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree.setHeaderHeight( 15 );
       tree.setScrollBarsVisible( true, true );
       var column = new rwt.widgets.GridColumn( tree );
@@ -2628,7 +2628,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       column.setWidth( 500 );
       tree.setHeaderVisible( true );
       tree.setWidth( 450 );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var barWidth = tree._vertScrollBar.getWidth();
       var dummy = tree._header._dummyColumn;
@@ -2640,10 +2640,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testOnlyShowDummyColumn : function() {
       var tree = this._createDefaultTree();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree.setHeaderVisible( true );
       tree.setScrollBarsVisible( true, true );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var dummy = tree._header._dummyColumn;
       assertTrue( dummy.getVisibility() );
@@ -2655,21 +2655,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testReLayoutDummyColumn : function() {
       var tree = this._createDefaultTree();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       var column = new rwt.widgets.GridColumn( tree );
       column.setLeft( 0 );
       column.setWidth( 500 );
       tree.setWidth( 600 );
       tree.setHeaderVisible( true );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var dummy = tree._header._dummyColumn;
       assertEquals( 500, dummy.getLeft() );
       assertEquals( 100, dummy.getWidth() );
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       column.setWidth( 400 );
       TestUtil.flush();
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       assertEquals( 400, dummy.getLeft() );
       assertEquals( 200, dummy.getWidth() );
       tree.destroy();
@@ -2753,7 +2753,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testMoveColumn : function() {
       var tree = this._createDefaultTree();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree.setHeaderVisible( true );
       var column = new rwt.widgets.GridColumn( tree );
       tree.setItemCount( 1 );
@@ -2763,7 +2763,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       column.setLeft( 100 );
       column.setWidth( 100 );
       column.setMoveable( true );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       TestUtil.initRequestLog();
       var left = rwt.event.MouseEvent.buttons.left;
@@ -2779,7 +2779,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testResizeColumn : function() {
       var tree = this._createDefaultTree();
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree.setHeaderVisible( true );
       var column = new rwt.widgets.GridColumn( tree );
       tree.setItemCount( 1 );
@@ -2789,7 +2789,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       column.setLeft( 100 );
       column.setWidth( 100 );
       column.setMoveable( true );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       TestUtil.initRequestLog();
       var left = rwt.event.MouseEvent.buttons.left;
@@ -2957,7 +2957,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testDontScrollFixedColumn : function() {
       var tree = this._createDefaultTree( false, true, "fixedColumns", 1 );
       tree.setHeaderVisible( true );
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
       var columnX = new rwt.widgets.GridColumn( tree );
       ObjectRegistry.add( "colX", columnX );
@@ -2970,7 +2970,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setScrollLeft( 160 );
       tree.setHeaderHeight( 30 );
       tree.setHeaderVisible( true );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       assertEquals( 160, tree._header.getScrollLeft() );
       assertEquals( 10, columnX.getLeft() );
@@ -2987,7 +2987,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testFixedColumnDontFlushInServerResponse : function() {
       var tree = this._createDefaultTree( false, true, "fixedColumns", 1 );
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
       var columnX = new rwt.widgets.GridColumn( tree );
       columnX.setLeft( 10 );
@@ -2999,7 +2999,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHeaderVisible( true );
       TestUtil.flush();
       tree.setScrollLeft( 10 );
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       var label = this._getColumnLabel( tree, columnX );
       assertEquals( 10, parseInt( label.getElement().style.left, 10 ) );
       TestUtil.flush();
@@ -4050,7 +4050,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testTreeMultiSelectionDrag : function() {
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       var actions = [ "copy", "move", "alias" ];
       dndSupport.registerDragSource( tree, actions );
@@ -4075,7 +4075,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testTreeMultiSelectionDragMouseOut : function() {
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       var actions = [ "copy", "move", "alias" ];
       dndSupport.registerDragSource( tree, actions );
@@ -4240,7 +4240,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     _createDefaultTree : function( noflush, asTable, option, arg ) {
-      org.eclipse.swt.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( true );
       this._fakeAppearance();
       var appearance = asTable ? "table" : "tree";
       var args = { "appearance": appearance };
@@ -4277,7 +4277,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       if( !noflush ) {
         TestUtil.flush();
       }
-      org.eclipse.swt.EventUtil.setSuspended( false );
+      rwt.remote.EventUtil.setSuspended( false );
       return tree;
     },
 

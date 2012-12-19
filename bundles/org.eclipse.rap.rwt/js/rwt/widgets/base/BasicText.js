@@ -555,7 +555,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     },
 
     _renderTextShadow : function() {
-      org.eclipse.rwt.HtmlUtil.setTextShadow( this._inputElement, this.__textShadow );
+      rwt.util.html.HtmlUtil.setTextShadow( this._inputElement, this.__textShadow );
     },
 
     _visualizeFocus : function() {

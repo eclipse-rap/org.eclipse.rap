@@ -48,7 +48,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
     this._frame = new rwt.widgets.base.Parent();
     this._frame.setAppearance( "ctabfolder-frame" );
     this.add( this._frame );
-    this._frameBorder = new org.eclipse.rwt.Border( 2, "solid", "black" );
+    this._frameBorder = new rwt.util.html.Border( 2, "solid", "black" );
 
     // Create horizontal line that separates the button bar from the rest of
     // the client area
@@ -181,7 +181,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
       if( color != null && !this.hasState( "rwt_FLAT" ) ) {
         this._frame.setBorder( null );
         this._frameBorder.dispose();
-        this._frameBorder = new org.eclipse.rwt.Border( 2, "solid", color );
+        this._frameBorder = new rwt.util.html.Border( 2, "solid", color );
         this._frame.setBorder( this._frameBorder );
       } else {
         this._frame.resetBorder();
@@ -446,7 +446,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
 
     _onChevronExecute : function( evt ) {
       if( this._chevronMenu == null || !this._chevronMenu.isSeeable() ) {
-        if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+        if( !rwt.remote.EventUtil.getSuspended() ) {
           var server = rwt.remote.Server.getInstance();
           server.getServerObject( this ).notify( "Folder", { "detail" : "showList" } );
         }
@@ -454,7 +454,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
     },
 
     _onMinMaxExecute : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var detail;
         if ( evt.getTarget() == this._minButton ) {
           // Minimize button was pressed
@@ -511,7 +511,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
     // TODO [rst] Change to respect _hasSelectionListener as soon as server-side
     // code is revised accordingly -> CTabFolderLCA.readData().
     _notifyItemClick : function( item ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         if( !item.isSelected() ) {
           this.deselectAll();
           item.setSelected( true );
@@ -520,13 +520,13 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
           var id = widgetManager.findIdByWidget( this );
           var itemId = widgetManager.findIdByWidget( item );
           req.addParameter( id + ".selection", itemId );
-          org.eclipse.swt.EventUtil.notifySelected( this );
+          rwt.remote.EventUtil.notifySelected( this );
         }
       }
     },
 
     _notifyItemDblClick : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         if( this._hasDefaultSelectionListener ) {
           var item = evt.getTarget();
           var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
@@ -536,7 +536,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
           // TODO [rst] remove this parameter as soon as server-side code is revised
           //      -> CTabFolderLCA.readData()
           req.addParameter( id + ".selection", itemId );
-          org.eclipse.swt.EventUtil.widgetDefaultSelected( evt, this );
+          rwt.remote.EventUtil.widgetDefaultSelected( evt, this );
         }
       }
     }

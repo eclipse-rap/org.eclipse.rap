@@ -152,7 +152,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
 
     _handleSelectionChange : function( start, length ) {
       this.base( arguments, start, length );
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         rwt.widgets.util.WidgetUtil.setPropertyParam( this, "selectionStart", start );
         rwt.widgets.util.WidgetUtil.setPropertyParam( this, "selectionLength", length );
       }
@@ -180,7 +180,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
      * Sends a widget default selected event to the server.
      */
     _sendWidgetDefaultSelected : function( detail ) {
-      org.eclipse.swt.EventUtil.notifyDefaultSelected( this, 0, 0, 0, 0, detail );
+      rwt.remote.EventUtil.notifyDefaultSelected( this, 0, 0, 0, 0, detail );
     },
 
     ///////////////////
@@ -408,7 +408,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     _applyValue : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       this._updateMessageVisibility();
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         this._handleModification();
       }
     },
@@ -469,7 +469,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
           var styleMap = this._getMessageStyle();
           style.color = styleMap.textColor || "";
           style.left = styleMap.paddingLeft + "px";
-          org.eclipse.rwt.HtmlUtil.setTextShadow( this._messageElement, styleMap.textShadow );
+          rwt.util.html.HtmlUtil.setTextShadow( this._messageElement, styleMap.textShadow );
           this._getTargetNode().insertBefore( this._messageElement, this._inputElement );
         }
         if( this._messageElement ) {

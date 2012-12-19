@@ -693,7 +693,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       var node = this.getCellNode( cell );
       var source = this.getCellContent( cell );
       var opacity = this.getEnabled() ? 1 : 0.3;
-      org.eclipse.rwt.HtmlUtil.setBackgroundImage( node, source, opacity );
+      rwt.util.html.HtmlUtil.setBackgroundImage( node, source, opacity );
     },
 
     _updateAllImages : function() {

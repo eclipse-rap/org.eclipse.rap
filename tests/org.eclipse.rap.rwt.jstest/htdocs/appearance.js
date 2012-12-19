@@ -410,9 +410,9 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
         } else {
           borderRadii = [ 0, 0, radii[ 2 ], radii[ 3 ] ];
         }
-        result.border = new org.eclipse.rwt.Border( borderWidth, "rounded", color, borderRadii );
+        result.border = new rwt.util.html.Border( borderWidth, "rounded", color, borderRadii );
       } else {
-        result.border = new org.eclipse.rwt.Border( borderWidth, "solid", color );
+        result.border = new rwt.util.html.Border( borderWidth, "solid", color );
       }
       return result;
     }
@@ -429,7 +429,7 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
         }
         var tv = new rwt.theme.ThemeValues( statesWithSelected );
         var color = tv.getCssColor( "CTabItem", "background-color" );
-        result.border = new org.eclipse.rwt.Border( 2, "solid", color );
+        result.border = new rwt.util.html.Border( 2, "solid", color );
       } else {
         result.border = "undefined";
       }
@@ -445,9 +445,9 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
       var color = tv.getCssColor( "CTabFolder", "border-color" );
       var border;
       if( states.barTop ) {
-        border = new org.eclipse.rwt.Border( [ 0, 0, 1, 0 ], "solid", color );
+        border = new rwt.util.html.Border( [ 0, 0, 1, 0 ], "solid", color );
       } else {
-        border = new org.eclipse.rwt.Border( [ 1, 0, 0, 0 ], "solid", color );
+        border = new rwt.util.html.Border( [ 1, 0, 0, 0 ], "solid", color );
       }
       result.border = border;
       return result;
@@ -494,10 +494,10 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
         borderWidths[ 3 ] = 1;
       }
       if( rounded && states.selected ) {
-        result.border = new org.eclipse.rwt.Border( borderWidths, "rounded", color, radii );
+        result.border = new rwt.util.html.Border( borderWidths, "rounded", color, radii );
         result.containerOverflow = false;
       } else {
-        result.border = new org.eclipse.rwt.Border( borderWidths, "solid", color );
+        result.border = new rwt.util.html.Border( borderWidths, "solid", color );
       }
       if( states.selected ) {
         result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
@@ -520,7 +520,7 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
       if( states.over ) {
         result.backgroundColor = "white";
         var color = tv.getCssColor( "CTabFolder", "border-color" );
-        result.border = new org.eclipse.rwt.Border( 1, "solid", color );
+        result.border = new rwt.util.html.Border( 1, "solid", color );
       } else {
         result.backgroundColor = "undefined";
         result.border = "undefined";
@@ -1088,9 +1088,9 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
       if( states.checked ) {
         result.zIndex = 1; // TODO [rst] Doesn't this interfere with our z-order?
         if( states.barTop ) {
-          result.border = new org.eclipse.rwt.Border( [ 3, 1, 0, 1 ], "solid", checkedColorTop );
+          result.border = new rwt.util.html.Border( [ 3, 1, 0, 1 ], "solid", checkedColorTop );
         } else {
-          result.border = new org.eclipse.rwt.Border( [ 0, 1, 3, 1 ], "solid", checkedColorBottom );
+          result.border = new rwt.util.html.Border( [ 0, 1, 3, 1 ], "solid", checkedColorBottom );
         }
         result.margin = [ 0, -1, 0, -2 ];
         if( states.firstChild ) {
@@ -1101,11 +1101,11 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
         result.marginRight = 1;
         result.marginLeft = 0;
         if( states.barTop ) {
-          result.border = new org.eclipse.rwt.Border( [ 1, 1, 0, 1 ], "solid", borderColor );
+          result.border = new rwt.util.html.Border( [ 1, 1, 0, 1 ], "solid", borderColor );
           result.marginTop = 3;
           result.marginBottom = 1;
         } else {
-          result.border = new org.eclipse.rwt.Border( [ 0, 1, 1, 1 ], "solid", borderColor );
+          result.border = new rwt.util.html.Border( [ 0, 1, 1, 1 ], "solid", borderColor );
           result.marginTop = 1;
           result.marginBottom = 3;
         }
@@ -1168,7 +1168,7 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
       borderWidths[ 2 ] = borderBottom.getWidthBottom();
       borderStyles[ 2 ] = borderBottom.getStyleBottom();
       borderColors[ 2 ] = borderBottom.getColorBottom();
-      result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
+      result.border = new rwt.util.html.Border( borderWidths, borderStyles, borderColors );
       result.textShadow = tv.getCssShadow( "TableColumn", "text-shadow" );
       return result;
     }
@@ -1227,7 +1227,7 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
       var gridColor = tv.getCssColor( "Table-GridLine", "color" );
       gridColor = gridColor == "undefined" ? "transparent" : gridColor;
       var result = {};
-      result.border = new org.eclipse.rwt.Border( [ 0, 0, 0, 1 ], "solid", gridColor );
+      result.border = new rwt.util.html.Border( [ 0, 0, 0, 1 ], "solid", gridColor );
       return result;
     }
   }
@@ -1449,7 +1449,7 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
       borderStyles[ 2 ] = borderBottom.getStyleBottom();
       borderColors[ 2 ] = borderBottom.getColorBottom();
     }
-    result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
+    result.border = new rwt.util.html.Border( borderWidths, borderStyles, borderColors );
     result.textShadow = tv.getCssShadow( "TreeColumn", "text-shadow" );
     return result;
   }
@@ -1791,9 +1791,9 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       if( states.header ) {
-        var border = new org.eclipse.rwt.Border( [ 0, 1, 1, 0 ], "solid", "gray" );
+        var border = new rwt.util.html.Border( [ 0, 1, 1, 0 ], "solid", "gray" );
       } else {
-        var border = new org.eclipse.rwt.Border( [ 0, 1, 0, 0 ], "solid", "gray" );
+        var border = new rwt.util.html.Border( [ 0, 1, 0, 0 ], "solid", "gray" );
       }
       return {
         textAlign : "center",
@@ -1806,7 +1806,7 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
   "calendar-weekday" : {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
-      var border = new org.eclipse.rwt.Border( [ 0, 0, 1, 0 ], "solid", "gray" );
+      var border = new rwt.util.html.Border( [ 0, 0, 1, 0 ], "solid", "gray" );
       // FIXME: [if] Bigger font size leads to text cutoff
       var font = tv.getCssFont( "*", "font" );
       var smallFont = qx.ui.core.Font.fromString( font.toCss() );
@@ -1835,7 +1835,7 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
       }
       result.textShadow = tv.getCssShadow( "DateTime-Calendar-Day", "text-shadow" );
       var borderColor = states.disabled ? tv.getCssColor( "*", "color" ) : "red";
-      var border = new org.eclipse.rwt.Border( 1, "solid", borderColor );
+      var border = new rwt.util.html.Border( 1, "solid", borderColor );
       result.border = states.today ? border : "undefined";
       return result;
     }

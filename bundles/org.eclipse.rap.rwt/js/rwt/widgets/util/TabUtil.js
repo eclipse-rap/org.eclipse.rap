@@ -60,7 +60,7 @@ rwt.qx.Class.define( "rwt.widgets.util.TabUtil", {
 
     _onTabItemSelected : function( evt ) {
       var tab = evt.getTarget();
-      if( !org.eclipse.swt.EventUtil.getSuspended() && tab.getChecked() ) {
+      if( !rwt.remote.EventUtil.getSuspended() && tab.getChecked() ) {
         var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         var itemId = widgetManager.findIdByWidget( tab );
         var server = rwt.remote.Server.getInstance();

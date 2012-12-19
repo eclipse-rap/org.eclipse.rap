@@ -172,7 +172,7 @@ rwt.qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
 
     _onTouchEvent : function( domEvent ) {
       try {
-        if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+        if( !rwt.remote.EventUtil.getSuspended() ) {
           var type = domEvent.type;
           if( this._mouseEnabled ) {
             switch( type ) {
@@ -421,7 +421,7 @@ rwt.qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
       var result = false;
       if( this._lastMouseClickTarget === target ) {
         var diff = ( ( new Date() ).getTime() ) - this._lastMouseClickTime;
-        result = diff < org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME;
+        result = diff < rwt.remote.EventUtil.DOUBLE_CLICK_TIME;
       }
       return result;
     },

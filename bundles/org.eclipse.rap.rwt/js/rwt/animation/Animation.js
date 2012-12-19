@@ -278,7 +278,7 @@ rwt.qx.Class.define( "rwt.animation.Animation", {
 
     _mainLoop : function() {
       try {
-        if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+        if( !rwt.remote.EventUtil.getSuspended() ) {
           var time = new Date().getTime();
           var Animation = rwt.animation.Animation;
           try {

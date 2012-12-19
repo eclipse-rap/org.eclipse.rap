@@ -134,7 +134,7 @@ rwt.qx.Class.define( "rwt.widgets.CoolItem", {
       this.resetBackgroundColor();
       this.getTopLevelWidget().setGlobalCursor( null );
       // Send request that informs about dragged CoolItem
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         rwt.remote.Server.getInstance().getServerObject( this ).call( "move", {
           "left" : this.getLeft()
         } );

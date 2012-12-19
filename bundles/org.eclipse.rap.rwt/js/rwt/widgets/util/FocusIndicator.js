@@ -35,7 +35,7 @@ rwt.qx.Class.define( "rwt.widgets.util.FocusIndicator", {
       var tv = new rwt.theme.ThemeValues( states );
       var border = tv.getCssBorder( cssSelector, "border" );
       var opacity = tv.getCssFloat( cssSelector, "opacity" );
-      var hasValidBorder = border instanceof org.eclipse.rwt.Border;
+      var hasValidBorder = border instanceof rwt.util.html.Border;
       var margin = tv.getCssBoxDimensions( cssSelector, "margin" );
       var padding = tv.getCssBoxDimensions( cssSelector, "padding" );
       if( !padding ) {

@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-rwt.qx.Class.define( "org.eclipse.rwt.DNDSupport", {
+rwt.qx.Class.define( "rwt.remote.DNDSupport", {
   type : "singleton",
   extend : rwt.qx.Object,
 
@@ -133,7 +133,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       req.addEvent( eventName, id );
       req.addParameter( eventName + ".x", x );
       req.addParameter( eventName + ".y", y );
-      var time = org.eclipse.swt.EventUtil.eventTimestamp();
+      var time = rwt.remote.EventUtil.eventTimestamp();
       req.addParameter( eventName + ".time", time );
       req.send();
     },
@@ -234,7 +234,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         y = this._currentMousePosition.y;
       }
       var source = wm.findIdByWidget( this._currentDragSource );
-      var time = org.eclipse.swt.EventUtil.eventTimestamp();
+      var time = rwt.remote.EventUtil.eventTimestamp();
       var operation = action == "alias" ? "link" : action;
       var eventName = "org.eclipse.swt.dnd." + type;
       var event = {};

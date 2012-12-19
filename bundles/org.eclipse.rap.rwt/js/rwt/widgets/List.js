@@ -86,7 +86,7 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     },
 
     _onChangeLeadItem : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var wm = rwt.widgets.util.WidgetManager.getInstance();
         var id = wm.findIdByWidget( this );
         var req = rwt.remote.Server.getInstance();
@@ -96,10 +96,10 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     },
 
     _onSelectionChange : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         this._sendSelectionChange();
         if( this._hasSelectionListener ) {
-          org.eclipse.swt.EventUtil.notifySelected( this );
+          rwt.remote.EventUtil.notifySelected( this );
         }
       }
       this._updateSelectedItemState();
@@ -123,8 +123,8 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     },
 
     _onDblClick : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() && this._hasDefaultSelectionListener ) {
-        org.eclipse.swt.EventUtil.notifyDefaultSelected( this );
+      if( !rwt.remote.EventUtil.getSuspended() && this._hasDefaultSelectionListener ) {
+        rwt.remote.EventUtil.notifyDefaultSelected( this );
       }
     },
 

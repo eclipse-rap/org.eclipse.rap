@@ -232,7 +232,7 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
           this._createFunctionWrapper( name );
         } catch( e ) {
           var msg = "Unable to create function: \"" + name + "\".\n" + e;
-          if( org.eclipse.swt.EventUtil.getSuspended() ) {
+          if( rwt.remote.EventUtil.getSuspended() ) {
             throw msg;
           } else {
             rwt.runtime.ErrorHandler.processJavaScriptError( msg );

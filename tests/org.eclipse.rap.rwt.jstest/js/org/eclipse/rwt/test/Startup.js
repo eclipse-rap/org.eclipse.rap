@@ -32,7 +32,7 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
   rwt.remote.Request.createXHR = function() {
     return new org.eclipse.rwt.test.fixture.NativeRequestMock();
   };
-  org.eclipse.rwt.KeyEventSupport.getInstance()._sendRequestAsync = function() {
+  rwt.remote.KeyEventSupport.getInstance()._sendRequestAsync = function() {
     rwt.remote.Server.getInstance().sendImmediate( true );
   };
   var server = rwt.remote.Server.getInstance();

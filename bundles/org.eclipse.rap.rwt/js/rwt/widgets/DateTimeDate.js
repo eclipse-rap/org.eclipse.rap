@@ -658,7 +658,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
     },
 
     _sendChanges : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
         var req = rwt.remote.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
@@ -673,7 +673,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
 
     _onInterval : function() {
       this._requestTimer.stop();
-      org.eclipse.swt.EventUtil.notifySelected( this );
+      rwt.remote.EventUtil.notifySelected( this );
     },
 
     setMonth : function( value ) {
