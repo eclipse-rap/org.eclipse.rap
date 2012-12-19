@@ -15,7 +15,7 @@ rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.ToggleHyperlink", {
 
   construct : function() {
     this.base( arguments );
-    this.setCursor( qx.constant.Style.CURSOR_HAND );
+    this.setCursor( "pointer" );
     this._hover = false;
     this._expanded = false;
     this._collapseNormal = null;

@@ -602,7 +602,7 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
       result.font = tv.getCssFont( "Label", "font" );
       var decoration = tv.getCssIdentifier( "Label", "text-decoration" );
       if( decoration != null && decoration != "none" ) {
-        var decoratedFont = new qx.ui.core.Font();
+        var decoratedFont = new rwt.util.html.Font();
         decoratedFont.setSize( result.font.getSize() );
         decoratedFont.setFamily( result.font.getFamily() );
         decoratedFont.setBold( result.font.getBold() );
@@ -1809,7 +1809,7 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
       var border = new rwt.util.html.Border( [ 0, 0, 1, 0 ], "solid", "gray" );
       // FIXME: [if] Bigger font size leads to text cutoff
       var font = tv.getCssFont( "*", "font" );
-      var smallFont = qx.ui.core.Font.fromString( font.toCss() );
+      var smallFont = rwt.util.html.Font.fromString( font.toCss() );
       smallFont.setSize( 11 );
       return {
         font : smallFont,

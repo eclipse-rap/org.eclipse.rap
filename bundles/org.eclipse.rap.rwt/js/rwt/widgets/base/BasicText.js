@@ -534,7 +534,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
         if( this.__font != null ) {
           this.__font.renderElement( this._inputElement );
         } else {
-          qx.ui.core.Font.resetElement( this._inputElement );
+          rwt.util.html.Font.resetElement( this._inputElement );
         }
       }
     },

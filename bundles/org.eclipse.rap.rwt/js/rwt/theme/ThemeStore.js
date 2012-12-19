@@ -212,8 +212,8 @@ rwt.qx.Class.define( "rwt.theme.ThemeStore", {
     getFont : function( element, states, property, theme ) {
       var key = this._getCssValue( element, states, property, theme );
       var value = this._values.fonts[ key ];
-      if( !( value instanceof qx.ui.core.Font ) ) {
-        var font = new qx.ui.core.Font();
+      if( !( value instanceof rwt.util.html.Font ) ) {
+        var font = new rwt.util.html.Font();
         font.setSize( value.size );
         font.setFamily( value.family );
         font.setBold( value.bold );

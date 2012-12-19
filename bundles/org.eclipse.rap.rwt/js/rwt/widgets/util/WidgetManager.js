@@ -181,7 +181,7 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetManager", {
       var id = name + size + bold + italic;
       var font = this._fontPool[ id ];
       if( !font ) {
-        font = new qx.ui.core.Font( size, name );
+        font = new rwt.util.html.Font( size, name );
         font.setBold( bold );
         font.setItalic( italic );
         this._fontPool[ id ] = font;

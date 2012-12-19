@@ -15,7 +15,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
 
   construct : function( style, monthNames, weekdayNames ) {
     this.base( arguments );
-    this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+    this.setOverflow( "hidden" );
     this.setAppearance( "datetime-calendar" );
 
     // Has selection listener

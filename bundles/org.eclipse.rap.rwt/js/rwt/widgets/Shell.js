@@ -28,7 +28,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     this.setResizableNorth( styles.RESIZE === true  );
     this.setResizableEast( styles.RESIZE === true  );
     this.setResizableSouth( styles.RESIZE === true  );
-    this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+    this.setOverflow( "hidden" );
     // Note: This prevents a laoyut-glitch on the ipad:
     this.setRestrictToPageOnOpen( false );
     // TODO [rh] HACK to set mode on Label that shows the caption, _captionTitle

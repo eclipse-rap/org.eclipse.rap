@@ -21,7 +21,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
                         datePattern )
   {
     this.base( arguments );
-    this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+    this.setOverflow( "hidden" );
     this.setAppearance( "datetime-date" );
 
     // Get styles

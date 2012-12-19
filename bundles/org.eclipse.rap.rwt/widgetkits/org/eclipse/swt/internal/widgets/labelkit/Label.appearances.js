@@ -19,7 +19,7 @@ var appearances = {
       result.font = tv.getCssFont( "Label", "font" );
       var decoration = tv.getCssIdentifier( "Label", "text-decoration" );
       if( decoration != null && decoration != "none" ) {
-        var decoratedFont = new qx.ui.core.Font();
+        var decoratedFont = new rwt.util.html.Font();
         decoratedFont.setSize( result.font.getSize() );
         decoratedFont.setFamily( result.font.getFamily() );
         decoratedFont.setBold( result.font.getBold() );

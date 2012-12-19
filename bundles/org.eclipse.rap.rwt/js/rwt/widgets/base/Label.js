@@ -251,14 +251,14 @@ rwt.qx.Class.define("rwt.widgets.base.Label",
      * Apply the font to the label.
      *
      * @type member
-     * @param font {qx.ui.core.Font} new font.
+     * @param font {rwt.util.html.Font} new font.
      */
     _styleFont : function( font ) {
       this._invalidatePreferredInnerDimensions();
       if( font ) {
         font.render( this );
       } else {
-        qx.ui.core.Font.reset( this );
+        rwt.util.html.Font.reset( this );
       }
     },
 

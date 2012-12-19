@@ -15,7 +15,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
 
   construct : function( style ) {
     this.base( arguments );
-    this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+    this.setOverflow( "hidden" );
     this.setAppearance( "datetime-time" );
 
     // Get styles

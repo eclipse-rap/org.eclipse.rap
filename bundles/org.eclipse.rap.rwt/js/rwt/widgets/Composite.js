@@ -18,7 +18,7 @@ rwt.qx.Class.define( "rwt.widgets.Composite", {
   construct : function() {
     this.base( arguments );
     this.setAppearance( "composite" );
-    this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+    this.setOverflow( "hidden" );
     this.setHideFocus( true );
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );

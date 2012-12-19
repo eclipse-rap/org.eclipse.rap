@@ -22,11 +22,11 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     this.setAppearance( "ctab-item" );
     this.setVerticalChildrenAlign( rwt.widgets.util.Layout.ALIGN_MIDDLE );
     this.setHorizontalChildrenAlign( rwt.widgets.util.Layout.ALIGN_LEFT );
-    this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+    this.setOverflow( "hidden" );
     this.setTabIndex( null );
     // Set the label part to 'html mode'
     this.setLabel( "(empty)" );
-    this.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
+    this.getLabelObject().setMode( "html" );
     this.getLabelObject().setVerticalAlign( rwt.widgets.util.Layout.ALIGN_MIDDLE );
     this.setLabel( "" );
     this._selected = false;

@@ -573,10 +573,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _getFontProps : function( font ) {
       var result = {};
       var fontObject;
-      if( font instanceof qx.ui.core.Font ) {
+      if( font instanceof rwt.util.html.Font ) {
         fontObject = font;
       } else {
-        fontObject = qx.ui.core.Font.fromString( font );
+        fontObject = rwt.util.html.Font.fromString( font );
       }
       fontObject.renderStyle( result );
       fontObject.dispose();
@@ -590,7 +590,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( font === "" || font === null ) {
         this._resetFont( element );
       } else {
-        if( font instanceof qx.ui.core.Font ) {
+        if( font instanceof rwt.util.html.Font ) {
           font.renderStyle( element.style );
         } else {
           element.style.font = font;

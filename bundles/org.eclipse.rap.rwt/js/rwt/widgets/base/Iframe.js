@@ -523,7 +523,7 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
       this.base(arguments);
 
       // register to iframe manager as active widget
-      rwt.widgets.base.IframeManager.getInstance().add(this);
+      rwt.widgets.util.IframeManager.getInstance().add(this);
     },
 
 
@@ -538,7 +538,7 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
       this.base(arguments);
 
       // deregister from iframe manager
-      rwt.widgets.base.IframeManager.getInstance().remove(this);
+      rwt.widgets.util.IframeManager.getInstance().remove(this);
     },
 
 

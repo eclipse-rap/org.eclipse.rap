@@ -14,7 +14,7 @@
 /**
  * Provides resizing behavior to any widget.
  */
-rwt.qx.Mixin.define("qx.ui.resizer.MResizable",
+rwt.qx.Mixin.define("rwt.widgets.util.MResizable",
 {
   /*
   *****************************************************************************

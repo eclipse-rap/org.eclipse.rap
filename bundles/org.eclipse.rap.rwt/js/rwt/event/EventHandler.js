@@ -447,7 +447,7 @@ rwt.qx.Class.define( "rwt.event.EventHandler", {
           if( this._menuManager != null ) {
             this._menuManager.update( vTarget, vType );
           }
-          rwt.widgets.base.IframeManager.getInstance().handleMouseDown( vEventObject );
+          rwt.widgets.util.IframeManager.getInstance().handleMouseDown( vEventObject );
         break;
         case "mouseup":
           // Mouseup event should always hide, independed of target,
@@ -455,8 +455,8 @@ rwt.qx.Class.define( "rwt.event.EventHandler", {
           if( this._menuManager != null ) {
             this._menuManager.update( vTarget, vType );
           }
-          if( rwt.qx.Class.isDefined("rwt.widgets.base.IframeManager" ) ) {
-            rwt.widgets.base.IframeManager.getInstance().handleMouseUp( vEventObject );
+          if( rwt.qx.Class.isDefined("rwt.widgets.util.IframeManager" ) ) {
+            rwt.widgets.util.IframeManager.getInstance().handleMouseUp( vEventObject );
           }
         break;
       }

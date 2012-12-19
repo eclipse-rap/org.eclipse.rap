@@ -17,7 +17,7 @@
 rwt.qx.Class.define("rwt.widgets.base.ResizablePopup",
 {
   extend   : rwt.widgets.base.Popup,
-  include  : qx.ui.resizer.MResizable,
+  include  : rwt.widgets.util.MResizable,
 
   construct : function()
   {

@@ -21,7 +21,7 @@ rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
     // End of workaround
     var labelObject = this.getLabelObject();
     labelObject.setAppearance( "hyperlink-label" );
-    labelObject.setMode( qx.constant.Style.LABEL_MODE_HTML );
+    labelObject.setMode( "html" );
     labelObject.setWrap( rwt.util.String.contains( style, "wrap" ) );
     // TODO [rh] workaround for weird getLabelObject behavior
     this.setLabel( "" );
@@ -71,11 +71,11 @@ rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
     },
 
     setActiveTextColor : function( value ) {
-      this._activeTextColor = value;      
+      this._activeTextColor = value;
     },
 
     setUnderlineMode : function( value ) {
-      this._underlineMode = value;      
+      this._underlineMode = value;
     },
 
     setHasDefaultSelectionListener : function( value ) {

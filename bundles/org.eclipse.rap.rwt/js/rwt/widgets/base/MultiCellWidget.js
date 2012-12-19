@@ -747,7 +747,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       if( font ) {
         font.renderStyle( this.__fontCache );
       } else {
-        qx.ui.core.Font.resetStyle( this.__fontCache );
+        rwt.util.html.Font.resetStyle( this.__fontCache );
       }
       for( var i = 0; i < this.__cellCount; i++ ) {
         if( this._isTextCell( i ) && this._cellHasContent( i ) ) {
@@ -755,7 +755,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
             if( font ) {
               font.renderStyle( this.getCellNode( i ).style );
             } else {
-              qx.ui.core.Font.resetStyle( this.getCellNode( i ).style );
+              rwt.util.html.Font.resetStyle( this.getCellNode( i ).style );
             }
           }
           this.__updateComputedCellDimension( i );

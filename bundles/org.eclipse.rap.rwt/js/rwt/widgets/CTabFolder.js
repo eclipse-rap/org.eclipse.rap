@@ -263,7 +263,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
         // Create chevron button
         this._chevron = new rwt.widgets.base.Button();
         this._chevron.setAppearance( "ctabfolder-drop-down-button" );
-        this._chevron.setShow( qx.constant.Style.BUTTON_SHOW_ICON );
+        this._chevron.setShow( "icon" );
         this._chevron.addEventListener( "execute", this._onChevronExecute, this );
         var wm = rwt.widgets.util.WidgetManager.getInstance();
         wm.setToolTip( this._chevron, rwt.widgets.CTabFolder.CHEVRON_TOOLTIP );
@@ -335,7 +335,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
       if( this._maxButton == null ) {
         this._maxButton = new rwt.widgets.base.Button();
         this._maxButton.setAppearance( "ctabfolder-button" );
-        this._maxButton.setShow( qx.constant.Style.BUTTON_SHOW_ICON );
+        this._maxButton.setShow( "icon" );
         this.setMinMaxState( this._minMaxState );  // initializes the icon according to current state
         // [if] "mousedown" is used instead of "execute" because of the bug 247672
         this._maxButton.addEventListener( "mousedown", this._onMinMaxExecute, this );
@@ -371,7 +371,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
       if( this._minButton == null ) {
         this._minButton = new rwt.widgets.base.Button();
         this._minButton.setAppearance( "ctabfolder-button" );
-        this._minButton.setShow( qx.constant.Style.BUTTON_SHOW_ICON );
+        this._minButton.setShow( "icon" );
         this.setMinMaxState( this._minMaxState );  // initializes the icon according to current state
         // [if] "mousedown" is used instead of "execute" because of the bug 247672
         this._minButton.addEventListener( "mousedown", this._onMinMaxExecute, this );

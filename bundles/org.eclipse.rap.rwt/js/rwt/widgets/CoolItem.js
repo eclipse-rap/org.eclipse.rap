@@ -19,7 +19,7 @@ rwt.qx.Class.define( "rwt.widgets.CoolItem", {
 
   construct : function( orientation ) {
     this.base( arguments );
-    this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+    this.setOverflow( "hidden" );
     this.setAppearance( "coolitem" );
     this._orientation = orientation;
     // Create handle to drag this CoolItem around
@@ -47,7 +47,6 @@ rwt.qx.Class.define( "rwt.widgets.CoolItem", {
   },
 
   statics : {
-    // TODO [rh] move to a central place, e.g. qx.constant.Style or similar
     DRAG_CURSOR : "col-resize",
     CONTROL_OFFSET : 6
   },

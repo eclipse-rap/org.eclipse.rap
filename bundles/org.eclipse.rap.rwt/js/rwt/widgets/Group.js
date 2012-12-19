@@ -24,7 +24,7 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
 
     // Enable method remapping
     this.remapChildrenHandlingTo(this._frameObject);
-    this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+    this.setOverflow( "hidden" );
     var themeValues = new rwt.theme.ThemeValues( {} );
     this._themeBackgroundColor = themeValues.getCssColor( "Group-Label", "background-color" );
     themeValues.dispose();
@@ -35,7 +35,7 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
       this.setLegend( "" );
     }
     labelObject = this.getLegendObject().getLabelObject();
-    labelObject.setMode( qx.constant.Style.LABEL_MODE_HTML );
+    labelObject.setMode( "html" );
     this.addEventListener( "changeBackgroundColor",
                            this._onChangeBackgroundColor,
                            this );

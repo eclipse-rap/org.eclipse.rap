@@ -2709,7 +2709,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     changeTreeFont : function() {
       var tree = this._createDefaultTree();
-      tree.setFont( new qx.ui.core.Font( 12, [ "monospace" ] ) );
+      tree.setFont( new rwt.util.html.Font( 12, [ "monospace" ] ) );
       tree.setItemCount( 1 );
       var item = this._createItem( tree.getRootItem(), 0 );
       item.setTexts( [ "Test1" ] );
@@ -2718,7 +2718,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var node = row._getTargetNode().childNodes[ 0 ];
       var font = TestUtil.getElementFont( node );
       assertTrue( font.indexOf( "monospace" ) != -1 );
-      tree.setFont( new qx.ui.core.Font( 12, [ "fantasy" ] ) );
+      tree.setFont( new rwt.util.html.Font( 12, [ "fantasy" ] ) );
       TestUtil.flush();
       assertTrue( font.indexOf( "fantasy" ) != -1 );
       tree.destroy();

@@ -284,7 +284,7 @@ var appearances = {
       var border = new rwt.util.html.Border( [ 0, 0, 1, 0 ], "solid", "gray" );
       // FIXME: [if] Bigger font size leads to text cutoff
       var font = tv.getCssFont( "DateTime", "font" );
-      var smallFont = qx.ui.core.Font.fromString( font.toCss() );
+      var smallFont = rwt.util.html.Font.fromString( font.toCss() );
       smallFont.setSize( 11 );
       return {
         font : smallFont,
