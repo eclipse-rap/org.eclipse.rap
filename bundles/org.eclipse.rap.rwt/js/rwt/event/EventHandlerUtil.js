@@ -15,7 +15,7 @@ qx.Class.define( "rwt.event.EventHandlerUtil", {
   type : "static",
 
   statics : {
-    // TODO [tb] : integrate qx.html.EventRegistration
+    // TODO [tb] : integrate rwt.util.html.EventRegistration
     _lastUpDownType : {},
     _lastKeyCode : null,
 
@@ -46,7 +46,7 @@ qx.Class.define( "rwt.event.EventHandlerUtil", {
             event.preventDefault();
           }
         };
-        qx.html.EventRegistration.addEventListener( docElement,
+        rwt.util.html.EventRegistration.addEventListener( docElement,
                                                     "mousedown",
                                                     this._ffMouseFixListener );
       },
@@ -103,7 +103,7 @@ qx.Class.define( "rwt.event.EventHandlerUtil", {
 
 
     blockUserDomEvents : function( element, value ) {
-      var eventUtil = qx.html.EventRegistration;
+      var eventUtil = rwt.util.html.EventRegistration;
       if( value ) {
         for( var i = 0; i < this._userEventTypes.length; i++ ) {
           eventUtil.addEventListener( element, this._userEventTypes[ i ], this._domEventBlocker );

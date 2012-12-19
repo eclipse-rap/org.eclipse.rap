@@ -233,7 +233,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
     getContentWindow : function()
     {
       if (this.isCreated()) {
-        return qx.html.Iframe.getWindow(this.getIframeNode());
+        return rwt.util.html.Iframe.getWindow(this.getIframeNode());
       } else {
         return null;
       }
@@ -249,7 +249,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
     getContentDocument : function()
     {
       if (this.isCreated()) {
-        return qx.html.Iframe.getDocument(this.getIframeNode());
+        return rwt.util.html.Iframe.getDocument(this.getIframeNode());
       } else {
         return null;
       }

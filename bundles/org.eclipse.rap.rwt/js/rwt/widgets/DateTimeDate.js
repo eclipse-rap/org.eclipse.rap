@@ -854,7 +854,7 @@ qx.Class.define( "rwt.widgets.DateTimeDate", {
     _setCalendarLocation : function() {
       if( this.getElement() && this._calendar != null ){
         var elementPos = rwt.util.html.Location.get( this.getElement() );
-        var browserHeight = qx.html.Window.getInnerHeight( window );
+        var browserHeight = rwt.util.html.Window.getInnerHeight( window );
         var top = elementPos.top + this.getHeight();
         var height = this._calendar.getHeightValue();
         if( top + height > browserHeight ) {

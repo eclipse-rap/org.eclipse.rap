@@ -162,16 +162,16 @@ qx.Class.define( "rwt.widgets.Link", {
       var hyperlinks = this._getHyperlinkElements();
       if( hyperlinks.length > 0 && !this._hyperlinksHaveListeners ) {
         for( var i = 0; i < hyperlinks.length; i++ ) {
-          qx.html.EventRegistration.addEventListener( hyperlinks[ i ],
+          rwt.util.html.EventRegistration.addEventListener( hyperlinks[ i ],
                                                       "mousedown",
                                                       this.__onMouseDown );
-          qx.html.EventRegistration.addEventListener( hyperlinks[ i ],
+          rwt.util.html.EventRegistration.addEventListener( hyperlinks[ i ],
                                                       "mouseover",
                                                       this.__onMouseOver );
-          qx.html.EventRegistration.addEventListener( hyperlinks[ i ],
+          rwt.util.html.EventRegistration.addEventListener( hyperlinks[ i ],
                                                       "mouseout",
                                                       this.__onMouseOut );
-          qx.html.EventRegistration.addEventListener( hyperlinks[ i ],
+          rwt.util.html.EventRegistration.addEventListener( hyperlinks[ i ],
                                                       "keydown",
                                                       this.__onKeyDown );
         }
@@ -183,16 +183,16 @@ qx.Class.define( "rwt.widgets.Link", {
       var hyperlinks = this._getHyperlinkElements();
       if( hyperlinks.length > 0 && this._hyperlinksHaveListeners ) {
         for( var i = 0; i < hyperlinks.length; i++ ) {
-          qx.html.EventRegistration.removeEventListener( hyperlinks[ i ],
+          rwt.util.html.EventRegistration.removeEventListener( hyperlinks[ i ],
                                                          "mousedown",
                                                          this.__onMouseDown );
-          qx.html.EventRegistration.removeEventListener( hyperlinks[ i ],
+          rwt.util.html.EventRegistration.removeEventListener( hyperlinks[ i ],
                                                          "mouseover",
                                                          this.__onMouseOver );
-          qx.html.EventRegistration.removeEventListener( hyperlinks[ i ],
+          rwt.util.html.EventRegistration.removeEventListener( hyperlinks[ i ],
                                                          "mouseout",
                                                          this.__onMouseOut );
-          qx.html.EventRegistration.removeEventListener( hyperlinks[ i ],
+          rwt.util.html.EventRegistration.removeEventListener( hyperlinks[ i ],
                                                          "keydown",
                                                          this.__onKeyDown );
         }

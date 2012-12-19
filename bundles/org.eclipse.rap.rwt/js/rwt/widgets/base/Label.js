@@ -347,7 +347,7 @@ qx.Class.define("rwt.widgets.base.Label",
       switch (mode)
       {
         case "text":
-          var escapedText = qx.html.String.escape(text).replace(/(^ | $)/g, "&nbsp;").replace(/  /g, "&nbsp;&nbsp;");
+          var escapedText = rwt.util.html.String.escape(text).replace(/(^ | $)/g, "&nbsp;").replace(/  /g, "&nbsp;&nbsp;");
           this._isHtml = escapedText !== text;
           this._content = escapedText;
           break;

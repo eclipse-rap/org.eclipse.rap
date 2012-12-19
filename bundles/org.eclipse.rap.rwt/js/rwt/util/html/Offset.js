@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define("qx.html.Offset",
+qx.Class.define("rwt.util.html.Offset",
 {
   /*
   *****************************************************************************
@@ -43,12 +43,12 @@ qx.Class.define("qx.html.Offset",
         var val = el.offsetLeft;
         var pa = el.parentNode;
 
-        var pose = qx.html.Style.getStyleProperty(el, "position");
-        var posp = qx.html.Style.getStyleProperty(pa, "position");
+        var pose = rwt.util.html.Style.getStyleProperty(el, "position");
+        var posp = rwt.util.html.Style.getStyleProperty(pa, "position");
 
         // If element is positioned non-static: Substract the border of the element
         if (pose != "absolute" && pose != "fixed") {
-          val -= qx.html.Style.getBorderLeft(pa);
+          val -= rwt.util.html.Style.getBorderLeft(pa);
         }
 
         // If parent is positioned static: Substract the border of the first
@@ -63,11 +63,11 @@ qx.Class.define("qx.html.Offset",
               break;
             }
 
-            var posi = qx.html.Style.getStyleProperty(pa, "position");
+            var posi = rwt.util.html.Style.getStyleProperty(pa, "position");
 
             if (posi == "absolute" || posi == "fixed")
             {
-              val -= qx.html.Style.getBorderLeft(pa) + qx.html.Style.getPaddingLeft(pa);
+              val -= rwt.util.html.Style.getBorderLeft(pa) + rwt.util.html.Style.getPaddingLeft(pa);
               break;
             }
           }
@@ -97,12 +97,12 @@ qx.Class.define("qx.html.Offset",
         var val = el.offsetTop;
         var pa = el.parentNode;
 
-        var pose = qx.html.Style.getStyleProperty(el, "position");
-        var posp = qx.html.Style.getStyleProperty(pa, "position");
+        var pose = rwt.util.html.Style.getStyleProperty(el, "position");
+        var posp = rwt.util.html.Style.getStyleProperty(pa, "position");
 
         // If element is positioned non-static: Substract the border of the element
         if (pose != "absolute" && pose != "fixed") {
-          val -= qx.html.Style.getBorderTop(pa);
+          val -= rwt.util.html.Style.getBorderTop(pa);
         }
 
         // If parent is positioned static: Substract the border of the first
@@ -117,11 +117,11 @@ qx.Class.define("qx.html.Offset",
               break;
             }
 
-            var posi = qx.html.Style.getStyleProperty(pa, "position");
+            var posi = rwt.util.html.Style.getStyleProperty(pa, "position");
 
             if (posi == "absolute" || posi == "fixed")
             {
-              val -= qx.html.Style.getBorderTop(pa) + qx.html.Style.getPaddingTop(pa);
+              val -= rwt.util.html.Style.getBorderTop(pa) + rwt.util.html.Style.getPaddingTop(pa);
               break;
             }
           }

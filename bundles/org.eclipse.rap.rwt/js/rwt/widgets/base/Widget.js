@@ -577,7 +577,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     disableScrolling : function( widget ) {
       var el = widget._getTargetNode();
       if( el ) {
-        qx.html.Scroll.disableScrolling(el);
+        rwt.util.html.Scroll.disableScrolling(el);
       } else {
         widget.addEventListener( "appear", this._blockScrollingOnAppear, widget );
       }
@@ -586,7 +586,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     enableScrolling : function( widget ) {
       var el = widget._getTargetNode();
       if( el ) {
-        qx.html.Scroll.enableScrolling( el );
+        rwt.util.html.Scroll.enableScrolling( el );
       } else {
         widget.removeEventListener( "appear", this._blockScrollingOnAppear, widget );
       }
@@ -3979,12 +3979,12 @@ qx.Class.define( "rwt.widgets.base.Widget", {
 
     getOffsetLeft : function() {
       this._visualPropertyCheck();
-      return qx.html.Offset.getLeft(this.getElement());
+      return rwt.util.html.Offset.getLeft(this.getElement());
     },
 
     getOffsetTop : function() {
       this._visualPropertyCheck();
-      return qx.html.Offset.getTop(this.getElement());
+      return rwt.util.html.Offset.getTop(this.getElement());
     },
 
     getScrollLeft : function() {
@@ -4048,14 +4048,14 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       if (!this._isCreated || !this._isDisplayable) {
         return false;
       }
-      return qx.html.ScrollIntoView.scrollX(this.getElement(), alignLeft);
+      return rwt.util.html.ScrollIntoView.scrollX(this.getElement(), alignLeft);
     },
 
     scrollIntoViewY : function(alignTop) {
       if (!this._isCreated || !this._isDisplayable) {
         return false;
       }
-      return qx.html.ScrollIntoView.scrollY(this.getElement(), alignTop);
+      return rwt.util.html.ScrollIntoView.scrollY(this.getElement(), alignTop);
     },
 
     ////////////////////////

@@ -298,8 +298,8 @@ qx.Class.define( "rwt.widgets.Combo", {
         var listLeft = elementPos.left;
         var comboTop = elementPos.top;
         var listTop = comboTop + this.getHeight();
-        var browserHeight = qx.html.Window.getInnerHeight( window );
-        var browserWidth = qx.html.Window.getInnerWidth( window );
+        var browserHeight = rwt.util.html.Window.getInnerHeight( window );
+        var browserWidth = rwt.util.html.Window.getInnerWidth( window );
         var itemsWidth = this._list.getPreferredWidth();
         var listWidth = Math.min( browserWidth - listLeft, itemsWidth );
         listWidth = Math.max( this.getWidth(), listWidth );
@@ -419,7 +419,7 @@ qx.Class.define( "rwt.widgets.Combo", {
     _formatText : function( value ) {
       var result = value;
       result = result.replace( /<[^>]+?>/g, "" );
-      result = qx.html.String.unescape( result );
+      result = rwt.util.html.String.unescape( result );
       return result;
     },
 

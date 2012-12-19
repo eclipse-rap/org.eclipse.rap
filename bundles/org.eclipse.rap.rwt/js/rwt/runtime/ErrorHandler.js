@@ -192,7 +192,7 @@ qx.Class.define( "rwt.runtime.ErrorHandler", {
       doc.setSelectable( true );
       if( rwt.client.Client.isGecko() ) {
         var EventHandlerUtil = rwt.event.EventHandlerUtil;
-        qx.html.EventRegistration.removeEventListener( document.documentElement,
+        rwt.util.html.EventRegistration.removeEventListener( document.documentElement,
                                                        "mousedown",
                                                        EventHandlerUtil._ffMouseFixListener );
       }

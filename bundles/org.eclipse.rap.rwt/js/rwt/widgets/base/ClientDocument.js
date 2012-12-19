@@ -384,7 +384,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
      * @return {var} TODOC
      */
     createStyleElement : function(vCssText) {
-      return qx.html.StyleSheet.createElement(vCssText);
+      return rwt.util.html.StyleSheet.createElement(vCssText);
     },
 
 
@@ -398,7 +398,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
      * @return {var} TODOC
      */
     addCssRule : function(vSheet, vSelector, vStyle) {
-      return qx.html.StyleSheet.addRule(vSheet, vSelector, vStyle);
+      return rwt.util.html.StyleSheet.addRule(vSheet, vSelector, vStyle);
     },
 
 
@@ -411,7 +411,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
      * @return {var} TODOC
      */
     removeCssRule : function(vSheet, vSelector) {
-      return qx.html.StyleSheet.removeRule(vSheet, vSelector);
+      return rwt.util.html.StyleSheet.removeRule(vSheet, vSelector);
     },
 
 
@@ -423,7 +423,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
      * @return {var} TODOC
      */
     removeAllCssRules : function(vSheet) {
-      return qx.html.StyleSheet.removeAllRules(vSheet);
+      return rwt.util.html.StyleSheet.removeAllRules(vSheet);
     },
 
 
@@ -601,14 +601,14 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
     var borderBoxCss = boxSizingAttr.join(":border-box;") + ":border-box;";
     var contentBoxCss = boxSizingAttr.join(":content-box;") + ":content-box;";
 
-    qx.html.StyleSheet.createElement(
+    rwt.util.html.StyleSheet.createElement(
       "html,body { margin:0;border:0;padding:0; } " +
       "html { border:0 none; } " +
       "*{" + borderBoxCss +"} " +
       "img{" + contentBoxCss + "}"
     );
 
-    qx.html.StyleSheet.createElement("html,body{width:100%;height:100%;overflow:hidden;}");
+    rwt.util.html.StyleSheet.createElement("html,body{width:100%;height:100%;overflow:hidden;}");
   },
 
 

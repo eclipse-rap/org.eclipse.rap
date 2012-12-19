@@ -32,7 +32,7 @@ qx.Class.define( "rwt.widgets.base.Scrollable", {
   destruct : function() {
     var el = this._clientArea._getTargetNode();
     if( el ) {
-      var eventUtil = qx.html.EventRegistration;
+      var eventUtil = rwt.util.html.EventRegistration;
       eventUtil.removeEventListener( el, "scroll", this.__onscroll );
       delete this.__onscroll;
     }
@@ -180,9 +180,9 @@ qx.Class.define( "rwt.widgets.base.Scrollable", {
       this._clientArea.prepareEnhancedBorder();
       this._clientArea.setContainerOverflow( false );
       var el = this._clientArea._getTargetNode();
-      var eventUtil = qx.html.EventRegistration;
+      var eventUtil = rwt.util.html.EventRegistration;
       eventUtil.addEventListener( el, "scroll", this.__onscroll );
-      qx.html.Scroll.disableScrolling( this._clientArea.getElement() );
+      rwt.util.html.Scroll.disableScrolling( this._clientArea.getElement() );
     },
 
     _onClientLayout : rwt.util.Variant.select( "qx.client", {

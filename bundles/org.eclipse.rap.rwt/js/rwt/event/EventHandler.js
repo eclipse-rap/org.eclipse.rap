@@ -60,7 +60,7 @@ qx.Class.define( "rwt.event.EventHandler", {
     },
 
     attachEvents : function() {
-      var eventUtil = qx.html.EventRegistration;
+      var eventUtil = rwt.util.html.EventRegistration;
       this.attachEventTypes( this._mouseEventTypes, this.__onmouseevent );
       this.attachEventTypes( this._dragEventTypes, this.__ondragevent );
       this.attachEventTypes( this._keyEventTypes, this.__onKeyEvent );
@@ -73,7 +73,7 @@ qx.Class.define( "rwt.event.EventHandler", {
     },
 
     detachEvents : function() {
-      var eventUtil = qx.html.EventRegistration;
+      var eventUtil = rwt.util.html.EventRegistration;
       this.detachEventTypes( this._mouseEventTypes, this.__onmouseevent);
       this.detachEventTypes( this._dragEventTypes, this.__ondragevent);
       this.detachEventTypes( this._keyEventTypes, this.__onKeyEvent );
@@ -615,7 +615,7 @@ qx.Class.define( "rwt.event.EventHandler", {
         // 'window', so there we use the 'body' element
         var el = rwt.client.Client.isGecko() ? window : document.body;
         for( var i=0, l=vEventTypes.length; i<l; i++ ) {
-          qx.html.EventRegistration.addEventListener( el, vEventTypes[i], vFunctionPointer );
+          rwt.util.html.EventRegistration.addEventListener( el, vEventTypes[i], vFunctionPointer );
         }
       }
       catch( ex ) {
@@ -627,7 +627,7 @@ qx.Class.define( "rwt.event.EventHandler", {
       try {
         var el = rwt.client.Client.isGecko() ? window : document.body;
         for (var i=0, l=vEventTypes.length; i<l; i++) {
-          qx.html.EventRegistration.removeEventListener( el, vEventTypes[i], vFunctionPointer );
+          rwt.util.html.EventRegistration.removeEventListener( el, vEventTypes[i], vFunctionPointer );
         }
       } catch( ex ) {
         throw new Error( "EventHandler: Failed to detach window event types: " + vEventTypes + ": " + ex );

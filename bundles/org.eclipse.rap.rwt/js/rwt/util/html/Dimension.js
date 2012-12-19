@@ -29,7 +29,7 @@
  * </pre>
  */
 
-qx.Class.define("qx.html.Dimension",
+qx.Class.define("rwt.util.html.Dimension",
 {
   /*
   *****************************************************************************
@@ -85,13 +85,13 @@ qx.Class.define("qx.html.Dimension",
         // sum. This is normally not correct and so we
         // fix this value with a more complex calculation.
         // (Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.7.6) Gecko/20050223 Firefox/1.0.1)
-        var Style = qx.html.Style;
+        var Style = rwt.util.html.Style;
         if(    el.clientWidth !== 0
             && el.clientWidth !== ( Style.getBorderLeft( el ) + Style.getBorderRight( el ) )
         ) {
           return el.clientWidth;
         } else {
-          return qx.html.Dimension.getBoxWidth(el) - qx.html.Dimension.getInsetLeft(el) - qx.html.Dimension.getInsetRight(el);
+          return rwt.util.html.Dimension.getBoxWidth(el) - rwt.util.html.Dimension.getInsetLeft(el) - rwt.util.html.Dimension.getInsetRight(el);
         }
       },
 
@@ -100,7 +100,7 @@ qx.Class.define("qx.html.Dimension",
           // 0 in clientWidth could mean both: That it is really 0 or
           // that the element is not rendered by the browser and
           // therefore it is 0, too
-          return el.clientWidth !== 0 ? el.clientWidth : (qx.html.Dimension.getBoxWidth(el) - qx.html.Dimension.getInsetLeft(el) - qx.html.Dimension.getInsetRight(el));
+          return el.clientWidth !== 0 ? el.clientWidth : (rwt.util.html.Dimension.getBoxWidth(el) - rwt.util.html.Dimension.getInsetLeft(el) - rwt.util.html.Dimension.getInsetRight(el));
         }
     }),
 
@@ -125,10 +125,10 @@ qx.Class.define("qx.html.Dimension",
         // sum. This is normally not correct and so we
         // fix this value with a more complex calculation.
         // (Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.7.6) Gecko/20050223 Firefox/1.0.1)
-        if (el.clientHeight !== 0 && el.clientHeight !== (qx.html.Style.getBorderTop(el) + qx.html.Style.getBorderBottom(el))) {
+        if (el.clientHeight !== 0 && el.clientHeight !== (rwt.util.html.Style.getBorderTop(el) + rwt.util.html.Style.getBorderBottom(el))) {
           return el.clientHeight;
         } else {
-          return qx.html.Dimension.getBoxHeight(el) - qx.html.Dimension.getInsetTop(el) - qx.html.Dimension.getInsetBottom(el);
+          return rwt.util.html.Dimension.getBoxHeight(el) - rwt.util.html.Dimension.getInsetTop(el) - rwt.util.html.Dimension.getInsetBottom(el);
         }
       },
 
@@ -137,7 +137,7 @@ qx.Class.define("qx.html.Dimension",
         // 0 in clientHeight could mean both: That it is really 0 or
         // that the element is not rendered by the browser and
         // therefore it is 0, too
-        return el.clientHeight !== 0 ? el.clientHeight : (qx.html.Dimension.getBoxHeight(el) - qx.html.Dimension.getInsetTop(el) - qx.html.Dimension.getInsetBottom(el));
+        return el.clientHeight !== 0 ? el.clientHeight : (rwt.util.html.Dimension.getBoxHeight(el) - rwt.util.html.Dimension.getInsetTop(el) - rwt.util.html.Dimension.getInsetBottom(el));
       }
     }),
 
@@ -158,7 +158,7 @@ qx.Class.define("qx.html.Dimension",
       },
 
       "default" : function(el) {
-        return qx.html.Style.getBorderLeft(el);
+        return rwt.util.html.Style.getBorderLeft(el);
       }
     }),
 
@@ -178,7 +178,7 @@ qx.Class.define("qx.html.Dimension",
       },
 
       "default" : function(el) {
-        return qx.html.Style.getBorderTop(el);
+        return rwt.util.html.Style.getBorderTop(el);
       }
     }),
 
@@ -195,8 +195,8 @@ qx.Class.define("qx.html.Dimension",
     {
       "mshtml" : function(el)
       {
-        if (qx.html.Style.getStyleProperty(el, "overflowY") === "hidden" || el.clientWidth === 0) {
-          return qx.html.Style.getBorderRight(el);
+        if (rwt.util.html.Style.getStyleProperty(el, "overflowY") === "hidden" || el.clientWidth === 0) {
+          return rwt.util.html.Style.getBorderRight(el);
         }
 
         return Math.max(0, el.offsetWidth - el.clientLeft - el.clientWidth);
@@ -208,12 +208,12 @@ qx.Class.define("qx.html.Dimension",
         // clientWidth == 0 could mean both: unavailable or really 0
         if (el.clientWidth === 0)
         {
-          var ov = qx.html.Style.getStyleProperty(el, "overflow");
+          var ov = rwt.util.html.Style.getStyleProperty(el, "overflow");
           var sbv = ov == "scroll" || ov == "-moz-scrollbars-vertical" ? 16 : 0;
-          return Math.max(0, qx.html.Style.getBorderRight(el) + sbv);
+          return Math.max(0, rwt.util.html.Style.getBorderRight(el) + sbv);
         }
 
-        return Math.max(0, el.offsetWidth - el.clientWidth - qx.html.Style.getBorderLeft(el));
+        return Math.max(0, el.offsetWidth - el.clientWidth - rwt.util.html.Style.getBorderLeft(el));
       }
     }),
 
@@ -230,8 +230,8 @@ qx.Class.define("qx.html.Dimension",
     {
       "mshtml" : function(el)
       {
-        if (qx.html.Style.getStyleProperty(el, "overflowX") === "hidden" || el.clientHeight === 0) {
-          return qx.html.Style.getBorderBottom(el);
+        if (rwt.util.html.Style.getStyleProperty(el, "overflowX") === "hidden" || el.clientHeight === 0) {
+          return rwt.util.html.Style.getBorderBottom(el);
         }
 
         return Math.max(0, el.offsetHeight - el.clientTop - el.clientHeight);
@@ -243,12 +243,12 @@ qx.Class.define("qx.html.Dimension",
         // clientHeight == 0 could mean both: unavailable or really 0
         if (el.clientHeight === 0)
         {
-          var ov = qx.html.Style.getStyleProperty(el, "overflow");
+          var ov = rwt.util.html.Style.getStyleProperty(el, "overflow");
           var sbv = ov == "scroll" || ov == "-moz-scrollbars-horizontal" ? 16 : 0;
-          return Math.max(0, qx.html.Style.getBorderBottom(el) + sbv);
+          return Math.max(0, rwt.util.html.Style.getBorderBottom(el) + sbv);
         }
 
-        return Math.max(0, el.offsetHeight - el.clientHeight - qx.html.Style.getBorderTop(el));
+        return Math.max(0, el.offsetHeight - el.clientHeight - rwt.util.html.Style.getBorderTop(el));
       }
     }),
 
@@ -260,7 +260,7 @@ qx.Class.define("qx.html.Dimension",
      * @return {var} TODOC
      */
     getScrollBarSizeRight : function(el) {
-      return qx.html.Dimension.getInsetRight(el) - qx.html.Style.getBorderRight(el);
+      return rwt.util.html.Dimension.getInsetRight(el) - rwt.util.html.Style.getBorderRight(el);
     },
 
 
@@ -272,7 +272,7 @@ qx.Class.define("qx.html.Dimension",
      * @return {var} TODOC
      */
     getScrollBarSizeBottom : function(el) {
-      return qx.html.Dimension.getInsetBottom(el) - qx.html.Style.getBorderBottom(el);
+      return rwt.util.html.Dimension.getInsetBottom(el) - rwt.util.html.Style.getBorderBottom(el);
     }
 
   }

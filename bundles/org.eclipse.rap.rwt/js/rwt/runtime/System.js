@@ -25,9 +25,9 @@ qx.Class.define( "rwt.runtime.System", {
       this._onloadWrapped = rwt.util.Function.bind( this._onload, this );
       this._onbeforeunloadWrapped = rwt.util.Function.bind( this._onbeforeunload, this );
       this._onunloadWrapped = rwt.util.Function.bind( this._onunload, this );
-      qx.html.EventRegistration.addEventListener( window, "load", this._onloadWrapped );
-      qx.html.EventRegistration.addEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
-      qx.html.EventRegistration.addEventListener( window, "unload", this._onunloadWrapped );
+      rwt.util.html.EventRegistration.addEventListener( window, "load", this._onloadWrapped );
+      rwt.util.html.EventRegistration.addEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
+      rwt.util.html.EventRegistration.addEventListener( window, "unload", this._onunloadWrapped );
       this._applyPatches();
       rwt.graphics.GraphicsUtil.init();
       var eventHandler = rwt.event.EventHandler;
@@ -156,9 +156,9 @@ qx.Class.define( "rwt.runtime.System", {
   },
 
   destruct : function() {
-    qx.html.EventRegistration.removeEventListener( window, "load", this._onloadWrapped );
-    qx.html.EventRegistration.removeEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
-    qx.html.EventRegistration.removeEventListener( window, "unload", this._onunloadWrapped );
+    rwt.util.html.EventRegistration.removeEventListener( window, "load", this._onloadWrapped );
+    rwt.util.html.EventRegistration.removeEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
+    rwt.util.html.EventRegistration.removeEventListener( window, "unload", this._onunloadWrapped );
   },
 
   defer : function( statics, proto, properties )  {

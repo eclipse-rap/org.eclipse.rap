@@ -146,8 +146,8 @@ rwt.widgets.Display.prototype = {
   // client to server
 
   _appendWindowSize : function() {
-    var width = qx.html.Window.getInnerWidth( window );
-    var height = qx.html.Window.getInnerHeight( window );
+    var width = rwt.util.html.Window.getInnerWidth( window );
+    var height = rwt.util.html.Window.getInnerHeight( window );
     var bounds = [ 0, 0, width, height ];
     rwt.remote.Server.getInstance().getServerObject( this ).set( "bounds", bounds );
   },

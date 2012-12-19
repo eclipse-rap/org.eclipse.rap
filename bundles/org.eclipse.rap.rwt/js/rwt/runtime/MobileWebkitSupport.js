@@ -116,7 +116,7 @@ qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
     },
 
     _hideTabHighlight : function() {
-      qx.html.StyleSheet.createElement( " * { -webkit-tap-highlight-color: rgba(0,0,0,0); }" );
+      rwt.util.html.StyleSheet.createElement( " * { -webkit-tap-highlight-color: rgba(0,0,0,0); }" );
     },
 
     _bindListeners : function() {
