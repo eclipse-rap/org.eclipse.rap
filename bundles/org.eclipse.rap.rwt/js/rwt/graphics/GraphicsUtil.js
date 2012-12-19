@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
+qx.Class.define( "rwt.graphics.GraphicsUtil", {
 
   statics : {
     _renderClass : null,
@@ -17,9 +17,9 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
     init : function() {
       if( this._renderClass == null ) {
         if( rwt.client.Client.supportsVml() ) {
-          this._renderClass = org.eclipse.rwt.VML;
+          this._renderClass = rwt.graphics.VML;
         } else if ( rwt.client.Client.supportsSvg() ) {
-          this._renderClass = org.eclipse.rwt.SVG;
+          this._renderClass = rwt.graphics.SVG;
         }
         if( this._renderClass != null ) {
           this._renderClass.init();

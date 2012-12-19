@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.SVG", {
+qx.Class.define( "rwt.graphics.SVG", {
 
   statics : {
 
@@ -245,8 +245,8 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
             if(   shape.parent !== null
                && shape.parent.node.parentNode )
             {
-              org.eclipse.rwt.SVG._setXLink( imageNode, source );
-              org.eclipse.rwt.SVG._redrawWebkit( shape );
+              rwt.graphics.SVG._setXLink( imageNode, source );
+              rwt.graphics.SVG._redrawWebkit( shape );
             }
           } );
         } else {
@@ -339,7 +339,7 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
         // Fix for bug 301768: "onload" is sometimes called too early due
         // to a bug in Google Chrome. This can be detected by this check:
         if( arguments.callee.caller != null ) {
-          org.eclipse.rwt.SVG._onImageLoad( source, func );
+          rwt.graphics.SVG._onImageLoad( source, func );
         } else {
           func();
         }
@@ -402,7 +402,7 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
 
     _redrawWebkit : function( shape ) {
       var wrapper = function() {
-        org.eclipse.rwt.SVG._redrawWebkitCore( shape );
+        rwt.graphics.SVG._redrawWebkitCore( shape );
       };
       window.setTimeout( wrapper, 10 );
     },

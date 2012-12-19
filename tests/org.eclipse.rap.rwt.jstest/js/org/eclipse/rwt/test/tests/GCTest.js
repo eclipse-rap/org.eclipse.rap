@@ -99,7 +99,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 //      "default" : function() {},
 //      "mshtml" : function() {
 //        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-//        var graphicsUtil = org.eclipse.rwt.GraphicsUtil;
+//        var graphicsUtil = rwt.graphics.GraphicsUtil;
 //        var border = new org.eclipse.rwt.Border( 3, "rounded", "#FF00F0", [ 0, 1, 2, 3 ] );
 //        var parent = new rwt.widgets.Composite();
 //        parent.addToDocument();

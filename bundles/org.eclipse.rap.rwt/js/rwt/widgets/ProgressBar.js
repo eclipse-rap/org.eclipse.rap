@@ -225,7 +225,7 @@ qx.Class.define( "rwt.widgets.ProgressBar", {
     // eventhandler
 
     _onCanvasAppear : function() {
-      org.eclipse.rwt.GraphicsUtil.handleAppear( this._canvas );
+      rwt.graphics.GraphicsUtil.handleAppear( this._canvas );
     },
 
     _onInterval : function() {
@@ -261,7 +261,7 @@ qx.Class.define( "rwt.widgets.ProgressBar", {
     },
 
     _createCanvas : function() {
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       this._canvas = GraphicsUtil.createCanvas();
       this._getTargetNode().appendChild( GraphicsUtil.getCanvasNode( this._canvas ) );
       this._gfxCanvasAppended = true;
@@ -281,7 +281,7 @@ qx.Class.define( "rwt.widgets.ProgressBar", {
     // render style
 
     _styleIndicatorBorder : function() {
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       if( this.getBorder() && this.getBorder().getStyle() === "rounded" ) {
         if( !this._useBorderShape ) {
           this._style.border = "";
@@ -305,7 +305,7 @@ qx.Class.define( "rwt.widgets.ProgressBar", {
     },
 
     _styleSeparatorBorder : function() {
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       var border = this.getSeparatorBorder();
       if( border != null ) {
         if( !this._useSeparator ) {
@@ -349,7 +349,7 @@ qx.Class.define( "rwt.widgets.ProgressBar", {
     },
 
     _styleIndicatorFill : function() {
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       if(    this.getIndicatorImage() != null
           && this.getIndicatorImage()[ 0 ] != null )
       {
@@ -368,7 +368,7 @@ qx.Class.define( "rwt.widgets.ProgressBar", {
     },
 
     _styleBackgroundFill : function() {
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       if(    this.getBackgroundImageSized() != null
           && this.getBackgroundImageSized()[ 0 ] != null )
       {
@@ -390,7 +390,7 @@ qx.Class.define( "rwt.widgets.ProgressBar", {
     // render layout
 
     _renderDimension : function() {
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       var radii = [ 0, 0, 0, 0 ];
       var width = this.getInnerWidth();
       var height = this.getInnerHeight();
@@ -412,7 +412,7 @@ qx.Class.define( "rwt.widgets.ProgressBar", {
     },
 
     _renderIndicatorSelection : function() {
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       var virtualPosition = this._getIndicatorVirtualPosition();
       var position = Math.max( virtualPosition, 0 );
       var length = this._getIndicatorLength( virtualPosition );
@@ -457,7 +457,7 @@ qx.Class.define( "rwt.widgets.ProgressBar", {
     },
 
     _renderSeparator : function( position, length ) {
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       var full = length + position == this._getIndicatorFullLength();
       if( length === 0 ) {
         GraphicsUtil.setDisplay( this._separatorEndShape, false );

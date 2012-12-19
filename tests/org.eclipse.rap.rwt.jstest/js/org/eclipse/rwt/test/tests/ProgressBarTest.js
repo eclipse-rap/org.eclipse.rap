@@ -242,7 +242,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testCreateSimpleBar : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       assertFalse( bar._isVertical() );
       assertFalse( bar._isIndeterminate() );
@@ -269,7 +269,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testComplexBorder : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       assertFalse( bar._isVertical() );
       bar.setDimension( 200, 30 );
@@ -295,7 +295,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testRoundedBorder : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.setDimension( 200, 30 );
       bar.addToDocument();
@@ -349,7 +349,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testRoundedBorderIndicatorMinLength : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.setDimension( 200, 30 );
       bar.addToDocument();
@@ -364,7 +364,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testRoundedBorderIndicatorZero : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.setDimension( 200, 30 );
       bar.addToDocument();
@@ -378,7 +378,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testRoundedBorderIndicatorMaxLength : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.setDimension( 200, 30 );
       bar.addToDocument();
@@ -393,7 +393,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testRoundedBorderIndicatorFull : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.setDimension( 200, 30 );
       bar.addToDocument();
@@ -408,7 +408,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testDifferentRadii : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.setDimension( 200, 30 );
       bar.addToDocument();
@@ -423,7 +423,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testDifferentRadiiIndicatorMinLength : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.setDimension( 200, 30 );
       bar.addToDocument();
@@ -438,7 +438,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testDifferentRadiiIndicatorZero : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.setDimension( 200, 30 );
       bar.addToDocument();
@@ -452,7 +452,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testDifferentRadiiIndicatorMaxLength : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.setDimension( 200, 30 );
       bar.addToDocument();
@@ -467,7 +467,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testDifferentRadiiIndicatorFull : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.setDimension( 200, 30 );
       bar.addToDocument();
@@ -482,7 +482,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testCreateSimpleBarVertical : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.addState( "rwt_VERTICAL" );
       assertTrue( bar._isVertical() );
@@ -499,7 +499,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testRoundedBorderVertical : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.addState( "rwt_VERTICAL" );
       assertTrue( bar._isVertical() );
@@ -516,7 +516,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testDifferentRadiiIndicatorVerticalZero : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.addState( "rwt_VERTICAL" );
       bar.setDimension( 50, 120 );
@@ -531,7 +531,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testDifferentRadiiIndicatorVerticalMinLength : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.addState( "rwt_VERTICAL" );
       bar.setDimension( 50, 120 );
@@ -548,7 +548,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testDifferentRadiiIndicatorVerticalMaxLength : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.addState( "rwt_VERTICAL" );
       bar.setDimension( 50, 120 );
@@ -564,7 +564,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testDifferentRadiiIndicatorVerticalFull : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.addState( "rwt_VERTICAL" );
       bar.setDimension( 50, 120 );
@@ -581,7 +581,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testIndicatorFill : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.setDimension( 200, 30 );
       bar.addToDocument();
@@ -604,7 +604,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testBackgroundFill : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var bar = new rwt.widgets.ProgressBar();
       bar.setDimension( 200, 30 );
       bar.addToDocument();
@@ -675,7 +675,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testUndeterminedWrap : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.prepareTimerUse();
       var bar = new rwt.widgets.ProgressBar();
@@ -706,7 +706,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testUndeterminedRoundedWrap : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.prepareTimerUse();
       var bar = new rwt.widgets.ProgressBar();
@@ -740,7 +740,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
 
 
     testUndeterminedRoundedWrapVertical : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.prepareTimerUse();
       var bar = new rwt.widgets.ProgressBar();
@@ -776,7 +776,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testUndeterminedRoundedSkipStart : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.prepareTimerUse();
       var bar = new rwt.widgets.ProgressBar();
@@ -802,7 +802,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testUndeterminedRoundedSkipEnd : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var gfxUtil = rwt.graphics.GraphicsUtil;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.prepareTimerUse();
       var bar = new rwt.widgets.ProgressBar();

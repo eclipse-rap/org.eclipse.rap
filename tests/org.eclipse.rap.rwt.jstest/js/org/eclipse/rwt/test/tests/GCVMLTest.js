@@ -19,7 +19,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testStrokeProperties : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var VML = org.eclipse.rwt.VML;
+      var VML = rwt.graphics.VML;
       var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
@@ -53,7 +53,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testFillProperties : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var VML = org.eclipse.rwt.VML;
+      var VML = rwt.graphics.VML;
       var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
@@ -259,15 +259,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       var vmlCanvas = gc._context._canvas;
-      var shape = org.eclipse.rwt.VML.createShape( "image" );
-      org.eclipse.rwt.VML.setImageData( shape,
+      var shape = rwt.graphics.VML.createShape( "image" );
+      rwt.graphics.VML.setImageData( shape,
                                         "test.jpg",
                                         40,
                                         50,
                                         100,
                                         200,
                                         [ 0.1, 0.2, 0.3, 0.4 ] );
-      org.eclipse.rwt.VML.addToCanvas( vmlCanvas, shape );
+      rwt.graphics.VML.addToCanvas( vmlCanvas, shape );
       assertEquals( "test.jpg", shape.node.src );
       assertEquals( 40, parseInt( shape.node.style.left ) );
       assertEquals( 50, parseInt( shape.node.style.top ) );

@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
+qx.Class.define( "rwt.graphics.VMLCanvas", {
 
   extend : qx.core.Object,
 
@@ -61,12 +61,12 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
 
     // Limitation: Arguments are ignored, the entire canvas is cleared.
     clearRect : function( x, y, width, height ) {
-      org.eclipse.rwt.VML.clearCanvas( this._canvas );
+      rwt.graphics.VML.clearCanvas( this._canvas );
     },
 
     stroke : function( fill ) {
-      var shape = org.eclipse.rwt.VML.createShapeFromContext( this, fill );
-      org.eclipse.rwt.VML.addToCanvas( this._canvas, shape );
+      var shape = rwt.graphics.VML.createShapeFromContext( this, fill );
+      rwt.graphics.VML.addToCanvas( this._canvas, shape );
     },
 
     fill : function() {
@@ -144,13 +144,13 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
     },
 
     drawImage : function() {
-      var shape = org.eclipse.rwt.VML.createShape( "image" );
-      org.eclipse.rwt.VML.setOpacity( shape, this.globalAlpha );
+      var shape = rwt.graphics.VML.createShape( "image" );
+      rwt.graphics.VML.setOpacity( shape, this.globalAlpha );
       var image = arguments[ 0 ];
       if( arguments.length == 3 ) {
         var destX = arguments[ 1 ];
         var destY = arguments[ 2 ];
-        org.eclipse.rwt.VML.setImageData( shape,
+        rwt.graphics.VML.setImageData( shape,
                                           image.src,
                                           destX,
                                           destY,
@@ -171,7 +171,7 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
           ( image.height - srcY - srcHeight ) / image.height,
           srcX / image.width
         ];
-        org.eclipse.rwt.VML.setImageData( shape,
+        rwt.graphics.VML.setImageData( shape,
                                           image.src,
                                           destX,
                                           destY,
@@ -179,7 +179,7 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
                                           destHeight,
                                           crop );
       }
-      org.eclipse.rwt.VML.addToCanvas( this._canvas, shape );
+      rwt.graphics.VML.addToCanvas( this._canvas, shape );
     },
 
     // Limitations: The gradient is drawn wither vertically or horizontally.

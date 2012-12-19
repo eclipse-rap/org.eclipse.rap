@@ -133,9 +133,9 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
 
     _createCanvas : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
-        this._vmlCanvas = org.eclipse.rwt.VML.createCanvas();
-        this._canvas = org.eclipse.rwt.VML.getCanvasNode( this._vmlCanvas );
-        this._context = new org.eclipse.rwt.VMLCanvas( this._vmlCanvas );
+        this._vmlCanvas = rwt.graphics.VML.createCanvas();
+        this._canvas = rwt.graphics.VML.getCanvasNode( this._vmlCanvas );
+        this._context = new rwt.graphics.VMLCanvas( this._vmlCanvas );
         this._control.addEventListener( "insertDom", this._onCanvasAppear, this );
       },
       "default" : function() {
@@ -149,7 +149,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     },
 
     _onCanvasAppear : function() {
-      var graphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var graphicsUtil = rwt.graphics.GraphicsUtil;
       graphicsUtil.handleAppear( this._vmlCanvas );
     },
 

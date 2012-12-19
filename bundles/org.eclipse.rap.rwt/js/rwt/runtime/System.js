@@ -29,7 +29,7 @@ qx.Class.define( "rwt.runtime.System", {
       qx.html.EventRegistration.addEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
       qx.html.EventRegistration.addEventListener( window, "unload", this._onunloadWrapped );
       this._applyPatches();
-      org.eclipse.rwt.GraphicsUtil.init();
+      rwt.graphics.GraphicsUtil.init();
       var eventHandler = org.eclipse.rwt.EventHandler;
       eventHandler.setAllowContextMenu( rwt.widgets.Menu.getAllowContextMenu );
       eventHandler.setMenuManager( rwt.widgets.util.MenuManager.getInstance() );

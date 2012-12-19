@@ -98,7 +98,7 @@ qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
       "mshtml" : function( opacity ) {
         if( this._gfxData && this._gfxData.backgroundInsert ) {
           var antiAlias = opacity === 1 || opacity === null;
-          org.eclipse.rwt.VML._setAntiAlias( this._gfxData.backgroundShape, antiAlias );
+          rwt.graphics.VML._setAntiAlias( this._gfxData.backgroundShape, antiAlias );
         }
       }
     } ),
@@ -411,7 +411,7 @@ qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
         this._prepareForCanvas();
       }
       this._gfxData = {};
-      this._gfxCanvas = org.eclipse.rwt.GraphicsUtil.createCanvas();
+      this._gfxCanvas = rwt.graphics.GraphicsUtil.createCanvas();
       // TODO [tb] : can be removed?
       this._prepareBackgroundShape();
     },
@@ -440,7 +440,7 @@ qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
 
     _appendCanvas : function() {
       var parentNode = this.getElement();
-      var gfxNode = org.eclipse.rwt.GraphicsUtil.getCanvasNode( this._gfxCanvas );
+      var gfxNode = rwt.graphics.GraphicsUtil.getCanvasNode( this._gfxCanvas );
       if( gfxNode != null ) {
         parentNode.insertBefore( gfxNode, parentNode.firstChild );
       }
@@ -452,7 +452,7 @@ qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
     },
 
     _removeCanvas : function() {
-      var gfxNode = org.eclipse.rwt.GraphicsUtil.getCanvasNode( this._gfxCanvas );
+      var gfxNode = rwt.graphics.GraphicsUtil.getCanvasNode( this._gfxCanvas );
       if( gfxNode != null ) {
         gfxNode.parentNode.removeChild( gfxNode );
         this._gfxCanvasAppended = false;
@@ -462,7 +462,7 @@ qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
 
     _onCanvasAppear : function() {
       if( this._gfxCanvasAppended ) {
-        org.eclipse.rwt.GraphicsUtil.handleAppear( this._gfxCanvas );
+        rwt.graphics.GraphicsUtil.handleAppear( this._gfxCanvas );
       }
     },
 
@@ -470,7 +470,7 @@ qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
     // internals - backgroundShape
 
     _prepareBackgroundShape : function() {
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       if( this._gfxData ) {
         var backgroundShape = this._gfxData.backgroundShape;
         if( this._gfxBackgroundEnabled ) {
@@ -493,7 +493,7 @@ qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
     _renderGfxBackground : function() {
       this._prepareBackgroundShape();
       var fillType = this.getGfxProperty( "fillType" );
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       if( fillType == "gradient" ) {
         var gradient = this.getGfxProperty( "gradient" );
         GraphicsUtil.setFillGradient( this._gfxData.backgroundShape, gradient );
@@ -519,7 +519,7 @@ qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
       var shape = this._gfxData.backgroundShape;
       var width = this.getGfxProperty( "borderMaxWidth" );
       var color = this.getGfxProperty( "borderColor" );
-      org.eclipse.rwt.GraphicsUtil.setStroke( shape, color, width );
+      rwt.graphics.GraphicsUtil.setStroke( shape, color, width );
     },
 
     _layoutBackgroundShape : function() {
@@ -571,7 +571,7 @@ qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
         rectWidth = Math.max( 0, rectWidth );
         rectHeight = Math.max( 0, rectHeight );
         var shape = this._gfxData.backgroundShape;
-        var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+        var GraphicsUtil = rwt.graphics.GraphicsUtil;
         GraphicsUtil.setRoundRectLayout( shape, left, top, rectWidth, rectHeight, radii );
       }
     },
@@ -580,7 +580,7 @@ qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
     // internal - shadowShape
 
     _prepareShadowShape : function() {
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       if( this._gfxData ) {
         if( this._gfxShadowEnabled ) {
           if( this._gfxData.shadowShape === undefined ) {
@@ -608,7 +608,7 @@ qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
 
     _createShadowShape : function() {
       var shape = null;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       var shape = GraphicsUtil.createShape( "roundrect" );
       this._gfxData.shadowShape = shape;
       return shape;
@@ -617,7 +617,7 @@ qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
     _renderGfxShadow : function() {
       this._prepareShadowShape();
       if( this._gfxShadowEnabled ) {
-        var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+        var GraphicsUtil = rwt.graphics.GraphicsUtil;
         var shadow = this.getGfxProperty( "shadow" );
         var shape = this._gfxData.shadowShape;
         GraphicsUtil.setBlur( shape, shadow[ 3 ] );
@@ -627,7 +627,7 @@ qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
     },
 
     _layoutShadowShape : function() {
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       var rect = [ this.getBoxWidth(), this.getBoxHeight() ];
       var rectDimension = [ this.getBoxWidth(), this.getBoxHeight() ];
       var oldDimension = this.getGfxProperty( "shadowLayouted" );

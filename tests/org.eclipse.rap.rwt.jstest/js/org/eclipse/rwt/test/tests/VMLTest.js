@@ -18,7 +18,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
 
     testCreateCanvas : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       var canvas = GraphicsUtil.createCanvas();
       var canvasNode = GraphicsUtil.getCanvasNode( canvas );
       assertEquals( "DIV", canvasNode.tagName );
@@ -29,7 +29,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
 
     testDrawRectInWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       var parent = new rwt.widgets.base.Terminator();
       parent.setLocation( 10, 10 );
       parent.setDimension( 400, 400 );
@@ -51,7 +51,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
 
     testFillColor : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       TestUtil.flush();
       var parentNode = document.body;
       var canvas = GraphicsUtil.createCanvas();
@@ -74,7 +74,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
 
     testTransparentFill : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       TestUtil.flush();
       var parentNode = document.body;
       var canvas = GraphicsUtil.createCanvas();
@@ -95,7 +95,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
 
     testColorRestore : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       TestUtil.flush();
       var parentNode = document.body;
       var canvas = GraphicsUtil.createCanvas();
@@ -115,7 +115,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
 
     testFillGradient : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       TestUtil.flush();
       var parentNode = document.body;
       var canvas = GraphicsUtil.createCanvas();
@@ -136,7 +136,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
 
     testFillGradientHorizontal : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       TestUtil.flush();
       var parentNode = document.body;
       var canvas = GraphicsUtil.createCanvas();
@@ -157,7 +157,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
 
     testDrawRoundRect : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       var canvas = GraphicsUtil.createCanvas();
       var parent = document.body;
       var shape = GraphicsUtil.createShape( "roundrect" );
@@ -175,7 +175,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
 
     testDrawRoundRectOneRadiusOnlyMinimalMize : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       var canvas = GraphicsUtil.createCanvas();
       var parent = document.body;
       var shape = GraphicsUtil.createShape( "roundrect" );
@@ -192,7 +192,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
 
     testDrawRoundRectOneRadiusOnlyTooSmall : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       var canvas = GraphicsUtil.createCanvas();
       var parent = document.body;
       var shape = GraphicsUtil.createShape( "roundrect" );
@@ -209,7 +209,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
 
     testDisplay : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       var parent = new rwt.widgets.base.Terminator();
       parent.setLocation( 10, 10 );
       parent.setDimension( 400, 400 );
@@ -231,7 +231,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     
     testFillPattern : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       var parentNode = document.body;
       var canvas = GraphicsUtil.createCanvas();
       var shape = GraphicsUtil.createShape( "rect" );
@@ -252,7 +252,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     
     testOpacity : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       TestUtil.flush();
       var parentNode = document.body;
       var canvas = GraphicsUtil.createCanvas();
@@ -272,7 +272,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
 
     testBlur : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       TestUtil.flush();
       var parentNode = document.body;
       var canvas = GraphicsUtil.createCanvas();
@@ -294,7 +294,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
 
     testBlurWithOpacity : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       TestUtil.flush();
       var parentNode = document.body;
       var canvas = GraphicsUtil.createCanvas();
@@ -320,7 +320,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     
     testNodeOrder : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = rwt.graphics.GraphicsUtil;
       var parent = document.body;
       var canvas = GraphicsUtil.createCanvas();
       parent.appendChild( GraphicsUtil.getCanvasNode( canvas ) );

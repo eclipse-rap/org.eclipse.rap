@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.VML", {
+qx.Class.define( "rwt.graphics.VML", {
 
   statics : {
 
