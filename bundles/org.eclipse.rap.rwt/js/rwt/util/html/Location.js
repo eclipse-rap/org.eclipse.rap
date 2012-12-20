@@ -196,7 +196,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
         var top = body.offsetTop;
 
         // Correct substracted border (only in content-box mode)
-        if (rwt.util.html.BoxSizing.get(body) !== "border-box")
+        if (rwt.widgets.base.ClientDocument.BOXSIZING !== "border-box")
         {
           left += this.__num(body, "borderLeftWidth");
           top += this.__num(body, "borderTopWidth");
@@ -344,10 +344,9 @@ rwt.qx.Class.define("rwt.util.html.Location",
 
           // Stop at the body
           var body = rwt.util.html.Node.getDocument(elem).body;
-          var box = rwt.util.html.BoxSizing;
+          var box = rwt.widgets.base.ClientDocument.BOXSIZING;
 
-          if (box.get(elem) !== "border-box")
-          {
+          if( box !== "border-box" ) {
             left -= this.__num(elem, "borderLeftWidth");
             top -= this.__num(elem, "borderTopWidth");
           }
@@ -360,8 +359,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
 
             // Mozilla does not add the borders to the offset
             // when using box-sizing=content-box
-            if (box.get(elem) !== "border-box")
-            {
+            if( box !== "border-box" ) {
               left += this.__num(elem, "borderLeftWidth");
               top += this.__num(elem, "borderTopWidth");
             }

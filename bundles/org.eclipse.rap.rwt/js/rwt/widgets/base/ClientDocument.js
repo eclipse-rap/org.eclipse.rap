@@ -571,23 +571,6 @@ rwt.qx.Class.define("rwt.widgets.base.ClientDocument",
   },
 
 
-
-
-  /*
-  *****************************************************************************
-     SETTINGS
-  *****************************************************************************
-  */
-
-  settings :
-  {
-    "qx.enableApplicationLayout" : true,
-    "qx.boxModelCorrection"      : true
-  },
-
-
-
-
   /*
   *****************************************************************************
      DEFER
@@ -609,6 +592,7 @@ rwt.qx.Class.define("rwt.widgets.base.ClientDocument",
     );
 
     rwt.util.html.StyleSheet.createElement("html,body{width:100%;height:100%;overflow:hidden;}");
+    rwt.widgets.base.ClientDocument.BOXSIZING = "border-box";
   },
 
 

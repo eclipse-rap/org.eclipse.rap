@@ -96,7 +96,6 @@ public final class ClientResources {
     "rwt/widgets/util/FocusHandler.js",
     "rwt/util/html/Location.js",
     "rwt/util/html/Style.js",
-    "rwt/util/html/BoxSizing.js",
     "rwt/util/html/Document.js",
     "rwt/util/html/Overflow.js",
     "rwt/util/html/ImageManager.js",
