@@ -9,9 +9,9 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-namespace( "rwt.protocol" );
+namespace( "rwt.util" );
 
-rwt.protocol.EncodingUtil = {
+rwt.util.Encoding = {
 
   _escapeRegExp : /(&|<|>|\")/g,
   _escapeRegExpMnemonics : /(&&|&|<|>|")/g,
@@ -110,6 +110,41 @@ rwt.protocol.EncodingUtil = {
     return text.replace( this._outerWhitespaceRegExp2, this._outerWhitespaceResolver );
   },
 
+
+  /**
+   * Escapes all chars that have a special meaning in regular expressions
+   *
+   * @type static
+   * @param str {String} the string where to escape the chars.
+   * @return {String} the string with the escaped chars.
+   */
+  escapeRegexpChars : function( str ) {
+    return str.replace( /([\\\.\(\)\[\]\{\}\^\$\?\+\*])/g, "\\$1" );
+  },
+
+
+  /**
+   * Unescapes a string containing entity escapes to a string
+   * containing the actual Unicode characters corresponding to the
+   * escapes. Supports HTML 4.0 entities.
+   *
+   * For example, the string "&amp;lt;Fran&amp;ccedil;ais&amp;gt;"
+   * will become "&lt;Fran&ccedil;ais&gt;"
+   *
+   * If an entity is unrecognized, it is left alone, and inserted
+   * verbatim into the result string. e.g. "&amp;gt;&amp;zzzz;x" will
+   * become "&gt;&amp;zzzz;x".
+   *
+   * @type static
+   * @param str {String} the String to unescape, may be null
+   * @return {var} a new unescaped String
+   * @see #escape
+   */
+  unescape : function( str ) {
+    return this._unescapeEntities( str, rwt.util.html.Entity.TO_CHARCODE );
+  },
+
+
   /////////
   // Helper
 
@@ -147,6 +182,35 @@ rwt.protocol.EncodingUtil = {
 
   _whitespaceResolver : function( match ) {
     return match.slice( 1 ).replace( / /g, "&nbsp;" ) + " ";
+  },
+
+  _unescapeEntities : function( str, entitiesToCharCode ) {
+    return str.replace( /&[#\w]+;/gi, function( entity ) {
+      var chr = entity;
+      var entity = entity.substring( 1, entity.length - 1 );
+      var code = entitiesToCharCode[ entity ];
+      if( code ) {
+        chr = String.fromCharCode( code );
+      } else {
+        if( entity.charAt( 0 ) === '#' ) {
+          if( entity.charAt(1).toUpperCase() === 'X' ) {
+            code = entity.substring( 2 );
+            // match hex number
+            if( code.match( /^[0-9A-Fa-f]+$/gi ) ) {
+              chr = String.fromCharCode( parseInt( code, 16 ) );
+            }
+          } else {
+            code = entity.substring( 1 );
+            // match integer
+            if( code.match( /^\d+$/gi ) ) {
+              chr = String.fromCharCode( parseInt( code, 10 ) );
+            }
+          }
+        }
+      }
+      return chr;
+    } );
   }
+
 
 };

@@ -62,7 +62,7 @@ rwt.protocol.HandlerRegistry.add( "rwt.widgets.ToolItem", {
     },
     "toolTip" : rwt.protocol.HandlerUtil.getControlPropertyHandler( "toolTip" ),
     "text" : function( widget, value ) {
-      var EncodingUtil = rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.util.Encoding;
       var text = EncodingUtil.escapeText( value, true );
       widget.setText( text );
     },

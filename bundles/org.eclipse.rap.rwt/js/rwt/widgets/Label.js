@@ -47,7 +47,7 @@ rwt.qx.Class.define( "rwt.widgets.Label", {
     setText : function( value ) {
       var text = value;
       if( !this._markupEnabled ) {
-        var EncodingUtil = rwt.protocol.EncodingUtil;
+        var EncodingUtil = rwt.util.Encoding;
         // Order is important here: escapeText, replace line breaks
         text = EncodingUtil.escapeText( value, true );
         text = EncodingUtil.replaceNewLines( text, "<br/>" );

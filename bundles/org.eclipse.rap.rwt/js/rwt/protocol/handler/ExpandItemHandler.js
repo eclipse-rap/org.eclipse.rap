@@ -41,7 +41,7 @@ rwt.protocol.HandlerRegistry.add( "rwt.widgets.ExpandItem", {
       widget.setHeight( value[ 3 ] );
     },
     "text" : function( widget, value ) {
-      var EncodingUtil = rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.util.Encoding;
       var text = EncodingUtil.escapeText( value, false );
       widget.setText( text );
     },

@@ -707,7 +707,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     // Helper
 
     _escapeTexts : function() {
-      var EncodingUtil = rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.util.Encoding;
       for( var i = 0; i < this._texts.length; i++ ) {
         var text = this._texts[ i ];
         if( text ) {

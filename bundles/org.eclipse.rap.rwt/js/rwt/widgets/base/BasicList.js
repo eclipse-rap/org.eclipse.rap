@@ -251,7 +251,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
     _escapeItems : function( items ) {
       var result = items;
       if( !this._markupEnabled ) {
-        var EncodingUtil = rwt.protocol.EncodingUtil;
+        var EncodingUtil = rwt.util.Encoding;
         for( var i = 0; i < result.length; i++ ) {
           result[ i ] = EncodingUtil.replaceNewLines( result[ i ], " " );
           result[ i ] = EncodingUtil.escapeText( result[ i ], false );

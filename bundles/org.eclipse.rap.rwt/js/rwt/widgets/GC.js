@@ -253,7 +253,7 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
     },
 
     _escapeText : function( value, drawMnemonic, drawDelemiter, drawTab ) {
-      var EncodingUtil = rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.util.Encoding;
       var text = EncodingUtil.escapeText( value, drawMnemonic );
       var replacement = drawDelemiter ? "<br/>" : "";
       text = EncodingUtil.replaceNewLines( text, replacement );

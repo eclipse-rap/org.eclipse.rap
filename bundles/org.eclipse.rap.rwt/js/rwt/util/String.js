@@ -115,19 +115,8 @@ rwt.qx.Class.define("rwt.util.String",
       }
 
       return str;
-    },
-
-
-    /**
-     * Escapes all chars that have a special meaning in regular expressions
-     *
-     * @type static
-     * @param str {String} the string where to escape the chars.
-     * @return {String} the string with the escaped chars.
-     */
-    escapeRegexpChars : function(str) {
-      return str.replace(/([\\\.\(\)\[\]\{\}\^\$\?\+\*])/g, "\\$1");
     }
+
 
   }
 });

@@ -29,7 +29,7 @@ rwt.protocol.HandlerRegistry.add( "rwt.widgets.Group", {
 
   propertyHandler : rwt.protocol.HandlerUtil.extendControlPropertyHandler( {
     "text" : function( widget, value ) {
-      var EncodingUtil = rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.util.Encoding;
       var text = EncodingUtil.escapeText( value, true );
       widget.setLegend( text );
     }

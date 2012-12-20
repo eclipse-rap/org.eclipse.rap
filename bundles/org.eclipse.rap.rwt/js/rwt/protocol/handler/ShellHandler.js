@@ -82,7 +82,7 @@ rwt.protocol.HandlerRegistry.add( "rwt.widgets.Shell", {
       shell.setMinHeight( value[ 1 ] );
     },
     "text" : function( shell, value ) {
-      var text = rwt.protocol.EncodingUtil.escapeText( value, false );
+      var text = rwt.util.Encoding.escapeText( value, false );
       shell.setCaption( text );
     },
     "image" : function( shell, value ) {

@@ -70,7 +70,7 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       }
       var hrefAttr = "href=\"" + location + "\"";
       var html = content.replace( /\{HREF_URL\}/, hrefAttr );
-      html = rwt.protocol.EncodingUtil.replaceNewLines( html, "<br/>" );
+      html = rwt.util.Encoding.replaceNewLines( html, "<br/>" );
       if( freeze ) {
         this._freezeApplication();
       }

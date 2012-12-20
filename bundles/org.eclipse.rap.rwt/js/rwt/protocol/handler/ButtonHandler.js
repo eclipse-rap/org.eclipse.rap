@@ -48,7 +48,7 @@ rwt.protocol.HandlerRegistry.add( "rwt.widgets.Button", {
 
   propertyHandler : rwt.protocol.HandlerUtil.extendControlPropertyHandler( {
     "text" : function( widget, value ) {
-      var EncodingUtil = rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.util.Encoding;
       var text = EncodingUtil.escapeText( value, true );
       if( widget.hasState( "rwt_WRAP" ) ) {
         text = EncodingUtil.replaceNewLines( text, "<br/>" );

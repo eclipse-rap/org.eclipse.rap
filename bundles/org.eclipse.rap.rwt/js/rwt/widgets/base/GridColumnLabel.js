@@ -46,7 +46,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
     },
 
     setText : function( value ) {
-      var EncodingUtil = rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.util.Encoding;
       var text = EncodingUtil.escapeText( value, false );
       text = EncodingUtil.replaceNewLines( text, "<br/>" );
       this.setCellContent( 1, text );

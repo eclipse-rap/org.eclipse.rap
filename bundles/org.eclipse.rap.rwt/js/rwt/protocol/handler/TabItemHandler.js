@@ -42,7 +42,7 @@ rwt.protocol.HandlerRegistry.add( "rwt.widgets.TabItem", {
 
   propertyHandler : {
     "text" : function( widget, value ) {
-      var EncodingUtil = rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.util.Encoding;
       var text = EncodingUtil.escapeText( value, false );
       widget.setLabel( text );
     },

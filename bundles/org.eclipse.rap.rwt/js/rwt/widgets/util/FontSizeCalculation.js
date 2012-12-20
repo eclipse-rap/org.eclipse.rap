@@ -130,7 +130,7 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
     },
 
     _escapeText : function( text ) {
-      var EncodingUtil = rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.util.Encoding;
       var result = EncodingUtil.escapeText( text, true );
       result = EncodingUtil.replaceNewLines( result, "<br/>" );
       result = EncodingUtil.replaceWhiteSpaces( result );

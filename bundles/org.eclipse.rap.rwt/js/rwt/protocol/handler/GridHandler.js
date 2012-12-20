@@ -103,7 +103,7 @@ rwt.protocol.HandlerRegistry.add( "rwt.widgets.Grid", {
       widget.setScrollBarsVisible( value[ 0 ], value[ 1 ] );
     },
     "cellToolTipText" : function( widget, value ) {
-      var EncodingUtil = rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.util.Encoding;
       var text = EncodingUtil.escapeText( value, false );
       text = EncodingUtil.replaceNewLines( text, "<br/>" );
       widget.setCellToolTipText( text );

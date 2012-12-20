@@ -328,11 +328,6 @@ rwt.qx.Class.define( "rwt.util.html.Entity", {
       // rsaquo is proposed but not yet ISO standardized
       "euro"     : 8364 //  -- euro sign, U+20AC NEW
     }
-  },
-
-  defer : function( statics, members, properties ) {
-    /** Mapping of char codes to HTML entity names */
-    statics.FROM_CHARCODE = rwt.util.Object.invert( statics.TO_CHARCODE );
   }
 
 } );

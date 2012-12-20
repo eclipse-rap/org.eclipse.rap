@@ -419,7 +419,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     _formatText : function( value ) {
       var result = value;
       result = result.replace( /<[^>]+?>/g, "" );
-      result = rwt.util.html.String.unescape( result );
+      result = rwt.util.Encoding.unescape( result );
       return result;
     },
 

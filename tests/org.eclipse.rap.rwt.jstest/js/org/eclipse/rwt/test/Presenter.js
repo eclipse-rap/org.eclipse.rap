@@ -116,7 +116,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.Presenter", {
       //var msg = document.createTextNode( text );
       var br = document.createElement( "br" );
       //span.appendChild( msg );
-      span.innerHTML = rwt.protocol.EncodingUtil.replaceNewLines( text, "</br>" );
+      span.innerHTML = rwt.util.Encoding.replaceNewLines( text, "</br>" );
       if( link ) {
         span.style.cursor = "pointer";
         span.link = link;

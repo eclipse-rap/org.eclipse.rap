@@ -35,7 +35,7 @@ rwt.protocol.HandlerRegistry.add( "forms.widgets.Hyperlink", {
 
   propertyHandler : rwt.protocol.HandlerUtil.extendControlPropertyHandler( {
     "text" : function( widget, value ) {
-      var EncodingUtil = rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.util.Encoding;
       var text = EncodingUtil.escapeText( value, false );
       widget.setText( text );
     },

@@ -114,7 +114,7 @@ rwt.protocol.HandlerUtil = {
     },
     "toolTip" : function( widget, value ) {
       if( value != null && value !== "" ) {
-        var EncodingUtil = rwt.protocol.EncodingUtil;
+        var EncodingUtil = rwt.util.Encoding;
         var text = EncodingUtil.escapeText( value, false );
         text = EncodingUtil.replaceNewLines( text, "<br/>" );
         widget.setUserData( "toolTipText", text );

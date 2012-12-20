@@ -60,7 +60,7 @@ rwt.protocol.HandlerRegistry.add( "rwt.widgets.MenuItem", {
     },
     "text" : function( widget, value ) {
       if( !widget.hasState( "rwt_SEPARATOR" ) ) {
-        var EncodingUtil = rwt.protocol.EncodingUtil;
+        var EncodingUtil = rwt.util.Encoding;
         var text = value;
         // Strip accelerator text
         var index = text.indexOf( "\t" );

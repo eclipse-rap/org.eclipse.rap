@@ -50,12 +50,12 @@ rwt.protocol.HandlerRegistry.add( "rwt.widgets.ToolTip", {
       widget.setHideAfterTimeout( value );
     },
     "text" : function( widget, value ) {
-      var EncodingUtil = rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.util.Encoding;
       var text = EncodingUtil.escapeText( value, false );
       widget.setText( text );
     },
     "message" : function( widget, value ) {
-      var EncodingUtil = rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.util.Encoding;
       var text = EncodingUtil.escapeText( value, false );
       text = EncodingUtil.replaceNewLines( text, "<br/>" );
       widget.setMessage( text );

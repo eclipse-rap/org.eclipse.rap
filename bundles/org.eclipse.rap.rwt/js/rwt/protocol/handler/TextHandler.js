@@ -41,7 +41,7 @@ rwt.protocol.HandlerRegistry.add( "rwt.widgets.Text", {
 
   propertyHandler : rwt.protocol.HandlerUtil.extendControlPropertyHandler( {
     "text" : function( widget, value ) {
-      var EncodingUtil = rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.util.Encoding;
       var text = EncodingUtil.truncateAtZero( value );
       if( !widget.hasState( "rwt_MULTI" ) ) {
         text = EncodingUtil.replaceNewLines( text, " " );
