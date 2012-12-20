@@ -31,16 +31,6 @@ rwt.qx.Class.define("rwt.util.html.Document",
 {
   statics :
   {
-    /**
-     * Whether the document is in quirks mode (e.g. non XHTML, HTML4 Strict or missing doctype)
-     *
-     * @type static
-     * @param win {Window?window} The window to query
-     * @return {Boolean} true when containing document is in quirks mode
-     */
-    isQuirksMode : function(win) {
-      return (win||window).document.compatMode !== "CSS1Compat";
-    },
 
 
     /**
@@ -50,72 +40,10 @@ rwt.qx.Class.define("rwt.util.html.Document",
      * @param win {Window?window} The window to query
      * @return {Boolean} true when containing document is in quirks mode
      */
-    isStandardMode : function(win) {
+    isStandardMode : function(win) { // TODO : use Client.js
       return (win||window).document.compatMode === "CSS1Compat";
-    },
-
-
-    /**
-     * Returns the width of the document.
-     *
-     * Internet Explorer in standard mode stores the properitary <code>scrollWidth</code> property
-     * on the <code>documentElement</code>, but in quirks mode on the body element. All
-     * other known browsers simply store the correct value on the <code>documentElement</code>.
-     *
-     * If the viewport is wider than the document the viewport width is returned.
-     *
-     * As the html element has no visual appearance it also can not scroll. This
-     * means that we must use the body <code>scrollWidth</code> in all non mshtml clients.
-     *
-     * Verified to correctly work with:
-     *
-     * * Mozilla Firefox 2.0.0.4
-     * * Opera 9.2.1
-     * * Safari 3.0 beta (3.0.2)
-     * * Internet Explorer 7.0
-     *
-     * @type static
-     * @param win {Window?window} The window to query
-     * @return {Integer} The width of the actual document (which includes the body and its margin).
-     */
-    getWidth : function(win)
-    {
-      var doc = (win||window).document;
-      var view = rwt.util.html.Viewport.getWidth(win);
-      var scroll = doc.compatMode === "CSS1Compat" ? doc.documentElement.scrollWidth : doc.body.scrollWidth;
-      return Math.max(scroll, view);
-    },
-
-
-    /**
-     * Returns the height of the document.
-     *
-     * Internet Explorer in standard mode stores the properitary <code>scrollHeight</code> property
-     * on the <code>documentElement</code>, but in quirks mode on the body element. All
-     * other known browsers simply store the correct value on the <code>documentElement</code>.
-     *
-     * If the viewport is higher than the document the viewport height is returned.
-     *
-     * As the html element has no visual appearance it also can not scroll. This
-     * means that we must use the body <code>scrollHeight</code> in all non mshtml clients.
-     *
-     * Verified to correctly work with:
-     *
-     * * Mozilla Firefox 2.0.0.4
-     * * Opera 9.2.1
-     * * Safari 3.0 beta (3.0.2)
-     * * Internet Explorer 7.0
-     *
-     * @type static
-     * @param win {Window?window} The window to query
-     * @return {Integer} The height of the actual document (which includes the body and its margin).
-     */
-    getHeight : function(win)
-    {
-      var doc = (win||window).document;
-      var view = rwt.util.html.Viewport.getHeight(win);
-      var scroll = doc.compatMode === "CSS1Compat" ? doc.documentElement.scrollHeight : doc.body.scrollHeight;
-      return Math.max(scroll, view);
     }
+
+
   }
 });

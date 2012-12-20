@@ -606,14 +606,14 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
 
     _getInputElementHeight : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
-        var result = rwt.util.html.Dimension.getBoxHeight( this._inputElement );
+        var result = this._inputElement.offsetWidth;
         if( result !== 0 ) {
           result -= 2;
         }
         return result;
       },
       "default" :function() {
-        return rwt.util.html.Dimension.getBoxHeight( this._inputElement );
+        return this._inputElement.offsetHeight;
       }
     } ),
 

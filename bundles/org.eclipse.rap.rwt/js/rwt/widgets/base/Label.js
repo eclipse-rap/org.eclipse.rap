@@ -335,58 +335,13 @@ rwt.qx.Class.define("rwt.widgets.base.Label",
      *
      * @param text {String} new label text
      */
-    _syncText : function(text)
-    {
-      /*
-      var mode = this.getMode();
-
-      if (mode === "auto") {
-        mode = rwt.util.Validation.isValidString(text) && text.match(/<.*>/) ? "html" : "text";
-      }
-
-      switch (mode)
-      {
-        case "text":
-          var escapedText = rwt.util.html.String.escape(text).replace(/(^ | $)/g, "&nbsp;").replace(/  /g, "&nbsp;&nbsp;");
-          this._isHtml = escapedText !== text;
-          this._content = escapedText;
-          break;
-
-        case "html":
-          this._isHtml = true;
-          this._content = text;
-          break;
-      }
-      */
-
-          this._content = text;
+    _syncText : function(text) {
+      this._content = text;
 
       if (this._isCreated) {
         this._renderContent();
       }
     },
-
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     */
-// TODO [rh] unused
-/*
-    _applyMnemonic : function(value, old)
-    {
-      this._mnemonicTest = value ? new RegExp("^(((<([^>]|" + value + ")+>)|(&([^;]|" + value + ")+;)|[^&" + value + "])*)(" + value + ")", "i") : null;
-
-      if (this._isCreated) {
-        this._renderContent();
-      }
-    },
-*/
-
-
 
 
     /*

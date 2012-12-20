@@ -22,10 +22,8 @@
  * * generic setter support
  * * user friendly OO interfaces like {@link #self} or {@link #base}
  */
-rwt.qx.Class.define("rwt.qx.Object",
-{
+rwt.qx.Class.define("rwt.qx.Object", {
   extend : Object,
-  include : [ rwt.qx.MUserData ],
 
 
 
@@ -57,8 +55,9 @@ rwt.qx.Class.define("rwt.qx.Object",
     }
   },
 
-
-
+  destruct : function() {
+    this._disposeFields("__userData");
+  },
 
   /*
   *****************************************************************************
@@ -189,6 +188,39 @@ rwt.qx.Class.define("rwt.qx.Object",
     /** If the object should automatically be disposed on application unload */
     _autoDispose : true,
 
+    /**
+     * Store user defined data inside the object.
+     *
+     * @type member
+     * @param key {String} the key
+     * @param value {Object} the value of the user data
+     * @return {void}
+     */
+    setUserData : function(key, value)
+    {
+      if (!this.__userData) {
+        this.__userData = {};
+      }
+
+      this.__userData[key] = value;
+    },
+
+
+    /**
+     * Load user defined data from the object
+     *
+     * @type member
+     * @param key {String} the key
+     * @return {Object} the user data
+     */
+    getUserData : function(key)
+    {
+      if (!this.__userData) {
+        return null;
+      }
+      var data = this.__userData[key];
+      return data === undefined ? null : data;
+    },
 
     /*
     ---------------------------------------------------------------------------
