@@ -136,9 +136,7 @@ rwt.remote.HandlerUtil = {
         if( fontData === null ) {
           widget.resetFont();
         } else {
-          var wm = rwt.remote.WidgetManager.getInstance();
-          // TODO [tb] : move helper
-          var font = wm._createFont.apply( wm, fontData );
+          var font = rwt.html.Font.fromArray( fontData );
           widget.setFont( font );
         }
       }

@@ -150,8 +150,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
     },
 
     setFont : function( value ) {
-      var wm = rwt.remote.WidgetManager.getInstance();
-      this._font = value ? wm._createFont.apply( wm, value ) : null;
+      this._font = value ? rwt.html.Font.fromArray( value ) : null;
       this._update();
     },
 
@@ -179,7 +178,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
 
     setFooterFont : function( value ) {
       var wm = rwt.remote.WidgetManager.getInstance();
-      this._footerFont = value ? wm._createFont.apply( wm, value ) : null;
+      this._footerFont = value ? rwt.html.Font.fromArray( value ) : null;
       this._update();
     },
 

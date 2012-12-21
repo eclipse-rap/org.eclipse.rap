@@ -34,6 +34,9 @@ rwt.qx.Class.define( "rwt.html.Font", {
   },
 
   statics : {
+
+    _fontPool : {},
+
     /**
      * Converts a typical CSS font definition string to an font object
      *
@@ -69,6 +72,22 @@ rwt.qx.Class.define( "rwt.html.Font", {
       }
       if( name.length > 0 ) {
         font.setFamily( name );
+      }
+      return font;
+    },
+
+    fromArray : function( arr ) {
+      var name = arr[ 0 ];
+      var size = arr[ 1 ];
+      var bold = arr[ 2 ];
+      var italic = arr[ 3 ];
+      var id = name + size + bold + italic;
+      var font = this._fontPool[ id ]; // TODO [tb] : use pool for all static methods
+      if( !font ) {
+        font = new rwt.html.Font( size, name );
+        font.setBold( bold );
+        font.setItalic( italic );
+        this._fontPool[ id ] = font;
       }
       return font;
     },
