@@ -125,7 +125,7 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       style.width = "100%";
       style.height = "100%";
       style.backgroundColor = "#808080";
-      rwt.util.html.HtmlUtil.setOpacity( element, 0.2 );
+      rwt.util.html.Style.setOpacity( element, 0.2 );
       style.zIndex = 100000000;
       document.body.appendChild( element );
       return element;

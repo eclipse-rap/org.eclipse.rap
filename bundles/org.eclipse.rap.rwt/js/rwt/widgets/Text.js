@@ -469,7 +469,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
           var styleMap = this._getMessageStyle();
           style.color = styleMap.textColor || "";
           style.left = styleMap.paddingLeft + "px";
-          rwt.util.html.HtmlUtil.setTextShadow( this._messageElement, styleMap.textShadow );
+          rwt.util.html.Style.setTextShadow( this._messageElement, styleMap.textShadow );
           this._getTargetNode().insertBefore( this._messageElement, this._inputElement );
         }
         if( this._messageElement ) {

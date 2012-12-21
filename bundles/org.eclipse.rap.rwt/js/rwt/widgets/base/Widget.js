@@ -3418,7 +3418,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
      * inclusive, where 1 means totally opaque and 0 invisible.
      */
     _applyOpacity : function( value, old ) {
-      rwt.util.html.HtmlUtil.setOpacity( this, value );
+      rwt.util.html.Style.setOpacity( this, value );
     },
 
     /////////////////
@@ -3712,7 +3712,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     },
 
     _applyBackgroundGradient : function( value, oldValue ) {
-      rwt.util.html.HtmlUtil.setBackgroundGradient( this, value );
+      rwt.util.html.Style.setBackgroundGradient( this, value );
       if( value === null ) {
         this.setStyleProperty( "backgroundImage", this.getStyleProperty( "backgroundImage" ) );
         this.setStyleProperty( "backgroundColor", this.getStyleProperty( "backgroundColor" ) );
@@ -3720,11 +3720,11 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     },
 
     _applyShadow : function( value, oldValue ) {
-      rwt.util.html.HtmlUtil.setBoxShadow( this, value );
+      rwt.util.html.Style.setBoxShadow( this, value );
     },
 
     _applyTextShadow : function( value, oldValue ) {
-      rwt.util.html.HtmlUtil.setTextShadow( this, value );
+      rwt.util.html.Style.setTextShadow( this, value );
     },
 
     _styleBackgroundColor : function( value ) {

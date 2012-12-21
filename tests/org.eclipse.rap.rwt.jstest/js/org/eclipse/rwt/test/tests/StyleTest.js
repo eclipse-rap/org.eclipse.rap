@@ -9,70 +9,70 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
 
   extend : rwt.qx.Object,
 
   members : {
-    
+
     testSetStylePropertyOnWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = rwt.util.html.HtmlUtil;
+      var Style = rwt.util.html.Style;
       var red = "red";
       var widget = this._createWidget();
-      HtmlUtil.setStyleProperty( widget, "backgroundColor", red);
+      Style.setStyleProperty( widget, "backgroundColor", red);
       assertEquals( red, TestUtil.getCssBackgroundColor( widget ) );
       widget.destroy();
     },
-    
+
     testSetStylePropertyOnElement : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = rwt.util.html.HtmlUtil;
+      var Style = rwt.util.html.Style;
       var red = "red";
       var element = document.createElement( "div" );
-      HtmlUtil.setStyleProperty( element, "backgroundColor", red );
+      Style.setStyleProperty( element, "backgroundColor", red );
       assertEquals( red, element.style.backgroundColor );
     },
-    
+
     testRemoveStylePropertyOnWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = rwt.util.html.HtmlUtil;
+      var Style = rwt.util.html.Style;
       var red = "red";
       var widget = this._createWidget();
-      HtmlUtil.setStyleProperty( widget, "backgroundColor", red );
-      HtmlUtil.removeStyleProperty( widget, "backgroundColor" );
+      Style.setStyleProperty( widget, "backgroundColor", red );
+      Style.removeStyleProperty( widget, "backgroundColor" );
       assertNull( TestUtil.getCssBackgroundColor( widget ) );
       widget.destroy();
     },
 
     testRemoveStylePropertyOnElement : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = rwt.util.html.HtmlUtil;
+      var Style = rwt.util.html.Style;
       var red = "red";
       var element = document.createElement( "div" );
-      HtmlUtil.setStyleProperty( element, "backgroundColor", red );
-      HtmlUtil.removeStyleProperty( element, "backgroundColor" );
+      Style.setStyleProperty( element, "backgroundColor", red );
+      Style.removeStyleProperty( element, "backgroundColor" );
       assertEquals( "", element.style.backgroundColor );
     },
-    
+
     testSetStylePropertyOnWidgetBeforeCreate : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = rwt.util.html.HtmlUtil;
+      var Style = rwt.util.html.Style;
       var widget = this._createWidget( true );
       var red = "red";
-      HtmlUtil.setStyleProperty( widget, "color", red );
+      Style.setStyleProperty( widget, "color", red );
       TestUtil.flush();
       assertEquals( red, widget._style.color );
       widget.destroy();
     },
-    
+
     testRemoveStylePropertyOnWidgetBeforeCreate : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = rwt.util.html.HtmlUtil;
+      var Style = rwt.util.html.Style;
       var red = "red";
       var widget = this._createWidget( true );
-      HtmlUtil.setStyleProperty( widget, "color", red );
-      HtmlUtil.removeStyleProperty( widget, "color" );
+      Style.setStyleProperty( widget, "color", red );
+      Style.removeStyleProperty( widget, "color" );
       TestUtil.flush();
       assertTrue( widget._style.color == "" );
       widget.destroy();
@@ -80,22 +80,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
 
     testSetOpacity : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = rwt.util.html.HtmlUtil;
+      var Style = rwt.util.html.Style;
       var element = document.createElement( "div" );
       var widget = this._createWidget();
-      HtmlUtil.setOpacity( element, 0.5 );
-      HtmlUtil.setOpacity( widget, 0.5 );
+      Style.setOpacity( element, 0.5 );
+      Style.setOpacity( widget, 0.5 );
       assertTrue( TestUtil.hasElementOpacity( element ) );
       assertTrue( TestUtil.hasElementOpacity( widget.getElement() ) );
-      HtmlUtil.setOpacity( element, 1 );
-      HtmlUtil.setOpacity( widget, 1 );
+      Style.setOpacity( element, 1 );
+      Style.setOpacity( widget, 1 );
       assertFalse( TestUtil.hasElementOpacity( element ) );
       assertFalse( TestUtil.hasElementOpacity( widget.getElement() ) );
       var css1 = element.style.cssText.toLowerCase();
       var css2 = widget.getElement().style.cssText.toLowerCase();
       // additional check for IE:
       assertTrue( css1.indexOf( "filter" ) == -1 );
-      assertTrue( css2.indexOf( "filter" ) == -1 );      
+      assertTrue( css2.indexOf( "filter" ) == -1 );
       widget.destroy();
     },
 
@@ -118,23 +118,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
 
     testSetOpacityOnOuterElement : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var HtmlUtil = rwt.util.html.HtmlUtil;
+      var Style = rwt.util.html.Style;
       var element = document.createElement( "div" );
       var widget = this._createWidget();
       widget.prepareEnhancedBorder();
-      HtmlUtil.setOpacity( element, 0.5 );
-      HtmlUtil.setOpacity( widget, 0.5 );
+      Style.setOpacity( element, 0.5 );
+      Style.setOpacity( widget, 0.5 );
       assertTrue( TestUtil.hasElementOpacity( element ) );
       assertTrue( TestUtil.hasElementOpacity( widget.getElement() ) );
-      HtmlUtil.setOpacity( element, 1 );
-      HtmlUtil.setOpacity( widget, 1 );
+      Style.setOpacity( element, 1 );
+      Style.setOpacity( widget, 1 );
       assertFalse( TestUtil.hasElementOpacity( element ) );
       assertFalse( TestUtil.hasElementOpacity( widget.getElement() ) );
       var css1 = element.style.cssText.toLowerCase();
       var css2 = widget.getElement().style.cssText.toLowerCase();
       // additional check for IE:
       assertTrue( css1.indexOf( "filter" ) == -1 );
-      assertTrue( css2.indexOf( "filter" ) == -1 );      
+      assertTrue( css2.indexOf( "filter" ) == -1 );
       widget.destroy();
     },
 
@@ -161,7 +161,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
 
     /////////
    // Helper
-        
+
     _createWidget : function( noFlush ) {
       var result = new rwt.widgets.base.MultiCellWidget( [] );
       result.addToDocument();

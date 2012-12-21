@@ -586,7 +586,7 @@ rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
           if( this._gfxData.shadowShape === undefined ) {
             this._createShadowShape();
             var canvasNode = GraphicsUtil.getCanvasNode( this._gfxCanvas );
-            rwt.util.html.HtmlUtil.setPointerEvents( canvasNode, "none" );
+            rwt.util.html.Style.setPointerEvents( canvasNode, "none" );
           }
           var shape = this._gfxData.shadowShape;
           if( !this._gfxData.shadowInsert ) {

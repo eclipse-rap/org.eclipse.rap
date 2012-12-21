@@ -45,7 +45,7 @@ public class RWTTestsContribution implements TestContribution {
     "tests/DisplayTest.js",
     "tests/ThemeStoreTest.js",
     "tests/ShellProtocolIntegrationTest.js",
-    "tests/HtmlUtilTest.js",
+    "tests/StyleTest.js",
     "tests/BorderTest.js",
     "tests/WidgetTest.js",
     "tests/GroupTest.js",

@@ -555,7 +555,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     },
 
     _renderTextShadow : function() {
-      rwt.util.html.HtmlUtil.setTextShadow( this._inputElement, this.__textShadow );
+      rwt.util.html.Style.setTextShadow( this._inputElement, this.__textShadow );
     },
 
     _visualizeFocus : function() {

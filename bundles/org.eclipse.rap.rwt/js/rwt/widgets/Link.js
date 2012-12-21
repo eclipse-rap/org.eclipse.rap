@@ -139,9 +139,9 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       var style = this._getHyperlinkStyle( false );
       var hyperlinks = this._getHyperlinkElements();
       for( var i = 0; i < hyperlinks.length; i++ ) {
-        rwt.util.html.HtmlUtil.setStyleProperty( hyperlinks[ i ], "color", style.textColor );
-        rwt.util.html.HtmlUtil.setTextShadow( hyperlinks[ i ], style.textShadow );
-        rwt.util.html.HtmlUtil.setStyleProperty( hyperlinks[ i ], "cursor", style.cursor );
+        rwt.util.html.Style.setStyleProperty( hyperlinks[ i ], "color", style.textColor );
+        rwt.util.html.Style.setTextShadow( hyperlinks[ i ], style.textShadow );
+        rwt.util.html.Style.setStyleProperty( hyperlinks[ i ], "cursor", style.cursor );
       }
     },
 
@@ -218,13 +218,13 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
     _onMouseOver : function( evt ) {
       var target = this._getEventTarget( evt );
       var style = this._getHyperlinkStyle( true );
-      rwt.util.html.HtmlUtil.setStyleProperty( target, "textDecoration", style.textDecoration );
+      rwt.util.html.Style.setStyleProperty( target, "textDecoration", style.textDecoration );
     },
 
     _onMouseOut : function( evt ) {
       var target = this._getEventTarget( evt );
       var style = this._getHyperlinkStyle( false );
-      rwt.util.html.HtmlUtil.setStyleProperty( target, "textDecoration", style.textDecoration );
+      rwt.util.html.Style.setStyleProperty( target, "textDecoration", style.textDecoration );
     },
 
     _isLeftMouseButtonPressed : function( evt ) {
