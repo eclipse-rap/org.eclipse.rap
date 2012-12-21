@@ -393,7 +393,7 @@ rwt.qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
     },
 
     _isDraggableWidget : function ( widgetTarget ) {
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       // We find the nearest control because matching based on widgetTarget can produce too
       // generalized cases.
       var widget = widgetManager.findControl( widgetTarget );

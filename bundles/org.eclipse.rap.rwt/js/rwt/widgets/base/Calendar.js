@@ -61,7 +61,7 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
     var nextMonthBt = new rwt.widgets.base.Button();
     var nextYearBt = new rwt.widgets.base.Button();
 
-    var wm = rwt.widgets.util.WidgetManager.getInstance();
+    var wm = rwt.remote.WidgetManager.getInstance();
     wm.setToolTip( lastYearBt, "Previous year" );
     wm.setToolTip( lastMonthBt, "Previous month" );
     wm.setToolTip( nextMonthBt, "Next month" );

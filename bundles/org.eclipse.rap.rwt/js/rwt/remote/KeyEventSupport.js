@@ -203,7 +203,7 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
         var focusRoot = rwt.event.EventHandler.getFocusRoot();
         result = focusRoot === null ? null : focusRoot.getActiveChild();
       }
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       while( result !== null && !widgetManager.isControl( result ) ) {
         result = result.getParent ? result.getParent() : null;
       }

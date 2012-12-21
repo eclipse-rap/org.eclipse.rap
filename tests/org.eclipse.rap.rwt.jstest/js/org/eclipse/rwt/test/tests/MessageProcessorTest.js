@@ -672,12 +672,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
     },
 
     _getTargetById : function( id ) {
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       return widgetManager.findWidgetById( id );
     },
 
     _isControl : function( target ) {
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       return widgetManager.isControl( target );
     },
 
@@ -691,7 +691,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       result.setHeight( 20 );
       TestUtil.flush();
       if( typeof targetId === "string" ) {
-        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+        var widgetManager = rwt.remote.WidgetManager.getInstance();
         widgetManager.add( result, targetId, true, "dummyType" );
       }
       return result;

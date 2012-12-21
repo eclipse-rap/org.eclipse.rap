@@ -208,7 +208,7 @@ rwt.remote.MessageProcessor = {
   _addTarget : function( target, targetId, handler ) {
     if( target instanceof rwt.widgets.base.Widget ) {
       // TODO [tb] : remove WidgetManager and then this if
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       widgetManager.add( target, targetId, false, handler ); // uses ObjectManager internally
     } else {
       rwt.remote.ObjectRegistry.add( targetId, target, handler );

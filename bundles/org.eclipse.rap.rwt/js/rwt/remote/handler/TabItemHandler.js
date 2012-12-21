@@ -56,7 +56,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.TabItem", {
     "control" : function( widget, value ) {
       if( value !== null ) {
         rwt.remote.HandlerUtil.callWithTarget( value, function( control ) {
-          var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+          var widgetManager = rwt.remote.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( widget ) + "pg";
           rwt.remote.HandlerUtil.callWithTarget( id, function( parent ) {
             control.setParent( parent );

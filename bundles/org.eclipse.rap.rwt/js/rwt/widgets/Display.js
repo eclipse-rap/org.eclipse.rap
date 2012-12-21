@@ -27,6 +27,13 @@ rwt.widgets.Display.getCurrent = function() {
   return rwt.widgets.Display._current;
 };
 
+
+rwt.widgets.Display._onAppearFocus = function( evt ) {
+  var widget = this;
+  widget.focus();
+  widget.removeEventListener( "appear", rwt.widgets.Display._onAppearFocus, widget );
+};
+
 rwt.widgets.Display.prototype = {
 
   applyObjectId : function() {
@@ -70,7 +77,12 @@ rwt.widgets.Display.prototype = {
   },
 
   setFocusControl : function( widgetId ) {
-    rwt.widgets.util.WidgetManager.getInstance().focus( widgetId );
+    var widget = this.findWidgetById( widgetId );
+    if( widget.isSeeable() ) {
+      widget.focus();
+    } else {
+      widget.addEventListener( "appear", rwt.widgets.Display._onAppearFocus, widget );
+    }
   },
 
   setEnableUiTests : function( value ) {

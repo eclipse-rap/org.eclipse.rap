@@ -111,7 +111,7 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
       var fileName = this._formatFileName( this._getFileName() );
       if( !rwt.remote.EventUtil.getSuspended() ) {
         var req = rwt.remote.Server.getInstance();
-        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+        var widgetManager = rwt.remote.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
         req.addParameter( id + ".fileName", fileName );
         req.send();

@@ -362,7 +362,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
 
     _sendChanges : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+        var widgetManager = rwt.remote.WidgetManager.getInstance();
         var req = rwt.remote.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
         req.addParameter( id + ".hours",

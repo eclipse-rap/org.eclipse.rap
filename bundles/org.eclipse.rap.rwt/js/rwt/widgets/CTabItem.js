@@ -45,7 +45,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     this._closeButton.setAppearance( "ctab-close-button" );
     this._closeButton.setWidth( 20 );
     this._closeButton.addEventListener( "click", this._onClose, this );
-    var wm = rwt.widgets.util.WidgetManager.getInstance();
+    var wm = rwt.remote.WidgetManager.getInstance();
     wm.setToolTip( this._closeButton, rwt.widgets.CTabFolder.CLOSE_TOOLTIP );
     this.add( this._closeButton );
     this.updateCloseButton();
@@ -65,7 +65,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     this.removeEventListener( "changeParent", this._onChangeParent, this );
     this.removeEventListener( "changeLeft", this._onChangeLeft, this );
     this._closeButton.removeEventListener( "click", this._onClose, this );
-    var wm = rwt.widgets.util.WidgetManager.getInstance();
+    var wm = rwt.remote.WidgetManager.getInstance();
     wm.setToolTip( this._closeButton, null );
     this._closeButton.dispose();
     this._closeButton = null;

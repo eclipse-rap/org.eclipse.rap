@@ -80,7 +80,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.GridItem", {
       if( value === null ) {
         widget.setFont( null );
       } else {
-        var wm = rwt.widgets.util.WidgetManager.getInstance();
+        var wm = rwt.remote.WidgetManager.getInstance();
         var font = wm._createFont.apply( wm, value );
         widget.setFont( font );
       }
@@ -113,7 +113,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.GridItem", {
         if( value[ i ] === null ) {
           fonts[ i ] = "";
         } else {
-          var wm = rwt.widgets.util.WidgetManager.getInstance();
+          var wm = rwt.remote.WidgetManager.getInstance();
           var font = wm._createFont.apply( wm, value[ i ] );
           fonts[ i ] = font.toCss();
         }

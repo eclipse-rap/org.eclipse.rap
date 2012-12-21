@@ -33,7 +33,7 @@ rwt.qx.Class.define( "rwt.widgets.ControlDecorator", {
     },
 
     _updateToolTip : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       if( this._text === null || this._text === "" || !this._showHover ) {
         wm.setToolTip( this, null );
       } else {

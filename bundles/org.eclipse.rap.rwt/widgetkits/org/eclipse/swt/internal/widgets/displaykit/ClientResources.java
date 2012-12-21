@@ -259,7 +259,7 @@ public final class ClientResources {
     "rwt/runtime/MobileWebkitSupport.js",
     "rwt/widgets/ToolTip.js",
     "rwt/remote/handler/ToolTipHandler.js",
-    "rwt/widgets/util/WidgetManager.js",
+    "rwt/remote/WidgetManager.js",
     "rwt/remote/MessageProcessor.js",
     "rwt/remote/MessageWriter.js",
     "rwt/client/ServerPush.js",

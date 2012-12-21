@@ -348,7 +348,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
           && widget !== this._activeControl )
       {
         this._notifyDeactivate( this._activeControl, widget );
-        var id = rwt.widgets.util.WidgetManager.getInstance().findIdByWidget( widget );
+        var id = rwt.remote.WidgetManager.getInstance().findIdByWidget( widget );
         var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
         remoteObject.set( "activeControl", id );
         this._notifyActivate( this._activeControl, widget );
@@ -425,7 +425,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
 
     _onChangeMode : function( evt ) {
       var value = evt.getValue();
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( evt.getTarget() );
       var req = rwt.remote.Server.getInstance();
       req.addParameter( id + ".mode", value );
@@ -487,7 +487,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
         var focusedChild = this.getFocusedChild();
         if( focusedChild != null && focusedChild != this._focusControl ) {
           this._focusControl = focusedChild;
-          var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+          var widgetManager = rwt.remote.WidgetManager.getInstance();
           var focusedChildId = widgetManager.findIdByWidget( focusedChild );
           var server = rwt.remote.Server.getInstance();
           var serverDisplay = server.getRemoteObject( rwt.widgets.Display.getCurrent() );
@@ -502,7 +502,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
      * if there is no parent
      */
     _getParentControl : function( widget ) {
-      var widgetMgr = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetMgr = rwt.remote.WidgetManager.getInstance();
       var result = widget;
       while( result != null && !widgetMgr.isControl( result ) ) {
         if( result.getParent ) {

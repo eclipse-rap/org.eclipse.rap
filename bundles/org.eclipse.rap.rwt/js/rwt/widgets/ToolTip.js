@@ -176,7 +176,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
     },
 
     _getWidgetId : function() {
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       return widgetManager.findIdByWidget( this );
     },
 

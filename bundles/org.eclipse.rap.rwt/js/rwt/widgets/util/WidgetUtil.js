@@ -18,7 +18,7 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
   statics : {
 
     setPropertyParam : function( widget, propertyName, propertyValue ) {
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( widget );
       var req = rwt.remote.Server.getInstance();
       req.addParameter( id + "." + propertyName, propertyValue );
@@ -37,7 +37,7 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
     } ),
 
     getControl : function( widget ) {
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       var result = widget;
       while( result != null && !widgetManager.isControl( result ) ) {
         result = result.getParent ? result.getParent() : null;

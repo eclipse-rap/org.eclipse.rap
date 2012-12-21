@@ -68,7 +68,7 @@ rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
         width  : bounds[ 2 ],
         height : bounds[ 3 ]
       } );
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       widgetManager.setToolTip( textHyperlink, toolTip );
       if( font != null ) {
         widgetManager.setFont( textHyperlink, font[ 0 ], font[ 1 ], font[ 2 ], font[ 3 ] );
@@ -91,7 +91,7 @@ rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
         height : bounds[ 3 ]
       } );
       if( font != null ) {
-        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+        var widgetManager = rwt.remote.WidgetManager.getInstance();
         widgetManager.setFont( textFragment, font[ 0 ], font[ 1 ], font[ 2 ], font[ 3 ] );
       }
       if( color != null ) {
@@ -112,7 +112,7 @@ rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
         height     : bounds[ 3 ],
         paddingTop : 2
       } );
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       widgetManager.setToolTip( imageHyperlink, toolTip );
       this._segments[ this._segments.length ] = imageHyperlink;
       this.add( imageHyperlink );

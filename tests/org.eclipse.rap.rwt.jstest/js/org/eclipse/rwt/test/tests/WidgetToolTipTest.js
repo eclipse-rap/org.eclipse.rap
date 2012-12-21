@@ -16,7 +16,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
     this.TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
     this.TestUtil.prepareTimerUse();
     this.manager = rwt.widgets.util.ToolTipManager.getInstance();
-    this.wm = rwt.widgets.util.WidgetManager.getInstance();        
+    this.wm = rwt.remote.WidgetManager.getInstance();        
     this.TestUtil.flush();
     this.toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
   },

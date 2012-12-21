@@ -234,7 +234,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var style = "medium";
       var dateTime = new rwt.widgets.DateTimeTime( style );
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       widgetManager.add( dateTime, "w3", true );
       dateTime.setSpace( 3, 115, 3, 20 );
       dateTime.addToDocument();

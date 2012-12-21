@@ -344,7 +344,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testSendValueChanged : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       TestUtil.initRequestLog();
       var upload = createFileUpload();
       wm.add( upload, "w200", true );
@@ -357,7 +357,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testDontSendFullPathValueSlash : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       TestUtil.initRequestLog();
       var upload = createFileUpload();
       wm.add( upload, "w200", true );
@@ -370,7 +370,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testDontSendFullPathValueBackSlash : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       TestUtil.initRequestLog();
       var upload = createFileUpload();
       wm.add( upload, "w200", true );

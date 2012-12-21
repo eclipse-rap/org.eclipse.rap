@@ -629,7 +629,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var wm = rwt.widgets.util.WidgetManager.getInstance();
+        var wm = rwt.remote.WidgetManager.getInstance();
         var el = browser._getTargetNode();
         var iframe = browser._iframeNode;
         assertTrue( iframe.parentNode === el );
@@ -745,7 +745,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       browser.setSpace( 10, 576, 57, 529 );
       browser.setSource( this.BLANK );
       browser.syncSource();
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       wm.add( browser, "w6", true );
       TestUtil.flush();
       return browser;

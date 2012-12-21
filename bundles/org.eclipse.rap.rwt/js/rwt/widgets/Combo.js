@@ -680,7 +680,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     },
 
     _onSend : function( evt ) {
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
       var req = rwt.remote.Server.getInstance();
       req.addParameter( id + ".text", this._field.getComputedValue() );
@@ -697,7 +697,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     _sendWidgetSelected : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+        var widgetManager = rwt.remote.WidgetManager.getInstance();
         var req = rwt.remote.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
         var list = this._list;
@@ -720,7 +720,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     _updateListVisibleRequestParam : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+        var widgetManager = rwt.remote.WidgetManager.getInstance();
         var req = rwt.remote.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
         req.addParameter( id + ".listVisible", this._list.getDisplay() );
@@ -747,7 +747,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         length = 0;
       }
       if( this._selectionStart != start || this._selectionLength != length ) {
-        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+        var widgetManager = rwt.remote.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
         var req = rwt.remote.Server.getInstance();
         this._selectionStart = start;

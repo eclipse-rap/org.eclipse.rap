@@ -237,7 +237,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
           this.removeState( "selected" );
         }
         if( !rwt.remote.EventUtil.getSuspended() ) {
-          var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+          var widgetManager = rwt.remote.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( this );
           var req = rwt.remote.Server.getInstance();
           req.addParameter( id + ".selection", this._selected );

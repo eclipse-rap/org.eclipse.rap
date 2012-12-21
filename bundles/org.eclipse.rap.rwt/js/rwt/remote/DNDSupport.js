@@ -70,7 +70,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
     },
 
     _dragStartHandler : function( event ) {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var target = event.getCurrentTarget();
       var control = wm.findControl( event.getTarget() );
       if( control == target && !this._blockDrag ) {
@@ -121,7 +121,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
 
     _sendDragSourceEvent : function( widget, type, qxDomEvent ) {
       var req = rwt.remote.Server.getInstance();
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var id = wm.findIdByWidget( widget );
       var x = 0;
       var y = 0;
@@ -220,7 +220,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
     },
 
     _sendDropTargetEvent : function( widget, type, qxDomEvent, action ) {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var id = wm.findIdByWidget( widget );
       var item = this._getCurrentItemTarget();
       var itemId = item != null ? wm.findIdByWidget( item ) : null;
@@ -268,7 +268,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
     },
 
     _setPropertyRetroactively : function( dropTarget, property, value ) {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       for( var type in this._dropTargetEventQueue ) {
         var event = this._dropTargetEventQueue[ type ];
         if( event[ "id" ] == wm.findIdByWidget( dropTarget ) ) {

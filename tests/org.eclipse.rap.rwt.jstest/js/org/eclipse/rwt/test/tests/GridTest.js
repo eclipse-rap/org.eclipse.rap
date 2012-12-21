@@ -939,7 +939,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testSetScrollBarsVisibileResetValue : function() {
       var tree = this._createDefaultTree();
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       wm.add( tree, "wtest", false );
       tree.setScrollBarsVisible( true, true );
       TestUtil.flush();
@@ -1239,7 +1239,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fakeCheckBoxAppearance();
       tree.setItemCount( 1 );
       var item = this._createItem( tree.getRootItem(), 0 );
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       wm.add( tree, "w11", true );
       wm.add( item, "w2", false );
       TestUtil.flush();
@@ -1266,7 +1266,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fakeCheckBoxAppearance();
       tree.setItemCount( 1 );
       var item = this._createItem( tree.getRootItem(), 0 );
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       wm.add( tree, "w11", true );
       wm.add( item, "w2", false );
       TestUtil.flush();
@@ -1284,7 +1284,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fakeCheckBoxAppearance();
       tree.setItemCount( 1 );
       var item = this._createItem( tree.getRootItem(), 0 );
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       wm.add( tree, "w11", true );
       wm.add( item, "w2", false );
       TestUtil.flush();
@@ -1303,7 +1303,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fakeCheckBoxAppearance();
       tree.setItemCount( 1 );
       var item = this._createItem( tree.getRootItem(), 0 );
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       wm.add( tree, "w11", true );
       wm.add( item, "w2", false );
       TestUtil.flush();
@@ -1325,7 +1325,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setItemCount( 1 );
       tree.setHasSelectionListener( true );
       var item = this._createItem( tree.getRootItem(), 0 );
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       wm.add( tree, "w11", true );
       wm.add( item, "w2", false );
       TestUtil.flush();
@@ -1347,7 +1347,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setItemCount( 1 );
       tree.setColumnCount( 4 );
       var item = this._createItem( tree.getRootItem(), 0 );
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       wm.add( tree, "w11", true );
       wm.add( item, "w2", false );
       TestUtil.flush();
@@ -1365,7 +1365,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree( false, false, "check", [ 5, 20 ]  );
       this._fakeCheckBoxAppearance();
       tree.setItemCount( 1 );
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       wm.add( tree, "w11", true );
       TestUtil.flush();
       TestUtil.initRequestLog();
@@ -1440,7 +1440,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testFocusItem : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var req = rwt.remote.Server.getInstance();
       var tree = this._createDefaultTree();
       TestUtil.initRequestLog();
@@ -1460,7 +1460,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testChangeFocusItem : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var req = rwt.remote.Server.getInstance();
       var tree = this._createDefaultTree();
       tree.setItemCount( 3 );
@@ -1482,7 +1482,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testFocusUnresolvedItem : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var req = rwt.remote.Server.getInstance();
       var tree = this._createDefaultTree();
       TestUtil.initRequestLog();
@@ -1757,7 +1757,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testSendExpandTrue : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       TestUtil.initRequestLog();
       var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       var child1 = this._createItem( tree.getRootItem() );
@@ -1775,7 +1775,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testSendExpandFalse : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       var child1 = this._createItem( tree.getRootItem() );
       this._createItem( child1 );
@@ -1794,7 +1794,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testSendExpandEvent : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       TestUtil.initRequestLog();
       var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       var child1 = this._createItem( tree.getRootItem() );
@@ -1813,7 +1813,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testSendCollapseEvent : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       TestUtil.initRequestLog();
       var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       var child1 = this._createItem( tree.getRootItem() );
@@ -1835,7 +1835,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testNoSendEventDuringResponse : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       TestUtil.initRequestLog();
       var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       tree.setItemCount( 1 );
@@ -1855,7 +1855,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testSendSelectionProperty : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 2 );
       var child1 = this._createItem( tree.getRootItem(), 0 );
@@ -1878,7 +1878,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testSendSelectionEvent : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setHasSelectionListener( true );
       tree.setItemCount( 2 );
@@ -1901,7 +1901,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testSendDefaultSelectionEvent : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
       tree.setHasDefaultSelectionListener( true );
       tree.setItemCount( 1 );
@@ -1922,7 +1922,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testSendSelectionForUnresolved : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 2 );
       var child1 = this._createItem( tree.getRootItem(), 0, false );
@@ -1953,7 +1953,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testSendDefaultSelectionEventOnDragSource : function() {
       var dndSupport = rwt.remote.DNDSupport.getInstance();
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setHasSelectionListener( true );
       tree.setHasDefaultSelectionListener( true );
@@ -1981,7 +1981,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testDontSendDefaultSelectionEventOnDoubleRightClick : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
       tree.setHasSelectionListener( true );
       tree.setHasDefaultSelectionListener( true );
@@ -2005,7 +2005,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testSendDefaultSelectionEventByEnter : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
       tree.setHasDefaultSelectionListener( true );
       tree.setItemCount( 1 );
@@ -2028,7 +2028,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testSendDefaultSelectionEventByEnterChangedFocus : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
       tree.setHasDefaultSelectionListener( true );
       tree.setItemCount( 2 );
@@ -2051,7 +2051,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testDontSendDefaultSelectionEventOnFastClick : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
       tree.setHasSelectionListener( true );
       tree.setHasDefaultSelectionListener( true );
@@ -2077,7 +2077,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testMultiSelectionEvent : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setHasSelectionListener( true );
       tree.setHasDefaultSelectionListener( true );
@@ -2300,7 +2300,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testSendTopItemIndex : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
       this._fillTree( tree, 100 );
       TestUtil.initRequestLog();
@@ -2758,7 +2758,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var column = new rwt.widgets.GridColumn( tree );
       tree.setItemCount( 1 );
       this._createItem( tree.getRootItem(), 0 );
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       wm.add( column, "w11", false );
       column.setLeft( 100 );
       column.setWidth( 100 );
@@ -2784,7 +2784,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var column = new rwt.widgets.GridColumn( tree );
       tree.setItemCount( 1 );
       this._createItem( tree.getRootItem(), 0 );
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       wm.add( column, "w11", false );
       column.setLeft( 100 );
       column.setWidth( 100 );
@@ -2853,7 +2853,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testSendScrollLeft : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
       tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
       tree.setTreeColumn( 1 );
@@ -3193,7 +3193,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testVirtualSendTopItemIndex : function() {
       TestUtil.prepareTimerUse();
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "virtual" );
       this._fillTree( tree, 100 );
       TestUtil.initRequestLog();
@@ -3211,7 +3211,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testVirtualSendScrollLeft : function() {
       TestUtil.prepareTimerUse();
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "virtual" );
       tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
       tree.setItemCount( 1 );
@@ -3231,7 +3231,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testVirtualNoScrollSendTopItemIndex : function() {
       TestUtil.prepareTimerUse();
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "virtual" );
       this._fillTree( tree, 100 );
       TestUtil.initRequestLog();
@@ -3888,7 +3888,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testNoDoubleClickOnDifferentItems : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
       tree.setHasSelectionListener( true );
       tree.setItemCount( 2 );
@@ -3912,7 +3912,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testNoDoubleClickOnSameItem : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
       tree.setHasSelectionListener( true );
       tree.setItemCount( 2 );
@@ -3936,7 +3936,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testNoDefaultSelectionWithCtrlSpace : function() {
-      var wm = rwt.widgets.util.WidgetManager.getInstance();
+      var wm = rwt.remote.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
       tree.setHasSelectionListener( true );
       tree.setItemCount( 1 );
@@ -4117,7 +4117,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testRequestCellToolTipText : function() {
       var tree = this._createDefaultTree();
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       widgetManager.add( tree, "w3", true );
       tree.setEnableCellToolTip( true );
       tree.setColumnCount( 6 );

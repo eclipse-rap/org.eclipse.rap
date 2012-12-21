@@ -40,7 +40,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
           "parent" : "w2"
         }
       } );
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       var shell = widgetManager.findWidgetById( "w2" );
       var composite = widgetManager.findWidgetById( "w3" );
       assertTrue( composite instanceof rwt.widgets.Composite );

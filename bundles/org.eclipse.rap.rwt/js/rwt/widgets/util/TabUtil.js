@@ -14,7 +14,7 @@ rwt.qx.Class.define( "rwt.widgets.util.TabUtil", {
 
   statics : {
     createTabItem : function( id, parentId, index ) {
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       var tabFolder = widgetManager.findWidgetById( parentId );
       var tabItem = new rwt.widgets.TabItem();
       tabItem.setTabIndex( null );
@@ -37,7 +37,7 @@ rwt.qx.Class.define( "rwt.widgets.util.TabUtil", {
       tabItem.removeEventListener( "changeFocused", rwt.widgets.util.TabUtil._onTabItemChangeFocus );
       tabItem.removeEventListener( "changeChecked", rwt.widgets.util.TabUtil._onTabItemSelected );
       tabItem.removeEventListener( "click", rwt.widgets.util.TabUtil._onTabItemClick );
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       var itemId = widgetManager.findIdByWidget( tabItem );
       widgetManager.dispose( itemId + "pg" );
       widgetManager.dispose( itemId );
@@ -61,7 +61,7 @@ rwt.qx.Class.define( "rwt.widgets.util.TabUtil", {
     _onTabItemSelected : function( evt ) {
       var tab = evt.getTarget();
       if( !rwt.remote.EventUtil.getSuspended() && tab.getChecked() ) {
-        var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+        var widgetManager = rwt.remote.WidgetManager.getInstance();
         var itemId = widgetManager.findIdByWidget( tab );
         var server = rwt.remote.Server.getInstance();
         var folder = tab.getParent().getParent();

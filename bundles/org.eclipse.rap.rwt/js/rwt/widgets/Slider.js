@@ -203,7 +203,7 @@ rwt.qx.Class.define( "rwt.widgets.Slider", {
     },
 
     _sendChanges : function() {
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       var req = rwt.remote.Server.getInstance();
       var id = widgetManager.findIdByWidget( this );
       req.addParameter( id + ".selection", this._selection );

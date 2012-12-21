@@ -43,13 +43,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.PerformanceTest", {
 
     // NOTE: Values need to change due to potential setter optimizations.
     _syncEval : function( iterations ) {
-      var evalText1 = "var wm = rwt.widgets.util.WidgetManager.getInstance();";
+      var evalText1 = "var wm = rwt.remote.WidgetManager.getInstance();";
       evalText1 += "var w = wm.findWidgetById( \"dummyId\" );";
       evalText1 += "w.setTextColor( \"#c20017\" );";
       evalText1 += "w.setLeft( 100 );";
       evalText1 += "w.setTop( 100 );";
       evalText1 += "w.setLabel( \"foo\" );";
-      var evalText2 = "var wm = rwt.widgets.util.WidgetManager.getInstance();";
+      var evalText2 = "var wm = rwt.remote.WidgetManager.getInstance();";
       evalText2 += "var w = wm.findWidgetById( \"dummyId\" );";
       evalText2 += "w.setTextColor( \"#000000\" );";
       evalText2 += "w.setLeft( 200 );";
@@ -109,7 +109,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.PerformanceTest", {
 
     _createDummyTarget : function( fakeProperties ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widgetManager = rwt.widgets.util.WidgetManager.getInstance();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
       var registry = rwt.remote.HandlerRegistry;
       var processor = rwt.remote.MessageProcessor;
       var dummy = new rwt.widgets.base.Atom();
