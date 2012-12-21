@@ -27,18 +27,16 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.SWTException;
@@ -828,11 +826,7 @@ public class Display_Test extends TestCase {
     color = display.getSystemColor( SWT.COLOR_YELLOW );
     assertEquals( new RGB( 255, 255, 0 ), color.getRGB() );
     // Only one instance per color
-    Color systemRed = display.getSystemColor( SWT.COLOR_RED );
-    Color red = Graphics.getColor( 255, 0, 0 );
-    assertEquals( red, systemRed );
-    assertSame( red, systemRed );
-    assertSame( systemRed, display.getSystemColor( SWT.COLOR_RED ) );
+    assertSame( display.getSystemColor( SWT.COLOR_RED ), display.getSystemColor( SWT.COLOR_RED ) );
   }
 
   public void testAddFilterWithNullArgument() {
@@ -931,23 +925,21 @@ public class Display_Test extends TestCase {
     }
   }
 
-  public void testTimerExecWithNullArgument() {
-    // Ensure that parameters are checked properly
+  public void testTimerExec_failsWithNullArgument() {
     final Display display = new Display();
     try {
       display.timerExec( 0, null );
-      fail( "timerExec must throw exception when null-runnable is passed in " );
-    } catch( Exception expected ) {
+      fail();
+    } catch( IllegalArgumentException exception ) {
+      assertEquals( "Argument cannot be null", exception.getMessage() );
     }
-    // Further timerExec tests can be found in ServerPushManager_Test
   }
 
-  public void testTimerExecFromBackgroundThread() throws Throwable {
+  public void testTimerExec_failsFromBackgroundThread() throws Throwable {
     final Display display = new Display();
-    // Ensure that invoking from background thread throws InvalidThreadAccess
     Runnable runnable = new Runnable() {
       public void run() {
-        display.timerExec( 1, new NoOpRunnable() );
+        display.timerExec( 1, mock( Runnable.class ) );
       }
     };
 
@@ -959,10 +951,32 @@ public class Display_Test extends TestCase {
     }
   }
 
-  public void testRemoveNonExistingTimerExec() {
-    Display display = new Display();
-    display.timerExec( -1, new NoOpRunnable() );
-    // must not cause any exception
+  public void tesTimerExec_schedulesRunnable() {
+    final TimerExecScheduler scheduler = mock( TimerExecScheduler.class );
+    Display display = new Display() {
+      @Override
+      TimerExecScheduler createTimerExecScheduler() {
+        return scheduler;
+      }
+    };
+    Runnable runnable = mock( Runnable.class );
+    display.timerExec( 23, runnable );
+
+    verify( scheduler ).schedule( 23, runnable );
+  }
+
+  public void tesTimerExec_cancelsRunnableIfTimeIsNegative() {
+    final TimerExecScheduler scheduler = mock( TimerExecScheduler.class );
+    Display display = new Display() {
+      @Override
+      TimerExecScheduler createTimerExecScheduler() {
+        return scheduler;
+      }
+    };
+    Runnable runnable = mock( Runnable.class );
+    display.timerExec( -1, runnable );
+
+    verify( scheduler ).cancel( runnable );
   }
 
   public void testGetMonitors() {

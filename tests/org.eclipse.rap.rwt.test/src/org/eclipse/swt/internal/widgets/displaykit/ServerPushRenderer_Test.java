@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Display;
 
 public class ServerPushRenderer_Test extends TestCase {
 
+  private static final Object HANDLE = new Object();
   private static final String REMOTE_OBJECT_ID = "rwt.client.ServerPush";
 
   private Display display;
@@ -41,7 +42,7 @@ public class ServerPushRenderer_Test extends TestCase {
 
   public void testDoNotCreateServerPushClientObject() {
     // Server push object is created by the client
-    ServerPushManager.getInstance().activateServerPushFor( "id" );
+    ServerPushManager.getInstance().activateServerPushFor( HANDLE );
 
     renderer.render();
 
@@ -57,7 +58,7 @@ public class ServerPushRenderer_Test extends TestCase {
   }
 
   public void testActivationIsRendered() {
-    ServerPushManager.getInstance().activateServerPushFor( "id" );
+    ServerPushManager.getInstance().activateServerPushFor( HANDLE );
 
     renderer.render();
 
@@ -66,11 +67,11 @@ public class ServerPushRenderer_Test extends TestCase {
   }
 
   public void testActivationIsPreserved() {
-    ServerPushManager.getInstance().activateServerPushFor( "id" );
+    ServerPushManager.getInstance().activateServerPushFor( HANDLE );
     renderer.render();
 
     Fixture.fakeNewRequest();
-    ServerPushManager.getInstance().activateServerPushFor( "id" );
+    ServerPushManager.getInstance().activateServerPushFor( HANDLE );
     renderer.render();
 
     Message message = Fixture.getProtocolMessage();
@@ -78,11 +79,11 @@ public class ServerPushRenderer_Test extends TestCase {
   }
 
   public void testDeactivationIsRendered() {
-    ServerPushManager.getInstance().activateServerPushFor( "id" );
+    ServerPushManager.getInstance().activateServerPushFor( HANDLE );
     renderer.render();
 
     Fixture.fakeNewRequest();
-    ServerPushManager.getInstance().deactivateServerPushFor( "id" );
+    ServerPushManager.getInstance().deactivateServerPushFor( HANDLE );
     renderer.render();
 
     Message message = Fixture.getProtocolMessage();
@@ -90,12 +91,12 @@ public class ServerPushRenderer_Test extends TestCase {
   }
 
   public void testDeactivationIsNotRenderedWhenRunnablesArePending() {
-    ServerPushManager.getInstance().activateServerPushFor( "id" );
+    ServerPushManager.getInstance().activateServerPushFor( HANDLE );
     renderer.render();
     display.asyncExec( mock( Runnable.class ) );
 
     Fixture.fakeNewRequest();
-    ServerPushManager.getInstance().deactivateServerPushFor( "id" );
+    ServerPushManager.getInstance().deactivateServerPushFor( HANDLE );
     renderer.render();
 
     Message message = Fixture.getProtocolMessage();

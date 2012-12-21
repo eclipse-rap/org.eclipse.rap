@@ -306,8 +306,8 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( new Point( 1, 2 ), display.getCursorLocation() );
   }
 
-  public void testUICallBackRendered() throws IOException {
-    ServerPushManager.getInstance().activateServerPushFor( "id" );
+  public void testServerPushRendered() throws IOException {
+    ServerPushManager.getInstance().activateServerPushFor( new Object() );
 
     displayLCA.render( display );
 

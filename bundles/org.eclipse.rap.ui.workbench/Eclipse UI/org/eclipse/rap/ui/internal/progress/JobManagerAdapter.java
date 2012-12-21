@@ -127,8 +127,7 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
     if( display != null && !display.isDisposed() ) {
       display.asyncExec( new Runnable() {
         public void run() {
-          String id = String.valueOf( event.getJob().hashCode() );
-          ServerPushManager.getInstance().deactivateServerPushFor( id );
+          ServerPushManager.getInstance().deactivateServerPushFor( event.getJob() );
           manager[ 0 ].changeListener.done( event );
         }
       } );
@@ -154,8 +153,7 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
 
           public void run() {
             bindToSession( event.getJob() );
-            String id = String.valueOf( event.getJob().hashCode() );
-            ServerPushManager.getInstance().activateServerPushFor( id );
+            ServerPushManager.getInstance().activateServerPushFor( event.getJob() );
           }
         };
         RWT.getUISession( display ).exec( runnable );

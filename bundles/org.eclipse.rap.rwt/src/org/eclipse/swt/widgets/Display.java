@@ -641,7 +641,9 @@ public class Display extends Device implements Adaptable {
    */
   public void disposeExec( Runnable runnable ) {
     checkDevice();
-    if (disposeList == null) disposeList = new Runnable [4];
+    if (disposeList == null) {
+      disposeList = new Runnable [4];
+    }
     for (int i=0; i<disposeList.length; i++) {
       if (disposeList [i] == null) {
         disposeList [i] = runnable;
@@ -921,8 +923,12 @@ public class Display extends Device implements Adaptable {
   // verbatim copy of SWT code
   public void setSynchronizer (Synchronizer synchronizer) {
     checkDevice ();
-    if (synchronizer == null) error (SWT.ERROR_NULL_ARGUMENT);
-    if (synchronizer == this.synchronizer) return;
+    if (synchronizer == null) {
+      error (SWT.ERROR_NULL_ARGUMENT);
+    }
+    if (synchronizer == this.synchronizer) {
+      return;
+    }
     Synchronizer oldSynchronizer;
     synchronized (deviceLock) {
       oldSynchronizer = this.synchronizer;
@@ -1074,13 +1080,17 @@ public class Display extends Device implements Adaptable {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( scheduler == null ) {
-      scheduler = new TimerExecScheduler( this, ServerPushManager.getInstance() );
+      scheduler = createTimerExecScheduler();
     }
     if( milliseconds < 0 ) {
       scheduler.cancel( runnable );
     } else {
       scheduler.schedule( milliseconds, runnable );
     }
+  }
+
+  TimerExecScheduler createTimerExecScheduler() {
+    return new TimerExecScheduler( this );
   }
 
   /**

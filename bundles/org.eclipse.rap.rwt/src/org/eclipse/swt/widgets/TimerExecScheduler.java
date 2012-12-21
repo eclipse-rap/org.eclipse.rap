@@ -17,7 +17,6 @@ import java.io.ObjectInputValidation;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,30 +28,29 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
 
-final class TimerExecScheduler implements SerializableCompatibility {
+class TimerExecScheduler implements SerializableCompatibility {
 
-  private final Display display;
-  private final ServerPushManager serverPushManager;
+  final Display display;
+  final ServerPushManager serverPushManager;
   private final Collection<TimerExecTask> tasks;
   private transient Timer timer;
 
-  TimerExecScheduler( Display display, ServerPushManager serverPushManager ) {
+  TimerExecScheduler( Display display ) {
     this.display = display;
-    this.serverPushManager = serverPushManager;
+    serverPushManager = ServerPushManager.getInstance();
     tasks = new LinkedList<TimerExecTask>();
   }
 
   void schedule( int milliseconds, Runnable runnable ) {
-    TimerExecTask task = new TimerExecTask( runnable, milliseconds );
     synchronized( display.getDeviceLock() ) {
       initializeTimer();
-      tasks.add( task );
+      TimerExecTask task = findOrAddTask( runnable );
       timer.schedule( task, milliseconds );
     }
   }
 
   void cancel( Runnable runnable ) {
-    TimerExecTask task = removeTask( runnable );
+    TimerExecTask task = findAndRemoveTask( runnable );
     if( task != null ) {
       task.cancel();
     }
@@ -69,7 +67,46 @@ final class TimerExecScheduler implements SerializableCompatibility {
 
   private void initializeTimer() {
     if( timer == null ) {
-      timer = new Timer( "RWT timerExec scheduler", true );
+      timer = createTimer();
+    }
+  }
+
+  Timer createTimer() {
+    return new Timer( "RWT timerExec scheduler", true );
+  }
+
+  private TimerExecTask findOrAddTask( Runnable runnable ) {
+    synchronized( display.getDeviceLock() ) {
+      for( TimerExecTask task : tasks ) {
+        if( task.getRunnable() == runnable ) {
+          return task;
+        }
+      }
+      TimerExecTask task = createTask( runnable );
+      tasks.add( task );
+      return task;
+    }
+  }
+
+  TimerExecTask createTask( Runnable runnable ) {
+    return new TimerExecTask( this, runnable );
+  }
+
+  private TimerExecTask findAndRemoveTask( Runnable runnable ) {
+    synchronized( display.getDeviceLock() ) {
+      for( TimerExecTask task : tasks ) {
+        if( task.getRunnable() == runnable ) {
+          tasks.remove( task );
+          return task;
+        }
+      }
+    }
+    return null;
+  }
+
+  void removeTask( TimerTask task ) {
+    synchronized( display.getDeviceLock() ) {
+      tasks.remove( task );
     }
   }
 
@@ -78,30 +115,10 @@ final class TimerExecScheduler implements SerializableCompatibility {
       if( tasks.size() > 0 ) {
         initializeTimer();
         for( TimerExecTask task : tasks ) {
-          timer.schedule( task, task.getTime() );
+          timer.schedule( task, new Date( task.scheduledExecutionTime() ) );
         }
       }
     }
-  }
-
-  private TimerExecTask removeTask( Runnable runnable ) {
-    TimerExecTask result = null;
-    synchronized( display.getDeviceLock() ) {
-      Iterator<TimerExecTask> iter = tasks.iterator();
-      while( result == null && iter.hasNext() ) {
-        TimerExecTask task = iter.next();
-        if( task.getRunnable() == runnable ) {
-          removeTask( result );
-          result = task;
-        }
-      }
-    }
-    return result;
-  }
-
-  private void removeTask( TimerTask task ) {
-    // code is synchronized by caller
-    tasks.remove( task );
   }
 
   private void writeObject( ObjectOutputStream stream ) throws IOException {
@@ -113,47 +130,6 @@ final class TimerExecScheduler implements SerializableCompatibility {
   private void readObject( ObjectInputStream stream ) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
     stream.registerValidation( new PostDeserializationValidation(), 0 );
-  }
-
-  private class TimerExecTask extends TimerTask implements SerializableCompatibility {
-
-    private final Runnable runnable;
-    private final Date time;
-
-    TimerExecTask( Runnable runnable, long milliseconds ) {
-      this.runnable = runnable;
-      time = new Date( System.currentTimeMillis() + milliseconds );
-      serverPushManager.activateServerPushFor( getUICallBackId() );
-    }
-
-    @Override
-    public void run() {
-      synchronized( display.getDeviceLock() ) {
-        removeTask( this );
-        if( !display.isDisposed() ) {
-          display.asyncExec( runnable );
-        }
-      }
-      serverPushManager.deactivateServerPushFor( getUICallBackId() );
-    }
-
-    @Override
-    public boolean cancel() {
-      serverPushManager.deactivateServerPushFor( getUICallBackId() );
-      return super.cancel();
-    }
-
-    Runnable getRunnable() {
-      return runnable;
-    }
-
-    Date getTime() {
-      return time;
-    }
-
-    private String getUICallBackId() {
-      return getClass().getName() + "-" + System.identityHashCode( this );
-    }
   }
 
   private class PostDeserializationValidation implements ObjectInputValidation {
