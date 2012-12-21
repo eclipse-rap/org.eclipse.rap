@@ -75,8 +75,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
     },
 
     testSendWindowSize : function() {
-      var width = rwt.util.html.Window.getInnerWidth( window );
-      var height = rwt.util.html.Window.getInnerHeight( window );
+      var width = rwt.html.Window.getInnerWidth( window );
+      var height = rwt.html.Window.getInnerHeight( window );
       rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
 
       var message = TestUtil.getMessageObject();

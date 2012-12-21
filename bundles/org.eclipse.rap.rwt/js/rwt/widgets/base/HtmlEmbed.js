@@ -146,13 +146,13 @@ rwt.qx.Class.define("rwt.widgets.base.HtmlEmbed",
 
     /**
      * @type member
-     * @param value {rwt.util.html.Font}
+     * @param value {rwt.html.Font}
      */
     _styleFont : function( value ) {
       if( value ) {
         value.render( this );
       } else {
-        rwt.util.html.Font.reset( this );
+        rwt.html.Font.reset( this );
       }
     },
 

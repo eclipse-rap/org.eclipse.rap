@@ -161,7 +161,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     var req = rwt.remote.Server.getInstance();
     req.removeEventListener( "send", this._onSend, this );
     if( this.isCreated() ) {
-      rwt.util.html.EventRegistration.removeEventListener( this.getElement(),
+      rwt.html.EventRegistration.removeEventListener( this.getElement(),
                                                      "mousedown",
                                                      this.__onwindowmousedown );
     }
@@ -181,7 +181,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     },
 
     _onCreate : function( evt ) {
-      rwt.util.html.EventRegistration.addEventListener( this.getElement(),
+      rwt.html.EventRegistration.addEventListener( this.getElement(),
                                                   "mousedown",
                                                   this.__onwindowmousedown );
       this.removeEventListener( "create", this._onCreate, this );

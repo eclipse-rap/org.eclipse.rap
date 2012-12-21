@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-rwt.qx.Class.define("rwt.util.html.StyleSheet",
+rwt.qx.Class.define("rwt.html.StyleSheet",
 {
   /*
   *****************************************************************************

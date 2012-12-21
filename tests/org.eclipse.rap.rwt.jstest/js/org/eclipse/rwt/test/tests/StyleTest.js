@@ -17,7 +17,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
 
     testSetStylePropertyOnWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.util.html.Style;
+      var Style = rwt.html.Style;
       var red = "red";
       var widget = this._createWidget();
       Style.setStyleProperty( widget, "backgroundColor", red);
@@ -27,7 +27,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
 
     testSetStylePropertyOnElement : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.util.html.Style;
+      var Style = rwt.html.Style;
       var red = "red";
       var element = document.createElement( "div" );
       Style.setStyleProperty( element, "backgroundColor", red );
@@ -36,7 +36,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
 
     testRemoveStylePropertyOnWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.util.html.Style;
+      var Style = rwt.html.Style;
       var red = "red";
       var widget = this._createWidget();
       Style.setStyleProperty( widget, "backgroundColor", red );
@@ -47,7 +47,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
 
     testRemoveStylePropertyOnElement : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.util.html.Style;
+      var Style = rwt.html.Style;
       var red = "red";
       var element = document.createElement( "div" );
       Style.setStyleProperty( element, "backgroundColor", red );
@@ -57,7 +57,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
 
     testSetStylePropertyOnWidgetBeforeCreate : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.util.html.Style;
+      var Style = rwt.html.Style;
       var widget = this._createWidget( true );
       var red = "red";
       Style.setStyleProperty( widget, "color", red );
@@ -68,7 +68,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
 
     testRemoveStylePropertyOnWidgetBeforeCreate : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.util.html.Style;
+      var Style = rwt.html.Style;
       var red = "red";
       var widget = this._createWidget( true );
       Style.setStyleProperty( widget, "color", red );
@@ -80,7 +80,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
 
     testSetOpacity : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.util.html.Style;
+      var Style = rwt.html.Style;
       var element = document.createElement( "div" );
       var widget = this._createWidget();
       Style.setOpacity( element, 0.5 );
@@ -118,7 +118,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
 
     testSetOpacityOnOuterElement : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.util.html.Style;
+      var Style = rwt.html.Style;
       var element = document.createElement( "div" );
       var widget = this._createWidget();
       widget.prepareEnhancedBorder();

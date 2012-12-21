@@ -11,8 +11,8 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-/** This singleton manage all rwt.util.html.ImagePreloader instances. */
-rwt.qx.Class.define("rwt.util.html.ImagePreloaderManager",
+/** This singleton manage all rwt.html.ImagePreloader instances. */
+rwt.qx.Class.define("rwt.html.ImagePreloaderManager",
 {
   type : "singleton",
   extend : rwt.qx.Object,
@@ -45,10 +45,10 @@ rwt.qx.Class.define("rwt.util.html.ImagePreloaderManager",
   members :
   {
     /**
-     * Adds a rwt.util.html.ImagePreloader instance to the manager
+     * Adds a rwt.html.ImagePreloader instance to the manager
      *
      * @type member
-     * @param vObject {Preloader} rwt.util.html.ImagePreloader instance
+     * @param vObject {Preloader} rwt.html.ImagePreloader instance
      * @return {void}
      */
     add : function(vObject) {
@@ -57,10 +57,10 @@ rwt.qx.Class.define("rwt.util.html.ImagePreloaderManager",
 
 
     /**
-     * Removes a rwt.util.html.ImagePreloader instance from the manager
+     * Removes a rwt.html.ImagePreloader instance from the manager
      *
      * @type member
-     * @param vObject {Preloader} rwt.util.html.ImagePreloader instance
+     * @param vObject {Preloader} rwt.html.ImagePreloader instance
      * @return {void}
      */
     remove : function(vObject) {
@@ -85,7 +85,7 @@ rwt.qx.Class.define("rwt.util.html.ImagePreloaderManager",
      *
      * @type member
      * @param vSource {String} Source of preloader image instance
-     * @return {Preloader} rwt.util.html.ImagePreloader instance
+     * @return {Preloader} rwt.html.ImagePreloader instance
      */
     get : function(vSource) {
       return this._objects[vSource];
@@ -97,7 +97,7 @@ rwt.qx.Class.define("rwt.util.html.ImagePreloaderManager",
      *
      * @type member
      * @param vSource {String} Source of preloader image instance
-     * @return {Preloader} new rwt.util.html.ImagePreloader instance
+     * @return {Preloader} new rwt.html.ImagePreloader instance
      */
     create : function(vSource)
     {
@@ -105,7 +105,7 @@ rwt.qx.Class.define("rwt.util.html.ImagePreloaderManager",
         return this._objects[vSource];
       }
 
-      return new rwt.util.html.ImagePreloader(vSource);
+      return new rwt.html.ImagePreloader(vSource);
     }
   },
 

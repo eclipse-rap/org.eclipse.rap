@@ -136,7 +136,7 @@ rwt.qx.Class.define( "rwt.theme.ThemeValues", {
       }
       if( changed ) {
         // TODO: Border radii are ingnored during the merge.
-        result = new rwt.util.html.Border( borderWidths, borderStyles, borderColors );
+        result = new rwt.html.Border( borderWidths, borderStyles, borderColors );
       }
       return result;
     }

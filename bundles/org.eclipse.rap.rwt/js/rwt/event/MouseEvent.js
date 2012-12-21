@@ -224,7 +224,7 @@ rwt.qx.Class.define("rwt.event.MouseEvent",
     getPageX : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function() {
-        return this.getDomEvent().clientX + rwt.util.html.Viewport.getScrollLeft(window);
+        return this.getDomEvent().clientX + rwt.html.Viewport.getScrollLeft(window);
       },
 
       "default" : function() {
@@ -242,7 +242,7 @@ rwt.qx.Class.define("rwt.event.MouseEvent",
     getPageY : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function() {
-        return this.getDomEvent().clientY + rwt.util.html.Viewport.getScrollTop(window);
+        return this.getDomEvent().clientY + rwt.html.Viewport.getScrollTop(window);
       },
 
       "default" : function() {

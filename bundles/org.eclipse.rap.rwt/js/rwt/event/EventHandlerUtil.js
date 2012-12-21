@@ -15,7 +15,7 @@ rwt.qx.Class.define( "rwt.event.EventHandlerUtil", {
   type : "static",
 
   statics : {
-    // TODO [tb] : integrate rwt.util.html.EventRegistration
+    // TODO [tb] : integrate rwt.html.EventRegistration
     _lastUpDownType : {},
     _lastKeyCode : null,
 
@@ -46,7 +46,7 @@ rwt.qx.Class.define( "rwt.event.EventHandlerUtil", {
             event.preventDefault();
           }
         };
-        rwt.util.html.EventRegistration.addEventListener( docElement,
+        rwt.html.EventRegistration.addEventListener( docElement,
                                                     "mousedown",
                                                     this._ffMouseFixListener );
       },
@@ -72,7 +72,7 @@ rwt.qx.Class.define( "rwt.event.EventHandlerUtil", {
       "webkit" : function( vDomEvent ) {
         var vNode = vDomEvent.target || vDomEvent.srcElement;
         // Safari takes text nodes as targets for events
-        if( vNode && ( vNode.nodeType == rwt.util.html.Node.TEXT ) ) {
+        if( vNode && ( vNode.nodeType == rwt.html.Node.TEXT ) ) {
           vNode = vNode.parentNode;
         }
         return vNode;
@@ -103,7 +103,7 @@ rwt.qx.Class.define( "rwt.event.EventHandlerUtil", {
 
 
     blockUserDomEvents : function( element, value ) {
-      var eventUtil = rwt.util.html.EventRegistration;
+      var eventUtil = rwt.html.EventRegistration;
       if( value ) {
         for( var i = 0; i < this._userEventTypes.length; i++ ) {
           eventUtil.addEventListener( element, this._userEventTypes[ i ], this._domEventBlocker );

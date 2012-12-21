@@ -140,16 +140,16 @@ rwt.qx.Class.define("rwt.widgets.util.FocusHandler",
         return t1 - t2;
       }
 
-      var y1 = rwt.util.html.Location.getTop(c1.getElement());
-      var y2 = rwt.util.html.Location.getTop(c2.getElement());
+      var y1 = rwt.html.Location.getTop(c1.getElement());
+      var y2 = rwt.html.Location.getTop(c2.getElement());
 
       if (y1 != y2) {
         return y1 - y2;
       }
 
       // Sort-Check #3: Left-Position
-      var x1 = rwt.util.html.Location.getLeft(c1.getElement());
-      var x2 = rwt.util.html.Location.getLeft(c2.getElement());
+      var x1 = rwt.html.Location.getLeft(c1.getElement());
+      var x2 = rwt.html.Location.getLeft(c2.getElement());
 
       if (x1 != x2) {
         return x1 - x2;

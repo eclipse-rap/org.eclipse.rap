@@ -48,7 +48,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
     this._frame = new rwt.widgets.base.Parent();
     this._frame.setAppearance( "ctabfolder-frame" );
     this.add( this._frame );
-    this._frameBorder = new rwt.util.html.Border( 2, "solid", "black" );
+    this._frameBorder = new rwt.html.Border( 2, "solid", "black" );
 
     // Create horizontal line that separates the button bar from the rest of
     // the client area
@@ -181,7 +181,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
       if( color != null && !this.hasState( "rwt_FLAT" ) ) {
         this._frame.setBorder( null );
         this._frameBorder.dispose();
-        this._frameBorder = new rwt.util.html.Border( 2, "solid", color );
+        this._frameBorder = new rwt.html.Border( 2, "solid", color );
         this._frame.setBorder( this._frameBorder );
       } else {
         this._frame.resetBorder();

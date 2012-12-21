@@ -125,7 +125,7 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       style.width = "100%";
       style.height = "100%";
       style.backgroundColor = "#808080";
-      rwt.util.html.Style.setOpacity( element, 0.2 );
+      rwt.html.Style.setOpacity( element, 0.2 );
       style.zIndex = 100000000;
       document.body.appendChild( element );
       return element;
@@ -192,7 +192,7 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       doc.setSelectable( true );
       if( rwt.client.Client.isGecko() ) {
         var EventHandlerUtil = rwt.event.EventHandlerUtil;
-        rwt.util.html.EventRegistration.removeEventListener( document.documentElement,
+        rwt.html.EventRegistration.removeEventListener( document.documentElement,
                                                        "mousedown",
                                                        EventHandlerUtil._ffMouseFixListener );
       }

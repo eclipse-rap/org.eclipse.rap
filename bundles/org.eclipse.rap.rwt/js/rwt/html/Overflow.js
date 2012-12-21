@@ -14,7 +14,7 @@
 /**
  * Contains methods to control and query the element's overflow properties.
  */
-rwt.qx.Class.define("rwt.util.html.Overflow",
+rwt.qx.Class.define("rwt.html.Overflow",
 {
   /*
   *****************************************************************************
@@ -45,8 +45,8 @@ rwt.qx.Class.define("rwt.util.html.Overflow",
      * @type static
      * @signature function(element, mode)
      * @param element {Element} DOM element to query
-     * @param mode {Number} Choose one of the modes {@link rwt.util.html.Style#COMPUTED_MODE},
-     *   {@link rwt.util.html.Style#CASCADED_MODE}, {@link rwt.util.html.Style#LOCAL_MODE}.
+     * @param mode {Number} Choose one of the modes {@link rwt.html.Style#COMPUTED_MODE},
+     *   {@link rwt.html.Style#CASCADED_MODE}, {@link rwt.html.Style#LOCAL_MODE}.
      *   The computed mode is the default one.
      * @return {String} computed overflow value
      */
@@ -60,7 +60,7 @@ rwt.qx.Class.define("rwt.util.html.Overflow",
       // because of issues in older geckos
       function(element, mode)
       {
-        var overflow = rwt.util.html.Style.get(element, "overflow", mode, false);
+        var overflow = rwt.html.Style.get(element, "overflow", mode, false);
 
         if (overflow === "-moz-scrollbars-none") {
           overflow = "hidden";
@@ -71,7 +71,7 @@ rwt.qx.Class.define("rwt.util.html.Overflow",
 
       // gecko >= 1.8 supports overflowX, too
       function(element, mode) {
-        return rwt.util.html.Style.get(element, "overflowX", mode, false);
+        return rwt.html.Style.get(element, "overflowX", mode, false);
       },
 
       // opera support differs
@@ -79,17 +79,17 @@ rwt.qx.Class.define("rwt.util.html.Overflow",
 
       // older versions of opera have no support for splitted overflow properties.
       function(element, mode) {
-        return rwt.util.html.Style.get(element, "overflow", mode, false);
+        return rwt.html.Style.get(element, "overflow", mode, false);
       } :
 
       // opera >=9.5 supports overflowX, too
       function(element, mode) {
-        return rwt.util.html.Style.get(element, "overflowX", mode, false);
+        return rwt.html.Style.get(element, "overflowX", mode, false);
       },
 
       // use native overflowX property
       "default" : function(element, mode) {
-        return rwt.util.html.Style.get(element, "overflowX", mode, false);
+        return rwt.html.Style.get(element, "overflowX", mode, false);
       }
     }),
 
@@ -102,8 +102,8 @@ rwt.qx.Class.define("rwt.util.html.Overflow",
      * @type static
      * @signature function(element, mode)
      * @param element {Element} DOM element to query
-     * @param mode {Number} Choose one of the modes {@link rwt.util.html.Style#COMPUTED_MODE},
-     *   {@link rwt.util.html.Style#CASCADED_MODE}, {@link rwt.util.html.Style#LOCAL_MODE}.
+     * @param mode {Number} Choose one of the modes {@link rwt.html.Style#COMPUTED_MODE},
+     *   {@link rwt.html.Style#CASCADED_MODE}, {@link rwt.html.Style#LOCAL_MODE}.
      *   The computed mode is the default one.
      * @return {String} computed overflow value
      */
@@ -117,7 +117,7 @@ rwt.qx.Class.define("rwt.util.html.Overflow",
       // because of issues in older geckos
       function(element, mode)
       {
-        var overflow = rwt.util.html.Style.get(element, "overflow", mode, false);
+        var overflow = rwt.html.Style.get(element, "overflow", mode, false);
 
         if (overflow === "-moz-scrollbars-none") {
           overflow = "hidden";
@@ -128,7 +128,7 @@ rwt.qx.Class.define("rwt.util.html.Overflow",
 
       // gecko >= 1.8 supports overflowY, too
       function(element, mode) {
-        return rwt.util.html.Style.get(element, "overflowY", mode, false);
+        return rwt.html.Style.get(element, "overflowY", mode, false);
       },
 
       // opera support differs
@@ -136,17 +136,17 @@ rwt.qx.Class.define("rwt.util.html.Overflow",
 
       // older versions of opera have no support for splitted overflow properties.
       function(element, mode) {
-        return rwt.util.html.Style.get(element, "overflow", mode, false);
+        return rwt.html.Style.get(element, "overflow", mode, false);
       } :
 
       // opera >=9.5 supports overflowY, too
       function(element, mode) {
-        return rwt.util.html.Style.get(element, "overflowY", mode, false);
+        return rwt.html.Style.get(element, "overflowY", mode, false);
       },
 
       // use native overflowY property
       "default" : function(element, mode) {
-        return rwt.util.html.Style.get(element, "overflowY", mode, false);
+        return rwt.html.Style.get(element, "overflowY", mode, false);
       }
     })
 

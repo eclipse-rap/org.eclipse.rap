@@ -693,7 +693,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       var node = this.getCellNode( cell );
       var source = this.getCellContent( cell );
       var opacity = this.getEnabled() ? 1 : 0.3;
-      rwt.util.html.Style.setBackgroundImage( node, source, opacity );
+      rwt.html.Style.setBackgroundImage( node, source, opacity );
     },
 
     _updateAllImages : function() {
@@ -747,7 +747,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       if( font ) {
         font.renderStyle( this.__fontCache );
       } else {
-        rwt.util.html.Font.resetStyle( this.__fontCache );
+        rwt.html.Font.resetStyle( this.__fontCache );
       }
       for( var i = 0; i < this.__cellCount; i++ ) {
         if( this._isTextCell( i ) && this._cellHasContent( i ) ) {
@@ -755,7 +755,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
             if( font ) {
               font.renderStyle( this.getCellNode( i ).style );
             } else {
-              rwt.util.html.Font.resetStyle( this.getCellNode( i ).style );
+              rwt.html.Font.resetStyle( this.getCellNode( i ).style );
             }
           }
           this.__updateComputedCellDimension( i );

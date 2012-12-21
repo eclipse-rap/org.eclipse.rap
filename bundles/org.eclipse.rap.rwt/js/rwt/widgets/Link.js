@@ -139,9 +139,9 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       var style = this._getHyperlinkStyle( false );
       var hyperlinks = this._getHyperlinkElements();
       for( var i = 0; i < hyperlinks.length; i++ ) {
-        rwt.util.html.Style.setStyleProperty( hyperlinks[ i ], "color", style.textColor );
-        rwt.util.html.Style.setTextShadow( hyperlinks[ i ], style.textShadow );
-        rwt.util.html.Style.setStyleProperty( hyperlinks[ i ], "cursor", style.cursor );
+        rwt.html.Style.setStyleProperty( hyperlinks[ i ], "color", style.textColor );
+        rwt.html.Style.setTextShadow( hyperlinks[ i ], style.textShadow );
+        rwt.html.Style.setStyleProperty( hyperlinks[ i ], "cursor", style.cursor );
       }
     },
 
@@ -162,16 +162,16 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       var hyperlinks = this._getHyperlinkElements();
       if( hyperlinks.length > 0 && !this._hyperlinksHaveListeners ) {
         for( var i = 0; i < hyperlinks.length; i++ ) {
-          rwt.util.html.EventRegistration.addEventListener( hyperlinks[ i ],
+          rwt.html.EventRegistration.addEventListener( hyperlinks[ i ],
                                                       "mousedown",
                                                       this.__onMouseDown );
-          rwt.util.html.EventRegistration.addEventListener( hyperlinks[ i ],
+          rwt.html.EventRegistration.addEventListener( hyperlinks[ i ],
                                                       "mouseover",
                                                       this.__onMouseOver );
-          rwt.util.html.EventRegistration.addEventListener( hyperlinks[ i ],
+          rwt.html.EventRegistration.addEventListener( hyperlinks[ i ],
                                                       "mouseout",
                                                       this.__onMouseOut );
-          rwt.util.html.EventRegistration.addEventListener( hyperlinks[ i ],
+          rwt.html.EventRegistration.addEventListener( hyperlinks[ i ],
                                                       "keydown",
                                                       this.__onKeyDown );
         }
@@ -183,16 +183,16 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       var hyperlinks = this._getHyperlinkElements();
       if( hyperlinks.length > 0 && this._hyperlinksHaveListeners ) {
         for( var i = 0; i < hyperlinks.length; i++ ) {
-          rwt.util.html.EventRegistration.removeEventListener( hyperlinks[ i ],
+          rwt.html.EventRegistration.removeEventListener( hyperlinks[ i ],
                                                          "mousedown",
                                                          this.__onMouseDown );
-          rwt.util.html.EventRegistration.removeEventListener( hyperlinks[ i ],
+          rwt.html.EventRegistration.removeEventListener( hyperlinks[ i ],
                                                          "mouseover",
                                                          this.__onMouseOver );
-          rwt.util.html.EventRegistration.removeEventListener( hyperlinks[ i ],
+          rwt.html.EventRegistration.removeEventListener( hyperlinks[ i ],
                                                          "mouseout",
                                                          this.__onMouseOut );
-          rwt.util.html.EventRegistration.removeEventListener( hyperlinks[ i ],
+          rwt.html.EventRegistration.removeEventListener( hyperlinks[ i ],
                                                          "keydown",
                                                          this.__onKeyDown );
         }
@@ -218,13 +218,13 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
     _onMouseOver : function( evt ) {
       var target = this._getEventTarget( evt );
       var style = this._getHyperlinkStyle( true );
-      rwt.util.html.Style.setStyleProperty( target, "textDecoration", style.textDecoration );
+      rwt.html.Style.setStyleProperty( target, "textDecoration", style.textDecoration );
     },
 
     _onMouseOut : function( evt ) {
       var target = this._getEventTarget( evt );
       var style = this._getHyperlinkStyle( false );
-      rwt.util.html.Style.setStyleProperty( target, "textDecoration", style.textDecoration );
+      rwt.html.Style.setStyleProperty( target, "textDecoration", style.textDecoration );
     },
 
     _isLeftMouseButtonPressed : function( evt ) {

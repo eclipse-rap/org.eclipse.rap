@@ -2020,7 +2020,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testInheritFont : function() {
-      tree.setFont( new rwt.util.html.Font( 12, [ "monospace" ] ) );
+      tree.setFont( new rwt.html.Font( 12, [ "monospace" ] ) );
       var item = this._createItem( tree );
       item.setTexts( [ "Test1" ] );
       row.renderItem( item, tree._config, false, null );

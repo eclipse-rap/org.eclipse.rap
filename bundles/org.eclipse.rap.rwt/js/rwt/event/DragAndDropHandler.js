@@ -244,7 +244,7 @@ rwt.qx.Class.define("rwt.event.DragAndDropHandler",
         // a valid event target. The target is always the element
         // which was the one with the mousedown event before.
         if (vCurrent == this.__dragCache.sourceWidget) {
-          vCurrent = rwt.event.EventHandlerUtil.getTargetObject(rwt.util.html.ElementFromPoint.getElementFromPoint(e.getPageX(), e.getPageY()));
+          vCurrent = rwt.event.EventHandlerUtil.getTargetObject(rwt.html.ElementFromPoint.getElementFromPoint(e.getPageX(), e.getPageY()));
         } else {
           vCurrent = rwt.event.EventHandlerUtil.getTargetObject(null, vCurrent);
         }

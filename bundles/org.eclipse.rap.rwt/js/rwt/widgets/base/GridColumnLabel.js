@@ -271,7 +271,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
      * column */
     _isResizeLocation : function( pageX ) {
       var result = false;
-      var columnRight = rwt.util.html.Location.getLeft( this.getElement() ) + this.getWidth();
+      var columnRight = rwt.html.Location.getLeft( this.getElement() ) + this.getWidth();
       if( pageX >= columnRight - 5 && pageX <= columnRight ) {
         result = true;
       }

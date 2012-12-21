@@ -59,7 +59,7 @@ var appearances = {
       borderWidths[ 2 ] = borderBottom.getWidthBottom();
       borderStyles[ 2 ] = borderBottom.getStyleBottom();
       borderColors[ 2 ] = borderBottom.getColorBottom();
-      result.border = new rwt.util.html.Border( borderWidths, borderStyles, borderColors );
+      result.border = new rwt.html.Border( borderWidths, borderStyles, borderColors );
       result.textShadow = tv.getCssShadow( "TableColumn", "text-shadow" );
       return result;
     }
@@ -118,7 +118,7 @@ var appearances = {
       var gridColor = tv.getCssColor( "Table-GridLine", "color" );
       gridColor = gridColor == "undefined" ? "transparent" : gridColor;
       var result = {};
-      result.border = new rwt.util.html.Border( [ 0, 0, 0, 1 ], "solid", gridColor );
+      result.border = new rwt.html.Border( [ 0, 0, 0, 1 ], "solid", gridColor );
       return result;
     }
   }

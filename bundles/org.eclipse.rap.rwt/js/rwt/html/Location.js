@@ -37,7 +37,7 @@
  * * Opera 9.2
  * * Safari 3.0 beta
  */
-rwt.qx.Class.define("rwt.util.html.Location",
+rwt.qx.Class.define("rwt.html.Location",
 {
   statics :
   {
@@ -50,7 +50,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
      * @return {String} Value of given style property
      */
     __style : function(elem, style) {
-      return rwt.util.html.Style.get(elem, style, rwt.util.html.Style.COMPUTED_MODE, false);
+      return rwt.html.Style.get(elem, style, rwt.html.Style.COMPUTED_MODE, false);
     },
 
 
@@ -63,7 +63,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
      * @return {Integer} Value of given style property
      */
     __num : function(elem, style) {
-      return parseInt(rwt.util.html.Style.get(elem, style, rwt.util.html.Style.COMPUTED_MODE, false), 10) || 0;
+      return parseInt(rwt.html.Style.get(elem, style, rwt.html.Style.COMPUTED_MODE, false), 10) || 0;
     },
 
 
@@ -85,20 +85,20 @@ rwt.qx.Class.define("rwt.util.html.Location",
       if (elem.getBoundingClientRect)
       {
         // Find window
-        var win = rwt.util.html.Node.getWindow(elem);
+        var win = rwt.html.Node.getWindow(elem);
 
         // Reduce by viewport scrolling. getBoundingClientRect returns the
         // location of the element in relation to the viewport which includes
         // its scrolling, except in mobile webkit
         if( !rwt.client.Client.isMobileSafari() ) {
-          left -= rwt.util.html.Viewport.getScrollLeft(win);
-          top -= rwt.util.html.Viewport.getScrollTop(win);
+          left -= rwt.html.Viewport.getScrollLeft(win);
+          top -= rwt.html.Viewport.getScrollTop(win);
         }
       }
       else
       {
         // Find body element
-        var body = rwt.util.html.Node.getDocument(elem).body;
+        var body = rwt.html.Node.getDocument(elem).body;
 
         // Only the parents are influencing the scroll position
         elem = elem.parentNode;
@@ -135,7 +135,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
       "mshtml" : function(elem)
       {
         // Find body element
-        var doc = rwt.util.html.Node.getDocument(elem);
+        var doc = rwt.html.Node.getDocument(elem);
         var body = doc.body;
 
         // Start with the offset
@@ -162,7 +162,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
       "webkit" : function(elem)
       {
         // Find body element
-        var doc = rwt.util.html.Node.getDocument(elem);
+        var doc = rwt.html.Node.getDocument(elem);
         var body = doc.body;
 
         // Start with the offset
@@ -189,7 +189,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
       "gecko" : function(elem)
       {
         // Find body element
-        var body = rwt.util.html.Node.getDocument(elem).body;
+        var body = rwt.html.Node.getDocument(elem).body;
 
         // Start with the offset
         var left = body.offsetLeft;
@@ -240,7 +240,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
       "default" : function(elem)
       {
         // Find body element
-        var body = rwt.util.html.Node.getDocument(elem).body;
+        var body = rwt.html.Node.getDocument(elem).body;
 
         // Start with the offset
         var left = body.offsetLeft;
@@ -277,7 +277,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
     {
       "mshtml|newmshtml|webkit" : function(elem)
       {
-        var doc = rwt.util.html.Node.getDocument(elem);
+        var doc = rwt.html.Node.getDocument(elem);
 
         // Use faster getBoundingClientRect() if available
         // Note: This is not yet supported by Webkit.
@@ -343,7 +343,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
           var top = 0;
 
           // Stop at the body
-          var body = rwt.util.html.Node.getDocument(elem).body;
+          var body = rwt.html.Node.getDocument(elem).body;
           var box = rwt.widgets.base.ClientDocument.BOXSIZING;
 
           if( box !== "border-box" ) {
@@ -390,7 +390,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
         var top = 0;
 
         // Stop at the body
-        var body = rwt.util.html.Node.getDocument(elem).body;
+        var body = rwt.html.Node.getDocument(elem).body;
 
         // Add all offsets of parent hierarchy, do not include
         // body element.
@@ -458,12 +458,12 @@ rwt.qx.Class.define("rwt.util.html.Location",
         // which may be higher than the outer width/height when the element has scrollbars.
         if (mode == "padding" || mode == "scroll")
         {
-          var overX = rwt.util.html.Overflow.getX(elem);
+          var overX = rwt.html.Overflow.getX(elem);
           if (overX == "scroll" || overX == "auto") {
             right += elem.scrollWidth - elem.offsetWidth + this.__num(elem, "borderLeftWidth") + this.__num(elem, "borderRightWidth");
           }
 
-          var overY = rwt.util.html.Overflow.getY(elem);
+          var overY = rwt.html.Overflow.getY(elem);
           if (overY == "scroll" || overY == "auto") {
             bottom += elem.scrollHeight - elem.offsetHeight + this.__num(elem, "borderTopWidth") + this.__num(elem, "borderBottomWidth");
           }
@@ -507,7 +507,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
     /**
      * Computes the location of the given element in context of
      * the document dimensions. For supported modes please
-     * have a look at the {@link rwt.util.html.Location#get} method.
+     * have a look at the {@link rwt.html.Location#get} method.
      *
      * @type static
      * @param elem {Element} DOM element to query
@@ -523,7 +523,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
     /**
      * Computes the location of the given element in context of
      * the document dimensions.For supported modes please
-     * have a look at the {@link rwt.util.html.Location#get} method.
+     * have a look at the {@link rwt.html.Location#get} method.
      *
      * @type static
      * @param elem {Element} DOM element to query
@@ -539,7 +539,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
     /**
      * Computes the location of the given element in context of
      * the document dimenions.For supported modes please
-     * have a look at the {@link rwt.util.html.Location#get} method.
+     * have a look at the {@link rwt.html.Location#get} method.
      *
      * @type static
      * @param elem {Element} DOM element to query
@@ -555,7 +555,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
     /**
      * Computes the location of the given element in context of
      * the document dimenions.For supported modes please
-     * have a look at the {@link rwt.util.html.Location#get} method.
+     * have a look at the {@link rwt.html.Location#get} method.
      *
      * @type static
      * @param elem {Element} DOM element to query
@@ -570,7 +570,7 @@ rwt.qx.Class.define("rwt.util.html.Location",
 
     /**
      * Returns the distance between two DOM elements. For supported modes please
-     * have a look at the {@link rwt.util.html.Location#get} method.
+     * have a look at the {@link rwt.html.Location#get} method.
      *
      * @type static
      * @param elem1 {Element} First element

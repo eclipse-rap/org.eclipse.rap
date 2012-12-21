@@ -163,8 +163,8 @@ rwt.qx.Mixin.define("rwt.widgets.util.MResizable",
         var pl = pa.getElement();
 
         // compute locations
-        var paLoc = rwt.util.html.Location.get(pl, "scroll");
-        var elLoc = rwt.util.html.Location.get(el);
+        var paLoc = rwt.html.Location.get(pl, "scroll");
+        var elLoc = rwt.html.Location.get(el);
 
         // handle frame and translucently
         switch(this.getResizeMethod())
@@ -400,7 +400,7 @@ rwt.qx.Mixin.define("rwt.widgets.util.MResizable",
 
         this._resizeNorth = this._resizeSouth = this._resizeWest = this._resizeEast = false;
 
-        var elLoc = rwt.util.html.Location.get(el);
+        var elLoc = rwt.html.Location.get(el);
 
         if (this._near(elLoc.top, e.getPageY()))
         {

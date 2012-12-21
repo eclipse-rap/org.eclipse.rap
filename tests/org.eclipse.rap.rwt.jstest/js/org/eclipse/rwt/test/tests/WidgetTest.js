@@ -39,7 +39,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         var widget = this._createWidget();
         widget.setBorder( this._getComplexBorder() );
         TestUtil.flush();
-        widget.setBorder( new rwt.util.html.Border( [ 5, 6, 7, 8 ], "solid", "black" ) );
+        widget.setBorder( new rwt.html.Border( [ 5, 6, 7, 8 ], "solid", "black" ) );
         TestUtil.flush();
 
         var target = widget._getTargetNode();
@@ -60,7 +60,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         widget.setWidth( 6 );
         widget.setBorder( this._getComplexBorder() );
         TestUtil.flush();
-        widget.setBorder( new rwt.util.html.Border( [ 5, 6, 7, 8 ], "solid", "black" ) );
+        widget.setBorder( new rwt.html.Border( [ 5, 6, 7, 8 ], "solid", "black" ) );
         TestUtil.flush();
 
         var target = widget._getTargetNode();
@@ -226,7 +226,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
       child.addEventListener( "insertDom", logger );
       child.setParent( parent );
-      parent.setBorder( new rwt.util.html.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] ) );
+      parent.setBorder( new rwt.html.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] ) );
       TestUtil.flush();
       assertEquals( 1, log.length );
       assertIdentical( parent._getTargetNode(), log[ 0 ] );
@@ -696,7 +696,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     _getComplexBorder : function() {
-      return new rwt.util.html.Border( 2, "complex", "green", "red" );
+      return new rwt.html.Border( 2, "complex", "green", "red" );
     },
 
     _getCssGradient : function( element ) {

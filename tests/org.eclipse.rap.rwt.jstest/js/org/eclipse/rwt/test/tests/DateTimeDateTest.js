@@ -186,7 +186,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     testDropDownCalendarNotEnoughSpace : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dateTime = this._createDefaultDateTime( true );
-      var browserHeight = rwt.util.html.Window.getInnerHeight( window );
+      var browserHeight = rwt.html.Window.getInnerHeight( window );
       dateTime.setTop( browserHeight - 40 );
       TestUtil.flush();
       TestUtil.click( dateTime._dropDownButton );

@@ -534,7 +534,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
         if( this.__font != null ) {
           this.__font.renderElement( this._inputElement );
         } else {
-          rwt.util.html.Font.resetElement( this._inputElement );
+          rwt.html.Font.resetElement( this._inputElement );
         }
       }
     },
@@ -555,7 +555,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     },
 
     _renderTextShadow : function() {
-      rwt.util.html.Style.setTextShadow( this._inputElement, this.__textShadow );
+      rwt.html.Style.setTextShadow( this._inputElement, this.__textShadow );
     },
 
     _visualizeFocus : function() {

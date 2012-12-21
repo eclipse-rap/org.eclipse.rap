@@ -12,7 +12,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-rwt.qx.Class.define( "rwt.util.html.Border", {
+rwt.qx.Class.define( "rwt.html.Border", {
 
   extend : rwt.qx.Object,
 
@@ -105,14 +105,14 @@ rwt.qx.Class.define( "rwt.util.html.Border", {
 
     _resetComplexBorder : rwt.util.Variant.select("qx.client", {
       "gecko" : function( widget ) {
-        var statics = rwt.util.html.Border;
+        var statics = rwt.html.Border;
         var style = widget._style;
         for( var i = 0; i < 4; i++ ) {
           style[ statics._EDGEMOZCOLORS[ i ] ] = "";
         }
       },
       "default" : function( widget ) {
-        var statics = rwt.util.html.Border;
+        var statics = rwt.html.Border;
         var inner = widget._innerStyle;
         if( inner ) {
           for( var i = 0; i < 4; i++ ) {
@@ -280,13 +280,13 @@ rwt.qx.Class.define( "rwt.util.html.Border", {
     },
 
     _renderSimpleBorder : function( widget ) {
-      rwt.util.html.Border._resetComplexBorder( widget );
-      rwt.util.html.Border._resetRadii( widget );
+      rwt.html.Border._resetComplexBorder( widget );
+      rwt.html.Border._resetRadii( widget );
       this._renderSimpleBorderStyle( widget._style );
     },
 
     _renderSimpleBorderStyle : function( style ) {
-      var statics = rwt.util.html.Border;
+      var statics = rwt.html.Border;
       for( var i = 0; i < 4; i++ ) {
         style[ statics._EDGEWIDTH[ i ] ] = ( this._widths[ i ] || 0 ) + "px";
         style[ statics._EDGESTYLE[ i ] ] = this._styles[ i ] || "none";
@@ -296,7 +296,7 @@ rwt.qx.Class.define( "rwt.util.html.Border", {
 
     _renderComplexBorder : rwt.util.Variant.select( "qx.client", {
       "gecko" : function( widget ) {
-        var statics = rwt.util.html.Border;
+        var statics = rwt.html.Border;
         statics._resetRadii( widget );
         var style = widget._style;
         for( var i = 0; i < 4; i++ ) {
@@ -312,7 +312,7 @@ rwt.qx.Class.define( "rwt.util.html.Border", {
         }
       },
       "default" : function( widget ) {
-        var statics = rwt.util.html.Border;
+        var statics = rwt.html.Border;
         statics._resetRadii( widget );
         var outer = widget._style;
         var inner = widget._innerStyle;
@@ -343,7 +343,7 @@ rwt.qx.Class.define( "rwt.util.html.Border", {
     } ),
 
     _renderRoundedBorder : function( widget ) {
-      var statics = rwt.util.html.Border;
+      var statics = rwt.html.Border;
       this._renderSimpleBorder( widget );
       var style = widget._style;
       for( var i = 0; i < 4; i++ ) {

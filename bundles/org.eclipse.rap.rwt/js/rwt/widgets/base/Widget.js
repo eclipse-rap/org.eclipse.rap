@@ -577,7 +577,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     disableScrolling : function( widget ) {
       var el = widget._getTargetNode();
       if( el ) {
-        rwt.util.html.Scroll.disableScrolling(el);
+        rwt.html.Scroll.disableScrolling(el);
       } else {
         widget.addEventListener( "appear", this._blockScrollingOnAppear, widget );
       }
@@ -586,7 +586,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     enableScrolling : function( widget ) {
       var el = widget._getTargetNode();
       if( el ) {
-        rwt.util.html.Scroll.enableScrolling( el );
+        rwt.html.Scroll.enableScrolling( el );
       } else {
         widget.removeEventListener( "appear", this._blockScrollingOnAppear, widget );
       }
@@ -2919,7 +2919,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
           var width = map.border.getWidthTop();
           var color = map.border.getColorTop();
           var radii = [ 0, 0, 0, 0 ];
-          map.border = new rwt.util.html.Border( width, "rounded", color, radii );
+          map.border = new rwt.html.Border( width, "rounded", color, radii );
         }
       },
       "default" : function( map ) {
@@ -3418,7 +3418,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
      * inclusive, where 1 means totally opaque and 0 invisible.
      */
     _applyOpacity : function( value, old ) {
-      rwt.util.html.Style.setOpacity( this, value );
+      rwt.html.Style.setOpacity( this, value );
     },
 
     /////////////////
@@ -3524,7 +3524,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     // BACKGROUND IMAGE SUPPORT
 
     _applyBackgroundImage : function(value, old) {
-      var imageMgr = rwt.util.html.ImageManager.getInstance();
+      var imageMgr = rwt.html.ImageManager.getInstance();
       if (old) {
         imageMgr.hide(old);
       }
@@ -3712,7 +3712,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     },
 
     _applyBackgroundGradient : function( value, oldValue ) {
-      rwt.util.html.Style.setBackgroundGradient( this, value );
+      rwt.html.Style.setBackgroundGradient( this, value );
       if( value === null ) {
         this.setStyleProperty( "backgroundImage", this.getStyleProperty( "backgroundImage" ) );
         this.setStyleProperty( "backgroundColor", this.getStyleProperty( "backgroundColor" ) );
@@ -3720,11 +3720,11 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     },
 
     _applyShadow : function( value, oldValue ) {
-      rwt.util.html.Style.setBoxShadow( this, value );
+      rwt.html.Style.setBoxShadow( this, value );
     },
 
     _applyTextShadow : function( value, oldValue ) {
-      rwt.util.html.Style.setTextShadow( this, value );
+      rwt.html.Style.setTextShadow( this, value );
     },
 
     _styleBackgroundColor : function( value ) {
@@ -3824,7 +3824,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       if( value ) {
         value.renderWidget( this );
       } else {
-        rwt.util.html.Border.resetWidget( this );
+        rwt.html.Border.resetWidget( this );
       }
       // RAP: Fix for Bug 301709, 380878
       this._outerFrame = this._computeOuterFrame();
@@ -3979,12 +3979,12 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     getOffsetLeft : function() {
       this._visualPropertyCheck();
-      return rwt.util.html.Offset.getLeft(this.getElement());
+      return rwt.html.Offset.getLeft(this.getElement());
     },
 
     getOffsetTop : function() {
       this._visualPropertyCheck();
-      return rwt.util.html.Offset.getTop(this.getElement());
+      return rwt.html.Offset.getTop(this.getElement());
     },
 
     getScrollLeft : function() {
@@ -4048,14 +4048,14 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       if (!this._isCreated || !this._isDisplayable) {
         return false;
       }
-      return rwt.util.html.ScrollIntoView.scrollX(this.getElement(), alignLeft);
+      return rwt.html.ScrollIntoView.scrollX(this.getElement(), alignLeft);
     },
 
     scrollIntoViewY : function(alignTop) {
       if (!this._isCreated || !this._isDisplayable) {
         return false;
       }
-      return rwt.util.html.ScrollIntoView.scrollY(this.getElement(), alignTop);
+      return rwt.html.ScrollIntoView.scrollY(this.getElement(), alignTop);
     },
 
     ////////////////////////

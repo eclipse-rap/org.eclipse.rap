@@ -384,7 +384,7 @@ rwt.qx.Class.define("rwt.widgets.base.ClientDocument",
      * @return {var} TODOC
      */
     createStyleElement : function(vCssText) {
-      return rwt.util.html.StyleSheet.createElement(vCssText);
+      return rwt.html.StyleSheet.createElement(vCssText);
     },
 
 
@@ -398,7 +398,7 @@ rwt.qx.Class.define("rwt.widgets.base.ClientDocument",
      * @return {var} TODOC
      */
     addCssRule : function(vSheet, vSelector, vStyle) {
-      return rwt.util.html.StyleSheet.addRule(vSheet, vSelector, vStyle);
+      return rwt.html.StyleSheet.addRule(vSheet, vSelector, vStyle);
     },
 
 
@@ -411,7 +411,7 @@ rwt.qx.Class.define("rwt.widgets.base.ClientDocument",
      * @return {var} TODOC
      */
     removeCssRule : function(vSheet, vSelector) {
-      return rwt.util.html.StyleSheet.removeRule(vSheet, vSelector);
+      return rwt.html.StyleSheet.removeRule(vSheet, vSelector);
     },
 
 
@@ -423,7 +423,7 @@ rwt.qx.Class.define("rwt.widgets.base.ClientDocument",
      * @return {var} TODOC
      */
     removeAllCssRules : function(vSheet) {
-      return rwt.util.html.StyleSheet.removeAllRules(vSheet);
+      return rwt.html.StyleSheet.removeAllRules(vSheet);
     },
 
 
@@ -584,14 +584,14 @@ rwt.qx.Class.define("rwt.widgets.base.ClientDocument",
     var borderBoxCss = boxSizingAttr.join(":border-box;") + ":border-box;";
     var contentBoxCss = boxSizingAttr.join(":content-box;") + ":content-box;";
 
-    rwt.util.html.StyleSheet.createElement(
+    rwt.html.StyleSheet.createElement(
       "html,body { margin:0;border:0;padding:0; } " +
       "html { border:0 none; } " +
       "*{" + borderBoxCss +"} " +
       "img{" + contentBoxCss + "}"
     );
 
-    rwt.util.html.StyleSheet.createElement("html,body{width:100%;height:100%;overflow:hidden;}");
+    rwt.html.StyleSheet.createElement("html,body{width:100%;height:100%;overflow:hidden;}");
     rwt.widgets.base.ClientDocument.BOXSIZING = "border-box";
   },
 

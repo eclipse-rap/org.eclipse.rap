@@ -394,7 +394,7 @@ rwt.qx.Class.define( "rwt.graphics.VML", {
       if( filterStr.length > 0 ) {
         shape.node.style.filter = filterStr.join( "" );
       } else {
-        rwt.util.html.Style.removeCssFilter( shape.node );
+        rwt.html.Style.removeCssFilter( shape.node );
       }
     },
 

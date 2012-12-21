@@ -15,7 +15,7 @@
  * A wrapper for CSS font styles. Fond objects can be aplpied to widgets
  * or DOM elements.
  */
-rwt.qx.Class.define( "rwt.util.html.Font", {
+rwt.qx.Class.define( "rwt.html.Font", {
 
   extend : rwt.qx.Object,
 
@@ -39,10 +39,10 @@ rwt.qx.Class.define( "rwt.util.html.Font", {
      *
      * @type static
      * @param str {String} the CSS string
-     * @return {rwt.util.html.Font} the created instance
+     * @return {rwt.html.Font} the created instance
      */
     fromString : function( str ) {
-      var font = new rwt.util.html.Font();
+      var font = new rwt.html.Font();
       var parts = str.split( /\s+/ );
       var name = [];
       for( var i = 0; i < parts.length; i++ ) {
@@ -78,10 +78,10 @@ rwt.qx.Class.define( "rwt.util.html.Font", {
      *
      * @type static
      * @param config {Map} map of property values
-     * @return {rwt.util.html.Font} the created instance
+     * @return {rwt.html.Font} the created instance
      */
     fromConfig : function( config ) {
-      var font = new rwt.util.html.Font();
+      var font = new rwt.html.Font();
       font.set( config );
       return font;
     },

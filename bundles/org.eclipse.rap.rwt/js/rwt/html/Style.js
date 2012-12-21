@@ -33,7 +33,7 @@
  * Automatically normalizes cross-browser differences. Optimized for
  * performance.
  */
-rwt.qx.Class.define( "rwt.util.html.Style", {
+rwt.qx.Class.define( "rwt.html.Style", {
 
   statics : {
 
@@ -206,7 +206,7 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
             // when working with frames and access an element of another frame.
             // Then we must use the <code>getComputedStyle</code> of the document
             // where the element is defined.
-            var doc = rwt.util.html.Node.getDocument(element);
+            var doc = rwt.html.Node.getDocument(element);
             var computed = doc.defaultView.getComputedStyle(element, null);
 
             // All relevant browsers expose the configured style properties to
@@ -269,7 +269,7 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
      * @return {Integer} the (CSS) style property converted to an integer value
      */
     getStyleSize : function(vElement, propertyName) {
-      return parseInt( rwt.util.html.Style.getStyleProperty( vElement, propertyName ), 10 ) || 0;
+      return parseInt( rwt.html.Style.getStyleProperty( vElement, propertyName ), 10 ) || 0;
     },
 
 
@@ -281,7 +281,7 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
      * @return {Integer} the element's left margin size
      */
     getMarginLeft : function(vElement) {
-      return rwt.util.html.Style.getStyleSize(vElement, "marginLeft");
+      return rwt.html.Style.getStyleSize(vElement, "marginLeft");
     },
 
 
@@ -293,7 +293,7 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
      * @return {Integer} the element's top margin size
      */
     getMarginTop : function(vElement) {
-      return rwt.util.html.Style.getStyleSize(vElement, "marginTop");
+      return rwt.html.Style.getStyleSize(vElement, "marginTop");
     },
 
 
@@ -305,7 +305,7 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
      * @return {Integer} the element's right margin size
      */
     getMarginRight : function(vElement) {
-      return rwt.util.html.Style.getStyleSize(vElement, "marginRight");
+      return rwt.html.Style.getStyleSize(vElement, "marginRight");
     },
 
 
@@ -317,7 +317,7 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
      * @return {Integer} the element's bottom margin size
      */
     getMarginBottom : function(vElement) {
-      return rwt.util.html.Style.getStyleSize(vElement, "marginBottom");
+      return rwt.html.Style.getStyleSize(vElement, "marginBottom");
     },
 
 
@@ -329,7 +329,7 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
      * @return {Integer} the element's left padding size
      */
     getPaddingLeft : function(vElement) {
-      return rwt.util.html.Style.getStyleSize(vElement, "paddingLeft");
+      return rwt.html.Style.getStyleSize(vElement, "paddingLeft");
     },
 
 
@@ -341,7 +341,7 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
      * @return {Integer} the element's top padding size
      */
     getPaddingTop : function(vElement) {
-      return rwt.util.html.Style.getStyleSize(vElement, "paddingTop");
+      return rwt.html.Style.getStyleSize(vElement, "paddingTop");
     },
 
 
@@ -353,7 +353,7 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
      * @return {Integer} the element's right padding size
      */
     getPaddingRight : function(vElement) {
-      return rwt.util.html.Style.getStyleSize(vElement, "paddingRight");
+      return rwt.html.Style.getStyleSize(vElement, "paddingRight");
     },
 
 
@@ -365,7 +365,7 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
      * @return {Integer} the element's bottom padding size
      */
     getPaddingBottom : function(vElement) {
-      return rwt.util.html.Style.getStyleSize(vElement, "paddingBottom");
+      return rwt.html.Style.getStyleSize(vElement, "paddingBottom");
     },
 
 
@@ -377,7 +377,7 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
      * @return {Integer} the element's left border width
      */
     getBorderLeft : function(vElement) {
-      return rwt.util.html.Style.getStyleProperty(vElement, "borderLeftStyle") == "none" ? 0 : rwt.util.html.Style.getStyleSize(vElement, "borderLeftWidth");
+      return rwt.html.Style.getStyleProperty(vElement, "borderLeftStyle") == "none" ? 0 : rwt.html.Style.getStyleSize(vElement, "borderLeftWidth");
     },
 
 
@@ -389,7 +389,7 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
      * @return {Integer} the element's top border width
      */
     getBorderTop : function(vElement) {
-      return rwt.util.html.Style.getStyleProperty(vElement, "borderTopStyle") == "none" ? 0 : rwt.util.html.Style.getStyleSize(vElement, "borderTopWidth");
+      return rwt.html.Style.getStyleProperty(vElement, "borderTopStyle") == "none" ? 0 : rwt.html.Style.getStyleSize(vElement, "borderTopWidth");
     },
 
 
@@ -401,7 +401,7 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
      * @return {Integer} the element's right border width
      */
     getBorderRight : function(vElement) {
-      return rwt.util.html.Style.getStyleProperty(vElement, "borderRightStyle") == "none" ? 0 : rwt.util.html.Style.getStyleSize(vElement, "borderRightWidth");
+      return rwt.html.Style.getStyleProperty(vElement, "borderRightStyle") == "none" ? 0 : rwt.html.Style.getStyleSize(vElement, "borderRightWidth");
     },
 
 
@@ -413,7 +413,7 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
      * @return {Integer} the element's bottom border width
      */
     getBorderBottom : function(vElement) {
-      return rwt.util.html.Style.getStyleProperty(vElement, "borderBottomStyle") == "none" ? 0 : rwt.util.html.Style.getStyleSize(vElement, "borderBottomWidth");
+      return rwt.html.Style.getStyleProperty(vElement, "borderBottomStyle") == "none" ? 0 : rwt.html.Style.getStyleSize(vElement, "borderBottomWidth");
     },
 
     // TODO [tb] : Without IE6-support the browser-switch and opacity parameter can be removed
@@ -621,7 +621,7 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
     _passEventsThrough : function( target, value ) {
       // TODO [tb] : This is a very limited implementation that allowes
       // to click "through" the elmement, but won't handle hover and cursor.
-      var EventRegistration = rwt.util.html.EventRegistration;
+      var EventRegistration = rwt.html.EventRegistration;
       var types = rwt.event.EventHandler._mouseEventTypes;
       var handler = this._passEventThroughHandler;
       if( value === "none" ) {
@@ -650,11 +650,11 @@ rwt.qx.Class.define( "rwt.util.html.Style", {
           && type !== "mouseout" )
       {
         if( type === "mousedown" ) {
-          rwt.util.html.Style._refireEvent( newTarget, "mouseover", domEvent );
+          rwt.html.Style._refireEvent( newTarget, "mouseover", domEvent );
         }
-        rwt.util.html.Style._refireEvent( newTarget, type, domEvent );
+        rwt.html.Style._refireEvent( newTarget, type, domEvent );
         if( type === "mouseup" ) {
-          rwt.util.html.Style._refireEvent( newTarget, "mouseout", domEvent );
+          rwt.html.Style._refireEvent( newTarget, "mouseout", domEvent );
         }
       }
       domTarget.style.display = "";

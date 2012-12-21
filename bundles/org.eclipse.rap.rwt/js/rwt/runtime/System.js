@@ -25,9 +25,9 @@ rwt.qx.Class.define( "rwt.runtime.System", {
       this._onloadWrapped = rwt.util.Function.bind( this._onload, this );
       this._onbeforeunloadWrapped = rwt.util.Function.bind( this._onbeforeunload, this );
       this._onunloadWrapped = rwt.util.Function.bind( this._onunload, this );
-      rwt.util.html.EventRegistration.addEventListener( window, "load", this._onloadWrapped );
-      rwt.util.html.EventRegistration.addEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
-      rwt.util.html.EventRegistration.addEventListener( window, "unload", this._onunloadWrapped );
+      rwt.html.EventRegistration.addEventListener( window, "load", this._onloadWrapped );
+      rwt.html.EventRegistration.addEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
+      rwt.html.EventRegistration.addEventListener( window, "unload", this._onunloadWrapped );
       this._applyPatches();
       rwt.graphics.GraphicsUtil.init();
       var eventHandler = rwt.event.EventHandler;
@@ -89,8 +89,8 @@ rwt.qx.Class.define( "rwt.runtime.System", {
     },
 
     _preload : function() {
-      var visibleImages = rwt.util.html.ImageManager.getInstance().getVisibleImages();
-      this.__preloader = new rwt.util.html.ImagePreloaderSystem( visibleImages, this._preloaderDone, this );
+      var visibleImages = rwt.html.ImageManager.getInstance().getVisibleImages();
+      this.__preloader = new rwt.html.ImagePreloaderSystem( visibleImages, this._preloaderDone, this );
       this.__preloader.start();
     },
 
@@ -105,8 +105,8 @@ rwt.qx.Class.define( "rwt.runtime.System", {
     },
 
     _postload : function() {
-      var hiddenImages = rwt.util.html.ImageManager.getInstance().getHiddenImages();
-      this.__postloader = new rwt.util.html.ImagePreloaderSystem( hiddenImages, this._postloaderDone, this );
+      var hiddenImages = rwt.html.ImageManager.getInstance().getHiddenImages();
+      this.__postloader = new rwt.html.ImagePreloaderSystem( hiddenImages, this._postloaderDone, this );
       this.__postloader.start();
     },
 
@@ -156,9 +156,9 @@ rwt.qx.Class.define( "rwt.runtime.System", {
   },
 
   destruct : function() {
-    rwt.util.html.EventRegistration.removeEventListener( window, "load", this._onloadWrapped );
-    rwt.util.html.EventRegistration.removeEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
-    rwt.util.html.EventRegistration.removeEventListener( window, "unload", this._onunloadWrapped );
+    rwt.html.EventRegistration.removeEventListener( window, "load", this._onloadWrapped );
+    rwt.html.EventRegistration.removeEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
+    rwt.html.EventRegistration.removeEventListener( window, "unload", this._onunloadWrapped );
   },
 
   defer : function( statics, proto, properties )  {

@@ -181,7 +181,7 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetManager", {
       var id = name + size + bold + italic;
       var font = this._fontPool[ id ];
       if( !font ) {
-        font = new rwt.util.html.Font( size, name );
+        font = new rwt.html.Font( size, name );
         font.setBold( bold );
         font.setItalic( italic );
         this._fontPool[ id ] = font;
@@ -263,7 +263,7 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetManager", {
           && bottomLeftRaduis >= 0 )
       {
         var radii = [ topLeftRadius, topRightRaduis, bottomRightRaduis, bottomLeftRaduis ];
-        var border = new rwt.util.html.Border( width, "rounded", color, radii );
+        var border = new rwt.html.Border( width, "rounded", color, radii );
         widget.setBorder( border );
       } else {
         widget.resetBorder();

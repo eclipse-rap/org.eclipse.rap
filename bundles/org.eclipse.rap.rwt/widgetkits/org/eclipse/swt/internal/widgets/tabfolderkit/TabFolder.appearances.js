@@ -69,9 +69,9 @@ var appearances = {
       if( states.checked ) {
         result.zIndex = 1; // TODO [rst] Doesn't this interfere with our z-order?
         if( states.barTop ) {
-          result.border = new rwt.util.html.Border( [ 3, 1, 0, 1 ], "solid", checkedColorTop );
+          result.border = new rwt.html.Border( [ 3, 1, 0, 1 ], "solid", checkedColorTop );
         } else {
-          result.border = new rwt.util.html.Border( [ 0, 1, 3, 1 ], "solid", checkedColorBottom );
+          result.border = new rwt.html.Border( [ 0, 1, 3, 1 ], "solid", checkedColorBottom );
         }
         result.margin = [ 0, -1, 0, -2 ];
         if( states.firstChild ) {
@@ -82,11 +82,11 @@ var appearances = {
         result.marginRight = 1;
         result.marginLeft = 0;
         if( states.barTop ) {
-          result.border = new rwt.util.html.Border( [ 1, 1, 0, 1 ], "solid", borderColor );
+          result.border = new rwt.html.Border( [ 1, 1, 0, 1 ], "solid", borderColor );
           result.marginTop = 3;
           result.marginBottom = 1;
         } else {
-          result.border = new rwt.util.html.Border( [ 0, 1, 1, 1 ], "solid", borderColor );
+          result.border = new rwt.html.Border( [ 0, 1, 1, 1 ], "solid", borderColor );
           result.marginTop = 1;
           result.marginBottom = 3;
         }

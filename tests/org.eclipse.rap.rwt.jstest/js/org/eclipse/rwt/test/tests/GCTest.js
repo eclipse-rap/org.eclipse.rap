@@ -100,7 +100,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 //      "mshtml" : function() {
 //        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 //        var graphicsUtil = rwt.graphics.GraphicsUtil;
-//        var border = new rwt.util.html.Border( 3, "rounded", "#FF00F0", [ 0, 1, 2, 3 ] );
+//        var border = new rwt.html.Border( 3, "rounded", "#FF00F0", [ 0, 1, 2, 3 ] );
 //        var parent = new rwt.widgets.Composite();
 //        parent.addToDocument();
 //        var canvas = new rwt.widgets.Composite();

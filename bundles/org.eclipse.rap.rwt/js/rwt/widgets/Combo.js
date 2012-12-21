@@ -294,12 +294,12 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     _setListBounds : function() {
       if( this.getElement() ){
-        var elementPos = rwt.util.html.Location.get( this.getElement() );
+        var elementPos = rwt.html.Location.get( this.getElement() );
         var listLeft = elementPos.left;
         var comboTop = elementPos.top;
         var listTop = comboTop + this.getHeight();
-        var browserHeight = rwt.util.html.Window.getInnerHeight( window );
-        var browserWidth = rwt.util.html.Window.getInnerWidth( window );
+        var browserHeight = rwt.html.Window.getInnerHeight( window );
+        var browserWidth = rwt.html.Window.getInnerWidth( window );
         var itemsWidth = this._list.getPreferredWidth();
         var listWidth = Math.min( browserWidth - listLeft, itemsWidth );
         listWidth = Math.max( this.getWidth(), listWidth );

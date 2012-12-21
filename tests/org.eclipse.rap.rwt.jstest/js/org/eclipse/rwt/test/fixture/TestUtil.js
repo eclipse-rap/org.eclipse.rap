@@ -221,8 +221,8 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     var clientX = left;
     var clientY = top;
     if( rwt.client.Client.getEngine() == "mshtml" ) {
-      clientX -= rwt.util.html.Viewport.getScrollLeft( window );
-      clientY -= rwt.util.html.Viewport.getScrollTop( window );
+      clientX -= rwt.html.Viewport.getScrollLeft( window );
+      clientY -= rwt.html.Viewport.getScrollTop( window );
     }
     var which = null;
     switch( button ) {

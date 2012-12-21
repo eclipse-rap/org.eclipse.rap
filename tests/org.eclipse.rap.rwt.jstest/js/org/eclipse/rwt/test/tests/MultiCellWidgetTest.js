@@ -378,12 +378,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
 
     testFont : function() {
       var widget = this.createDefaultWidget();
-      widget.setFont( new rwt.util.html.Font( 10, [ "monospace" ] ) );
+      widget.setFont( new rwt.html.Font( 10, [ "monospace" ] ) );
       this.initWidget( widget, true );
       var style = widget._getTargetNode().lastChild.style;
       assertEquals( '10px', style.fontSize );
       assertTrue( style.fontFamily.search( 'monospace' ) != -1 );
-      widget.setFont( new rwt.util.html.Font( 12, [ "serif" ] ) );
+      widget.setFont( new rwt.html.Font( 12, [ "serif" ] ) );
       assertEquals( '12px', style.fontSize );
       assertTrue( style.fontFamily.search( 'serif' ) != -1 );
       this.disposeWidget( widget );

@@ -266,9 +266,9 @@ var appearances = {
     style : function( states ) {
       var border;
       if( states.header ) {
-        border = new rwt.util.html.Border( [ 0, 1, 1, 0 ], "solid", "gray" );
+        border = new rwt.html.Border( [ 0, 1, 1, 0 ], "solid", "gray" );
       } else {
-        border = new rwt.util.html.Border( [ 0, 1, 0, 0 ], "solid", "gray" );
+        border = new rwt.html.Border( [ 0, 1, 0, 0 ], "solid", "gray" );
       }
       return {
         textAlign : "center",
@@ -281,10 +281,10 @@ var appearances = {
   "calendar-weekday" : {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
-      var border = new rwt.util.html.Border( [ 0, 0, 1, 0 ], "solid", "gray" );
+      var border = new rwt.html.Border( [ 0, 0, 1, 0 ], "solid", "gray" );
       // FIXME: [if] Bigger font size leads to text cutoff
       var font = tv.getCssFont( "DateTime", "font" );
-      var smallFont = rwt.util.html.Font.fromString( font.toCss() );
+      var smallFont = rwt.html.Font.fromString( font.toCss() );
       smallFont.setSize( 11 );
       return {
         font : smallFont,
@@ -310,7 +310,7 @@ var appearances = {
       }
       result.textShadow = tv.getCssShadow( "DateTime-Calendar-Day", "text-shadow" );
       var borderColor = states.disabled ? tv.getCssColor( "*", "color" ) : "red";
-      var border = new rwt.util.html.Border( 1, "solid", borderColor );
+      var border = new rwt.html.Border( 1, "solid", borderColor );
       result.border = states.today ? border : "undefined";
       return result;
     }

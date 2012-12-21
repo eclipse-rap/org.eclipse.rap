@@ -15,13 +15,13 @@
  * This class preloads one image and provides information about this image
  * after it is loaded.
  *
- * This class should not be used directly. Better use {@link rwt.util.html.ImagePreloaderManager}:
+ * This class should not be used directly. Better use {@link rwt.html.ImagePreloaderManager}:
  *
  * <pre class='javascript'>
- * rwt.util.html.ImagePreloaderManager.getInstance().create(imageUrl)
+ * rwt.html.ImagePreloaderManager.getInstance().create(imageUrl)
  * </pre>
  */
-rwt.qx.Class.define("rwt.util.html.ImagePreloader",
+rwt.qx.Class.define("rwt.html.ImagePreloader",
 {
   extend : rwt.qx.Target,
 
@@ -48,9 +48,9 @@ rwt.qx.Class.define("rwt.util.html.ImagePreloader",
    */
   construct : function(imageUrl)
   {
-    if (rwt.util.html.ImagePreloaderManager.getInstance().has(imageUrl))
+    if (rwt.html.ImagePreloaderManager.getInstance().has(imageUrl))
     {
-      return rwt.util.html.ImagePreloaderManager.getInstance().get(imageUrl);
+      return rwt.html.ImagePreloaderManager.getInstance().get(imageUrl);
     }
 
     this.base(arguments);
@@ -70,7 +70,7 @@ rwt.qx.Class.define("rwt.util.html.ImagePreloader",
 
     this._checkPng();
 
-    rwt.util.html.ImagePreloaderManager.getInstance().add(this);
+    rwt.html.ImagePreloaderManager.getInstance().add(this);
   },
 
 

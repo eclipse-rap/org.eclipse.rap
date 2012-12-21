@@ -16,7 +16,7 @@
  * which are needed later. Once all images are pre loaded a "complete"
  * event is fired.
  */
-rwt.qx.Class.define("rwt.util.html.ImagePreloaderSystem",
+rwt.qx.Class.define("rwt.html.ImagePreloaderSystem",
 {
   extend : rwt.qx.Target,
 
@@ -111,7 +111,7 @@ rwt.qx.Class.define("rwt.util.html.ImagePreloaderSystem",
 
       for (var vSource in this._list)
       {
-        var vPreloader = rwt.util.html.ImagePreloaderManager.getInstance().create( vSource );
+        var vPreloader = rwt.html.ImagePreloaderManager.getInstance().create( vSource );
 
         if (vPreloader.isErroneous() || vPreloader.isLoaded()) {
           delete this._list[vSource];

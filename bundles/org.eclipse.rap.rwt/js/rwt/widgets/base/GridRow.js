@@ -16,7 +16,7 @@
 
 (function() {
 
-var HtmlUtil = rwt.util.html.Style;
+var HtmlUtil = rwt.html.Style;
 var Variant = rwt.util.Variant;
 
 rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
@@ -573,10 +573,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _getFontProps : function( font ) {
       var result = {};
       var fontObject;
-      if( font instanceof rwt.util.html.Font ) {
+      if( font instanceof rwt.html.Font ) {
         fontObject = font;
       } else {
-        fontObject = rwt.util.html.Font.fromString( font );
+        fontObject = rwt.html.Font.fromString( font );
       }
       fontObject.renderStyle( result );
       fontObject.dispose();
@@ -590,7 +590,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( font === "" || font === null ) {
         this._resetFont( element );
       } else {
-        if( font instanceof rwt.util.html.Font ) {
+        if( font instanceof rwt.html.Font ) {
           font.renderStyle( element.style );
         } else {
           element.style.font = font;

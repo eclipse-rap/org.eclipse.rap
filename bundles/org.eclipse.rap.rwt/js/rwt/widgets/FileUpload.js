@@ -91,7 +91,7 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
       this._inputElement.setAttribute( "size", "1" );
       this._inputElement.style.cursor = this._cursor;
       this._inputElement.onchange = this.__onValueChange;
-      rwt.util.html.Style.setOpacity( this._inputElement, 0 );
+      rwt.html.Style.setOpacity( this._inputElement, 0 );
       this._formElement.appendChild( this._inputElement );
     },
 

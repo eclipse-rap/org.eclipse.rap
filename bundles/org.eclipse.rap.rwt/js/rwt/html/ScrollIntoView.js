@@ -21,7 +21,7 @@
 /**
  * Functions to scroll DOM elements into the visible area of the parent element
  */
-rwt.qx.Class.define("rwt.util.html.ScrollIntoView",
+rwt.qx.Class.define("rwt.html.ScrollIntoView",
 {
   /*
   *****************************************************************************
@@ -50,7 +50,7 @@ rwt.qx.Class.define("rwt.util.html.ScrollIntoView",
 
       while (vParent)
       {
-        switch(rwt.util.html.Style.getStyleProperty(vParent, "overflow"))
+        switch(rwt.html.Style.getStyleProperty(vParent, "overflow"))
         {
           case "scroll":
           case "auto":
@@ -59,7 +59,7 @@ rwt.qx.Class.define("rwt.util.html.ScrollIntoView",
             break;
 
           default:
-            switch(rwt.util.html.Style.getStyleProperty(vParent, "overflowX"))
+            switch(rwt.html.Style.getStyleProperty(vParent, "overflowX"))
             {
               case "scroll":
               case "auto":
@@ -124,7 +124,7 @@ rwt.qx.Class.define("rwt.util.html.ScrollIntoView",
 
       while (vParent)
       {
-        switch(rwt.util.html.Style.getStyleProperty(vParent, "overflow"))
+        switch(rwt.html.Style.getStyleProperty(vParent, "overflow"))
         {
           case "scroll":
           case "auto":
@@ -133,7 +133,7 @@ rwt.qx.Class.define("rwt.util.html.ScrollIntoView",
             break;
 
           default:
-            switch(rwt.util.html.Style.getStyleProperty(vParent, "overflowY"))
+            switch(rwt.html.Style.getStyleProperty(vParent, "overflowY"))
             {
               case "scroll":
               case "auto":

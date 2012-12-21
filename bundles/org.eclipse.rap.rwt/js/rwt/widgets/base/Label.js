@@ -251,14 +251,14 @@ rwt.qx.Class.define("rwt.widgets.base.Label",
      * Apply the font to the label.
      *
      * @type member
-     * @param font {rwt.util.html.Font} new font.
+     * @param font {rwt.html.Font} new font.
      */
     _styleFont : function( font ) {
       this._invalidatePreferredInnerDimensions();
       if( font ) {
         font.render( this );
       } else {
-        rwt.util.html.Font.reset( this );
+        rwt.html.Font.reset( this );
       }
     },
 
@@ -500,7 +500,7 @@ rwt.qx.Class.define("rwt.widgets.base.Label",
       else
       {
         element.innerHTML = "";
-        rwt.util.html.Element.setTextContent(element, html);
+        rwt.html.Element.setTextContent(element, html);
       }
     }
       */

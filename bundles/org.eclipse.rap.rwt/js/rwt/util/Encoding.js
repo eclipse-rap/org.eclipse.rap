@@ -141,7 +141,7 @@ rwt.util.Encoding = {
    * @see #escape
    */
   unescape : function( str ) {
-    return this._unescapeEntities( str, rwt.util.html.Entity.TO_CHARCODE );
+    return this._unescapeEntities( str, rwt.html.Entity.TO_CHARCODE );
   },
 
 

@@ -155,7 +155,7 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
     /** The assigned preloader instance of the image. */
     preloader :
     {
-      check : "rwt.util.html.ImagePreloader",
+      check : "rwt.html.ImagePreloader",
       apply : "_applyPreloader",
       nullable : true
     },
@@ -217,7 +217,7 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
     */
 
     /**
-     * Registers an image at the image manager (rwt.util.html.ImageManager) and increases the
+     * Registers an image at the image manager (rwt.html.ImageManager) and increases the
      * visible counter
      *
      * @type member
@@ -228,7 +228,7 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
       var source = this.getSource();
       if (source)
       {
-        rwt.util.html.ImageManager.getInstance().show(source);
+        rwt.html.ImageManager.getInstance().show(source);
         this._registeredAsVisible = true;
       }
 
@@ -237,7 +237,7 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
 
 
     /**
-     * Registers an image at the image manager (rwt.util.html.ImageManager) and reduces the
+     * Registers an image at the image manager (rwt.html.ImageManager) and reduces the
      * visible counter
      *
      * @type member
@@ -248,7 +248,7 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
       var source = this.getSource();
       if (source && this._registeredAsVisible)
       {
-        rwt.util.html.ImageManager.getInstance().hide(source);
+        rwt.html.ImageManager.getInstance().hide(source);
         delete this._registeredAsVisible;
       }
 
@@ -273,7 +273,7 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
      */
     _applySource : function(value, old)
     {
-      var imageMgr = rwt.util.html.ImageManager.getInstance();
+      var imageMgr = rwt.html.ImageManager.getInstance();
 
       if (old)
       {
@@ -327,7 +327,7 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
       }
       else
       {
-        var preloader = rwt.util.html.ImagePreloaderManager.getInstance().create(value);
+        var preloader = rwt.html.ImagePreloaderManager.getInstance().create(value);
         this.setPreloader(preloader);
       }
     },

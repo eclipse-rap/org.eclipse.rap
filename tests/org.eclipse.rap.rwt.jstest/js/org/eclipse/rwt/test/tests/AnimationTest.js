@@ -473,7 +473,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       var animation = new rwt.animation.Animation();
       var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
-      var border = new rwt.util.html.Border( 1, "rounded", "black", 4 );
+      var border = new rwt.html.Border( 1, "rounded", "black", 4 );
       widget.setBorder( border );
       widget.setBackgroundColor( "#FF0000" );
       TestUtil.flush();

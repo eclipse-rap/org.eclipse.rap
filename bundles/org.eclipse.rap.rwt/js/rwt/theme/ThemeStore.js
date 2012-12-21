@@ -212,8 +212,8 @@ rwt.qx.Class.define( "rwt.theme.ThemeStore", {
     getFont : function( element, states, property, theme ) {
       var key = this._getCssValue( element, states, property, theme );
       var value = this._values.fonts[ key ];
-      if( !( value instanceof rwt.util.html.Font ) ) {
-        var font = new rwt.util.html.Font();
+      if( !( value instanceof rwt.html.Font ) ) {
+        var font = new rwt.html.Font();
         font.setSize( value.size );
         font.setFamily( value.family );
         font.setBold( value.bold );
@@ -227,7 +227,7 @@ rwt.qx.Class.define( "rwt.theme.ThemeStore", {
       var border;
       var key = this._getCssValue( element, states, property, theme );
       var value = this._values.borders[ key ];
-      var resolved = value instanceof rwt.util.html.Border;
+      var resolved = value instanceof rwt.html.Border;
       var style = resolved ? value.getStyle() : value.style;
       if( style === "solid" || style === "none" || style === null ) {
         var radiiKey = this._getCssValue( element, states, "border-radius", theme );
@@ -238,7 +238,7 @@ rwt.qx.Class.define( "rwt.theme.ThemeStore", {
           if( !roundedBorder ) {
             var width = resolved ? value.getWidthTop() : value.width;
             var color = resolved ? value.getColorTop() : value.color;
-            border = new rwt.util.html.Border( width, "rounded", color, radii );
+            border = new rwt.html.Border( width, "rounded", color, radii );
             this._values.borders[ roundedBorderKey ] = border;
           } else {
             border = roundedBorder;
@@ -269,7 +269,7 @@ rwt.qx.Class.define( "rwt.theme.ThemeStore", {
         if( borderDef ) {
           var color = this._resolveNamedColors( borderDef.color );
           var innerColor = this._resolveNamedColors( borderDef.innerColor );
-          result = new rwt.util.html.Border( borderDef.width, "complex", color, innerColor );
+          result = new rwt.html.Border( borderDef.width, "complex", color, innerColor );
           this._values.borders[ key ] = result;
         } else {
           result = null;
@@ -412,7 +412,7 @@ rwt.qx.Class.define( "rwt.theme.ThemeStore", {
         }
       }
       if( result === null ) {
-        result = new rwt.util.html.Border( value.width, value.style, value.color );
+        result = new rwt.html.Border( value.width, value.style, value.color );
       }
       return result;
     }

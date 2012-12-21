@@ -14,8 +14,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
   extend : rwt.qx.Object,
 
   construct : function(){
-    this.gfxBorder = new rwt.util.html.Border( 1, "rounded", "black", 0 );
-    this.cssBorder = new rwt.util.html.Border( 1, "solid", "black" );
+    this.gfxBorder = new rwt.html.Border( 1, "rounded", "black", 0 );
+    this.cssBorder = new rwt.html.Border( 1, "solid", "black" );
     this.gradient = [ [ 0, "red" ], [ 1, "yellow" ] ];
   },
 
@@ -150,11 +150,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       assertTrue( widget.getElement() !== widget._getTargetNode() );
       assertEquals( [ 1, 1, 1, 1 ], this.getFakePadding( widget ) );
       assertEquals( [ 1, 1, 1, 1 ], this.getBorderCache( widget ) );
-      widget.setBorder( new rwt.util.html.Border( 0, "rounded", "black", 0 ) );
+      widget.setBorder( new rwt.html.Border( 0, "rounded", "black", 0 ) );
       TestUtil.flush();
       assertEquals ( [ 0, 0, 0, 0 ], this.getFakePadding( widget ) );
       assertEquals ( [ 0, 0, 0, 0 ], this.getBorderCache( widget ) );
-      widget.setBorder( new rwt.util.html.Border( [ 4, 0, 3, 0 ], "rounded", "black", 0 ) );
+      widget.setBorder( new rwt.html.Border( [ 4, 0, 3, 0 ], "rounded", "black", 0 ) );
       TestUtil.flush();
       assertEquals ( [ 4, 0, 3, 0 ], this.getFakePadding( widget ) );
       assertEquals ( [ 4, 0, 3, 0 ], this.getBorderCache( widget ) );
@@ -175,7 +175,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       var widget = this._createWidget();
       // TODO [tb] : this test is not completely valid as RAP does not support different widths for
       //             complex borders (the Border class does, but not ThemeStore and Widget)
-      widget.setBorder( new rwt.util.html.Border( [ 0, 1, 2, 3 ], "complex", "red", "blue" ) );
+      widget.setBorder( new rwt.html.Border( [ 0, 1, 2, 3 ], "complex", "red", "blue" ) );
       TestUtil.flush();
       TestUtil.flush();
       widget.setBackgroundGradient( this.gradient );
@@ -211,17 +211,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = rwt.graphics.GraphicsUtil;
       var widget = this._createWidget();
-      var gfxBorder = new rwt.util.html.Border( 0, "rounded", "black", 3 );
+      var gfxBorder = new rwt.html.Border( 0, "rounded", "black", 3 );
       widget.setBorder( gfxBorder );
       TestUtil.flush();
       assertTrue( this.usesGfxBorder( widget ) );
       var shape = widget._gfxData.backgroundShape;
       assertEquals( 0, gfxUtil.getStrokeWidth( shape ) );
-      gfxBorder = new rwt.util.html.Border( 2, "rounded", "black", 0 );
+      gfxBorder = new rwt.html.Border( 2, "rounded", "black", 0 );
       widget._applyBorder( gfxBorder );
       TestUtil.flush();
       assertEquals( 2, gfxUtil.getStrokeWidth( shape ) );
-      gfxBorder = new rwt.util.html.Border( [ 1, 2, 3, 4 ], "rounded", "black", 0 );
+      gfxBorder = new rwt.html.Border( [ 1, 2, 3, 4 ], "rounded", "black", 0 );
       widget._applyBorder( gfxBorder );
       TestUtil.flush();
       assertEquals( 4, gfxUtil.getStrokeWidth( shape ) );
@@ -233,7 +233,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = rwt.graphics.GraphicsUtil;
       var widget = this._createWidget();
-      var gfxBorder = new rwt.util.html.Border( 2, "rounded", "red", 3 );
+      var gfxBorder = new rwt.html.Border( 2, "rounded", "red", 3 );
       widget.setBorder( gfxBorder );
       TestUtil.flush();
       assertTrue( this.usesGfxBorder( widget ) );
@@ -248,7 +248,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       // outline is visually incompatible with SVG (glitch)
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = this._createShell();
-      var gfxBorder = new rwt.util.html.Border( 1, "rounded", "black", 4 );
+      var gfxBorder = new rwt.html.Border( 1, "rounded", "black", 4 );
       shell.setBorder( gfxBorder );
       shell.setHideFocus( false );
       TestUtil.flush();
@@ -276,7 +276,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       widget.addToDocument();
       widget.setLocation( 0, 0 );
       widget.setDimension( 100, 100 );
-      var gfxBorder = new rwt.util.html.Border( [ 1, 0, 0, 1 ], "rounded", "black", 5 );
+      var gfxBorder = new rwt.html.Border( [ 1, 0, 0, 1 ], "rounded", "black", 5 );
       widget.setBorder( gfxBorder );
       TestUtil.flush();
       assertTrue( this.usesGfxBorder( widget ) );
@@ -292,7 +292,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       widget.addToDocument();
       widget.setLocation( 0, 0 );
       widget.setDimension( 100, 100 );
-      var gfxBorder = new rwt.util.html.Border( 1, "rounded", "black", 5 );
+      var gfxBorder = new rwt.html.Border( 1, "rounded", "black", 5 );
       widget.setBorder( gfxBorder );
       TestUtil.flush();
       assertTrue( this.usesGfxBorder( widget ) );
@@ -489,7 +489,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       // time via CSS, but when using CSS and Java-API.
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new rwt.widgets.base.MultiCellWidget( [] );
-      var gfxBorder = new rwt.util.html.Border( 1, "rounded", "black", 5 );
+      var gfxBorder = new rwt.html.Border( 1, "rounded", "black", 5 );
       widget.addToDocument();
       widget.setLocation( 0, 0 );
       widget.setDimension( 100, 100 );
@@ -734,7 +734,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
         var isMshtml = rwt.util.Variant.isSet( "qx.client", "mshtml" );
         var widget = this._createWidget();
         widget.setShadow( [ false, 0, 0, 0, 0, "#000000", 1 ] );
-        var gfxBorder = new rwt.util.html.Border( 1, "rounded", "black", 5 );
+        var gfxBorder = new rwt.html.Border( 1, "rounded", "black", 5 );
         widget.setBorder( gfxBorder );
         TestUtil.flush();
         var shape = widget._gfxData.shadowShape;
@@ -837,7 +837,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     testPrepareShapeBug : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var button = new rwt.widgets.Button( "push" );
-      var gfxBorder = new rwt.util.html.Border( 1, "rounded", "black", 3 );
+      var gfxBorder = new rwt.html.Border( 1, "rounded", "black", 3 );
       button.setText( "Hello World!" );
       button.addToDocument();
       button.setBackgroundGradient( null );

@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-rwt.qx.Class.define("rwt.util.html.Scroll",
+rwt.qx.Class.define("rwt.html.Scroll",
 {
   /*
   *****************************************************************************
@@ -34,7 +34,7 @@ rwt.qx.Class.define("rwt.util.html.Scroll",
       this.enableScrolling(el);
       el.scrollLeft = 0;
       el.scrollTop = 0;
-      rwt.util.html.EventRegistration.addEventListener(el, "scroll", this._onscroll);
+      rwt.html.EventRegistration.addEventListener(el, "scroll", this._onscroll);
     },
 
 
@@ -46,7 +46,7 @@ rwt.qx.Class.define("rwt.util.html.Scroll",
      * @return {void}
      */
     enableScrolling : function( el ) {
-      rwt.util.html.EventRegistration.removeEventListener( el, "scroll", this._onscroll );
+      rwt.html.EventRegistration.removeEventListener( el, "scroll", this._onscroll );
     },
 
 
