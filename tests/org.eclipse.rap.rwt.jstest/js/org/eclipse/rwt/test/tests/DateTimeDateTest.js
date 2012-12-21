@@ -233,7 +233,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       if( dropdown ) {
         styles[ 2 ] = "DROP_DOWN";
       }
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.DateTime",
@@ -248,7 +248,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
           "datePattern" : this.datePattern
         }
       } );
-      return rwt.protocol.ObjectRegistry.getObject( "w3" );
+      return rwt.remote.ObjectRegistry.getObject( "w3" );
     },
 
     _createDefaultDateTime : function( dropdown ) {

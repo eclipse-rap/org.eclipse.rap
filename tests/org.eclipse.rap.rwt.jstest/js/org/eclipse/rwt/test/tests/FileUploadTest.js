@@ -37,7 +37,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = createFileUploadByProtocol( "w3", "w2" );
       var iframe = widget._iframe;
-       rwt.protocol.MessageProcessor.processOperation( {
+       rwt.remote.MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "destroy"
       } );
@@ -79,7 +79,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
         var shell = TestUtil.createShellByProtocol( "w2" );
         var widget = createFileUploadByProtocol( "w3", "w2" );
         setFileName( widget, "foo" );
-        rwt.protocol.MessageProcessor.processOperation( {
+        rwt.remote.MessageProcessor.processOperation( {
           "target" : "w3",
           "action" : "call",
           "method" : "submit",
@@ -434,7 +434,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
 // Helper
 
 var createFileUploadByProtocol = function( id, parentId ) {
-  rwt.protocol.MessageProcessor.processOperation( {
+  rwt.remote.MessageProcessor.processOperation( {
     "target" : id,
     "action" : "create",
     "type" : "rwt.widgets.FileUpload",
@@ -444,7 +444,7 @@ var createFileUploadByProtocol = function( id, parentId ) {
     }
   } );
   TestUtil.flush();
-  return rwt.protocol.ObjectRegistry.getObject( id );
+  return rwt.remote.ObjectRegistry.getObject( id );
 };
 
 var createFileUpload = function( noFlush ) {

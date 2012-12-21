@@ -80,7 +80,7 @@ rap = {
    */
   registerTypeHandler : function( type, handler ) {
     handler.isPublic = true;
-    rwt.protocol.HandlerRegistry.add( type, handler );
+    rwt.remote.HandlerRegistry.add( type, handler );
   },
 
   /**
@@ -92,7 +92,7 @@ rap = {
    * @returns {Object}
    */
   getObject : function( id ) {
-    var entry = rwt.protocol.ObjectRegistry.getEntry( id );
+    var entry = rwt.remote.ObjectRegistry.getEntry( id );
     var result;
     if( entry && entry.handler.isPublic ) {
       result = entry.object;

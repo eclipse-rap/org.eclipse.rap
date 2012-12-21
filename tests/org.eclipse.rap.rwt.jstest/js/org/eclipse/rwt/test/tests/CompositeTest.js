@@ -11,8 +11,8 @@
 
 (function(){
 
-var ObjectRegistry = rwt.protocol.ObjectRegistry;
-var MessageProcessor = rwt.protocol.MessageProcessor;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
+var MessageProcessor = rwt.remote.MessageProcessor;
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
@@ -22,7 +22,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
   members : {
 
     testCreateCompositeByProtocol : function() {
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w2",
         "action" : "create",

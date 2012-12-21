@@ -12,8 +12,8 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var Processor = rwt.protocol.MessageProcessor;
-var ObjectManager = rwt.protocol.ObjectRegistry;
+var Processor = rwt.remote.MessageProcessor;
+var ObjectManager = rwt.remote.ObjectRegistry;
 var Font = rwt.util.html.Font;
 var Border = rwt.util.html.Border;
 var Client = rwt.client.Client;

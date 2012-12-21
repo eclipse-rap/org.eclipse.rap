@@ -12,7 +12,7 @@
 (function(){
 
 var register = function( widget ) {
-  rwt.protocol.ObjectRegistry.add( "w" + widget.toHashCode(), widget );
+  rwt.remote.ObjectRegistry.add( "w" + widget.toHashCode(), widget );
 };
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {

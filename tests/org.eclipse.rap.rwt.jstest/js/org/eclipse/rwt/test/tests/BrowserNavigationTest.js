@@ -23,7 +23,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserNavigationTest", {
 
     testSetHasNavigationListenerByProtocol : function() {
       var browserNavigation = this._createBrowserNavigationByProtocol();
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : "rwt.client.BrowserNavigation",
         "action" : "listen",
         "properties" : {
@@ -38,7 +38,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserNavigationTest", {
 
     testAddByProtocol : function() {
       var browserNavigation = this._createBrowserNavigationByProtocol();
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : "rwt.client.BrowserNavigation",
         "action" : "call",
         "method" : "addToHistory",
@@ -52,7 +52,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserNavigationTest", {
     testSendNavigated : [
       function() {
         var browserNavigation = this._createBrowserNavigationByProtocol();
-        rwt.protocol.MessageProcessor.processOperation( {
+        rwt.remote.MessageProcessor.processOperation( {
           "target" : "rwt.client.BrowserNavigation",
           "action" : "call",
           "method" : "addToHistory",
@@ -60,7 +60,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserNavigationTest", {
             "entries" : [ [ "id1", "text1" ], [ "id2", "text2" ] ]
           }
         } );
-        rwt.protocol.MessageProcessor.processOperation( {
+        rwt.remote.MessageProcessor.processOperation( {
           "target" : "rwt.client.BrowserNavigation",
           "action" : "listen",
           "properties" : {
@@ -85,7 +85,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserNavigationTest", {
     testSendNavigatedWithUnknownEntry : [
       function() {
         var browserNavigation = this._createBrowserNavigationByProtocol();
-        rwt.protocol.MessageProcessor.processOperation( {
+        rwt.remote.MessageProcessor.processOperation( {
           "target" : "rwt.client.BrowserNavigation",
           "action" : "call",
           "method" : "addToHistory",
@@ -93,7 +93,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserNavigationTest", {
             "entries" : [ [ "id1", "text1" ], [ "id2", "text2" ] ]
           }
         } );
-        rwt.protocol.MessageProcessor.processOperation( {
+        rwt.remote.MessageProcessor.processOperation( {
           "target" : "rwt.client.BrowserNavigation",
           "action" : "listen",
           "properties" : {
@@ -119,7 +119,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserNavigationTest", {
     // Helper
 
     _createBrowserNavigationByProtocol : function() {
-      return rwt.protocol.ObjectRegistry.getObject( "rwt.client.BrowserNavigation" );
+      return rwt.remote.ObjectRegistry.getObject( "rwt.client.BrowserNavigation" );
     }
 
   }

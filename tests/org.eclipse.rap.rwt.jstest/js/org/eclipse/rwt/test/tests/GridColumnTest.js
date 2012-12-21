@@ -12,8 +12,8 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var MessageProcessor = rwt.protocol.MessageProcessor;
-var ObjectRegistry = rwt.protocol.ObjectRegistry;
+var MessageProcessor = rwt.remote.MessageProcessor;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
 
 var shell;
 
@@ -24,9 +24,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
   members : {
 
     testCreateTableColumnByProtocol : function() {
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var Processor = rwt.protocol.MessageProcessor;
+      var Processor = rwt.remote.MessageProcessor;
       Processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -1037,9 +1037,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
     },
 
     testCreateColumnGroupByProtocol : function() {
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var Processor = rwt.protocol.MessageProcessor;
+      var Processor = rwt.remote.MessageProcessor;
 
       Processor.processOperation( {
         "target" : "w4",
@@ -1531,7 +1531,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
     // Helping methods
 
     _createTreeByProtocol : function( id, parentId, styles ) {
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.Grid",
@@ -1547,7 +1547,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
           "headerVisible" : true
         }
       } );
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : id + "_vscroll",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",
@@ -1556,7 +1556,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
           "style" : [ "VERTICAL" ]
         }
       } );
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : id + "_hscroll",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",
@@ -1565,11 +1565,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
           "style" : [ "HORIZONTAL" ]
         }
       } );
-      return rwt.protocol.ObjectRegistry.getObject( id );
+      return rwt.remote.ObjectRegistry.getObject( id );
     },
 
     _createColumnByProtocol : function( id, parentId, styles ) {
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.GridColumn",
@@ -1579,11 +1579,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
         }
       } );
       TestUtil.flush( true );
-      return rwt.protocol.ObjectRegistry.getObject( id );
+      return rwt.remote.ObjectRegistry.getObject( id );
     },
 
     _createColumnGroupByProtocol : function( id, parentId, styles, noFlush ) {
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.GridColumnGroup",
@@ -1595,7 +1595,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       if( !noFlush ) {
         TestUtil.flush( true );
       }
-      return rwt.protocol.ObjectRegistry.getObject( id );
+      return rwt.remote.ObjectRegistry.getObject( id );
     },
 
     setUp : function() {

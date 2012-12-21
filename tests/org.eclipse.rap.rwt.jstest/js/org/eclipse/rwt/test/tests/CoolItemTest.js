@@ -21,7 +21,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
 
     testCreateCoolItemByProtocol : function() {
       var bar = this._createCoolBar();
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -31,7 +31,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
           "parent" : "w2"
         }
       } );
-      var item = rwt.protocol.ObjectRegistry.getObject( "w3" );
+      var item = rwt.remote.ObjectRegistry.getObject( "w3" );
       assertTrue( item instanceof rwt.widgets.CoolItem );
       assertIdentical( bar, item.getParent() );
       assertEquals( 0, item.getMinWidth() );
@@ -42,7 +42,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
 
     testCreateCoolItemByProtocolVertical : function() {
       var bar = this._createCoolBar();
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -52,7 +52,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
           "parent" : "w2"
         }
       } );
-      var item = rwt.protocol.ObjectRegistry.getObject( "w3" );
+      var item = rwt.remote.ObjectRegistry.getObject( "w3" );
       assertTrue( item instanceof rwt.widgets.CoolItem );
       assertIdentical( bar, item.getParent() );
       assertEquals( 0, item.getMinWidth() );
@@ -64,7 +64,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
     testDestroyCoolItemByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createCoolBar();
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -74,7 +74,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
           "parent" : "w2"
         }
       } );
-      var item = rwt.protocol.ObjectRegistry.getObject( "w3" );
+      var item = rwt.remote.ObjectRegistry.getObject( "w3" );
       TestUtil.flush();
       processor.processOperation( {
         "target" : "w3",
@@ -87,7 +87,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
     testDestroyCoolItemWithCoolBar : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createCoolBar();
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -97,20 +97,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
           "parent" : "w2"
         }
       } );
-      var item = rwt.protocol.ObjectRegistry.getObject( "w3" );
+      var item = rwt.remote.ObjectRegistry.getObject( "w3" );
       TestUtil.flush();
 
       processor.processOperationArray( [ "destroy", "w2" ] );
       TestUtil.flush();
 
-      assertTrue( rwt.protocol.ObjectRegistry.getObject( "w3" ) == null );
+      assertTrue( rwt.remote.ObjectRegistry.getObject( "w3" ) == null );
       assertTrue( item.isDisposed() );
       bar.destroy();
     },
 
     testUpdateHandleHeight : function() {
       var bar = this._createCoolBar();
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -121,7 +121,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
           "bounds" : [ 0, 0, 30, 40 ]
         }
       } );
-      var item = rwt.protocol.ObjectRegistry.getObject( "w3" );
+      var item = rwt.remote.ObjectRegistry.getObject( "w3" );
       assertEquals( 30, item.getWidth() );
       assertEquals( 40, item.getHeight() );
       assertEquals( 40, item._handle.getHeight() );
@@ -130,7 +130,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
 
     testSetControlByProtocol: function() {
       var bar = this._createCoolBar();
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -150,8 +150,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
           "parent" : "w2"
         }
       } );
-      var item = rwt.protocol.ObjectRegistry.getObject( "w3" );
-      var button = rwt.protocol.ObjectRegistry.getObject( "w4" );
+      var item = rwt.remote.ObjectRegistry.getObject( "w3" );
+      var button = rwt.remote.ObjectRegistry.getObject( "w4" );
       assertIdentical( button, item._control );
       bar.destroy();
     },
@@ -159,7 +159,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
     testDestroyCoolItemAndControlWithCoolBar : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createCoolBar();
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -179,23 +179,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
           "parent" : "w2"
         }
       } );
-      var item = rwt.protocol.ObjectRegistry.getObject( "w3" );
-      var control = rwt.protocol.ObjectRegistry.getObject( "w4" );
+      var item = rwt.remote.ObjectRegistry.getObject( "w3" );
+      var control = rwt.remote.ObjectRegistry.getObject( "w4" );
       TestUtil.flush();
 
       processor.processOperationArray( [ "destroy", "w2" ] );
       TestUtil.flush();
 
-      assertTrue( rwt.protocol.ObjectRegistry.getObject( "w3" ) == null );
+      assertTrue( rwt.remote.ObjectRegistry.getObject( "w3" ) == null );
       assertTrue( item.isDisposed() );
-      assertTrue( rwt.protocol.ObjectRegistry.getObject( "w4" ) == null );
+      assertTrue( rwt.remote.ObjectRegistry.getObject( "w4" ) == null );
       assertTrue( control.isDisposed() );
       bar.destroy();
     },
 
     testSetLockByProtocol: function() {
       var bar = this._createCoolBar();
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -204,7 +204,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
           "style" : [ ],
           "parent" : "w2"        }
       } );
-      var item = rwt.protocol.ObjectRegistry.getObject( "w3" );
+      var item = rwt.remote.ObjectRegistry.getObject( "w3" );
       assertTrue( item._handle.getDisplay() );
       processor.processOperation( {
         "target" : "w2",
@@ -219,7 +219,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
 
     testCreateLockedByProtocol: function() {
       var bar = this._createCoolBar();
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w2",
         "action" : "set",
@@ -236,14 +236,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
           "parent" : "w2"
         }
       } );
-      var item = rwt.protocol.ObjectRegistry.getObject( "w3" );
+      var item = rwt.remote.ObjectRegistry.getObject( "w3" );
       assertFalse( item._handle.getDisplay() );
       bar.destroy();
     },
 
     testMove : function() {
       var bar = this._createCoolBar();
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -254,7 +254,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
           "bounds" : [ 0, 0, 100, 10 ]
         }
       } );
-      var item = rwt.protocol.ObjectRegistry.getObject( "w3" );
+      var item = rwt.remote.ObjectRegistry.getObject( "w3" );
       TestUtil.flush();
 
       TestUtil.fakeMouseEvent( item._handle, "mousedown", 0, 0 );
@@ -273,7 +273,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
 
     _createCoolBar : function() {
       TestUtil.createShellByProtocol( "shell" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w2",
         "action" : "create",
@@ -283,7 +283,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
           "parent" : "shell"
         }
       } );
-      return rwt.protocol.ObjectRegistry.getObject( "w2" );
+      return rwt.remote.ObjectRegistry.getObject( "w2" );
     }
 
   }

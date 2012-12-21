@@ -12,8 +12,8 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var ObjectRegistry = rwt.protocol.ObjectRegistry;
-var MessageProcessor = rwt.protocol.MessageProcessor;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
+var MessageProcessor = rwt.remote.MessageProcessor;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
@@ -23,7 +23,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testCreateTreeByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -37,7 +37,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
           "checkBoxMetrics" : [ 5, 16 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Grid );
       assertIdentical( shell, widget.getParent() );
@@ -158,7 +158,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testSetFixedColumnsByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Grid",
@@ -172,7 +172,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
           "splitContainer" : true
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       TestUtil.protocolSet( "w3", { "fixedColumns" : 3 } );
       assertTrue( widget.getRowContainer() instanceof rwt.widgets.util.GridRowContainerWrapper );
@@ -340,7 +340,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       this._createDefaultTreeByProtocol( "w3", "w2", [] );
       TestUtil.protocolListen( "w3", { "Selection" : true } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
@@ -351,7 +351,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       this._createDefaultTreeByProtocol( "w3", "w2", [] );
       TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasDefaultSelectionListener );
       shell.destroy();
@@ -362,7 +362,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       this._createDefaultTreeByProtocol( "w3", "w2", [] );
       TestUtil.protocolListen( "w3", { "Expand" : true } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasExpandListener );
       shell.destroy();
@@ -373,7 +373,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       this._createDefaultTreeByProtocol( "w3", "w2", [] );
       TestUtil.protocolListen( "w3", { "Collapse" : true } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasCollapseListener );
       shell.destroy();
@@ -414,7 +414,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testSetMarkupEnabledByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Grid",
@@ -425,7 +425,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
           "markupEnabled" : true
         }
       } );
-      var widget = rwt.protocol.ObjectRegistry.getObject( "w3" );
+      var widget = rwt.remote.ObjectRegistry.getObject( "w3" );
       assertTrue( widget.getRenderConfig().markupEnabled );
       shell.destroy();
       widget.destroy();
@@ -435,7 +435,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
       var column = new rwt.widgets.GridColumn( widget );
-      rwt.protocol.ObjectRegistry.add( "w4", column );
+      rwt.remote.ObjectRegistry.add( "w4", column );
       widget.setSortColumn( column );
       TestUtil.protocolSet( "w3", { "sortDirection" : "up" } );
       assertEquals( "up", widget._sortDirection );
@@ -448,7 +448,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
       var column = new rwt.widgets.GridColumn( widget );
-      rwt.protocol.ObjectRegistry.add( "w4", column );
+      rwt.remote.ObjectRegistry.add( "w4", column );
       widget.setSortDirection( "down" );
       TestUtil.protocolSet( "w3", { "sortColumn" : "w4" } );
       assertIdentical( column, widget._sortColumn );
@@ -4152,7 +4152,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testSendSelectedEventHorizontal : function() {
       TestUtil.createShellByProtocol( "w2" );
       var tree = this._createDefaultTreeByProtocol( "w3", "w2", [] );
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : "w3_hscroll",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",
@@ -4180,7 +4180,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testSendSelectedEventVertical : function() {
       TestUtil.createShellByProtocol( "w2" );
       var tree = this._createDefaultTreeByProtocol( "w3", "w2", [] );
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : "w3_vscroll",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",
@@ -4209,7 +4209,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     // helper
 
     _createDefaultTreeByProtocol : function( id, parentId, styles ) {
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.Grid",
@@ -4223,11 +4223,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
           "bounds" : [ 0, 0, 100, 100 ]
         }
       } );
-      return rwt.protocol.ObjectRegistry.getObject( id );
+      return rwt.remote.ObjectRegistry.getObject( id );
     },
 
     _createTreeItemByProtocol : function( id, parentId, index ) {
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.GridItem",
@@ -4236,7 +4236,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
           "index": index
         }
       } );
-      return rwt.protocol.ObjectRegistry.getObject( id );
+      return rwt.remote.ObjectRegistry.getObject( id );
     },
 
     _createDefaultTree : function( noflush, asTable, option, arg ) {
@@ -4257,7 +4257,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       args[ "selectionPadding" ] = [ 2, 4 ];
       args[ "indentionWidth" ] = 16;
       var tree = new rwt.widgets.Grid( args );
-      rwt.protocol.ObjectRegistry.add( "w3", tree );
+      rwt.remote.ObjectRegistry.add( "w3", tree );
       if( option === "fixedColumns" ) {
         rwt.widgets.util.GridUtil.setFixedColumns( tree, arg );
       }
@@ -4342,7 +4342,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     _createItem : function( parent, index, placeholder ) {
       var result = new rwt.widgets.GridItem( parent, index, placeholder );
-      rwt.protocol.ObjectRegistry.add( "w" + result.toHashCode(), result );
+      rwt.remote.ObjectRegistry.add( "w" + result.toHashCode(), result );
       return result;
     }
 

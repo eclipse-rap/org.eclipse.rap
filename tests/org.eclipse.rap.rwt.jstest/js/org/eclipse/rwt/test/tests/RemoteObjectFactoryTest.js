@@ -11,7 +11,7 @@
 
 (function(){
 
-var RemoteObjectFactory = rwt.protocol.RemoteObjectFactory;
+var RemoteObjectFactory = rwt.remote.RemoteObjectFactory;
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
 var shell;
@@ -60,7 +60,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.RemoteObjectFactoryTest", {
     testDisposeWithTarget : function() {
       var remoteObject = RemoteObjectFactory.getRemoteObject( shell );
 
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : "w2",
         "action" : "destroy"
       } );

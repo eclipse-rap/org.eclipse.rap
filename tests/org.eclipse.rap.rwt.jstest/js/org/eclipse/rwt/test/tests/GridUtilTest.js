@@ -423,7 +423,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       var tree = this._createSplitTree();
       for( var i = 0; i < 5; i++ ) {
         var column = new rwt.widgets.GridColumn( tree );
-        rwt.protocol.ObjectRegistry.add( "col", column );
+        rwt.remote.ObjectRegistry.add( "col", column );
         column.setLeft( tree.getRenderConfig().itemLeft[ i ] );
         column.setWidth( tree.getRenderConfig().itemWidth[ i ] );
         if( i < 2 ) {
@@ -539,9 +539,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       if( !noflush ) {
         TestUtil.flush();
       }
-      rwt.protocol.ObjectRegistry.add( "w3", tree );
-      rwt.protocol.ObjectRegistry.add( "w3_vscroll", tree.getVerticalBar() );
-      rwt.protocol.ObjectRegistry.add( "w3_hscroll", tree.getHorizontalBar() );
+      rwt.remote.ObjectRegistry.add( "w3", tree );
+      rwt.remote.ObjectRegistry.add( "w3_vscroll", tree.getVerticalBar() );
+      rwt.remote.ObjectRegistry.add( "w3_hscroll", tree.getHorizontalBar() );
       return tree;
     },
 

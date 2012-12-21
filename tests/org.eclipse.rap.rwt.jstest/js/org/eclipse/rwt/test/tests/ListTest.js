@@ -18,7 +18,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testCreateListByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -28,7 +28,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.List );
       assertIdentical( shell, widget.getParent() );
@@ -42,7 +42,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testCreateListWithMultiByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -52,7 +52,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.getManager().getMultiSelection() );
       shell.destroy();
@@ -62,7 +62,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testCreateListWithMarkupEnabled : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -73,7 +73,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "markupEnabled" : true
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._markupEnabled );
       shell.destroy();
@@ -83,7 +83,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testSetItemsByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -94,7 +94,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "items" : [ "a", "b", "c" ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getItems();
       assertEquals( 3, widget.getItemsCount() );
@@ -108,7 +108,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testSetItemsEscapeTextByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -119,7 +119,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "items" : [ "  foo &\nbar " ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getItems();
       assertEquals( "&nbsp; foo &amp; bar&nbsp;", items[ 0 ].getLabel() );
@@ -130,7 +130,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testSetItemsWithMarkupEnabledByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -142,7 +142,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "items" : [ "<b>bold</b>  </br>  <i>italic</i>" ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getItems();
       assertEquals( "<b>bold</b>  </br>  <i>italic</i>", items[ 0 ].getLabel() );
@@ -153,7 +153,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testSetSingleSelectionIndicesByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -165,7 +165,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "selectionIndices" : [ 2 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getSelectedItems();
       assertEquals( 1, items.length );
@@ -177,7 +177,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testSetMultiSelectionIndicesByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -189,7 +189,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "selectionIndices" : [ 0, 2 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getSelectedItems();
       assertEquals( 2, items.length );
@@ -202,7 +202,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testSetAllSelectionIndicesByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -214,7 +214,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "selectionIndices" : [ 0, 1, 2 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getSelectedItems();
       assertEquals( 3, items.length );
@@ -228,7 +228,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testSetTopIndexByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -241,7 +241,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "itemDimensions" : [ 100, 10 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 2, widget._topIndex );
       shell.destroy();
@@ -251,7 +251,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testSetFocusIndexByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -263,7 +263,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "focusIndex" : 2
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var focusItem = widget.getManager().getLeadItem();
       assertEquals( "c", focusItem.getLabel() );
@@ -274,7 +274,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testSetScrollBarsNotVisibleByDefault : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
 
       processor.processOperation( {
         "target" : "w3",
@@ -286,7 +286,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
         }
       } );
 
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertFalse( widget._horzScrollBar.getDisplay() );
       assertFalse( widget._vertScrollBar.getDisplay() );
@@ -297,7 +297,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testSetScrollBarsVisibleByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -312,7 +312,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       TestUtil.protocolSet( "w3_vscroll", { "visibility" : true } );
       TestUtil.protocolSet( "w3_hscroll", { "visibility" : true } );
 
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._horzScrollBar.getDisplay() );
       assertTrue( widget._vertScrollBar.getDisplay() );
@@ -323,7 +323,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testSetItemDimensionsByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -334,7 +334,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "itemDimensions" : [ 10, 20 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 10, widget._itemWidth );
       assertEquals( 20, widget._itemHeight );
@@ -345,7 +345,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testSetHasSelectionListenerByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -356,7 +356,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "Selection" : true } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
@@ -366,7 +366,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testSetHasDefaultSelectionListenerByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -377,7 +377,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasDefaultSelectionListener );
       shell.destroy();
@@ -387,7 +387,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testSetHasFocusListenerByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -399,7 +399,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       } );
       TestUtil.protocolListen( "w3", { "FocusIn" : true } );
       TestUtil.protocolListen( "w3", { "FocusOut" : true } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasEventListeners( "focusin" ) );
       assertTrue( widget.hasEventListeners( "focusout" ) );
@@ -489,9 +489,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
     testSelectMarkupItemByCharacter : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -831,7 +831,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testApplyCustomVariantToExistingItems : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -845,7 +845,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
       TestUtil.protocolSet( "w3", { "customVariant" : "variant_myVariant" } );
 
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getItems();
       assertTrue( items[ 0 ].hasState( "variant_myVariant" ) );
@@ -858,7 +858,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testApplyCustomVariantToNewItems : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -873,7 +873,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
       TestUtil.protocolSet( "w3", { "items" : [ "a", "b", "c" ] } );
 
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getItems();
       assertTrue( items[ 0 ].hasState( "variant_myVariant" ) );
@@ -886,7 +886,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     testReplaceCustomVariant : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -902,7 +902,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
       TestUtil.protocolSet( "w3", { "customVariant" : "variant_other" } );
 
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getItems();
       assertFalse( items[ 0 ].hasState( "variant_myVariant" ) );
@@ -924,7 +924,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.setItemDimensions( 100, 20 );
       list.addToDocument();
       list.setSpace( 5, 238, 5, 436 );
-      rwt.protocol.ObjectRegistry.add( "w3", list );
+      rwt.remote.ObjectRegistry.add( "w3", list );
       this._createProtocolScrollBars( "w3" );
       if( noflush !== true ) {
         TestUtil.flush();
@@ -1002,7 +1002,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     _createProtocolScrollBars : function( id ) {
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : id + "_vscroll",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",
@@ -1012,7 +1012,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "visibility" : true
         }
       } );
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : id + "_hscroll",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",

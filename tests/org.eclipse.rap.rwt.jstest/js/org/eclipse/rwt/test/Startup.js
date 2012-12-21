@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
-  rwt.protocol.MessageProcessor.processMessage( {
+  rwt.remote.MessageProcessor.processMessage( {
     "head": {},
     "operations": [
       [
@@ -52,7 +52,7 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
     this.send();
   }, server );
   org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();
-  rwt.protocol.MessageProcessor.processMessage( {
+  rwt.remote.MessageProcessor.processMessage( {
     "head": {},
     "operations": [
       [ "create", "w1", "rwt.widgets.Display" ]

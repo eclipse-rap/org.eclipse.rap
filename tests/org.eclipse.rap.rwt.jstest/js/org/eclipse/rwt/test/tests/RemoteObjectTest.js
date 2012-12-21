@@ -82,7 +82,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.RemoteObjectTest", {
 
     setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );
-      remoteObject = rwt.protocol.RemoteObjectFactory.getRemoteObject( shell );
+      remoteObject = rwt.remote.RemoteObjectFactory.getRemoteObject( shell );
     },
 
     tearDown : function() {

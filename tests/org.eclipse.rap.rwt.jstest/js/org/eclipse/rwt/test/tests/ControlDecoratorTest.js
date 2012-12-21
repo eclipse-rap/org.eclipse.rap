@@ -135,7 +135,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
     },
 
     _createControlDecoratorByProtocol : function( id, parentId, style ) {
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.ControlDecorator",
@@ -145,7 +145,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
         }
       } );
       TestUtil.flush();
-      return rwt.protocol.ObjectRegistry.getObject( id );
+      return rwt.remote.ObjectRegistry.getObject( id );
     }
 
   }

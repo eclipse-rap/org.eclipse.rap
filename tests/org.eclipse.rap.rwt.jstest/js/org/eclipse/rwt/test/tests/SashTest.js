@@ -18,7 +18,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
     testCreateSashByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -28,7 +28,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Sash );
       assertIdentical( shell, widget.getParent() );
@@ -42,7 +42,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
     testCreateSashHorizontalByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -52,7 +52,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Sash );
       assertEquals( "horizontal", widget.getOrientation() );
@@ -63,7 +63,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
     testSendWidgetSelected : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -74,7 +74,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
           "bounds" : [ 10, 20 , 10, 100 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
 
       this.fakeDrag( widget, 5, 0 );

@@ -54,7 +54,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 
     testCreateGCByProtocol : function() {
       this._createGCByProtocol();
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var shell = ObjectManager.getObject( "w2" );
       var canvas = ObjectManager.getObject( "w3" );
       var gc = ObjectManager.getObject( "w4" );
@@ -72,7 +72,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       this._createGCByProtocol();
       TestUtil.flush();
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var shell = ObjectManager.getObject( "w2" );
       var canvas = ObjectManager.getObject( "w3" );
       var gc = ObjectManager.getObject( "w4" );
@@ -80,7 +80,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       var node = canvas._getTargetNode();
       assertTrue( node.childNodes.length > 1 );
 
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "destroy"
@@ -295,8 +295,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       assertEquals( expected, gc._escapeText( text, false, false, false ) );
 
       gc.dispose();
-      rwt.protocol.ObjectRegistry.getObject( "w2" ).destroy();
-      rwt.protocol.ObjectRegistry.getObject( "w3" ).destroy();
+      rwt.remote.ObjectRegistry.getObject( "w2" ).destroy();
+      rwt.remote.ObjectRegistry.getObject( "w3" ).destroy();
     },
 
     /////////
@@ -305,7 +305,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
     _createGCByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -323,7 +323,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
           "parent" : "w3"
         }
       } );
-      return rwt.protocol.ObjectRegistry.getObject( "w4" );
+      return rwt.remote.ObjectRegistry.getObject( "w4" );
     },
 
     _setProperty : function( gc, property, value ) {

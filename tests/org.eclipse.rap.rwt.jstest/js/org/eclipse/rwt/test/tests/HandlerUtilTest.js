@@ -16,7 +16,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
   members : {
 
     testGradientHandler : function() {
-      var handler = rwt.protocol.HandlerUtil.getBackgroundGradientHandler();
+      var handler = rwt.remote.HandlerUtil.getBackgroundGradientHandler();
       var widget = new rwt.widgets.Composite();
       handler( widget, [ [ [ 255, 0, 0, 255 ], [ 255, 255, 0, 255 ] ], [ 0, 100 ], true ] );
       var gradient = widget.getBackgroundGradient();
@@ -27,7 +27,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
     },
 
     testGradientHandlerReset : function() {
-      var handler = rwt.protocol.HandlerUtil.getBackgroundGradientHandler();
+      var handler = rwt.remote.HandlerUtil.getBackgroundGradientHandler();
       var widget = new rwt.widgets.Composite();
       handler( widget, [ [ 255, 0, 0, 255 ], [ 255, 255, 0, 255 ], [ 0, 100 ], true ] );
       handler( widget, null );
@@ -35,7 +35,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
     },
 
     testBorderHandler : function() {
-      var handler = rwt.protocol.HandlerUtil.getRoundedBorderHandler();
+      var handler = rwt.remote.HandlerUtil.getRoundedBorderHandler();
       var widget = new rwt.widgets.Composite();
       handler( widget, [ 1, [ 0, 0, 255, 255 ], 2, 3, 4, 5 ] );
       var border = widget.getBorder();
@@ -45,7 +45,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
     },
 
     testBorderHandlerReset : function() {
-      var handler = rwt.protocol.HandlerUtil.getRoundedBorderHandler();
+      var handler = rwt.remote.HandlerUtil.getRoundedBorderHandler();
       var widget = new rwt.widgets.Button( "push" );
       var orgBorder = widget.getBorder();
       handler( widget, [ 1, "blue", 2, 3, 4, 5 ] );
@@ -54,21 +54,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
     },
 
     testBackgroundHandler : function() {
-      var handler = rwt.protocol.HandlerUtil.getControlPropertyHandler( "background" );
+      var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "background" );
       var widget = new rwt.widgets.Composite();
       handler( widget, [ 1, 2, 3, 255 ] );
       assertEquals( "rgb(1,2,3)", widget.getBackgroundColor() );
     },
 
     testBackgroundHandlerTransparent : function() {
-      var handler = rwt.protocol.HandlerUtil.getControlPropertyHandler( "background" );
+      var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "background" );
       var widget = new rwt.widgets.Composite();
       handler( widget, [ 1, 2, 3, 0 ] );
       assertEquals( "transparent", widget.getBackgroundColor() );
     },
 
     testBackgroundHandlerReset : function() {
-      var handler = rwt.protocol.HandlerUtil.getControlPropertyHandler( "background" );
+      var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "background" );
       var widget = new rwt.widgets.Composite();
       var orgBackground = widget.getBackgroundColor();
       handler( widget, [ 1, 2, 3, 255 ] );
@@ -77,14 +77,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
     },
 
     testForegroundHandler : function() {
-      var handler = rwt.protocol.HandlerUtil.getControlPropertyHandler( "foreground" );
+      var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "foreground" );
       var widget = new rwt.widgets.Button( "push" );
       handler( widget, [ 1, 2, 3, 255 ] );
       assertEquals( "rgb(1,2,3)", widget.getTextColor() );
     },
 
     testForegroundHandlerReset : function() {
-      var handler = rwt.protocol.HandlerUtil.getControlPropertyHandler( "foreground" );
+      var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "foreground" );
       var widget = new rwt.widgets.Button( "push" );
       var orgForeground = widget.getTextColor();
       handler( widget, [ 1, 2, 3, 255 ] );
@@ -93,19 +93,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
     },
 
     testMenuHandler : function() {
-      var handler = rwt.protocol.HandlerUtil.getControlPropertyHandler( "menu" );
+      var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "menu" );
       var widget = new rwt.widgets.Composite();
       var menu = new rwt.widgets.Menu();
-      rwt.protocol.ObjectRegistry.add( "w3", menu, "rwt.widgets.Menu" );
+      rwt.remote.ObjectRegistry.add( "w3", menu, "rwt.widgets.Menu" );
       handler( widget, "w3" );
       assertIdentical( menu, widget.getContextMenu() );
     },
 
     testMenuHandlerReset : function() {
-      var handler = rwt.protocol.HandlerUtil.getControlPropertyHandler( "menu" );
+      var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "menu" );
       var widget = new rwt.widgets.Composite();
       var menu = new rwt.widgets.Menu();
-      rwt.protocol.ObjectRegistry.add( "w3", menu, "rwt.widgets.Menu" );
+      rwt.remote.ObjectRegistry.add( "w3", menu, "rwt.widgets.Menu" );
       handler( widget, "w3" );
       handler( widget, null );
       assertNull( widget.getContextMenu() );
@@ -116,10 +116,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
       var childOne = new rwt.widgets.Composite();
       var childTwo = new rwt.widgets.Composite();
 
-      rwt.protocol.HandlerUtil.addDestroyableChild( parent, childOne );
-      rwt.protocol.HandlerUtil.addDestroyableChild( parent, childTwo );
+      rwt.remote.HandlerUtil.addDestroyableChild( parent, childOne );
+      rwt.remote.HandlerUtil.addDestroyableChild( parent, childTwo );
 
-      var result = rwt.protocol.HandlerUtil.getDestroyableChildren( parent );
+      var result = rwt.remote.HandlerUtil.getDestroyableChildren( parent );
       assertEquals( 2, result.length );
       assertTrue( result.indexOf( childOne ) !== -1 );
       assertTrue( result.indexOf( childTwo ) !== -1 );
@@ -130,24 +130,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
       var childOne = new rwt.widgets.Composite();
       var childTwo = new rwt.widgets.Composite();
 
-      rwt.protocol.HandlerUtil.addDestroyableChild( parent, childOne );
-      rwt.protocol.HandlerUtil.addDestroyableChild( parent, childTwo );
-      rwt.protocol.HandlerUtil.removeDestroyableChild( parent, childOne );
+      rwt.remote.HandlerUtil.addDestroyableChild( parent, childOne );
+      rwt.remote.HandlerUtil.addDestroyableChild( parent, childTwo );
+      rwt.remote.HandlerUtil.removeDestroyableChild( parent, childOne );
 
       var expected = [ childTwo ];
-      assertEquals( expected, rwt.protocol.HandlerUtil.getDestroyableChildren( parent ) );
+      assertEquals( expected, rwt.remote.HandlerUtil.getDestroyableChildren( parent ) );
     },
 
     testSetParent : function() {
       var parent = new rwt.widgets.Composite();
       var child = new rwt.widgets.Composite();
-      rwt.protocol.ObjectRegistry.add( "c", child );
+      rwt.remote.ObjectRegistry.add( "c", child );
 
-      rwt.protocol.HandlerUtil.setParent( child, "p" );
-      rwt.protocol.ObjectRegistry.add( "p", parent );
+      rwt.remote.HandlerUtil.setParent( child, "p" );
+      rwt.remote.ObjectRegistry.add( "p", parent );
 
       assertIdentical( parent, child.getParent() );
-      assertEquals( [ child ], rwt.protocol.HandlerUtil.getDestroyableChildren( parent ) );
+      assertEquals( [ child ], rwt.remote.HandlerUtil.getDestroyableChildren( parent ) );
       parent.destroy();
     },
 
@@ -156,18 +156,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
       var parent = new rwt.widgets.Composite();
       var widget = new rwt.widgets.Composite();
       var child = new rwt.widgets.Composite();
-      rwt.protocol.ObjectRegistry.add( "p", parent );
-      rwt.protocol.ObjectRegistry.add( "w", widget );
-      rwt.protocol.ObjectRegistry.add( "c", child );
-      rwt.protocol.HandlerUtil.setParent( child, "w" );
-      rwt.protocol.HandlerUtil.setParent( widget, "p" );
+      rwt.remote.ObjectRegistry.add( "p", parent );
+      rwt.remote.ObjectRegistry.add( "w", widget );
+      rwt.remote.ObjectRegistry.add( "c", child );
+      rwt.remote.HandlerUtil.setParent( child, "w" );
+      rwt.remote.HandlerUtil.setParent( widget, "p" );
 
-      rwt.protocol.HandlerUtil.getWidgetDestructor()( widget );
+      rwt.remote.HandlerUtil.getWidgetDestructor()( widget );
       TestUtil.flush();
 
       assertTrue( widget.isDisposed() );
       assertTrue( child.isDisposed() );
-      assertEquals( [], rwt.protocol.HandlerUtil.getDestroyableChildren( parent ) );
+      assertEquals( [], rwt.remote.HandlerUtil.getDestroyableChildren( parent ) );
       parent.destroy();
     }
 

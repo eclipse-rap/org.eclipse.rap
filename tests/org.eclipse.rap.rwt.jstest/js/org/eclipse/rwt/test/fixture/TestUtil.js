@@ -926,7 +926,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
 
   createShellByProtocol : function( id ) {
     rwt.remote.EventUtil.setSuspended( true );
-    rwt.protocol.MessageProcessor.processOperation( {
+    rwt.remote.MessageProcessor.processOperation( {
       "target" : id ? id : "w2",
       "action" : "create",
       "type" : "rwt.widgets.Shell",
@@ -937,12 +937,12 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       }
     } );
     rwt.remote.EventUtil.setSuspended( false );
-    return rwt.protocol.ObjectRegistry.getObject( id );
+    return rwt.remote.ObjectRegistry.getObject( id );
   },
 
   createWidgetByProtocol : function( id, parentId, type ) {
     rwt.remote.EventUtil.setSuspended( true );
-    rwt.protocol.MessageProcessor.processOperation( {
+    rwt.remote.MessageProcessor.processOperation( {
       "target" : id,
       "action" : "create",
       "type" : type ? type : "rwt.widgets.Composite",
@@ -953,11 +953,11 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       }
     } );
     rwt.remote.EventUtil.setSuspended( false );
-    return rwt.protocol.ObjectRegistry.getObject( id );
+    return rwt.remote.ObjectRegistry.getObject( id );
   },
 
   protocolListen : function( id, properties ) {
-    var processor = rwt.protocol.MessageProcessor;
+    var processor = rwt.remote.MessageProcessor;
     processor.processOperation( {
       "target" : id,
       "action" : "listen",
@@ -966,7 +966,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   protocolCall : function( id, method, properties ) {
-    var processor = rwt.protocol.MessageProcessor;
+    var processor = rwt.remote.MessageProcessor;
     processor.processOperation( {
       "target" : id,
       "action" : "call",
@@ -977,7 +977,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
 
   protocolSet : function( id, properties ) {
     rwt.remote.EventUtil.setSuspended( true );
-    var processor = rwt.protocol.MessageProcessor;
+    var processor = rwt.remote.MessageProcessor;
     processor.processOperation( {
       "target" : id,
       "action" : "set",
@@ -987,9 +987,9 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   resetObjectManager : function() {
-    var w1 = rwt.protocol.ObjectRegistry._map[ "w1" ];
-    rwt.protocol.ObjectRegistry._map = { "w1" : w1 };
-    rwt.protocol.ObjectRegistry._callbacks = {};
+    var w1 = rwt.remote.ObjectRegistry._map[ "w1" ];
+    rwt.remote.ObjectRegistry._map = { "w1" : w1 };
+    rwt.remote.ObjectRegistry._callbacks = {};
   },
 
   getXMLHttpRequests : function() {

@@ -219,7 +219,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
         var server = rwt.remote.Server.getInstance();
         server.getRemoteObject( this.getParent() ).notify( "Folder", {
           "detail" : "close",
-          "item" : rwt.protocol.ObjectRegistry.getId( this )
+          "item" : rwt.remote.ObjectRegistry.getId( this )
         } );
       }
     },

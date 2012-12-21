@@ -134,7 +134,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
 
     _createDefaultDateTimeByProtocol : function( id, parentId ) {
       var styles =  [ "CALENDAR", "MEDIUM" ];
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.DateTime",
@@ -146,7 +146,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
           "weekdayShortNames" : this.weekdayShortNames
         }
       } );
-      return rwt.protocol.ObjectRegistry.getObject( "w3" );
+      return rwt.remote.ObjectRegistry.getObject( "w3" );
     }
 
   }

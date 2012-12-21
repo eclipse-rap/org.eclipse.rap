@@ -117,7 +117,7 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
             || ( this._expandBar._hasCollapseListener && !this._expanded ) )
         {
           var serverBar = rwt.remote.Server.getInstance().getRemoteObject( this._expandBar );
-          var itemId = rwt.protocol.ObjectRegistry.getId( this );
+          var itemId = rwt.remote.ObjectRegistry.getId( this );
           var eventName = this._expanded ? "Expand" : "Collapse";
           serverBar.notify( eventName, { "item" : itemId } );
         }

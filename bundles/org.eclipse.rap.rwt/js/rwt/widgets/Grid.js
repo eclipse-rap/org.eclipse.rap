@@ -1030,11 +1030,11 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
           rwt.remote.Server.getInstance().getRemoteObject( item ).set( "expanded", expanded );
           if( expanded && this._hasExpandListener ) {
             rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Expand", {
-              "item" : rwt.protocol.ObjectRegistry.getId( item )
+              "item" : rwt.remote.ObjectRegistry.getId( item )
             } );
           } else if( !expanded && this._hasCollapseListener ) {
             rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Collapse", {
-              "item" : rwt.protocol.ObjectRegistry.getId( item )
+              "item" : rwt.remote.ObjectRegistry.getId( item )
             } );
           }
         }

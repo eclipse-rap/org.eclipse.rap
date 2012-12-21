@@ -67,7 +67,7 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetManager", {
       if( isControl === true ) {
         widget.setUserData( "isControl", true );
       }
-      rwt.protocol.ObjectRegistry.add( id, widget, adapter );
+      rwt.remote.ObjectRegistry.add( id, widget, adapter );
     },
 
     /**
@@ -76,7 +76,7 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetManager", {
      */
     remove : function( widget ) {
       var id = this.findIdByWidget( widget );
-      rwt.protocol.ObjectRegistry.remove( id );
+      rwt.remote.ObjectRegistry.remove( id );
     },
 
     /**
@@ -84,7 +84,7 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetManager", {
      * registered for the given id exists.
      */
     findWidgetById : function( id ) {
-      return rwt.protocol.ObjectRegistry.getObject( id );
+      return rwt.remote.ObjectRegistry.getObject( id );
     },
 
     /**
@@ -92,7 +92,7 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetManager", {
      * registered.
      */
     findIdByWidget : function( widget ) {
-      return rwt.protocol.ObjectRegistry.getId( widget );
+      return rwt.remote.ObjectRegistry.getId( widget );
     },
 
     /**

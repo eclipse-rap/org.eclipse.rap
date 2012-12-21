@@ -11,7 +11,7 @@
 
 (function(){
 
-var ObjectRegistry = rwt.protocol.ObjectRegistry;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
 var launcher;

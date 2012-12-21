@@ -122,10 +122,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
     },
 
     testGetServerObject : function() {
-      rwt.protocol.ObjectRegistry.add( "w1", rwt.widgets.Display.getCurrent() );
+      rwt.remote.ObjectRegistry.add( "w1", rwt.widgets.Display.getCurrent() );
       var remoteObject = server.getRemoteObject( rwt.widgets.Display.getCurrent() );
 
-      assertTrue( remoteObject instanceof rwt.protocol.RemoteObject );
+      assertTrue( remoteObject instanceof rwt.remote.RemoteObject );
     },
 
     // See Bug 391393 - Invalid request counter on session restart

@@ -20,7 +20,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
   members : {
 
     testSetActiveKeysByProtocol : function() {
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       var keyUtil = rwt.remote.KeyEventSupport.getInstance();
 
       processor.processOperation( {
@@ -37,7 +37,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testSetCancelKeysByProtocol : function() {
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       var keyUtil = rwt.remote.KeyEventSupport.getInstance();
 
       processor.processOperation( {
@@ -669,8 +669,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
     setUp : function() {
       display = rwt.widgets.Display.getCurrent();
-      var adapter = rwt.protocol.HandlerRegistry.getHandler( "rwt.widgets.Display" );
-      rwt.protocol.ObjectRegistry.add( "w1", display, adapter );
+      var adapter = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Display" );
+      rwt.remote.ObjectRegistry.add( "w1", display, adapter );
     },
 
     _createWidget : function() {
@@ -679,14 +679,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       result.setLocation( 0, 0 );
       result.setDimension( 100, 100 );
       rwt.widgets.base.Widget.flushGlobalQueues();
-      rwt.protocol.ObjectRegistry.add( "w11", result );
+      rwt.remote.ObjectRegistry.add( "w11", result );
       return result;
     },
 
     _createTextWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -704,7 +704,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
           "Traverse" : true
         }
       } );
-      var text = rwt.protocol.ObjectRegistry.getObject( "w3" );
+      var text = rwt.remote.ObjectRegistry.getObject( "w3" );
       TestUtil.flush();
       text.focus();
       TestUtil.initRequestLog();
@@ -720,8 +720,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     _setActiveKeys : function( widget, activeKeys ) {
-      var id = rwt.protocol.ObjectRegistry.getId( widget );
-      var processor = rwt.protocol.MessageProcessor;
+      var id = rwt.remote.ObjectRegistry.getId( widget );
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : id,
         "action" : "set",
@@ -732,8 +732,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     _setCancelKeys : function( widget, cancelKeys ) {
-      var id = rwt.protocol.ObjectRegistry.getId( widget );
-      var processor = rwt.protocol.MessageProcessor;
+      var id = rwt.remote.ObjectRegistry.getId( widget );
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : id,
         "action" : "set",

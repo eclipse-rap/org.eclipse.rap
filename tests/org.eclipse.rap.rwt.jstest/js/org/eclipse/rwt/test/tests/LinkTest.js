@@ -18,7 +18,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
     testCreateLinkByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -28,7 +28,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Link );
       assertIdentical( shell, widget.getParent() );
@@ -44,7 +44,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
     testSetTextByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -55,7 +55,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
           "text" : [ [ "text1 ", null ], [ "link1", 0 ], [ " text2 ", null ], [ "link2", 1 ] ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var expected
         = "text1 "
@@ -71,7 +71,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
     testSetTextWithLineBreaksByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -82,7 +82,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
           "text" : [ [ "text\ntext ", null ], [ "link\nlink", 0 ] ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var expected
         = "text<br/>text "
@@ -98,7 +98,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
     testSetTextEscapedByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -109,7 +109,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
           "text" : [ [ "foo && <> \" bar ", null ], [ "foo && <> \" bar", 0 ] ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var expected
         = "foo &amp;&amp; &lt;&gt; &quot; bar "
@@ -124,7 +124,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
     testSetHasSelectionListenerByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -135,7 +135,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "Selection" : true } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
@@ -145,7 +145,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
     testSendSelectionEvent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -158,7 +158,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
       } );
       TestUtil.protocolListen( "w3", { "Selection" : true } );
       TestUtil.flush();
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
 
       //TestUtil.clickDOM( widget._link.getElement().lastChild );

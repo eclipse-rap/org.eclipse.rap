@@ -12,7 +12,7 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var MessageProcessor = rwt.protocol.MessageProcessor;
+var MessageProcessor = rwt.remote.MessageProcessor;
 
 var themeStore = rwt.theme.ThemeStore.getInstance();
 var originalTheme;

@@ -55,10 +55,6 @@ rwt.qx.Class.define("rwt.qx.Object", {
     }
   },
 
-  destruct : function() {
-    this._disposeFields("__userData");
-  },
-
   /*
   *****************************************************************************
      STATICS
@@ -679,6 +675,7 @@ rwt.qx.Class.define("rwt.qx.Object", {
 
       clazz = clazz.superclass;
     }
+    this._disposeFields("__userData");
 
     // Delete Entry from Object DB
     if (this.__dbKey != null)

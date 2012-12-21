@@ -12,8 +12,8 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var MessageProcessor = rwt.protocol.MessageProcessor;
-var ObjectRegistry = rwt.protocol.ObjectRegistry;
+var MessageProcessor = rwt.remote.MessageProcessor;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
   extend : rwt.qx.Object,
@@ -112,7 +112,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       } );
       TestUtil.fakeResponse( true );
       var shell = new rwt.widgets.Shell( [ "APPLICATION_MODAL" ] );
-      rwt.protocol.ObjectRegistry.add( "w222", shell );
+      rwt.remote.ObjectRegistry.add( "w222", shell );
       shell.addState( "rwt_APPLICATION_MODAL" );
       shell.initialize();
       shell.open();
@@ -374,7 +374,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     testNotifyShellActivate : function() {
       rwt.remote.EventUtil.setSuspended( true );
       var shell = new rwt.widgets.Shell( {} );
-      rwt.protocol.ObjectRegistry.add( "w222", shell );
+      rwt.remote.ObjectRegistry.add( "w222", shell );
       shell.initialize();
       shell.open();
       rwt.remote.EventUtil.setSuspended( false );
@@ -389,7 +389,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     testNotifyShellClose : function() {
       rwt.remote.EventUtil.setSuspended( true );
       var shell = new rwt.widgets.Shell( {} );
-      rwt.protocol.ObjectRegistry.add( "w222", shell );
+      rwt.remote.ObjectRegistry.add( "w222", shell );
       shell.initialize();
       shell.open();
       rwt.remote.EventUtil.setSuspended( false );

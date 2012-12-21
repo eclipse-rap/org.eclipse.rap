@@ -710,11 +710,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     testResetObjectManager : function() {
       TestUtil.createShellByProtocol( "w2" );
 
-      assertTrue( null != rwt.protocol.ObjectRegistry.getObject( "w1" ) );
+      assertTrue( null != rwt.remote.ObjectRegistry.getObject( "w1" ) );
       TestUtil.resetObjectManager();
 
-      assertTrue( null == rwt.protocol.ObjectRegistry.getObject( "w2" ) );
-      assertTrue( null != rwt.protocol.ObjectRegistry.getObject( "w1" ) );
+      assertTrue( null == rwt.remote.ObjectRegistry.getObject( "w2" ) );
+      assertTrue( null != rwt.remote.ObjectRegistry.getObject( "w1" ) );
     },
 
     testProtocolListen : function() {
@@ -785,7 +785,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       result.setLocation( 0, 0 );
       result.setDimension( 100, 100 );
       rwt.widgets.base.Widget.flushGlobalQueues();
-      rwt.protocol.ObjectRegistry.add( "w11", result );
+      rwt.remote.ObjectRegistry.add( "w11", result );
       return result;
     },
 

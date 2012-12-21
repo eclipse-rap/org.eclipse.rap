@@ -12,8 +12,8 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var MessageProcessor = rwt.protocol.MessageProcessor;
-var ObjectRegistry = rwt.protocol.ObjectRegistry;
+var MessageProcessor = rwt.remote.MessageProcessor;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
 var FakeServer = org.eclipse.rwt.test.fixture.FakeServer;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.JavaScriptLoaderTest", {
@@ -42,7 +42,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.JavaScriptLoaderTest", {
     },
 
     testParseScript : function() {
-      scheduleResponse( "rwt.protocol.ObjectRegistry.add( \"testObj\", { \"value\" : 42 } );" );
+      scheduleResponse( "rwt.remote.ObjectRegistry.add( \"testObj\", { \"value\" : 42 } );" );
 
       load( [ "rwt-resource/myJS" ] );
 
@@ -72,9 +72,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.JavaScriptLoaderTest", {
       FakeServer.getInstance().setRequestHandler( function( message, url ) {
         var response;
         if( url === "rwt-resource/myJS" ) {
-          response = "rwt.protocol.ObjectRegistry.add( \"testObj\", { \"value\" : 42 } );";
+          response = "rwt.remote.ObjectRegistry.add( \"testObj\", { \"value\" : 42 } );";
         } else if( url === "rwt-resource/myOtherJS" ) {
-          response = "rwt.protocol.ObjectRegistry.getObject( \"testObj\" ).value++;";
+          response = "rwt.remote.ObjectRegistry.getObject( \"testObj\" ).value++;";
         }
         return response;
       } );

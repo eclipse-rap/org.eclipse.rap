@@ -9,22 +9,22 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-rwt.protocol.HandlerRegistry.add( "forms.widgets.Hyperlink", {
+rwt.remote.HandlerRegistry.add( "forms.widgets.Hyperlink", {
 
   factory : function( properties ) {
     var wrap = properties.style.indexOf( "WRAP" ) !== -1 ? "wrap" : "";
     var result = new org.eclipse.ui.forms.widgets.Hyperlink( wrap );
-    rwt.protocol.HandlerUtil.addStatesForStyles( result, properties.style );
+    rwt.remote.HandlerUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
-    rwt.protocol.HandlerUtil.setParent( result, properties.parent );
+    rwt.remote.HandlerUtil.setParent( result, properties.parent );
     return result;
   },
 
-  destructor : rwt.protocol.HandlerUtil.getControlDestructor(),
+  destructor : rwt.remote.HandlerUtil.getControlDestructor(),
 
-  getDestroyableChildren : rwt.protocol.HandlerUtil.getDestroyableChildrenFinder(),
+  getDestroyableChildren : rwt.remote.HandlerUtil.getDestroyableChildrenFinder(),
 
-  properties : rwt.protocol.HandlerUtil.extendControlProperties( [
+  properties : rwt.remote.HandlerUtil.extendControlProperties( [
     "text",
     "image",
     "underlined",
@@ -33,7 +33,7 @@ rwt.protocol.HandlerRegistry.add( "forms.widgets.Hyperlink", {
     "activeBackground"
   ] ),
 
-  propertyHandler : rwt.protocol.HandlerUtil.extendControlPropertyHandler( {
+  propertyHandler : rwt.remote.HandlerUtil.extendControlPropertyHandler( {
     "text" : function( widget, value ) {
       var EncodingUtil = rwt.util.Encoding;
       var text = EncodingUtil.escapeText( value, false );
@@ -62,11 +62,11 @@ rwt.protocol.HandlerRegistry.add( "forms.widgets.Hyperlink", {
     }
   } ),
 
-  listeners : rwt.protocol.HandlerUtil.extendControlListeners( [
+  listeners : rwt.remote.HandlerUtil.extendControlListeners( [
     "DefaultSelection"
   ] ),
 
-  listenerHandler : rwt.protocol.HandlerUtil.extendControlListenerHandler( {} ),
+  listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} ),
 
   methods : []
 

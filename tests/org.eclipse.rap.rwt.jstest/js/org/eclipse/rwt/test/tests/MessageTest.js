@@ -220,7 +220,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageTest", {
     // Helper
 
     setUp : function() {
-      writer = new rwt.protocol.MessageWriter();
+      writer = new rwt.remote.MessageWriter();
     },
 
     tearDown : function() {

@@ -176,9 +176,9 @@ rwt.widgets.Display.prototype = {
       var history = rwt.client.BrowserNavigation.getInstance();
       // TODO: Temporary workaround for 388835
       var type = "rwt.client.BrowserNavigation";
-      rwt.protocol.ObjectRegistry.add( type,
+      rwt.remote.ObjectRegistry.add( type,
                                        history,
-                                       rwt.protocol.HandlerRegistry.getHandler( type ) );
+                                       rwt.remote.HandlerRegistry.getHandler( type ) );
       server.getRemoteObject( history ).notify( "Navigation", {
         "state" : state.substr( 1 )
       } );
@@ -187,7 +187,7 @@ rwt.widgets.Display.prototype = {
 
   _appendTimezoneOffset : function() {
     // NOTE : using ObjectRegistry implicitly registers the ClientInfo service
-    var clientObject = rwt.protocol.ObjectRegistry.getObject( "rwt.client.ClientInfo" );
+    var clientObject = rwt.remote.ObjectRegistry.getObject( "rwt.client.ClientInfo" );
     var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( clientObject );
     remoteObject.set( "timezoneOffset", clientObject.getTimezoneOffset() );
   }

@@ -18,7 +18,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
     testCreateGroupByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -28,7 +28,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Group );
       assertIdentical( shell, widget.getParent() );
@@ -41,7 +41,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
     testDestroyGroupWithChildrenByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var MessageProcessor = rwt.protocol.MessageProcessor;
+      var MessageProcessor = rwt.remote.MessageProcessor;
       MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -51,7 +51,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectRegistry = rwt.protocol.ObjectRegistry;
+      var ObjectRegistry = rwt.remote.ObjectRegistry;
       var group = ObjectRegistry.getObject( "w3" );
       MessageProcessor.processOperationArray( [ "create", "w4", "rwt.widgets.Composite", {
           "style" : [ "BORDER" ],
@@ -73,7 +73,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
     testSetTextByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -84,7 +84,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
           "text" : "foo && <> \" bar"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( "foo &amp; &lt;&gt; &quot; bar", widget.getLegend() );
       shell.destroy();
@@ -96,7 +96,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
 //    testApplyGroupLabelId : function(){
 //      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 //      var shell = TestUtil.createShellByProtocol( "w2" );
-//      var processor = rwt.protocol.MessageProcessor;
+//      var processor = rwt.remote.MessageProcessor;
 //      processor.processOperation( {
 //        "target" : "w3",
 //        "action" : "create",
@@ -106,7 +106,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
 //          "parent" : "w2"
 //        }
 //      } );
-//      var ObjectManager = rwt.protocol.ObjectRegistry;
+//      var ObjectManager = rwt.remote.ObjectRegistry;
 //      var widget = ObjectManager.getObject( "w3" );
 //      var labelObject = widget.getLegendObject().getLabelObject();
 //

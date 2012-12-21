@@ -11,8 +11,8 @@
 
 (function(){
 
-var Processor = rwt.protocol.MessageProcessor;
-var ObjectManager = rwt.protocol.ObjectRegistry;
+var Processor = rwt.remote.MessageProcessor;
+var ObjectManager = rwt.remote.ObjectRegistry;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExternalBrowserTest", {
 

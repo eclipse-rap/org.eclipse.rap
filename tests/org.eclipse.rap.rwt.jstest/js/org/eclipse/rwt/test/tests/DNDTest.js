@@ -22,9 +22,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testCreateDragSourceByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = rwt.remote.DNDSupport.getInstance();
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -59,9 +59,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testDisposeDragSourceByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = rwt.remote.DNDSupport.getInstance();
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -95,9 +95,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testDisposeDragSourceWithControlByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = rwt.remote.DNDSupport.getInstance();
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -130,9 +130,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testSetDragSourceTransferByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = rwt.remote.DNDSupport.getInstance();
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -165,9 +165,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testCreateDropTargetByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = rwt.remote.DNDSupport.getInstance();
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -202,9 +202,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testDisposeDropTargetByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = rwt.remote.DNDSupport.getInstance();
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -238,9 +238,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testDisposeDropTargetWithControlByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = rwt.remote.DNDSupport.getInstance();
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -273,9 +273,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testSetDropTargetTransferByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = rwt.remote.DNDSupport.getInstance();
-      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var ObjectManager = rwt.remote.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -1520,7 +1520,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();
       assertNull( dndHandler.__dragCache );
 
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : "w123",
         "action" : "destroy"
       } );
@@ -1534,7 +1534,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     // Helper
 
     createDragSourceByProtocol : function( id, controlId ) {
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : id,
         "action" : "create",
@@ -1545,7 +1545,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
           "transfer" : [ "default" ]
         }
       } );
-      return rwt.protocol.ObjectRegistry.getObject( id );
+      return rwt.remote.ObjectRegistry.getObject( id );
     },
 
     createSource : function() {
@@ -1601,9 +1601,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
         }
       } );
       var tree = new rwt.widgets.Grid( argsMap );
-      rwt.protocol.ObjectRegistry.add( "w2", tree );
-      rwt.protocol.ObjectRegistry.add( "w2_vscroll", tree.getVerticalBar() );
-      rwt.protocol.ObjectRegistry.add( "w2_hscroll", tree.getHorizontalBar() );
+      rwt.remote.ObjectRegistry.add( "w2", tree );
+      rwt.remote.ObjectRegistry.add( "w2_vscroll", tree.getVerticalBar() );
+      rwt.remote.ObjectRegistry.add( "w2_hscroll", tree.getHorizontalBar() );
       tree.setUserData( "isControl", true );
       tree.setSpace( 13, 364, 27, 30 );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );

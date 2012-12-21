@@ -12,8 +12,8 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var MessageProcessor = rwt.protocol.MessageProcessor;
-var ObjectRegistry = rwt.protocol.ObjectRegistry;
+var MessageProcessor = rwt.remote.MessageProcessor;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
@@ -744,7 +744,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
     testDisposeShell : function() {
       var shell = this._protocolCreateShell();
       shell.setVisibility( true );
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "destroy"
@@ -786,7 +786,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
     },
 
     _protocolCreateShell : function( id, parentId ) {
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       var props = {
         "style" : [ "BORDER", "APPLICATION_MODAL", "ON_TOP", "TITLE", "TOOL", "SHEET", "MIN" ]
       };
@@ -805,7 +805,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
     },
 
     _protocolSet : function( properties ) {
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "set",
@@ -814,7 +814,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
     },
 
     _protocolCall : function( targetId, method ) {
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : targetId,
         "action" : "call",
@@ -824,7 +824,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
     },
 
     _protocolListen : function( properties ) {
-      var processor = rwt.protocol.MessageProcessor;
+      var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "listen",

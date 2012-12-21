@@ -24,7 +24,7 @@
   var lv1 = "  ";
   var lv2 = "    ";
 
-  var registry = rwt.protocol.HandlerRegistry._registry;
+  var registry = rwt.remote.HandlerRegistry._registry;
   var text = "RAP Protocol Reference" + nl + nl;
   for( var key in registry ) {
     try {

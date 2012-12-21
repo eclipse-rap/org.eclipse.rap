@@ -29,8 +29,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
 
     testDestroyToolTipWithParent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var ObjectRegistry = rwt.protocol.ObjectRegistry;
-      var MessageProcessor = rwt.protocol.MessageProcessor;
+      var ObjectRegistry = rwt.remote.ObjectRegistry;
+      var MessageProcessor = rwt.remote.MessageProcessor;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
 
@@ -185,7 +185,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     // Helper
 
     _createToolTipByProtocol : function( id, parentId, style ) {
-      rwt.protocol.MessageProcessor.processOperation( {
+      rwt.remote.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.ToolTip",
@@ -194,7 +194,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
           "parent" : parentId
         }
       } );
-      return rwt.protocol.ObjectRegistry.getObject( id );
+      return rwt.remote.ObjectRegistry.getObject( id );
     }
 
   }

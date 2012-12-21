@@ -11,9 +11,9 @@
 
 (function(){
 
-var ObjectRegistry = rwt.protocol.ObjectRegistry;
-var AdapterRegistry = rwt.protocol.HandlerRegistry;
-var MessageProcessor = rwt.protocol.MessageProcessor;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
+var AdapterRegistry = rwt.remote.HandlerRegistry;
+var MessageProcessor = rwt.remote.MessageProcessor;
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {

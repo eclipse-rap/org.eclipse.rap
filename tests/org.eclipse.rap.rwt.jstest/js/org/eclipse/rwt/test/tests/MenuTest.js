@@ -12,8 +12,8 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var ObjectRegistry = rwt.protocol.ObjectRegistry;
-var MessageProcessor = rwt.protocol.MessageProcessor;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
+var MessageProcessor = rwt.remote.MessageProcessor;
 var Menu = rwt.widgets.Menu;
 var MenuItem = rwt.widgets.MenuItem;
 var MenuBar = rwt.widgets.MenuBar;
@@ -1196,7 +1196,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testDisposeWithRunningAnimaton : function() {
       createSimpleMenu( "push" );
-      rwt.protocol.ObjectRegistry.add( "w321", menu );
+      rwt.remote.ObjectRegistry.add( "w321", menu );
       menu.hide();
       TestUtil.flush();
       menu.setAnimation( {
@@ -1373,7 +1373,7 @@ var createMenuWithItems = function( itemType, itemCount ) {
 
 var createPopUpMenuByProtocol = function( id ) {
   TestUtil.createShellByProtocol( "w2" );
-  rwt.protocol.MessageProcessor.processOperation( {
+  rwt.remote.MessageProcessor.processOperation( {
     "target" : id,
     "action" : "create",
     "type" : "rwt.widgets.Menu",
@@ -1382,11 +1382,11 @@ var createPopUpMenuByProtocol = function( id ) {
       "parent" : "w2"
     }
   } );
-  return rwt.protocol.ObjectRegistry.getObject( id );
+  return rwt.remote.ObjectRegistry.getObject( id );
 };
 
 var createMenuItemByProtocol = function( id, parentId, style ) {
-  rwt.protocol.MessageProcessor.processOperation( {
+  rwt.remote.MessageProcessor.processOperation( {
     "target" : id,
     "action" : "create",
     "type" : "rwt.widgets.MenuItem",
@@ -1396,7 +1396,7 @@ var createMenuItemByProtocol = function( id, parentId, style ) {
       "index" : 0
     }
   } );
-  return rwt.protocol.ObjectRegistry.getObject( id );
+  return rwt.remote.ObjectRegistry.getObject( id );
 };
 
 var createSimpleMenu = function( type ) {

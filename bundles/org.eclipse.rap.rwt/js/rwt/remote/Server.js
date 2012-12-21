@@ -14,7 +14,7 @@
 
 var Client = rwt.client.Client;
 var Timer = rwt.client.Timer;
-var Processor = rwt.protocol.MessageProcessor;
+var Processor = rwt.remote.MessageProcessor;
 var ErrorHandler = rwt.runtime.ErrorHandler;
 var EventUtil = rwt.remote.EventUtil;
 var ServerPush = rwt.client.ServerPush;
@@ -158,13 +158,13 @@ rwt.qx.Class.define( "rwt.remote.Server", {
 
     getMessageWriter : function() {
       if( this._writer === null ) {
-        this._writer = new rwt.protocol.MessageWriter();
+        this._writer = new rwt.remote.MessageWriter();
       }
       return this._writer;
     },
 
     getRemoteObject : function( target ) {
-      return rwt.protocol.RemoteObjectFactory.getRemoteObject( target );
+      return rwt.remote.RemoteObjectFactory.getRemoteObject( target );
     },
 
     onNextSend : function( func, context ) {
