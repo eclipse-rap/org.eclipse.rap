@@ -124,7 +124,7 @@ public class StartupPage {
 
   protected void writeAppScript( PrintWriter printWriter ) {
     StringBuilder code = new StringBuilder();
-    code.append( "rwt.protocol.MessageProcessor.processMessage( " );
+    code.append( "rwt.remote.MessageProcessor.processMessage( " );
     code.append( StartupJson.get() );
     code.append( ");/*EOM*/" );
     printWriter.write( code.toString() );
