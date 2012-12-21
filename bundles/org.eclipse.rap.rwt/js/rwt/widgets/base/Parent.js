@@ -560,10 +560,10 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
         if (vOldIndex != vIndex)
         {
           if (vOldIndex != -1) {
-            rwt.util.Array.removeAt(vChildren, vOldIndex);
+            rwt.util.Arrays.removeAt(vChildren, vOldIndex);
           }
 
-          rwt.util.Array.insertAt(vChildren, vChild, vIndex);
+          rwt.util.Arrays.insertAt(vChildren, vChild, vIndex);
 
           if (this._initialLayoutDone)
           {
@@ -741,7 +741,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
      * @return {Widget|null} First child widget (null if this widget does not have any children)
      */
     getFirstChild : function() {
-      return rwt.util.Array.getFirst(this.getChildren()) || null;
+      return rwt.util.Arrays.getFirst(this.getChildren()) || null;
     },
 
 
@@ -753,7 +753,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
      *     not have any visible children)
      */
     getFirstVisibleChild : function() {
-      return rwt.util.Array.getFirst(this.getVisibleChildren()) || null;
+      return rwt.util.Arrays.getFirst(this.getVisibleChildren()) || null;
     },
 
 
@@ -786,7 +786,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
      *     not have any children)
      */
     getLastChild : function() {
-      return rwt.util.Array.getLast(this.getChildren()) || null;
+      return rwt.util.Arrays.getLast(this.getChildren()) || null;
     },
 
 
@@ -798,7 +798,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
      *     not have any visible children)
      */
     getLastVisibleChild : function() {
-      return rwt.util.Array.getLast(this.getVisibleChildren()) || null;
+      return rwt.util.Arrays.getLast(this.getVisibleChildren()) || null;
     },
 
 
@@ -919,7 +919,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
           }
         } );
       },
-      "default" : rwt.util.Function.returnTrue
+      "default" : rwt.util.Functions.returnTrue
     } ),
 
     // overridden
@@ -1086,7 +1086,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
       {
         delete this._childrenQueue[vChild.toHashCode()];
 
-        if (rwt.util.Object.isEmpty(this._childrenQueue))
+        if (rwt.util.Objects.isEmpty(this._childrenQueue))
         {
           this._childrenQueue = {};
           rwt.widgets.base.Widget.removeFromGlobalLayoutQueue(this);
@@ -1103,7 +1103,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
      */
     _flushChildrenQueue : function()
     {
-      if (!rwt.util.Object.isEmpty(this._childrenQueue))
+      if (!rwt.util.Objects.isEmpty(this._childrenQueue))
       {
         this.getLayoutImpl().flushChildrenQueue(this._childrenQueue);
         delete this._childrenQueue;

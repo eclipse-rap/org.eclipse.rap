@@ -13,7 +13,7 @@ namespace( "rwt.widgets" );
 
 rwt.widgets.Display = function( properties ) {
   this._document = rwt.widgets.base.ClientDocument.getInstance();
-  this._request = rwt.remote.Server.getInstance();
+  this._server = rwt.remote.Server.getInstance();
   this._exitConfirmation = null;
   this._initialized = false;
   if( rwt.widgets.Display._current !== undefined ) {
@@ -43,14 +43,14 @@ rwt.widgets.Display.prototype = {
   },
 
   init : function() {
-    this._request.getMessageWriter().appendHead( "rwt_initialize", true );
+    this._server.getMessageWriter().appendHead( "rwt_initialize", true );
     this._appendWindowSize();
     this._appendSystemDPI();
     this._appendColorDepth();
     this._appendInitialHistoryEvent();
     this._appendTimezoneOffset();
     this._attachListener();
-    this._request.send();
+    this._server.send();
     this._initialized = true;
   },
 
@@ -77,7 +77,7 @@ rwt.widgets.Display.prototype = {
   },
 
   setFocusControl : function( widgetId ) {
-    var widget = this.findWidgetById( widgetId );
+    var widget = rwt.remote.ObjectRegistry.getObject( widgetId );
     if( widget.isSeeable() ) {
       widget.focus();
     } else {
@@ -113,7 +113,7 @@ rwt.widgets.Display.prototype = {
   _attachListener : function() {
     this._document.addEventListener( "windowresize", this._onResize, this );
     this._document.addEventListener( "keypress", this._onKeyPress, this );
-    this._request.addEventListener( "send", this._onSend, this );
+    this._server.addEventListener( "send", this._onSend, this );
     rwt.remote.KeyEventSupport.getInstance(); // adds global KeyListener
     rwt.runtime.System.getInstance().addEventListener( "beforeunload", this._onBeforeUnload, this );
     rwt.runtime.System.getInstance().addEventListener( "unload", this._onUnload, this );
@@ -122,8 +122,8 @@ rwt.widgets.Display.prototype = {
   _onResize : function( evt ) {
     this._appendWindowSize();
     // Fix for bug 315230
-    if( this._request.getRequestCounter() != null ) {
-      this._request.send();
+    if( this._server.getRequestCounter() != null ) {
+      this._server.send();
     }
   },
 
@@ -151,7 +151,7 @@ rwt.widgets.Display.prototype = {
   _onUnload : function() {
     this._document.removeEventListener( "windowresize", this._onResize, this );
     this._document.removeEventListener( "keypress", this._onKeyPress, this );
-    this._request.removeEventListener( "send", this._onSend, this );
+    this._server.removeEventListener( "send", this._onSend, this );
   },
 
   ///////////////////

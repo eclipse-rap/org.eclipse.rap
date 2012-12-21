@@ -173,7 +173,7 @@ rwt.qx.Class.define("rwt.widgets.util.Selection",
      * @return {Boolean} whether the selection is empty
      */
     isEmpty : function() {
-      return rwt.util.Object.isEmpty(this.__storage);
+      return rwt.util.Objects.isEmpty(this.__storage);
     }
   },
 

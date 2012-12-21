@@ -163,7 +163,7 @@ rwt.qx.Class.define( "rwt.qx.Class", {
           clazz = this.__wrapConstructor(config.construct, name, config.type);
           if( config.statics ) {
             var key;
-            for( var i = 0, a = rwt.util.Object.getKeys( config.statics ), l = a.length; i < l; i++ ) {
+            for( var i = 0, a = rwt.util.Objects.getKeys( config.statics ), l = a.length; i < l; i++ ) {
               key = a[ i ];
               clazz[ key ] = config.statics[ key ];
             }
@@ -287,7 +287,7 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * @return {Number} the total number of classes
      */
     getTotalNumber : function() {
-      return rwt.util.Object.getLength(this.__registry);
+      return rwt.util.Objects.getLength(this.__registry);
     },
 
 
@@ -1051,7 +1051,7 @@ rwt.qx.Class.define( "rwt.qx.Class", {
     __addMembers : function( clazz, members, patch, base, wrap ) {
       var proto = clazz.prototype;
       var key, member;
-      for( var i = 0, a = rwt.util.Object.getKeys( members ), l = a.length; i < l; i++ ) {
+      for( var i = 0, a = rwt.util.Objects.getKeys( members ), l = a.length; i < l; i++ ) {
         key = a[ i ];
         member = members[ key ];
         // Added helper stuff to functions

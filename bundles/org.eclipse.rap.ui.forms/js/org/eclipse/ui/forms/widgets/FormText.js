@@ -95,7 +95,7 @@ rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
         widgetManager.setFont( textFragment, font[ 0 ], font[ 1 ], font[ 2 ], font[ 3 ] );
       }
       if( color != null ) {
-        textFragment.setTextColor( rwt.util.ColorUtil.rgbToRgbString( color ) );
+        textFragment.setTextColor( rwt.util.Colors.rgbToRgbString( color ) );
       }
       this._segments[ this._segments.length ] = textFragment;
       this.add( textFragment );

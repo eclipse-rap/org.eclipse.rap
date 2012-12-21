@@ -195,14 +195,14 @@ rwt.qx.Class.define("rwt.widgets.base.ClientDocument",
     /**
      * @signature function()
      */
-    _applyParent : rwt.util.Function.returnTrue,
+    _applyParent : rwt.util.Functions.returnTrue,
 
 
     /**
      * @signature function()
      * @return {Object}
      */
-    getTopLevelWidget : rwt.util.Function.returnThis,
+    getTopLevelWidget : rwt.util.Functions.returnThis,
 
 
     /**
@@ -234,7 +234,7 @@ rwt.qx.Class.define("rwt.widgets.base.ClientDocument",
      * @return {rwt.widgets.base.Parent} TODOC
      * @signature function()
      */
-    getParent : rwt.util.Function.returnNull,
+    getParent : rwt.util.Functions.returnNull,
 
 
     /**
@@ -244,7 +244,7 @@ rwt.qx.Class.define("rwt.widgets.base.ClientDocument",
      * @return {rwt.widgets.base.ToolTip} TODOC
      * @signature function()
      */
-    getToolTip : rwt.util.Function.returnNull,
+    getToolTip : rwt.util.Functions.returnNull,
 
     /**
      * TODOC
@@ -253,7 +253,7 @@ rwt.qx.Class.define("rwt.widgets.base.ClientDocument",
      * @signature function()
      * @return {boolean}
      */
-    isSeeable : rwt.util.Function.returnTrue,
+    isSeeable : rwt.util.Functions.returnTrue,
 
 
     _isDisplayable : true,
@@ -353,7 +353,7 @@ rwt.qx.Class.define("rwt.widgets.base.ClientDocument",
         {
           this._modalNativeWindow = null;
         } else {
-          rwt.util.Array.remove( this._modalWidgets, vActiveChild );
+          rwt.util.Arrays.remove( this._modalWidgets, vActiveChild );
         }
       }
       var l = this._modalWidgets.length;

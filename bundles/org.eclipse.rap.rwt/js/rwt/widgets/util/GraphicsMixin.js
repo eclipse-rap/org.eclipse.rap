@@ -94,7 +94,7 @@ rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
    },
 
     _checkAntiAlias : rwt.util.Variant.select( "qx.client", {
-      "default" : rwt.util.Function.returnTrue,
+      "default" : rwt.util.Functions.returnTrue,
       "mshtml" : function( opacity ) {
         if( this._gfxData && this._gfxData.backgroundInsert ) {
           var antiAlias = opacity === 1 || opacity === null;
@@ -184,7 +184,7 @@ rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
     },
 
     _handleCssRadii : rwt.util.Variant.select( "qx.client", {
-      "default" : rwt.util.Function.returnTrue,
+      "default" : rwt.util.Functions.returnTrue,
       "newmshtml" : function( radii ) {
         // NOTE : While the actual border is rendred with vector graphics, CSS radii
         //        are set anyway to provide clipping and rounded CSS-shadows
@@ -673,7 +673,7 @@ rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
     },
 
     _willBeLayouted : function() {
-      return this._jobQueue !== undefined || !rwt.util.Object.isEmpty( this._layoutChanges );
+      return this._jobQueue !== undefined || !rwt.util.Objects.isEmpty( this._layoutChanges );
     }
 
   }

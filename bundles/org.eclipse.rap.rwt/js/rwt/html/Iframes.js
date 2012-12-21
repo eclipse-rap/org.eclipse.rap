@@ -14,7 +14,7 @@
 /**
  * Cross browser abstractions to work with iframes.
  */
-rwt.qx.Class.define("rwt.html.Iframe",
+rwt.qx.Class.define("rwt.html.Iframes",
 {
   /*
   *****************************************************************************
@@ -47,7 +47,7 @@ rwt.qx.Class.define("rwt.html.Iframe",
       {
         try
         {
-          var vDoc = rwt.html.Iframe.getDocument(vIframe);
+          var vDoc = rwt.html.Iframes.getDocument(vIframe);
           return vDoc ? vDoc.defaultView : null;
         }
         catch(ex)
@@ -72,7 +72,7 @@ rwt.qx.Class.define("rwt.html.Iframe",
       {
         try
         {
-          var vWin = rwt.html.Iframe.getWindow(vIframe);
+          var vWin = rwt.html.Iframes.getWindow(vIframe);
           return vWin ? vWin.document : null;
         }
         catch(ex)
@@ -101,7 +101,7 @@ rwt.qx.Class.define("rwt.html.Iframe",
      */
     getBody : function(vIframe)
     {
-      var vDoc = rwt.html.Iframe.getDocument(vIframe);
+      var vDoc = rwt.html.Iframes.getDocument(vIframe);
       return vDoc ? vDoc.getElementsByTagName("body")[0] : null;
     }
   }

@@ -394,12 +394,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       widget.setTextColor( "#FF0000" );
       this.initWidget( widget, true );
       var style = widget._getTargetNode().style;
-      var rgb = rwt.util.ColorUtil.stringToRgb( style.color );
+      var rgb = rwt.util.Colors.stringToRgb( style.color );
       assertEquals( 255, rgb[ 0 ] );
       assertEquals( 0, rgb[ 1 ] );
       assertEquals( 0 , rgb[ 2 ] );
       widget.setTextColor( "#00FF00" );
-      rgb = rwt.util.ColorUtil.stringToRgb( style.color );
+      rgb = rwt.util.Colors.stringToRgb( style.color );
       assertEquals( 0, rgb[ 0 ] );
       assertEquals( 255, rgb[ 1 ] );
       assertEquals( 0 , rgb[ 2 ] );

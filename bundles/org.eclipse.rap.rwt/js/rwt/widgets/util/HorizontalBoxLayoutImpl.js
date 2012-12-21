@@ -183,7 +183,7 @@ rwt.qx.Class.define("rwt.widgets.util.HorizontalBoxLayoutImpl",
           vCurrentChild = vFlexibleChildren[vIterator];
 
           vComputedFlexibleWidth = vCurrentChild._computedWidthFlexValue = vCurrentChild._computedWidthParsed * vPartWidth;
-          vAllocationDiff += vComputedFlexibleWidth - rwt.util.Number.limit(vComputedFlexibleWidth, vCurrentChild.getMinWidthValue(), vCurrentChild.getMaxWidthValue());
+          vAllocationDiff += vComputedFlexibleWidth - rwt.util.Numbers.limit(vComputedFlexibleWidth, vCurrentChild.getMinWidthValue(), vCurrentChild.getMaxWidthValue());
         }
 
         // Rounding diff
@@ -227,7 +227,7 @@ rwt.qx.Class.define("rwt.widgets.util.HorizontalBoxLayoutImpl",
               }
               else
               {
-                rwt.util.Array.removeAt(vFlexibleChildren, vIterator);
+                rwt.util.Arrays.removeAt(vFlexibleChildren, vIterator);
 
                 vCurrentChild._computedWidthFlexValue = Math.round(vCurrentChild._computedWidthFlexValue);
                 vUsedWidth += Math.round(vCurrentChild._computedWidthFlexValue + vAdjust);
@@ -242,7 +242,7 @@ rwt.qx.Class.define("rwt.widgets.util.HorizontalBoxLayoutImpl",
               }
               else
               {
-                rwt.util.Array.removeAt(vFlexibleChildren, vIterator);
+                rwt.util.Arrays.removeAt(vFlexibleChildren, vIterator);
 
                 vCurrentChild._computedWidthFlexValue = Math.round(vCurrentChild._computedWidthFlexValue);
                 vUsedWidth += Math.round(vCurrentChild._computedWidthFlexValue - vAdjust);
@@ -286,7 +286,7 @@ rwt.qx.Class.define("rwt.widgets.util.HorizontalBoxLayoutImpl",
 
                 vUsedWidth += vCurrentChild._computedWidthFlexValue;
                 delete vCurrentChild._allocationLoops;
-                rwt.util.Array.removeAt(vFlexibleChildren, vIterator);
+                rwt.util.Arrays.removeAt(vFlexibleChildren, vIterator);
               }
               else
               {

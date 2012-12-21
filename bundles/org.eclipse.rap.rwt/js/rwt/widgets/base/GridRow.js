@@ -813,7 +813,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           }
         }
       },
-      "default" : rwt.util.Function.returnTrue
+      "default" : rwt.util.Functions.returnTrue
     } ),
 
     ////////////////

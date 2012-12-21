@@ -33,7 +33,7 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
         widget.setStyleProperty( "fontSize", "0" );
         widget.setStyleProperty( "lineHeight", "0" );
       },
-      "default" : rwt.util.Function.returnTrue
+      "default" : rwt.util.Functions.returnTrue
     } ),
 
     getControl : function( widget ) {

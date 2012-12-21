@@ -22,7 +22,7 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
     this._inputElement = null;
     this._iframe = null;
     this._cursor = "";
-    this.__onValueChange = rwt.util.Function.bind( this._onValueChange, this );
+    this.__onValueChange = rwt.util.Functions.bind( this._onValueChange, this );
     this.setEnableElementFocus( false );
     this._createIframeWidget();
   },
@@ -246,8 +246,8 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
 
     // NOTE : key-handling interferes with native keyboard control. This
     //        disables the "pressed" state, but is still the lesser evil.
-    _onKeyDown : rwt.util.Function.returnTrue,
-    _onKeyUp : rwt.util.Function.returnTrue,
+    _onKeyDown : rwt.util.Functions.returnTrue,
+    _onKeyUp : rwt.util.Functions.returnTrue,
 
     // NOTE : In chrome (windows?), the input-element needs to be focused using
     //        tabulator for keyboard control to work. To minimize confusion,

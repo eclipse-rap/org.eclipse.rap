@@ -14,7 +14,7 @@
 /**
  * Methods to convert colors between different color spaces.
  */
-rwt.qx.Class.define("rwt.util.ColorUtil",
+rwt.qx.Class.define("rwt.util.Colors",
 {
   statics :
   {
@@ -228,9 +228,9 @@ rwt.qx.Class.define("rwt.util.ColorUtil",
      */
     rgbToHexString : function(rgb) {
       return(
-        rwt.util.String.pad(rgb[0].toString(16).toUpperCase(), 2) +
-        rwt.util.String.pad(rgb[1].toString(16).toUpperCase(), 2) +
-        rwt.util.String.pad(rgb[2].toString(16).toUpperCase(), 2)
+        rwt.util.Strings.pad(rgb[0].toString(16).toUpperCase(), 2) +
+        rwt.util.Strings.pad(rgb[1].toString(16).toUpperCase(), 2) +
+        rwt.util.Strings.pad(rgb[2].toString(16).toUpperCase(), 2)
       );
     },
 

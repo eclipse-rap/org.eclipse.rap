@@ -66,8 +66,8 @@ rwt.qx.Class.define("rwt.widgets.util.IframeManager",
      */
     handleMouseDown : function(evt)
     {
-      var iframeMap = this._blockData = rwt.util.Object.copy(this.getAll());
-      // console.debug("Blocking frames: " + rwt.util.Object.getLength(iframeMap));
+      var iframeMap = this._blockData = rwt.util.Objects.copy(this.getAll());
+      // console.debug("Blocking frames: " + rwt.util.Objects.getLength(iframeMap));
 
       for (var key in iframeMap) {
         iframeMap[key].block();
@@ -85,7 +85,7 @@ rwt.qx.Class.define("rwt.widgets.util.IframeManager",
     handleMouseUp : function(evt)
     {
       var iframeMap = this._blockData;
-      // console.debug("Releasing frames: " + rwt.util.Object.getLength(iframeMap));
+      // console.debug("Releasing frames: " + rwt.util.Objects.getLength(iframeMap));
 
       for (var key in iframeMap) {
         iframeMap[key].release();

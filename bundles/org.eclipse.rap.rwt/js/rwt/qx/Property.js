@@ -141,7 +141,7 @@ rwt.qx.Class.define( "rwt.qx.Property", {
       "Interface" : 'value !== null && value.$$type === "Interface"',
       "Theme"     : 'value !== null && value.$$type === "Theme"',
 
-      "Color"     : 'typeof value === "string" && rwt.util.ColorUtil.isValid(value)',
+      "Color"     : 'typeof value === "string" && rwt.util.Colors.isValid(value)',
       "Border"    : 'value !== null',
       "Font"      : 'value !== null',
       "Label"     : 'value !== null && typeof value === "string"'
@@ -314,14 +314,14 @@ rwt.qx.Class.define( "rwt.qx.Property", {
       if( name.charAt(0) === "_" ) {
         if( name.charAt(1) === "_" ) {
           prefix = "__";
-          postfix = rwt.util.String.toFirstUp(name.substring(2));
+          postfix = rwt.util.Strings.toFirstUp(name.substring(2));
         } else {
           prefix = "_";
-          postfix = rwt.util.String.toFirstUp(name.substring(1));
+          postfix = rwt.util.Strings.toFirstUp(name.substring(1));
         }
       } else {
         prefix = "";
-        postfix = rwt.util.String.toFirstUp(name);
+        postfix = rwt.util.Strings.toFirstUp(name);
       }
 
       // Attach methods
@@ -365,7 +365,7 @@ rwt.qx.Class.define( "rwt.qx.Property", {
       }
 
       if( config.mode == "shorthand" ) {
-        var shorthand = "a=rwt.util.Array.fromShortHand(rwt.util.Array.fromArguments(a));";
+        var shorthand = "a=rwt.util.Arrays.fromShortHand(rwt.util.Arrays.fromArguments(a));";
         setter.push( shorthand );
 
         if( themeable ) {
@@ -747,7 +747,7 @@ rwt.qx.Class.define( "rwt.qx.Property", {
           }
           else if( config.check instanceof Array ) {
             // reconfigure for faster access trough map usage
-            config.checkMap = rwt.util.Object.fromArray(config.check);
+            config.checkMap = rwt.util.Objects.fromArray(config.check);
 
             code.push(clazz.classname, '.$$properties.', name);
             code.push( '.checkMap[value]===undefined' );

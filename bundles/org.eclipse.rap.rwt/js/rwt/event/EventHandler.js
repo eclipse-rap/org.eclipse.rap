@@ -17,7 +17,7 @@ rwt.qx.Class.define( "rwt.event.EventHandler", {
 
   statics : {
     _filter : {},
-    _allowContextMenu : rwt.util.Function.returnFalse,
+    _allowContextMenu : rwt.util.Functions.returnFalse,
     _captureWidget : null,
     _focusRoot : null,
     _menuManager : null,
@@ -32,14 +32,14 @@ rwt.qx.Class.define( "rwt.event.EventHandler", {
     // Public functions
 
     init : function() {
-      var functionUtil = rwt.util.Function;
+      var functionUtil = rwt.util.Functions;
       this.__onmouseevent = functionUtil.bind( this._onmouseevent, this );
       this.__ondragevent = functionUtil.bind( this._ondragevent, this );
       this.__onselectevent = functionUtil.bind( this._onselectevent, this );
       this.__onwindowblur = functionUtil.bind( this._onwindowblur, this );
       this.__onwindowfocus = functionUtil.bind( this._onwindowfocus, this );
       this.__onwindowresize = functionUtil.bind( this._onwindowresize, this );
-      this.__onKeyEvent = rwt.util.Function.bind( this._onKeyEvent, this );
+      this.__onKeyEvent = rwt.util.Functions.bind( this._onKeyEvent, this );
       rwt.event.EventHandlerUtil.applyBrowserFixes();
     },
 

@@ -184,7 +184,7 @@ rwt.qx.Class.define("rwt.widgets.util.VerticalBoxLayoutImpl",
           vCurrentChild = vFlexibleChildren[vIterator];
 
           vComputedFlexibleHeight = vCurrentChild._computedHeightFlexValue = vCurrentChild._computedHeightParsed * vPartHeight;
-          vAllocationDiff += vComputedFlexibleHeight - rwt.util.Number.limit(vComputedFlexibleHeight, vCurrentChild.getMinHeightValue(), vCurrentChild.getMaxHeightValue());
+          vAllocationDiff += vComputedFlexibleHeight - rwt.util.Numbers.limit(vComputedFlexibleHeight, vCurrentChild.getMinHeightValue(), vCurrentChild.getMaxHeightValue());
         }
 
         // Rounding diff
@@ -228,7 +228,7 @@ rwt.qx.Class.define("rwt.widgets.util.VerticalBoxLayoutImpl",
               }
               else
               {
-                rwt.util.Array.removeAt(vFlexibleChildren, vIterator);
+                rwt.util.Arrays.removeAt(vFlexibleChildren, vIterator);
 
                 vCurrentChild._computedHeightFlexValue = Math.round(vCurrentChild._computedHeightFlexValue);
                 vUsedHeight += Math.round(vCurrentChild._computedHeightFlexValue + vAdjust);
@@ -243,7 +243,7 @@ rwt.qx.Class.define("rwt.widgets.util.VerticalBoxLayoutImpl",
               }
               else
               {
-                rwt.util.Array.removeAt(vFlexibleChildren, vIterator);
+                rwt.util.Arrays.removeAt(vFlexibleChildren, vIterator);
 
                 vCurrentChild._computedHeightFlexValue = Math.round(vCurrentChild._computedHeightFlexValue);
                 vUsedHeight += Math.round(vCurrentChild._computedHeightFlexValue - vAdjust);
@@ -286,7 +286,7 @@ rwt.qx.Class.define("rwt.widgets.util.VerticalBoxLayoutImpl",
 
                 vUsedHeight += vCurrentChild._computedHeightFlexValue;
                 delete vCurrentChild._allocationLoops;
-                rwt.util.Array.removeAt(vFlexibleChildren, vIterator);
+                rwt.util.Arrays.removeAt(vFlexibleChildren, vIterator);
               }
               else
               {

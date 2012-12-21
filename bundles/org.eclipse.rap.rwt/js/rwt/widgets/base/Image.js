@@ -443,7 +443,7 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
       "gecko|opera|webkit" : function() {
         this._styleEnabled();
       },
-      "default": rwt.util.Function.returnTrue
+      "default": rwt.util.Functions.returnTrue
     } ),
 
     /*

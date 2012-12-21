@@ -150,7 +150,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
       this._dropTargets[ hash ] = {
         "actions" : this._operationsToActions( operations )
       };
-      widget.setSupportsDropMethod( rwt.util.Function.returnTrue );
+      widget.setSupportsDropMethod( rwt.util.Functions.returnTrue );
     },
 
     setDropTargetTransferTypes : function( widget, transferTypes ) {

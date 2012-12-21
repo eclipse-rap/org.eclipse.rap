@@ -234,11 +234,11 @@ rwt.remote.MessageProcessor = {
   },
 
   _getSetterName : function( property ) {
-    return "set" + rwt.util.String.toFirstUp( property );
+    return "set" + rwt.util.Strings.toFirstUp( property );
   },
 
   _getListenerSetterName : function( eventType ) {
-    return "setHas" + rwt.util.String.toFirstUp( eventType ) + "Listener";
+    return "setHas" + rwt.util.Strings.toFirstUp( eventType ) + "Listener";
   }
 
 };

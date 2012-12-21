@@ -256,7 +256,7 @@ rwt.qx.Mixin.define( "rwt.animation.VisibilityAnimationMixin", {
     },
 
     _lockActiveState : function() {
-      //this._setActiveState = rwt.util.Function.returnNull;
+      //this._setActiveState = rwt.util.Functions.returnNull;
       this.getWindowManager().blockActiveState = true;
     },
 

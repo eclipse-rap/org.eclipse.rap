@@ -187,7 +187,7 @@ rwt.qx.Class.define( "rwt.animation.Animation", {
       if( this.isStarted() ) {
         throw "Cannot remove AnimationRenderer: Animation already started!";
       }
-      rwt.util.Array.remove( this._renderer, renderer );
+      rwt.util.Arrays.remove( this._renderer, renderer );
     },
 
     _init : function() {
@@ -260,7 +260,7 @@ rwt.qx.Class.define( "rwt.animation.Animation", {
       if( animation === this._exclusive ) {
         this._exclusive = null;
       } else {
-        rwt.util.Array.remove( this._queue, animation );
+        rwt.util.Arrays.remove( this._queue, animation );
       }
       if( this._exclusive === null && this._queue.length === 0 ) {
         this._stopLoop();

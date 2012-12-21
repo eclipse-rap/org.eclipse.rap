@@ -61,8 +61,8 @@ rwt.qx.Class.define("rwt.html.ImagePreloader",
     this._element = new Image();
 
     // Define handler if image events occurs
-    this._element.onload = rwt.util.Function.bind(this.__onload, this);
-    this._element.onerror = rwt.util.Function.bind(this.__onerror, this);
+    this._element.onload = rwt.util.Functions.bind(this.__onload, this);
+    this._element.onerror = rwt.util.Functions.bind(this.__onerror, this);
 
     // Set Source
     this._source = imageUrl;
@@ -147,7 +147,7 @@ rwt.qx.Class.define("rwt.html.ImagePreloader",
     },
 
     _checkPng : rwt.util.Variant.select( "qx.client", {
-      "default": rwt.util.Function.returnTrue,
+      "default": rwt.util.Functions.returnTrue,
       "mshtml" : function() {
         this._isPng = /\.png$/i.test(this._element.nameProp);
       }

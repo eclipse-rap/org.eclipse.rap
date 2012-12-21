@@ -59,7 +59,7 @@ rwt.qx.Class.define( "rwt.html.Font", {
             break;
           default:
             var temp = parseInt( part, 10 );
-            if( temp == part || rwt.util.String.contains( part, "px" ) ) {
+            if( temp == part || rwt.util.Strings.contains( part, "px" ) ) {
               font.setSize(temp);
             } else {
               name.push(part);

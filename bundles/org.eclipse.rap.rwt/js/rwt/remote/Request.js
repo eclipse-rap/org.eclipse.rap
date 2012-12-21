@@ -92,7 +92,7 @@ rwt.remote.Request.prototype = {
       }
       var contentType = "application/json; charset=UTF-8";
       this._request.setRequestHeader( "Content-Type", contentType );
-      this._request.onreadystatechange = rwt.util.Function.bind( this._onReadyStateChange, this );
+      this._request.onreadystatechange = rwt.util.Functions.bind( this._onReadyStateChange, this );
     },
 
     _onReadyStateChange : function() {

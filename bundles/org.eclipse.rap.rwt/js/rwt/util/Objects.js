@@ -14,7 +14,7 @@
 /**
  * Helper functions to handle Object as a Hash map.
  */
-rwt.qx.Class.define("rwt.util.Object",
+rwt.qx.Class.define("rwt.util.Objects",
 {
   statics :
   {
@@ -140,7 +140,7 @@ rwt.qx.Class.define("rwt.util.Object",
      */
     getKeysAsString : function(map)
     {
-      var keys = rwt.util.Object.getKeys(map);
+      var keys = rwt.util.Objects.getKeys(map);
       if (keys.length === 0) {
         return "";
       }
@@ -209,7 +209,7 @@ rwt.qx.Class.define("rwt.util.Object",
      */
     carefullyMergeWith : function(target, source)
     {
-      return rwt.util.Object.mergeWith(target, source, false);
+      return rwt.util.Objects.mergeWith(target, source, false);
     },
 
 
@@ -226,7 +226,7 @@ rwt.qx.Class.define("rwt.util.Object",
       var len = arguments.length;
 
       for (var i=1; i<len; i++) {
-        rwt.util.Object.mergeWith(target, arguments[i]);
+        rwt.util.Objects.mergeWith(target, arguments[i]);
       }
 
       return target;

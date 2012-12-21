@@ -329,22 +329,22 @@ rwt.qx.Mixin.define("rwt.widgets.util.MResizable",
       {
         if (this._resizeWest)
         {
-          s.lastWidth = rwt.util.Number.limit(s.boxWidth + s.boxLeft - Math.max(e.getPageX(), s.parentContentLeft), s.minWidth, s.maxWidth);
+          s.lastWidth = rwt.util.Numbers.limit(s.boxWidth + s.boxLeft - Math.max(e.getPageX(), s.parentContentLeft), s.minWidth, s.maxWidth);
           s.lastLeft = s.boxRight - s.lastWidth - s.parentContentLeft;
         }
         else if (this._resizeEast)
         {
-          s.lastWidth = rwt.util.Number.limit(Math.min(e.getPageX(), s.parentContentRight) - s.boxLeft, s.minWidth, s.maxWidth);
+          s.lastWidth = rwt.util.Numbers.limit(Math.min(e.getPageX(), s.parentContentRight) - s.boxLeft, s.minWidth, s.maxWidth);
         }
 
         if (this._resizeNorth)
         {
-          s.lastHeight = rwt.util.Number.limit(s.boxHeight + s.boxTop - Math.max(e.getPageY(), s.parentContentTop), s.minHeight, s.maxHeight);
+          s.lastHeight = rwt.util.Numbers.limit(s.boxHeight + s.boxTop - Math.max(e.getPageY(), s.parentContentTop), s.minHeight, s.maxHeight);
           s.lastTop = s.boxBottom - s.lastHeight - s.parentContentTop;
         }
         else if (this._resizeSouth)
         {
-          s.lastHeight = rwt.util.Number.limit(Math.min(e.getPageY(), s.parentContentBottom) - s.boxTop, s.minHeight, s.maxHeight);
+          s.lastHeight = rwt.util.Numbers.limit(Math.min(e.getPageY(), s.parentContentBottom) - s.boxTop, s.minHeight, s.maxHeight);
         }
 
         switch(this.getResizeMethod())

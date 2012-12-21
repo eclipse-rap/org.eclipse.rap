@@ -21,7 +21,7 @@
  * The string/array generics introduced in JavaScript 1.6 are supported by
  * {@link qx.lang.Generics}.
  */
-rwt.qx.Class.define("rwt.util.Array",
+rwt.qx.Class.define("rwt.util.Arrays",
 {
   statics :
   {
@@ -49,7 +49,7 @@ rwt.qx.Class.define("rwt.util.Array",
       if( len === 0 || len > 4 ) {
         throw new Error( "Invalid number of arguments!" );
       }
-      var result = rwt.util.Array.copy(input);
+      var result = rwt.util.Arrays.copy(input);
       if( len === 1 ) {
         result[1] = result[2] = result[3] = result[0];
       } else if( len === 2 ) {

@@ -208,7 +208,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
 
     _getGridBorder : function( state ) {
       var tvGrid = new rwt.theme.ThemeValues( state );
-      var cssElement = rwt.util.String.toFirstUp( this._baseAppearance ) + "-GridLine";
+      var cssElement = rwt.util.Strings.toFirstUp( this._baseAppearance ) + "-GridLine";
       var gridColor = tvGrid.getCssColor( cssElement, "color" );
       tvGrid.dispose();
       var borderWidths = [ 0, 0, 0, 0 ];

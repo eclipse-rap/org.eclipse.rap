@@ -125,7 +125,7 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
 
       var vBox = (vChild._computedWidthTypePercent || vChild._computedWidthTypeFlex ? null : vChild.getWidthValue()) || vChild.getPreferredBoxWidth() || 0;
 
-      return rwt.util.Number.limit(vBox, vMinBox, vMaxBox) + vChild.getMarginLeft() + vChild.getMarginRight();
+      return rwt.util.Numbers.limit(vBox, vMinBox, vMaxBox) + vChild.getMarginLeft() + vChild.getMarginRight();
     },
 
 
@@ -145,7 +145,7 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
 
       var vBox = (vChild._computedHeightTypePercent || vChild._computedHeightTypeFlex ? null : vChild.getHeightValue()) || vChild.getPreferredBoxHeight() || 0;
 
-      return rwt.util.Number.limit(vBox, vMinBox, vMaxBox) + vChild.getMarginTop() + vChild.getMarginBottom();
+      return rwt.util.Numbers.limit(vBox, vMinBox, vMaxBox) + vChild.getMarginTop() + vChild.getMarginBottom();
     },
 
 
@@ -455,7 +455,7 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
      * @signature function(vChild, vJobs)
      */
     layoutChild_sizeLimitX : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : rwt.util.Function.returnTrue,
+      "mshtml" : rwt.util.Functions.returnTrue,
       "default" : function( vChild, vJobs ) {
         if( vJobs.minWidth ) {
           if( vChild._computedMinWidthTypeNull ) {
@@ -491,7 +491,7 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
      * @signature function(vChild, vJobs)
      */
     layoutChild_sizeLimitY :  rwt.util.Variant.select( "qx.client", {
-      "mshtml" : rwt.util.Function.returnTrue,
+      "mshtml" : rwt.util.Functions.returnTrue,
 
       "default" : function( vChild, vJobs ) {
         if( vJobs.minHeight ) {

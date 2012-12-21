@@ -50,14 +50,14 @@ rwt.remote.HandlerRegistry.add( "forms.widgets.Hyperlink", {
       if( value === null ) {
         widget.setActiveTextColor( null );
       } else {
-        widget.setActiveTextColor( rwt.util.ColorUtil.rgbToRgbString( value ) );
+        widget.setActiveTextColor( rwt.util.Colors.rgbToRgbString( value ) );
       }
     },
     "activeBackground" : function( widget, value ) {
       if( value === null ) {
         widget.setActiveBackgroundColor( null );
       } else {
-        widget.setActiveBackgroundColor( rwt.util.ColorUtil.rgbToRgbString( value ) );
+        widget.setActiveBackgroundColor( rwt.util.Colors.rgbToRgbString( value ) );
       }
     }
   } ),

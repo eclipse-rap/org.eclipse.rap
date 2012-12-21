@@ -59,7 +59,7 @@ rwt.qx.Class.define( "rwt.widgets.MenuItemSeparator", {
      * @signature function()
      * @return {Boolean} false
      */
-    hasIcon : rwt.util.Function.returnFalse,
+    hasIcon : rwt.util.Functions.returnFalse,
 
     /**
      * Returns <code>false</code> to clarify that the Separator widget has no label
@@ -67,7 +67,7 @@ rwt.qx.Class.define( "rwt.widgets.MenuItemSeparator", {
      * @signature function()
      * @return {Boolean} false
      */
-    hasLabel : rwt.util.Function.returnFalse,
+    hasLabel : rwt.util.Functions.returnFalse,
 
     /**
      * Returns <code>false</code> to clarify that the Separator widget has no shortcut
@@ -75,7 +75,7 @@ rwt.qx.Class.define( "rwt.widgets.MenuItemSeparator", {
      * @signature function()
      * @return {Boolean} false
      */
-    hasShortcut : rwt.util.Function.returnFalse,
+    hasShortcut : rwt.util.Functions.returnFalse,
 
     /**
      * Returns <code>false</code> to clarify that the Separator widget has no sub menu
@@ -83,7 +83,7 @@ rwt.qx.Class.define( "rwt.widgets.MenuItemSeparator", {
      * @signature function()
      * @return {Boolean} false
      */
-    hasMenu : rwt.util.Function.returnFalse,
+    hasMenu : rwt.util.Functions.returnFalse,
 
 
     /**

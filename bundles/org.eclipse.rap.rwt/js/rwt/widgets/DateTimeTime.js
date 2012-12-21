@@ -19,9 +19,9 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
     this.setAppearance( "datetime-time" );
 
     // Get styles
-    this._short = rwt.util.String.contains( style, "short" );
-    this._medium = rwt.util.String.contains( style, "medium" );
-    this._long = rwt.util.String.contains( style, "long" );
+    this._short = rwt.util.Strings.contains( style, "short" );
+    this._medium = rwt.util.Strings.contains( style, "medium" );
+    this._long = rwt.util.Strings.contains( style, "long" );
 
     // Has selection listener
     this._hasSelectionListener = false;

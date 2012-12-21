@@ -246,7 +246,7 @@ rwt.qx.Class.define("rwt.qx.Mixin",
      * @return {Number} the number of classes
      */
     getTotalNumber : function() {
-      return rwt.util.Object.getLength(this.__registry);
+      return rwt.util.Objects.getLength(this.__registry);
     },
 
 

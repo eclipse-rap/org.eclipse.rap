@@ -45,7 +45,7 @@ rwt.qx.Class.define("rwt.client.Timer",
       this.setInterval(interval);
     }
 
-    this.__oninterval = rwt.util.Function.bind(this._oninterval, this);
+    this.__oninterval = rwt.util.Functions.bind(this._oninterval, this);
 
     //Event instance to dispatch when interval fires
     this.__event = new rwt.event.Event("interval");

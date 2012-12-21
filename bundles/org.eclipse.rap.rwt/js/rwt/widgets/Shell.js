@@ -55,7 +55,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     // [if] Listen for DOM event instead of qooxdoo event - see bug 294846.
     this.removeEventListener( "mousedown", this._onwindowmousedown );
     this.addEventListener( "create", this._onCreate, this );
-    this.__onwindowmousedown = rwt.util.Function.bind( this._onwindowmousedown, this );
+    this.__onwindowmousedown = rwt.util.Functions.bind( this._onwindowmousedown, this );
     this.addToDocument();
   },
 
@@ -78,7 +78,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     },
 
     reorderShells : function( vWindowManager ) {
-      var shells = rwt.util.Object.getValues( vWindowManager.getAll() );
+      var shells = rwt.util.Objects.getValues( vWindowManager.getAll() );
       shells = shells.sort( rwt.widgets.Shell._compareShells );
       var vLength = shells.length;
       var upperModalShell = null;

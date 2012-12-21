@@ -110,12 +110,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = this._createShell();
       shell.setBackgroundColor( "#008000" );
-      var result = rwt.util.ColorUtil.stringToRgb( TestUtil.getCssBackgroundColor( shell ) );
+      var result = rwt.util.Colors.stringToRgb( TestUtil.getCssBackgroundColor( shell ) );
       assertEquals( [ 0, 128, 0 ], result );
       shell.setBackgroundGradient( this.gradient );
       assertNull( TestUtil.getCssBackgroundColor( shell ) );
       shell.setBackgroundGradient( null );
-      result = rwt.util.ColorUtil.stringToRgb( TestUtil.getCssBackgroundColor( shell ) );
+      result = rwt.util.Colors.stringToRgb( TestUtil.getCssBackgroundColor( shell ) );
       assertEquals( [ 0, 128, 0 ], result );
       shell.destroy();
       TestUtil.flush();

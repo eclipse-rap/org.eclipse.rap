@@ -17,7 +17,7 @@ rwt.remote.HandlerRegistry.add( "rwt.client.JavaScriptExecutor", {
 
   service : true,
 
-  destructor : rwt.util.Function.returnTrue,
+  destructor : rwt.util.Functions.returnTrue,
 
   methods : [
     "execute"

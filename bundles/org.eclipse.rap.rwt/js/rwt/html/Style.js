@@ -206,7 +206,7 @@ rwt.qx.Class.define( "rwt.html.Style", {
             // when working with frames and access an element of another frame.
             // Then we must use the <code>getComputedStyle</code> of the document
             // where the element is defined.
-            var doc = rwt.html.Node.getDocument(element);
+            var doc = rwt.html.Nodes.getDocument(element);
             var computed = doc.defaultView.getComputedStyle(element, null);
 
             // All relevant browsers expose the configured style properties to
@@ -226,7 +226,7 @@ rwt.qx.Class.define( "rwt.html.Style", {
      * @return {String} the (CSS) style property
      * @signature function(vElement, propertyName)
      */
-    getStyleProperty : rwt.util.Object.select((document.defaultView && document.defaultView.getComputedStyle) ? "hasComputed" : "noComputed",
+    getStyleProperty : rwt.util.Objects.select((document.defaultView && document.defaultView.getComputedStyle) ? "hasComputed" : "noComputed",
     {
       "hasComputed" : function(el, prop)
       {
@@ -457,7 +457,7 @@ rwt.qx.Class.define( "rwt.html.Style", {
           this.removeStyleProperty( target, "MozOpacity" );
           this.removeStyleProperty( target, "opacity" );
         } else {
-          var targetValue = rwt.util.Number.limit( value, 0, 1 );
+          var targetValue = rwt.util.Numbers.limit( value, 0, 1 );
           this.setStyleProperty( target, "MozOpacity", targetValue );
           this.setStyleProperty( target, "opacity", targetValue );
         }
@@ -466,7 +466,7 @@ rwt.qx.Class.define( "rwt.html.Style", {
         if( value == null || value >= 1 ) {
           this.removeStyleProperty( target, "opacity" );
         } else {
-          var targetValue = rwt.util.Number.limit( value, 0, 1 );
+          var targetValue = rwt.util.Numbers.limit( value, 0, 1 );
           this.setStyleProperty( target, "opacity", targetValue );
         }
       }
@@ -522,7 +522,7 @@ rwt.qx.Class.define( "rwt.html.Style", {
         // NOTE: older webkit dont accept spread, therefor only use parameters 1-3
         var string = shadowObject[ 0 ] ? "inset " : "";
         string += shadowObject.slice( 1, 4 ).join( "px " ) + "px";
-        var rgba = rwt.util.ColorUtil.stringToRgb( shadowObject[ 5 ] );
+        var rgba = rwt.util.Colors.stringToRgb( shadowObject[ 5 ] );
         rgba.push( shadowObject[ 6 ] );
         string += " rgba(" + rgba.join() + ")";
         this.setStyleProperty( target, property, string );
@@ -536,7 +536,7 @@ rwt.qx.Class.define( "rwt.html.Style", {
         var property = "textShadow";
         if( shadowObject ) {
           var string = shadowObject.slice( 1, 4 ).join( "px " ) + "px";
-          var rgba = rwt.util.ColorUtil.stringToRgb( shadowObject[ 5 ] );
+          var rgba = rwt.util.Colors.stringToRgb( shadowObject[ 5 ] );
           rgba.push( shadowObject[ 6 ] );
           string += " rgba(" + rgba.join() + ")";
           this.setStyleProperty( target, property, string );

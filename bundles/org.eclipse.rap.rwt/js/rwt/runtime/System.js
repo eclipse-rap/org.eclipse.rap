@@ -22,9 +22,9 @@ rwt.qx.Class.define( "rwt.runtime.System", {
       this.base( arguments );
       this._startupTime = new Date().getTime();
       // Attach load/unload events
-      this._onloadWrapped = rwt.util.Function.bind( this._onload, this );
-      this._onbeforeunloadWrapped = rwt.util.Function.bind( this._onbeforeunload, this );
-      this._onunloadWrapped = rwt.util.Function.bind( this._onunload, this );
+      this._onloadWrapped = rwt.util.Functions.bind( this._onload, this );
+      this._onbeforeunloadWrapped = rwt.util.Functions.bind( this._onbeforeunload, this );
+      this._onunloadWrapped = rwt.util.Functions.bind( this._onunload, this );
       rwt.html.EventRegistration.addEventListener( window, "load", this._onloadWrapped );
       rwt.html.EventRegistration.addEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
       rwt.html.EventRegistration.addEventListener( window, "unload", this._onunloadWrapped );

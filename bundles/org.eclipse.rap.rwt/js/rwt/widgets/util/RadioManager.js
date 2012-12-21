@@ -177,7 +177,7 @@ rwt.qx.Class.define("rwt.widgets.util.RadioManager",
       {
         vItem = vItems[i];
 
-        if (rwt.util.Array.contains(this._items, vItem)) {
+        if (rwt.util.Arrays.contains(this._items, vItem)) {
           return;
         }
 
@@ -208,7 +208,7 @@ rwt.qx.Class.define("rwt.widgets.util.RadioManager",
     remove : function(vItem)
     {
       // Remove RadioButton from array
-      rwt.util.Array.remove(this._items, vItem);
+      rwt.util.Arrays.remove(this._items, vItem);
 
       // Inform radio button about new manager
       vItem.setManager(null);

@@ -134,7 +134,7 @@ rwt.qx.Class.define("rwt.widgets.util.CanvasLayoutImpl",
         var vBox = (vChild._computedWidthTypePercent ? null : vChild.getWidthValue()) || vChild.getPreferredBoxWidth() || 0;
       }
 
-      return rwt.util.Number.limit(vBox, vMinBox, vMaxBox) + vLeft + vRight + vChild.getMarginLeft() + vChild.getMarginRight();
+      return rwt.util.Numbers.limit(vBox, vMinBox, vMaxBox) + vLeft + vRight + vChild.getMarginLeft() + vChild.getMarginRight();
     },
 
 
@@ -158,7 +158,7 @@ rwt.qx.Class.define("rwt.widgets.util.CanvasLayoutImpl",
         var vBox = (vChild._computedHeightTypePercent ? null : vChild.getHeightValue()) || vChild.getPreferredBoxHeight() || 0;
       }
 
-      return rwt.util.Number.limit(vBox, vMinBox, vMaxBox) + vTop + vBottom + vChild.getMarginTop() + vChild.getMarginBottom();
+      return rwt.util.Numbers.limit(vBox, vMinBox, vMaxBox) + vTop + vBottom + vChild.getMarginTop() + vChild.getMarginBottom();
     },
 
 

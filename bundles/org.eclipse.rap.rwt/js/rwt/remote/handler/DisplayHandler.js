@@ -33,11 +33,11 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Display", {
 
   propertyHandler : {
     "activeKeys" : function( object, value ) {
-      var map = rwt.util.Object.fromArray( value );
+      var map = rwt.util.Objects.fromArray( value );
       rwt.remote.KeyEventSupport.getInstance().setKeyBindings( map );
     },
     "cancelKeys" : function( object, value ) {
-      var map = rwt.util.Object.fromArray( value );
+      var map = rwt.util.Objects.fromArray( value );
       rwt.remote.KeyEventSupport.getInstance().setCancelKeys( map );
     }
   }

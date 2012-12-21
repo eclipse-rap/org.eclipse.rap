@@ -597,7 +597,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
 
     // Tests animationType "change" and renderType "backgroundColor"
     testGlow : function() {
-      var ColorUtil = rwt.util.ColorUtil;
+      var ColorUtil = rwt.util.Colors;
       var animation = new rwt.animation.Animation();
       var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();

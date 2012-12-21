@@ -663,7 +663,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
       var zIndexCompare = function(a, b) {
         return a.getZIndex() - b.getZIndex();
       };
-      var vAll = rwt.util.Object.getValues(this.getWindowManager().getAll()).sort(zIndexCompare);
+      var vAll = rwt.util.Objects.getValues(this.getWindowManager().getAll()).sort(zIndexCompare);
       var vLength = vAll.length;
       var vIndex = this._minZIndex;
 
@@ -1488,7 +1488,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
       }
 
       // pre check if we go out of the available area
-      if (!rwt.util.Number.isBetweenRange(e.getPageX(), s.parentAvailableAreaLeft, s.parentAvailableAreaRight) || !rwt.util.Number.isBetweenRange(e.getPageY(), s.parentAvailableAreaTop, s.parentAvailableAreaBottom)) {
+      if (!rwt.util.Numbers.isBetweenRange(e.getPageX(), s.parentAvailableAreaLeft, s.parentAvailableAreaRight) || !rwt.util.Numbers.isBetweenRange(e.getPageY(), s.parentAvailableAreaTop, s.parentAvailableAreaBottom)) {
         return;
       }
 

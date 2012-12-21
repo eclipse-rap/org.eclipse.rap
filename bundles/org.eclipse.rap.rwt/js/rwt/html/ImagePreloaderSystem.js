@@ -44,7 +44,7 @@ rwt.qx.Class.define("rwt.html.ImagePreloaderSystem",
 
     // internally use a map for the image sources
     if( vPreloadList instanceof Array ) {
-      this._list = rwt.util.Object.fromArray( vPreloadList );
+      this._list = rwt.util.Objects.fromArray( vPreloadList );
     } else {
       this._list = vPreloadList;
     }
@@ -103,7 +103,7 @@ rwt.qx.Class.define("rwt.html.ImagePreloaderSystem",
      */
     start : function()
     {
-      if (rwt.util.Object.isEmpty(this._list))
+      if (rwt.util.Objects.isEmpty(this._list))
       {
         this.createDispatchEvent("completed");
         return;
@@ -206,7 +206,7 @@ rwt.qx.Class.define("rwt.html.ImagePreloaderSystem",
         return;
       }
 
-      if (rwt.util.Object.isEmpty(this._list))
+      if (rwt.util.Objects.isEmpty(this._list))
       {
         this._timer.stop();
         this.createDispatchEvent("completed");

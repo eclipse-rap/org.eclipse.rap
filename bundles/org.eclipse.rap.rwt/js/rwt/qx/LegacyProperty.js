@@ -77,7 +77,7 @@ rwt.qx.Class.define("rwt.qx.LegacyProperty",
     addFastProperty : function(config, proto)
     {
       var vName = config.name;
-      var vUpName = rwt.util.String.toFirstUp(vName);
+      var vUpName = rwt.util.Strings.toFirstUp(vName);
 
       var vStorageField = "_value" + vUpName;
       var vGetterName = "get" + vUpName;
@@ -143,7 +143,7 @@ rwt.qx.Class.define("rwt.qx.LegacyProperty",
     addCachedProperty : function(config, proto)
     {
       var vName = config.name;
-      var vUpName = rwt.util.String.toFirstUp(vName);
+      var vUpName = rwt.util.Strings.toFirstUp(vName);
 
       var vStorageField = "_cached" + vUpName;
       var vComputerName = "_compute" + vUpName;
@@ -227,8 +227,8 @@ rwt.qx.Class.define("rwt.qx.LegacyProperty",
         config.dispose = true;
       }
 
-      config.method = rwt.util.String.toFirstUp(config.name);
-      config.implMethod = config.impl ? rwt.util.String.toFirstUp(config.impl) : config.method;
+      config.method = rwt.util.Strings.toFirstUp(config.name);
+      config.implMethod = config.impl ? rwt.util.Strings.toFirstUp(config.impl) : config.method;
 
       if (config.defaultValue === undefined) {
         config.defaultValue = null;
@@ -319,7 +319,7 @@ rwt.qx.Class.define("rwt.qx.LegacyProperty",
         {
           // convert multiple arguments to array
           if (config.allowMultipleArguments && arguments.length > 1) {
-            newValue = rwt.util.Array.fromArguments(arguments);
+            newValue = rwt.util.Arrays.fromArguments(arguments);
           }
 
           // support converter methods
@@ -361,7 +361,7 @@ rwt.qx.Class.define("rwt.qx.LegacyProperty",
               throw new Error("Attention! The value \"" + newValue + "\" is an invalid value for the property \"" + config.name + "\" which must be an object with the classname \"" + config.classname + "\"!");
             }
 
-            if (config.hasPossibleValues && newValue != null && !rwt.util.Array.contains(config.possibleValues, newValue)) {
+            if (config.hasPossibleValues && newValue != null && !rwt.util.Arrays.contains(config.possibleValues, newValue)) {
               throw new Error("Failed to save value for " + config.name + ". '" + newValue + "' is not a possible value!");
             }
           }

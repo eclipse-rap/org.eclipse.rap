@@ -203,7 +203,7 @@ rwt.qx.Class.define("rwt.util.Variant",
       if (rwt.util.Variant.compilerIsSet("qx.debug", "on"))
       {
         throw new Error('No match for variant "' + key +
-          '" in variants [' + rwt.util.Object.getKeysAsString(variantFunctionMap) +
+          '" in variants [' + rwt.util.Objects.getKeysAsString(variantFunctionMap) +
           '] found, and no default ("default") given');
       }
     },

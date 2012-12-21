@@ -164,7 +164,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     removeFromGlobalWidgetQueue : function(vWidget) {
       if (vWidget._isInGlobalWidgetQueue) {
-        rwt.util.Array.remove(rwt.widgets.base.Widget._globalWidgetQueue, vWidget);
+        rwt.util.Arrays.remove(rwt.widgets.base.Widget._globalWidgetQueue, vWidget);
         delete vWidget._isInGlobalWidgetQueue;
       }
     },
@@ -195,7 +195,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     removeFromGlobalElementQueue : function(vWidget) {
       if (vWidget._isInGlobalElementQueue) {
-        rwt.util.Array.remove(rwt.widgets.base.Widget._globalElementQueue, vWidget);
+        rwt.util.Arrays.remove(rwt.widgets.base.Widget._globalElementQueue, vWidget);
         delete vWidget._isInGlobalElementQueue;
       }
     },
@@ -226,7 +226,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     removeFromGlobalStateQueue : function(vWidget) {
       if (vWidget._isInGlobalStateQueue) {
-        rwt.util.Array.remove(rwt.widgets.base.Widget._globalStateQueue, vWidget);
+        rwt.util.Arrays.remove(rwt.widgets.base.Widget._globalStateQueue, vWidget);
         delete vWidget._isInGlobalStateQueue;
       }
     },
@@ -237,7 +237,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       // the queue may change while doing the flush so we work on a copy of
       // the queue and loop while the queue has any entries.
       while(Widget._globalStateQueue.length > 0) {
-        var queue = rwt.util.Array.copy(Widget._globalStateQueue);
+        var queue = rwt.util.Arrays.copy(Widget._globalStateQueue);
         Widget._globalStateQueue = [];
         for (var i=0, l=queue.length; i<l; i++) {
           var widget = queue[i];
@@ -261,7 +261,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     removeFromGlobalJobQueue : function(vWidget) {
       if (vWidget._isInGlobalJobQueue) {
-        rwt.util.Array.remove(rwt.widgets.base.Widget._globalJobQueue, vWidget);
+        rwt.util.Arrays.remove(rwt.widgets.base.Widget._globalJobQueue, vWidget);
         delete vWidget._isInGlobalJobQueue;
       }
     },
@@ -293,7 +293,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     removeFromGlobalLayoutQueue : function(vParent) {
       if (vParent._isInGlobalLayoutQueue) {
-        rwt.util.Array.remove(rwt.widgets.base.Widget._globalLayoutQueue, vParent);
+        rwt.util.Arrays.remove(rwt.widgets.base.Widget._globalLayoutQueue, vParent);
         delete vParent._isInGlobalLayoutQueue;
       }
     },
@@ -394,7 +394,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
         delete vLazyQueues[vKey];
       }
       // reset queue if it is empty. This frees some browser memory
-      if (rwt.util.Object.isEmpty(vLazyQueues)) {
+      if (rwt.util.Objects.isEmpty(vLazyQueues)) {
         rwt.widgets.base.Widget._lazyGlobalDisplayQueues = {};
       }
       // Reset display queue flag for widgets in fastQueue
@@ -556,7 +556,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       ];
       for (var i=0, l=a.length, p, b, t; i<l; i++) {
         p = a[i];
-        b = "_computed" + rwt.util.String.toFirstUp(p);
+        b = "_computed" + rwt.util.Strings.toFirstUp(p);
         t = b + "Type";
         statics.layoutPropertyTypes[p] = {
           dataType    : t,
@@ -1542,16 +1542,16 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     // CHILDREN HANDLING
 
     // NOTE: Implemented in Parent.js
-    getChildren : rwt.util.Function.returnNull,
-    getChildrenLength : rwt.util.Function.returnZero,
-    hasChildren : rwt.util.Function.returnFalse,
-    isEmpty : rwt.util.Function.returnTrue,
-    indexOf : rwt.util.Function.returnNegativeIndex,
-    contains : rwt.util.Function.returnFalse,
-    getVisibleChildren : rwt.util.Function.returnNull,
-    getVisibleChildrenLength : rwt.util.Function.returnZero,
-    hasVisibleChildren : rwt.util.Function.returnFalse,
-    isVisibleEmpty : rwt.util.Function.returnTrue,
+    getChildren : rwt.util.Functions.returnNull,
+    getChildrenLength : rwt.util.Functions.returnZero,
+    hasChildren : rwt.util.Functions.returnFalse,
+    isEmpty : rwt.util.Functions.returnTrue,
+    indexOf : rwt.util.Functions.returnNegativeIndex,
+    contains : rwt.util.Functions.returnFalse,
+    getVisibleChildren : rwt.util.Functions.returnNull,
+    getVisibleChildrenLength : rwt.util.Functions.returnZero,
+    hasVisibleChildren : rwt.util.Functions.returnFalse,
+    isVisibleEmpty : rwt.util.Functions.returnTrue,
 
     /////////////////
     //  CORE MODIFIER
@@ -1592,7 +1592,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
         this._cachedInnerHeight = null;
         this._cachedOuterHeight = null;
         // Finally remove from children array
-        rwt.util.Array.removeAt(old.getChildren(), vOldIndex);
+        rwt.util.Arrays.removeAt(old.getChildren(), vOldIndex);
         // Invalidate visible children cache
         old._invalidateVisibleChildren();
         // Remove child from old parent's children queue
@@ -1609,7 +1609,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       if (value) {
         this._hasParent = true;
         if (typeof this._insertIndex == "number") {
-          rwt.util.Array.insertAt(value.getChildren(), this, this._insertIndex);
+          rwt.util.Arrays.insertAt(value.getChildren(), this, this._insertIndex);
           delete this._insertIndex;
         } else {
           value.getChildren().push(this);
@@ -1679,10 +1679,10 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
           rwt.widgets.base.Widget.addToGlobalElementQueue(this);
         }
         rwt.widgets.base.Widget.addToGlobalStateQueue( this );
-        if(!rwt.util.Object.isEmpty(this._jobQueue ) ) {
+        if(!rwt.util.Objects.isEmpty(this._jobQueue ) ) {
           rwt.widgets.base.Widget.addToGlobalJobQueue( this );
         }
-        if( !rwt.util.Object.isEmpty( this._childrenQueue ) ) {
+        if( !rwt.util.Objects.isEmpty( this._childrenQueue ) ) {
           rwt.widgets.base.Widget.addToGlobalLayoutQueue( this );
         }
         // displayable end
@@ -1718,9 +1718,9 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       return true;
     },
 
-    addToCustomQueues : rwt.util.Function.returnTrue,
-    removeFromCustomQueues : rwt.util.Function.returnTrue,
-    _handleDisplayableCustom : rwt.util.Function.returnTrue,
+    addToCustomQueues : rwt.util.Functions.returnTrue,
+    removeFromCustomQueues : rwt.util.Functions.returnTrue,
+    _handleDisplayableCustom : rwt.util.Functions.returnTrue,
 
     _computeDisplayable : function() {
       return this.getDisplay() && this.getParent() && this.getParent()._isDisplayable ? true : false;
@@ -1752,7 +1752,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
           this._innerStyle.height = height;
         }
       },
-      "default" : rwt.util.Function.returnTrue
+      "default" : rwt.util.Functions.returnTrue
     } ),
 
     _beforeDisappear : function() {
@@ -1930,7 +1930,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       // 1. Pre checks
       var vQueue = this._jobQueue;
       var vParent = this.getParent();
-      if (!vParent || rwt.util.Object.isEmpty(vQueue)) {
+      if (!vParent || rwt.util.Objects.isEmpty(vQueue)) {
         return;
       }
       var vLayoutImpl = this instanceof rwt.widgets.base.Parent ? this.getLayoutImpl() : null;
@@ -2047,8 +2047,8 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     ////////////////////////////////////////////
     // METHODS TO GIVE THE LAYOUTERS INFORMATION
 
-    _isWidthEssential : rwt.util.Function.returnTrue,
-    _isHeightEssential : rwt.util.Function.returnTrue,
+    _isWidthEssential : rwt.util.Functions.returnTrue,
+    _isHeightEssential : rwt.util.Functions.returnTrue,
 
     _computeBoxWidthFallback : function() {
       return 0;
@@ -2060,12 +2060,12 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     _computeBoxWidth : function() {
       var vLayoutImpl = this.getParent().getLayoutImpl();
-      return Math.max(0, rwt.util.Number.limit(vLayoutImpl.computeChildBoxWidth(this), this.getMinWidthValue(), this.getMaxWidthValue()));
+      return Math.max(0, rwt.util.Numbers.limit(vLayoutImpl.computeChildBoxWidth(this), this.getMinWidthValue(), this.getMaxWidthValue()));
     },
 
     _computeBoxHeight : function() {
       var vLayoutImpl = this.getParent().getLayoutImpl();
-      return Math.max(0, rwt.util.Number.limit(vLayoutImpl.computeChildBoxHeight(this), this.getMinHeightValue(), this.getMaxHeightValue()));
+      return Math.max(0, rwt.util.Numbers.limit(vLayoutImpl.computeChildBoxHeight(this), this.getMinHeightValue(), this.getMaxHeightValue()));
     },
 
     _computeOuterWidth : function() {
@@ -3226,7 +3226,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       return null;
     },
 
-    _ontabfocus : rwt.util.Function.returnTrue,
+    _ontabfocus : rwt.util.Functions.returnTrue,
 
     _applyFocused : function(value, old) {
       if (!this.isCreated()) {
@@ -3254,7 +3254,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       // Need no implementation for others then mshtml, because
       // all these browsers support css outlines and do not
       // have an attribute "hideFocus" as IE.
-      "default" : rwt.util.Function.returnTrue
+      "default" : rwt.util.Functions.returnTrue
     } ),
 
     _visualizeBlur : function() {
@@ -3771,7 +3771,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     _prepareGraphicsSupport : ( function() {
       var result;
       if( rwt.client.Client.supportsCss3() ) {
-        result = rwt.util.Function.returnTrue;
+        result = rwt.util.Functions.returnTrue;
       } else {
         result = function() {
           if( !this._targetNodeEnabled && !this._isCreated ) {

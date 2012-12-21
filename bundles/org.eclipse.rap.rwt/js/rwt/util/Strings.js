@@ -25,7 +25,7 @@
  * The string/array generics introduced in JavaScript 1.6 are supported by
  * {@link qx.lang.Generics}.
  */
-rwt.qx.Class.define("rwt.util.String",
+rwt.qx.Class.define("rwt.util.Strings",
 {
   statics :
   {
@@ -99,7 +99,7 @@ rwt.qx.Class.define("rwt.util.String",
      * Print a list of arguments using a format string
      * In the format string occurences of %n are replaced by the n'th element of the args list.
      * Example:
-     * <pre class='javascript'>rwt.util.String.format("Hello %1, my name is %2", ["Egon", "Franz"]) == "Hello Egon, my name is Franz"</pre>
+     * <pre class='javascript'>rwt.util.Strings.format("Hello %1, my name is %2", ["Egon", "Franz"]) == "Hello Egon, my name is Franz"</pre>
      *
      * @type static
      * @param pattern {String} format string

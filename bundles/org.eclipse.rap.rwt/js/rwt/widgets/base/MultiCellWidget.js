@@ -348,17 +348,17 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       this._afterScheduleLayoutY();
     },
 
-    _afterScheduleLayoutX : rwt.util.Function.returnTrue,
+    _afterScheduleLayoutX : rwt.util.Functions.returnTrue,
 
-    _afterScheduleLayoutY : rwt.util.Function.returnTrue,
+    _afterScheduleLayoutY : rwt.util.Functions.returnTrue,
 
-    _beforeComputeInnerWidth : rwt.util.Function.returnTrue,
+    _beforeComputeInnerWidth : rwt.util.Functions.returnTrue,
 
-    _beforeComputeInnerHeight : rwt.util.Function.returnTrue,
+    _beforeComputeInnerHeight : rwt.util.Functions.returnTrue,
 
-    _beforeRenderLayout : rwt.util.Function.returnTrue,
+    _beforeRenderLayout : rwt.util.Functions.returnTrue,
 
-    _afterRenderLayout : rwt.util.Function.returnTrue,
+    _afterRenderLayout : rwt.util.Functions.returnTrue,
 
     _cellHasContent : function( cell ) {
       var content = this.__cellData[ cell ][ 1 ];
@@ -437,8 +437,8 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       return dimension;
     },
 
-    _isWidthEssential : rwt.util.Function.returnTrue,
-    _isHeightEssential : rwt.util.Function.returnTrue,
+    _isWidthEssential : rwt.util.Functions.returnTrue,
+    _isHeightEssential : rwt.util.Functions.returnTrue,
 
     _computePreferredInnerWidth : function() {
       return this._getContentWidth( "ignoreFlexible" );

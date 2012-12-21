@@ -31,7 +31,7 @@ rwt.qx.Class.define( "rwt.animation.AnimationRenderer", {
     this._active = true;
     this._activeOnce = false;
     // Widget integration:
-    this._invisibilityGetter = rwt.util.Function.returnZero;
+    this._invisibilityGetter = rwt.util.Functions.returnZero;
     this._fullVisibilityValue = null;
     this._autoStartEnabled = true;
     this._renderType = null;
@@ -211,7 +211,7 @@ rwt.qx.Class.define( "rwt.animation.AnimationRenderer", {
             if( value == "transparent" || value === "" || value.slice( 0, 4 ) === "rgba" ) {
               result = null;
             } else {
-              result = rwt.util.ColorUtil.cssStringToRgb( value );
+              result = rwt.util.Colors.cssStringToRgb( value );
             }
           }
         break;
@@ -221,7 +221,7 @@ rwt.qx.Class.define( "rwt.animation.AnimationRenderer", {
             for( var i = 0; i < value.length; i++ ) {
               result[ i ] = [
                 value[ i ][ 0 ],
-                rwt.util.ColorUtil.cssStringToRgb( value[ i ][ 1 ] )
+                rwt.util.Colors.cssStringToRgb( value[ i ][ 1 ] )
               ];
             }
           }
@@ -619,7 +619,7 @@ rwt.qx.Class.define( "rwt.animation.AnimationRenderer", {
           part = Math.round( startValue[ i ] + partDiff * value );
           result[ i ] = Math.max( 0, Math.min( part, 255 ) );
         }
-        return rwt.util.ColorUtil.rgbToRgbString( result );
+        return rwt.util.Colors.rgbToRgbString( result );
       },
 
       // Assumes that the number of colors are identical

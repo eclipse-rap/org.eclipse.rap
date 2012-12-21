@@ -15,7 +15,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ExternalBrowser", {
     return rwt.widgets.ExternalBrowser.getInstance();
   },
 
-  destructor : rwt.util.Function.returnTrue,
+  destructor : rwt.util.Functions.returnTrue,
 
   methods : [
     "open",

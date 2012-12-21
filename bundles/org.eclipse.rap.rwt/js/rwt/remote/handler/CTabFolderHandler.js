@@ -86,14 +86,14 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.CTabFolder", {
       if( value === null ) {
         widget.setSelectionBackground( null );
       } else {
-        widget.setSelectionBackground( rwt.util.ColorUtil.rgbToRgbString( value ) );
+        widget.setSelectionBackground( rwt.util.Colors.rgbToRgbString( value ) );
       }
     },
     "selectionForeground" : function( widget, value ) {
       if( value === null ) {
         widget.setSelectionForeground( null );
       } else {
-        widget.setSelectionForeground( rwt.util.ColorUtil.rgbToRgbString( value ) );
+        widget.setSelectionForeground( rwt.util.Colors.rgbToRgbString( value ) );
       }
     },
     "selectionBackgroundGradient" : function( widget, value ) {
@@ -104,7 +104,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.CTabFolder", {
         var vertical = value[ 2 ];
         gradient = [];
         for( var i = 0; i < colors.length; i++ ) {
-          gradient[ i ] = [ percents[ i ] / 100, rwt.util.ColorUtil.rgbToRgbString( colors[ i ] ) ];
+          gradient[ i ] = [ percents[ i ] / 100, rwt.util.Colors.rgbToRgbString( colors[ i ] ) ];
         }
         gradient.horizontal = !vertical;
       }

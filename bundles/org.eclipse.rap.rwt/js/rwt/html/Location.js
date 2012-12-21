@@ -85,7 +85,7 @@ rwt.qx.Class.define("rwt.html.Location",
       if (elem.getBoundingClientRect)
       {
         // Find window
-        var win = rwt.html.Node.getWindow(elem);
+        var win = rwt.html.Nodes.getWindow(elem);
 
         // Reduce by viewport scrolling. getBoundingClientRect returns the
         // location of the element in relation to the viewport which includes
@@ -98,7 +98,7 @@ rwt.qx.Class.define("rwt.html.Location",
       else
       {
         // Find body element
-        var body = rwt.html.Node.getDocument(elem).body;
+        var body = rwt.html.Nodes.getDocument(elem).body;
 
         // Only the parents are influencing the scroll position
         elem = elem.parentNode;
@@ -135,7 +135,7 @@ rwt.qx.Class.define("rwt.html.Location",
       "mshtml" : function(elem)
       {
         // Find body element
-        var doc = rwt.html.Node.getDocument(elem);
+        var doc = rwt.html.Nodes.getDocument(elem);
         var body = doc.body;
 
         // Start with the offset
@@ -162,7 +162,7 @@ rwt.qx.Class.define("rwt.html.Location",
       "webkit" : function(elem)
       {
         // Find body element
-        var doc = rwt.html.Node.getDocument(elem);
+        var doc = rwt.html.Nodes.getDocument(elem);
         var body = doc.body;
 
         // Start with the offset
@@ -189,7 +189,7 @@ rwt.qx.Class.define("rwt.html.Location",
       "gecko" : function(elem)
       {
         // Find body element
-        var body = rwt.html.Node.getDocument(elem).body;
+        var body = rwt.html.Nodes.getDocument(elem).body;
 
         // Start with the offset
         var left = body.offsetLeft;
@@ -240,7 +240,7 @@ rwt.qx.Class.define("rwt.html.Location",
       "default" : function(elem)
       {
         // Find body element
-        var body = rwt.html.Node.getDocument(elem).body;
+        var body = rwt.html.Nodes.getDocument(elem).body;
 
         // Start with the offset
         var left = body.offsetLeft;
@@ -277,7 +277,7 @@ rwt.qx.Class.define("rwt.html.Location",
     {
       "mshtml|newmshtml|webkit" : function(elem)
       {
-        var doc = rwt.html.Node.getDocument(elem);
+        var doc = rwt.html.Nodes.getDocument(elem);
 
         // Use faster getBoundingClientRect() if available
         // Note: This is not yet supported by Webkit.
@@ -343,7 +343,7 @@ rwt.qx.Class.define("rwt.html.Location",
           var top = 0;
 
           // Stop at the body
-          var body = rwt.html.Node.getDocument(elem).body;
+          var body = rwt.html.Nodes.getDocument(elem).body;
           var box = rwt.widgets.base.ClientDocument.BOXSIZING;
 
           if( box !== "border-box" ) {
@@ -390,7 +390,7 @@ rwt.qx.Class.define("rwt.html.Location",
         var top = 0;
 
         // Stop at the body
-        var body = rwt.html.Node.getDocument(elem).body;
+        var body = rwt.html.Nodes.getDocument(elem).body;
 
         // Add all offsets of parent hierarchy, do not include
         // body element.

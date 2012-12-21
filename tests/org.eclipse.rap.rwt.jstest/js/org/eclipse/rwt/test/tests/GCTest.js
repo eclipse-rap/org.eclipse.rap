@@ -177,8 +177,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       this._setProperty( gc, "lineCap", "round" );
       this._setProperty( gc, "lineJoin", "bevel" );
       this._setProperty( gc, "font", [ [ "Arial" ], 16, true, true ] );
-      assertEquals( [ 1, 2, 3 ], rwt.util.ColorUtil.stringToRgb( gc._context.strokeStyle ) );
-      assertEquals( [ 4, 5, 6 ], rwt.util.ColorUtil.stringToRgb( gc._context.fillStyle ) );
+      assertEquals( [ 1, 2, 3 ], rwt.util.Colors.stringToRgb( gc._context.strokeStyle ) );
+      assertEquals( [ 4, 5, 6 ], rwt.util.Colors.stringToRgb( gc._context.fillStyle ) );
       assertEquals( 128, Math.round( gc._context.globalAlpha * 1000 ) );
       assertEquals( 4, gc._context.lineWidth );
       assertEquals( "round", gc._context.lineCap );
@@ -190,8 +190,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       gc.init( 300, 300,
                [ [ "Arial" ], 10, false, false ],
                [ 255, 255, 255, 255 ], [ 0, 0, 0, 255 ] );
-      assertEquals( [ 0, 0, 0 ], rwt.util.ColorUtil.stringToRgb( gc._context.strokeStyle ) );
-      assertEquals( [ 255, 255, 255 ], rwt.util.ColorUtil.stringToRgb( gc._context.fillStyle ) );
+      assertEquals( [ 0, 0, 0 ], rwt.util.Colors.stringToRgb( gc._context.strokeStyle ) );
+      assertEquals( [ 255, 255, 255 ], rwt.util.Colors.stringToRgb( gc._context.fillStyle ) );
       assertEquals( 1, gc._context.globalAlpha );
       assertEquals( 1, gc._context.lineWidth );
       assertEquals( "butt", gc._context.lineCap );
@@ -219,16 +219,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       // Do not use "init" as setting the dimension clears the stack
       gc._context.clearRect( 0, 0, 300, 300 );
       gc._initFields( [ [ "Arial" ], 10, false, false ], [ 255, 255, 255, 255 ], [ 0, 0, 0, 255 ] );
-      assertEquals( [ 0, 0, 0 ], rwt.util.ColorUtil.stringToRgb( gc._context.strokeStyle ) );
-      assertEquals( [ 255, 255, 255 ], rwt.util.ColorUtil.stringToRgb( gc._context.fillStyle ) );
+      assertEquals( [ 0, 0, 0 ], rwt.util.Colors.stringToRgb( gc._context.strokeStyle ) );
+      assertEquals( [ 255, 255, 255 ], rwt.util.Colors.stringToRgb( gc._context.fillStyle ) );
       assertEquals( 1, gc._context.globalAlpha );
       assertEquals( 1, gc._context.lineWidth );
       assertEquals( "butt", gc._context.lineCap );
       assertEquals( "miter", gc._context.lineJoin );
       assertEquals( "10px Arial", gc._context.font );
       gc._context.restore();
-      assertEquals( [ 1, 2, 3 ], rwt.util.ColorUtil.stringToRgb( gc._context.strokeStyle ) );
-      assertEquals( [ 4, 5, 6 ], rwt.util.ColorUtil.stringToRgb( gc._context.fillStyle ) );
+      assertEquals( [ 1, 2, 3 ], rwt.util.Colors.stringToRgb( gc._context.strokeStyle ) );
+      assertEquals( [ 4, 5, 6 ], rwt.util.Colors.stringToRgb( gc._context.fillStyle ) );
       assertEquals( 128, Math.round( gc._context.globalAlpha * 1000 ) );
       assertEquals( 4, gc._context.lineWidth );
       assertEquals( "round", gc._context.lineCap );
@@ -257,8 +257,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       assertEquals( 40, parseInt( textNode.style.left, 10 ) );
       assertEquals( 50, parseInt( textNode.style.top, 10 ) );
       assertTrue( textNode.style.font.indexOf( "Arial" ) != -1 );
-      assertEquals( [ 0, 0, 0 ], rwt.util.ColorUtil.stringToRgb( textNode.style.color ) );
-      assertEquals( [ 255, 255, 255 ], rwt.util.ColorUtil.stringToRgb( textNode.style.backgroundColor ) );
+      assertEquals( [ 0, 0, 0 ], rwt.util.Colors.stringToRgb( textNode.style.color ) );
+      assertEquals( [ 255, 255, 255 ], rwt.util.Colors.stringToRgb( textNode.style.backgroundColor ) );
       gc.init( 300, 300,
                [ [ "Arial" ], 10, false, false ],
                [ 255, 255, 255 ], [ 0, 0, 0 ] );

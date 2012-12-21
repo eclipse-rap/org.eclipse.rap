@@ -22,7 +22,7 @@ rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
     var labelObject = this.getLabelObject();
     labelObject.setAppearance( "hyperlink-label" );
     labelObject.setMode( "html" );
-    labelObject.setWrap( rwt.util.String.contains( style, "wrap" ) );
+    labelObject.setWrap( rwt.util.Strings.contains( style, "wrap" ) );
     // TODO [rh] workaround for weird getLabelObject behavior
     this.setLabel( "" );
     // End of workaround

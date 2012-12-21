@@ -66,7 +66,7 @@ rwt.remote.HandlerUtil = {
       if( value === null ) {
         widget.resetTextColor();
       } else {
-        widget.setTextColor( rwt.util.ColorUtil.rgbToRgbString( value ) );
+        widget.setTextColor( rwt.util.Colors.rgbToRgbString( value ) );
       }
     },
     "background" : function( widget, value ) {
@@ -79,7 +79,7 @@ rwt.remote.HandlerUtil = {
         if( widget.__user$backgroundGradient == null ) {
           widget.setBackgroundGradient( null );
         }
-        var color = value[ 3 ] === 0 ? "transparent" : rwt.util.ColorUtil.rgbToRgbString( value );
+        var color = value[ 3 ] === 0 ? "transparent" : rwt.util.Colors.rgbToRgbString( value );
         widget.setBackgroundColor( color );
       }
     },
@@ -158,11 +158,11 @@ rwt.remote.HandlerUtil = {
       } );
     },
     "activeKeys" : function( widget, value ) {
-      var map = rwt.util.Object.fromArray( value );
+      var map = rwt.util.Objects.fromArray( value );
       widget.setUserData( "activeKeys", map );
     },
     "cancelKeys" : function( widget, value ) {
-      var map = rwt.util.Object.fromArray( value );
+      var map = rwt.util.Objects.fromArray( value );
       widget.setUserData( "cancelKeys", map );
     }
   },
@@ -274,7 +274,7 @@ rwt.remote.HandlerUtil = {
         var vertical = value[ 2 ];
         gradient = [];
         for( var i = 0; i < colors.length; i++ ) {
-          gradient[ i ] = [ percents[ i ] / 100, rwt.util.ColorUtil.rgbToRgbString( colors[ i ] ) ];
+          gradient[ i ] = [ percents[ i ] / 100, rwt.util.Colors.rgbToRgbString( colors[ i ] ) ];
         }
         gradient.horizontal = !vertical;
       }
@@ -283,7 +283,7 @@ rwt.remote.HandlerUtil = {
     "roundedBorder" : function( widget, value ) {
       if( value ) {
         var width = value[ 0 ];
-        var color = rwt.util.ColorUtil.rgbToRgbString( value[ 1 ] );
+        var color = rwt.util.Colors.rgbToRgbString( value[ 1 ] );
         var radii = value.slice( -4 );
         var border = new rwt.html.Border( width, "rounded", color, radii );
         widget.setBorder( border );
@@ -313,7 +313,7 @@ rwt.remote.HandlerUtil = {
   },
 
   extendControlPropertyHandler : function( handler ) {
-    return rwt.util.Object.mergeWith( handler, this._controlPropertyHandler, false );
+    return rwt.util.Objects.mergeWith( handler, this._controlPropertyHandler, false );
   },
 
   extendControlListeners : function( list ) {
@@ -321,7 +321,7 @@ rwt.remote.HandlerUtil = {
   },
 
   extendControlListenerHandler : function( handler ) {
-    return rwt.util.Object.mergeWith( handler, this._controlListenerHandler, false );
+    return rwt.util.Objects.mergeWith( handler, this._controlListenerHandler, false );
   },
 
   getBackgroundGradientHandler : function() {
