@@ -36,7 +36,6 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 
@@ -285,27 +284,6 @@ public class ServerPushManager_Test extends TestCase {
     assertFalse( manager.isCallBackRequestBlocked() );
     assertFalse( callBackRequestSimulator.isRequestRunning() );
     assertEquals( RUN_ASYNC_EXEC + RUN_ASYNC_EXEC, log );
-  }
-
-  public void testExceptionInAsyncExec() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final RuntimeException exception = new RuntimeException( "bad things happen" );
-    Runnable runnable = new Runnable() {
-      public void run() {
-        throw exception;
-      }
-    };
-    display.asyncExec( runnable );
-    try {
-      display.readAndDispatch();
-      String msg
-        = "Exception that occurs in an asynExec runnable must be wrapped "
-        + "in an SWTException";
-      fail( msg );
-    } catch( SWTException e ) {
-      assertEquals( SWT.ERROR_FAILED_EXEC, e.code );
-      assertSame( exception, e.throwable );
-    }
   }
 
   // This test ensures that addSync doesn't cause deadlocks

@@ -883,23 +883,18 @@ public class Display extends Device implements Adaptable {
    *
    * @param thread the user-interface thread
    * @return the display for the given thread
-   *
-   * @since 1.3
    */
   public static Display findDisplay( Thread thread ) {
     synchronized( Device.class ) {
-      WeakReference[] displays = getDisplays();
-      Display result = null;
-      for( int i = 0; result == null && i < displays.length; i++ ) {
-        WeakReference current = displays[ i ];
-        if( current != null ) {
-          Display display = ( Display )current.get();
+      for( WeakReference<Display> displayRef : getDisplays() ) {
+        if( displayRef != null ) {
+          Display display = displayRef.get();
           if( display != null && !display.isDisposed() && display.thread == thread ) {
-            result = display;
+            return display;
           }
         }
       }
-      return result;
+      return null;
     }
   }
 

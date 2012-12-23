@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -553,16 +554,13 @@ public final class Fixture {
   }
 
   public static void runInThread( final Runnable runnable ) throws Throwable {
-    final Object lock = new Object();
-    final Throwable[] exception = { null };
+    final AtomicReference<Throwable> exception = new AtomicReference<Throwable>();
     Runnable exceptionGuard = new Runnable() {
       public void run() {
         try {
           runnable.run();
-        } catch( Throwable thr ) {
-          synchronized( lock ) {
-            exception[ 0 ] = thr;
-          }
+        } catch( Throwable throwable ) {
+          exception.set( throwable );
         }
       }
     };
@@ -570,10 +568,8 @@ public final class Fixture {
     thread.setDaemon( true );
     thread.start();
     thread.join();
-    synchronized( lock ) {
-      if( exception[ 0 ] != null ) {
-        throw exception[ 0 ];
-      }
+    if( exception.get() != null ) {
+      throw exception.get();
     }
   }
 

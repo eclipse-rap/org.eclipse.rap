@@ -24,10 +24,12 @@ import org.eclipse.swt.widgets.Display;
 
 public class LifeCycleUtil_Test extends TestCase {
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
