@@ -24,7 +24,7 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
  * A service handler can be used to process custom requests, e.g. to deliver files, images or other
  * content to the client. Service handlers are called in the user's session scope, i.e. they can access session
  * information. They can be implemented like servlets, i.e. they can access headers and parameters
- * from the request object and write the result into the reponse writer or output stream.
+ * from the request object and write the result into the response writer or output stream.
  * <p>
  * Implementations can be registered with the {@link ServiceManager} or in an
  * {@link ApplicationConfiguration}. Once registered, a service handler can be accessed by a URL
