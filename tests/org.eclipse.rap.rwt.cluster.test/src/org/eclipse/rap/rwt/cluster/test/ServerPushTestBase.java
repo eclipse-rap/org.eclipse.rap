@@ -62,8 +62,8 @@ public abstract class ServerPushTestBase extends TestCase {
     Response response = client.sendUICallBackRequest( 0 );
     thread.join();
 
-    String expected = "[ \"call\", \"uicb\", \"sendUIRequest\" ]";
-    assertTrue( response.getContentText().contains( expected ) );
+    String contentText = response.getContentText();
+    assertEquals( "", contentText.trim() );
   }
 
   public void testAbortConnectionDuringUICallbackRequest() throws Exception {

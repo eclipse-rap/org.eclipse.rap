@@ -11,11 +11,14 @@
 package org.eclipse.rap.rwt.cluster.testfixture.client;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushServiceHandler;
@@ -44,7 +47,7 @@ public class RWTClient {
     this.connectionProvider = connectionProvider;
     startTime = System.currentTimeMillis();
     sessionId = "";
-    requestCounter = -2;
+    requestCounter = -1;
   }
 
   public void changeServletEngine( IServletEngine servletEngine ) {
@@ -60,129 +63,150 @@ public class RWTClient {
   }
 
   public Response sendStartupRequest() throws IOException {
-    return sendRequest( "GET", new HashMap<String,String>() );
+    return sendGetRequest( new HashMap<String, String>() );
   }
 
   public Response sendInitializationRequest() throws IOException {
-    Map<String,String> parameters = new HashMap<String,String>();
-    parameters.put( "rwt_initialize", "true" );
-    parameters.put( "uiRoot", "w1" );
-    parameters.put( "w1.bounds.width", "800" );
-    parameters.put( "w1.bounds.height", "600" );
-    parameters.put( "w1.dpi.x", "96" );
-    parameters.put( "w1.dpi.y", "96" );
-    parameters.put( "w1.colorDepth", "32" );
-    parameters.put( "w1.cursorLocation.x", "0" );
-    parameters.put( "w1.cursorLocation.y", "0" );
-    return sendPostRequest( parameters );
+    JsonMessage message = new JsonMessage();
+    message.setInitialize( true );
+    message.addOperation( "[\"set\",\"w1\",{\"bounds\":[0,0,800,600],\"dpi\":[96,96],\"colorDepth\":32}]" );
+    message.addOperation( "[\"set\",\"w1\",{\"cursorLocation\":[0,0]}]" );
+    return sendPostRequest( message );
   }
 
   public Response sendDisplayResizeRequest( int width, int height ) throws IOException {
-    Map<String, String> parameters = createDefaultParameters();
-    parameters.put( "w1.bounds.width", String.valueOf( width ) );
-    parameters.put( "w1.bounds.height", String.valueOf( height ) );
-    return sendPostRequest( parameters );
+    JsonMessage message = new JsonMessage();
+    message.addOperation( "[\"set\",\"w1\",{\"bounds\":[0,0," + width + "," + height + "]}]" );
+    return sendPostRequest( message );
   }
 
   public Response sendWidgetSelectedRequest( String widgetId ) throws IOException {
-    Map<String, String> parameters = createDefaultParameters();
-    parameters.put( "org.eclipse.swt.events.widgetSelected", widgetId );
-    return sendPostRequest( parameters );
+    JsonMessage message = new JsonMessage();
+    message.addOperation( "[\"notify\",\"" + widgetId + "\",\"Selection\",{}]" );
+    return sendPostRequest( message );
   }
 
   public Response sendShellCloseRequest( String shellId ) throws IOException {
-    Map<String, String> parameters = createDefaultParameters();
-    parameters.put( "org.eclipse.swt.widgets.Shell_close", shellId );
-    return sendPostRequest( parameters );
+    JsonMessage message = new JsonMessage();
+    message.addOperation( "[\"notify\",\"" + shellId + "\",\"Close\",{}]" );
+    return sendPostRequest( message );
   }
 
   public Response sendDragStartRequest( String widgetId ) throws IOException {
-    Map<String, String> parameters = createDefaultParameters();
-    parameters.put( "org.eclipse.swt.dnd.dragStart", widgetId );
-    parameters.put( "org.eclipse.swt.dnd.dragStart.x", "100" );
-    parameters.put( "org.eclipse.swt.dnd.dragStart.y", "100" );
-    parameters.put( "org.eclipse.swt.dnd.dragStart.time", createTimeParam() );
-    return sendPostRequest( parameters );
+    JsonMessage message = new JsonMessage();
+    message.addOperation( "[\"notify\",\""
+                          + widgetId
+                          + "\",\"dragStart\",{\"x\":100,\"y\":100,\"time\":"
+                          + createTimeParam()
+                          + "}]" );
+    return sendPostRequest( message );
   }
 
   public Response sendDragFinishedRequest( String sourceWidgetId, String targetWidgetId )
     throws IOException
   {
-    Map<String, String> parameters = createDefaultParameters();
-    parameters.put( "org.eclipse.swt.dnd.dropAccept", targetWidgetId );
-    parameters.put( "org.eclipse.swt.dnd.dropAccept.x", "100" );
-    parameters.put( "org.eclipse.swt.dnd.dropAccept.y", "100" );
-    parameters.put( "org.eclipse.swt.dnd.dropAccept.item", null );
-    parameters.put( "org.eclipse.swt.dnd.dropAccept.operation", "move" );
-    parameters.put( "org.eclipse.swt.dnd.dropAccept.feedback", "0" );
-    parameters.put( "org.eclipse.swt.dnd.dropAccept.dataType", TEXT_TRANSFER_DATA_TYPE );
-    parameters.put( "org.eclipse.swt.dnd.dropAccept.source", sourceWidgetId );
-    parameters.put( "org.eclipse.swt.dnd.dropAccept.time", createTimeParam() );
-    parameters.put( "org.eclipse.swt.dnd.dragFinished", sourceWidgetId );
-    parameters.put( "org.eclipse.swt.dnd.dragFinished.x", "100" );
-    parameters.put( "org.eclipse.swt.dnd.dragFinished.y", "100" );
-    parameters.put( "org.eclipse.swt.dnd.dragFinished.time", createTimeParam() );
-    return sendPostRequest( parameters );
+    JsonMessage message = new JsonMessage();
+    message.addOperation( "[\"notify\",\""
+                          + sourceWidgetId
+                          + "\",\"dragFinished\",{\"x\":100,\"y\":100,\"time\":"
+                          + createTimeParam()
+                          + "}]" );
+    message.addOperation( "[\"notify\",\""
+                          + targetWidgetId
+                          + "\",\"dropAccept\",{\"x\":100,\"y\":100,\"item\":null,"
+                          + "\"operation\":\"move\",\"feedback\":0,\"dataType\":"
+                          + TEXT_TRANSFER_DATA_TYPE
+                          + ",\"source\":\""
+                          + sourceWidgetId
+                          + "\",\"time\":"
+                          + createTimeParam()
+                          + "}]" );
+    return sendPostRequest( message );
   }
 
   public Response sendResourceRequest( String resourceLocation ) throws IOException {
-    URL url = createUrl( resourceLocation, new HashMap<String,String>() );
-    HttpURLConnection connection = createConnection( "GET", url, 0 );
+    URL url = createUrl( resourceLocation );
+    HttpURLConnection connection = createGetConnection( url, 0 );
     return new Response( connection );
   }
 
   public Response sendUICallBackRequest( int timeout ) throws IOException {
-    Map<String,String> parameters = new HashMap<String,String>();
+    Map<String, String> parameters = new HashMap<String, String>();
     parameters.put( ServiceManagerImpl.REQUEST_PARAM, ServerPushServiceHandler.HANDLER_ID );
     URL url = createUrl( IServletEngine.SERVLET_NAME, parameters );
-    HttpURLConnection connection = createConnection( "GET", url, timeout );
+    HttpURLConnection connection = createGetConnection( url, timeout );
     return new Response( connection );
   }
 
-  Response sendPostRequest() throws IOException {
-    return sendPostRequest( new HashMap<String,String>() );
-  }
-
-  Response sendPostRequest( Map<String, String> parameters ) throws IOException {
-    return sendRequest( "POST", parameters );
-  }
-
-  Response sendRequest( String method, Map<String,String> parameters ) throws IOException {
+  Response sendPostRequest( JsonMessage message ) throws IOException {
     if( requestCounter >= 0 ) {
-      parameters.put( "requestCounter", String.valueOf( requestCounter ) );
+      message.setRequestCounter( requestCounter );
     }
-    URL url = createUrl( IServletEngine.SERVLET_NAME, parameters );
-    HttpURLConnection connection = createConnection( method, url, 0 );
+    URL url = createUrl( IServletEngine.SERVLET_NAME );
+    HttpURLConnection connection = createPostConnection( url, message.toString(), 0 );
     parseSessionId( connection );
-    requestCounter++;
+    Response response = new Response( connection );
+    requestCounter = parseRequestCounter( response.getContentText() );
+    return response;
+  }
+
+  Response sendGetRequest( Map<String, String> parameters ) throws IOException {
+    URL url = createUrl( IServletEngine.SERVLET_NAME, parameters );
+    HttpURLConnection connection = createGetConnection( url, 0 );
+    parseSessionId( connection );
     return new Response( connection );
   }
 
-  private URL createUrl( String path, Map<String,String> parameters ) {
+  private void addSessionCookie( HttpURLConnection connection ) {
+    if( sessionId != null && sessionId.length() > 0 ) {
+      connection.setRequestProperty( "Cookie", "JSESSIONID=" + sessionId );
+    }
+  }
+
+  private URL createUrl( String path ) {
+    return createUrl( path, new HashMap<String, String>() );
+  }
+
+  private URL createUrl( String path, Map<String, String> parameters ) {
     int port = servletEngine.getPort();
     HttpUrlBuilder urlBuilder = new HttpUrlBuilder( "localhost", port, path );
     urlBuilder.addParameters( parameters );
-    urlBuilder.setSessionId( sessionId );
     return urlBuilder.toUrl();
   }
 
-  private HttpURLConnection createConnection( String method, URL url, int timeout )
+  private HttpURLConnection createGetConnection( URL url, int timeout )
     throws IOException
   {
-    HttpURLConnection result = ( HttpURLConnection )connectionProvider.createConnection( url );
-    result.setInstanceFollowRedirects( false );
-    result.setAllowUserInteraction( false );
-    result.setRequestMethod( method );
-    result.setConnectTimeout( timeout );
-    result.setReadTimeout( timeout );
-    result.connect();
-    return result;
+    HttpURLConnection connection = ( HttpURLConnection )connectionProvider.createConnection( url );
+    connection.setInstanceFollowRedirects( false );
+    connection.setAllowUserInteraction( false );
+    connection.setRequestMethod( "GET" );
+    connection.setConnectTimeout( timeout );
+    connection.setReadTimeout( timeout );
+    addSessionCookie( connection );
+    connection.connect();
+    return connection;
   }
 
-  private Map<String, String> createDefaultParameters() {
-    Map<String,String> result = new HashMap<String,String>();
-    result.put( "uiRoot", "w1" );
-    return result;
+  private HttpURLConnection createPostConnection( URL url, String content, int timeout )
+    throws IOException
+  {
+    byte[] bytes = content.getBytes();
+    HttpURLConnection connection = ( HttpURLConnection )connectionProvider.createConnection( url );
+    connection.setRequestMethod( "POST" );
+    connection.setRequestProperty( "Content-Type", "application/json" );
+    connection.setRequestProperty( "Content-Length", Integer.toString( bytes.length ) );
+    connection.setUseCaches( false );
+    connection.setDoInput( true );
+    connection.setDoOutput( true );
+    connection.setConnectTimeout( timeout );
+    connection.setReadTimeout( timeout );
+    addSessionCookie( connection );
+    OutputStream outputStream = connection.getOutputStream();
+    outputStream.write( content.getBytes() );
+    outputStream.flush();
+    outputStream.close();
+    return connection;
   }
 
   private String createTimeParam() {
@@ -195,6 +219,15 @@ public class RWTClient {
       String[] parts = cookieField.split( ";" );
       sessionId = parts[ 0 ].split( "=" )[ 1 ];
     }
+  }
+
+  static int parseRequestCounter( String content ) {
+    Pattern pattern = Pattern.compile( "\"requestCounter\":\\s*(\\d+)" );
+    Matcher matcher = pattern.matcher( content );
+    if( matcher.find() ) {
+      return Integer.parseInt( matcher.group( 1 ) );
+    }
+    return -1;
   }
 
   private static class DefaultConnectionProvider implements IConnectionProvider {

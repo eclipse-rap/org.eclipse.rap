@@ -172,7 +172,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
 
   private static void reinitializeServiceStore() {
     ClientMessage clientMessage = ProtocolUtil.getClientMessage();
-    ServiceStore serviceStore = ( ServiceStore )ContextProvider.getServiceStore();
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
     serviceStore.clear();
     ProtocolUtil.setClientMessage( clientMessage );
   }

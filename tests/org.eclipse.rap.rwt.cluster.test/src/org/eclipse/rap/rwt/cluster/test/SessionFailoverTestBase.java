@@ -60,6 +60,20 @@ public abstract class SessionFailoverTestBase extends TestCase {
   private IServletEngine secondary;
   private RWTClient client;
 
+  @Override
+  protected void setUp() throws Exception {
+    ClusterTestHelper.enableUITests( true );
+    cluster = getServletEngineFactory().createServletEngineCluster();
+    primary = cluster.addServletEngine();
+    secondary = cluster.addServletEngine();
+    client = new RWTClient( primary );
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    cluster.stop();
+  }
+
   abstract IServletEngineFactory getServletEngineFactory();
 
   public void testButtonEntryPoint() throws Exception {
@@ -192,20 +206,6 @@ public abstract class SessionFailoverTestBase extends TestCase {
     UISession uiSession = ClusterTestHelper.getFirstUISession( secondary );
     assertEquals( 1, getFirstDisplay( secondary ).getShells().length );
     assertEquals( SWT.CANCEL, DialogEntryPoint.getDialogReturnCode( uiSession ) );
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    ClusterTestHelper.enableUITests( true );
-    cluster = getServletEngineFactory().createServletEngineCluster();
-    primary = cluster.addServletEngine();
-    secondary = cluster.addServletEngine();
-    client = new RWTClient( primary );
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    cluster.stop();
   }
 
   private void initializeClient( Class<? extends EntryPoint> entryPoint ) throws Exception {

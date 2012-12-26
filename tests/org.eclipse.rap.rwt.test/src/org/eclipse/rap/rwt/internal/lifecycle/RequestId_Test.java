@@ -69,12 +69,13 @@ public class RequestId_Test extends TestCase {
   }
 
   public void testSerialization() throws Exception {
-    Integer requestId = RequestId.getInstance().nextRequestId();
+    RequestId instance = RequestId.getInstance();
+    instance.nextRequestId(); // ensure counter differs from zero
+    Integer currentRequestId = instance.nextRequestId();
 
-    RequestId deserialized
-      = Fixture.serializeAndDeserialize( RequestId.getInstance() );
+    RequestId deserialized = Fixture.serializeAndDeserialize( instance );
 
-    assertEquals( requestId, deserialized.getCurrentRequestId() );
+    assertEquals( currentRequestId, deserialized.getCurrentRequestId() );
   }
 
 }

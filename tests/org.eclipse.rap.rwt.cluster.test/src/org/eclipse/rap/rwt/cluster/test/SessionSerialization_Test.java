@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineCluster;
 import org.eclipse.rap.rwt.cluster.testfixture.server.JettyFactory;
 
 
-
 public class SessionSerialization_Test extends TestCase {
 
   private IServletEngineCluster cluster;
@@ -41,6 +40,7 @@ public class SessionSerialization_Test extends TestCase {
     assertTrue( response.isValidJsonResponse() );
   }
 
+  @Override
   protected void setUp() throws Exception {
     cluster = new JettyFactory().createServletEngineCluster();
     primary = cluster.addServletEngine();
@@ -49,6 +49,7 @@ public class SessionSerialization_Test extends TestCase {
     client = new RWTClient( primary );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     cluster.stop();
   }
@@ -64,4 +65,5 @@ public class SessionSerialization_Test extends TestCase {
     client.changeServletEngine( secondary );
     return client.sendDisplayResizeRequest( 500, 700 );
   }
+
 }
