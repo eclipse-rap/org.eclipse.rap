@@ -21,7 +21,7 @@ import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
-import org.eclipse.rap.rwt.internal.lifecycle.RequestId;
+import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
@@ -152,8 +152,8 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
 
   private static void renderRequestCounter() {
     ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-    Integer requestId = RequestId.getInstance().nextRequestId();
-    protocolWriter.appendHead( PROP_REQUEST_COUNTER, requestId.intValue() );
+    int requestId = RequestCounter.getInstance().nextRequestId();
+    protocolWriter.appendHead( PROP_REQUEST_COUNTER, requestId );
   }
 
   private static void renderExitConfirmation( Display display ) {

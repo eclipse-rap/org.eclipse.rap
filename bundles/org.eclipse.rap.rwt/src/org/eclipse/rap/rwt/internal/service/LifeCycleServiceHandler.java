@@ -27,7 +27,7 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.RequestId;
+import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
@@ -124,7 +124,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   // helping methods
 
   private static boolean isRequestCounterValid() {
-    return hasInitializeParameter() || RequestId.getInstance().isValid();
+    return hasInitializeParameter() || RequestCounter.getInstance().isValid();
   }
 
   private static void handleInvalidRequestCounter( HttpServletResponse response ) {

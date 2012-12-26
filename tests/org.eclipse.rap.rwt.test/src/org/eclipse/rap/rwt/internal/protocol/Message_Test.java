@@ -100,8 +100,6 @@ public class Message_Test extends TestCase {
     new Display();
     Fixture.fakeNewRequest();
     Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeNewRequest();
-    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 1, Fixture.getProtocolMessage().getRequestCounter() );
   }
 

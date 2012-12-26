@@ -44,30 +44,27 @@ public class RenderDispose_Test extends TestCase {
     // set up the test widget hierarchy
     Display display = new Display();
     final Composite shell = new Shell( display , SWT.NONE );
-    // render initial markup that constructs the above created
-    // widget hierarchy (display, shell and button)
+    // render initial message that creates the remote widgets (display and shell)
     Fixture.executeLifeCycleFromServerThread( );
-    // create and dispose of the button
+    // create a button and dispose of it immediately
     Fixture.fakeNewRequest();
     ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
-      private static final long serialVersionUID = 1L;
-
+      public PhaseId getPhaseId() {
+        return PhaseId.RENDER;
+      }
       public void beforePhase( PhaseEvent event ) {
         Button button = new Button( shell, SWT.PUSH );
         button.dispose();
       }
-
       public void afterPhase( PhaseEvent event ) {
       }
-
-      public PhaseId getPhaseId() {
-        return PhaseId.RENDER;
-      }
     } );
+
     Fixture.executeLifeCycleFromServerThread( );
+
     Message message = Fixture.getProtocolMessage();
-    assertEquals( 1, message.getRequestCounter() );
+    assertEquals( 2, message.getRequestCounter() );
     assertEquals( 0, message.getOperationCount() );
   }
 
