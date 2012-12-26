@@ -24,6 +24,7 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
 
@@ -85,5 +86,7 @@ public class RWTClusterSupport implements Filter {
   private static void markSessionChanged( HttpSession httpSession ) {
     UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
     UISessionImpl.attachInstanceToSession( httpSession, uiSession );
+    RequestCounter.reattachToHttpSession( httpSession );
   }
+
 }

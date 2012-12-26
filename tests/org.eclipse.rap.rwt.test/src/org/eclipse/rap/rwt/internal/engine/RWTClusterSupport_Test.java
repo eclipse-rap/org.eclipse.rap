@@ -10,18 +10,18 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.engine;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
@@ -30,66 +30,49 @@ import org.eclipse.rap.rwt.testfixture.TestSession;
 
 public class RWTClusterSupport_Test extends TestCase {
 
-  private static class TestFilterChain implements FilterChain {
-    boolean doFilterWasCalled;
-    public void doFilter( ServletRequest request, ServletResponse response )
-      throws IOException, ServletException
-    {
-      doFilterWasCalled = true;
-    }
-  }
-
   private RWTClusterSupport rwtClusterSupport;
-  private TestFilterChain chain;
+  private FilterChain chain;
   private TestRequest request;
   private TestResponse response;
+
+  @Override
+  protected void setUp() throws Exception {
+    request = new TestRequest();
+    response = new TestResponse();
+    chain = mock( FilterChain.class );
+    rwtClusterSupport = new RWTClusterSupport();
+  }
 
   public void testWithNonExistingSession() throws Exception {
     request.setSession( null );
 
     rwtClusterSupport.doFilter( request, response, chain );
 
-    assertTrue( chain.doFilterWasCalled );
+    verify( chain ).doFilter( same( request ), same( response ) );
   }
 
   public void testUISessionIsAttached() throws Exception {
-    HttpSession session = new TestSession();
-    request.setSession( session );
-    UISessionImpl.attachInstanceToSession( session, new UISessionImpl( session ) );
+    HttpSession httpSession = new TestSession();
+    request.setSession( httpSession );
+    UISessionImpl.attachInstanceToSession( httpSession, new UISessionImpl( httpSession ) );
 
     rwtClusterSupport.doFilter( request, response, chain );
 
-    UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( session );
-    assertTrue( chain.doFilterWasCalled );
-    assertSame( session, uiSession.getHttpSession() );
+    verify( chain ).doFilter( same( request ), same( response ) );
+    UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
+    assertSame( httpSession, uiSession.getHttpSession() );
   }
 
   public void testSessionIsMarkedAsChanged() throws Exception {
-    final List<Object> log = new ArrayList<Object>();
-    HttpSession session = new TestSession() {
-      @Override
-      public void setAttribute( String name, Object value ) {
-        super.setAttribute( name, value );
-        log.add( value );
-      }
-    };
-    request.setSession( session );
-    session.setAttribute( "foo", "bar" );
-    UISessionImpl uiSession = new UISessionImpl( session );
-    UISessionImpl.attachInstanceToSession( session, uiSession );
-    log.clear();
+    HttpSession httpSession = mock( HttpSession.class );
+    request.setSession( httpSession );
+    UISessionImpl uiSession = new UISessionImpl( httpSession );
+    UISessionImpl.attachInstanceToSession( httpSession, uiSession );
 
     rwtClusterSupport.doFilter( request, response, chain );
 
-    assertEquals( 1, log.size() );
-    assertEquals( uiSession, log.get( 0 ) );
+    verify( httpSession ).setAttribute( anyString(), same( uiSession ) );
+    verify( httpSession ).setAttribute( anyString(), any( RequestCounter.class ) );
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    request = new TestRequest();
-    response = new TestResponse();
-    chain = new TestFilterChain();
-    rwtClusterSupport = new RWTClusterSupport();
-  }
 }

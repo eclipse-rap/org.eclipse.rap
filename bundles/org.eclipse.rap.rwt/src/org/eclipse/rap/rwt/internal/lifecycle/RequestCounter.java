@@ -41,6 +41,11 @@ public final class RequestCounter implements SerializableCompatibility {
     return result;
   }
 
+  public static void reattachToHttpSession( HttpSession httpSession ) {
+    Object value = httpSession.getAttribute( ATTR_INSTANCE );
+    httpSession.setAttribute( ATTR_INSTANCE, value );
+  }
+
   public boolean isValid() {
     String sentRequestId = ProtocolUtil.readHeadPropertyValue( PROP_REQUEST_COUNTER );
     if( sentRequestId == null ) {
