@@ -12,10 +12,10 @@ package org.eclipse.rap.rwt.internal.engine;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpSession;
 
@@ -72,7 +72,18 @@ public class RWTClusterSupport_Test extends TestCase {
     rwtClusterSupport.doFilter( request, response, chain );
 
     verify( httpSession ).setAttribute( anyString(), same( uiSession ) );
-    verify( httpSession ).setAttribute( anyString(), any( RequestCounter.class ) );
+  }
+
+  public void testRequestCounterIsMarkedAsChanged() throws Exception {
+    HttpSession httpSession = mock( HttpSession.class );
+    request.setSession( httpSession );
+    UISessionImpl uiSession = new UISessionImpl( httpSession );
+    UISessionImpl.attachInstanceToSession( httpSession, uiSession );
+
+    rwtClusterSupport.doFilter( request, response, chain );
+
+    String attr = RequestCounter.class.getName() + "#instance";
+    verify( httpSession ).setAttribute( eq( attr ), any( RequestCounter.class ) );
   }
 
 }
