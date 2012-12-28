@@ -10,12 +10,13 @@
 *******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import static org.eclipse.rap.rwt.internal.resources.TestUtil.assertArrayEquals;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -30,16 +31,19 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ClientObject_Test extends TestCase {
+public class ClientObject_Test {
 
   private Shell shell;
   private String shellId;
   private IClientObject clientObject;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
     Display display = new Display();
@@ -48,11 +52,12 @@ public class ClientObject_Test extends TestCase {
     clientObject = ClientObjectFactory.getClientObject( shell );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testCreate() {
     clientObject.create( "rwt.widgets.Shell" );
 
@@ -61,6 +66,7 @@ public class ClientObject_Test extends TestCase {
     assertEquals( "rwt.widgets.Shell", operation.getType() );
   }
 
+  @Test
   public void testCreateIncludesSetProperties() {
     clientObject.create( "rwt.widgets.Shell" );
     clientObject.set( "foo", 23 );
@@ -71,6 +77,7 @@ public class ClientObject_Test extends TestCase {
     assertEquals( new Integer( 23 ), message.getOperation( 0 ).getProperty( "foo" ) );
   }
 
+  @Test
   public void testSetProperty() {
     clientObject.set( "key", ( Object )"value" );
     clientObject.set( "key2", 2 );
@@ -87,6 +94,7 @@ public class ClientObject_Test extends TestCase {
     assertEquals( "aString", operation.getProperty( "key5" ) );
   }
 
+  @Test
   public void testSetPropertyForIntArray() throws JSONException {
     clientObject.set( "key", new int[]{ 1, 2, 3 } );
 
@@ -98,6 +106,7 @@ public class ClientObject_Test extends TestCase {
     assertEquals( 3, result.getInt( 2 ) );
   }
 
+  @Test
   public void testCreatePropertyGetStyle() {
     clientObject.create( "rwt.widgets.Shell"  );
     clientObject.set( "style", new String[] { "PUSH", "BORDER" } );
@@ -106,6 +115,7 @@ public class ClientObject_Test extends TestCase {
     assertArrayEquals( new String[] { "PUSH", "BORDER" }, operation.getStyles() );
   }
 
+  @Test
   public void testDestroy() {
     clientObject.destroy();
 
@@ -113,6 +123,7 @@ public class ClientObject_Test extends TestCase {
     assertEquals( shellId, operation.getTarget() );
   }
 
+  @Test
   public void testAddListener() {
     clientObject.listen( "selection", true );
     clientObject.listen( "fake", true );
@@ -123,6 +134,7 @@ public class ClientObject_Test extends TestCase {
     assertTrue( operation.listensTo( "fake" ) );
   }
 
+  @Test
   public void testRemoveListener() {
     clientObject.listen( "selection", false );
     clientObject.listen( "fake", false );
@@ -135,6 +147,7 @@ public class ClientObject_Test extends TestCase {
     assertTrue( operation.listensTo( "fake2" ) );
   }
 
+  @Test
   public void testCall() {
     clientObject.call( "method", null );
 
@@ -143,6 +156,7 @@ public class ClientObject_Test extends TestCase {
     assertEquals( "method", operation.getMethodName() );
   }
 
+  @Test
   public void testCallTwice() {
     clientObject.call( "method", null );
     Map<String, Object> properties = new HashMap<String, Object>();

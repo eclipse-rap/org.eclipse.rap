@@ -12,7 +12,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -22,13 +26,33 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ImageDataFactory_Test extends TestCase {
+public class ImageDataFactory_Test {
+
   private static final ClassLoader CLASS_LOADER = ImageDataFactory_Test.class.getClassLoader();
-  
+
   private ImageDataFactory imageDataFactory;
 
+  @Before
+  public void setUp() {
+    Fixture.createApplicationContext();
+    Fixture.createServiceContext();
+    Fixture.useDefaultResourceManager();
+    imageDataFactory = new ImageDataFactory( RWTFactory.getResourceManager() );
+    new Display();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfApplicationContext();
+  }
+
+  @Test
   public void testFindImageData() {
     Image image = Graphics.getImage( Fixture.IMAGE_50x100, CLASS_LOADER );
     ResourceManager resourceManager = RWT.getResourceManager();
@@ -38,7 +62,8 @@ public class ImageDataFactory_Test extends TestCase {
     assertEquals( 50, imageData.width );
     assertEquals( 100, imageData.height );
   }
-  
+
+  @Test
   public void testFindImageDataUsesCachedImage() {
     Image image = Graphics.getImage( Fixture.IMAGE_50x100, CLASS_LOADER );
     ImageData imageData1 = imageDataFactory.findImageData( image.internalImage );
@@ -47,6 +72,7 @@ public class ImageDataFactory_Test extends TestCase {
     assertEquals( imageData1.data.length, imageData2.data.length );
   }
 
+  @Test
   public void testFindImageDataWithBlankImage() {
     Image blankImage = Graphics.getImage( "resources/images/blank.gif", CLASS_LOADER );
     ImageData blankData = imageDataFactory.findImageData( blankImage.internalImage );
@@ -55,6 +81,7 @@ public class ImageDataFactory_Test extends TestCase {
     assertEquals( 1, blankData.height );
   }
 
+  @Test
   public void testFindImageDataWithNull() {
     try {
       imageDataFactory.findImageData( null );
@@ -63,16 +90,4 @@ public class ImageDataFactory_Test extends TestCase {
     }
   }
 
-  protected void setUp() {
-    Fixture.createApplicationContext();
-    Fixture.createServiceContext();
-    Fixture.useDefaultResourceManager();
-    imageDataFactory = new ImageDataFactory( RWTFactory.getResourceManager() );
-    new Display();
-  }
-
-  protected void tearDown() {
-    Fixture.disposeOfServiceContext();
-    Fixture.disposeOfApplicationContext();
-  }
 }

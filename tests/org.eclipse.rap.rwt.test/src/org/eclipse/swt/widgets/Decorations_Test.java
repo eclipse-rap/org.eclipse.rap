@@ -1,25 +1,44 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Image;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 
 @SuppressWarnings("deprecation")
-public class Decorations_Test extends TestCase {
+public class Decorations_Test {
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testSetImages() {
     Display display = new Display();
     Decorations shell = new Shell( display );
@@ -37,6 +56,7 @@ public class Decorations_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetImages() {
     Display display = new Display();
     Decorations shell = new Shell( display );
@@ -51,6 +71,7 @@ public class Decorations_Test extends TestCase {
     assertEquals( image2, images[1] );
   }
 
+  @Test
   public void testSetImage() {
     Display display = new Display();
     Decorations shell = new Shell( display );
@@ -59,13 +80,5 @@ public class Decorations_Test extends TestCase {
     shell.setImage( image );
     assertEquals( image, shell.getImage() );
   }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-  }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

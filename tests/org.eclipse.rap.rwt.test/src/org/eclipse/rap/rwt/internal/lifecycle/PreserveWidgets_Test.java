@@ -12,18 +12,20 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import junit.framework.TestCase;
+import java.io.IOException;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -36,9 +38,106 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class PreserveWidgets_Test extends TestCase {
+public class PreserveWidgets_Test {
+
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    Fixture.fakeNewRequest();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
+  public void testInitialization() {
+    // ensures that the default preserve mechanism is registered and executes at the designated
+    // phases
+    Display display = new Display();
+    Composite shell = new Shell( display );
+    final Text text = new Text( shell, SWT.NONE );
+    text.setText( "hello" );
+    Fixture.markInitialized( display );
+    ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
+    final StringBuilder log = new StringBuilder();
+    lifeCycle.addPhaseListener( new PhaseListener() {
+      private static final long serialVersionUID = 1L;
+      public void beforePhase( PhaseEvent event ) {
+        if( PhaseId.PROCESS_ACTION.equals( event.getPhaseId() ) ) {
+          WidgetAdapter adapter = WidgetUtil.getAdapter( text );
+          if( "hello".equals( adapter.getPreserved( Props.TEXT ) ) ) {
+            log.append( "copy created" );
+          }
+        }
+      }
+      public void afterPhase( PhaseEvent event ) {
+      }
+      public PhaseId getPhaseId() {
+        return PhaseId.ANY;
+      }
+    } );
+
+    Fixture.executeLifeCycleFromServerThread( );
+
+    assertEquals( "copy created", log.toString() );
+  }
+
+  @Test
+  public void testExecutionOrder() {
+    Display display = new Display();
+    LoggingWidgetLCA loggingWidgetLCA = new LoggingWidgetLCA();
+    Composite shell = new CustomLCAShell( display, loggingWidgetLCA );
+    new CustomLCAWidget( shell, loggingWidgetLCA );
+    Fixture.markInitialized( display );
+
+    new DisplayLCA().preserveValues( display );
+
+    String expectedorder = CustomLCAShell.class.getName() + CustomLCAWidget.class.getName();
+    assertEquals( expectedorder, loggingWidgetLCA.log.toString() );
+  }
+
+  @Test
+  public void testPreserveValuesWhenDisplayIsUninitialized() {
+    StringBuilder log = new StringBuilder();
+    Display display = new Display();
+    LoggingWidgetLCA loggingWidgetLCA = new LoggingWidgetLCA();
+    Composite shell = new CustomLCAShell( display, loggingWidgetLCA );
+    new CustomLCAWidget( shell, loggingWidgetLCA );
+
+    new DisplayLCA().preserveValues( display );
+
+    assertEquals( "", log.toString() );
+  }
+
+  @Test
+  public void testStartup() throws Exception {
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
+                                                      TestEntryPointWithShell.class,
+                                                      null );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
+    lifeCycle.execute();
+    Message message = Fixture.getProtocolMessage();
+    assertTrue( message.getOperationCount() > 0 );
+  }
+
+  @Test
+  public void testClearPreservedWithDisposedDisplay() {
+    Display display = new Display();
+    display.dispose();
+    Fixture.fakePhase( PhaseId.RENDER );
+    try {
+      new DisplayLCA().clearPreserved( display );
+    } catch( Exception e ) {
+      fail( "clearPreserved() must succeed even with disposed display" );
+    }
+  }
 
   public static class TestEntryPointWithShell implements EntryPoint {
     public int createUI() {
@@ -129,92 +228,4 @@ public class PreserveWidgets_Test extends TestCase {
     }
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakeNewRequest();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
-
-  public void testInitialization() throws Exception {
-    // ensures that the default preserve mechanism is registered and executes at the designated
-    // phases
-    Display display = new Display();
-    Composite shell = new Shell( display );
-    final Text text = new Text( shell, SWT.NONE );
-    text.setText( "hello" );
-    Fixture.markInitialized( display );
-    ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
-    final StringBuilder log = new StringBuilder();
-    lifeCycle.addPhaseListener( new PhaseListener() {
-      private static final long serialVersionUID = 1L;
-      public void beforePhase( PhaseEvent event ) {
-        if( PhaseId.PROCESS_ACTION.equals( event.getPhaseId() ) ) {
-          WidgetAdapter adapter = WidgetUtil.getAdapter( text );
-          if( "hello".equals( adapter.getPreserved( Props.TEXT ) ) ) {
-            log.append( "copy created" );
-          }
-        }
-      }
-      public void afterPhase( PhaseEvent event ) {
-      }
-      public PhaseId getPhaseId() {
-        return PhaseId.ANY;
-      }
-    } );
-
-    Fixture.executeLifeCycleFromServerThread( );
-
-    assertEquals( "copy created", log.toString() );
-  }
-
-  public void testExecutionOrder() {
-    Display display = new Display();
-    LoggingWidgetLCA loggingWidgetLCA = new LoggingWidgetLCA();
-    Composite shell = new CustomLCAShell( display, loggingWidgetLCA );
-    new CustomLCAWidget( shell, loggingWidgetLCA );
-    Fixture.markInitialized( display );
-
-    new DisplayLCA().preserveValues( display );
-
-    String expectedorder = CustomLCAShell.class.getName() + CustomLCAWidget.class.getName();
-    assertEquals( expectedorder, loggingWidgetLCA.log.toString() );
-  }
-
-  public void testPreserveValuesWhenDisplayIsUninitialized() {
-    StringBuilder log = new StringBuilder();
-    Display display = new Display();
-    LoggingWidgetLCA loggingWidgetLCA = new LoggingWidgetLCA();
-    Composite shell = new CustomLCAShell( display, loggingWidgetLCA );
-    new CustomLCAWidget( shell, loggingWidgetLCA );
-
-    new DisplayLCA().preserveValues( display );
-
-    assertEquals( "", log.toString() );
-  }
-
-  public void testStartup() throws Exception {
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
-                                                      TestEntryPointWithShell.class,
-                                                      null );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    lifeCycle.execute();
-    Message message = Fixture.getProtocolMessage();
-    assertTrue( message.getOperationCount() > 0 );
-  }
-
-  public void testClearPreservedWithDisposedDisplay() {
-    Display display = new Display();
-    display.dispose();
-    Fixture.fakePhase( PhaseId.RENDER );
-    try {
-      new DisplayLCA().clearPreserved( display );
-    } catch( Exception e ) {
-      fail( "clearPreserved() must succeed even with disposed display" );
-    }
-  }
 }

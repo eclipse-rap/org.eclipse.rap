@@ -11,17 +11,38 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ContextProvider_Test extends TestCase {
+public class ContextProvider_Test {
 
+  @Before
+  public void setUp() {
+    Fixture.createApplicationContext();
+  }
+
+  @After
+  public void tearDown() {
+    if( ContextProvider.hasContext() ) {
+      Fixture.disposeOfServiceContext();
+    }
+    Fixture.disposeOfApplicationContext();
+    Fixture.disposeOfServletContext();
+  }
+
+  @Test
   public void testThreadLocalFunctionalityWithCurrentThread() {
     assertFalse( ContextProvider.hasContext() );
     TestResponse response = new TestResponse();
@@ -33,6 +54,7 @@ public class ContextProvider_Test extends TestCase {
     assertFalse( ContextProvider.hasContext() );
   }
 
+  @Test
   public void testThreadLocalFunctionalityWithAnyThread() throws Exception {
     TestResponse response = new TestResponse();
     TestRequest request = new TestRequest();
@@ -40,6 +62,7 @@ public class ContextProvider_Test extends TestCase {
 
     final boolean[] hasContext = new boolean[ 1 ];
     Thread thread1 = new Thread() {
+      @Override
       public void run() {
         hasContext[ 0 ] = ContextProvider.hasContext();
       }
@@ -53,6 +76,7 @@ public class ContextProvider_Test extends TestCase {
 
     hasContext[ 0 ] = false;
     Thread thread2 = new Thread() {
+      @Override
       public void run() {
         hasContext[ 0 ] = ContextProvider.hasContext();
       }
@@ -68,6 +92,7 @@ public class ContextProvider_Test extends TestCase {
     hasContext[ 0 ] = true;
     final boolean[] useMapped = { false };
     Thread thread3 = new Thread() {
+      @Override
       public void run() {
         useMapped[ 0 ] = ContextProvider.releaseContextHolder();
         hasContext[ 0 ] = ContextProvider.hasContext();
@@ -81,6 +106,7 @@ public class ContextProvider_Test extends TestCase {
     assertFalse( hasContext[ 0 ] );
   }
 
+  @Test
   public void testContextCreation() {
     TestResponse response = new TestResponse();
     try {
@@ -97,6 +123,7 @@ public class ContextProvider_Test extends TestCase {
     }
   }
 
+  @Test
   public void testApplicationContextIsAttachedToUISession() {
     Fixture.createServiceContext();
 
@@ -105,16 +132,4 @@ public class ContextProvider_Test extends TestCase {
     assertNotNull( ApplicationContextUtil.get( uiSession ) );
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    Fixture.createApplicationContext();
-  }
-
-  protected void tearDown() throws Exception {
-    if( ContextProvider.hasContext() ) {
-      Fixture.disposeOfServiceContext();
-    }
-    Fixture.disposeOfApplicationContext();
-    Fixture.disposeOfServletContext();
-  }
 }

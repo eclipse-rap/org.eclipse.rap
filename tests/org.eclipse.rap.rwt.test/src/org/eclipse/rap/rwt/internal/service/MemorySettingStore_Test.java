@@ -11,24 +11,29 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.rap.rwt.service.FileSettingStore_Test;
 import org.eclipse.rap.rwt.service.SettingStoreFactory;
 import org.eclipse.rap.rwt.testfixture.internal.service.MemorySettingStore;
 import org.eclipse.rap.rwt.testfixture.internal.service.MemorySettingStoreFactory;
+import org.junit.Test;
 
 
 /**
- * Tests for the classes {@link MemorySettingStore} 
+ * Tests for the classes {@link MemorySettingStore}
  * and {@link MemorySettingStoreFactory}.
  */
 public class MemorySettingStore_Test extends FileSettingStore_Test {
 
-  private SettingStoreFactory factory = new MemorySettingStoreFactory();
+  private final SettingStoreFactory factory = new MemorySettingStoreFactory();
 
+  @Override
   protected SettingStoreFactory getFactory() {
     return factory;
   }
 
+  @Test
   public void testFactoryCreatesRightInstance() {
     String id = getClass().getName();
     assertTrue( factory.createSettingStore( id ) instanceof MemorySettingStore );

@@ -13,6 +13,10 @@ package org.eclipse.rap.rwt.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -24,8 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -61,18 +63,21 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
 @SuppressWarnings("deprecation")
-public class ControlLCAUtil_Test extends TestCase {
+public class ControlLCAUtil_Test {
 
   private Display display;
   private Shell shell;
   private Button control;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -82,12 +87,13 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     display.dispose();
     Fixture.tearDown();
   }
 
+  @Test
   public void testProcessSelectionForControl() {
     SelectionListener listener = mock( SelectionListener.class );
     control.addSelectionListener( listener );
@@ -104,6 +110,7 @@ public class ControlLCAUtil_Test extends TestCase {
                   new Rectangle( event.x, event.y, event.width, event.height ) );
   }
 
+  @Test
   public void testProcessSelectionForControlWithItem() {
     Item item = mock( Item.class );
     Listener listener = mock( Listener.class );
@@ -121,6 +128,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( control.getBounds(), event.getBounds() );
   }
 
+  @Test
   public void testProcessSelectionWithStateMask() {
     SelectionListener listener = mock( SelectionListener.class );
     control.addSelectionListener( listener );
@@ -138,6 +146,7 @@ public class ControlLCAUtil_Test extends TestCase {
                   new Rectangle( event.x, event.y, event.width, event.height ) );
   }
 
+  @Test
   public void testProcessSelectionWithoutReadingBounds() {
     Listener listener = mock( Listener.class );
     control.addListener( SWT.Selection, listener );
@@ -156,6 +165,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 0, event.height );
   }
 
+  @Test
   public void testProcessSelectionWithDetailChecked() {
     SelectionListener listener = mock( SelectionListener.class );
     control.addSelectionListener( listener );
@@ -169,6 +179,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( SWT.CHECK, event.detail );
   }
 
+  @Test
   public void testProcessSelectionWithDetailSearch() {
     SelectionListener listener = mock( SelectionListener.class );
     control.addSelectionListener( listener );
@@ -182,6 +193,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( SWT.ICON_SEARCH, event.detail );
   }
 
+  @Test
   public void testProcessSelectionWithDetailCancel() {
     SelectionListener listener = mock( SelectionListener.class );
     control.addSelectionListener( listener );
@@ -195,6 +207,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( SWT.CANCEL, event.detail );
   }
 
+  @Test
   public void testProcessDefaultSelection() {
     SelectionListener listener = mock( SelectionListener.class );
     control.addSelectionListener( listener );
@@ -206,6 +219,7 @@ public class ControlLCAUtil_Test extends TestCase {
     verify( listener ).widgetDefaultSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testProcessKeyEventWithDisplayFilter() {
     shell.open();
     Listener listener = mock( Listener.class );
@@ -221,6 +235,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 0, captor.getValue().stateMask );
   }
 
+  @Test
   public void testProcessKeyEventWithLowerCaseCharacter() {
     shell.open();
     KeyListener listener = mock( KeyListener.class );
@@ -236,6 +251,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 0, captor.getValue().stateMask );
   }
 
+  @Test
   public void testProcessKeyEventWithUpperCaseCharacter() {
     shell.open();
     KeyListener listener = mock( KeyListener.class );
@@ -251,6 +267,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 0, captor.getValue().stateMask );
   }
 
+  @Test
   public void testProcessKeyEventWithDigitCharacter() {
     shell.open();
     KeyListener listener = mock( KeyListener.class );
@@ -266,6 +283,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 0, captor.getValue().stateMask );
   }
 
+  @Test
   public void testProcessKeyEventWithPunctuationCharacter() {
     shell.open();
     KeyListener listener = mock( KeyListener.class );
@@ -281,6 +299,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 0, captor.getValue().stateMask );
   }
 
+  @Test
   public void testKeyAndTraverseEvents() {
     final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
@@ -307,6 +326,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( SWT.KeyUp, upEvent.type );
   }
 
+  @Test
   public void testGetTraverseKey() {
     int traverseKey;
     traverseKey = ControlLCAUtil.getTraverseKey( 13, 0 );
@@ -321,6 +341,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( traverseKey, SWT.TRAVERSE_NONE );
   }
 
+  @Test
   public void testTranslateKeyCode() {
     int keyCode;
     keyCode = ControlLCAUtil.translateKeyCode( 40 );
@@ -343,6 +364,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( SWT.ALT, keyCode );
   }
 
+  @Test
   public void testProcessHelpEvent() {
     shell.open();
     HelpListener listener = mock( HelpListener.class );
@@ -354,6 +376,7 @@ public class ControlLCAUtil_Test extends TestCase {
     verify( listener, times( 1 ) ).helpRequested( any( HelpEvent.class) );
   }
 
+  @Test
   public void testRenderFocusListener_NotFocusableControl() {
     Label control = new Label( shell, SWT.NONE );
     Fixture.fakeResponseWriter();
@@ -370,6 +393,7 @@ public class ControlLCAUtil_Test extends TestCase {
   //////////////////////////////////////////////
   // Tests for new render methods using protocol
 
+  @Test
   public void testRenderVisibilityIntiallyFalse() {
     control.setVisible( false );
     ControlLCAUtil.renderVisible( control );
@@ -378,6 +402,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findSetProperty( control, "visibility" ) );
   }
 
+  @Test
   public void testRenderVisibilityInitiallyTrue() {
     ControlLCAUtil.renderVisible( control );
 
@@ -385,6 +410,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "visibility" ) );
   }
 
+  @Test
   public void testRenderVisibilityUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -398,6 +424,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
+  @Test
   public void testRenderBoundsIntiallyZero() throws JSONException {
     control = new Button( shell, SWT.PUSH );
     ControlLCAUtil.renderBounds( control );
@@ -408,6 +435,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
+  @Test
   public void testRenderBoundsInitiallySet() throws JSONException {
     control.setBounds( 10, 20, 100, 200 );
     ControlLCAUtil.renderBounds( control );
@@ -418,6 +446,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
+  @Test
   public void testRenderBoundsUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -430,6 +459,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "bounds" ) );
   }
 
+  @Test
   public void testRenderIntialChildren() throws JSONException {
     ControlLCAUtil.renderChildren( shell );
 
@@ -438,6 +468,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[" +  WidgetUtil.getId( control ) + "]", actual ) );
   }
 
+  @Test
   public void testRenderChildren() throws JSONException {
     Button button = new Button( shell, SWT.PUSH );
     control.moveBelow( button );
@@ -449,6 +480,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderChildrenOnNotComposite() {
     ControlLCAUtil.renderChildren( control );
 
@@ -456,6 +488,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "children" ) );
   }
 
+  @Test
   public void testRenderChildrenUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -468,6 +501,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( shell, "children" ) );
   }
 
+  @Test
   public void testRenderIntialTabIndex() throws IOException {
     ShellLCA shellLCA = new ShellLCA();
     shellLCA.renderChanges( shell );
@@ -478,6 +512,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( new Integer( 1 ), message.findSetProperty( control, "tabIndex" ) );
   }
 
+  @Test
   public void testRenderTabIndex() throws IOException {
     shell.setTabList( new Control[]{ new Button( shell, SWT.PUSH ), control } );
     ShellLCA shellLCA = new ShellLCA();
@@ -489,6 +524,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( new Integer( 2 ), message.findSetProperty( control, "tabIndex" ) );
   }
 
+  @Test
   public void testRenderTabIndexUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -505,6 +541,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
+  @Test
   public void testRenderIntialToolTip() {
     ControlLCAUtil.renderToolTip( control );
 
@@ -513,6 +550,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
+  @Test
   public void testRenderToolTip() {
     control.setToolTipText( "foo" );
     ControlLCAUtil.renderToolTip( control );
@@ -522,6 +560,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
+  @Test
   public void testRenderToolTipUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -535,6 +574,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
+  @Test
   public void testRenderIntialMenu() {
     ControlLCAUtil.renderMenu( control );
 
@@ -543,6 +583,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
+  @Test
   public void testRenderMenu() {
     control.setMenu( new Menu( shell ) );
     ControlLCAUtil.renderMenu( control );
@@ -553,6 +594,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
+  @Test
   public void testRenderMenuUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -566,6 +608,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
+  @Test
   public void testRenderIntialEnabled() {
     ControlLCAUtil.renderEnabled( control );
 
@@ -574,6 +617,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
+  @Test
   public void testRenderEnabled() {
     control.setEnabled( false );
     ControlLCAUtil.renderEnabled( control );
@@ -583,6 +627,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
+  @Test
   public void testRenderEnabledUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -595,6 +640,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "enabled" ) );
   }
 
+  @Test
   public void testRenderIntialBackgroundImage() {
     ControlLCAUtil.renderBackgroundImage( control );
 
@@ -602,6 +648,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "backgroundImage" ) );
   }
 
+  @Test
   public void testRenderBackgroundImage() throws JSONException {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
 
@@ -615,6 +662,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, args ) );
   }
 
+  @Test
   public void testRenderBackgroundImageUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -627,6 +675,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "backgroundImage" ) );
   }
 
+  @Test
   public void testRenderInitialFont() {
     ControlLCAUtil.renderFont( control );
 
@@ -634,6 +683,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "font" ) );
   }
 
+  @Test
   public void testRenderFont() throws JSONException {
     control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
     ControlLCAUtil.renderFont( control );
@@ -643,40 +693,44 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 4, result.length() );
     assertEquals( "Arial", ( ( JSONArray )result.get( 0 ) ).getString( 0 ) );
     assertEquals( 12, result.getInt( 1 ) );
-    assertEquals( false, result.getBoolean( 2 ) );
-    assertEquals( false, result.getBoolean( 3 ) );
+    assertFalse( result.getBoolean( 2 ) );
+    assertFalse( result.getBoolean( 3 ) );
   }
 
+  @Test
   public void testRenderFontBold() throws JSONException {
     control.setFont( new Font( display, "Arial", 12, SWT.BOLD ) );
     ControlLCAUtil.renderFont( control );
 
     Message message = Fixture.getProtocolMessage();
     JSONArray result = ( JSONArray )message.findSetProperty( control, "font" );
-    assertEquals( true, result.getBoolean( 2 ) );
-    assertEquals( false, result.getBoolean( 3 ) );
+    assertTrue( result.getBoolean( 2 ) );
+    assertFalse( result.getBoolean( 3 ) );
   }
 
+  @Test
   public void testRenderFontItalic() throws JSONException {
     control.setFont( new Font( display, "Arial", 12, SWT.ITALIC ) );
     ControlLCAUtil.renderFont( control );
 
     Message message = Fixture.getProtocolMessage();
     JSONArray result = ( JSONArray )message.findSetProperty( control, "font" );
-    assertEquals( false, result.getBoolean( 2 ) );
-    assertEquals( true, result.getBoolean( 3 ) );
+    assertFalse( result.getBoolean( 2 ) );
+    assertTrue( result.getBoolean( 3 ) );
   }
 
+  @Test
   public void testRenderFontItalicAndBold() throws JSONException {
     control.setFont( new Font( display, "Arial", 12, SWT.ITALIC | SWT.BOLD ) );
     ControlLCAUtil.renderFont( control );
 
     Message message = Fixture.getProtocolMessage();
     JSONArray result = ( JSONArray )message.findSetProperty( control, "font" );
-    assertEquals( true, result.getBoolean( 2 ) );
-    assertEquals( true, result.getBoolean( 3 ) );
+    assertTrue( result.getBoolean( 2 ) );
+    assertTrue( result.getBoolean( 3 ) );
   }
 
+  @Test
   public void testRenderFontUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -689,6 +743,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "font" ) );
   }
 
+  @Test
   public void testResetFont() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -702,6 +757,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( control, "font" ) );
   }
 
+  @Test
   public void testRenderInitialCursor() {
     ControlLCAUtil.renderCursor( control );
 
@@ -709,6 +765,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "cursor" ) );
   }
 
+  @Test
   public void testRenderCursor() {
     control.setCursor( display.getSystemCursor( SWT.CURSOR_HAND ) );
     ControlLCAUtil.renderCursor( control );
@@ -717,6 +774,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( "pointer", message.findSetProperty( control, "cursor" ) );
   }
 
+  @Test
   public void testRenderCursorUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -729,6 +787,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "cursor" ) );
   }
 
+  @Test
   public void testResetCursor() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -742,6 +801,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( control, "cursor" ) );
   }
 
+  @Test
   public void testRenderInitialListenActivate() {
     ControlLCAUtil.renderListenActivate( control );
 
@@ -750,6 +810,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findListenOperation( control, "Deactivate" ) );
   }
 
+  @Test
   public void testRenderListenActivate() {
     control.addListener( SWT.Activate, mock( Listener.class ) );
 
@@ -759,6 +820,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( control, "Activate" ) );
   }
 
+  @Test
   public void testRenderListenDeactivate() {
     control.addListener( SWT.Deactivate, mock( Listener.class ) );
 
@@ -768,6 +830,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( control, "Deactivate" ) );
   }
 
+  @Test
   public void testRenderListenActivateUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -782,6 +845,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findListenOperation( control, "Deactivate" ) );
   }
 
+  @Test
   public void testRenderListenActivateRemoved() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -799,6 +863,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( control, "Deactivate" ) );
   }
 
+  @Test
   public void testRenderNoListenActivateOnDispose() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -812,6 +877,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findListenOperation( control, "activate" ) );
   }
 
+  @Test
   public void testRenderInitialListenFocus() {
     ControlLCAUtil.renderListenFocus( control );
 
@@ -820,6 +886,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findListenOperation( control, "FocusIn" ) );
   }
 
+  @Test
   public void testRenderListenFocus() {
     FocusAdapter listener = new FocusAdapter() {};
 
@@ -831,6 +898,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( control, "FocusOut" ) );
   }
 
+  @Test
   public void testRenderListenFocusUnchanged() {
     FocusAdapter listener = new FocusAdapter() {};
     Fixture.markInitialized( display );
@@ -845,6 +913,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findListenOperation( control, "FocusIn" ) );
   }
 
+  @Test
   public void testRenderListenFocusRemoved() {
     FocusAdapter listener = new FocusAdapter() {};
     Fixture.markInitialized( display );
@@ -860,6 +929,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( control, "FocusOut" ) );
   }
 
+  @Test
   public void testRenderInitialListenMouse() {
     ControlLCAUtil.renderListenMouse( control );
 
@@ -869,6 +939,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findListenOperation( control, "MouseUp" ) );
   }
 
+  @Test
   public void testRenderListenMouse() {
     MouseAdapter listener = new MouseAdapter() {};
 
@@ -881,6 +952,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( control, "MouseUp" ) );
   }
 
+  @Test
   public void testRenderListenMouseUnchanged() {
     MouseAdapter listener = new MouseAdapter() {};
     Fixture.markInitialized( display );
@@ -896,6 +968,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findListenOperation( control, "MouseUp" ) );
   }
 
+  @Test
   public void testRenderListenMouseRemoved() {
     MouseAdapter listener = new MouseAdapter() {
     };
@@ -913,6 +986,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( control, "MouseUp" ) );
   }
 
+  @Test
   public void testRenderInitialListenKey() {
     ControlLCAUtil.renderListenKey( control );
 
@@ -920,6 +994,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findListenOperation( control, "KeyDown" ) );
   }
 
+  @Test
   public void testRenderListenKey() {
     control.addKeyListener( mock( KeyListener.class ) );
     ControlLCAUtil.renderListenKey( control );
@@ -928,6 +1003,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( control, "KeyDown" ) );
   }
 
+  @Test
   public void testRenderListenKeyUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -940,6 +1016,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findListenOperation( control, "KeyDown" ) );
   }
 
+  @Test
   public void testRenderListenKeyRemoved() {
     KeyListener listener = mock( KeyListener.class );
     Fixture.markInitialized( display );
@@ -954,6 +1031,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( control, "KeyDown" ) );
   }
 
+  @Test
   public void testRenderInitialListenTraverse() {
     ControlLCAUtil.renderListenTraverse( control );
 
@@ -961,6 +1039,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findListenOperation( control, "Traverse" ) );
   }
 
+  @Test
   public void testRenderListenTraverse() {
     control.addTraverseListener( mock( TraverseListener.class ) );
     ControlLCAUtil.renderListenTraverse( control );
@@ -969,6 +1048,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( control, "Traverse" ) );
   }
 
+  @Test
   public void testRenderListenTraverseUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -981,6 +1061,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findListenOperation( control, "Traverse" ) );
   }
 
+  @Test
   public void testRenderListenTraverseRemoved() {
     TraverseListener listener = mock( TraverseListener.class );
     Fixture.markInitialized( display );
@@ -995,6 +1076,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( control, "Traverse" ) );
   }
 
+  @Test
   public void testRenderInitialListenMenuDetect() {
     ControlLCAUtil.renderListenMenuDetect( control );
 
@@ -1002,6 +1084,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findListenOperation( control, "MenuDetect" ) );
   }
 
+  @Test
   public void testRenderListenMenuDetect() {
     MenuDetectListener listener = new MenuDetectListener() {
       public void menuDetected( MenuDetectEvent e ) {
@@ -1014,6 +1097,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( control, "MenuDetect" ) );
   }
 
+  @Test
   public void testRenderListenMenuDetectUnchanged() {
     MenuDetectListener listener = new MenuDetectListener() {
       public void menuDetected( MenuDetectEvent e ) {
@@ -1030,6 +1114,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findListenOperation( control, "MenuDetect" ) );
   }
 
+  @Test
   public void testRenderListenMenuDetectRemoved() {
     MenuDetectListener listener = new MenuDetectListener() {
       public void menuDetected( MenuDetectEvent e ) {

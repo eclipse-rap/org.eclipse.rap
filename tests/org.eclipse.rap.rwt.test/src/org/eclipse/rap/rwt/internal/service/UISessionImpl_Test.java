@@ -11,6 +11,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -27,8 +35,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.http.HttpSession;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
@@ -42,17 +48,20 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestLogger;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rap.rwt.testfixture.TestSession;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class UISessionImpl_Test extends TestCase {
+public class UISessionImpl_Test {
 
   private HttpSession httpSession;
   private UISessionImpl uiSession;
   private List<Throwable> servletLogEntries;
   private Locale localeBuffer;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     localeBuffer = Locale.getDefault();
     Locale.setDefault( Locale.ENGLISH );
     Fixture.setUp();
@@ -69,12 +78,13 @@ public class UISessionImpl_Test extends TestCase {
     } );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
     Locale.setDefault( localeBuffer );
   }
 
+  @Test
   public void testConstructor_failsWithWithNullArgument() {
     try {
       new UISessionImpl( null );
@@ -83,12 +93,14 @@ public class UISessionImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetInstanceFromSession() {
     UISessionImpl result = UISessionImpl.getInstanceFromSession( httpSession );
 
     assertSame( result, uiSession );
   }
 
+  @Test
   public void testGetInstanceFromSession_returnsNullAfterInvalidate() {
     httpSession.invalidate();
     UISessionImpl result = UISessionImpl.getInstanceFromSession( httpSession );
@@ -96,10 +108,12 @@ public class UISessionImpl_Test extends TestCase {
     assertNull( result );
   }
 
+  @Test
   public void testGetId() {
     assertNotNull( uiSession.getId() );
   }
 
+  @Test
   public void testGetId_validAfterSessionWasInvalidated() {
     String id = uiSession.getId();
     httpSession.invalidate();
@@ -107,10 +121,12 @@ public class UISessionImpl_Test extends TestCase {
     assertEquals( id, uiSession.getId() );
   }
 
+  @Test
   public void testGetHttpSession() {
     assertSame( httpSession, uiSession.getHttpSession() );
   }
 
+  @Test
   public void testAttachHttpSession() {
     HttpSession anotherSession = new TestSession();
     uiSession.attachHttpSession( anotherSession );
@@ -118,6 +134,7 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( anotherSession, uiSession.getHttpSession() );
   }
 
+  @Test
   public void testAttachHttpSession_failsWithNullArgument() {
     try {
       uiSession.attachHttpSession( null );
@@ -126,6 +143,7 @@ public class UISessionImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testAttachHttpSession_doesNotChangeId() {
     String initialId = uiSession.getId();
     TestSession anotherSession = new TestSession();
@@ -137,6 +155,7 @@ public class UISessionImpl_Test extends TestCase {
     assertEquals( initialId, id );
   }
 
+  @Test
   public void testAttachHttpSession_doesNotTriggerListener() {
     final boolean[] wasCalled = { false };
     uiSession.addUISessionListener( new UISessionListener() {
@@ -149,16 +168,19 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( wasCalled[ 0 ] );
   }
 
+  @Test
   public void testIsBound() {
     assertTrue( uiSession.isBound() );
   }
 
+  @Test
   public void testIsBound_isFalseAfterSessionWasInvalidated() {
     httpSession.invalidate();
 
     assertFalse( uiSession.isBound() );
   }
 
+  @Test
   public void testGetAttribute() {
     Object value = new Object();
     uiSession.setAttribute( "name", value );
@@ -168,6 +190,7 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( value, result );
   }
 
+  @Test
   public void testGetAttribute_failsWithNullName() {
     try {
       uiSession.getAttribute( null );
@@ -176,12 +199,14 @@ public class UISessionImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetAttribute_returnsNullWithNonExistingName() {
     Object attribute = uiSession.getAttribute( "does.not.exist" );
 
     assertNull( attribute );
   }
 
+  @Test
   public void testGetAttribute_returnsNullWhenUnbound() {
     uiSession.setAttribute( "name", null );
     httpSession.invalidate();
@@ -191,6 +216,7 @@ public class UISessionImpl_Test extends TestCase {
     assertNull( result );
   }
 
+  @Test
   public void testSetAttribute_failsWithNullName() {
     try {
       uiSession.setAttribute( null, new Object() );
@@ -199,6 +225,7 @@ public class UISessionImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetAttribute_returnsFalseWhenUnbound() {
     httpSession.invalidate();
 
@@ -207,6 +234,7 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( result );
   }
 
+  @Test
   public void testSetAttribute_whileDestroyingUISession() {
     final AtomicBoolean resultCaptor = new AtomicBoolean();
     uiSession.addUISessionListener( new UISessionListener() {
@@ -220,6 +248,7 @@ public class UISessionImpl_Test extends TestCase {
     assertTrue( resultCaptor.get() );
   }
 
+  @Test
   public void testRemoveAttribute_failsWithNullName() {
     try {
       uiSession.removeAttribute( null );
@@ -228,6 +257,7 @@ public class UISessionImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRemoveAttribute_removesExistingAttribute() {
     uiSession.setAttribute( "name", new Object() );
 
@@ -236,12 +266,14 @@ public class UISessionImpl_Test extends TestCase {
     assertNull( uiSession.getAttribute( "name" ) );
   }
 
+  @Test
   public void testRemoveAttribute_returnsNullForNonExistingAttribute() {
     uiSession.removeAttribute( "does.not.exist" );
 
     assertNull( uiSession.getAttribute( "does.not.exist" ) );
   }
 
+  @Test
   public void testRemoveAttribute_returnsFalseWhenUnbound() {
     uiSession.setAttribute( "name", null );
     httpSession.invalidate();
@@ -251,6 +283,7 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( result );
   }
 
+  @Test
   public void testGetAttributeNames() {
     uiSession.setAttribute( "name", new Object() );
 
@@ -261,6 +294,7 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( attributeNames.hasMoreElements() );
   }
 
+  @Test
   public void testGetAttributeNames_returnsSnapshot() {
     uiSession.setAttribute( "name", new Object() );
 
@@ -272,6 +306,7 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( attributeNames.hasMoreElements() );
   }
 
+  @Test
   public void testGetAttributeNames_isEmptyWhenUnbound() {
     uiSession.setAttribute( "name", "value" );
     httpSession.invalidate();
@@ -282,6 +317,7 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( attributeNames.hasMoreElements() );
   }
 
+  @Test
   public void testGetAttributeNamesIsThreadSafe() throws InterruptedException {
     final Throwable[] exception = { null };
     Runnable runnable = new Runnable() {
@@ -303,6 +339,7 @@ public class UISessionImpl_Test extends TestCase {
     assertNull( exception[ 0 ] );
   }
 
+  @Test
   public void testAddUISessionListener_failsWithNullArgument() {
     try {
       uiSession.addUISessionListener( null );
@@ -311,6 +348,7 @@ public class UISessionImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testAddUISessionListener_returnsFalseWhenUnbound() {
     httpSession.invalidate();
     EmptyUISessionListener listener = new EmptyUISessionListener();
@@ -320,6 +358,7 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( added );
   }
 
+  @Test
   public void testAddUISessionListener_whileDestroyingUISession() {
     final boolean[] aboutUnboundListener = { true };
     uiSession.addUISessionListener( new UISessionListener() {
@@ -334,6 +373,7 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( aboutUnboundListener[ 0 ] );
   }
 
+  @Test
   public void testRemoveUISessionListener_failsWithNullArgument() {
     try {
       uiSession.removeUISessionListener( null );
@@ -342,6 +382,7 @@ public class UISessionImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRemoveUISessionListener_returnsFalseWhenUnbound() {
     httpSession.invalidate();
     EmptyUISessionListener listener = new EmptyUISessionListener();
@@ -351,6 +392,7 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( removed );
   }
 
+  @Test
   public void testBeforeDestroyEvent_hasServiceContext() {
     final AtomicBoolean resultCaptor = new AtomicBoolean();
     uiSession.addUISessionListener( new UISessionListener() {
@@ -364,6 +406,7 @@ public class UISessionImpl_Test extends TestCase {
     assertTrue( resultCaptor.get() );
   }
 
+  @Test
   public void testBeforeDestroyEvent_details() {
     final List<UISessionEvent> eventLog = new LinkedList<UISessionEvent>();
     uiSession.addUISessionListener( new UISessionListener() {
@@ -378,6 +421,7 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( uiSession, eventLog.get( 0 ).getUISession() );
   }
 
+  @Test
   public void testExceptionHandlingInUISessionListeners() {
     uiSession.addUISessionListener( new UISessionListener() {
       public void beforeDestroy( UISessionEvent event ) {
@@ -395,6 +439,7 @@ public class UISessionImpl_Test extends TestCase {
     assertEquals( 2, servletLogEntries.size() );
   }
 
+  @Test
   public void testShutdownCallback() {
     final boolean[] interceptShutdownWasCalled = { false };
     final Runnable[] shutdownCallback = { null };
@@ -427,6 +472,7 @@ public class UISessionImpl_Test extends TestCase {
     assertFalse( uiSession.isBound() );
   }
 
+  @Test
   public void testOverrideAtributeWithNull() {
     String attributeName = "name";
     uiSession.setAttribute( attributeName, new Object() );
@@ -436,6 +482,7 @@ public class UISessionImpl_Test extends TestCase {
     assertNull( uiSession.getAttribute( attributeName ) );
   }
 
+  @Test
   public void testOverrideSerializableAttributeWithNonSerializable() {
     String attributeName = "name";
     Serializable serializableAttribute = new String();
@@ -447,6 +494,7 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( overridingAtribute, uiSession.getAttribute( attributeName ) );
   }
 
+  @Test
   public void testOverrideNonSerializableAttributeWithSerializable() {
     String attributeName = "name";
     Object nonSerializableAttribute = new Object();
@@ -458,6 +506,7 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( overridingAtribute, uiSession.getAttribute( attributeName ) );
   }
 
+  @Test
   public void testGetClient() {
     Client client = mock( Client.class );
     ClientSelector clientSelector = mock( ClientSelector.class );
@@ -471,6 +520,7 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( client, result );
   }
 
+  @Test
   public void testSetLocale_canBeResetWithNull() {
     ApplicationContextUtil.set( uiSession, ApplicationContextUtil.getInstance() );
     Fixture.fakeClient( mockClientWithLocale( null ) );
@@ -481,6 +531,7 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( Locale.getDefault(), uiSession.getLocale() );
   }
 
+  @Test
   public void testGetLocale_returnsSetLocale() {
     uiSession.setLocale( Locale.UK );
 
@@ -489,6 +540,7 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( Locale.UK, locale );
   }
 
+  @Test
   public void testGetLocale_fallsBackToClientLocale() {
     ApplicationContextUtil.set( uiSession, ApplicationContextUtil.getInstance() );
     Fixture.fakeClient( mockClientWithLocale( Locale.ITALIAN ) );
@@ -498,6 +550,7 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( Locale.ITALIAN, locale );
   }
 
+  @Test
   public void testGetLocale_fallsBackToSystemLocale_withoutClientInfo() {
     ApplicationContextUtil.set( uiSession, ApplicationContextUtil.getInstance() );
     Fixture.fakeClient( mock( Client.class ) );
@@ -507,6 +560,7 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( Locale.getDefault(), locale );
   }
 
+  @Test
   public void testGetLocale_fallsBackToSystemLocale_withoutClientLocale() {
     ApplicationContextUtil.set( uiSession, ApplicationContextUtil.getInstance() );
     Fixture.fakeClient( mockClientWithLocale( null ) );
@@ -516,6 +570,7 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( Locale.getDefault(), locale );
   }
 
+  @Test
   public void testGetLocale_worksInBackgroundThread() throws Throwable {
     ApplicationContextUtil.set( uiSession, ApplicationContextUtil.getInstance() );
     Fixture.fakeClient( mock( Client.class ) );
@@ -530,6 +585,7 @@ public class UISessionImpl_Test extends TestCase {
     assertNotNull( localeCaptor.get() );
   }
 
+  @Test
   public void testExec_failsWithNullArgument() {
     try {
       uiSession.exec( null );
@@ -539,6 +595,7 @@ public class UISessionImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testExec_executesRunnable() {
     Runnable runnable = mock( Runnable.class );
 
@@ -547,6 +604,7 @@ public class UISessionImpl_Test extends TestCase {
     verify( runnable ).run();
   }
 
+  @Test
   public void testExec_executesRunnableWithSameContextInUIThread() {
     ServiceContext context = ContextProvider.getContext();
     ContextTrackerRunnable runnable = new ContextTrackerRunnable();
@@ -556,6 +614,7 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( context, runnable.getContext() );
   }
 
+  @Test
   public void testExec_executesRunnableWithFakeContextInBGThread() throws Throwable {
     ServiceContext context = ContextProvider.getContext();
     final ContextTrackerRunnable runnable = new ContextTrackerRunnable();
@@ -570,6 +629,7 @@ public class UISessionImpl_Test extends TestCase {
     assertSame( uiSession, runnable.getUISession() );
   }
 
+  @Test
   public void testExec_executesRunnableWithFakeContextInDifferentUIThread() throws Throwable {
     ServiceContext context = ContextProvider.getContext();
     final ContextTrackerRunnable runnable = new ContextTrackerRunnable();

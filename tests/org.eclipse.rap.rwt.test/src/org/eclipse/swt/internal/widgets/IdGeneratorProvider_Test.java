@@ -10,35 +10,43 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import junit.framework.TestCase;
 
-
-public class IdGeneratorProvider_Test extends TestCase {
+public class IdGeneratorProvider_Test {
 
   private static final String CUSTOM_ID_GENERATOR_CLASS_NAME
     = "org.eclipse.swt.internal.widgets.CustomIdGenerator";
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
     System.clearProperty( RWTProperties.ID_GENERATOR );
   }
 
+  @Test
   public void testDefaultIdGenerator() {
     IdGenerator idGenerator = IdGeneratorProvider.getIdGenerator();
 
     assertTrue( idGenerator instanceof IdGeneratorImpl );
   }
 
+  @Test
   public void testDefaultIdGenerator_SameInstance() {
     IdGenerator idGenerator1 = IdGeneratorProvider.getIdGenerator();
     IdGenerator idGenerator2 = IdGeneratorProvider.getIdGenerator();
@@ -46,6 +54,7 @@ public class IdGeneratorProvider_Test extends TestCase {
     assertSame( idGenerator1, idGenerator2 );
   }
 
+  @Test
   public void testCustomIdGenerator() {
     System.setProperty( RWTProperties.ID_GENERATOR, CUSTOM_ID_GENERATOR_CLASS_NAME );
     IdGenerator idGenerator = IdGeneratorProvider.getIdGenerator();
@@ -53,6 +62,7 @@ public class IdGeneratorProvider_Test extends TestCase {
     assertTrue( idGenerator instanceof CustomIdGenerator );
   }
 
+  @Test
   public void testCustomIdGenerator_NotIdGeneratorClass() {
     System.setProperty( RWTProperties.ID_GENERATOR, "java.lang.Object" );
 
@@ -65,6 +75,7 @@ public class IdGeneratorProvider_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCustomIdGenerator_MissingClass() {
     System.setProperty( RWTProperties.ID_GENERATOR, "foo.bar.Gen" );
 

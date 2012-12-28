@@ -10,23 +10,28 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.application;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class RWTFactory_Test extends TestCase {
+public class RWTFactory_Test {
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testApplicationScopedSingletons() {
     assertNotNull( RWTFactory.getThemeManager() );
     assertSame( RWTFactory.getThemeManager(), RWTFactory.getThemeManager() );

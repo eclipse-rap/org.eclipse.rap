@@ -1,34 +1,45 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import java.util.Locale;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import junit.framework.TestCase;
+import java.util.Locale;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Color;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class QxColor_Test extends TestCase {
+public class QxColor_Test {
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testIllegalArguments() {
     try {
       QxColor.valueOf( "#0000" );
@@ -50,6 +61,7 @@ public class QxColor_Test extends TestCase {
     }
   }
 
+  @Test
   public void testIllegalArguments_OutOfRangeAlpha() {
     try {
       QxColor.valueOf( "1, 2, 3, 1.01" );
@@ -59,6 +71,7 @@ public class QxColor_Test extends TestCase {
     }
   }
 
+  @Test
   public void testIllegalArguments_NegativeAlpha() {
     try {
       QxColor.valueOf( "1, 2, 3, -0.01" );
@@ -68,6 +81,7 @@ public class QxColor_Test extends TestCase {
     }
   }
 
+  @Test
   public void test6HexNotation() {
     QxColor color1 = QxColor.valueOf( "#0023ff" );
     assertEquals( 0, color1.red );
@@ -80,6 +94,7 @@ public class QxColor_Test extends TestCase {
     assertEquals( 239, color2.blue );
   }
 
+  @Test
   public void test3HexNotation() {
     QxColor color1 = QxColor.valueOf( "#03f" );
     assertEquals( 0, color1.red );
@@ -93,6 +108,7 @@ public class QxColor_Test extends TestCase {
     assertEquals( QxColor.valueOf( "#ffffff"), QxColor.valueOf( "#fff" ) );
   }
 
+  @Test
   public void testNamedColors() {
     QxColor color1 = QxColor.valueOf( "red" );
     assertEquals( 255, color1.red );
@@ -105,6 +121,7 @@ public class QxColor_Test extends TestCase {
     assertEquals( 255, color2.blue );
   }
 
+  @Test
   public void testCommaSeparatedValues() {
     QxColor color = QxColor.valueOf( "100, 23, 42" );
     assertEquals( 100, color.red );
@@ -113,6 +130,7 @@ public class QxColor_Test extends TestCase {
     assertEquals( 1f, color.alpha, 0 );
   }
 
+  @Test
   public void testCommaSeparatedValues_WithAlpha() {
     QxColor color = QxColor.valueOf( "100, 23, 42, 0.5" );
     assertEquals( 100, color.red );
@@ -121,10 +139,12 @@ public class QxColor_Test extends TestCase {
     assertEquals( 0.5, color.alpha, 0 );
   }
 
+  @Test
   public void testTransparent() {
     assertTrue( QxColor.TRANSPARENT.isTransparent() );
   }
 
+  @Test
   public void testShared() {
     assertSame( QxColor.WHITE, QxColor.valueOf( "white" ) );
     assertSame( QxColor.WHITE, QxColor.valueOf( "255, 255, 255" ) );
@@ -135,31 +155,37 @@ public class QxColor_Test extends TestCase {
     assertSame( QxColor.TRANSPARENT, QxColor.valueOf( "transparent" ) );
   }
 
+  @Test
   public void testToString() {
     QxColor color = QxColor.valueOf( "100, 23, 42" );
     assertEquals( "QxColor{ 100, 23, 42, 1.0 }", color.toString() );
   }
 
+  @Test
   public void testToString_WithAlpha() {
     QxColor color = QxColor.valueOf( "100, 23, 42, 0.5" );
     assertEquals( "QxColor{ 100, 23, 42, 0.5 }", color.toString() );
   }
 
+  @Test
   public void testDefaultString() {
     QxColor color = QxColor.valueOf( "100, 23, 42" );
     assertEquals( "#64172a", color.toDefaultString() );
   }
-  
+
+  @Test
   public void testDefaultString_Transparent() {
     QxColor color = QxColor.valueOf( "100, 23, 42, 0" );
     assertEquals( "transparent", color.toDefaultString() );
   }
 
+  @Test
   public void testDefaultString_WithAlpha() {
     QxColor color = QxColor.valueOf( "100, 23, 42, 0.5" );
     assertEquals( "rgba(100,23,42,0.5)", color.toDefaultString() );
   }
 
+  @Test
   public void testWithTurkishLocale() {
     Locale originalLocale = Locale.getDefault();
     try {
@@ -170,6 +196,7 @@ public class QxColor_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCreateColor_WithoutAlpha() {
     QxColor color = QxColor.valueOf( "100, 23, 42" );
     Color result = QxColor.createColor( color );
@@ -179,6 +206,7 @@ public class QxColor_Test extends TestCase {
     assertEquals( 42, result.getBlue() );
   }
 
+  @Test
   public void testCreateColor_WithAlpha() {
     QxColor color = QxColor.valueOf( "100, 23, 42, 0.5" );
     Color result = QxColor.createColor( color );
@@ -188,9 +216,11 @@ public class QxColor_Test extends TestCase {
     assertEquals( 42, result.getBlue() );
   }
 
+  @Test
   public void testCreateColor_FullyTransparent() {
     QxColor color = QxColor.valueOf( "100, 23, 42, 0" );
     Color result = QxColor.createColor( color );
     assertNull( result );
   }
+
 }

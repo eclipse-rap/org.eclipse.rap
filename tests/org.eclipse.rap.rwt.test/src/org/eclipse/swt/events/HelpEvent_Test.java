@@ -11,24 +11,25 @@
 package org.eclipse.swt.events;
 
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.Test;
 
 
-public class HelpEvent_Test extends TestCase {
+public class HelpEvent_Test {
 
+  @Test
   public void testUntypedEventConstructor() {
     Event event = new Event();
     event.display = mock( Display.class );
     event.widget = mock( Widget.class );
     event.time = 1;
     event.data = new Object();
-    
+
     HelpEvent helpEvent = new HelpEvent( event );
-    
+
     EventTestHelper.assertFieldsEqual( helpEvent, event );
   }
 

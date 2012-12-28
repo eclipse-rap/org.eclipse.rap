@@ -11,17 +11,23 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
+import org.junit.Test;
 
 
-public class Probe_Test extends TestCase {
+public class Probe_Test {
   private static final String PROBE_STRING = "probeString";
   private static final FontData FONT_DATA = new FontData( "arial", 23, SWT.NONE );
 
+  @Test
   public void testGetter() {
     Probe probe1 = new Probe( PROBE_STRING, FONT_DATA );
     Probe probe2 = new Probe( FONT_DATA );
@@ -32,6 +38,7 @@ public class Probe_Test extends TestCase {
     assertSame( Probe.DEFAULT_PROBE_STRING, probe2.getText() );
   }
 
+  @Test
   public void testParamTextMustNotBeNull() {
     try {
       new Probe( null, FONT_DATA );
@@ -40,6 +47,7 @@ public class Probe_Test extends TestCase {
     }
   }
 
+  @Test
   public void testParamFontDataMustNotBeNull() {
     try {
       new Probe( PROBE_STRING, null );
@@ -48,6 +56,7 @@ public class Probe_Test extends TestCase {
     }
   }
 
+  @Test
   public void testEquals() {
     Probe probe = new Probe( FONT_DATA );
 
@@ -59,10 +68,12 @@ public class Probe_Test extends TestCase {
     assertFalse( probe.equals( new Probe( new FontData( "helvetia", 23, SWT.BOLD ) ) ) );
   }
 
+  @Test
   public void testHashcode() {
     assertEquals( -290887150, new Probe( FONT_DATA ).hashCode() );
   }
 
+  @Test
   public void testIsSerializable() throws Exception {
     Probe probe = new Probe( "text", new FontData( "name", 1, SWT.ITALIC ) );
 
@@ -73,7 +84,9 @@ public class Probe_Test extends TestCase {
   }
 
   // see bug 374914
+  @Test
   public void testDefaultProbeString() {
     assertTrue( Probe.DEFAULT_PROBE_STRING.indexOf( "AzByCx" ) != -1 );
   }
+
 }

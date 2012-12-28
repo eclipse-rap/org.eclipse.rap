@@ -1,24 +1,42 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class Monitor_Test extends TestCase {
+
+public class Monitor_Test {
 
   private Display display;
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    display = new Display();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testBounds() {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
@@ -35,6 +53,7 @@ public class Monitor_Test extends TestCase {
     assertEquals( new Rectangle( 100, 200, 300, 400 ), newMonitorBounds );
   }
 
+  @Test
   public void testClientArea() {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
@@ -51,32 +70,26 @@ public class Monitor_Test extends TestCase {
     assertEquals( new Rectangle( 100, 200, 300, 400 ), newMonitorClientArea );
   }
 
+  @Test
   public void testEquals() {
     Monitor primaryMonitor = display.getPrimaryMonitor();
     Monitor[] monitors = display.getMonitors();
     assertEquals( primaryMonitor, monitors[ 0 ] );
   }
-  
+
+  @Test
   public void testIsSerializable() throws Exception {
     Monitor monitor = display.getPrimaryMonitor();
     Rectangle bounds = monitor.getBounds();
-    
+
     Monitor deserializedMonitor = Fixture.serializeAndDeserialize( monitor );
     getDisplayAdapter( deserializedMonitor.display ).attachThread();
-    
+
     assertEquals( bounds, deserializedMonitor.getBounds() );
-  }
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    display = new Display();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 
   private IDisplayAdapter getDisplayAdapter( Display display ) {
     return display.getAdapter( IDisplayAdapter.class );
   }
+
 }

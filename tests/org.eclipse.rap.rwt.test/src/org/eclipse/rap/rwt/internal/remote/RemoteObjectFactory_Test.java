@@ -10,28 +10,36 @@
 *******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class RemoteObjectFactory_Test extends TestCase {
+public class RemoteObjectFactory_Test {
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testReturnsSingletonInstance() {
     RemoteObjectFactory factory = RemoteObjectFactory.getInstance();
 
@@ -39,12 +47,14 @@ public class RemoteObjectFactory_Test extends TestCase {
     assertSame( factory, RemoteObjectFactory.getInstance() );
   }
 
+  @Test
   public void testCreateRemoteObject_returnsAnObject() {
     RemoteObject remoteObject = RemoteObjectFactory.getInstance().createRemoteObject( "type" );
 
     assertNotNull( remoteObject );
   }
 
+  @Test
   public void testCreateRemoteObject_failsWithNullType() {
     try {
       RemoteObjectFactory.getInstance().createRemoteObject( null );
@@ -53,6 +63,7 @@ public class RemoteObjectFactory_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCreateRemoteObject_failsWithEmptyType() {
     try {
       RemoteObjectFactory.getInstance().createRemoteObject( "" );
@@ -61,12 +72,14 @@ public class RemoteObjectFactory_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCreatedRemoteObjectHasGivenType() {
     RemoteObject remoteObject = RemoteObjectFactory.getInstance().createRemoteObject( "type" );
 
     assertRendersCreateWithType( remoteObject, "type" );
   }
 
+  @Test
   public void testCreatedRemoteObjectsHaveDifferentIds() {
     RemoteObject remoteObject1 = RemoteObjectFactory.getInstance().createRemoteObject( "type" );
     RemoteObject remoteObject2 = RemoteObjectFactory.getInstance().createRemoteObject( "type" );
@@ -74,18 +87,21 @@ public class RemoteObjectFactory_Test extends TestCase {
     assertFalse( getId( remoteObject2 ).equals( getId( remoteObject1 ) ) );
   }
 
+  @Test
   public void testCreatedRemoteObjectsAreRegistered() {
     RemoteObject remoteObject = RemoteObjectFactory.getInstance().createRemoteObject( "type" );
 
     assertSame( remoteObject, RemoteObjectRegistry.getInstance().get( getId( remoteObject ) ) );
   }
 
+  @Test
   public void testCreateServiceObject_returnsAnObject() {
     RemoteObject remoteObject = RemoteObjectFactory.getInstance().createServiceObject( "id" );
 
     assertNotNull( remoteObject );
   }
 
+  @Test
   public void testCreateServiceObject_failsWithNullId() {
     try {
       RemoteObjectFactory.getInstance().createServiceObject( null );
@@ -94,6 +110,7 @@ public class RemoteObjectFactory_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCreateServiceObject_failsWithEmptyId() {
     try {
       RemoteObjectFactory.getInstance().createServiceObject( "" );
@@ -102,12 +119,14 @@ public class RemoteObjectFactory_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCreatedServiceObjectHasGivenId() {
     RemoteObject remoteObject = RemoteObjectFactory.getInstance().createServiceObject( "id" );
 
     assertEquals( "id", getId( remoteObject ) );
   }
 
+  @Test
   public void testCreatedServiceObjectsAreRegistered() {
     RemoteObject remoteObject = RemoteObjectFactory.getInstance().createServiceObject( "id" );
 

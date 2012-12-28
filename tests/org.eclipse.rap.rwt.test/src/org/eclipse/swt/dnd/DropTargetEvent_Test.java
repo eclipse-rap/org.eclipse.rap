@@ -10,17 +10,20 @@
  ******************************************************************************/
 package org.eclipse.swt.dnd;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
 
 import org.eclipse.swt.internal.dnd.DNDEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.Test;
 
 
-public class DropTargetEvent_Test extends TestCase {
+public class DropTargetEvent_Test {
 
-  public void testUntypedEventConstructor() throws Exception {
+  @Test
+  public void testUntypedEventConstructor() {
     DNDEvent event = new DNDEvent();
     event.display = mock( Display.class );
     event.widget = mock( Widget.class );
@@ -35,7 +38,7 @@ public class DropTargetEvent_Test extends TestCase {
     event.operations = 7;
     event.feedback = 9;
     event.item = mock( Widget.class );
-    
+
     DropTargetEvent dropTargetEvent = new DropTargetEvent( event );
 
     assertEquals( dropTargetEvent.display, event.display );
@@ -44,7 +47,7 @@ public class DropTargetEvent_Test extends TestCase {
     assertEquals( dropTargetEvent.x, event.x );
     assertEquals( dropTargetEvent.y, event.y );
     assertEquals( dropTargetEvent.currentDataType, event.dataType );
-    assertEquals( dropTargetEvent.dataTypes, event.dataTypes );
+    assertArrayEquals( dropTargetEvent.dataTypes, event.dataTypes );
     assertEquals( dropTargetEvent.detail, event.detail );
     assertEquals( dropTargetEvent.data, event.data );
     assertEquals( dropTargetEvent.operations, event.operations );

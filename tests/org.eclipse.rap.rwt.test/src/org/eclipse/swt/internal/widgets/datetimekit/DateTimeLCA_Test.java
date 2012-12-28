@@ -12,14 +12,15 @@
 package org.eclipse.swt.internal.widgets.datetimekit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -42,17 +43,20 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-public class DateTimeLCA_Test extends TestCase {
+public class DateTimeLCA_Test {
 
   private Display display;
   private Shell shell;
   private DateTimeLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
@@ -60,11 +64,12 @@ public class DateTimeLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( dateTime );
@@ -76,6 +81,7 @@ public class DateTimeLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( dateTime );
   }
 
+  @Test
   public void testDateTimeDatePreserveValues() {
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM | SWT.DROP_DOWN );
     dateTime.setDay( 1 );
@@ -86,6 +92,7 @@ public class DateTimeLCA_Test extends TestCase {
     testPreserveControlProperties( dateTime );
   }
 
+  @Test
   public void testDateTimeTimePreserveValues() {
     DateTime dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
     dateTime.setHours( 1 );
@@ -96,6 +103,7 @@ public class DateTimeLCA_Test extends TestCase {
     testPreserveControlProperties( dateTime );
   }
 
+  @Test
   public void testDateTimeCalendarPreserveValues() {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
     dateTime.setDay( 1 );
@@ -106,11 +114,13 @@ public class DateTimeLCA_Test extends TestCase {
     testPreserveControlProperties( dateTime );
   }
 
+  @Test
   public void testSelectionEvent_Date() {
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
     fakeAndCheckSelectionEvent( dateTime );
   }
 
+  @Test
   public void testSelectionEvent_Time() {
     DateTime dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
     fakeAndCheckSelectionEvent( dateTime );
@@ -118,6 +128,7 @@ public class DateTimeLCA_Test extends TestCase {
 
   // 315950: [DateTime] method getDay() return wrong day in particular
   // circumstances
+  @Test
   public void testDateTimeDate_Bug315950() {
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM | SWT.DROP_DOWN );
     dateTime.setDay( 15 );
@@ -206,9 +217,10 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( 0, event.y );
     assertEquals( 0, event.width );
     assertEquals( 0, event.height );
-    assertEquals( true, event.doit );
+    assertTrue( event.doit );
   }
 
+  @Test
   public void testRenderCreateDate() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.SHORT | SWT.DROP_DOWN );
 
@@ -223,6 +235,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( styles.contains( "DROP_DOWN" ) );
   }
 
+  @Test
   public void testRenderCreateDate_InitalParameters() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
 
@@ -239,6 +252,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( propertyNames.contains( "datePattern" ) );
   }
 
+  @Test
   public void testRenderCreateTime() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
 
@@ -252,6 +266,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( styles.contains( "MEDIUM" ) );
   }
 
+  @Test
   public void testRenderCreateCalendar() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR | SWT.LONG );
 
@@ -265,6 +280,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( styles.contains( "LONG" ) );
   }
 
+  @Test
   public void testRenderCreateCalendar_InitalParameters() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
 
@@ -278,6 +294,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( propertyNames.contains( "weekdayShortNames" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
 
@@ -289,6 +306,7 @@ public class DateTimeLCA_Test extends TestCase {
   }
 
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
     Fixture.markInitialized( display );
@@ -302,6 +320,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( dateTime, "Selection" ) );
   }
 
+  @Test
   public void testRenderRemoveSelectionListener() throws Exception {
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
     SelectionListener listener = new SelectionAdapter() { };
@@ -317,6 +336,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( dateTime, "Selection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
     Fixture.markInitialized( display );
@@ -331,6 +351,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertNull( message.findListenOperation( dateTime, "selection" ) );
   }
 
+  @Test
   public void testRenderInitialYear() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
 
@@ -341,6 +362,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().contains( "year" ) );
   }
 
+  @Test
   public void testRenderYear() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
 
@@ -351,6 +373,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( new Integer( 2000 ), message.findSetProperty( dateTime, "year" ) );
   }
 
+  @Test
   public void testRenderYearUnchanged() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
     Fixture.markInitialized( display );
@@ -364,6 +387,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( dateTime, "year" ) );
   }
 
+  @Test
   public void testRenderInitialMonth() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
 
@@ -374,6 +398,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().contains( "month" ) );
   }
 
+  @Test
   public void testRenderMonth() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
 
@@ -385,6 +410,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( new Integer( 2 ), message.findSetProperty( dateTime, "month" ) );
   }
 
+  @Test
   public void testRenderMonthUnchanged() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
     Fixture.markInitialized( display );
@@ -399,6 +425,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( dateTime, "month" ) );
   }
 
+  @Test
   public void testRenderInitialDay() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
 
@@ -409,6 +436,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().contains( "day" ) );
   }
 
+  @Test
   public void testRenderDay() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
 
@@ -419,6 +447,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( new Integer( 3 ), message.findSetProperty( dateTime, "day" ) );
   }
 
+  @Test
   public void testRenderDayUnchanged() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
     Fixture.markInitialized( display );
@@ -432,6 +461,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( dateTime, "day" ) );
   }
 
+  @Test
   public void testRenderInitialSubWidgetsBounds_Date() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
 
@@ -442,6 +472,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().contains( "subWidgetsBounds" ) );
   }
 
+  @Test
   public void testRenderSubWidgetsBounds_Date() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
 
@@ -452,6 +483,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( 9, actual.length() );
   }
 
+  @Test
   public void testRenderSubWidgetsBoundsUnchanged_Date() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
     Fixture.markInitialized( display );
@@ -464,6 +496,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( dateTime, "subWidgetsBounds" ) );
   }
 
+  @Test
   public void testRenderInitialHours() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.TIME );
 
@@ -474,6 +507,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().contains( "hours" ) );
   }
 
+  @Test
   public void testRenderHours() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.TIME );
 
@@ -484,6 +518,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( dateTime, "hours" ) );
   }
 
+  @Test
   public void testRenderHoursUnchanged() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.TIME );
     Fixture.markInitialized( display );
@@ -497,6 +532,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( dateTime, "hours" ) );
   }
 
+  @Test
   public void testRenderInitialMinutes() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.TIME );
 
@@ -507,6 +543,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().contains( "minutes" ) );
   }
 
+  @Test
   public void testRenderMinutes() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.TIME );
 
@@ -517,6 +554,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( dateTime, "minutes" ) );
   }
 
+  @Test
   public void testRenderMinutesUnchanged() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.TIME );
     Fixture.markInitialized( display );
@@ -530,6 +568,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( dateTime, "minutes" ) );
   }
 
+  @Test
   public void testRenderInitialSeconds() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.TIME );
 
@@ -540,6 +579,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().contains( "seconds" ) );
   }
 
+  @Test
   public void testRenderSeconds() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.TIME );
 
@@ -550,6 +590,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( dateTime, "seconds" ) );
   }
 
+  @Test
   public void testRenderSecondsUnchanged() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.TIME );
     Fixture.markInitialized( display );
@@ -563,6 +604,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( dateTime, "seconds" ) );
   }
 
+  @Test
   public void testRenderInitialSubWidgetsBounds_Time() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.TIME );
 
@@ -573,6 +615,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().contains( "subWidgetsBounds" ) );
   }
 
+  @Test
   public void testRenderSubWidgetsBounds_Time() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.TIME );
 
@@ -583,6 +626,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( 6, actual.length() );
   }
 
+  @Test
   public void testRenderSubWidgetsBoundsUnchanged_Time() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.TIME );
     Fixture.markInitialized( display );
@@ -595,6 +639,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( dateTime, "subWidgetsBounds" ) );
   }
 
+  @Test
   public void testRenderInitialYear_Calendar() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
 
@@ -605,6 +650,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().contains( "year" ) );
   }
 
+  @Test
   public void testRenderYear_Calendar() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
 
@@ -615,6 +661,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( new Integer( 2000 ), message.findSetProperty( dateTime, "year" ) );
   }
 
+  @Test
   public void testRenderYearUnchanged_Calendar() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
     Fixture.markInitialized( display );
@@ -628,6 +675,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( dateTime, "year" ) );
   }
 
+  @Test
   public void testRenderInitialMonth_Calendar() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
 
@@ -638,6 +686,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().contains( "month" ) );
   }
 
+  @Test
   public void testRenderMonth_Calendar() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
 
@@ -649,6 +698,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( new Integer( 2 ), message.findSetProperty( dateTime, "month" ) );
   }
 
+  @Test
   public void testRenderMonthUnchanged_Calendar() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
     Fixture.markInitialized( display );
@@ -663,6 +713,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( dateTime, "month" ) );
   }
 
+  @Test
   public void testRenderInitialDay_Calendar() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
 
@@ -673,6 +724,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().contains( "day" ) );
   }
 
+  @Test
   public void testRenderDay_Calendar() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
 
@@ -683,6 +735,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( new Integer( 3 ), message.findSetProperty( dateTime, "day" ) );
   }
 
+  @Test
   public void testRenderDayUnchanged_Calendar() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
     Fixture.markInitialized( display );

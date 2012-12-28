@@ -11,11 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -29,16 +32,19 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class Text_Test extends TestCase {
+public class Text_Test {
 
   private Display display;
   private Shell shell;
   private Text text;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
@@ -46,11 +52,12 @@ public class Text_Test extends TestCase {
     text = new Text( shell, SWT.NONE );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testInitialValuesForSingleText() {
     assertEquals( "", text.getText() );
     assertEquals( "", text.getMessage() );
@@ -60,6 +67,7 @@ public class Text_Test extends TestCase {
     assertEquals( ( char )0, text.getEchoChar() );
   }
 
+  @Test
   public void testTextLimit() {
     text.setTextLimit( -1 );
     assertEquals( -1, text.getTextLimit() );
@@ -82,6 +90,7 @@ public class Text_Test extends TestCase {
     assertEquals( "Other_", text.getText() );
   }
 
+  @Test
   public void testGetLineHeight() {
     Text text = new Text( shell, SWT.MULTI );
     // default theme font is 11px
@@ -92,6 +101,7 @@ public class Text_Test extends TestCase {
     assertEquals( 16, text.getLineHeight() );
   }
 
+  @Test
   public void testSelection() {
     // test select all
     text.setText( "abc" );
@@ -136,6 +146,7 @@ public class Text_Test extends TestCase {
     assertEquals( new Point( 0, 0 ), text.getSelection() );
   }
 
+  @Test
   public void testModifyEvent() {
     final StringBuilder log = new StringBuilder();
     text.addModifyListener( new ModifyListener() {
@@ -153,6 +164,7 @@ public class Text_Test extends TestCase {
     assertEquals( "modifyEvent|", log.toString() );
   }
 
+  @Test
   public void testVerifyEvent() {
     VerifyListener verifyListener;
     final java.util.List<TypedEvent> log = new ArrayList<TypedEvent>();
@@ -245,6 +257,7 @@ public class Text_Test extends TestCase {
   }
 
   // TODO [bm] extend testcase with newline chars and getLineCount
+  @Test
   public void testInsert() {
     // Test insert on multi-line Text
     Text text = new Text( shell, SWT.MULTI );
@@ -290,6 +303,7 @@ public class Text_Test extends TestCase {
 	}
 
   // TODO [bm] extend testcase with newline chars for SWT.MULTI
+  @Test
   public void testAppend() {
 		Text text = new Text(shell, SWT.SINGLE);
 
@@ -321,6 +335,7 @@ public class Text_Test extends TestCase {
 
 	}
 
+  @Test
   public void testInsertWithModifyListener() {
     final java.util.List<ModifyEvent> log = new ArrayList<ModifyEvent>();
     Text text = new Text( shell, SWT.SINGLE );
@@ -347,67 +362,79 @@ public class Text_Test extends TestCase {
     assertEquals( 0, log.size() );
   }
 
+  @Test
   public void testComputeSize_Empty() {
     assertEquals( new Point( 85, 26 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
+  @Test
   public void testComputeSize_WithText() {
     text.setText( "This is a long long text!" );
     assertEquals( new Point( 189, 28 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
+  @Test
   public void testComputeSize_WithMessage() {
     text.setMessage( "This is a message that is longer than the text!" );
     assertEquals( new Point( 337, 28 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
+  @Test
   public void testComputeSize_WithTextAndMessage() {
     text.setText( "This is a long long text!" );
     text.setMessage( "This is a message that is longer than the text!" );
     assertEquals( new Point( 337, 28 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
+  @Test
   public void testComputeSize_Multi() {
     text = new Text( shell, SWT.MULTI );
     text.setText( "This is a long long text!\nThis is the second row." );
     assertEquals( new Point( 189, 47 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
+  @Test
   public void testComputeSize_MultiWithWrap() {
     text = new Text( shell, SWT.MULTI | SWT.WRAP );
     text.setText( "This is a long long text!\nThis is the second row." );
     assertEquals( new Point( 71, 152 ), text.computeSize( 50, SWT.DEFAULT ) );
   }
 
+  @Test
   public void testComputeSize_MultiWithWrapAndBorder() {
     text = new Text( shell, SWT.MULTI | SWT.WRAP | SWT.BORDER );
     text.setText( "This is a long long text!\nThis is the second row." );
     assertEquals( new Point( 73, 154 ), text.computeSize( 50, SWT.DEFAULT ) );
   }
 
+  @Test
   public void testComputeSize_MultiWithHint() {
     text = new Text( shell, SWT.MULTI | SWT.WRAP | SWT.BORDER );
     assertEquals(  new Point( 123, 114 ), text.computeSize( 100, 100 ) );
   }
 
+  @Test
   public void testComputeSize_SearchWithoutIcons() {
     text = new Text( shell, SWT.SEARCH );
     text.setText( "This is a long long text!" );
     assertEquals( new Point( 191, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
+  @Test
   public void testComputeSize_SearchWithOneIcon() {
     text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH );
     text.setText( "This is a long long text!" );
     assertEquals( new Point( 210, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
+  @Test
   public void testComputeSize_SearchWithTwoIcon() {
     text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL );
     text.setText( "This is a long long text!" );
     assertEquals( new Point( 229, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
+  @Test
   public void testComputeTrim() {
     Text text = new Text( shell, SWT.SINGLE );
     Rectangle expected = new Rectangle( -10, -5, 20, 10 );
@@ -427,6 +454,7 @@ public class Text_Test extends TestCase {
     assertEquals( expected, text.computeTrim( 0, 0, 1, 0 ) );
   }
 
+  @Test
   public void testGetCaretPosition() {
     Text text = new Text( shell, SWT.SINGLE );
     text.setText( "Sample text" );
@@ -445,6 +473,7 @@ public class Text_Test extends TestCase {
     assertEquals( 8, text.getCaretPosition() );
   }
 
+  @Test
   public void testGetText() {
     text.setText( "Test Text" );
     assertEquals( "Test", text.getText( 0, 3 ) );
@@ -454,6 +483,7 @@ public class Text_Test extends TestCase {
     assertEquals( "Test ", text.getText( -3, 4 ) );
   }
 
+  @Test
   public void testMessage() {
     Text text = new Text( shell, SWT.SINGLE );
     assertEquals( "", text.getMessage() );
@@ -461,6 +491,7 @@ public class Text_Test extends TestCase {
     assertEquals( "New message", text.getMessage() );
   }
 
+  @Test
   public void testStyle() {
     Text text = new Text( shell, SWT.SEARCH | SWT.PASSWORD );
     int style = text.getStyle();
@@ -469,6 +500,7 @@ public class Text_Test extends TestCase {
     assertTrue( ( style & SWT.PASSWORD ) == 0 );
   }
 
+  @Test
   public void testEchoChar() {
     // single line text field
     Text singleText = new Text( shell, SWT.NONE );
@@ -487,12 +519,14 @@ public class Text_Test extends TestCase {
     assertEquals( '*', passwordText.getEchoChar() );
   }
 
+  @Test
   public void testIconStyles() {
     Text text = new Text( shell, SWT.SEARCH | SWT.ICON_CANCEL | SWT.ICON_SEARCH );
     assertTrue( ( text.getStyle() & SWT.ICON_CANCEL ) != 0 );
     assertTrue( ( text.getStyle() & SWT.ICON_SEARCH ) != 0 );
   }
 
+  @Test
   public void testSetTextChars() {
     char[] expected = new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' };
     text.setTextChars( expected );
@@ -504,6 +538,7 @@ public class Text_Test extends TestCase {
     assertEquals( "password", text.getText() );
   }
 
+  @Test
   public void testSetTextChars_NullValue() {
     try {
       text.setTextChars( null );
@@ -512,6 +547,7 @@ public class Text_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetTextChars_EmptyArray() {
     char[] expected = new char[ 0 ];
     text.setTextChars( expected );
@@ -520,6 +556,7 @@ public class Text_Test extends TestCase {
     assertEquals( "", text.getText() );
   }
 
+  @Test
   public void testGetTextChars_FromText() {
     String string = "new string";
     text.setText( string );
@@ -529,6 +566,7 @@ public class Text_Test extends TestCase {
     }
   }
 
+  @Test
   public void testIsSerializable() throws Exception {
     text.setText( "foo" );
 
@@ -537,6 +575,7 @@ public class Text_Test extends TestCase {
     assertEquals( text.getText(), deserializedText.getText() );
   }
 
+  @Test
   public void testSelectionAfterInsertText() {
     text.setText( "foobar" );
     text.setSelection( 3 );
@@ -546,52 +585,58 @@ public class Text_Test extends TestCase {
     assertEquals( new Point( 6, 6 ), text.getSelection() );
   }
 
+  @Test
   public void testAddModifyListenerRegistersUntypedEvents() {
     text.addModifyListener( mock( ModifyListener.class ) );
-  
+
     assertTrue( text.isListening( SWT.Modify ) );
   }
 
+  @Test
   public void testRemoveModifyListenerUnregistersUntypedEvents() {
     ModifyListener listener = mock( ModifyListener.class );
     text.addModifyListener( listener );
 
     text.removeModifyListener( listener );
-    
+
     assertFalse( text.isListening( SWT.Modify ) );
   }
-  
+
+  @Test
   public void testAddVerifyListenerRegistersUntypedEvents() {
     text.addVerifyListener( mock( VerifyListener.class ) );
-    
+
     assertTrue( text.isListening( SWT.Verify ) );
   }
-  
+
+  @Test
   public void testRemoveVerifyListenerUnregistersUntypedEvents() {
     VerifyListener listener = mock( VerifyListener.class );
     text.addVerifyListener( listener );
-    
+
     text.removeVerifyListener( listener );
-    
+
     assertFalse( text.isListening( SWT.Verify ) );
   }
-  
+
+  @Test
   public void testAddSelectionListener() {
     Text text = new Text( shell, SWT.NONE );
 
     text.addSelectionListener( mock( SelectionListener.class ) );
-    
+
     assertTrue( text.isListening( SWT.Selection ) );
     assertTrue( text.isListening( SWT.DefaultSelection ) );
   }
-  
+
+  @Test
   public void testRemoveSelectionListener() {
     Text text = new Text( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     text.addSelectionListener( listener );
 
     text.removeSelectionListener( listener );
-    
+
     assertFalse( text.isListening( SWT.Selection ) );
     assertFalse( text.isListening( SWT.DefaultSelection ) );
   }

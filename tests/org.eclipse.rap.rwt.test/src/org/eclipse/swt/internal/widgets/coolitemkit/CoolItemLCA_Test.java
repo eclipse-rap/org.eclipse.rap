@@ -10,14 +10,15 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolitemkit;
 
-import static org.eclipse.rap.rwt.internal.resources.TestUtil.assertArrayEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -35,9 +36,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class CoolItemLCA_Test extends TestCase {
+public class CoolItemLCA_Test {
 
   private Display display;
   private Shell shell;
@@ -45,7 +49,8 @@ public class CoolItemLCA_Test extends TestCase {
   private CoolItem item;
   private CoolItemLCA lca;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
@@ -56,10 +61,12 @@ public class CoolItemLCA_Test extends TestCase {
     Fixture.fakeResponseWriter();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testPreserveValues() {
     Button button = new Button( bar, SWT.NONE );
     Fixture.markInitialized( item );
@@ -75,6 +82,7 @@ public class CoolItemLCA_Test extends TestCase {
     assertNull( adapter.getPreserved( CoolItemLCA.PROP_CONTROL ) );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( item );
 
@@ -84,6 +92,7 @@ public class CoolItemLCA_Test extends TestCase {
     assertArrayEquals( new String[] { "NONE" }, operation.getStyles() );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( item );
 
@@ -92,6 +101,7 @@ public class CoolItemLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( bar ), operation.getParent() );
   }
 
+  @Test
   public void testRenderVertical() throws IOException {
     item = new CoolItem( bar, SWT.VERTICAL );
     lca.renderInitialization( item );
@@ -101,6 +111,7 @@ public class CoolItemLCA_Test extends TestCase {
     assertArrayEquals( new String[] { "VERTICAL" }, operation.getStyles() );
   }
 
+  @Test
   public void testRenderBounds() throws IOException, JSONException {
     item.setSize( 10, 20 );
     lca.renderInitialization( item );
@@ -112,6 +123,7 @@ public class CoolItemLCA_Test extends TestCase {
     assertEquals( "0,0,0,20", bounds );
   }
 
+  @Test
   public void testRenderControl() throws Exception {
     Button button = new Button( bar, SWT.NONE );
     Fixture.markInitialized( item );
@@ -124,6 +136,7 @@ public class CoolItemLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( button ), operation.getProperty( "control" ) );
   }
 
+  @Test
   public void testReadMove() {
     bar.setSize( 100, 10 );
     item.setSize( 10, 10 );

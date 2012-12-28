@@ -12,28 +12,33 @@
 package org.eclipse.rap.rwt.internal.service;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class RequestParameterBuffer_Test extends TestCase {
+public class RequestParameterBuffer_Test {
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testStore() {
     Map<String, String[]> originalParameters = new HashMap<String, String[]>();
     originalParameters.put( "key", new String[] { "value" } );
@@ -45,6 +50,7 @@ public class RequestParameterBuffer_Test extends TestCase {
     assertArrayEquals( new String[]{ "value" }, ( String[] )bufferedParameters.get( "key" ) );
   }
 
+  @Test
   public void testStoreOverridesBuffer() {
     // see bug 369549
     Map<String, String[]> originalParameters = new HashMap<String, String[]>();
@@ -63,6 +69,7 @@ public class RequestParameterBuffer_Test extends TestCase {
     assertArrayEquals( new String[] { "value3" }, (String[])bufferedParameters.get( "key3" ) );
   }
 
+  @Test
   public void testMerge() {
     Map<String, String[]> parameters = new HashMap<String, String[]>();
     parameters.put( "key1", new String[] { "value1" } );
@@ -79,6 +86,7 @@ public class RequestParameterBuffer_Test extends TestCase {
     assertEquals( "value3", ContextProvider.getRequest().getParameter( "key3" ) );
   }
 
+  @Test
   public void testMergeOnlyOnce() {
     Map<String, String[]> parameters = new HashMap<String, String[]>();
     parameters.put( "key1", new String[] { "value1" } );

@@ -11,6 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -20,11 +27,9 @@ import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -36,34 +41,39 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.internal.events.EventList;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 
 
-public class Widget_Test extends TestCase {
+public class Widget_Test {
 
   private Display display;
   private Shell shell;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testGetAdapterForDisposedWidget() {
     shell.dispose();
     Object adapterOfDisposedWidget = shell.getAdapter( WidgetAdapter.class );
     assertNotNull( adapterOfDisposedWidget );
   }
 
+  @Test
   public void testCheckWidget() throws Throwable {
     final Widget widget = new Text( shell, SWT.NONE );
     Runnable target = new Runnable() {
@@ -79,6 +89,7 @@ public class Widget_Test extends TestCase {
     }
   }
 
+  @Test
   public void testData() {
     Widget widget = new Text( shell, SWT.NONE );
 
@@ -119,6 +130,7 @@ public class Widget_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDisposeParentWhileInDispose() {
     // This test leads to a stack overflow or, if line "item[ 0 ].dispose();"
     // is activated to a NPE
@@ -140,6 +152,7 @@ public class Widget_Test extends TestCase {
     // no assert: this test ensures that no StackOverflowError occurs
   }
 
+  @Test
   public void testDisposeSelfWhileInDispose() {
     shell.addDisposeListener( new DisposeListener() {
       public void widgetDisposed( DisposeEvent event ) {
@@ -150,6 +163,7 @@ public class Widget_Test extends TestCase {
     // no assert: this test ensures that no exception occurs
   }
 
+  @Test
   public void testDisposeSelfWhileInDispose_RenderOnce() {
     Fixture.markInitialized( shell );
     shell.addDisposeListener( new DisposeListener() {
@@ -168,6 +182,7 @@ public class Widget_Test extends TestCase {
     assertEquals( 1, counter );
   }
 
+  @Test
   public void testCheckBits() {
     int style = SWT.VERTICAL | SWT.HORIZONTAL;
     int result = Widget.checkBits( style, SWT.VERTICAL, SWT.HORIZONTAL, 0, 0, 0, 0 );
@@ -175,21 +190,23 @@ public class Widget_Test extends TestCase {
     assertFalse( ( result & SWT.HORIZONTAL ) != 0 );
   }
 
+  @Test
   public void testDispose() {
     Widget widget = new Button( shell, SWT.NONE );
 
     // Ensure initial state
-    assertEquals( false, widget.isDisposed() );
+    assertFalse( widget.isDisposed() );
 
     // Test dispose the first time
     widget.dispose();
-    assertEquals( true, widget.isDisposed() );
+    assertTrue( widget.isDisposed() );
 
     // Disposing of an already disposed of widget does nothing
     widget.dispose();
-    assertEquals( true, widget.isDisposed() );
+    assertTrue( widget.isDisposed() );
   }
 
+  @Test
   public void testDisposeFromIllegalThread() throws Throwable {
     final Widget widget = new Button( shell, SWT.NONE );
     Runnable runnable = new Runnable() {
@@ -204,6 +221,7 @@ public class Widget_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDisposeWithException() {
     shell.addDisposeListener( new DisposeListener() {
       public void widgetDisposed( DisposeEvent event ) {
@@ -220,12 +238,14 @@ public class Widget_Test extends TestCase {
     assertEquals( 0, DisposedWidgets.getAll().length );
   }
 
+  @Test
   public void testAddDisposeListener() {
     shell.addDisposeListener( mock( DisposeListener.class ) );
 
     assertTrue( shell.isListening( SWT.Dispose ) );
   }
 
+  @Test
   public void testAddDisposeListenerWithNullArgument() {
     try {
       shell.addDisposeListener( null );
@@ -234,6 +254,7 @@ public class Widget_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRemoveDisposeListenerWithRegisteredListener() {
     DisposeListener listener = mock( DisposeListener.class );
     shell.addDisposeListener( listener );
@@ -243,6 +264,7 @@ public class Widget_Test extends TestCase {
     assertFalse( shell.isListening( SWT.Dispose ) );
   }
 
+  @Test
   public void testRemoveDisposeListenerWithUnregisteredListener() {
     DisposeListener listener = mock( DisposeListener.class );
 
@@ -251,6 +273,7 @@ public class Widget_Test extends TestCase {
     assertFalse( shell.isListening( SWT.Dispose ) );
   }
 
+  @Test
   public void testRemoveListener() {
     // Ensure that removing a listener that was never added is ignored
     // silently see https://bugs.eclipse.org/251816
@@ -258,6 +281,7 @@ public class Widget_Test extends TestCase {
   }
 
   // bug 328043
+  @Test
   public void testUntypedDisposeListener() {
     DisposeListener listener = mock( DisposeListener.class );
     shell.addDisposeListener( listener );
@@ -267,6 +291,7 @@ public class Widget_Test extends TestCase {
     verify( listener ).widgetDisposed( any( DisposeEvent.class ) );
   }
 
+  @Test
   public void testNotifyListeners() {
     final StringBuilder log = new StringBuilder();
     shell.addListener( SWT.Resize, new Listener() {
@@ -278,6 +303,7 @@ public class Widget_Test extends TestCase {
     assertEquals( "untyped", log.toString() );
   }
 
+  @Test
   public void testNotifyListenersTyped() {
     ControlListener listener = mock( ControlListener.class );
     shell.addControlListener( listener );
@@ -288,6 +314,7 @@ public class Widget_Test extends TestCase {
     verify( listener, never() ).controlMoved( any( ControlEvent.class ) );
   }
 
+  @Test
   public void testNotifyListenersWithFilter() {
     Listener filter = mock( Listener.class );
     display.addFilter( SWT.Resize, filter );
@@ -301,6 +328,7 @@ public class Widget_Test extends TestCase {
     inOrder.verify( listener ).handleEvent( any( Event.class ) );
   }
 
+  @Test
   public void testNotifyListenersWithDenyingFilter() {
     Listener filter = spy( new Listener() {
       public void handleEvent( Event event ) {
@@ -318,6 +346,7 @@ public class Widget_Test extends TestCase {
   }
 
   // SWT always overrides e.type, e.display and e.widget
+  @Test
   public void testNotifyListenersEventFields() {
     final StringBuilder log = new StringBuilder();
     display.addFilter( SWT.Resize, new Listener() {
@@ -328,7 +357,7 @@ public class Widget_Test extends TestCase {
         assertNotNull( event.data );
         assertEquals( 6, event.detail );
         assertSame( display, event.display );
-        assertEquals( false, event.doit );
+        assertFalse( event.doit );
         assertEquals( 8, event.end );
         assertEquals( 10, event.height );
         assertEquals( 12, event.index );
@@ -373,6 +402,7 @@ public class Widget_Test extends TestCase {
     assertEquals( "filter", log.toString() );
   }
 
+  @Test
   public void testNotifyListenersWithEmptyEvent() {
     Event event = new Event();
     Listener listener = mock( Listener.class );
@@ -389,6 +419,7 @@ public class Widget_Test extends TestCase {
     assertTrue( event.time > 0 );
   }
 
+  @Test
   public void testNotifyListenersNullEvent() {
     final StringBuilder log = new StringBuilder();
     shell.addControlListener( new ControlAdapter() {
@@ -403,6 +434,7 @@ public class Widget_Test extends TestCase {
     assertEquals( "typed", log.toString() );
   }
 
+  @Test
   public void testNotifyListenersInvalidEventType() {
     Listener listener = mock( Listener.class );
     shell.addListener( SWT.Resize, listener );
@@ -412,6 +444,7 @@ public class Widget_Test extends TestCase {
     verify( listener, never() ).handleEvent( any( Event.class ) );
   }
 
+  @Test
   public void testNotifyListenersInReadDataPhase() {
     Fixture.fakePhase( PhaseId.READ_DATA );
     Listener listener = mock( Listener.class );
@@ -425,6 +458,7 @@ public class Widget_Test extends TestCase {
     assertEquals( event, EventList.getInstance().getAll()[ 0 ] );
   }
 
+  @Test
   public void testNotifyListenersWithNullPhase() {
     Fixture.fakePhase( null );
     Listener listener = mock( Listener.class );
@@ -435,6 +469,7 @@ public class Widget_Test extends TestCase {
     verify( listener, never() ).handleEvent( any( Event.class ) );
   }
 
+  @Test
   public void testNotifyListenersWithPreInitializedTime() {
     int predefinedTime = 12345;
     Listener listener = mock( Listener.class );
@@ -450,6 +485,7 @@ public class Widget_Test extends TestCase {
   }
 
   // bug 286039
+  @Test
   public void testRemoveUntypedListenerLeavesNeighbourListenerIntact() {
     Listener listener = mock( Listener.class );
     shell.addListener( SWT.Move, listener );
@@ -462,6 +498,7 @@ public class Widget_Test extends TestCase {
   }
 
   // bug 332511
+  @Test
   public void testRemoveTypedListenerWithUntypedRemoveListener() {
     shell.addDisposeListener( mock( DisposeListener.class ) );
 
@@ -473,6 +510,7 @@ public class Widget_Test extends TestCase {
     assertFalse( shell.isListening( SWT.Dispose ) );
   }
 
+  @Test
   public void testGetListeners() {
     Listener[] listeners = shell.getListeners( 0 );
     assertNotNull( listeners );
@@ -493,12 +531,14 @@ public class Widget_Test extends TestCase {
     assertEquals( 2, shell.getListeners( SWT.Resize ).length );
   }
 
+  @Test
   public void testIsListeningWithoutRegisteredListeners() {
     boolean listening = shell.isListening( SWT.Dispose );
 
     assertFalse( listening );
   }
 
+  @Test
   public void testIsListeningAfterAddListener() {
     Listener listener = mock( Listener.class );
 
@@ -507,6 +547,7 @@ public class Widget_Test extends TestCase {
     assertTrue( shell.isListening( SWT.Resize ) );
   }
 
+  @Test
   public void testIsListeningAfterRemoveListener() {
     Listener listener = mock( Listener.class );
     shell.addListener( SWT.Resize, listener );
@@ -516,6 +557,7 @@ public class Widget_Test extends TestCase {
     assertFalse( shell.isListening( SWT.Resize ) );
   }
 
+  @Test
   public void testIsListeningForTypedEvent() {
     shell.addHelpListener( new HelpListener() {
       public void helpRequested( HelpEvent event ) {
@@ -524,10 +566,12 @@ public class Widget_Test extends TestCase {
     assertTrue( shell.isListening( SWT.Help ) );
   }
 
+  @Test
   public void testGetDisplay() {
     assertSame( display, shell.getDisplay() );
   }
 
+  @Test
   public void testGetDisplayFromNonUIThread() throws Exception {
     final Display[] widgetDisplay = { null };
     Thread thread = new Thread( new Runnable() {
@@ -540,6 +584,7 @@ public class Widget_Test extends TestCase {
     assertSame( display, widgetDisplay[ 0 ] );
   }
 
+  @Test
   public void testReskin() {
     final java.util.List<Widget> log = new ArrayList<Widget>();
     Listener listener = new Listener() {

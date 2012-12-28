@@ -10,9 +10,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.droptargetkit;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import junit.framework.TestCase;
+import java.io.IOException;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -32,16 +34,20 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class DropTargetLCA_Test extends TestCase {
+public class DropTargetLCA_Test {
 
   private Control control;
   private Shell shell;
   private Display display;
   private DropTargetLCA lca;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     Fixture.markInitialized( display );
@@ -51,10 +57,12 @@ public class DropTargetLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testRenderCreate() throws IOException, JSONException {
     DropTarget target = new DropTarget( control, DND.DROP_MOVE | DND.DROP_COPY );
     lca.renderInitialization( target );
@@ -67,6 +75,7 @@ public class DropTargetLCA_Test extends TestCase {
     assertEquals( "\"DROP_COPY\",\"DROP_MOVE\"", result );
   }
 
+  @Test
   public void testRenderTransfer() throws IOException, JSONException {
     DropTarget target = new DropTarget( control, DND.DROP_MOVE | DND.DROP_COPY );
     Fixture.markInitialized( target );
@@ -89,6 +98,7 @@ public class DropTargetLCA_Test extends TestCase {
     assertEquals( expected, result );
   }
 
+  @Test
   public void testDisposeDropControl() {
     DropTarget target = new DropTarget( control, DND.DROP_COPY );
     shell.open();
@@ -103,6 +113,7 @@ public class DropTargetLCA_Test extends TestCase {
     assertNull( message.findDestroyOperation( target ) );
   }
 
+  @Test
   public void testDisposeDroptargetAndControl() {
     DropTarget target = new DropTarget( control, DND.DROP_COPY );
     shell.open();

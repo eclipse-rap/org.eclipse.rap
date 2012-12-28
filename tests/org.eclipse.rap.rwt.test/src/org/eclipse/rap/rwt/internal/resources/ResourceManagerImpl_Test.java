@@ -12,6 +12,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.resources;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -24,17 +31,32 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ResourceManagerImpl_Test extends TestCase {
+public class ResourceManagerImpl_Test {
 
   private ResourceManagerImpl resourceManager;
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    resourceManager = new ResourceManagerImpl( RWTFactory.getResourceDirectory() );
+  }
+
+  @After
+  public void tearDown() {
+    File path = new File( getWebContextDirectory(), ResourceDirectory.DIRNAME );
+    Fixture.delete( path );
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testRegistration() throws Exception {
     String resource = "path/to/resource";
     byte[] bytes = new byte[] { 1, 2, 3 };
@@ -43,9 +65,10 @@ public class ResourceManagerImpl_Test extends TestCase {
     File jarFile = getResourceCopyFile( resource );
     assertTrue( "Resource not registered",  resourceManager.isRegistered( resource ) );
     assertTrue( "Resource was not written to disk", jarFile.exists() );
-    assertEquals( bytes, read( jarFile ) );
+    assertArrayEquals( bytes, read( jarFile ) );
   }
 
+  @Test
   public void testRegisterOverridesPreviousVersion() {
     String resource = "path/to/resource";
     InputStream inputStream = new ByteArrayInputStream( new byte[ 0 ] );
@@ -58,6 +81,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     assertTrue( file.exists() );
   }
 
+  @Test
   public void testRegistrationWithNullParams() {
     try {
       resourceManager.register( "path", null );
@@ -71,12 +95,14 @@ public class ResourceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testUnregisterNonExistingResource() {
     boolean unregistered = resourceManager.unregister( "foo" );
 
     assertFalse( unregistered );
   }
 
+  @Test
   public void testUnregisterWithIllegalArgument() {
     try {
       resourceManager.unregister( null );
@@ -85,6 +111,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testUnregister() {
     String path = "path/to/resource";
     resourceManager.register( path, createInputStream() );
@@ -95,6 +122,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     assertFalse( getResourceCopyFile( path ).exists() );
   }
 
+  @Test
   public void testGetLocation() {
     String path = "path/to/resource";
     resourceManager.register( path, createInputStream() );
@@ -102,6 +130,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     assertEquals( "rwt-resources/" + path, location );
   }
 
+  @Test
   public void testGetLocationWithWrongParams() {
     try {
       resourceManager.getLocation( "trallala" );
@@ -110,6 +139,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetLocationWithNullArgument() {
     try {
       resourceManager.getLocation( null );
@@ -118,6 +148,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetRegisteredContent() throws IOException {
     InputStream inputStream = createInputStream();
     resourceManager.register( "myfile", inputStream );
@@ -130,6 +161,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   @SuppressWarnings( "resource" )
+  @Test
   public void testGetRegisteredContentForNonExistingResource() {
     InputStream content = resourceManager.getRegisteredContent( "not-there" );
 
@@ -140,6 +172,7 @@ public class ResourceManagerImpl_Test extends TestCase {
    * 280582: resource registration fails when using ImageDescriptor.createFromURL
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=280582
    */
+  @Test
   public void testRegisterWithInvalidPath() throws Exception {
     InputStream inputStream = mock( InputStream.class );
     String path = "http://host:port/path$1";
@@ -151,6 +184,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     assertEquals( "rwt-resources/http$1//host$1port/path$$1", location );
   }
 
+  @Test
   public void testRegisterWithEmptyPath() {
     try {
       resourceManager.register( "", mock( InputStream.class ) );
@@ -159,6 +193,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterWithAbsolutePath() throws Exception {
     InputStream inputStream = createInputStream();
     String path = "/absolute/path/to/resource.txt";
@@ -170,6 +205,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     assertEquals( "rwt-resources//absolute/path/to/resource.txt", location );
   }
 
+  @Test
   public void testRegisterWithTrailingSlash() {
     try {
       resourceManager.register( "/", createInputStream() );
@@ -178,6 +214,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterWithTrailingBackslash() {
     try {
       resourceManager.register( "\\", createInputStream() );
@@ -187,6 +224,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   @SuppressWarnings( "resource" )
+  @Test
   public void testRegisterDoesNotCloseStream() throws IOException {
     InputStream inputStream = mock( InputStream.class );
 
@@ -196,6 +234,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   @SuppressWarnings( "resource" )
+  @Test
   public void testRegisterJavascriptDoesNotCloseStream() throws IOException {
     InputStream inputStream = mock( InputStream.class );
 
@@ -204,6 +243,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     verify( inputStream, never() ).close();
   }
 
+  @Test
   public void testCallRegisterOnce() throws Exception {
     String resource = "path/to/resource";
     final byte[] bytes = new byte[] { 1, 2, 3 };
@@ -217,9 +257,10 @@ public class ResourceManagerImpl_Test extends TestCase {
     File jarFile = getResourceCopyFile( resource );
     assertTrue( resourceManager.isRegistered( resource ) );
     assertTrue( jarFile.exists() );
-    assertEquals( bytes, read( jarFile ) );
+    assertArrayEquals( bytes, read( jarFile ) );
   }
 
+  @Test
   public void testCallRegisterOnceTwice() {
     String resource = "path/to/resource";
     final byte[] bytes = new byte[] { 1, 2, 3 };
@@ -237,6 +278,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     assertEquals( 1, log.size() );
   }
 
+  @Test
   public void testRegisterOnceCloseStream() throws IOException {
     String resource = "path/to/resource";
     final InputStream stream = mock( InputStream.class );
@@ -251,6 +293,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     verify( stream ).close();
   }
 
+  @Test
   public void testRegisterOnceWithNullParams() {
     try {
       resourceManager.registerOnce( "path", null );
@@ -264,6 +307,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterOnceUnregister() {
     String path = "path/to/resource";
     resourceManager.registerOnce( path, createResourceLoader() );
@@ -274,6 +318,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     assertFalse( getResourceCopyFile( path ).exists() );
   }
 
+  @Test
   public void testRegisterOnceGetLocation() {
     String path = "path/to/resource";
     resourceManager.registerOnce( path, createResourceLoader() );
@@ -283,6 +328,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     assertEquals( "rwt-resources/" + path, location );
   }
 
+  @Test
   public void testRegisterOnceGetRegisteredContent() throws IOException {
     resourceManager.registerOnce( "myfile", createResourceLoader() );
 
@@ -296,6 +342,7 @@ public class ResourceManagerImpl_Test extends TestCase {
    * 280582: resource registration fails when using ImageDescriptor.createFromURL
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=280582
    */
+  @Test
   public void testRegisterOnceWithInvalidPath() {
     String path = "http://host:port/path$1";
     resourceManager.registerOnce( path, createResourceLoader() );
@@ -305,6 +352,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     assertEquals( "rwt-resources/http$1//host$1port/path$$1", location );
   }
 
+  @Test
   public void testRegisterOnceWithEmptyPath() {
     try {
       resourceManager.registerOnce( "", mock( ResourceLoader.class ) );
@@ -313,6 +361,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterOnceWithAbsolutePath() {
     String path = "/absolute/path/to/resource.txt";
     resourceManager.registerOnce( path, createResourceLoader() );
@@ -322,6 +371,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     assertEquals( "rwt-resources//absolute/path/to/resource.txt", location );
   }
 
+  @Test
   public void testRegisterOnceWithTrailingSlash() {
     try {
       resourceManager.registerOnce( "/", createResourceLoader() );
@@ -330,34 +380,12 @@ public class ResourceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterOnceWithTrailingBackslash() {
     try {
       resourceManager.registerOnce( "\\", createResourceLoader() );
       fail();
     } catch( IllegalArgumentException expected ) {
-    }
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    resourceManager = new ResourceManagerImpl( RWTFactory.getResourceDirectory() );
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    File path = new File( getWebContextDirectory(), ResourceDirectory.DIRNAME );
-    Fixture.delete( path );
-    Fixture.tearDown();
-  }
-
-  ///////////////////
-  // helping methods
-
-  private void assertEquals( byte[] origin, byte[] copy ) {
-    assertEquals( "Content sizes are different", origin.length, copy.length );
-    for( int i = 0; i < copy.length; i++ ) {
-      assertEquals( "Content is different", origin[ i ], copy[ i ] );
     }
   }
 

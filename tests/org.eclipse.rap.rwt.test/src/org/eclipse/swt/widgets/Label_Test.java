@@ -11,10 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -23,30 +28,37 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class Label_Test extends TestCase {
+public class Label_Test {
 
   private Display display;
   private Shell shell;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display , SWT.NONE );
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testInitialValues() {
     Label label = new Label( shell, SWT.NONE );
     assertEquals( "", label.getText() );
     assertEquals( SWT.LEFT, label.getAlignment() );
   }
 
+  @Test
   public void testText() {
     Label label = new Label( shell, SWT.NONE );
     label.setText( "abc" );
@@ -59,6 +71,7 @@ public class Label_Test extends TestCase {
     }
   }
 
+  @Test
   public void testStyle() {
     Label label;
 
@@ -78,6 +91,7 @@ public class Label_Test extends TestCase {
     assertFalse( ( label.getStyle() & SWT.SHADOW_IN ) != 0 );
   }
 
+  @Test
   public void testAlignment() {
     Label label;
 
@@ -104,6 +118,7 @@ public class Label_Test extends TestCase {
     assertEquals( SWT.CENTER, label.getAlignment() );
   }
 
+  @Test
   public void testSeparatorLabel() throws IOException {
     Label label = new Label( shell, SWT.SEPARATOR );
     label.setText( "bla" );
@@ -112,6 +127,7 @@ public class Label_Test extends TestCase {
     assertNull( label.getImage() );
   }
 
+  @Test
   public void testImageAndText() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     label.setText( "bla" );
@@ -124,6 +140,7 @@ public class Label_Test extends TestCase {
     assertNull( label.getImage() );
   }
 
+  @Test
   public void testSize() {
     Label labelWrap = new Label( shell, SWT.WRAP );
     Label labelNoWrap = new Label( shell, SWT.NONE );
@@ -147,6 +164,7 @@ public class Label_Test extends TestCase {
     assertTrue( extentWrap.y > 0 );
   }
 
+  @Test
   public void testComputeSize() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     Point expected = new Point( 0, 14 );
@@ -178,6 +196,7 @@ public class Label_Test extends TestCase {
     assertEquals( expected, label.computeSize( 100, 100 ) );
   }
 
+  @Test
   public void testComputeSizeWithMarkupEnabled() {
     Label label = new Label( shell, SWT.NONE );
     label.setText( "foo bar" );
@@ -191,6 +210,7 @@ public class Label_Test extends TestCase {
     assertEquals( markupExtent.y, textExtent.y );
   }
 
+  @Test
   public void testIsSerializable() throws Exception {
     String text = "labelText";
     Label label = new Label( shell, SWT.NONE );
@@ -201,6 +221,7 @@ public class Label_Test extends TestCase {
     assertEquals( text, deserializedLabel.getText() );
   }
 
+  @Test
   public void testMarkupTextWithoutMarkupEnabled() {
     Label label = new Label( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
@@ -212,6 +233,7 @@ public class Label_Test extends TestCase {
     }
   }
 
+  @Test
   public void testMarkupTextWithMarkupEnabled() {
     Label label = new Label( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
@@ -223,6 +245,7 @@ public class Label_Test extends TestCase {
     }
   }
 
+  @Test
   public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
     Label label = new Label( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
@@ -235,6 +258,7 @@ public class Label_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDisableMarkupIsIgnored() {
     Label label = new Label( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );

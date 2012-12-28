@@ -1,17 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -19,18 +20,24 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class Layout_Test extends TestCase {
+public class Layout_Test {
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testLayoutCall() {
     Fixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
     Display display = new Display();
@@ -66,6 +73,7 @@ public class Layout_Test extends TestCase {
     assertEquals( expected, control.getBounds() );
   }
 
+  @Test
   public void testClientArea() {
     Fixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
     Display display = new Display();
@@ -80,6 +88,7 @@ public class Layout_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 48, 98 ), comp2.getClientArea() );
   }
 
+  @Test
   public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
     Display display = new Display();

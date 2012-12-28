@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.engine;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
@@ -20,8 +23,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
@@ -34,10 +35,12 @@ import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rap.rwt.testfixture.TestSession;
+import org.junit.Test;
 
 
-public class RWTServlet_Test extends TestCase {
+public class RWTServlet_Test {
 
+  @Test
   public void testInvalidRequestUrlWithPathInfo() throws Exception {
     TestRequest request = new TestRequest();
     TestResponse response = new TestResponse();
@@ -48,6 +51,7 @@ public class RWTServlet_Test extends TestCase {
     assertEquals( HttpServletResponse.SC_NOT_FOUND, response.getErrorStatus() );
   }
 
+  @Test
   public void testCreateRedirectUrl() {
     TestRequest request = new TestRequest();
     request.setPathInfo( "/" );
@@ -57,6 +61,7 @@ public class RWTServlet_Test extends TestCase {
     assertEquals( "/fooapp/rap", url );
   }
 
+  @Test
   public void testCreateRedirectUrlWithParam() {
     TestRequest request = new TestRequest();
     request.setParameter( "param1", "value1" );
@@ -66,6 +71,7 @@ public class RWTServlet_Test extends TestCase {
     assertEquals( "/fooapp/rap?param1=value1", url );
   }
 
+  @Test
   public void testCreateRedirectUrlWithTwoParams() {
     TestRequest request = new TestRequest();
     request.setParameter( "param1", "value1" );
@@ -77,6 +83,7 @@ public class RWTServlet_Test extends TestCase {
                 || "/fooapp/rap?param2=value2&param1=value1".equals( url ) );
   }
 
+  @Test
   public void testServiceHandlerHasServiceStore() throws ServletException, IOException {
     final List<ServiceStore> log = new ArrayList<ServiceStore>();
     ApplicationContextImpl applicationContext = createApplicationContext();
@@ -110,4 +117,5 @@ public class RWTServlet_Test extends TestCase {
     result.setSession( session );
     return result;
   }
+
 }

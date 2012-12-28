@@ -10,41 +10,51 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-import junit.framework.TestCase;
+import java.io.IOException;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class Render_Test extends TestCase {
+public class Render_Test {
 
   private Render render;
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    Fixture.fakeResponseWriter();
+    render = new Render();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testGetPhaseId() {
     assertEquals( PhaseId.RENDER, render.getPhaseId() );
   }
-  
+
+  @Test
   public void testExecute() throws IOException {
     Display display = new Display();
     PhaseId nextPhase = render.execute( display );
     assertNull( nextPhase );
   }
-  
+
+  @Test
   public void testExecuteWithNullDisplay() throws IOException {
     PhaseId nextPhase = render.execute( null );
     assertNull( nextPhase );
   }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakeResponseWriter();
-    render = new Render();
-  }
-  
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
+
 }

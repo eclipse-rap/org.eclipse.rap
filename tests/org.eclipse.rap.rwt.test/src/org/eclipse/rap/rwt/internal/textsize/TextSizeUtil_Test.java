@@ -12,7 +12,8 @@
 
 package org.eclipse.rap.rwt.internal.textsize;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
@@ -22,22 +23,28 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class TextSizeUtil_Test extends TestCase {
+public class TextSizeUtil_Test {
 
   private static final String TEST_STRING = "test";
   private static final FontData FONT_DATA = new FontData( "arial", 10, SWT.NORMAL );
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     new Display();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testStringExtentAssignsUnknownStringsToTextSizeMeasuring() {
     TextSizeUtil.stringExtent( getFont(), TEST_STRING );
 
@@ -46,6 +53,7 @@ public class TextSizeUtil_Test extends TestCase {
     assertEquals( FONT_DATA, getMeasurementItems()[ 0 ].getFontData() );
   }
 
+  @Test
   public void testStringExtentAssignsUnknownFontToFontProbing() {
     TextSizeUtil.stringExtent( getFont(), TEST_STRING );
 
@@ -53,6 +61,7 @@ public class TextSizeUtil_Test extends TestCase {
     assertEquals( FONT_DATA, getProbes()[ 0 ].getFontData() );
   }
 
+  @Test
   public void testStringExtentUsesEstimationForUnknownStrings() {
     Point determined = TextSizeUtil.stringExtent( getFont(), TEST_STRING );
     Point estimated = TextSizeEstimation.stringExtent( getFont(), TEST_STRING );
@@ -60,6 +69,7 @@ public class TextSizeUtil_Test extends TestCase {
     assertEquals( estimated, determined );
   }
 
+  @Test
   public void testStringExtentUsesStoreageForKnowStrings() {
     Point storedSize = new Point( 100, 10 );
     fakeMeasurement( TEST_STRING, SWT.DEFAULT, TextSizeUtil.STRING_EXTENT, storedSize );
@@ -69,12 +79,14 @@ public class TextSizeUtil_Test extends TestCase {
     assertEquals( storedSize, determinedSize );
   }
 
+  @Test
   public void testStringExtentForEmptyString() {
     Point emptyStringSize = TextSizeUtil.stringExtent( getFont(), "" );
 
     assertEquals( new Point( 0, 10 ), emptyStringSize );
   }
 
+  @Test
   public void testStringExtentMustNotExpandLineBreaks() {
     Point singleLine = TextSizeUtil.stringExtent( getFont(), "First Line" );
     Point multiLine = TextSizeUtil.stringExtent( getFont(), "First Line\nSecond Line" );
@@ -82,6 +94,7 @@ public class TextSizeUtil_Test extends TestCase {
     assertEquals( singleLine.y, multiLine.y );
   }
 
+  @Test
   public void testStringExtentConsideresLeadingAndTrailingSpaces() {
     Point str = TextSizeUtil.stringExtent( getFont(), "  First Line    " );
     Point trimStr = TextSizeUtil.stringExtent( getFont(), "First Line" );
@@ -89,6 +102,7 @@ public class TextSizeUtil_Test extends TestCase {
     assertTrue( str.x > trimStr.x );
   }
 
+  @Test
   public void testTextExtentExpandLineBreaks() {
     Point singleLine = TextSizeUtil.textExtent( getFont(), "First Line", 0 );
     Point multiLine = TextSizeUtil.textExtent( getFont(), "First Line\nSecond Line", 0 );
@@ -96,6 +110,7 @@ public class TextSizeUtil_Test extends TestCase {
     assertTrue( singleLine.y < multiLine.y );
   }
 
+  @Test
   public void testGetCharHeightAssignsUnknownFontToFontProbing() {
     TextSizeUtil.getCharHeight( getFont() );
 
@@ -103,6 +118,7 @@ public class TextSizeUtil_Test extends TestCase {
     assertEquals( FONT_DATA, getProbes()[ 0 ].getFontData() );
   }
 
+  @Test
   public void testGetCharHeightUsesEstimationForUnknownStrings() {
     int determined = TextSizeUtil.getCharHeight( getFont() );
     int estimated = TextSizeEstimation.getCharHeight( getFont() );
@@ -110,6 +126,7 @@ public class TextSizeUtil_Test extends TestCase {
     assertEquals( estimated, determined, 0 );
   }
 
+  @Test
   public void testGetCharHeightUsesStorageForUnknownStrings() {
     int charHeight = 13;
     ProbeResultStore probeResultStore = ProbeResultStore.getInstance();
@@ -120,6 +137,7 @@ public class TextSizeUtil_Test extends TestCase {
     assertEquals( charHeight, determined );
   }
 
+  @Test
   public void testGetAvgCharWidthAssignsUnknownFontToFontProbing() {
     TextSizeUtil.getAvgCharWidth( getFont() );
 
@@ -127,6 +145,7 @@ public class TextSizeUtil_Test extends TestCase {
     assertEquals( FONT_DATA, getProbes()[ 0 ].getFontData() );
   }
 
+  @Test
   public void testGetAvgCharWidthUsesEstimationForUnknownStrings() {
     float determined = TextSizeUtil.getAvgCharWidth( getFont() );
     float estimated = TextSizeEstimation.getAvgCharWidth( getFont() );
@@ -134,6 +153,7 @@ public class TextSizeUtil_Test extends TestCase {
     assertEquals( estimated, determined, 0 );
   }
 
+  @Test
   public void testGetAvgCharWidthUsesStorageForKnownStrings() {
     ProbeResultStore probeStore = ProbeResultStore.getInstance();
     Point probeSize = new Point( Probe.DEFAULT_PROBE_STRING.length() * 4, 10 );
@@ -144,6 +164,7 @@ public class TextSizeUtil_Test extends TestCase {
     assertEquals( 4, determined, 0 );
   }
 
+  @Test
   public void testHeightAdjustmentInCaseOfWhitespaceText() {
     fakeMeasurement( " ", SWT.DEFAULT, TextSizeUtil.TEXT_EXTENT, new Point( 2, 0 ) );
 
@@ -152,6 +173,7 @@ public class TextSizeUtil_Test extends TestCase {
     assertEquals( 10, size.y );
   }
 
+  @Test
   public void testHeightAdjustmentInCaseOfMultiLineLengthGreaterThanWrapWidth() {
     String textToMeasure = "multi\nline\ntext";
     fakeMeasurement( textToMeasure, 2, TextSizeUtil.TEXT_EXTENT, new Point( 6, 10 ) );
@@ -178,4 +200,5 @@ public class TextSizeUtil_Test extends TestCase {
   private Font getFont() {
     return Graphics.getFont( FONT_DATA );
   }
+
 }

@@ -11,13 +11,18 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
+import org.junit.Test;
 
 
-public class DefaultEntryPointFactory_Test extends TestCase {
+public class DefaultEntryPointFactory_Test {
 
+  @Test
   public void testConstructorWithNullParam() {
     try {
       new DefaultEntryPointFactory( ( Class<? extends EntryPoint> )null );
@@ -26,6 +31,7 @@ public class DefaultEntryPointFactory_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConstructorFailsWithAbstractClass() {
     try {
       new DefaultEntryPointFactory( AbstractClass.class );
@@ -36,6 +42,7 @@ public class DefaultEntryPointFactory_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConstructorFailsWithInterface() {
     try {
       new DefaultEntryPointFactory( Interface.class );
@@ -46,6 +53,7 @@ public class DefaultEntryPointFactory_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConstructorFailsWithNonStaticInnerClass() {
     try {
       new DefaultEntryPointFactory( NonStaticInnerClass.class );
@@ -56,6 +64,7 @@ public class DefaultEntryPointFactory_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCreate() {
     DefaultEntryPointFactory factory = new DefaultEntryPointFactory( TestEntryPoint.class );
 
@@ -64,6 +73,7 @@ public class DefaultEntryPointFactory_Test extends TestCase {
     assertTrue( entryPoint instanceof TestEntryPoint );
   }
 
+  @Test
   public void testCreateTwice() {
     DefaultEntryPointFactory factory = new DefaultEntryPointFactory( TestEntryPoint.class );
 
@@ -74,6 +84,7 @@ public class DefaultEntryPointFactory_Test extends TestCase {
     assertNotSame( entryPoint1, entryPoint2 );
   }
 
+  @Test
   public void testCreateWithInnerClass() {
     DefaultEntryPointFactory factory = new DefaultEntryPointFactory( InnerEntryPoint.class );
 
@@ -82,6 +93,7 @@ public class DefaultEntryPointFactory_Test extends TestCase {
     assertTrue( entryPoint instanceof InnerEntryPoint );
   }
 
+  @Test
   public void testCreateWithPrivateConstructor() {
     DefaultEntryPointFactory factory
       = new DefaultEntryPointFactory( EntryPointWithPrivateConstructor.class );
@@ -91,6 +103,7 @@ public class DefaultEntryPointFactory_Test extends TestCase {
     assertTrue( entryPoint instanceof EntryPointWithPrivateConstructor );
   }
 
+  @Test
   public void testCreateWithFailingConstructor() {
     DefaultEntryPointFactory factory
       = new DefaultEntryPointFactory( EntryPointWithFailingConstructor.class );

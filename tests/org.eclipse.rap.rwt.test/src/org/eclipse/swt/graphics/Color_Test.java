@@ -1,27 +1,49 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class Color_Test extends TestCase {
+
+public class Color_Test {
 
   private Device device;
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    device = new Display();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testColorFromRGB() {
     Color salmon = Graphics.getColor( new RGB( 250, 128, 114 ) );
     assertEquals( 250, salmon.getRed() );
@@ -29,6 +51,7 @@ public class Color_Test extends TestCase {
     assertEquals( 114, salmon.getBlue() );
   }
 
+  @Test
   public void testColorFromInt() {
     Color salmon = Graphics.getColor( 250, 128, 114 );
     assertEquals( 250, salmon.getRed() );
@@ -36,6 +59,7 @@ public class Color_Test extends TestCase {
     assertEquals( 114, salmon.getBlue() );
   }
 
+  @Test
   public void testColorFromConstant() {
     Color color = device.getSystemColor( SWT.COLOR_RED );
     assertEquals( 255, color.getRed() );
@@ -43,6 +67,7 @@ public class Color_Test extends TestCase {
     assertEquals( 0, color.getBlue() );
   }
 
+  @Test
   public void testEquality() {
     Color salmon1 = Graphics.getColor( 250, 128, 114 );
     Color salmon2 = Graphics.getColor( 250, 128, 114 );
@@ -57,6 +82,7 @@ public class Color_Test extends TestCase {
     assertTrue( salmon1.equals( salmon2 ) );
   }
 
+  @Test
   public void testIdentity() {
     Color salmon1 = Graphics.getColor( 250, 128, 114 );
     Color salmon2 = Graphics.getColor( 250, 128, 114 );
@@ -65,19 +91,22 @@ public class Color_Test extends TestCase {
     salmon2 = Graphics.getColor( 250, 128, 114 );
     assertNotSame( salmon1, salmon2 );
   }
-  
+
+  @Test
   public void testGetRGB() {
     RGB rgbSalmon = new RGB( 250, 128, 114 );
     assertEquals( rgbSalmon, Graphics.getColor( rgbSalmon ).getRGB() );
   }
-  
+
+  @Test
   public void testConstructor() {
     Color color = new Color( null, 0, 0, 0 );
     assertSame( Display.getCurrent(), color.getDevice() );
     color = new Color( null, new RGB( 0, 0, 0 ) );
     assertSame( Display.getCurrent(), color.getDevice() );
   }
-  
+
+  @Test
   public void testConstructorWithoutDevice() {
     device.dispose();
     try {
@@ -93,7 +122,8 @@ public class Color_Test extends TestCase {
       // expected
     }
   }
-  
+
+  @Test
   public void testConstructorWithInvalidRedValue() {
     try {
       new Color( device, -1, 0, 0 );
@@ -106,7 +136,8 @@ public class Color_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
+  @Test
   public void testConstructorWithInvalidGreenValue() {
     try {
       new Color( device, 0, -1, 0 );
@@ -119,7 +150,8 @@ public class Color_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
+  @Test
   public void testConstructorWithInvalidBlueValue() {
     try {
       new Color( device, 0, 0, -1 );
@@ -132,13 +164,15 @@ public class Color_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
+  @Test
   public void testDispose() {
     Color color = new Color( device, new RGB( 0, 0, 0 ) );
     color.dispose();
     assertTrue( color.isDisposed() );
   }
-  
+
+  @Test
   public void testDisposeFactoryCreated() {
     Color color = Graphics.getColor( new RGB( 0, 0, 0 ) );
     try {
@@ -148,7 +182,8 @@ public class Color_Test extends TestCase {
       assertFalse( color.isDisposed() );
     }
   }
-  
+
+  @Test
   public void testGetAttributesAfterDispose() {
     Color font = new Color( device, 0, 0, 0 );
     font.dispose();
@@ -173,10 +208,11 @@ public class Color_Test extends TestCase {
     } catch( Exception expected ) {
     }
   }
-  
+
+  @Test
   public void testSerializeSessionColor() throws Exception {
     Color color = new Color( device, 1, 2, 3 );
-    
+
     Color deserializedColor = Fixture.serializeAndDeserialize( color );
 
     assertEquals( color.getRGB(), deserializedColor.getRGB() );
@@ -184,22 +220,15 @@ public class Color_Test extends TestCase {
     assertNotNull( deserializedColor.getDevice() );
     assertNotSame( color.getDevice(), deserializedColor.getDevice() );
   }
-  
+
+  @Test
   public void testSerializeSharedColor() throws Exception {
     Color color = Graphics.getColor( 1, 2, 3 );
-    
+
     Color deserializedColor = Fixture.serializeAndDeserialize( color );
-    
+
     assertEquals( color.getRGB(), deserializedColor.getRGB() );
     assertFalse( deserializedColor.isDisposed() );
   }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    device = new Display();
-  }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

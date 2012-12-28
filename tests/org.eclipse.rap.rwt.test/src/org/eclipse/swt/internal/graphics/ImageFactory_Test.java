@@ -12,19 +12,26 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ImageFactory_Test extends TestCase {
+public class ImageFactory_Test {
 
   private static final String TEST_PATH = "testpath";
 
@@ -33,12 +40,29 @@ public class ImageFactory_Test extends TestCase {
   private Display display;
   private ImageFactory imageFactory;
 
+  @Before
+  public void setUp() {
+    Fixture.createApplicationContext();
+    Fixture.createServiceContext();
+    display = new Display();
+    imageFactory = new ImageFactory();
+  }
+
+  @After
+  public void tearDown() {
+    display.dispose();
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfApplicationContext();
+  }
+
+  @Test
   public void testFindImageByPathRegistersResource() {
     Image image1 = imageFactory.findImage( Fixture.IMAGE1, CLASS_LOADER );
     String registerPath = getRegisterPath( image1 );
     assertTrue( RWT.getResourceManager().isRegistered( registerPath ) );
   }
 
+  @Test
   public void testFindImageByPathReturnsSharedImage() {
     Image image1 = imageFactory.findImage( Fixture.IMAGE1, CLASS_LOADER );
     Image image1a = imageFactory.findImage( Fixture.IMAGE1, CLASS_LOADER );
@@ -50,6 +74,7 @@ public class ImageFactory_Test extends TestCase {
     assertSame( image2, image2a );
   }
 
+  @Test
   public void testCreateImage() throws IOException {
     InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
     Image image = imageFactory.createImage( display, TEST_PATH, stream );
@@ -57,7 +82,8 @@ public class ImageFactory_Test extends TestCase {
     assertNotNull( image );
     assertNotNull( image.internalImage );
   }
-  
+
+  @Test
   public void testCreateImageReturnsDistinctInstancesForSameStream() throws IOException {
     InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
     Image image1 = imageFactory.createImage( display, TEST_PATH, stream );
@@ -66,7 +92,8 @@ public class ImageFactory_Test extends TestCase {
     assertNotSame( image1, image2 );
     assertSame( image1.internalImage, image2.internalImage );
   }
-  
+
+  @Test
   public void testCreateImageReturnsDisposableImage() throws IOException {
     InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
     Image image1 = imageFactory.createImage( display, TEST_PATH, stream );
@@ -75,6 +102,7 @@ public class ImageFactory_Test extends TestCase {
     image1.dispose();
   }
 
+  @Test
   public void testGetImagePath() throws IOException {
     InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
     Image image = imageFactory.createImage( display, TEST_PATH, stream );
@@ -84,22 +112,10 @@ public class ImageFactory_Test extends TestCase {
     assertTrue( imagePath.length() > 0 );
   }
 
+  @Test
   public void testGetImagePathForNullImage() {
     String imagePath = ImageFactory.getImagePath( null );
     assertNull( imagePath );
-  }
-
-  protected void setUp() throws Exception {
-    Fixture.createApplicationContext();
-    Fixture.createServiceContext();
-    display = new Display();
-    imageFactory = new ImageFactory();
-  }
-
-  protected void tearDown() throws Exception {
-    display.dispose();
-    Fixture.disposeOfServiceContext();
-    Fixture.disposeOfApplicationContext();
   }
 
   private static String getRegisterPath( Image image ) {
@@ -107,4 +123,5 @@ public class ImageFactory_Test extends TestCase {
     int prefixLength = ResourceDirectory.DIRNAME.length() + 1;
     return imagePath.substring( prefixLength );
   }
+
 }

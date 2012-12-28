@@ -10,10 +10,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.RWTProperties;
@@ -22,26 +23,30 @@ import org.eclipse.rap.rwt.internal.resources.TestUtil;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ClientResources_Test extends TestCase {
+public class ClientResources_Test {
 
   private ClientResources clientResources;
   private ResourceManager resourceManager;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.useDefaultResourceManager();
     resourceManager = RWTFactory.getResourceManager();
     clientResources = new ClientResources( resourceManager, RWTFactory.getThemeManager() );
   }
 
-  @Override
-  protected void tearDown() {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testRegisterResources() {
     clientResources.registerResources();
 
@@ -51,6 +56,7 @@ public class ClientResources_Test extends TestCase {
     assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".json" ) );
   }
 
+  @Test
   public void testRegisterResourcesDebug() {
     System.setProperty( RWTProperties.DEVELOPMEMT_MODE, "true" );
     clientResources.registerResources();
@@ -61,6 +67,7 @@ public class ClientResources_Test extends TestCase {
     assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".json" ) );
   }
 
+  @Test
   public void testRegisteredContent() throws IOException {
     System.getProperties().remove( RWTProperties.DEVELOPMEMT_MODE );
     clientResources.registerResources();
@@ -73,6 +80,7 @@ public class ClientResources_Test extends TestCase {
     assertTrue( clientJs.contains( "{this.JSON={}}" ) );
   }
 
+  @Test
   public void testRegisteredContentDebug() throws IOException {
     System.setProperty( RWTProperties.DEVELOPMEMT_MODE, "true" );
     clientResources.registerResources();

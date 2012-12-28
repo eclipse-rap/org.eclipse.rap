@@ -10,7 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.resources;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
@@ -24,17 +29,34 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class JavaScriptModuleLoaderImpl_Test extends TestCase {
+public class JavaScriptModuleLoaderImpl_Test {
 
   private static final String JS_FILE_1 = "resourcetest1.js";
   private static final String JS_FILE_2 = "utf-8-resource.js";
 
-  private JavaScriptModuleLoader loader = new JavaScriptModuleLoaderImpl();
+  private final JavaScriptModuleLoader loader = new JavaScriptModuleLoaderImpl();
   private ResourceManager resourceManager;
   private Display display;
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    display = new Display();
+    Fixture.fakeNewRequest();
+    resourceManager = RWT.getResourceManager();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testRegisterOnce() {
     ensureFiles( new String[]{ JS_FILE_1 } );
 
@@ -42,6 +64,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     assertTrue( resourceManager.isRegistered( expected ) );
   }
 
+  @Test
   public void testDoNotRegisterTwice() {
     ensureFiles( new String[]{ JS_FILE_1 } );
     ensureFiles( new String[]{ JS_FILE_2 } );
@@ -54,6 +77,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     assertFalse( resourceManager.isRegistered( notExpected ) );
   }
 
+  @Test
   public void testRegisterMultipleFiles() {
     ensureFiles( new String[]{ JS_FILE_1, JS_FILE_2 } );
 
@@ -63,6 +87,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     assertTrue( resourceManager.isRegistered( expectedTwo ) );
   }
 
+  @Test
   public void testRegisterMultipleModules() {
     ensureFiles( new String[]{ JS_FILE_1 } );
     ensureFiles( new String[]{ JS_FILE_2 }, true );
@@ -73,6 +98,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     assertTrue( resourceManager.isRegistered( expectedTwo ) );
   }
 
+  @Test
   public void testFileNotFound() {
     try {
       ensureFiles( new String[]{ "this-file-does-not-exist.js" } );
@@ -82,6 +108,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testNoFilesGiven() {
     try {
       ensureFiles( new String[]{} );
@@ -91,6 +118,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testLoadOnce() {
     ensureFiles( new String[]{ JS_FILE_1 } );
     Fixture.executeLifeCycleFromServerThread();
@@ -100,6 +128,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     assertNotNull( findLoadOperation( message, expected ) );
   }
 
+  @Test
   public void testLoadBeforeCreateWidget() {
     ensureFiles( new String[]{ JS_FILE_1 } );
     Shell shell = new Shell( display );
@@ -112,6 +141,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     assertTrue( load.getPosition() < create.getPosition() );
   }
 
+  @Test
   public void testDoNotLoadTwiceForSameRequest() {
     ensureFiles( new String[]{ JS_FILE_1 } );
     ensureFiles( new String[]{ JS_FILE_1 } );
@@ -123,6 +153,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     assertEquals( 1, message.getOperationCount() );
   }
 
+  @Test
   public void testDoNotLoadTwiceForSameSession() {
     ensureFiles( new String[]{ JS_FILE_1 } );
     Fixture.executeLifeCycleFromServerThread();
@@ -136,6 +167,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     assertNull( findLoadOperation( message, expected ) );
   }
 
+  @Test
   public void testDoLoadTwiceForSameApplication() {
     ensureFiles( new String[]{ JS_FILE_1 } );
     Fixture.executeLifeCycleFromServerThread();
@@ -149,6 +181,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     assertNotNull( findLoadOperation( message, expected ) );
   }
 
+  @Test
   public void testLoadMultipleFiles() {
     ensureFiles( new String[]{ JS_FILE_1, JS_FILE_2 } );
     Fixture.executeLifeCycleFromServerThread();
@@ -162,6 +195,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     assertEquals( operationOne.getPosition(), operationTwo.getPosition() );
   }
 
+  @Test
   public void testLoadMultipleFilesInOrder() throws JSONException {
     ensureFiles( new String[]{ JS_FILE_1, JS_FILE_2 } );
     Fixture.executeLifeCycleFromServerThread();
@@ -175,6 +209,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     assertEquals( expectedTwo, files.getString( 1 ) );
   }
 
+  @Test
   public void testLoadMultipleModulesInSameRequest() {
     ensureFiles( new String[]{ JS_FILE_1 }, false );
     ensureFiles( new String[]{ JS_FILE_2 }, true );
@@ -188,6 +223,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     assertTrue( operationOne.getPosition() < operationTwo.getPosition() );
   }
 
+  @Test
   public void testLoadMultipleModulesInMultipleRequest() {
     ensureFiles( new String[]{ JS_FILE_1 }, false );
     Fixture.executeLifeCycleFromServerThread();
@@ -203,6 +239,7 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     assertNull( findLoadOperation( message, notExpected ) );
   }
 
+  @Test
   public void testFileNamesChangeAtRuntime() {
     ensureFiles( new String[]{ JS_FILE_1 } );
     Fixture.executeLifeCycleFromServerThread();
@@ -214,20 +251,6 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     String expected = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
     assertNotNull( findLoadOperation( message, expected ) );
-  }
-
-  /////////
-  // Helper
-
-  public void setUp() {
-    Fixture.setUp();
-    display = new Display();
-    Fixture.fakeNewRequest();
-    resourceManager = RWT.getResourceManager();
-  }
-
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   private void ensureFiles( String[] files ) {
@@ -291,9 +314,6 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
     resourceManager = RWT.getResourceManager();
   }
 
-  /////////////////
-  // helper classes
-
   static public class DummyModule implements JavaScriptModule {
 
     public static String[] files;
@@ -331,4 +351,3 @@ public class JavaScriptModuleLoaderImpl_Test extends TestCase {
   }
 
 }
-

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,28 +12,51 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 @SuppressWarnings("deprecation")
-public class Image_Test extends TestCase {
+public class Image_Test {
+
+  @Before
+  public void setUp() {
+    Fixture.createApplicationContext();
+    Fixture.createServiceContext();
+    device = new Display();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfApplicationContext();
+  }
 
   //////////////////////////
   // InputStream constructor
 
   private Device device;
 
+  @Test
   public void testStreamConstructorWithNullDevice() {
     device.dispose();
     try {
@@ -44,6 +67,7 @@ public class Image_Test extends TestCase {
     }
   }
 
+  @Test
   public void testStreamConstructorWithNullInputStream() {
     try {
       new Image( device, ( InputStream )null );
@@ -53,6 +77,7 @@ public class Image_Test extends TestCase {
     }
   }
 
+  @Test
   public void testStreamConstructorUsesDefaultDisplay() throws IOException {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
@@ -61,12 +86,14 @@ public class Image_Test extends TestCase {
     assertSame( Display.getCurrent(), image.getDevice() );
   }
 
+  @Test
   public void testStreamConstructor() throws IOException {
     Image image = createImage(Fixture.IMAGE1);
 
     assertEquals( new Rectangle( 0, 0, 58, 12 ), image.getBounds() );
   }
 
+  @Test
   public void testStreamConstructorWithIllegalImage() {
     try {
       new Image( device, new ByteArrayInputStream( new byte[ 12 ] ) );
@@ -79,6 +106,7 @@ public class Image_Test extends TestCase {
   ///////////////////////
   // Filename constructor
 
+  @Test
   public void testFileConstructorWithNullDevice() {
     device.dispose();
     try {
@@ -89,6 +117,7 @@ public class Image_Test extends TestCase {
     }
   }
 
+  @Test
   public void testFileConstructorWithNullFileName() {
     try {
       new Image( device, ( String )null );
@@ -98,6 +127,7 @@ public class Image_Test extends TestCase {
     }
   }
 
+  @Test
   public void testFileConstructorUsesDefaultDisplay() throws IOException {
     File imageFile = new File( Fixture.TEMP_DIR, "test.gif" );
     Fixture.copyTestResource( Fixture.IMAGE1, imageFile );
@@ -106,6 +136,7 @@ public class Image_Test extends TestCase {
     imageFile.delete();
   }
 
+  @Test
   public void testFileConstructor() throws IOException {
     File testImage = new File( Fixture.TEMP_DIR, "test.gif" );
     Fixture.copyTestResource( Fixture.IMAGE1, testImage );
@@ -114,6 +145,7 @@ public class Image_Test extends TestCase {
     testImage.delete();
   }
 
+  @Test
   public void testFileConstructorWithMissingImage() {
     File missingImage = new File( Fixture.TEMP_DIR, "not-existing.gif" );
     try {
@@ -127,6 +159,7 @@ public class Image_Test extends TestCase {
   ////////////////////
   // Image constructor
 
+  @Test
   public void testImageConstructorWithNullImage() {
     try {
       new Image( device, ( Image )null, SWT.IMAGE_COPY );
@@ -136,6 +169,7 @@ public class Image_Test extends TestCase {
     }
   }
 
+  @Test
   public void testImageConstructorWithIllegalFlag() throws IOException {
     Image image = createImage( Fixture.IMAGE1 );
 
@@ -146,6 +180,7 @@ public class Image_Test extends TestCase {
     }
   }
 
+  @Test
   public void testImageConstructor() throws IOException {
     Image image = createImage( Fixture.IMAGE1 );
     Image copiedImage = new Image( device, image, SWT.IMAGE_COPY );
@@ -157,7 +192,8 @@ public class Image_Test extends TestCase {
 
   ////////////////////////
   // ImageData constructor
-  
+
+  @Test
   public void testImageDataConstructor() throws IOException {
     InputStream stream = Fixture.class.getClassLoader().getResourceAsStream( Fixture.IMAGE_100x50 );
     ImageData imageData = new ImageData( stream );
@@ -167,6 +203,7 @@ public class Image_Test extends TestCase {
     assertEquals( 50, image.getBounds().height );
   }
 
+  @Test
   public void testImageDataConstructorWithNullDevice() throws IOException {
     device.dispose();
     InputStream stream = Fixture.class.getClassLoader().getResourceAsStream( Fixture.IMAGE1 );
@@ -180,6 +217,7 @@ public class Image_Test extends TestCase {
     }
   }
 
+  @Test
   public void testImageDataConstructorWithNullImageData() {
     try {
       new Image( device, ( ImageData )null );
@@ -188,10 +226,11 @@ public class Image_Test extends TestCase {
       assertEquals( "Argument cannot be null", e.getMessage() );
     }
   }
-  
+
   ///////////////////////////
   // Width/Height constructor
-  
+
+  @Test
   public void testWidthHeightConstructor() {
     Fixture.useDefaultResourceManager();
     Image image = new Image( device, 1, 1 );
@@ -201,6 +240,7 @@ public class Image_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 1, 1 ), image.getBounds() );
   }
 
+  @Test
   public void testWidthHeightConstructorWithNullDevice() {
     device.dispose();
     try {
@@ -209,7 +249,8 @@ public class Image_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
+  @Test
   public void testWidthHeightConstructorWithZeroWidth() {
     try {
       new Image( null, 0, 1 );
@@ -217,7 +258,8 @@ public class Image_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
+  @Test
   public void testWidthHeightConstructorWithZeroHeight() {
     try {
       new Image( null, 1, 0 );
@@ -229,6 +271,7 @@ public class Image_Test extends TestCase {
   ////////////////
   // Image methods
 
+  @Test
   public void testGetBounds() throws IOException {
     Image image1 = createImage( Fixture.IMAGE_100x50 );
     assertEquals( new Rectangle( 0, 0, 100, 50 ), image1.getBounds() );
@@ -237,10 +280,11 @@ public class Image_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 100, 50 ), image2.getBounds() );
   }
 
+  @Test
   public void testGetBoundsWhenDisposed() throws IOException {
     Image image = createImage( Fixture.IMAGE1 );
     image.dispose();
-    
+
     try {
       image.getBounds();
       fail();
@@ -249,6 +293,7 @@ public class Image_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetImageData() throws IOException {
     Fixture.useDefaultResourceManager();
     ClassLoader loader = Fixture.class.getClassLoader();
@@ -261,6 +306,7 @@ public class Image_Test extends TestCase {
     assertEquals( 50, imageDataFromImage.height );
   }
 
+  @Test
   public void testGetImageDataWhenDisposed() throws IOException {
     Image image = createImage(Fixture.IMAGE1);
     image.dispose();
@@ -272,6 +318,7 @@ public class Image_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetBackgroundWhenDisposed() throws IOException {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
@@ -285,6 +332,7 @@ public class Image_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetBackgroundWithDisposedColor() throws IOException {
     Image image = createImage( Fixture.IMAGE_100x50 );
     Color disposedColor = new Color( device, 0, 0, 0 );
@@ -296,6 +344,7 @@ public class Image_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetBackgroundWithNullColor() throws IOException {
     Image image = createImage( Fixture.IMAGE_100x50 );
     try {
@@ -305,16 +354,18 @@ public class Image_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetBackground() throws IOException {
     Image image = createImage( Fixture.IMAGE_100x50 );
 
     assertNull( image.getBackground() );
   }
 
+  @Test
   public void testGetBackgroundWhenDisposed() throws IOException {
     Image image = createImage( Fixture.IMAGE_100x50 );
     image.dispose();
-    
+
     try {
       image.getBackground();
       fail( "setBackground cannot be called on disposed image" );
@@ -323,6 +374,7 @@ public class Image_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDispose() throws IOException {
     Image image = createImage( Fixture.IMAGE_100x50 );
     image.dispose();
@@ -330,6 +382,7 @@ public class Image_Test extends TestCase {
     assertTrue( image.isDisposed() );
   }
 
+  @Test
   public void testDisposeFactoryCreated() {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     try {
@@ -340,6 +393,7 @@ public class Image_Test extends TestCase {
     }
   }
 
+  @Test
   public void testEquality() throws IOException {
     Image image1 = Graphics.getImage( Fixture.IMAGE1 );
     Image image2 = Graphics.getImage( Fixture.IMAGE1 );
@@ -356,6 +410,7 @@ public class Image_Test extends TestCase {
     assertFalse( image1.equals( image2 ) );
   }
 
+  @Test
   public void testIdentity() throws IOException {
     Image image1 = Graphics.getImage( Fixture.IMAGE1 );
     Image image2 = Graphics.getImage( Fixture.IMAGE1 );
@@ -363,17 +418,6 @@ public class Image_Test extends TestCase {
     image1 = createImage( Fixture.IMAGE1 );
     image2 = Graphics.getImage( Fixture.IMAGE1 );
     assertNotSame( image1, image2 );
-  }
-
-  protected void setUp() {
-    Fixture.createApplicationContext();
-    Fixture.createServiceContext();
-    device = new Display();
-  }
-
-  protected void tearDown() {
-    Fixture.disposeOfServiceContext();
-    Fixture.disposeOfApplicationContext();
   }
 
   private Image createImage( String resourceName ) throws IOException {

@@ -11,10 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.clabelkit;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -33,17 +36,20 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 @SuppressWarnings("deprecation")
-public class CLabelLCA_Test extends TestCase {
+public class CLabelLCA_Test {
 
   private Display display;
   private Shell shell;
   private CLabelLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -51,8 +57,8 @@ public class CLabelLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
@@ -60,6 +66,7 @@ public class CLabelLCA_Test extends TestCase {
    * 280291: [CLabel] causes NullPointerException when rendered uninitialized
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=280291
    */
+  @Test
   public void testWriteText() throws IOException {
     CLabel label = new CLabel( shell, SWT.NONE );
     assertNull( label.getText() ); // assert precondition: text == null
@@ -69,6 +76,7 @@ public class CLabelLCA_Test extends TestCase {
     // an exception - thus there is no assert
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -80,6 +88,7 @@ public class CLabelLCA_Test extends TestCase {
     assertFalse( operation.getPropertyNames().contains( "markupEnabled" ) );
   }
 
+  @Test
   public void testRenderCreateWithMarkupEnabled() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
     clabel.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
@@ -91,6 +100,7 @@ public class CLabelLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, operation.getProperty( "markupEnabled" ) );
   }
 
+  @Test
   public void testRenderCreateWithShadowIn() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.SHADOW_IN );
 
@@ -103,6 +113,7 @@ public class CLabelLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "SHADOW_IN" ) );
   }
 
+  @Test
   public void testRenderCreateWithAlignment() throws Exception {
     CLabel clabel = new CLabel( shell, SWT.CENTER );
 
@@ -112,6 +123,7 @@ public class CLabelLCA_Test extends TestCase {
     assertEquals( "center", message.findCreateProperty( clabel, "alignment" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -122,6 +134,7 @@ public class CLabelLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( clabel.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -132,6 +145,7 @@ public class CLabelLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -142,6 +156,7 @@ public class CLabelLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( clabel, "text" ) );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -155,6 +170,7 @@ public class CLabelLCA_Test extends TestCase {
     assertNull( message.findSetOperation( clabel, "text" ) );
   }
 
+  @Test
   public void testRenderInitialImage() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -165,6 +181,7 @@ public class CLabelLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "image" ) == -1 );
   }
 
+  @Test
   public void testRenderImage() throws IOException, JSONException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
@@ -179,6 +196,7 @@ public class CLabelLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderImageUnchanged() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -193,6 +211,7 @@ public class CLabelLCA_Test extends TestCase {
     assertNull( message.findSetOperation( clabel, "image" ) );
   }
 
+  @Test
   public void testRenderImageReset() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -208,6 +227,7 @@ public class CLabelLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( clabel, "image" ) );
   }
 
+  @Test
   public void testRenderInitialAlignment() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -218,6 +238,7 @@ public class CLabelLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "alignment" ) == -1 );
   }
 
+  @Test
   public void testRenderAlignment() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -228,6 +249,7 @@ public class CLabelLCA_Test extends TestCase {
     assertEquals( "right", message.findSetProperty( clabel, "alignment" ) );
   }
 
+  @Test
   public void testRenderAlignmentUnchanged() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -241,6 +263,7 @@ public class CLabelLCA_Test extends TestCase {
     assertNull( message.findSetOperation( clabel, "alignment" ) );
   }
 
+  @Test
   public void testRenderInitialLeftMargin() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -251,6 +274,7 @@ public class CLabelLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "leftMargin" ) == -1 );
   }
 
+  @Test
   public void testRenderLeftMargin() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -261,6 +285,7 @@ public class CLabelLCA_Test extends TestCase {
     assertEquals( new Integer( 5 ), message.findSetProperty( clabel, "leftMargin" ) );
   }
 
+  @Test
   public void testRenderLeftMarginUnchanged() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -275,6 +300,7 @@ public class CLabelLCA_Test extends TestCase {
   }
 
 
+  @Test
   public void testRenderInitialTopMargin() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -285,6 +311,7 @@ public class CLabelLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "topMargin" ) == -1 );
   }
 
+  @Test
   public void testRenderTopMargin() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -295,6 +322,7 @@ public class CLabelLCA_Test extends TestCase {
     assertEquals( new Integer( 5 ), message.findSetProperty( clabel, "topMargin" ) );
   }
 
+  @Test
   public void testRenderTopMarginUnchanged() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -308,6 +336,7 @@ public class CLabelLCA_Test extends TestCase {
     assertNull( message.findSetOperation( clabel, "topMargin" ) );
   }
 
+  @Test
   public void testRenderInitialRightMargin() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -318,6 +347,7 @@ public class CLabelLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "rightMargin" ) == -1 );
   }
 
+  @Test
   public void testRenderRightMargin() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -328,6 +358,7 @@ public class CLabelLCA_Test extends TestCase {
     assertEquals( new Integer( 5 ), message.findSetProperty( clabel, "rightMargin" ) );
   }
 
+  @Test
   public void testRenderRightMarginUnchanged() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -341,6 +372,7 @@ public class CLabelLCA_Test extends TestCase {
     assertNull( message.findSetOperation( clabel, "rightMargin" ) );
   }
 
+  @Test
   public void testRenderInitialBottomMargin() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -351,6 +383,7 @@ public class CLabelLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "bottomMargin" ) == -1 );
   }
 
+  @Test
   public void testRenderBottomMargin() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -361,6 +394,7 @@ public class CLabelLCA_Test extends TestCase {
     assertEquals( new Integer( 5 ), message.findSetProperty( clabel, "bottomMargin" ) );
   }
 
+  @Test
   public void testRenderBottomMarginUnchanged() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -374,6 +408,7 @@ public class CLabelLCA_Test extends TestCase {
     assertNull( message.findSetOperation( clabel, "bottomMargin" ) );
   }
 
+  @Test
   public void testRenderInitialBackgroundGradient() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -384,6 +419,7 @@ public class CLabelLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "backgroundGradient" ) == -1 );
   }
 
+  @Test
   public void testRenderBackgroundGradient() throws IOException, JSONException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
 
@@ -406,6 +442,7 @@ public class CLabelLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, gradient.get( 2 ) );
   }
 
+  @Test
   public void testRenderBackgroundGradientUnchanged() throws IOException {
     CLabel clabel = new CLabel( shell, SWT.NONE );
     Fixture.markInitialized( display );

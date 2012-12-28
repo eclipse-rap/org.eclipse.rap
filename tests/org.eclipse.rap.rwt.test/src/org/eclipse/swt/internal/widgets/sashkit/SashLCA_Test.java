@@ -9,10 +9,11 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.sashkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -21,8 +22,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -44,17 +43,21 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-public class SashLCA_Test extends TestCase {
+
+public class SashLCA_Test {
 
   private Display display;
   private Shell shell;
   private Sash sash;
   private SashLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -63,11 +66,12 @@ public class SashLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ControlLCATestUtil.testActivateListener( sash );
     ControlLCATestUtil.testFocusListener( sash );
@@ -78,6 +82,7 @@ public class SashLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( sash );
   }
 
+  @Test
   public void testPreserveValues() {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
@@ -148,6 +153,7 @@ public class SashLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
+  @Test
   public void testSelectionEvent() {
     SelectionListener listener = mock( SelectionListener.class );
     sash.addSelectionListener( listener );
@@ -173,11 +179,12 @@ public class SashLCA_Test extends TestCase {
     assertEquals( 2, event.y );
     assertEquals( 3, event.width );
     assertEquals( 4, event.height );
-    assertEquals( true, event.doit );
+    assertTrue( event.doit );
     assertEquals( SWT.DRAG, event.detail );
     assertTrue( ( event.stateMask & SWT.ALT ) != 0 );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( sash );
 
@@ -186,6 +193,7 @@ public class SashLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.Sash", operation.getType() );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( sash );
 
@@ -194,6 +202,7 @@ public class SashLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( sash.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderCreateWithHorizontal() throws IOException {
     sash = new Sash( shell, SWT.HORIZONTAL );
 

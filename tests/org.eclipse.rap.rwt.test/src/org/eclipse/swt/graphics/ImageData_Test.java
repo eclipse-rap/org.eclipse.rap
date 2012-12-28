@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,17 +12,20 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.junit.Test;
 
 
-public class ImageData_Test extends TestCase {
-  
+public class ImageData_Test {
+
+  @Test
   public void testImageData() throws IOException {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream inputStream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
@@ -37,5 +40,5 @@ public class ImageData_Test extends TestCase {
     assertEquals( 50, data.height );
     assertEquals( SWT.IMAGE_PNG, data.type );
   }
-  
+
 }

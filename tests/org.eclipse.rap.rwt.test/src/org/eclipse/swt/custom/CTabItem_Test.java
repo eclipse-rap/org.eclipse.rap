@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import junit.framework.TestCase;
+import java.io.IOException;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
@@ -27,10 +31,24 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class CTabItem_Test extends TestCase {
+public class CTabItem_Test {
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testCreation() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.MULTI );
@@ -41,6 +59,7 @@ public class CTabItem_Test extends TestCase {
     assertSame( display, item.getDisplay() );
   }
 
+  @Test
   public void testInitialState() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -53,6 +72,7 @@ public class CTabItem_Test extends TestCase {
     assertEquals( null, item.getImage() );
   }
 
+  @Test
   public void testStyle() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -70,6 +90,7 @@ public class CTabItem_Test extends TestCase {
     assertTrue( ( item3.getStyle() & SWT.CLOSE ) != 0 );
   }
 
+  @Test
   public void testBounds() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -90,6 +111,7 @@ public class CTabItem_Test extends TestCase {
     assertTrue( item2.getBounds().x >= item1Right );
   }
 
+  @Test
   public void testDisplay() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -99,6 +121,7 @@ public class CTabItem_Test extends TestCase {
     assertSame( folder.getDisplay(), item.getDisplay() );
   }
 
+  @Test
   public void testSetControl() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -113,14 +136,14 @@ public class CTabItem_Test extends TestCase {
     folder.setSelection( -1 );
     item1.setControl( item1Control );
     assertSame( item1Control, item1.getControl() );
-    assertEquals( false, item1Control.getVisible() );
+    assertFalse( item1Control.getVisible() );
     assertEquals( new Point( 1, 1 ), item1Control.getSize() );
 
     // Reset control: must set its visibility to false
     item1Control.setVisible( true );
     item1.setControl( null );
     assertEquals( null, item1.getControl() );
-    assertEquals( false, item1Control.getVisible() );
+    assertFalse( item1Control.getVisible() );
 
     // Set control for selected item
     CTabItem item2 = new CTabItem( folder, SWT.NONE );
@@ -128,7 +151,7 @@ public class CTabItem_Test extends TestCase {
     folder.setSelection( 1 );
     item2.setControl( item2Control );
     assertSame( item2Control, item2.getControl() );
-    assertEquals( true, item2Control.getVisible() );
+    assertTrue( item2Control.getVisible() );
     assertEquals( folder.getClientArea(), item2Control.getBounds() );
 
     // Try to set disposed of control
@@ -155,6 +178,7 @@ public class CTabItem_Test extends TestCase {
     }
   }
 
+  @Test
   public void testShowClose() {
     CTabFolder folder;
     CTabItem item;
@@ -191,6 +215,7 @@ public class CTabItem_Test extends TestCase {
   }
 
   @SuppressWarnings("deprecation")
+  @Test
   public void testShowImage() {
     CTabItem item1, item2;
     Display display = new Display();
@@ -221,6 +246,7 @@ public class CTabItem_Test extends TestCase {
     assertFalse( adapter.showItemImage( item2 ) );
   }
 
+  @Test
   public void testSetFont() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -248,6 +274,7 @@ public class CTabItem_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetFontFromCSS() throws IOException {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -264,11 +291,4 @@ public class CTabItem_Test extends TestCase {
     assertEquals( 24, FontUtil.getData( font ).getHeight() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

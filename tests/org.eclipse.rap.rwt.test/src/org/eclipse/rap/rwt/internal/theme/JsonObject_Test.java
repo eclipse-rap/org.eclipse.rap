@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,25 +11,30 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 
-public class JsonObject_Test extends TestCase {
+public class JsonObject_Test {
 
+  @Test
   public void testToStringWhenEmpty() {
     JsonObject object = new JsonObject();
-    
+
     assertEquals( "{}", object.toString() );
   }
 
+  @Test
   public void testAppendOnce() {
     JsonObject object = new JsonObject();
 
     object.append( "a", 23 );
-    
+
     assertEquals( "{\n\"a\": 23\n}", object.toString() );
   }
 
+  @Test
   public void testAppendMultiple() {
     JsonObject object = new JsonObject();
 
@@ -43,9 +48,10 @@ public class JsonObject_Test extends TestCase {
                   object.toString() );
   }
 
+  @Test
   public void testAppendAfterToString() {
     JsonObject object = new JsonObject();
-    
+
     object.append( "a", 23 );
     object.toString();
     object.append( "b", false );
@@ -53,9 +59,10 @@ public class JsonObject_Test extends TestCase {
     assertEquals( "{\n\"a\": 23,\n\"b\": false\n}", object.toString() );
   }
 
+  @Test
   public void testAppendArray() {
     JsonObject object = new JsonObject();
-    
+
     object.append( "a", 23 );
     object.append( "b", new JsonArray() );
     object.append( "c", ( JsonArray )null );
@@ -63,6 +70,7 @@ public class JsonObject_Test extends TestCase {
     assertEquals( "{\n\"a\": 23,\n\"b\": [],\n\"c\": null\n}", object.toString() );
   }
 
+  @Test
   public void testAppendObject() {
     JsonObject object = new JsonObject();
 

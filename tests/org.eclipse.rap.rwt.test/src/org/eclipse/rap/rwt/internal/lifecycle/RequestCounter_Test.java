@@ -11,36 +11,44 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class RequestCounter_Test extends TestCase {
+public class RequestCounter_Test {
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testInitialValueIsZero() {
     int requestId = RequestCounter.getInstance().currentRequestId();
 
     assertEquals( 0, requestId );
   }
 
+  @Test
   public void testNextRequestId_returnsIncrementedValue() {
     int requestId = RequestCounter.getInstance().nextRequestId();
 
     assertEquals( 1, requestId );
   }
 
+  @Test
   public void testNextCurrentRequestId_doesNotModifyValue() {
     RequestCounter.getInstance().currentRequestId();
     int requestId = RequestCounter.getInstance().currentRequestId();
@@ -48,6 +56,7 @@ public class RequestCounter_Test extends TestCase {
     assertEquals( 0, requestId );
   }
 
+  @Test
   public void testIsValid_trueWithValidParameter() {
     int nextRequestId = RequestCounter.getInstance().nextRequestId();
     Fixture.fakeHeadParameter( "requestCounter", Integer.toString( nextRequestId ) );
@@ -57,6 +66,7 @@ public class RequestCounter_Test extends TestCase {
     assertTrue( valid );
   }
 
+  @Test
   public void testIsValid_falseWithInvalidParameter() {
     RequestCounter.getInstance().nextRequestId();
     Fixture.fakeHeadParameter( "requestCounter", "23" );
@@ -66,6 +76,7 @@ public class RequestCounter_Test extends TestCase {
     assertFalse( valid );
   }
 
+  @Test
   public void testIsValid_falseWithIllegalParameterFormat() {
     RequestCounter.getInstance().nextRequestId();
     Fixture.fakeHeadParameter( "requestCounter", "not-a-number" );
@@ -75,12 +86,14 @@ public class RequestCounter_Test extends TestCase {
     assertFalse( valid );
   }
 
+  @Test
   public void testIsValid_toleratesMissingParameterInFirstRequest() {
     boolean valid = RequestCounter.getInstance().isValid();
 
     assertTrue( valid );
   }
 
+  @Test
   public void testIsValid_falseWithMissingParameter() {
     RequestCounter.getInstance().nextRequestId();
 
@@ -89,6 +102,7 @@ public class RequestCounter_Test extends TestCase {
     assertFalse( valid );
   }
 
+  @Test
   public void testSerialization() throws Exception {
     RequestCounter instance = RequestCounter.getInstance();
     instance.nextRequestId(); // ensure counter differs from zero

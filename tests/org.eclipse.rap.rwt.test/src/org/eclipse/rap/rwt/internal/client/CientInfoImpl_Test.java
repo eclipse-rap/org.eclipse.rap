@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -20,28 +23,30 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.internal.remote.RemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.remote.RemoteOperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-public class CientInfoImpl_Test extends TestCase {
+public class CientInfoImpl_Test {
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testCreatesRemoteObjectWithCorrectId() {
     RemoteObjectFactory factory = fakeRemoteObjectFactory( mock( RemoteObject.class ) );
 
@@ -50,6 +55,7 @@ public class CientInfoImpl_Test extends TestCase {
     verify( factory ).createServiceObject( eq( "rwt.client.ClientInfo" ) );
   }
 
+  @Test
   public void testGetTimezoneOffset_failsWhenTimezoneOffsetNotSet() {
     fakeRemoteObjectFactory( mock( RemoteObject.class ) );
 
@@ -62,6 +68,7 @@ public class CientInfoImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetTimezoneOffset_readsTimezoneOffsetFromHandler() {
     RemoteObject remoteObject = mock( RemoteObject.class );
     fakeRemoteObjectFactory( remoteObject );
@@ -75,6 +82,7 @@ public class CientInfoImpl_Test extends TestCase {
     assertEquals( -90, clientInfo.getTimezoneOffset() );
   }
 
+  @Test
   public void testGetLocale_returnsNullWhenLocaleNotSet() {
     Fixture.fakeNewGetRequest();
     fakeRemoteObjectFactory();
@@ -84,6 +92,7 @@ public class CientInfoImpl_Test extends TestCase {
     assertNull( clientInfo.getLocale() );
   }
 
+  @Test
   public void testGetLocales_returnsEmptyArrayWhenLocaleNotSet() {
     Fixture.fakeNewGetRequest();
     fakeRemoteObjectFactory();
@@ -93,6 +102,7 @@ public class CientInfoImpl_Test extends TestCase {
     assertEquals( 0, clientInfo.getLocales().length );
   }
 
+  @Test
   public void testGetLocale_readsLocaleFromRequest() {
     TestRequest request = Fixture.fakeNewGetRequest();
     fakeRemoteObjectFactory();
@@ -104,6 +114,7 @@ public class CientInfoImpl_Test extends TestCase {
     assertEquals( new Locale( "en-US" ), clientInfo.getLocale() );
   }
 
+  @Test
   public void testGetLocales_readsLocalesFromRequest() {
     TestRequest request = Fixture.fakeNewGetRequest();
     fakeRemoteObjectFactory();
@@ -117,6 +128,7 @@ public class CientInfoImpl_Test extends TestCase {
     assertEquals( new Locale( "de-DE" ), clientInfo.getLocales()[ 1 ] );
   }
 
+  @Test
   public void testReturnsSaveLocalesCopy() {
     TestRequest request = Fixture.fakeNewGetRequest();
     fakeRemoteObjectFactory();

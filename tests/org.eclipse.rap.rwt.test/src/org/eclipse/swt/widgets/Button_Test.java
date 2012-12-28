@@ -11,12 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.io.InputStream;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
@@ -25,14 +28,30 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 @SuppressWarnings("deprecation")
-public class Button_Test extends TestCase {
+public class Button_Test {
 
   private Display display;
   private Composite shell;
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testImage() {
     Button button = new Button( shell, SWT.NONE );
     button.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
@@ -50,10 +69,11 @@ public class Button_Test extends TestCase {
     assertEquals( null, arrowButton.getImage() );
 
   }
-  
+
+  @Test
   public void testSetImageWithDisposedImage() throws IOException {
     Button button = new Button( shell, SWT.NONE );
-    
+
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Image image = new Image( display, stream );
@@ -66,88 +86,93 @@ public class Button_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetText() {
-  	Button button = new Button( shell, SWT.NONE );
-  	button.setText( "Click me!" );
-  	assertSame( "Click me!", button.getText() );
+    Button button = new Button( shell, SWT.NONE );
+    button.setText( "Click me!" );
+    assertSame( "Click me!", button.getText() );
   }
-  
+
+  @Test
   public void testSetTextForArrowButton() {
     Button arrowButton = new Button( shell, SWT.ARROW );
     arrowButton.setText( "Click me!" );
     assertTrue( arrowButton.getText().length() == 0 );
   }
 
+  @Test
   public void testAlignment() {
-  	Button button = new Button( shell, SWT.NONE );
-  	button.setAlignment( SWT.LEFT );
-  	assertEquals( SWT.LEFT, button.getAlignment() );
-  	button.setAlignment( SWT.RIGHT );
-  	assertEquals( SWT.RIGHT, button.getAlignment() );
-  	button.setAlignment( SWT.CENTER );
-  	assertEquals( SWT.CENTER, button.getAlignment() );
-  	button.setAlignment( SWT.UP );
-  	assertEquals( SWT.CENTER, button.getAlignment() );
+    Button button = new Button( shell, SWT.NONE );
+    button.setAlignment( SWT.LEFT );
+    assertEquals( SWT.LEFT, button.getAlignment() );
+    button.setAlignment( SWT.RIGHT );
+    assertEquals( SWT.RIGHT, button.getAlignment() );
+    button.setAlignment( SWT.CENTER );
+    assertEquals( SWT.CENTER, button.getAlignment() );
+    button.setAlignment( SWT.UP );
+    assertEquals( SWT.CENTER, button.getAlignment() );
 
-  	button = new Button( shell, SWT.NONE | SWT.LEFT );
-  	assertEquals( SWT.LEFT, button.getAlignment() );
-  	button = new Button( shell, SWT.NONE | SWT.RIGHT );
-  	assertEquals( SWT.RIGHT, button.getAlignment() );
-  	button = new Button( shell, SWT.NONE | SWT.CENTER );
-  	assertEquals( SWT.CENTER, button.getAlignment() );
+    button = new Button( shell, SWT.NONE | SWT.LEFT );
+    assertEquals( SWT.LEFT, button.getAlignment() );
+    button = new Button( shell, SWT.NONE | SWT.RIGHT );
+    assertEquals( SWT.RIGHT, button.getAlignment() );
+    button = new Button( shell, SWT.NONE | SWT.CENTER );
+    assertEquals( SWT.CENTER, button.getAlignment() );
 
-  	Button arrowButton = new Button( shell, SWT.ARROW );
-  	arrowButton.setAlignment( SWT.LEFT );
-  	assertEquals( SWT.LEFT, arrowButton.getAlignment() );
-  	arrowButton.setAlignment( SWT.RIGHT );
-  	assertEquals( SWT.RIGHT, arrowButton.getAlignment() );
-  	arrowButton.setAlignment( SWT.UP );
-  	assertEquals( SWT.UP, arrowButton.getAlignment() );
-  	arrowButton.setAlignment( SWT.DOWN );
-  	assertEquals( SWT.DOWN, arrowButton.getAlignment() );
-  	arrowButton.setAlignment( SWT.FLAT );
-  	assertEquals( SWT.UP, arrowButton.getAlignment() );
+    Button arrowButton = new Button( shell, SWT.ARROW );
+    arrowButton.setAlignment( SWT.LEFT );
+    assertEquals( SWT.LEFT, arrowButton.getAlignment() );
+    arrowButton.setAlignment( SWT.RIGHT );
+    assertEquals( SWT.RIGHT, arrowButton.getAlignment() );
+    arrowButton.setAlignment( SWT.UP );
+    assertEquals( SWT.UP, arrowButton.getAlignment() );
+    arrowButton.setAlignment( SWT.DOWN );
+    assertEquals( SWT.DOWN, arrowButton.getAlignment() );
+    arrowButton.setAlignment( SWT.FLAT );
+    assertEquals( SWT.UP, arrowButton.getAlignment() );
 
-  	arrowButton = new Button( shell, SWT.ARROW | SWT.LEFT );
-  	assertEquals( SWT.LEFT, arrowButton.getAlignment() );
-  	arrowButton = new Button( shell, SWT.ARROW | SWT.RIGHT );
-  	assertEquals( SWT.RIGHT, arrowButton.getAlignment() );
-  	arrowButton = new Button( shell, SWT.ARROW | SWT.UP );
-  	assertEquals( SWT.UP, arrowButton.getAlignment() );
-  	arrowButton = new Button( shell, SWT.ARROW | SWT.DOWN );
-  	assertEquals( SWT.DOWN, arrowButton.getAlignment() );
-  	arrowButton = new Button( shell, SWT.ARROW | SWT.CENTER );
-  	assertEquals( SWT.UP, arrowButton.getAlignment() );
+    arrowButton = new Button( shell, SWT.ARROW | SWT.LEFT );
+    assertEquals( SWT.LEFT, arrowButton.getAlignment() );
+    arrowButton = new Button( shell, SWT.ARROW | SWT.RIGHT );
+    assertEquals( SWT.RIGHT, arrowButton.getAlignment() );
+    arrowButton = new Button( shell, SWT.ARROW | SWT.UP );
+    assertEquals( SWT.UP, arrowButton.getAlignment() );
+    arrowButton = new Button( shell, SWT.ARROW | SWT.DOWN );
+    assertEquals( SWT.DOWN, arrowButton.getAlignment() );
+    arrowButton = new Button( shell, SWT.ARROW | SWT.CENTER );
+    assertEquals( SWT.UP, arrowButton.getAlignment() );
   }
 
+  @Test
   public void testSelection() {
-  	Button button = new Button( shell, SWT.NONE );
+    Button button = new Button( shell, SWT.NONE );
     assertFalse( button.getSelection() );
-  	button.setSelection( true );
-  	assertFalse( button.getSelection() );
+    button.setSelection( true );
+    assertFalse( button.getSelection() );
 
-  	Button button1 = new Button( shell, SWT.CHECK );
-  	assertFalse( button1.getSelection() );
-  	button1.setSelection( true );
-  	assertTrue( button1.getSelection() );
-  	button1.setSelection( false );
-  	assertFalse( button1.getSelection() );
+    Button button1 = new Button( shell, SWT.CHECK );
+    assertFalse( button1.getSelection() );
+    button1.setSelection( true );
+    assertTrue( button1.getSelection() );
+    button1.setSelection( false );
+    assertFalse( button1.getSelection() );
 
-  	Button button2 = new Button( shell, SWT.RADIO );
-  	assertFalse( button2.getSelection() );
-  	button2.setSelection( true );
-  	assertTrue( button2.getSelection() );
-  	button2.setSelection( false );
-  	assertFalse( button2.getSelection() );
+    Button button2 = new Button( shell, SWT.RADIO );
+    assertFalse( button2.getSelection() );
+    button2.setSelection( true );
+    assertTrue( button2.getSelection() );
+    button2.setSelection( false );
+    assertFalse( button2.getSelection() );
 
-  	Button button3 = new Button( shell, SWT.TOGGLE );
+    Button button3 = new Button( shell, SWT.TOGGLE );
     assertFalse( button3.getSelection() );
-  	button3.setSelection( true );
-  	assertTrue( button3.getSelection() );
-  	button3.setSelection( false );
-  	assertFalse( button3.getSelection() );
+    button3.setSelection( true );
+    assertTrue( button3.getSelection() );
+    button3.setSelection( false );
+    assertFalse( button3.getSelection() );
   }
 
+  @Test
   public void testGrayed() {
     Button button = new Button( shell, SWT.CHECK );
     assertFalse( button.getGrayed() );
@@ -165,6 +190,7 @@ public class Button_Test extends TestCase {
     assertFalse( button.getGrayed() );
   }
 
+  @Test
   public void testComputeSize() {
     // Text and image to use
     String text = "Click me!";
@@ -262,6 +288,7 @@ public class Button_Test extends TestCase {
     assertEquals( expected, button.computeSize( 100, 100 ) );
   }
 
+  @Test
   public void testComputeSizeWithCustomTheme() throws IOException {
     String css = "Button {\nspacing: 10px;\n}";
     ThemeTestUtil.registerTheme( "custom", css, null );
@@ -290,9 +317,10 @@ public class Button_Test extends TestCase {
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
+  @Test
   public void testComputeSizeWithWrap() {
     String text = "Click me!";
-    String textWithBreak = "Click\nme!";    
+    String textWithBreak = "Click\nme!";
     Button buttonNoWrap = new Button( shell, SWT.NONE );
     Button buttonWrap = new Button( shell, SWT.WRAP );
     buttonWrap.setText( text );
@@ -305,11 +333,12 @@ public class Button_Test extends TestCase {
     assertEquals( new Point( 92, 30 ), buttonNoWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     assertEquals( new Point( 66, 49 ), buttonWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     buttonWrap.setText( text );
-    buttonNoWrap.setText( text );    
+    buttonNoWrap.setText( text );
     assertEquals( new Point( 47, 30 ), buttonNoWrap.computeSize( 45, SWT.DEFAULT ) );
     assertEquals( new Point( 47, 49 ), buttonWrap.computeSize( 45, SWT.DEFAULT ) );
   }
-  
+
+  @Test
   public void testAddSelectionListenerWithNullArgument() {
     Button button = new Button( shell, SWT.NONE );
     try {
@@ -317,33 +346,26 @@ public class Button_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
+  @Test
   public void testAddSelectionListener() {
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( mock( SelectionListener.class ) );
-    
+
     assertTrue( button.isListening( SWT.Selection ) );
     assertTrue( button.isListening( SWT.DefaultSelection ) );
   }
-  
+
+  @Test
   public void testRemoveSelectionListener() {
     Button button = new Button( shell, SWT.PUSH );
     SelectionListener listener = mock( SelectionListener.class );
     button.addSelectionListener( listener );
 
     button.removeSelectionListener( listener );
-    
+
     assertFalse( button.isListening( SWT.Selection ) );
     assertFalse( button.isListening( SWT.DefaultSelection ) );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    display = new Display();
-    shell = new Shell( display, SWT.NONE );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

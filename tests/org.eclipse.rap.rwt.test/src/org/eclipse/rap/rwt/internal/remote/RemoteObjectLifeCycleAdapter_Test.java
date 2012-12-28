@@ -19,24 +19,26 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class RemoteObjectLifeCycleAdapter_Test extends TestCase {
+public class RemoteObjectLifeCycleAdapter_Test {
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testRenderDelegatesToRegisteredRemoteObjects() {
     RemoteObjectImpl remoteObject = mock( RemoteObjectImpl.class );
     RemoteObjectRegistry.getInstance().register( remoteObject );
@@ -46,6 +48,7 @@ public class RemoteObjectLifeCycleAdapter_Test extends TestCase {
     verify( remoteObject ).render( same( ContextProvider.getProtocolWriter() ) );
   }
 
+  @Test
   public void testReadDataDelegatesSetOperationsToRegisteredRemoteObjects() {
     RemoteObjectImpl remoteObject = mockAndRegisterRemoteObject( "id" );
     Map<String, Object> properties = createTestProperties();
@@ -56,6 +59,7 @@ public class RemoteObjectLifeCycleAdapter_Test extends TestCase {
     verify( remoteObject ).handleSet( eq( properties ) );
   }
 
+  @Test
   public void testReadDataDelegatesCallOperationsToRegisteredRemoteObjects() {
     RemoteObjectImpl remoteObject = mockAndRegisterRemoteObject( "id" );
     Map<String, Object> properties = createTestProperties();
@@ -66,6 +70,7 @@ public class RemoteObjectLifeCycleAdapter_Test extends TestCase {
     verify( remoteObject ).handleCall( eq( "method" ), eq( properties ) );
   }
 
+  @Test
   public void testReadDataDelegatesNotifyOperationsToRegisteredRemoteObjects() {
     RemoteObjectImpl remoteObject = mockAndRegisterRemoteObject( "id" );
     Map<String, Object> properties = createTestProperties();

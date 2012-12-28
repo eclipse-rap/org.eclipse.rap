@@ -11,14 +11,15 @@
 package org.eclipse.rap.rwt.internal.widgets.fileuploadkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -46,18 +47,21 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 @SuppressWarnings("deprecation")
-public class FileUploadLCA_Test extends TestCase {
+public class FileUploadLCA_Test {
 
   private Display display;
   private Shell shell;
   private FileUpload fileUpload;
   private FileUploadLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -66,11 +70,12 @@ public class FileUploadLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ControlLCATestUtil.testActivateListener( fileUpload );
     ControlLCATestUtil.testFocusListener( fileUpload );
@@ -81,6 +86,7 @@ public class FileUploadLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( fileUpload );
   }
 
+  @Test
   public void testPreserveBounds() {
     Fixture.markInitialized( display );
     WidgetAdapter adapter = WidgetUtil.getAdapter( fileUpload );
@@ -92,6 +98,7 @@ public class FileUploadLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
+  @Test
   public void testReadFileName() {
     Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( fileUpload ), "fileName", "foo" );
@@ -105,6 +112,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertEquals( "foo", fileUpload.getFileName() );
   }
 
+  @Test
   public void testReadEmptyFileName() {
     Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( fileUpload ), "fileName", "" );
@@ -113,6 +121,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertEquals( null, fileUpload.getFileName() );
   }
 
+  @Test
   public void testFireSelectionEvent() {
     SelectionListener listener = mock( SelectionListener.class );
     fileUpload.addSelectionListener( listener );
@@ -125,6 +134,7 @@ public class FileUploadLCA_Test extends TestCase {
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( fileUpload );
 
@@ -133,6 +143,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.FileUpload", operation.getType() );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( fileUpload );
 
@@ -141,6 +152,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( fileUpload.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderDispose() throws IOException {
     lca.renderDispose( fileUpload );
 
@@ -150,6 +162,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( fileUpload ), operation.getTarget() );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     lca.renderChanges( fileUpload );
 
@@ -157,6 +170,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertNull( message.findSetOperation( fileUpload, "text" ) );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     fileUpload.setText( "test" );
     lca.renderChanges( fileUpload );
@@ -165,6 +179,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertEquals( "test", message.findSetProperty( fileUpload, "text" ) );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( fileUpload );
@@ -177,6 +192,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertNull( message.findSetOperation( fileUpload, "text" ) );
   }
 
+  @Test
   public void testRenderInitialImage() throws IOException {
     lca.renderChanges( fileUpload );
 
@@ -184,6 +200,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertNull( message.findSetOperation( fileUpload, "image" ) );
   }
 
+  @Test
   public void testRenderImage() throws IOException, JSONException {
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
@@ -197,6 +214,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( fileUpload );
@@ -210,6 +228,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertNull( message.findSetOperation( fileUpload, "image" ) );
   }
 
+  @Test
   public void testRenderImageReset() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( fileUpload );
@@ -224,6 +243,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( fileUpload, "image" ) );
   }
 
+  @Test
   public void testSubmit() throws IOException {
     IFileUploadAdapter adapter = getFileUploadAdapter( fileUpload );
     adapter.setFileName( "foo" );
@@ -236,6 +256,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertEquals( "bar", operation.getProperty( "url" ) );
   }
 
+  @Test
   public void testSubmitWithoutFileName() throws IOException {
     fileUpload.submit( "bar" );
     lca.renderChanges( fileUpload );
@@ -244,6 +265,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertNull( message.findCallOperation( fileUpload, "submit" ) );
   }
 
+  @Test
   public void testRenderInitialCustomVariant() throws IOException {
     lca.render( fileUpload );
 
@@ -252,6 +274,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
   }
 
+  @Test
   public void testRenderCustomVariant() throws IOException {
     fileUpload.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( fileUpload );
@@ -260,6 +283,7 @@ public class FileUploadLCA_Test extends TestCase {
     assertEquals( "variant_blue", message.findSetProperty( fileUpload, "customVariant" ) );
   }
 
+  @Test
   public void testRenderCustomVariantUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( fileUpload );
@@ -275,4 +299,5 @@ public class FileUploadLCA_Test extends TestCase {
   private IFileUploadAdapter getFileUploadAdapter( FileUpload upload ) {
     return upload.getAdapter( IFileUploadAdapter.class );
   }
+
 }

@@ -10,11 +10,17 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
@@ -34,25 +40,29 @@ import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener.PhaseEventInfo;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class SimpleLifeCycle_Test extends TestCase {
+public class SimpleLifeCycle_Test {
 
   private LifeCycle lifeCycle;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     UISession uiSession = ContextProvider.getUISession();
     ApplicationContextUtil.set( uiSession, ApplicationContextUtil.getInstance() );
     lifeCycle = new SimpleLifeCycle( ApplicationContextUtil.getInstance() );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testPhaseOrderForInitialRequest() throws Exception {
     registerEntryPoint( TestEntryPoint.class );
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
@@ -66,6 +76,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertAfterPhaseEvent( loggedEvents[ 3 ], PhaseId.RENDER );
   }
 
+  @Test
   public void testPhaseOrderForSubsequentRequest() throws Exception {
     new Display();
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
@@ -83,6 +94,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertAfterPhaseEvent( loggedEvents[ 7 ], PhaseId.RENDER );
   }
 
+  @Test
   public void testThreadIsAttachedInInitialRequest() throws IOException {
     registerEntryPoint( TestEntryPoint.class );
     ThreadRecordingPhaseListener phaseListener = new ThreadRecordingPhaseListener( );
@@ -94,6 +106,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     }
   }
 
+  @Test
   public void testThreadIsDetachedInInitialRequest() throws IOException {
     registerEntryPoint( TestEntryPoint.class );
     lifeCycle.execute();
@@ -101,6 +114,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertNull( LifeCycleUtil.getSessionDisplay().getThread() );
   }
 
+  @Test
   public void testThreadIsAttachedInSubsequentRequest() throws IOException {
     registerEntryPoint( TestEntryPoint.class );
     lifeCycle.execute();
@@ -114,6 +128,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     }
   }
 
+  @Test
   public void testThreadIsDetachedInSubsequentRequest() throws IOException {
     registerEntryPoint( TestEntryPoint.class );
     TestRequest request = ( TestRequest )RWT.getRequest();
@@ -127,6 +142,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
 
   // bug 361753
+  @Test
   public void testDefaultDisplayIsAvailableInInitialRequest() throws IOException {
     registerEntryPoint( DefaultDisplayEntryPoint.class );
     Fixture.fakeNewRequest();
@@ -136,6 +152,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertNotNull( LifeCycleUtil.getSessionDisplay( ContextProvider.getUISession() ) );
   }
 
+  @Test
   public void testPhaseListenersHaveApplicationScope() throws Exception {
     registerEntryPoint( TestEntryPoint.class );
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
@@ -145,6 +162,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertTrue( phaseListener.getLoggedEvents().length > 0 );
   }
 
+  @Test
   public void testAddPhaseListener() throws Exception {
     registerEntryPoint( TestEntryPoint.class );
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
@@ -153,6 +171,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertTrue( phaseListener.getLoggedEvents().length > 0 );
   }
 
+  @Test
   public void testRemovePhaseListener() throws Exception {
     registerEntryPoint( TestEntryPoint.class );
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
@@ -162,6 +181,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertEquals( 0, phaseListener.getLoggedEvents().length );
   }
 
+  @Test
   public void testRequestThreadExecRunsRunnableOnCallingThread() {
     final Thread[] invocationThread = { null };
     Runnable runnable = new Runnable() {
@@ -175,6 +195,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertSame( Thread.currentThread(), invocationThread[ 0 ] );
   }
 
+  @Test
   public void testGetUIThreadWhileLifeCycleInExecute() throws IOException {
     new Display();
     final Thread[] uiThread = { null };
@@ -195,6 +216,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertSame( Thread.currentThread(), uiThread[ 0 ] );
   }
 
+  @Test
   public void testGetUIThreadAfterLifeCycleExecuted() throws IOException {
     registerEntryPoint( TestEntryPoint.class );
     lifeCycle.execute();
@@ -204,6 +226,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertNull( threadHolder );
   }
 
+  @Test
   public void testInvalidateDisposesDisplay() throws Throwable {
     final UISession uiSession = ContextProvider.getUISession();
     Display display = new Display();
@@ -218,6 +241,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertTrue( display.isDisposed() );
   }
 
+  @Test
   public void testSessionRestartDisposesDisplay() throws IOException {
     final UISession uiSession = ContextProvider.getUISession();
     Display display = new Display();
@@ -228,6 +252,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertTrue( display.isDisposed() );
   }
 
+  @Test
   public void testSleep() {
     try {
       lifeCycle.sleep();
@@ -237,6 +262,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     }
   }
 
+  @Test
   public void testContextOnShutdownFromBackgroundThread() throws Exception {
     final boolean[] log = new boolean[ 1 ];
     // Activate SimpleLifeCycle
@@ -329,4 +355,5 @@ public class SimpleLifeCycle_Test extends TestCase {
       return 0;
     }
   }
+
 }

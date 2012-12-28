@@ -11,31 +11,37 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.service;
 
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class FileSettingStoreFactory_Test extends TestCase {
+public class FileSettingStoreFactory_Test {
 
   private static final String SETTING_STORE_DIR = "org.eclipse.rap.rwt.service.FileSettingStore.dir";
   private SettingStoreFactory factory;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     factory = new FileSettingStoreFactory();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testCreate_failsWithNullId() {
     try {
       factory.createSettingStore( null );
@@ -45,6 +51,7 @@ public class FileSettingStoreFactory_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCreate_failsWithEmptyId() {
     try {
       factory.createSettingStore( "" );
@@ -54,6 +61,7 @@ public class FileSettingStoreFactory_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCreate_failsWithWhitespaceOnlyId() {
     try {
       factory.createSettingStore( " \t " );
@@ -63,12 +71,14 @@ public class FileSettingStoreFactory_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCreate_createsInstancesWithCorrectType() {
     SettingStore instance = factory.createSettingStore( "id" );
 
     assertSame( FileSettingStore.class, instance.getClass() );
   }
 
+  @Test
   public void testCreate_createsDirectory() {
     File file = new File( Fixture.TEMP_DIR, UUID.randomUUID().toString() );
     file.deleteOnExit();
@@ -79,6 +89,7 @@ public class FileSettingStoreFactory_Test extends TestCase {
     assertTrue( file.exists() );
   }
 
+  @Test
   public void testCreate_failsIfDirectoryCannotBeCreated() throws IOException {
     File file = new File( Fixture.TEMP_DIR, UUID.randomUUID().toString() );
     file.createNewFile();

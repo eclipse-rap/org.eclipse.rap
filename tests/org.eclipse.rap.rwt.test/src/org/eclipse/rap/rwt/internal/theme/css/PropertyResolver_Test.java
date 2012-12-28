@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,18 @@
 package org.eclipse.rap.rwt.internal.theme.css;
 
 import static org.eclipse.rap.rwt.internal.theme.ThemeTestUtil.RESOURCE_LOADER;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.apache.batik.css.parser.Parser;
 import org.eclipse.rap.rwt.internal.theme.QxAnimation;
@@ -34,15 +39,17 @@ import org.eclipse.rap.rwt.internal.theme.QxImage;
 import org.eclipse.rap.rwt.internal.theme.QxShadow;
 import org.eclipse.rap.rwt.internal.theme.QxType;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.Test;
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.InputSource;
 import org.w3c.css.sac.LexicalUnit;
 
 
-public class PropertyResolver_Test extends TestCase {
+public class PropertyResolver_Test {
 
   private static Parser parser = new Parser();
 
+  @Test
   public void testColor() throws Exception {
     QxColor transparent = PropertyResolver.readColor( parseProperty( "transparent" ) );
     assertEquals( QxColor.TRANSPARENT, transparent );
@@ -74,6 +81,7 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  @Test
   public void testColorWithTurkishLocale() throws Exception {
     Locale originalLocale = Locale.getDefault();
     try {
@@ -85,6 +93,7 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  @Test
   public void testColorWithAlpha() throws Exception {
     String input = "rgba( 1, 2, 3, 0.25 )";
     QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
@@ -95,6 +104,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 0.25, result.alpha, 0 );
   }
 
+  @Test
   public void testColorWithAlpha_Percents() throws Exception {
     String input = "rgba( 0%, 50%, 100%, 0.25 )";
     QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
@@ -105,12 +115,14 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 0.25, result.alpha, 0 );
   }
 
+  @Test
   public void testColorWithAlpha_NoTransparency() throws Exception {
     String input = "rgba( 0, 0, 0, 1 )";
     QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
     assertSame( QxColor.BLACK, result );
   }
 
+  @Test
   public void testColorWithAlpha_NormalizeNegativeAlpha() throws Exception {
     String input = "rgba( 1, 2, 3, -0.1 )";
     QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
@@ -121,6 +133,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 0f, result.alpha, 0 );
   }
 
+  @Test
   public void testColorWithAlpha_NormalizePositiveAlpha() throws Exception {
     String input = "rgba( 1, 2, 3, 1.1 )";
     QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
@@ -131,6 +144,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 1f, result.alpha, 0 );
   }
 
+  @Test
   public void testColorWithAlpha_NormalizeColorValue() throws Exception {
     String input = "rgba( -10, 127, 300, 0.25 )";
     QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
@@ -141,6 +155,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 0.25, result.alpha, 0 );
   }
 
+  @Test
   public void testColorWithAlpha_MixedValues() throws Exception {
     String input = "rgba( 0%, 50, 100, 0.25 )";
     try {
@@ -151,6 +166,7 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDimension() throws Exception {
     QxDimension zero = PropertyResolver.readDimension( parseProperty( "0px" ) );
     assertNotNull( zero );
@@ -172,12 +188,14 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDimension_ZeroWithoutUnit() throws Exception {
     QxDimension zero = PropertyResolver.readDimension( parseProperty( "0" ) );
     assertNotNull( zero );
     assertEquals( QxDimension.ZERO, zero );
   }
 
+  @Test
   public void testBoxDimensions() throws Exception {
     LexicalUnit zeroUnit = parseProperty( "0px" );
     QxBoxDimensions zero = PropertyResolver.readBoxDimensions( zeroUnit );
@@ -218,6 +236,7 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  @Test
   public void testBoxDimension_ZeroWithoutUnit() throws Exception {
     QxBoxDimensions zero = PropertyResolver.readBoxDimensions( parseProperty( "0" ) );
     assertNotNull( zero );
@@ -229,6 +248,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( QxBoxDimensions.create( 0, 1, 2, 3 ), withZero );
   }
 
+  @Test
   public void testBorderWidth() throws Exception {
     int zero = PropertyResolver.readBorderWidth( parseProperty( "0px" ) );
     assertEquals( 0, zero );
@@ -248,11 +268,13 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( -1, negative );
   }
 
+  @Test
   public void testBorderWidth_ZeroWithoutUnit() throws Exception {
     int zero = PropertyResolver.readBorderWidth( parseProperty( "0" ) );
     assertEquals( 0, zero );
   }
 
+  @Test
   public void testBorderStyle() throws Exception {
     String nonsense = PropertyResolver.readBorderStyle( parseProperty( "nonsense" ) );
     assertNull( nonsense );
@@ -260,6 +282,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( "none", none );
   }
 
+  @Test
   public void testBorder() throws Exception {
     String input = "1";
     try {
@@ -293,6 +316,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( border1, border3 );
   }
 
+  @Test
   public void testFontStyle() throws Exception {
     String normal = "normal";
     assertEquals( normal, PropertyResolver.readFontStyle( parseProperty( normal ) ) );
@@ -304,6 +328,7 @@ public class PropertyResolver_Test extends TestCase {
     assertNull( PropertyResolver.readFontStyle( parseProperty( inherit ) ) );
   }
 
+  @Test
   public void testFontWeight() throws Exception {
     String normal = "normal";
     assertEquals( normal, PropertyResolver.readFontWeight( parseProperty( normal ) ) );
@@ -315,6 +340,7 @@ public class PropertyResolver_Test extends TestCase {
     assertNull( PropertyResolver.readFontWeight( parseProperty( inherit ) ) );
   }
 
+  @Test
   public void testFontSize() throws Exception {
     assertEquals( 0, PropertyResolver.readFontSize( parseProperty( "0px" ) ) );
     assertEquals( 2, PropertyResolver.readFontSize( parseProperty( "2px" ) ) );
@@ -323,10 +349,12 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( -1, PropertyResolver.readFontSize( parseProperty( "-2px" ) ) );
   }
 
+  @Test
   public void testFontSize_ZeroWithoutUnit() throws Exception {
     assertEquals( 0, PropertyResolver.readFontSize( parseProperty( "0" ) ) );
   }
 
+  @Test
   public void testFontFamily() throws Exception {
     String input1 = "Helvetica";
     String[] res1 = PropertyResolver.readFontFamily( parseProperty( input1 ) );
@@ -349,6 +377,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 3, res4.length );
   }
 
+  @Test
   public void testFont() throws Exception {
     // http://www.w3.org/TR/CSS21/fonts.html#font-shorthand
     String input1 = "9px Helvetica";
@@ -401,6 +430,7 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  @Test
   public void testBackgroundImage() throws Exception {
     // background-image: none;
     String input = "none";
@@ -430,6 +460,7 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGradient() throws Exception {
     String input1 = "gradient( linear, left top, left bottom, "
                   + "from( #0000FF ), "
@@ -508,6 +539,7 @@ public class PropertyResolver_Test extends TestCase {
     assertTrue( res4.vertical );
   }
 
+  @Test
   public void testGradient_Horizontal() throws Exception {
     String input = "gradient( linear, left top, right top, "
                   + "from( #0000FF ), "
@@ -531,6 +563,7 @@ public class PropertyResolver_Test extends TestCase {
     assertFalse( res.vertical );
   }
 
+  @Test
   public void testGradient_InvalidValues() throws Exception {
     String input = "gradient( radial, left top, left bottom, "
                  + "from( #0000FF ), "
@@ -577,6 +610,7 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  @Test
   public void testFloat() throws Exception {
     QxFloat zero = PropertyResolver.readFloat( parseProperty( "0" ) );
     assertNotNull( zero );
@@ -609,6 +643,7 @@ public class PropertyResolver_Test extends TestCase {
     assertNull( floatValue );
   }
 
+  @Test
   public void testCursor() throws Exception {
     // Test predefined cursor
     String input = "default";
@@ -645,6 +680,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( expected, res3 );
   }
 
+  @Test
   public void testAnimation() throws Exception {
     String input = "slideIn 2s ease-in";
     QxAnimation result = PropertyResolver.readAnimation( parseProperty( input ) );
@@ -703,6 +739,7 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  @Test
   public void testShadow_XYOffsetOnlyNotation() throws Exception {
     String input = "1px 2px";
     QxShadow result = PropertyResolver.readShadow( parseProperty( input ) );
@@ -715,6 +752,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 1f, result.opacity, 0 );
   }
 
+  @Test
   public void testShadow_OffsetXYBlurNotation() throws Exception {
     String input = "1px 2px 3px";
     QxShadow result = PropertyResolver.readShadow( parseProperty( input ) );
@@ -727,6 +765,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 1f, result.opacity, 0 );
   }
 
+  @Test
   public void testShadow_XYOffsetBlurSpreadNotation() throws Exception {
     String input = "1px 2px 0 0";
     QxShadow result = PropertyResolver.readShadow( parseProperty( input ) );
@@ -739,6 +778,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 1f, result.opacity, 0 );
   }
 
+  @Test
   public void testShadow_FullNotation_NamedColor() throws Exception {
     String input = "1px 2px 0px 0 red";
     QxShadow result = PropertyResolver.readShadow( parseProperty( input ) );
@@ -751,6 +791,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 1f, result.opacity, 0 );
   }
 
+  @Test
   public void testShadow_FullNotation_HexColor() throws Exception {
     String input = "1px 2px 0px 0 #FF0000";
     QxShadow result = PropertyResolver.readShadow( parseProperty( input ) );
@@ -763,6 +804,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 1f, result.opacity, 0 );
   }
 
+  @Test
   public void testShadow_FullNotation_RgbColor() throws Exception {
     String input = "1px 2px 3px 0 rgb( 1, 2, 3 )";
     QxShadow result = PropertyResolver.readShadow( parseProperty( input ) );
@@ -775,6 +817,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 1f, result.opacity, 0 );
   }
 
+  @Test
   public void testShadow_FullNotation_RgbaColor() throws Exception {
     String input = "1px 2px 0px 0 rgba( 1, 2, 3, 0.25 )";
     QxShadow result = PropertyResolver.readShadow( parseProperty( input ) );
@@ -787,6 +830,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 0.25, result.opacity, 0 );
   }
 
+  @Test
   public void testShadow_WithoutOffsetY() throws Exception {
     try {
       PropertyResolver.readShadow( parseProperty( "1px" ) );
@@ -796,6 +840,7 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  @Test
   public void testShadow_MissingRgbaParameters() throws Exception {
     String input = "1px 2px 0px 0 rgba( 1, 2, 0.25 )";
     try {
@@ -806,6 +851,7 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  @Test
   public void testShadow_NonZeroSpread() throws Exception {
     String input = "1px 2px 3px 3px rgba( 1, 2, 3, 0.25 )";
     try {
@@ -816,6 +862,7 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  @Test
   public void testIsColorProperty() {
     assertFalse( PropertyResolver.isColorProperty( "border" ) );
     assertTrue( PropertyResolver.isColorProperty( "color" ) );
@@ -824,16 +871,19 @@ public class PropertyResolver_Test extends TestCase {
     assertTrue( PropertyResolver.isColorProperty( "rwt-selectionmarker-color" ) );
   }
 
+  @Test
   public void testIsBorderProperty() {
     assertTrue( PropertyResolver.isBorderProperty( "border" ) );
     assertTrue( PropertyResolver.isBorderProperty( "border-left" ) );
     assertTrue( PropertyResolver.isBorderProperty( "border-bottom" ) );
   }
 
+  @Test
   public void testIsFontProperty() {
     assertTrue( PropertyResolver.isFontProperty( "font" ) );
   }
 
+  @Test
   public void testIsDimensionProperty() {
     assertTrue( PropertyResolver.isDimensionProperty( "spacing" ) );
     assertTrue( PropertyResolver.isDimensionProperty( "width" ) );
@@ -841,28 +891,34 @@ public class PropertyResolver_Test extends TestCase {
     assertTrue( PropertyResolver.isDimensionProperty( "min-height" ) );
   }
 
+  @Test
   public void testIsBoxDimProperty() {
     assertTrue( PropertyResolver.isBoxDimensionProperty( "padding" ) );
     assertTrue( PropertyResolver.isBoxDimensionProperty( "margin" ) );
   }
 
+  @Test
   public void testIsImageProperty() {
     assertTrue( PropertyResolver.isImageProperty( "background-image" ) );
   }
 
+  @Test
   public void testIsCursorProperty() {
     assertTrue( PropertyResolver.isCursorProperty( "cursor" ) );
   }
 
+  @Test
   public void testIsAnimationProperty() {
     assertTrue( PropertyResolver.isAnimationProperty( "animation" ) );
   }
 
+  @Test
   public void testIsShadowProperty() {
     assertTrue( PropertyResolver.isShadowProperty( "box-shadow" ) );
     assertTrue( PropertyResolver.isShadowProperty( "text-shadow" ) );
   }
 
+  @Test
   public void testResolveProperty() throws Exception {
     LexicalUnit unit = parseProperty( "white" );
     QxType value = PropertyResolver.resolveProperty( "color", unit, null );
@@ -890,4 +946,5 @@ public class PropertyResolver_Test extends TestCase {
     inputSource.setByteStream( byteStream );
     return parser.parsePropertyValue( inputSource );
   }
+
 }

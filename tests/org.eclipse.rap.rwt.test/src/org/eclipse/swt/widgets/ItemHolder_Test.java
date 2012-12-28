@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,22 +11,31 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ItemHolder_Test extends TestCase {
+public class ItemHolder_Test {
 
-  
-  private static class TestItem extends Item {
-    public TestItem( Widget parent ) {
-      super( parent, 0 );
-    }
+  @Before
+  public void setUp() {
+    Fixture.setUp();
   }
 
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testItemHolder() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -72,6 +81,7 @@ public class ItemHolder_Test extends TestCase {
     }
   }
 
+  @Test
   public void testItemHolderAccessors() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -87,7 +97,7 @@ public class ItemHolder_Test extends TestCase {
     TreeItem item = new TreeItem( tree, SWT.NONE );
     items = ItemHolder.getItemHolder( tree ).getItems();
     assertEquals( 1, items.length );
-    assertEquals( item, items[ 0 ] ); 
+    assertEquals( item, items[ 0 ] );
     assertEquals( 1, tree.getItemCount() );
     assertEquals( 0, tree.indexOf( item ) );
     item.dispose();
@@ -104,20 +114,20 @@ public class ItemHolder_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSerialize() throws Exception {
     ItemHolder<TestItem> itemHolder = new ItemHolder<TestItem>( TestItem.class );
     itemHolder.add( new TestItem( new Shell( new Display() ) ) );
-    
+
     ItemHolder<TestItem> deserializedItemHolder = Fixture.serializeAndDeserialize( itemHolder );
 
     assertEquals( 1, deserializedItemHolder.getItems().length );
   }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
+
+  private static class TestItem extends Item {
+    public TestItem( Widget parent ) {
+      super( parent, 0 );
+    }
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

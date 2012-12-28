@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -21,30 +23,37 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ControlHolder_Test extends TestCase {
+public class ControlHolder_Test {
 
   private Display display;
   private Composite shell;
   private ControlHolder controlHolder;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display , SWT.NONE );
     controlHolder = new ControlHolder();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testEmpty() {
     assertEquals( 0, controlHolder.size() );
     assertEquals( 0, controlHolder.getControls().length );
   }
 
+  @Test
   public void testAddControl() {
     Control control = new Text( shell, SWT.NONE );
     controlHolder.add( control );
@@ -53,6 +62,7 @@ public class ControlHolder_Test extends TestCase {
     assertSame( control, controlHolder.getControls()[ 0 ] );
   }
 
+  @Test
   public void testRemoveControl() {
     Control control = new Text( shell, SWT.NONE );
     controlHolder.add( control );
@@ -62,6 +72,7 @@ public class ControlHolder_Test extends TestCase {
     assertEquals( 0, controlHolder.getControls().length );
   }
 
+  @Test
   public void testAddControlTwice() {
     Control control = new Text( shell, SWT.NONE );
     controlHolder.add( control );
@@ -74,6 +85,7 @@ public class ControlHolder_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRemoveNonExistingControl() {
     Control control = new Text( shell, SWT.NONE );
 
@@ -86,6 +98,7 @@ public class ControlHolder_Test extends TestCase {
     }
   }
 
+  @Test
   public void testAddControlWithNull() {
     try {
       controlHolder.add( null );
@@ -95,6 +108,7 @@ public class ControlHolder_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRemoveControlWithNull() {
     try {
       controlHolder.remove( null );
@@ -104,16 +118,19 @@ public class ControlHolder_Test extends TestCase {
     }
   }
 
+  @Test
   public void testStaticSizeWithEmptyShell() {
     assertEquals( 0, ControlHolder.size( shell ) );
   }
 
+  @Test
   public void testStaticSizeWithOneChild() {
     new Button( shell, SWT.PUSH );
 
     assertEquals( 1, ControlHolder.size( shell ) );
   }
 
+  @Test
   public void testStaticSizeWithDisposedChild() {
     Button control = new Button( shell, SWT.PUSH );
     control.dispose();
@@ -121,6 +138,7 @@ public class ControlHolder_Test extends TestCase {
     assertEquals( 0, ControlHolder.size( shell ) );
   }
 
+  @Test
   public void testStaticAddControlWithWrongParent() {
     Composite otherParent = new Composite( shell, SWT.NONE );
     Control button = new Button( otherParent, SWT.PUSH );
@@ -132,6 +150,7 @@ public class ControlHolder_Test extends TestCase {
     }
   }
 
+  @Test
   public void testAddAtIndex() {
     Button button1 = new Button( shell, SWT.PUSH );
     Button button2 = new Button( shell, SWT.PUSH );

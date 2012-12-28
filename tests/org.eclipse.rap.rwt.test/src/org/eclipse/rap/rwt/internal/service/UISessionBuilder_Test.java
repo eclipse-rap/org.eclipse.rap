@@ -10,6 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -21,8 +25,6 @@ import java.util.HashMap;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
@@ -39,9 +41,12 @@ import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestSession;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class UISessionBuilder_Test extends TestCase {
+public class UISessionBuilder_Test {
 
   private static final String CUSTOM_THEME_ID = "custom.theme.id";
 
@@ -51,8 +56,8 @@ public class UISessionBuilder_Test extends TestCase {
   private ApplicationConfiguration configuration;
   private ApplicationContextImpl applicationContext;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     httpSession = new TestSession();
     request = new TestRequest();
@@ -63,11 +68,12 @@ public class UISessionBuilder_Test extends TestCase {
     applicationContext.getClientSelector().activate();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testUISessionReferencesApplicationContext() {
     registerEntryPoint( null );
 
@@ -77,6 +83,7 @@ public class UISessionBuilder_Test extends TestCase {
     assertEquals( applicationContext, ApplicationContextUtil.get( uiSession ) );
   }
 
+  @Test
   public void testUISessionIsAttachedToHttpSession() {
     registerEntryPoint( null );
     httpSession = mock( HttpSession.class );
@@ -89,6 +96,7 @@ public class UISessionBuilder_Test extends TestCase {
     verify( httpSession ).setAttribute( anyString(), same( uiSession ) );
   }
 
+  @Test
   public void testSingletonManagerIsInstalled() {
     registerEntryPoint( null );
 
@@ -98,6 +106,7 @@ public class UISessionBuilder_Test extends TestCase {
     assertSingletonManagerIsInstalled( uiSession );
   }
 
+  @Test
   public void testDefaultThemeIsSelected() {
     registerEntryPoint( null );
 
@@ -107,6 +116,7 @@ public class UISessionBuilder_Test extends TestCase {
     assertEquals( RWT.DEFAULT_THEME_ID, uiSession.getAttribute( ThemeUtil.CURR_THEME_ATTR ) );
   }
 
+  @Test
   public void testCustomThemeIsSelected() {
     Theme theme = mock( Theme.class );
     when( theme.getId() ).thenReturn( CUSTOM_THEME_ID );
@@ -121,6 +131,7 @@ public class UISessionBuilder_Test extends TestCase {
     assertEquals( CUSTOM_THEME_ID, uiSession.getAttribute( ThemeUtil.CURR_THEME_ATTR ) );
   }
 
+  @Test
   public void testFailsWithNonExistingThemeId() {
     HashMap<String, String> properties = new HashMap<String,String>();
     properties.put( WebClient.THEME_ID, "does.not.exist" );
@@ -134,6 +145,7 @@ public class UISessionBuilder_Test extends TestCase {
     }
   }
 
+  @Test
   public void testClientIsSelected() {
     registerEntryPoint( null );
 
@@ -163,4 +175,5 @@ public class UISessionBuilder_Test extends TestCase {
       fail( "No SingletonManager found in session store" );
     }
   }
+
 }

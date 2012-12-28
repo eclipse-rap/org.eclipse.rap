@@ -1,41 +1,59 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class CoolItem_Test extends TestCase {
+public class CoolItem_Test {
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testSetControl() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.NONE );
     Button button = new Button( bar, SWT.NONE );
     CoolItem item = new CoolItem( bar, SWT.NONE );
-    
+
     item.setControl( button );
     assertSame( button, item.getControl() );
 
     item.setControl( null );
     assertEquals( null, item.getControl() );
-    
+
     try {
       Button disposedButton = new Button( bar, SWT.PUSH );
       disposedButton.dispose();
@@ -52,7 +70,8 @@ public class CoolItem_Test extends TestCase {
       // expected
     }
   }
-  
+
+  @Test
   public void testSize() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -64,7 +83,7 @@ public class CoolItem_Test extends TestCase {
     bar.relayout();
     assertEquals( new Point( 100 , 30 ), item.getSize() );
     assertNotSame( size, item.getSize() );
-    
+
     item.setPreferredSize( -2, -1 );
     bar.relayout();
     assertEquals( CoolItem.MINIMUM_WIDTH , item.getPreferredSize().x );
@@ -82,21 +101,21 @@ public class CoolItem_Test extends TestCase {
 //    item2.setSize( 30, 10 );
 //    CoolItem item3 = new CoolItem( horizontalBar, SWT.NONE );
 //    item3.setSize( 40, 10 );
-//    
+//
 //    Rectangle expected = new Rectangle( 0, 0, 20 + CoolItem.HANDLE_SIZE, 10 );
 //    assertEquals( expected, item1.getBounds() );
-//    expected = new Rectangle( 20 + CoolItem.HANDLE_SIZE, 
-//                              0, 
-//                              30 + CoolItem.HANDLE_SIZE, 
+//    expected = new Rectangle( 20 + CoolItem.HANDLE_SIZE,
+//                              0,
+//                              30 + CoolItem.HANDLE_SIZE,
 //                              10 );
 //    assertEquals( expected, item2.getBounds() );
-//    expected = new Rectangle( 50 + CoolItem.HANDLE_SIZE + CoolItem.HANDLE_SIZE, 
-//                              0, 
-//                              40 + CoolItem.HANDLE_SIZE, 
+//    expected = new Rectangle( 50 + CoolItem.HANDLE_SIZE + CoolItem.HANDLE_SIZE,
+//                              0,
+//                              40 + CoolItem.HANDLE_SIZE,
 //                              10 );
 //    assertEquals( expected, item3.getBounds() );
 //  }
-  
+
   // TODO: review this - test breaks but would also break with swt
 //  public void testBoundsVertical() {
 //    Display display = new Display();
@@ -108,21 +127,22 @@ public class CoolItem_Test extends TestCase {
 //    item2.setSize( 10, 30 );
 //    CoolItem item3 = new CoolItem( bar, SWT.NONE );
 //    item3.setSize( 10, 40 );
-//    
+//
 //    Rectangle expected = new Rectangle( 0, 0, 20 + CoolItem.HANDLE_SIZE, 10 );
 //    assertEquals( expected, item1.getBounds() );
-//    expected = new Rectangle( 0, 
-//                              20 + CoolItem.HANDLE_SIZE, 
-//                              30 + CoolItem.HANDLE_SIZE, 
+//    expected = new Rectangle( 0,
+//                              20 + CoolItem.HANDLE_SIZE,
+//                              30 + CoolItem.HANDLE_SIZE,
 //                              10 );
 //    assertEquals( expected, item2.getBounds() );
-//    expected = new Rectangle( 0, 
-//                              50 + CoolItem.HANDLE_SIZE + CoolItem.HANDLE_SIZE, 
-//                              40 + CoolItem.HANDLE_SIZE, 
+//    expected = new Rectangle( 0,
+//                              50 + CoolItem.HANDLE_SIZE + CoolItem.HANDLE_SIZE,
+//                              40 + CoolItem.HANDLE_SIZE,
 //                              10 );
 //    assertEquals( expected, item3.getBounds() );
 //  }
-  
+
+  @Test
   public void test_getBounds() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -137,7 +157,8 @@ public class CoolItem_Test extends TestCase {
     assertEquals( size.x, rect.width );
     assertEquals( size.y, rect.height );
   }
-  
+
+  @Test
   public void test_computeSizeII() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -160,7 +181,8 @@ public class CoolItem_Test extends TestCase {
     size2 = coolItem.computeSize(26, 26);
     assertEquals(25, size2.x - size.x);
   }
-  
+
+  @Test
   public void test_getControl() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -178,7 +200,8 @@ public class CoolItem_Test extends TestCase {
     control = coolItem.getControl();
     assertEquals(button, control);
   }
-  
+
+  @Test
   public void test_getParent() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -186,7 +209,8 @@ public class CoolItem_Test extends TestCase {
     CoolItem coolItem = new CoolItem(coolBar, 0);
     assertEquals(coolBar, coolItem.getParent());
   }
-  
+
+  @Test
   public void testDisplay() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -195,7 +219,8 @@ public class CoolItem_Test extends TestCase {
     assertSame( display, coolItem.getDisplay() );
     assertSame( coolBar.getDisplay(), coolItem.getDisplay() );
   }
-  
+
+  @Test
   public void testRemoveNonExistingSelectionListener() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -205,6 +230,7 @@ public class CoolItem_Test extends TestCase {
     // no assert: must silently ignore attempt to remove unknown listener
   }
 
+  @Test
   public void test_setPreferredSizeLorg_eclipse_swt_graphics_Point() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -213,7 +239,7 @@ public class CoolItem_Test extends TestCase {
     Button button = new Button(coolBar, SWT.PUSH);
     button.setText("foobar");
     coolItem.setControl(button);
-    
+
     Point size = new Point(50, 30);
     coolItem.setPreferredSize(size);
     Point size2 = coolItem.getPreferredSize();
@@ -222,6 +248,7 @@ public class CoolItem_Test extends TestCase {
   }
 
 
+  @Test
   public void test_setSizeLorg_eclipse_swt_graphics_Point() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -230,7 +257,7 @@ public class CoolItem_Test extends TestCase {
     Button button = new Button(coolBar, SWT.PUSH);
     button.setText("foo");
     coolItem.setControl(button);
-    
+
     Point size = new Point(50, 50);
     coolItem.setSize(size);
     Point size2 = coolItem.getSize();
@@ -238,11 +265,4 @@ public class CoolItem_Test extends TestCase {
     assertEquals(size2, coolItem.getSize());
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,16 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
 
 
-public class QxDimension_Test extends TestCase {
+public class QxDimension_Test {
 
+  @Test
   public void testIllegalArguments() {
     try {
       QxDimension.valueOf( null );
@@ -43,12 +48,14 @@ public class QxDimension_Test extends TestCase {
     }
   }
 
+  @Test
   public void testZero() {
     assertSame( QxDimension.ZERO, QxDimension.valueOf( "0" ) );
     assertSame( QxDimension.ZERO, QxDimension.valueOf( "0px" ) );
     assertEquals( 0, QxDimension.ZERO.value );
   }
 
+  @Test
   public void testValid() {
     QxDimension dim23 = QxDimension.valueOf( "23" );
     assertEquals( 23, dim23.value );
@@ -58,8 +65,10 @@ public class QxDimension_Test extends TestCase {
     assertEquals( -1, negative.value );
   }
 
+  @Test
   public void testDefaultString() {
     assertEquals( "0px", QxDimension.ZERO.toDefaultString() );
     assertEquals( "23px", QxDimension.valueOf( "23" ).toDefaultString() );
   }
+
 }

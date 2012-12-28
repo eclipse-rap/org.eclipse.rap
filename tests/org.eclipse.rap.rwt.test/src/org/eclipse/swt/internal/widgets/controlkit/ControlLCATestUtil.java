@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.controlkit;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;

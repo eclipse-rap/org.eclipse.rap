@@ -11,29 +11,38 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Button;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ThemeCssValuesMap_Test extends TestCase {
+public class ThemeCssValuesMap_Test {
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakeNewRequest();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testGetValues_Font() throws Exception {
     ThemeCssValuesMap map = getValuesMap();
     ConditionalValue[] fontValues = map .getValues( "Button", "font" );
@@ -58,6 +67,7 @@ public class ThemeCssValuesMap_Test extends TestCase {
     assertEquals( font2, fontValues[ 2 ].value );
   }
 
+  @Test
   public void testGetValues_Color() throws Exception {
     ThemeCssValuesMap map = getValuesMap();
     ConditionalValue[] colorValues = map.getValues( "Button", "color" );
@@ -76,6 +86,7 @@ public class ThemeCssValuesMap_Test extends TestCase {
     assertEquals( QxColor.valueOf( "#705e42" ), colorValues[ 2 ].value );
   }
 
+  @Test
   public void testGetValues_Background() throws Exception {
     ThemeCssValuesMap map = getValuesMap();
     ConditionalValue[] backgroundValues = map.getValues( "Button",
@@ -94,6 +105,7 @@ public class ThemeCssValuesMap_Test extends TestCase {
     assertEquals( QxColor.valueOf( "227, 221, 158" ), backgroundValues[ 0 ].value );
   }
 
+  @Test
   public void testGetAllValues() throws Exception {
     ThemeCssValuesMap map = getValuesMap();
     QxType[] values = map.getAllValues();
@@ -114,4 +126,5 @@ public class ThemeCssValuesMap_Test extends TestCase {
     Theme theme = new Theme( "test.theme", "Test THeme", styleSheet );
     return new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
   }
+
 }

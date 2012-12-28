@@ -11,16 +11,17 @@
 package org.eclipse.swt.events;
 
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.Test;
 
 
-public class TraverseEvent_Test extends TestCase {
+public class TraverseEvent_Test {
 
-  public void testUntypedEventConstructor() throws Exception {
+  @Test
+  public void testUntypedEventConstructor() {
     Event event = new Event();
     event.display = mock( Display.class );
     event.widget = mock( Widget.class );
@@ -31,9 +32,9 @@ public class TraverseEvent_Test extends TestCase {
     event.doit = true;
     event.detail = 6;
     event.data = new Object();
-    
+
     TraverseEvent traverseEvent = new TraverseEvent( event );
-    
+
     EventTestHelper.assertFieldsEqual( traverseEvent, event );
   }
 

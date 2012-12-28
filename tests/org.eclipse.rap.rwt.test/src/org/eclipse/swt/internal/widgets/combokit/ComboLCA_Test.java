@@ -9,10 +9,12 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.combokit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -20,13 +22,11 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -52,9 +52,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-public class ComboLCA_Test extends TestCase {
+
+public class ComboLCA_Test {
 
   private static final String PROP_ITEMS = "items";
   private static final String PROP_SELECTION_INDEX = "selectionIndex";
@@ -64,8 +68,8 @@ public class ComboLCA_Test extends TestCase {
   private Combo combo;
   private ComboLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
@@ -74,11 +78,12 @@ public class ComboLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ControlLCATestUtil.testActivateListener( combo );
     ControlLCATestUtil.testFocusListener( combo );
@@ -89,6 +94,7 @@ public class ComboLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( combo );
   }
 
+  @Test
   public void testPreserveValues() {
     Combo combo = new Combo( shell, SWT.READ_ONLY );
     Fixture.markInitialized( display );
@@ -153,6 +159,7 @@ public class ComboLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
+  @Test
   public void testEditablePreserveValues() {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
@@ -166,6 +173,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), textLimit );
   }
 
+  @Test
   public void testReadData_ListVisible() {
     combo.add( "item 1" );
     combo.add( "item 2" );
@@ -173,9 +181,10 @@ public class ComboLCA_Test extends TestCase {
     Fixture.fakeSetParameter( getId( combo ), "listVisible", Boolean.TRUE );
     lca.readData( combo );
 
-    assertEquals( true, combo.getListVisible() );
+    assertTrue( combo.getListVisible() );
   }
 
+  @Test
   public void testReadData_SelectedItem() {
     combo.add( "item 1" );
     combo.add( "item 2" );
@@ -186,6 +195,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( 1, combo.getSelectionIndex() );
   }
 
+  @Test
   public void testFireSelectionEvent() {
     SelectionListener listener = mock( SelectionListener.class );
     combo.addSelectionListener( listener );
@@ -196,6 +206,7 @@ public class ComboLCA_Test extends TestCase {
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testFireDefaultSelectionEvent() {
     SelectionListener listener = mock( SelectionListener.class );
     combo.addSelectionListener( listener );
@@ -206,6 +217,7 @@ public class ComboLCA_Test extends TestCase {
     verify( listener, times( 1 ) ).widgetDefaultSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testReadData_Text() {
     Fixture.fakeSetParameter( getId( combo ), "text", "abc" );
 
@@ -214,6 +226,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( "abc", combo.getText() );
   }
 
+  @Test
   public void testReadData_TextAndSelection() {
     Fixture.fakeSetParameter( getId( combo ), "text", "abc" );
     Fixture.fakeSetParameter( getId( combo ), "selectionStart", Integer.valueOf( 1 ) );
@@ -224,6 +237,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( new Point( 1, 2 ), combo.getSelection() );
   }
 
+  @Test
   public void testTextIsNotRenderdBack() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -238,6 +252,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( "some text", combo.getText() );
   }
 
+  @Test
   public void testReadText_WithVerifyListener() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Fixture.markInitialized( display );
@@ -259,6 +274,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( 9, event.end );
   }
 
+  @Test
   public void testTextSelectionWithVerifyEvent_EmptyListener() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -277,6 +293,7 @@ public class ComboLCA_Test extends TestCase {
     assertNull( message.findSetOperation( combo, "selection" ) );
   }
 
+  @Test
   public void testTextSelectionWithVerifyEvent_ListenerDoesNotChangeSelection() {
     combo.setText( "" );
     combo.addVerifyListener( new VerifyListener() {
@@ -292,6 +309,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( "verified", combo.getText() );
   }
 
+  @Test
   public void testTextSelectionWithVerifyEvent_ListenerAdjustsSelection() {
     combo.setText( "" );
     combo.addVerifyListener( new VerifyListener() {
@@ -307,6 +325,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( "", combo.getText() );
   }
 
+  @Test
   public void testSelectionAfterRemoveAll() {
     combo = new Combo( shell, SWT.READ_ONLY );
     Fixture.markInitialized( display );
@@ -331,6 +350,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( new Integer( 0 ), message.findSetProperty( combo, PROP_SELECTION_INDEX ) );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( combo );
 
@@ -339,6 +359,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.Combo", operation.getType() );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( combo );
 
@@ -347,6 +368,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( combo.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderInitialItemHeight() throws IOException {
     lca.render( combo );
 
@@ -355,6 +377,7 @@ public class ComboLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().contains( "itemHeight" ) );
   }
 
+  @Test
   public void testRenderItemHeight() throws IOException {
     combo.setFont( Graphics.getFont( "Arial", 16, SWT.NONE ) );
     lca.renderChanges( combo );
@@ -363,6 +386,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( new Integer( 22 ), message.findSetProperty( combo, "itemHeight" ) );
   }
 
+  @Test
   public void testRenderItemHeightUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -375,6 +399,7 @@ public class ComboLCA_Test extends TestCase {
     assertNull( message.findSetOperation( combo, "itemHeight" ) );
   }
 
+  @Test
   public void testRenderInitialVisibleItemCount() throws IOException {
     lca.render( combo );
 
@@ -383,6 +408,7 @@ public class ComboLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "visibleItemCount" ) == -1 );
   }
 
+  @Test
   public void testRenderVisibleItemCount() throws IOException {
     combo.setVisibleItemCount( 10 );
     lca.renderChanges( combo );
@@ -391,6 +417,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( combo, "visibleItemCount" ) );
   }
 
+  @Test
   public void testRenderVisibleItemCountUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -403,6 +430,7 @@ public class ComboLCA_Test extends TestCase {
     assertNull( message.findSetOperation( combo, "visibleItemCount" ) );
   }
 
+  @Test
   public void testRenderInitialItems() throws IOException {
     lca.render( combo );
 
@@ -411,6 +439,7 @@ public class ComboLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "items" ) == -1 );
   }
 
+  @Test
   public void testRenderItems() throws IOException, JSONException {
     combo.setItems( new String[] { "a", "b", "c" } );
     lca.renderChanges( combo );
@@ -421,6 +450,7 @@ public class ComboLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderItemsUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -433,6 +463,7 @@ public class ComboLCA_Test extends TestCase {
     assertNull( message.findSetOperation( combo, "items" ) );
   }
 
+  @Test
   public void testRenderInitialListVisible() throws IOException {
     lca.render( combo );
 
@@ -441,6 +472,7 @@ public class ComboLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "listVisible" ) == -1 );
   }
 
+  @Test
   public void testRenderListVisible() throws IOException {
     combo.setListVisible( true );
     lca.renderChanges( combo );
@@ -449,6 +481,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( combo, "listVisible" ) );
   }
 
+  @Test
   public void testRenderListVisibleUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -461,6 +494,7 @@ public class ComboLCA_Test extends TestCase {
     assertNull( message.findSetOperation( combo, "listVisible" ) );
   }
 
+  @Test
   public void testRenderEditable() throws IOException {
     lca.render( combo );
 
@@ -469,6 +503,7 @@ public class ComboLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "editable" ) == -1 );
   }
 
+  @Test
   public void testRenderEditable_ReadOnly() throws IOException {
     Combo combo = new Combo( shell, SWT.READ_ONLY );
 
@@ -479,6 +514,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, operation.getProperty( "editable" ) );
   }
 
+  @Test
   public void testRenderInitialSelectionIndex() throws IOException {
     lca.render( combo );
 
@@ -487,6 +523,7 @@ public class ComboLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "selectionIndex" ) == -1 );
   }
 
+  @Test
   public void testRenderSelectionIndex() throws IOException {
     combo.setItems( new String[] { "a", "b", "c" } );
 
@@ -497,6 +534,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( new Integer( 1 ), message.findSetProperty( combo, "selectionIndex" ) );
   }
 
+  @Test
   public void testRenderSelectionIndexUnchanged() throws IOException {
     combo.setItems( new String[] { "a", "b", "c" } );
     Fixture.markInitialized( display );
@@ -510,6 +548,7 @@ public class ComboLCA_Test extends TestCase {
     assertNull( message.findSetOperation( combo, "selectionIndex" ) );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     lca.render( combo );
 
@@ -518,6 +557,7 @@ public class ComboLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     combo.setText( "foo" );
     lca.renderChanges( combo );
@@ -526,6 +566,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( combo, "text" ) );
   }
 
+  @Test
   public void testRenderTextNotEditable() throws IOException {
     Combo combo = new Combo( shell, SWT.READ_ONLY );
 
@@ -536,6 +577,7 @@ public class ComboLCA_Test extends TestCase {
     assertNull( message.findSetOperation( combo, "text" ) );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -548,6 +590,7 @@ public class ComboLCA_Test extends TestCase {
     assertNull( message.findSetOperation( combo, "text" ) );
   }
 
+  @Test
   public void testRenderInitialSelection() throws IOException {
     lca.render( combo );
 
@@ -556,6 +599,7 @@ public class ComboLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
   }
 
+  @Test
   public void testRenderSelection() throws IOException, JSONException {
     combo.setText( "foo bar" );
 
@@ -567,6 +611,7 @@ public class ComboLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 3 ]", actual ) );
   }
 
+  @Test
   public void testRenderSelectionUnchanged() throws IOException {
     combo.setText( "foo bar" );
     Fixture.markInitialized( display );
@@ -580,6 +625,7 @@ public class ComboLCA_Test extends TestCase {
     assertNull( message.findSetOperation( combo, "selection" ) );
   }
 
+  @Test
   public void testRenderInitialTextLimit() throws IOException {
     lca.render( combo );
 
@@ -588,6 +634,7 @@ public class ComboLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "textLimit" ) == -1 );
   }
 
+  @Test
   public void testRenderTextLimit() throws IOException {
     combo.setTextLimit( 10 );
     lca.renderChanges( combo );
@@ -596,6 +643,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( combo, "textLimit" ) );
   }
 
+  @Test
   public void testRenderTextLimitNoLimit() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -609,6 +657,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( combo, "textLimit" ) );
   }
 
+  @Test
   public void testRenderTextLimitUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -621,6 +670,7 @@ public class ComboLCA_Test extends TestCase {
     assertNull( message.findSetOperation( combo, "textLimit" ) );
   }
 
+  @Test
   public void testRenderTextLimitReset() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -634,6 +684,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( combo, "textLimit" ) );
   }
 
+  @Test
   public void testRenderTextLimitResetWithNegative() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -647,6 +698,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( combo, "textLimit" ) );
   }
 
+  @Test
   public void testListenSelection() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -660,6 +712,7 @@ public class ComboLCA_Test extends TestCase {
     assertNull( message.findListenOperation( combo, "DefaultSelection" ) );
   }
 
+  @Test
   public void testListenDefaultSelection() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -673,6 +726,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( combo, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRemoveListenSelection() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -687,6 +741,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( combo, "Selection" ) );
   }
 
+  @Test
   public void testRemoveListenDefaultSelection() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -701,6 +756,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( combo, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -714,6 +770,7 @@ public class ComboLCA_Test extends TestCase {
     assertNull( message.findListenOperation( combo, "selection" ) );
   }
 
+  @Test
   public void testRenderAddModifyListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -729,6 +786,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( combo, "Modify" ) );
   }
 
+  @Test
   public void testRenderRemoveModifyListener() throws Exception {
     ModifyListener listener = new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
@@ -746,6 +804,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( combo, "Modify" ) );
   }
 
+  @Test
   public void testRenderModifyListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -762,6 +821,7 @@ public class ComboLCA_Test extends TestCase {
     assertNull( message.findListenOperation( combo, "modify" ) );
   }
 
+  @Test
   public void testRenderAddVerifyListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -777,6 +837,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( combo, "Modify" ) );
   }
 
+  @Test
   public void testRenderRemoveVerifyListener() throws Exception {
     VerifyListener listener = new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
@@ -794,6 +855,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( combo, "Modify" ) );
   }
 
+  @Test
   public void testRenderVerifyListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );

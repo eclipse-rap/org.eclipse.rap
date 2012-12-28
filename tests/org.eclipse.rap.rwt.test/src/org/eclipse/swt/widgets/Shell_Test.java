@@ -11,11 +11,17 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -34,31 +40,36 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.layout.FillLayout;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class Shell_Test extends TestCase {
+public class Shell_Test {
 
   private Display display;
   private Shell shell;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testGetAdapterWithShellAdapter() {
     Object adapter = shell.getAdapter( IShellAdapter.class );
     assertNotNull( adapter );
   }
 
+  @Test
   public void testMenuBar() {
     Shell shell2 = new Shell( display, SWT.NONE );
     Menu menu = new Menu( shell, SWT.BAR );
@@ -111,6 +122,7 @@ public class Shell_Test extends TestCase {
     }
   }
 
+  @Test
   public void testClientArea() {
     Rectangle clientAreaWithoutMenuBar = shell.getClientArea();
     Menu menuBar = new Menu( shell, SWT.BAR );
@@ -119,6 +131,7 @@ public class Shell_Test extends TestCase {
     assertTrue( clientAreaWithoutMenuBar.y < clientAreaWithMenuBar.y );
   }
 
+  @Test
   public void testConstructor() throws Exception {
     Shell shell = new Shell();
     assertSame( display, shell.getDisplay() );
@@ -158,6 +171,7 @@ public class Shell_Test extends TestCase {
     assertTrue( failed[ 0 ] );
   }
 
+  @Test
   public void testInitialValues() {
     // Must return the display it was created with
     assertSame( display, shell.getDisplay() );
@@ -170,20 +184,22 @@ public class Shell_Test extends TestCase {
     // Text must be an empty string
     assertEquals( "", shell.getText() );
     // Enabled
-    assertEquals( true, shell.getEnabled() );
+    assertTrue( shell.getEnabled() );
     // Shell is visible after open(), but not directly after creation
-    assertEquals( false, shell.getVisible() );
-    assertEquals( false, shell.isVisible() );
+    assertFalse( shell.getVisible() );
+    assertFalse( shell.isVisible() );
     // The Shell(Display) constructor must use style SHELL_TRIM
     Shell trimShell = new Shell( display );
     assertEquals( SWT.SHELL_TRIM | SWT.LEFT_TO_RIGHT, trimShell.getStyle() );
   }
 
+  @Test
   public void testInitialSize() {
     Point empty = new Point( 0, 0 );
     assertFalse( empty.equals( shell.getSize() ) );
   }
 
+  @Test
   public void testAlpha() {
     assertEquals( 255, shell.getAlpha() );
     shell.setAlpha( 23 );
@@ -192,12 +208,14 @@ public class Shell_Test extends TestCase {
     assertEquals( 0, shell.getAlpha() );
   }
 
+  @Test
   public void testOpen() {
     shell.open();
-    assertEquals( true, shell.getVisible() );
-    assertEquals( true, shell.isVisible() );
+    assertTrue( shell.getVisible() );
+    assertTrue( shell.isVisible() );
   }
 
+  @Test
   public void testLayoutOnSetVisible() {
     // ensure that layout is trigered while opening a shell, more specifically
     // during setVisible( true )
@@ -224,6 +242,7 @@ public class Shell_Test extends TestCase {
     assertEquals( "", log.toString() );
   }
 
+  @Test
   public void testCloseNotifiesShellListeners() {
     final ShellEvent[] shellEvent = { null };
     shell.addShellListener( new ShellAdapter() {
@@ -240,6 +259,7 @@ public class Shell_Test extends TestCase {
     assertSame( shell.getDisplay(), shellEvent[ 0 ].display );
   }
 
+  @Test
   public void testCloseChildShells() {
     shell.open();
     Shell childShell = new Shell( shell );
@@ -247,6 +267,7 @@ public class Shell_Test extends TestCase {
     assertTrue( childShell.isDisposed() );
   }
 
+  @Test
   public void testCloseDisposesShell() {
     shell.open();
 
@@ -255,6 +276,7 @@ public class Shell_Test extends TestCase {
     assertTrue( shell.isDisposed() );
   }
 
+  @Test
   public void testDisposeChildShell() {
     shell.open();
     Shell childShell = new Shell( shell );
@@ -265,18 +287,21 @@ public class Shell_Test extends TestCase {
     assertTrue( childShell.isDisposed() );
   }
 
+  @Test
   public void testDisposeMenu() {
     Menu menu = new Menu( shell, SWT.BAR );
     shell.dispose();
     assertTrue( menu.isDisposed() );
   }
 
+  @Test
   public void testCreateDescendantShell() {
     Shell descendantShell = new Shell( shell );
     assertEquals( 0, shell.getChildren().length );
     assertSame( shell, descendantShell.getParent() );
   }
 
+  @Test
   public void testFocusAfterReEnable() {
     Control focusedWhileDisabled = new Button( shell, SWT.PUSH );
     Control focusedControl = new Button( shell, SWT.PUSH );
@@ -288,6 +313,7 @@ public class Shell_Test extends TestCase {
     assertEquals( focusedControl, display.getFocusControl() );
   }
 
+  @Test
   public void testSavedFocus() {
     Control control = new Button( shell, SWT.PUSH );
     shell.open();
@@ -298,6 +324,7 @@ public class Shell_Test extends TestCase {
     assertNull( shell.getSavedFocus() );
   }
 
+  @Test
   public void testInvalidDefaultButton() {
     Shell anotherShell = new Shell( display );
     Button anotherButton = new Button( anotherShell, SWT.PUSH );
@@ -336,6 +363,7 @@ public class Shell_Test extends TestCase {
     assertSame( defaultButton, shell.getDefaultButton() );
   }
 
+  @Test
   public void testSaveDefaultButton() {
     Button button1 = new Button( shell, SWT.PUSH );
     Button button2 = new Button( shell, SWT.PUSH );
@@ -356,6 +384,7 @@ public class Shell_Test extends TestCase {
     assertEquals( null, shell.getDefaultButton() );
   }
 
+  @Test
   public void testDefaultButtonDisposed() {
     Button defaultButton = new Button( shell, SWT.PUSH );
     shell.setDefaultButton( defaultButton );
@@ -363,6 +392,7 @@ public class Shell_Test extends TestCase {
     assertNull( shell.getDefaultButton() );
   }
 
+  @Test
   public void testResetDefaultButton() {
     Button defaultButton = new Button( shell, SWT.PUSH );
     shell.setDefaultButton( defaultButton );
@@ -372,6 +402,7 @@ public class Shell_Test extends TestCase {
     assertNull( shell.getDefaultButton() );
   }
 
+  @Test
   public void testSetDefaultButtonOnFocus() {
     shell.open();
     assertNull( shell.getDefaultButton() );
@@ -383,6 +414,7 @@ public class Shell_Test extends TestCase {
     assertNull( shell.getDefaultButton() );
   }
 
+  @Test
   public void testSetDefaultButtonOnFocus_EventOrder() {
     final ArrayList<Button> log = new ArrayList<Button>();
     shell.open();
@@ -404,6 +436,7 @@ public class Shell_Test extends TestCase {
     assertSame( button, log.get( 1 ) );
   }
 
+  @Test
   public void testForceActive() {
     Shell secondShell = new Shell( display );
     shell.open();
@@ -413,6 +446,7 @@ public class Shell_Test extends TestCase {
     assertSame( shell, display.getActiveShell() );
   }
 
+  @Test
   public void testActivateInvisible() {
     shell.setSize( 50, 50 );
     shell.setVisible( false );
@@ -420,6 +454,7 @@ public class Shell_Test extends TestCase {
     assertNull( display.getActiveShell() );
   }
 
+  @Test
   public void testSetActive() {
     final java.util.List<ShellEvent> log = new ArrayList<ShellEvent>();
     shell.open();
@@ -439,6 +474,7 @@ public class Shell_Test extends TestCase {
     assertEquals( 0, log.size() );
   }
 
+  @Test
   public void testActiveShellOnFocusControl() {
     final java.util.List<String> log = new ArrayList<String>();
     Shell secondShell = new Shell( display );
@@ -475,6 +511,7 @@ public class Shell_Test extends TestCase {
    * 278996: [Shell] Stackoverflow when closing child shell
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=278996
    */
+  @Test
   public void testCloseOnDeactivateWithSingleShell() {
     shell.addShellListener( new ShellAdapter() {
       @Override
@@ -491,6 +528,7 @@ public class Shell_Test extends TestCase {
    * Bug 282506: [Shell] StackOverflow when calling Shell#close in Deactivate
    *             listener
    */
+  @Test
   public void testCloseOnDeactivateWithMultipleShells() {
     shell.open();
     final Shell dialog = new Shell( shell );
@@ -506,6 +544,7 @@ public class Shell_Test extends TestCase {
     // no assert: test case is to ensure that no stack overflow occurs
   }
 
+  @Test
   public void testNoDeactivateEventOnDispose() {
     final StringBuilder log = new StringBuilder();
     shell.addShellListener( new ShellAdapter() {
@@ -523,6 +562,7 @@ public class Shell_Test extends TestCase {
     assertEquals( "shell activated", log.toString() );
   }
 
+  @Test
   public void testMaximized() {
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMaximized( true );
@@ -530,6 +570,7 @@ public class Shell_Test extends TestCase {
     assertEquals( shell.getBounds(), display.getBounds() );
   }
 
+  @Test
   public void testSetBoundsResetMaximized() {
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMaximized( true );
@@ -539,6 +580,7 @@ public class Shell_Test extends TestCase {
     assertEquals( bounds, shell.getBounds() );
   }
 
+  @Test
   public void testSetLocationResetMaximized() {
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMaximized( true );
@@ -546,6 +588,7 @@ public class Shell_Test extends TestCase {
     assertFalse( shell.getMaximized() );
   }
 
+  @Test
   public void testSetSizeResetMaximized() {
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMaximized( true );
@@ -553,6 +596,7 @@ public class Shell_Test extends TestCase {
     assertFalse( shell.getMaximized() );
   }
 
+  @Test
   public void testSetBoundsResetMaximizedEventOrder() {
     final boolean[] maximized = {
       true
@@ -569,6 +613,7 @@ public class Shell_Test extends TestCase {
     assertFalse( maximized[ 0 ] );
   }
 
+  @Test
   public void testShellAdapterSetBounds() {
     final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
     shell.setBounds( 1, 2, 3, 4 );
@@ -587,6 +632,7 @@ public class Shell_Test extends TestCase {
     assertEquals( 1, log.size() );
   }
 
+  @Test
   public void testSetBoundsResetMinimized() {
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMinimized( true );
@@ -596,6 +642,7 @@ public class Shell_Test extends TestCase {
     assertEquals( bounds, shell.getBounds() );
   }
 
+  @Test
   public void testModified() {
     assertFalse( shell.getModified() );
     shell.setModified( true );
@@ -604,6 +651,7 @@ public class Shell_Test extends TestCase {
     assertFalse( shell.getModified() );
   }
 
+  @Test
   public void testMinimumSize() {
     final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
     shell.addControlListener( new ControlAdapter() {
@@ -637,6 +685,7 @@ public class Shell_Test extends TestCase {
     }
   }
 
+  @Test
   public void testFullScreen() {
     final java.util.List<String> log = new ArrayList<String>();
     Rectangle displayBounds = new Rectangle( 0, 0, 800, 600 );
@@ -755,6 +804,7 @@ public class Shell_Test extends TestCase {
     assertEquals( "controlResized", log.get( 1 ) );
   }
 
+  @Test
   public void testActiveShellOnFullScreen() {
     shell.setBounds( 20, 20, 200, 200 );
     shell.open();
@@ -766,12 +816,14 @@ public class Shell_Test extends TestCase {
     assertEquals( shell, display.getActiveShell() );
   }
 
+  @Test
   public void testGetToolTipsWhenNoToolTipWasCreated() {
     IShellAdapter adapter = shell.getAdapter( IShellAdapter.class );
     assertNotNull( adapter.getToolTips() );
     assertEquals( 0, adapter.getToolTips().length );
   }
 
+  @Test
   public void testGetToolTipsWhenToolTipWasCreated() {
     ToolTip toolTip = new ToolTip( shell, SWT.NONE );
     IShellAdapter adapter = shell.getAdapter( IShellAdapter.class );
@@ -779,6 +831,7 @@ public class Shell_Test extends TestCase {
     assertEquals( toolTip, adapter.getToolTips()[ 0 ] );
   }
 
+  @Test
   public void testGetToolTipsAfterToolTipWasDisposed() {
     ToolTip toolTip = new ToolTip( shell, SWT.NONE );
     toolTip.dispose();
@@ -787,6 +840,7 @@ public class Shell_Test extends TestCase {
     assertEquals( 0, adapter.getToolTips().length );
   }
 
+  @Test
   public void testGetToolBar() {
     assertNull( shell.getToolBar() );
   }
@@ -796,6 +850,7 @@ public class Shell_Test extends TestCase {
     return ( IDisplayAdapter )adapter;
   }
 
+  @Test
   public void testIsSerializable() throws Exception {
     shell.setText( "text" );
 
@@ -803,26 +858,29 @@ public class Shell_Test extends TestCase {
 
     assertEquals( shell.getText(), deserializedShell.getText() );
   }
-  
+
+  @Test
   public void testAddShellListener() {
     shell.addShellListener( mock( ShellListener.class ) );
-    
+
     assertTrue( shell.isListening( SWT.Activate ) );
     assertTrue( shell.isListening( SWT.Deactivate ) );
     assertTrue( shell.isListening( SWT.Close ) );
   }
 
+  @Test
   public void testRemoveShellListener() {
     ShellListener listener = mock( ShellListener.class );
     shell.addShellListener( listener );
 
     shell.removeShellListener( listener );
-    
+
     assertFalse( shell.isListening( SWT.Activate ) );
     assertFalse( shell.isListening( SWT.Deactivate ) );
     assertFalse( shell.isListening( SWT.Close ) );
   }
 
+  @Test
   public void testAddShellListenerWithNullArgument() {
     try {
       shell.addShellListener( null );
@@ -830,10 +888,12 @@ public class Shell_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRemoveShellListenerWithNullArgument() {
     try {
       shell.removeShellListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
+
 }

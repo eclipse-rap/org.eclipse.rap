@@ -11,7 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -20,10 +23,24 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class WidgetUtil_Test extends TestCase {
+public class WidgetUtil_Test {
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testFind() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -39,6 +56,7 @@ public class WidgetUtil_Test extends TestCase {
     assertNull( WidgetUtil.find( composite, shellId ) );
   }
 
+  @Test
   public void testGetVariant() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -80,13 +98,4 @@ public class WidgetUtil_Test extends TestCase {
     }
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

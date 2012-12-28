@@ -10,27 +10,32 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class MeasurementUtil_Test extends TestCase {
+public class MeasurementUtil_Test {
 
   private static final String TEXT_TO_MEASURE = " text \"to\" measure ";
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testCreateProbeParamObject() {
     Probe probe = createProbe();
 
@@ -39,6 +44,7 @@ public class MeasurementUtil_Test extends TestCase {
     checkProbeObject( probeObject, probe );
   }
 
+  @Test
   public void testCreateItemParamObject() {
     MeasurementItem item = createMeasurementItem();
 
@@ -91,4 +97,5 @@ public class MeasurementUtil_Test extends TestCase {
     FontData fontData = new FontData( "fontName", 1, SWT.NORMAL );
     return new MeasurementItem( TEXT_TO_MEASURE, fontData, 17, TextSizeUtil.STRING_EXTENT );
   }
+
 }

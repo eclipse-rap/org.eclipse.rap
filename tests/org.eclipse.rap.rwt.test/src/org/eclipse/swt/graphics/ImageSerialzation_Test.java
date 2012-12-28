@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.io.InputStream;
@@ -19,8 +21,6 @@ import java.util.Arrays;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
@@ -33,13 +33,33 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ImageSerialzation_Test extends TestCase {
+public class ImageSerialzation_Test {
 
   private Display display;
   private ApplicationContextImpl applicationContext;
 
+  @Before
+  public void setUp() {
+    Fixture.createApplicationContext();
+    Fixture.createServiceContext();
+    Fixture.useDefaultResourceManager();
+    applicationContext = ApplicationContextUtil.getInstance();
+    ApplicationContextUtil.set( ContextProvider.getUISession(), applicationContext );
+    display = new Display();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfApplicationContext();
+  }
+
+  @Test
   public void testSerializedSharedImage() throws Exception {
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream( Fixture.IMAGE1 );
     Image image = Graphics.getImage( "image", inputStream );
@@ -52,6 +72,7 @@ public class ImageSerialzation_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSerializeSessionImage() throws Exception {
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream( Fixture.IMAGE1 );
     Image image = new Image( display, inputStream );
@@ -63,25 +84,9 @@ public class ImageSerialzation_Test extends TestCase {
     createServiceContext( deserializedImage.getDevice() );
     runClusterSupportFilter();
 
-    assertEquals( image.isDisposed(), deserializedImage.isDisposed() );
+    assertTrue( image.isDisposed() == deserializedImage.isDisposed() );
     ImageData deserializedImageData = deserializedImage.getImageData();
     assertEquals( imageData, deserializedImageData );
-  }
-
-  @Override
-  protected void setUp() {
-    Fixture.createApplicationContext();
-    Fixture.createServiceContext();
-    Fixture.useDefaultResourceManager();
-    applicationContext = ApplicationContextUtil.getInstance();
-    ApplicationContextUtil.set( ContextProvider.getUISession(), applicationContext );
-    display = new Display();
-  }
-
-  @Override
-  protected void tearDown() {
-    Fixture.disposeOfServiceContext();
-    Fixture.disposeOfApplicationContext();
   }
 
   private void createServiceContext( Device device ) {
@@ -107,8 +112,9 @@ public class ImageSerialzation_Test extends TestCase {
   }
 
   private static void assertEquals( ImageData actual, ImageData expected ) {
-    assertEquals( actual.width, expected.width );
-    assertEquals( actual.height, expected.height );
+    assertTrue( actual.width == expected.width );
+    assertTrue( actual.height == expected.height );
     assertTrue( Arrays.equals( actual.data, expected.data ) );
   }
+
 }

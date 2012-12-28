@@ -10,9 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.TestCase;
+import java.io.IOException;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
@@ -20,28 +21,33 @@ import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class PrepareUIRoot_Test extends TestCase {
+public class PrepareUIRoot_Test {
 
   private IPhase phase;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     phase = new PrepareUIRoot( ApplicationContextUtil.getInstance() );
     TestEntryPoint.wasInvoked = false;
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testGetPhaseId() {
     assertEquals( PhaseId.PREPARE_UI_ROOT, phase.getPhaseId() );
   }
 
+  @Test
   public void testExecuteInSubsequentRequests() throws IOException {
     Display display = new Display();
 
@@ -50,6 +56,7 @@ public class PrepareUIRoot_Test extends TestCase {
     assertEquals( PhaseId.READ_DATA, phaseId );
   }
 
+  @Test
   public void testExecuteInFirstRequests() throws IOException {
     EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
     entryPointManager.register( EntryPointManager.DEFAULT_PATH, TestEntryPoint.class, null );

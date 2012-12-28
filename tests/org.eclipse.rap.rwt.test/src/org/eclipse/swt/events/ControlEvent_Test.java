@@ -9,16 +9,15 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.events;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -29,14 +28,18 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class ControlEvent_Test extends TestCase {
+
+public class ControlEvent_Test {
 
   private Display display;
   private Control control;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     control = new Shell( display, SWT.NONE );
@@ -45,23 +48,25 @@ public class ControlEvent_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
-  public void testUntypedEventConstructor() throws Exception {
+  @Test
+  public void testUntypedEventConstructor() {
     Event event = new Event();
     event.display = display;
     event.widget = mock( Widget.class );
     event.time = 1;
     event.data = new Object();
-    
+
     ControlEvent controlEvent = new ControlEvent( event );
-    
+
     EventTestHelper.assertFieldsEqual( controlEvent, event );
   }
 
+  @Test
   public void testResized() {
     ControlListener listener = mock( ControlListener.class );
     control.addControlListener( listener );
@@ -72,6 +77,7 @@ public class ControlEvent_Test extends TestCase {
     verify( listener, times( 0 ) ).controlMoved( any( ControlEvent.class ) );
   }
 
+  @Test
   public void testResized_FromClient() {
     control.setLocation( 50, 50 );
     ControlListener listener = mock( ControlListener.class );
@@ -93,6 +99,7 @@ public class ControlEvent_Test extends TestCase {
     assertEquals( new Point( 50, 100 ), control.getSize() );
   }
 
+  @Test
   public void testMoved() {
     ControlListener listener = mock( ControlListener.class );
     control.addControlListener( listener );
@@ -103,6 +110,7 @@ public class ControlEvent_Test extends TestCase {
     verify( listener, times( 1 ) ).controlMoved( any( ControlEvent.class ) );
   }
 
+  @Test
   public void testMoved_FromClient() {
     ControlListener listener = mock( ControlListener.class );
     control.addControlListener( listener );

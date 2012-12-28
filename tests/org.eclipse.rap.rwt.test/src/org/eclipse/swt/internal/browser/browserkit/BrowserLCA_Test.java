@@ -15,6 +15,10 @@ package org.eclipse.swt.internal.browser.browserkit;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.Fixture.fakeNewRequest;
 import static org.eclipse.rap.rwt.testfixture.Fixture.fakeSetParameter;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -24,8 +28,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -48,17 +50,20 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class BrowserLCA_Test extends TestCase {
+public class BrowserLCA_Test {
 
   private Display display;
   private Shell shell;
   private Browser browser;
   private BrowserLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -67,11 +72,12 @@ public class BrowserLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ControlLCATestUtil.testActivateListener( browser );
     ControlLCATestUtil.testFocusListener( browser );
@@ -82,6 +88,7 @@ public class BrowserLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( browser );
   }
 
+  @Test
   public void testTextChanged() throws IOException {
     Fixture.markInitialized( display );
 
@@ -118,6 +125,7 @@ public class BrowserLCA_Test extends TestCase {
     assertTrue( BrowserLCA.getUrl( browser ).contains( expected ) );
   }
 
+  @Test
   public void testUrlChanged() throws IOException {
     Fixture.markInitialized( display );
 
@@ -145,6 +153,7 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( "http://eclipse.org/rip", BrowserLCA.getUrl( browser ) );
   }
 
+  @Test
   public void testResetUrlChanged_NotInitialized() throws IOException {
     Fixture.markInitialized( display );
     browser.setUrl( "http://eclipse.org/rap" );
@@ -156,6 +165,7 @@ public class BrowserLCA_Test extends TestCase {
     assertFalse( getAdapter( browser).hasUrlChanged() );
   }
 
+  @Test
   public void testResetUrlChanged_Initialized() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
@@ -168,6 +178,7 @@ public class BrowserLCA_Test extends TestCase {
     assertFalse( getAdapter( browser).hasUrlChanged() );
   }
 
+  @Test
   public void testExecuteFunction() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final List<Object> log = new ArrayList<Object>();
@@ -189,6 +200,7 @@ public class BrowserLCA_Test extends TestCase {
     assertTrue( Arrays.equals( expected, log.toArray() ) );
   }
 
+  @Test
   public void testProgressEvent() {
     final ArrayList<String> log = new ArrayList<String>();
     Fixture.markInitialized( display );
@@ -209,6 +221,7 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( "completed", log.get( 1 ) );
   }
 
+  @Test
   public void testProgressEvent_InvisibleBrowser() {
     Fixture.markInitialized( display );
     browser.setVisible( false );
@@ -222,6 +235,7 @@ public class BrowserLCA_Test extends TestCase {
     verify( listener ).completed( any( ProgressEvent.class ) );
   }
 
+  @Test
   public void testProgressEvent_DisabledBrowser() {
     Fixture.markInitialized( display );
     browser.setEnabled( false );
@@ -236,6 +250,7 @@ public class BrowserLCA_Test extends TestCase {
     verify( listener ).completed( any( ProgressEvent.class ) );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( browser );
 
@@ -244,6 +259,7 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.Browser", operation.getType() );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( browser );
 
@@ -252,6 +268,7 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( browser.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
@@ -264,6 +281,7 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( browser, "Progress" ) );
   }
 
+  @Test
   public void testRenderRemoveSelectionListener() throws Exception {
     ProgressListener listener = mock( ProgressListener.class );
     browser.addProgressListener( listener );
@@ -278,6 +296,7 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( browser, "Progress" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
@@ -296,6 +315,7 @@ public class BrowserLCA_Test extends TestCase {
     assertNull( message.findListenOperation( browser, "progress" ) );
   }
 
+  @Test
   public void testRenderInitialUrl() throws IOException {
     lca.render( browser );
 
@@ -304,6 +324,7 @@ public class BrowserLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().contains( "url" ) );
   }
 
+  @Test
   public void testRenderUrl() throws IOException {
     browser.setUrl( "http://eclipse.org/rap" );
     lca.renderChanges( browser );
@@ -312,6 +333,7 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( "http://eclipse.org/rap", message.findSetProperty( browser, "url" ) );
   }
 
+  @Test
   public void testRenderUrlUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
@@ -325,6 +347,7 @@ public class BrowserLCA_Test extends TestCase {
     assertNull( message.findSetOperation( browser, "url" ) );
   }
 
+  @Test
   public void testCallEvaluate() {
     BrowserCallback browserCallback = new BrowserCallback() {
       public void evaluationSucceeded( Object result ) {
@@ -343,6 +366,7 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( "(function(){alert('33');})();", callOperation.getProperty( "script" ) );
   }
 
+  @Test
   public void testEvaluateResponse() {
     BrowserCallback browserCallback = mock( BrowserCallback.class );
     Fixture.markInitialized( display );
@@ -359,6 +383,7 @@ public class BrowserLCA_Test extends TestCase {
     verify( browserCallback, times( 1 ) ).evaluationSucceeded( Integer.valueOf( 27 ) );
   }
 
+  @Test
   public void testCallCreateFunctions() throws JSONException, IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
@@ -373,6 +398,7 @@ public class BrowserLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[\"func1\",\"func2\"]", actual ) );
   }
 
+  @Test
   public void testCallDestroyFunctions() throws JSONException, IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
@@ -387,6 +413,7 @@ public class BrowserLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[\"func1\"]", actual ) );
   }
 
+  @Test
   public void testRenderFunctionResult() throws JSONException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );

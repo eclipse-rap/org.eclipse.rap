@@ -12,35 +12,42 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.Locale;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ServiceManagerImpl_Test extends TestCase {
+public class ServiceManagerImpl_Test {
 
   private ServiceHandler defaultServiceHandler;
   private ServiceManagerImpl serviceManager;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     defaultServiceHandler = mock( ServiceHandler.class );
     serviceManager = new ServiceManagerImpl( defaultServiceHandler );
   }
 
-  @Override
-  protected void tearDown() {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testRegisterServiceHandler() {
     ServiceHandler serviceHandler = mock( ServiceHandler.class );
 
@@ -49,6 +56,7 @@ public class ServiceManagerImpl_Test extends TestCase {
     assertSame( serviceHandler, serviceManager.getServiceHandler( "id" ) );
   }
 
+  @Test
   public void testRegisterServiceHandler_failsWhithSameId() {
     serviceManager.registerServiceHandler( "foo", mock( ServiceHandler.class ) );
 
@@ -61,6 +69,7 @@ public class ServiceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterServiceHandler_failsWithNullId() {
     try {
       serviceManager.registerServiceHandler( null, mock( ServiceHandler.class ) );
@@ -69,6 +78,7 @@ public class ServiceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterServiceHandler_failsWithEmptyId() {
     try {
       serviceManager.registerServiceHandler( "", mock( ServiceHandler.class ) );
@@ -77,6 +87,7 @@ public class ServiceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterServiceHandler_failsWithNullHandler() {
     try {
       serviceManager.registerServiceHandler( "id", null );
@@ -85,6 +96,7 @@ public class ServiceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testUnregisterServiceHandler() {
     serviceManager.registerServiceHandler( "id", mock( ServiceHandler.class ) );
 
@@ -93,10 +105,12 @@ public class ServiceManagerImpl_Test extends TestCase {
     assertNull( serviceManager.getServiceHandler( "id" ) );
   }
 
+  @Test
   public void testUnregisterServiceHandler_doesNotFailWithUnknownId() {
     serviceManager.unregisterServiceHandler( "id" );
   }
 
+  @Test
   public void testUnregisterServiceHandler_failsWithNull() {
     try {
       serviceManager.unregisterServiceHandler( null );
@@ -105,6 +119,7 @@ public class ServiceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testUnregisterServiceHandler_failsWithEmpty() {
     try {
       serviceManager.unregisterServiceHandler( "" );
@@ -113,6 +128,7 @@ public class ServiceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testClear_removesCustomHandler() {
     serviceManager.registerServiceHandler( "id", mock( ServiceHandler.class ) );
 
@@ -121,6 +137,7 @@ public class ServiceManagerImpl_Test extends TestCase {
     assertNull( serviceManager.getServiceHandler( "id" ) );
   }
 
+  @Test
   public void testClear_retainsDefaultHandler() {
     serviceManager.registerServiceHandler( "id", mock( ServiceHandler.class ) );
 
@@ -129,6 +146,7 @@ public class ServiceManagerImpl_Test extends TestCase {
     assertSame( defaultServiceHandler, serviceManager.getHandler() );
   }
 
+  @Test
   public void testGetHandler_returnsDefaultHandler() {
     ServiceHandler serviceHandler = mock( ServiceHandler.class );
     serviceManager.registerServiceHandler( "id", serviceHandler );
@@ -138,6 +156,7 @@ public class ServiceManagerImpl_Test extends TestCase {
     assertSame( defaultServiceHandler, handler );
   }
 
+  @Test
   public void testGetHandler_returnsCustomHandler() {
     ServiceHandler serviceHandler = mock( ServiceHandler.class );
     serviceManager.registerServiceHandler( "id", serviceHandler );
@@ -149,6 +168,7 @@ public class ServiceManagerImpl_Test extends TestCase {
     assertSame( serviceHandler, handler );
   }
 
+  @Test
   public void testGetHandler_failsWithUnknownId() {
     TestRequest request = Fixture.fakeNewGetRequest();
     request.setParameter( ServiceManagerImpl.REQUEST_PARAM, "id" );
@@ -161,18 +181,21 @@ public class ServiceManagerImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetServiceHandlerUrl_returnsUrl() {
     String url = RWT.getServiceManager().getServiceHandlerUrl( "foo" );
 
     assertEquals( "/fooapp/rap?servicehandler=foo", url );
   }
 
+  @Test
   public void testGetServiceHandlerUrl_returnsUrlWithCharactersEscaped() {
     String url = RWT.getServiceManager().getServiceHandlerUrl( "Smørre brød" );
 
     assertEquals( "/fooapp/rap?servicehandler=Sm%C3%B8rre%20br%C3%B8d", url );
   }
 
+  @Test
   public void testGetServiceHandlerUrl_failsWithNull() {
     try {
       RWT.getServiceManager().getServiceHandlerUrl( null );

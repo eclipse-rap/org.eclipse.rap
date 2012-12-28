@@ -14,21 +14,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 
 public class TestUtil {
-
-  public static void assertArrayEquals( Object[] expected, Object[] actual ) {
-    if( !Arrays.equals( expected, actual ) ) {
-      TestCase.fail( "Expected:\n"
-                     + Arrays.toString( expected )
-                     + "\n but was:\n"
-                     + Arrays.toString( actual ) );
-    }
-  }
 
   public static String readContent( InputStream inputStream, String encoding )
     throws IOException, UnsupportedEncodingException

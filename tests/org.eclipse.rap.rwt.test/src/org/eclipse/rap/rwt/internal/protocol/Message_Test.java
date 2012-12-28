@@ -10,10 +10,15 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -24,23 +29,27 @@ import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.ListenOperation;
 import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class Message_Test extends TestCase {
+public class Message_Test {
 
   private ProtocolMessageWriter writer;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     writer = new ProtocolMessageWriter();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testConstructWithNull() {
     try {
       new Message( null );
@@ -49,6 +58,7 @@ public class Message_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConstructWithEmptyString() {
     try {
       new Message( "" );
@@ -58,6 +68,7 @@ public class Message_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConstructWithInvalidJson() {
     try {
       new Message( "{" );
@@ -67,6 +78,7 @@ public class Message_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConstructWithoutOperations() {
     try {
       new Message( "{ \"foo\": 23 }" );
@@ -76,6 +88,7 @@ public class Message_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConstructWithInvalidOperations() {
     try {
       new Message( "{ \"operations\": 23 }" );
@@ -85,10 +98,12 @@ public class Message_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetOperationCountWhenEmpty() {
     assertEquals( 0, getMessage().getOperationCount() );
   }
 
+  @Test
   public void testGetOperationCount() {
     writer.appendCall( "w1", "method1", null );
     writer.appendCall( "w2", "method2", null );
@@ -96,6 +111,7 @@ public class Message_Test extends TestCase {
     assertEquals( 2, getMessage().getOperationCount() );
   }
 
+  @Test
   public void testGetRequestCounter() {
     new Display();
     Fixture.fakeNewRequest();
@@ -103,42 +119,49 @@ public class Message_Test extends TestCase {
     assertEquals( 1, Fixture.getProtocolMessage().getRequestCounter() );
   }
 
+  @Test
   public void testGetOperation() {
     writer.appendCall( "w2", "method", null );
 
     assertNotNull( getMessage().getOperation( 0 ) );
   }
 
+  @Test
   public void testGetCreateOperation() {
     writer.appendCreate( "w1", "type" );
 
     assertTrue( getMessage().getOperation( 0 ) instanceof CreateOperation );
   }
 
+  @Test
   public void testGetCallOperation() {
     writer.appendCall( "w2", "method", null );
 
     assertTrue( getMessage().getOperation( 0 ) instanceof CallOperation );
   }
 
+  @Test
   public void testGetSetOperation() {
     writer.appendSet( "w1", "key", true );
 
     assertTrue( getMessage().getOperation( 0 ) instanceof SetOperation );
   }
 
+  @Test
   public void testGetListenOperation() {
     writer.appendListen( "w1", "event", true );
 
     assertTrue( getMessage().getOperation( 0 ) instanceof ListenOperation );
   }
 
+  @Test
   public void testGetDestroyOperation() {
     writer.appendDestroy( "w1" );
 
     assertTrue( getMessage().getOperation( 0 ) instanceof DestroyOperation );
   }
 
+  @Test
   public void testGetOperationWithUnknownType() {
     Message message = new Message( "{ \"operations\" : [ { \"action\" : \"foo\" } ] }" );
     try {
@@ -148,6 +171,7 @@ public class Message_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetOperationPosition() {
     writer.appendCreate( "w1", "type" );
     writer.appendCreate( "w2", "type" );
@@ -157,6 +181,7 @@ public class Message_Test extends TestCase {
     assertEquals( 1, message.getOperation( 1 ).getPosition() );
   }
 
+  @Test
   public void testCreateOperation() {
     writer.appendCreate( "w1", "type" );
 
@@ -165,6 +190,7 @@ public class Message_Test extends TestCase {
     assertEquals( "type", operation.getType() );
   }
 
+  @Test
   public void testCallOperation() {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "key1", "a" );
@@ -178,6 +204,7 @@ public class Message_Test extends TestCase {
     assertEquals( new Integer( 2 ), operation.getProperty( "key2" ) );
   }
 
+  @Test
   public void testSetOperation() {
     writer.appendSet( "w1", "key", true );
     writer.appendSet( "w1", "key2", "value" );
@@ -188,15 +215,17 @@ public class Message_Test extends TestCase {
     assertEquals( "value", operation.getProperty( "key2" ) );
   }
 
+  @Test
   public void testListenOperation() {
     writer.appendListen( "w1", "event", true );
     writer.appendListen( "w1", "event2", false );
 
     ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
-    assertEquals( true, operation.listensTo( "event" ) );
-    assertEquals( false, operation.listensTo( "event2" ) );
+    assertTrue( operation.listensTo( "event" ) );
+    assertFalse( operation.listensTo( "event2" ) );
   }
 
+  @Test
   public void testOperationGetPropertyNames() {
     writer.appendSet( "w1", "key", true );
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
@@ -205,6 +234,7 @@ public class Message_Test extends TestCase {
     assertTrue( operation.getPropertyNames().contains( "key" ) );
   }
 
+  @Test
   public void testOperationGetPropertyNamesWhenEmpty() {
     writer.appendCall( "w1", "foo", null );
     CallOperation operation = ( CallOperation )getMessage().getOperation( 0 );
@@ -216,6 +246,7 @@ public class Message_Test extends TestCase {
     }
   }
 
+  @Test
   public void testFindSetOperation() {
     writer.appendSet( "w1", "key", true );
 
@@ -225,6 +256,7 @@ public class Message_Test extends TestCase {
     assertEquals( Boolean.TRUE, operation.getProperty( "key" ) );
   }
 
+  @Test
   public void testFindSetOperationFailed() {
     writer.appendSet( "w1", "key1", true );
 
@@ -234,6 +266,7 @@ public class Message_Test extends TestCase {
     assertNull( message.findSetOperation( "w2", "key1" ) );
   }
 
+  @Test
   public void testFindSetProperty() {
     writer.appendSet( "w1", "key", true );
 
@@ -242,6 +275,7 @@ public class Message_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( "w1", "key" ) );
   }
 
+  @Test
   public void testFindSetPropertyFailed() {
     writer.appendSet( "w1", "key1", true );
 
@@ -261,6 +295,7 @@ public class Message_Test extends TestCase {
     }
   }
 
+  @Test
   public void testFindListenOperation() {
     writer.appendListen( "w1", "key", true );
 
@@ -270,6 +305,7 @@ public class Message_Test extends TestCase {
     assertEquals( Boolean.TRUE, operation.getProperty( "key" ) );
   }
 
+  @Test
   public void testFindListenOperationFailed() {
     writer.appendListen( "w1", "key1", true );
 
@@ -279,6 +315,7 @@ public class Message_Test extends TestCase {
     assertNull( message.findListenOperation( "w2", "key1" ) );
   }
 
+  @Test
   public void testFindListenProperty() {
     writer.appendListen( "w1", "key", true );
 
@@ -287,6 +324,7 @@ public class Message_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( "w1", "key" ) );
   }
 
+  @Test
   public void testFindListenPropertyFailed() {
     writer.appendListen( "w1", "key1", true );
 
@@ -306,6 +344,7 @@ public class Message_Test extends TestCase {
     }
   }
 
+  @Test
   public void testFindCreateOperation() {
     writer.appendCreate( "w2", "myType" );
     writer.appendSet( "w2", "key", true );
@@ -318,6 +357,7 @@ public class Message_Test extends TestCase {
     assertEquals( Boolean.TRUE, operation.getProperty( "key" ) );
   }
 
+  @Test
   public void testFindCreateFailed() {
     writer.appendCreate( "w2", "myType" );
 
@@ -326,6 +366,7 @@ public class Message_Test extends TestCase {
     assertNull( message.findCreateOperation( "w1" ) );
   }
 
+  @Test
   public void testFindCreateProperty() {
     writer.appendCreate( "w2", "myType" );
     writer.appendSet( "w2", "key", true );
@@ -335,6 +376,7 @@ public class Message_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findCreateProperty( "w2", "key" ) );
   }
 
+  @Test
   public void testFindCreatePropertyFailed() {
     writer.appendCreate( "w2", "myType" );
     writer.appendSet( "w2", "key1", true );
@@ -355,6 +397,7 @@ public class Message_Test extends TestCase {
     }
   }
 
+  @Test
   public void testFindCallOperation() {
     writer.appendCall( "w1", "method", null );
 
@@ -365,6 +408,7 @@ public class Message_Test extends TestCase {
     assertEquals( "method", operation.getMethodName() );
   }
 
+  @Test
   public void testFindCallOperationFailed() {
     writer.appendCall( "w2", "method1", null );
     writer.appendCall( "w1", "method2", null );
@@ -374,6 +418,7 @@ public class Message_Test extends TestCase {
     assertNull( message.findCallOperation( "w1", "method1" ) );
   }
 
+  @Test
   public void testOperationGetProperty() {
     writer.appendSet( "w1", "foo", 23 );
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
@@ -381,6 +426,7 @@ public class Message_Test extends TestCase {
     assertEquals( Integer.valueOf( 23 ), operation.getProperty( "foo" ) );
   }
 
+  @Test
   public void testOperationGetPropertyWithNonExistingValue() {
     writer.appendSet( "w1", "foo", 23 );
 
@@ -393,6 +439,7 @@ public class Message_Test extends TestCase {
   }
 
 
+  @Test
   public void testNonExistingOperation() {
     writer.appendSet( "w1", "key", true );
 
@@ -403,12 +450,14 @@ public class Message_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetError() {
     writer.appendHead( "error", JsonValue.valueOf( "test error" ) );
 
     assertEquals( "test error", getMessage().getError() );
   }
 
+  @Test
   public void testGetNoError() {
     try {
       getMessage().getError();
@@ -417,12 +466,14 @@ public class Message_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetErrorMessage() {
     writer.appendHead( "message", JsonValue.valueOf( "test message" ) );
 
     assertEquals( "test message", getMessage().getErrorMessage() );
   }
 
+  @Test
   public void testGetNoErrorMessage() {
     try {
       getMessage().getErrorMessage();

@@ -11,14 +11,19 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -40,27 +45,31 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 @SuppressWarnings("deprecation")
-public class Tree_Test extends TestCase {
+public class Tree_Test {
 
   private Display display;
   private Composite composite;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     composite = new Shell( display, SWT.NONE );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testGetItemsAndGetItemCount() {
     Tree tree = new Tree( composite, SWT.NONE );
     assertEquals( 0, tree.getItemCount() );
@@ -72,6 +81,7 @@ public class Tree_Test extends TestCase {
     assertSame( item, tree.getItems()[ 0 ] );
   }
 
+  @Test
   public void testImage() {
     Tree tree = new Tree( composite, SWT.NONE );
 
@@ -84,6 +94,7 @@ public class Tree_Test extends TestCase {
     assertSame( Graphics.getImage( Fixture.IMAGE2 ), item2.getImage() );
   }
 
+  @Test
   public void testStyle() {
     Tree tree1 = new Tree( composite, SWT.NONE );
     assertTrue( ( tree1.getStyle() & SWT.SINGLE ) != 0 );
@@ -106,6 +117,7 @@ public class Tree_Test extends TestCase {
     assertTrue( ( tree4.getStyle() & SWT.V_SCROLL ) != 0 );
   }
 
+  @Test
   public void testItemHierarchy() {
     Tree tree = new Tree( composite, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -120,6 +132,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, subItem.getItems().length );
   }
 
+  @Test
   public void testDispose() {
     Tree tree = new Tree( composite, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -127,14 +140,15 @@ public class Tree_Test extends TestCase {
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     tree.dispose();
 
-    assertEquals( true, item.isDisposed() );
-    assertEquals( true, subItem.isDisposed() );
-    assertEquals( true, column.isDisposed() );
+    assertTrue( item.isDisposed() );
+    assertTrue( subItem.isDisposed() );
+    assertTrue( column.isDisposed() );
     assertEquals( 0, ItemHolder.getItemHolder( tree ).getItems().length );
     assertEquals( 0, ItemHolder.getItemHolder( item ).getItems().length );
     assertEquals( 0, ItemHolder.getItemHolder( subItem ).getItems().length );
   }
 
+  @Test
   public void testDisposeWithFontDisposeInDisposeListener() {
     Tree tree = new Tree( composite, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
@@ -149,6 +163,7 @@ public class Tree_Test extends TestCase {
     tree.dispose();
   }
 
+  @Test
   public void testDisposeSelected() {
     Tree tree = new Tree( composite, SWT.MULTI );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -157,13 +172,14 @@ public class Tree_Test extends TestCase {
     tree.setSelection( new TreeItem[] { subItem, otherItem } );
     item.dispose();
 
-    assertEquals( true, item.isDisposed() );
-    assertEquals( true, subItem.isDisposed() );
-    assertEquals( false, otherItem.isDisposed() );
+    assertTrue( item.isDisposed() );
+    assertTrue( subItem.isDisposed() );
+    assertFalse( otherItem.isDisposed() );
     assertEquals( 1, tree.getSelectionCount() );
     assertSame( otherItem, tree.getSelection()[ 0 ] );
   }
 
+  @Test
   public void testIndexOf() {
     Tree tree = new Tree( composite, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -189,6 +205,7 @@ public class Tree_Test extends TestCase {
     assertEquals( -1, tree.indexOf( anotherItem ) );
   }
 
+  @Test
   public void testIndexOfColumns() {
     Tree tree = new Tree( composite, SWT.NONE );
     TreeColumn col = new TreeColumn( tree, SWT.NONE );
@@ -210,6 +227,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testIndexOfAfterDispose() {
     Tree tree = new Tree( composite, SWT.NONE );
     for( int i = 0; i < 10; i++ ) {
@@ -222,6 +240,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 7, tree.indexOf( item8 ) );
   }
 
+  @Test
   public void testIndexOfAfterInsert() {
     Tree tree = new Tree( composite, SWT.NONE );
     for( int i = 0; i < 10; i++ ) {
@@ -234,6 +253,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 9, tree.indexOf( item8 ) );
   }
 
+  @Test
   public void testGetItemCountAfterInsert() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setItemCount( 10 );
@@ -243,6 +263,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 11, tree.getItemCount() );
   }
 
+  @Test
   public void testGetItemCountAfterRemove() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setItemCount( 10 );
@@ -252,6 +273,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 9, tree.getItemCount() );
   }
 
+  @Test
   public void testExpandCollapse() {
     final StringBuilder log = new StringBuilder();
     Tree tree = new Tree( composite, SWT.NONE );
@@ -268,25 +290,26 @@ public class Tree_Test extends TestCase {
     TreeItem childlessItem = new TreeItem( tree, SWT.NONE );
 
     // ensure initial state
-    assertEquals( false, item.getExpanded() );
+    assertFalse( item.getExpanded() );
 
     // ensure changing works
     item.setExpanded( true );
-    assertEquals( true, item.getExpanded() );
+    assertTrue( item.getExpanded() );
 
     // test that items without sub-items cannot be expanded
     childlessItem.setExpanded( true );
-    assertEquals( false, childlessItem.getExpanded() );
+    assertFalse( childlessItem.getExpanded() );
 
     // test that an item is still expanded when it has no more sub items
     item.setExpanded( true );
     subItem.dispose();
-    assertEquals( true, item.getExpanded() );
+    assertTrue( item.getExpanded() );
 
     // ensure that calling setExpanded does not raise any events
     assertEquals( "", log.toString() );
   }
 
+  @Test
   public void testSelectionForSingle() {
     Tree tree = new Tree( composite, SWT.SINGLE );
 
@@ -371,6 +394,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSelectionForMulti() {
     Tree tree = new Tree( composite, SWT.MULTI );
 
@@ -440,6 +464,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSelectAllForSingle() {
     Tree tree = new Tree( composite, SWT.SINGLE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
@@ -451,6 +476,7 @@ public class Tree_Test extends TestCase {
     assertSame( item2, tree.getSelection()[ 0 ] );
   }
 
+  @Test
   public void testSelectAllForMulti() {
     Tree tree = new Tree( composite, SWT.MULTI );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
@@ -463,6 +489,7 @@ public class Tree_Test extends TestCase {
     assertTrue( contains( tree.getSelection(), item2 ) );
   }
 
+  @Test
   public void testDeselectAll() {
     Tree tree = new Tree( composite, SWT.MULTI );
     TreeItem treeItem1 = new TreeItem( tree, SWT.NONE );
@@ -474,6 +501,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, tree.getSelection().length );
   }
 
+  @Test
   public void testSelectForSingle() {
     Tree tree = new Tree( composite, SWT.SINGLE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
@@ -486,6 +514,7 @@ public class Tree_Test extends TestCase {
     assertFalse( contains( tree.getSelection(), item2 ) );
   }
 
+  @Test
   public void testSelectForMulti() {
     Tree tree = new Tree( composite, SWT.MULTI );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
@@ -499,6 +528,7 @@ public class Tree_Test extends TestCase {
     assertTrue( contains( tree.getSelection(), item2 ) );
   }
 
+  @Test
   public void testDeselectForSingle() {
     Tree tree = new Tree( composite, SWT.SINGLE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
@@ -512,6 +542,7 @@ public class Tree_Test extends TestCase {
     assertFalse( contains( tree.getSelection(), item2 ) );
   }
 
+  @Test
   public void testDeselectForMulti() {
     Tree tree = new Tree( composite, SWT.MULTI );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
@@ -525,6 +556,7 @@ public class Tree_Test extends TestCase {
     assertTrue( contains( tree.getSelection(), item2 ) );
   }
 
+  @Test
   public void testRemoveAllOnEmptyTree() {
     Tree tree = new Tree( composite, SWT.MULTI );
 
@@ -534,6 +566,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, tree.getSelection().length );
   }
 
+  @Test
   public void testRemoveAll() {
     Tree tree = new Tree( composite, SWT.MULTI );
     new TreeItem( tree, SWT.NONE );
@@ -549,6 +582,7 @@ public class Tree_Test extends TestCase {
     assertTrue( item2_1.isDisposed() );
   }
 
+  @Test
   public void testVirtualRemoveAll() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setItemCount( 100 );
@@ -560,6 +594,7 @@ public class Tree_Test extends TestCase {
     assertTrue( item.isDisposed() );
   }
 
+  @Test
   public void testInitialGetTopItemIndex() {
     Tree tree = new Tree( composite, SWT.NONE );
     ITreeAdapter adapter = getTreeAdapter( tree );
@@ -567,6 +602,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, adapter.getTopItemIndex() );
   }
 
+  @Test
   public void testShowItemFlat() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setBounds( 0, 0, 200, 200 );
@@ -581,12 +617,14 @@ public class Tree_Test extends TestCase {
     assertEquals( 64, adapter.getTopItemIndex() );
   }
 
+  @Test
   public void testGetParentItem() {
     Tree tree = new Tree( composite, SWT.SINGLE );
 
     assertNull( tree.getParentItem() );
   }
 
+  @Test
   public void testGetColumnCount() {
     Tree tree = new Tree( composite, SWT.SINGLE );
     assertEquals( 0, tree.getColumnCount() );
@@ -610,6 +648,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, tree.getColumnCount() );
   }
 
+  @Test
   public void testGetColumnI() {
     Tree tree = new Tree( composite, SWT.SINGLE );
 
@@ -650,6 +689,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetColumns() {
     Tree tree = new Tree( composite, SWT.SINGLE );
     assertEquals( 0, tree.getColumns().length );
@@ -678,6 +718,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, tree.getColumns().length );
   }
 
+  @Test
   public void testSetHeaderVisible() {
     Tree tree = new Tree( composite, SWT.SINGLE );
     assertFalse( tree.getHeaderVisible() );
@@ -689,6 +730,7 @@ public class Tree_Test extends TestCase {
     assertFalse( tree.getHeaderVisible() );
   }
 
+  @Test
   public void testGetHeaderHeight() {
     Tree tree = new Tree( composite, SWT.SINGLE );
     assertEquals( 0, tree.getHeaderHeight() );
@@ -700,6 +742,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, tree.getHeaderHeight() );
   }
 
+  @Test
   public void testHeaderHeightWithCustomUserFont() {
     Tree tree = new Tree( composite, SWT.SINGLE );
     tree.setHeaderVisible( true );
@@ -710,6 +753,7 @@ public class Tree_Test extends TestCase {
     assertTrue( headerHeight < tree.getHeaderHeight() );
   }
 
+  @Test
   public void testMultiLineHeaderHeight() {
     Tree tree = new Tree( composite, SWT.SINGLE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
@@ -720,6 +764,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 52, tree.getHeaderHeight() );
   }
 
+  @Test
   public void testSetSortColumn() {
     Tree tree = new Tree( composite, SWT.SINGLE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
@@ -732,6 +777,7 @@ public class Tree_Test extends TestCase {
     assertEquals( null, tree.getSortColumn() );
   }
 
+  @Test
   public void testSetSortDirection() {
     Tree tree = new Tree( composite, SWT.SINGLE );
     assertEquals( SWT.NONE, tree.getSortDirection() );
@@ -743,6 +789,7 @@ public class Tree_Test extends TestCase {
     assertEquals( SWT.DOWN, tree.getSortDirection() );
   }
 
+  @Test
   public void testShowSelection() {
     Tree tree = new Tree( composite, SWT.SINGLE );
     TreeItem item;
@@ -754,6 +801,7 @@ public class Tree_Test extends TestCase {
     // TODO [fappel]: What does this test? I wonder since there is no assert statement.
   }
 
+  @Test
   public void testResizeListener() {
     final Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
     final List<ControlEvent> log = new ArrayList<ControlEvent>();
@@ -768,6 +816,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 1, log.size() );
   }
 
+  @Test
   public void testUpdateScrollBarOnColumnChange() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 20, 20 );
@@ -787,6 +836,7 @@ public class Tree_Test extends TestCase {
     assertFalse( tree.hasHScrollBar() );
   }
 
+  @Test
   public void testUpdateScrollBarOnItemsChange() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 20, 20 );
@@ -801,6 +851,7 @@ public class Tree_Test extends TestCase {
     assertFalse( tree.hasVScrollBar() );
   }
 
+  @Test
   public void testUpdateScrollBarOnItemExpand() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 50, tree.getItemHeight() + 4 );
@@ -817,6 +868,7 @@ public class Tree_Test extends TestCase {
     assertFalse( tree.hasVScrollBar() );
   }
 
+  @Test
   public void testUpdateScrollBarOnResize() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 20, 20 );
@@ -829,6 +881,7 @@ public class Tree_Test extends TestCase {
     assertFalse( tree.hasHScrollBar() );
   }
 
+  @Test
   public void testUpdateScrollBarOnItemWidthChange() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 60, 60 );
@@ -849,6 +902,7 @@ public class Tree_Test extends TestCase {
     assertFalse( tree.hasHScrollBar() );
   }
 
+  @Test
   public void testUpdateScrollBarOnClearAll() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 100, 100 );
@@ -860,6 +914,7 @@ public class Tree_Test extends TestCase {
     assertFalse( tree.hasHScrollBar() );
   }
 
+  @Test
   public void testUpdateScrollBarOnHeaderVisibleChange() {
     Tree tree = new Tree( composite, SWT.NONE );
     int itemCount = 5;
@@ -876,6 +931,7 @@ public class Tree_Test extends TestCase {
     assertTrue( tree.hasVScrollBar() );
   }
 
+  @Test
   public void testUpdateScrollBarOnVirtualItemCountChange() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     int itemCount = 5;
@@ -889,6 +945,7 @@ public class Tree_Test extends TestCase {
     assertTrue( tree.hasVScrollBar() );
   }
 
+  @Test
   public void testUpdateScrollBarItemWidthChangeWithColumn() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 20, 20 );
@@ -906,6 +963,7 @@ public class Tree_Test extends TestCase {
     assertFalse( tree.hasHScrollBar() );
   }
 
+  @Test
   public void testUpdateScrollBarWithInterDependencyHFirst() {
     Tree tree = new Tree( composite, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
@@ -924,6 +982,7 @@ public class Tree_Test extends TestCase {
     assertTrue( tree.hasVScrollBar() );
   }
 
+  @Test
   public void testUpdateScrollBarWithInterDependencyVFirst() {
     Tree tree = new Tree( composite, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
@@ -940,6 +999,7 @@ public class Tree_Test extends TestCase {
     assertTrue( tree.hasVScrollBar() );
   }
 
+  @Test
   public void testComputeSizeWithColumns() {
     Tree tree = new Tree( composite, SWT.NONE );
     Point expected = new Point( 74, 74 );
@@ -1005,6 +1065,7 @@ public class Tree_Test extends TestCase {
     assertEquals( expected, tree.computeSize( 300, 300 ) );
   }
 
+  @Test
   public void testComputeSizeWithIndention() {
     Tree tree = new Tree( composite, SWT.NONE );
     Point expected = new Point( 74, 74 );
@@ -1025,6 +1086,7 @@ public class Tree_Test extends TestCase {
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
+  @Test
   public void testImageCutOff() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 200, 200 );
@@ -1036,6 +1098,7 @@ public class Tree_Test extends TestCase {
     assertTrue( tree.getItemImageSize( 0 ).x <= 20 );
   }
 
+  @Test
   public void testImageCutOffMultiColumn() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 500, 500 );
@@ -1055,6 +1118,7 @@ public class Tree_Test extends TestCase {
     assertTrue( tree.getItemImageSize( 1 ).x <= 50 );
   }
 
+  @Test
   public void testImageCutOffAndRestore() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 200, 200 );
@@ -1072,6 +1136,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 100, tree.getItemImageSize( 0 ).x );
   }
 
+  @Test
   public void testHideColumn() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 200, 200 );
@@ -1082,6 +1147,7 @@ public class Tree_Test extends TestCase {
     assertEquals(  0, tree.getTextWidth( 0 ) );
   }
 
+  @Test
   public void testHideColumnWidthImage() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 200, 200 );
@@ -1097,6 +1163,7 @@ public class Tree_Test extends TestCase {
   //////////
   // VIRTUAL
 
+  @Test
   public void testVirtualGetItemOutOfBounds() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setItemCount( 10 );
@@ -1109,6 +1176,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testVirtualInitalSetDataEvents() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     final List<Widget> log = new ArrayList<Widget>();
@@ -1127,6 +1195,7 @@ public class Tree_Test extends TestCase {
     assertFalse( log.contains( tree.getItem( 19 ) ) );
   }
 
+  @Test
   public void testSetDataEvents() {
     final Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
     tree.addListener( SWT.SetData, createSetDataListener() );
@@ -1137,6 +1206,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 10, item.getItemCount() );
   }
 
+  @Test
   public void testVirtualNoSetDataEventForCollapsedItems() {
     final Tree tree = new Tree( composite, SWT.VIRTUAL );
     final List<Event> log = new ArrayList<Event>();
@@ -1154,6 +1224,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 1, log.size() );
   }
 
+  @Test
   public void testVirtualItemIsResolved() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setItemCount( 10 );
@@ -1164,6 +1235,7 @@ public class Tree_Test extends TestCase {
     assertFalse( item.isDisposed() );
   }
 
+  @Test
   public void testVirtualWithSmallerItemsCount() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setItemCount( 10 );
@@ -1177,6 +1249,7 @@ public class Tree_Test extends TestCase {
     assertTrue( item9.isDisposed() );
   }
 
+  @Test
   public void testVirtualClearAllNonRecursive() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setSize( 100, 160 );
@@ -1192,6 +1265,7 @@ public class Tree_Test extends TestCase {
     assertEquals( "custom", tree.getItem( 0 ).getItem( 0 ).getText() );
   }
 
+  @Test
   public void testVirtualClearAllRecursive() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setSize( 100, 160 );
@@ -1207,6 +1281,7 @@ public class Tree_Test extends TestCase {
     assertEquals( "node 0 - 0", tree.getItem( 0 ).getItem( 0 ).getText() );
   }
 
+  @Test
   public void testVirtualClearNonRecursive() {
     Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
     tree.setSize( 100, 160 );
@@ -1224,6 +1299,7 @@ public class Tree_Test extends TestCase {
     assertEquals( "custom", tree.getItem( 1 ).getText() );
   }
 
+  @Test
   public void testVirtualClearRecursive() {
     Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
     tree.setSize( 100, 160 );
@@ -1241,6 +1317,7 @@ public class Tree_Test extends TestCase {
     assertEquals( "custom", tree.getItem( 1 ).getText() );
   }
 
+  @Test
   public void testVirtualComputeSize() {
     Tree tree = new Tree( composite, SWT.BORDER | SWT.VIRTUAL );
     tree.setItemCount( 10 );
@@ -1286,6 +1363,7 @@ public class Tree_Test extends TestCase {
     assertEquals( expected, tree.computeSize( 300, 300 ) );
   }
 
+  @Test
   public void testVirtualScrollThrowsSetData() {
     final LoggingListener log = new LoggingListener();
     Tree tree = new Tree( composite, SWT.VIRTUAL );
@@ -1300,6 +1378,7 @@ public class Tree_Test extends TestCase {
     assertSame( tree.getItem( 31 ), log.get( 1 ).item );
   }
 
+  @Test
   public void testVirtualShowItemThrowsSetData() {
     final LoggingListener log = new LoggingListener();
     Tree tree = new Tree( composite, SWT.VIRTUAL );
@@ -1312,6 +1391,7 @@ public class Tree_Test extends TestCase {
     assertTrue( log.getItems().contains( tree.getItem( 30 ) ) );
   }
 
+  @Test
   public void testVirtualSetFlatIndexOnShowItem() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setItemCount( 100 );
@@ -1323,6 +1403,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 30, item.getFlatIndex() );
   }
 
+  @Test
   public void testVirtualSetFlatIndexOnSetTopItem() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setItemCount( 100 );
@@ -1334,6 +1415,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 30, item.getFlatIndex() );
   }
 
+  @Test
   public void testTopItem() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 300, 85 );
@@ -1367,6 +1449,7 @@ public class Tree_Test extends TestCase {
     assertTrue( items[ 54 ].getExpanded() );
   }
 
+  @Test
   public void testTopItemOnResize() {
     Tree tree = new Tree( composite, SWT.NONE );
     createTreeItems( tree, 10 );
@@ -1379,6 +1462,7 @@ public class Tree_Test extends TestCase {
     assertEquals( tree.getItem( 4 ), tree.getTopItem() );
   }
 
+  @Test
   public void testTopItemOnItemDispose() {
     Tree tree = new Tree( composite, SWT.NONE );
     createTreeItems( tree, 10 );
@@ -1391,6 +1475,7 @@ public class Tree_Test extends TestCase {
     assertEquals( tree.getItem( 6 ), tree.getTopItem() );
   }
 
+  @Test
   public void testTopIndexOnTemporaryResize() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 100, 100 );
@@ -1403,6 +1488,7 @@ public class Tree_Test extends TestCase {
     assertEquals( tree.getItem( 5 ), tree.getTopItem() );
   }
 
+  @Test
   public void testTopItemInResizeEvent() {
     final TreeItem[] log = new TreeItem[ 1 ];
     final Tree tree = new Tree( composite, SWT.NONE );
@@ -1422,6 +1508,7 @@ public class Tree_Test extends TestCase {
     assertSame( tree.getItem( 4 ), log[ 0 ] );
   }
 
+  @Test
   public void testSetTopItemTwice() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 300, 85 );
@@ -1445,6 +1532,7 @@ public class Tree_Test extends TestCase {
     assertTrue( items[ 18 ].getExpanded() );
   }
 
+  @Test
   public void testScrollBars() {
     Tree tree = new Tree( composite, SWT.NONE );
     assertNotNull( tree.getHorizontalBar() );
@@ -1455,6 +1543,7 @@ public class Tree_Test extends TestCase {
     assertNull( tree.getVerticalBar() );
   }
 
+  @Test
   public void testHasScrollBar_NO_SCROLL() {
     Tree tree = new Tree( composite, SWT.NO_SCROLL );
     tree.setSize( 200, 200 );
@@ -1468,6 +1557,7 @@ public class Tree_Test extends TestCase {
     assertFalse( tree.hasHScrollBar() );
   }
 
+  @Test
   public void testCellWidthWithoutColumns() {
     Tree tree = new Tree( composite, SWT.NONE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
@@ -1490,6 +1580,7 @@ public class Tree_Test extends TestCase {
     assertTrue( cellWidth3 > cellWidth2 );
   }
 
+  @Test
   public void testGetItemByPoint() {
     Tree tree = new Tree( composite, SWT.NONE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
@@ -1500,6 +1591,7 @@ public class Tree_Test extends TestCase {
     assertSame( item1, result );
   }
 
+  @Test
   public void testPreferredWidthBufferHandlingOfTreeItem() {
     Tree tree = new Tree( composite, SWT.NONE );
 
@@ -1522,6 +1614,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 378, item1.getPreferredWidthBuffer( 0 ) );
   }
 
+  @Test
   public void testChanged() {
     Tree tree = new Tree( composite, SWT.NONE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
@@ -1532,6 +1625,7 @@ public class Tree_Test extends TestCase {
     assertFalse( item1.hasPreferredWidthBuffer( 0 ) );
   }
 
+  @Test
   public void testIsSerializable() throws Exception {
     Tree tree = new Tree( composite, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
@@ -1543,6 +1637,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 1, deserializedTree.getColumnCount() );
   }
 
+  @Test
   public void testLayoutCacheIsSerializable() throws Exception {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setHeaderVisible( true );
@@ -1554,6 +1649,7 @@ public class Tree_Test extends TestCase {
     assertEquals( headerHeight, deserializedTree.getHeaderHeight() );
   }
 
+  @Test
   public void testGetPreferredCellWidthForColumn() {
     Tree tree = new Tree( composite, SWT.NONE );
     createColumns( tree, 3 );
@@ -1566,6 +1662,7 @@ public class Tree_Test extends TestCase {
     assertTrue( width2 > width1 );
   }
 
+  @Test
   public void testSetItemCountDoesNotResolveVirtualItems() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setSize( 300, 50 );
@@ -1575,6 +1672,7 @@ public class Tree_Test extends TestCase {
     assertFalse( tree.getItem( 0 ).isCached() );
   }
 
+  @Test
   public void testTemporaryResizeDoesNotResolveVirtualItems() {
     final java.util.List<Event> eventLog = new LinkedList<Event>();
     composite.setSize( 100, 100 );
@@ -1594,6 +1692,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, eventLog.size() );
   }
 
+  @Test
   public void testVirtualMaterializeItemOnScroll() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setSize( 300, 300 );
@@ -1607,6 +1706,7 @@ public class Tree_Test extends TestCase {
     assertTrue( item.getItem( 25 ).isCached() );
   }
 
+  @Test
   public void testGetCreatedItems_DoesNotContainNullItems() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setItemCount( 100 );
@@ -1615,6 +1715,7 @@ public class Tree_Test extends TestCase {
     assertTrue( tree.getCreatedItems().length < 10 );
   }
 
+  @Test
   public void testGetCreatedItems_DoesNotContainPlaceholderItems() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setItemCount( 100 );
@@ -1625,12 +1726,14 @@ public class Tree_Test extends TestCase {
     assertTrue( tree.getCreatedItems().length < 10 );
   }
 
+  @Test
   public void testSetCustomItemHeight() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 123 ) );
     assertEquals( 123, tree.getItemHeight() );
   }
 
+  @Test
   public void testGetCustomItemHeight() {
     Integer itemHeight = new Integer( 123 );
     Tree tree = new Tree( composite, SWT.NONE );
@@ -1641,6 +1744,7 @@ public class Tree_Test extends TestCase {
     assertEquals( itemHeight, returnedItemHeight );
   }
 
+  @Test
   public void testResetCustomItemHeight() {
     Tree tree = new Tree( composite, SWT.NONE );
     int calculatedItemHeight = tree.getItemHeight();
@@ -1649,11 +1753,13 @@ public class Tree_Test extends TestCase {
     assertEquals( calculatedItemHeight, tree.getItemHeight() );
   }
 
+  @Test
   public void testDefaultCustomItemHeight() {
     Tree tree = new Tree( composite, SWT.NONE );
     assertEquals( 27, tree.getItemHeight() );
   }
 
+  @Test
   public void testSetCustomItemHeightWithNegativeValue() {
     Tree tree = new Tree( composite, SWT.NONE );
     try {
@@ -1663,6 +1769,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetCustomItemHeightWithNonIntegerValue() {
     Tree tree = new Tree( composite, SWT.NONE );
     try {
@@ -1672,6 +1779,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testMarkupTextWithoutMarkupEnabled() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
@@ -1684,6 +1792,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testMarkupTextWithMarkupEnabled() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
@@ -1696,6 +1805,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
@@ -1709,6 +1819,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDisableMarkupIsIgnored() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
@@ -1719,6 +1830,7 @@ public class Tree_Test extends TestCase {
   }
 
   // see bug 371860
+  @Test
   public void testClearSetDataOrder() {
     final List<String> log = new ArrayList<String>();
     Tree tree = new Tree( composite, SWT.VIRTUAL );
@@ -1751,6 +1863,7 @@ public class Tree_Test extends TestCase {
     assertEquals( "item0#SetData", log.get( 3 ) );
   }
 
+  @Test
   public void testShowColumn() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 325, 100 );
@@ -1775,6 +1888,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 125, adapter.getScrollLeft() );
   }
 
+  @Test
   public void testShowColumnWithReorderedColumns() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 325, 100 );
@@ -1793,6 +1907,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 125, adapter.getScrollLeft() );
   }
 
+  @Test
   public void testShowColumnWithNullArgument() {
     Tree tree = new Tree( composite, SWT.NONE );
     try {
@@ -1802,6 +1917,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testShowColumnWithDisposedColumn() {
     Tree tree = new Tree( composite, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
@@ -1813,6 +1929,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testShowColumnWithForeignColumn() {
     int initialLeftOffset = 123456;
     Tree tree = new Tree( composite, SWT.NONE );
@@ -1829,6 +1946,7 @@ public class Tree_Test extends TestCase {
     assertEquals( initialLeftOffset, adapter.getScrollLeft() );
   }
 
+  @Test
   public void testShowFixedColumn() {
     composite.setSize( 800, 600 );
     Tree tree = createFixedColumnsTree();
@@ -1846,6 +1964,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 100, adapter.getScrollLeft() );
   }
 
+  @Test
   public void testShowColumnWithFixedColumns_ScrolledToLeft() {
     int numColumns = 4;
     int columnWidth = 100;
@@ -1863,6 +1982,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, adapter.getScrollLeft() );
   }
 
+  @Test
   public void testShowColumnWithFixedColumns_ScrolledToRight() {
     int numColumns = 4;
     int columnWidth = 100;
@@ -1879,6 +1999,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 100, adapter.getScrollLeft() );
   }
 
+  @Test
   public void testAddTreeListener() {
     Tree tree = new Tree( composite, SWT.NONE );
 
@@ -1888,6 +2009,7 @@ public class Tree_Test extends TestCase {
     assertTrue( tree.isListening( SWT.Collapse ) );
   }
 
+  @Test
   public void testRemoveTreeListener() {
     Tree tree = new Tree( composite, SWT.NONE );
     TreeListener listener = mock( TreeListener.class );
@@ -1899,6 +2021,7 @@ public class Tree_Test extends TestCase {
     assertFalse( tree.isListening( SWT.Collapse ) );
   }
 
+  @Test
   public void testAddTreeListenerWithNullArgument() {
     Tree tree = new Tree( composite, SWT.NONE );
 
@@ -1908,6 +2031,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRemoveTreeListenerWithNullArgument() {
     Tree tree = new Tree( composite, SWT.NONE );
 
@@ -1917,6 +2041,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testAddSelectionListener() {
     Tree tree = new Tree( composite, SWT.NONE );
 
@@ -1926,6 +2051,7 @@ public class Tree_Test extends TestCase {
     assertTrue( tree.isListening( SWT.DefaultSelection ) );
   }
 
+  @Test
   public void testRemoveSelectionListener() {
     Tree tree = new Tree( composite, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
@@ -1937,6 +2063,7 @@ public class Tree_Test extends TestCase {
     assertFalse( tree.isListening( SWT.DefaultSelection ) );
   }
 
+  @Test
   public void testAddSelectionListenerWithNullArgument() {
     Tree tree = new Tree( composite, SWT.NONE );
 
@@ -1946,6 +2073,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRemoveSelectionListenerWithNullArgument() {
     Tree tree = new Tree( composite, SWT.NONE );
 
@@ -1955,6 +2083,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDisposeCellEditor() {
     Tree tree = new Tree( composite, SWT.NONE );
     Text cellEditor = new Text( tree, SWT.NONE );

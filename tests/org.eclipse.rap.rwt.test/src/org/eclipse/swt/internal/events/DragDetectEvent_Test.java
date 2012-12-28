@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,13 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -26,14 +28,31 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class DragDetectEvent_Test extends TestCase {
+public class DragDetectEvent_Test {
 
   private Display display;
   private Shell shell;
 
-  public void testUntypedEventConstructor() throws Exception {
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
+  public void testUntypedEventConstructor() {
     Event event = new Event();
     event.display = display;
     event.widget = mock( Widget.class );
@@ -42,12 +61,13 @@ public class DragDetectEvent_Test extends TestCase {
     event.y = 20;
     event.button = 2;
     event.stateMask = 23;
-    
+
     DragDetectEvent dragEvent = new DragDetectEvent( event );
-    
+
     EventTestHelper.assertFieldsEqual( dragEvent, event );
   }
-  
+
+  @Test
   public void testDragDetectEvent() {
     final java.util.List<Event> log = new ArrayList<Event>();
     Listener listener = new Listener() {
@@ -69,14 +89,4 @@ public class DragDetectEvent_Test extends TestCase {
     assertEquals( 0, log.size() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display = new Display();
-    shell = new Shell( display );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

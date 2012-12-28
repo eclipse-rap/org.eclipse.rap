@@ -10,21 +10,25 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.service;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.testfixture.TestSession;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class UISessionEvent_Test extends TestCase {
+public class UISessionEvent_Test {
 
   private UISessionImpl uiSession;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     uiSession = new UISessionImpl( new TestSession() );
   }
 
+  @Test
   public void testConstructorWithNullArgument() {
     try {
       new UISessionEvent( null );
@@ -33,6 +37,7 @@ public class UISessionEvent_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetSource() {
     UISessionEvent event = new UISessionEvent( uiSession );
 
@@ -41,6 +46,7 @@ public class UISessionEvent_Test extends TestCase {
     assertSame( uiSession, source );
   }
 
+  @Test
   public void testGetUISession() {
     UISessionEvent event = new UISessionEvent( uiSession );
 

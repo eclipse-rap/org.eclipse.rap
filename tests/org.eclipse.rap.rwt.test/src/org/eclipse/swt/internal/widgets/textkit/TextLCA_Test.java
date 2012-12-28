@@ -13,6 +13,10 @@
 package org.eclipse.swt.internal.widgets.textkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -26,12 +30,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -57,17 +59,20 @@ import org.eclipse.swt.widgets.Text;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class TextLCA_Test extends TestCase {
+public class TextLCA_Test {
 
   private Display display;
   private Shell shell;
   private TextLCA lca;
   private Text text;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     lca = new TextLCA();
     display = new Display();
@@ -76,11 +81,12 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ControlLCATestUtil.testActivateListener( text );
     ControlLCATestUtil.testFocusListener( text );
@@ -91,21 +97,25 @@ public class TextLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( text );
   }
 
+  @Test
   public void testMultiPreserveValues() {
     Text text = new Text( shell, SWT.MULTI );
     testPreserveValues( text );
   }
 
+  @Test
   public void testPasswordPreserveValues() {
     Text text = new Text( shell, SWT.PASSWORD );
     testPreserveValues( text );
   }
 
+  @Test
   public void testSinglePreserveValues() {
     Text text = new Text( shell, SWT.SINGLE );
     testPreserveValues( text );
   }
 
+  @Test
   public void testReadText() {
     Fixture.fakeSetParameter( getId( text ), "text", "abc" );
 
@@ -114,6 +124,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( "abc", text.getText() );
   }
 
+  @Test
   public void testReadSelection() {
     Fixture.fakeSetParameter( getId( text ), "text", "abc" );
     Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
@@ -124,6 +135,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( new Point( 1, 2 ), text.getSelection() );
   }
 
+  @Test
   public void testModifyEvent() {
     ModifyListener listener = mock( ModifyListener.class );
     text.addModifyListener( listener );
@@ -135,6 +147,7 @@ public class TextLCA_Test extends TestCase {
     verify( listener, times( 1 ) ).modifyText( any( ModifyEvent.class ) );
   }
 
+  @Test
   public void testVerifyEvent() {
     VerifyListener listener = mock( VerifyListener.class );
     text.addVerifyListener( listener );
@@ -146,6 +159,7 @@ public class TextLCA_Test extends TestCase {
     verify( listener, times( 1 ) ).verifyText( any( VerifyEvent.class ) );
   }
 
+  @Test
   public void testSelectionWithVerifyEvent_EmptyListener() {
     // ensure that selection is unchanged in case a verify-listener is
     // registered that does not change the text
@@ -171,6 +185,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( "verify me", text.getText() );
   }
 
+  @Test
   public void testSelectionWithVerifyEvent_ListenerDoesNotChangeSelection() {
     // ensure that selection is unchanged in case a verify-listener changes
     // the incoming text within the limits of the selection
@@ -190,6 +205,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( "verified", text.getText() );
   }
 
+  @Test
   public void testSelectionWithVerifyEvent_ListenerAdjustsSelection() {
     // ensure that selection is adjusted in case a verify-listener changes
     // the incoming text in a way that would result in an invalid selection
@@ -209,6 +225,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( "", text.getText() );
   }
 
+  @Test
   public void testPreserveText() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
@@ -224,6 +241,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findSetOperation( text, "selection" ) );
   }
 
+  @Test
   public void testVerifyAndModifyEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final List<TypedEvent> log = new ArrayList<TypedEvent>();
@@ -323,6 +341,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
+  @Test
   public void testWriteModifyListenerWhenReadOnly() throws IOException {
     Text text = new Text( shell, SWT.READ_ONLY );
     text.addListener( SWT.Modify, mock( Listener.class ) );
@@ -333,6 +352,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( text, "Modify" ) );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( text );
 
@@ -343,6 +363,7 @@ public class TextLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "SINGLE" ) );
   }
 
+  @Test
   public void testRenderCreateMultiWithWrap() throws IOException {
     Text text = new Text( shell, SWT.MULTI | SWT.WRAP );
 
@@ -356,6 +377,7 @@ public class TextLCA_Test extends TestCase {
     assertTrue( styles.contains( "WRAP" ) );
   }
 
+  @Test
   public void testRenderAlingment() throws Exception {
     Text text = new Text( shell, SWT.SINGLE | SWT.CENTER );
     Fixture.fakeResponseWriter();
@@ -368,6 +390,7 @@ public class TextLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "CENTER" ) );
   }
 
+  @Test
   public void testRenderCreateMultiWithScroll() throws IOException {
     Text text = new Text( shell, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL );
     Fixture.fakeResponseWriter();
@@ -384,6 +407,7 @@ public class TextLCA_Test extends TestCase {
     assertFalse( styles.contains( "ICON_SEARCH" ) );
   }
 
+  @Test
   public void testRenderCreateSearchWithIcons() throws IOException {
     Text text = new Text( shell, SWT.SEARCH | SWT.ICON_CANCEL | SWT.ICON_SEARCH );
     Fixture.fakeResponseWriter();
@@ -400,6 +424,7 @@ public class TextLCA_Test extends TestCase {
     assertFalse( styles.contains( "V_SCROLL" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( text );
 
@@ -408,6 +433,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( text.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderInitialMessage() throws IOException {
     lca.renderChanges( text );
 
@@ -415,6 +441,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findSetOperation( text, "message" ) );
   }
 
+  @Test
   public void testRenderMessage() throws IOException {
     text.setMessage( "test" );
     lca.renderChanges( text );
@@ -423,6 +450,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( "test", message.findSetProperty( text, "message" ) );
   }
 
+  @Test
   public void testRenderMessageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
@@ -435,6 +463,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findSetOperation( text, "message" ) );
   }
 
+  @Test
   public void testRenderPasswordEchoChar() throws IOException {
     Text text = new Text( shell, SWT.PASSWORD );
 
@@ -444,6 +473,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( "?", message.findSetProperty( text, "echoChar" ) );
   }
 
+  @Test
   public void testRenderMultiEchoChar() throws IOException {
     Text text = new Text( shell, SWT.MULTI );
 
@@ -453,6 +483,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findSetOperation( text, "echoChar" ) );
   }
 
+  @Test
   public void testRenderInitialEchoChar() throws IOException {
     lca.renderChanges( text );
 
@@ -460,6 +491,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findSetOperation( text, "echoChar" ) );
   }
 
+  @Test
   public void testRenderEchoChar() throws IOException {
     text.setEchoChar( '*' );
     lca.renderChanges( text );
@@ -468,6 +500,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( "*", message.findSetProperty( text, "echoChar" ) );
   }
 
+  @Test
   public void testRenderEchoCharUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
@@ -480,6 +513,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findSetOperation( text, "echoChar" ) );
   }
 
+  @Test
   public void testRenderInitialEditable() throws IOException {
     lca.renderChanges( text );
 
@@ -487,6 +521,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findSetOperation( text, "editable" ) );
   }
 
+  @Test
   public void testRenderEditable() throws IOException {
     text.setEditable( false );
     lca.renderChanges( text );
@@ -495,6 +530,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findSetProperty( text, "editable" ) );
   }
 
+  @Test
   public void testRenderEditableUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
@@ -507,6 +543,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findSetOperation( text, "editable" ) );
   }
 
+  @Test
   public void testRenderInitialSelection() throws IOException {
     text.setText( "foo bar" );
 
@@ -516,6 +553,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findSetOperation( text, "selection" ) );
   }
 
+  @Test
   public void testRenderSelection() throws IOException, JSONException {
     text.setText( "foo bar" );
 
@@ -527,6 +565,7 @@ public class TextLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 3 ]", actual ) );
   }
 
+  @Test
   public void testRenderSelectionAfterTextChange() throws IOException, JSONException {
     // See bug 376957
     text.setText( "foo bar" );
@@ -544,6 +583,7 @@ public class TextLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[ 0, 7 ]", actual ) );
   }
 
+  @Test
   public void testRenderSelectionUnchanged() throws IOException {
     text.setText( "foo bar" );
     Fixture.markInitialized( display );
@@ -557,6 +597,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findSetOperation( text, "selection" ) );
   }
 
+  @Test
   public void testRenderInitialTextLimit() throws IOException {
     lca.renderChanges( text );
 
@@ -564,6 +605,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findSetOperation( text, "textLimit" ) );
   }
 
+  @Test
   public void testRenderTextLimit() throws IOException {
     text.setTextLimit( 10 );
     lca.renderChanges( text );
@@ -572,6 +614,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( text, "textLimit" ) );
   }
 
+  @Test
   public void testRenderTextLimitUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
@@ -584,6 +627,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findSetOperation( text, "textLimit" ) );
   }
 
+  @Test
   public void testRenderTextLimitReset() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
@@ -597,6 +641,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( text, "textLimit" ) );
   }
 
+  @Test
   public void testRenderTextLimitResetWithNegative() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
@@ -610,6 +655,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( text, "textLimit" ) );
   }
 
+  @Test
   public void testRenderAddDefaultSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
@@ -623,6 +669,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findListenOperation( text, "Selection" ) );
   }
 
+  @Test
   public void testRenderRemoveDefaultSelectionListener() throws Exception {
     Listener listener = mock( Listener.class );
     text.addListener( SWT.DefaultSelection, listener );
@@ -638,6 +685,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findListenOperation( text, "Selection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
@@ -651,6 +699,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findListenOperation( text, "Selection" ) );
   }
 
+  @Test
   public void testRenderAddModifyListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
@@ -663,6 +712,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( text, "Modify" ) );
   }
 
+  @Test
   public void testRenderRemoveModifyListener() throws Exception {
     Listener listener = mock( Listener.class );
     text.addListener( SWT.Modify, listener );
@@ -677,6 +727,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( text, "Modify" ) );
   }
 
+  @Test
   public void testRenderModifyListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
@@ -690,6 +741,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findListenOperation( text, "Modify" ) );
   }
 
+  @Test
   public void testRenderAddVerifyListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
@@ -702,6 +754,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( text, "Modify" ) );
   }
 
+  @Test
   public void testRenderVerifyModifyListener() throws Exception {
     Listener listener = mock( Listener.class );
     text.addListener( SWT.Verify, listener );
@@ -716,6 +769,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( text, "Modify" ) );
   }
 
+  @Test
   public void testRenderVerifyListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
@@ -729,6 +783,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findListenOperation( text, "Modify" ) );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     lca.renderChanges( text );
 
@@ -736,6 +791,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findSetOperation( text, "text" ) );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     text.setText( "test" );
     lca.renderChanges( text );
@@ -744,6 +800,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( "test", message.findSetProperty( text, "text" ) );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
@@ -756,6 +813,7 @@ public class TextLCA_Test extends TestCase {
     assertNull( message.findSetOperation( text, "text" ) );
   }
 
+  @Test
   public void testProcessDefaultSelectionEvent() {
     List<Event> events = new LinkedList<Event>();
     text.addListener( SWT.DefaultSelection, new LoggingListener( events ) );
@@ -771,6 +829,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( SWT.NONE, event.detail );
   }
 
+  @Test
   public void testProcessDefaultSelectionEvent_WithSearchDetail() {
     List<Event> events = new LinkedList<Event>();
     text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL );
@@ -791,6 +850,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( SWT.ICON_SEARCH, event.detail );
   }
 
+  @Test
   public void testProcessDefaultSelectionEvent_WithCancelDetail() {
     List<Event> events = new LinkedList<Event>();
     text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL );

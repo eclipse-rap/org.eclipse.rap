@@ -13,7 +13,9 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -26,31 +28,35 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 /*
  * Put in separate class because this test does not share the same setUp/tearDown
  * as the tests in DisplayLCA_Test.
  */
-public class DisplayLCAFocus_Test extends TestCase {
+public class DisplayLCAFocus_Test {
 
   private Display display;
   private Shell shell;
   private Button button;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
     button = new Button( shell, SWT.PUSH );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testUnchangedFocus() {
     shell.setSize( 400, 400 );
     shell.setLayout( new FillLayout() );
@@ -69,6 +75,7 @@ public class DisplayLCAFocus_Test extends TestCase {
   }
 
   /* Test case for https://bugs.eclipse.org/bugs/show_bug.cgi?id=196911 */
+  @Test
   public void testSetFocusToClientSideFocusedControl() {
     final Shell[] childShell = { null };
     shell.setSize( 400, 400 );

@@ -12,6 +12,9 @@
 package org.eclipse.swt.events;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -22,8 +25,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -38,44 +39,21 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 
 
-public class MouseEvent_Test extends TestCase {
-
-  private static class LoggingListener implements Listener {
-    private final List<Object> events;
-    private LoggingListener( List<Object> events ) {
-      this.events = events;
-    }
-    public void handleEvent( Event event ) {
-      events.add( event );
-    }
-  }
-
-  private static class LoggingMouseListener implements MouseListener {
-    private final List<Object> events;
-    private LoggingMouseListener( List<Object> events ) {
-      this.events = events;
-    }
-    public void mouseDoubleClick( MouseEvent event ) {
-      events.add( event );
-    }
-    public void mouseDown( MouseEvent event ) {
-      events.add( event );
-    }
-    public void mouseUp( MouseEvent event ) {
-      events.add( event );
-    }
-  }
+public class MouseEvent_Test {
 
   private Display display;
   private Shell shell;
   private List<Object> events;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
@@ -83,11 +61,12 @@ public class MouseEvent_Test extends TestCase {
     events = new LinkedList<Object>();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testUntypedEventConstructor() {
     Event event = new Event();
     event.display = display;
@@ -105,6 +84,7 @@ public class MouseEvent_Test extends TestCase {
     EventTestHelper.assertFieldsEqual( mouseEvent, event );
   }
 
+  @Test
   public void testAddListener() {
     MouseListener listener = mock( MouseListener.class );
 
@@ -118,6 +98,7 @@ public class MouseEvent_Test extends TestCase {
     verify( listener ).mouseDoubleClick( any( MouseEvent.class ) );
   }
 
+  @Test
   public void testRemoveListener() {
     MouseListener listener = mock( MouseListener.class );
     shell.addMouseListener( listener );
@@ -128,6 +109,7 @@ public class MouseEvent_Test extends TestCase {
     verify( listener, never() ).mouseDown( any( MouseEvent.class ) );
   }
 
+  @Test
   public void testAddRemoveUntypedListener() {
     Listener listener = new LoggingListener( events );
     // MouseDown
@@ -159,6 +141,7 @@ public class MouseEvent_Test extends TestCase {
     assertEquals( 0, events.size() );
   }
 
+  @Test
   public void testTypedMouseEventOrderWithClick() {
     MouseListener mouseListener = mock( MouseListener.class );
     shell.setLocation( 100, 100 );
@@ -193,6 +176,7 @@ public class MouseEvent_Test extends TestCase {
     assertEquals( 1, mouseUp.count );
   }
 
+  @Test
   public void testTypedMouseEventOrderWithDoubleClick() {
     MouseListener mouseListener = mock( MouseListener.class );
     shell.setLocation( 100, 100 );
@@ -237,6 +221,7 @@ public class MouseEvent_Test extends TestCase {
     assertEquals( 2, mouseUp.count );
   }
 
+  @Test
   public void testUntypedMouseEventOrderWithClick() {
     shell.setLocation( 100, 100 );
     shell.open();
@@ -265,6 +250,7 @@ public class MouseEvent_Test extends TestCase {
     assertEquals( 53, mouseEvent.y );
   }
 
+  @Test
   public void testUntypedMouseEventOrderWithDoubleClick() {
     shell.setBounds( 100, 100, 200, 200 );
     shell.open();
@@ -300,6 +286,7 @@ public class MouseEvent_Test extends TestCase {
     assertEquals( 53, mouseUp.y );
   }
 
+  @Test
   public void testNoMouseEventOutsideClientArea() {
     Menu menuBar = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menuBar );
@@ -331,6 +318,7 @@ public class MouseEvent_Test extends TestCase {
     assertEquals( 0, events.size() );
   }
 
+  @Test
   public void testNoMouseEventOnScrollBars() {
     Table table = createTableWithMouseListener();
     assertEquals( new Rectangle( 0, 0, 90, 100 ), table.getClientArea() );
@@ -342,6 +330,7 @@ public class MouseEvent_Test extends TestCase {
     assertEquals( 0, events.size() );
   }
 
+  @Test
   public void testMouseSelectionEventsOrder() {
     MouseListener mouseListener = mock( MouseListener.class );
     SelectionListener selectionListener = mock( SelectionListener.class );
@@ -363,6 +352,7 @@ public class MouseEvent_Test extends TestCase {
     inOrder.verify( mouseListener ).mouseUp( any( MouseEvent.class ) );
   }
 
+  @Test
   public void testMouseMenuDetectEventsOrder() {
     MouseListener mouseListener = mock( MouseListener.class );
     MenuDetectListener menuDetectListener = mock( MenuDetectListener.class );
@@ -436,5 +426,31 @@ public class MouseEvent_Test extends TestCase {
     parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( y ) );
     parameters.put( ClientMessageConst.EVENT_PARAM_TIME, Integer.valueOf( 0 ) );
     Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_MOUSE_DOWN, parameters );
+  }
+
+  private static class LoggingListener implements Listener {
+    private final List<Object> events;
+    private LoggingListener( List<Object> events ) {
+      this.events = events;
+    }
+    public void handleEvent( Event event ) {
+      events.add( event );
+    }
+  }
+
+  private static class LoggingMouseListener implements MouseListener {
+    private final List<Object> events;
+    private LoggingMouseListener( List<Object> events ) {
+      this.events = events;
+    }
+    public void mouseDoubleClick( MouseEvent event ) {
+      events.add( event );
+    }
+    public void mouseDown( MouseEvent event ) {
+      events.add( event );
+    }
+    public void mouseUp( MouseEvent event ) {
+      events.add( event );
+    }
   }
 }

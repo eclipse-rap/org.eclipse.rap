@@ -11,10 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.labelkit;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -41,27 +45,31 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 @SuppressWarnings("deprecation")
-public class LabelLCA_Test extends TestCase {
+public class LabelLCA_Test {
 
   private Display display;
   private Shell shell;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     display.dispose();
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( label );
@@ -72,6 +80,7 @@ public class LabelLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( label );
   }
 
+  @Test
   public void testStandardPreserveValues() {
     Label label = new Label( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -183,6 +192,7 @@ public class LabelLCA_Test extends TestCase {
     assertEquals( "some text", label.getToolTipText() );
   }
 
+  @Test
   public void testSeparatorPreserveValues() {
     int style = SWT.SEPARATOR | SWT.HORIZONTAL;
     Label label = new Label( shell, style );
@@ -190,6 +200,7 @@ public class LabelLCA_Test extends TestCase {
     testPreserveValues( display, label );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     LabelLCA lca = new LabelLCA();
@@ -200,6 +211,7 @@ public class LabelLCA_Test extends TestCase {
     assertNull( message.findSetOperation( label, "text" ) );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     LabelLCA lca = new LabelLCA();
@@ -211,6 +223,7 @@ public class LabelLCA_Test extends TestCase {
     assertEquals( "test", message.findSetProperty( label, "text" ) );
   }
 
+  @Test
   public void testRenderTextWithQuotationMarks() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     LabelLCA lca = new LabelLCA();
@@ -222,6 +235,7 @@ public class LabelLCA_Test extends TestCase {
     assertEquals( "te\"s't", message.findSetProperty( label, "text" ) );
   }
 
+  @Test
   public void testRenderTextWithNewlines() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     LabelLCA lca = new LabelLCA();
@@ -233,6 +247,7 @@ public class LabelLCA_Test extends TestCase {
     assertEquals( "\ntes\r\nt\n", message.findSetProperty( label, "text" ) );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -248,6 +263,7 @@ public class LabelLCA_Test extends TestCase {
     assertNull( message.findSetOperation( label, "text" ) );
   }
 
+  @Test
   public void testRenderDispose() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     label.dispose();
@@ -260,6 +276,7 @@ public class LabelLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( label ), operation.getTarget() );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     Label label = new Label( shell, SWT.WRAP );
     LabelLCA lca = new LabelLCA();
@@ -274,6 +291,7 @@ public class LabelLCA_Test extends TestCase {
     assertFalse( operation.getPropertyNames().contains( "markupEnabled" ) );
   }
 
+  @Test
   public void testRenderCreateWithMarkupEnabled() throws IOException {
     Label label = new Label( shell, SWT.WRAP );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
@@ -286,6 +304,7 @@ public class LabelLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, operation.getProperty( "markupEnabled" ) );
   }
 
+  @Test
   public void testRenderInitialImage() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     LabelLCA lca = new LabelLCA();
@@ -296,6 +315,7 @@ public class LabelLCA_Test extends TestCase {
     assertNull( message.findSetOperation( label, "image" ) );
   }
 
+  @Test
   public void testRenderImage() throws IOException, JSONException {
     Label label = new Label( shell, SWT.NONE );
     LabelLCA lca = new LabelLCA();
@@ -311,6 +331,7 @@ public class LabelLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderImageUnchanged() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -326,6 +347,7 @@ public class LabelLCA_Test extends TestCase {
     assertNull( message.findSetOperation( label, "image" ) );
   }
 
+  @Test
   public void testRenderImageReset() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -342,6 +364,7 @@ public class LabelLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( label, "image" ) );
   }
 
+  @Test
   public void testRenderInitialAlignment() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     LabelLCA lca = new LabelLCA();
@@ -352,6 +375,7 @@ public class LabelLCA_Test extends TestCase {
     assertNull( message.findSetOperation( label, "alignment" ) );
   }
 
+  @Test
   public void testRenderAlignment() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     LabelLCA lca = new LabelLCA();
@@ -363,6 +387,7 @@ public class LabelLCA_Test extends TestCase {
     assertEquals( "right", message.findSetProperty( label, "alignment" ) );
   }
 
+  @Test
   public void testRenderAlignmentUnchanged() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -377,6 +402,7 @@ public class LabelLCA_Test extends TestCase {
     assertNull( message.findSetOperation( label, "alignment" ) );
   }
 
+  @Test
   public void testRenderCreateSeparator() throws IOException {
     Label label = new Label( shell, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.VERTICAL );
     LabelLCA lca = new LabelLCA();

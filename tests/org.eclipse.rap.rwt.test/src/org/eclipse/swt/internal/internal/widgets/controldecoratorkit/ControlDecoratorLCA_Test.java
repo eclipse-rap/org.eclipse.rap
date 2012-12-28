@@ -11,6 +11,9 @@
 package org.eclipse.swt.internal.internal.widgets.controldecoratorkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -18,8 +21,6 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -45,11 +46,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
 @SuppressWarnings("deprecation")
-public class ControlDecoratorLCA_Test extends TestCase {
+public class ControlDecoratorLCA_Test {
 
   private Display display;
   private Shell shell;
@@ -57,8 +61,8 @@ public class ControlDecoratorLCA_Test extends TestCase {
   private ControlDecorator decorator;
   private ControlDecoratorLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -68,11 +72,12 @@ public class ControlDecoratorLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testSelectionEvent() {
     SelectionListener listener = mock( SelectionListener.class );
     decorator.addSelectionListener( listener );
@@ -87,9 +92,10 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertEquals( null, event.item );
     assertEquals( SWT.NONE, event.detail );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), getEventBounds( event ) );
-    assertEquals( true, event.doit );
+    assertTrue( event.doit );
   }
 
+  @Test
   public void testDefaultSelectionEvent() {
     SelectionListener listener = mock( SelectionListener.class );
     decorator.addSelectionListener( listener );
@@ -104,9 +110,10 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertEquals( null, event.item );
     assertEquals( SWT.NONE, event.detail );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), getEventBounds( event ) );
-    assertEquals( true, event.doit );
+    assertTrue( event.doit );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( decorator );
 
@@ -118,6 +125,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertTrue( styles.contains( "CENTER" ) );
   }
 
+  @Test
   public void testRenderCreateWithRightAndBottom() throws IOException {
     decorator = new ControlDecorator( control, SWT.RIGHT | SWT.BOTTOM, null );
 
@@ -130,6 +138,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertTrue( styles.contains( "BOTTOM" ) );
   }
 
+  @Test
   public void testRenderCreateWithLeftAndTop() throws IOException {
     decorator = new ControlDecorator( control, SWT.LEFT | SWT.TOP, null );
 
@@ -142,6 +151,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertTrue( styles.contains( "TOP" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( decorator );
 
@@ -150,6 +160,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( decorator.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderDispose() throws IOException {
     lca.renderDispose( decorator );
 
@@ -159,6 +170,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( decorator ), operation.getTarget() );
   }
 
+  @Test
   public void testRenderInitialBounds() throws IOException, JSONException {
     lca.render( decorator );
 
@@ -168,6 +180,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertEquals( 0, bounds.getInt( 3 ) );
   }
 
+  @Test
   public void testRenderBounds() throws IOException, JSONException {
     decorator.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
     lca.renderChanges( decorator );
@@ -178,6 +191,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertTrue( bounds.getInt( 3 ) > 0 );
   }
 
+  @Test
   public void testRenderBoundsUnchanged() throws IOException {
     decorator.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
     Fixture.markInitialized( display );
@@ -190,6 +204,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertNull( message.findSetOperation( decorator, "bounds" ) );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     lca.render( decorator );
 
@@ -198,6 +213,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     decorator.setText( "foo" );
     lca.renderChanges( decorator );
@@ -206,6 +222,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( decorator, "text" ) );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( decorator );
@@ -218,6 +235,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertNull( message.findSetOperation( decorator, "text" ) );
   }
 
+  @Test
   public void testRenderInitialImage() throws IOException {
     lca.render( decorator );
 
@@ -225,6 +243,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertNull( message.findSetOperation( decorator, "image" ) );
   }
 
+  @Test
   public void testRenderImage() throws IOException, JSONException {
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
@@ -238,6 +257,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( decorator );
@@ -251,6 +271,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertNull( message.findSetOperation( decorator, "image" ) );
   }
 
+  @Test
   public void testRenderImageReset() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( decorator );
@@ -265,6 +286,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( decorator, "image" ) );
   }
 
+  @Test
   public void testRenderInitialVisible() throws IOException {
     lca.render( decorator );
 
@@ -273,6 +295,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "visible" ) == -1 );
   }
 
+  @Test
   public void testRenderVisible() throws IOException {
     shell.open();
     decorator.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
@@ -285,6 +308,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( decorator, "visible" ) );
   }
 
+  @Test
   public void testRenderVisibleUnchanged() throws IOException {
     shell.open();
     Fixture.markInitialized( display );
@@ -299,6 +323,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertNull( message.findSetOperation( decorator, "visible" ) );
   }
 
+  @Test
   public void testRenderInitialShowHover() throws IOException {
     lca.render( decorator );
 
@@ -307,6 +332,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "showHover" ) == -1 );
   }
 
+  @Test
   public void testRenderShowHover() throws IOException {
     decorator.setShowHover( false );
     lca.renderChanges( decorator );
@@ -315,6 +341,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findSetProperty( decorator, "showHover" ) );
   }
 
+  @Test
   public void testRenderShowHoverUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( decorator );
@@ -327,6 +354,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertNull( message.findSetOperation( decorator, "showHover" ) );
   }
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( decorator );
@@ -340,6 +368,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( decorator, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderRemoveSelectionListener() throws Exception {
     SelectionListener listener = new SelectionAdapter() { };
     decorator.addSelectionListener( listener );
@@ -355,6 +384,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( decorator, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( decorator );
@@ -369,6 +399,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertNull( message.findListenOperation( decorator, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( decorator );
@@ -382,6 +413,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertNull( message.findListenOperation( decorator, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderDefaultSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( decorator );

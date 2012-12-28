@@ -13,6 +13,10 @@
 package org.eclipse.swt.internal.widgets.linkkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -20,8 +24,6 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -48,17 +50,21 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-public class LinkLCA_Test extends TestCase {
+
+public class LinkLCA_Test {
 
   private Display display;
   private Shell shell;
   private LinkLCA lca;
   private Link link;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -67,11 +73,12 @@ public class LinkLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ControlLCATestUtil.testActivateListener( link );
     ControlLCATestUtil.testFocusListener( link );
@@ -82,6 +89,7 @@ public class LinkLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( link );
   }
 
+  @Test
   public void testPreserveValues() {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
@@ -160,6 +168,7 @@ public class LinkLCA_Test extends TestCase {
     assertEquals( "some text", link.getToolTipText() );
   }
 
+  @Test
   public void testSelectionEvent() {
     link.setText( "Big <a>Bang</a>" );
     SelectionListener listener = mock( SelectionListener.class );
@@ -177,9 +186,10 @@ public class LinkLCA_Test extends TestCase {
     assertEquals( 0, event.y );
     assertEquals( 0, event.width );
     assertEquals( 0, event.height );
-    assertEquals( true, event.doit );
+    assertTrue( event.doit );
   }
 
+  @Test
   public void testIllegalSelectionEvent() {
     // Selection event should not fire if index out of bounds (see bug 252354)
     link.setText( "No Link" );
@@ -194,6 +204,7 @@ public class LinkLCA_Test extends TestCase {
     Fixture.readDataAndProcessAction( link );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( link );
 
@@ -202,6 +213,7 @@ public class LinkLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.Link", operation.getType() );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( link );
 
@@ -210,6 +222,7 @@ public class LinkLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( link.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     lca.render( link );
 
@@ -218,6 +231,7 @@ public class LinkLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
 
+  @Test
   public void testRenderText() throws IOException, JSONException {
     link.setText( "foo <a>123</a> bar" );
     lca.renderChanges( link );
@@ -236,6 +250,7 @@ public class LinkLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, segment3.get( 1 ) );
   }
 
+  @Test
   public void testRenderTextEmpty() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( link );
@@ -250,6 +265,7 @@ public class LinkLCA_Test extends TestCase {
     assertEquals( 0, text.length() );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( link );
@@ -262,6 +278,7 @@ public class LinkLCA_Test extends TestCase {
     assertNull( message.findSetOperation( link, "text" ) );
   }
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( link );
@@ -275,6 +292,7 @@ public class LinkLCA_Test extends TestCase {
     assertNull( message.findListenOperation( link, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderRemoveSelectionListener() throws Exception {
     Listener listener = mock( Listener.class );
     link.addListener( SWT.Selection, listener );
@@ -289,6 +307,7 @@ public class LinkLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( link, "Selection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( link );

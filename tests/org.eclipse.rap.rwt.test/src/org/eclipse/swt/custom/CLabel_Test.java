@@ -11,7 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -27,25 +30,29 @@ import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class CLabel_Test extends TestCase {
+public class CLabel_Test {
 
   private Display display;
   private Shell shell;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testSetBackgroundColor() {
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Color red = display.getSystemColor( SWT.COLOR_RED );
@@ -53,12 +60,14 @@ public class CLabel_Test extends TestCase {
     assertEquals( label.getBackground(), red );
   }
 
+  @Test
   public void testSetToolTipText() {
     CLabel label = new CLabel( shell, SWT.RIGHT );
     label.setToolTipText( "foo" );
     assertEquals( label.getToolTipText(), "foo" );
   }
 
+  @Test
   public void testSetAlignment() {
     CLabel label = new CLabel( shell, SWT.LEFT );
     assertEquals( label.getAlignment(), SWT.LEFT );
@@ -66,6 +75,7 @@ public class CLabel_Test extends TestCase {
     assertEquals( label.getAlignment(), SWT.RIGHT );
   }
 
+  @Test
   public void testSetImage() {
     CLabel label = new CLabel( shell, SWT.RIGHT );
     assertEquals( label.getImage(), null );
@@ -74,6 +84,7 @@ public class CLabel_Test extends TestCase {
                   Graphics.getImage( Fixture.IMAGE1, getClass().getClassLoader() ) );
   }
 
+  @Test
   public void testSetText() {
     CLabel label = new CLabel( shell, SWT.RIGHT );
     assertEquals( null, label.getText() );
@@ -82,6 +93,7 @@ public class CLabel_Test extends TestCase {
   }
 
   @SuppressWarnings("deprecation")
+  @Test
   public void testComputeSize() {
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Point expected = new Point( 12, 26 );
@@ -97,6 +109,7 @@ public class CLabel_Test extends TestCase {
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
+  @Test
   public void testSetMargins() {
     CLabel label = new CLabel( shell, SWT.RIGHT );
     CLabelThemeAdapter themeAdapter = ( CLabelThemeAdapter )label.getAdapter( IThemeAdapter.class );
@@ -133,6 +146,7 @@ public class CLabel_Test extends TestCase {
     assertEquals( 0, label.getBottomMargin() );
   }
 
+  @Test
   public void testSetBackgroundGradient_Horizontal() {
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Color[] colors = new Color[] {
@@ -150,6 +164,7 @@ public class CLabel_Test extends TestCase {
     assertFalse( adapter.isBackgroundGradientVertical() );
   }
 
+  @Test
   public void testSetBackgroundGradient_Vertical() {
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Color[] colors = new Color[] {
@@ -167,6 +182,7 @@ public class CLabel_Test extends TestCase {
     assertTrue( adapter.isBackgroundGradientVertical() );
   }
 
+  @Test
   public void testSetBackgroundGradient_NullValues() {
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Color[] colors = null;
@@ -189,6 +205,7 @@ public class CLabel_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetBackgroundGradient_ArraysSize() {
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Color[] colors = new Color[] {
@@ -205,6 +222,7 @@ public class CLabel_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetBackgroundGradient_InvalidPercents() {
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Color[] colors = new Color[] {
@@ -235,6 +253,7 @@ public class CLabel_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetBackgroundGradient_NullColorReplace() {
     CLabel label = new CLabel( shell, SWT.RIGHT );
     label.setBackground( display.getSystemColor( SWT.COLOR_GREEN ) );
@@ -252,6 +271,7 @@ public class CLabel_Test extends TestCase {
                   adapter.getBackgroundGradientColors()[ 1 ] );
   }
 
+  @Test
   public void testIsSerializable() throws Exception {
     CLabel label = new CLabel( shell, SWT.NONE );
     label.setText( "text" );
@@ -261,6 +281,7 @@ public class CLabel_Test extends TestCase {
     assertEquals( "text", deserializedLabel.getText() );
   }
 
+  @Test
   public void testMarkupTextWithoutMarkupEnabled() {
     CLabel label = new CLabel( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
@@ -272,6 +293,7 @@ public class CLabel_Test extends TestCase {
     }
   }
 
+  @Test
   public void testMarkupTextWithMarkupEnabled() {
     CLabel label = new CLabel( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
@@ -283,6 +305,7 @@ public class CLabel_Test extends TestCase {
     }
   }
 
+  @Test
   public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
     CLabel label = new CLabel( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
@@ -295,6 +318,7 @@ public class CLabel_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDisableMarkupIsIgnored() {
     CLabel label = new CLabel( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );

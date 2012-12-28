@@ -12,14 +12,17 @@
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -44,18 +47,21 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 @SuppressWarnings("deprecation")
-public class ToolItemLCA_Test extends TestCase {
+public class ToolItemLCA_Test {
 
   private Display display;
   private Shell shell;
   private ToolBar toolbar;
   private ToolItemLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -64,11 +70,12 @@ public class ToolItemLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testCheckItemSelected() {
     final boolean[] wasEventFired = { false };
     final ToolItem item = new ToolItem( toolbar, SWT.CHECK );
@@ -78,12 +85,12 @@ public class ToolItemLCA_Test extends TestCase {
         wasEventFired[ 0 ] = true;
         assertEquals( null, event.item );
         assertSame( item, event.getSource() );
-        assertEquals( true, event.doit );
+        assertTrue( event.doit );
         assertEquals( 0, event.x );
         assertEquals( 0, event.y );
         assertEquals( 0, event.width );
         assertEquals( 0, event.height );
-        assertEquals( true, item.getSelection() );
+        assertTrue( item.getSelection() );
         assertTrue( ( event.stateMask & SWT.ALT ) != 0 );
       }
     } );
@@ -95,9 +102,10 @@ public class ToolItemLCA_Test extends TestCase {
     Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, params );
     Fixture.readDataAndProcessAction( display );
 
-    assertEquals( true, wasEventFired[ 0 ] );
+    assertTrue( wasEventFired[ 0 ] );
   }
 
+  @Test
   public void testDropDownItemSelected() {
     final boolean[] wasEventFired = { false };
     final ToolItem item = new ToolItem( toolbar, SWT.DROP_DOWN );
@@ -107,7 +115,7 @@ public class ToolItemLCA_Test extends TestCase {
         wasEventFired[ 0 ] = true;
         assertEquals( null, event.item );
         assertSame( item, event.getSource() );
-        assertEquals( true, event.doit );
+        assertTrue( event.doit );
         assertEquals( SWT.ARROW, event.detail );
         Rectangle itemBounds = item.getBounds();
         assertEquals( itemBounds.x, event.x );
@@ -126,9 +134,10 @@ public class ToolItemLCA_Test extends TestCase {
     Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, params );
     Fixture.readDataAndProcessAction( display );
 
-    assertEquals( true, wasEventFired[ 0 ] );
+    assertTrue( wasEventFired[ 0 ] );
   }
 
+  @Test
   public void testRadioItemSelected() {
     ToolItem item0 = new ToolItem( toolbar, SWT.RADIO );
     item0.setSelection( true );
@@ -142,6 +151,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertTrue( item1.getSelection() );
   }
 
+  @Test
   public void testReadData() {
     ToolItem item = new ToolItem( toolbar, SWT.CHECK );
 
@@ -159,6 +169,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, Boolean.valueOf( item.getSelection() ) );
   }
 
+  @Test
   public void testGetImage() {
     ToolItem item = new ToolItem( toolbar, SWT.CHECK );
 
@@ -180,6 +191,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertSame( enabledImage, ToolItemLCAUtil.getImage( item ) );
   }
 
+  @Test
   public void testRenderCreatePush() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
@@ -193,6 +205,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "PUSH" ) );
   }
 
+  @Test
   public void testRenderCreateCheck() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.CHECK );
 
@@ -206,6 +219,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "CHECK" ) );
   }
 
+  @Test
   public void testRenderCreateRadio() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.RADIO );
 
@@ -219,6 +233,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "RADIO" ) );
   }
 
+  @Test
   public void testRenderCreateDropDown() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.DROP_DOWN );
 
@@ -232,6 +247,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "DROP_DOWN" ) );
   }
 
+  @Test
   public void testRenderCreateSeparator() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.SEPARATOR );
 
@@ -245,6 +261,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "SEPARATOR" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
@@ -255,6 +272,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( toolitem.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderInitialEnabled() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
@@ -265,6 +283,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "enabled" ) == -1 );
   }
 
+  @Test
   public void testRenderEnabled() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
@@ -275,6 +294,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findSetProperty( toolitem, "enabled" ) );
   }
 
+  @Test
   public void testRenderEnabledUnchanged() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -288,6 +308,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolitem, "enabled" ) );
   }
 
+  @Test
   public void testRenderInitialToolTip() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
@@ -298,6 +319,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "toolTip" ) == -1 );
   }
 
+  @Test
   public void testRenderToolTip() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
@@ -308,6 +330,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( toolitem, "toolTip" ) );
   }
 
+  @Test
   public void testRenderToolTipUnchanged() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -321,6 +344,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolitem, "toolTip" ) );
   }
 
+  @Test
   public void testRenderInitialCustomVariant() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
@@ -331,6 +355,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
   }
 
+  @Test
   public void testRenderCustomVariant() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
@@ -341,6 +366,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( "variant_blue", message.findSetProperty( toolitem, "customVariant" ) );
   }
 
+  @Test
   public void testRenderCustomVariantUnchanged() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -354,6 +380,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolitem, "customVariant" ) );
   }
 
+  @Test
   public void testRenderInitialVisible() throws IOException {
     toolbar.setSize( 20, 25 );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
@@ -365,6 +392,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "visible" ) == -1 );
   }
 
+  @Test
   public void testRenderVisible() throws IOException {
     toolbar.setSize( 20, 25 );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
@@ -376,6 +404,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findSetProperty( toolitem, "visible" ) );
   }
 
+  @Test
   public void testRenderVisibleUnchanged() throws IOException {
     toolbar.setSize( 20, 25 );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
@@ -390,6 +419,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolitem, "visible" ) );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
@@ -400,6 +430,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
@@ -410,6 +441,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( toolitem, "text" ) );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -423,6 +455,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolitem, "text" ) );
   }
 
+  @Test
   public void testRenderInitialImage() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
@@ -432,6 +465,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolitem, "image" ) );
   }
 
+  @Test
   public void testRenderImage() throws IOException, JSONException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
@@ -446,6 +480,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderImageUnchanged() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -460,6 +495,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolitem, "image" ) );
   }
 
+  @Test
   public void testRenderInitialHotImage() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
@@ -469,6 +505,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolitem, "hotImage" ) );
   }
 
+  @Test
   public void testRenderHotImage() throws IOException, JSONException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
@@ -483,6 +520,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderHotImageUnchanged() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -497,6 +535,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolitem, "hotImage" ) );
   }
 
+  @Test
   public void testRenderImageReset() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -512,6 +551,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( toolitem, "image" ) );
   }
 
+  @Test
   public void testRenderInitialControl() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.SEPARATOR );
 
@@ -522,6 +562,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "control" ) == -1 );
   }
 
+  @Test
   public void testRenderControl() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.SEPARATOR );
     Composite control = new Composite( toolbar, SWT.NONE );
@@ -534,6 +575,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( controlId, message.findSetProperty( toolitem, "control" ) );
   }
 
+  @Test
   public void testRenderControlUnchanged() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.SEPARATOR );
     Composite control = new Composite( toolbar, SWT.NONE );
@@ -548,6 +590,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolitem, "control" ) );
   }
 
+  @Test
   public void testRenderInitialSelection() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.CHECK );
 
@@ -558,6 +601,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
   }
 
+  @Test
   public void testRenderSelection() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.CHECK );
 
@@ -568,6 +612,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( toolitem, "selection" ) );
   }
 
+  @Test
   public void testRenderSelectionUnchanged() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.CHECK );
     Fixture.markInitialized( display );
@@ -581,6 +626,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolitem, "selection" ) );
   }
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -594,6 +640,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( toolitem, "Selection" ) );
   }
 
+  @Test
   public void testRenderRemoveSelectionListener() throws Exception {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Listener listener = mock( Listener.class );
@@ -609,6 +656,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( toolitem, "Selection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );

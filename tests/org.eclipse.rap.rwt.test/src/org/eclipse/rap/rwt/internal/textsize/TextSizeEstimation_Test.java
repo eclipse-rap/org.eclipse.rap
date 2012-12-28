@@ -11,7 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -19,28 +20,35 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class TextSizeEstimation_Test extends TestCase {
+public class TextSizeEstimation_Test {
 
   private Font font10;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     new Display();
     font10 = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testAvgCharWidth() {
     float avgCharWidth = TextSizeEstimation.getAvgCharWidth( font10 );
     assertTrue( avgCharWidth > 3 );
     assertTrue( avgCharWidth < 6 );
   }
 
+  @Test
   public void testAvgCharWithUsesProbeResults() {
     Probe probe = new Probe( "X", font10.getFontData()[ 0 ] );
     ProbeResultStore.getInstance().createProbeResult( probe, new Point( 4711, 0 ) );
@@ -48,12 +56,14 @@ public class TextSizeEstimation_Test extends TestCase {
     assertEquals( 4711.0, avgCharWidth, 0.01 );
   }
 
+  @Test
   public void testCharHeight() {
     int charHeight = TextSizeEstimation.getCharHeight( font10 );
     assertTrue( charHeight > 9 );
     assertTrue( charHeight < 13 );
   }
 
+  @Test
   public void testStringExtent() {
     String string = "TestString";
     int charHeight = TextSizeEstimation.getCharHeight( font10 );
@@ -77,6 +87,7 @@ public class TextSizeEstimation_Test extends TestCase {
     assertTrue( extent.y < charHeight * 1.5 * 5 );
   }
 
+  @Test
   public void testTextExtent() {
     int charHeight = TextSizeEstimation.getCharHeight( font10 );
     assertTrue( charHeight > 9 );
@@ -100,12 +111,14 @@ public class TextSizeEstimation_Test extends TestCase {
   }
 
   // Test for a case where text width == wrapWidth
+  @Test
   public void testEndlessLoopProblem() {
     Font font = Graphics.getFont( "Helvetica", 11, SWT.NORMAL );
     Point extent = TextSizeEstimation.textExtent( font, "Zusatzinfo (Besuch)", 100 );
     assertEquals( 100, extent.x );
   }
 
+  @Test
   public void testMarkupExtent_SingleLine() {
     int charHeight = TextSizeEstimation.getCharHeight( font10 );
     String testMarkup = "foo <b>bar</b> and <img src=\"image.png\" /><sup>image</sup>";
@@ -118,6 +131,7 @@ public class TextSizeEstimation_Test extends TestCase {
     assertTrue( markupExtent.y < charHeight * 1.5 );
   }
 
+  @Test
   public void testMarkupExtent_MultipleLines() {
     int charHeight = TextSizeEstimation.getCharHeight( font10 );
     String testMarkup = "foo <b>bar</b><br/> and <img src=\"image.png\" /><br/><sup>image</sup>";
@@ -130,6 +144,7 @@ public class TextSizeEstimation_Test extends TestCase {
     assertTrue( markupExtent.y < charHeight * 4 );
   }
 
+  @Test
   public void testMarkupExtent_WithoutWrapWidth() {
     int charHeight = TextSizeEstimation.getCharHeight( font10 );
     String testMarkup = "Test1 <b>Test2</b> <sup>Test3</sup> Test4 <i>Test5</i>";
@@ -140,6 +155,7 @@ public class TextSizeEstimation_Test extends TestCase {
     assertTrue( markupExtent.y < charHeight * 1.5 );
   }
 
+  @Test
   public void testMarkupExtent_WithWrapWidth() {
     int charHeight = TextSizeEstimation.getCharHeight( font10 );
     String testMarkup = "Test1 <b>Test2</b> <sup>Test3</sup> Test4 <i>Test5</i>";
@@ -151,6 +167,7 @@ public class TextSizeEstimation_Test extends TestCase {
     assertTrue( markupExtent.y < charHeight * 1.5 * 5 );
   }
 
+  @Test
   public void testRemoveAllTags() {
     String markup = "foo <b>bar</b> and <img src=\"image.png\" /><sup>image</sup>";
 
@@ -158,6 +175,7 @@ public class TextSizeEstimation_Test extends TestCase {
     assertEquals( expected, TextSizeEstimation.removeAllTags( markup ) );
   }
 
+  @Test
   public void testRemoveAllTagsWithLineBreaks() {
     String markup = "foo <b>bar</b><br/> and <img src=\"image.png\" /><br/><sup>image</sup>";
 

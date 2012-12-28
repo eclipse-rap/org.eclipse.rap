@@ -12,29 +12,38 @@
 package org.eclipse.rap.rwt.internal.theme;
 
 import static org.eclipse.rap.rwt.internal.theme.ThemeTestUtil.RESOURCE_LOADER;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class QxImage_Test extends TestCase {
+public class QxImage_Test {
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  @Override
-  protected void tearDown() {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testIllegalArguments() {
     try {
       QxImage.valueOf( null, null );
@@ -68,6 +77,7 @@ public class QxImage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testNotExisting() {
     try {
       QxImage.valueOf( "not-existing.png", RESOURCE_LOADER );
@@ -77,6 +87,7 @@ public class QxImage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testNone() {
     assertSame( QxImage.NONE, QxImage.valueOf( "none", null ) );
     assertSame( QxImage.NONE, QxImage.valueOf( "none", RESOURCE_LOADER ) );
@@ -90,6 +101,7 @@ public class QxImage_Test extends TestCase {
     assertEquals( 0, QxImage.NONE.height );
   }
 
+  @Test
   public void testCreateImage() {
     QxImage qxImage = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     assertFalse( qxImage.none );
@@ -103,6 +115,7 @@ public class QxImage_Test extends TestCase {
     assertFalse( qxImage.isGradient() );
   }
 
+  @Test
   public void testCreateVerticalGradient() {
     String[] gradientColors = new String[] { "#FF0000", "#00FF00", "#0000FF" };
     float[] gradientPercents = new float[] { 0f, 50f, 100f };
@@ -118,6 +131,7 @@ public class QxImage_Test extends TestCase {
     assertTrue( qxImage.isGradient() );
   }
 
+  @Test
   public void testCreateHorizontalGradient() {
     String[] gradientColors = new String[] { "#FF0000", "#00FF00", "#0000FF" };
     float[] gradientPercents = new float[] { 0f, 50f, 100f };
@@ -133,11 +147,13 @@ public class QxImage_Test extends TestCase {
     assertTrue( qxImage.isGradient() );
   }
 
+  @Test
   public void testDefaultString() {
     assertEquals( "none", QxImage.NONE.toDefaultString() );
     assertEquals( "", QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER ).toDefaultString() );
   }
 
+  @Test
   public void testHashCode() {
     assertEquals( -1526341861, QxImage.NONE.hashCode() );
     QxImage qxImage1 = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
@@ -152,6 +168,7 @@ public class QxImage_Test extends TestCase {
     assertEquals( gradient1.hashCode(), gradient2.hashCode() );
   }
 
+  @Test
   public void testHashCode_GradientWithMoreColors() {
     String[] gradientColors1
       = new String[] { "#FFFFFF", "#00AA00", "#00AA00", "#00AA00", "#FFFFFF" };
@@ -164,11 +181,13 @@ public class QxImage_Test extends TestCase {
     assertFalse( gradient1.hashCode() == gradient2.hashCode() );
   }
 
+  @Test
   public void testIsGradientFalseForNone() {
     QxImage nonImage = QxImage.NONE;
     assertFalse( nonImage.isGradient() );
   }
 
+  @Test
   public void testGetResourceName() {
     QxImage image = QxImage.NONE;
     assertNull( image.getResourcePath() );
@@ -176,6 +195,7 @@ public class QxImage_Test extends TestCase {
     assertEquals( "themes/images/ba873d77.png", image.getResourcePath() );
   }
 
+  @Test
   public void testCreateSWTImageFromNone() throws IOException {
     QxImage image = QxImage.NONE;
     try {
@@ -186,6 +206,7 @@ public class QxImage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCreateSWTImageFromGradient() throws IOException {
     String[] gradientColors = new String[] { "#FF0000", "#00FF00", "#0000FF" };
     float[] gradientPercents = new float[] { 0f, 50f, 100f };
@@ -198,6 +219,7 @@ public class QxImage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCreateSWTImage() throws IOException {
     Display display = new Display();
     QxImage image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
@@ -206,12 +228,14 @@ public class QxImage_Test extends TestCase {
     assertSame( display, swtImage.getDevice() );
   }
 
+  @Test
   public void testGetResourcePath() {
     QxImage image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
 
     assertTrue( image.getResourcePath().startsWith( "themes/images/" ) );
   }
 
+  @Test
   public void testResourcePathsDiffer() {
     QxImage image1 = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     QxImage image2 = QxImage.valueOf( Fixture.IMAGE_100x50, RESOURCE_LOADER );
@@ -219,14 +243,17 @@ public class QxImage_Test extends TestCase {
     assertFalse( image1.getResourcePath().equals( image2.getResourcePath() ) );
   }
 
+  @Test
   public void testGetResourcePathWithNone() {
     assertNull( QxImage.NONE.getResourcePath() );
   }
 
+  @Test
   public void testGetResourcePathWithGradient() {
     assertNull( createGradient().getResourcePath() );
   }
 
+  @Test
   public void testGetResourceAsStream() throws IOException {
     QxImage image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     InputStream inputStream = image.getResourceAsStream();
@@ -235,10 +262,12 @@ public class QxImage_Test extends TestCase {
     inputStream.close();
   }
 
+  @Test
   public void testGetResourceAsStreamWithNone() throws IOException {
     assertNull( QxImage.NONE.getResourceAsStream() );
   }
 
+  @Test
   public void testGetResourceAsStreamWithGradient() throws IOException {
     assertNull( createGradient().getResourceAsStream() );
   }

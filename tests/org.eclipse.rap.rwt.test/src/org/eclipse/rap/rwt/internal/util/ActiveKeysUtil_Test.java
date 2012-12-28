@@ -10,14 +10,17 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.util;
 
-import java.util.Arrays;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import junit.framework.TestCase;
+import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -26,22 +29,28 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ActiveKeysUtil_Test extends TestCase {
+public class ActiveKeysUtil_Test {
 
   private Display display;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testPreserveKeyBindingsEmpty() {
     Fixture.markInitialized( display );
     WidgetAdapter adapter = DisplayUtil.getAdapter( display );
@@ -51,6 +60,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertNull( adapter.getPreserved( ActiveKeysUtil.PROP_ACTIVE_KEYS ) );
   }
 
+  @Test
   public void testPreserveKeyBindings() {
     Fixture.markInitialized( display );
     WidgetAdapter adapter = DisplayUtil.getAdapter( display );
@@ -63,6 +73,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertTrue( Arrays.equals( keyBindings, preserved ) );
   }
 
+  @Test
   public void testPreserveActiveKeys() {
     Shell shell = new Shell( display );
     Fixture.markInitialized( display );
@@ -77,6 +88,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertTrue( Arrays.equals( keyBindings, preserved ) );
   }
 
+  @Test
   public void testKeyBindingsSafeCopy() {
     Fixture.markInitialized( display );
     WidgetAdapter adapter = DisplayUtil.getAdapter( display );
@@ -90,6 +102,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertEquals( "CTRL+A", preserved[ 0 ] );
   }
 
+  @Test
   public void testPreserveCancelKeysEmpty() {
     Fixture.markInitialized( display );
     WidgetAdapter adapter = DisplayUtil.getAdapter( display );
@@ -99,6 +112,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertNull( adapter.getPreserved( ActiveKeysUtil.PROP_CANCEL_KEYS ) );
   }
 
+  @Test
   public void testPreserveCancelKeys() {
     Fixture.markInitialized( display );
     WidgetAdapter adapter = DisplayUtil.getAdapter( display );
@@ -111,6 +125,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertTrue( Arrays.equals( keyBindings, preserved ) );
   }
 
+  @Test
   public void testPreserveCancelKeysOnWidget() {
     Shell shell = new Shell( display );
     Fixture.markInitialized( display );
@@ -125,6 +140,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertTrue( Arrays.equals( keyBindings, preserved ) );
   }
 
+  @Test
   public void testCancelKeySafeCopy() {
     Fixture.markInitialized( display );
     WidgetAdapter adapter = DisplayUtil.getAdapter( display );
@@ -138,6 +154,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertEquals( "CTRL+A", preserved[ 0 ] );
   }
 
+  @Test
   public void testWriteKeyBindings() throws JSONException {
     Fixture.fakeNewRequest();
 
@@ -179,6 +196,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertEquals( expected, activeKeys.join( "," ) );
   }
 
+  @Test
   public void testWriteKeyBindingsOnWidget() throws JSONException {
     Fixture.fakeNewRequest();
     Shell shell = new Shell( display );
@@ -193,6 +211,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertEquals( expected, renderedKeys.join( "," ) );
   }
 
+  @Test
   public void testWriteCancelKeys() throws JSONException {
     Fixture.fakeNewRequest();
     String[] activeKeys = new String[] { "x", "ALT+x", };
@@ -206,6 +225,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertEquals( expected, renderedKeys.join( "," ) );
   }
 
+  @Test
   public void testWriteCancelKeysOnWidget() throws JSONException {
     Fixture.fakeNewRequest();
     Shell shell = new Shell( display );
@@ -220,6 +240,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertEquals( expected, renderedKeys.join( "," ) );
   }
 
+  @Test
   public void testWriteKeyBindings_UnrecognizedKey() {
     Fixture.fakeNewRequest();
 
@@ -234,6 +255,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testWriteKeyBindings_UnrecognizedModifier() {
     Fixture.fakeNewRequest();
 
@@ -247,6 +269,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testWriteKeyBindings_EmptyKeyBinding() {
     Fixture.fakeNewRequest();
 
@@ -265,6 +288,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testWriteKeyBindings_NullKeyBinding() {
     Fixture.fakeNewRequest();
 
@@ -283,6 +307,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testWriteKeyBindings_InvalidKeyBindingListClass() {
     Fixture.fakeNewRequest();
 
@@ -296,6 +321,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testWriteKeyBindings_NullKeyBindingList() {
     Fixture.markInitialized( display );
     display.setData( RWT.ACTIVE_KEYS, new String[] { "CTRL+E" } );
@@ -311,6 +337,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertEquals( 0, activeKeys.length() );
   }
 
+  @Test
   public void testWriteKeyBindings_EmptyKeyBindingList() {
     Fixture.markInitialized( display );
     display.setData( RWT.ACTIVE_KEYS, new String[] { "CTRL+E" } );

@@ -12,6 +12,11 @@
 package org.eclipse.swt.internal.widgets.buttonkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -23,8 +28,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -59,11 +62,14 @@ import org.eclipse.swt.widgets.Widget;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 // TODO [rst] Split into different test classes for button types
 @SuppressWarnings("deprecation")
-public class ButtonLCA_Test extends TestCase {
+public class ButtonLCA_Test {
 
   private static final String PROP_SELECTION_LISTENER = "listener_Selection";
 
@@ -71,8 +77,8 @@ public class ButtonLCA_Test extends TestCase {
   private Shell shell;
   private ButtonLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -80,11 +86,12 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     Button button = new Button( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( button );
@@ -96,6 +103,7 @@ public class ButtonLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( button );
   }
 
+  @Test
   public void testRadioPreserveValues() {
     Button button = new Button( shell, SWT.RADIO );
     Fixture.markInitialized( display );
@@ -106,6 +114,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
   }
 
+  @Test
   public void testCheckPreserveValues() {
     Button button = new Button( shell, SWT.CHECK );
     Fixture.markInitialized( display );
@@ -118,6 +127,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_GRAYED ) );
   }
 
+  @Test
   public void testTogglePreserveValues() {
     Button button = new Button( shell, SWT.TOGGLE );
     Fixture.markInitialized( display );
@@ -137,7 +147,7 @@ public class ButtonLCA_Test extends TestCase {
       Fixture.preserveWidgets();
       adapter = WidgetUtil.getAdapter( button );
       Object object = adapter.getPreserved( Props.TEXT );
-      assertEquals( "abc", ( String )object );
+      assertEquals( "abc", object );
       Fixture.clearPreserved();
       Image image = Graphics.getImage( Fixture.IMAGE1 );
       button.setImage( image );
@@ -225,6 +235,7 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
+  @Test
   public void testDisabledButtonSelection() {
     final Button button = new Button( shell, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
@@ -246,6 +257,7 @@ public class ButtonLCA_Test extends TestCase {
     verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testSelectionEvent() {
     Button button = new Button( shell, SWT.PUSH );
     SelectionListener listener = mock( SelectionListener.class );
@@ -257,6 +269,7 @@ public class ButtonLCA_Test extends TestCase {
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testRadioSelectionEvent() {
     Button button = new Button( shell, SWT.RADIO );
     SelectionListener listener = mock( SelectionListener.class );
@@ -271,6 +284,7 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872
+  @Test
   public void testRadioDeselectionEvent() {
     Button button = new Button( shell, SWT.RADIO );
     button.setSelection( true );
@@ -285,6 +299,7 @@ public class ButtonLCA_Test extends TestCase {
     verify( listener ).widgetSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testRadioTypedSelectionEventOrder_TypedListener() {
     final List<Widget> log = new ArrayList<Widget>();
     Button button1 = new Button( shell, SWT.RADIO );
@@ -308,6 +323,7 @@ public class ButtonLCA_Test extends TestCase {
     assertTrue( Arrays.equals( new Widget[]{ button2, button1 }, log.toArray() ) );
   }
 
+  @Test
   public void testRadioTypedSelectionEventOrder_UntypedListener() {
     final List<Widget> log = new ArrayList<Widget>();
     Button button1 = new Button( shell, SWT.RADIO );
@@ -330,6 +346,7 @@ public class ButtonLCA_Test extends TestCase {
     assertTrue( Arrays.equals( new Widget[]{ button2, button1 }, log.toArray() ) );
   }
 
+  @Test
   public void testRenderWrap() throws Exception {
     Button button = new Button( shell, SWT.PUSH | SWT.WRAP );
     Fixture.fakeResponseWriter();
@@ -343,6 +360,7 @@ public class ButtonLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     Button pushButton = new Button( shell, SWT.PUSH );
 
@@ -355,6 +373,7 @@ public class ButtonLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "PUSH" ) );
   }
 
+  @Test
   public void testRenderCreateArrow() throws IOException {
     Button pushButton = new Button( shell, SWT.ARROW );
 
@@ -367,6 +386,7 @@ public class ButtonLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "ARROW" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     Button pushButton = new Button( shell, SWT.PUSH );
 
@@ -377,6 +397,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( pushButton.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
 
@@ -386,6 +407,7 @@ public class ButtonLCA_Test extends TestCase {
     assertNull( message.findSetOperation( button, "text" ) );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
 
@@ -396,6 +418,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( "test", message.findSetProperty( button, "text" ) );
   }
 
+  @Test
   public void testRenderTextWithQuotationMarks() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
 
@@ -406,6 +429,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( "te\"s't", message.findSetProperty( button, "text" ) );
   }
 
+  @Test
   public void testRenderTextWithNewlines() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
 
@@ -416,6 +440,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( "\ntes\r\nt\n", message.findSetProperty( button, "text" ) );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -429,6 +454,7 @@ public class ButtonLCA_Test extends TestCase {
     assertNull( message.findSetOperation( button, "text" ) );
   }
 
+  @Test
   public void testRenderInitialAlignment() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
 
@@ -438,6 +464,7 @@ public class ButtonLCA_Test extends TestCase {
     assertNull( message.findSetOperation( button, "alignment" ) );
   }
 
+  @Test
   public void testRenderInitialAlignment_Arrow() throws IOException {
     Button button = new Button( shell, SWT.ARROW );
 
@@ -447,6 +474,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( "up", message.findSetProperty( button, "alignment" ) );
   }
 
+  @Test
   public void testRenderAlignment() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
 
@@ -457,6 +485,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( "right", message.findSetProperty( button, "alignment" ) );
   }
 
+  @Test
   public void testRenderAlignment_Arrow() throws IOException {
     Button button = new Button( shell, SWT.ARROW | SWT.DOWN );
 
@@ -466,6 +495,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( "down", message.findSetProperty( button, "alignment" ) );
   }
 
+  @Test
   public void testRenderAlignmentUnchanged() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -479,6 +509,7 @@ public class ButtonLCA_Test extends TestCase {
     assertNull( message.findSetOperation( button, "alignment" ) );
   }
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     Button button = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -492,6 +523,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( button, "Selection" ) );
   }
 
+  @Test
   public void testRenderRemoveSelectionListener() throws Exception {
     Button button = new Button( shell, SWT.PUSH );
     SelectionListener listener = new SelectionAdapter() { };
@@ -507,6 +539,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( button, "Selection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Button button = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -521,6 +554,7 @@ public class ButtonLCA_Test extends TestCase {
     assertNull( message.findListenOperation( button, "selection" ) );
   }
 
+  @Test
   public void testRenderInitialImage() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
 
@@ -530,6 +564,7 @@ public class ButtonLCA_Test extends TestCase {
     assertNull( message.findSetOperation( button, "image" ) );
   }
 
+  @Test
   public void testRenderImage() throws IOException, JSONException {
     Button button = new Button( shell, SWT.PUSH );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
@@ -544,6 +579,7 @@ public class ButtonLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderImageUnchanged() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -558,6 +594,7 @@ public class ButtonLCA_Test extends TestCase {
     assertNull( message.findSetOperation( button, "image" ) );
   }
 
+  @Test
   public void testRenderImageReset() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -573,6 +610,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( button, "image" ) );
   }
 
+  @Test
   public void testRenderInitialSelection() throws IOException {
     Button button = new Button( shell, SWT.CHECK );
 
@@ -582,6 +620,7 @@ public class ButtonLCA_Test extends TestCase {
     assertNull( message.findSetOperation( button, "selection" ) );
   }
 
+  @Test
   public void testRenderSelection() throws IOException {
     Button button = new Button( shell, SWT.CHECK );
 
@@ -592,6 +631,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( button, "selection" ) );
   }
 
+  @Test
   public void testRenderSelectionUnchanged() throws IOException {
     Button button = new Button( shell, SWT.CHECK );
     Fixture.markInitialized( display );
@@ -605,6 +645,7 @@ public class ButtonLCA_Test extends TestCase {
     assertNull( message.findSetOperation( button, "selection" ) );
   }
 
+  @Test
   public void testRenderInitialGrayed() throws IOException {
     Button button = new Button( shell, SWT.CHECK );
 
@@ -614,6 +655,7 @@ public class ButtonLCA_Test extends TestCase {
     assertNull( message.findSetOperation( button, "grayed" ) );
   }
 
+  @Test
   public void testRenderGrayed() throws IOException {
     Button button = new Button( shell, SWT.CHECK );
 
@@ -624,6 +666,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( button, "grayed" ) );
   }
 
+  @Test
   public void testRenderGrayedUnchanged() throws IOException {
     Button button = new Button( shell, SWT.CHECK );
     Fixture.markInitialized( display );

@@ -10,11 +10,16 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.NotSerializableException;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -23,25 +28,29 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class GC_Test extends TestCase {
+public class GC_Test {
 
   private Display display;
   private GC gc;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     gc = new GC( display );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testConstructorWithNullArgument() {
     try {
       new GC( null );
@@ -51,6 +60,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testInitialValues() {
     assertEquals( 255, gc.getAlpha() );
     assertEquals( SWT.CAP_FLAT, gc.getLineCap() );
@@ -65,6 +75,7 @@ public class GC_Test extends TestCase {
     assertEquals( SWT.DEFAULT, gc.getTextAntialias() );
   }
 
+  @Test
   public void testSetFontWithDisposedFont() {
     Font disposedFont = createFont();
     disposedFont.dispose();
@@ -74,6 +85,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDisposedGC() {
     gc.dispose();
     assertTrue( gc.isDisposed() );
@@ -313,6 +325,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testTextExtentWithNullArgument() {
     try {
       gc.textExtent( null );
@@ -322,6 +335,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testTextExtent() {
     String string = "foo";
     Font systemFont = display.getSystemFont();
@@ -330,6 +344,7 @@ public class GC_Test extends TestCase {
     assertEquals( gcTextExtent, textExtent );
   }
 
+  @Test
   public void testStringExtent() {
     String string = "foo";
     Font systemFont = display.getSystemFont();
@@ -338,11 +353,13 @@ public class GC_Test extends TestCase {
     assertEquals( gcStringExtent, stringExtent );
   }
 
+  @Test
   public void testGetCharWidth() {
     int width = gc.getCharWidth( 'A' );
     assertTrue( width > 0 );
   }
 
+  @Test
   public void testSetBackgroundWithNullArgument() {
     try {
       gc.setBackground( null );
@@ -351,6 +368,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetBackgroundWithDisposedColor() {
     Color color = createColor();
     color.dispose();
@@ -362,6 +380,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetForegroundWithNullArgument() {
     try {
       gc.setForeground( null );
@@ -371,6 +390,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetForegroundWithDisposedColor() {
     Color color = createColor();
     color.dispose();
@@ -382,31 +402,37 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetAlpha() {
     gc.setAlpha( 123 );
     assertEquals( 123, gc.getAlpha() );
   }
 
+  @Test
   public void testSetAlphaWithInvalidValue() {
     gc.setAlpha( 777 );
     assertEquals( 255, gc.getAlpha() );
   }
 
+  @Test
   public void testSetLineWidth() {
     gc.setLineWidth( 5 );
     assertEquals( 5, gc.getLineWidth() );
   }
 
+  @Test
   public void testSetLineWidthWithNegativeValue() {
     gc.setLineWidth( -2 );
     assertEquals( -2, gc.getLineWidth() );
   }
 
+  @Test
   public void testSetLineCap() {
     gc.setLineCap( SWT.CAP_ROUND );
     assertEquals( SWT.CAP_ROUND, gc.getLineCap() );
   }
 
+  @Test
   public void testSetLineCapWithInvalidValue() {
     try {
       gc.setLineCap( 500 );
@@ -415,11 +441,13 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetLineJoin() {
     gc.setLineJoin( SWT.JOIN_ROUND );
     assertEquals( SWT.JOIN_ROUND, gc.getLineJoin() );
   }
 
+  @Test
   public void testSetLineJoinWithInvalidValue() {
     try {
       gc.setLineCap( 500 );
@@ -428,6 +456,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetLineAttributes() {
     LineAttributes attributes
       = new LineAttributes( 5, SWT.CAP_ROUND, SWT.JOIN_BEVEL );
@@ -440,6 +469,7 @@ public class GC_Test extends TestCase {
     assertEquals( SWT.JOIN_BEVEL, gc.getLineAttributes().join );
   }
 
+  @Test
   public void testSetLineAttributesWithNullArgument() {
     try {
       gc.setLineAttributes( null );
@@ -448,6 +478,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetLineAttributes() {
     LineAttributes attributes
       = new LineAttributes( 5, SWT.CAP_ROUND, SWT.JOIN_BEVEL );
@@ -459,6 +490,7 @@ public class GC_Test extends TestCase {
     assertEquals( attributes.width, returnedAttributes.width, 0 );
   }
 
+  @Test
   public void testCheckBounds() {
     Rectangle rectangle = GC.checkBounds( 1, 2, 3, 4 );
     assertEquals( 1, rectangle.x );
@@ -467,6 +499,7 @@ public class GC_Test extends TestCase {
     assertEquals( 4, rectangle.height );
   }
 
+  @Test
   public void testCheckBoundsWithNegativeWidthAndHeight() {
     Rectangle rectangle = GC.checkBounds( 1, 2, -3, -4 );
     assertEquals( -2, rectangle.x );
@@ -475,6 +508,7 @@ public class GC_Test extends TestCase {
     assertEquals( 4, rectangle.height );
   }
 
+  @Test
   public void testDrawRectangeWithNullArgument() {
     try {
       gc.drawRectangle( null );
@@ -484,6 +518,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testFillRectangleWithNullArgument() {
     try {
       gc.fillRectangle( null );
@@ -492,6 +527,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDrawPolygonWithNullArgument() {
     try {
       gc.drawPolygon( null );
@@ -499,6 +535,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testFillPolygonWithNullArgument() {
     try {
       gc.fillPolygon( null );
@@ -506,6 +543,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDrawPolylineWithNullArgument() {
     try {
       gc.drawPolyline( null );
@@ -513,6 +551,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDrawTextWithNullString() {
     try {
       gc.drawText( null, 10, 10, SWT.DRAW_TRANSPARENT );
@@ -522,6 +561,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDrawStringWithNullString() {
     try {
       gc.drawString( null, 10, 10, true );
@@ -530,6 +570,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDrawImageWithNullImage() {
     Control control = new Shell( display );
     GC gc = new GC( control );
@@ -541,6 +582,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDrawImageWithDisposedImage() throws IOException {
     Image disposedImage = createImage();
     disposedImage.dispose();
@@ -552,6 +594,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDrawImageWithInvalidSourceRegion() {
     Image image = display.getSystemImage( SWT.ICON_INFORMATION );
     assertTrue( image.getBounds().width < 40 );  // precondition
@@ -568,6 +611,7 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testStyle() {
     GC gc = new GC( display, SWT.NONE );
     assertEquals( SWT.LEFT_TO_RIGHT, gc.getStyle() );
@@ -577,39 +621,46 @@ public class GC_Test extends TestCase {
     assertEquals( SWT.LEFT_TO_RIGHT, gc.getStyle() );
   }
 
+  @Test
   public void testAdvanced() {
     GC gc = new GC( display, SWT.NONE );
     gc.setAdvanced( true );
     assertTrue( gc.getAdvanced() );
   }
 
+  @Test
   public void testGetAdvancedAfterUsingSetAlpha() {
     gc.setAlpha( 123 );
     assertTrue( gc.getAdvanced() );
   }
 
+  @Test
   public void testGetAdvancedAfterUsingSetLineAttributes() {
     gc.setLineAttributes( new LineAttributes( 1 ) );
     assertTrue( gc.getAdvanced() );
   }
 
+  @Test
   public void testGetAdvancedAfterUsingSetAntialias() {
     gc.setAntialias( SWT.ON );
     assertTrue( gc.getAdvanced() );
   }
 
+  @Test
   public void testResetAdvancedAfterUsingAdvancedGrahpics() {
     gc.setAlpha( 123 );
     gc.setAdvanced( false );
     assertFalse( gc.getAdvanced() );
   }
 
+  @Test
   public void testResetAlphaAfterUsingSetAdvanced() {
     gc.setAlpha( 64 );
     gc.setAdvanced( false );
     assertEquals( 255, gc.getAlpha() );
   }
 
+  @Test
   public void testSerialization() throws Exception {
     // As of now, GC must not be serializable. It should only be used within a request (i.e. inside
     // a paint listener)
@@ -620,11 +671,13 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetAntialias() {
     gc.setAntialias( SWT.ON );
     assertEquals( SWT.ON, gc.getAntialias() );
   }
 
+  @Test
   public void testSetAntialiasWithInvalidArgument() {
     try {
       gc.setAntialias( 1234 );
@@ -632,17 +685,20 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testResetAntialiasAfterUsingSetAdvanced() {
     gc.setAntialias( SWT.ON );
     gc.setAdvanced( false );
     assertEquals( SWT.DEFAULT, gc.getAntialias() );
   }
 
+  @Test
   public void testSetTextAntialias() {
     gc.setTextAntialias( SWT.ON );
     assertEquals( SWT.ON, gc.getTextAntialias() );
   }
 
+  @Test
   public void testSetTextAntialiasWithInvalidArgument() {
     try {
       gc.setTextAntialias( 1234 );
@@ -650,12 +706,14 @@ public class GC_Test extends TestCase {
     }
   }
 
+  @Test
   public void testResetTextAntialiasAfterUsingSetAdvanced() {
     gc.setTextAntialias( SWT.ON );
     gc.setAdvanced( false );
     assertEquals( SWT.DEFAULT, gc.getTextAntialias() );
   }
 
+  @Test
   public void testSetFontOverEqualDisplosedFont() {
     Font font = createFont();
     gc.setFont( font );
@@ -667,6 +725,7 @@ public class GC_Test extends TestCase {
     assertSame( font, gc.getFont() );
   }
 
+  @Test
   public void testSetEqualFontTwice() {
     Font font = createFont();
     gc.setFont( font );
@@ -677,6 +736,7 @@ public class GC_Test extends TestCase {
     assertSame( font, gc.getFont() );
   }
 
+  @Test
   public void testSetBackgroundOverEqualDisplosedColor() {
     Color color = createColor();
     gc.setBackground( color );
@@ -688,6 +748,7 @@ public class GC_Test extends TestCase {
     assertSame( color, gc.getBackground() );
   }
 
+  @Test
   public void testSetEqualBackgroundTwice() {
     Color color = createColor();
     gc.setBackground( color );
@@ -698,6 +759,7 @@ public class GC_Test extends TestCase {
     assertSame( color, gc.getBackground() );
   }
 
+  @Test
   public void testSetForegroundOverEqualDisplosedColor() {
     Color color = createColor();
     gc.setForeground( color );
@@ -709,6 +771,7 @@ public class GC_Test extends TestCase {
     assertSame( color, gc.getForeground() );
   }
 
+  @Test
   public void testSetEqualForegroundTwice() {
     Color color = createColor();
     gc.setForeground( color );
@@ -734,4 +797,5 @@ public class GC_Test extends TestCase {
   private Font createFont() {
     return new Font( display, "font-name", 11, SWT.NORMAL );
   }
+
 }

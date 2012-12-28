@@ -10,8 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -20,26 +23,31 @@ import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class LifeCycleUtil_Test extends TestCase {
+public class LifeCycleUtil_Test {
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testGetSessionDisplayBeforeAnyDisplayCreated() {
     Display sessionDisplay = LifeCycleUtil.getSessionDisplay();
 
     assertNull( sessionDisplay );
   }
 
+  @Test
   public void testGetSessionDisplayWithDisplayCreated() {
     Display display = new Display();
 
@@ -48,6 +56,7 @@ public class LifeCycleUtil_Test extends TestCase {
     assertSame( display, sessionDisplay );
   }
 
+  @Test
   public void testGetSessionDisplayAfterDisplayDisposed() {
     Display display = new Display();
     display.dispose();
@@ -57,6 +66,7 @@ public class LifeCycleUtil_Test extends TestCase {
     assertSame( display, sessionDisplay );
   }
 
+  @Test
   public void testGetSessionDisplayFromBackgroundThreadWithoutContext() throws Throwable {
     final Display[] sessionDisplay = { null };
     Runnable runnable = new Runnable() {
@@ -68,6 +78,7 @@ public class LifeCycleUtil_Test extends TestCase {
     assertNull( sessionDisplay[ 0 ] );
   }
 
+  @Test
   public void testGetSessionDisplayFromBackgroundThreadWithContext() throws Throwable {
     final Display display = new Display();
     final Display[] sessionDisplay = { null };
@@ -84,12 +95,14 @@ public class LifeCycleUtil_Test extends TestCase {
     assertSame( display, sessionDisplay[ 0 ] );
   }
 
+  @Test
   public void testGetUIThreadForNewSession() {
     IUIThreadHolder uiThread = LifeCycleUtil.getUIThread( ContextProvider.getUISession() );
 
     assertNull( uiThread );
   }
 
+  @Test
   public void testGetUIThreadWithMultipleSessions() {
     IUIThreadHolder uiThread1 = mock( IUIThreadHolder.class );
     IUIThreadHolder uiThread2 = mock( IUIThreadHolder.class );
@@ -103,14 +116,17 @@ public class LifeCycleUtil_Test extends TestCase {
     assertSame( uiThread2, LifeCycleUtil.getUIThread( uiSession2 ) );
   }
 
+  @Test
   public void testIsStartup_withoutDisplayCreated() {
     assertTrue( LifeCycleUtil.isStartup() );
   }
 
+  @Test
   public void testIsStartup_withStartupParameter() {
     assertTrue( LifeCycleUtil.isStartup() );
   }
 
+  @Test
   public void testIsStartup_whenDisplayWasCreated() {
     new Display();
 

@@ -11,11 +11,15 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+import org.junit.Test;
 
 
-public class JsonValue_Test extends TestCase {
+public class JsonValue_Test {
 
+  @Test
   public void testValueOfInts() {
     assertEquals( "0", JsonValue.valueOf( 0 ).toString() );
     assertEquals( "23", JsonValue.valueOf( 23 ).toString() );
@@ -24,28 +28,33 @@ public class JsonValue_Test extends TestCase {
     assertEquals( "-2147483648", JsonValue.valueOf( Integer.MIN_VALUE ).toString() );
   }
 
+  @Test
   public void testValueOfLongs() {
     assertEquals( "214748364711", JsonValue.valueOf( 214748364711l ).toString() );
     assertEquals( "-214748364811", JsonValue.valueOf( -214748364811l ).toString() );
   }
 
+  @Test
   public void testValueOfFloats() {
     assertEquals( "10.0", JsonValue.valueOf( 10f ).toString() );
     assertEquals( "1.23E-6", JsonValue.valueOf( 0.00000123f ).toString() );
     assertEquals( "-1.23E7", JsonValue.valueOf( -12300000f ).toString() );
   }
 
+  @Test
   public void testValueOfDoubles() {
     assertEquals( "10.0", JsonValue.valueOf( 10d ).toString() );
     assertEquals( "1.23E-6", JsonValue.valueOf( 0.00000123d ).toString() );
     assertEquals( "1.7976931348623157E308", JsonValue.valueOf( 1.7976931348623157E308d ).toString() );
   }
 
+  @Test
   public void testValueOfBooleans() {
     assertEquals( "true", JsonValue.valueOf( true ).toString() );
     assertEquals( "false", JsonValue.valueOf( false ).toString() );
   }
 
+  @Test
   public void testValueOfStrings() {
     assertEquals( "null", JsonValue.valueOf( null ).toString() );
     assertEquals( "\"\"", JsonValue.valueOf( "" ).toString() );
@@ -53,12 +62,14 @@ public class JsonValue_Test extends TestCase {
     assertEquals( "\"\\\"Hallo\\\"\"", JsonValue.valueOf( "\"Hallo\"" ).toString() );
   }
 
+  @Test
   public void testValueOfConstants() {
     assertSame( JsonValue.valueOf( true ), JsonValue.valueOf( true ) );
     assertSame( JsonValue.valueOf( false ), JsonValue.valueOf( false ) );
     assertSame( JsonValue.valueOf( null ), JsonValue.valueOf( null ) );
   }
 
+  @Test
   public void testQuoteString() {
     // empty string
     assertEquals( "\"\"", JsonValue.quoteAndEscapeString( "" ) );
@@ -68,6 +79,7 @@ public class JsonValue_Test extends TestCase {
     assertEquals( "\" a b \"", JsonValue.quoteAndEscapeString( " a b " ) );
   }
 
+  @Test
   public void testEscapeStringWithQuotes() {
     // escape a\b -> "a\\b"
     assertEquals( "a\\\\b", JsonValue.escapeString( "a\\b" ) );
@@ -77,30 +89,36 @@ public class JsonValue_Test extends TestCase {
     assertEquals( "a\\\\\\\"b\\\\\\\"", JsonValue.escapeString( "a\\\"b\\\"" ) );
   }
 
+  @Test
   public void testEscapeStringWithNewLines() {
     assertEquals( "a\\n", JsonValue.escapeString( "a\n" ) );
     assertEquals( "a\\r\\nb", JsonValue.escapeString( "a\r\nb" ) );
   }
 
+  @Test
   public void testEscapeStringWithTabs() {
     assertEquals( "a\\tb", JsonValue.escapeString( "a\tb" ) );
   }
 
+  @Test
   public void testEscapeStringWithSpecialCharacters() {
     String expected = "\\u2028foo\\u2029";
     assertEquals( expected, JsonValue.escapeString( "\u2028foo\u2029" ) );
   }
 
+  @Test
   public void testEscapeStringWithZeroChar() {
     char[] data = new char[] { 'h', 'e', 'l', 0, 'l', 'o' };
     assertEquals( "\"hel\\u0000lo\"", JsonValue.valueOf( String.valueOf( data ) ).toString() );
   }
 
+  @Test
   public void testEscapeStringWithEscapeChar() {
     char[] data = new char[] { 'h', 'e', 'l', 27, 'l', 'o' };
     assertEquals( "\"hel\\u001blo\"", JsonValue.valueOf( String.valueOf( data ) ).toString() );
   }
 
+  @Test
   public void testEscapeStringWithControlChar() {
     char[] data = new char[] { 'h', 'e', 'l', 8, 'l', 'o' };
     assertEquals( "\"hel\\u0008lo\"", JsonValue.valueOf( String.valueOf( data ) ).toString() );

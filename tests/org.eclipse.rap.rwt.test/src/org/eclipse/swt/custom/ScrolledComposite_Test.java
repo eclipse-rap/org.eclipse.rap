@@ -1,15 +1,22 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -22,13 +29,29 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ScrolledComposite_Test extends TestCase {
-  
+public class ScrolledComposite_Test {
+
   private Display display;
   private Shell shell;
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display , SWT.NONE );
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testCreation() {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.NONE );
     assertNull( sc.getHorizontalBar() );
@@ -43,12 +66,13 @@ public class ScrolledComposite_Test extends TestCase {
     assertNotNull( sc.getHorizontalBar() );
     assertNotNull( sc.getVerticalBar() );
   }
-  
+
+  @Test
   public void testDispose() {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
-    
+
     ScrollBar horizontalBar = sc.getHorizontalBar();
     ScrollBar verticalBar = sc.getVerticalBar();
     sc.dispose();
@@ -57,7 +81,8 @@ public class ScrolledComposite_Test extends TestCase {
     assertTrue( horizontalBar.isDisposed() );
     assertTrue( verticalBar.isDisposed() );
   }
-  
+
+  @Test
   public void testContent() {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     assertNull( sc.getContent() );
@@ -66,7 +91,8 @@ public class ScrolledComposite_Test extends TestCase {
     assertSame( content, sc.getContent() );
     assertTrue( content.isListening( SWT.Resize ) );
   }
-  
+
+  @Test
   public void testOrigin() {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     assertEquals( new Point( 0, 0 ), sc.getOrigin() );
@@ -90,7 +116,8 @@ public class ScrolledComposite_Test extends TestCase {
     assertEquals( 10, sc.getVerticalBar().getSelection() );
     assertEquals( new Point( -10, -10 ), content.getLocation() );
   }
-  
+
+  @Test
   public void testAlwaysShowScrollBars() {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     sc.setSize( 100, 100 );
@@ -105,14 +132,16 @@ public class ScrolledComposite_Test extends TestCase {
     assertTrue( sc.getVerticalBar().getVisible() );
     assertTrue( sc.getHorizontalBar().getVisible() );
   }
-  
+
+  @Test
   public void testLayout() {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     // test ignore layout
     sc.setLayout( new GridLayout() );
     assertFalse( sc.getLayout() instanceof GridLayout );
   }
-  
+
+  @Test
   public void testMinSize() {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     assertEquals( 0, sc.getMinWidth() );
@@ -136,7 +165,8 @@ public class ScrolledComposite_Test extends TestCase {
     assertEquals( 0, sc.getMinWidth() );
     assertEquals( 0, sc.getMinHeight() );
   }
-  
+
+  @Test
   public void testExpand() {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     assertFalse( sc.getExpandHorizontal() );
@@ -146,7 +176,8 @@ public class ScrolledComposite_Test extends TestCase {
     assertTrue( sc.getExpandHorizontal() );
     assertTrue( sc.getExpandVertical() );
   }
-  
+
+  @Test
   public void testClientArea() {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     sc.setSize( 100, 100 );
@@ -154,7 +185,8 @@ public class ScrolledComposite_Test extends TestCase {
     sc.setAlwaysShowScrollBars( true );
     assertEquals( new Rectangle( 0, 0, 90, 90 ), sc.getClientArea() );
   }
-  
+
+  @Test
   public void testNeedHScroll() {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     sc.setSize( 100, 100 );
@@ -171,7 +203,8 @@ public class ScrolledComposite_Test extends TestCase {
     assertTrue( sc.needHScroll( new Rectangle( 0, 0, 50, 50 ), false ) );
     assertTrue( sc.needHScroll( new Rectangle( 0, 0, 50, 50 ), true ) );
   }
-  
+
+  @Test
   public void testNeedVScroll() {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     sc.setSize( 100, 100 );
@@ -188,14 +221,16 @@ public class ScrolledComposite_Test extends TestCase {
     assertTrue( sc.needVScroll( new Rectangle( 0, 0, 50, 50 ), false ) );
     assertTrue( sc.needVScroll( new Rectangle( 0, 0, 50, 50 ), true ) );
   }
-  
+
+  @Test
   public void testShowFocusedControl() {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     assertFalse( sc.getShowFocusedControl() );
     sc.setShowFocusedControl( true );
     assertTrue( sc.getShowFocusedControl() );
   }
-  
+
+  @Test
   public void testShowControl() {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     Composite content = new Composite( sc, SWT.NONE );
@@ -219,24 +254,16 @@ public class ScrolledComposite_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
+  @Test
   public void testIsSerializable() throws Exception {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     sc.setContent( new Label( sc, SWT.NONE ) );
-    
+
     ScrolledComposite deserializedSC = Fixture.serializeAndDeserialize( sc );
-    
+
     assertTrue( deserializedSC.getContent() instanceof Label );
     assertTrue( deserializedSC.getLayout() instanceof ScrolledCompositeLayout );
   }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    display = new Display();
-    shell = new Shell( display , SWT.NONE );
-  }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

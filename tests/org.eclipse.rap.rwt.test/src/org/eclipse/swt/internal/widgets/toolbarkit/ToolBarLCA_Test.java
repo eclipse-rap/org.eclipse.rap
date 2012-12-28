@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.toolbarkit;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -24,15 +26,19 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ToolBarLCA_Test extends TestCase {
+public class ToolBarLCA_Test {
 
   private Display display;
   private Shell shell;
   private ToolBarLCA lca;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
@@ -40,10 +46,12 @@ public class ToolBarLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ToolBar toolBar = new ToolBar( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( toolBar );
@@ -55,6 +63,7 @@ public class ToolBarLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( toolBar );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     ToolBar toolBar = new ToolBar( shell, SWT.NONE );
 
@@ -68,6 +77,7 @@ public class ToolBarLCA_Test extends TestCase {
     assertFalse( Arrays.asList( styles ).contains( "H_SCROLL" ) );
   }
 
+  @Test
   public void testRenderCreate_Vertical() throws IOException {
     ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
 
@@ -80,6 +90,7 @@ public class ToolBarLCA_Test extends TestCase {
     assertFalse( Arrays.asList( styles ).contains( "V_SCROLL" ) );
   }
 
+  @Test
   public void testRenderCreate_Flat() throws IOException {
     ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
 
@@ -91,6 +102,7 @@ public class ToolBarLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "FLAT" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     ToolBar toolBar = new ToolBar( shell, SWT.NONE );
 

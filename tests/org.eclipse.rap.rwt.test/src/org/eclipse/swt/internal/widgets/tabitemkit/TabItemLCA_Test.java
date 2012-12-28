@@ -10,9 +10,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tabitemkit;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.TestCase;
+import java.io.IOException;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
@@ -33,10 +35,13 @@ import org.eclipse.swt.widgets.TabItem;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 @SuppressWarnings("deprecation")
-public class TabItemLCA_Test extends TestCase {
+public class TabItemLCA_Test {
 
   private Display display;
   private Shell shell;
@@ -44,8 +49,8 @@ public class TabItemLCA_Test extends TestCase {
   private TabItem item;
   private TabItemLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
@@ -55,11 +60,12 @@ public class TabItemLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testPreserveValues() {
     new TabItem( folder, SWT.NONE );
 
@@ -80,6 +86,7 @@ public class TabItemLCA_Test extends TestCase {
     assertEquals( "tooltip text", adapter.getPreserved( "toolTip" ) );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( item );
 
@@ -90,6 +97,7 @@ public class TabItemLCA_Test extends TestCase {
     assertEquals( Integer.valueOf( 0 ), operation.getProperty( "index" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( item );
 
@@ -98,6 +106,7 @@ public class TabItemLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( item.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderInitialToolTip() throws IOException {
     lca.render( item );
 
@@ -106,6 +115,7 @@ public class TabItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "toolTip" ) == -1 );
   }
 
+  @Test
   public void testRenderToolTip() throws IOException {
     item.setToolTipText( "foo" );
     lca.renderChanges( item );
@@ -114,6 +124,7 @@ public class TabItemLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( item, "toolTip" ) );
   }
 
+  @Test
   public void testRenderToolTipUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
@@ -126,6 +137,7 @@ public class TabItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "toolTip" ) );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     lca.render( item );
 
@@ -134,6 +146,7 @@ public class TabItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     item.setText( "foo" );
     lca.renderChanges( item );
@@ -142,6 +155,7 @@ public class TabItemLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( item, "text" ) );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
@@ -154,6 +168,7 @@ public class TabItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "text" ) );
   }
 
+  @Test
   public void testRenderInitialImage() throws IOException {
     lca.renderChanges( item );
 
@@ -161,6 +176,7 @@ public class TabItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "image" ) );
   }
 
+  @Test
   public void testRenderImage() throws IOException, JSONException {
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
@@ -174,6 +190,7 @@ public class TabItemLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
@@ -187,6 +204,7 @@ public class TabItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "image" ) );
   }
 
+  @Test
   public void testRenderImageReset() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
@@ -201,6 +219,7 @@ public class TabItemLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( item, "image" ) );
   }
 
+  @Test
   public void testRenderInitialControl() throws IOException {
     lca.render( item );
 
@@ -209,6 +228,7 @@ public class TabItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "control" ) == -1 );
   }
 
+  @Test
   public void testRenderControl() throws IOException {
     Composite content = new Composite( folder, SWT.NONE );
     String contentId = WidgetUtil.getId( content );
@@ -220,6 +240,7 @@ public class TabItemLCA_Test extends TestCase {
     assertEquals( contentId, message.findSetProperty( item, "control" ) );
   }
 
+  @Test
   public void testRenderControlUnchanged() throws IOException {
     Composite content = new Composite( folder, SWT.NONE );
     Fixture.markInitialized( display );

@@ -11,30 +11,36 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
-import junit.framework.TestCase;
+import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ThemeUtil_Test extends TestCase {
+public class ThemeUtil_Test {
   private static final String CUSTOM_THEME_ID = "customThemeId";
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testRegisterThemeDoesNotChangeCurrentTheme() throws Exception {
     Theme theme = createTheme( CUSTOM_THEME_ID );
     ThemeTestUtil.registerTheme( theme );
@@ -44,6 +50,7 @@ public class ThemeUtil_Test extends TestCase {
     assertSame( defaultTheme, ThemeUtil.getCurrentTheme() );
   }
 
+  @Test
   public void testSetCurrentTheme() throws Exception {
     Theme theme = createTheme( CUSTOM_THEME_ID );
     ThemeTestUtil.registerTheme( theme );
@@ -54,6 +61,7 @@ public class ThemeUtil_Test extends TestCase {
                 ThemeUtil.getCurrentTheme() );
   }
 
+  @Test
   public void testSetCurrentThemeToUnknownId() {
     ThemeUtil.setCurrentThemeId( ContextProvider.getUISession(), "unknown.theme" );
 

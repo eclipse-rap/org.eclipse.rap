@@ -12,11 +12,15 @@
 package org.eclipse.swt.internal.widgets.tooltipkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -39,17 +43,20 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolTip;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ToolTipLCA_Test extends TestCase {
+public class ToolTipLCA_Test {
 
   private Display display;
   private Shell shell;
   private ToolTip toolTip;
   private ToolTipLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
@@ -59,11 +66,12 @@ public class ToolTipLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testReadVisibleWithRequestParamFalse() {
     toolTip.setVisible( true );
 
@@ -73,12 +81,14 @@ public class ToolTipLCA_Test extends TestCase {
     assertFalse( toolTip.isVisible() );
   }
 
+  @Test
   public void testReadVisibleWithNoRequestParam() {
     toolTip.setVisible( true );
     Fixture.readDataAndProcessAction( display );
     assertTrue( toolTip.isVisible() );
   }
 
+  @Test
   public void testSelectionEvent() {
     final SelectionEvent[] eventLog = { null };
     toolTip.addSelectionListener( new SelectionAdapter() {
@@ -106,6 +116,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( event.item );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( toolTip );
 
@@ -114,6 +125,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.ToolTip", operation.getType() );
   }
 
+  @Test
   public void testRenderCreateWithBalloon() throws IOException {
     toolTip = new ToolTip( shell, SWT.BALLOON );
 
@@ -126,6 +138,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "BALLOON" ) );
   }
 
+  @Test
   public void testRenderCreateWithIconError() throws IOException {
     toolTip = new ToolTip( shell, SWT.ICON_ERROR );
 
@@ -138,6 +151,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "ICON_ERROR" ) );
   }
 
+  @Test
   public void testRenderCreateWithIconWarning() throws IOException {
     toolTip = new ToolTip( shell, SWT.ICON_WARNING );
 
@@ -150,6 +164,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "ICON_WARNING" ) );
   }
 
+  @Test
   public void testRenderCreateWithIconInformation() throws IOException {
     toolTip = new ToolTip( shell, SWT.ICON_INFORMATION );
 
@@ -162,6 +177,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "ICON_INFORMATION" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( toolTip );
 
@@ -170,6 +186,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( toolTip.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderDispose() throws IOException {
     lca.renderDispose( toolTip );
 
@@ -179,6 +196,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( toolTip ), operation.getTarget() );
   }
 
+  @Test
   public void testRenderInitialCustomVariant() throws IOException {
     lca.render( toolTip );
 
@@ -187,6 +205,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
   }
 
+  @Test
   public void testRenderCustomVariant() throws IOException {
     toolTip.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( toolTip );
@@ -195,6 +214,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertEquals( "variant_blue", message.findSetProperty( toolTip, "customVariant" ) );
   }
 
+  @Test
   public void testRenderCustomVariantUnchanged() throws IOException {
     Fixture.markInitialized( toolTip );
 
@@ -206,6 +226,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolTip, "customVariant" ) );
   }
 
+  @Test
   public void testRenderInitialRoundedBorder() throws IOException {
     lca.render( toolTip );
 
@@ -214,6 +235,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "roundedBorder" ) == -1 );
   }
 
+  @Test
   public void testRenderRoundedBorder() throws IOException, JSONException {
     IWidgetGraphicsAdapter graphicsAdapter = toolTip.getAdapter( IWidgetGraphicsAdapter.class );
     Color color = Graphics.getColor( 0, 255, 0 );
@@ -232,6 +254,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertEquals( 8, border.getInt( 5 ) );
   }
 
+  @Test
   public void testRenderRoundedBorderUnchanged() throws IOException {
     IWidgetGraphicsAdapter graphicsAdapter = toolTip.getAdapter( IWidgetGraphicsAdapter.class );
     Color color = Graphics.getColor( 0, 255, 0 );
@@ -245,6 +268,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolTip, "roundedBorder" ) );
   }
 
+  @Test
   public void testRenderInitialBackgroundGradient() throws IOException {
     lca.render( toolTip );
 
@@ -253,6 +277,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "backgroundGradient" ) == -1 );
   }
 
+  @Test
   public void testRenderBackgroundGradient() throws IOException, JSONException {
     IWidgetGraphicsAdapter graphicsAdapter = toolTip.getAdapter( IWidgetGraphicsAdapter.class );
     Color[] gradientColors = new Color[] {
@@ -275,6 +300,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, gradient.get( 2 ) );
   }
 
+  @Test
   public void testRenderBackgroundGradientUnchanged() throws IOException {
     IWidgetGraphicsAdapter graphicsAdapter = toolTip.getAdapter( IWidgetGraphicsAdapter.class );
     Color[] gradientColors = new Color[] {
@@ -292,6 +318,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolTip, "backgroundGradient" ) );
   }
 
+  @Test
   public void testRenderInitialAutoHide() throws IOException {
     lca.render( toolTip );
 
@@ -299,6 +326,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolTip, "autoHide" ) );
   }
 
+  @Test
   public void testRenderAutoHide() throws IOException {
     toolTip.setAutoHide( true );
     lca.renderChanges( toolTip );
@@ -307,6 +335,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( toolTip, "autoHide" ) );
   }
 
+  @Test
   public void testRenderAutoHideUnchanged() throws IOException {
     Fixture.markInitialized( toolTip );
 
@@ -318,6 +347,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolTip, "autoHide" ) );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     lca.render( toolTip );
 
@@ -325,6 +355,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolTip, "text" ) );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     toolTip.setText( "foo" );
     lca.renderChanges( toolTip );
@@ -333,6 +364,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( toolTip, "text" ) );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     Fixture.markInitialized( toolTip );
 
@@ -344,6 +376,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolTip, "text" ) );
   }
 
+  @Test
   public void testRenderInitialMessage() throws IOException {
     lca.render( toolTip );
 
@@ -351,6 +384,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolTip, "message" ) );
   }
 
+  @Test
   public void testRenderMessage() throws IOException {
     toolTip.setMessage( "foo" );
     lca.renderChanges( toolTip );
@@ -359,6 +393,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( toolTip, "message" ) );
   }
 
+  @Test
   public void testRenderMessageUnchanged() throws IOException {
     Fixture.markInitialized( toolTip );
 
@@ -370,6 +405,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolTip, "message" ) );
   }
 
+  @Test
   public void testRenderInitialLocation() throws IOException {
     lca.render( toolTip );
 
@@ -377,6 +413,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolTip, "location" ) );
   }
 
+  @Test
   public void testRenderLocation() throws IOException, JSONException {
     toolTip.setLocation( 10, 20 );
     lca.renderChanges( toolTip );
@@ -386,6 +423,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[10,20]", actual ) );
   }
 
+  @Test
   public void testRenderLocationUnchanged() throws IOException {
     Fixture.markInitialized( toolTip );
 
@@ -397,6 +435,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolTip, "location" ) );
   }
 
+  @Test
   public void testRenderInitialVisible() throws IOException {
     lca.render( toolTip );
 
@@ -404,6 +443,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolTip, "visible" ) );
   }
 
+  @Test
   public void testRenderVisible() throws IOException {
     toolTip.setVisible( true );
     lca.renderChanges( toolTip );
@@ -412,6 +452,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( toolTip, "visible" ) );
   }
 
+  @Test
   public void testRenderVisibleUnchanged() throws IOException {
     Fixture.markInitialized( toolTip );
 
@@ -423,6 +464,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( message.findSetOperation( toolTip, "visible" ) );
   }
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     Fixture.markInitialized( toolTip );
     Fixture.preserveWidgets();
@@ -435,6 +477,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( message.findListenOperation( toolTip, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderRemoveSelectionListener() throws Exception {
     SelectionListener listener = new SelectionAdapter() { };
     toolTip.addSelectionListener( listener );
@@ -449,6 +492,7 @@ public class ToolTipLCA_Test extends TestCase {
     assertNull( message.findListenOperation( toolTip, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( toolTip );
     Fixture.preserveWidgets();

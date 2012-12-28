@@ -11,11 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.expandbarkit;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -41,16 +45,20 @@ import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class ExpandBarLCA_Test extends TestCase {
+
+public class ExpandBarLCA_Test {
 
   private Display display;
   private Shell shell;
   private ExpandBar expandBar;
   private ExpandBarLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -59,11 +67,12 @@ public class ExpandBarLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ControlLCATestUtil.testActivateListener( expandBar );
     ControlLCATestUtil.testFocusListener( expandBar );
@@ -74,6 +83,7 @@ public class ExpandBarLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( expandBar );
   }
 
+  @Test
   public void testPreserveValues() {
     expandBar.setSize( expandBar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     Fixture.markInitialized( display );
@@ -125,6 +135,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( expandBar );
 
@@ -133,6 +144,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.ExpandBar", operation.getType() );
   }
 
+  @Test
   public void testRenderCreateWithVScroll() throws IOException {
     expandBar = new ExpandBar( shell, SWT.V_SCROLL );
 
@@ -145,6 +157,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertFalse( styles.contains( "V_SCROLL" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( expandBar );
 
@@ -153,6 +166,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( expandBar.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderDispose() throws IOException {
     lca.renderDispose( expandBar );
 
@@ -162,6 +176,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( expandBar ), operation.getTarget() );
   }
 
+  @Test
   public void testRenderInitialBottomSpacingBounds() throws IOException, JSONException {
     lca.render( expandBar );
 
@@ -171,6 +186,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertTrue( bounds.getInt( 3 ) > 0 );
   }
 
+  @Test
   public void testRenderBottomSpacingBounds() throws IOException, JSONException {
     lca.renderChanges( expandBar );
 
@@ -180,6 +196,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertTrue( bounds.getInt( 3 ) > 0 );
   }
 
+  @Test
   public void testRenderBottomSpacingBoundsUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( expandBar );
@@ -191,6 +208,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertNull( message.findSetOperation( expandBar, "boubottomSpacingBoundsnds" ) );
   }
 
+  @Test
   public void testRenderInitialVScrollBarVisible() throws IOException {
     expandBar = new ExpandBar( shell, SWT.V_SCROLL );
     ScrollBar vScroll = expandBar.getVerticalBar();
@@ -203,6 +221,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 
+  @Test
   public void testRenderVScrollBarVisible() throws IOException {
     expandBar = new ExpandBar( shell, SWT.V_SCROLL );
     ScrollBar vScroll = expandBar.getVerticalBar();
@@ -216,6 +235,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( vScroll, "visibility" ) );
   }
 
+  @Test
   public void testRenderVScrollBarVisibleUnchanged() throws IOException {
     expandBar = new ExpandBar( shell, SWT.V_SCROLL );
     ScrollBar vScroll = expandBar.getVerticalBar();
@@ -233,6 +253,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 
+  @Test
   public void testRenderInitialVScrollBarMax() throws IOException {
     expandBar = new ExpandBar( shell, SWT.NONE );
     expandBar.setSize( 100, 40 );
@@ -245,6 +266,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "vScrollBarMax" ) == -1 );
   }
 
+  @Test
   public void testRenderVScrollBarMax() throws IOException {
     expandBar = new ExpandBar( shell, SWT.V_SCROLL );
     expandBar.setSize( 100, 40 );
@@ -257,6 +279,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertNotNull( message.findSetProperty( expandBar, "vScrollBarMax" ) );
   }
 
+  @Test
   public void testRenderVScrollBarMaxUnchanged() throws IOException {
     expandBar = new ExpandBar( shell, SWT.V_SCROLL );
     expandBar.setSize( 100, 40 );
@@ -272,6 +295,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertNull( message.findSetOperation( expandBar, "vScrollBarMax" ) );
   }
 
+  @Test
   public void testRenderAddExpandListener() throws Exception {
     lca.renderChanges( expandBar );
 
@@ -279,6 +303,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( expandBar, "Expand" ) );
   }
 
+  @Test
   public void testRenderAddCollapseListener() throws Exception {
     lca.renderChanges( expandBar );
 
@@ -286,6 +311,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( expandBar, "Collapse" ) );
   }
 
+  @Test
   public void testRenderAddScrollBarsSelectionListener_Vertical() throws Exception {
     expandBar = new ExpandBar( shell, SWT.V_SCROLL );
     ScrollBar vScroll = expandBar.getVerticalBar();
@@ -299,6 +325,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( vScroll, "Selection" ) );
   }
 
+  @Test
   public void testRenderRemoveScrollBarsSelectionListener_Vertical() throws Exception {
     expandBar = new ExpandBar( shell, SWT.V_SCROLL );
     ScrollBar vScroll = expandBar.getVerticalBar();
@@ -314,6 +341,7 @@ public class ExpandBarLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( vScroll, "Selection" ) );
   }
 
+  @Test
   public void testRenderScrollBarsSelectionListenerUnchanged_Vertical() throws Exception {
     expandBar = new ExpandBar( shell, SWT.V_SCROLL );
     ScrollBar vScroll = expandBar.getVerticalBar();

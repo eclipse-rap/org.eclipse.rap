@@ -12,6 +12,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.engine;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -19,8 +22,6 @@ import static org.mockito.Mockito.when;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
@@ -33,27 +34,31 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class RWTServletContextListener_Test extends TestCase {
+public class RWTServletContextListener_Test {
 
   private RWTServletContextListener rwtServletContextListener;
   private ServletContext servletContext;
   private ServletContextEvent contextInitializedEvent;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.useTestResourceManager();
     rwtServletContextListener = new RWTServletContextListener();
     servletContext = new TestServletContext();
     contextInitializedEvent = new ServletContextEvent( servletContext );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.useDefaultResourceManager();
   }
 
+  @Test
   public void testResourceManagerIsInitialized() {
     String className = TestConfigurator.class.getName();
     servletContext.setInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM, className );
@@ -63,6 +68,7 @@ public class RWTServletContextListener_Test extends TestCase {
     assertResourceManagerIsRegistered();
   }
 
+  @Test
   public void testEntryPointInitialization() {
     String className = TestEntryPoint.class.getName();
     servletContext.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, className );
@@ -72,6 +78,7 @@ public class RWTServletContextListener_Test extends TestCase {
     assertEntryPointIsRegistered();
   }
 
+  @Test
   public void testEntryPointInitializationWithNonExistingClassName() {
     String className = "does.not.Exist";
     servletContext.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, className );
@@ -83,6 +90,7 @@ public class RWTServletContextListener_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConfigurator() {
     String className = TestConfigurator.class.getName();
     servletContext.setInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM, className );
@@ -94,6 +102,7 @@ public class RWTServletContextListener_Test extends TestCase {
   }
 
   @SuppressWarnings( "unchecked" )
+  @Test
   public void testConfiguratorWithThreadContextClassLoader() throws ClassNotFoundException {
     // See bug 367033
     // use a class name that cannot be found by RWT's class loader

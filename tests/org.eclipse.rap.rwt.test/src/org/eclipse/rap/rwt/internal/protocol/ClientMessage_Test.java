@@ -10,20 +10,26 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
+import org.junit.Test;
 
 
-public class ClientMessage_Test extends TestCase {
+public class ClientMessage_Test {
 
+  @Test
   public void testConstructWithNull() {
     try {
       new ClientMessage( null );
@@ -32,6 +38,7 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConstructWithEmptyString() {
     try {
       new ClientMessage( "" );
@@ -41,6 +48,7 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConstructWithInvalidJson() {
     try {
       new ClientMessage( "{" );
@@ -50,6 +58,7 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConstructWithoutHeader() {
     try {
       new ClientMessage( "{ \"foo\": 23 }" );
@@ -59,6 +68,7 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConstructWithoutOperations() {
     try {
       new ClientMessage( "{ " + ClientMessage.PROP_HEAD + " : {}, \"foo\": 23 }" );
@@ -68,6 +78,7 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetHeaderParameter() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : { \"abc\" : \"foo\" },"
@@ -77,6 +88,7 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( "foo", message.getHeadProperty( "abc" ) );
   }
 
+  @Test
   public void testGetHeaderParameter_NoParameter() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -86,6 +98,7 @@ public class ClientMessage_Test extends TestCase {
     assertNull( message.getHeadProperty( "abc" ) );
   }
 
+  @Test
   public void testConstructWithInvalidOperations() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -99,6 +112,7 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConstructWithOperationUnknownType() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -113,6 +127,7 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetAllOperationsFor() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -130,6 +145,7 @@ public class ClientMessage_Test extends TestCase {
     assertTrue( operations[ 1 ] instanceof NotifyOperation );
   }
 
+  @Test
   public void testGetAllOperationsFor_NoOperations() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -145,6 +161,7 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( 0, operations.length );
   }
 
+  @Test
   public void testGetAllOperations() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -160,6 +177,7 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( 3, operations.length );
   }
 
+  @Test
   public void testGetLastSetOperation_ByProperty() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -175,6 +193,7 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( "bar", operation.getProperty( "p1" ) );
   }
 
+  @Test
   public void testGetLastNotifyOperation() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -193,6 +212,7 @@ public class ClientMessage_Test extends TestCase {
     assertNull( operation.getProperty( "detail" ) );
   }
 
+  @Test
   public void testGetLastNotifyOperation_WithoutTarget() {
     String json = "{ "
         + ClientMessage.PROP_HEAD + " : {},"
@@ -209,6 +229,7 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( "w3", operation.getTarget() );
   }
 
+  @Test
   public void testGetLastNotifyOperation_WithoutTargetAndName() {
     String json = "{ "
         + ClientMessage.PROP_HEAD + " : {},"
@@ -225,6 +246,7 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( "w3", operation.getTarget() );
   }
 
+  @Test
   public void testGetAllCallOperations() {
     String json = "{ "
         + ClientMessage.PROP_HEAD + " : {},"
@@ -242,6 +264,7 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( "foo", operations[ 1 ].getMethodName() );
   }
 
+  @Test
   public void testGetAllCallOperations_ByTarget() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -258,6 +281,7 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( "store", operations[ 0 ].getMethodName() );
   }
 
+  @Test
   public void testGetAllCallOperations_ByTargetAnMethodName() {
     String json = "{ "
         + ClientMessage.PROP_HEAD + " : {},"
@@ -276,6 +300,7 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( "def", operations[ 1 ].getProperty( "p2" ) );
   }
 
+  @Test
   public void testSetOperation_WithoutTarget() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -290,6 +315,7 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetOperation_WithoutProperties() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -304,6 +330,7 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testNotifyOperation_WithoutEventType() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -318,6 +345,7 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testNotifyOperation_WithoutProperties() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -332,6 +360,7 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCallOperation() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -347,6 +376,7 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( Integer.valueOf( 123 ), operation.getProperty( "id" ) );
   }
 
+  @Test
   public void testCallOperation_WithoutMethodName() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -361,6 +391,7 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCallOperation_WithoutProperties() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -375,6 +406,7 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
+  @Test
   public void testOperationGetPropertyAsArray() {
     String json = "{ "
                 + ClientMessage.PROP_HEAD + " : {},"
@@ -389,6 +421,7 @@ public class ClientMessage_Test extends TestCase {
     assertTrue( Arrays.equals( extected, ( Object[] )operation.getProperty( "result" ) ) );
   }
 
+  @Test
   public void testOperationGetProperty_MixedArray() {
     String json = "{ "
         + ClientMessage.PROP_HEAD + " : {},"
@@ -407,6 +440,7 @@ public class ClientMessage_Test extends TestCase {
     assertTrue( Arrays.equals( extected, ( Object[] )operation.getProperty( "result" ) ) );
   }
 
+  @Test
   public void testOperationGetPropertyAsMap() {
     String json = "{ "
         + ClientMessage.PROP_HEAD + " : {},"
@@ -424,6 +458,7 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( "bar", map.get( "p2" ) );
   }
 
+  @Test
   public void testOperationGetPropertyAsMap_WithArray() {
     String json = "{ "
         + ClientMessage.PROP_HEAD + " : {},"
@@ -442,6 +477,7 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( "bar", map.get( "p2" ) );
   }
 
+  @Test
   public void testOperationGetPropertyNames() {
     Operation operation = createOperation( "[ \"set\", \"w3\", { \"foo\" : 23, \"bar\" : 42 } ]" );
 
@@ -452,6 +488,7 @@ public class ClientMessage_Test extends TestCase {
     assertTrue( names.contains( "bar" ) );
   }
 
+  @Test
   public void testOperationGetPropertyNamesWhenEmtpy() {
     Operation operation = createOperation( "[ \"set\", \"w3\", {} ]" );
 

@@ -11,23 +11,29 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.application;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ApplicationContextImpl_Test extends TestCase {
+public class ApplicationContextImpl_Test {
   private ApplicationContextImpl context;
 
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     context = new ApplicationContextImpl( null, null );
     ResourceDirectory resourceDirectory = context.getResourceDirectory();
     resourceDirectory.configure( Fixture.WEB_CONTEXT_DIR.getAbsolutePath() );
   }
 
+  @Test
   public void testApplicationContextSingletons() {
     assertNotNull( context.getThemeManager() );
     assertSame( context.getThemeManager(), context.getThemeManager() );
@@ -87,6 +93,7 @@ public class ApplicationContextImpl_Test extends TestCase {
     assertSame( context.getClientSelector(), context.getClientSelector() );
   }
 
+  @Test
   public void testStateAfterCreation() {
     assertFalse( context.isActive() );
     checkUnallowedMethodAccessIfNotActivated();

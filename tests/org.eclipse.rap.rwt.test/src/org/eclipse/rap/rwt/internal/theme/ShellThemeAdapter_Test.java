@@ -12,10 +12,9 @@
 package org.eclipse.rap.rwt.internal.theme;
 
 import static org.eclipse.rap.rwt.internal.theme.ThemeTestUtil.setCustomTheme;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -25,24 +24,28 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ShellThemeAdapter_Test extends TestCase {
+public class ShellThemeAdapter_Test {
 
   private Display display;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakeNewRequest();
     display = new Display();
   }
 
-  @Override
-  protected void tearDown() {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testPlainShell() throws IOException {
     Color yellow = display.getSystemColor( SWT.COLOR_YELLOW );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
@@ -57,6 +60,7 @@ public class ShellThemeAdapter_Test extends TestCase {
     assertEquals( yellow, themeAdapter.getBackground( shell ) );
   }
 
+  @Test
   public void testShellWithBorder() {
     Shell shell = new Shell( display, SWT.BORDER );
     ShellThemeAdapter themeAdapter = getShellThemeAdapter( shell );
@@ -65,6 +69,7 @@ public class ShellThemeAdapter_Test extends TestCase {
     assertEquals( 0, themeAdapter.getBorderWidth( shell ) );
   }
 
+  @Test
   public void testTitleBarHeightFromCustomVariant() throws IOException {
     Shell shell = new Shell( display, SWT.TITLE );
     ShellThemeAdapter shellThemeAdapter = getShellThemeAdapter( shell );
@@ -75,6 +80,7 @@ public class ShellThemeAdapter_Test extends TestCase {
     assertEquals( 50, shellThemeAdapter.getTitleBarHeight( shell ) );
   }
 
+  @Test
   public void testTitleBarMarginFromCustomVariant() throws IOException {
     Shell shell = new Shell( display, SWT.TITLE );
     ShellThemeAdapter shellThemeAdapter = getShellThemeAdapter( shell );
@@ -85,6 +91,7 @@ public class ShellThemeAdapter_Test extends TestCase {
     assertEquals( new Rectangle( 4, 1, 6, 4 ), shellThemeAdapter.getTitleBarMargin( shell ) );
   }
 
+  @Test
   public void testStyle_APPLICATION_MODAL() throws IOException {
     Shell shell = new Shell( display, SWT.APPLICATION_MODAL );
     ShellThemeAdapter shellThemeAdapter = getShellThemeAdapter( shell );
@@ -94,6 +101,7 @@ public class ShellThemeAdapter_Test extends TestCase {
     assertEquals( new Rectangle( 57, 23, 114, 46 ), shellThemeAdapter.getPadding( shell ) );
   }
 
+  @Test
   public void testStyle_TOOL() throws IOException {
     Shell shell = new Shell( display, SWT.TOOL );
     ShellThemeAdapter shellThemeAdapter = getShellThemeAdapter( shell );
@@ -103,6 +111,7 @@ public class ShellThemeAdapter_Test extends TestCase {
     assertEquals( new Rectangle( 57, 23, 114, 46 ), shellThemeAdapter.getPadding( shell ) );
   }
 
+  @Test
   public void testStyle_TITLE() throws IOException {
     Shell shell = new Shell( display, SWT.TITLE );
     ShellThemeAdapter shellThemeAdapter = getShellThemeAdapter( shell );
@@ -112,6 +121,7 @@ public class ShellThemeAdapter_Test extends TestCase {
     assertEquals( new Rectangle( 57, 23, 114, 46 ), shellThemeAdapter.getPadding( shell ) );
   }
 
+  @Test
   public void testStyle_SHEET() throws IOException {
     Shell shell = new Shell( display, SWT.SHEET );
     ShellThemeAdapter shellThemeAdapter = getShellThemeAdapter( shell );

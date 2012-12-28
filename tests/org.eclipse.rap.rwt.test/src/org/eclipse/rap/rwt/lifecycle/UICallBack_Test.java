@@ -10,7 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -18,10 +21,25 @@ import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class UICallBack_Test extends TestCase {
+@SuppressWarnings( "deprecation" )
+public class UICallBack_Test {
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testActivateFromBackgroundThread() {
     final Display display = new Display();
     Runnable runnable = new Runnable() {
@@ -39,6 +57,7 @@ public class UICallBack_Test extends TestCase {
     assertTrue( exception instanceof SWTException );
   }
 
+  @Test
   public void testActivateWithNullArgument() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     try {
@@ -48,6 +67,7 @@ public class UICallBack_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDeactivateWithNullArgument() {
     try {
       UICallBack.deactivate( null );
@@ -56,6 +76,7 @@ public class UICallBack_Test extends TestCase {
     }
   }
 
+  @Test
   public void testActivateFromNonUIThread() {
     Runnable runnable = new Runnable() {
       public void run() {
@@ -69,6 +90,7 @@ public class UICallBack_Test extends TestCase {
     assertIsThreadInvalidAccess( exception );
   }
 
+  @Test
   public void testActivateFromNonUIThreadWithFakeContext() {
     final Display display = new Display();
     Runnable runnable = new Runnable() {
@@ -87,6 +109,7 @@ public class UICallBack_Test extends TestCase {
     assertIsThreadInvalidAccess( exception );
   }
 
+  @Test
   public void testDeactivateFromNonUIThread() {
     Runnable runnable = new Runnable() {
       public void run() {
@@ -100,6 +123,7 @@ public class UICallBack_Test extends TestCase {
     assertIsThreadInvalidAccess( exception );
   }
 
+  @Test
   public void testDeativateFromNonUIThreadWithFakeContext() {
     final Display display = new Display();
     Runnable runnable = new Runnable() {
@@ -117,6 +141,7 @@ public class UICallBack_Test extends TestCase {
     assertNull( exception );
   }
 
+  @Test
   public void testRunNonUIThreadWithFakeContextWithNullDisplay() {
     try {
       UICallBack.runNonUIThreadWithFakeContext( null, new NoOpRunnable() );
@@ -125,22 +150,13 @@ public class UICallBack_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRunNonUIThreadWithFakeContextWithNullRunnable() {
     try {
       UICallBack.runNonUIThreadWithFakeContext( new Display(), null );
       fail( "must not accept null-argument" );
     } catch( IllegalArgumentException expected ) {
     }
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 
   private static void assertIsThreadInvalidAccess( Throwable exception ) {
@@ -157,4 +173,5 @@ public class UICallBack_Test extends TestCase {
     }
     return result;
   }
+
 }

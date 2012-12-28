@@ -1,19 +1,24 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
 
 
-public class QxAnimation_Test extends TestCase {
+public class QxAnimation_Test {
 
+  @Test
   public void testIllegalArguments() {
     QxAnimation animation = new QxAnimation();
     try {
@@ -42,6 +47,7 @@ public class QxAnimation_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCreate() {
     QxAnimation animation = new QxAnimation();
     animation.addAnimation( "fadeIn", 2000, "linear" );
@@ -59,6 +65,7 @@ public class QxAnimation_Test extends TestCase {
     assertEquals( "ease-in-out", animation.animations[ 1 ].timingFunction );
   }
 
+  @Test
   public void testDefaultString() {
     QxAnimation animation = new QxAnimation();
     animation.addAnimation( "fadeIn", 2000, "linear" );
@@ -69,6 +76,7 @@ public class QxAnimation_Test extends TestCase {
     assertEquals( expected, animation.toDefaultString() );
   }
 
+  @Test
   public void testToString() {
     QxAnimation animation = new QxAnimation();
     animation.addAnimation( "fadeIn", 2000, "linear" );
@@ -76,10 +84,12 @@ public class QxAnimation_Test extends TestCase {
     assertEquals( expected, animation.toString() );
   }
 
+  @Test
   public void testToCamelCaseString() {
     assertEquals( "easeInOut", QxAnimation.toCamelCaseString( "ease-in-out" ) );
   }
 
+  @Test
   public void testEquals() {
     QxAnimation animation1 = new QxAnimation();
     animation1.addAnimation( "fadeIn", 2000, "linear" );
@@ -88,4 +98,5 @@ public class QxAnimation_Test extends TestCase {
     assertEquals( animation1, animation2 );
     assertEquals( animation1.hashCode(), animation2.hashCode() );
   }
+
 }

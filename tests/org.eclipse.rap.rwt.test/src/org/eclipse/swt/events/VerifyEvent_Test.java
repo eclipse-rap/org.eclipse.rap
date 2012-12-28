@@ -11,16 +11,17 @@
 package org.eclipse.swt.events;
 
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.Test;
 
 
-public class VerifyEvent_Test extends TestCase {
+public class VerifyEvent_Test {
 
-  public void testUntypedEventConstructor() throws Exception {
+  @Test
+  public void testUntypedEventConstructor() {
     Event event = new Event();
     event.display = mock( Display.class );
     event.widget = mock( Widget.class );
@@ -32,9 +33,9 @@ public class VerifyEvent_Test extends TestCase {
     event.character = 'x';
     event.keyCode = 321;
     event.stateMask = 444;
-    
+
     VerifyEvent selectionEvent = new VerifyEvent( event );
-    
+
     EventTestHelper.assertFieldsEqual( selectionEvent, event );
   }
 

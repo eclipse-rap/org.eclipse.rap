@@ -11,9 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.widgets;
 
-import java.io.IOException;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import junit.framework.TestCase;
+import java.io.IOException;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
@@ -25,20 +26,25 @@ import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ExternalBrowser_Test extends TestCase {
+@SuppressWarnings( "deprecation" )
+public class ExternalBrowser_Test {
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testOpen() {
     new Display();
     // Test illegal arguments
@@ -62,6 +68,7 @@ public class ExternalBrowser_Test extends TestCase {
     }
   }
 
+  @Test
   public void testClose() {
     new Display();
     // Test illegal arguments
@@ -83,6 +90,7 @@ public class ExternalBrowser_Test extends TestCase {
    * Ensure that the order in which the protocol messages are rendered
    * matches the order of the ExternalBrowser#open/close calls
    */
+  @Test
   public void testExecutionOrder() throws IOException {
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
                                                       TestExecutionOrderEntryPoint.class,
@@ -154,4 +162,5 @@ public class ExternalBrowser_Test extends TestCase {
       return 0;
     }
   }
+
 }

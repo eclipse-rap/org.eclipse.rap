@@ -12,6 +12,9 @@
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -20,8 +23,6 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Locale;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -50,17 +51,20 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class SpinnerLCA_Test extends TestCase {
+public class SpinnerLCA_Test {
 
   private Display display;
   private Shell shell;
   private SpinnerLCA lca;
   private Spinner spinner;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
@@ -69,11 +73,12 @@ public class SpinnerLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ControlLCATestUtil.testActivateListener( spinner );
     ControlLCATestUtil.testFocusListener( spinner );
@@ -84,6 +89,7 @@ public class SpinnerLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( spinner );
   }
 
+  @Test
   public void testPreserveValues() {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
@@ -198,6 +204,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( "some text", spinner.getToolTipText() );
   }
 
+  @Test
   public void testReadSelection() {
     spinner.setMaximum( 100 );
 
@@ -207,6 +214,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( 77, spinner.getSelection() );
   }
 
+  @Test
   public void testReadSelection_Invalid() {
     spinner.setMaximum( 100 );
 
@@ -216,6 +224,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( spinner.getMaximum(), spinner.getSelection() );
   }
 
+  @Test
   public void testSelectionEvent() {
     SelectionListener listener = mock( SelectionListener.class );
     spinner.addSelectionListener( listener );
@@ -226,6 +235,7 @@ public class SpinnerLCA_Test extends TestCase {
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testDefaultSelectionEvent() {
     SelectionListener listener = mock( SelectionListener.class );
     spinner.addSelectionListener( listener );
@@ -236,6 +246,7 @@ public class SpinnerLCA_Test extends TestCase {
     verify( listener, times( 1 ) ).widgetDefaultSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testModifyEvent() {
     ModifyListener listener = mock( ModifyListener.class );
     spinner.addModifyListener( listener );
@@ -246,6 +257,7 @@ public class SpinnerLCA_Test extends TestCase {
     verify( listener, times( 1 ) ).modifyText( any( ModifyEvent.class ) );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( spinner );
 
@@ -254,6 +266,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.Spinner", operation.getType() );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( spinner );
 
@@ -262,6 +275,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( spinner.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderCreateWithWrapAndReadOnly() throws IOException {
     Spinner spinner = new Spinner( shell, SWT.WRAP | SWT.READ_ONLY );
 
@@ -274,6 +288,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "READ_ONLY" ) );
   }
 
+  @Test
   public void testRenderInitialMinimum() throws IOException {
     lca.render( spinner );
 
@@ -282,6 +297,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "minimum" ) == -1 );
   }
 
+  @Test
   public void testRenderMinimum() throws IOException {
     spinner.setMinimum( 10 );
     lca.renderChanges( spinner );
@@ -290,6 +306,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( spinner, "minimum" ) );
   }
 
+  @Test
   public void testRenderMinimumUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
@@ -302,6 +319,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertNull( message.findSetOperation( spinner, "minimum" ) );
   }
 
+  @Test
   public void testRenderInitialMaxmum() throws IOException {
     lca.render( spinner );
 
@@ -310,6 +328,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "maximum" ) == -1 );
   }
 
+  @Test
   public void testRenderMaxmum() throws IOException {
     spinner.setMaximum( 10 );
     lca.renderChanges( spinner );
@@ -318,6 +337,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( spinner, "maximum" ) );
   }
 
+  @Test
   public void testRenderMaxmumUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
@@ -330,6 +350,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertNull( message.findSetOperation( spinner, "maximum" ) );
   }
 
+  @Test
   public void testRenderInitialSelection() throws IOException {
     lca.render( spinner );
 
@@ -338,6 +359,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
   }
 
+  @Test
   public void testRenderSelection() throws IOException {
     spinner.setSelection( 10 );
     lca.renderChanges( spinner );
@@ -346,6 +368,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( spinner, "selection" ) );
   }
 
+  @Test
   public void testRenderSelectionUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
@@ -358,6 +381,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertNull( message.findSetOperation( spinner, "selection" ) );
   }
 
+  @Test
   public void testRenderInitialDigits() throws IOException {
     lca.render( spinner );
 
@@ -366,6 +390,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "digits" ) == -1 );
   }
 
+  @Test
   public void testRenderDigits() throws IOException {
     spinner.setDigits( 2 );
     lca.renderChanges( spinner );
@@ -374,6 +399,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( new Integer( 2 ), message.findSetProperty( spinner, "digits" ) );
   }
 
+  @Test
   public void testRenderDigitsUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
@@ -386,6 +412,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertNull( message.findSetOperation( spinner, "digits" ) );
   }
 
+  @Test
   public void testRenderInitialIncrement() throws IOException {
     lca.render( spinner );
 
@@ -394,6 +421,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "increment" ) == -1 );
   }
 
+  @Test
   public void testRenderIncrement() throws IOException {
     spinner.setIncrement( 2 );
     lca.renderChanges( spinner );
@@ -402,6 +430,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( new Integer( 2 ), message.findSetProperty( spinner, "increment" ) );
   }
 
+  @Test
   public void testRenderIncrementUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
@@ -414,6 +443,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertNull( message.findSetOperation( spinner, "increment" ) );
   }
 
+  @Test
   public void testRenderInitialPageIncrement() throws IOException {
     lca.render( spinner );
 
@@ -422,6 +452,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "pageIncrement" ) == -1 );
   }
 
+  @Test
   public void testRenderPageIncrement() throws IOException {
     spinner.setPageIncrement( 20 );
     lca.renderChanges( spinner );
@@ -430,6 +461,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( new Integer( 20 ), message.findSetProperty( spinner, "pageIncrement" ) );
   }
 
+  @Test
   public void testRenderPageIncrementUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
@@ -442,6 +474,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertNull( message.findSetOperation( spinner, "pageIncrement" ) );
   }
 
+  @Test
   public void testRenderInitialTextLimit() throws IOException {
     lca.renderChanges( spinner );
 
@@ -449,6 +482,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertNull( message.findSetOperation( spinner, "textLimit" ) );
   }
 
+  @Test
   public void testRenderTextLimit() throws IOException {
     spinner.setTextLimit( 10 );
     lca.renderChanges( spinner );
@@ -457,6 +491,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( spinner, "textLimit" ) );
   }
 
+  @Test
   public void testRenderTextLimitUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
@@ -469,6 +504,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertNull( message.findSetOperation( spinner, "textLimit" ) );
   }
 
+  @Test
   public void testRenderTextLimitReset() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
@@ -482,6 +518,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( spinner, "textLimit" ) );
   }
 
+  @Test
   public void testRenderTextLimitResetWithNegative() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
@@ -495,6 +532,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( spinner, "textLimit" ) );
   }
 
+  @Test
   public void testRenderInitialDecimalSeparator() throws IOException {
     RWT.setLocale( Locale.US );
     lca.render( spinner );
@@ -504,6 +542,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "decimalSeparator" ) == -1 );
   }
 
+  @Test
   public void testRenderDecimalSeparator() throws IOException {
     RWT.setLocale( Locale.GERMANY );
     lca.renderChanges( spinner );
@@ -512,6 +551,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( ",", message.findSetProperty( spinner, "decimalSeparator" ) );
   }
 
+  @Test
   public void testRenderDecimalSeparatorUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
@@ -524,6 +564,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertNull( message.findSetOperation( spinner, "decimalSeparator" ) );
   }
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
@@ -537,6 +578,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertNull( message.findListenOperation( spinner, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderRemoveSelectionListener() throws Exception {
     Listener listener = mock( Listener.class );
     spinner.addListener( SWT.Selection, listener );
@@ -552,6 +594,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertNull( message.findListenOperation( spinner, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderAddDefaultSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
@@ -565,6 +608,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertNull( message.findListenOperation( spinner, "Selection" ) );
   }
 
+  @Test
   public void testRenderRemoveDefaultSelectionListener() throws Exception {
     Listener listener = mock( Listener.class );
     spinner.addListener( SWT.DefaultSelection, listener );
@@ -580,6 +624,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertNull( message.findListenOperation( spinner, "Selection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
@@ -593,6 +638,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertNull( message.findListenOperation( spinner, "selection" ) );
   }
 
+  @Test
   public void testRenderAddModifyListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
@@ -608,6 +654,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( spinner, "Selection" ) );
   }
 
+  @Test
   public void testRenderRemoveModifyListener() throws Exception {
     ModifyListener listener = new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
@@ -625,6 +672,7 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( spinner, "Selection" ) );
   }
 
+  @Test
   public void testRenderModifyListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );

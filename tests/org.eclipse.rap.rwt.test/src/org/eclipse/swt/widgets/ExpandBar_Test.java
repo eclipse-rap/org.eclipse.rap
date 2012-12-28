@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -23,24 +28,30 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ExpandEvent;
 import org.eclipse.swt.events.ExpandListener;
 import org.eclipse.swt.graphics.Font;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ExpandBar_Test extends TestCase {
+public class ExpandBar_Test {
 
   private Display display;
   private Shell shell;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testInitialValues() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     assertEquals( ExpandItem.CHEVRON_SIZE, expandBar.getBandHeight() );
@@ -50,6 +61,7 @@ public class ExpandBar_Test extends TestCase {
     assertNull( expandBar.getMenu() );
   }
 
+  @Test
   public void testCreation() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     assertEquals( 0, expandBar.getItemCount() );
@@ -74,6 +86,7 @@ public class ExpandBar_Test extends TestCase {
     assertEquals( 0, expandBar.indexOf( item ) );
   }
 
+  @Test
   public void testStyle() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     assertTrue( ( expandBar.getStyle() & SWT.V_SCROLL ) == 0 );
@@ -87,6 +100,7 @@ public class ExpandBar_Test extends TestCase {
     assertTrue( ( expandBar.getStyle() & SWT.V_SCROLL ) != 0 );
   }
 
+  @Test
   public void testBandHeight() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     assertEquals( ExpandItem.CHEVRON_SIZE, expandBar.getBandHeight() );
@@ -95,6 +109,7 @@ public class ExpandBar_Test extends TestCase {
     assertEquals( 34, expandBar.getBandHeight() );
   }
 
+  @Test
   public void testSpacing() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     assertEquals( 4, expandBar.getSpacing() );
@@ -102,6 +117,7 @@ public class ExpandBar_Test extends TestCase {
     assertEquals( 8, expandBar.getSpacing() );
   }
 
+  @Test
   public void testDispose() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
@@ -110,6 +126,7 @@ public class ExpandBar_Test extends TestCase {
     assertTrue( item.isDisposed() );
   }
 
+  @Test
   public void testExpandListener() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     final StringBuilder log = new StringBuilder();
@@ -127,7 +144,8 @@ public class ExpandBar_Test extends TestCase {
     expandBar.notifyListeners( SWT.Collapse, new Event() );
     assertEquals( "expanded|collapsed", log.toString() );
   }
-  
+
+  @Test
   public void testIndexOfWithNullItem() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     try {
@@ -138,6 +156,7 @@ public class ExpandBar_Test extends TestCase {
     }
   }
 
+  @Test
   public void testIndexOfWithDisposedItem() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
@@ -151,6 +170,7 @@ public class ExpandBar_Test extends TestCase {
   }
 
   // bug 301005
+  @Test
   public void testSetFontNull() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     try {
@@ -160,6 +180,7 @@ public class ExpandBar_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDisposeWithFontDisposeInDisposeListener() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     new ExpandItem( expandBar, SWT.NONE );
@@ -173,48 +194,53 @@ public class ExpandBar_Test extends TestCase {
     } );
     expandBar.dispose();
   }
-  
+
+  @Test
   public void testIsSerializable() throws Exception {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     new ExpandItem( expandBar, SWT.NONE );
 
     ExpandBar deserializedExpandBar = Fixture.serializeAndDeserialize( expandBar );
-    
+
     assertEquals( 1, deserializedExpandBar.getItemCount() );
   }
-  
+
+  @Test
   public void testAddExpandListener() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
-    
+
     expandBar.addExpandListener( mock( ExpandListener.class ) );
 
     assertTrue( expandBar.isListening( SWT.Expand ) );
     assertTrue( expandBar.isListening( SWT.Collapse ) );
   }
 
+  @Test
   public void testRemoveExpandListener() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     ExpandListener listener = mock( ExpandListener.class );
     expandBar.addExpandListener( listener );
-    
+
     expandBar.removeExpandListener( listener );
-    
+
     assertFalse( expandBar.isListening( SWT.Expand ) );
     assertFalse( expandBar.isListening( SWT.Collapse ) );
   }
 
+  @Test
   public void testAddExpandListenerWithNullArgument() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
-    
+
     try {
       expandBar.addExpandListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
 
+  @Test
   public void testRemoveExpandListenerWithNullArgument() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
-    
+
     try {
       expandBar.removeExpandListener( null );
     } catch( IllegalArgumentException expected ) {

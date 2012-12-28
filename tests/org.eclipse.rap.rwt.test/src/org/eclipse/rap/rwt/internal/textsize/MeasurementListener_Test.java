@@ -15,11 +15,13 @@ import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.METHOD_M
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.METHOD_STORE_MEASUREMENTS;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.PROPERTY_RESULTS;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.TYPE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
@@ -36,17 +38,20 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class MeasurementListener_Test extends TestCase {
+public class MeasurementListener_Test {
   private static final int EXPAND_AND_RESTORE = 2;
   private static final FontData FONT_DATA = new FontData( "arial", 12, SWT.BOLD );
 
   private MeasurementListener listener;
   private int resizeCount;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     listener = new MeasurementListener();
 
     Fixture.setUp();
@@ -55,17 +60,19 @@ public class MeasurementListener_Test extends TestCase {
     initResizeCount();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testGetPhaseId() {
     PhaseId phaseId = listener.getPhaseId();
 
     assertSame( PhaseId.ANY, phaseId );
   }
 
+  @Test
   public void testAfterPhaseWithoutMeasurementItemsOrProbes() {
     listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
 
@@ -73,6 +80,7 @@ public class MeasurementListener_Test extends TestCase {
     assertNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
   }
 
+  @Test
   public void testAfterPhaseWithMeasurementItems() {
     MeasurementOperator.getInstance().addItemToMeasure( createItem() );
 
@@ -82,6 +90,7 @@ public class MeasurementListener_Test extends TestCase {
     assertNotNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
   }
 
+  @Test
   public void testAfterPhaseWithProbes() {
     MeasurementOperator.getInstance().addProbeToMeasure( FONT_DATA );
 
@@ -91,6 +100,7 @@ public class MeasurementListener_Test extends TestCase {
     assertNotNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
   }
 
+  @Test
   public void testAfterPhaseWithMeasurementItemsButWrongPhaseId() {
     MeasurementOperator.getInstance().addItemToMeasure( createItem() );
 
@@ -100,6 +110,7 @@ public class MeasurementListener_Test extends TestCase {
     assertNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
   }
 
+  @Test
   public void testAfterPhaseWithProbesButWrongPhaseId() {
     MeasurementOperator.getInstance().addProbeToMeasure( FONT_DATA );
 
@@ -109,6 +120,7 @@ public class MeasurementListener_Test extends TestCase {
     assertNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
   }
 
+  @Test
   public void testBeforePhaseWithMeasuredProbes() {
     fakeRequestWithProbeMeasurementResults();
 
@@ -117,6 +129,7 @@ public class MeasurementListener_Test extends TestCase {
     checkProbeResultHasBeenStored();
   }
 
+  @Test
   public void testBeforePhaseWithMeasuredItems() {
     createShellWithResizeListener();
     fakeRequestWithItemMeasurementResults();
@@ -127,6 +140,7 @@ public class MeasurementListener_Test extends TestCase {
     checkShellHasBeenResized();
   }
 
+  @Test
   public void testBeforePhaseWithoutMeasuredItemsMustNotResizeShell() {
     createShellWithResizeListener();
 
@@ -135,6 +149,7 @@ public class MeasurementListener_Test extends TestCase {
     checkShellHasNotBeenResized();
   }
 
+  @Test
   public void testBeforePhaseProbeMeasurementOfStartupProbes() {
     createProbe();
     fakeRequestWithProbeMeasurementResults();

@@ -1,41 +1,49 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class Slider_Test extends TestCase {
+public class Slider_Test {
 
   private Shell shell;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     shell = new Shell( display );
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testInitialValues() {
     Slider slider = new Slider( shell, SWT.NONE );
     assertEquals( 0, slider.getMinimum() );
@@ -46,6 +54,7 @@ public class Slider_Test extends TestCase {
     assertEquals( 10, slider.getThumb() );
   }
 
+  @Test
   public void testValues() {
     Slider slider = new Slider( shell, SWT.NONE );
 
@@ -79,7 +88,7 @@ public class Slider_Test extends TestCase {
 
     slider.setSelection( -10 );
     assertEquals( 40, slider.getSelection() );
-    
+
     slider.setSelection( 73 );
     assertEquals( 52, slider.getSelection() );
 
@@ -88,21 +97,22 @@ public class Slider_Test extends TestCase {
 
     slider.setIncrement( -5 );
     assertEquals( 5, slider.getIncrement() );
-    
+
     slider.setThumb( -5 );
     assertEquals( 13, slider.getThumb() );
-    
+
     slider.setThumb( 0 );
     assertEquals( 13, slider.getThumb() );
-    
+
     slider.setThumb( 3 );
     assertEquals( 3, slider.getThumb() );
-    
+
     slider.setThumb( 30 );
     assertEquals( 25, slider.getThumb() );
     assertEquals( 40, slider.getSelection() );
   }
 
+  @Test
   public void testStyle() {
     // Test SWT.NONE
     Slider slider = new Slider( shell, SWT.NONE );
@@ -120,12 +130,14 @@ public class Slider_Test extends TestCase {
     assertTrue( ( slider.getStyle() & SWT.VERTICAL ) == 0 );
   }
 
+  @Test
   public void testDispose() {
     Slider slider = new Slider( shell, SWT.NONE );
     slider.dispose();
     assertTrue( slider.isDisposed() );
   }
 
+  @Test
   public void testComputeSize() {
     Slider slider = new Slider( shell, SWT.HORIZONTAL );
     Point expected = new Point( 170, 16 );
@@ -139,50 +151,56 @@ public class Slider_Test extends TestCase {
     assertEquals( expected, slider.computeSize( 100, 100 ) );
   }
 
+  @Test
   public void testIsSerializable() throws Exception {
     Slider slider = new Slider( shell, SWT.HORIZONTAL );
     slider.setSelection( 2 );
-    
+
     Slider deserializedSlider = Fixture.serializeAndDeserialize( slider );
-    
+
     assertEquals( slider.getSelection(), deserializedSlider.getSelection() );
   }
 
+  @Test
   public void testAddSelectionListener() {
     Slider slider = new Slider( shell, SWT.NONE );
 
     slider.addSelectionListener( mock( SelectionListener.class ) );
-    
+
     assertTrue( slider.isListening( SWT.Selection ) );
     assertTrue( slider.isListening( SWT.DefaultSelection ) );
   }
-  
+
+  @Test
   public void testRemoveSelectionListener() {
     Slider slider = new Slider( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     slider.addSelectionListener( listener );
 
     slider.removeSelectionListener( listener );
-    
+
     assertFalse( slider.isListening( SWT.Selection ) );
     assertFalse( slider.isListening( SWT.DefaultSelection ) );
   }
 
+  @Test
   public void testAddSelectionListenerWithNullArgument() {
     Slider slider = new Slider( shell, SWT.NONE );
-    
+
     try {
       slider.addSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
 
+  @Test
   public void testRemoveSelectionListenerWithNullArgument() {
     Slider slider = new Slider( shell, SWT.NONE );
-    
+
     try {
       slider.removeSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
+
 }

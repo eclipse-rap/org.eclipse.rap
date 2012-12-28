@@ -10,29 +10,37 @@
 *******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class RemoteObjectRegistry_Test extends TestCase {
+public class RemoteObjectRegistry_Test {
 
   private RemoteObjectRegistry registry;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     registry = new RemoteObjectRegistry();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testReturnsSingletonInstance() {
     Object registry1 = RemoteObjectRegistry.getInstance();
     Object registry2 = RemoteObjectRegistry.getInstance();
@@ -41,6 +49,7 @@ public class RemoteObjectRegistry_Test extends TestCase {
     assertSame( registry1, registry2 );
   }
 
+  @Test
   public void testCanRegisterRemoteObject() {
     RemoteObjectImpl remoteObject = new RemoteObjectImpl( "id", "type" );
     registry.register( remoteObject );
@@ -50,6 +59,7 @@ public class RemoteObjectRegistry_Test extends TestCase {
     assertSame( remoteObject, result );
   }
 
+  @Test
   public void testCanRemoveRegisteredObject() {
     RemoteObjectImpl remoteObject = new RemoteObjectImpl( "id", "type" );
     registry.register( remoteObject );
@@ -59,6 +69,7 @@ public class RemoteObjectRegistry_Test extends TestCase {
     assertNull( registry.get( "id" ) );
   }
 
+  @Test
   public void testPreventsRegisterDuplicateIds() {
     registry.register( new RemoteObjectImpl( "id", "type" ) );
 
@@ -70,6 +81,7 @@ public class RemoteObjectRegistry_Test extends TestCase {
     }
   }
 
+  @Test
   public void testPreventsRemoveNonExisting() {
     try {
       registry.remove( new RemoteObjectImpl( "id", "type" ) );
@@ -79,6 +91,7 @@ public class RemoteObjectRegistry_Test extends TestCase {
     }
   }
 
+  @Test
   public void testReturnsOrderedListOfRegisteredObjects() {
     for( int i = 0; i < 10; i++ ) {
       registry.register( new RemoteObjectImpl( "id" + i, "type" ) );

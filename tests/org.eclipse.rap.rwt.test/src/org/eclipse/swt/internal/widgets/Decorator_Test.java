@@ -1,16 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -24,13 +29,31 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 
 @SuppressWarnings("deprecation")
 // TODO [rh] rename to ControlDecorator_Test
-public class Decorator_Test extends TestCase {
+public class Decorator_Test {
 
   private Shell shell;
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    shell = new Shell( display , SWT.NONE );
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testCreate() {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
@@ -56,6 +79,7 @@ public class Decorator_Test extends TestCase {
     assertEquals( 2, Decorator.getDecorators( control ).length );
   }
 
+  @Test
   public void testDispose() {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
@@ -78,6 +102,7 @@ public class Decorator_Test extends TestCase {
     assertEquals( 0, Decorator.getDecorators( control ).length );
   }
 
+  @Test
   public void testImage() {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
@@ -94,6 +119,7 @@ public class Decorator_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 0, 0 ), decoration.getBounds() );
   }
 
+  @Test
   public void testDescriptionText() {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
@@ -105,6 +131,7 @@ public class Decorator_Test extends TestCase {
     assertEquals( "", decoration.getText() );
   }
 
+  @Test
   public void testMarginWidth() {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
@@ -114,31 +141,34 @@ public class Decorator_Test extends TestCase {
     assertEquals( 5, decoration.getMarginWidth() );
   }
 
+  @Test
   public void testSetShowOnlyOnFocusToTrue() {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
 
     decoration.setShowOnlyOnFocus( true );
-    
+
     assertTrue( decoration.getShowOnlyOnFocus() );
     assertTrue( control.isListening( SWT.FocusIn ) );
     assertTrue( control.isListening( SWT.FocusOut ) );
   }
 
+  @Test
   public void testSetShowOnlyOnFocusToFalse() {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
     decoration.setShowOnlyOnFocus( true );
-    
+
     decoration.setShowOnlyOnFocus( false );
 
     assertFalse( decoration.getShowOnlyOnFocus() );
     assertFalse( control.isListening( SWT.FocusIn ) );
     assertFalse( control.isListening( SWT.FocusOut ) );
   }
-  
+
+  @Test
   public void testSetShowOnlyOnFocusCalledTwice() {
     Control control = new Button( shell, SWT.PUSH );
     ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
@@ -151,6 +181,7 @@ public class Decorator_Test extends TestCase {
     assertFalse( control.isListening( SWT.FocusOut ) );
   }
 
+  @Test
   public void testShowHover() {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
@@ -160,6 +191,7 @@ public class Decorator_Test extends TestCase {
     assertFalse( decoration.getShowHover() );
   }
 
+  @Test
   public void testVisible() {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
@@ -187,34 +219,26 @@ public class Decorator_Test extends TestCase {
     assertFalse( decoration.isVisible() );
   }
 
+  @Test
   public void testAddSelectionListener() {
     ControlDecorator decoration = new ControlDecorator( shell, SWT.RIGHT, null );
 
     decoration.addSelectionListener( mock( SelectionListener.class ) );
-    
+
     assertTrue( decoration.isListening( SWT.Selection ) );
     assertTrue( decoration.isListening( SWT.DefaultSelection ) );
   }
-  
+
+  @Test
   public void testRemoveSelectionListener() {
     ControlDecorator decoration = new ControlDecorator( shell, SWT.RIGHT, null );
     SelectionListener listener = mock( SelectionListener.class );
     decoration.addSelectionListener( listener );
 
     decoration.removeSelectionListener( listener );
-    
+
     assertFalse( decoration.isListening( SWT.Selection ) );
     assertFalse( decoration.isListening( SWT.DefaultSelection ) );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    shell = new Shell( display , SWT.NONE );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

@@ -12,14 +12,15 @@
 package org.eclipse.swt.internal.widgets.scalekit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -42,17 +43,21 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-public class ScaleLCA_Test extends TestCase {
+
+public class ScaleLCA_Test {
 
   private Display display;
   private Shell shell;
   private Scale scale;
   private ScaleLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
@@ -61,11 +66,12 @@ public class ScaleLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testScalePreserveValues() {
     Scale scale = new Scale( shell, SWT.HORIZONTAL );
     Fixture.markInitialized( display );
@@ -88,6 +94,7 @@ public class ScaleLCA_Test extends TestCase {
     testPreserveControlProperties( scale );
   }
 
+  @Test
   public void testSelectionEvent() {
     SelectionListener listener = mock( SelectionListener.class );
     scale.addSelectionListener( listener );
@@ -104,7 +111,7 @@ public class ScaleLCA_Test extends TestCase {
     assertEquals( 0, event.y );
     assertEquals( 0, event.width );
     assertEquals( 0, event.height );
-    assertEquals( true, event.doit );
+    assertTrue( event.doit );
   }
 
   private void testPreserveControlProperties( Scale scale ) {
@@ -164,6 +171,7 @@ public class ScaleLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( scale );
 
@@ -172,6 +180,7 @@ public class ScaleLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.Scale", operation.getType() );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( scale );
 
@@ -180,6 +189,7 @@ public class ScaleLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( scale.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderCreateWithHorizontal() throws IOException {
     Scale scale = new Scale( shell, SWT.HORIZONTAL );
 
@@ -191,6 +201,7 @@ public class ScaleLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "HORIZONTAL" ) );
   }
 
+  @Test
   public void testRenderInitialMinimum() throws IOException {
     lca.render( scale );
 
@@ -199,6 +210,7 @@ public class ScaleLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "minimum" ) == -1 );
   }
 
+  @Test
   public void testRenderMinimum() throws IOException {
     scale.setMinimum( 10 );
     lca.renderChanges( scale );
@@ -207,6 +219,7 @@ public class ScaleLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( scale, "minimum" ) );
   }
 
+  @Test
   public void testRenderMinimumUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( scale );
@@ -219,6 +232,7 @@ public class ScaleLCA_Test extends TestCase {
     assertNull( message.findSetOperation( scale, "minimum" ) );
   }
 
+  @Test
   public void testRenderInitialMaxmum() throws IOException {
     lca.render( scale );
 
@@ -227,6 +241,7 @@ public class ScaleLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "maximum" ) == -1 );
   }
 
+  @Test
   public void testRenderMaxmum() throws IOException {
     scale.setMaximum( 10 );
     lca.renderChanges( scale );
@@ -235,6 +250,7 @@ public class ScaleLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( scale, "maximum" ) );
   }
 
+  @Test
   public void testRenderMaxmumUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( scale );
@@ -247,6 +263,7 @@ public class ScaleLCA_Test extends TestCase {
     assertNull( message.findSetOperation( scale, "maximum" ) );
   }
 
+  @Test
   public void testRenderInitialSelection() throws IOException {
     lca.render( scale );
 
@@ -255,6 +272,7 @@ public class ScaleLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
   }
 
+  @Test
   public void testRenderSelection() throws IOException {
     scale.setSelection( 10 );
     lca.renderChanges( scale );
@@ -263,6 +281,7 @@ public class ScaleLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( scale, "selection" ) );
   }
 
+  @Test
   public void testRenderSelectionUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( scale );
@@ -275,6 +294,7 @@ public class ScaleLCA_Test extends TestCase {
     assertNull( message.findSetOperation( scale, "selection" ) );
   }
 
+  @Test
   public void testRenderInitialIncrement() throws IOException {
     lca.render( scale );
 
@@ -283,6 +303,7 @@ public class ScaleLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "increment" ) == -1 );
   }
 
+  @Test
   public void testRenderIncrement() throws IOException {
     scale.setIncrement( 2 );
     lca.renderChanges( scale );
@@ -291,6 +312,7 @@ public class ScaleLCA_Test extends TestCase {
     assertEquals( new Integer( 2 ), message.findSetProperty( scale, "increment" ) );
   }
 
+  @Test
   public void testRenderIncrementUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( scale );
@@ -303,6 +325,7 @@ public class ScaleLCA_Test extends TestCase {
     assertNull( message.findSetOperation( scale, "increment" ) );
   }
 
+  @Test
   public void testRenderInitialPageIncrement() throws IOException {
     lca.render( scale );
 
@@ -311,6 +334,7 @@ public class ScaleLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "pageIncrement" ) == -1 );
   }
 
+  @Test
   public void testRenderPageIncrement() throws IOException {
     scale.setPageIncrement( 20 );
     lca.renderChanges( scale );
@@ -319,6 +343,7 @@ public class ScaleLCA_Test extends TestCase {
     assertEquals( new Integer( 20 ), message.findSetProperty( scale, "pageIncrement" ) );
   }
 
+  @Test
   public void testRenderPageIncrementUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( scale );
@@ -331,6 +356,7 @@ public class ScaleLCA_Test extends TestCase {
     assertNull( message.findSetOperation( scale, "pageIncrement" ) );
   }
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( scale );
@@ -344,6 +370,7 @@ public class ScaleLCA_Test extends TestCase {
     assertNull( message.findListenOperation( scale, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderRemoveSelectionListener() throws Exception {
     Listener listener = mock( Listener.class );
     scale.addListener( SWT.Selection, listener );
@@ -359,6 +386,7 @@ public class ScaleLCA_Test extends TestCase {
     assertNull( message.findListenOperation( scale, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( scale );

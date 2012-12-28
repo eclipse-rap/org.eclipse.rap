@@ -11,32 +11,37 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class Scrollable_Test extends TestCase {
+public class Scrollable_Test {
 
   private Display display;
   private Shell shell;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display, SWT.NONE );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testComputeTrim() {
     Composite scrollable = new Composite( shell, SWT.BORDER );
     Rectangle trim = scrollable.computeTrim( 20, 30, 200, 300 );
@@ -47,6 +52,7 @@ public class Scrollable_Test extends TestCase {
     assertEquals( 300 + ( 2 * borderWidth ), trim.height );
   }
 
+  @Test
   public void testComputeTrimWithPadding() {
     final Rectangle padding = new Rectangle( 10, 10, 10, 10 );
     Composite scrollable = new Composite( shell, SWT.BORDER ) {
@@ -71,6 +77,7 @@ public class Scrollable_Test extends TestCase {
     assertEquals( 332, trim.height );
   }
 
+  @Test
   public void testGetClientArea() {
     Composite scrollable = new Composite( shell, SWT.BORDER );
     scrollable.setSize( 100, 100 );
@@ -78,6 +85,7 @@ public class Scrollable_Test extends TestCase {
     assertEquals( expected, scrollable.getClientArea() );
   }
 
+  @Test
   public void testGetClientArea_WithScrollbars() {
     Composite scrollable = new Composite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     scrollable.getHorizontalBar().setVisible( true );
@@ -87,6 +95,7 @@ public class Scrollable_Test extends TestCase {
     assertEquals( expected, scrollable.getClientArea() );
   }
 
+  @Test
   public void testClientAreaWithPadding() {
     Composite scrollable = new Composite( shell, SWT.BORDER ) {
       @Override
@@ -108,6 +117,7 @@ public class Scrollable_Test extends TestCase {
     assertEquals( expected, scrollable.getClientArea() );
   }
 
+  @Test
   public void testClientAreaIsZero() {
     Composite scrollable = new Composite( shell, SWT.BORDER );
     scrollable.setSize( 0, 0 );
@@ -115,6 +125,7 @@ public class Scrollable_Test extends TestCase {
     assertEquals( expected, scrollable.getClientArea() );
   }
 
+  @Test
   public void testClientAreaIsZeroWithPadding() {
     Composite scrollable = new Composite( shell, SWT.BORDER ) {
       @Override
@@ -135,6 +146,7 @@ public class Scrollable_Test extends TestCase {
     assertEquals( expected, scrollable.getClientArea() );
   }
 
+  @Test
   public void testScrollBarsAreDisposed() {
     Composite scrollable = new Composite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     ScrollBar verticalBar = scrollable.getVerticalBar();
@@ -146,6 +158,7 @@ public class Scrollable_Test extends TestCase {
     assertTrue( horizontalBar.isDisposed() );
   }
 
+  @Test
   public void testDisposeWithoutScrollBars() {
     Composite scrollable = new Composite( shell, SWT.NONE );
 

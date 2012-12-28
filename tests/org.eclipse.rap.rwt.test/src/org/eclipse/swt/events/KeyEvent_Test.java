@@ -20,8 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -31,17 +29,20 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.InOrder;
 
 
-public class KeyEvent_Test extends TestCase {
+public class KeyEvent_Test {
 
   private Display display;
   private Shell shell;
   private List<Object> events;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -49,11 +50,12 @@ public class KeyEvent_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testUntypedEventConstructor() {
     Event event = new Event();
     event.display = display;
@@ -70,6 +72,7 @@ public class KeyEvent_Test extends TestCase {
     EventTestHelper.assertFieldsEqual( keyEvent, event );
   }
 
+  @Test
   public void testKeySelectionEventsOrder() {
     KeyListener keyListener = mock( KeyListener.class );
     SelectionListener selectionListener = mock( SelectionListener.class );
@@ -88,6 +91,7 @@ public class KeyEvent_Test extends TestCase {
     inOrder.verify( keyListener ).keyReleased( any( KeyEvent.class ) );
   }
 
+  @Test
   public void testKeyTreeEventsOrder() {
     KeyListener keyListener = mock( KeyListener.class );
     TreeListener treeListener = mock( TreeListener.class );
@@ -106,6 +110,7 @@ public class KeyEvent_Test extends TestCase {
     inOrder.verify( keyListener ).keyReleased( any( KeyEvent.class ) );
   }
 
+  @Test
   public void testKeyHelpEventsOrder() {
     KeyListener keyListener = mock( KeyListener.class );
     HelpListener helpListener = mock( HelpListener.class );
@@ -175,4 +180,5 @@ public class KeyEvent_Test extends TestCase {
       events.add( event );
     }
   }
+
 }

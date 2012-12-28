@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and thers.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -24,24 +28,30 @@ import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class Menu_Test extends TestCase {
-  
+public class Menu_Test {
+
   private Display display;
   private Shell shell;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testMenuBarConstructor() {
     Menu menuBar = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menuBar );
@@ -82,6 +92,7 @@ public class Menu_Test extends TestCase {
     assertSame( menuBar.getDisplay(), subMenu2.getDisplay() );
   }
 
+  @Test
   public void testStyle() {
     Menu menuBar = new Menu( shell, SWT.BAR );
     assertEquals( SWT.BAR, menuBar.getStyle() );
@@ -90,7 +101,8 @@ public class Menu_Test extends TestCase {
     Menu menuPopup = new Menu( shell, SWT.POP_UP );
     assertEquals( SWT.POP_UP, menuPopup.getStyle() );
   }
-  
+
+  @Test
   public void testVisibility() {
     Menu menuBar = new Menu( shell, SWT.BAR );
     assertFalse( menuBar.getVisible() );
@@ -109,6 +121,7 @@ public class Menu_Test extends TestCase {
     assertFalse( dropdownMenu.isVisible() );
   }
 
+  @Test
   public void testItems() {
     Menu menu = new Menu( shell, SWT.BAR );
     assertEquals( 0, menu.getItemCount() );
@@ -139,6 +152,7 @@ public class Menu_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDispose() {
     Menu menu = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menu );
@@ -147,9 +161,10 @@ public class Menu_Test extends TestCase {
     fileMenuItem.setMenu( fileMenu );
     MenuItem exitMenuItem = new MenuItem( fileMenu, SWT.PUSH );
     fileMenu.dispose();
-    assertEquals( true, fileMenu.isDisposed() );
-    assertEquals( true, exitMenuItem.isDisposed() );
+    assertTrue( fileMenu.isDisposed() );
+    assertTrue( exitMenuItem.isDisposed() );
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      @Override
       public boolean doVisit( Widget widget ) {
         assertTrue( widget != fileMenu );
         return true;
@@ -157,6 +172,7 @@ public class Menu_Test extends TestCase {
     } );
   }
 
+  @Test
   public void testUntypedShowEvent() {
     final java.util.List<Event> log = new ArrayList<Event>();
     Listener listener = new Listener() {
@@ -185,11 +201,13 @@ public class Menu_Test extends TestCase {
     assertEquals( 0, log.size() );
   }
 
+  @Test
   public void testOrientation() {
     Menu menu = new Menu( shell, SWT.POP_UP );
     assertEquals( SWT.LEFT_TO_RIGHT, menu.getOrientation() );
   }
 
+  @Test
   public void testDefaultItem() {
     Menu menu = new Menu( shell, SWT.POP_UP );
     MenuItem item = new MenuItem( menu, SWT.PUSH );
@@ -197,84 +215,93 @@ public class Menu_Test extends TestCase {
     assertNull( menu.getDefaultItem() );
   }
 
+  @Test
   public void testIsSerializable() throws Exception {
     Menu menu = new Menu( shell, SWT.POP_UP );
     new MenuItem( menu, SWT.PUSH );
 
     Menu deserializedMenu = Fixture.serializeAndDeserialize( menu );
-    
+
     assertEquals( 1, deserializedMenu.getItemCount() );
   }
 
+  @Test
   public void testAddHelpListener() {
     Menu menu = new Menu( shell, SWT.POP_UP );
     menu.addHelpListener( mock( HelpListener.class ) );
 
     assertTrue( menu.isListening( SWT.Help ) );
   }
-  
+
+  @Test
   public void testRemoveHelpListener() {
     Menu menu = new Menu( shell, SWT.POP_UP );
     HelpListener listener = mock( HelpListener.class );
     menu.addHelpListener( listener );
-    
+
     menu.removeHelpListener( listener );
 
     assertFalse( menu.isListening( SWT.Help ) );
   }
-  
+
+  @Test
   public void testAddHelpListenerWithNullArgument() {
     Menu menu = new Menu( shell, SWT.POP_UP );
-    
+
     try {
       menu.addHelpListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
 
+  @Test
   public void testRemoveHelpListenerWithNullArgument() {
     Menu menu = new Menu( shell, SWT.POP_UP );
-    
+
     try {
       menu.removeHelpListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
 
+  @Test
   public void testAddMenuListener() {
     Menu menu = new Menu( shell, SWT.POP_UP );
 
     menu.addMenuListener( mock( MenuListener.class ) );
-    
+
     assertTrue( menu.isListening( SWT.Show ) );
     assertTrue( menu.isListening( SWT.Hide ) );
   }
 
+  @Test
   public void testAddMenuListenerWithNullArgument() {
     Menu menu = new Menu( shell, SWT.POP_UP );
-    
+
     try {
       menu.addMenuListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
 
+  @Test
   public void testRemoveMenuListenerWithNullArgument() {
     Menu menu = new Menu( shell, SWT.POP_UP );
-    
+
     try {
       menu.removeMenuListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
 
+  @Test
   public void testRemoveMenuListener() {
     Menu menu = new Menu( shell, SWT.POP_UP );
     MenuListener listener = mock( MenuListener.class );
     menu.addMenuListener( listener );
-    
+
     menu.removeMenuListener( listener );
-    
+
     assertFalse( menu.isListening( SWT.Show ) );
     assertFalse( menu.isListening( SWT.Hide ) );
   }

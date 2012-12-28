@@ -11,17 +11,18 @@
 package org.eclipse.swt.events;
 
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
 
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.Test;
 
 
-public class PaintEvent_Test extends TestCase {
+public class PaintEvent_Test {
 
-  public void testUntypedEventConstructor() throws Exception {
+  @Test
+  public void testUntypedEventConstructor() {
     Event event = new Event();
     event.display = mock( Display.class );
     event.widget = mock( Widget.class );
@@ -34,7 +35,7 @@ public class PaintEvent_Test extends TestCase {
     event.count = 99;
 
     PaintEvent paintEvent = new PaintEvent( event );
-    
+
     EventTestHelper.assertFieldsEqual( paintEvent, event );
   }
 

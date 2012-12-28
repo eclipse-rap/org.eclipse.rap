@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,15 +11,18 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 
-public class QxAppearanceWriter_Test extends TestCase {
+public class QxAppearanceWriter_Test {
 
+  @Test
   public void testNoValues() {
     List<String> appearances = Collections.<String>emptyList();
     String code = QxAppearanceWriter.createQxAppearanceTheme( appearances );
@@ -28,6 +31,7 @@ public class QxAppearanceWriter_Test extends TestCase {
     assertTrue( code.endsWith( "} );\n" ) );
   }
 
+  @Test
   public void testTailAlreadyWritten() {
     List<String> appearances = new ArrayList<String>();
     appearances.add( "foo\nfoo" );

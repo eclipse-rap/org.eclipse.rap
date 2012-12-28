@@ -11,28 +11,36 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.application;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletContext;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ApplicationContextUtil_Test extends TestCase {
+public class ApplicationContextUtil_Test {
 
   private ApplicationContextImpl applicationContext;
 
+  @Before
   public void setUp() {
     applicationContext = new ApplicationContextImpl( null, null );
   }
 
+  @Test
   public void testSetToServletContext() {
     ServletContext servletContext = Fixture.createServletContext();
 
@@ -41,6 +49,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertSame( applicationContext, ApplicationContextUtil.get( servletContext ) );
   }
 
+  @Test
   public void testRemoveFromServletContext() {
     ServletContext servletContext = Fixture.createServletContext();
     ApplicationContextUtil.set( servletContext, applicationContext );
@@ -50,6 +59,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNull( ApplicationContextUtil.get( servletContext ) );
   }
 
+  @Test
   public void testSetToUISession() {
     UISessionImpl uiSession = new UISessionImpl( new TestSession() );
     ApplicationContextImpl applicationContext = new ApplicationContextImpl( null, null );
@@ -59,6 +69,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertSame( applicationContext, ApplicationContextUtil.get( uiSession ) );
   }
 
+  @Test
   public void testRunWith() {
     final ApplicationContextImpl[] found = new ApplicationContextImpl[ 1 ];
     Runnable runnable = new Runnable() {
@@ -76,6 +87,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertFalse( after );
   }
 
+  @Test
   public void testRunWithWithException() {
     final RuntimeException expected = new RuntimeException();
     Runnable runnable = new Runnable() {
@@ -93,6 +105,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertFalse( after );
   }
 
+  @Test
   public void testParamApplicationContextNotNull() {
     try {
       ApplicationContextUtil.runWith( null, new NoOpRunnable() );
@@ -101,6 +114,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testParamRunnableNotNull() {
     try {
       ApplicationContextUtil.runWith( applicationContext, null );
@@ -109,6 +123,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRunWithWithNestedCall() {
     Runnable runnable = new Runnable() {
       public void run() {
@@ -123,6 +138,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetInstance() {
     ServletContext servletContext = Fixture.createServletContext();
     Fixture.createServiceContext();
@@ -134,6 +150,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     Fixture.disposeOfServiceContext();
   }
 
+  @Test
   public void testGetInstanceWithoutContextProviderRegistration() {
     try {
       ApplicationContextUtil.getInstance();
@@ -142,6 +159,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDelete() throws IOException {
     File contextDirectory = new File( Fixture.TEMP_DIR, "contextDirectory" );
     boolean directoryCreated = contextDirectory.mkdirs();
@@ -155,6 +173,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertFalse( contextDirectory.exists() );
   }
 
+  @Test
   public void testApplicationContextInUISessionIsNotSerialized() throws Exception {
     UISessionImpl uiSession = new UISessionImpl( new TestSession() );
     ApplicationContextUtil.set( uiSession, applicationContext );

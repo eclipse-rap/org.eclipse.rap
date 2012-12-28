@@ -12,6 +12,11 @@
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -21,13 +26,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -50,10 +53,13 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 @SuppressWarnings("deprecation")
-public class TableColumnLCA_Test extends TestCase {
+public class TableColumnLCA_Test {
 
   private Display display;
   private Shell shell;
@@ -61,8 +67,8 @@ public class TableColumnLCA_Test extends TestCase {
   private TableColumn column;
   private TableColumnLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -73,11 +79,12 @@ public class TableColumnLCA_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testPreserveValus() {
     table = new Table( shell, SWT.BORDER );
     column = new TableColumn( table, SWT.CENTER );
@@ -141,6 +148,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( new Integer( 30 ), width );
   }
 
+  @Test
   public void testResizeEvent() {
     Fixture.markInitialized( column );
     column.setWidth( 20 );
@@ -160,6 +168,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( Integer.valueOf( newWidth ), message.findSetProperty( column, "width" ) );
   }
 
+  @Test
   public void testGetLeft() {
     column.setWidth( 10 );
     TableColumn column1 = new TableColumn( table, SWT.NONE );
@@ -179,6 +188,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( 20, getColumnLeft( column ) );
   }
 
+  @Test
   public void testMoveColumn() {
     column.setText( "Col 0" );
     column.setWidth( 10 );
@@ -293,6 +303,7 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   // see bug 336340
+  @Test
   public void testMoveColumn_ZeroWidth() {
     column.dispose();
     Fixture.markInitialized( display );
@@ -314,6 +325,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( Integer.valueOf( 10 ), message.findSetProperty( column1, "left" ) );
   }
 
+  @Test
   public void testMoveColumnFixedColumnTarget() {
     Table table = createFixedColumnsTable( shell );
     table.setSize( 200, 200 );
@@ -328,6 +340,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( 3, columnOrder[ 3 ] );
   }
 
+  @Test
   public void testMoveColumnFixedColumnSource() {
     Table table = createFixedColumnsTable( shell );
     table.setSize( 200, 200 );
@@ -340,6 +353,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( 3, columnOrder[ 3 ] );
   }
 
+  @Test
   public void testMoveColumnFixedColumnRightHalfTarget() {
     Table table = createFixedColumnsTable( shell );
     table.setSize( 200, 200 );
@@ -354,6 +368,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( 3, columnOrder[ 3 ] );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( column );
 
@@ -362,6 +377,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.GridColumn", operation.getType() );
   }
 
+  @Test
   public void testRenderCreateWithAligment() throws IOException {
     column = new TableColumn( table, SWT.RIGHT );
 
@@ -373,6 +389,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( "right", message.findCreateProperty( column, "alignment" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( column );
 
@@ -381,6 +398,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( column.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderInitialIndex() throws IOException {
     lca.render( column );
 
@@ -389,6 +407,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "index" ) == -1 );
   }
 
+  @Test
   public void testRenderIndex() throws IOException {
     new TableColumn( table, SWT.NONE, 0 );
     lca.renderChanges( column );
@@ -397,6 +416,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( Integer.valueOf( 1 ), message.findSetProperty( column, "index" ) );
   }
 
+  @Test
   public void testRenderIndexUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -409,6 +429,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertNull( message.findSetOperation( column, "index" ) );
   }
 
+  @Test
   public void testRenderInitialToolTip() throws IOException {
     lca.render( column );
 
@@ -417,6 +438,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "toolTip" ) == -1 );
   }
 
+  @Test
   public void testRenderToolTip() throws IOException {
     column.setToolTipText( "foo" );
     lca.renderChanges( column );
@@ -425,6 +447,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( column, "toolTip" ) );
   }
 
+  @Test
   public void testRenderToolTipUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -437,6 +460,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertNull( message.findSetOperation( column, "toolTip" ) );
   }
 
+  @Test
   public void testRenderInitialCustomVariant() throws IOException {
     lca.render( column );
 
@@ -445,6 +469,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
   }
 
+  @Test
   public void testRenderCustomVariant() throws IOException {
     column.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( column );
@@ -453,6 +478,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( "variant_blue", message.findSetProperty( column, "customVariant" ) );
   }
 
+  @Test
   public void testRenderCustomVariantUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -465,6 +491,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertNull( message.findSetOperation( column, "customVariant" ) );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     lca.render( column );
 
@@ -473,6 +500,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     column.setText( "foo" );
     lca.renderChanges( column );
@@ -481,6 +509,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( column, "text" ) );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -493,6 +522,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertNull( message.findSetOperation( column, "text" ) );
   }
 
+  @Test
   public void testRenderInitialImage() throws IOException {
     lca.renderChanges( column );
 
@@ -500,6 +530,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertNull( message.findSetOperation( column, "image" ) );
   }
 
+  @Test
   public void testRenderImage() throws IOException, JSONException {
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
@@ -513,6 +544,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -526,6 +558,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertNull( message.findSetOperation( column, "image" ) );
   }
 
+  @Test
   public void testRenderImageReset() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -540,6 +573,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( column, "image" ) );
   }
 
+  @Test
   public void testRenderInitialLeft() throws IOException {
     lca.render( column );
 
@@ -548,6 +582,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "left" ) == -1 );
   }
 
+  @Test
   public void testRenderLeft() throws IOException {
     TableColumn col2 = new TableColumn( table, SWT.NONE, 0 );
     col2.setWidth( 50 );
@@ -557,6 +592,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( Integer.valueOf( 50 ), message.findSetProperty( column, "left" ) );
   }
 
+  @Test
   public void testRenderLeftUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -570,6 +606,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertNull( message.findSetOperation( column, "left" ) );
   }
 
+  @Test
   public void testRenderInitialWidth() throws IOException {
     lca.render( column );
 
@@ -578,6 +615,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "width" ) == -1 );
   }
 
+  @Test
   public void testRenderWidth() throws IOException {
     column.setWidth( 50 );
     lca.renderChanges( column );
@@ -586,6 +624,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( Integer.valueOf( 50 ), message.findSetProperty( column, "width" ) );
   }
 
+  @Test
   public void testRenderWidthUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -598,6 +637,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertNull( message.findSetOperation( column, "width" ) );
   }
 
+  @Test
   public void testRenderInitialResizable() throws IOException {
     lca.render( column );
 
@@ -606,6 +646,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "resizable" ) == -1 );
   }
 
+  @Test
   public void testRenderResizable() throws IOException {
     column.setResizable( false );
     lca.renderChanges( column );
@@ -614,6 +655,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findSetProperty( column, "resizable" ) );
   }
 
+  @Test
   public void testRenderResizableUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -626,6 +668,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertNull( message.findSetOperation( column, "resizable" ) );
   }
 
+  @Test
   public void testRenderInitialMoveable() throws IOException {
     lca.render( column );
 
@@ -634,6 +677,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "moveable" ) == -1 );
   }
 
+  @Test
   public void testRenderMoveable() throws IOException {
     column.setMoveable( true );
     lca.renderChanges( column );
@@ -642,6 +686,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( column, "moveable" ) );
   }
 
+  @Test
   public void testRenderMoveableUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -654,6 +699,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertNull( message.findSetOperation( column, "moveable" ) );
   }
 
+  @Test
   public void testRenderInitialAlignment() throws IOException {
     lca.render( column );
 
@@ -662,6 +708,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "alignment" ) == -1 );
   }
 
+  @Test
   public void testRenderAlignment() throws IOException {
     column.setAlignment( SWT.RIGHT );
     lca.renderChanges( column );
@@ -670,6 +717,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( "right", message.findSetProperty( column, "alignment" ) );
   }
 
+  @Test
   public void testRenderAlignmentUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -682,6 +730,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertNull( message.findSetOperation( column, "alignment" ) );
   }
 
+  @Test
   public void testRenderInitialFixed() throws IOException {
     lca.render( column );
 
@@ -690,6 +739,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "fixed" ) == -1 );
   }
 
+  @Test
   public void testRenderFixed() throws IOException {
     table.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
     lca.renderChanges( column );
@@ -698,6 +748,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( column, "fixed" ) );
   }
 
+  @Test
   public void testRenderFixedUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -710,6 +761,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertNull( message.findSetOperation( column, "fixed" ) );
   }
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -722,6 +774,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( column, "Selection" ) );
   }
 
+  @Test
   public void testRenderRemoveSelectionListener() throws Exception {
     Listener listener = mock( Listener.class );
     column.addListener( SWT.Selection, listener );
@@ -736,6 +789,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( column, "Selection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -749,6 +803,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertNull( message.findListenOperation( column, "selection" ) );
   }
 
+  @Test
   public void testRenderInitialFont() throws IOException {
     lca.render( column );
 
@@ -757,6 +812,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "font" ) == -1 );
   }
 
+  @Test
   public void testRenderFont() throws JSONException, IOException {
     table.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
 
@@ -767,10 +823,11 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( 4, result.length() );
     assertEquals( "Arial", ( ( JSONArray )result.get( 0 ) ).getString( 0 ) );
     assertEquals( 12, result.getInt( 1 ) );
-    assertEquals( false, result.getBoolean( 2 ) );
-    assertEquals( false, result.getBoolean( 3 ) );
+    assertFalse( result.getBoolean( 2 ) );
+    assertFalse( result.getBoolean( 3 ) );
   }
 
+  @Test
   public void testRenderFontUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -783,6 +840,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertNull( message.findSetOperation( column, "font" ) );
   }
 
+  @Test
   public void testResetFont() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );

@@ -12,6 +12,11 @@
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -20,12 +25,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -46,17 +49,21 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-public class TabFolderLCA_Test extends TestCase {
+
+public class TabFolderLCA_Test {
 
   private Display display;
   private Shell shell;
   private TabFolder folder;
   private TabFolderLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -65,11 +72,12 @@ public class TabFolderLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ControlLCATestUtil.testActivateListener( folder );
     ControlLCATestUtil.testFocusListener( folder );
@@ -80,6 +88,7 @@ public class TabFolderLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( folder );
   }
 
+  @Test
   public void testPreserveValues() {
     Fixture.markInitialized( display );
     //control: enabled
@@ -148,6 +157,7 @@ public class TabFolderLCA_Test extends TestCase {
     assertEquals( "some text", folder.getToolTipText() );
   }
 
+  @Test
   public void testSelectionWithoutListener() {
     TabItem item0 = new TabItem( folder, SWT.NONE );
     Control control0 = new Button( folder, SWT.PUSH );
@@ -164,6 +174,7 @@ public class TabFolderLCA_Test extends TestCase {
     assertTrue( control1.getVisible() );
   }
 
+  @Test
   public void testSelectionWithListener() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     TabItem item0 = new TabItem( folder, SWT.NONE );
@@ -195,6 +206,7 @@ public class TabFolderLCA_Test extends TestCase {
     assertNull( event.text );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( folder );
 
@@ -205,6 +217,7 @@ public class TabFolderLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "TOP" ) );
   }
 
+  @Test
   public void testRenderCreateOnBottom() throws IOException {
     folder = new TabFolder( shell, SWT.BOTTOM );
 
@@ -217,6 +230,7 @@ public class TabFolderLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "BOTTOM" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( folder );
 
@@ -225,6 +239,7 @@ public class TabFolderLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( folder.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderInitialSelectionWithoutItems() throws IOException {
     lca.render( folder );
 
@@ -233,6 +248,7 @@ public class TabFolderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
   }
 
+  @Test
   public void testRenderInitialSelectionWithItems() throws IOException {
     TabItem item = new TabItem( folder, SWT.NONE );
     new TabItem( folder, SWT.NONE );
@@ -245,6 +261,7 @@ public class TabFolderLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( item ), operation.getProperty( "selection" ) );
   }
 
+  @Test
   public void testRenderSelection() throws IOException {
     new TabItem( folder, SWT.NONE );
     TabItem item = new TabItem( folder, SWT.NONE );
@@ -257,6 +274,7 @@ public class TabFolderLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( item ), message.findSetProperty( folder, "selection" ) );
   }
 
+  @Test
   public void testRenderSelectionUnchanged() throws IOException {
     new TabItem( folder, SWT.NONE );
     new TabItem( folder, SWT.NONE );
@@ -272,6 +290,7 @@ public class TabFolderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( folder, "selection" ) );
   }
 
+  @Test
   public void testReadSelection() {
     TabItem item = new TabItem( folder, SWT.NONE );
     folder.setSelection( new TabItem[ 0 ] );
@@ -289,4 +308,5 @@ public class TabFolderLCA_Test extends TestCase {
                                  ClientMessageConst.EVENT_SELECTION,
                                  parameters );
   }
+
 }

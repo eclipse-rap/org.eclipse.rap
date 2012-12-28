@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -20,22 +23,23 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Timer;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-public class TimerExecScheduler_Test extends TestCase {
+public class TimerExecScheduler_Test {
 
   private TimerExecScheduler scheduler;
   private Display display;
   private Collection<Throwable> exceptions;
   private Timer timer;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     timer = mock( Timer.class );
@@ -54,11 +58,12 @@ public class TimerExecScheduler_Test extends TestCase {
     exceptions = Collections.synchronizedList( new LinkedList<Throwable>() );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testSchedule_schedulesRunnable() {
     Runnable runnable = mock( Runnable.class );
 
@@ -69,6 +74,7 @@ public class TimerExecScheduler_Test extends TestCase {
     assertSame( runnable, taskCaptor.getValue().getRunnable() );
   }
 
+  @Test
   public void testSchedule_reschedulesSameRunnable() {
     Runnable runnable = mock( Runnable.class );
 
@@ -81,6 +87,7 @@ public class TimerExecScheduler_Test extends TestCase {
     assertSame( taskCaptor.getAllValues().get( 0 ), taskCaptor.getAllValues().get( 1 ) );
   }
 
+  @Test
   public void testCancel_cancelsTask() {
     Runnable runnable = mock( Runnable.class );
     scheduler.schedule( 23, runnable );
@@ -92,10 +99,12 @@ public class TimerExecScheduler_Test extends TestCase {
     verify( taskCaptor.getValue() ).cancel();
   }
 
+  @Test
   public void testCancel_cancelNonExistingTaskDoesNotFail() {
     scheduler.cancel( mock( Runnable.class ) );
   }
 
+  @Test
   public void testCancel_removesTask() {
     Runnable runnable = mock( Runnable.class );
     scheduler.schedule( 23, runnable );
@@ -109,6 +118,7 @@ public class TimerExecScheduler_Test extends TestCase {
     assertNotSame( taskCaptor.getAllValues().get( 0 ), taskCaptor.getAllValues().get( 1 ) );
   }
 
+  @Test
   public void testSerializationIsThreadSafe() throws Exception {
     scheduler = new TimerExecScheduler( display );
     Runnable runnable = new Runnable() {

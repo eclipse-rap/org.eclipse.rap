@@ -12,6 +12,11 @@
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -25,8 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -70,19 +73,22 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
 @SuppressWarnings("deprecation")
-public class CTabFolderLCA_Test extends TestCase {
+public class CTabFolderLCA_Test {
 
   private Display display;
   private Shell shell;
   private CTabFolder folder;
   private CTabFolderLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -91,11 +97,12 @@ public class CTabFolderLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ControlLCATestUtil.testActivateListener( folder );
     ControlLCATestUtil.testFocusListener( folder );
@@ -106,6 +113,7 @@ public class CTabFolderLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( folder );
   }
 
+  @Test
   public void testLCA() {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -115,6 +123,7 @@ public class CTabFolderLCA_Test extends TestCase {
                 item.getAdapter( WidgetLifeCycleAdapter.class ).getClass() );
   }
 
+  @Test
   public void testPreserveValues() {
     Label label = new Label( folder, SWT.NONE );
     folder.setTopRight( label, SWT.FILL );
@@ -184,6 +193,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( "some text", folder.getToolTipText() );
   }
 
+  @Test
   public void testChangeSelection() {
     folder = new CTabFolder( shell, SWT.MULTI );
     folder.setSize( 100, 100 );
@@ -206,6 +216,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( "visible=true", item2Control.markup.toString() );
   }
 
+  @Test
   public void testSelectionEvent() {
     folder = new CTabFolder( shell, SWT.MULTI );
     SelectionListener listener = mock( SelectionListener.class );
@@ -227,6 +238,7 @@ public class CTabFolderLCA_Test extends TestCase {
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testMinimizeEvent() {
     CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
     folder.addCTabFolder2Listener( listener  );
@@ -237,6 +249,7 @@ public class CTabFolderLCA_Test extends TestCase {
     verify( listener, times( 1 ) ).minimize( any( CTabFolderEvent.class ) );
   }
 
+  @Test
   public void testMaximizeEvent() {
     CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
     folder.addCTabFolder2Listener( listener  );
@@ -247,6 +260,7 @@ public class CTabFolderLCA_Test extends TestCase {
     verify( listener, times( 1 ) ).maximize( any( CTabFolderEvent.class ) );
   }
 
+  @Test
   public void testRestoreEvent() {
     CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
     folder.addCTabFolder2Listener( listener  );
@@ -257,6 +271,7 @@ public class CTabFolderLCA_Test extends TestCase {
     verify( listener, times( 1 ) ).restore( any( CTabFolderEvent.class ) );
   }
 
+  @Test
   public void testCloseEvent_WithVeto() {
     final AtomicBoolean log = new AtomicBoolean( false );
     CTabItem item = new CTabItem( folder, SWT.NONE );
@@ -275,6 +290,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertFalse( item.isDisposed() );
   }
 
+  @Test
   public void testCloseEvent_WithoutVeto() {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
@@ -287,6 +303,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( item.isDisposed() );
   }
 
+  @Test
   public void testShowListEvent_WithVeto() {
     folder = new CTabFolder( shell, SWT.SINGLE );
     folder.setSize( 30, 130 );
@@ -313,6 +330,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( null, getShowListMenu( folder ) );
   }
 
+  @Test
   public void testShowListEvent_WithoutVeto() {
     folder = new CTabFolder( shell, SWT.SINGLE );
     folder.setSize( 30, 130 );
@@ -331,6 +349,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( 1, getShowListMenu( folder ).getItemCount() );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( folder );
 
@@ -342,6 +361,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( styles.contains( "MULTI" ) );
   }
 
+  @Test
   public void testRenderCreateOnBottom() throws IOException {
     folder = new CTabFolder( shell, SWT.BOTTOM );
 
@@ -356,6 +376,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( "bottom", message.findCreateProperty( folder, "tabPosition" ) );
   }
 
+  @Test
   public void testRenderSingleFlatAndClose() throws IOException {
     folder = new CTabFolder( shell, SWT.SINGLE | SWT.FLAT | SWT.CLOSE );
 
@@ -369,6 +390,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( styles.contains( "CLOSE" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( folder );
 
@@ -377,6 +399,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( folder.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderToolTipTexts() throws IOException {
     lca.renderInitialization( folder );
 
@@ -385,6 +408,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( 5, texts.length() );
   }
 
+  @Test
   public void testRenderDispose() throws IOException {
     lca.renderDispose( folder );
 
@@ -394,6 +418,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( folder ), operation.getTarget() );
   }
 
+  @Test
   public void testRenderInitialTabPosition() throws IOException {
     lca.render( folder );
 
@@ -402,6 +427,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "tabPosition" ) == -1 );
   }
 
+  @Test
   public void testRenderTabPosition() throws IOException {
     folder.setTabPosition( SWT.BOTTOM );
     lca.renderChanges( folder );
@@ -410,6 +436,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( "bottom", message.findSetProperty( folder, "tabPosition" ) );
   }
 
+  @Test
   public void testRenderTabPositionUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -422,6 +449,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( folder, "tabPosition" ) );
   }
 
+  @Test
   public void testRenderInitialTabHeight() throws IOException {
     lca.render( folder );
 
@@ -430,6 +458,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().contains( "tabHeight" ) );
   }
 
+  @Test
   public void testRenderTabHeight() throws IOException {
     folder.setTabHeight( 20 );
     lca.renderChanges( folder );
@@ -438,6 +467,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( Integer.valueOf( 20 ), message.findSetProperty( folder, "tabHeight" ) );
   }
 
+  @Test
   public void testRenderTabHeightUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -450,6 +480,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( folder, "tabHeight" ) );
   }
 
+  @Test
   public void testRenderInitialMinMaxState() throws IOException {
     lca.render( folder );
 
@@ -458,6 +489,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "minMaxState" ) == -1 );
   }
 
+  @Test
   public void testRenderMinMaxState_Max() throws IOException {
     folder.setMaximized( true );
     lca.renderChanges( folder );
@@ -466,6 +498,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( "max", message.findSetProperty( folder, "minMaxState" ) );
   }
 
+  @Test
   public void testRenderMinMaxState_Min() throws IOException {
     folder.setMinimized( true );
     lca.renderChanges( folder );
@@ -474,6 +507,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( "min", message.findSetProperty( folder, "minMaxState" ) );
   }
 
+  @Test
   public void testRenderMinMaxStateUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -486,6 +520,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( folder, "minMaxState" ) );
   }
 
+  @Test
   public void testRenderInitialMinimizeBoundsAndVisible() throws IOException {
     folder.setSize( 150, 150 );
 
@@ -497,6 +532,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "minimizeVisible" ) == -1 );
   }
 
+  @Test
   public void testRenderMinimizeBoundsAndVisible() throws IOException, JSONException {
     folder.setSize( 150, 150 );
 
@@ -509,6 +545,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( folder, "minimizeVisible" ) );
   }
 
+  @Test
   public void testRenderMinimizeBoundsAndVisibleUnchanged() throws IOException {
     folder.setSize( 150, 150 );
     Fixture.markInitialized( display );
@@ -523,6 +560,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( folder, "minimizeVisible" ) );
   }
 
+  @Test
   public void testRenderInitialMaximizeBoundsAndVisible() throws IOException {
     folder.setSize( 150, 150 );
 
@@ -534,6 +572,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "maximizeVisible" ) == -1 );
   }
 
+  @Test
   public void testRenderMaximizeBoundsAndVisible() throws IOException, JSONException {
     folder.setSize( 150, 150 );
 
@@ -546,6 +585,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( folder, "maximizeVisible" ) );
   }
 
+  @Test
   public void testRenderMaximizeBoundsAndVisibleUnchanged() throws IOException {
     folder.setSize( 150, 150 );
     Fixture.markInitialized( display );
@@ -560,6 +600,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( folder, "maximizeVisible" ) );
   }
 
+  @Test
   public void testRenderInitialChevronBoundsAndVisible() throws IOException {
     folder.setSize( 150, 150 );
 
@@ -571,6 +612,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "chevronVisible" ) == -1 );
   }
 
+  @Test
   public void testRenderChevronBoundsAndVisible() throws IOException, JSONException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
@@ -585,6 +627,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( folder, "chevronVisible" ) );
   }
 
+  @Test
   public void testRenderChevronBoundsAndVisibleUnchanged() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
@@ -601,6 +644,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( folder, "chevronVisible" ) );
   }
 
+  @Test
   public void testRenderInitialUnselectedCloseVisible() throws IOException {
     lca.render( folder );
 
@@ -609,6 +653,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "unselectedCloseVisible" ) == -1 );
   }
 
+  @Test
   public void testRenderUnselectedCloseVisible() throws IOException {
     folder.setUnselectedCloseVisible( false );
     lca.renderChanges( folder );
@@ -617,6 +662,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findSetProperty( folder, "unselectedCloseVisible" ) );
   }
 
+  @Test
   public void testRenderUnselectedCloseVisibleUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -629,6 +675,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( folder, "unselectedCloseVisible" ) );
   }
 
+  @Test
   public void testRenderInitialSelection() throws IOException {
     lca.render( folder );
 
@@ -637,6 +684,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
   }
 
+  @Test
   public void testRenderSelection() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -647,6 +695,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( item ), message.findSetProperty( folder, "selection" ) );
   }
 
+  @Test
   public void testRenderSelectionUnchanged() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     Fixture.markInitialized( display );
@@ -660,6 +709,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( folder, "selection" ) );
   }
 
+  @Test
   public void testRenderInitialSelectionBackground() throws IOException {
     lca.render( folder );
 
@@ -668,6 +718,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "selectionBackground" ) == -1 );
   }
 
+  @Test
   public void testRenderSelectionBackground() throws IOException, JSONException {
     folder.setSelectionBackground( display.getSystemColor( SWT.COLOR_BLUE ) );
     lca.renderChanges( folder );
@@ -677,6 +728,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,255,255]", actual ) );
   }
 
+  @Test
   public void testRenderSelectionBackgroundUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -689,6 +741,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( folder, "selectionBackground" ) );
   }
 
+  @Test
   public void testRenderInitialSelectionForeground() throws IOException {
     lca.render( folder );
 
@@ -697,6 +750,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "selectionForeground" ) == -1 );
   }
 
+  @Test
   public void testRenderSelectionForeground() throws IOException, JSONException {
     folder.setSelectionForeground( display.getSystemColor( SWT.COLOR_BLUE ) );
     lca.renderChanges( folder );
@@ -706,6 +760,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,255,255]", actual ) );
   }
 
+  @Test
   public void testRenderSelectionForegroundUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -718,6 +773,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( folder, "selectionForeground" ) );
   }
 
+  @Test
   public void testRenderInitialSelectionBackgroundImage() throws IOException {
     lca.render( folder );
 
@@ -726,6 +782,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "selectionBackgroundImage" ) == -1 );
   }
 
+  @Test
   public void testRenderSelectionBackgroundImage() throws IOException, JSONException {
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
@@ -739,6 +796,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderSelectionBackgroundImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -752,6 +810,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( folder, "selectionBackgroundImage" ) );
   }
 
+  @Test
   public void testRenderInitialSelectionBackgroundGradient() throws IOException {
     lca.render( folder );
 
@@ -760,6 +819,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "selectionBackgroundGradient" ) == -1 );
   }
 
+  @Test
   public void testRenderSelectionBackgroundGradient() throws IOException, JSONException {
     Color[] gradientColors = new Color[] {
       display.getSystemColor( SWT.COLOR_RED ),
@@ -781,6 +841,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, gradient.get( 2 ) );
   }
 
+  @Test
   public void testRenderSelectionBackgroundGradientUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -798,6 +859,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( folder, "selectionBackgroundGradient" ) );
   }
 
+  @Test
   public void testRenderInitialBorderVisible() throws IOException {
     lca.render( folder );
 
@@ -806,6 +868,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "borderVisible" ) == -1 );
   }
 
+  @Test
   public void testRenderBorderVisible() throws IOException {
     folder.setBorderVisible( true );
     lca.renderChanges( folder );
@@ -814,6 +877,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( folder, "borderVisible" ) );
   }
 
+  @Test
   public void testRenderBorderVisibleUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -826,6 +890,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( folder, "borderVisible" ) );
   }
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -839,6 +904,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findListenOperation( folder, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderAddDefaultSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -852,6 +918,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findListenOperation( folder, "Selection" ) );
   }
 
+  @Test
   public void testRenderRemoveSelectionListener() throws Exception {
     Listener listener = mock( Listener.class );
     folder.addListener( SWT.Selection, listener );
@@ -867,6 +934,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findListenOperation( folder, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderRemoveDefaultSelectionListener() throws Exception {
     Listener listener = mock( Listener.class );
     folder.addListener( SWT.DefaultSelection, listener );
@@ -882,6 +950,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findListenOperation( folder, "Selection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -895,6 +964,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertNull( message.findListenOperation( folder, "Selection" ) );
   }
 
+  @Test
   public void testRenderAddFolderListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -907,6 +977,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( folder, "Folder" ) );
   }
 
+  @Test
   public void testRenderRemoveFolderListener() throws Exception {
     CTabFolder2Adapter listener = new CTabFolder2Adapter() { };
     folder.addCTabFolder2Listener( listener );
@@ -921,6 +992,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( folder, "Folder" ) );
   }
 
+  @Test
   public void testRenderFolderListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );

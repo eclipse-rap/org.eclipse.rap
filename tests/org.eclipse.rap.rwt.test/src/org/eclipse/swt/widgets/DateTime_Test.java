@@ -1,21 +1,22 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.Locale;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -23,22 +24,29 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class DateTime_Test extends TestCase {
+
+public class DateTime_Test {
 
   private Shell shell;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     shell = new Shell( display, SWT.NONE );
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testInvalidValues() {
     DateTime dateTime = new DateTime( shell, SWT.NONE );
     dateTime.setDay( 1 );
@@ -112,6 +120,7 @@ public class DateTime_Test extends TestCase {
     assertEquals( 16, dateTime.getSeconds() );
   }
 
+  @Test
   public void testSetDate() {
     DateTime dateTime = new DateTime( shell, SWT.NONE );
 
@@ -126,6 +135,7 @@ public class DateTime_Test extends TestCase {
     assertEquals( 2008, dateTime.getYear() );
   }
 
+  @Test
   public void testSetTime() {
     DateTime dateTime = new DateTime( shell, SWT.NONE );
 
@@ -135,6 +145,7 @@ public class DateTime_Test extends TestCase {
     assertEquals( 30, dateTime.getSeconds() );
   }
 
+  @Test
   public void testStyle() {
     // Test SWT.NONE
     DateTime dateTime = new DateTime( shell, SWT.NONE );
@@ -188,12 +199,14 @@ public class DateTime_Test extends TestCase {
     assertTrue( ( dateTime.getStyle() & SWT.DROP_DOWN ) == 0 );
   }
 
+  @Test
   public void testDispose() {
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
     dateTime.dispose();
     assertTrue( dateTime.isDisposed() );
   }
 
+  @Test
   public void testComputeSize() {
     // The component computeSize depends on day/months names
     // which are locale dependent
@@ -234,61 +247,67 @@ public class DateTime_Test extends TestCase {
     expected = new Point( 100, 100 );
     assertEquals( expected, dateTime.computeSize( 100, 100 ) );
   }
-  
+
+  @Test
   public void testDateIsSerializable() throws Exception {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
     dateTime.setDate( 2000, 1, 1 );
-    
+
     DateTime deserializedDateTime = Fixture.serializeAndDeserialize( dateTime );
-    
+
     assertEquals( 1, deserializedDateTime.getDay() );
     assertEquals( 1, deserializedDateTime.getMonth() );
     assertEquals( 2000, deserializedDateTime.getYear() );
   }
 
+  @Test
   public void testTimeIsSerializable() throws Exception {
     DateTime dateTime = new DateTime( shell, SWT.TIME );
     dateTime.setTime( 12, 12, 12 );
-    
+
     DateTime deserializedDateTime = Fixture.serializeAndDeserialize( dateTime );
-    
+
     assertEquals( 12, deserializedDateTime.getHours() );
     assertEquals( 12, deserializedDateTime.getMinutes() );
     assertEquals( 12, deserializedDateTime.getSeconds() );
   }
 
+  @Test
   public void testAddSelectionListener() {
     DateTime dateTime = new DateTime( shell, SWT.NONE );
 
     dateTime.addSelectionListener( mock( SelectionListener.class ) );
-    
+
     assertTrue( dateTime.isListening( SWT.Selection ) );
     assertTrue( dateTime.isListening( SWT.DefaultSelection ) );
   }
-  
+
+  @Test
   public void testRemoveSelectionListener() {
     DateTime dateTime = new DateTime( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     dateTime.addSelectionListener( listener );
 
     dateTime.removeSelectionListener( listener );
-    
+
     assertFalse( dateTime.isListening( SWT.Selection ) );
     assertFalse( dateTime.isListening( SWT.DefaultSelection ) );
   }
 
+  @Test
   public void testAddSelectionListenerWithNullArgument() {
     DateTime dateTime = new DateTime( shell, SWT.NONE );
-    
+
     try {
       dateTime.addSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
 
+  @Test
   public void testRemoveSelectionListenerWithNullArgument() {
     DateTime dateTime = new DateTime( shell, SWT.NONE );
-    
+
     try {
       dateTime.removeSelectionListener( null );
     } catch( IllegalArgumentException expected ) {

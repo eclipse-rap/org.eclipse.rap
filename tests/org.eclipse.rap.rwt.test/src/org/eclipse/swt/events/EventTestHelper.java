@@ -10,10 +10,10 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
+import static org.junit.Assert.assertEquals;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-
-import junit.framework.Assert;
 
 import org.eclipse.swt.widgets.Event;
 
@@ -27,7 +27,7 @@ public class EventTestHelper {
         Field untypedField = getField( untypedEvent, typedField.getName() );
         Object typedEventValue = getFieldValue( typedEvent, typedField );
         Object untypedEventValue = getFieldValue( untypedEvent, untypedField );
-        Assert.assertEquals( typedEventValue, untypedEventValue );
+        assertEquals( typedEventValue, untypedEventValue );
       }
     }
   }

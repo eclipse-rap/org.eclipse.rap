@@ -12,10 +12,12 @@
 package org.eclipse.swt.internal.widgets.tableitemkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -43,18 +45,21 @@ import org.eclipse.swt.widgets.TableItem;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 @SuppressWarnings("deprecation")
-public class TableItemLCA_Test extends TestCase {
+public class TableItemLCA_Test {
 
   private Display display;
   private Shell shell;
   private Table table;
   private TableItemLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -63,11 +68,12 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testPreserveValues() {
     Table table = new Table( shell, SWT.BORDER );
     new TableColumn( table, SWT.CENTER );
@@ -153,6 +159,7 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
+  @Test
   public void testCheckPreserveValues() {
     Table table = new Table( shell, SWT.CHECK );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -175,6 +182,7 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
+  @Test
   public void testItemTextWithoutColumn() throws IOException, JSONException {
     TableItem item = new TableItem( table, SWT.NONE );
     // Ensure that even though there are no columns, the first text of an item
@@ -190,6 +198,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[\"newText\"]", actual ) );
   }
 
+  @Test
   public void testDisposeSelected() {
     final boolean[] executed = { false };
     final Table table = new Table( shell, SWT.CHECK );
@@ -212,6 +221,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( executed[ 0 ] );
   }
 
+  @Test
   public void testDispose() throws IOException {
     Table table = new Table( shell, SWT.CHECK );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -227,6 +237,7 @@ public class TableItemLCA_Test extends TestCase {
     assertNotNull( message.findDestroyOperation( tableItem ) );
   }
 
+  @Test
   public void testDisposeTable() throws IOException {
     Table table = new Table( shell, SWT.CHECK );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -244,6 +255,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( tableItem.isDisposed() );
   }
 
+  @Test
   public void testWriteChangesForVirtualItem() throws IOException {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 100 );
@@ -270,6 +282,7 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( 0, Fixture.getProtocolMessage().getOperationCount() );
   }
 
+  @Test
   public void testDynamicColumns() {
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -281,6 +294,7 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.preserveWidgets();
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     new TableItem( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -293,6 +307,7 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     TableItem item = new TableItem( table, SWT.NONE );
 
@@ -303,6 +318,7 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( item.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderInitialTexts() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -315,6 +331,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "texts" ) == -1 );
   }
 
+  @Test
   public void testRenderTexts() throws IOException, JSONException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -328,6 +345,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[\"item 0.0\",\"item 0.1\"]", actual ) );
   }
 
+  @Test
   public void testRenderTextsUnchanged() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -343,6 +361,7 @@ public class TableItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "texts" ) );
   }
 
+  @Test
   public void testRenderInitialImages() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -355,6 +374,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "images" ) == -1 );
   }
 
+  @Test
   public void testRenderImages() throws IOException, JSONException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -371,6 +391,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual.getJSONArray( 1 ) ) );
   }
 
+  @Test
   public void testRenderImagesUnchanged() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -387,6 +408,7 @@ public class TableItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "images" ) );
   }
 
+  @Test
   public void testRenderInitialBackground() throws IOException {
     TableItem item = new TableItem( table, SWT.NONE );
 
@@ -397,6 +419,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "background" ) == -1 );
   }
 
+  @Test
   public void testRenderBackground() throws IOException, JSONException {
     TableItem item = new TableItem( table, SWT.NONE );
 
@@ -408,6 +431,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual ) );
   }
 
+  @Test
   public void testRenderBackgroundUnchanged() throws IOException {
     TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
@@ -421,6 +445,7 @@ public class TableItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "background" ) );
   }
 
+  @Test
   public void testRenderInitialForeground() throws IOException {
     TableItem item = new TableItem( table, SWT.NONE );
 
@@ -431,6 +456,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "foreground" ) == -1 );
   }
 
+  @Test
   public void testRenderForeground() throws IOException, JSONException {
     TableItem item = new TableItem( table, SWT.NONE );
 
@@ -442,6 +468,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual ) );
   }
 
+  @Test
   public void testRenderForegroundUnchanged() throws IOException {
     TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
@@ -455,6 +482,7 @@ public class TableItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "foreground" ) );
   }
 
+  @Test
   public void testRenderInitialFont() throws IOException {
     TableItem item = new TableItem( table, SWT.NONE );
 
@@ -465,6 +493,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "font" ) == -1 );
   }
 
+  @Test
   public void testRenderFont() throws IOException, JSONException {
     TableItem item = new TableItem( table, SWT.NONE );
 
@@ -479,6 +508,7 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, actual.get( 3 ) );
   }
 
+  @Test
   public void testRenderFontUnchanged() throws IOException {
     TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
@@ -492,6 +522,7 @@ public class TableItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "font" ) );
   }
 
+  @Test
   public void testRenderInitialCellBackgrounds() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -504,6 +535,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "cellBackgrounds" ) == -1 );
   }
 
+  @Test
   public void testRenderCellBackgrounds() throws IOException, JSONException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -518,6 +550,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual.getJSONArray( 1 ) ) );
   }
 
+  @Test
   public void testRenderCellBackgroundsUnchanged() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -533,6 +566,7 @@ public class TableItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "cellBackgrounds" ) );
   }
 
+  @Test
   public void testRenderInitialCellForegrounds() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -545,6 +579,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "cellForegrounds" ) == -1 );
   }
 
+  @Test
   public void testRenderCellForegrounds() throws IOException, JSONException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -559,6 +594,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual.getJSONArray( 1 ) ) );
   }
 
+  @Test
   public void testRenderCellForegroundsUnchanged() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -574,6 +610,7 @@ public class TableItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "cellForegrounds" ) );
   }
 
+  @Test
   public void testRenderInitialCellFonts() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -586,6 +623,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "cellFonts" ) == -1 );
   }
 
+  @Test
   public void testRenderCellFonts() throws IOException, JSONException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -604,6 +642,7 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, cellFont.get( 3 ) );
   }
 
+  @Test
   public void testRenderCellFontsUnchanged() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -619,6 +658,7 @@ public class TableItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "cellFonts" ) );
   }
 
+  @Test
   public void testRenderInitialChecked() throws IOException {
     table = new Table( shell, SWT.CHECK );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -630,6 +670,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "checked" ) == -1 );
   }
 
+  @Test
   public void testRenderChecked() throws IOException {
     table = new Table( shell, SWT.CHECK );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -641,6 +682,7 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( item, "checked" ) );
   }
 
+  @Test
   public void testRenderCheckedUnchanged() throws IOException {
     table = new Table( shell, SWT.CHECK );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -655,6 +697,7 @@ public class TableItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "checked" ) );
   }
 
+  @Test
   public void testRenderInitialGrayed() throws IOException {
     table = new Table( shell, SWT.CHECK );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -666,6 +709,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "grayed" ) == -1 );
   }
 
+  @Test
   public void testRenderGrayed() throws IOException {
     table = new Table( shell, SWT.CHECK );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -677,6 +721,7 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( item, "grayed" ) );
   }
 
+  @Test
   public void testRenderGrayedUnchanged() throws IOException {
     table = new Table( shell, SWT.CHECK );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -691,6 +736,7 @@ public class TableItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "grayed" ) );
   }
 
+  @Test
   public void testRenderInitialCustomVariant() throws IOException {
     TableItem item = new TableItem( table, SWT.NONE );
 
@@ -701,6 +747,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
   }
 
+  @Test
   public void testRenderCustomVariant() throws IOException {
     TableItem item = new TableItem( table, SWT.NONE );
 
@@ -711,6 +758,7 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( "variant_blue", message.findSetProperty( item, "customVariant" ) );
   }
 
+  @Test
   public void testRenderCustomVariantUnchanged() throws IOException {
     TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
@@ -724,6 +772,7 @@ public class TableItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "customVariant" ) );
   }
 
+  @Test
   public void testRenderClear() throws IOException {
     table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 1 );

@@ -16,7 +16,10 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -31,24 +34,25 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 
 
-public class Browser_Test extends TestCase {
+public class Browser_Test {
 
   private Display display;
   private Shell shell;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testInitialValues() {
     Browser browser = new Browser( shell, SWT.NONE );
 
@@ -56,6 +60,7 @@ public class Browser_Test extends TestCase {
     assertEquals( "", getText( browser ) );
   }
 
+  @Test
   public void testMozillaStyleFlags() {
     try {
       new Browser( shell, SWT.MOZILLA );
@@ -66,6 +71,7 @@ public class Browser_Test extends TestCase {
     }
   }
 
+  @Test
   public void testWebkitStyleFlag() {
     try {
       new Browser( shell, SWT.WEBKIT );
@@ -76,6 +82,7 @@ public class Browser_Test extends TestCase {
     }
   }
 
+  @Test
   public void testUrlAndText() {
     Browser browser = new Browser( shell, SWT.NONE );
 
@@ -99,54 +106,59 @@ public class Browser_Test extends TestCase {
       assertEquals( "oldValue", getText( browser ) );
     }
   }
-  
+
+  @Test
   public void testAddLocationListenerRegistersUntypedListeners() {
     Browser browser = new Browser( shell, SWT.NONE );
 
     browser.addLocationListener( mock( LocationListener.class ) );
-    
+
     assertTrue( browser.isListening( EventTypes.LOCALTION_CHANGING ) );
     assertTrue( browser.isListening( EventTypes.LOCALTION_CHANGED ) );
   }
-  
+
+  @Test
   public void testRemoveLocationListenerRegistersUntypedListeners() {
     Browser browser = new Browser( shell, SWT.NONE );
     LocationListener locationListener = mock( LocationListener.class );
     browser.addLocationListener( locationListener );
-    
+
     browser.removeLocationListener( locationListener );
-    
+
     assertFalse( browser.isListening( EventTypes.LOCALTION_CHANGING ) );
     assertFalse( browser.isListening( EventTypes.LOCALTION_CHANGED ) );
   }
-  
+
+  @Test
   public void testAddProgressListenerRegistersUntypedListeners() {
     Browser browser = new Browser( shell, SWT.NONE );
-    
+
     browser.addProgressListener( mock( ProgressListener.class ) );
-    
+
     assertTrue( browser.isListening( EventTypes.PROGRESS_CHANGED ) );
     assertTrue( browser.isListening( EventTypes.PROGRESS_COMPLETED ) );
   }
-  
+
+  @Test
   public void testRemoveProgressListenerRegistersUntypedListeners() {
     Browser browser = new Browser( shell, SWT.NONE );
     ProgressListener progressListener = mock( ProgressListener.class );
     browser.addProgressListener( progressListener );
-    
+
     browser.removeProgressListener( progressListener );
-    
+
     assertFalse( browser.isListening( EventTypes.PROGRESS_CHANGED ) );
     assertFalse( browser.isListening( EventTypes.PROGRESS_COMPLETED ) );
   }
-  
+
+  @Test
   public void testSetTextWithNonVetoingLocationListener() {
     Browser browser = new Browser( shell, SWT.NONE );
     LocationListener listener = mock( LocationListener.class );
     browser.addLocationListener( listener );
 
     browser.setText( "text" );
-    
+
     ArgumentCaptor<LocationEvent> changingCaptor = ArgumentCaptor.forClass( LocationEvent.class );
     verify( listener ).changing( changingCaptor.capture() );
     assertEquals( Browser.ABOUT_BLANK, changingCaptor.getValue().location );
@@ -154,15 +166,16 @@ public class Browser_Test extends TestCase {
     verify( listener ).changed( changedCaptor.capture() );
     assertEquals( Browser.ABOUT_BLANK, changedCaptor.getValue().location );
   }
-  
+
+  @Test
   public void testSetUrlWithNonVetoingLocationListener() {
     Browser browser = new Browser( shell, SWT.NONE );
     LocationListener listener = mock( LocationListener.class );
     browser.addLocationListener( listener );
-    
+
     String newUrl = "NEW_URL";
     browser.setUrl( newUrl );
-    
+
     ArgumentCaptor<LocationEvent> changingCaptor = ArgumentCaptor.forClass( LocationEvent.class );
     verify( listener ).changing( changingCaptor.capture() );
     assertEquals( newUrl, changingCaptor.getValue().location );
@@ -170,19 +183,21 @@ public class Browser_Test extends TestCase {
     verify( listener ).changed( changedCaptor.capture() );
     assertEquals( newUrl, changedCaptor.getValue().location );
   }
-  
+
+  @Test
   public void testLocationListenerOrderInSetText() {
     Browser browser = new Browser( shell, SWT.NONE );
     LocationListener listener = mock( LocationListener.class );
     browser.addLocationListener( listener );
 
     browser.setText( "text" );
-    
+
     InOrder inOrder = inOrder( listener );
     inOrder.verify( listener ).changing( any( LocationEvent.class ) );
     inOrder.verify( listener ).changed( any( LocationEvent.class ) );
   }
 
+  @Test
   public void testLocationEvent() {
     final StringBuilder log = new StringBuilder();
     final String[] expectedLocation = new String[ 1 ];
@@ -196,7 +211,7 @@ public class Browser_Test extends TestCase {
       public void changed( LocationEvent event ) {
         log.append( "changed" + event.location );
         assertSame( browser, event.getSource() );
-        assertEquals( true, event.doit );
+        assertTrue( event.doit );
         assertEquals( expectedLocation[ 0 ], event.location );
         assertTrue( event.top );
       }
@@ -206,12 +221,12 @@ public class Browser_Test extends TestCase {
     browser.addLocationListener( listener );
     expectedLocation[ 0 ] = "NEW_URL";
     boolean success = browser.setUrl( expectedLocation[ 0 ] );
-    assertEquals( true, success );
+    assertTrue( success );
     assertEquals( "changingNEW_URL|changedNEW_URL", log.toString() );
     // setting the current url must also fire events
     log.setLength( 0 );
     success = browser.setUrl( expectedLocation[ 0 ] );
-    assertEquals( true, success );
+    assertTrue( success );
     assertEquals( "changingNEW_URL|changedNEW_URL", log.toString() );
     // clean up
     log.setLength( 0 );
@@ -221,15 +236,16 @@ public class Browser_Test extends TestCase {
     browser.addLocationListener( listener );
     expectedLocation[ 0 ] = "about:blank";
     success = browser.setText( "Some html" );
-    assertEquals( true, success );
+    assertTrue( success );
     assertEquals( "changingabout:blank|changedabout:blank", log.toString() );
     // setting the current url must also fire events
     log.setLength( 0 );
     success = browser.setText( "Some html" );
-    assertEquals( true, success );
+    assertTrue( success );
     assertEquals( "changingabout:blank|changedabout:blank", log.toString() );
   }
-  
+
+  @Test
   public void testSetUrlWithVetoingLocationListener() {
     String oldUrl = "OLD_URL";
     Browser browser = new Browser( shell, SWT.NONE );
@@ -237,72 +253,79 @@ public class Browser_Test extends TestCase {
     browser.addLocationListener( new VetoingLocationListener() );
 
     browser.setUrl( "NEW_URL" );
-    
+
     assertEquals( oldUrl, browser.getUrl() );
   }
 
+  @Test
   public void testSetTextWithVetoingLocationListener() {
     String oldText = "OLD_TEXT";
     Browser browser = new Browser( shell, SWT.NONE );
     browser.setText( oldText );
     browser.addLocationListener( new VetoingLocationListener() );
-    
+
     browser.setUrl( "NEW_TEXT" );
-    
+
     assertEquals( oldText, browser.getAdapter( IBrowserAdapter.class ).getText() );
   }
-  
+
+  @Test
   public void testSetTextWithProgressListener() {
     Browser browser = new Browser( shell, SWT.NONE );
     ProgressListener listener = mock( ProgressListener.class );
     browser.addProgressListener( listener );
-    
+
     browser.setText( "test" );
 
     verify( listener ).changed( any( ProgressEvent.class ) );
     verify( listener, never() ).completed( any( ProgressEvent.class ) );
   }
 
+  @Test
   public void testVetoedSetTextWithProgressListener() {
     Browser browser = new Browser( shell, SWT.NONE );
     ProgressListener listener = mock( ProgressListener.class );
     browser.addProgressListener( listener );
     browser.addLocationListener( new VetoingLocationListener() );
-    
+
     browser.setText( "test" );
-    
+
     verify( listener, never() ).changed( any( ProgressEvent.class ) );
     verify( listener, never() ).completed( any( ProgressEvent.class ) );
   }
-  
+
+  @Test
   public void testSetUrlWithProgressListener() {
     Browser browser = new Browser( shell, SWT.NONE );
     ProgressListener listener = mock( ProgressListener.class );
     browser.addProgressListener( listener );
-    
+
     browser.setUrl( "http://eclipse.org/rap" );
-    
+
     verify( listener ).changed( any( ProgressEvent.class ) );
     verify( listener, never() ).completed( any( ProgressEvent.class ) );
   }
-  
+
+  @Test
   public void testVetoedSetUrlWithProgressListener() {
     Browser browser = new Browser( shell, SWT.NONE );
     ProgressListener listener = mock( ProgressListener.class );
     browser.addProgressListener( listener );
     browser.addLocationListener( new VetoingLocationListener() );
-    
+
     browser.setUrl( "http://eclipse.org/rap" );
-    
+
     verify( listener, never() ).changed( any( ProgressEvent.class ) );
     verify( listener, never() ).completed( any( ProgressEvent.class ) );
   }
-  
+
+  @Test
   public void testGetWebBrowser() {
     Browser browser = new Browser( shell, SWT.NONE );
     assertNull( browser.getWebBrowser() );
   }
 
+  @Test
   public void testIsSerializable() throws Exception {
     Browser browser = new Browser( shell, SWT.NONE );
     browser.setUrl( "http://eclipse.org/rap" );
@@ -312,6 +335,7 @@ public class Browser_Test extends TestCase {
     assertEquals( browser.getUrl(), deserializedBrowser.getUrl() );
   }
 
+  @Test
   public void testExecuteReturnsAfterDispose() {
     final Browser browser = new Browser( shell, SWT.NONE );
     display.asyncExec( new Runnable() {
@@ -325,6 +349,7 @@ public class Browser_Test extends TestCase {
     assertFalse( result );
   }
 
+  @Test
   public void testExecute_JEE_COMPATIBILITY() {
     // Activate SimpleLifeCycle
     RWTFactory.getLifeCycleFactory().deactivate();
@@ -339,6 +364,7 @@ public class Browser_Test extends TestCase {
     }
   }
 
+  @Test
   public void testEvaluate_JEE_COMPATIBILITY() {
     // Activate SimpleLifeCycle
     RWTFactory.getLifeCycleFactory().deactivate();

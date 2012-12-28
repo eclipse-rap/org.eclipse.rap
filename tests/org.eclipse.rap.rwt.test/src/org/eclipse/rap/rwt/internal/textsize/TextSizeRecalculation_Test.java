@@ -11,7 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -35,9 +37,12 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class TextSizeRecalculation_Test extends TestCase {
+public class TextSizeRecalculation_Test {
   private static final FontData FONT_DATA = new FontData( "arial", 23, SWT.BOLD );
   private static final String TEXT_TO_MEASURE = "textToMeasure";
 
@@ -50,18 +55,19 @@ public class TextSizeRecalculation_Test extends TestCase {
   private TableColumn packedTableColumn;
   private TreeColumn packedTreeColumn;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testExecute() {
     createWidgetTree();
     registerResizeListeners();
@@ -75,6 +81,7 @@ public class TextSizeRecalculation_Test extends TestCase {
     checkRePackTookPlace();
   }
 
+  @Test
   public void testIControlAdapterIsPacked() {
     Shell control = new Shell( display );
     assertFalse( ControlUtil.getControlAdapter( control ).isPacked() );
@@ -86,6 +93,7 @@ public class TextSizeRecalculation_Test extends TestCase {
     assertFalse( ControlUtil.getControlAdapter( control ).isPacked() );
   }
 
+  @Test
   public void testShellRePackTookPlace() {
     shell.pack();
     turnOnImmediateResizeEventHandling();
@@ -97,6 +105,7 @@ public class TextSizeRecalculation_Test extends TestCase {
     assertTrue( ControlUtil.getControlAdapter( shell ).isPacked() );
   }
 
+  @Test
   public void testLayoutOfCompositeWithFixedSize() {
     turnOnImmediateResizeEventHandling();
     createShellWithLayout();
@@ -214,7 +223,7 @@ public class TextSizeRecalculation_Test extends TestCase {
 
   private final class ResizeListener implements ControlListener {
     private int resizeCount;
-    private StringBuilder resizeLog = new StringBuilder();
+    private final StringBuilder resizeLog = new StringBuilder();
 
     public void controlResized( ControlEvent e ) {
       resizeCount++;

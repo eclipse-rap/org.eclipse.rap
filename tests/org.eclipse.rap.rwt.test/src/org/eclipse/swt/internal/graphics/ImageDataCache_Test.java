@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,18 +12,37 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.ImageData;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ImageDataCache_Test extends TestCase {
+public class ImageDataCache_Test {
 
+  @Before
+  public void setUp() {
+    Fixture.createApplicationContext();
+    Fixture.createServiceContext();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfApplicationContext();
+  }
+
+  @Test
   public void testSmallImageIsCached() throws IOException {
     ImageDataCache cache = new ImageDataCache();
     ImageData imageData = getImageData( Fixture.IMAGE1 ); // 129 bytes
@@ -33,6 +52,7 @@ public class ImageDataCache_Test extends TestCase {
     assertEqualsImageData( imageData, cache.getImageData( internalImage ) );
   }
 
+  @Test
   public void testBigImageIsNotCached() throws IOException {
     ImageDataCache cache = new ImageDataCache();
     ImageData imageData = getImageData( Fixture.IMAGE_100x50 ); // 1281 bytes
@@ -42,6 +62,7 @@ public class ImageDataCache_Test extends TestCase {
     assertNull( cache.getImageData( internalImage ) );
   }
 
+  @Test
   public void testSafeCopiesReturned() throws IOException {
     ImageDataCache cache = new ImageDataCache();
     ImageData originalData = getImageData( Fixture.IMAGE1 );
@@ -53,6 +74,7 @@ public class ImageDataCache_Test extends TestCase {
     assertEqualsImageData( originalData, copyData );
   }
 
+  @Test
   public void testSafeCopiesStored() throws IOException {
     ImageDataCache cache = new ImageDataCache();
     ImageData originalData = getImageData( Fixture.IMAGE1 );
@@ -64,16 +86,6 @@ public class ImageDataCache_Test extends TestCase {
     originalData.setPixel( 0, 0, 23 );
     ImageData copyData2 = cache.getImageData( internalImage );
     assertEqualsImageData( copyData1, copyData2 );
-  }
-
-  protected void setUp() throws Exception {
-    Fixture.createApplicationContext();
-    Fixture.createServiceContext();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.disposeOfServiceContext();
-    Fixture.disposeOfApplicationContext();
   }
 
   private ImageData getImageData( String resource ) throws IOException {
@@ -90,4 +102,5 @@ public class ImageDataCache_Test extends TestCase {
     assertEquals( imageData1.height, imageData2.height );
     assertTrue( Arrays.equals( imageData1.data, imageData2.data ) );
   }
+
 }

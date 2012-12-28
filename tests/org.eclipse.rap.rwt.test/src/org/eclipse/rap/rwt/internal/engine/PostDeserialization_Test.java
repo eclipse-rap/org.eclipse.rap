@@ -10,18 +10,28 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.engine;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.TestSession;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class PostDeserialization_Test extends TestCase {
+public class PostDeserialization_Test {
 
   private UISession uiSession;
   private boolean wasExecuted;
 
+  @Before
+  public void setUp() {
+    uiSession = createUISession();
+    wasExecuted = false;
+  }
+
+  @Test
   public void testRunProcessor() {
     PostDeserialization.addProcessor( uiSession, new Runnable() {
       public void run() {
@@ -34,6 +44,7 @@ public class PostDeserialization_Test extends TestCase {
     assertTrue( wasExecuted );
   }
 
+  @Test
   public void testRunProcessorFromDifferentUISession() {
     PostDeserialization.addProcessor( uiSession, new Runnable() {
       public void run() {
@@ -47,13 +58,8 @@ public class PostDeserialization_Test extends TestCase {
     assertFalse( wasExecuted );
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    uiSession = createUISession();
-    wasExecuted = false;
-  }
-
   private static UISessionImpl createUISession() {
     return new UISessionImpl( new TestSession() );
   }
+
 }

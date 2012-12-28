@@ -11,32 +11,39 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class LifeCycleFactory_Test extends TestCase {
+public class LifeCycleFactory_Test {
   private ApplicationContextImpl applicationContext;
   private LifeCycleFactory lifeCycleFactory;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     applicationContext = ApplicationContextUtil.get( Fixture.getServletContext() );
     lifeCycleFactory = new LifeCycleFactory( applicationContext );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testActivateDeactivateCycle() {
     lifeCycleFactory.configure( TestLifeCycle.class );
     ILifeCycle beforeActivate = lifeCycleFactory.getLifeCycle();
@@ -52,6 +59,7 @@ public class LifeCycleFactory_Test extends TestCase {
     assertNull( afterDeactivate );
   }
 
+  @Test
   public void testActivateAfterDeactivate() {
     lifeCycleFactory.configure( TestLifeCycle.class );
     lifeCycleFactory.activate();
@@ -63,6 +71,7 @@ public class LifeCycleFactory_Test extends TestCase {
     assertSame( SimpleLifeCycle.class, lifeCycleClass );
   }
 
+  @Test
   public void testConfigure() {
     lifeCycleFactory.configure( TestLifeCycle.class );
     lifeCycleFactory.activate();
@@ -72,6 +81,7 @@ public class LifeCycleFactory_Test extends TestCase {
     assertSame( TestLifeCycle.class, lifeCycleClass );
   }
 
+  @Test
   public void testDefaultLifeCycle() {
     lifeCycleFactory.activate();
 
@@ -80,15 +90,17 @@ public class LifeCycleFactory_Test extends TestCase {
     assertSame( SimpleLifeCycle.class, lifeCycleClass );
   }
 
+  @Test
   public void testGetLifeCycle() {
     lifeCycleFactory.configure( TestLifeCycle.class );
     lifeCycleFactory.activate();
-    
+
     TestLifeCycle lifeCycle = ( TestLifeCycle )lifeCycleFactory.getLifeCycle();
-    
+
     assertEquals( applicationContext, lifeCycle.applicationContext );
   }
-  
+
+  @Test
   public void testGetLifeCycleWithRegisteredPhaseListeners() {
     PhaseListener phaseListener = mock( PhaseListener.class );
     applicationContext.getPhaseListenerRegistry().removeAll();

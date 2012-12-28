@@ -11,11 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -28,25 +31,29 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class List_Test extends TestCase {
+public class List_Test {
 
   private Shell shell;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     shell = new Shell( display );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testGetItemsAndGetItemCount() {
     List list = new List( shell, SWT.NONE );
     assertEquals( 0, list.getItemCount() );
@@ -94,6 +101,7 @@ public class List_Test extends TestCase {
     assertEquals( 0, list.getItemCount() );
   }
 
+  @Test
   public void testAdd() {
     List list = new List( shell, SWT.NONE );
 
@@ -145,6 +153,7 @@ public class List_Test extends TestCase {
     assertEquals( "xyz", list.getItem( 0 ) );
   }
 
+  @Test
   public void testRemove() {
     List list = new List( shell, SWT.NONE );
     list.add( "item1" );
@@ -256,6 +265,7 @@ public class List_Test extends TestCase {
     assertEquals( 0, list.getItemCount() );
   }
 
+  @Test
   public void testSelectionForSingle() {
     List list = new List( shell, SWT.SINGLE );
 
@@ -535,6 +545,7 @@ public class List_Test extends TestCase {
     assertEquals( 0, list.getSelectionCount() );
   }
 
+  @Test
   public void testSelectionForMulti() {
     List list = new List( shell, SWT.MULTI );
 
@@ -853,6 +864,7 @@ public class List_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetItem() {
     List list = new List( shell, SWT.NONE );
 
@@ -882,6 +894,7 @@ public class List_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetItems() {
     List list = new List( shell, SWT.NONE );
 
@@ -916,6 +929,7 @@ public class List_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetItem() {
     List list = new List( shell, SWT.NONE );
 
@@ -938,6 +952,7 @@ public class List_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetItems() {
     List list = new List( shell, SWT.NONE );
     assertEquals( 0, list.getItems().length );
@@ -945,6 +960,7 @@ public class List_Test extends TestCase {
     assertTrue( Arrays.equals( new String[] { "item1" }, list.getItems() ) );
   }
 
+  @Test
   public void testStyle() {
     List list1 = new List( shell, SWT.NONE );
     assertTrue( ( list1.getStyle() & SWT.SINGLE ) != 0 );
@@ -959,6 +975,7 @@ public class List_Test extends TestCase {
     assertTrue( ( list4.getStyle() & SWT.SINGLE ) != 0 );
   }
 
+  @Test
   public void testFocusIndexForSingle() {
     List list = new List( shell, SWT.SINGLE );
 
@@ -1021,6 +1038,7 @@ public class List_Test extends TestCase {
     assertEquals( -1, list.getFocusIndex() );
   }
 
+  @Test
   public void testFocusIndexForMulti() {
     List list = new List( shell, SWT.MULTI );
 
@@ -1067,6 +1085,7 @@ public class List_Test extends TestCase {
     assertEquals( -1, list.getFocusIndex() );
   }
 
+  @Test
   public void testTopIndex() {
     List list = new List( shell, SWT.NONE );
     list.add( "item0" );
@@ -1098,6 +1117,7 @@ public class List_Test extends TestCase {
     assertEquals( 0, list.getTopIndex() );
   }
 
+  @Test
   public void testDispose() {
     List list = new List( shell, SWT.NONE );
     list.add( "test" );
@@ -1105,6 +1125,7 @@ public class List_Test extends TestCase {
     assertTrue( list.isDisposed() );
   }
 
+  @Test
   public void testComputeSize() {
     List list = new List( shell, SWT.NONE );
     Point expected = new Point( 64, 64 );
@@ -1141,6 +1162,7 @@ public class List_Test extends TestCase {
     assertEquals( expected, list.computeSize( 100, 100 ) );
   }
 
+  @Test
   public void testShowSelectionEmptyList() {
     List list = new List( shell, SWT.NONE );
     list.showSelection();
@@ -1155,6 +1177,7 @@ public class List_Test extends TestCase {
     list.showSelection();
   }
 
+  @Test
   public void testShowSelectionBottom() {
     List list = new List( shell, SWT.NONE );
     list.setSize( 100, 26 );
@@ -1168,6 +1191,7 @@ public class List_Test extends TestCase {
     list.removeAll();
   }
 
+  @Test
   public void testShowSelectionTop() {
     List list = new List( shell, SWT.NONE );
     list.setSize( 100, 20 );
@@ -1181,6 +1205,7 @@ public class List_Test extends TestCase {
     assertEquals( 0, list.getTopIndex() );
   }
 
+  @Test
   public void testHasScrollBar() {
     List list = new List( shell, SWT.NONE );
     list.setSize( 10, 10 );
@@ -1219,6 +1244,7 @@ public class List_Test extends TestCase {
     assertFalse( list.hasHScrollBar() );
   }
 
+  @Test
   public void testGetScrollBarWidth() {
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.setSize( 10, 10 );
@@ -1231,6 +1257,7 @@ public class List_Test extends TestCase {
     assertEquals( 0, noScrollList.getHScrollBarHeight() );
   }
 
+  @Test
   public void testUpdateScrollBarOnItemsChange() {
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.setSize( 200, 26 );
@@ -1248,6 +1275,7 @@ public class List_Test extends TestCase {
     assertTrue( list.hasVScrollBar() );
   }
 
+  @Test
   public void testUpdateScrollBarOnResize() {
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.setSize( 20, 20 );
@@ -1259,6 +1287,7 @@ public class List_Test extends TestCase {
     assertFalse( list.hasHScrollBar() );
   }
 
+  @Test
   public void testUpdateScrollBarOnItemWidthChange() {
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.setSize( 60, 60 );
@@ -1280,6 +1309,7 @@ public class List_Test extends TestCase {
     assertTrue( list.hasHScrollBar() );
   }
 
+  @Test
   public void testUpdateScrollBarWithInterDependencyHFirst() {
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.add( "" );
@@ -1293,6 +1323,7 @@ public class List_Test extends TestCase {
     assertTrue( list.hasVScrollBar() );
   }
 
+  @Test
   public void testUpdateScrollBarWithInterDependencyVFirst() {
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.add( "123" );
@@ -1306,6 +1337,7 @@ public class List_Test extends TestCase {
     assertTrue( list.hasVScrollBar() );
   }
 
+  @Test
   public void testItemDimensions() {
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     assertEquals( new Point( 0, 0 ), list.getItemDimensions() );
@@ -1321,6 +1353,7 @@ public class List_Test extends TestCase {
     assertEquals( new Point( 148, 26 ), list.getItemDimensions() );
   }
 
+  @Test
   public void testIsSerialized() throws Exception {
     String listItem = "listItem";
     List list = new List( shell, SWT.NONE  );
@@ -1331,7 +1364,8 @@ public class List_Test extends TestCase {
     assertEquals( listItem, deserializedList.getItem( 0 ) );
   }
 
-  public void testIsSelected_IdenticalItems() throws Exception {
+  @Test
+  public void testIsSelected_IdenticalItems() {
     List list = new List( shell, SWT.MULTI );
     String[] items = { "text1", "text2", "text2" }; // two identical
     list.setItems( items );
@@ -1343,7 +1377,8 @@ public class List_Test extends TestCase {
     assertTrue( list.isSelected( 2 ) );
   }
 
-  public void testIsSelected_IdenticalItems2() throws Exception {
+  @Test
+  public void testIsSelected_IdenticalItems2() {
     List list = new List( shell, SWT.MULTI );
     String[] items = { "text1", "text2", "text2" }; // two identical
     list.setItems( items );
@@ -1355,6 +1390,7 @@ public class List_Test extends TestCase {
     assertTrue( list.isSelected( 2 ) );
   }
 
+  @Test
   public void testSelection_DuplicateSelectionIndices() {
     List list = new List( shell, SWT.MULTI );
     String[] items = { "text1", "text2", "text2", "text3" };
@@ -1366,6 +1402,7 @@ public class List_Test extends TestCase {
     assertFalse( hasDuplicateIndices( list.getSelectionIndices() ) );
   }
 
+  @Test
   public void testSetInvalidSelectionForMulti() {
     List list = new List( shell, SWT.MULTI );
     list.setItems( new String[] { "text1", "text2", "text2" } );
@@ -1375,12 +1412,14 @@ public class List_Test extends TestCase {
     assertEquals( 2, list.getSelectionCount() );
   }
 
+  @Test
   public void testSetCustomItemHeight() {
     List list = new List( shell, SWT.NONE );
     list.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 123 ) );
     assertEquals( 123, list.getItemHeight() );
   }
 
+  @Test
   public void testGetCustomItemHeight() {
     Integer itemHeight = new Integer( 123 );
     List list = new List( shell, SWT.NONE );
@@ -1391,6 +1430,7 @@ public class List_Test extends TestCase {
     assertEquals( itemHeight, returnedItemHeight );
   }
 
+  @Test
   public void testResetCustomItemHeight() {
     List list = new List( shell, SWT.NONE );
     int calculatedItemHeight = list.getItemHeight();
@@ -1399,11 +1439,13 @@ public class List_Test extends TestCase {
     assertEquals( calculatedItemHeight, list.getItemHeight() );
   }
 
+  @Test
   public void testDefaultCustomItemHeight() {
     List list = new List( shell, SWT.NONE );
     assertEquals( 26, list.getItemHeight() );
   }
 
+  @Test
   public void testSetCustomItemHeightWithNegativeValue() {
     List list = new List( shell, SWT.NONE );
     try {
@@ -1413,6 +1455,7 @@ public class List_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetCustomItemHeightWithNonIntegerValue() {
     List list = new List( shell, SWT.NONE );
     try {
@@ -1422,6 +1465,7 @@ public class List_Test extends TestCase {
     }
   }
 
+  @Test
   public void testMarkupTextWithoutMarkupEnabled() {
     List list = new List( shell, SWT.NONE );
     list.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
@@ -1433,6 +1477,7 @@ public class List_Test extends TestCase {
     }
   }
 
+  @Test
   public void testMarkupTextWithMarkupEnabled() {
     List list = new List( shell, SWT.NONE );
     list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
@@ -1444,6 +1489,7 @@ public class List_Test extends TestCase {
     }
   }
 
+  @Test
   public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
     List list = new List( shell, SWT.NONE );
     list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
@@ -1456,6 +1502,7 @@ public class List_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDisableMarkupIsIgnored() {
     List list = new List( shell, SWT.NONE );
     list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
@@ -1465,38 +1512,42 @@ public class List_Test extends TestCase {
     assertTrue( list.markupEnabled );
   }
 
+  @Test
   public void testAddSelectionListener() {
     List list = new List( shell, SWT.NONE );
 
     list.addSelectionListener( mock( SelectionListener.class ) );
-    
+
     assertTrue( list.isListening( SWT.Selection ) );
     assertTrue( list.isListening( SWT.DefaultSelection ) );
   }
-  
+
+  @Test
   public void testRemoveSelectionListener() {
     List list = new List( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     list.addSelectionListener( listener );
 
     list.removeSelectionListener( listener );
-    
+
     assertFalse( list.isListening( SWT.Selection ) );
     assertFalse( list.isListening( SWT.DefaultSelection ) );
   }
 
+  @Test
   public void testAddSelectionListenerWithNullArgument() {
     List list = new List( shell, SWT.NONE );
-    
+
     try {
       list.addSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
 
+  @Test
   public void testRemoveSelectionListenerWithNullArgument() {
     List list = new List( shell, SWT.NONE );
-    
+
     try {
       list.removeSelectionListener( null );
     } catch( IllegalArgumentException expected ) {

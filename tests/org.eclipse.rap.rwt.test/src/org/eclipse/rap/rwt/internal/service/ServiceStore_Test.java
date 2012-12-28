@@ -10,20 +10,26 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ServiceStore_Test extends TestCase {
+public class ServiceStore_Test {
   private static final String NAME = "name";
   private static final Object VALUE = new Object();
 
   private ServiceStore serviceStore;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     serviceStore = new ServiceStore();
   }
 
+  @Test
   public void testSetAttributeWithNullName() {
     try {
       serviceStore.setAttribute( null, VALUE );
@@ -32,6 +38,7 @@ public class ServiceStore_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetAttributeWithNullName() {
     try {
       serviceStore.getAttribute( null );
@@ -40,6 +47,7 @@ public class ServiceStore_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetAttribute() {
     serviceStore.setAttribute( NAME, VALUE );
 
@@ -48,6 +56,7 @@ public class ServiceStore_Test extends TestCase {
     assertSame( VALUE, attribute );
   }
 
+  @Test
   public void testRemoveAttribute() {
     serviceStore.setAttribute( NAME, VALUE );
 
@@ -56,6 +65,7 @@ public class ServiceStore_Test extends TestCase {
     assertNull( serviceStore.getAttribute( NAME ) );
   }
 
+  @Test
   public void testRemoveAttributeWithNullArgument() {
     try {
       serviceStore.removeAttribute( null );
@@ -64,6 +74,7 @@ public class ServiceStore_Test extends TestCase {
     }
   }
 
+  @Test
   public void testClear() {
     serviceStore.setAttribute( "foo", "bar" );
     serviceStore.setAttribute( "abc", "def" );
@@ -73,4 +84,5 @@ public class ServiceStore_Test extends TestCase {
     assertNull( serviceStore.getAttribute( "foo" ) );
     assertNull( serviceStore.getAttribute( "abc" ) );
   }
+
 }

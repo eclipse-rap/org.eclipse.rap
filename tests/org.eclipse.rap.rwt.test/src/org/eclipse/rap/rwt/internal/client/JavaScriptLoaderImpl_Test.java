@@ -11,11 +11,12 @@
 package org.eclipse.rap.rwt.internal.client;
 
 import static org.eclipse.rap.rwt.testfixture.Fixture.getProtocolMessage;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -25,25 +26,29 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class JavaScriptLoaderImpl_Test extends TestCase {
+public class JavaScriptLoaderImpl_Test {
 
   private final JavaScriptLoader loader = new JavaScriptLoaderImpl();
   private Display display;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testCreatesLoadOperation() {
     loader.require( "url" );
 
@@ -52,6 +57,7 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
     assertEquals( list( "url" ), getFiles( operation ) );
   }
 
+  @Test
   public void testLoadsBeforeCreateWidget() {
     loader.require( "url" );
     Shell shell = new Shell( display );
@@ -61,6 +67,7 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
     assertNotNull( getProtocolMessage().findCreateOperation( shell ) );
   }
 
+  @Test
   public void testDoesNotLoadUrlTwiceInSameRequest() {
     loader.require( "url" );
     loader.require( "url" );
@@ -69,6 +76,7 @@ public class JavaScriptLoaderImpl_Test extends TestCase {
     assertEquals( 1, getProtocolMessage().getOperationCount() );
   }
 
+  @Test
   public void testDoesNotLoadUrlTwiceInSameSession() {
     loader.require( "url" );
 

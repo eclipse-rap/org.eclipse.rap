@@ -10,11 +10,13 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -30,6 +32,9 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 /*
@@ -38,25 +43,26 @@ import org.eclipse.swt.widgets.Shell;
  * most of the add/remove/getItem.../selection test cases can be omitted.
  * They are covered in List_Test
  */
-public class CCombo_Test extends TestCase {
+public class CCombo_Test {
 
   private boolean listenerCalled;
   private Display display;
   private Shell shell;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display, SWT.NONE );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testDeselect() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "item1" );
@@ -73,6 +79,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( 1, combo.getSelectionIndex() );
   }
 
+  @Test
   public void testGetText() {
     CCombo combo = new CCombo( shell, SWT.READ_ONLY );
     combo.add( "item1" );
@@ -96,6 +103,7 @@ public class CCombo_Test extends TestCase {
     }
   }
 
+  @Test
   public void testTextLimit() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setTextLimit( -1 );
@@ -119,6 +127,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( "Other_", combo.getText() );
   }
 
+  @Test
   public void testListVisible() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setListVisible( true );
@@ -127,6 +136,7 @@ public class CCombo_Test extends TestCase {
     assertFalse( combo.getListVisible() );
   }
 
+  @Test
   public void testSelection() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     // test clearSelection
@@ -145,6 +155,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( new Point( 2, 5 ), combo.getSelection() );
   }
 
+  @Test
   public void testIndexOf() {
     CCombo combo = new CCombo( shell, SWT.READ_ONLY );
     combo.add( "string0" );
@@ -193,6 +204,7 @@ public class CCombo_Test extends TestCase {
     }
   }
 
+  @Test
   public void testIndexOfI() {
     CCombo combo = new CCombo( shell, SWT.READ_ONLY );
     combo.add( "string0" );
@@ -227,6 +239,7 @@ public class CCombo_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetText() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     try {
@@ -257,6 +270,7 @@ public class CCombo_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetTextReadOnly() {
     CCombo combo = new CCombo( shell, SWT.READ_ONLY );
 
@@ -265,6 +279,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( "foo", combo.getText() );
   }
 
+  @Test
   public void testSetTextNotEditable() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setEditable( false );
@@ -274,6 +289,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( "foo", combo.getText() );
   }
 
+  @Test
   public void testSetTextNotInItems() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setItems( new String[] { "a", "b", "c" } );
@@ -285,6 +301,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( -1, combo.getSelectionIndex() );
   }
 
+  @Test
   public void testSetTextInItems() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setItems( new String[] { "a", "b", "c" } );
@@ -295,6 +312,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( 1, combo.getSelectionIndex() );
   }
 
+  @Test
   public void testSelect() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
@@ -307,6 +325,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( "foo", combo.getText() );
   }
 
+  @Test
   public void testSelect2() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
@@ -327,6 +346,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( "foo", combo.getText() );
   }
 
+  @Test
   public void testSelect3() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
@@ -375,6 +395,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( "", combo.getText() );
   }
 
+  @Test
   public void testSelectWithInvalidIndex() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
@@ -394,6 +415,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( "", combo.getText() );
   }
 
+  @Test
   public void testSetTextSelect() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
@@ -404,6 +426,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( "test2", combo.getText() );
   }
 
+  @Test
   public void testRemoveAll() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "1" );
@@ -412,6 +435,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( 0, combo.getItems().length );
   }
 
+  @Test
   public void testDispose() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
@@ -419,6 +443,7 @@ public class CCombo_Test extends TestCase {
     assertTrue( combo.isDisposed() );
   }
 
+  @Test
   public void testAddModifyListener() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setItems( new String [] { "A-1", "B-1", "C-1" } );
@@ -485,6 +510,7 @@ public class CCombo_Test extends TestCase {
     }
   }
 
+  @Test
   public void testAddModifyListenerWithNullArgument() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     try {
@@ -493,6 +519,7 @@ public class CCombo_Test extends TestCase {
     }
   }
 
+  @Test
   public void testAddModifyListenerReadOnly() {
     CCombo combo = new CCombo( shell, SWT.READ_ONLY );
     combo.setItems (new String [] {"A-1", "B-1", "C-1"});
@@ -556,23 +583,26 @@ public class CCombo_Test extends TestCase {
     }
   }
 
+  @Test
   public void testAddModifyListenerRegistersUntypedEvents() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.addModifyListener( mock( ModifyListener.class ) );
-  
+
     assertTrue( combo.isListening( SWT.Modify ) );
   }
 
+  @Test
   public void testRemoveModifyListenerUnregistersUntypedEvents() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     ModifyListener listener = mock( ModifyListener.class );
     combo.addModifyListener( listener );
 
     combo.removeModifyListener( listener );
-    
+
     assertFalse( combo.isListening( SWT.Modify ) );
   }
-  
+
+  @Test
   public void testAddVerifyListenerWithNullArgument() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     try {
@@ -581,23 +611,26 @@ public class CCombo_Test extends TestCase {
     }
   }
 
+  @Test
   public void testAddVerifyListenerRegistersUntypedEvents() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.addVerifyListener( mock( VerifyListener.class ) );
-    
+
     assertTrue( combo.isListening( SWT.Verify ) );
   }
-  
+
+  @Test
   public void testRemoveVerifyListenerUnregistersUntypedEvents() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     VerifyListener listener = mock( VerifyListener.class );
     combo.addVerifyListener( listener );
-    
+
     combo.removeVerifyListener( listener );
-    
+
     assertFalse( combo.isListening( SWT.Verify ) );
   }
-  
+
+  @Test
   public void testVerifyEvent() {
     VerifyListener verifyListener;
     final java.util.List<TypedEvent> log = new ArrayList<TypedEvent>();
@@ -678,6 +711,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( sampleText, verifyEvent.text );
   }
 
+  @Test
   public void testVisibleItemCount() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "1" );
@@ -692,6 +726,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( 3, combo.getVisibleItemCount() );
   }
 
+  @Test
   public void testComputeSize() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     Point expected = new Point( 64, 26 );
@@ -716,6 +751,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( expected, combo.computeSize( 100, 100 ) );
   }
 
+  @Test
   public void testSetTextAndSelection() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
@@ -726,12 +762,13 @@ public class CCombo_Test extends TestCase {
         event.text = event.text + "2";
       }
     } );
-    
+
     combo.setText( "test" );
-    
+
     assertEquals( 2, combo.getSelectionIndex() );
   }
 
+  @Test
   public void testGetTextHeight() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     // default theme font is 11px
@@ -742,6 +779,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( 16, combo.getTextHeight() );
   }
 
+  @Test
   public void testSelectionIsSerializable() throws Exception {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "0" );
@@ -756,7 +794,8 @@ public class CCombo_Test extends TestCase {
     assertEquals( "1", deserializedCombo.getItem( 1 ) );
   }
 
-  public void testSelectionIndex() throws Exception {
+  @Test
+  public void testSelectionIndex() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test" );
@@ -772,27 +811,30 @@ public class CCombo_Test extends TestCase {
     combo.select( 2 );
     assertEquals( 2, combo.getSelectionIndex() );
   }
-  
+
+  @Test
   public void testAddSelectionListener() {
     CCombo combo = new CCombo( shell, SWT.NONE );
 
     combo.addSelectionListener( mock( SelectionListener.class ) );
-    
+
     assertTrue( combo.isListening( SWT.Selection ) );
     assertTrue( combo.isListening( SWT.DefaultSelection ) );
   }
-  
+
+  @Test
   public void testRemoveSelectionListener() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     combo.addSelectionListener( listener );
 
     combo.removeSelectionListener( listener );
-    
+
     assertFalse( combo.isListening( SWT.Selection ) );
     assertFalse( combo.isListening( SWT.DefaultSelection ) );
   }
 
+  @Test
   public void testAddSelectionListenerWithNullArgument() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     try {
@@ -800,5 +842,5 @@ public class CCombo_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
 }

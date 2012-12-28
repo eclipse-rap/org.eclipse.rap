@@ -10,20 +10,25 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.swt.graphics.Rectangle;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class Event_Test extends TestCase {
-  
+public class Event_Test {
+
   private Event event;
-  
-  @Override
-  protected void setUp() throws Exception {
+
+  @Before
+  public void setUp() {
     event = new Event();
   }
 
+  @Test
   public void testInitialValues() {
     assertTrue( event.doit );
     assertEquals( 0, event.button );
@@ -49,32 +54,35 @@ public class Event_Test extends TestCase {
     assertNull( event.widget );
     assertNull( event.text );
   }
-  
+
+  @Test
   public void testSetBounds() {
     int x = 1;
     int y = 2;
     int width = 3;
     int height = 4;
-    
+
     event.setBounds( new Rectangle( x, y, width, height ) );
-    
+
     assertEquals( x, event.x );
     assertEquals( y, event.y );
     assertEquals( width, event.width  );
     assertEquals( height, event.height );
   }
-  
+
+  @Test
   public void testGetBounds() {
     event.x = 1;
     event.y = 2;
     event.width = 3;
     event.height = 4;
-    
+
     Rectangle bounds = event.getBounds();
-    
+
     assertEquals( event.x, bounds.x );
     assertEquals( event.y, bounds.y );
     assertEquals( event.width, bounds.width );
     assertEquals( event.height, bounds.height );
   }
+
 }

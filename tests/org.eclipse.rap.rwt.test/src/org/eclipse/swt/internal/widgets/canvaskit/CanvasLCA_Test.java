@@ -10,9 +10,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import junit.framework.TestCase;
+import java.io.IOException;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
@@ -40,17 +43,20 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class CanvasLCA_Test extends TestCase {
+public class CanvasLCA_Test {
 
   private Display display;
   private Shell shell;
   private CanvasLCA lca;
   private Canvas canvas;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -59,11 +65,12 @@ public class CanvasLCA_Test extends TestCase {
     canvas = new Canvas( shell, SWT.NONE );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ControlLCATestUtil.testActivateListener( canvas );
     ControlLCATestUtil.testFocusListener( canvas );
@@ -74,6 +81,7 @@ public class CanvasLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( canvas );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( canvas );
 
@@ -87,6 +95,7 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( canvasId, gcCreate.getProperty( "parent" ) );
   }
 
+  @Test
   public void testWriqteSingleGCOperation() throws IOException, JSONException {
     canvas.setSize( 50, 50 );
     canvas.setFont( new Font( display, "Arial", 11, SWT.NORMAL ) );
@@ -115,6 +124,7 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( 4, operations.length() );
   }
 
+  @Test
   public void testWriteMultipleGCOperations() throws IOException {
     canvas.setSize( 50, 50 );
     canvas.setFont( new Font( display, "Arial", 11, SWT.NORMAL ) );
@@ -133,6 +143,7 @@ public class CanvasLCA_Test extends TestCase {
   }
 
   // see bug 323080
+  @Test
   public void testMultipleGC_SetFont() throws IOException {
     canvas.setSize( 50, 50 );
     canvas.setFont( new Font( display, "Arial", 11, SWT.NORMAL ) );
@@ -155,6 +166,7 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( 0, message.getOperationCount() );
   }
 
+  @Test
   public void testTrimTrailingSetOperations() throws IOException {
     canvas.setSize( 50, 50 );
     canvas.setFont( new Font( display, "Arial", 11, SWT.NORMAL ) );
@@ -177,6 +189,7 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( 0, adapter.getGCOperations().length );
   }
 
+  @Test
   public void testNoDrawOperations() throws IOException {
     canvas.setSize( 50, 50 );
     canvas.setFont( new Font( display, "Arial", 11, SWT.NORMAL ) );
@@ -195,6 +208,7 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( 0, adapter.getGCOperations().length );
   }
 
+  @Test
   public void testRenderOperations_empty() throws IOException {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     canvas.setSize( 50, 50 );
@@ -216,6 +230,7 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( 0, message.getOperationCount() );
   }
 
+  @Test
   public void testRenderOperations_resize() throws IOException {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Canvas canvas = new Canvas( shell, SWT.NONE );
@@ -243,6 +258,7 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( 8, operations.length() );
   }
 
+  @Test
   public void testRenderOperations_redraw() throws IOException {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     canvas.setSize( 50, 50 );
@@ -266,6 +282,7 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( 8, operations.length() );
   }
 
+  @Test
   public void testClearDrawing() throws IOException {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     canvas.setSize( 50, 50 );

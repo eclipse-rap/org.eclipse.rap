@@ -10,22 +10,27 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class IdGeneratorImpl_Test extends TestCase {
+public class IdGeneratorImpl_Test {
 
   private IdGeneratorImpl idGenerator;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     idGenerator = new IdGeneratorImpl();
   }
 
+  @Test
   public void testCreateId() {
     String id1 = idGenerator.createId( "w" );
     String id2 = idGenerator.createId( "w" );
@@ -33,18 +38,22 @@ public class IdGeneratorImpl_Test extends TestCase {
     assertFalse( id1.equals( id2 ) );
   }
 
+  @Test
   public void testCreateId_WithNull() {
     assertTrue( idGenerator.createId( null ).startsWith( "o" ) );
   }
 
+  @Test
   public void testCreateId_WithObject() {
     assertTrue( idGenerator.createId( mock( Object.class ) ).startsWith( "o" ) );
   }
 
+  @Test
   public void testCreateId_WithWidget() {
     assertTrue( idGenerator.createId( mock( Widget.class ) ).startsWith( "w" ) );
   }
 
+  @Test
   public void testReproducibleIds() {
     String id1 = idGenerator.createId( "w" );
     String id2 = new IdGeneratorImpl().createId( "w" );
@@ -52,11 +61,13 @@ public class IdGeneratorImpl_Test extends TestCase {
     assertEquals( id1, id2 );
   }
 
+  @Test
   public void testIdsArePrefixed() {
     assertTrue( idGenerator.createId( "x" ).startsWith( "x" ) );
     assertTrue( idGenerator.createId( "y" ).startsWith( "y" ) );
   }
 
+  @Test
   public void testSerialize() throws Exception {
     String id1 = idGenerator.createId( "w" );
 

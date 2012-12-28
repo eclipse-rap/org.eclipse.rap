@@ -12,70 +12,83 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
 import java.util.Locale;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class NLS_Test extends TestCase {
+public class NLS_Test {
 
   private Locale localeBuffer;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     localeBuffer = Locale.getDefault();
     Locale.setDefault( Locale.ENGLISH );
     Fixture.setUp();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
     Locale.setDefault( localeBuffer );
   }
 
+  @Test
   public void testNLS_default() {
     assertEquals( "My Message", TestMessages.get().MyMessage );
   }
 
+  @Test
   public void testNLS_italian() {
     RWT.setLocale( Locale.ITALIAN );
 
     assertEquals( "Il mio messaggio", TestMessages.get().MyMessage );
   }
 
+  @Test
   public void testNLS_german() {
     RWT.setLocale( Locale.GERMAN );
 
     assertEquals( "Meine Nachricht", TestMessages.get().MyMessage );
   }
 
+  @Test
   public void testNLS_sameInstance() {
     assertSame( TestMessages.get(), TestMessages.get() );
   }
 
+  @Test
   public void testNLS_UTF8_default() {
     assertEquals( "My Message", TestMessagesUTF8.get().MyMessage );
   }
 
+  @Test
   public void testNLS_UTF8_italian() {
     RWT.setLocale( Locale.ITALIAN );
 
     assertEquals( "Il mio messaggio", TestMessagesUTF8.get().MyMessage );
   }
 
+  @Test
   public void testNLS_UTF8_german() {
     RWT.setLocale( Locale.GERMAN );
 
     assertEquals( "Meine Nachricht", TestMessagesUTF8.get().MyMessage );
   }
 
+  @Test
   public void testNLS_UTF8_sameInstance() {
     assertSame( TestMessagesUTF8.get(), TestMessagesUTF8.get() );
   }
 
+  @Test
   public void testNLSWithIncompleteLocalization() {
     assertEquals( "", TestIncompleteMessages.get().NoTranslationAvailable );
   }

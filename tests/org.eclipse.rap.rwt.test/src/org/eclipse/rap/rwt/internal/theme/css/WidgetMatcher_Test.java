@@ -11,7 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme.css;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.QxBorder;
@@ -24,10 +25,24 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class WidgetMatcher_Test extends TestCase {
+public class WidgetMatcher_Test {
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testWidgetMatcher() {
     // Create matcher for a certain widget instance
     WidgetMatcher matcher = new WidgetMatcher();
@@ -93,13 +108,4 @@ public class WidgetMatcher_Test extends TestCase {
     assertNull( result );
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

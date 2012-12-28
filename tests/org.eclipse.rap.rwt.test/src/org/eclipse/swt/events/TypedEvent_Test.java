@@ -13,13 +13,15 @@ package org.eclipse.swt.events;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -34,45 +36,40 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class TypedEvent_Test extends TestCase {
+public class TypedEvent_Test {
 
-  private static final String EVENT_FIRED
-    = "eventFired|";
-  private static final String AFTER_RENDER
-    = "after" + PhaseId.RENDER + "|";
-  private static final String BEFORE_RENDER
-    = "before" + PhaseId.RENDER + "|";
-  private static final String AFTER_PROCESS_ACTION
-    = "after" + PhaseId.PROCESS_ACTION + "|";
-  private static final String BEFORE_PROCESS_ACTION
-    = "before" + PhaseId.PROCESS_ACTION + "|";
-  private static final String AFTER_READ_DATA
-    = "after" + PhaseId.READ_DATA + "|";
-  private static final String BEFORE_READ_DATA
-    = "before" + PhaseId.READ_DATA + "|";
-  private static final String AFTER_PREPARE_UI_ROOT
-    = "after" + PhaseId.PREPARE_UI_ROOT + "|";
-  private static final String BEFORE_PREPARE_UI_ROOT
-    = "before" + PhaseId.PREPARE_UI_ROOT + "|";
+  private static final String EVENT_FIRED = "eventFired|";
+  private static final String AFTER_RENDER = "after" + PhaseId.RENDER + "|";
+  private static final String BEFORE_RENDER = "before" + PhaseId.RENDER + "|";
+  private static final String AFTER_PROCESS_ACTION = "after" + PhaseId.PROCESS_ACTION + "|";
+  private static final String BEFORE_PROCESS_ACTION = "before" + PhaseId.PROCESS_ACTION + "|";
+  private static final String AFTER_READ_DATA = "after" + PhaseId.READ_DATA + "|";
+  private static final String BEFORE_READ_DATA = "before" + PhaseId.READ_DATA + "|";
+  private static final String AFTER_PREPARE_UI_ROOT = "after" + PhaseId.PREPARE_UI_ROOT + "|";
+  private static final String BEFORE_PREPARE_UI_ROOT = "before" + PhaseId.PREPARE_UI_ROOT + "|";
 
   private Display display;
   private Shell shell;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
-  public void testUntypedEventConstructor() throws Exception {
+  @Test
+  public void testUntypedEventConstructor() {
     Event event = new Event();
     event.display = display;
     event.widget = mock( Widget.class );
@@ -85,6 +82,7 @@ public class TypedEvent_Test extends TestCase {
     EventTestHelper.assertFieldsEqual( typedEvent, event );
   }
 
+  @Test
   public void testObjectConstructor() {
     Object source = new Object();
     TypedEvent typedEvent = new TypedEvent( source );
@@ -92,6 +90,7 @@ public class TypedEvent_Test extends TestCase {
     assertSame( source, typedEvent.getSource() );
   }
 
+  @Test
   public void testPhase() {
     final StringBuilder log = new StringBuilder();
     Button button = new Button( shell, SWT.PUSH );
@@ -132,6 +131,7 @@ public class TypedEvent_Test extends TestCase {
     assertEquals( expected, log.toString() );
   }
 
+  @Test
   public void testFireFocusEventBeforeMouseEvent() {
     final java.util.List<TypedEvent> eventLog = new ArrayList<TypedEvent>();
     Button button = new Button( shell, SWT.PUSH );
@@ -157,6 +157,7 @@ public class TypedEvent_Test extends TestCase {
     assertEquals( MouseEvent.class, eventLog.get( 1 ).getClass() );
   }
 
+  @Test
   public void testSourceConstructor() {
     TypedEvent event = new TypedEvent( shell );
 
@@ -165,6 +166,7 @@ public class TypedEvent_Test extends TestCase {
     assertNull( event.display );
   }
 
+  @Test
   public void testEventConstructorWithNullWidget() {
     Event event = new Event();
     try {
@@ -174,6 +176,7 @@ public class TypedEvent_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSourceConstructorWithNullWidget() {
     try {
       new TypedEvent( ( Object )null );

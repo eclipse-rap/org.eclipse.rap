@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.resources;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,18 +21,25 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.io.InputStream;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry.ResourceRegistration;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ResourceManager;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ResourceRegistry_Test extends TestCase {
+public class ResourceRegistry_Test {
 
   private ResourceManager resourceManager;
   private ResourceRegistry resourceRegistry;
 
+  @Before
+  public void setUp() {
+    resourceManager = mock( ResourceManager.class );
+    resourceRegistry = new ResourceRegistry( resourceManager );
+  }
+
+  @Test
   public void testAdd() {
     String resourceName = "name";
     ResourceLoader resourceLoader = mock( ResourceLoader.class );
@@ -41,6 +51,7 @@ public class ResourceRegistry_Test extends TestCase {
     assertEquals( resourceLoader, resourceRegistration.getResourceLoader() );
   }
 
+  @Test
   public void testClear() {
     resourceRegistry.add( "name", mock( ResourceLoader.class ) );
 
@@ -49,6 +60,7 @@ public class ResourceRegistry_Test extends TestCase {
     assertEquals( 0, resourceRegistry.getResourceRegistrations().length );
   }
 
+  @Test
   @SuppressWarnings( "resource" )
   public void testRegisterResources() throws IOException {
     String resourceName = "name";
@@ -63,6 +75,7 @@ public class ResourceRegistry_Test extends TestCase {
     assertEquals( 0, resourceRegistry.getResourceRegistrations().length );
   }
 
+  @Test
   public void testRegisterResourcesWithCorruptResourceLoader() {
     String resourceName = "resource-name";
     ResourceLoader resourceLoader = mock( ResourceLoader.class );
@@ -74,11 +87,6 @@ public class ResourceRegistry_Test extends TestCase {
     } catch( IllegalStateException expected ) {
       assertTrue( expected.getMessage().contains( resourceName ) );
     }
-  }
-
-  protected void setUp() throws Exception {
-    resourceManager = mock( ResourceManager.class );
-    resourceRegistry = new ResourceRegistry( resourceManager );
   }
 
 }

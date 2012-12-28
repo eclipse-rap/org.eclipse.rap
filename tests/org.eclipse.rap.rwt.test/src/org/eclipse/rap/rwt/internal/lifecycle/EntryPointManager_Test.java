@@ -11,21 +11,28 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class EntryPointManager_Test extends TestCase {
+public class EntryPointManager_Test {
 
   private static final String PATH = "/entrypoint";
   private static final Integer RETURN_VALUE = Integer.valueOf( 123 );
@@ -34,8 +41,8 @@ public class EntryPointManager_Test extends TestCase {
   private EntryPointFactory entryPointFactory;
   private EntryPoint entryPoint;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     mockEntryPoint();
     mockEntryPointFactory();
@@ -52,11 +59,12 @@ public class EntryPointManager_Test extends TestCase {
     when( Integer.valueOf( entryPoint.createUI() ) ).thenReturn( RETURN_VALUE );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testRegisterEntryPointByPath_nullPath() {
     try {
       entryPointManager.register( null, TestEntryPoint.class, null );
@@ -65,6 +73,7 @@ public class EntryPointManager_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterEntryPointByPath_nullClass() {
     try {
       entryPointManager.register( PATH, ( Class<? extends EntryPoint> )null, null );
@@ -73,6 +82,7 @@ public class EntryPointManager_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterEntryPointByPath_duplicate() {
     entryPointManager.register( PATH, TestEntryPoint.class, null );
     try {
@@ -82,6 +92,7 @@ public class EntryPointManager_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterEntryPointByPath_illegalPath() {
     Class<TestEntryPoint> entryPointClass = TestEntryPoint.class;
     assertRegisterByPathFails( "", entryPointClass );
@@ -91,6 +102,7 @@ public class EntryPointManager_Test extends TestCase {
     assertRegisterByPathFails( "/foo/bar", entryPointClass );
   }
 
+  @Test
   public void testRegisterEntryPointByPath() {
     entryPointManager.register( PATH, TestEntryPoint.class, null );
 
@@ -99,6 +111,7 @@ public class EntryPointManager_Test extends TestCase {
     assertEquals( TestEntryPoint.class, factory.create().getClass() );
   }
 
+  @Test
   public void testRegisterEntryPointByPath_withProperties() {
     Map<String, String> map = new HashMap<String, String>();
     map.put( "foo", "bar" );
@@ -108,6 +121,7 @@ public class EntryPointManager_Test extends TestCase {
     assertEquals( map, entryPointManager.getRegistrationByPath( PATH ).getProperties() );
   }
 
+  @Test
   public void testRegisterFactoryByPath_nullPath() {
     try {
       entryPointManager.register( null, entryPointFactory, null );
@@ -116,6 +130,7 @@ public class EntryPointManager_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterFactoryByPath_duplicate() {
     entryPointManager.register( PATH, entryPointFactory, null );
     try {
@@ -125,6 +140,7 @@ public class EntryPointManager_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterFactoryByPath_illegalPath() {
     assertRegisterByPathFails( "", entryPointFactory );
     assertRegisterByPathFails( "/", entryPointFactory );
@@ -133,6 +149,7 @@ public class EntryPointManager_Test extends TestCase {
     assertRegisterByPathFails( "/foo/bar", entryPointFactory );
   }
 
+  @Test
   public void testRegisterFactoryByPath_nullFactory() {
     try {
       entryPointManager.register( PATH, ( EntryPointFactory )null, null );
@@ -141,12 +158,14 @@ public class EntryPointManager_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRegisterFactoryByPath() {
     entryPointManager.register( PATH, entryPointFactory, null );
 
     assertSame( entryPointFactory, entryPointManager.getRegistrationByPath( PATH ).getFactory() );
   }
 
+  @Test
   public void testRegisterFactoryByPath_withProperties() {
     Map<String, String> map = new HashMap<String, String>();
     map.put( "foo", "bar" );
@@ -156,10 +175,12 @@ public class EntryPointManager_Test extends TestCase {
     assertEquals( map, entryPointManager.getRegistrationByPath( PATH ).getProperties() );
   }
 
+  @Test
   public void testGetRegistrationByPath_nonExisting() {
     assertNull( entryPointManager.getRegistrationByPath( PATH ) );
   }
 
+  @Test
   public void testGetRegistrationByPath_propertiesNotNull() {
     entryPointManager.register( PATH, entryPointFactory, null );
 
@@ -167,6 +188,7 @@ public class EntryPointManager_Test extends TestCase {
     assertEquals( 0, entryPointManager.getRegistrationByPath( PATH ).getProperties().size() );
   }
 
+  @Test
   public void testGetRegistrationByPath_propertiesNotModifiable() {
     entryPointManager.register( PATH, entryPointFactory, new HashMap<String, String>() );
     Map<String, String> properties = entryPointManager.getRegistrationByPath( PATH ).getProperties();
@@ -179,10 +201,12 @@ public class EntryPointManager_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetServletPaths_initallyEmpty() {
     assertTrue( entryPointManager.getServletPaths().isEmpty() );
   }
 
+  @Test
   public void testGetServletPaths() {
     entryPointManager.register( "/foo", entryPointFactory, null );
     entryPointManager.register( "/bar", entryPointFactory, null );
@@ -192,6 +216,7 @@ public class EntryPointManager_Test extends TestCase {
     assertTrue( entryPointManager.getServletPaths().contains( "/bar" ) );
   }
 
+  @Test
   public void testDeregisterAll() {
     entryPointManager.register( PATH, entryPointFactory, null );
 
@@ -200,6 +225,7 @@ public class EntryPointManager_Test extends TestCase {
     assertTrue( entryPointManager.getServletPaths().isEmpty() );
   }
 
+  @Test
   public void testGetEntryPointRegistration() {
     HashMap<String, String> properties = new HashMap<String, String>();
     properties.put( "prop", "value" );
@@ -213,6 +239,7 @@ public class EntryPointManager_Test extends TestCase {
     assertEquals( "value", registration.getProperties().get( "prop" ) );
   }
 
+  @Test
   public void testGetEntryPointRegistrationForUnregisteredEntryPoint() {
     TestRequest request = new TestRequest();
     request.setServletPath( PATH );

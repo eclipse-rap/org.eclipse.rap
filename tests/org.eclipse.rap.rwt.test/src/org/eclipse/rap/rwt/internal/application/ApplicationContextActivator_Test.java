@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.application;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
@@ -23,9 +22,11 @@ import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.StartupPage;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.service.ResourceManager;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ApplicationContextActivator_Test extends TestCase {
+public class ApplicationContextActivator_Test {
 
   private ApplicationContextImpl applicationContext;
   private LifeCycleFactory lifeCycleFactory;
@@ -34,11 +35,12 @@ public class ApplicationContextActivator_Test extends TestCase {
   private ClientSelector clientSelector;
   private StartupPage startupPage;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     mockApplicationContext();
   }
 
+  @Test
   public void testActivate() {
     ApplicationContextActivator activator = new ApplicationContextActivator( applicationContext );
 
@@ -50,6 +52,7 @@ public class ApplicationContextActivator_Test extends TestCase {
     verify( startupPage ).activate();
   }
 
+  @Test
   public void testDeactivate() {
     ApplicationContextActivator activator = new ApplicationContextActivator( applicationContext );
 

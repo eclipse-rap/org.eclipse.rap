@@ -10,7 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -20,21 +21,25 @@ import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ThemeAdapter_Test extends TestCase {
+public class ThemeAdapter_Test {
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testAdapterForShell() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -43,6 +48,7 @@ public class ThemeAdapter_Test extends TestCase {
     assertTrue( adapter instanceof ShellThemeAdapter );
   }
 
+  @Test
   public void testAdapterForComposite() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -52,6 +58,7 @@ public class ThemeAdapter_Test extends TestCase {
     assertTrue( adapter instanceof ControlThemeAdapterImpl );
   }
 
+  @Test
   public void testAdapterForCustomWidget() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -67,4 +74,5 @@ public class ThemeAdapter_Test extends TestCase {
       super( parent, style );
     }
   }
+
 }

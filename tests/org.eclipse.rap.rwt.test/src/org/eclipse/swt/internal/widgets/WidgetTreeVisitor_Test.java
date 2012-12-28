@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -38,13 +40,29 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class WidgetTreeVisitor_Test extends TestCase {
+public class WidgetTreeVisitor_Test {
 
   private Display display;
   private Shell shell;
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display , SWT.NONE );
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testTreeVisitor() {
     Control control1 = new Button( shell, SWT.PUSH );
     Composite composite = new Composite( shell, SWT.NONE );
@@ -69,11 +87,13 @@ public class WidgetTreeVisitor_Test extends TestCase {
     };
     final int[] count = { 0 };
     WidgetTreeVisitor.accept( shell, new WidgetTreeVisitor() {
+      @Override
       public boolean visit( Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
         return true;
       }
+      @Override
       public boolean visit( Composite composite ) {
         assertSame( composite, elements[ count[ 0 ] ] );
         count[ 0 ]++;
@@ -83,6 +103,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 10, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new WidgetTreeVisitor() {
+      @Override
       public boolean visit( Composite composite ) {
         count[ 0 ]++;
         return false;
@@ -91,6 +112,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 1, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      @Override
       public boolean doVisit( Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
@@ -100,6 +122,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 10, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      @Override
       public boolean doVisit( Widget widget ) {
         count[ 0 ]++;
         return widget != treeItem1;
@@ -108,6 +131,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 9, count[ 0 ] );
   }
 
+  @Test
   public void testTreeVisitorWithTable() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item1 = new TableItem( table, SWT.NONE );
@@ -120,6 +144,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
       shell, table, column1, column2, item1, item2, tableControl
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      @Override
       public boolean doVisit( Widget widget ) {
         assertSame( elements[ count[ 0 ] ], widget );
         count[ 0 ]++;
@@ -131,6 +156,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     // Ensure that table item are visited in this order: first TableColumn,
     // then TableItem; regardless in which order they were constructed
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      @Override
       public boolean doVisit( Widget widget ) {
         assertSame( elements[ count[ 0 ] ], widget );
         count[ 0 ]++;
@@ -140,6 +166,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( elements.length, count[ 0 ] );
   }
 
+  @Test
   public void testTreeVisitorWithToolBar() {
     ToolBar toolBar = new ToolBar( shell, SWT.NONE );
     ToolItem toolItem = new ToolItem( toolBar, SWT.NONE );
@@ -150,6 +177,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
       shell, toolBar, toolItem
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      @Override
       public boolean doVisit( Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
@@ -159,6 +187,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 1, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      @Override
       public boolean doVisit( Widget widget ) {
         assertSame( elements[ count[ 0 ] ], widget );
         count[ 0 ]++;
@@ -168,6 +197,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( elements.length, count[ 0 ] );
   }
 
+  @Test
   public void testTreeVisitorWithMenus() {
     Menu menuBar = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menuBar );
@@ -179,6 +209,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
       shell, menuBar, shellMenu, textMenu, text
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      @Override
       public boolean doVisit( Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
@@ -188,6 +219,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 1, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      @Override
       public boolean doVisit( Widget widget ) {
         assertSame( elements[ count[ 0 ] ], widget );
         count[ 0 ]++;
@@ -197,6 +229,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 5, count[ 0 ] );
   }
 
+  @Test
   public void testTreeVisitorWithDecoration() {
     Control control1 = new Button( shell, SWT.PUSH );
     Decorator decoration1 = new Decorator( control1, SWT.RIGHT );
@@ -208,6 +241,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
       shell, control1, decoration1, composite, control2, decoration2
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      @Override
       public boolean doVisit( Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
@@ -217,6 +251,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 1, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      @Override
       public boolean doVisit( Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
@@ -226,6 +261,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 6, count[ 0 ] );
   }
 
+  @Test
   public void testTreeVisitorWithDragSource() {
     DragSource compositeDragSource = new DragSource( shell, SWT.NONE );
     Text text = new Text( shell, SWT.NONE );
@@ -235,6 +271,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
       shell, compositeDragSource, text, controlDragSource
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      @Override
       public boolean doVisit( Widget widget ) {
         assertSame( elements[ count[ 0 ] ], widget );
         count[ 0 ]++;
@@ -244,6 +281,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 4, count[ 0 ] );
   }
 
+  @Test
   public void testTreeVisitorWithToolTip() {
     Control control = new Label( shell, SWT.NONE );
     ToolTip toolTip = new ToolTip( shell, SWT.NONE );
@@ -252,6 +290,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
       shell, control, toolTip
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      @Override
       public boolean doVisit( Widget widget ) {
         assertSame( elements[ count[ 0 ] ], widget );
         count[ 0 ]++;
@@ -262,6 +301,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 3, count[ 0 ] );
   }
 
+  @Test
   public void testWithCustomWidget() {
     // Custom widgets may override getChildren, see bug 363844
     Composite customWidget = new Composite( shell, SWT.NONE ) {
@@ -274,6 +314,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
 
     final List<Widget> log = new ArrayList<Widget>();
     WidgetTreeVisitor.accept( customWidget, new AllWidgetTreeVisitor() {
+      @Override
       public boolean doVisit( Widget widget ) {
         log.add( widget );
         return true;
@@ -284,13 +325,4 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertTrue( log.contains( innerLabel ) );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    display = new Display();
-    shell = new Shell( display , SWT.NONE );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

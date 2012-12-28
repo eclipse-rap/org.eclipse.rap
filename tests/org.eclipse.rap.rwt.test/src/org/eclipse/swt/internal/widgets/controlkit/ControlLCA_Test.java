@@ -13,6 +13,10 @@
 package org.eclipse.swt.internal.widgets.controlkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -20,8 +24,6 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -45,24 +47,28 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-public class ControlLCA_Test extends TestCase {
+public class ControlLCA_Test {
 
   private Display display;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testPreserveValues() {
     Composite shell = new Shell( display , SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
@@ -119,6 +125,7 @@ public class ControlLCA_Test extends TestCase {
     assertEquals( "some text", control.getToolTipText() );
   }
 
+  @Test
   public void testMenuDetectListener() {
     Shell shell = new Shell( display );
     Label label = new Label( shell, SWT.NONE );
@@ -139,6 +146,7 @@ public class ControlLCA_Test extends TestCase {
     assertEquals( 30, event.y );
   }
 
+  @Test
   public void testRedrawAndDispose() {
     final StringBuilder log = new StringBuilder();
     // Set up test scenario
@@ -192,6 +200,7 @@ public class ControlLCA_Test extends TestCase {
     assertEquals( "renderDispose", log.toString() );
   }
 
+  @Test
   public void testRenderNoDisposeWhenParentDisposed() {
     Shell shell = new Shell( display );
     Label label = new Label( shell, SWT.NONE );

@@ -11,32 +11,41 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
 import java.util.Enumeration;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class FileSettingStore_Test extends TestCase {
+public class FileSettingStore_Test {
 
   private final SettingStoreFactory factory = new FileSettingStoreFactory();
   private static int instanceCount = 0;
   private String storeId;
   private SettingStore store;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     storeId = createUniqueId();
     store = getFactory().createSettingStore( storeId );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testGetAttributeNullKey() {
     try {
       assertNull( store.getAttribute( null ) );
@@ -46,10 +55,12 @@ public class FileSettingStore_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetAttributeUnknownKey() {
     assertNull( store.getAttribute( "key_does_not_exist" ) );
   }
 
+  @Test
   public void testGetSetRemove() throws Exception {
     assertNull( store.getAttribute( "key" ) );
     store.setAttribute( "key", "value" );
@@ -60,6 +71,7 @@ public class FileSettingStore_Test extends TestCase {
     assertNull( store.getAttribute( "key" ) );
   }
 
+  @Test
   public void testRemoveAttributeNullKey() throws Exception {
     try {
       store.removeAttribute( null );
@@ -69,12 +81,14 @@ public class FileSettingStore_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRemoveAttributeUnknownKey() throws Exception {
     String key = "key_does_not_exist";
     store.removeAttribute( key );
     assertNull( store.getAttribute( key ) );
   }
 
+  @Test
   public void testSetAttributeNullKey() throws Exception {
     try {
       store.setAttribute( null, "foo" );
@@ -84,6 +98,7 @@ public class FileSettingStore_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetAttributeNullValue() throws Exception {
     store.setAttribute( "key", "value" );
     assertNotNull( store.getAttribute( "key" ) );
@@ -92,6 +107,7 @@ public class FileSettingStore_Test extends TestCase {
     assertNull( store.getAttribute( "key" ) );
   }
 
+  @Test
   public void testGetAttributeNames() throws Exception {
     assertEquals( 0, countElements( store.getAttributeNames() ) );
     store.setAttribute( "key", "value" );
@@ -107,6 +123,7 @@ public class FileSettingStore_Test extends TestCase {
     assertEquals( 1, countElements( store.getAttributeNames() ) );
   }
 
+  @Test
   public void testLoadByIdNull() throws Exception {
     try {
       store.loadById( null );
@@ -116,6 +133,7 @@ public class FileSettingStore_Test extends TestCase {
     }
   }
 
+  @Test
   public void testLoadByIdEmpty() throws Exception {
     try {
       store.loadById( "" );
@@ -131,6 +149,7 @@ public class FileSettingStore_Test extends TestCase {
     }
   }
 
+  @Test
   public void testLoadByIdDoesClear() throws Exception {
     store.setAttribute( "key", "value" );
     assertEquals( 1, countElements( store.getAttributeNames() ) );
@@ -140,6 +159,7 @@ public class FileSettingStore_Test extends TestCase {
     assertEquals( 1, countElements( store.getAttributeNames() ) );
   }
 
+  @Test
   public void testLoadByIdDoesLoad() throws Exception {
     String currentId = store.getId();
     store.setAttribute( "key", "value" );
@@ -159,6 +179,7 @@ public class FileSettingStore_Test extends TestCase {
     assertEquals( "value2", newStore.getAttribute( "key2" ) );
   }
 
+  @Test
   public void testAddSettingStoreListenerNull() {
     try {
       store.addSettingStoreListener( null );
@@ -168,6 +189,7 @@ public class FileSettingStore_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRemoveSettingStoreListenerNull() {
     try {
       store.removeSettingStoreListener( null );
@@ -177,6 +199,7 @@ public class FileSettingStore_Test extends TestCase {
     }
   }
 
+  @Test
   public void testAddRemoveSettingStoreListener() throws Exception {
     FTSettingStoreListener listener = new FTSettingStoreListener();
     store.addSettingStoreListener( listener );
@@ -203,6 +226,7 @@ public class FileSettingStore_Test extends TestCase {
     assertEquals( 3, listener.getCount() );
   }
 
+  @Test
   public void testSettingStoreListenerEvents() throws Exception {
     FTSettingStoreListener listener = new FTSettingStoreListener();
     store.addSettingStoreListener( listener );
@@ -229,6 +253,7 @@ public class FileSettingStore_Test extends TestCase {
     assertNull( event.getNewValue() );
   }
 
+  @Test
   public void testListenerEventsOnLoadForRemovedKeys() throws Exception {
     store.setAttribute( "key1", "value1" );
     store.setAttribute( "key2", "value2" );
@@ -243,6 +268,7 @@ public class FileSettingStore_Test extends TestCase {
     assertNull( lastEvent.getNewValue() );
   }
 
+  @Test
   public void testListenerEventsOnLoadForLoadedKeys() throws Exception {
     store.setAttribute( "key1", "value1" );
     store.setAttribute( "key2", "value2" );
@@ -259,6 +285,7 @@ public class FileSettingStore_Test extends TestCase {
     assertNotNull( lastEvent.getNewValue() );
   }
 
+  @Test
   public void testGetId() {
     assertNotNull( store.getId() );
     assertEquals( storeId, store.getId() );

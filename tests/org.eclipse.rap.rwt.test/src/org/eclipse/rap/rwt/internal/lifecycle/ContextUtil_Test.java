@@ -10,20 +10,30 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.testfixture.TestSession;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ContextUtil_Test extends TestCase {
+public class ContextUtil_Test {
 
   private UISessionImpl uiSession;
 
+  @Before
+  public void setUp() {
+    uiSession = new UISessionImpl( new TestSession() );
+  }
+
+  @Test
   public void testGetSessionOnFakedRequest() {
     ServiceContext serviceContext = ContextUtil.createFakeContext( uiSession );
 
@@ -34,6 +44,7 @@ public class ContextUtil_Test extends TestCase {
     assertSame( request.getSession( false ), uiSession.getHttpSession() );
   }
 
+  @Test
   public void testGetLocaleOnFakedRequest() {
     ServiceContext serviceContext = ContextUtil.createFakeContext( uiSession );
 
@@ -42,6 +53,7 @@ public class ContextUtil_Test extends TestCase {
     assertNull( request.getLocale() );
   }
 
+  @Test
   public void testFakedRequest() {
     ServiceContext serviceContext = ContextUtil.createFakeContext( uiSession );
     HttpServletRequest request = serviceContext.getRequest();
@@ -51,6 +63,7 @@ public class ContextUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testFakedResponse() throws Exception {
     ServiceContext serviceContext = ContextUtil.createFakeContext( uiSession );
     HttpServletResponse response = serviceContext.getResponse();
@@ -60,14 +73,11 @@ public class ContextUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testFakedServiceStore() {
     ServiceContext serviceContext = ContextUtil.createFakeContext( uiSession );
 
     assertNotNull( serviceContext.getServiceStore() );
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    uiSession = new UISessionImpl( new TestSession() );
-  }
 }

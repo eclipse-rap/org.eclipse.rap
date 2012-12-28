@@ -10,11 +10,14 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -23,16 +26,19 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class Canvas_Test extends TestCase {
+public class Canvas_Test {
 
   private java.util.List<PaintEvent> paintEventLog;
   private Display display;
   private Canvas canvas;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     paintEventLog = new ArrayList<PaintEvent>();
@@ -41,11 +47,12 @@ public class Canvas_Test extends TestCase {
     canvas = new Canvas( shell, SWT.NONE );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testPaintEvent() {
     canvas.addPaintListener( new PaintListener() {
       public void paintControl( PaintEvent event ) {
@@ -65,6 +72,7 @@ public class Canvas_Test extends TestCase {
     assertEquals( event.height, canvas.getClientArea().height );
   }
 
+  @Test
   public void testResize() {
     canvas.addPaintListener( new PaintListener() {
       public void paintControl( PaintEvent event ) {
@@ -75,6 +83,7 @@ public class Canvas_Test extends TestCase {
     assertEquals( 1, paintEventLog.size() );
   }
 
+  @Test
   public void testMultiplePaintEvents() {
     canvas.addPaintListener( new PaintListener() {
       public void paintControl( PaintEvent event ) {
@@ -89,17 +98,20 @@ public class Canvas_Test extends TestCase {
     assertEquals( 1, adapter.getGCOperations().length );
   }
 
+  @Test
   public void testIsSerializable() throws Exception {
     Canvas deserializedCanvas = Fixture.serializeAndDeserialize( canvas );
     assertNotNull( deserializedCanvas );
   }
 
+  @Test
   public void testAddPaintListener() {
     canvas.addPaintListener( mock( PaintListener.class ) );
 
     assertTrue( canvas.isListening( SWT.Paint ) );
   }
 
+  @Test
   public void testRemovePaintListener() {
     PaintListener listener = mock( PaintListener.class );
     canvas.addPaintListener( listener );
@@ -109,6 +121,7 @@ public class Canvas_Test extends TestCase {
     assertFalse( canvas.isListening( SWT.Paint ) );
   }
 
+  @Test
   public void testRemovePaintListenerUnregistersUntypedEvent() {
     PaintListener listener = mock( PaintListener.class );
     canvas.addPaintListener( listener );
@@ -118,6 +131,7 @@ public class Canvas_Test extends TestCase {
     assertFalse( canvas.isListening( SWT.Paint ) );
   }
 
+  @Test
   public void testAddPaintListenerWithNullArgument() {
     try {
       canvas.addPaintListener( null );
@@ -125,6 +139,7 @@ public class Canvas_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRemovePaintListenerWithNullArgument() {
     try {
       canvas.removePaintListener( null );
@@ -132,6 +147,7 @@ public class Canvas_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConstructorDoesNotSendPaintEvents() {
     // See bug 393771
     canvas.addPaintListener( mock( PaintListener.class ) );

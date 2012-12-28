@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,19 +11,22 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme.css;
 
-import java.util.Arrays;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import junit.framework.TestCase;
+import java.util.Arrays;
 
 import org.eclipse.rap.rwt.internal.theme.QxBorder;
 import org.eclipse.rap.rwt.internal.theme.QxColor;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
+import org.junit.Test;
 
 
-public class StyleSheet_Test extends TestCase {
+public class StyleSheet_Test {
 
   private static final String TEST_EXAMPLE_CSS = "TestExample.css";
 
+  @Test
   public void testGetStyleRules() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_EXAMPLE_CSS );
     StyleRule[] rules = styleSheet.getStyleRules();
@@ -31,6 +34,7 @@ public class StyleSheet_Test extends TestCase {
     assertEquals( 13, rules.length );
   }
 
+  @Test
   public void testAllConstraintsAreSorted() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_EXAMPLE_CSS );
     ConditionalValue[] values = styleSheet.getValues( "Button", "border" );
@@ -42,6 +46,7 @@ public class StyleSheet_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetConditionalValues_Optimized() throws Exception {
     // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=282461
     String css = "* { color: red }\n" + "Button { color: blue }\n";
@@ -52,6 +57,7 @@ public class StyleSheet_Test extends TestCase {
     assertEquals( QxColor.create( 0, 0, 255 ), values[ 0 ].value );
   }
 
+  @Test
   public void testGetConditionalValues_SortedAndOptimized() throws Exception {
     String css =   "Button:hover[BORDER].special { color: red }\n"
                  + "Button[BORDER]:hover.special { color: green }\n"
@@ -63,6 +69,7 @@ public class StyleSheet_Test extends TestCase {
     assertEquals( QxColor.create( 0, 0, 255 ), values[ 0 ].value );
   }
 
+  @Test
   public void testGetConditionalValues() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_EXAMPLE_CSS );
     ConditionalValue[] values = styleSheet.getValues( "Button", "border" );
@@ -111,4 +118,5 @@ public class StyleSheet_Test extends TestCase {
     }
     return result.toString();
   }
+
 }

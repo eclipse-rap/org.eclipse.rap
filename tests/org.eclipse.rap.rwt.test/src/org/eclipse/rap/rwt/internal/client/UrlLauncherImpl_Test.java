@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -19,32 +20,34 @@ import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.eclipse.rap.rwt.internal.remote.RemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-public class UrlLauncherImpl_Test extends TestCase {
+public class UrlLauncherImpl_Test {
 
   private static final String URL = "http://someurl.com/foo/bar";
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     new Display();
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testCreatesRemoteObjectWithCorrectId() {
     RemoteObjectFactory factory = fakeRemoteObjectFactory( mock( RemoteObject.class ) );
 
@@ -54,6 +57,7 @@ public class UrlLauncherImpl_Test extends TestCase {
     verify( factory ).createServiceObject( eq( "rwt.client.UrlLauncher" ) );
   }
 
+  @Test
   public void testWritesCallOperation() {
     RemoteObject remoteObject = mock( RemoteObject.class );
     fakeRemoteObjectFactory( remoteObject );
@@ -77,4 +81,5 @@ public class UrlLauncherImpl_Test extends TestCase {
     verify( remoteObject ).call( eq( "openURL" ), captor.capture() );
     return ( String )captor.getValue().get( "url" );
   }
+
 }

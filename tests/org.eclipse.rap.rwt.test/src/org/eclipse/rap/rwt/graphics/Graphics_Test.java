@@ -12,14 +12,20 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.graphics;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
@@ -36,13 +42,17 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 @SuppressWarnings("deprecation")
-public class Graphics_Test extends TestCase {
+public class Graphics_Test {
 
   private Display display;
 
+  @Test
   public void testGetColorWithNullArgument() {
     try {
       Graphics.getColor( null );
@@ -50,12 +60,14 @@ public class Graphics_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetColorRGBReturnsEqualColorAsGetColor() {
     Color color1 = Graphics.getColor( new RGB( 1, 1, 1 ) );
     Color color2 = Graphics.getColor( 1, 1, 1 );
     assertEquals( color1, color2 );
   }
 
+  @Test
   public void testTextExtentNull() {
     Font font = Graphics.getFont( "Arial", 12, SWT.BOLD );
     try {
@@ -70,6 +82,7 @@ public class Graphics_Test extends TestCase {
     }
   }
 
+  @Test
   public void testStringExtentNull() {
     Font font = Graphics.getFont( "Arial", 12, SWT.BOLD );
     try {
@@ -84,6 +97,7 @@ public class Graphics_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetCharHeightNull() {
     try {
       Graphics.getCharHeight( null );
@@ -92,11 +106,13 @@ public class Graphics_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetAvgCharWidth() {
     float result = Graphics.getAvgCharWidth( display.getSystemFont() );
     assertTrue( result > 0 );
   }
 
+  @Test
   public void testGetAvgCharWidthNull() {
     try {
       Graphics.getAvgCharWidth( null );
@@ -105,6 +121,7 @@ public class Graphics_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetImage() {
     Fixture.useDefaultResourceManager();
     ResourceManager resourceManager = RWT.getResourceManager();
@@ -128,6 +145,7 @@ public class Graphics_Test extends TestCase {
     assertTrue( resourceManager.isRegistered( registerPath ) );
   }
 
+  @Test
   public void testGetImageWithClassLoader() throws IOException {
     String resourceName = "test.gif";
     File testGif = new File( Fixture.WEB_CONTEXT_DIR, resourceName );
@@ -139,6 +157,7 @@ public class Graphics_Test extends TestCase {
     assertNotNull( image );
   }
 
+  @Test
   public void testGetImageFromClassLoaderWithNonExistingPath() {
     try {
       Graphics.getImage( "test.gif" );
@@ -147,6 +166,7 @@ public class Graphics_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetImageWithInputStream() throws IOException {
     String imageName = "testIS.gif";
     File testGif = new File( Fixture.WEB_CONTEXT_DIR, imageName );
@@ -165,6 +185,7 @@ public class Graphics_Test extends TestCase {
     assertNotNull( image );
   }
 
+  @Test
   public void testGetImageWithIllegalArguments() {
     try {
       Graphics.getImage( null );
@@ -183,6 +204,7 @@ public class Graphics_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetFont() {
     Font font = Graphics.getFont( "roman", 1, SWT.NORMAL );
     assertEquals( "roman", FontUtil.getData( font ).getName() );
@@ -203,11 +225,13 @@ public class Graphics_Test extends TestCase {
     assertNotSame( arial13Normal, arial12Bold );
   }
 
+  @Test
   public void testGetFontReturnsCurrentDisplay() {
     Font font = Graphics.getFont( "roman", 1, SWT.NORMAL );
     assertSame( Display.getCurrent(), font.getDevice() );
   }
 
+  @Test
   public void testGetFontWithIllegalArguments() {
     try {
       Graphics.getFont( null, 1, SWT.NONE );
@@ -223,6 +247,7 @@ public class Graphics_Test extends TestCase {
     assertEquals( SWT.NORMAL, FontUtil.getData( font ).getStyle() );
   }
 
+  @Test
   public void testDisposeFactoryCreated() {
     Font font = Graphics.getFont( "roman", 1, SWT.NORMAL );
     try {
@@ -233,6 +258,7 @@ public class Graphics_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCheckThreadFromUIThread() {
     try {
       Graphics.checkThread();
@@ -241,6 +267,7 @@ public class Graphics_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCheckThreadWithoutDisplay() {
     display.dispose();
     LifeCycleUtil.setSessionDisplay( null );
@@ -252,6 +279,7 @@ public class Graphics_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCheckThreadFromBackgroundThread() throws InterruptedException {
     final Throwable[] exception = { null };
     Thread thread = new Thread( new Runnable() {
@@ -270,15 +298,15 @@ public class Graphics_Test extends TestCase {
     assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swtException.code );
   }
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
     display = new Display();
   }
 
-  @Override
-  protected void tearDown() {
+  @After
+  public void tearDown() {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
   }

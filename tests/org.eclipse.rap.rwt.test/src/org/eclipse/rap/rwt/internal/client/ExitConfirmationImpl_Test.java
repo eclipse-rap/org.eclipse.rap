@@ -10,19 +10,23 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
+import org.junit.Test;
 
 
-public class ExitConfirmationImpl_Test extends TestCase {
+public class ExitConfirmationImpl_Test {
 
+  @Test
   public void testMessageIsNullByDefault() {
     ExitConfirmation exitConfirmation = new ExitConfirmationImpl();
 
     assertNull( exitConfirmation.getMessage() );
   }
 
+  @Test
   public void testKeepsMessage() {
     ExitConfirmation exitConfirmation = new ExitConfirmationImpl();
 

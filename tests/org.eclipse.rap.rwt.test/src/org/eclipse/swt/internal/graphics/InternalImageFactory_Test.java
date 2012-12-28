@@ -12,13 +12,17 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -28,9 +32,12 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class InternalImageFactory_Test extends TestCase {
+public class InternalImageFactory_Test {
 
   private static final ClassLoader CLASS_LOADER = InternalImageFactory_Test.class.getClassLoader();
 
@@ -41,19 +48,20 @@ public class InternalImageFactory_Test extends TestCase {
 
   private InternalImageFactory internalImageFactory;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
     internalImageFactory = new InternalImageFactory();
   }
 
-  @Override
-  protected void tearDown() {
+  @After
+  public void tearDown() {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
   }
 
+  @Test
   public void testRegisterResource() throws IOException {
     InputStream inputStream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
     String name = "testName";
@@ -63,6 +71,7 @@ public class InternalImageFactory_Test extends TestCase {
     assertTrue( RWT.getResourceManager().isRegistered( name ) );
   }
 
+  @Test
   public void testReadImageData() throws IOException {
     InputStream inputStream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
     ImageData data = InternalImageFactory.readImageData( new BufferedInputStream( inputStream ) );
@@ -72,11 +81,13 @@ public class InternalImageFactory_Test extends TestCase {
     assertEquals( 50, data.height );
   }
 
+  @Test
   public void testImageWithUndefinedType() {
     // imageData without type field should not throw SWT exception
     assertNotNull( InternalImageFactory.createInputStream( createImageDataWithoutType() ) );
   }
 
+  @Test
   public void testInternalImagesFromInputStreamAreCached() throws IOException {
     InputStream stream1 = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
     InternalImage internalImage1 = internalImageFactory.findInternalImage( stream1 );
@@ -89,6 +100,7 @@ public class InternalImageFactory_Test extends TestCase {
     assertSame( internalImage1, internalImage2 );
   }
 
+  @Test
   public void testInternalImagesFromFilenameAreCached() throws IOException {
     File imageFile = new File( Fixture.TEMP_DIR, "test.gif" );
     Fixture.copyTestResource( Fixture.IMAGE1, imageFile );
@@ -100,6 +112,7 @@ public class InternalImageFactory_Test extends TestCase {
   }
 
   @SuppressWarnings("deprecation")
+  @Test
   public void testInternalImagesFromImageDataAreCached() {
     new Display();
     Fixture.useDefaultResourceManager();
@@ -113,6 +126,7 @@ public class InternalImageFactory_Test extends TestCase {
     assertSame( internalImage1, internalImage2 );
   }
 
+  @Test
   public void testInternalImagesDifferForDifferentPalettes() {
     PaletteData palette1 = new PaletteData( new RGB[] { new RGB( 23, 1, 7 ) } );
     PaletteData palette2 = new PaletteData( new RGB[] { new RGB( 3, 5, 42 ) } );
@@ -123,6 +137,7 @@ public class InternalImageFactory_Test extends TestCase {
     assertNotSame( internalImage1, internalImage2 );
   }
 
+  @Test
   public void testInternalImagesDifferForDifferentPalettes2() {
     PaletteData palette1 = new PaletteData( new RGB[] { new RGB( 1, 2, 3 ) } );
     PaletteData palette2 = new PaletteData( 1, 2, 3 );
@@ -134,6 +149,7 @@ public class InternalImageFactory_Test extends TestCase {
   }
 
   // Regression test for bug 326888
+  @Test
   public void testInternalImagesDifferForSimilarImageData() throws IOException {
     InputStream stream1 = CLASS_LOADER.getResourceAsStream( IMAGE_SAMPLE1 );
     InternalImage internalImage1 = internalImageFactory.findInternalImage( stream1 );
@@ -147,6 +163,7 @@ public class InternalImageFactory_Test extends TestCase {
   }
 
   // Regression test for bug 326888
+  @Test
   public void testInternalImagesDifferForDifferentColor() throws IOException {
     InputStream stream1 = CLASS_LOADER.getResourceAsStream( IMAGE_OK );
     InternalImage internalImage1 = internalImageFactory.findInternalImage( stream1 );
@@ -159,6 +176,7 @@ public class InternalImageFactory_Test extends TestCase {
     assertNotSame( internalImage1, internalImage2 );
   }
 
+  @Test
   public void testFindInternalImageWithPath() throws IOException {
     InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
     String key = "testkey";
@@ -171,6 +189,7 @@ public class InternalImageFactory_Test extends TestCase {
     assertSame( internalImage1, internalImage2 );
   }
 
+  @Test
   public void testImageExtension_PNG() throws IOException {
     InputStream stream = CLASS_LOADER.getResourceAsStream( IMAGE_OK );
     InternalImage internalImage = internalImageFactory.findInternalImage( stream );
@@ -179,6 +198,7 @@ public class InternalImageFactory_Test extends TestCase {
     assertTrue( internalImage.getResourceName().endsWith( ".png" ) );
   }
 
+  @Test
   public void testImageExtension_GIF() throws IOException {
     InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
     InternalImage internalImage = internalImageFactory.findInternalImage( stream );
@@ -187,6 +207,7 @@ public class InternalImageFactory_Test extends TestCase {
     assertTrue( internalImage.getResourceName().endsWith( ".gif" ) );
   }
 
+  @Test
   public void testImageExtension_UndefinedType() throws IOException {
     InputStream stream = InternalImageFactory.createInputStream( createImageDataWithoutType() );
 

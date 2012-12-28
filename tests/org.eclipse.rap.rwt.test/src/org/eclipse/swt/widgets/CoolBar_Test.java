@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -23,13 +28,30 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class CoolBar_Test extends TestCase {
+public class CoolBar_Test {
 
   private Display display;
   private Shell shell;
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testHierarchy() {
     CoolBar bar = new CoolBar( shell, SWT.NONE );
 
@@ -43,6 +65,7 @@ public class CoolBar_Test extends TestCase {
     assertSame( bar, item.getParent() );
   }
 
+  @Test
   public void testItems() {
     CoolBar bar = new CoolBar( shell, SWT.NONE );
     assertEquals( 0, bar.getItemCount() );
@@ -59,6 +82,7 @@ public class CoolBar_Test extends TestCase {
     assertEquals( -1, bar.indexOf( anotherItem ) );
   }
 
+  @Test
   public void testIndexOnCreation() {
     CoolBar coolBar = new CoolBar( shell, SWT.NONE );
     CoolItem coolItem = new CoolItem( coolBar, SWT.NONE );
@@ -69,6 +93,7 @@ public class CoolBar_Test extends TestCase {
     assertSame( coolItem2, coolBar.getItem( 0 ) );
   }
 
+  @Test
   public void testStyle() {
     CoolBar bar = new CoolBar( shell, SWT.NONE );
     assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, bar.getStyle() );
@@ -95,6 +120,7 @@ public class CoolBar_Test extends TestCase {
     assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.FLAT | SWT.LEFT_TO_RIGHT, bar.getStyle() );
   }
 
+  @Test
   public void testIndexOf() {
     CoolBar bar = new CoolBar( shell, SWT.NONE );
     CoolItem item = new CoolItem( bar, SWT.NONE );
@@ -115,6 +141,7 @@ public class CoolBar_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDispose() {
     final java.util.List<Object> log = new ArrayList<Object>();
     DisposeListener disposeListener = new DisposeListener() {
@@ -130,25 +157,27 @@ public class CoolBar_Test extends TestCase {
     item2.addDisposeListener( disposeListener );
 
     item1.dispose();
-    assertEquals( true, item1.isDisposed() );
+    assertTrue( item1.isDisposed() );
     assertEquals( 1, bar.getItemCount() );
 
     bar.dispose();
-    assertEquals( true, bar.isDisposed() );
-    assertEquals( true, item2.isDisposed() );
+    assertTrue( bar.isDisposed() );
+    assertTrue( item2.isDisposed() );
 
     assertSame( item1, log.get( 0 ) );
     assertSame( item2, log.get( 1 ) );
     assertSame( bar, log.get( 2 ) );
   }
 
+  @Test
   public void testLocked() {
     CoolBar bar = new CoolBar( shell, SWT.NONE );
-    assertEquals( false, bar.getLocked() );
+    assertFalse( bar.getLocked() );
     bar.setLocked( true );
-    assertEquals( true, bar.getLocked() );
+    assertTrue( bar.getLocked() );
   }
 
+  @Test
   public void testItemOrder() {
     CoolBar bar = new CoolBar( shell, SWT.NONE );
     new CoolItem( bar, SWT.NONE );
@@ -170,21 +199,21 @@ public class CoolBar_Test extends TestCase {
       fail( "setItemOrder must not allow null-argument" );
     } catch( IllegalArgumentException e ) {
       // Ensure that nothing that itemOrder hasn't changed
-      assertEquals( expectedItemOrder, bar.getItemOrder() );
+      assertArrayEquals( expectedItemOrder, bar.getItemOrder() );
     }
     try {
       bar.setItemOrder( new int[] { 0, 5 } );
       fail( "setItemOrder must not allow argument with indics out of range" );
     } catch( IllegalArgumentException e ) {
       // Ensure that nothing that itemOrder hasn't changed
-      assertEquals( expectedItemOrder, bar.getItemOrder() );
+      assertArrayEquals( expectedItemOrder, bar.getItemOrder() );
     }
     try {
       bar.setItemOrder( new int[] { 0, 0 } );
       fail( "setItemOrder must not allow argument with duplicate indices" );
     } catch( IllegalArgumentException e ) {
       // Ensure that nothing that itemOrder hasn't changed
-      assertEquals( expectedItemOrder, bar.getItemOrder() );
+      assertArrayEquals( expectedItemOrder, bar.getItemOrder() );
     }
     try {
       bar.setItemOrder( new int[] { 1 } );
@@ -194,10 +223,11 @@ public class CoolBar_Test extends TestCase {
       fail( msg );
     } catch( IllegalArgumentException e ) {
       // Ensure that nothing that itemOrder hasn't changed
-      assertEquals( expectedItemOrder, bar.getItemOrder() );
+      assertArrayEquals( expectedItemOrder, bar.getItemOrder() );
     }
   }
 
+  @Test
   public void testComputeSize() {
     CoolBar coolBar = new CoolBar( shell, SWT.HORIZONTAL );
     Point expected = new Point( 0, 0 );
@@ -221,6 +251,7 @@ public class CoolBar_Test extends TestCase {
     assertEquals( expected, coolBar.computeSize( 100, 100 ) );
   }
 
+  @Test
   public void testDisposeWithFontDisposeInDisposeListener() {
     CoolBar coolBar = new CoolBar( shell, SWT.NONE );
     new CoolItem( coolBar, SWT.NONE );
@@ -234,25 +265,15 @@ public class CoolBar_Test extends TestCase {
     } );
     coolBar.dispose();
   }
-  
+
+  @Test
   public void testIsSerializable() throws Exception {
     CoolBar coolBar = new CoolBar( shell, SWT.NONE );
     new CoolItem( coolBar, SWT.NONE );
-    
+
     CoolBar deserializedCoolBar = Fixture.serializeAndDeserialize( coolBar );
-    
+
     assertEquals( 1, deserializedCoolBar.getItemCount() );
-  }
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display = new Display();
-    shell = new Shell( display );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 
   private static CoolItem createItem( CoolBar coolBar ) {
@@ -270,10 +291,4 @@ public class CoolBar_Test extends TestCase {
     return item;
   }
 
-  private static void assertEquals( int[] expected, int[] actual ) {
-    assertEquals( expected.length, actual.length );
-    for( int i = 0; i < expected.length; i++ ) {
-      assertEquals( expected[ i ], actual[ i ] );
-    }
-  }
 }

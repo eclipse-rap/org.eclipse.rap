@@ -1,21 +1,29 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
 
 
-public class QxBorder_Test extends TestCase {
+public class QxBorder_Test {
 
+  @Test
   public void testIllegalArguments() {
     try {
       QxBorder.valueOf( null );
@@ -49,6 +57,7 @@ public class QxBorder_Test extends TestCase {
     }
   }
 
+  @Test
   public void testNone() {
     assertSame( QxBorder.NONE, QxBorder.valueOf( "none" ) );
     assertEquals( 0, QxBorder.NONE.width );
@@ -56,6 +65,7 @@ public class QxBorder_Test extends TestCase {
     assertNull( QxBorder.NONE.color );
   }
 
+  @Test
   public void testDefaults() {
     QxBorder border1 = QxBorder.valueOf( "1px" );
     assertEquals( 1, border1.width );
@@ -82,6 +92,7 @@ public class QxBorder_Test extends TestCase {
     assertEquals( null, ridge.color );
   }
 
+  @Test
   public void testDefaultString() {
     QxBorder red = QxBorder.valueOf( "red" );
     assertEquals( "1px solid red", red.toDefaultString() );
@@ -91,6 +102,7 @@ public class QxBorder_Test extends TestCase {
     assertEquals( "1px dashed #ff0000", border2.toDefaultString() );
   }
 
+  @Test
   public void testEquals() {
     QxBorder border1 = QxBorder.create( 0, null, null );
     QxBorder border2 = QxBorder.create( 1, null, null );
@@ -99,4 +111,5 @@ public class QxBorder_Test extends TestCase {
     assertNull( border1.color );
     assertFalse( border1.equals( border2 ) );
   }
+
 }

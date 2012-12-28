@@ -1,23 +1,39 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class FontMetrics_Test extends TestCase {
-  
+public class FontMetrics_Test {
+
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testGetHeight() {
     Display display = new Display();
     GC gc = new GC( display );
@@ -29,7 +45,8 @@ public class FontMetrics_Test extends TestCase {
     int height30 = fontMetrics30.getHeight();
     assertTrue( height30 > height10 );
   }
-  
+
+  @Test
   public void testEquals() {
     Display display = new Display();
     GC gc = new GC( display );
@@ -41,12 +58,5 @@ public class FontMetrics_Test extends TestCase {
     FontMetrics differentFontMetrics = gc.getFontMetrics();
     assertFalse( differentFontMetrics.equals( fontMetrics ) );
   }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

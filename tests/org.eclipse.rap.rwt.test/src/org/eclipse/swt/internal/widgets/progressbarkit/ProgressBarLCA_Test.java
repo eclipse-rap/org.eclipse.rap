@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.progressbarkit;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -25,15 +27,19 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ProgressBarLCA_Test extends TestCase {
+public class ProgressBarLCA_Test {
 
   private Shell shell;
   private Display display;
   private ProgressBarLCA lca;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -41,10 +47,12 @@ public class ProgressBarLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( progressBar );
@@ -55,6 +63,7 @@ public class ProgressBarLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( progressBar );
   }
 
+  @Test
   public void testPreserveValues() {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     Fixture.preserveWidgets();
@@ -63,6 +72,7 @@ public class ProgressBarLCA_Test extends TestCase {
     assertNull( preserved );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
 
@@ -73,6 +83,7 @@ public class ProgressBarLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.ProgressBar", operation.getType() );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
 
@@ -83,6 +94,7 @@ public class ProgressBarLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( progressBar.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderCreateWithVerticalAndIndeterminate() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.VERTICAL | SWT.INDETERMINATE );
 
@@ -95,6 +107,7 @@ public class ProgressBarLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "INDETERMINATE" ) );
   }
 
+  @Test
   public void testRenderInitialMinimum() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
 
@@ -105,6 +118,7 @@ public class ProgressBarLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "minimum" ) == -1 );
   }
 
+  @Test
   public void testRenderMinimum() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
 
@@ -115,6 +129,7 @@ public class ProgressBarLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( progressBar, "minimum" ) );
   }
 
+  @Test
   public void testRenderMinimumUnchanged() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     Fixture.markInitialized( display );
@@ -128,6 +143,7 @@ public class ProgressBarLCA_Test extends TestCase {
     assertNull( message.findSetOperation( progressBar, "minimum" ) );
   }
 
+  @Test
   public void testRenderInitialMaxmum() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
 
@@ -138,6 +154,7 @@ public class ProgressBarLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "maximum" ) == -1 );
   }
 
+  @Test
   public void testRenderMaxmum() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
 
@@ -148,6 +165,7 @@ public class ProgressBarLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( progressBar, "maximum" ) );
   }
 
+  @Test
   public void testRenderMaxmumUnchanged() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     Fixture.markInitialized( display );
@@ -161,6 +179,7 @@ public class ProgressBarLCA_Test extends TestCase {
     assertNull( message.findSetOperation( progressBar, "maximum" ) );
   }
 
+  @Test
   public void testRenderInitialSelection() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
 
@@ -171,6 +190,7 @@ public class ProgressBarLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
   }
 
+  @Test
   public void testRenderSelection() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
 
@@ -181,6 +201,7 @@ public class ProgressBarLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( progressBar, "selection" ) );
   }
 
+  @Test
   public void testRenderSelectionUnchanged() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     Fixture.markInitialized( display );
@@ -194,6 +215,7 @@ public class ProgressBarLCA_Test extends TestCase {
     assertNull( message.findSetOperation( progressBar, "selection" ) );
   }
 
+  @Test
   public void testRenderInitialState() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
 
@@ -204,6 +226,7 @@ public class ProgressBarLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "state" ) == -1 );
   }
 
+  @Test
   public void testRenderState() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
 
@@ -214,6 +237,7 @@ public class ProgressBarLCA_Test extends TestCase {
     assertEquals( "error", message.findSetProperty( progressBar, "state" ) );
   }
 
+  @Test
   public void testRenderStateUnchanged() throws IOException {
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     Fixture.markInitialized( display );

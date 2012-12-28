@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -26,23 +24,27 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ReadDispose_Test extends TestCase {
+public class ReadDispose_Test {
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
   // see bug 195735: Widget disposal causes NullPointerException
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=195735
+  @Test
   public void testWidgetDisposal() throws Exception {
     // Run requests to initialize the 'system'
     Fixture.fakeNewRequest();

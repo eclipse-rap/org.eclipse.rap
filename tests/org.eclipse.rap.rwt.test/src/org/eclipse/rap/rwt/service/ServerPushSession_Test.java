@@ -10,31 +10,36 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.service;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.service.ServerPushSession;
-import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ServerPushSession_Test extends TestCase {
+public class ServerPushSession_Test {
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     new Display();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testCreate_failsFromBackgroundThread() throws Throwable {
     try {
       Fixture.runInThread( new Runnable() {
@@ -48,6 +53,7 @@ public class ServerPushSession_Test extends TestCase {
     }
   }
 
+  @Test
   public void testStart_failsFromBackgroundThread() throws Throwable {
     final ServerPushSession pushSession = new ServerPushSession();
 
@@ -63,6 +69,7 @@ public class ServerPushSession_Test extends TestCase {
     }
   }
 
+  @Test
   public void testStart_failsFromBackgroundThreadWithContext() throws Throwable {
     final UISession uiSession = ContextProvider.getUISession();
     final ServerPushSession pushSession = new ServerPushSession();
@@ -83,6 +90,7 @@ public class ServerPushSession_Test extends TestCase {
     }
   }
 
+  @Test
   public void testStart_failsFromAnotherUIThread() throws Throwable {
     final ServerPushSession pushSession = new ServerPushSession();
 
@@ -101,12 +109,14 @@ public class ServerPushSession_Test extends TestCase {
     }
   }
 
+  @Test
   public void testStart_succeedsFromUIThread() {
     new ServerPushSession().start();
 
     assertTrue( ServerPushManager.getInstance().isServerPushActive() );
   }
 
+  @Test
   public void testStart_canBeCalledTwice() {
     ServerPushSession pushSession = new ServerPushSession();
     pushSession.start();
@@ -115,6 +125,7 @@ public class ServerPushSession_Test extends TestCase {
     assertTrue( ServerPushManager.getInstance().isServerPushActive() );
   }
 
+  @Test
   public void testStart_isReentrant() {
     ServerPushSession pushSession = new ServerPushSession();
     pushSession.start();
@@ -124,6 +135,7 @@ public class ServerPushSession_Test extends TestCase {
     assertFalse( ServerPushManager.getInstance().isServerPushActive() );
   }
 
+  @Test
   public void testStop_succeedsFromBackgroundThread() throws Throwable {
     final ServerPushSession pushSession = new ServerPushSession();
     pushSession.start();
@@ -137,6 +149,7 @@ public class ServerPushSession_Test extends TestCase {
     assertFalse( ServerPushManager.getInstance().isServerPushActive() );
   }
 
+  @Test
   public void testStop_succeedsFromBackgroundThreadWithContext() throws Throwable {
     final UISession uiSession = ContextProvider.getUISession();
     final ServerPushSession pushSession = new ServerPushSession();
@@ -155,6 +168,7 @@ public class ServerPushSession_Test extends TestCase {
     assertFalse( ServerPushManager.getInstance().isServerPushActive() );
   }
 
+  @Test
   public void testStop_succeedsFromUIThread() {
     ServerPushSession pushSession = new ServerPushSession();
     pushSession.start();
@@ -163,11 +177,13 @@ public class ServerPushSession_Test extends TestCase {
     assertFalse( ServerPushManager.getInstance().isServerPushActive() );
   }
 
+  @Test
   public void testStop_doesNothingIfNotStarted() {
     ServerPushSession pushSession = new ServerPushSession();
     pushSession.stop();
   }
 
+  @Test
   public void testStop_canBeCalledTwice() {
     ServerPushSession pushSession = new ServerPushSession();
     pushSession.start();
@@ -177,6 +193,7 @@ public class ServerPushSession_Test extends TestCase {
     assertFalse( ServerPushManager.getInstance().isServerPushActive() );
   }
 
+  @Test
   public void testAllowsRestart() {
     ServerPushSession pushSession = new ServerPushSession();
     pushSession.start();

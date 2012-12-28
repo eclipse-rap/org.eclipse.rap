@@ -11,11 +11,16 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -31,25 +36,31 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ITableItemAdapter;
 import org.eclipse.swt.layout.FillLayout;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 @SuppressWarnings("deprecation")
-public class TableItem_Test extends TestCase {
+public class TableItem_Test {
 
   private Display display;
   private Shell shell;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testConstructor() {
     Table table = new Table( shell, SWT.NONE );
 
@@ -59,6 +70,7 @@ public class TableItem_Test extends TestCase {
     assertSame( item1, table.getItem( 0 ) );
   }
 
+  @Test
   public void testConstructorThatInsertsItem() {
     Table table = new Table( shell, SWT.NONE );
     new TableItem( table, SWT.NONE );
@@ -69,6 +81,7 @@ public class TableItem_Test extends TestCase {
     assertSame( item0, table.getItem( 0 ) );
   }
 
+  @Test
   public void testConstructorWithNegativeIndex() {
     Table table = new Table( shell, SWT.NONE );
     try {
@@ -78,6 +91,7 @@ public class TableItem_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConstructorWithTooHighIndex() {
     Table table = new Table( shell, SWT.NONE );
     try {
@@ -87,6 +101,7 @@ public class TableItem_Test extends TestCase {
     }
   }
 
+  @Test
   public void testConstructorWithNullParent() {
     try {
       new TableItem( null, SWT.NONE );
@@ -95,12 +110,14 @@ public class TableItem_Test extends TestCase {
     }
   }
 
+  @Test
   public void testParent() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     assertSame( table, item.getParent() );
   }
 
+  @Test
   public void testBounds() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -143,6 +160,7 @@ public class TableItem_Test extends TestCase {
     assertTrue( bounds.y >= table.getHeaderHeight() );
   }
 
+  @Test
   public void testBoundsWithScroll() {
     final int tableWidth = 100;
     final int tableHeight = 100;
@@ -171,6 +189,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( column0Bounds.x, table.getItem( 0 ).getBounds( 1 ).x );
   }
 
+  @Test
   public void testItemLeftWithFixedColumns() {
     Table table = createFixedColumnsTable();
     table.setSize( 100, 200 );
@@ -187,6 +206,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( 30, item.getBounds( 1 ).x );
   }
 
+  @Test
   public void testItemLeftWithFixedColumnsSwitchOrder() {
     Table table = createFixedColumnsTable();
     table.setSize( 100, 200 );
@@ -204,6 +224,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( 30, item.getBounds( 0 ).x );
   }
 
+  @Test
   public void testTextBounds() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -219,6 +240,7 @@ public class TableItem_Test extends TestCase {
     assertTrue( textBounds1.x + textBounds1.width <= textBounds2.x );
   }
 
+  @Test
   public void testTextLeftWithFixedColumns() {
     Table table = createFixedColumnsTable();
     table.setSize( 100, 200 );
@@ -237,6 +259,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( 33, item.getTextBounds( 1 ).x );
   }
 
+  @Test
   public void testTextBoundsWithInvalidIndex() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -248,6 +271,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getTextBounds( 123 ) );
   }
 
+  @Test
   public void testTextBoundsWithImageAndColumns() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -261,6 +285,7 @@ public class TableItem_Test extends TestCase {
     assertTrue( item.getTextBounds( 0 ).x < image.getBounds().width );
   }
 
+  @Test
   public void testTextBoundsWithChangedFont() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -274,6 +299,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( origBounds, actualBounds );
   }
 
+  @Test
   public void testTextBoundsWithChangedTableFont() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -286,6 +312,7 @@ public class TableItem_Test extends TestCase {
     assertTrue( actualBounds.width > origBounds.width );
   }
 
+  @Test
   public void testTextBoundsWithCheckboxTable() {
     Table table = new Table( shell, SWT.CHECK );
     TableColumn column = new TableColumn( table, SWT.LEFT );
@@ -297,6 +324,7 @@ public class TableItem_Test extends TestCase {
     assertTrue( textBounds.width < 85 );
   }
 
+  @Test
   public void testTextBoundsWithScroll() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -312,6 +340,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( column0TextBounds.x, item.getTextBounds( 1 ).x );
   }
 
+  @Test
   public void testTextBoundsWithChangedText() {
     String itemText = "text";
     Table table = new Table( shell, SWT.NONE );
@@ -325,6 +354,7 @@ public class TableItem_Test extends TestCase {
     assertTrue( shortWidth < longWidth );
   }
 
+  @Test
   public void testTextBoundsWithEmptyText() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -336,6 +366,7 @@ public class TableItem_Test extends TestCase {
     assertTrue( textBounds.height > 0 );
   }
 
+  @Test
   public void testImageBoundsWithoutColumns() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -365,6 +396,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( 100, bounds.width );
   }
 
+  @Test
   public void testImageBoundsWithColumns() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -405,6 +437,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( 0, bounds.width );
   }
 
+  @Test
   public void testImageBoundsWithScroll() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -420,6 +453,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( column0ImageBounds.x, item.getImageBounds( 1 ).x );
   }
 
+  @Test
   public void testImageLeftWithFixedColumns() {
     Table table = createFixedColumnsTable();
     table.setSize( 100, 200 );
@@ -437,6 +471,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( 33, item.getImageBounds( 1 ).x );
   }
 
+  @Test
   public void testBoundsWithCheckedTable() {
     // without columns
     Table table = new Table( shell, SWT.CHECK );
@@ -460,6 +495,7 @@ public class TableItem_Test extends TestCase {
     assertTrue( item.getBounds( 1 ).x >= getCheckWidth( table ) );
   }
 
+  @Test
   public void testBoundsWidthReorderedColumns() {
     Table table = new Table( shell, SWT.NONE );
     TableColumn column0 = new TableColumn( table, SWT.NONE );
@@ -477,6 +513,7 @@ public class TableItem_Test extends TestCase {
                   item.getBounds( table.indexOf( column1 ) ).width );
   }
 
+  @Test
   public void testInvalidBounds() {
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -487,6 +524,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getBounds( 1 ) );
   }
 
+  @Test
   public void testText() {
     Table table = new Table( shell, SWT.NONE );
 
@@ -517,6 +555,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( "", item.getText() );
   }
 
+  @Test
   public void testImage() throws IOException {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     Table table = new Table( shell, SWT.NONE );
@@ -554,6 +593,7 @@ public class TableItem_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetImage() throws IOException {
     Table table = new Table( shell, SWT.CHECK );
     TableItem tableItem = new TableItem( table, 0 );
@@ -614,45 +654,49 @@ public class TableItem_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCheckedAndGrayedWithSimpleTable() {
     // Ensure that checked and grayed only work with SWT.CHECK
     Table simpleTable = new Table( shell, SWT.NONE );
     TableItem simpleItem = new TableItem( simpleTable, SWT.NONE );
     assertTrue( ( simpleTable.getStyle() & SWT.CHECK ) == 0 );
-    assertEquals( false, simpleItem.getChecked() );
-    assertEquals( false, simpleItem.getGrayed() );
+    assertFalse( simpleItem.getChecked() );
+    assertFalse( simpleItem.getGrayed() );
     simpleItem.setChecked( true );
-    assertEquals( false, simpleItem.getChecked() );
+    assertFalse( simpleItem.getChecked() );
     simpleItem.setGrayed( true );
-    assertEquals( false, simpleItem.getGrayed() );
+    assertFalse( simpleItem.getGrayed() );
   }
 
+  @Test
   public void testCheckedAndGrayedWithCheckTable() {
     Table checkedTable = new Table( shell, SWT.CHECK );
     TableItem checkedItem = new TableItem( checkedTable, SWT.NONE );
-    assertEquals( false, checkedItem.getChecked() );
-    assertEquals( false, checkedItem.getGrayed() );
+    assertFalse( checkedItem.getChecked() );
+    assertFalse( checkedItem.getGrayed() );
     checkedItem.setChecked( true );
-    assertEquals( true, checkedItem.getChecked() );
+    assertTrue( checkedItem.getChecked() );
     checkedItem.setGrayed( true );
-    assertEquals( true, checkedItem.getGrayed() );
+    assertTrue( checkedItem.getGrayed() );
   }
 
+  @Test
   public void testClearVirtual() {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 100, 20 );
     table.setItemCount( 101 );
 
     TableItem item = table.getItem( 100 );
-    assertEquals( false, item.cached );
+    assertFalse( item.cached );
 
     item.getText();
-    assertEquals( true, item.cached );
+    assertTrue( item.cached );
 
     table.clear( 100 );
-    assertEquals( false, item.cached );
+    assertFalse( item.cached );
   }
 
+  @Test
   public void testFont() {
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -684,6 +728,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( table.getFont(), item.getFont() );
   }
 
+  @Test
   public void testBackground() {
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -715,6 +760,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( table.getBackground(), item.getBackground() );
   }
 
+  @Test
   public void testForeground() {
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -751,6 +797,7 @@ public class TableItem_Test extends TestCase {
    * a SetData event.
    * This may lead to items e.g. without proper text as no SetData event gets
    * fired when the item becomes visible. SWT (on Windows) behaves the same. */
+  @Test
   public void testSetterWithVirtual() {
     // set up virtual table with unresolved items
     final java.util.List<Event> eventLog = new ArrayList<Event>();
@@ -775,6 +822,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( 0, eventLog.size() );
   }
 
+  @Test
   public void testDisposeVirtual() {
     shell.setLayout( new FillLayout() );
     shell.setSize( 100, 100 );
@@ -796,6 +844,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( 0, table.getItemCount() );
   }
 
+  @Test
   public void testSetItemCountDisposeOrder() {
     final java.util.List<Object> log = new ArrayList<Object>();
     Table table = new Table( shell, SWT.NONE );
@@ -820,6 +869,7 @@ public class TableItem_Test extends TestCase {
   /////////////////////////
   // TableItemAdapter Tests
 
+  @Test
   public void testGetBackground() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -845,6 +895,7 @@ public class TableItem_Test extends TestCase {
     assertSame( cellColor, backgrounds[ 0 ] );
   }
 
+  @Test
   public void testGetForegrounds() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -870,6 +921,7 @@ public class TableItem_Test extends TestCase {
     assertSame( cellColor, foregrounds[ 0 ] );
   }
 
+  @Test
   public void testGetFont() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -895,6 +947,7 @@ public class TableItem_Test extends TestCase {
     assertSame( cellFont, fonts[ 0 ] );
   }
 
+  @Test
   public void testSetBackground() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -905,6 +958,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( table.getBackground(), tableItem.getBackground() );
   }
 
+  @Test
   public void testSetBackgroundWithDisposedColor() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -917,6 +971,7 @@ public class TableItem_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetBackgroundI() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -927,6 +982,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( table.getBackground(), tableItem.getBackground() );
   }
 
+  @Test
   public void testSetBackgroundIWidthDisposedColor() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -939,6 +995,7 @@ public class TableItem_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetFont() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -953,6 +1010,7 @@ public class TableItem_Test extends TestCase {
     assertSame( tableFont, tableItem.getFont() );
   }
 
+  @Test
   public void testSetFontWithDisposedFont() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -965,6 +1023,7 @@ public class TableItem_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetFontI() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -979,6 +1038,7 @@ public class TableItem_Test extends TestCase {
     assertSame( tableFont, tableItem.getFont() );
   }
 
+  @Test
   public void testFontFontIWithDisposedFont() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -991,6 +1051,7 @@ public class TableItem_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetForeground() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -1001,6 +1062,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( table.getForeground(), tableItem.getForeground() );
   }
 
+  @Test
   public void testSetForegroundWithDisposedColor() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -1013,6 +1075,7 @@ public class TableItem_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetForegroundI() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -1023,6 +1086,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( table.getForeground(), tableItem.getForeground() );
   }
 
+  @Test
   public void testSetForegroundIWithDisposedColor() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -1035,6 +1099,7 @@ public class TableItem_Test extends TestCase {
     }
   }
 
+  @Test
   public void testInsertColumn_ShiftData_Text() {
     Table table = new Table( shell, SWT.BORDER );
     for( int i = 0; i < 3; i++ ) {
@@ -1051,6 +1116,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( "cell2", item.getText( 3 ) );
   }
 
+  @Test
   public void testInsertColumn_ShiftData_Image() {
     Table table = new Table( shell, SWT.BORDER );
     for( int i = 0; i < 3; i++ ) {
@@ -1068,6 +1134,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( image, item.getImage( 3 ) );
   }
 
+  @Test
   public void testInsertColumn_ShiftData_Font() {
     Table table = new Table( shell, SWT.BORDER );
     for( int i = 0; i < 3; i++ ) {
@@ -1085,6 +1152,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( 22, item.getFont( 3 ).getFontData()[ 0 ].getHeight() );
   }
 
+  @Test
   public void testInsertColumn_ShiftData_Foreground() {
     Table table = new Table( shell, SWT.BORDER );
     for( int i = 0; i < 3; i++ ) {
@@ -1102,6 +1170,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( 22, item.getForeground( 3 ).getRed() );
   }
 
+  @Test
   public void testInsertColumn_ShiftData_Background() {
     Table table = new Table( shell, SWT.BORDER );
     for( int i = 0; i < 3; i++ ) {
@@ -1119,6 +1188,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( 22, item.getBackground( 3 ).getRed() );
   }
 
+  @Test
   public void testInsertColumn_NoShiftData() {
     Table table = new Table( shell, SWT.BORDER );
     for( int i = 0; i < 3; i++ ) {
@@ -1135,6 +1205,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( "", item.getText( 3 ) );
   }
 
+  @Test
   public void testInsertColumn_NoShiftData2() {
     Table table = new Table( shell, SWT.BORDER );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -1143,6 +1214,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( "cell0", item.getText( 0 ) );
   }
 
+  @Test
   public void testMarkCachedOnSetChecked() {
     Table table = new Table( shell, SWT.VIRTUAL | SWT.CHECK );
     table.setItemCount( 1 );
@@ -1153,6 +1225,7 @@ public class TableItem_Test extends TestCase {
     assertFalse( adapter.isItemVirtual( 0 ) );
   }
 
+  @Test
   public void testMarkCachedOnSetGrayed() {
     Table table = new Table( shell, SWT.VIRTUAL | SWT.CHECK );
     table.setItemCount( 1 );
@@ -1163,6 +1236,7 @@ public class TableItem_Test extends TestCase {
     assertFalse( adapter.isItemVirtual( 0 ) );
   }
 
+  @Test
   public void testIsSerializable() throws Exception {
     String itemText = "text";
     Table table = new Table( shell, SWT.VIRTUAL | SWT.CHECK );
@@ -1174,6 +1248,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( itemText, deserializedItem.getText() );
   }
 
+  @Test
   public void testVirtualGetBoundsMaterializeItems() {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.addListener( SWT.SetData, new Listener() {

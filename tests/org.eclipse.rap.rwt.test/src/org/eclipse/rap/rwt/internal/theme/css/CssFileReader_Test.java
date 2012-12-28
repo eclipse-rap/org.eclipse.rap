@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,16 +11,19 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme.css;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.w3c.css.sac.CSSException;
 
 
-public class CssFileReader_Test extends TestCase {
+public class CssFileReader_Test {
 
   private static final String PACKAGE = "resources/theme/";
 
@@ -28,10 +31,11 @@ public class CssFileReader_Test extends TestCase {
 
   private static final String TEST_INVALID_CSS = "TestInvalidProps.css";
 
+  @Test
   public void testSyntax() throws Exception {
     InputStream inStream = getInputStream( TEST_SYNTAX_CSS );
     assertNotNull( inStream );
-    
+
     // capture stderr
     ByteArrayOutputStream stderr = new ByteArrayOutputStream();
     System.setErr( new PrintStream( stderr ) );
@@ -56,6 +60,7 @@ public class CssFileReader_Test extends TestCase {
     assertTrue( containsProblem( problems, "page rules not supported" ) );
   }
 
+  @Test
   public void testInvalidProperties() throws Exception {
     InputStream inStream = getInputStream( TEST_INVALID_CSS );
     assertNotNull( inStream );
@@ -102,4 +107,5 @@ public class CssFileReader_Test extends TestCase {
     }
     return result ;
   }
+
 }

@@ -12,6 +12,8 @@
 package org.eclipse.swt.internal.events;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -21,8 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -36,27 +36,31 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-public class ActivateEvent_Test extends TestCase {
+public class ActivateEvent_Test {
 
   private Display display;
   private Shell shell;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display, SWT.NONE );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testListenerOnControl() {
     final Widget[] activated = new Widget[ 10 ];
     final int[] activatedCount = { 0 };
@@ -84,6 +88,7 @@ public class ActivateEvent_Test extends TestCase {
     assertSame( label, activated[ 0 ] );
   }
 
+  @Test
   public void testListenerOnComposite() {
     final Widget[] activated = new Widget[ 10 ];
     final int[] activatedCount = { 0 };
@@ -128,6 +133,7 @@ public class ActivateEvent_Test extends TestCase {
     assertSame( otherComposite, deactivated[ 1 ] );
   }
 
+  @Test
   public void testActivateOnFocus() {
     // This label gets implicitly focused (and thus activated) on Shell#open()
     new Label( shell, SWT.NONE );
@@ -148,6 +154,7 @@ public class ActivateEvent_Test extends TestCase {
     assertEquals( labelToActivate, captor.getValue().widget );
   }
 
+  @Test
   public void testUntypedListener() {
     final List<Event> log = new ArrayList<Event>();
     Listener listener = new Listener() {

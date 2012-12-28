@@ -13,14 +13,18 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.LinkedList;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
@@ -52,13 +56,16 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 /*
  * Tests in here are separated from RWTLifeCycle_Test because they need
  * different setUp/tearDown implementations.
  */
-public class RWTLifeCycle2_Test extends TestCase {
+public class RWTLifeCycle2_Test {
   private static final String TEST_SESSION_ATTRIBUTE = "testSessionAttr";
   private static final String EXCEPTION_MSG = "Error in readAndDispatch";
 
@@ -71,8 +78,8 @@ public class RWTLifeCycle2_Test extends TestCase {
 
   private HttpSession session;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
 
@@ -84,13 +91,14 @@ public class RWTLifeCycle2_Test extends TestCase {
     registerTestLogger();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     session = null;
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
   }
 
+  @Test
   public void testSessionRestartAfterExceptionInUIThread() throws Exception {
     Class<? extends EntryPoint> entryPoint = ExceptionInReadAndDispatchEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
@@ -130,6 +138,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertTrue( eventLog.get( 0 ) instanceof Event );
   }
 
+  @Test
   public void testSessionRestartAfterExceptionInInitialRequest() throws Exception {
     Class<? extends EntryPoint> entryPoint = ExceptionInCreateUIEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
@@ -154,6 +163,7 @@ public class RWTLifeCycle2_Test extends TestCase {
    * 353053: ContextUtil doesn't support getProperty on Request proxy
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=353053
    */
+  @Test
   public void testSessionRestartWithStringMeasurementInDisplayDispose() throws Exception {
     Class<? extends EntryPoint> entryPoint = StringMeasurementInDisplayDisposeEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
@@ -165,6 +175,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertEquals( 0, eventLog.size() );
   }
 
+  @Test
   public void testEventProcessingOnSessionRestart() throws Exception {
     Class<? extends EntryPoint> entryPoint = EventProcessingOnSessionRestartEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
@@ -184,6 +195,7 @@ public class RWTLifeCycle2_Test extends TestCase {
    *             context has been disposed)
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=225167
    */
+  @Test
   public void testSessionInvalidateWithDisposeInFinally() throws Exception {
     Class<? extends EntryPoint> clazz = TestSessionInvalidateWithDisposeInFinallyEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", clazz, null );
@@ -202,6 +214,7 @@ public class RWTLifeCycle2_Test extends TestCase {
    * 354368: Occasional exception on refresh (F5)
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=354368
    */
+  @Test
   public void testClearUISessionOnSessionRestart() throws Exception {
     RWTFactory.getEntryPointManager().register( "/test", TestEntryPoint.class, null );
     // send initial request - response creates UI
@@ -220,6 +233,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     // ensures that no exceptions has been thrown
   }
 
+  @Test
   public void testGetRequestDoesNotClearUISession() throws Exception {
     Class<? extends EntryPoint> entryPoint = TestEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
@@ -235,6 +249,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertEquals( Boolean.TRUE, ContextProvider.getUISession().getAttribute( "dummy" ) );
   }
 
+  @Test
   public void testGetRequestAlwaysReturnsHtml() throws Exception {
     Class<? extends EntryPoint> entryPoint = TestEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
@@ -249,6 +264,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertEquals( "text/html; charset=UTF-8", response.getContentType() );
   }
 
+  @Test
   public void testPostRequestReturnsJsonAfterSessionTimeout() throws Exception {
     Class<? extends EntryPoint> entryPoint = TestEntryPoint.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
@@ -268,6 +284,7 @@ public class RWTLifeCycle2_Test extends TestCase {
    * listener beforeDestroy method.
    * see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=372946
    */
+  @Test
   public void testGetLockOnUISession() throws Exception {
     Class<? extends EntryPoint> entryPoint = EntryPointWithSynchronizationOnUISession.class;
     RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );

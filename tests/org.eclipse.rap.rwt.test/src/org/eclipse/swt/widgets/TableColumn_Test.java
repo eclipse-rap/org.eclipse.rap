@@ -11,11 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -28,17 +32,20 @@ import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class TableColumn_Test extends TestCase {
+public class TableColumn_Test {
 
   private Display display;
   private Shell shell;
   private Table table;
   private TableColumn column;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
@@ -47,11 +54,12 @@ public class TableColumn_Test extends TestCase {
     column = new TableColumn( table, SWT.NONE );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testCreation() {
     assertEquals( 1, table.getColumnCount() );
     assertSame( column, table.getColumn( 0 ) );
@@ -67,6 +75,7 @@ public class TableColumn_Test extends TestCase {
     }
   }
 
+  @Test
   public void testParent() {
     // Test creating column with valid parent
     assertSame( table, column.getParent() );
@@ -79,10 +88,12 @@ public class TableColumn_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDisplay() {
     assertSame( display, column.getDisplay() );
   }
 
+  @Test
   public void testStyle() {
     assertTrue( ( column.getStyle() & SWT.LEFT ) != 0 );
     column = new TableColumn( table, SWT.LEFT | SWT.RIGHT | SWT.CENTER );
@@ -91,16 +102,18 @@ public class TableColumn_Test extends TestCase {
     assertTrue( ( column.getStyle() & SWT.RIGHT ) != 0 );
   }
 
+  @Test
   public void testInitialValues() {
     assertEquals( 0, column.getWidth() );
     assertEquals( "", column.getText() );
     assertEquals( null, column.getToolTipText() );
     assertNull( column.getImage() );
-    assertEquals( true, column.getResizable() );
-    assertEquals( false, column.getMoveable() );
+    assertTrue( column.getResizable() );
+    assertFalse( column.getMoveable() );
     assertEquals( SWT.LEFT, column.getAlignment() );
   }
 
+  @Test
   public void testAlignment() {
     assertEquals( SWT.LEFT, column.getAlignment() );
     column = new TableColumn( table, SWT.LEFT );
@@ -116,10 +129,12 @@ public class TableColumn_Test extends TestCase {
     assertEquals( SWT.LEFT, column.getAlignment() );
   }
 
+  @Test
   public void testInitialWidth() {
     assertEquals( 0, column.getWidth() );
   }
 
+  @Test
   public void testWidth() {
     column.setWidth( 70 );
     assertEquals( 70, column.getWidth() );
@@ -127,6 +142,7 @@ public class TableColumn_Test extends TestCase {
     assertEquals( 0, column.getWidth() );
   }
 
+  @Test
   public void testWidthWithNegativeValue() {
     column.setWidth( 4711 );
     column.setWidth( -1 );
@@ -137,6 +153,7 @@ public class TableColumn_Test extends TestCase {
     assertEquals( 4711, column.getWidth() );
   }
 
+  @Test
   public void testPack() {
     final java.util.List<Widget> log = new ArrayList<Widget>();
     ControlAdapter resizeListener = new ControlAdapter() {
@@ -187,6 +204,7 @@ public class TableColumn_Test extends TestCase {
     assertTrue( column.getWidth() >= item.getBounds().width );
   }
 
+  @Test
   public void testGetPreferredWidthWithInvisibleHeader() {
     table.setHeaderVisible( true );
     column.setText( "column" );
@@ -197,6 +215,7 @@ public class TableColumn_Test extends TestCase {
     assertEquals( preferredWidth, column.getPreferredWidth() );
   }
 
+  @Test
   public void testGetPreferredWidthMultiLineHeader() {
     for( int i = 0; i < 3; i++ ) {
       TableColumn column1 = new TableColumn( table, SWT.NONE );
@@ -211,6 +230,7 @@ public class TableColumn_Test extends TestCase {
     assertEquals( 60, column.getPreferredWidth() );
   }
 
+  @Test
   public void testPackWithVirtual() {
     final java.util.List<Widget> log = new ArrayList<Widget>();
     Listener setDataListener = new Listener() {
@@ -244,6 +264,7 @@ public class TableColumn_Test extends TestCase {
     assertEquals( 1, log.size() );
   }
 
+  @Test
   public void testResizeEvent() {
     final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
     column.addControlListener( new ControlListener() {
@@ -270,6 +291,7 @@ public class TableColumn_Test extends TestCase {
     assertEquals( column, event.getSource() );
   }
 
+  @Test
   public void testMoveEvent() {
     final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
     column.addControlListener( new ControlListener() {
@@ -301,6 +323,7 @@ public class TableColumn_Test extends TestCase {
     assertSame( column1, event.getSource() );
   }
 
+  @Test
   public void testDisposeLast() {
     TableColumn column1 = new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -320,6 +343,7 @@ public class TableColumn_Test extends TestCase {
   // 323179: Creating and disposing a TableColumn (without updating the
   // TableItems) results in an ArrayIndexOutOfBoundsException
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=323179
+  @Test
   public void testCreateDisposeColumnWithoutDataUpdate() {
     column.setText( "First Column" );
     int number = 5;
@@ -333,6 +357,7 @@ public class TableColumn_Test extends TestCase {
     column2.dispose();
   }
 
+  @Test
   public void testIsFixedColumn() {
     shell.setSize( 800, 600 );
     Table table = createFixedColumnsTable( shell );
@@ -345,6 +370,7 @@ public class TableColumn_Test extends TestCase {
     assertTrue( adapter.isFixedColumn( table.getColumn( 1 ) ) );
   }
 
+  @Test
   public void testAddSelectionListener() {
     column.addSelectionListener( mock( SelectionListener.class ) );
 
@@ -352,6 +378,7 @@ public class TableColumn_Test extends TestCase {
     assertTrue( column.isListening( SWT.DefaultSelection ) );
   }
 
+  @Test
   public void testRemoveSelectionListener() {
     SelectionListener listener = mock( SelectionListener.class );
     column.addSelectionListener( listener );
@@ -362,6 +389,7 @@ public class TableColumn_Test extends TestCase {
     assertFalse( column.isListening( SWT.DefaultSelection ) );
   }
 
+  @Test
   public void testAddSelectionListenerWithNullArgument() {
     try {
       column.addSelectionListener( null );
@@ -369,6 +397,7 @@ public class TableColumn_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRemoveSelectionListenerWithNullArgument() {
     try {
       column.removeSelectionListener( null );
@@ -376,6 +405,7 @@ public class TableColumn_Test extends TestCase {
     }
   }
 
+  @Test
   public void testAddControlListenerWithNullArgument() {
     try {
       column.addControlListener( null );
@@ -383,6 +413,7 @@ public class TableColumn_Test extends TestCase {
     }
   }
 
+  @Test
   public void testAddControlListener() {
     column.addControlListener( mock( ControlListener.class ) );
 
@@ -390,6 +421,7 @@ public class TableColumn_Test extends TestCase {
     assertTrue( column.isListening( SWT.Resize ) );
   }
 
+  @Test
   public void testRemoveControlListenerWithNullArgument() {
     try {
       column.removeControlListener( null );
@@ -397,6 +429,7 @@ public class TableColumn_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRemoveControlListener() {
     ControlListener listener = mock( ControlListener.class );
     column.addControlListener( listener );

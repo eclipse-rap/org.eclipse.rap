@@ -1,17 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -27,23 +30,30 @@ import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class Composite_Test extends TestCase {
+
+public class Composite_Test {
 
   private Display display;
   private Shell shell;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testStyle() {
     Composite composite = new Composite( shell, SWT.NONE );
     assertTrue( ( composite.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
@@ -51,6 +61,7 @@ public class Composite_Test extends TestCase {
     assertTrue( ( composite.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
   }
 
+  @Test
   public void testTabList() {
     // add different controls to the shell
     Control button = new Button( shell, SWT.PUSH );
@@ -82,6 +93,7 @@ public class Composite_Test extends TestCase {
     assertSame( text1, group.getTabList()[ 1 ] );
   }
 
+  @Test
   public void testLayout() {
     GridLayout gridLayout = new GridLayout();
     shell.setLayout( gridLayout );
@@ -91,6 +103,7 @@ public class Composite_Test extends TestCase {
     assertSame( rowLayout, shell.getLayout() );
   }
 
+  @Test
   public void testBackgroundMode() {
     Button button = new Button( shell, SWT.PUSH );
     IControlAdapter adapter = ControlUtil.getControlAdapter( button );
@@ -105,7 +118,7 @@ public class Composite_Test extends TestCase {
     assertTrue( adapter.getBackgroundTransparency() );
   }
 
-  @SuppressWarnings("deprecation")
+  @Test
   public void testComputeSize() {
     Composite composite = new Composite( shell, SWT.BORDER );
     assertEquals( 1, composite.getBorderWidth() );
@@ -119,6 +132,7 @@ public class Composite_Test extends TestCase {
     assertEquals( 52, preferredSize.y ); // 50 + border
   }
 
+  @Test
   public void testSetFocus() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setVisible( true );
@@ -126,6 +140,7 @@ public class Composite_Test extends TestCase {
     Text text = new Text( composite, SWT.SINGLE );
     final StringBuilder log = new StringBuilder();
     text.addFocusListener( new FocusAdapter() {
+      @Override
       public void focusGained( FocusEvent event ) {
         log.append( "focusGained" );
       }
@@ -135,6 +150,7 @@ public class Composite_Test extends TestCase {
     assertEquals( "focusGained", log.toString() );
   }
 
+  @Test
   public void testMimimumSize() {
     // See bug 333002
     Group group = new Group( shell, SWT.NONE );
@@ -144,14 +160,16 @@ public class Composite_Test extends TestCase {
     Point size = group.minimumSize( SWT.DEFAULT, SWT.DEFAULT, true );
     assertEquals( new Point( 200, 50 ), size );
   }
-  
+
+  @Test
   public void testIsSerializable() throws Exception {
     Composite composite = new Composite( shell, SWT.NONE );
     new Label( composite, SWT.NONE );
-    
+
     Composite deserializedComposite = Fixture.serializeAndDeserialize( composite );
-    
+
     assertEquals( 1, deserializedComposite.getChildren().length );
     assertTrue( deserializedComposite.getChildren()[ 0 ] instanceof Label );
   }
+
 }

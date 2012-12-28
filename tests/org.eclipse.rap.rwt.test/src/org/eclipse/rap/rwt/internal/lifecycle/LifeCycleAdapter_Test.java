@@ -11,9 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import java.util.Locale;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import junit.framework.TestCase;
+import java.util.Locale;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
@@ -27,28 +31,25 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class LifeCycleAdapter_Test extends TestCase {
+public class LifeCycleAdapter_Test {
 
-  public static class CustomComposite extends Composite {
-    public CustomComposite( Composite parent ) {
-      super( parent, SWT.NONE );
-    }
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    Fixture.fakeResponseWriter();
   }
 
-  public static class TestControl extends Control {
-    public TestControl( Composite parent ) {
-      super( parent, SWT.NONE );
-    }
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
   }
 
-  public static class TestWidget extends Widget {
-    public TestWidget( Widget parent ) {
-      super( parent, SWT.NONE );
-    }
-  }
-
+  @Test
   public void testDisplayAdapter() {
     Display display = new Display();
 
@@ -57,6 +58,7 @@ public class LifeCycleAdapter_Test extends TestCase {
     assertNotNull( adapter );
   }
 
+  @Test
   public void testDisplayAdapterReturnsSameAdapterForEachInvocation() {
     Display display = new Display();
 
@@ -66,6 +68,7 @@ public class LifeCycleAdapter_Test extends TestCase {
     assertSame( adapter1, adapter2 );
   }
 
+  @Test
   public void testDisplayAdapterReturnsSameAdapterForDifferentDisplays() {
     Display display1 = new Display();
     Object adapter1 = display1.getAdapter( DisplayLifeCycleAdapter.class );
@@ -77,6 +80,7 @@ public class LifeCycleAdapter_Test extends TestCase {
     assertSame( adapter1, adapter2 );
   }
 
+  @Test
   public void testDisplayAdapterIsApplicationScoped() {
     Display display1 = new Display();
     Object adapter1 = display1.getAdapter( DisplayLifeCycleAdapter.class );
@@ -88,6 +92,7 @@ public class LifeCycleAdapter_Test extends TestCase {
     assertSame( adapter1, adapter2 );
   }
 
+  @Test
   public void testWidgetAdapter() {
     Display display = new Display();
     Widget widget = new Shell( display );
@@ -97,6 +102,7 @@ public class LifeCycleAdapter_Test extends TestCase {
     assertNotNull( adapter );
   }
 
+  @Test
   public void testWidgetAdapterReturnsSameAdapterForEachInvocation() {
     Display display = new Display();
     Widget widget = new Shell( display );
@@ -107,6 +113,7 @@ public class LifeCycleAdapter_Test extends TestCase {
     assertSame( adapter1, adapter2 );
   }
 
+  @Test
   public void testWidgetAdapterReturnsSameAdapterForDifferentInstancesOfSameType() {
     Display display = new Display();
     Widget widget1 = new Shell( display );
@@ -118,6 +125,7 @@ public class LifeCycleAdapter_Test extends TestCase {
     assertSame( adapter1, adapter2 );
   }
 
+  @Test
   public void testWidgetAdaptreReturnsDistinctAdapterForEachWidgetType() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -131,6 +139,7 @@ public class LifeCycleAdapter_Test extends TestCase {
     assertNotSame( shellAdapter, buttonAdapter );
   }
 
+  @Test
   public void testWidgetAdapterIsApplicationScoped() {
     Display display1 = new Display();
     Widget widget1 = new Shell( display1 );
@@ -143,6 +152,7 @@ public class LifeCycleAdapter_Test extends TestCase {
     assertSame( adapter1, adapter2 );
   }
 
+  @Test
   public void testGetAdapterWithMissingWidgetLCA() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -154,6 +164,7 @@ public class LifeCycleAdapter_Test extends TestCase {
     }
   }
 
+  @Test
   public void testTreeItemLifeCycleAdapter() {
     Locale originalLocale = Locale.getDefault();
     try {
@@ -171,20 +182,27 @@ public class LifeCycleAdapter_Test extends TestCase {
     }
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakeResponseWriter();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
-
   private static void newSession() {
     ContextProvider.disposeContext();
     Fixture.createServiceContext();
+  }
+
+  public static class CustomComposite extends Composite {
+    public CustomComposite( Composite parent ) {
+      super( parent, SWT.NONE );
+    }
+  }
+
+  public static class TestControl extends Control {
+    public TestControl( Composite parent ) {
+      super( parent, SWT.NONE );
+    }
+  }
+
+  public static class TestWidget extends Widget {
+    public TestWidget( Widget parent ) {
+      super( parent, SWT.NONE );
+    }
   }
 
 }

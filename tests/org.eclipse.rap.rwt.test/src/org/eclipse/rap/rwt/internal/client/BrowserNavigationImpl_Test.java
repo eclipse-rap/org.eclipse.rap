@@ -10,6 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -17,8 +21,6 @@ import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
@@ -31,29 +33,32 @@ import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.swt.widgets.Display;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-public class BrowserNavigationImpl_Test extends TestCase {
+public class BrowserNavigationImpl_Test {
 
   private static final String TYPE = "rwt.client.BrowserNavigation";
 
-  private Display display;
   private BrowserNavigationImpl navigation;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
-    display = new Display();
+    new Display();
     navigation = new BrowserNavigationImpl();
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testCreateHistoryEntry() {
     navigation.pushState( "state", "title" );
 
@@ -62,6 +67,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     assertEquals( "title", navigation.getEntries()[ 0 ].title );
   }
 
+  @Test
   public void testCreateHistoryEntryWithNullText() {
     navigation.pushState( "state", null );
 
@@ -70,6 +76,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     assertNull( navigation.getEntries()[ 0 ].title );
   }
 
+  @Test
   public void testCreateHistoryEntryWithEmptyId() {
     try {
       navigation.pushState( "", "name" );
@@ -78,6 +85,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCreateHistoryEntryWithNullId() {
     try {
       navigation.pushState( null, "name" );
@@ -86,6 +94,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testAddBrowserNavigationListener_failsWithNull() {
     try {
       navigation.addBrowserNavigationListener( null );
@@ -95,6 +104,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testAddBrowserNavigationListener_addsListenerToList() {
     BrowserNavigationListener listener = mock( BrowserNavigationListener.class );
 
@@ -104,6 +114,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     verify( listener ).navigated( any( BrowserNavigationEvent.class ) );
   }
 
+  @Test
   public void testAddBrowserNavigationListener_doesNotAddListenerTwice() {
     BrowserNavigationListener listener = mock( BrowserNavigationListener.class );
 
@@ -114,6 +125,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     verify( listener, times( 1 ) ).navigated( any( BrowserNavigationEvent.class ) );
   }
 
+  @Test
   public void testRemoveBrowserNavigationListener_failsWithNull() {
     try {
       navigation.removeBrowserNavigationListener( null );
@@ -123,6 +135,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRemoveBrowserNavigationListener_removesListener() {
     BrowserNavigationListener listener = mock( BrowserNavigationListener.class );
     navigation.addBrowserNavigationListener( listener );
@@ -133,6 +146,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     verify( listener, times( 0 ) ).navigated( any( BrowserNavigationEvent.class ) );
   }
 
+  @Test
   public void testFireNavigationEvent() {
     BrowserNavigationListener listener = mock( BrowserNavigationListener.class );
     navigation.addBrowserNavigationListener( listener );
@@ -149,6 +163,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     assertEquals( "foo", event.getState() );
   }
 
+  @Test
   public void testRenderAddNavigationListener() {
     Fixture.fakePhase( PhaseId.READ_DATA );
     ProcessActionRunner.add( new Runnable() {
@@ -166,6 +181,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( TYPE, "Navigation" ) );
   }
 
+  @Test
   public void testRenderRemoveNavigationListener() {
     final BrowserNavigationListener listener = new BrowserNavigationListener() {
       public void navigated( BrowserNavigationEvent event ) {
@@ -185,6 +201,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( TYPE, "Navigation" ) );
   }
 
+  @Test
   public void testRenderNavigationListenerUnchanged() {
     navigation.addBrowserNavigationListener( new BrowserNavigationListener() {
       public void navigated( BrowserNavigationEvent event ) {
@@ -197,6 +214,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     assertNull( message.findListenOperation( TYPE, "navigation" ) );
   }
 
+  @Test
   public void testRenderAddToHistory() throws JSONException {
     navigation.pushState( "testId", "testText" );
 
@@ -209,6 +227,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[\"testId\",\"testText\"]", actual1 ) );
   }
 
+  @Test
   public void testRenderAddToHistory_NoEntries() {
     navigation.pushState( "testId", "testText" );
 
@@ -220,6 +239,7 @@ public class BrowserNavigationImpl_Test extends TestCase {
     assertNull( message.findCallOperation( TYPE, "addToHistory" ) );
   }
 
+  @Test
   public void testRenderAddToHistoryOrder() throws JSONException {
     navigation.pushState( "testId1", "testText1" );
     navigation.pushState( "testId2", "testText2" );
@@ -234,4 +254,5 @@ public class BrowserNavigationImpl_Test extends TestCase {
     JSONArray actual2 = entries.getJSONArray( 1 );
     assertTrue( ProtocolTestUtil.jsonEquals( "[\"testId2\",\"testText2\"]", actual2 ) );
   }
+
 }

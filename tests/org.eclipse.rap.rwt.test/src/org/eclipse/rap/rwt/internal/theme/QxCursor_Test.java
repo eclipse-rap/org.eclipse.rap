@@ -11,27 +11,34 @@
 package org.eclipse.rap.rwt.internal.theme;
 
 import static org.eclipse.rap.rwt.internal.theme.ThemeTestUtil.RESOURCE_LOADER;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class QxCursor_Test extends TestCase {
+public class QxCursor_Test {
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  @Override
-  protected void tearDown() {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testIllegalArguments() {
     try {
       QxCursor.valueOf( null, null );
@@ -59,6 +66,7 @@ public class QxCursor_Test extends TestCase {
     }
   }
 
+  @Test
   public void testNotExisting() {
     try {
       QxCursor.valueOf( "not-existing.cur", RESOURCE_LOADER );
@@ -68,6 +76,7 @@ public class QxCursor_Test extends TestCase {
     }
   }
 
+  @Test
   public void testPredefinedCursor() {
     QxCursor cursor = QxCursor.valueOf( "crosshair" );
     assertEquals( "crosshair", cursor.value );
@@ -75,6 +84,7 @@ public class QxCursor_Test extends TestCase {
     assertFalse( cursor.isCustomCursor() );
   }
 
+  @Test
   public void testCustomCursor() {
     QxCursor cursor = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     assertEquals( Fixture.IMAGE_50x100, cursor.value );
@@ -82,6 +92,7 @@ public class QxCursor_Test extends TestCase {
     assertTrue( cursor.isCustomCursor() );
   }
 
+  @Test
   public void testDefaultString() {
     QxCursor cursor = QxCursor.valueOf( "crosshair" );
     assertEquals( "crosshair", cursor.toDefaultString() );
@@ -89,6 +100,7 @@ public class QxCursor_Test extends TestCase {
     assertEquals( "", cursor.toDefaultString() );
   }
 
+  @Test
   public void testHashCode() {
     QxCursor cursor1 = QxCursor.valueOf( "crosshair" );
     QxCursor cursor2 = QxCursor.valueOf( "crosshair" );
@@ -101,12 +113,14 @@ public class QxCursor_Test extends TestCase {
     assertEquals( cursor1.hashCode(), cursor2.hashCode() );
   }
 
+  @Test
   public void testGetResourcePath() {
     QxCursor image = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
 
     assertTrue( image.getResourcePath().startsWith( "themes/cursors/" ) );
   }
 
+  @Test
   public void testResourcePathsDiffer() {
     QxCursor image1 = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     QxCursor image2 = QxCursor.valueOf( Fixture.IMAGE_100x50, RESOURCE_LOADER );
@@ -114,10 +128,12 @@ public class QxCursor_Test extends TestCase {
     assertFalse( image1.getResourcePath().equals( image2.getResourcePath() ) );
   }
 
+  @Test
   public void testGetResourcePathWithPredefined() {
     assertNull( QxCursor.valueOf( "crosshair" ).getResourcePath() );
   }
 
+  @Test
   public void testGetResourceAsStream() throws IOException {
     QxCursor image = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     InputStream inputStream = image.getResourceAsStream();
@@ -126,6 +142,7 @@ public class QxCursor_Test extends TestCase {
     inputStream.close();
   }
 
+  @Test
   public void testGetResourceAsStreamWithPredefined() throws IOException {
     assertNull( QxCursor.valueOf( "crosshair" ).getResourceAsStream() );
   }

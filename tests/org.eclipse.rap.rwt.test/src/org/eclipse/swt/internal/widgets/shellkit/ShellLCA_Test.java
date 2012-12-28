@@ -14,6 +14,11 @@ package org.eclipse.swt.internal.widgets.shellkit;
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_ACTIVATE;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -22,14 +27,12 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.Arrays;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -60,16 +63,19 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 @SuppressWarnings("deprecation")
-public class ShellLCA_Test extends TestCase {
+public class ShellLCA_Test {
 
   private Display display;
   private Shell shell;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -77,12 +83,13 @@ public class ShellLCA_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     display.dispose();
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     Shell shell = new Shell( display, SWT.NONE );
     ControlLCATestUtil.testFocusListener( shell );
@@ -93,6 +100,7 @@ public class ShellLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( shell );
   }
 
+  @Test
   public void testPreserveValues() {
     Shell shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
@@ -191,6 +199,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( "some text", shell.getToolTipText() );
   }
 
+  @Test
   public void testReadDataForClosed() {
     shell.open();
     ShellListener listener = mock( ShellListener.class );
@@ -202,6 +211,7 @@ public class ShellLCA_Test extends TestCase {
     verify( listener ).shellClosed( any( ShellEvent.class ) );
   }
 
+  @Test
   public void testReadDataForActiveControl() {
     Label label = new Label( shell, SWT.NONE );
     Label otherLabel = new Label( shell, SWT.NONE );
@@ -213,6 +223,7 @@ public class ShellLCA_Test extends TestCase {
     assertSame( label, getActiveControl( shell ) );
   }
 
+  @Test
   public void testReadDataForMode_Maximixed() {
     shell.open();
 
@@ -223,6 +234,7 @@ public class ShellLCA_Test extends TestCase {
     assertFalse( shell.getMinimized() );
   }
 
+  @Test
   public void testReadDataForMode_Minimixed() {
     shell.open();
 
@@ -233,6 +245,7 @@ public class ShellLCA_Test extends TestCase {
     assertTrue( shell.getMinimized() );
   }
 
+  @Test
   public void testReadDataForMode_Restore() {
     shell.open();
     shell.setMaximized( true );
@@ -243,6 +256,7 @@ public class ShellLCA_Test extends TestCase {
     assertFalse( shell.getMaximized() );
   }
 
+  @Test
   public void testReadModeBoundsOrder_Maximize() {
     Rectangle displayBounds = new Rectangle( 0, 0, 800, 600 );
     getDisplayAdapter( display ).setBounds( displayBounds );
@@ -256,6 +270,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( displayBounds, shell.getBounds() );
   }
 
+  @Test
   public void testReadModeBoundsOrder_Restore() {
     Rectangle displayBounds = new Rectangle( 0, 0, 800, 600 );
     getDisplayAdapter( display ).setBounds( displayBounds );
@@ -270,6 +285,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( shellBounds, shell.getBounds() );
   }
 
+  @Test
   public void testUntypedActivateEvent() {
     shell.open();
     Shell otherShell = new Shell( display );
@@ -283,6 +299,7 @@ public class ShellLCA_Test extends TestCase {
     verify( listener ).handleEvent( any( Event.class ) );
   }
 
+  @Test
   public void testTypedActivateEvent() {
     shell.open();
     Shell otherShell = new Shell( display );
@@ -297,6 +314,7 @@ public class ShellLCA_Test extends TestCase {
     verify( listener, times( 1 ) ).shellActivated( any( ShellEvent.class ) );
   }
 
+  @Test
   public void testLatestOpenedShellIsActive() {
     shell.open();
     Shell secondShell = new Shell( display );
@@ -305,6 +323,7 @@ public class ShellLCA_Test extends TestCase {
     assertSame( secondShell, display.getActiveShell() );
   }
 
+  @Test
   public void testShellActivateWithoutEventListeners() {
     Shell shellToActivate = new Shell( display );
     shellToActivate.setData( "shellToActivate" );
@@ -320,6 +339,7 @@ public class ShellLCA_Test extends TestCase {
     assertSame( shellToActivate, display.getActiveShell() );
   }
 
+  @Test
   public void testShellActivate() {
     final StringBuilder activateEventLog = new StringBuilder();
     Listener activateListener = new Listener() {
@@ -374,6 +394,7 @@ public class ShellLCA_Test extends TestCase {
     assertNull( message.findSetOperation( shellToActivate, "active" ) );
   }
 
+  @Test
   public void testNoDeactivateNullActiveShell() {
     // no deactivation event must be created for a null active shell (NPE)
     shell.setVisible( true );
@@ -386,6 +407,7 @@ public class ShellLCA_Test extends TestCase {
     assertSame( shell, display.getActiveShell() );
   }
 
+  @Test
   public void testDisposeSingleShell() {
     shell.open();
 
@@ -394,9 +416,10 @@ public class ShellLCA_Test extends TestCase {
 
     assertEquals( 0, display.getShells().length );
     assertEquals( null, display.getActiveShell() );
-    assertEquals( true, shell.isDisposed() );
+    assertTrue( shell.isDisposed() );
   }
 
+  @Test
   public void testAlpha() throws Exception {
     shell.open();
     ShellLCA lca = new ShellLCA();
@@ -408,6 +431,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( new Integer( 23 ), message.findSetProperty( shell, "alpha" ) );
   }
 
+  @Test
   public void testRenderMode() throws Exception {
     shell.open();
     ShellLCA lca = new ShellLCA();
@@ -419,6 +443,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( "maximized", message.findSetProperty( shell, "mode" ) );
   }
 
+  @Test
   public void testRenderFullscreen() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -434,6 +459,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( shell, "mode" ) );
   }
 
+  @Test
   public void testResetFullscreen() throws Exception {
     shell.open();
     ShellLCA lca = new ShellLCA();
@@ -445,6 +471,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( "fullscreen", message.findSetProperty( shell, "mode" ) );
   }
 
+  @Test
   public void testRenderDefaultButtonIntiallyNull() throws IOException {
     ShellLCA lca = new ShellLCA();
 
@@ -454,6 +481,7 @@ public class ShellLCA_Test extends TestCase {
     assertNull( message.findSetOperation( shell, "defaultButton" ) );
   }
 
+  @Test
   public void testRenderDefaultButtonInitiallySet() throws Exception {
     ShellLCA lca = new ShellLCA();
     Button button = new Button( shell, SWT.PUSH );
@@ -465,6 +493,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( button ), message.findSetProperty( shell, "defaultButton" ) );
   }
 
+  @Test
   public void testRenderDefaultButtonUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -478,6 +507,7 @@ public class ShellLCA_Test extends TestCase {
     assertNull( message.findSetOperation( shell, "defaultButton" ) );
   }
 
+  @Test
   public void testResetDefaultButton() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -493,6 +523,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( shell, "defaultButton" ) );
   }
 
+  @Test
   public void testResetDefaultButton_AfterFocusControlChange() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -511,6 +542,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( shell, "defaultButton" ) );
   }
 
+  @Test
   public void testRenderActiveControlIntiallyNull() throws IOException {
     ShellLCA lca = new ShellLCA();
 
@@ -520,6 +552,7 @@ public class ShellLCA_Test extends TestCase {
     assertNull( message.findSetOperation( shell, "activeControl" ) );
   }
 
+  @Test
   public void testRenderActiveControlInitiallySet() throws Exception {
     ShellLCA lca = new ShellLCA();
     Button button = new Button( shell, SWT.PUSH );
@@ -532,6 +565,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( button ), message.findSetProperty( shell, "activeControl" ) );
   }
 
+  @Test
   public void testRenderActiveControlUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -547,6 +581,7 @@ public class ShellLCA_Test extends TestCase {
     assertNull( message.findSetOperation( shell, "activeControl" ) );
   }
 
+  @Test
   public void testResetActiveControl() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -563,7 +598,8 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( shell, "activeControl" ) );
   }
 
-  public void testRenderInitialBounds() throws Exception {
+  @Test
+  public void testRenderInitialBounds() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.preserveWidgets();
@@ -573,6 +609,7 @@ public class ShellLCA_Test extends TestCase {
     assertNull( message.findSetOperation( shell, "bounds" ) );
   }
 
+  @Test
   public void testRenderMinimumSize() throws Exception {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
@@ -585,6 +622,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( "[100,200]", message.findSetProperty( shell, "minimumSize" ).toString() );
   }
 
+  @Test
   public void testRenderStyleFlags() throws Exception {
     Shell shell = new Shell( display , SWT.NO_TRIM );
     Fixture.markInitialized( display );
@@ -599,6 +637,7 @@ public class ShellLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "NO_TRIM" ) );
   }
 
+  @Test
   public void testRenderText() throws Exception {
     Shell shell = new Shell( display , SWT.SHELL_TRIM );
     Fixture.markInitialized( display );
@@ -615,6 +654,7 @@ public class ShellLCA_Test extends TestCase {
 
   // NOTE: Resize and Move are currently always set to listen after creation. This is to keep
   //       the previous behavior where updates for bounds were always sent immediately.
+  @Test
   public void testRenderControlListener() throws Exception {
     Shell shell = new Shell( display , SWT.NO_TRIM );
     Fixture.markInitialized( display );
@@ -628,6 +668,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( shell, "Move" ) );
   }
 
+  @Test
   public void testRenderActivateListener() throws Exception {
     Shell shell = new Shell( display , SWT.NO_TRIM );
     Fixture.markInitialized( display );
@@ -640,6 +681,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( shell, "Activate" ) );
   }
 
+  @Test
   public void testRenderCloseListener() throws Exception {
     Shell shell = new Shell( display , SWT.NO_TRIM );
     Fixture.markInitialized( display );
@@ -652,6 +694,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( shell, "Close" ) );
   }
 
+  @Test
   public void testRenderActive() throws Exception {
     Shell shell = new Shell( display , SWT.SHELL_TRIM );
     shell.open();
@@ -667,6 +710,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( shell, "active" ) );
   }
 
+  @Test
   public void testRenderParentShellForDialogShell() throws Exception {
     Shell parentShell = new Shell( display );
     Shell dialogShell = new Shell( parentShell );
@@ -682,6 +726,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( parentId, message.findCreateProperty( dialogShell, "parentShell" ) );
   }
 
+  @Test
   public void testTitleImageWithCaptionBar() throws Exception {
     Shell shell = new Shell( display , SWT.SHELL_TRIM );
     Fixture.markInitialized( display );
@@ -699,6 +744,7 @@ public class ShellLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testTitleImageWithoutCaptionBar() throws Exception {
     Shell shell = new Shell( display, SWT.NO_TRIM );
     Fixture.markInitialized( display );
@@ -713,6 +759,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( 0, message.getOperationCount() );
   }
 
+  @Test
   public void testTitleImageWithCaptionBarWihoutMinMaxClose() throws Exception {
     Shell shell = new Shell( display, SWT.TITLE );
     Fixture.markInitialized( display );
@@ -730,6 +777,7 @@ public class ShellLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testTitleImageWithMultipleImages() throws Exception {
     Shell shell = new Shell( display, SWT.TITLE );
     Fixture.markInitialized( display );
@@ -747,6 +795,7 @@ public class ShellLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderVisibilityIntiallyFalse() throws IOException {
     ShellLCA lca = new ShellLCA();
 
@@ -756,6 +805,7 @@ public class ShellLCA_Test extends TestCase {
     assertNull( message.findSetOperation( shell, "visibility" ) );
   }
 
+  @Test
   public void testRenderVisibilityInitiallyTrue() throws IOException {
     ShellLCA lca = new ShellLCA();
 

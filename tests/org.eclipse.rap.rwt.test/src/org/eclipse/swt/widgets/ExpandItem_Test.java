@@ -11,7 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -20,16 +22,20 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 @SuppressWarnings("deprecation")
-public class ExpandItem_Test extends TestCase {
+public class ExpandItem_Test {
 
   private Display display;
   private Shell shell;
   private ExpandBar expandBar;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
@@ -37,10 +43,12 @@ public class ExpandItem_Test extends TestCase {
     expandBar = new ExpandBar( shell, SWT.NONE );
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testCreation() {
     // Add one item
     ExpandItem item1 = new ExpandItem( expandBar, SWT.NONE, 0 );
@@ -61,6 +69,7 @@ public class ExpandItem_Test extends TestCase {
     }
   }
 
+  @Test
   public void testParent() {
     // Test creating with valid parent
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
@@ -74,6 +83,7 @@ public class ExpandItem_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDispose() {
     for( int i = 0; i < 10; i++ ) {
       new ExpandItem( expandBar, SWT.NONE );
@@ -84,6 +94,7 @@ public class ExpandItem_Test extends TestCase {
     assertEquals( 9, expandBar.getItemCount() );
   }
 
+  @Test
   public void testText() {
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
     assertEquals( "", item.getText() );
@@ -94,6 +105,7 @@ public class ExpandItem_Test extends TestCase {
     assertEquals( "", item.getText() );
   }
 
+  @Test
   public void testImage() {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
@@ -102,6 +114,7 @@ public class ExpandItem_Test extends TestCase {
     assertSame( image, item.getImage() );
   }
 
+  @Test
   public void testHeight() {
     Composite composite = new Composite( expandBar, SWT.NONE );
     composite.setLayout( new GridLayout() );
@@ -117,6 +130,7 @@ public class ExpandItem_Test extends TestCase {
                   item.getHeight() );
   }
 
+  @Test
   public void testHeaderHeight() {
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
     item.setText( "What is your favorite button?" );

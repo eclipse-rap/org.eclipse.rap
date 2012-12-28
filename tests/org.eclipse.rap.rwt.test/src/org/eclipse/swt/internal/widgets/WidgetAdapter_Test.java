@@ -11,11 +11,16 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
@@ -31,23 +36,27 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class WidgetAdapter_Test extends TestCase {
+public class WidgetAdapter_Test {
 
   private Display display;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testGetAdapterForDisplay() {
     Object adapter1 = display.getAdapter( WidgetAdapter.class );
     assertTrue( adapter1 instanceof WidgetAdapter );
@@ -59,6 +68,7 @@ public class WidgetAdapter_Test extends TestCase {
     assertTrue( adapter3 != adapter2 );
   }
 
+  @Test
   public void testGetAdapterForShell() {
     Composite shell = new Shell( display, SWT.NONE );
     Object adapter1 = shell.getAdapter( WidgetAdapter.class );
@@ -68,6 +78,7 @@ public class WidgetAdapter_Test extends TestCase {
     assertTrue( adapter1 != adapter2 );
   }
 
+  @Test
   public void testGetAdapterForButton() {
     Composite shell = new Shell( display, SWT.NONE );
     Button button1 = new Button( shell, SWT.PUSH );
@@ -78,6 +89,7 @@ public class WidgetAdapter_Test extends TestCase {
     assertTrue( adapter1 != adapter2 );
   }
 
+  @Test
   public void testId() {
     WidgetAdapter adapter1 = display.getAdapter( WidgetAdapter.class );
     display.dispose();
@@ -86,12 +98,14 @@ public class WidgetAdapter_Test extends TestCase {
     assertEquals( adapter1.getId(), adapter2.getId() );
   }
 
+  @Test
   public void testId_Widget() {
     Shell shell = new Shell( display, SWT.NONE );
 
     assertTrue(  WidgetUtil.getId( shell ).startsWith( "w" ) );
   }
 
+  @Test
   public void testCustomIdWithoutUITestEnabled() {
     Shell shell = new Shell( display, SWT.NONE );
 
@@ -100,6 +114,7 @@ public class WidgetAdapter_Test extends TestCase {
     assertFalse( WidgetUtil.getId( shell ).equals( "myShell" ) );
   }
 
+  @Test
   public void testCustomIdAfterWidgetIsInitialised() {
     Shell shell = new Shell( display, SWT.NONE );
     Fixture.markInitialized( shell );
@@ -111,27 +126,30 @@ public class WidgetAdapter_Test extends TestCase {
     }
   }
 
+  @Test
   public void testInitializedForShell() throws IOException {
     Fixture.fakeNewRequest();
     Fixture.fakeResponseWriter();
     Composite shell = new Shell( display, SWT.NONE );
     WidgetAdapter adapter = WidgetUtil.getAdapter( shell );
-    assertEquals( false, adapter.isInitialized() );
+    assertFalse( adapter.isInitialized() );
     DisplayUtil.getLCA( display ).render( display );
-    assertEquals( true, adapter.isInitialized() );
+    assertTrue( adapter.isInitialized() );
   }
 
+  @Test
   public void testInitializedForDisplay() throws IOException {
     WidgetAdapter adapter = DisplayUtil.getAdapter( display );
-    assertEquals( false, adapter.isInitialized() );
+    assertFalse( adapter.isInitialized() );
     Fixture.fakeNewRequest();
     DisplayUtil.getLCA( display ).render( display );
-    assertEquals( true, adapter.isInitialized() );
+    assertTrue( adapter.isInitialized() );
     Fixture.fakeNewRequest();
     DisplayUtil.getLCA( display ).render( display );
-    assertEquals( true, adapter.isInitialized() );
+    assertTrue( adapter.isInitialized() );
   }
 
+  @Test
   public void testRenderRunnable() {
     WidgetAdapterImpl adapter = new WidgetAdapterImpl();
     IRenderRunnable runnable = mock( IRenderRunnable.class );
@@ -141,6 +159,7 @@ public class WidgetAdapter_Test extends TestCase {
     assertSame( runnable, adapter.getRenderRunnable() );
   }
 
+  @Test
   public void testSetRenderRunnableTwice() {
     WidgetAdapterImpl adapter = new WidgetAdapterImpl();
     adapter.setRenderRunnable( mock( IRenderRunnable.class ) );
@@ -153,6 +172,7 @@ public class WidgetAdapter_Test extends TestCase {
     }
   }
 
+  @Test
   public void testMarkDisposed() {
     Fixture.fakeNewRequest();
     Fixture.fakeResponseWriter();
@@ -172,6 +192,7 @@ public class WidgetAdapter_Test extends TestCase {
     assertEquals( 1, DisposedWidgets.getAll().length );
   }
 
+  @Test
   public void testSerializableFields() throws Exception {
     WidgetAdapterImpl adapter = new WidgetAdapterImpl();
     adapter.setInitialized( true );
@@ -179,9 +200,10 @@ public class WidgetAdapter_Test extends TestCase {
     WidgetAdapterImpl deserializedAdapter = Fixture.serializeAndDeserialize( adapter );
 
     assertEquals( adapter.getId(), deserializedAdapter.getId() );
-    assertEquals( adapter.isInitialized(), deserializedAdapter.isInitialized() );
+    assertTrue( adapter.isInitialized() == deserializedAdapter.isInitialized() );
   }
 
+  @Test
   public void testNonSerializableFields() throws Exception {
     String property = "foo";
     WidgetAdapterImpl adapter = new WidgetAdapterImpl();
@@ -196,6 +218,7 @@ public class WidgetAdapter_Test extends TestCase {
     assertNull( deserializedAdapter.getPreserved( property ) );
   }
 
+  @Test
   public void testGetGCForClient() {
     WidgetAdapterImpl adapter = new WidgetAdapterImpl();
 
@@ -204,6 +227,7 @@ public class WidgetAdapter_Test extends TestCase {
     assertNotNull( gc );
   }
 
+  @Test
   public void testGetGCForClientAdapter() {
     WidgetAdapterImpl adapter = new WidgetAdapterImpl();
     Adaptable gc = adapter.getGCForClient();
@@ -211,6 +235,7 @@ public class WidgetAdapter_Test extends TestCase {
     assertNotNull( gc.getAdapter( IClientObjectAdapter.class ) );
   }
 
+  @Test
   public void testGetGCForClientAdapterWithInvalidClass() {
     WidgetAdapterImpl adapter = new WidgetAdapterImpl();
     Adaptable gc = adapter.getGCForClient();
@@ -218,6 +243,7 @@ public class WidgetAdapter_Test extends TestCase {
     assertNull( gc.getAdapter( WidgetAdapter.class ) );
   }
 
+  @Test
   public void testGetGCForClientAdapterId() {
     WidgetAdapterImpl adapter = new WidgetAdapterImpl();
     Adaptable gc = adapter.getGCForClient();
@@ -227,6 +253,7 @@ public class WidgetAdapter_Test extends TestCase {
     assertTrue( id.startsWith( "gc" ) );
   }
 
+  @Test
   public void testGetGCForClientAdapterHasSameId() {
     WidgetAdapterImpl adapter = new WidgetAdapterImpl();
     Adaptable gc = adapter.getGCForClient();
@@ -237,6 +264,7 @@ public class WidgetAdapter_Test extends TestCase {
     assertEquals( id1, id2 );
   }
 
+  @Test
   public void testGetParent() {
     Composite shell = new Shell( display, SWT.NONE );
 
@@ -246,6 +274,7 @@ public class WidgetAdapter_Test extends TestCase {
     assertSame( shell, adapter.getParent() );
   }
 
+  @Test
   public void testGetParentFromButton() {
     Composite shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );

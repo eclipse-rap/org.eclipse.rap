@@ -11,9 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.TestCase;
+import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -24,25 +24,29 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ControlThemeAdapter_Test extends TestCase {
+public class ControlThemeAdapter_Test {
 
   private Shell shell;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakeNewRequest();
     Display display = new Display();
     shell = new Shell( display );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testValues() {
     Label label = new Label( shell, SWT.BORDER );
     ControlThemeAdapterImpl cta = ( ControlThemeAdapterImpl )label.getAdapter( IThemeAdapter.class );
@@ -52,6 +56,7 @@ public class ControlThemeAdapter_Test extends TestCase {
     assertEquals( Graphics.getColor( 255, 255, 255 ), cta.getBackground( label ) );
   }
 
+  @Test
   public void testForegroundWhenDisabled() {
     Label label = new Label( shell, SWT.BORDER );
     label.setEnabled( false );
@@ -61,6 +66,7 @@ public class ControlThemeAdapter_Test extends TestCase {
     assertEquals( Graphics.getColor( 74, 74, 74 ), cta.getForeground( label ) );
   }
 
+  @Test
   public void testGetBorderWidthForCompositeSubclass() throws IOException {
     String css = "Composite.special { border: 23px solid gray }";
     ThemeTestUtil.registerTheme( "custom", css, null );

@@ -10,26 +10,37 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class WidgetSerialization_Test extends TestCase {
-
-  private static class TestListener implements Listener {
-    public void handleEvent( Event event ) {
-    }
-  }
-
-  private static class TestWidget extends Widget {
-  }
+public class WidgetSerialization_Test {
 
   private Widget widget;
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    widget = new TestWidget();
+    widget.display = new Display();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testWidgetAdapterIsSerializable() throws Exception {
     WidgetAdapterImpl adapter = getWidgetAdapter( widget );
     adapter.setInitialized( true );
@@ -39,9 +50,10 @@ public class WidgetSerialization_Test extends TestCase {
 
     assertNotNull( deserializedAdapter );
     assertEquals( adapter.getId(), deserializedAdapter.getId() );
-    assertEquals( adapter.isInitialized(), deserializedAdapter.isInitialized() );
+    assertTrue( adapter.isInitialized() == deserializedAdapter.isInitialized() );
   }
 
+  @Test
   public void testStyleIsSerializable() throws Exception {
     int style = 1234;
     widget.style = style;
@@ -51,6 +63,7 @@ public class WidgetSerialization_Test extends TestCase {
     assertEquals( style, deserializedWidget.style );
   }
 
+  @Test
   public void testStateIsSerializable() throws Exception {
     int state = 5678;
     widget.state = state;
@@ -60,6 +73,7 @@ public class WidgetSerialization_Test extends TestCase {
     assertEquals( state, deserializedWidget.state );
   }
 
+  @Test
   public void testDataIsSerializable() throws Exception {
     String data = "data";
     String key = "key";
@@ -73,6 +87,7 @@ public class WidgetSerialization_Test extends TestCase {
     assertEquals( keyedData, deserializedWidget.getData( key ) );
   }
 
+  @Test
   public void testListenerIsSerializable() throws Exception {
     widget.addListener( SWT.Dispose, new TestListener() );
 
@@ -82,6 +97,7 @@ public class WidgetSerialization_Test extends TestCase {
     assertEquals( 1, listeners.length );
   }
 
+  @Test
   public void testPreservedValuesAreNotSerialized() throws Exception {
     String propertyName = "foo";
     WidgetAdapterImpl adapter = getWidgetAdapter( widget );
@@ -93,19 +109,16 @@ public class WidgetSerialization_Test extends TestCase {
     assertNull( deserializedAdapter.getPreserved( propertyName ) );
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    widget = new TestWidget();
-    widget.display = new Display();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
-
   private static WidgetAdapterImpl getWidgetAdapter( Widget widget ) {
     return ( WidgetAdapterImpl )widget.getAdapter( WidgetAdapter.class );
   }
+
+  private static class TestListener implements Listener {
+    public void handleEvent( Event event ) {
+    }
+  }
+
+  private static class TestWidget extends Widget {
+  }
+
 }

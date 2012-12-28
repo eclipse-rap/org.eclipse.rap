@@ -10,13 +10,19 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -27,23 +33,27 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ProtocolUtil_Test extends TestCase {
+public class ProtocolUtil_Test {
 
   private Display display;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testColorToArray() {
     Color red = display.getSystemColor( SWT.COLOR_RED );
 
@@ -52,6 +62,7 @@ public class ProtocolUtil_Test extends TestCase {
     checkColorArray( 255, 0, 0, 255, array );
   }
 
+  @Test
   public void testColorToArray_RGB() {
     RGB red = new RGB( 255, 0, 0 );
 
@@ -60,6 +71,7 @@ public class ProtocolUtil_Test extends TestCase {
     checkColorArray( 255, 0, 0, 255, array );
   }
 
+  @Test
   public void testColorToArray_Transparent() {
     Color red = display.getSystemColor( SWT.COLOR_RED );
 
@@ -68,10 +80,12 @@ public class ProtocolUtil_Test extends TestCase {
     checkColorArray( 255, 0, 0, 0, array );
   }
 
+  @Test
   public void testColorToArray_Null() {
     assertNull( ProtocolUtil.getColorAsArray( ( Color )null, false ) );
   }
 
+  @Test
   public void testFontAsArray() {
     Font font = new Font( display, "Arial", 22, SWT.NONE );
 
@@ -80,6 +94,7 @@ public class ProtocolUtil_Test extends TestCase {
     checkFontArray( new String[] { "Arial" }, 22, false, false, array );
   }
 
+  @Test
   public void testFontAsArray_FontData() {
     Font font = new Font( display, "Arial", 22, SWT.NONE );
 
@@ -88,6 +103,7 @@ public class ProtocolUtil_Test extends TestCase {
     checkFontArray( new String[] { "Arial" }, 22, false, false, array );
   }
 
+  @Test
   public void testFontAsArray_Bold() {
     Font font = new Font( display, "Arial", 22, SWT.BOLD );
 
@@ -96,6 +112,7 @@ public class ProtocolUtil_Test extends TestCase {
     checkFontArray( new String[] { "Arial" }, 22, true, false, array );
   }
 
+  @Test
   public void testFontAsArray_Italic() {
     Font font = new Font( display, "Arial", 22, SWT.ITALIC );
 
@@ -104,13 +121,14 @@ public class ProtocolUtil_Test extends TestCase {
     checkFontArray( new String[] { "Arial" }, 22, false, true, array );
   }
 
+  @Test
   public void testFontAsArray_Null() {
     assertNull( ProtocolUtil.getFontAsArray( ( Font )null ) );
   }
 
-  @SuppressWarnings("deprecation")
+  @Test
   public void testImageAsArray() {
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( Fixture.IMAGE_100x50 );
 
     Object[] array = ProtocolUtil.getImageAsArray( image );
 
@@ -119,6 +137,7 @@ public class ProtocolUtil_Test extends TestCase {
     assertEquals( Integer.valueOf( 50 ), array[ 2 ] );
   }
 
+  @Test
   public void testImageAsArray_Null() {
     assertNull( ProtocolUtil.getImageAsArray( null ) );
   }
@@ -142,12 +161,14 @@ public class ProtocolUtil_Test extends TestCase {
     assertEquals( Boolean.valueOf( italic ), array[ 3 ] );
   }
 
+  @Test
   public void testIsClientMessageProcessed_No() {
     fakeNewJsonMessage();
 
     assertFalse( ProtocolUtil.isClientMessageProcessed() );
   }
 
+  @Test
   public void testIsClientMessageProcessed_Yes() {
     fakeNewJsonMessage();
 
@@ -156,6 +177,7 @@ public class ProtocolUtil_Test extends TestCase {
     assertTrue( ProtocolUtil.isClientMessageProcessed() );
   }
 
+  @Test
   public void testGetClientMessage() {
     fakeNewJsonMessage();
 
@@ -165,6 +187,7 @@ public class ProtocolUtil_Test extends TestCase {
     assertTrue( message.getAllOperationsFor( "w3" ).length > 0 );
   }
 
+  @Test
   public void testGetClientMessage_SameInstance() {
     fakeNewJsonMessage();
 
@@ -174,48 +197,56 @@ public class ProtocolUtil_Test extends TestCase {
     assertSame( message1, message2 );
   }
 
+  @Test
   public void testReadHeaderPropertyValue() {
     fakeNewJsonMessage();
 
     assertEquals( "21", ProtocolUtil.readHeadPropertyValue( "requestCounter" ) );
   }
 
+  @Test
   public void testReadHeaderPropertyValue_MissingProperty() {
     fakeNewJsonMessage();
 
     assertNull( ProtocolUtil.readHeadPropertyValue( "abc" ) );
   }
 
+  @Test
   public void testReadProperyValue_MissingProperty() {
     fakeNewJsonMessage();
 
     assertNull( ProtocolUtil.readPropertyValueAsString( "w3", "p0" ) );
   }
 
+  @Test
   public void testReadProperyValueAsString_String() {
     fakeNewJsonMessage();
 
     assertEquals( "foo", ProtocolUtil.readPropertyValueAsString( "w3", "p1" ) );
   }
 
+  @Test
   public void testReadProperyValueAsString_Integer() {
     fakeNewJsonMessage();
 
     assertEquals( "123", ProtocolUtil.readPropertyValueAsString( "w3", "p2" ) );
   }
 
+  @Test
   public void testReadProperyValueAsString_Boolean() {
     fakeNewJsonMessage();
 
     assertEquals( "true", ProtocolUtil.readPropertyValueAsString( "w3", "p3" ) );
   }
 
+  @Test
   public void testReadProperyValueAsString_Null() {
     fakeNewJsonMessage();
 
     assertEquals( "null", ProtocolUtil.readPropertyValueAsString( "w3", "p4" ) );
   }
 
+  @Test
   public void testReadPropertyValue_LastSetValue() {
     Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( "w3", "p1", "foo" );
@@ -224,12 +255,14 @@ public class ProtocolUtil_Test extends TestCase {
     assertEquals( "bar", ProtocolUtil.readPropertyValueAsString( "w3", "p1" ) );
   }
 
+  @Test
   public void testReadEventPropertyValue_MissingProperty() {
     fakeNewJsonMessage();
 
     assertNull( ProtocolUtil.readEventPropertyValueAsString( "w3", "widgetSelected", "item" ) );
   }
 
+  @Test
   public void testReadEventPropertyValue() {
     fakeNewJsonMessage();
 
@@ -237,24 +270,28 @@ public class ProtocolUtil_Test extends TestCase {
     assertEquals( "check", value );
   }
 
+  @Test
   public void testWasEventSend_Send() {
     fakeNewJsonMessage();
 
     assertTrue( ProtocolUtil.wasEventSent( "w3", "widgetSelected" ) );
   }
 
+  @Test
   public void testWasEventSend_NotSend() {
     fakeNewJsonMessage();
 
     assertFalse( ProtocolUtil.wasEventSent( "w3", "widgetDefaultSelected" ) );
   }
 
+  @Test
   public void testReadPropertyValueAsPoint() {
     fakeNewJsonMessage();
 
     assertEquals( new Point( 1, 2 ), ProtocolUtil.readPropertyValueAsPoint( "w3", "p5" ) );
   }
 
+  @Test
   public void testReadPropertyValueAsPoint_NotPoint() {
     fakeNewJsonMessage();
 
@@ -265,6 +302,7 @@ public class ProtocolUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testReadPropertyValueAsRectangle() {
     fakeNewJsonMessage();
 
@@ -272,6 +310,7 @@ public class ProtocolUtil_Test extends TestCase {
     assertEquals( expected, ProtocolUtil.readPropertyValueAsRectangle( "w3", "p6" ) );
   }
 
+  @Test
   public void testReadPropertyValueAsRectangle_NotRectangle() {
     fakeNewJsonMessage();
 
@@ -282,6 +321,7 @@ public class ProtocolUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testReadPropertyValueAsIntArray() {
     fakeNewJsonMessage();
 
@@ -290,6 +330,7 @@ public class ProtocolUtil_Test extends TestCase {
     assertTrue( Arrays.equals( expected, actual ) );
   }
 
+  @Test
   public void testReadPropertyValueAsBooleanArray() {
     fakeNewJsonMessage();
 
@@ -298,6 +339,7 @@ public class ProtocolUtil_Test extends TestCase {
     assertTrue( Arrays.equals( expected, actual ) );
   }
 
+  @Test
   public void testReadPropertyValueAsBooleanArray_NotBoolean() {
     fakeNewJsonMessage();
 
@@ -308,6 +350,7 @@ public class ProtocolUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testReadPropertyValueAsStringArray() {
     fakeNewJsonMessage();
 
@@ -316,6 +359,7 @@ public class ProtocolUtil_Test extends TestCase {
     assertTrue( Arrays.equals( expected, actual ) );
   }
 
+  @Test
   public void testReadPropertyValueAsStringArray_NotString() {
     fakeNewJsonMessage();
 
@@ -326,6 +370,7 @@ public class ProtocolUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testReadPropertyValue() {
     fakeNewJsonMessage();
 
@@ -334,6 +379,7 @@ public class ProtocolUtil_Test extends TestCase {
     assertTrue( Arrays.equals( expected, actual ) );
   }
 
+  @Test
   public void testWasCallSent() {
     fakeNewJsonMessage();
 
@@ -341,18 +387,21 @@ public class ProtocolUtil_Test extends TestCase {
     assertFalse( ProtocolUtil.wasCallSend( "w4", "resize" ) );
   }
 
+  @Test
   public void testReadCallProperty() {
     fakeNewJsonMessage();
 
     assertEquals( "10", ProtocolUtil.readCallPropertyValueAsString( "w3", "resize", "width" ) );
   }
 
+  @Test
   public void testReadCallProperty_MissingProperty() {
     fakeNewJsonMessage();
 
     assertNull( ProtocolUtil.readCallPropertyValueAsString( "w3", "resize", "left" ) );
   }
 
+  @Test
   public void testReadCallProperty_MissingOperation() {
     fakeNewJsonMessage();
 
@@ -385,4 +434,12 @@ public class ProtocolUtil_Test extends TestCase {
     parameters.put( "width", Integer.valueOf( 10 ) );
     Fixture.fakeCallOperation( "w3", "resize", parameters );
   }
+
+  @SuppressWarnings( "resource" )
+  private Image createImage( String name ) {
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( name );
+    return new Image( display, stream );
+  }
+
 }

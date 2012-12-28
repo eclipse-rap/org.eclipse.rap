@@ -11,11 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.Locale;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -28,18 +31,24 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class Spinner_Test extends TestCase {
+public class Spinner_Test {
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testInitialValues() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -60,6 +69,7 @@ public class Spinner_Test extends TestCase {
     assertTrue( ( spinner.getStyle() & SWT.READ_ONLY ) != 0 );
   }
 
+  @Test
   public void testMinMax() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -90,6 +100,7 @@ public class Spinner_Test extends TestCase {
     assertEquals( -50, spinner.getMaximum() );
   }
 
+  @Test
   public void testIncrementAndPageIncrement() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -106,6 +117,7 @@ public class Spinner_Test extends TestCase {
     assertEquals( 10, spinner.getPageIncrement() );
   }
 
+  @Test
   public void testModifyAndSelectionEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuilder log = new StringBuilder();
@@ -120,6 +132,7 @@ public class Spinner_Test extends TestCase {
     } );
     // Changing the selection programmatically never triggers a selection event
     spinner.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         assertSame( spinner, event.getSource() );
         log.append( "selectionEvent" );
@@ -139,16 +152,18 @@ public class Spinner_Test extends TestCase {
     assertEquals( "modifyEvent", log.toString() );
   }
 
+  @Test
   public void testAddModifyListener() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Spinner spinner = new Spinner( shell, SWT.NONE );
-    
+
     spinner.addModifyListener( mock( ModifyListener.class ) );
-  
+
     assertTrue( spinner.isListening( SWT.Modify ) );
   }
 
+  @Test
   public void testRemoveModifyListener() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -157,32 +172,35 @@ public class Spinner_Test extends TestCase {
     spinner.addModifyListener( listener );
 
     spinner.removeModifyListener( listener );
-    
+
     assertFalse( spinner.isListening( SWT.Modify ) );
   }
-  
+
+  @Test
   public void testAddModifyListenerWithNullArgument() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Spinner spinner = new Spinner( shell, SWT.NONE );
-    
+
     try {
       spinner.addModifyListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
 
+  @Test
   public void testRemoveModifyListenerWithNullArgument() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Spinner spinner = new Spinner( shell, SWT.NONE );
-    
+
     try {
       spinner.removeModifyListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
 
+  @Test
   public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -212,6 +230,7 @@ public class Spinner_Test extends TestCase {
     assertEquals( expected, spinner.computeSize( 100, 100 ) );
   }
 
+  @Test
   public void testComputeTrim() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -225,6 +244,7 @@ public class Spinner_Test extends TestCase {
     assertEquals( expected, spinner.computeTrim( 0, 0, 100, 100 ) );
   }
 
+  @Test
   public void testGetText() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -240,6 +260,7 @@ public class Spinner_Test extends TestCase {
     assertEquals( "0,05", spinner.getText() );
   }
 
+  @Test
   public void testTextLimit() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -255,6 +276,7 @@ public class Spinner_Test extends TestCase {
     }
   }
 
+  @Test
   public void testDigits() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -270,6 +292,7 @@ public class Spinner_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetValuesValid() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -284,6 +307,7 @@ public class Spinner_Test extends TestCase {
     assertEquals( 10, spinner.getPageIncrement() );
   }
 
+  @Test
   public void testSetValuesInvalid() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -322,6 +346,7 @@ public class Spinner_Test extends TestCase {
     assertEquals( 10, spinner.getPageIncrement() );
   }
 
+  @Test
   public void testSetValuesWithNonCrossedRanges() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -344,28 +369,31 @@ public class Spinner_Test extends TestCase {
     assertEquals( 10, spinner.getPageIncrement() );
   }
 
+  @Test
   public void testIsSerializable() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display );
     Spinner spinner = new Spinner( shell, SWT.HORIZONTAL );
     spinner.setSelection( 2 );
-    
+
     Spinner deserializedSpinner = Fixture.serializeAndDeserialize( spinner );
-    
+
     assertEquals( spinner.getSelection(), deserializedSpinner.getSelection() );
   }
 
+  @Test
   public void testAddSelectionListener() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Spinner spinner = new Spinner( shell, SWT.NONE );
 
     spinner.addSelectionListener( mock( SelectionListener.class ) );
-    
+
     assertTrue( spinner.isListening( SWT.Selection ) );
     assertTrue( spinner.isListening( SWT.DefaultSelection ) );
   }
-  
+
+  @Test
   public void testRemoveSelectionListener() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -374,30 +402,33 @@ public class Spinner_Test extends TestCase {
     spinner.addSelectionListener( listener );
 
     spinner.removeSelectionListener( listener );
-    
+
     assertFalse( spinner.isListening( SWT.Selection ) );
     assertFalse( spinner.isListening( SWT.DefaultSelection ) );
   }
 
+  @Test
   public void testAddSelectionListenerWithNullArgument() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Spinner spinner = new Spinner( shell, SWT.NONE );
-    
+
     try {
       spinner.addSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
 
+  @Test
   public void testRemoveSelectionListenerWithNullArgument() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Spinner spinner = new Spinner( shell, SWT.NONE );
-    
+
     try {
       spinner.removeSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
+
 }

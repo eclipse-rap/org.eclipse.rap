@@ -11,11 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.Date;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -42,16 +44,19 @@ import org.eclipse.swt.widgets.Widget;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class WidgetLCAUtil_Test extends TestCase {
+public class WidgetLCAUtil_Test {
 
   private Display display;
   private Shell shell;
   private Control widget;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
     display = new Display();
@@ -59,79 +64,81 @@ public class WidgetLCAUtil_Test extends TestCase {
     widget = new Button( shell, SWT.PUSH );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     display.dispose();
     Fixture.tearDown();
   }
 
+  @Test
   public void testHasChanged() {
     Text text = new Text( shell, SWT.NONE );
     // test initial behaviour, text is same as default value -> no 'change'
     text.setText( "" );
     boolean hasChanged;
     hasChanged = WidgetLCAUtil.hasChanged( text, Props.TEXT, text.getText(), "" );
-    assertEquals( false, hasChanged );
+    assertFalse( hasChanged );
     // test initial behaviour, text is different as default value -> 'change'
     text.setText( "other value" );
     hasChanged = WidgetLCAUtil.hasChanged( text, Props.TEXT, text.getText(), "" );
-    assertEquals( true, hasChanged );
+    assertTrue( hasChanged );
     // test subsequent behaviour (when already initialized)
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
     Fixture.clearPreserved();
     Fixture.preserveWidgets();
     hasChanged = WidgetLCAUtil.hasChanged( text, Props.TEXT, text.getText(), "" );
-    assertEquals( false, hasChanged );
+    assertFalse( hasChanged );
     Fixture.clearPreserved();
     Fixture.preserveWidgets();
     text.setText( "whatsoevervaluehasbeensetduringrequest" );
     hasChanged = WidgetLCAUtil.hasChanged( text, Props.TEXT, text.getText(), "" );
-    assertEquals( true, hasChanged );
+    assertTrue( hasChanged );
   }
 
+  @Test
   public void testHasChangedWidthArrays() {
     List list = new List( shell, SWT.MULTI );
 
     boolean hasChanged;
     hasChanged = WidgetLCAUtil.hasChanged( list, "items", new String[] { "a" } );
-    assertEquals( true, hasChanged );
+    assertTrue( hasChanged );
 
     list.setItems( new String[] { "a" } );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     hasChanged = WidgetLCAUtil.hasChanged( list, "items", new String[] { "a" } );
-    assertEquals( false, hasChanged );
+    assertFalse( hasChanged );
 
     list.setItems( new String[] { "a" } );
     Fixture.preserveWidgets();
     hasChanged = WidgetLCAUtil.hasChanged( list, "items", new String[] { "b" } );
-    assertEquals( true, hasChanged );
+    assertTrue( hasChanged );
 
     list.setItems( new String[] { "a" } );
     Fixture.preserveWidgets();
-    hasChanged
-      = WidgetLCAUtil.hasChanged( list, "items", new String[] { "a", "b" } );
-    assertEquals( true, hasChanged );
+    hasChanged = WidgetLCAUtil.hasChanged( list, "items", new String[] { "a", "b" } );
+    assertTrue( hasChanged );
 
     list.setItems( new String[] { "a" } );
     Fixture.preserveWidgets();
     hasChanged = WidgetLCAUtil.hasChanged( list, "items", null );
-    assertEquals( true, hasChanged );
+    assertTrue( hasChanged );
 
     list.setItems( new String[] { "a", "b", "c" } );
     list.setSelection( new int[] { 0, 1, 2 } );
     Fixture.preserveWidgets();
     hasChanged = WidgetLCAUtil.hasChanged( list, "selectionIndices", new int[] { 0, 1, 4 } );
-    assertEquals( true, hasChanged );
+    assertTrue( hasChanged );
 
     list.setItems( new String[] { "a", "b", "c" } );
     list.setSelection( new int[] { 0, 1, 2 } );
     Fixture.preserveWidgets();
     hasChanged = WidgetLCAUtil.hasChanged( list, "selectionIndices", new int[] { 0, 1, 2 } );
-    assertEquals( false, hasChanged );
+    assertFalse( hasChanged );
   }
 
+  @Test
   public void testEquals() {
     assertTrue( WidgetLCAUtil.equals( null, null ) );
     assertFalse( WidgetLCAUtil.equals( null, "1" ) );
@@ -161,6 +168,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertFalse( WidgetLCAUtil.equals( new Date[] { new Date( 3 ) }, null ) );
   }
 
+  @Test
   public void testParseFontName() {
     // IE doesn't like quoted font names (or whatever qooxdoo makes out of them)
     String systemFontName
@@ -187,6 +195,7 @@ public class WidgetLCAUtil_Test extends TestCase {
   //////////////////////////////////////////////
   // Tests for new render methods using protocol
 
+  @Test
   public void testRenderIntialBackgroundNull() {
     WidgetLCAUtil.renderBackground( widget, null );
 
@@ -194,6 +203,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "background" ) );
   }
 
+  @Test
   public void testRenderBackground() throws JSONException {
     WidgetLCAUtil.renderBackground( widget, new Color( display, 0, 16, 255 ) );
 
@@ -202,6 +212,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[0,16,255,255]", actual ) );
   }
 
+  @Test
   public void testRenderBackgroundNull() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
@@ -214,6 +225,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( widget, "background" ) );
   }
 
+  @Test
   public void testRenderBackgroundUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
@@ -226,6 +238,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "background" ) );
   }
 
+  @Test
   public void testRenderIntialBackgroundTransparent() throws JSONException {
     WidgetLCAUtil.renderBackground( widget, null, true );
 
@@ -235,6 +248,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,0,0]", actual ) );
   }
 
+  @Test
   public void testRenderBackgroundTransparencyUnchanged() {
     widget = new Button( shell, SWT.CHECK );
     shell.setBackgroundMode( SWT.INHERIT_DEFAULT );
@@ -250,6 +264,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "background" ) );
   }
 
+  @Test
   public void testRenderBackgroundNoMoreTransparent() throws JSONException {
     widget = new Button( shell, SWT.CHECK );
     shell.setBackgroundMode( SWT.INHERIT_DEFAULT );
@@ -267,6 +282,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[0,16,255,255]", actual ) );
   }
 
+  @Test
   public void testRenderBackgroundReset() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
@@ -279,6 +295,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( widget, "background" ) );
   }
 
+  @Test
   public void testRenderIntialForeground() {
     ControlLCAUtil.renderForeground( widget );
 
@@ -287,6 +304,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "foreground" ) );
   }
 
+  @Test
   public void testRenderForeground() throws JSONException {
     widget.setForeground( new Color( display, 0, 16, 255 ) );
     ControlLCAUtil.renderForeground( widget );
@@ -298,6 +316,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[0,16,255,255]", actual ) );
   }
 
+  @Test
   public void testRenderForegroundUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
@@ -310,6 +329,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "foreground" ) );
   }
 
+  @Test
   public void testRenderInitialCustomVariant() {
     WidgetLCAUtil.renderCustomVariant( widget );
 
@@ -317,6 +337,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "customVariant" ) );
   }
 
+  @Test
   public void testRenderCustomVariant() {
     widget.setData( RWT.CUSTOM_VARIANT, "my_variant" );
     WidgetLCAUtil.renderCustomVariant( widget );
@@ -325,6 +346,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( "variant_my_variant", message.findSetProperty( widget, "customVariant" ) );
   }
 
+  @Test
   public void testRenderCustomVariantUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
@@ -337,6 +359,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "customVariant" ) );
   }
 
+  @Test
   public void testRenderInitialListenHelp() {
     WidgetLCAUtil.renderListenHelp( widget );
 
@@ -344,6 +367,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findListenOperation( widget, "Help" ) );
   }
 
+  @Test
   public void testRenderListenHelp() {
     widget.addHelpListener( mock( HelpListener.class ) );
     WidgetLCAUtil.renderListenHelp( widget );
@@ -352,6 +376,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( widget, "Help" ) );
   }
 
+  @Test
   public void testRenderListenHelpUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
@@ -364,6 +389,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findListenOperation( widget, "Help" ) );
   }
 
+  @Test
   public void testRenderListenHelpRemoved() {
     HelpListener listener = mock( HelpListener.class );
     Fixture.markInitialized( display );
@@ -378,6 +404,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( widget, "Help" ) );
   }
 
+  @Test
   public void testRenderBackgroundGradient() throws JSONException {
     Control control = new Composite( shell, SWT.NONE );
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
@@ -402,6 +429,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( Boolean.TRUE, gradient.get( 2 ) );
   }
 
+  @Test
   public void testRenderBackgroundGradientHorizontal() throws JSONException {
     Control control = new Composite( shell, SWT.NONE );
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
@@ -426,6 +454,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, gradient.get( 2 ) );
   }
 
+  @Test
   public void testRenderBackgroundGradientUnchanged() {
     Control control = new Composite( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -446,6 +475,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "backgroundGradient" ) );
   }
 
+  @Test
   public void testResetBackgroundGradient() {
     Control control = new Composite( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -467,6 +497,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( control, "backgroundGradient" ) );
   }
 
+  @Test
   public void testRenderRoundedBorder() throws JSONException {
     Widget widget = new Composite( shell, SWT.NONE );
     Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
@@ -487,6 +518,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( 8, border.getInt( 5 ) );
   }
 
+  @Test
   public void testRenderRoundedBorderUnchanged() {
     Widget widget = new Composite( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -503,6 +535,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "roundedBorder" ) );
   }
 
+  @Test
   public void testResetRoundedBorder() {
     Widget widget = new Composite( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -520,6 +553,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( widget, "roundedBorder" ) );
   }
 
+  @Test
   public void testRenderInitialMenu() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
@@ -530,6 +564,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( 0, message.getOperationCount() );
   }
 
+  @Test
   public void testRenderMenu() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
@@ -542,6 +577,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( WidgetUtil.getId( menu ), message.findSetProperty( widget, "menu" ) );
   }
 
+  @Test
   public void testRenderMenuReset() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );

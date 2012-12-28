@@ -10,7 +10,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -30,15 +32,18 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class GCOperationWriter_Test extends TestCase {
+public class GCOperationWriter_Test {
 
   private Display display;
   private Canvas canvas;
   private GC gc;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
     display = new Display();
@@ -47,11 +52,12 @@ public class GCOperationWriter_Test extends TestCase {
     gc = new GC( canvas );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testSetLineWidth() {
     gc.setLineWidth( 13 );
 
@@ -59,6 +65,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"lineWidth\",13", getOperation( 0, ops ) );
   }
 
+  @Test
   public void testSetLineWidthZero() {
     gc.setLineWidth( 10 );
     gc.setLineWidth( 0 );
@@ -68,6 +75,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"lineWidth\",1", getOperation( 1, ops ) );
   }
 
+  @Test
   public void testForeground() {
     gc.setForeground( new Color( display, 155, 11, 24 ) );
 
@@ -75,6 +83,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"strokeStyle\",[155,11,24,255]", getOperation( 0, ops ) );
   }
 
+  @Test
   public void testBackground() {
     gc.setBackground( new Color( display, 155, 11, 24 ) );
 
@@ -82,6 +91,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"fillStyle\",[155,11,24,255]", getOperation( 0, ops ) );
   }
 
+  @Test
   public void testAlpha() {
     gc.setAlpha( 100 );
 
@@ -89,6 +99,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"globalAlpha\",0.39", getOperation( 0, ops ) );
   }
 
+  @Test
   public void testLineCapFlat() {
     gc.setLineCap( SWT.CAP_ROUND );
     gc.setLineCap( SWT.CAP_FLAT );
@@ -97,6 +108,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"lineCap\",\"butt\"", getOperation( 1, ops ) );
   }
 
+  @Test
   public void testLineCapRound() {
     gc.setLineCap( SWT.CAP_ROUND );
 
@@ -104,6 +116,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"lineCap\",\"round\"", getOperation( 0, ops ) );
   }
 
+  @Test
   public void testLineCapSquare() {
     gc.setLineCap( SWT.CAP_SQUARE );
 
@@ -111,6 +124,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"lineCap\",\"square\"", getOperation( 0, ops ) );
   }
 
+  @Test
   public void testLineJoinBevel() {
     gc.setLineJoin( SWT.JOIN_BEVEL );
 
@@ -118,6 +132,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"lineJoin\",\"bevel\"", getOperation( 0, ops ) );
   }
 
+  @Test
   public void testLineJoinMiter() {
     gc.setLineJoin( SWT.JOIN_ROUND );
     gc.setLineJoin( SWT.JOIN_MITER );
@@ -126,6 +141,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"lineJoin\",\"miter\"", getOperation( 1, ops ) );
   }
 
+  @Test
   public void testLineJoinRound() {
     gc.setLineJoin( SWT.JOIN_ROUND );
 
@@ -133,6 +149,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"lineJoin\",\"round\"", getOperation( 0, ops ) );
   }
 
+  @Test
   public void testFont() {
     gc.setFont( new Font( display, "Arial", 12, SWT.BOLD ) );
 
@@ -140,6 +157,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"font\",[[\"Arial\"],12,true,false]", getOperation( 0, ops ) );
   }
 
+  @Test
   public void testDrawLine() {
     gc.setLineWidth( 2 );
     gc.drawLine( 10, 11, 20, 21 );
@@ -151,6 +169,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"stroke\"", getOperation( 4, ops ) );
   }
 
+  @Test
   public void testDrawLineOffset() {
     gc.drawLine( 10, 11, 20, 21 );
 
@@ -161,6 +180,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"stroke\"", getOperation( 3, ops ) );
   }
 
+  @Test
   public void testDrawPoint() {
     gc.setForeground( new Color( display, 255, 0, 7 ) );
     gc.drawPoint( 27, 44 );
@@ -176,6 +196,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"restore\"", getOperation( 7, ops ) );
   }
 
+  @Test
   public void testDrawRectangle() {
     gc.setLineWidth( 2 );
     gc.drawRectangle( 10, 20, 55, 56 );
@@ -186,6 +207,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"stroke\"", getOperation( 3, ops ) );
   }
 
+  @Test
   public void testFillRectangle() {
     gc.setLineWidth( 2 );
     gc.fillRectangle( 10, 20, 55, 56 );
@@ -196,6 +218,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"fill\"", getOperation( 3, ops ) );
   }
 
+  @Test
   public void testDrawRectangleOffset() {
     gc.setLineWidth( 1 );
     gc.drawRectangle( 10, 20, 55, 56 );
@@ -206,6 +229,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"stroke\"", getOperation( 3, ops ) );
   }
 
+  @Test
   public void testDrawPolyLine() {
     gc.setLineWidth( 2 );
     gc.drawPolyline( new int[]{ 10, 20, 30, 40, 50, 60, 90, 100 } );
@@ -219,6 +243,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"stroke\"", getOperation( 6, ops ) );
   }
 
+  @Test
   public void testDrawPolygon() {
     gc.setLineWidth( 2 );
     gc.drawPolygon( new int[]{ 10, 20, 30, 40, 50, 60, 90, 100 } );
@@ -233,6 +258,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"stroke\"", getOperation( 7, ops ) );
   }
 
+  @Test
   public void testfillPolygon() {
     gc.setLineWidth( 2 );
     gc.fillPolygon( new int[]{ 10, 20, 30, 40, 50, 60, 90, 100 } );
@@ -247,6 +273,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"fill\"", getOperation( 7, ops ) );
   }
 
+  @Test
   public void testDrawPolyLineOffset() {
     gc.drawPolyline( new int[]{ 10, 20, 30, 40, 50, 60, 90, 100 } );
 
@@ -259,6 +286,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"stroke\"", getOperation( 5, ops ) );
   }
 
+  @Test
   public void testDrawRoundRect() {
     gc.setLineWidth( 2 );
     gc.drawRoundRectangle( 10, 20, 100, 200, 1, 3 );
@@ -277,6 +305,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"stroke\"", getOperation( 11, ops ) );
   }
 
+  @Test
   public void testDrawRoundRectOffset() {
     gc.setLineWidth( 1 );
     gc.drawRoundRectangle( 10, 20, 100, 200, 1, 3 );
@@ -295,6 +324,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"stroke\"", getOperation( 11, ops ) );
   }
 
+  @Test
   public void testFillRoundRect() {
     gc.setLineWidth( 2 );
     gc.fillRoundRectangle( 10, 20, 100, 200, 1, 3 );
@@ -313,6 +343,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"fill\"", getOperation( 11, ops ) );
   }
 
+  @Test
   public void testFillGradientRectangleVertical() {
     gc.setLineWidth( 2 );
     gc.setForeground( new Color( display, new RGB( 0, 10, 20 ) ) );
@@ -331,6 +362,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"restore\"", getOperation( 11, ops ) );
   }
 
+  @Test
   public void testFillGradientRectangleHorizontal() {
     gc.setLineWidth( 2 );
     gc.setForeground( new Color( display, new RGB( 0, 10, 20 ) ) );
@@ -349,6 +381,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"restore\"", getOperation( 11, ops ) );
   }
 
+  @Test
   public void testFillGradientRectangleVerticalSwapped() {
     gc.setLineWidth( 2 );
     gc.setForeground( new Color( display, new RGB( 0, 10, 20 ) ) );
@@ -367,6 +400,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"restore\"", getOperation( 11, ops ) );
   }
 
+  @Test
   public void testFillGradientRectangleHorizontalSwapped() {
     gc.setLineWidth( 2 );
     gc.setForeground( new Color( display, new RGB( 0, 10, 20 ) ) );
@@ -385,6 +419,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"restore\"", getOperation( 11, ops ) );
   }
 
+  @Test
   public void testDrawArc() {
     gc.setLineWidth( 2 );
     gc.drawArc( 10, 20, 100, 200, 50, 100 );
@@ -395,6 +430,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"stroke\"", getOperation( 3, ops ) );
   }
 
+  @Test
   public void testDrawArcOffset() {
     gc.setLineWidth( 1 );
     gc.drawArc( 10, 20, 100, 200, 50, 100 );
@@ -405,6 +441,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"stroke\"", getOperation( 3, ops ) );
   }
 
+  @Test
   public void testFillArc() {
     gc.setLineWidth( 2 );
     gc.fillArc( 10, 20, 100, 200, 50, 100 );
@@ -416,6 +453,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"fill\"", getOperation( 4, ops ) );
   }
 
+  @Test
   public void testFillArcClockwise() {
     gc.setLineWidth( 2 );
     gc.fillArc( 10, 20, 100, 200, 50, -100 );
@@ -427,6 +465,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"fill\"", getOperation( 4, ops ) );
   }
 
+  @Test
   public void testDrawImage() {
     Image image = Graphics.getImage( Fixture.IMAGE_50x100, canvas.getClass().getClassLoader() );
     String imageLocation = ImageFactory.getImagePath( image );
@@ -438,6 +477,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( expected, getOperation( 0, ops ) );
   }
 
+  @Test
   public void testDrawImagePart() {
     Image image = Graphics.getImage( Fixture.IMAGE_50x100, canvas.getClass().getClassLoader() );
     String imageLocation = ImageFactory.getImagePath( image );
@@ -449,6 +489,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( expected, getOperation( 0, ops ) );
   }
 
+  @Test
   public void testDrawText() {
     gc.drawText( "foo", 30, 34, true );
 
@@ -456,6 +497,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"strokeText\",\"foo\",false,true,true,30,34", getOperation( 0, ops ) );
   }
 
+  @Test
   public void testDrawTextWithMenmonic() {
     gc.drawText( "foo", 30, 34, SWT.DRAW_MNEMONIC );
 
@@ -463,6 +505,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"fillText\",\"foo\",true,false,false,30,34", getOperation( 0, ops ) );
   }
 
+  @Test
   public void testDrawTextWithDelimiter() {
     gc.drawText( "foo", 30, 34, SWT.DRAW_DELIMITER );
 
@@ -470,6 +513,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"fillText\",\"foo\",false,true,false,30,34", getOperation( 0, ops ) );
   }
 
+  @Test
   public void testDrawTextWithTab() {
     gc.drawText( "foo", 30, 34, SWT.DRAW_TAB );
 
@@ -477,6 +521,7 @@ public class GCOperationWriter_Test extends TestCase {
     assertEquals( "\"fillText\",\"foo\",false,false,true,30,34", getOperation( 0, ops ) );
   }
 
+  @Test
   public void testFillText() {
     gc.drawText( "foo", 30, 34 );
 
@@ -485,6 +530,7 @@ public class GCOperationWriter_Test extends TestCase {
   }
 
   // bug 351216: [GC] Throws unexpected "Graphic is diposed" exception
+  @Test
   public void testWriteColorOperationWithDisposedColor() {
     Color color = new Color( canvas.getDisplay(), 1, 2, 3 );
     gc.setForeground( color );
@@ -495,6 +541,7 @@ public class GCOperationWriter_Test extends TestCase {
   }
 
   // bug 351216: [GC] Throws unexpected "Graphic is diposed" exception
+  @Test
   public void testWriteFontOperationWithDisposedFont() {
     Font font = new Font( canvas.getDisplay(), "font-name", 1, SWT.NORMAL );
     gc.setFont( font );
@@ -505,6 +552,7 @@ public class GCOperationWriter_Test extends TestCase {
   }
 
   // bug 351216: [GC] Throws unexpected "Graphic is diposed" exception
+  @Test
   public void testWriteImageOperationWithDisposedImage() {
     Image image = new Image( canvas.getDisplay(), 100, 100 );
     gc.drawImage( image, 0, 0 );

@@ -10,24 +10,29 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestLogger;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
+import org.junit.Test;
 
 
-public class ServletLog_Test extends TestCase {
+public class ServletLog_Test {
 
   private static final String LOG_MESSAGE = "gabagabahey";
 
+  @Test
   public void testLogWithContext() {
     final String[] message = { null };
     final Throwable[] throwable= { null };
@@ -52,6 +57,7 @@ public class ServletLog_Test extends TestCase {
     Fixture.tearDown();
   }
 
+  @Test
   public void testLogWithoutContext() {
     PrintStream bufferedSystemErr = System.err;
     ByteArrayOutputStream capturedSystemErr = new ByteArrayOutputStream();
@@ -61,7 +67,8 @@ public class ServletLog_Test extends TestCase {
     assertTrue( capturedSystemErr.size() > 0 );
     System.setErr( bufferedSystemErr );
   }
-  
+
+  @Test
   public void testLogWithoutContextWithNullArguments() {
     PrintStream bufferedSystemErr = System.err;
     ByteArrayOutputStream capturedSystemErr = new ByteArrayOutputStream();
@@ -78,4 +85,5 @@ public class ServletLog_Test extends TestCase {
     }
     System.setErr( bufferedSystemErr );
   }
+
 }

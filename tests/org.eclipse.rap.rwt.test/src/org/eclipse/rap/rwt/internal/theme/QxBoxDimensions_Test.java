@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,17 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
 
 
-public class QxBoxDimensions_Test extends TestCase {
+public class QxBoxDimensions_Test {
 
+  @Test
   public void testIllegalArguments() {
     try {
       QxBoxDimensions.valueOf( ( String )null );
@@ -43,6 +49,7 @@ public class QxBoxDimensions_Test extends TestCase {
     }
   }
 
+  @Test
   public void testZero() {
     assertSame( QxBoxDimensions.ZERO, QxBoxDimensions.valueOf( "0" ) );
     assertSame( QxBoxDimensions.ZERO, QxBoxDimensions.valueOf( "0 0" ) );
@@ -52,6 +59,7 @@ public class QxBoxDimensions_Test extends TestCase {
     assertEquals( 0, QxBoxDimensions.ZERO.left );
   }
 
+  @Test
   public void test1Value() {
     QxBoxDimensions dim23px = QxBoxDimensions.valueOf( "23px" );
     assertEquals( 23, dim23px.top );
@@ -65,6 +73,7 @@ public class QxBoxDimensions_Test extends TestCase {
     assertEquals( -1, dimNeg1.left );
   }
 
+  @Test
   public void test2Values() {
     QxBoxDimensions dimensions = QxBoxDimensions.valueOf( "0 2" );
     assertEquals( 0, dimensions.top );
@@ -73,6 +82,7 @@ public class QxBoxDimensions_Test extends TestCase {
     assertEquals( 2, dimensions.left );
   }
 
+  @Test
   public void test3Values() {
     QxBoxDimensions dimensions = QxBoxDimensions.valueOf( "1 2 3px" );
     assertEquals( 1, dimensions.top );
@@ -81,6 +91,7 @@ public class QxBoxDimensions_Test extends TestCase {
     assertEquals( 2, dimensions.left );
   }
 
+  @Test
   public void test4Values() {
     QxBoxDimensions dimensions = QxBoxDimensions.valueOf( "0px 1px 2px 3px" );
     assertEquals( 0, dimensions.top );
@@ -89,6 +100,7 @@ public class QxBoxDimensions_Test extends TestCase {
     assertEquals( 3, dimensions.left );
   }
 
+  @Test
   public void testDefaultString() {
     QxBoxDimensions dim0123 = QxBoxDimensions.create( 0, 1, 2, 3 );
     assertEquals( "0px 1px 2px 3px", dim0123.toDefaultString() );
@@ -100,15 +112,18 @@ public class QxBoxDimensions_Test extends TestCase {
     assertEquals( "1px", dim1.toDefaultString() );
   }
 
+  @Test
   public void testHashCode() {
     QxBoxDimensions dim1 = QxBoxDimensions.create( 1, 1, 0, 0 );
     QxBoxDimensions dim2 = QxBoxDimensions.create( 0, 25, 0, 0 );
     assertTrue( dim1.hashCode() != dim2.hashCode() );
   }
 
+  @Test
   public void testHashCode2() {
     QxBoxDimensions dim1 = QxBoxDimensions.create( 0, 0, 1, 0 );
     QxBoxDimensions dim2 = QxBoxDimensions.create( 0, 0, 0, 1 );
     assertTrue( dim1.hashCode() != dim2.hashCode() );
   }
+
 }

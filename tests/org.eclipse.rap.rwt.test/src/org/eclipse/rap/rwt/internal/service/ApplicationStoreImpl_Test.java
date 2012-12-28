@@ -10,20 +10,27 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ApplicationStoreImpl_Test extends TestCase {
+public class ApplicationStoreImpl_Test {
+
   private static final String VALUE = "value";
   private static final String KEY = "key";
 
   private ApplicationStoreImpl applicationStore;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     applicationStore = new ApplicationStoreImpl();
   }
 
+  @Test
   public void testSetAttribute_failsWithNullName() {
     try {
       applicationStore.setAttribute( null, new Object() );
@@ -32,12 +39,14 @@ public class ApplicationStoreImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSetAttribute_succeedsWithNullValue() {
     applicationStore.setAttribute( "name", null );
 
     assertNull( applicationStore.getAttribute( "name" ) );
   }
 
+  @Test
   public void testGetAttribute() {
     applicationStore.setAttribute( KEY, VALUE );
 
@@ -46,6 +55,7 @@ public class ApplicationStoreImpl_Test extends TestCase {
     assertSame( VALUE, attribute );
   }
 
+  @Test
   public void testGetAttribute_failsWithNullName() {
     try {
       applicationStore.getAttribute( null );
@@ -54,6 +64,7 @@ public class ApplicationStoreImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testRemoveAttribute() {
     applicationStore.setAttribute( KEY, VALUE );
 
@@ -62,6 +73,7 @@ public class ApplicationStoreImpl_Test extends TestCase {
     assertSame( null, applicationStore.getAttribute( KEY ) );
   }
 
+  @Test
   public void testRemoveAttribute_failsWithNullName() {
     try {
       applicationStore.removeAttribute( null );
@@ -70,6 +82,7 @@ public class ApplicationStoreImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testReset() {
     applicationStore.setAttribute( KEY, VALUE );
 

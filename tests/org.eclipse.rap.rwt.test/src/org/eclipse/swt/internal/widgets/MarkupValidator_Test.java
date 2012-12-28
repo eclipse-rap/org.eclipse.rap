@@ -10,18 +10,24 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class MarkupValidator_Test extends TestCase {
+public class MarkupValidator_Test {
 
   private MarkupValidator validator;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     validator = new MarkupValidator();
   }
 
+  @Test
   public void testValidate() {
     String markup = "<b>foo</b><br/><span style=\"background-color: blue\">bar</span>";
 
@@ -33,6 +39,7 @@ public class MarkupValidator_Test extends TestCase {
     }
   }
 
+  @Test
   public void testValidate_NotWellFormedMarkup() {
     String markup = "<b>foo<br/><i>bar</i>";
 
@@ -45,6 +52,7 @@ public class MarkupValidator_Test extends TestCase {
     }
   }
 
+  @Test
   public void testValidate_UnsupportedElement() {
     String markup = "<ul>foo</ul><br/><i>bar</i>";
 
@@ -57,6 +65,7 @@ public class MarkupValidator_Test extends TestCase {
     }
   }
 
+  @Test
   public void testValidate_UnsupportedAttribute() {
     String markup = "<b>foo</b><br/><span href=\"abc\">bar</span>";
 
@@ -70,6 +79,7 @@ public class MarkupValidator_Test extends TestCase {
     }
   }
 
+  @Test
   public void testValidate_MissingMandatoryAttribute() {
     String markup = "<img src=\"image.png\" width=\"10\" />";
     try {
@@ -83,6 +93,7 @@ public class MarkupValidator_Test extends TestCase {
     }
   }
 
+  @Test
   public void testValidate_InvalidIntAttribute() {
     String markup = "<img src=\"image.png\" width=\"10\" height=\"abc\" />";
     try {

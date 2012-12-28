@@ -13,6 +13,10 @@
 package org.eclipse.swt.internal.widgets.listkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -20,14 +24,12 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.Arrays;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -51,9 +53,12 @@ import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-public class ListLCA_Test extends TestCase {
+public class ListLCA_Test {
 
   private Display display;
   private Shell shell;
@@ -62,8 +67,8 @@ public class ListLCA_Test extends TestCase {
   private ScrollBar hScroll;
   private ScrollBar vScroll;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
@@ -74,11 +79,12 @@ public class ListLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ControlLCATestUtil.testActivateListener( list );
     ControlLCATestUtil.testFocusListener( list );
@@ -89,6 +95,7 @@ public class ListLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( list );
   }
 
+  @Test
   public void testPreserveValues() {
     Fixture.markInitialized( display );
     // control: enabled
@@ -158,6 +165,7 @@ public class ListLCA_Test extends TestCase {
     assertEquals( "some text", list.getToolTipText() );
   }
 
+  @Test
   public void testReadSelectionForSingle() {
     createListItems( 3 );
 
@@ -167,6 +175,7 @@ public class ListLCA_Test extends TestCase {
     assertEquals( 0, list.getSelectionIndex() );
   }
 
+  @Test
   public void testReadSelectionForSingle_DeselectAll() {
     createListItems( 3 );
     list.setSelection( 1 );
@@ -177,6 +186,7 @@ public class ListLCA_Test extends TestCase {
     assertEquals( -1, list.getSelectionIndex() );
   }
 
+  @Test
   public void testReadSelectionForMulti() {
     list = new List( shell, SWT.MULTI );
     createListItems( 3 );
@@ -188,6 +198,7 @@ public class ListLCA_Test extends TestCase {
     assertTrue( Arrays.equals( expected, list.getSelectionIndices() ) );
   }
 
+  @Test
   public void testSelectionEvent() {
     createListItems( 2 );
     SelectionListener listener = mock( SelectionListener.class );
@@ -206,9 +217,10 @@ public class ListLCA_Test extends TestCase {
     assertEquals( 0, event.y );
     assertEquals( 0, event.width );
     assertEquals( 0, event.height );
-    assertEquals( true, event.doit );
+    assertTrue( event.doit );
   }
 
+  @Test
   public void testReadFocusedIndex() {
     createListItems( 3 );
     setFocusIndex( list, 0 );
@@ -220,6 +232,7 @@ public class ListLCA_Test extends TestCase {
     assertEquals( 1, list.getFocusIndex() );
   }
 
+  @Test
   public void testReadFocusedIndex_Reset() {
     createListItems( 3 );
     setFocusIndex( list, 0 );
@@ -230,6 +243,7 @@ public class ListLCA_Test extends TestCase {
     assertEquals( -1, list.getFocusIndex() );
   }
 
+  @Test
   public void testReadFocusedIndex_OutOfRange() {
     createListItems( 3 );
     setFocusIndex( list, 0 );
@@ -240,6 +254,7 @@ public class ListLCA_Test extends TestCase {
     assertEquals( 0, list.getFocusIndex() );
   }
 
+  @Test
   public void testReadTopIndex() {
     list.setSize( 100, 100 );
     createListItems( 10 );
@@ -250,6 +265,7 @@ public class ListLCA_Test extends TestCase {
     assertEquals( 5, list.getTopIndex() );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( list );
 
@@ -260,6 +276,7 @@ public class ListLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "SINGLE" ) );
   }
 
+  @Test
   public void testRenderCreateWithMulti() throws IOException {
     List list = new List( shell, SWT.MULTI );
 
@@ -271,6 +288,7 @@ public class ListLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "MULTI" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( list );
 
@@ -279,6 +297,7 @@ public class ListLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( list.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderInitialItems() throws IOException {
     lca.render( list );
 
@@ -287,6 +306,7 @@ public class ListLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "items" ) == -1 );
   }
 
+  @Test
   public void testRenderItems() throws IOException, JSONException {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     lca.renderChanges( list );
@@ -297,6 +317,7 @@ public class ListLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderItemsUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
@@ -309,6 +330,7 @@ public class ListLCA_Test extends TestCase {
     assertNull( message.findSetOperation( list, "items" ) );
   }
 
+  @Test
   public void testRenderInitialSelectionIndices() throws IOException {
     lca.render( list );
 
@@ -317,6 +339,7 @@ public class ListLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "selectionIndices" ) == -1 );
   }
 
+  @Test
   public void testRenderSelectionIndices() throws IOException, JSONException {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
 
@@ -328,6 +351,7 @@ public class ListLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[1]", actual ) );
   }
 
+  @Test
   public void testRenderSelectionIndicesWithMulti() throws IOException, JSONException {
     List list = new List( shell, SWT.MULTI );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
@@ -340,6 +364,7 @@ public class ListLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[1,2]", actual ) );
   }
 
+  @Test
   public void testRenderSelectionIndicesUnchanged() throws IOException {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     Fixture.markInitialized( display );
@@ -353,6 +378,7 @@ public class ListLCA_Test extends TestCase {
     assertNull( message.findSetOperation( list, "selectionIndices" ) );
   }
 
+  @Test
   public void testRenderInitialTopIndex() throws IOException {
     lca.render( list );
 
@@ -361,6 +387,7 @@ public class ListLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "topIndex" ) == -1 );
   }
 
+  @Test
   public void testRenderTopIndex() throws IOException {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
 
@@ -371,6 +398,7 @@ public class ListLCA_Test extends TestCase {
     assertEquals( Integer.valueOf( 2 ), message.findSetProperty( list, "topIndex" ) );
   }
 
+  @Test
   public void testRenderTopIndexUnchanged() throws IOException {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     Fixture.markInitialized( display );
@@ -386,6 +414,7 @@ public class ListLCA_Test extends TestCase {
     assertNull( message.findSetOperation( list, "topIndex" ) );
   }
 
+  @Test
   public void testRenderInitialFocusIndex() throws IOException {
     lca.render( list );
 
@@ -394,6 +423,7 @@ public class ListLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "focusIndex" ) == -1 );
   }
 
+  @Test
   public void testRenderFocusIndex() throws IOException {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
 
@@ -404,6 +434,7 @@ public class ListLCA_Test extends TestCase {
     assertEquals( Integer.valueOf( 2 ), message.findSetProperty( list, "focusIndex" ) );
   }
 
+  @Test
   public void testRenderFocusIndexUnchanged() throws IOException {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     Fixture.markInitialized( display );
@@ -417,6 +448,7 @@ public class ListLCA_Test extends TestCase {
     assertNull( message.findSetOperation( list, "focusIndex" ) );
   }
 
+  @Test
   public void testRenderInitialScrollBarsVisible() throws IOException {
     lca.render( list );
 
@@ -425,6 +457,7 @@ public class ListLCA_Test extends TestCase {
     assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 
+  @Test
   public void testRenderScrollBarsVisible_Horizontal() throws IOException {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     list.setSize( 20, 100 );
@@ -437,6 +470,7 @@ public class ListLCA_Test extends TestCase {
     assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 
+  @Test
   public void testRenderScrollBarsVisible_Vertical() throws IOException {
     list.setSize( 100, 20 );
 
@@ -448,6 +482,7 @@ public class ListLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( vScroll, "visibility" ) );
   }
 
+  @Test
   public void testRenderScrollBarsVisibleUnchanged() throws IOException {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     list.setSize( 20, 20 );
@@ -465,6 +500,7 @@ public class ListLCA_Test extends TestCase {
     assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 
+  @Test
   public void testRenderInitialItemDimensions() throws IOException {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
 
@@ -474,6 +510,7 @@ public class ListLCA_Test extends TestCase {
     assertNotNull( message.findSetOperation( list, "itemDimensions" ) );
   }
 
+  @Test
   public void testRenderItemDimensions() throws IOException, JSONException {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     lca.renderChanges( list );
@@ -483,6 +520,7 @@ public class ListLCA_Test extends TestCase {
     assertEquals( list.getItemHeight(), actual.getInt( 1 ) );
   }
 
+  @Test
   public void testRenderItemDimensionsUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
@@ -495,6 +533,7 @@ public class ListLCA_Test extends TestCase {
     assertNull( message.findSetOperation( list, "itemDimensions" ) );
   }
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
@@ -508,6 +547,7 @@ public class ListLCA_Test extends TestCase {
     assertNull( message.findListenOperation( list, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderRemoveSelectionListener() throws Exception {
     Listener listener = mock( Listener.class );
     list.addListener( SWT.Selection, listener );
@@ -523,6 +563,7 @@ public class ListLCA_Test extends TestCase {
     assertNull( message.findListenOperation( list, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderAddDefaultSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
@@ -536,6 +577,7 @@ public class ListLCA_Test extends TestCase {
     assertNull( message.findListenOperation( list, "Selection" ) );
   }
 
+  @Test
   public void testRenderRemoveDefaultSelectionListener() throws Exception {
     Listener listener = mock( Listener.class );
     list.addListener( SWT.DefaultSelection, listener );
@@ -551,6 +593,7 @@ public class ListLCA_Test extends TestCase {
     assertNull( message.findListenOperation( list, "Selection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
@@ -565,6 +608,7 @@ public class ListLCA_Test extends TestCase {
     assertNull( message.findListenOperation( list, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderMarkupEnabled() throws IOException {
     list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
 

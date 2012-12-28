@@ -10,13 +10,16 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import javax.servlet.http.HttpServletRequest;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
@@ -24,29 +27,34 @@ import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ClientSelector_Test extends TestCase {
+public class ClientSelector_Test {
 
   private ClientSelector clientSelector;
   private UISession uiSession;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     uiSession = new UISessionImpl( new TestSession() );
     clientSelector = new ClientSelector();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testNoClientSelectedByDefault() {
     assertNull( clientSelector.getSelectedClient( uiSession ) );
   }
 
+  @Test
   public void testSelectsMatchingClient() {
     Client client = mock( Client.class );
     clientSelector.addClientProvider( mockClientProvider( true, client ) );
@@ -56,6 +64,7 @@ public class ClientSelector_Test extends TestCase {
     assertSame( client, clientSelector.getSelectedClient( uiSession ) );
   }
 
+  @Test
   public void testSelectFailsWithoutClientProviders() {
     try {
       clientSelector.selectClient( mockRequest(), uiSession );
@@ -65,6 +74,7 @@ public class ClientSelector_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSelectFailsWithoutMatchingClientProviders() {
     clientSelector.addClientProvider( mockClientProvider( false, null ) );
 
@@ -76,6 +86,7 @@ public class ClientSelector_Test extends TestCase {
     }
   }
 
+  @Test
   public void testSelectsFirstMatchingClient() {
     Client expected = mock( Client.class );
     clientSelector.addClientProvider( mockClientProvider( false, null ) );
@@ -87,6 +98,7 @@ public class ClientSelector_Test extends TestCase {
     assertSame( expected, clientSelector.getSelectedClient( uiSession ) );
   }
 
+  @Test
   public void testActivateInstallsWebClientProvider() {
     clientSelector.activate();
 
@@ -95,6 +107,7 @@ public class ClientSelector_Test extends TestCase {
     assertTrue( clientSelector.getSelectedClient( uiSession ) instanceof WebClient );
   }
 
+  @Test
   public void testWebClientDoesNotOverrideOthers() {
     Client client = mock( Client.class );
     clientSelector.addClientProvider( mockClientProvider( true, client ) );
@@ -105,6 +118,7 @@ public class ClientSelector_Test extends TestCase {
     assertSame( client, clientSelector.getSelectedClient( uiSession ) );
   }
 
+  @Test
   public void testFallbackToWebClient() {
     clientSelector.addClientProvider( mockClientProvider( false, null ) );
     clientSelector.activate();
@@ -114,6 +128,7 @@ public class ClientSelector_Test extends TestCase {
     assertTrue( clientSelector.getSelectedClient( uiSession ) instanceof WebClient );
   }
 
+  @Test
   public void testCannotActivateTwice() {
     clientSelector.activate();
     try {
@@ -124,6 +139,7 @@ public class ClientSelector_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCannotAddClientProviderAfterActivation() {
     clientSelector.activate();
     try {

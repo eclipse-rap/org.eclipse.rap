@@ -11,10 +11,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.css.StyleRule;
@@ -22,21 +26,27 @@ import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ThemeManager_Test extends TestCase {
+public class ThemeManager_Test {
 
   private ThemeManager manager;
 
-  protected void setUp() {
+  @Before
+  public void setUp() {
     manager = new ThemeManager();
     Fixture.setUp();
   }
 
-  protected void tearDown() {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testDefaultThemeableWidgetsBeforeActivation() {
     ThemeableWidget[] allThemeableWidgets = manager.getAllThemeableWidgets();
 
@@ -44,6 +54,7 @@ public class ThemeManager_Test extends TestCase {
     assertEquals( Widget.class, allThemeableWidgets[ 0 ].widget );
   }
 
+  @Test
   public void testFallbackThemeBeforeActivation() {
     Theme fallbackTheme = manager.getTheme( ThemeManager.FALLBACK_THEME_ID );
 
@@ -51,6 +62,7 @@ public class ThemeManager_Test extends TestCase {
     assertEquals( "RAP Fallback Theme", fallbackTheme.getName() );
   }
 
+  @Test
   public void testRegisterTheme() {
     StyleSheet emptyStyleSheet = new StyleSheet( new StyleRule[ 0 ] );
     Theme customTheme = new Theme( "custom.id", "foo", emptyStyleSheet );
@@ -62,6 +74,7 @@ public class ThemeManager_Test extends TestCase {
     assertSame( customTheme, manager.getTheme( "custom.id" ) );
   }
 
+  @Test
   public void testRegisterThemeTwice() {
     StyleSheet emptyStyleSheet = new StyleSheet( new StyleRule[ 0 ] );
     Theme theme = new Theme( "id1", "foo", emptyStyleSheet );
@@ -73,6 +86,7 @@ public class ThemeManager_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetThemeableWidget() {
     manager.activate();
     ThemeableWidget themeableWidget = manager.getThemeableWidget( Button.class );
@@ -83,6 +97,7 @@ public class ThemeManager_Test extends TestCase {
     assertTrue( themeableWidget.elements.length > 0 );
   }
 
+  @Test
   public void testDefaultThemeInitialized() {
     manager.initialize();
     manager.activate();
@@ -91,6 +106,7 @@ public class ThemeManager_Test extends TestCase {
     assertTrue( defaultTheme.getValuesMap().getAllValues().length > 0 );
   }
 
+  @Test
   public void testCustomAndDefaultThemeInitialized() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
@@ -104,6 +120,7 @@ public class ThemeManager_Test extends TestCase {
     assertTrue( customTheme.getValuesMap().getAllValues().length > 0 );
   }
 
+  @Test
   public void testActivateAndDeactivate() {
     int beforeActivate = getFallbackTheme().getStyleSheet().getStyleRules().length;
     manager.activate();
@@ -116,6 +133,7 @@ public class ThemeManager_Test extends TestCase {
     assertEquals( 0, afterDeactivate );
   }
 
+  @Test
   public void testGetAppearances() {
     manager.activate();
 
@@ -137,4 +155,5 @@ public class ThemeManager_Test extends TestCase {
     }
     return buffer.toString();
   }
+
 }

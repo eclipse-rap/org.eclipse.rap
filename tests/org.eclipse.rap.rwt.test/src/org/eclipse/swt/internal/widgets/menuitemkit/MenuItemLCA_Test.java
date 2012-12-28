@@ -13,6 +13,10 @@ package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -22,8 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -55,11 +57,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
 @SuppressWarnings("deprecation")
-public class MenuItemLCA_Test extends TestCase {
+public class MenuItemLCA_Test {
 
   private Display display;
   private Shell shell;
@@ -67,8 +72,8 @@ public class MenuItemLCA_Test extends TestCase {
   private Menu menu;
   private MenuItemLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -78,11 +83,12 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testBarPreserveValues() {
     shell.setMenuBar( menuBar );
     MenuItem menuItem = new MenuItem( menuBar, SWT.BAR );
@@ -91,6 +97,7 @@ public class MenuItemLCA_Test extends TestCase {
     testPreserveText( menuItem );
   }
 
+  @Test
   public void testPushPreserveValues() {
     MenuItem fileItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu fileMenu = new Menu( shell, SWT.DROP_DOWN );
@@ -102,6 +109,7 @@ public class MenuItemLCA_Test extends TestCase {
     testPreserveText( menuItem );
   }
 
+  @Test
   public void testWidgetSelected() {
     shell.setMenu( menu );
     MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
@@ -121,9 +129,10 @@ public class MenuItemLCA_Test extends TestCase {
     assertEquals( 0, event.y );
     assertEquals( 0, event.width );
     assertEquals( 0, event.height );
-    assertEquals( true, event.doit );
+    assertTrue( event.doit );
   }
 
+  @Test
   public void testCheckItemSelected() {
     shell.setMenu( menu );
     MenuItem menuItem = new MenuItem( menu, SWT.CHECK );
@@ -134,6 +143,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( menuItem.getSelection() );
   }
 
+  @Test
   public void testRadioSelectionEvent() {
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
@@ -151,6 +161,7 @@ public class MenuItemLCA_Test extends TestCase {
   }
 
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872
+  @Test
   public void testRadioDeselectionEvent() {
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
@@ -168,6 +179,7 @@ public class MenuItemLCA_Test extends TestCase {
     verify( listener ).widgetSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testRadioTypedSelectionEventOrder_TypedListener() {
     final List<Widget> log = new ArrayList<Widget>();
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
@@ -194,6 +206,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( Arrays.equals( new Widget[]{ radioItem2, radioItem1 }, log.toArray() ) );
   }
 
+  @Test
   public void testRadioTypedSelectionEventOrder_UntypedListener() {
     final List<Widget> log = new ArrayList<Widget>();
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
@@ -219,6 +232,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( Arrays.equals( new Widget[]{ radioItem2, radioItem1 }, log.toArray() ) );
   }
 
+  @Test
   public void testArmEvent() {
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
@@ -271,6 +285,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
+  @Test
   public void testRenderCreatePush() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.PUSH );
 
@@ -282,6 +297,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( Arrays.asList( operation.getStyles() ).contains( "PUSH" ) );
   }
 
+  @Test
   public void testRenderCreateCheck() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
 
@@ -293,6 +309,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( Arrays.asList( operation.getStyles() ).contains( "CHECK" ) );
   }
 
+  @Test
   public void testRenderCreateRadio() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.RADIO );
 
@@ -304,6 +321,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( Arrays.asList( operation.getStyles() ).contains( "RADIO" ) );
   }
 
+  @Test
   public void testRenderCreateCascade() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CASCADE );
 
@@ -315,6 +333,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( Arrays.asList( operation.getStyles() ).contains( "CASCADE" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.PUSH );
 
@@ -325,6 +344,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( item.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderIndex() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.PUSH );
 
@@ -334,6 +354,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertEquals( Integer.valueOf( 0 ), message.findCreateProperty( item, "index" ) );
   }
 
+  @Test
   public void testRenderDispose() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.PUSH );
 
@@ -345,6 +366,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( item ), operation.getTarget() );
   }
 
+  @Test
   public void testRenderInitialMenu() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CASCADE );
 
@@ -355,6 +377,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "menu" ) == -1 );
   }
 
+  @Test
   public void testRenderMenu() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CASCADE );
     Menu subMenu = new Menu( item );
@@ -366,6 +389,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( subMenu ), message.findSetProperty( item, "menu" ) );
   }
 
+  @Test
   public void testRenderMenuUnchanged() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CASCADE );
     Menu subMenu = new Menu( item );
@@ -380,6 +404,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "menu" ) );
   }
 
+  @Test
   public void testRenderInitialEnabled() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.PUSH );
 
@@ -390,6 +415,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "enabled" ) == -1 );
   }
 
+  @Test
   public void testRenderEnabled() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.PUSH );
 
@@ -400,6 +426,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findSetProperty( item, "enabled" ) );
   }
 
+  @Test
   public void testRenderEnabledUnchanged() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -413,6 +440,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "enabled" ) );
   }
 
+  @Test
   public void testRenderInitialSelection() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
 
@@ -423,6 +451,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
   }
 
+  @Test
   public void testRenderSelection() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
 
@@ -433,6 +462,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( item, "selection" ) );
   }
 
+  @Test
   public void testRenderSelectionUnchanged() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     Fixture.markInitialized( display );
@@ -446,6 +476,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "selection" ) );
   }
 
+  @Test
   public void testRenderInitialCustomVariant() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
 
@@ -456,6 +487,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
   }
 
+  @Test
   public void testRenderCustomVariant() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
 
@@ -466,6 +498,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertEquals( "variant_blue", message.findSetProperty( item, "customVariant" ) );
   }
 
+  @Test
   public void testRenderCustomVariantUnchanged() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     Fixture.markInitialized( display );
@@ -479,6 +512,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "customVariant" ) );
   }
 
+  @Test
   public void testRenderInitialTexts() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
 
@@ -489,6 +523,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
 
+  @Test
   public void testRenderTexts() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
 
@@ -499,6 +534,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( item, "text" ) );
   }
 
+  @Test
   public void testRenderTextsUnchanged() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     Fixture.markInitialized( display );
@@ -512,6 +548,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "text" ) );
   }
 
+  @Test
   public void testRenderInitialImages() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
 
@@ -522,6 +559,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "image" ) == -1 );
   }
 
+  @Test
   public void testRenderImages() throws IOException, JSONException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
@@ -535,6 +573,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderImagesUnchanged() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     Fixture.markInitialized( display );
@@ -549,6 +588,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "image" ) );
   }
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     Fixture.markInitialized( display );
@@ -563,6 +603,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertNull( message.findListenOperation( item, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderRemoveSelectionListener() throws Exception {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     Listener listener = mock( Listener.class );
@@ -579,6 +620,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertNull( message.findListenOperation( item, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     Fixture.markInitialized( display );
@@ -593,6 +635,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertNull( message.findListenOperation( item, "Selection" ) );
   }
 
+  @Test
   public void testRenderAddHelpListener() throws Exception {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     Fixture.markInitialized( display );
@@ -609,6 +652,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( item, "Help" ) );
   }
 
+  @Test
   public void testRenderRemoveHelpListener() throws Exception {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     HelpListener listener = new HelpListener() {
@@ -627,6 +671,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( item, "Help" ) );
   }
 
+  @Test
   public void testRenderHelpListenerUnchanged() throws Exception {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     Fixture.markInitialized( display );

@@ -12,6 +12,9 @@ package org.eclipse.swt.internal.events;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -19,8 +22,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -44,15 +45,18 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class EventUtil_Test extends TestCase {
+public class EventUtil_Test {
 
   private Display display;
   private Shell shell;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -60,14 +64,15 @@ public class EventUtil_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     if( !ContextProvider.hasContext() ) {
       Fixture.createServiceContext();
     }
     Fixture.tearDown();
   }
 
+  @Test
   public void testGetLastEventTimeInSameRequest() {
     Fixture.fakePhase( PhaseId.READ_DATA );
 
@@ -77,6 +82,7 @@ public class EventUtil_Test extends TestCase {
     assertEquals( eventTime1, eventTime2 - 1 );
   }
 
+  @Test
   public void testGetLastEventTimeInSubsequentRequests() throws InterruptedException {
     Fixture.fakePhase( PhaseId.READ_DATA );
     int eventTime1 = EventUtil.getLastEventTime();
@@ -87,6 +93,7 @@ public class EventUtil_Test extends TestCase {
     assertTrue( eventTime1 < eventTime2 );
   }
 
+  @Test
   public void testGetLastEventTimeWithoutCurrentPhase() {
     Fixture.fakePhase( null );
     int eventTime = EventUtil.getLastEventTime();
@@ -94,6 +101,7 @@ public class EventUtil_Test extends TestCase {
     assertTrue( eventTime > 0 );
   }
 
+  @Test
   public void testGetLastEventTimeOutsideRequest() {
     ContextProvider.releaseContextHolder();
     int eventTime = EventUtil.getLastEventTime();
@@ -101,6 +109,7 @@ public class EventUtil_Test extends TestCase {
     assertTrue( eventTime > 0 );
   }
 
+  @Test
   public void testAllowProcessingForActivateEventOnInvisibleControl() {
     Control control = new Button( shell, SWT.PUSH );
     control.setEnabled( false );
@@ -111,6 +120,7 @@ public class EventUtil_Test extends TestCase {
     assertTrue( accessible );
   }
 
+  @Test
   public void testAllowProcessingForDeactivateEventOnInvisibleControl() {
     Control control = new Button( shell, SWT.PUSH );
     control.setEnabled( false );
@@ -121,6 +131,7 @@ public class EventUtil_Test extends TestCase {
     assertTrue( accessible );
   }
 
+  @Test
   public void testAllowProcessingForProgressEventOnInvisibleBrowser() {
     Browser browser = new Browser( shell, SWT.NONE );
     Event event = createEvent( browser, EventTypes.PROGRESS_CHANGED );
@@ -130,6 +141,7 @@ public class EventUtil_Test extends TestCase {
     assertTrue( accessible );
   }
 
+  @Test
   public void testAllowProcessingForResizeEventOnDisabledControl() {
     Control control = new Button( shell, SWT.PUSH );
     control.setEnabled( false );
@@ -140,6 +152,7 @@ public class EventUtil_Test extends TestCase {
     assertTrue( accessible );
   }
 
+  @Test
   public void testAllowProcessingForMoveEventOnDisabledControl() {
     Control control = new Button( shell, SWT.PUSH );
     control.setEnabled( false );
@@ -150,6 +163,7 @@ public class EventUtil_Test extends TestCase {
     assertTrue( accessible );
   }
 
+  @Test
   public void testAllowProcessingForModifyEventOnDisabledText() {
     Text text = new Text( shell, SWT.PUSH );
     text.setEnabled( false );
@@ -160,6 +174,7 @@ public class EventUtil_Test extends TestCase {
     assertTrue( accessible );
   }
 
+  @Test
   public void testAllowProcessingForVerifyEventOnDisabledText() {
     Text text = new Text( shell, SWT.PUSH );
     text.setEnabled( false );
@@ -170,6 +185,7 @@ public class EventUtil_Test extends TestCase {
     assertTrue( accessible );
   }
 
+  @Test
   public void testAllowProcessingForPaintEventOnDisabledControl() {
     Control control = new Canvas( shell, SWT.PUSH );
     control.setEnabled( false );
@@ -180,6 +196,7 @@ public class EventUtil_Test extends TestCase {
     assertTrue( accessible );
   }
 
+  @Test
   public void testAllowProcessingForSetDataEventOnDisabledControl() {
     Control text = new Canvas( shell, SWT.PUSH );
     text.setEnabled( false );
@@ -190,6 +207,7 @@ public class EventUtil_Test extends TestCase {
     assertTrue( accessible );
   }
 
+  @Test
   public void testЕventNotFiredOnDisabledButton() {
     Button button = new Button( shell, SWT.PUSH );
     button.setEnabled( false );
@@ -203,6 +221,7 @@ public class EventUtil_Test extends TestCase {
     verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testЕventNotFiredOnInvisibleButton() {
     Button button = new Button( shell, SWT.PUSH );
     button.setVisible( false );
@@ -216,6 +235,7 @@ public class EventUtil_Test extends TestCase {
     verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testЕventNotFiredOnDisposedButton() {
     // LCAs not called for disposed widgets
     Button button = new Button( shell, SWT.PUSH );
@@ -230,6 +250,7 @@ public class EventUtil_Test extends TestCase {
     verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testEventNotFiredOnBlockedParentShell() {
     Button button = new Button( shell, SWT.PUSH );
     SelectionListener listener = mock( SelectionListener.class );
@@ -245,6 +266,7 @@ public class EventUtil_Test extends TestCase {
     verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testFocusOutOpensModalShell() {
     final java.util.List<TypedEvent> events = new ArrayList<TypedEvent>();
     Text text = new Text( shell, SWT.NONE );
@@ -276,6 +298,7 @@ public class EventUtil_Test extends TestCase {
     verify( selectionListener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testCloseEventNotFiredOnDisposedShell() {
     // LCAs not called for disposed widgets
     shell.setSize( 100, 100 );
@@ -290,6 +313,7 @@ public class EventUtil_Test extends TestCase {
     verify( listener, never() ).shellClosed( any( ShellEvent.class ) );
   }
 
+  @Test
   public void testNestedModalShell() {
     Shell parentShell = new Shell( shell, SWT.APPLICATION_MODAL );
     parentShell.setSize( 100, 100 );

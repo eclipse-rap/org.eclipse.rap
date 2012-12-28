@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,17 +11,33 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.resources;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ResourceUtil_Test extends TestCase {
+public class ResourceUtil_Test {
 
+  @Before
+  public void setUp() {
+    Fixture.createApplicationContext();
+    Fixture.createServiceContext();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfApplicationContext();
+  }
+
+  @Test
   public void testWriteText() throws IOException {
     String input = createTestString( 10000 );
     byte[] content = input.getBytes( "UTF-8" );
@@ -45,13 +61,4 @@ public class ResourceUtil_Test extends TestCase {
     return buffer.toString();
   }
 
-  protected void setUp() throws Exception {
-    Fixture.createApplicationContext();
-    Fixture.createServiceContext();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.disposeOfServiceContext();
-    Fixture.disposeOfApplicationContext();
-  }
 }

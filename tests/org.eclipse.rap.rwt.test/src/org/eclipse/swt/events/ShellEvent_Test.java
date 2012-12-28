@@ -1,17 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -20,55 +22,65 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ShellEvent_Test extends TestCase {
-  
+public class ShellEvent_Test {
+
   private static final String SHELL_CLOSED = "shellClosed|";
-  
+
   private String log;
   private Display display;
   private Shell shell;
-  
-  protected void setUp() throws Exception {
+
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     log = "";
     display = new Display();
     shell = new Shell( display );
   }
-  
-  protected void tearDown() throws Exception {
+
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
-  
-  public void testUntypedEventConstructor() throws Exception {
+
+  @Test
+  public void testUntypedEventConstructor() {
     Event event = new Event();
     event.display = display;
     event.widget = shell;
     event.doit = false;
     event.data = new Object();
-    
+
     ShellEvent shellEvent = new ShellEvent( event );
-    
+
     EventTestHelper.assertFieldsEqual( shellEvent, event );
   }
 
+  @Test
   public void testAddRemoveClosedListener() {
     ShellListener listener = new ShellAdapter() {
+      @Override
       public void shellClosed( ShellEvent event ) {
         log += SHELL_CLOSED;
       }
     };
     shell.addShellListener( listener );
-    
+
     shell.close();
-    
+
     assertEquals( SHELL_CLOSED, log );
   }
-  
+
+  @Test
   public void testRemoveCloseListener() {
     ShellListener listener = new ShellAdapter() {
+      @Override
       public void shellClosed( ShellEvent event ) {
         log += SHELL_CLOSED;
       }
@@ -77,12 +89,14 @@ public class ShellEvent_Test extends TestCase {
     shell.removeShellListener( listener );
 
     shell.close();
-    
+
     assertEquals( "", log );
   }
-  
+
+  @Test
   public void testDenyClose() {
     ShellListener listener = new ShellAdapter() {
+      @Override
       public void shellClosed( ShellEvent event ) {
         // Test initial value of doit flag on ShellEvent
         assertTrue( event.doit );
@@ -98,6 +112,7 @@ public class ShellEvent_Test extends TestCase {
     assertTrue( shell.getVisible() );
   }
 
+  @Test
   public void testDenyCloseWithUntypedListener() {
     Listener listener = new Listener() {
       public void handleEvent( Event event ) {
@@ -114,4 +129,5 @@ public class ShellEvent_Test extends TestCase {
     assertEquals( SHELL_CLOSED, log );
     assertTrue( shell.getVisible() );
   }
+
 }

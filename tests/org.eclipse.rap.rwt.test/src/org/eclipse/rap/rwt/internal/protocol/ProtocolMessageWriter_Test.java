@@ -10,12 +10,14 @@
 *******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import static org.eclipse.rap.rwt.internal.resources.TestUtil.assertArrayEquals;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -33,36 +35,42 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ProtocolMessageWriter_Test extends TestCase {
+public class ProtocolMessageWriter_Test {
 
   private ProtocolMessageWriter writer;
   private Shell shell;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Display display = new Display();
     shell = new Shell( display );
     writer = new ProtocolMessageWriter();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testHasNoOperations() {
     assertFalse( writer.hasOperations() );
   }
 
+  @Test
   public void testHasOperationsAfterAppend() {
     writer.appendSet( "target", "foo", 23 );
 
     assertTrue( writer.hasOperations() );
   }
 
+  @Test
   public void testEmptyMessage() throws JSONException {
     String messageString = writer.createMessage();
     JSONObject message = new JSONObject( messageString );
@@ -72,12 +80,14 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( 0, operations.length() );
   }
 
+  @Test
   public void testMessageWithRequestCounter() {
     writer.appendHead( ProtocolConstants.REQUEST_COUNTER, 1 );
 
     assertEquals( 1, getMessage().getRequestCounter() );
   }
 
+  @Test
   public void testWriteMessageTwice() {
     writer.createMessage();
     try {
@@ -87,6 +97,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     }
   }
 
+  @Test
   public void testAppendAfterCreate() {
     writer.createMessage();
     try {
@@ -96,6 +107,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     }
   }
 
+  @Test
   public void testMessageWithCall() {
     String shellId = WidgetUtil.getId( shell );
     String methodName = "methodName";
@@ -112,6 +124,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( "b", operation.getProperty( "key2" ) );
   }
 
+  @Test
   public void testMessageWithTwoCallss() {
     String shellId = WidgetUtil.getId( shell );
     String methodName = "methodName";
@@ -131,6 +144,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( Boolean.FALSE, operation.getProperty( "key3" ) );
   }
 
+  @Test
   public void testMessageWithCreate() {
     String displayId = DisplayUtil.getId( shell.getDisplay() );
     String shellId = WidgetUtil.getId( shell );
@@ -151,6 +165,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( "b", operation.getProperty( "key2" ) );
   }
 
+  @Test
   public void testMessageWithMultipleOperations() {
     Button button = new Button( shell, SWT.PUSH );
     String shellId = WidgetUtil.getId( shell );
@@ -164,6 +179,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertTrue( message.getOperation( 1 ) instanceof CreateOperation );
   }
 
+  @Test
   public void testMessageWithIllegalParameterType() {
     Button wrongParameter = new Button( shell, SWT.PUSH );
     String shellId = WidgetUtil.getId( shell );
@@ -175,6 +191,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     }
   }
 
+  @Test
   public void testMessageWithDestroy() {
     Button button = new Button( shell, SWT.PUSH );
     String buttonId = WidgetUtil.getId( button );
@@ -185,6 +202,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( buttonId, operation.getTarget() );
   }
 
+  @Test
   public void testMessageWithDestroyTwice() {
     Button button = new Button( shell, SWT.PUSH );
     String shellId = WidgetUtil.getId( shell );
@@ -198,6 +216,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertTrue( message.getOperation( 1 ) instanceof DestroyOperation );
   }
 
+  @Test
   public void testMessageWithListen() {
     Button button = new Button( shell, SWT.PUSH );
     String buttonId = WidgetUtil.getId( button );
@@ -213,6 +232,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertTrue( operation.listensTo( "fake" ) );
   }
 
+  @Test
   public void testMessageWithExecuteScript() {
     String script = "var c = 4; c++;";
     Map<String, Object> properties = new HashMap<String, Object>();
@@ -225,6 +245,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( script, operation.getProperty( "content" ) );
   }
 
+  @Test
   public void testMessageWithSet() {
     Button button = new Button( shell, SWT.PUSH );
     String buttonId = WidgetUtil.getId( button );
@@ -240,6 +261,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( new Integer( 1 ), operation.getProperty( "fake" ) );
   }
 
+  @Test
   public void testMessageWithSetTwice() {
     Button button = new Button( shell, SWT.PUSH );
     String shellId = WidgetUtil.getId( shell );
@@ -259,6 +281,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertTrue( ( ( Boolean )operation.getProperty( "image" ) ).booleanValue() );
   }
 
+  @Test
   public void testMessageWithSetDuplicateProperty() {
     Button button = new Button( shell, SWT.PUSH );
     String buttonId = WidgetUtil.getId( button );
@@ -271,6 +294,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     }
   }
 
+  @Test
   public void testMessageWithMixedOperations() {
     Button button = new Button( shell, SWT.PUSH );
     addShellCreate( shell );
@@ -327,6 +351,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     writer.appendCall( WidgetUtil.getId( button ), "select", properties );
   }
 
+  @Test
   public void testAppendsToExistingSetOperation() {
     String shellId = WidgetUtil.getId( shell );
 
@@ -339,6 +364,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( "value2", operation.getProperty( "key2" ) );
   }
 
+  @Test
   public void testAppendsToExistingCreateOperation() {
     String shellId = WidgetUtil.getId( shell );
 
@@ -352,6 +378,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( "value2", createOperation.getProperty( "key2" ) );
   }
 
+  @Test
   public void testDoesNotAppendToOtherWidgetsOperation() {
     Button button = new Button( shell, SWT.PUSH );
     String shellId = WidgetUtil.getId( shell );
@@ -366,6 +393,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertFalse( firstOperation.getPropertyNames().contains( "key2" ) );
   }
 
+  @Test
   public void testStartsNewOperation() {
     Button button = new Button( shell, SWT.PUSH );
     String shellId = WidgetUtil.getId( shell );
@@ -384,6 +412,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( "value2", createOperation.getProperty( "key2" ) );
   }
 
+  @Test
   public void testAppendArrayParameter() throws JSONException {
     String shellId = WidgetUtil.getId( shell );
     Integer[] arrayParameter = new Integer[] { new Integer( 1 ), new Integer( 2 ) };
@@ -395,6 +424,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( 2, ( ( JSONArray )operation.getProperty( "key" ) ).getInt( 1 ) );
   }
 
+  @Test
   public void testAppendEmptyArrayParameter() {
     String shellId = WidgetUtil.getId( shell );
     Object[] emptyArray = new Object[ 0 ];
@@ -405,6 +435,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( 0, ( ( JSONArray )operation.getProperty( "key" ) ).length() );
   }
 
+  @Test
   public void testAppendMixedArrayParameter() throws JSONException {
     String shellId = WidgetUtil.getId( shell );
     Object[] mixedArray = new Object[] { new Integer( 23 ), "Hello" };
@@ -420,4 +451,5 @@ public class ProtocolMessageWriter_Test extends TestCase {
     String message = writer.createMessage();
     return new Message( message );
   }
+
 }

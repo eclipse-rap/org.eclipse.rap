@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.application;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -22,14 +25,14 @@ import java.util.Collection;
 
 import javax.servlet.ServletContext;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ApplicationRunner_Test extends TestCase {
+public class ApplicationRunner_Test {
 
   private static final String SERVLET_PATH = "/foo";
 
@@ -37,8 +40,8 @@ public class ApplicationRunner_Test extends TestCase {
   private ApplicationConfiguration configuration;
   private ApplicationRunner applicationRunner;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     servletContext = mock( ServletContext.class );
     when( servletContext.getRealPath( "/" ) )
       .thenReturn( Fixture.WEB_CONTEXT_RWT_RESOURCES_DIR.getPath() );
@@ -46,6 +49,7 @@ public class ApplicationRunner_Test extends TestCase {
     applicationRunner = new ApplicationRunner( configuration, servletContext );
   }
 
+  @Test
   public void testStart() {
     applicationRunner.start();
 
@@ -53,6 +57,7 @@ public class ApplicationRunner_Test extends TestCase {
     checkApplicationContextHasBeenRegistered();
   }
 
+  @Test
   public void testStartWithProblem() {
     createConfiguratorWithProblem();
 
@@ -61,6 +66,7 @@ public class ApplicationRunner_Test extends TestCase {
     checkApplicationContextHasBeenDeregistered();
   }
 
+  @Test
   public void testStop() {
     applicationRunner.start();
 
@@ -69,6 +75,7 @@ public class ApplicationRunner_Test extends TestCase {
     checkApplicationContextHasBeenDeregistered();
   }
 
+  @Test
   public void testStopThatHasFailedOnStart() {
     createConfiguratorWithProblem();
     startWithProblem();
@@ -79,6 +86,7 @@ public class ApplicationRunner_Test extends TestCase {
   }
 
   @SuppressWarnings( "deprecation" )
+  @Test
   public void testGetDefaultServletNames() {
     applicationRunner.start();
 
@@ -88,6 +96,7 @@ public class ApplicationRunner_Test extends TestCase {
   }
 
   @SuppressWarnings( "deprecation" )
+  @Test
   public void testGetServletNames() {
     startWithEntryPointConfiguration();
 
@@ -97,6 +106,7 @@ public class ApplicationRunner_Test extends TestCase {
     assertTrue( servletPaths.contains( SERVLET_PATH ) );
   }
 
+  @Test
   public void testParamServletContextMustNotBeNull() {
     try {
       new ApplicationRunner( mock( ApplicationConfiguration.class ), null );
@@ -105,6 +115,7 @@ public class ApplicationRunner_Test extends TestCase {
     }
   }
 
+  @Test
   public void testParamConfiguratorMustNotBeNull() {
     try {
       new ApplicationRunner( null, mock( ServletContext.class ) );

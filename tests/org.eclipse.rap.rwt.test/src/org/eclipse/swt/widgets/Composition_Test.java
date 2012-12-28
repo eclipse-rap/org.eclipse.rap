@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -22,10 +26,25 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.internal.widgets.ControlHolder;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class Composition_Test extends TestCase {
+public class Composition_Test {
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testControlComposition() {
     Display display = new Display();
     Composite composite = new Shell( display , SWT.NONE );
@@ -45,6 +64,7 @@ public class Composition_Test extends TestCase {
     }
   }
 
+  @Test
   public void testItemComposition() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -53,6 +73,7 @@ public class Composition_Test extends TestCase {
     assertEquals( 0, shell.getChildren().length );
   }
 
+  @Test
   public void testDispose() {
     final List<Object> disposedWidgets = new ArrayList<Object>();
     DisposeListener disposeListener = new DisposeListener() {
@@ -67,13 +88,13 @@ public class Composition_Test extends TestCase {
     button1.addDisposeListener( disposeListener );
     // Ensure that dipose removes a widget from its parent and sets isDisposed()
     button1.dispose();
-    assertEquals( true, button1.isDisposed() );
-    assertEquals( false, find( shell.getChildren(), button1 ) );
+    assertTrue( button1.isDisposed() );
+    assertFalse( find( shell.getChildren(), button1 ) );
     assertSame( button1, disposedWidgets.get( 0 ) );
     // Ensure that dispose may be called more than once
     disposedWidgets.clear();
     button1.dispose();
-    assertEquals( true, button1.isDisposed() );
+    assertTrue( button1.isDisposed() );
     assertEquals( 0, disposedWidgets.size() );
     Button button2 = new Button( shell, SWT.PUSH );
     button2.addDisposeListener( disposeListener );
@@ -81,8 +102,8 @@ public class Composition_Test extends TestCase {
     assertEquals( 2, disposedWidgets.size() );
     assertSame( shell, disposedWidgets.get( 0 ) );
     assertSame( button2, disposedWidgets.get( 1 ) );
-    assertEquals( true, shell.isDisposed() );
-    assertEquals( true, button2.isDisposed() );
+    assertTrue( shell.isDisposed() );
+    assertTrue( button2.isDisposed() );
     // the assert below may not work in the future since getChildren is
     // checkWidget()-protected
     assertEquals( 0, ControlHolder.size( shell ) );
@@ -91,9 +112,10 @@ public class Composition_Test extends TestCase {
     disposedWidgets.clear();
     shell.dispose();
     assertEquals( 0, disposedWidgets.size() );
-    assertEquals( true, shell.isDisposed() );
+    assertTrue( shell.isDisposed() );
   }
 
+  @Test
   public void testDisplay() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -112,12 +134,4 @@ public class Composition_Test extends TestCase {
     return found;
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

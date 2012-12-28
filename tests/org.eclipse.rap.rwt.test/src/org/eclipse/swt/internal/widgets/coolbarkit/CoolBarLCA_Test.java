@@ -12,12 +12,12 @@
 package org.eclipse.swt.internal.widgets.coolbarkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
@@ -40,17 +40,20 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public final class CoolBarLCA_Test extends TestCase {
+public final class CoolBarLCA_Test {
 
   private Display display;
   private Shell shell;
   private CoolBar bar;
   private CoolBarLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
@@ -59,11 +62,12 @@ public final class CoolBarLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ControlLCATestUtil.testActivateListener( bar );
     ControlLCATestUtil.testMouseListener( bar );
@@ -73,6 +77,7 @@ public final class CoolBarLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( bar );
   }
 
+  @Test
   public void testPreserveValues() {
     Fixture.markInitialized( bar );
     AbstractWidgetLCA lca = WidgetUtil.getLCA( bar );
@@ -151,6 +156,7 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( "some text", bar.getToolTipText() );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( bar );
 
@@ -159,6 +165,7 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.CoolBar", operation.getType() );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( bar );
 
@@ -167,6 +174,7 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( bar.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderLocked() throws IOException {
     lca.preserveValues( bar );
     bar.setLocked( true );
@@ -177,6 +185,7 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, operation.getProperty( "locked" ) );
   }
 
+  @Test
   public void testItemReordering1() {
     bar.setSize( 400, 25 );
     CoolItem item0 = new CoolItem( bar, SWT.NONE );
@@ -232,6 +241,7 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( 2, bar.getItemOrder()[ 2 ] );
   }
 
+  @Test
   public void testItemReordering2() {
     bar.setSize( 400, 25 );
     CoolItem item0 = new CoolItem( bar, SWT.NONE );
@@ -260,6 +270,7 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( 0, bar.getItemOrder()[ 1 ] );
   }
 
+  @Test
   public void testSnapBackItemMoved() {
     bar.setSize( 400, 25 );
     CoolItem item0 = new CoolItem( bar, SWT.NONE );

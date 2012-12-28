@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,21 +10,27 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.resources;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ContentBuffer_Test extends TestCase {
+public class ContentBuffer_Test {
 
   private ContentBuffer contentBuffer;
 
-  protected void setUp() {
+  @Before
+  public void setUp() {
     contentBuffer = new ContentBuffer();
   }
 
+  @Test
   public void testGetContentWhenEmpty() {
     byte[] content = contentBuffer.getContent();
 
@@ -32,6 +38,7 @@ public class ContentBuffer_Test extends TestCase {
     assertEquals( 0, content.length );
   }
 
+  @Test
   @SuppressWarnings( "resource" )
   public void testGetContentAsStreamWhenEmpty() throws IOException {
     InputStream inputStream = contentBuffer.getContentAsStream();
@@ -40,6 +47,7 @@ public class ContentBuffer_Test extends TestCase {
     assertEquals( "", TestUtil.readContent( inputStream, "UTF-8" ) );
   }
 
+  @Test
   public void testAppendEmptyBytes() throws IOException {
     contentBuffer.append( new ByteArrayInputStream( new byte[ 0 ] ) );
 
@@ -47,6 +55,7 @@ public class ContentBuffer_Test extends TestCase {
     assertEquals( 0, content.length );
   }
 
+  @Test
   public void testAppendEmptyStream() {
     contentBuffer.append( new byte[ 0 ] );
 
@@ -54,6 +63,7 @@ public class ContentBuffer_Test extends TestCase {
     assertEquals( 0, content.length );
   }
 
+  @Test
   public void testAppendBytes() throws IOException {
     contentBuffer.append( "foo".getBytes( "UTF-8" ) );
 
@@ -61,6 +71,7 @@ public class ContentBuffer_Test extends TestCase {
     assertEquals( "foo\n", new String( content, "UTF-8" ) );
   }
 
+  @Test
   public void testAppendStream() throws IOException {
     byte[] input = "foo".getBytes( "UTF-8" );
 
@@ -70,6 +81,7 @@ public class ContentBuffer_Test extends TestCase {
     assertEquals( "foo\n", new String( content, "UTF-8" ) );
   }
 
+  @Test
   public void testConcatenation() throws IOException {
     contentBuffer.append( "foo".getBytes( "UTF-8" ) );
     contentBuffer.append( "bar".getBytes( "UTF-8" ) );
@@ -78,6 +90,7 @@ public class ContentBuffer_Test extends TestCase {
     assertEquals( "foo\nbar\n", new String( content, "UTF-8" ) );
   }
 
+  @Test
   @SuppressWarnings( "resource" )
   public void testGetContentAsStream() throws IOException {
     contentBuffer.append( "foo".getBytes( "UTF-8" ) );

@@ -11,6 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.application;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.io.File;
@@ -20,8 +27,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletContext;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
@@ -34,16 +39,19 @@ import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.service.SettingStoreFactory;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
+import org.eclipse.rap.rwt.service.SettingStoreFactory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper.TestThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ApplicationContextConfigurator_Test extends TestCase {
+public class ApplicationContextConfigurator_Test {
 
   private static final String TEST_RESOURCE = "test-resource";
   private static final Object ATTRIBUTE_VALUE = new Object();
@@ -59,8 +67,8 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   private ApplicationContextImpl applicationContext;
   private File tempDirectory;
 
-  @Override
-  protected void setUp() throws IOException {
+  @Before
+  public void setUp() throws IOException {
     tempDirectory = createTempDirectory();
     phaseListener = mock( PhaseListener.class );
     settingStoreFactory = mock( SettingStoreFactory.class );
@@ -68,11 +76,12 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     serviceHandlerId = "serviceHandlerId";
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.delete( tempDirectory );
   }
 
+  @Test
   public void testConfigure() {
     activateApplicationContext( createConfiguration() );
 
@@ -88,12 +97,14 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     checkAttributeHasBeenSet();
   }
 
+  @Test
   public void testConfigureWithDifferentResourceLocation() {
     activateApplicationContext( createConfiguration(), tempDirectory );
 
     checkContextDirectoryHasBeenSet( tempDirectory );
   }
 
+  @Test
   public void testConfigureWithDefaultSettingStoreFactory() {
     activateApplicationContext( new ApplicationConfiguration() {
       public void configure( Application application ) {
@@ -104,6 +115,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     assertTrue( applicationContext.getSettingStoreManager().hasFactory() );
   }
 
+  @Test
   public void testReset() {
     activateApplicationContext( createConfiguration() );
 

@@ -13,6 +13,11 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.Fixture.getProtocolMessage;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -24,8 +29,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -56,8 +59,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class DNDSupport_Test extends TestCase {
+public class DNDSupport_Test {
 
   private Display display;
   private Shell shell;
@@ -69,8 +75,8 @@ public class DNDSupport_Test extends TestCase {
   private DropTarget dropTarget;
   private Transfer[] transfers;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -87,11 +93,12 @@ public class DNDSupport_Test extends TestCase {
     };
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testDragDetectEvent() {
     createDragSource( DND.DROP_MOVE );
     DragDetectListener listener = mock( DragDetectListener.class );
@@ -103,6 +110,7 @@ public class DNDSupport_Test extends TestCase {
     verify( listener, times( 1 ) ).dragDetected( any( DragDetectEvent.class ) );
   }
 
+  @Test
   public void testDragStartEvent() {
     createDragSource( DND.DROP_MOVE );
     DragSourceListener listener = mock( DragSourceListener.class );
@@ -114,6 +122,7 @@ public class DNDSupport_Test extends TestCase {
     verify( listener, times( 1 ) ).dragStart( any( DragSourceEvent.class ) );
   }
 
+  @Test
   public void testCancelStart() {
     createDragSource( DND.DROP_MOVE );
     dragSource.addDragListener( new DragSourceAdapter() {
@@ -129,6 +138,7 @@ public class DNDSupport_Test extends TestCase {
     assertNotNull( getProtocolMessage().findCallOperation( dragSource, "cancel" ) );
   }
 
+  @Test
   public void testDragDetectAndDragStartOrder() {
     createDragSource( DND.DROP_MOVE );
     addLogger( dragSource );
@@ -146,6 +156,7 @@ public class DNDSupport_Test extends TestCase {
     assertTrue( Arrays.equals( expected, getEventOrder() ) );
   }
 
+  @Test
   public void testDragStartCoordinates() {
     shell.setLocation( 5, 5 );
     sourceControl.setLocation( 10, 20 );
@@ -167,6 +178,7 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( 4, dragSourceEvent.y );
   }
 
+  @Test
   public void testDropTargetLeaveBeforeEnter() {
     createDragSource( DND.DROP_MOVE );
     createDropTarget( DND.DROP_MOVE );
@@ -184,6 +196,7 @@ public class DNDSupport_Test extends TestCase {
     assertTrue( Arrays.equals( expected, getEventOrder() ) );
   }
 
+  @Test
   public void testDropOverValidTarget() {
     createDragSource( DND.DROP_MOVE );
     createDropTarget( DND.DROP_MOVE );
@@ -199,6 +212,7 @@ public class DNDSupport_Test extends TestCase {
     assertTrue( Arrays.equals( expected, getEventOrder() ) );
   }
 
+  @Test
   public void testDataTransferOnDrop() {
     createDragSource( DND.DROP_MOVE );
     createDropTarget( DND.DROP_MOVE );
@@ -216,6 +230,7 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( "Hello World!", dropEvent.data );
   }
 
+  @Test
   public void testInvalidDataOnDragSetData() {
     createDragSource( DND.DROP_MOVE );
     createDropTarget( DND.DROP_MOVE );
@@ -238,6 +253,7 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( DND.ERROR_INVALID_DATA, exception.code );
   }
 
+  @Test
   public void testChangeDataTypeOnDrop() {
     createDragSource( DND.DROP_MOVE );
     createDropTarget( DND.DROP_MOVE );
@@ -267,6 +283,7 @@ public class DNDSupport_Test extends TestCase {
     assertTrue( dragSetDataEvent.dataType.type == dropEvent.currentDataType.type );
   }
 
+  @Test
   public void testChangeDataTypeInvalidOnDrop() {
     createDragSource( DND.DROP_MOVE );
     createDropTarget( DND.DROP_MOVE );
@@ -287,6 +304,7 @@ public class DNDSupport_Test extends TestCase {
     assertTrue( Arrays.equals( expected, getEventOrder() ) );
   }
 
+  @Test
   public void testNoDropAfterDropAcceptEvent() {
     createDragSource( DND.DROP_MOVE );
     createDropTarget( DND.DROP_MOVE );
@@ -314,6 +332,7 @@ public class DNDSupport_Test extends TestCase {
     assertTrue( getDragSourceEvent( 1 ).doit ); // Actual SWT behavior
   }
 
+  @Test
   public void testDropOverNonTarget() {
     createDragSource( DND.DROP_MOVE );
     createDropTarget( DND.DROP_MOVE );
@@ -329,6 +348,7 @@ public class DNDSupport_Test extends TestCase {
     assertTrue( event.doit ); // Actual SWT behavior
   }
 
+  @Test
   public void testChangeDetailInDropAccept() {
     createDragSource( DND.DROP_MOVE | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_COPY );
@@ -357,6 +377,7 @@ public class DNDSupport_Test extends TestCase {
     assertTrue( getDragSourceEvent( 3 ).doit );
   }
 
+  @Test
   public void testChangeDetailInvalidInDropAccept() {
     createDragSource( DND.DROP_MOVE | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE );
@@ -376,6 +397,7 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( DND.DROP_NONE, getDragSourceEvent( 0 ).detail );
   }
 
+  @Test
   public void testDragSetDataDoitIsFalse() {
     createDragSource( DND.DROP_MOVE );
     createDropTarget( DND.DROP_MOVE );
@@ -393,12 +415,12 @@ public class DNDSupport_Test extends TestCase {
     fakeDragSourceEvent( "dragFinished", 2 );
     Fixture.readDataAndProcessAction( display );
 
-    int[] expected = new int[]{ 
-      DND.DragLeave, 
-      DND.DropAccept, 
-      DND.DragSetData, 
-      DND.Drop, 
-      DND.DragEnd 
+    int[] expected = new int[]{
+      DND.DragLeave,
+      DND.DropAccept,
+      DND.DragSetData,
+      DND.Drop,
+      DND.DragEnd
     };
     assertTrue( Arrays.equals( expected, getEventOrder() ) );
     // NOTE: This is not the behavior documented for SWT, but how SWT behaves in Windows (SWT bug?)
@@ -406,6 +428,7 @@ public class DNDSupport_Test extends TestCase {
     assertTrue( getDragSourceEvent( 4 ).doit );
   }
 
+  @Test
   public void testDragSetDataDataType() {
     createDragSource( DND.DROP_MOVE );
     createDropTarget( DND.DROP_MOVE );
@@ -423,6 +446,7 @@ public class DNDSupport_Test extends TestCase {
     assertTrue( TransferData.sameType( setDataEvent.dataType, dropEvent.currentDataType ) );
   }
 
+  @Test
   public void testResponseNoDetailChange() {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
@@ -435,6 +459,7 @@ public class DNDSupport_Test extends TestCase {
     assertNull( message.findSetOperation( dragSource, "changeDetail" ) );
   }
 
+  @Test
   public void testResponseDetailChangedOnEnter() {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
@@ -455,6 +480,7 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( "DROP_LINK", call.getProperty( "detail" ) );
   }
 
+  @Test
   public void testResponseDetailChangedOnOver() {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
@@ -475,6 +501,7 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( "DROP_LINK", call.getProperty( "detail" ) );
   }
 
+  @Test
   public void testDropAcceptWithDetailChangedOnEnter() {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
@@ -504,6 +531,7 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( DND.DROP_COPY, getDropTargetEvent( 4 ).detail );
   }
 
+  @Test
   public void testDetermineDataType() {
     createDragSource( DND.DROP_MOVE );
     createDropTarget( DND.DROP_MOVE );
@@ -518,6 +546,7 @@ public class DNDSupport_Test extends TestCase {
     assertTrue( HTMLTransfer.getInstance().isSupportedType( dataTypes[ 0 ] ) );
   }
 
+  @Test
   public void testResponseFeedbackChangedOnEnter() throws JSONException {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
@@ -543,6 +572,7 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( "FEEDBACK_SELECT", feedbackArr.getString( 0 ) );
   }
 
+  @Test
   public void testResponseFeedbackChangedOnOver() throws JSONException {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
@@ -571,6 +601,7 @@ public class DNDSupport_Test extends TestCase {
 
   }
 
+  @Test
   public void testResponseInitDataType() {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
@@ -591,6 +622,7 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( getId( targetControl ), call.getProperty( "control" ) );
   }
 
+  @Test
   public void testResponseChangeDataTypeOnOver() {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
@@ -616,6 +648,7 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( new Integer( getTextType() ), call.getProperty( "dataType" ) );
   }
 
+  @Test
   public void testResponseChangeDataTypeOnEnter() {
     int operations = DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY;
     createDragSource( operations );
@@ -643,6 +676,7 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( expectedType, call.getProperty( "dataType" ) );
   }
 
+  @Test
   public void testResponseChangeDataTypeInvalid() {
     // NOTE : Setting an invalid value on currentDataType reverts the field
     //        back to the next-best valid value. This is NOT SWT-like behavior!
@@ -671,6 +705,7 @@ public class DNDSupport_Test extends TestCase {
 
   }
 
+  @Test
   public void testOperationChangedEvent() {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
@@ -687,6 +722,7 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( DND.DragOver, getEventType( 2 ) );
   }
 
+  @Test
   public void testOperationsField() {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK );
@@ -806,7 +842,7 @@ public class DNDSupport_Test extends TestCase {
       }
     } );
   }
-  
+
   private int getEventType( int index ) {
     return eventTypes.get( index ).intValue();
   }

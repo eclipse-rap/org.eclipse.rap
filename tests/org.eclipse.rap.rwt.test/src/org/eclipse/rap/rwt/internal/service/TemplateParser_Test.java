@@ -10,64 +10,73 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.internal.service.StartupPageTemplate.TemplateParser;
 import org.eclipse.rap.rwt.internal.service.StartupPageTemplate.Token;
+import org.junit.Test;
 
 
-public class TemplateParser_Test extends TestCase {
-  
+public class TemplateParser_Test {
+
+  @Test
   public void testParseWithoutVariable() {
     String text = "<html without variables />";
     TemplateParser parser = new TemplateParser( text );
-    
+
     Token[] tokens = parser.parse();
-    
+
     assertEquals( 1, tokens.length );
     assertEqualsText( text, tokens[ 0 ] );
   }
 
+  @Test
   public void testParseWithEmptyString() {
     TemplateParser parser = new TemplateParser( "" );
-    
+
     Token[] tokens = parser.parse();
-    
+
     assertEquals( 0, tokens.length );
   }
 
+  @Test
   public void testParseWithEmptyVariable() {
     TemplateParser parser = new TemplateParser( "${}" );
-    
+
     Token[] tokens = parser.parse();
-    
+
     assertEquals( 0, tokens.length );
   }
-  
+
+  @Test
   public void testParseWithOnlyVariable() {
     TemplateParser parser = new TemplateParser( "${var}" );
-    
+
     Token[] tokens = parser.parse();
-    
+
     assertEquals( 1, tokens.length );
     assertEqualsVariable( "var", tokens[ 0 ] );
   }
 
+  @Test
   public void testParseWithNestedVariable() {
     TemplateParser parser = new TemplateParser( "${${var}}" );
-    
+
     Token[] tokens = parser.parse();
-    
+
     assertEquals( 2, tokens.length );
     assertEqualsVariable( "${var", tokens[ 0 ] );
     assertEqualsText( "}", tokens[ 1 ] );
   }
-  
+
+  @Test
   public void testParseWithoutEmbeddedVariable() {
     TemplateParser parser = new TemplateParser( "begin${var}end" );
-    
+
     Token[] tokens = parser.parse();
-    
+
     assertEquals( 3, tokens.length );
     assertEqualsText( "begin", tokens[ 0 ] );
     assertEqualsVariable( "var", tokens[ 1 ] );
@@ -83,5 +92,5 @@ public class TemplateParser_Test extends TestCase {
     assertEquals( text, token.toString() );
     assertFalse( token.isVariable() );
   }
-  
+
 }

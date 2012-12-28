@@ -12,14 +12,15 @@
 package org.eclipse.swt.internal.widgets.sliderkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -41,17 +42,20 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Slider;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-public class SliderLCA_Test extends TestCase {
+public class SliderLCA_Test {
 
   private Display display;
   private Shell shell;
   private SliderLCA lca;
   private Slider slider;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
@@ -60,11 +64,12 @@ public class SliderLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testSliderPreserveValues() {
     Fixture.markInitialized( display );
     // Test preserved minimum, maximum,
@@ -88,6 +93,7 @@ public class SliderLCA_Test extends TestCase {
     testPreserveControlProperties( slider );
   }
 
+  @Test
   public void testSelectionEvent() {
     SelectionListener listener = mock( SelectionListener.class );
     slider.addSelectionListener( listener );
@@ -104,7 +110,7 @@ public class SliderLCA_Test extends TestCase {
     assertEquals( 0, event.y );
     assertEquals( 0, event.width );
     assertEquals( 0, event.height );
-    assertEquals( true, event.doit );
+    assertTrue( event.doit );
   }
 
   private void testPreserveControlProperties( Slider slider ) {
@@ -157,6 +163,7 @@ public class SliderLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( slider );
 
@@ -165,6 +172,7 @@ public class SliderLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.Slider", operation.getType() );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( slider );
 
@@ -173,6 +181,7 @@ public class SliderLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( slider.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderCreateWithHorizontal() throws IOException {
     Slider slider = new Slider( shell, SWT.HORIZONTAL );
 
@@ -184,6 +193,7 @@ public class SliderLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "HORIZONTAL" ) );
   }
 
+  @Test
   public void testRenderInitialMinimum() throws IOException {
     lca.render( slider );
 
@@ -192,6 +202,7 @@ public class SliderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "minimum" ) == -1 );
   }
 
+  @Test
   public void testRenderMinimum() throws IOException {
     slider.setMinimum( 10 );
     lca.renderChanges( slider );
@@ -200,6 +211,7 @@ public class SliderLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( slider, "minimum" ) );
   }
 
+  @Test
   public void testRenderMinimumUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
@@ -212,6 +224,7 @@ public class SliderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( slider, "minimum" ) );
   }
 
+  @Test
   public void testRenderInitialMaxmum() throws IOException {
     lca.render( slider );
 
@@ -220,6 +233,7 @@ public class SliderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "maximum" ) == -1 );
   }
 
+  @Test
   public void testRenderMaxmum() throws IOException {
     slider.setMaximum( 10 );
     lca.renderChanges( slider );
@@ -228,6 +242,7 @@ public class SliderLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( slider, "maximum" ) );
   }
 
+  @Test
   public void testRenderMaxmumUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
@@ -240,6 +255,7 @@ public class SliderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( slider, "maximum" ) );
   }
 
+  @Test
   public void testRenderInitialSelection() throws IOException {
     lca.render( slider );
 
@@ -248,6 +264,7 @@ public class SliderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
   }
 
+  @Test
   public void testRenderSelection() throws IOException {
     slider.setSelection( 10 );
     lca.renderChanges( slider );
@@ -256,6 +273,7 @@ public class SliderLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), message.findSetProperty( slider, "selection" ) );
   }
 
+  @Test
   public void testRenderSelectionUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
@@ -268,6 +286,7 @@ public class SliderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( slider, "selection" ) );
   }
 
+  @Test
   public void testRenderInitialIncrement() throws IOException {
     lca.render( slider );
 
@@ -276,6 +295,7 @@ public class SliderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "increment" ) == -1 );
   }
 
+  @Test
   public void testRenderIncrement() throws IOException {
     slider.setIncrement( 2 );
     lca.renderChanges( slider );
@@ -284,6 +304,7 @@ public class SliderLCA_Test extends TestCase {
     assertEquals( new Integer( 2 ), message.findSetProperty( slider, "increment" ) );
   }
 
+  @Test
   public void testRenderIncrementUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
@@ -296,6 +317,7 @@ public class SliderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( slider, "increment" ) );
   }
 
+  @Test
   public void testRenderInitialPageIncrement() throws IOException {
     lca.render( slider );
 
@@ -304,6 +326,7 @@ public class SliderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "pageIncrement" ) == -1 );
   }
 
+  @Test
   public void testRenderPageIncrement() throws IOException {
     slider.setPageIncrement( 20 );
     lca.renderChanges( slider );
@@ -312,6 +335,7 @@ public class SliderLCA_Test extends TestCase {
     assertEquals( new Integer( 20 ), message.findSetProperty( slider, "pageIncrement" ) );
   }
 
+  @Test
   public void testRenderPageIncrementUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
@@ -324,6 +348,7 @@ public class SliderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( slider, "pageIncrement" ) );
   }
 
+  @Test
   public void testRenderInitialThumb() throws IOException {
     lca.render( slider );
 
@@ -332,6 +357,7 @@ public class SliderLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "thumb" ) == -1 );
   }
 
+  @Test
   public void testRenderThumb() throws IOException {
     slider.setThumb( 20 );
     lca.renderChanges( slider );
@@ -340,6 +366,7 @@ public class SliderLCA_Test extends TestCase {
     assertEquals( new Integer( 20 ), message.findSetProperty( slider, "thumb" ) );
   }
 
+  @Test
   public void testRenderThumbUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
@@ -352,6 +379,7 @@ public class SliderLCA_Test extends TestCase {
     assertNull( message.findSetOperation( slider, "thumb" ) );
   }
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
@@ -364,6 +392,7 @@ public class SliderLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( slider, "Selection" ) );
   }
 
+  @Test
   public void testRenderRemoveSelectionListener() throws Exception {
     Listener listener = mock( Listener.class );
     slider.addListener( SWT.Selection, listener );
@@ -378,6 +407,7 @@ public class SliderLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( slider, "Selection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );

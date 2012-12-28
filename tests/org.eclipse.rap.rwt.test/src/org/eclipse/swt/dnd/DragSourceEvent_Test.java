@@ -11,7 +11,6 @@
 package org.eclipse.swt.dnd;
 
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -19,24 +18,28 @@ import org.eclipse.swt.events.EventTestHelper;
 import org.eclipse.swt.internal.dnd.DNDEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class DragSourceEvent_Test extends TestCase {
+public class DragSourceEvent_Test {
 
   private Display display;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
   }
-  
-  @Override
-  protected void tearDown() throws Exception {
+
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
-  
-  public void testUntypedEventConstructor() throws Exception {
+
+  @Test
+  public void testUntypedEventConstructor() {
     DNDEvent event = new DNDEvent();
     event.display = display;
     event.widget = mock( Widget.class );
@@ -50,9 +53,9 @@ public class DragSourceEvent_Test extends TestCase {
     event.data = new Object();
     event.offsetX = 11;
     event.offsetY = 12;
-    
+
     DragSourceEvent dragSourceEvent = new DragSourceEvent( event );
-    
+
     EventTestHelper.assertFieldsEqual( dragSourceEvent, event );
   }
 

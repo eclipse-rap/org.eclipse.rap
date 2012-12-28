@@ -11,7 +11,8 @@
 package org.eclipse.rap.rwt.widgets;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -19,16 +20,19 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class BrowserUtil_Test extends TestCase {
+public class BrowserUtil_Test {
 
   private Display display;
   private Browser browser;
   private BrowserCallback browserCallback;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     Shell shell = new Shell( display );
@@ -41,11 +45,12 @@ public class BrowserUtil_Test extends TestCase {
     };
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testExecuteWithNullBrowser() {
     try {
       BrowserUtil.evaluate( null, "return true;", browserCallback );
@@ -54,6 +59,7 @@ public class BrowserUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testExecuteWithNullCallback() {
     try {
       BrowserUtil.evaluate( browser, "return true;", null );
@@ -62,6 +68,7 @@ public class BrowserUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testExecuteWithNullScript() {
     try {
       BrowserUtil.evaluate( browser, null, browserCallback );
@@ -70,6 +77,7 @@ public class BrowserUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testExecute() {
     BrowserUtil.evaluate( browser, "return true;", browserCallback );
 
@@ -77,6 +85,7 @@ public class BrowserUtil_Test extends TestCase {
     assertEquals( expected, browser.getAdapter( IBrowserAdapter.class ).getExecuteScript() );
   }
 
+  @Test
   public void testExecuteTwice() {
     BrowserUtil.evaluate( browser, "return true;", browserCallback );
     BrowserUtil.evaluate( browser, "return false;", browserCallback );
@@ -85,6 +94,7 @@ public class BrowserUtil_Test extends TestCase {
     assertEquals( expected, browser.getAdapter( IBrowserAdapter.class ).getExecuteScript() );
   }
 
+  @Test
   public void testExecuteWithDisposedBrowser() {
     browser.dispose();
 
@@ -96,6 +106,7 @@ public class BrowserUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCallCallback_Succeeded() {
     final Object[] log = new Object[ 1 ];
     browserCallback = new BrowserCallback() {
@@ -116,6 +127,7 @@ public class BrowserUtil_Test extends TestCase {
     assertEquals( Integer.valueOf( 5 ), log[ 0 ] );
   }
 
+  @Test
   public void testCallCallback_Failed() {
     final Object[] log = new Object[ 1 ];
     browserCallback = new BrowserCallback() {

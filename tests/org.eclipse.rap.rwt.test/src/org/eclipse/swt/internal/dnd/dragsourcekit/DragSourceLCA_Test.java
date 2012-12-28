@@ -10,9 +10,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.dragsourcekit;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import junit.framework.TestCase;
+import java.io.IOException;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -37,16 +39,20 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class DragSourceLCA_Test extends TestCase {
+public class DragSourceLCA_Test {
 
   private Control control;
   private Shell shell;
   private Display display;
   private DragSourceLCA lca;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     Fixture.markInitialized( display );
@@ -56,10 +62,12 @@ public class DragSourceLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testRenderCreate() throws IOException, JSONException {
     DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     lca.renderInitialization( source );
@@ -72,6 +80,7 @@ public class DragSourceLCA_Test extends TestCase {
     assertEquals( "\"DROP_COPY\",\"DROP_MOVE\"", result );
   }
 
+  @Test
   public void testRenderTransfer() throws IOException, JSONException {
     DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     Fixture.markInitialized( source );
@@ -94,6 +103,7 @@ public class DragSourceLCA_Test extends TestCase {
     assertEquals( expected, result );
   }
 
+  @Test
   public void testRenderDetail() throws IOException {
     DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     Button targetControl = new Button( shell, SWT.PUSH );
@@ -111,6 +121,7 @@ public class DragSourceLCA_Test extends TestCase {
     assertEquals( "DROP_COPY", call.getProperty( "detail" ) );
   }
 
+  @Test
   public void testRenderDetailNone() throws IOException {
     DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     Button targetControl = new Button( shell, SWT.PUSH );
@@ -128,6 +139,7 @@ public class DragSourceLCA_Test extends TestCase {
     assertEquals( "DROP_NONE", call.getProperty( "detail" ) );
   }
 
+  @Test
   public void testRenderFeedback() throws IOException, JSONException {
     DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     Button targetControl = new Button( shell, SWT.PUSH );
@@ -149,6 +161,7 @@ public class DragSourceLCA_Test extends TestCase {
     assertEquals( "\"FEEDBACK_SCROLL\",\"FEEDBACK_SELECT\"", feedbackArr.join( "," ) );
   }
 
+  @Test
   public void testRenderDataType() throws IOException {
     DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     Button targetControl = new Button( shell, SWT.PUSH );
@@ -167,6 +180,7 @@ public class DragSourceLCA_Test extends TestCase {
     assertEquals( new Integer( dataType.type ), call.getProperty( "dataType" ) );
   }
 
+  @Test
   public void testRenderCancel() throws IOException {
     DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     Button targetControl = new Button( shell, SWT.PUSH );
@@ -183,6 +197,7 @@ public class DragSourceLCA_Test extends TestCase {
     assertNotNull( call );
   }
 
+  @Test
   public void testDisposeDragControl() {
     DragSource dragSource = new DragSource( control, DND.DROP_MOVE );
     shell.open();
@@ -197,6 +212,7 @@ public class DragSourceLCA_Test extends TestCase {
     assertNull( message.findDestroyOperation( dragSource ) );
   }
 
+  @Test
   public void testDisposeDragSourceAndControl() {
     DragSource dragSource = new DragSource( control, DND.DROP_MOVE );
     shell.open();

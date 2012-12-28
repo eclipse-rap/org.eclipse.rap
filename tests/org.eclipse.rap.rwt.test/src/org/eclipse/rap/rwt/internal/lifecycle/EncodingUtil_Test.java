@@ -1,23 +1,27 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.internal.util.EncodingUtil;
+import org.junit.Test;
 
-public class EncodingUtil_Test extends TestCase {
 
+public class EncodingUtil_Test {
+
+  @Test
   public void testEscapeDoubleQuoted() {
     String stringToEscape = "First line.\nSecond \"middle\" line.\nThird line.";
     String expected = "First line.\nSecond \\\"middle\\\" line.\nThird line.";
@@ -30,6 +34,7 @@ public class EncodingUtil_Test extends TestCase {
     assertEquals( expected, result );
   }
 
+  @Test
   public void testReplaceNewLines() {
     String stringToReplace = "First line.\nSecond line.\nThird line.";
     String expected = "First line.\\nSecond line.\\nThird line.";
@@ -52,6 +57,7 @@ public class EncodingUtil_Test extends TestCase {
     assertEquals( expected, result );
   }
 
+  @Test
   public void testSplitNewlines() {
     String input = "";
     String[] expected = new String[] { "" };
@@ -77,6 +83,7 @@ public class EncodingUtil_Test extends TestCase {
     assertTrue( Arrays.equals( expected, result ) );
   }
 
+  @Test
   public void testEscapeLeadingTrailingSpaces() {
     String stringToEscape = "  All rights reserved.   ";
     String expected = "&nbsp;&nbsp;All rights reserved.&nbsp;&nbsp;&nbsp;";
@@ -114,6 +121,7 @@ public class EncodingUtil_Test extends TestCase {
     assertEquals( expected, result );
   }
 
+  @Test
   public void testReplaceWhiteSpaces() {
     String stringToEscape = "test1 test2";
     String expected = "test1 test2";
@@ -141,13 +149,15 @@ public class EncodingUtil_Test extends TestCase {
     assertEquals( expected, result );
   }
 
+  @Test
   public void testEscapeSpecialCharacters() {
     String stringToEscape = "abc\u2028abc\u2029abc";
     String expected = "abcabcabc";
     String result = EncodingUtil.removeNonDisplayableChars( stringToEscape );
     assertEquals( expected, result );
   }
-  
+
+  @Test
   public void testTruncateAtZero() {
     char[] stringToTruncate = new char[] { 'h', 'e', 'l', 0, 'l', 'o' };
     String expected = "hel";
@@ -155,4 +165,5 @@ public class EncodingUtil_Test extends TestCase {
       = EncodingUtil.truncateAtZero( String.valueOf( stringToTruncate ) );
     assertEquals( expected, result );
   }
+
 }

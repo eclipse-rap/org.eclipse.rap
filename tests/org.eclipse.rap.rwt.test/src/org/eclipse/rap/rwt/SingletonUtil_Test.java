@@ -10,37 +10,44 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.http.HttpSession;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class SingletonUtil_Test extends TestCase {
+public class SingletonUtil_Test {
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
     createUISession();
     SingletonManager.install( ContextProvider.getUISession() );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     if( ContextProvider.hasContext() ) {
       Fixture.disposeOfServiceContext();
     }
     Fixture.disposeOfApplicationContext();
   }
 
+  @Test
   public void testGetSessionInstance_failsWithNullArgument() {
     try {
       SingletonUtil.getSessionInstance( null );
@@ -49,6 +56,7 @@ public class SingletonUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetSessionInstance_returnsInstanceOfGivenClass() {
     Object instance = SingletonUtil.getSessionInstance( TestSingleton.class );
 
@@ -56,6 +64,7 @@ public class SingletonUtil_Test extends TestCase {
     assertSame( TestSingleton.class, instance.getClass() );
   }
 
+  @Test
   public void testGetSessionInstance_returnsSameInstanceInSameSession() {
     Object instance1 = SingletonUtil.getSessionInstance( TestSingleton.class );
     Object instance2 = SingletonUtil.getSessionInstance( TestSingleton.class );
@@ -63,6 +72,7 @@ public class SingletonUtil_Test extends TestCase {
     assertSame( instance1, instance2 );
   }
 
+  @Test
   public void testGetSessionInstance_returnsNewInstanceInAnotherSession() throws Throwable {
     Object instance1 = SingletonUtil.getSessionInstance( TestSingleton.class );
     final AtomicReference<Object> instance2 = new AtomicReference<Object>();
@@ -77,6 +87,7 @@ public class SingletonUtil_Test extends TestCase {
     assertNotSame( instance1, instance2.get() );
   }
 
+  @Test
   public void testGetSessionInstance_returnsInstanceWithFakeContext()
     throws Throwable
   {
@@ -94,6 +105,7 @@ public class SingletonUtil_Test extends TestCase {
     assertNotNull( instance[ 0 ] );
   }
 
+  @Test
   public void testGetSessionInstance_failsWithoutContext() {
     ContextProvider.disposeContext();
     try {

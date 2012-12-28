@@ -1,17 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -19,23 +20,29 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class Group_Test extends TestCase {
+public class Group_Test {
 
   private Shell shell;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     shell = new Shell( display , SWT.NONE );
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testText() {
     Group group = new Group( shell, SWT.NONE );
     assertEquals( "", group.getText() );
@@ -49,6 +56,7 @@ public class Group_Test extends TestCase {
     }
   }
 
+  @Test
   public void testComputeSize() {
     Group group = new Group( shell, SWT.NONE );
     group.setLayout( new FillLayout( SWT.VERTICAL ) );
@@ -73,6 +81,7 @@ public class Group_Test extends TestCase {
     assertEquals( expected, group.computeSize( 100, 100 ) );
   }
 
+  @Test
   public void testComputeTrim() {
     Group group = new Group( shell, SWT.NONE );
     // trimmings = 3, 17, 6, 20
@@ -83,6 +92,7 @@ public class Group_Test extends TestCase {
     assertEquals( expected, group.computeTrim( 20, 20, 100, 100 ) );
   }
 
+  @Test
   public void testClientArea() {
     Group group = new Group( shell, SWT.NONE );
     group.setText( "This is a very long group title." );
@@ -95,14 +105,15 @@ public class Group_Test extends TestCase {
     Rectangle expected = new Rectangle( 19, 36, 62, 45 );
     assertEquals( expected, group.getClientArea() );
   }
-  
+
+  @Test
   public void testIsSerializable() throws Exception {
     String groupText = "text";
     Group group = new Group( shell, SWT.NONE );
     group.setText( groupText );
-    
+
     Group deserializedGroup = Fixture.serializeAndDeserialize( group );
-    
+
     assertEquals( groupText, deserializedGroup.getText() );
   }
 }

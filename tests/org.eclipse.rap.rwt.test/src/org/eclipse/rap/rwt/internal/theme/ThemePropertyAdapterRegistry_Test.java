@@ -10,7 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.BoxDimensionsPropertyAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.DimensionPropertyAdapter;
@@ -18,20 +21,24 @@ import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.DirectPro
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.ImagePropertyAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ThemePropertyAdapterRegistry_Test extends TestCase {
+public class ThemePropertyAdapterRegistry_Test {
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testGetPropertyAdapter() {
     ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
     ThemePropertyAdapter booleanAdapter = registry.getPropertyAdapter( QxBoolean.class );
@@ -44,6 +51,7 @@ public class ThemePropertyAdapterRegistry_Test extends TestCase {
     assertEquals( ImagePropertyAdapter.class, imageAdapter.getClass() );
   }
 
+  @Test
   public void testDimensionPropertyAdapter() {
     ThemePropertyAdapter adapter = new DimensionPropertyAdapter();
     assertEquals( "0", adapter.getKey( QxDimension.ZERO ) );
@@ -54,6 +62,7 @@ public class ThemePropertyAdapterRegistry_Test extends TestCase {
     assertEquals( "23", adapter.getValue( QxDimension.create( 23 ) ).toString() );
   }
 
+  @Test
   public void testBoxDimensionsPropertyAdapter() {
     ThemePropertyAdapter adapter = new BoxDimensionsPropertyAdapter();
     QxBoxDimensions testBoxDimensions = QxBoxDimensions.create( 0, 1, 2, 3 );
@@ -64,6 +73,7 @@ public class ThemePropertyAdapterRegistry_Test extends TestCase {
     assertEquals( "[ 0, 1, 2, 3 ]", adapter.getValue( testBoxDimensions ).toString() );
   }
 
+  @Test
   public void testDefaultPropertyAdapter() {
     ThemePropertyAdapter adapter = new DirectPropertyAdapter();
     assertEquals( "true", adapter.getKey( QxBoolean.TRUE ) );
@@ -72,6 +82,7 @@ public class ThemePropertyAdapterRegistry_Test extends TestCase {
     assertNull( adapter.getValue( QxBoolean.TRUE ) );
   }
 
+  @Test
   public void testSameInstance() {
     ThemePropertyAdapterRegistry registryA = ThemePropertyAdapterRegistry.getInstance();
     ThemePropertyAdapterRegistry registryB = ThemePropertyAdapterRegistry.getInstance();
@@ -79,6 +90,7 @@ public class ThemePropertyAdapterRegistry_Test extends TestCase {
     assertSame( registryA, registryB );
   }
 
+  @Test
   public void testInstanceHasApplicationScope() {
     ThemePropertyAdapterRegistry registryA = ThemePropertyAdapterRegistry.getInstance();
     Fixture.tearDown();

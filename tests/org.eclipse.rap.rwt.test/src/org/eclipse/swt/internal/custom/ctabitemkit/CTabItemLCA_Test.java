@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabitemkit;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -34,18 +36,21 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 @SuppressWarnings("deprecation")
-public class CTabItemLCA_Test extends TestCase {
+public class CTabItemLCA_Test {
 
   private Display display;
   private Shell shell;
   private CTabFolder folder;
   private CTabItemLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -55,11 +60,12 @@ public class CTabItemLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -71,6 +77,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertEquals( Integer.valueOf( 0 ), operation.getProperty( "index" ) );
   }
 
+  @Test
   public void testRenderCreateWithClose() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.CLOSE );
 
@@ -82,6 +89,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "CLOSE" ) );
   }
 
+  @Test
   public void testRenderIndex() throws IOException {
     new CTabItem( folder, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
@@ -94,6 +102,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -104,6 +113,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( item.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderDispose() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -115,6 +125,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( item ), operation.getTarget() );
   }
 
+  @Test
   public void testRenderInitialToolTip() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -125,6 +136,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "toolTip" ) == -1 );
   }
 
+  @Test
   public void testRenderToolTip() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -135,6 +147,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( item, "toolTip" ) );
   }
 
+  @Test
   public void testRenderToolTipUnchanged() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     Fixture.markInitialized( display );
@@ -148,6 +161,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "toolTip" ) );
   }
 
+  @Test
   public void testRenderInitialCustomVariant() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -158,6 +172,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
   }
 
+  @Test
   public void testRenderCustomVariant() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -168,6 +183,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertEquals( "variant_blue", message.findSetProperty( item, "customVariant" ) );
   }
 
+  @Test
   public void testRenderCustomVariantUnchanged() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     Fixture.markInitialized( display );
@@ -181,6 +197,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "customVariant" ) );
   }
 
+  @Test
   public void testRenderInitialBounds() throws IOException, JSONException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -192,6 +209,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertTrue( bounds.getInt( 3 ) > 0 );
   }
 
+  @Test
   public void testRenderBounds() throws IOException, JSONException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -203,6 +221,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertTrue( bounds.getInt( 3 ) > 0 );
   }
 
+  @Test
   public void testRenderBoundsUnchanged() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     Fixture.markInitialized( display );
@@ -215,6 +234,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "bounds" ) );
   }
 
+  @Test
   public void testRenderInitialFont() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -225,6 +245,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "font" ) == -1 );
   }
 
+  @Test
   public void testRenderFont() throws IOException, JSONException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -239,6 +260,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, actual.get( 3 ) );
   }
 
+  @Test
   public void testRenderFontUnchanged() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     Fixture.markInitialized( display );
@@ -252,6 +274,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "font" ) );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -262,6 +285,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -272,6 +296,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( item, "text" ) );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     Fixture.markInitialized( display );
@@ -285,6 +310,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "text" ) );
   }
 
+  @Test
   public void testRenderInitialImage() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -294,6 +320,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "image" ) );
   }
 
+  @Test
   public void testRenderImage() throws IOException, JSONException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
@@ -309,6 +336,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderImageUnchanged() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     Fixture.markInitialized( display );
@@ -324,6 +352,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "image" ) );
   }
 
+  @Test
   public void testRenderImageReset() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     Fixture.markInitialized( display );
@@ -340,6 +369,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( item, "image" ) );
   }
 
+  @Test
   public void testRenderInitialShowing() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -350,6 +380,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "showing" ) == -1 );
   }
 
+  @Test
   public void testRenderShowing() throws IOException {
     CTabItem firstItem = new CTabItem( folder, SWT.NONE );
     CTabItem item = new CTabItem( folder, SWT.NONE );
@@ -361,6 +392,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findSetProperty( item, "showing" ) );
   }
 
+  @Test
   public void testRenderShowingUnchanged() throws IOException {
     CTabItem firstItem = new CTabItem( folder, SWT.NONE );
     CTabItem item = new CTabItem( folder, SWT.NONE );
@@ -375,6 +407,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "showing" ) );
   }
 
+  @Test
   public void testRenderInitialShowClose() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -385,6 +418,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "showClose" ) == -1 );
   }
 
+  @Test
   public void testRenderShowClose() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -395,6 +429,7 @@ public class CTabItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( item, "showClose" ) );
   }
 
+  @Test
   public void testRenderShowCloseUnchanged() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     Fixture.markInitialized( display );

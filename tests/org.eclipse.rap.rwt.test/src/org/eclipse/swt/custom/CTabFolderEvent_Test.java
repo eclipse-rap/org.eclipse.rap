@@ -11,7 +11,6 @@
 package org.eclipse.swt.custom;
 
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -20,22 +19,28 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class CTabFolderEvent_Test extends TestCase {
+public class CTabFolderEvent_Test {
 
   private Display display;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testUntypedEventConstructor() {
     Event event = new Event();
     event.display = display;
@@ -47,9 +52,10 @@ public class CTabFolderEvent_Test extends TestCase {
     event.height = 4;
     event.doit = true;
     event.data = new Object();
-    
+
     CTabFolderEvent selectionEvent = new CTabFolderEvent( event );
-    
+
     EventTestHelper.assertFieldsEqual( selectionEvent, event );
   }
+
 }

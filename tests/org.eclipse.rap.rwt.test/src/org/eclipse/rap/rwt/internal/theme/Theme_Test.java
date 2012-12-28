@@ -12,7 +12,11 @@
 package org.eclipse.rap.rwt.internal.theme;
 
 import static org.eclipse.rap.rwt.internal.theme.ThemeTestUtil.RESOURCE_LOADER;
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
@@ -21,12 +25,14 @@ import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Button;
+import org.junit.Test;
 
 
-public class Theme_Test extends TestCase {
+public class Theme_Test {
 
   private static final String TEST_SYNTAX_CSS = "TestExample.css";
 
+  @Test
   public void testCreateWithNullId() {
     try {
       new Theme( null, "Test", null );
@@ -36,6 +42,7 @@ public class Theme_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCreateEmpty() {
     Theme theme = new Theme( "some.id", "Test", null );
     assertEquals( "some.id", theme.getId() );
@@ -46,6 +53,7 @@ public class Theme_Test extends TestCase {
     assertEquals( 0, valuesMap.getAllValues().length );
   }
 
+  @Test
   public void testCreate() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_SYNTAX_CSS );
     Theme theme = new Theme( "some.id", "Test", styleSheet );
@@ -53,6 +61,7 @@ public class Theme_Test extends TestCase {
     assertEquals( "Test", theme.getName() );
   }
 
+  @Test
   public void testAddStyleSheet() throws Exception {
     String defaultCss = "Button { background-color: black; color: #aaaaaa; }\n";
     StyleSheet defaultStyleSheet = ThemeTestUtil.createStyleSheet( defaultCss );
@@ -69,6 +78,7 @@ public class Theme_Test extends TestCase {
     assertEquals( "#aaaaaa", values[ 1 ].value.toDefaultString() );
   }
 
+  @Test
   public void test_Uninitialized() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_SYNTAX_CSS );
     Theme theme = new Theme( "some.id", "Test", styleSheet );
@@ -80,6 +90,7 @@ public class Theme_Test extends TestCase {
     }
   }
 
+  @Test
   public void testInitialize() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_SYNTAX_CSS );
     Theme theme = new Theme( "some.id", "Test", styleSheet );
@@ -87,6 +98,7 @@ public class Theme_Test extends TestCase {
     assertNotNull( theme.getValuesMap() );
   }
 
+  @Test
   public void testInitializeTwice() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_SYNTAX_CSS );
     Theme theme = new Theme( "some.id", "Test", styleSheet );
@@ -99,6 +111,7 @@ public class Theme_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetJsIdForDefaultTheme() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_SYNTAX_CSS );
     String defaultThemeId = RWT.DEFAULT_THEME_ID;
@@ -106,6 +119,7 @@ public class Theme_Test extends TestCase {
     assertEquals( "rwt.theme.Default", defaultTheme.getJsId() );
   }
 
+  @Test
   public void testGetJsId() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_SYNTAX_CSS );
     Theme theme1 = new Theme( "custom.id1", "Custom 1", styleSheet );
@@ -114,6 +128,7 @@ public class Theme_Test extends TestCase {
     assertFalse( theme2.getJsId().equals( theme1.getJsId() ) );
   }
 
+  @Test
   public void testRegisterResources() throws Exception {
     Fixture.setUp();
     try {

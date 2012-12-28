@@ -12,14 +12,14 @@ package org.eclipse.swt.internal.events;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -29,16 +29,19 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-public class EventLCAUtil_Test extends TestCase {
+public class EventLCAUtil_Test {
 
   private Display display;
   private Shell shell;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -46,11 +49,12 @@ public class EventLCAUtil_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testWidgetDefaultSeletedModifiers() {
     Button button = new Button( shell, SWT.PUSH );
     SelectionListener listener = mock( SelectionListener.class );
@@ -71,6 +75,7 @@ public class EventLCAUtil_Test extends TestCase {
     assertTrue( ( event.stateMask & SWT.SHIFT ) == 0 );
   }
 
+  @Test
   public void testTranslateModifier() {
     int stateMask = EventLCAUtil.translateModifier( "false", "false", "false" );
     assertEquals( 0, stateMask & SWT.MODIFIER_MASK );
@@ -95,6 +100,7 @@ public class EventLCAUtil_Test extends TestCase {
     assertEquals( stateMask, stateMask & SWT.MODIFIER_MASK );
   }
 
+  @Test
   public void testTranslateButton() {
     int button = EventLCAUtil.translateButton( 0 );
     assertEquals( 0, button & SWT.BUTTON_MASK );
@@ -144,4 +150,5 @@ public class EventLCAUtil_Test extends TestCase {
     assertEquals( 0, button & SWT.BUTTON4 );
     assertTrue( ( button & SWT.BUTTON5 ) != 0 );
   }
+
 }

@@ -10,9 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.TestCase;
+import java.io.IOException;
 
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -21,9 +21,40 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ReadData_Test extends TestCase {
+public class ReadData_Test {
+
+  private ReadData readData;
+
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    readData = new ReadData();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
+  public void testGetPhaseId() {
+    assertEquals( PhaseId.READ_DATA, readData.getPhaseId() );
+  }
+
+  @Test
+  public void testExecute() {
+    StringBuilder log = new StringBuilder();
+    Display display = new Display();
+    new TestWidget( display, log );
+    PhaseId phaseId = readData.execute( display );
+    assertEquals( LoggingWidgetLCA.READ_DATA, log.toString() );
+    assertEquals( PhaseId.PROCESS_ACTION, phaseId );
+  }
 
   private final class TestWidget extends Shell {
     private final StringBuilder log;
@@ -75,29 +106,4 @@ public class ReadData_Test extends TestCase {
     }
   }
 
-  private ReadData readData;
-
-  public void testGetPhaseId() {
-    assertEquals( PhaseId.READ_DATA, readData.getPhaseId() );
-  }
-
-  public void testExecute() {
-    StringBuilder log = new StringBuilder();
-    Display display = new Display();
-    new TestWidget( display, log );
-    PhaseId phaseId = readData.execute( display );
-    assertEquals( LoggingWidgetLCA.READ_DATA, log.toString() );
-    assertEquals( PhaseId.PROCESS_ACTION, phaseId );
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    readData = new ReadData();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

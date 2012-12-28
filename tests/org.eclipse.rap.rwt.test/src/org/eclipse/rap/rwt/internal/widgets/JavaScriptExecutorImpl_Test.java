@@ -11,7 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -19,28 +21,32 @@ import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class JavaScriptExecutorImpl_Test extends TestCase {
+public class JavaScriptExecutorImpl_Test {
 
   private static final String EXECUTE_1 = "execute_1";
   private static final String EXECUTE_2 = "execute_2";
 
   private JavaScriptExecutorImpl executor;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     new Display();
     executor = new JavaScriptExecutorImpl();
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testExecuteJSOnce() {
     executor.execute( EXECUTE_1 );
 
@@ -50,6 +56,7 @@ public class JavaScriptExecutorImpl_Test extends TestCase {
     assertTrue( indexOfCallOperation( message, "execute", EXECUTE_1 ) != -1 );
   }
 
+  @Test
   public void testExecuteJSTwice() {
     executor.execute( EXECUTE_1 );
     executor.execute( EXECUTE_2 );
@@ -60,6 +67,7 @@ public class JavaScriptExecutorImpl_Test extends TestCase {
     assertTrue( indexOfCallOperation( message, "execute", EXECUTE_1 + EXECUTE_2 ) != -1 );
   }
 
+  @Test
   public void testExecuteJSIsClearedAfterRender() {
     executor.execute( EXECUTE_1 );
 
@@ -73,6 +81,7 @@ public class JavaScriptExecutorImpl_Test extends TestCase {
     assertTrue( script.contains( EXECUTE_2 ) );
   }
 
+  @Test
   public void testExecuteJSWithDifferentDisplay() {
     executor.execute( EXECUTE_1 );
 
@@ -82,6 +91,7 @@ public class JavaScriptExecutorImpl_Test extends TestCase {
     assertFalse( getMessageScript().contains( EXECUTE_1 ) );
   }
 
+  @Test
   public void testEmptyScriptIsNotRendered() {
     Fixture.executeLifeCycleFromServerThread();
 
@@ -123,4 +133,5 @@ public class JavaScriptExecutorImpl_Test extends TestCase {
     }
     return result;
   }
+
 }

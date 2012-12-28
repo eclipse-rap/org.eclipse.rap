@@ -10,6 +10,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.io.Serializable;
@@ -18,16 +24,14 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
@@ -36,45 +40,44 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class DisplaySerialization_Test extends TestCase {
-
-  private static class BackgroundRunnable implements Runnable {
-    private final Display display;
-
-    BackgroundRunnable( Display display ) {
-      this.display = display;
-    }
-
-    public void run() {
-      display.syncExec( new SerializableRunnable() );
-    }
-  }
-
-  private static class SerializableRunnable implements Runnable, Serializable {
-    static boolean wasInvoked;
-    public void run() {
-      wasInvoked = true;
-    }
-  }
-
-  private static class SerializableListener implements Listener, Serializable {
-    static boolean wasInvoked;
-    public void handleEvent( Event event ) {
-      wasInvoked = true;
-    }
-  }
+public class DisplaySerialization_Test {
 
   private Display display;
   private ApplicationContextImpl applicationContext;
 
+  @Before
+  public void setUp() {
+    SerializableRunnable.wasInvoked = false;
+    Fixture.createApplicationContext();
+    Fixture.createServiceContext();
+    Fixture.useDefaultResourceManager();
+    applicationContext = ApplicationContextUtil.getInstance();
+    applicationContext.getLifeCycleFactory().configure( SimpleLifeCycle.class );
+    ApplicationContextUtil.set( ContextProvider.getUISession(), applicationContext );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+  }
+
+  @After
+  public void tearDown() {
+    display.dispose();
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfApplicationContext();
+  }
+
+  @Test
   public void testDisposeIsSerializable() throws Exception {
     Display deserializedDisplay = serializeAndDeserialize( display );
 
     assertFalse( deserializedDisplay.isDisposed() );
   }
 
+  @Test
   public void testDisplayAdapterIsSerializable() throws Exception {
     Display deserializedDisplay = serializeAndDeserialize( display );
 
@@ -84,6 +87,7 @@ public class DisplaySerialization_Test extends TestCase {
     assertNotNull( displayAdapter );
   }
 
+  @Test
   public void testWidgetAdapterIsSerializable() throws Exception {
     WidgetAdapterImpl adapter = getWidgetAdapter( display );
     adapter.setInitialized( true );
@@ -92,10 +96,11 @@ public class DisplaySerialization_Test extends TestCase {
     WidgetAdapterImpl deserializedAdapter = getWidgetAdapter( deserializedDisplay );
 
     assertNotNull( deserializedAdapter );
-    assertEquals( adapter.isInitialized(), deserializedAdapter.isInitialized() );
+    assertTrue( adapter.isInitialized() == deserializedAdapter.isInitialized() );
     assertEquals( adapter.getId(), deserializedAdapter.getId() );
   }
 
+  @Test
   public void testUISessionIsSerializable() throws Exception {
     Display deserializedDisplay = serializeAndDeserialize( display );
 
@@ -104,12 +109,14 @@ public class DisplaySerialization_Test extends TestCase {
     assertNotNull( uiSession );
   }
 
+  @Test
   public void testSynchronizer() throws Exception {
     Display deserializedDisplay = serializeAndDeserialize( display );
 
     assertSame( deserializedDisplay, deserializedDisplay.getSynchronizer().display );
   }
 
+  @Test
   public void testThreadIsNotSerializable() throws Exception {
     getDisplayAdapter( display ).attachThread();
 
@@ -118,6 +125,7 @@ public class DisplaySerialization_Test extends TestCase {
     assertNull( deserializedDisplay.getThread() );
   }
 
+  @Test
   public void testMonitorIsSerializable() throws Exception {
     Monitor monitor = display.getMonitors()[ 0 ];
     Display deserializedDisplay = serializeAndDeserialize( display );
@@ -130,6 +138,7 @@ public class DisplaySerialization_Test extends TestCase {
     assertEquals( monitor.getClientArea(), deserializedDisplay.getClientArea() );
   }
 
+  @Test
   public void testBoundsIsSerializable() throws Exception {
     getDisplayAdapter( display ).setBounds( new Rectangle( 1, 2, 3, 4 ) );
     Display deserializedDisplay = serializeAndDeserialize( display );
@@ -137,6 +146,7 @@ public class DisplaySerialization_Test extends TestCase {
     assertEquals( new Rectangle( 1, 2, 3, 4 ), deserializedDisplay.getBounds() );
   }
 
+  @Test
   public void testCursorLocationIsSerializable() throws Exception {
     getDisplayAdapter( display ).setCursorLocation( 1, 2 );
     Display deserializedDisplay = serializeAndDeserialize( display );
@@ -144,6 +154,7 @@ public class DisplaySerialization_Test extends TestCase {
     assertEquals( new Point( 1, 2 ), deserializedDisplay.getCursorLocation() );
   }
 
+  @Test
   public void testDataIsSerializable() throws Exception {
     String data = "foo";
     String dataKey = "bar";
@@ -156,6 +167,7 @@ public class DisplaySerialization_Test extends TestCase {
     assertEquals( dataValue, deserializedDisplay.getData( dataKey ) );
   }
 
+  @Test
   public void testCloseListenerIsSerializable() throws Exception {
     display.addListener( SWT.Close, new SerializableListener() );
     Display deserializedDisplay = serializeAndDeserialize( display );
@@ -165,6 +177,7 @@ public class DisplaySerialization_Test extends TestCase {
     assertTrue( SerializableListener.wasInvoked );
   }
 
+  @Test
   public void testShellsAndActiveShellIsSerializable() throws Exception {
     String shellText = "shell";
     Shell shell = new Shell( display );
@@ -180,6 +193,7 @@ public class DisplaySerialization_Test extends TestCase {
     assertEquals( shellText, deserializedDisplay.getActiveShell().getText() );
   }
 
+  @Test
   public void testFiltersIsSerializable() throws Exception {
     display.addFilter( SWT.Skin, new SerializableListener() );
 
@@ -188,6 +202,7 @@ public class DisplaySerialization_Test extends TestCase {
     assertTrue( deserializedDisplay.filters( SWT.Skin ) );
   }
 
+  @Test
   public void testDisposeExecRunnablesIsSerializable() throws Exception {
     display.disposeExec( new SerializableRunnable() );
     Display deserializedDisplay = serializeAndDeserialize( display );
@@ -197,6 +212,7 @@ public class DisplaySerialization_Test extends TestCase {
     assertTrue( SerializableRunnable.wasInvoked );
   }
 
+  @Test
   public void testAsyncExecIsSerializable() throws Exception {
     display.asyncExec( new SerializableRunnable() );
 
@@ -206,6 +222,7 @@ public class DisplaySerialization_Test extends TestCase {
     assertTrue( SerializableRunnable.wasInvoked );
   }
 
+  @Test
   public void testSyncExecIsSerializable() throws Exception {
     Thread thread = new Thread( new BackgroundRunnable( display ) );
     thread.setDaemon( true );
@@ -218,6 +235,7 @@ public class DisplaySerialization_Test extends TestCase {
     assertTrue( SerializableRunnable.wasInvoked );
   }
 
+  @Test
   public void testTimerExecIsSerializable() throws Exception {
     display.timerExec( 1, new SerializableRunnable() );
 
@@ -230,26 +248,6 @@ public class DisplaySerialization_Test extends TestCase {
     deserializedDisplay.readAndDispatch();
 
     assertTrue( SerializableRunnable.wasInvoked );
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    SerializableRunnable.wasInvoked = false;
-    Fixture.createApplicationContext();
-    Fixture.createServiceContext();
-    Fixture.useDefaultResourceManager();
-    applicationContext = ApplicationContextUtil.getInstance();
-    applicationContext.getLifeCycleFactory().configure( SimpleLifeCycle.class );
-    ApplicationContextUtil.set( ContextProvider.getUISession(), applicationContext );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display = new Display();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    display.dispose();
-    Fixture.disposeOfServiceContext();
-    Fixture.disposeOfApplicationContext();
   }
 
   private static Display serializeAndDeserialize( Display display ) throws Exception {
@@ -287,4 +285,31 @@ public class DisplaySerialization_Test extends TestCase {
   private static WidgetAdapterImpl getWidgetAdapter( Display display ) {
     return ( WidgetAdapterImpl )display.getAdapter( WidgetAdapter.class );
   }
+
+  private static class BackgroundRunnable implements Runnable {
+    private final Display display;
+
+    BackgroundRunnable( Display display ) {
+      this.display = display;
+    }
+
+    public void run() {
+      display.syncExec( new SerializableRunnable() );
+    }
+  }
+
+  private static class SerializableRunnable implements Runnable, Serializable {
+    static boolean wasInvoked;
+    public void run() {
+      wasInvoked = true;
+    }
+  }
+
+  private static class SerializableListener implements Listener, Serializable {
+    static boolean wasInvoked;
+    public void handleEvent( Event event ) {
+      wasInvoked = true;
+    }
+  }
+
 }

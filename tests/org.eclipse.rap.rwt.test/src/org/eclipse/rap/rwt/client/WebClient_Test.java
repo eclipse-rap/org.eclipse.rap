@@ -10,7 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.client;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
@@ -18,8 +21,8 @@ import org.eclipse.rap.rwt.client.service.ClientService;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
-import org.eclipse.rap.rwt.internal.client.BrowserNavigationImpl;
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
+import org.eclipse.rap.rwt.internal.client.BrowserNavigationImpl;
 import org.eclipse.rap.rwt.internal.client.ClientInfoImpl;
 import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
@@ -29,27 +32,32 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoader;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoaderImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class WebClient_Test extends TestCase {
+public class WebClient_Test {
 
   private WebClient client;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     client = new WebClient();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testGetInvalidService() {
     assertNull( client.getService( UnsupportedService.class ) );
   }
 
+  @Test
   public void testGetServiveTwice() {
     ClientService service1 = client.getService( JavaScriptExecutor.class );
     ClientService service2 = client.getService( JavaScriptExecutor.class );
@@ -57,16 +65,19 @@ public class WebClient_Test extends TestCase {
     assertSame( service1, service2 );
   }
 
+  @Test
   public void testGetClienInfoService() {
     ClientService service = client.getService( ClientInfo.class );
     assertTrue( service instanceof ClientInfoImpl );
   }
 
+  @Test
   public void testGetUrlLauncherService() {
     ClientService service = client.getService( UrlLauncher.class );
     assertTrue( service instanceof UrlLauncherImpl );
   }
 
+  @Test
   public void testRegistersClienInfoHandlerOnCreate() {
     try {
       RemoteObjectFactory.getInstance().createServiceObject( "rwt.client.ClientInfo" );
@@ -76,26 +87,31 @@ public class WebClient_Test extends TestCase {
     }
   }
 
+  @Test
   public void testGetJavaScriptExecutorService() {
     ClientService service = client.getService( JavaScriptExecutor.class );
     assertTrue( service instanceof JavaScriptExecutorImpl );
   }
 
+  @Test
   public void testGetBrowserHistoryService() {
     ClientService service = client.getService( BrowserNavigation.class );
     assertTrue( service instanceof BrowserNavigationImpl );
   }
 
+  @Test
   public void testGetExitConfirmationService() {
     ClientService service = client.getService( ExitConfirmation.class );
     assertTrue( service instanceof ExitConfirmationImpl );
   }
 
+  @Test
   public void testGetJavaScriptLoaderService() {
     ClientService service = client.getService( JavaScriptLoader.class );
     assertTrue( service instanceof JavaScriptLoaderImpl );
   }
 
+  @Test
   public void testGetJavaScriptModuleLoaderService() {
     ClientService service = client.getService( JavaScriptModuleLoader.class );
     assertTrue( service instanceof JavaScriptModuleLoaderImpl );

@@ -10,9 +10,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.groupkit;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.TestCase;
+import java.io.IOException;
 
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -23,15 +25,19 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class GroupLCA_Test extends TestCase {
+public class GroupLCA_Test {
 
   private Display display;
   private Shell shell;
   private GroupLCA lca;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
@@ -39,10 +45,12 @@ public class GroupLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     Group group = new Group( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( group );
@@ -53,6 +61,7 @@ public class GroupLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( group );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     Group group = new Group( shell, SWT.NONE );
 
@@ -63,6 +72,7 @@ public class GroupLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.Group", operation.getType() );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     Group group = new Group( shell, SWT.NONE );
 
@@ -73,6 +83,7 @@ public class GroupLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( group.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     Group group = new Group( shell, SWT.NONE );
 
@@ -83,6 +94,7 @@ public class GroupLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     Group group = new Group( shell, SWT.NONE );
 
@@ -93,6 +105,7 @@ public class GroupLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( group, "text" ) );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     Group group = new Group( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -105,4 +118,5 @@ public class GroupLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( group, "text" ) );
   }
+
 }

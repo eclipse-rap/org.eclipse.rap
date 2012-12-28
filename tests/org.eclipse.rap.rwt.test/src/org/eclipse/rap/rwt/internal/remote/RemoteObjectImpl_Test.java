@@ -10,6 +10,10 @@
 *******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -22,23 +26,24 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class RemoteObjectImpl_Test extends TestCase {
+public class RemoteObjectImpl_Test {
 
   private String objectId;
   private RemoteObjectImpl remoteObject;
   private ProtocolMessageWriter writer;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
     objectId = "testId";
@@ -46,11 +51,12 @@ public class RemoteObjectImpl_Test extends TestCase {
     writer = mock( ProtocolMessageWriter.class );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testReturnsId() {
     RemoteObjectImpl remoteObject = new RemoteObjectImpl( "id", "type" );
 
@@ -59,6 +65,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     assertEquals( "id", id );
   }
 
+  @Test
   public void testDoesNotRenderOperationsImmediately() {
     remoteObject.call( "method", mockProperties() );
 
@@ -66,6 +73,7 @@ public class RemoteObjectImpl_Test extends TestCase {
   }
 
   @SuppressWarnings( "unchecked" )
+  @Test
   public void testOperationsAreRenderedDeferred() {
     remoteObject.call( "method", null );
 
@@ -75,12 +83,14 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendCall( anyString(), anyString(), anyMap() );
   }
 
+  @Test
   public void testCreateIsRendered() {
     remoteObject.render( writer );
 
     verify( writer ).appendCreate( eq( objectId ), eq( "type" ) );
   }
 
+  @Test
   public void testCreateIsNotRenderedIfCreateTypeIsNull() {
     RemoteObjectImpl remoteObject = new RemoteObjectImpl( "id", null );
 
@@ -89,6 +99,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer, times( 0 ) ).appendCreate( anyString(), anyString() );
   }
 
+  @Test
   public void testSetIntIsRendered() {
     remoteObject.set( "property", 23 );
 
@@ -97,6 +108,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( 23 ) );
   }
 
+  @Test
   public void testChecksNameForSetInt() {
     try {
       remoteObject.set( null, 23 );
@@ -105,6 +117,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testChecksStateForSetInt() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
@@ -113,6 +126,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( remoteObjectSpy ).checkState();
   }
 
+  @Test
   public void testSetDoubleIsRendered() {
     remoteObject.set( "property", 47.11 );
 
@@ -121,6 +135,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( 47.11 ) );
   }
 
+  @Test
   public void testChecksNameForSetDouble() {
     try {
       remoteObject.set( null, 47.11 );
@@ -129,6 +144,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testChecksStateForSetDouble() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
@@ -137,6 +153,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( remoteObjectSpy ).checkState();
   }
 
+  @Test
   public void testSetBooleanIsRendered() {
     remoteObject.set( "property", true );
 
@@ -145,6 +162,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( true ) );
   }
 
+  @Test
   public void testChecksNameForSetBoolean() {
     try {
       remoteObject.set( null, true );
@@ -153,6 +171,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testChecksStateForSetBoolean() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
@@ -161,6 +180,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( remoteObjectSpy ).checkState();
   }
 
+  @Test
   public void testSetStringIsRendered() {
     remoteObject.set( "property", "foo" );
 
@@ -169,6 +189,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( "foo" ) );
   }
 
+  @Test
   public void testChecksNameForSetString() {
     try {
       remoteObject.set( null, "foo" );
@@ -177,6 +198,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testChecksStateForSetString() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
@@ -185,6 +207,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( remoteObjectSpy ).checkState();
   }
 
+  @Test
   public void testSetObjectIsRendered() {
     Object object = new Object();
     remoteObject.set( "property", object );
@@ -194,6 +217,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendSet( eq( objectId ), eq( "property" ), same( object ) );
   }
 
+  @Test
   public void testChecksNameForSetObject() {
     try {
       remoteObject.set( null, new Object() );
@@ -202,6 +226,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testChecksStateForSetObject() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
@@ -210,6 +235,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( remoteObjectSpy ).checkState();
   }
 
+  @Test
   public void testListenIsRendered() {
     remoteObject.listen( "event", true );
 
@@ -218,6 +244,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendListen( eq( objectId ), eq( "event" ), eq( true ) );
   }
 
+  @Test
   public void testChecksNameForListen() {
     try {
       remoteObject.listen( null, true );
@@ -226,6 +253,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testChecksStateForListen() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
@@ -234,6 +262,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( remoteObjectSpy ).checkState();
   }
 
+  @Test
   public void testCallIsRendered() {
     Map<String, Object> properties = mockProperties();
     remoteObject.call( "method", properties );
@@ -243,6 +272,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendCall( eq( objectId ), eq( "method" ), same( properties ) );
   }
 
+  @Test
   public void testChecksNameForCall() {
     try {
       remoteObject.call( null, mockProperties() );
@@ -251,6 +281,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testChecksStateForCall() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
@@ -259,6 +290,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( remoteObjectSpy ).checkState();
   }
 
+  @Test
   public void testDestroyIsRendered() {
     remoteObject.destroy();
 
@@ -267,6 +299,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer ).appendDestroy( eq( objectId ) );
   }
 
+  @Test
   public void testChecksStateForDestroy() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
@@ -275,6 +308,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( remoteObjectSpy ).checkState();
   }
 
+  @Test
   public void testRenderQueueIsClearedAfterRender() {
     remoteObject.set( "property", 23 );
 
@@ -284,16 +318,19 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( writer, times( 1 ) ).appendSet( eq( objectId ), eq( "property" ), eq( 23 ) );
   }
 
+  @Test
   public void testIsNotDestroyedInitially() {
     assertFalse( remoteObject.isDestroyed() );
   }
 
+  @Test
   public void testIsDestroyedAfterDestroy() {
     remoteObject.destroy();
 
     assertTrue( remoteObject.isDestroyed() );
   }
 
+  @Test
   public void testPreventsCallWhenDestroyed() {
     remoteObject.destroy();
     try {
@@ -304,6 +341,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testPreventsCallFromBackgroundThread() {
     try {
       runInBackgroundThread( new Runnable() {
@@ -317,6 +355,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     }
   }
 
+  @Test
   public void testHandleSetDelegatesToHandler() {
     RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
     remoteObject.setHandler( handler );
@@ -327,10 +366,12 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( handler ).handleSet( eq( properties ) );
   }
 
+  @Test
   public void testHandleSetDoesNotFailWithoutHandler() {
     remoteObject.handleSet( mockProperties() );
   }
 
+  @Test
   public void testHandleCallDelegatesToHandler() {
     RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
     remoteObject.setHandler( handler );
@@ -341,10 +382,12 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( handler ).handleCall( eq( "method" ), eq( properties ) );
   }
 
+  @Test
   public void testHandleCallDoesNotFailWithoutHandler() {
     remoteObject.handleCall( "method", mockProperties() );
   }
 
+  @Test
   public void testHandleNotifyDelegatesToHandler() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
@@ -356,6 +399,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( handler ).handleNotify( eq( "event" ), eq( properties ) );
   }
 
+  @Test
   public void testHandleNotifyDelegatesToHandlerNotInReadData() {
     Fixture.fakePhase( PhaseId.READ_DATA );
     RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
@@ -367,6 +411,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( handler, never() ).handleNotify( eq( "event" ), eq( properties ) );
   }
 
+  @Test
   public void testHandleNotifyDelegatesToHandlerNotInRender() {
     Fixture.fakePhase( PhaseId.RENDER );
     RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
@@ -378,6 +423,7 @@ public class RemoteObjectImpl_Test extends TestCase {
     verify( handler, never() ).handleNotify( eq( "event" ), eq( properties ) );
   }
 
+  @Test
   public void testHandleNotifyDoesNotFailWithoutHandler() {
     remoteObject.handleNotify( "event", mockProperties() );
   }

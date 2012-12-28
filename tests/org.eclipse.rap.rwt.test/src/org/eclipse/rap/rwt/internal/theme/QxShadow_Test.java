@@ -1,19 +1,28 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
 
 
-public class QxShadow_Test extends TestCase {
-  
+public class QxShadow_Test {
+
+  @Test
   public void testIllegalArguments_NegativeBlur() {
     try {
       QxShadow.create( false, 10, 10, -10, 0, QxColor.BLACK );
@@ -22,7 +31,8 @@ public class QxShadow_Test extends TestCase {
       // expected
     }
   }
-  
+
+  @Test
   public void testIllegalArguments_SpreadNotZero() {
     try {
       QxShadow.create( false, 10, 10, 0, 10, QxColor.BLACK );
@@ -31,7 +41,8 @@ public class QxShadow_Test extends TestCase {
       // expected
     }
   }
-  
+
+  @Test
   public void testIllegalArguments_NullColor() {
     try {
       QxShadow.create( false, 10, 10, 0, 0, null );
@@ -41,6 +52,7 @@ public class QxShadow_Test extends TestCase {
     }
   }
 
+  @Test
   public void testCreate_WithoutOpacity() {
     QxShadow shadow = QxShadow.create( false, 10, 10, 0, 0, QxColor.BLACK );
     assertNotNull( shadow );
@@ -53,6 +65,7 @@ public class QxShadow_Test extends TestCase {
     assertEquals( 1f, shadow.opacity, 0 );
   }
 
+  @Test
   public void testCreate_WithOpacity() {
     QxColor color = QxColor.valueOf( "0, 0, 0, 0.5" );
     QxShadow shadow = QxShadow.create( false, 10, 10, 0, 0, color );
@@ -66,6 +79,7 @@ public class QxShadow_Test extends TestCase {
     assertEquals( 0.5, shadow.opacity, 0 );
   }
 
+  @Test
   public void testNoneShadow() {
     QxShadow shadow = QxShadow.NONE;
     assertFalse( shadow.inset );
@@ -77,12 +91,14 @@ public class QxShadow_Test extends TestCase {
     assertEquals( 0, shadow.opacity, 0 );
   }
 
+  @Test
   public void testToString() {
     QxShadow shadow = QxShadow.create( false, 10, 10, 0, 0, QxColor.BLACK );
     String expected = "QxShadow{ false, 10, 10, 0, 0, #000000, 1.0 }";
     assertEquals( expected, shadow.toString() );
   }
 
+  @Test
   public void testToDefaultString() {
     QxColor color = QxColor.valueOf( "0, 0, 0, 0.5" );
     QxShadow shadow = QxShadow.create( false, 10, 10, 0, 0, color );
@@ -90,15 +106,18 @@ public class QxShadow_Test extends TestCase {
     assertEquals( expected, shadow.toDefaultString() );
   }
 
+  @Test
   public void testToDefaultString_NoneShadow() {
     QxShadow shadow = QxShadow.NONE;
     String expected = "none";
     assertEquals( expected, shadow.toDefaultString() );
   }
 
+  @Test
   public void testEquals() {
     QxShadow shadow1 = QxShadow.create( false, 10, 10, 0, 0, QxColor.BLACK );
     QxShadow shadow2 = QxShadow.create( false, 10, 10, 0, 0, QxColor.BLACK );
     assertTrue( shadow1.equals( shadow2 ) );
-  } 
+  }
+
 }

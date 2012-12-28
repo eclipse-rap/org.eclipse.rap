@@ -12,6 +12,10 @@
 package org.eclipse.swt.internal.widgets.expanditemkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -20,8 +24,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -46,11 +48,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
 @SuppressWarnings("deprecation")
-public class ExpandItemLCA_Test extends TestCase {
+public class ExpandItemLCA_Test {
 
   private Display display;
   private Shell shell;
@@ -58,8 +63,8 @@ public class ExpandItemLCA_Test extends TestCase {
   private ExpandItem expandItem;
   private ExpandItemLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -69,11 +74,12 @@ public class ExpandItemLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testExpandItem() {
     ExpandListener listener = mock( ExpandListener.class );
     expandBar.addExpandListener( listener );
@@ -92,10 +98,11 @@ public class ExpandItemLCA_Test extends TestCase {
     assertEquals( 0, event.y );
     assertEquals( 0, event.width );
     assertEquals( 0, event.height );
-    assertEquals( true, event.doit );
+    assertTrue( event.doit );
     assertTrue( expandItem.getExpanded() );
   }
 
+  @Test
   public void testExpandPropertyInsideExpandEvent() {
     final AtomicBoolean log = new AtomicBoolean();
     ExpandListener listener = new ExpandListener() {
@@ -114,6 +121,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertTrue( log.get() );
   }
 
+  @Test
   public void testCollapseItem() {
     ExpandListener listener = mock( ExpandListener.class );
     expandBar.addExpandListener( listener );
@@ -133,10 +141,11 @@ public class ExpandItemLCA_Test extends TestCase {
     assertEquals( 0, event.y );
     assertEquals( 0, event.width );
     assertEquals( 0, event.height );
-    assertEquals( true, event.doit );
+    assertTrue( event.doit );
     assertFalse( expandItem.getExpanded() );
   }
 
+  @Test
   public void testExpandPropertyInsideCollapseEvent() {
     final AtomicBoolean log = new AtomicBoolean( true );
     ExpandListener listener = new ExpandListener() {
@@ -156,6 +165,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertFalse( log.get() );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( expandItem );
 
@@ -165,6 +175,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "style" ) == -1 );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( expandItem );
 
@@ -173,6 +184,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( expandBar ), operation.getParent() );
   }
 
+  @Test
   public void testRenderDispose() throws IOException {
     lca.renderDispose( expandItem );
 
@@ -182,6 +194,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( expandItem ), operation.getTarget() );
   }
 
+  @Test
   public void testRenderInitialCustomVariant() throws IOException {
     lca.render( expandItem );
 
@@ -190,6 +203,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
   }
 
+  @Test
   public void testRenderCustomVariant() throws IOException {
     expandItem.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( expandItem );
@@ -198,6 +212,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertEquals( "variant_blue", message.findSetProperty( expandItem, "customVariant" ) );
   }
 
+  @Test
   public void testRenderCustomVariantUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( expandItem );
@@ -210,6 +225,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( expandItem, "customVariant" ) );
   }
 
+  @Test
   public void testRenderInitialBounds() throws IOException, JSONException {
     expandItem.setText( "foo" );
 
@@ -221,6 +237,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertTrue( bounds.getInt( 3 ) > 0 );
   }
 
+  @Test
   public void testRenderBounds() throws IOException, JSONException {
     expandItem.setText( "foo" );
 
@@ -232,6 +249,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertTrue( bounds.getInt( 3 ) > 0 );
   }
 
+  @Test
   public void testRenderBoundsUnchanged() throws IOException {
     expandItem.setText( "foo" );
     Fixture.markInitialized( display );
@@ -244,6 +262,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( expandItem, "bounds" ) );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     lca.render( expandItem );
 
@@ -252,6 +271,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     expandItem.setText( "foo" );
     lca.renderChanges( expandItem );
@@ -260,6 +280,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( expandItem, "text" ) );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( expandItem );
@@ -272,6 +293,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( expandItem, "text" ) );
   }
 
+  @Test
   public void testRenderInitialImage() throws IOException {
     lca.renderChanges( expandItem );
 
@@ -279,6 +301,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( expandItem, "image" ) );
   }
 
+  @Test
   public void testRenderImage() throws IOException, JSONException {
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
@@ -292,6 +315,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
+  @Test
   public void testRenderImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( expandItem );
@@ -305,6 +329,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( expandItem, "image" ) );
   }
 
+  @Test
   public void testRenderImageReset() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( expandItem );
@@ -319,6 +344,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( expandItem, "image" ) );
   }
 
+  @Test
   public void testRenderInitialHeaderHeight() throws IOException {
     lca.render( expandItem );
 
@@ -327,6 +353,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "headerHeight" ) == -1 );
   }
 
+  @Test
   public void testRenderHeaderHeight() throws IOException {
     expandBar.setFont( Graphics.getFont( "Arial", 22, SWT.BOLD )  );
     lca.renderChanges( expandItem );
@@ -335,6 +362,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertEquals( Integer.valueOf( 26 ), message.findSetProperty( expandItem, "headerHeight" ) );
   }
 
+  @Test
   public void testRenderHeaderHeightUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( expandItem );

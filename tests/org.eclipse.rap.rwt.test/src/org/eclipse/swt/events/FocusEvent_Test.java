@@ -13,11 +13,11 @@ package org.eclipse.swt.events;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -28,17 +28,20 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-public class FocusEvent_Test extends TestCase {
+public class FocusEvent_Test {
 
   private Display display;
   private Shell shell;
   private FocusListener focusListener;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -48,22 +51,24 @@ public class FocusEvent_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testUntypedEventConstructor() {
     Event event = new Event();
     event.display = display;
     event.widget = mock( Widget.class );
     event.data = new Object();
-    
+
     FocusEvent focusEvent = new FocusEvent( event );
-    
+
     EventTestHelper.assertFieldsEqual( focusEvent, event );
   }
 
+  @Test
   public void testFocusLost() {
     Button unfocusControl = new Button( shell, SWT.PUSH );
     unfocusControl.setText( "unfocusControl" );
@@ -71,7 +76,7 @@ public class FocusEvent_Test extends TestCase {
     unfocusControl.addFocusListener( focusListener );
     Button focusControl = new Button( shell, SWT.PUSH );
     focusControl.setText( "focusControl" );
-    
+
     Fixture.fakeSetParameter( getId( display ), "focusControl", getId( focusControl ) );
     Fixture.readDataAndProcessAction( display );
 
@@ -81,6 +86,7 @@ public class FocusEvent_Test extends TestCase {
     assertEquals( unfocusControl, captor.getValue().widget );
   }
 
+  @Test
   public void testFocusGained() {
     Control control = new Button( shell, SWT.PUSH );
     control.addFocusListener( focusListener );
@@ -94,6 +100,7 @@ public class FocusEvent_Test extends TestCase {
     assertEquals( control, captor.getValue().widget );
   }
 
+  @Test
   public void testFocusGainedLostOrder() {
     Button button1 = new Button( shell, SWT.PUSH );
     Button button2 = new Button( shell, SWT.PUSH );
@@ -111,4 +118,5 @@ public class FocusEvent_Test extends TestCase {
     verify( focusListener ).focusGained( captor2.capture() );
     assertEquals( button2, captor2.getValue().widget );
   }
+
 }

@@ -11,27 +11,45 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class TextSizeStorageUtil_Test extends TestCase {
+public class TextSizeStorageUtil_Test {
+
   private static final FontData FONT_DATA = new FontData( "arial", 10, SWT.NORMAL );
   private static final String TEST_STRING = "test";
   private static final int MODE = TextSizeUtil.STRING_EXTENT;
 
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+  }
 
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
   public void testLookupOfNotExistingText() {
     assertNull( TextSizeStorageUtil.lookup( FONT_DATA, TEST_STRING, SWT.DEFAULT, MODE ) );
   }
 
+  @Test
   public void testStoreWithUnprobedFont() {
     try {
       TextSizeStorageUtil.store( FONT_DATA, TEST_STRING, SWT.DEFAULT, MODE, new Point( 1, 1 ) );
@@ -40,6 +58,7 @@ public class TextSizeStorageUtil_Test extends TestCase {
     }
   }
 
+  @Test
   public void testStoreAndLookup() {
     ProbeResultStore probeResultStore = ProbeResultStore.getInstance();
     probeResultStore.createProbeResult( new Probe( FONT_DATA ), new Point( 2, 10 ) );
@@ -51,6 +70,7 @@ public class TextSizeStorageUtil_Test extends TestCase {
     assertEquals( storedSize, lookupSize );
   }
 
+  @Test
   public void testGetKey() {
     Set<Integer> takenKeys = new HashSet<Integer>();
     StringBuilder generatedText = new StringBuilder();
@@ -66,11 +86,4 @@ public class TextSizeStorageUtil_Test extends TestCase {
     }
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

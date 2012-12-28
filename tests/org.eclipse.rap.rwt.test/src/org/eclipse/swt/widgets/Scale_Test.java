@@ -11,31 +11,39 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class Scale_Test extends TestCase {
+public class Scale_Test {
 
   private Shell shell;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     shell = new Shell( display );
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testInitialValues() {
     Scale scale = new Scale( shell, SWT.NONE );
 
@@ -46,6 +54,7 @@ public class Scale_Test extends TestCase {
     assertEquals( 10, scale.getPageIncrement() );
   }
 
+  @Test
   public void testValues() {
     Scale scale = new Scale( shell, SWT.NONE );
 
@@ -88,6 +97,7 @@ public class Scale_Test extends TestCase {
     assertEquals( 5, scale.getIncrement() );
   }
 
+  @Test
   public void testStyle() {
     // Test SWT.NONE
     Scale scale = new Scale( shell, SWT.NONE );
@@ -105,12 +115,14 @@ public class Scale_Test extends TestCase {
     assertTrue( ( scale.getStyle() & SWT.VERTICAL ) == 0 );
   }
 
+  @Test
   public void testDispose() {
     Scale scale = new Scale( shell, SWT.NONE );
     scale.dispose();
     assertTrue( scale.isDisposed() );
   }
 
+  @Test
   public void testComputeSize() {
     Scale scale = new Scale( shell, SWT.HORIZONTAL );
     Point expected = new Point( 160, 41 );
@@ -131,51 +143,57 @@ public class Scale_Test extends TestCase {
     expected = new Point( 102, 102 );
     assertEquals( expected, scale.computeSize( 100, 100 ) );
   }
-  
+
+  @Test
   public void testIsSerializable() throws Exception {
     Scale scale = new Scale( shell, SWT.HORIZONTAL );
     scale.setSelection( 12 );
-    
+
     Scale deserializedScale = Fixture.serializeAndDeserialize( scale );
-    
+
     assertEquals( scale.getSelection(), deserializedScale.getSelection() );
   }
 
+  @Test
   public void testAddSelectionListener() {
     Scale scale = new Scale( shell, SWT.NONE );
 
     scale.addSelectionListener( mock( SelectionListener.class ) );
-    
+
     assertTrue( scale.isListening( SWT.Selection ) );
     assertTrue( scale.isListening( SWT.DefaultSelection ) );
   }
-  
+
+  @Test
   public void testRemoveSelectionListener() {
     Scale scale = new Scale( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     scale.addSelectionListener( listener );
 
     scale.removeSelectionListener( listener );
-    
+
     assertFalse( scale.isListening( SWT.Selection ) );
     assertFalse( scale.isListening( SWT.DefaultSelection ) );
   }
 
+  @Test
   public void testAddSelectionListenerWithNullArgument() {
     Scale scale = new Scale( shell, SWT.NONE );
-    
+
     try {
       scale.addSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
 
+  @Test
   public void testRemoveSelectionListenerWithNullArgument() {
     Scale scale = new Scale( shell, SWT.NONE );
-    
+
     try {
       scale.removeSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
     }
   }
+
 }

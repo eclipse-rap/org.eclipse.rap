@@ -12,6 +12,9 @@
 package org.eclipse.swt.internal.custom.scrolledcompositekit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -19,8 +22,6 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
@@ -48,9 +49,12 @@ import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ScrolledCompositeLCA_Test extends TestCase {
+public class ScrolledCompositeLCA_Test {
 
  private static final String PROP_SHOW_FOCUSED_CONTROL = "showFocusedControl";
 
@@ -61,8 +65,8 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   private ScrollBar vScroll;
   private ScrolledCompositeLCA lca;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
@@ -73,11 +77,12 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     Fixture.tearDown();
   }
 
+  @Test
   public void testControlListeners() throws IOException {
     ControlLCATestUtil.testActivateListener( sc );
     ControlLCATestUtil.testFocusListener( sc );
@@ -88,6 +93,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     ControlLCATestUtil.testHelpListener( sc );
   }
 
+  @Test
   public void testPreserveValues() {
     WidgetAdapter adapter = WidgetUtil.getAdapter( sc );
     assertEquals( null, adapter.getPreserved( PROP_SHOW_FOCUSED_CONTROL ) );
@@ -164,6 +170,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( "some text", sc.getToolTipText() );
   }
 
+  @Test
   public void testReadData_ScrollBarsSelection() {
     sc.setContent( new Composite( sc, SWT.NONE ) );
 
@@ -174,6 +181,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( new Point( 1, 2 ), sc.getOrigin() );
   }
 
+  @Test
   public void testReadData_ScrollBarsSelectionEvent() {
     sc.setContent( new Composite( sc, SWT.NONE ) );
     SelectionListener selectionListener = mock( SelectionListener.class );
@@ -187,6 +195,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     verify( selectionListener, times( 2 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( sc );
 
@@ -198,6 +207,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "V_SCROLL" ) );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( sc );
 
@@ -206,6 +216,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( sc.getParent() ), operation.getParent() );
   }
 
+  @Test
   public void testRenderInitialContent() throws IOException {
     lca.render( sc );
 
@@ -214,6 +225,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "content" ) == -1 );
   }
 
+  @Test
   public void testRenderContent() throws IOException {
     Composite content = new Composite( sc, SWT.NONE );
     String contentId = WidgetUtil.getId( content );
@@ -225,6 +237,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( contentId, message.findSetProperty( sc, "content" ) );
   }
 
+  @Test
   public void testRenderContentUnchanged() throws IOException {
     Composite content = new Composite( sc, SWT.NONE );
     Fixture.markInitialized( display );
@@ -238,6 +251,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( sc, "content" ) );
   }
 
+  @Test
   public void testRenderInitialOrigin() throws IOException {
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
@@ -249,6 +263,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( vScroll, "selection" ) );
   }
 
+  @Test
   public void testRenderOrigin() throws IOException, JSONException {
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
@@ -261,6 +276,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 2 ]", actual ) );
   }
 
+  @Test
   public void testRenderOrigin_SetByScrollbar() throws IOException, JSONException {
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
@@ -274,6 +290,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 2 ]", actual ) );
   }
 
+  @Test
   public void testRenderOriginUnchanged() throws IOException {
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
@@ -289,6 +306,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( vScroll, "selection" ) );
   }
 
+  @Test
   public void testRenderInitialShowFocusedControl() throws IOException {
     lca.render( sc );
 
@@ -297,6 +315,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertTrue( operation.getPropertyNames().indexOf( "showFocusedControl" ) == -1 );
   }
 
+  @Test
   public void testRenderShowFocusedControl() throws IOException {
     sc.setShowFocusedControl( true );
     lca.renderChanges( sc );
@@ -305,6 +324,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( sc, "showFocusedControl" ) );
   }
 
+  @Test
   public void testRenderShowFocusedControlUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( sc );
@@ -317,6 +337,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( sc, "showFocusedControl" ) );
   }
 
+  @Test
   public void testRenderAddScrollBarsSelectionListener_Horizontal() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( sc );
@@ -330,6 +351,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( hScroll, "Selection" ) );
   }
 
+  @Test
   public void testRenderRemoveScrollBarsSelectionListener_Horizontal() throws Exception {
     SelectionListener listener = new SelectionAdapter() { };
     hScroll.addSelectionListener( listener );
@@ -345,6 +367,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( hScroll, "Selection" ) );
   }
 
+  @Test
   public void testRenderScrollBarsSelectionListenerUnchanged_Horizontal() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( sc );
@@ -359,6 +382,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertNull( message.findListenOperation( hScroll, "Selection" ) );
   }
 
+  @Test
   public void testRenderAddScrollBarsSelectionListener_Vertical() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( sc );
@@ -372,6 +396,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( vScroll, "Selection" ) );
   }
 
+  @Test
   public void testRenderRemoveScrollBarsSelectionListener_Vertical() throws Exception {
     SelectionListener listener = new SelectionAdapter() { };
     vScroll.addSelectionListener( listener );
@@ -387,6 +412,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( vScroll, "Selection" ) );
   }
 
+  @Test
   public void testRenderScrollBarsSelectionListenerUnchanged_Vertical() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( sc );
@@ -401,6 +427,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertNull( message.findListenOperation( vScroll, "Selection" ) );
   }
 
+  @Test
   public void testRenderInitialScrollBarsVisible() throws IOException {
     lca.render( sc );
 
@@ -409,6 +436,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 
+  @Test
   public void testRenderScrollBarsVisible_Horizontal() throws IOException {
     hScroll.setVisible( true );
     lca.renderChanges( sc );
@@ -418,6 +446,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 
+  @Test
   public void testRenderScrollBarsVisible_Vertical() throws IOException {
     vScroll.setVisible( true );
     lca.renderChanges( sc );
@@ -427,6 +456,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findSetProperty( vScroll, "visibility" ) );
   }
 
+  @Test
   public void testRenderScrollBarsVisibleUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( sc );
