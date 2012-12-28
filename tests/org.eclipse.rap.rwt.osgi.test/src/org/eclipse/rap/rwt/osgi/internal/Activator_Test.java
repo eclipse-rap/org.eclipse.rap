@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
@@ -19,56 +20,58 @@ import static org.mockito.Mockito.when;
 
 import java.util.Dictionary;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.osgi.ApplicationLauncher;
+import org.junit.Before;
+import org.junit.Test;
 import org.osgi.framework.*;
 
 
-public class Activator_Test extends TestCase {
-  
+public class Activator_Test {
+
   private BundleContext context;
   private ServiceRegistration serviceRegistration;
 
-  public void testStart() throws Exception {
-    new Activator().start( context );
-    
-    checkTrackersHaveBeenOpend();
-    checkApplicationLauncherHasBeenRegistered();
-  }
-  
-  public void testStop() {
-    Activator activator = new Activator();
-    activator.start( context );
-    
-    activator.stop( context );
-    
-    checkTrackersHaveBeenClosed();
-    checkApplicationLauncherHasBeenUnregistered();
-  }
-  protected void setUp() {
+  @Before
+  public void setUp() {
     mockBundleContext();
   }
 
-  private void checkApplicationLauncherHasBeenUnregistered() {
-    verify( serviceRegistration ).unregister();
+  @Test
+  public void testStart_opensTrackers() throws Exception {
+    new Activator().start( context );
+
+    verify( context, times( 2 ) ).addServiceListener( any( ServiceListener.class ),
+                                                      any( String.class ) );
   }
 
-  private void checkTrackersHaveBeenClosed() {
+  @Test
+  @SuppressWarnings( "unchecked" )
+  public void testStart_registersApplicationLauncher() throws Exception {
+    new Activator().start( context );
+
+    verify( context ).registerService( eq( ApplicationLauncher.class.getName() ),
+                                       any( ApplicationLauncherImpl.class ),
+                                       any( Dictionary.class ) );
+  }
+
+  @Test
+  public void testStop_closesTrackers() {
+    Activator activator = new Activator();
+    activator.start( context );
+
+    activator.stop( context );
+
     verify( context, times( 2 ) ).removeServiceListener( any( ServiceListener.class ) );
   }
-  
-  @SuppressWarnings( "unchecked" )
-  private void checkApplicationLauncherHasBeenRegistered() {
-    verify( context )
-      .registerService( eq( ApplicationLauncher.class.getName() ),
-                        any( ApplicationLauncherImpl.class ), 
-                        any( Dictionary.class ) );
-  }
 
-  private void checkTrackersHaveBeenOpend() throws Exception {
-    verify( context, times( 2 ) )
-      .addServiceListener( any( ServiceListener.class ), any( String.class ) );
+  @Test
+  public void testStop_unregistersApplicationLauncher() {
+    Activator activator = new Activator();
+    activator.start( context );
+
+    activator.stop( context );
+
+    verify( serviceRegistration ).unregister();
   }
 
   @SuppressWarnings( "unchecked" )
@@ -79,4 +82,5 @@ public class Activator_Test extends TestCase {
                                    any( ApplicationLauncherImpl.class ),
                                    any( Dictionary.class ) ) ).thenReturn( serviceRegistration );
   }
+
 }

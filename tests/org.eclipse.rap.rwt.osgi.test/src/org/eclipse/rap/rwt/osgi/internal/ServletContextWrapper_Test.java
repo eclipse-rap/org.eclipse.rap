@@ -11,30 +11,35 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.servlet.ServletContext;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class ServletContextWrapper_Test extends TestCase {
+public class ServletContextWrapper_Test {
   private static final String CONTEXT_DIRECTORY = "contextDirectory";
 
   private ServletContextWrapper wrapper;
   private ServletContext context;
 
-  public void getContextDirectory() {
-    Object found = wrapper.getAttribute( ApplicationConfiguration.RESOURCE_ROOT_LOCATION );
-
-    assertSame( CONTEXT_DIRECTORY, found );
+  @Before
+  public void setUp() {
+    context = mock( ServletContext.class );
+    wrapper = new ServletContextWrapper( context, CONTEXT_DIRECTORY );
   }
 
+  @Test
   public void testGetContext() {
     String uripath = "uriPath";
     wrapper.getContext( uripath );
@@ -42,18 +47,21 @@ public class ServletContextWrapper_Test extends TestCase {
     verify( context ).getContext( uripath );
   }
 
+  @Test
   public void testGetContextPath() {
     wrapper.getContextPath();
 
     verify( context ).getContextPath();
   }
 
+  @Test
   public void testGetMajorVersion() {
     wrapper.getMajorVersion();
 
     verify( context ).getMajorVersion();
   }
 
+  @Test
   public void testGetMinorVersion() {
     wrapper.getMinorVersion();
 
@@ -67,6 +75,7 @@ public class ServletContextWrapper_Test extends TestCase {
     verify( context ).getMimeType( mimeType );
   }
 
+  @Test
   public void testGetResourcePaths() {
     String path = "path";
     wrapper.getResourcePaths( path );
@@ -74,6 +83,7 @@ public class ServletContextWrapper_Test extends TestCase {
     verify( context ).getResourcePaths( path );
   }
 
+  @Test
   public void testGetResource() throws Exception {
     String path = "path";
     wrapper.getResource( path );
@@ -81,6 +91,7 @@ public class ServletContextWrapper_Test extends TestCase {
     verify( context ).getResource( path );
   }
 
+  @Test
   public void testGetResourceAsStream() {
     String path = "path";
     wrapper.getResourceAsStream( path );
@@ -88,6 +99,7 @@ public class ServletContextWrapper_Test extends TestCase {
     verify( context ).getResourceAsStream( path );
   }
 
+  @Test
   public void testGetRequestDispatcher() {
     String path = "path";
     wrapper.getRequestDispatcher( path );
@@ -95,6 +107,7 @@ public class ServletContextWrapper_Test extends TestCase {
     verify( context ).getRequestDispatcher( path );
   }
 
+  @Test
   public void testGetNamedDispatcher() {
     String name = "path";
     wrapper.getNamedDispatcher( name );
@@ -103,6 +116,7 @@ public class ServletContextWrapper_Test extends TestCase {
   }
 
   @SuppressWarnings( "deprecation" )
+  @Test
   public void testGetServlet() throws Exception {
     String name = "name";
     wrapper.getServlet( name );
@@ -111,6 +125,7 @@ public class ServletContextWrapper_Test extends TestCase {
   }
 
   @SuppressWarnings( "deprecation" )
+  @Test
   public void testGetServlets() {
     wrapper.getServlets();
 
@@ -118,12 +133,14 @@ public class ServletContextWrapper_Test extends TestCase {
   }
 
   @SuppressWarnings( "deprecation" )
+  @Test
   public void testGetServletNames() {
     wrapper.getServletNames();
 
     verify( context ).getServletNames();
   }
 
+  @Test
   public void testLog() {
     String msg = "msg";
     wrapper.log( msg );
@@ -132,6 +149,7 @@ public class ServletContextWrapper_Test extends TestCase {
   }
 
   @SuppressWarnings( "deprecation" )
+  @Test
   public void testLogWithException() {
     Exception exception = new Exception();
     String msg = "msg";
@@ -141,6 +159,7 @@ public class ServletContextWrapper_Test extends TestCase {
   }
 
   @SuppressWarnings( "deprecation" )
+  @Test
   public void testLogWithThrowable() {
     Throwable throwable = new Throwable();
     String msg = "msg";
@@ -149,6 +168,7 @@ public class ServletContextWrapper_Test extends TestCase {
     verify( context ).log( msg, throwable );
   }
 
+  @Test
   public void testGetRealPath() {
     String path = "/path";
 
@@ -157,6 +177,7 @@ public class ServletContextWrapper_Test extends TestCase {
     assertEquals( null, realPath );
   }
 
+  @Test
   public void testGetRealPathInServletContainer() {
     String path = "/path";
     String containerRealPath = "containerContextPath" +  path;
@@ -167,12 +188,14 @@ public class ServletContextWrapper_Test extends TestCase {
     assertEquals( containerRealPath, realPath );
   }
 
+  @Test
   public void testGetServerInfo() {
     wrapper.getServerInfo();
 
     verify( context ).getServerInfo();
   }
 
+  @Test
   public void testGetInitParameter() {
     String name = "name";
     wrapper.getInitParameter( name );
@@ -180,12 +203,14 @@ public class ServletContextWrapper_Test extends TestCase {
     verify( context ).getInitParameter( name );
   }
 
+  @Test
   public void testGetInitParameterNames() {
     wrapper.getInitParameterNames();
 
     verify( context ).getInitParameterNames();
   }
 
+  @Test
   public void testGetAttribute() {
     String name = "name";
     wrapper.getAttribute( name );
@@ -193,12 +218,14 @@ public class ServletContextWrapper_Test extends TestCase {
     verify( context ).getAttribute( name );
   }
 
+  @Test
   public void testGetAttributeNames() {
     wrapper.getAttributeNames();
 
     verify( context ).getAttributeNames();
   }
 
+  @Test
   public void testSetAttribute() {
     String name = "name";
     Object object = new Object();
@@ -207,6 +234,7 @@ public class ServletContextWrapper_Test extends TestCase {
     verify( context ).setAttribute( name, object );
   }
 
+  @Test
   public void testRemoveAttribute() {
     String name = "name";
     when( context.getAttribute( name ) ).thenReturn( new Object() );
@@ -221,6 +249,7 @@ public class ServletContextWrapper_Test extends TestCase {
   // Note [fappel]: This fixes a problem with underlying OSGi ServletContext implementations
   //                that do not implement the attributes API part.
 
+  @Test
   public void testLocalAttributeBuffering() {
     Object object = new Object();
     String name = "name";
@@ -236,6 +265,7 @@ public class ServletContextWrapper_Test extends TestCase {
     assertNull( foundAfterRemove );
   }
 
+  @Test
   public void testAttributeBufferingInWrappedServletContext() {
     Object object = new Object();
     String name = "name";
@@ -256,15 +286,16 @@ public class ServletContextWrapper_Test extends TestCase {
   // END ATTRIBUTE BEHAVIOR TEST
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
+  @Test
   public void testGetServletContextName() {
     wrapper.getServletContextName();
 
     verify( context ).getServletContextName();
   }
 
-  @Override
-  protected void setUp() {
-    context = mock( ServletContext.class );
-    wrapper = new ServletContextWrapper( context, CONTEXT_DIRECTORY );
+  public void getContextDirectory() {
+    Object found = wrapper.getAttribute( ApplicationConfiguration.RESOURCE_ROOT_LOCATION );
+  
+    assertSame( CONTEXT_DIRECTORY, found );
   }
 }

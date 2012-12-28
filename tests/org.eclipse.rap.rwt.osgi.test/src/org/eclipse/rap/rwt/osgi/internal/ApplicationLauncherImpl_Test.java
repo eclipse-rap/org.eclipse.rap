@@ -11,6 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -27,11 +31,10 @@ import java.util.Dictionary;
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.application.*;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osgi.framework.*;
@@ -40,7 +43,7 @@ import org.osgi.service.http.HttpService;
 import org.osgi.service.log.LogService;
 
 
-public class ApplicationLauncherImpl_Test extends TestCase {
+public class ApplicationLauncherImpl_Test {
 
   private static final String CONTEXT_NAME = "context";
   private static final String FILTER_EXPRESSION = "(key=value)";
@@ -56,8 +59,8 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   private ServiceRegistration serviceRegistration;
   private LogService log;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     Fixture.deleteWebContextDirectory();
     Fixture.setSkipResourceDeletion( false );
     Fixture.useTestResourceManager();
@@ -67,12 +70,13 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     createApplicationLauncher();
   }
 
-  @Override
-  protected void tearDown() {
+  @After
+  public void tearDown() {
     Fixture.delete( Fixture.WEB_CONTEXT_DIR );
     Fixture.resetSkipResourceDeletion();
   }
 
+  @Test
   public void testLaunch() {
     String path = Fixture.WEB_CONTEXT_DIR.getPath();
 
@@ -84,6 +88,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkApplicationReferenceHasBeenRegisteredAsService();
   }
 
+  @Test
   public void testLaunchWithHttpContext() {
     HttpContext httpContext = mock( HttpContext.class );
     String path = Fixture.WEB_CONTEXT_DIR.getPath();
@@ -95,6 +100,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkApplicationReferenceHasBeenRegisteredAsService();
   }
 
+  @Test
   public void testLaunchWithDefaultContextDirectory() {
     launchApplication();
 
@@ -102,6 +108,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkWebContextResourcesHaveBeenCreated();
   }
 
+  @Test
   public void testLaunchWithProblem() {
     prepareConfiguratorToThrowException();
     mockLogService();
@@ -111,6 +118,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkProblemHasBeenLogged();
   }
 
+  @Test
   public void testStopApplication() {
     String path = Fixture.WEB_CONTEXT_DIR.getPath();
     ApplicationReference context = launchApplicationReference( path );
@@ -122,6 +130,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkApplicationReferenceHasBeenUnregisteredAsService();
   }
 
+  @Test
   public void testStopApplicationReferenceWithProblem() {
     mockLogService();
     ApplicationReferenceImpl applicationReference = createMalignApplicationReference();
@@ -131,6 +140,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkProblemHasBeenLogged();
   }
 
+  @Test
   public void testActivationStateAfterDeactivation() {
     ApplicationReference applicationReference = launchApplication();
 
@@ -142,6 +152,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkWebContextResourcesHaveBeenDeleted();
   }
 
+  @Test
   public void testLaunchWithMultipleServletNames() {
     createAliasConfigurator( SERVLET_PATH_1, SERVLET_PATH_2 );
     createApplicationLauncher();
@@ -152,6 +163,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkAliasHasBeenRegistered( SERVLET_PATH_2 );
   }
 
+  @Test
   public void testStopApplicationWithMultipleServletNames() {
     createAliasConfigurator( SERVLET_PATH_1, SERVLET_PATH_2 );
     createApplicationLauncher();
@@ -163,6 +175,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkAliasHasBeenUnregistered( SERVLET_PATH_2 );
   }
 
+  @Test
   public void testLaunchWithContextName() {
     mockBundleContext( CONTEXT_NAME );
     createApplicationLauncher();
@@ -173,6 +186,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkAliasHasBeenRegistered( "/" + CONTEXT_NAME + ApplicationReferenceImpl.DEFAULT_ALIAS );
   }
 
+  @Test
   public void testStopApplicationWithContextName() {
     mockBundleContext( CONTEXT_NAME );
     createApplicationLauncher();
@@ -185,6 +199,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkAliasHasBeenUnregistered( "/" + CONTEXT_NAME + ApplicationReferenceImpl.DEFAULT_ALIAS );
   }
 
+  @Test
   public void testActivate() {
     registerServiceReferences();
 
@@ -192,6 +207,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkWebContextResourcesHaveBeenCreated();
   }
 
+  @Test
   public void testDeactivate() {
     ApplicationReferenceImpl applicationReference = ( ApplicationReferenceImpl )launchApplication();
 
@@ -200,6 +216,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     assertFalse( applicationReference.isAlive() );
   }
 
+  @Test
   public void testAddConfigurator() {
     applicationLauncher.addHttpService( httpServiceReference );
 
@@ -210,6 +227,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkWebContextResourcesHaveBeenCreated();
   }
 
+  @Test
   public void testRemoveConfigurator() {
     applicationLauncher.addHttpService( httpServiceReference );
     applicationLauncher.addConfiguration( configuratorReference );
@@ -220,6 +238,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkWebContextResourcesHaveBeenDeleted();
   }
 
+  @Test
   public void testAddHttpService() {
     applicationLauncher.addConfiguration( configuratorReference );
 
@@ -230,6 +249,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkWebContextResourcesHaveBeenCreated();
   }
 
+  @Test
   public void testRemoveHttpService() {
     ApplicationReferenceImpl reference1 = ( ApplicationReferenceImpl )launchApplication();
     ApplicationReferenceImpl reference2 = ( ApplicationReferenceImpl )launchApplication();
@@ -241,6 +261,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkWebContextResourcesHaveBeenDeleted();
   }
 
+  @Test
   public void testAddConfigurerAfterLaunch() {
     ApplicationReference reference = launchApplication();
     applicationLauncher.addHttpService( httpServiceReference );
@@ -251,6 +272,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkDefaultAliasHasBeenRegisteredTwice();
   }
 
+  @Test
   public void testNonMatchingFilterUsageHttpService() {
     configureHttpServiceFilter( "wrongValue" );
 
@@ -259,6 +281,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkDefaultAliasHasNotBeenRegistered();
   }
 
+  @Test
   public void testNonMatchingFilterUsageConfigurator() {
     configureConfiguratorFilter( "wrongValue" );
 
@@ -267,6 +290,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkDefaultAliasHasNotBeenRegistered();
   }
 
+  @Test
   public void testMatchingFilterUsageHttpService() {
     configureHttpServiceFilter( "value" );
 
@@ -275,6 +299,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkDefaultAliasHasBeenRegistered();
   }
 
+  @Test
   public void testMatchingFilterUsageConfigurator() {
     configureConfiguratorFilter( "value" );
 
@@ -283,6 +308,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkDefaultAliasHasBeenRegistered();
   }
 
+  @Test
   public void testContextFileNameIsRelative() {
     // See bug 378778
     String name = ApplicationLauncherImpl.getContextFileName( "contextName",

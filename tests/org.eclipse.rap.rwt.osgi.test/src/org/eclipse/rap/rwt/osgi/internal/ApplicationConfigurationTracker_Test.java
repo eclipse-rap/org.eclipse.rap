@@ -15,15 +15,16 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osgi.framework.*;
 
 
-public class ApplicationConfigurationTracker_Test extends TestCase {
+public class ApplicationConfigurationTracker_Test {
 
   private BundleContext bundleContext;
   private ApplicationLauncherImpl applicationLauncher;
@@ -31,31 +32,35 @@ public class ApplicationConfigurationTracker_Test extends TestCase {
   private ApplicationConfiguration configurator;
   private ApplicationConfigurationTracker tracker;
 
-  public void testAddingService() {
-    tracker.addingService( configurationReference );
-    
-    verify( applicationLauncher ).addConfiguration( configurationReference );
-  }
-  
-  public void testRemovedService() {
-    tracker.removedService( configurationReference, configurator );
-    
-    verify( applicationLauncher ).removeConfiguration( configurator );
-  }
-  
-  public void testOpen() {
-    tracker.open();
-    
-    verify( applicationLauncher ).addConfiguration( configurationReference );
-  }
-  
+  @Before
   @SuppressWarnings( "unchecked" )
-  protected void setUp() throws Exception {
+  public void setUp() throws Exception {
     mockBundleContext();
     applicationLauncher = mock( ApplicationLauncherImpl.class );
     tracker = new ApplicationConfigurationTracker( bundleContext, applicationLauncher );
     configurationReference = mock( ServiceReference.class );
     configurator = mock( ApplicationConfiguration.class );
+  }
+
+  @Test
+  public void testAddingService() {
+    tracker.addingService( configurationReference );
+
+    verify( applicationLauncher ).addConfiguration( configurationReference );
+  }
+
+  @Test
+  public void testRemovedService() {
+    tracker.removedService( configurationReference, configurator );
+
+    verify( applicationLauncher ).removeConfiguration( configurator );
+  }
+
+  @Test
+  public void testOpen() {
+    tracker.open();
+
+    verify( applicationLauncher ).addConfiguration( configurationReference );
   }
 
   private void mockBundleContext() throws InvalidSyntaxException {

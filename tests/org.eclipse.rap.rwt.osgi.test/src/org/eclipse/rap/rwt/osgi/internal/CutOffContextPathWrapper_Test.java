@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -19,23 +21,32 @@ import static org.mockito.Mockito.verify;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.osgi.internal.CutOffContextPathWrapper.RequestWrapper;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class CutOffContextPathWrapper_Test extends TestCase {
+public class CutOffContextPathWrapper_Test {
   private static final String ALIAS = "alias";
 
   private CutOffContextPathWrapper cutOffContextPathWrapper;
   private HttpServlet servlet;
 
+  @Before
+  public void setUp() {
+    servlet = mock( HttpServlet.class );
+    ServletContext servletContext = mock( ServletContext.class );
+    cutOffContextPathWrapper = new CutOffContextPathWrapper( servlet, servletContext, ALIAS );
+  }
+
+  @Test
   public void testDestroy() {
     cutOffContextPathWrapper.destroy();
 
     verify( servlet ).destroy();
   }
 
+  @Test
   public void testGetInitParameter() {
     String key = "key";
     cutOffContextPathWrapper.getInitParameter( key );
@@ -43,36 +54,42 @@ public class CutOffContextPathWrapper_Test extends TestCase {
     verify( servlet ).getInitParameter( key );
   }
 
+  @Test
   public void testGetServletConfig() {
     cutOffContextPathWrapper.getServletConfig();
 
     verify( servlet ).getServletConfig();
   }
 
+  @Test
   public void testGetInitParameterNames() {
     cutOffContextPathWrapper.getInitParameterNames();
 
     verify( servlet ).getInitParameterNames();
   }
 
+  @Test
   public void testGetServletContext() {
     cutOffContextPathWrapper.getServletContext();
 
     verify( servlet ).getServletContext();
   }
 
+  @Test
   public void testGetServletInfo() {
     cutOffContextPathWrapper.getServletInfo();
 
     verify( servlet ).getServletInfo();
   }
 
+  @Test
   public void testInit() throws ServletException {
     cutOffContextPathWrapper.init();
 
     verify( servlet ).init();
   }
 
+  @Test
   public void testInitWithServletConfig() throws ServletException {
     ServletConfig servletConfig = mock( ServletConfig.class );
     cutOffContextPathWrapper.init( servletConfig );
@@ -80,12 +97,14 @@ public class CutOffContextPathWrapper_Test extends TestCase {
     verify( servlet ).init( servletConfig );
   }
 
+  @Test
   public void testGetServletName() {
     cutOffContextPathWrapper.getServletName();
 
     verify( servlet ).getServletName();
   }
 
+  @Test
   public void testService() throws Exception {
     HttpServletRequest request = mock( HttpServletRequest.class );
     HttpServletResponse response = mock( HttpServletResponse.class );
@@ -95,6 +114,7 @@ public class CutOffContextPathWrapper_Test extends TestCase {
     verify( servlet ).service( any( RequestWrapper.class ), eq( response ) );
   }
 
+  @Test
   public void testRequestWrapper() {
     HttpServletRequest servletRequest = mock( HttpServletRequest.class );
     ServletContext servletContext = mock( ServletContext.class );
@@ -107,6 +127,7 @@ public class CutOffContextPathWrapper_Test extends TestCase {
     assertSame( servletContext, foundContext );
   }
 
+  @Test
   public void testLogWithThrowable() {
     Throwable throwable = new Throwable();
     String message = "message";
@@ -115,17 +136,11 @@ public class CutOffContextPathWrapper_Test extends TestCase {
     verify( servlet ).log( message, throwable );
   }
 
+  @Test
   public void testLog() {
     String message = "message";
     cutOffContextPathWrapper.log( message );
 
     verify( servlet ).log( message );
-  }
-
-  @Override
-  protected void setUp() {
-    servlet = mock( HttpServlet.class );
-    ServletContext servletContext = mock( ServletContext.class );
-    cutOffContextPathWrapper = new CutOffContextPathWrapper( servlet, servletContext, ALIAS );
   }
 }

@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -20,20 +22,19 @@ import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.*;
 import org.osgi.service.http.HttpContext;
 
 
-public class HttpContextWrapper_Test extends TestCase {
+public class HttpContextWrapper_Test {
 
   private HttpContext httpContext;
   private HttpContextWrapper contextWrapper;
   private File directory;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     httpContext = mock( HttpContext.class );
     contextWrapper = new HttpContextWrapper( httpContext );
 
@@ -41,11 +42,12 @@ public class HttpContextWrapper_Test extends TestCase {
     directory.mkdirs();
   }
 
-  @Override
-  protected void tearDown() {
+  @After
+  public void tearDown() {
     Fixture.delete( directory );
   }
 
+  @Test
   public void testGetResource() throws Exception {
     File file = new File( directory, "test.txt" );
     file.createNewFile();
@@ -56,6 +58,7 @@ public class HttpContextWrapper_Test extends TestCase {
     assertEquals( file, new File( result.toURI() ) );
   }
 
+  @Test
   public void testGetResource_failsWithNonExistingFile() {
     String fileName = new File( directory, "test.txt" ).getPath();
 
@@ -64,6 +67,7 @@ public class HttpContextWrapper_Test extends TestCase {
     assertNull( result );
   }
 
+  @Test
   public void testGetResource_failsWithDirectory() {
     String directoryName = directory.getPath();
 
@@ -72,6 +76,7 @@ public class HttpContextWrapper_Test extends TestCase {
     assertNull( result );
   }
 
+  @Test
   public void testGetMimeType() {
     String name = "mimeType";
     contextWrapper.getMimeType( name );
@@ -79,6 +84,7 @@ public class HttpContextWrapper_Test extends TestCase {
     verify( httpContext ).getMimeType( name );
   }
 
+  @Test
   public void testHandleSecurity() throws Exception {
     HttpServletResponse response = mock( HttpServletResponse.class );
     HttpServletRequest request = mock( HttpServletRequest.class );

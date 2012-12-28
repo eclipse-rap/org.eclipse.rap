@@ -11,16 +11,20 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.junit.Before;
+import org.junit.Test;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 
 
-public class Matcher_Test extends TestCase {
+public class Matcher_Test {
 
   private static final String KEY = "key";
   private static final String VALUE = "value";
@@ -30,20 +34,22 @@ public class Matcher_Test extends TestCase {
   private ServiceReference<ApplicationConfiguration> configuratorReference;
   private Matcher matcher;
 
-  @Override
+  @Before
   @SuppressWarnings( "unchecked" )
-  protected void setUp() {
+  public void setUp() {
     httpServiceReference = mock( ServiceReference.class );
     configuratorReference = mock( ServiceReference.class );
     matcher = new Matcher( httpServiceReference, configuratorReference );
   }
 
+  @Test
   public void testMatchesWithoutFilters() {
     boolean matches = matcher.matches();
 
     assertTrue( matches );
   }
 
+  @Test
   public void testMatchesWithNonMatchingConfiguratorFilter() {
     createConfiguratorFilter();
 
@@ -52,6 +58,7 @@ public class Matcher_Test extends TestCase {
     assertFalse( matches );
   }
 
+  @Test
   public void testMatchesWithNonMatchingHttpServiceFilter() {
     createHttpServiceFilter();
 
@@ -60,6 +67,7 @@ public class Matcher_Test extends TestCase {
     assertFalse( matches );
   }
 
+  @Test
   public void testMatchesWithNonMatchingFilters() {
     createConfiguratorFilter();
     createHttpServiceFilter();
@@ -69,6 +77,7 @@ public class Matcher_Test extends TestCase {
     assertFalse( matches );
   }
 
+  @Test
   public void testMatchesWithMatchingConfiguratorFilter() {
     createConfiguratorFilter();
     createConfiguratorProperties();
@@ -78,6 +87,7 @@ public class Matcher_Test extends TestCase {
     assertTrue( matches );
   }
 
+  @Test
   public void testMatchesWithMatchingHttpServiceFilter() {
     createHttpServiceFilter();
     createHttpServiceProperties();
@@ -87,6 +97,7 @@ public class Matcher_Test extends TestCase {
     assertTrue( matches );
   }
 
+  @Test
   public void testMatchesWithMatchingConfigurationFilterAndNonMatchingHttpServiceFilter() {
     createConfiguratorFilter();
     createConfiguratorProperties();
@@ -97,6 +108,7 @@ public class Matcher_Test extends TestCase {
     assertFalse( matches );
   }
 
+  @Test
   public void testMatchesWithNonMatchingConfigurationFilterAndMatchingHttpServiceFilter() {
     createConfiguratorFilter();
     createHttpServiceFilter();
@@ -107,6 +119,7 @@ public class Matcher_Test extends TestCase {
     assertFalse( matches );
   }
 
+  @Test
   public void testMatchesWithMatchingFilters() {
     createConfiguratorFilter();
     createConfiguratorProperties();
@@ -118,6 +131,7 @@ public class Matcher_Test extends TestCase {
     assertTrue( matches );
   }
 
+  @Test
   public void testIllegalFilterSyntax() {
     String configuratorKey = Matcher.createTargetKey( ApplicationConfiguration.class );
     when( httpServiceReference.getProperty( configuratorKey ) ).thenReturn( "(((" );
@@ -129,6 +143,7 @@ public class Matcher_Test extends TestCase {
     }
   }
 
+  @Test
   public void testMatchesWithNullConfiguratorReference() {
     matcher = new Matcher( httpServiceReference, null );
 
@@ -137,6 +152,7 @@ public class Matcher_Test extends TestCase {
     assertFalse( matches );
   }
 
+  @Test
   public void testMatchesWithNullHttpServiceReference() {
     matcher = new Matcher( null, configuratorReference );
 
