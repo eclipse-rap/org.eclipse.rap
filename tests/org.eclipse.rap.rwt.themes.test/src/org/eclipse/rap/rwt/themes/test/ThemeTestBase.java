@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010, 2011 EclipseSource and others.
+* Copyright (c) 2010, 2012 EclipseSource and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -10,10 +10,10 @@
 *******************************************************************************/
 package org.eclipse.rap.rwt.themes.test;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.theme.QxType;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
@@ -25,18 +25,22 @@ import org.eclipse.rap.rwt.internal.theme.css.StyleRule;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.After;
+import org.junit.Before;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SelectorList;
 
 
 @SuppressWarnings("restriction")
-public abstract class ThemeTestCase extends TestCase {
+public abstract class ThemeTestBase {
 
-  protected void setUp() {
+  @Before
+  public void setUp() {
     Fixture.setUp();
   }
 
-  protected void tearDown() {
+  @After
+  public void tearDown() {
     ThemesTestUtil.cleanupThemes();
     Fixture.tearDown();
   }
@@ -97,8 +101,13 @@ public abstract class ThemeTestCase extends TestCase {
     String packageName = clazz.getPackage().getName().replace( '.', '/' );
     String filePath = packageName + "/" + fileName;
     InputStream inputStream = classLoader.getResourceAsStream( filePath );
-    ResourceLoader loader = ThemesTestUtil.RESOURCE_LOADER;
-    StyleSheet styleSheet = CssFileReader.readStyleSheet( inputStream, filePath, loader );
+    StyleSheet styleSheet;
+    try {
+      ResourceLoader loader = ThemesTestUtil.RESOURCE_LOADER;
+      styleSheet = CssFileReader.readStyleSheet( inputStream, filePath, loader );
+    } finally {
+      inputStream.close();
+    }
     return styleSheet.getStyleRules();
   }
 

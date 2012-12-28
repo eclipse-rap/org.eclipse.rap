@@ -12,12 +12,14 @@ package org.eclipse.rap.rwt.themes.test.fancy;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.themes.test.ThemeTestCase;
+import org.eclipse.rap.rwt.themes.test.ThemeTestBase;
 import org.eclipse.rap.rwt.themes.test.ThemesTestUtil;
+import org.junit.Test;
 
 
-public class FancyTheme_Test extends ThemeTestCase {
+public class FancyTheme_Test extends ThemeTestBase {
 
+  @Test
   public void testFancyTheme() throws IOException {
     ThemesTestUtil.createAndActivateTheme( ThemesTestUtil.FANCY_PATH, "test.fancy.id");
     processCssTestFile( getClass(), "Menu.test.css" );

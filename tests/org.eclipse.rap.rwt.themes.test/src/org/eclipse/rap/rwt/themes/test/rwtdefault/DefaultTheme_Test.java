@@ -12,12 +12,14 @@ package org.eclipse.rap.rwt.themes.test.rwtdefault;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.themes.test.ThemeTestCase;
+import org.eclipse.rap.rwt.themes.test.ThemeTestBase;
 import org.eclipse.rap.rwt.themes.test.ThemesTestUtil;
+import org.junit.Test;
 
 
-public class DefaultTheme_Test extends ThemeTestCase {
+public class DefaultTheme_Test extends ThemeTestBase {
 
+  @Test
   public void testDefaultTheme() throws IOException {
     ThemesTestUtil.createAndActivateTheme( ThemesTestUtil.DEFAULT_PATH, "test.dafault.id" );
     processCssTestFile( getClass(), "Button.test.css" );
@@ -48,4 +50,5 @@ public class DefaultTheme_Test extends ThemeTestCase {
     processCssTestFile( getClass(), "ToolTip.test.css" );
     processCssTestFile( getClass(), "FileUpload.test.css" );
   }
+
 }

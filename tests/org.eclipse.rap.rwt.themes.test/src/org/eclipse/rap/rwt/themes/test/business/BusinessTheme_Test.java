@@ -12,11 +12,14 @@ package org.eclipse.rap.rwt.themes.test.business;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.themes.test.ThemeTestCase;
+import org.eclipse.rap.rwt.themes.test.ThemeTestBase;
 import org.eclipse.rap.rwt.themes.test.ThemesTestUtil;
+import org.junit.Test;
 
-public class BusinessTheme_Test extends ThemeTestCase {
 
+public class BusinessTheme_Test extends ThemeTestBase {
+
+  @Test
   public void testBusinessTheme() throws IOException {
     ThemesTestUtil.createAndActivateTheme( ThemesTestUtil.BUSINESS_PATH, "test.business.id" );
     processCssTestFile( getClass(), "Menu.test.css" );
