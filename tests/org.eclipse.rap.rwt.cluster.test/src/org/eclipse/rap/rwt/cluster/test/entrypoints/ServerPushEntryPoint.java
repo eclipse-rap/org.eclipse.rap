@@ -11,7 +11,7 @@
 package org.eclipse.rap.rwt.cluster.test.entrypoints;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -19,7 +19,7 @@ public class ServerPushEntryPoint implements EntryPoint {
 
   @SuppressWarnings("unused")
   public int createUI() {
-    UICallBack.activate( "x" );
+    new ServerPushSession().start();
     new Display();
     return 0;
   }

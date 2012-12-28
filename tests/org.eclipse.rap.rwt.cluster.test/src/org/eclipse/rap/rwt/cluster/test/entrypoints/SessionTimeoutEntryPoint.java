@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSessionBindingListener;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -33,7 +33,7 @@ public class SessionTimeoutEntryPoint implements EntryPoint {
   @SuppressWarnings("unused")
   public int createUI() {
     sessionInvalidated = false;
-    UICallBack.activate( "foo" );
+    new ServerPushSession().start();
     new Display();
     HttpSession httpSession = RWT.getUISession().getHttpSession();
     httpSession.setAttribute( "listener", new SessionInvalidationListener() );
