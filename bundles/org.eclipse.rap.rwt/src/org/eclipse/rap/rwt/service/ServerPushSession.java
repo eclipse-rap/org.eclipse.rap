@@ -8,11 +8,11 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.serverpush;
+package org.eclipse.rap.rwt.service;
 
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
+import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.widgets.Display;
 
 

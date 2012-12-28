@@ -8,13 +8,14 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.lifecycle;
+package org.eclipse.rap.rwt.service;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
-import org.eclipse.rap.rwt.internal.serverpush.ServerPushSession;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Display;
