@@ -10,36 +10,56 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.test;
 
-import javax.servlet.http.HttpSession;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.TestCase;
+import java.util.Arrays;
+import java.util.Collection;
+import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.cluster.test.entrypoints.SessionCleanupEntryPoint;
 import org.eclipse.rap.rwt.cluster.testfixture.ClusterTestHelper;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
+import org.eclipse.rap.rwt.cluster.testfixture.server.JettyFactory;
+import org.eclipse.rap.rwt.cluster.testfixture.server.TomcatFactory;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 
-public abstract class SessionCleanupTestBase extends TestCase {
+@RunWith( Parameterized.class )
+public class SessionCleanup_Test {
 
+  private final IServletEngineFactory servletEngineFactory;
   private IServletEngine servletEngine;
   private RWTClient client;
 
-  abstract IServletEngineFactory getServletEngineFactory();
+  @Parameters
+  public static Collection<Object[]> getParameters() {
+    return Arrays.asList( new Object[][] { { new JettyFactory() }, { new TomcatFactory() } } );
+  }
 
-  @Override
-  protected void setUp() throws Exception {
-    servletEngine = getServletEngineFactory().createServletEngine();
+  public SessionCleanup_Test( IServletEngineFactory servletEngineFactory ) {
+    this.servletEngineFactory = servletEngineFactory;
+  }
+
+  @Before
+  public void setUp() throws Exception {
+    servletEngine = servletEngineFactory.createServletEngine();
     client = new RWTClient( servletEngine );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     servletEngine.stop();
   }
 
+  @Test
   public void testInvalidateSession() throws Exception {
     servletEngine.start( SessionCleanupEntryPoint.class );
     client.sendStartupRequest();

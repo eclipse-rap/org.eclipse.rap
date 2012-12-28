@@ -10,15 +10,22 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.internal.server;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.cluster.testfixture.ClusterTestHelper;
@@ -27,17 +34,51 @@ import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
+import org.eclipse.rap.rwt.cluster.testfixture.server.JettyFactory;
+import org.eclipse.rap.rwt.cluster.testfixture.server.TomcatFactory;
 import org.eclipse.rap.rwt.cluster.testfixture.test.TestEntryPoint;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 
-public abstract class ServletEngineTestBase extends TestCase {
+@RunWith( value = Parameterized.class )
+public class ServletEngine_Test {
 
+  private final IServletEngineFactory servletEngineFactory;
   private List<IServletEngine> startedEngines;
   private PrintStream bufferedSystemErr;
   private ByteArrayOutputStream redirectedSystemErr;
 
-  protected abstract IServletEngineFactory getServletEngineFactory();
+  @Parameters
+  public static Collection<Object[]> getParameters() {
+    return Arrays.asList( new Object[][] { { new JettyFactory() }, { new TomcatFactory() } } );
+  }
 
+  public ServletEngine_Test( IServletEngineFactory servletEngineFactory ) {
+    this.servletEngineFactory = servletEngineFactory;
+  }
+
+  @Before
+  public void setUp() throws Exception {
+    TestEntryPoint.reset();
+    startedEngines = new LinkedList<IServletEngine>();
+    bufferedSystemErr = System.err;
+    redirectedSystemErr = new ByteArrayOutputStream();
+    System.setErr( new PrintStream( redirectedSystemErr, true ) );
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    System.setErr( bufferedSystemErr );
+    stopEngines();
+    TestEntryPoint.reset();
+  }
+
+  @Test
   public void testPortsAreUnique() throws Exception {
     IServletEngine engine1 = startServletEngine( TestEntryPoint.class );
     IServletEngine engine2 = startServletEngine( TestEntryPoint.class );
@@ -45,9 +86,10 @@ public abstract class ServletEngineTestBase extends TestCase {
     assertFalse( engine1.getPort() == engine2.getPort() );
   }
 
+  @Test
   public void testSpecifyPort() throws Exception {
     int freePort = SocketUtil.getFreePort();
-    IServletEngine engine = getServletEngineFactory().createServletEngine( freePort );
+    IServletEngine engine = servletEngineFactory.createServletEngine( freePort );
     startedEngines.add( engine );
 
     engine.start( TestEntryPoint.class );
@@ -55,6 +97,7 @@ public abstract class ServletEngineTestBase extends TestCase {
     assertEquals( freePort, engine.getPort() );
   }
 
+  @Test
   public void testEntryPoint() throws Exception {
     IServletEngine engine = startServletEngine( TestEntryPoint.class );
     RWTClient client = new RWTClient( engine );
@@ -64,6 +107,7 @@ public abstract class ServletEngineTestBase extends TestCase {
     assertTrue( TestEntryPoint.wasCreateUIInvoked() );
   }
 
+  @Test
   public void testExceptionDuringRequest() throws Exception {
     IServletEngine engine = startServletEngine( TestEntryPoint.class );
     TestEntryPoint.setRunnable( new Runnable() {
@@ -81,6 +125,7 @@ public abstract class ServletEngineTestBase extends TestCase {
     }
   }
 
+  @Test
   public void testStartupSequence() throws Exception {
     IServletEngine servletEngine = startServletEngine( TestEntryPoint.class );
     RWTClient client = new RWTClient( servletEngine );
@@ -101,6 +146,7 @@ public abstract class ServletEngineTestBase extends TestCase {
   }
 
 
+  @Test
   public void testServletEngineIsolation() throws Exception {
     IServletEngine engine1 = startServletEngine( TestEntryPoint.class );
     IServletEngine engine2 = startServletEngine( TestEntryPoint.class );
@@ -119,6 +165,7 @@ public abstract class ServletEngineTestBase extends TestCase {
     assertNotSame( session1.getServletContext(), session2.getServletContext() );
   }
 
+  @Test
   public void testSessionAttributeNeedNotBeSerializable() throws Exception {
     IServletEngine engine = startServletEngine( TestEntryPoint.class );
     sendStartupRequest( engine );
@@ -129,20 +176,6 @@ public abstract class ServletEngineTestBase extends TestCase {
     session.setAttribute( name, nonSerializable );
 
     assertSame( nonSerializable, session.getAttribute( name ) );
-  }
-
-  protected void setUp() throws Exception {
-    TestEntryPoint.reset();
-    startedEngines = new LinkedList<IServletEngine>();
-    bufferedSystemErr = System.err;
-    redirectedSystemErr = new ByteArrayOutputStream();
-    System.setErr( new PrintStream( redirectedSystemErr, true ) );
-  }
-
-  protected void tearDown() throws Exception {
-    System.setErr( bufferedSystemErr );
-    stopEngines();
-    TestEntryPoint.reset();
   }
 
   private void stopEngines() throws Exception {
@@ -156,7 +189,7 @@ public abstract class ServletEngineTestBase extends TestCase {
   private IServletEngine startServletEngine( Class<? extends EntryPoint> entryPoint )
     throws Exception
   {
-    IServletEngine result = getServletEngineFactory().createServletEngine();
+    IServletEngine result = servletEngineFactory.createServletEngine();
     result.start( entryPoint );
     startedEngines.add( result );
     return result;
@@ -165,4 +198,5 @@ public abstract class ServletEngineTestBase extends TestCase {
   private static void sendStartupRequest( IServletEngine servletEngine ) throws IOException {
     new RWTClient( servletEngine ).sendStartupRequest();
   }
+
 }

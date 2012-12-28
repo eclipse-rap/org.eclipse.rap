@@ -10,34 +10,41 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.client;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.cluster.testfixture.test.TestHttpUrlConnection;
 import org.eclipse.rap.rwt.cluster.testfixture.test.TestServletEngine;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class RWTClient_Test extends TestCase {
+public class RWTClient_Test {
 
   private TestServletEngine servletEngine;
   private TestConnectionProvider connectionProvider;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     servletEngine = new TestServletEngine();
     connectionProvider = new TestConnectionProvider();
   }
 
+  @Test
   public void testConstructor() {
     RWTClient client = new RWTClient( servletEngine );
 
     assertSame( servletEngine, client.getServletEngine() );
   }
 
+  @Test
   public void testSendPostRequest() throws IOException {
     String responseContent = "responseContent";
     connectionProvider.setConnection( new TestHttpUrlConnection( responseContent ) );
@@ -48,6 +55,7 @@ public class RWTClient_Test extends TestCase {
     assertEquals( responseContent, response.getContentText() );
   }
 
+  @Test
   public void testSendResourceRequest() throws IOException {
     connectionProvider.setConnection( new TestHttpUrlConnection( "responseContent" ) );
     RWTClient client = new RWTClient( servletEngine, connectionProvider );
@@ -58,6 +66,7 @@ public class RWTClient_Test extends TestCase {
     assertEquals( "http://localhost:-1/foo/bar.gif", connectionUrl );
   }
 
+  @Test
   public void testSendUICallBackRequest() throws IOException {
     connectionProvider.setConnection( new TestHttpUrlConnection( "responseContent" ) );
     RWTClient client = new RWTClient( servletEngine, connectionProvider );
@@ -70,6 +79,7 @@ public class RWTClient_Test extends TestCase {
     assertEquals( expectedUrl, connectionUrl );
   }
 
+  @Test
   public void testRequestWithParameters() throws IOException {
     connectionProvider.setConnection( new TestHttpUrlConnection( "" ) );
     RWTClient client = new RWTClient( servletEngine, connectionProvider );
@@ -81,6 +91,7 @@ public class RWTClient_Test extends TestCase {
     assertEquals( "http://localhost:-1/rwt?foo=bar", connectionUrl );
   }
 
+  @Test
   public void testSessionId_isReadFromCookieHeader() throws IOException {
     TestHttpUrlConnection connection = new TestHttpUrlConnection( "" );
     connection.setCookieToResponse( "JSESSIONID=node0xyz.node0;Path=/" );
@@ -92,6 +103,7 @@ public class RWTClient_Test extends TestCase {
     assertEquals( "node0xyz.node0", client.getSessionId() );
   }
 
+  @Test
   public void testSessionId_isEmptyWhenNoHeaderWasSent() throws IOException {
     connectionProvider.setConnection( new TestHttpUrlConnection( "" ) );
     RWTClient client = new RWTClient( servletEngine, connectionProvider );
@@ -101,6 +113,7 @@ public class RWTClient_Test extends TestCase {
     assertEquals( "", client.getSessionId() );
   }
 
+  @Test
   public void testSessionId_isNotOverridden() throws IOException {
     TestHttpUrlConnection connection1 = new TestHttpUrlConnection( "" );
     connection1.setCookieToResponse( "JSESSIONID=xyz;Path=/" );
@@ -115,6 +128,7 @@ public class RWTClient_Test extends TestCase {
     assertEquals( "xyz", client.getSessionId() );
   }
 
+  @Test
   public void testSessionId_remainsAfterChangedServletEngine() throws IOException {
     TestHttpUrlConnection connection = new TestHttpUrlConnection( "" );
     connection.setCookieToResponse( "JSESSIONID=xyz;Path=/" );
@@ -130,6 +144,7 @@ public class RWTClient_Test extends TestCase {
     assertEquals( sessionIdBeforeChange, client.getSessionId() );
   }
 
+  @Test
   public void testSessionId_isSentWithRequest() throws IOException {
     RWTClient client = new RWTClient( servletEngine, connectionProvider );
     TestHttpUrlConnection connection1 = new TestHttpUrlConnection( "" );
@@ -144,6 +159,7 @@ public class RWTClient_Test extends TestCase {
     assertEquals( "JSESSIONID=xyz", connection2.getCookieFromRequest() );
   }
 
+  @Test
   public void testChangeServletEngine() {
     RWTClient client = new RWTClient( servletEngine );
     TestServletEngine otherServletEngine = new TestServletEngine();
@@ -152,6 +168,7 @@ public class RWTClient_Test extends TestCase {
     assertSame( otherServletEngine, client.getServletEngine() );
   }
 
+  @Test
   public void testParseRequestCounter() {
     int counter = RWTClient.parseRequestCounter( "{\"requestCounter\": 23}" );
     assertEquals( 23, counter );

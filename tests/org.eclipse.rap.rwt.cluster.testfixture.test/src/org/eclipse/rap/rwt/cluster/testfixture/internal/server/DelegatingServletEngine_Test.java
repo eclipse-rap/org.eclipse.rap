@@ -10,19 +10,129 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.internal.server;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.test.TestEntryPoint;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class DelegatingServletEngine_Test extends TestCase {
+public class DelegatingServletEngine_Test {
+
+  private TestServletEngine testServletEngine;
+
+  @Before
+  public void setUp() throws Exception {
+    testServletEngine = new TestServletEngine();
+  }
+
+  @Test
+  public void testGetDelegate() {
+    TestServletEngine delegate = new TestServletEngine();
+
+    DelegatingServletEngine engine = new DelegatingServletEngine( delegate );
+
+    assertSame( delegate, engine.getDelegate() );
+  }
+
+  @Test
+  public void testStartWithNullEntryPointClass() throws Exception {
+    IServletEngine engine = new DelegatingServletEngine( testServletEngine );
+    try {
+      engine.start( null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+
+  @Test
+  public void testStartDelegates() throws Exception {
+    IServletEngine engine = new DelegatingServletEngine( testServletEngine );
+
+    engine.start( TestEntryPoint.class );
+
+    assertEquals( TestServletEngine.START, testServletEngine.invocations.get( 0 ) );
+  }
+
+  @Test
+  public void testStartMultipleTimes() throws Exception {
+    IServletEngine engine = startServletEngine( TestEntryPoint.class );
+    try {
+      engine.start( TestEntryPoint.class );
+      fail();
+    } catch( IllegalStateException e ) {
+    }
+  }
+
+  @Test
+  public void testGetSessionsDelegates() throws Exception {
+    IServletEngine engine = new DelegatingServletEngine( testServletEngine );
+    engine.start( TestEntryPoint.class );
+
+    engine.getSessions();
+
+    assertTrue( testServletEngine.invocations.contains( TestServletEngine.START ) );
+  }
+
+  @Test
+  public void testGetSessionsAfterStop() throws Exception {
+    IServletEngine engine = startServletEngine( TestEntryPoint.class );
+    engine.stop();
+
+    try {
+      engine.getSessions();
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
+  }
+
+  @Test
+  public void testStopDelegates() throws Exception {
+    IServletEngine engine = new DelegatingServletEngine( testServletEngine );
+    engine.start( TestEntryPoint.class );
+
+    engine.stop();
+
+    assertTrue( testServletEngine.invocations.contains( TestServletEngine.STOP ) );
+  }
+
+  @Test
+  public void testStopTimeoutDelegates() throws Exception {
+    IServletEngine engine = new DelegatingServletEngine( testServletEngine );
+    engine.start( TestEntryPoint.class );
+
+    engine.stop( 0 );
+
+    assertTrue( testServletEngine.invocations.contains( TestServletEngine.STOP ) );
+  }
+
+  @Test
+  public void testGetPortDelegates() throws Exception {
+    IServletEngine engine = new DelegatingServletEngine( testServletEngine );
+    engine.start( TestEntryPoint.class );
+
+    engine.getPort();
+
+    assertTrue( testServletEngine.invocations.contains( TestServletEngine.GET_PORT ) );
+  }
+
+  private IServletEngine startServletEngine( Class<? extends EntryPoint> entryPoint )
+    throws Exception
+  {
+    IServletEngine result = new DelegatingServletEngine( testServletEngine );
+    result.start( entryPoint );
+    return result;
+  }
 
   private static class TestServletEngine implements IServletEngine {
     static final String START = "start";
@@ -59,99 +169,4 @@ public class DelegatingServletEngine_Test extends TestCase {
     }
   }
 
-  private TestServletEngine testServletEngine;
-
-  public void testGetDelegate() {
-    TestServletEngine delegate = new TestServletEngine();
-
-    DelegatingServletEngine engine = new DelegatingServletEngine( delegate );
-
-    assertSame( delegate, engine.getDelegate() );
-  }
-
-  public void testStartWithNullEntryPointClass() throws Exception {
-    IServletEngine engine = new DelegatingServletEngine( testServletEngine );
-    try {
-      engine.start( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  public void testStartDelegates() throws Exception {
-    IServletEngine engine = new DelegatingServletEngine( testServletEngine );
-
-    engine.start( TestEntryPoint.class );
-
-    assertEquals( TestServletEngine.START, testServletEngine.invocations.get( 0 ) );
-  }
-
-  public void testStartMultipleTimes() throws Exception {
-    IServletEngine engine = startServletEngine( TestEntryPoint.class );
-    try {
-      engine.start( TestEntryPoint.class );
-      fail();
-    } catch( IllegalStateException e ) {
-    }
-  }
-
-  public void testGetSessionsDelegates() throws Exception {
-    IServletEngine engine = new DelegatingServletEngine( testServletEngine );
-    engine.start( TestEntryPoint.class );
-
-    engine.getSessions();
-
-    assertTrue( testServletEngine.invocations.contains( TestServletEngine.START ) );
-  }
-
-  public void testGetSessionsAfterStop() throws Exception {
-    IServletEngine engine = startServletEngine( TestEntryPoint.class );
-    engine.stop();
-
-    try {
-      engine.getSessions();
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
-  }
-
-  public void testStopDelegates() throws Exception {
-    IServletEngine engine = new DelegatingServletEngine( testServletEngine );
-    engine.start( TestEntryPoint.class );
-
-    engine.stop();
-
-    assertTrue( testServletEngine.invocations.contains( TestServletEngine.STOP ) );
-  }
-
-  public void testStopTimeoutDelegates() throws Exception {
-    IServletEngine engine = new DelegatingServletEngine( testServletEngine );
-    engine.start( TestEntryPoint.class );
-
-    engine.stop( 0 );
-
-    assertTrue( testServletEngine.invocations.contains( TestServletEngine.STOP ) );
-  }
-
-  public void testGetPortDelegates() throws Exception {
-    IServletEngine engine = new DelegatingServletEngine( testServletEngine );
-    engine.start( TestEntryPoint.class );
-
-    engine.getPort();
-
-    assertTrue( testServletEngine.invocations.contains( TestServletEngine.GET_PORT ) );
-  }
-
-  private IServletEngine startServletEngine( Class<? extends EntryPoint> entryPoint )
-    throws Exception
-  {
-    IServletEngine result = new DelegatingServletEngine( testServletEngine );
-    result.start( entryPoint );
-    return result;
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    testServletEngine = new TestServletEngine();
-  }
 }

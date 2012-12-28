@@ -10,32 +10,66 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 
 import javax.servlet.http.HttpSession;
 
-import junit.framework.TestCase;
-
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.cluster.test.entrypoints.SessionTimeoutEntryPoint;
 import org.eclipse.rap.rwt.cluster.test.entrypoints.ServerPushEntryPoint;
+import org.eclipse.rap.rwt.cluster.test.entrypoints.SessionTimeoutEntryPoint;
 import org.eclipse.rap.rwt.cluster.testfixture.ClusterTestHelper;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
+import org.eclipse.rap.rwt.cluster.testfixture.server.JettyFactory;
+import org.eclipse.rap.rwt.cluster.testfixture.server.TomcatFactory;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 
 @SuppressWarnings("restriction")
-public abstract class ServerPushTestBase extends TestCase {
+@RunWith( Parameterized.class )
+public class ServerPush_Test {
 
+  private final IServletEngineFactory servletEngineFactory;
   private IServletEngine servletEngine;
   private RWTClient client;
 
-  abstract IServletEngineFactory getServletEngineFactory();
+  @Parameters
+  public static Collection<Object[]> getParameters() {
+    return Arrays.asList( new Object[][] { { new JettyFactory() }, { new TomcatFactory() } } );
+  }
 
+  public ServerPush_Test( IServletEngineFactory servletEngineFactory ) {
+    this.servletEngineFactory = servletEngineFactory;
+  }
+
+  @Before
+  public void setUp() throws Exception {
+    servletEngine = servletEngineFactory.createServletEngine();
+    client = new RWTClient( servletEngine );
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    servletEngine.stop();
+  }
+
+  @Test
   public void testCallbackRequestResponse() throws Exception {
     servletEngine.start( ServerPushEntryPoint.class );
     client.sendStartupRequest();
@@ -66,6 +100,7 @@ public abstract class ServerPushTestBase extends TestCase {
     assertEquals( "", contentText.trim() );
   }
 
+  @Test
   public void testAbortConnectionDuringUICallbackRequest() throws Exception {
     servletEngine.start( ServerPushEntryPoint.class );
     client.sendStartupRequest();
@@ -85,6 +120,7 @@ public abstract class ServerPushTestBase extends TestCase {
     assertFalse( pushManager.isCallBackRequestBlocked() );
   }
 
+  @Test
   public void testUICallBackRequestDoesNotKeepSessionAlive() throws Exception {
     servletEngine.start( SessionTimeoutEntryPoint.class );
     client.sendStartupRequest();
@@ -97,6 +133,7 @@ public abstract class ServerPushTestBase extends TestCase {
     assertTrue( SessionTimeoutEntryPoint.isSessionInvalidated() );
   }
 
+  @Test
   public void testUICallBackRequestDoesNotPreventEngineShutdown() throws Exception {
     servletEngine.start( SessionTimeoutEntryPoint.class );
     client.sendStartupRequest();
@@ -110,17 +147,6 @@ public abstract class ServerPushTestBase extends TestCase {
     servletEngine.stop( 2000 );
 
     assertTrue( SessionTimeoutEntryPoint.isSessionInvalidated() );
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    servletEngine = getServletEngineFactory().createServletEngine();
-    client = new RWTClient( servletEngine );
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    servletEngine.stop();
   }
 
   private ServerPushManager getUICallBackManager() {

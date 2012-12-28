@@ -10,14 +10,21 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
-
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
@@ -34,6 +41,8 @@ import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineCluster;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
+import org.eclipse.rap.rwt.cluster.testfixture.server.JettyFactory;
+import org.eclipse.rap.rwt.cluster.testfixture.server.TomcatFactory;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
@@ -47,35 +56,48 @@ import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 
 @SuppressWarnings("restriction")
-public abstract class SessionFailoverTestBase extends TestCase {
+@RunWith( Parameterized.class )
+public class SessionFailover_Test {
 
-  public interface SerializableRunnable extends Runnable, Serializable {
-  }
-
+  private final IServletEngineFactory servletEngineFactory;
   private IServletEngineCluster cluster;
   private IServletEngine primary;
   private IServletEngine secondary;
   private RWTClient client;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Parameters
+  public static Collection<Object[]> getParameters() {
+    return Arrays.asList( new Object[][] { { new JettyFactory() }, { new TomcatFactory() } } );
+  }
+
+  public SessionFailover_Test( IServletEngineFactory servletEngineFactory ) {
+    this.servletEngineFactory = servletEngineFactory;
+  }
+
+  @Before
+  public void setUp() throws Exception {
     ClusterTestHelper.enableUITests( true );
-    cluster = getServletEngineFactory().createServletEngineCluster();
+    cluster = servletEngineFactory.createServletEngineCluster();
     primary = cluster.addServletEngine();
     secondary = cluster.addServletEngine();
     client = new RWTClient( primary );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     cluster.stop();
   }
 
-  abstract IServletEngineFactory getServletEngineFactory();
-
+  @Test
   public void testButtonEntryPoint() throws Exception {
     initializeClient( ButtonEntryPoint.class );
     // Click center button four times on primary
@@ -99,6 +121,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
     assertNotSame( primaryDisplay, secondaryDisplay );
   }
 
+  @Test
   public void testResourcesEntryPoint() throws Exception {
     initializeClient( ResourcesEntryPoint.class );
 
@@ -116,6 +139,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
     assertSame( secondaryShell.getDisplay(), secondaryFont.getDevice() );
   }
 
+  @Test
   public void testImageEntryPoint() throws Exception {
     initializeClient( ImageEntryPoint.class );
     client.sendResourceRequest( ImageEntryPoint.imagePath );
@@ -128,12 +152,13 @@ public abstract class SessionFailoverTestBase extends TestCase {
     Shell secondaryShell = getFirstShell( secondary );
     Image primaryImage = primaryShell.getImage();
     Image secondaryImage = secondaryShell.getImage();
-    assertEquals( primaryImage.getImageData(), secondaryImage.getImageData() );
+    assertImageDataEquals( primaryImage.getImageData(), secondaryImage.getImageData() );
     assertNotSame( primaryImage, secondaryImage );
     assertSame( primaryShell.getDisplay(), primaryImage.getDevice() );
     assertSame( secondaryShell.getDisplay(), secondaryImage.getDevice() );
   }
 
+  @Test
   public void testAsyncExecEntryPoint() throws Exception {
     initializeClient( AsyncExecEntryPoint.class );
     AsyncExecEntryPoint.scheduleAsyncRunnable( getFirstDisplay( primary ) );
@@ -147,6 +172,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
     assertTrue( AsyncExecEntryPoint.wasRunnableExecuted( secondaryUiSession ) );
   }
 
+  @Test
   public void testSyncExecEntryPoint() throws Exception {
     initializeClient( AsyncExecEntryPoint.class );
     AsyncExecEntryPoint.scheduleSyncRunnable( getFirstDisplay( primary ) );
@@ -160,6 +186,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
     assertTrue( AsyncExecEntryPoint.wasRunnableExecuted( secondaryUiSession ) );
   }
 
+  @Test
   public void testTimerExecEntryPoint() throws Exception {
     initializeClient( TimerExecEntryPoint.class );
 
@@ -177,6 +204,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
     assertTrue( TimerExecEntryPoint.wasRunnableExecuted( secondaryUiSession ) );
   }
 
+  @Test
   public void testDNDEntryPoint() throws Exception {
     initializeClient( DNDEntryPoint.class );
     client.sendDragStartRequest( DNDEntryPoint.ID_SOURCE_LABEL );
@@ -192,6 +220,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
     assertTrue( DNDEntryPoint.isDropFinished( secondaryUiSession ) );
   }
 
+  @Test
   public void testDialogEntryPoint() throws Exception {
     initializeClient( DialogEntryPoint.class );
     cluster.removeServletEngine( primary );
@@ -214,7 +243,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
     client.sendInitializationRequest();
   }
 
-  private static void assertEquals( ImageData expected, ImageData actual ) {
+  private static void assertImageDataEquals( ImageData expected, ImageData actual ) {
     byte[] expectedBytes = getImageBytes( expected );
     byte[] actualBytes = getImageBytes( actual );
     assertEquals( expectedBytes.length, actualBytes.length );
@@ -301,6 +330,9 @@ public abstract class SessionFailoverTestBase extends TestCase {
       String msg = "label update mismatch, missing part: '" + expectedLabelPart + "'";
       assertTrue( msg, response.getContentText().contains( expectedLabelPart ) );
     }
+  }
+
+  public interface SerializableRunnable extends Runnable, Serializable {
   }
 
 }
