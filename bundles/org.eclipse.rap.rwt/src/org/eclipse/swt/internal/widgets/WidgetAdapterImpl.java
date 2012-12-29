@@ -38,10 +38,6 @@ public final class WidgetAdapterImpl
   private ClientObjectAdapter gcObjectAdapter;
   private Widget parent;
 
-  public WidgetAdapterImpl() {
-    this( IdGeneratorProvider.getIdGenerator().createId( "w" ) );
-  }
-
   public WidgetAdapterImpl( String id ) {
     this.id = id;
     initialize();
@@ -52,14 +48,7 @@ public final class WidgetAdapterImpl
   }
 
   public String getId() {
-    String result = null;
-    if( UITestUtil.isEnabled() ) {
-      result = customId;
-    }
-    if( result == null ) {
-      result = id;
-    }
-    return result;
+    return customId != null ? customId : id;
   }
 
   public void setParent( Widget parent ) {
@@ -74,8 +63,10 @@ public final class WidgetAdapterImpl
     if( isInitialized() ) {
       throw new IllegalStateException( "Widget is already initialized" );
     }
-    UITestUtil.checkId( customId );
-    this.customId = customId;
+    if( UITestUtil.isEnabled() ) {
+      UITestUtil.checkId( customId );
+      this.customId = customId;
+    }
   }
 
   public boolean isInitialized() {

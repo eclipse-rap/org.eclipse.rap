@@ -82,6 +82,7 @@ public class Display_Test {
   @Test
   public void testGetAdapter_forDisplayAdapter() {
     Display display = new Display();
+
     Object adapter = display.getAdapter( IDisplayAdapter.class );
 
     assertTrue( adapter instanceof IDisplayAdapter );
@@ -90,9 +91,33 @@ public class Display_Test {
   @Test
   public void testGetAdapter_forWidgetAdapter() {
     Display display = new Display();
+
     Object adapter = display.getAdapter( WidgetAdapter.class );
 
     assertTrue( adapter instanceof WidgetAdapter );
+  }
+
+  @Test
+  public void testGetAdapter_forWidgetAdapter_returnsSameInstance() {
+    Display display = new Display();
+
+    Object adapter1 = display.getAdapter( WidgetAdapter.class );
+    Object adapter2 = display.getAdapter( WidgetAdapter.class );
+
+    assertSame( adapter1, adapter2 );
+  }
+
+  @Test
+  public void testGetAdapter_forWidgetAdapter_returnsDifferentInstanceForNewDisplay() {
+    Display display = new Display();
+    WidgetAdapter adapter1 = display.getAdapter( WidgetAdapter.class );
+    display.dispose();
+    display = new Display();
+
+    WidgetAdapter adapter2 = display.getAdapter( WidgetAdapter.class );
+
+    assertNotSame( adapter1, adapter2 );
+    assertEquals( adapter1.getId(), adapter2.getId() );
   }
 
   @Test

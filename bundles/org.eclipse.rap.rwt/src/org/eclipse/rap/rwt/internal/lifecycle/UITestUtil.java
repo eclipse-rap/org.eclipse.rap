@@ -24,20 +24,15 @@ public final class UITestUtil {
   }
 
   public static void checkId( String id ) {
-    if( isEnabled() ) {
-      if( !isValidId( id ) ) {
-        String msg = "The widget id contains illegal characters: " + id;
-        throw new IllegalArgumentException( msg ) ;
-      }
+    if( !isValidId( id ) ) {
+      String msg = "The widget id contains illegal characters: " + id;
+      throw new IllegalArgumentException( msg ) ;
     }
   }
 
   public static boolean isEnabled() {
     return enabled;
   }
-
-  //////////////////
-  // helping methods
 
   static boolean isValidId( String id ) {
     // see http://www.w3.org/TR/html401/types.html#type-cdata (id and name)
@@ -65,4 +60,5 @@ public final class UITestUtil {
   private UITestUtil() {
     // prevent instantiation
   }
+
 }

@@ -172,7 +172,8 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     T result = null;
     if( adapter == IClientObjectAdapter.class || adapter == WidgetAdapter.class ) {
       if( widgetAdapter == null ) {
-        widgetAdapter = new WidgetAdapterImpl( IdGeneratorProvider.getIdGenerator().createId( this ) );
+        String id = IdGeneratorProvider.getIdGenerator().createId( this );
+        widgetAdapter = new WidgetAdapterImpl( id );
       }
       result = ( T )widgetAdapter;
     } else if( adapter == IThemeAdapter.class ) {

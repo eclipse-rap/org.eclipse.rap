@@ -30,9 +30,14 @@ import org.junit.Test;
 
 public class WidgetUtil_Test {
 
+  private Display display;
+  private Shell shell;
+
   @Before
   public void setUp() {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
   }
 
   @After
@@ -42,8 +47,6 @@ public class WidgetUtil_Test {
 
   @Test
   public void testFind() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Composite composite = new Composite( shell, SWT.NONE );
     Button button = new Button( composite, SWT.PUSH );
     String shellId = WidgetUtil.getId( shell );
@@ -58,8 +61,6 @@ public class WidgetUtil_Test {
 
   @Test
   public void testGetVariant() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     String valid = "Foo_Bar_23_42";
     shell.setData( RWT.CUSTOM_VARIANT, valid );
     assertEquals( valid, WidgetUtil.getVariant( shell ) );
@@ -96,6 +97,17 @@ public class WidgetUtil_Test {
     } catch( IllegalArgumentException e ) {
       // expected
     }
+  }
+
+  @Test
+  public void testInitializedForShell() {
+    Fixture.fakeNewRequest();
+    Fixture.fakeResponseWriter();
+    Composite shell = new Shell( display, SWT.NONE );
+
+    WidgetAdapter adapter = WidgetUtil.getAdapter( shell );
+
+    assertSame( shell.getAdapter( WidgetAdapter.class ), adapter );
   }
 
 }

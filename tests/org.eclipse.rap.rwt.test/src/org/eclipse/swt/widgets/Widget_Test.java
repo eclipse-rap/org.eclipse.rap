@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -28,8 +29,10 @@ import static org.mockito.Mockito.verify;
 import java.util.ArrayList;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
+import org.eclipse.rap.rwt.internal.lifecycle.UITestUtilAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -64,13 +67,50 @@ public class Widget_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
+    UITestUtilAdapter.setUITestEnabled( false );
   }
 
   @Test
-  public void testGetAdapterForDisposedWidget() {
+  public void testGetAdapter_forWidgetAdapter() {
+    Object adapter = shell.getAdapter( WidgetAdapter.class );
+
+    assertTrue( adapter instanceof WidgetAdapter );
+  }
+
+  @Test
+  public void testGetAdapter_forWidgetAdapter_returnsSameInstance() {
+    Object adapter1 = shell.getAdapter( WidgetAdapter.class );
+    Object adapter2 = shell.getAdapter( WidgetAdapter.class );
+
+    assertSame( adapter1, adapter2 );
+  }
+
+  @Test
+  public void testGetAdapter_forWidgetAdapter_returnsDifferentInstances() {
+    Object adapter1 = shell.getAdapter( WidgetAdapter.class );
+    Shell anotherShell = new Shell( display, SWT.NONE );
+
+    Object adapter2 = anotherShell.getAdapter( WidgetAdapter.class );
+
+    assertNotSame( adapter1, adapter2 );
+  }
+
+  @Test
+  public void testGetAdapter_succeedsForDisposedWidget() {
     shell.dispose();
-    Object adapterOfDisposedWidget = shell.getAdapter( WidgetAdapter.class );
-    assertNotNull( adapterOfDisposedWidget );
+
+    Object adapter = shell.getAdapter( WidgetAdapter.class );
+
+    assertNotNull( adapter );
+  }
+
+  @Test
+  public void testSetsParentToAdapter() {
+    Widget widget = new Button( shell, SWT.NONE );
+
+    WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
+
+    assertSame( shell, adapter.getParent() );
   }
 
   @Test
@@ -128,6 +168,16 @@ public class Widget_Test {
       fail( "Must not allow to get data for null key" );
     } catch( IllegalArgumentException expected ) {
     }
+  }
+
+  @Test
+  public void testSetData_handlesCustomId() {
+    UITestUtilAdapter.setUITestEnabled( true );
+    Widget widget = new Label( shell, SWT.NONE );
+
+    widget.setData( WidgetUtil.CUSTOM_WIDGET_ID, "custom-id" );
+
+    assertEquals( "custom-id", WidgetUtil.getId( widget ) );
   }
 
   @Test
