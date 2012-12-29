@@ -141,7 +141,6 @@ public final class WidgetLCAUtil {
    * there occurred a help event for the given <code>widget</code>.
    *
    * @param widget the widget to process
-   * @since 1.3
    */
   public static void processHelp( Widget widget ) {
     if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_HELP ) ) {
@@ -247,7 +246,6 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose background gradient properties to preserve
    * @see #renderBackgroundGradient(Widget)
-   * @since 1.3
    */
   public static void preserveBackgroundGradient( Widget widget ) {
     Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
@@ -269,7 +267,6 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose rounded border properties to preserve
    * @see #renderRoundedBorder(Widget)
-   * @since 1.3
    */
   public static void preserveRoundedBorder( Widget widget ) {
     Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
@@ -303,7 +300,6 @@ public final class WidgetLCAUtil {
    * <code>HelpListener</code>s attached.
    *
    * @param widget the widget to preserve
-   * @since 1.3
    */
   public static void preserveHelpListener( Widget widget ) {
     preserveListener( widget, PROP_HELP_LISTENER, widget.isListening( SWT.Help ) );
@@ -318,7 +314,6 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose bounds to write
    * @param bounds the new bounds of the widget
-   * @since 1.5
    */
   public static void renderBounds( Widget widget, Rectangle bounds ) {
     renderProperty( widget, Props.BOUNDS, bounds, null );
@@ -334,7 +329,6 @@ public final class WidgetLCAUtil {
    * @param widget the widget whose enabled property to set
    * @param enabled the new value of the property
    * @see #preserveEnabled(Widget, boolean)
-   * @since 1.5
    */
   public static void renderEnabled( Widget widget, boolean enabled ) {
     renderProperty( widget, Props.ENABLED, enabled, true );
@@ -346,7 +340,6 @@ public final class WidgetLCAUtil {
    * a protocol Message to the response that updates the client-side variant.
    *
    * @param widget the widget whose custom variant to write
-   * @since 1.5
    */
   public static void renderCustomVariant( Widget widget ) {
     String newValue = WidgetUtil.getVariant( widget );
@@ -365,7 +358,6 @@ public final class WidgetLCAUtil {
    * <code>widget</code> as necessary.
    *
    * @param widget
-   * @since 1.5
    */
   public static void renderListenHelp( Widget widget ) {
     renderListener( widget, PROP_HELP_LISTENER, widget.isListening( SWT.Help ), false );
@@ -380,7 +372,6 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose menu property to set
    * @param menu the new value of the property
-   * @since 1.5
    */
   public static void renderMenu( Widget widget, Menu menu ) {
     renderProperty( widget, Props.MENU, menu, null );
@@ -396,7 +387,6 @@ public final class WidgetLCAUtil {
    * @param widget the widget whose toolTip property to set
    * @param toolTip the new value of the property
    * @see #preserveToolTipText(Widget, String)
-   * @since 1.5
    */
   public static void renderToolTip( Widget widget, String toolTip ) {
     String text = toolTip == null ? "" : toolTip;
@@ -413,7 +403,6 @@ public final class WidgetLCAUtil {
    * @param widget the widget whose font property to set
    * @param font the new value of the property
    * @see #preserveFont(Widget, Font)
-   * @since 1.5
    */
   public static void renderFont( Widget widget, Font font ) {
     if( WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, null ) ) {
@@ -433,7 +422,6 @@ public final class WidgetLCAUtil {
    * @param widget the widget whose foreground property to set
    * @param newColor the new value of the property
    * @see #preserveForeground(Widget, Color)
-   * @since 1.5
    */
   public static void renderForeground( Widget widget, Color newColor ) {
     if( WidgetLCAUtil.hasChanged( widget, PROP_FOREGROUND, newColor, null ) ) {
@@ -453,7 +441,6 @@ public final class WidgetLCAUtil {
    * @param widget the widget whose background property to set
    * @param newColor the new value of the property
    * @see #preserveBackground(Widget, Color)
-   * @since 1.5
    */
   public static void renderBackground( Widget widget, Color newColor ) {
     renderBackground( widget, newColor, false );
@@ -472,7 +459,6 @@ public final class WidgetLCAUtil {
    * @param transparency the new background transparency, if <code>true</code>,
    *            the <code>background</code> parameter is ignored
    * @see #preserveBackground(Widget, Color, boolean)
-   * @since 1.5
    */
   public static void renderBackground( Widget widget, Color background, boolean transparency ) {
     boolean transparencyChanged = WidgetLCAUtil.hasChanged( widget,
@@ -498,7 +484,6 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose background gradient properties to set
    * @see #preserveBackgroundGradient(Widget)
-   * @since 1.5
    */
   public static void renderBackgroundGradient( Widget widget ) {
     if( hasBackgroundGradientChanged( widget ) ) {
@@ -555,7 +540,6 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose rounded border properties to set
    * @see #preserveRoundedBorder(Widget)
-   * @since 1.5
    */
   public static void renderRoundedBorder( Widget widget ) {
     if( hasRoundedBorderChanged( widget ) ) {
@@ -661,8 +645,6 @@ public final class WidgetLCAUtil {
    * @param widget the widget whose property to preserve
    * @param property the name of the property
    * @param value the value to preserve
-   *
-   * @since 1.5
    */
   public static void preserveProperty( Widget widget, String property, Object value ) {
     WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
@@ -675,8 +657,6 @@ public final class WidgetLCAUtil {
    * @param widget the widget whose property to preserve
    * @param property the name of the property
    * @param value the value to preserve
-   *
-   * @since 1.5
    */
   public static void preserveProperty( Widget widget, String property, int value ) {
     preserveProperty( widget, property, Integer.valueOf( value ) );
@@ -688,8 +668,6 @@ public final class WidgetLCAUtil {
    * @param widget the widget whose property to preserve
    * @param property the name of the property
    * @param value the value to preserve
-   *
-   * @since 1.5
    */
   public static void preserveProperty( Widget widget, String property, boolean value ) {
     preserveProperty( widget, property, Boolean.valueOf( value ) );
@@ -701,8 +679,6 @@ public final class WidgetLCAUtil {
    * @param widget the widget whose listener to preserve
    * @param listener the type of the listener
    * @param value the value to preserve
-   *
-   * @since 1.5
    */
   public static void preserveListener( Widget widget, String listener, boolean value ) {
     WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
@@ -721,8 +697,6 @@ public final class WidgetLCAUtil {
    * @param property the property name
    * @param newValue the new value of the property
    * @param defaultValue the default value of the property
-   *
-   * @since 1.5
    */
   public static void renderProperty( Widget widget,
                                      String property,
@@ -744,8 +718,6 @@ public final class WidgetLCAUtil {
    * @param property the property name
    * @param newValue the new value of the property
    * @param defaultValue the default value of the property
-   *
-   * @since 1.5
    */
   public static void renderProperty( Widget widget,
                                      String property,
@@ -766,8 +738,6 @@ public final class WidgetLCAUtil {
    * @param property the property name
    * @param newValue the new value of the property
    * @param defaultValue the default value of the property
-   *
-   * @since 1.5
    */
   public static void renderProperty( Widget widget,
                                      String property,
@@ -788,8 +758,6 @@ public final class WidgetLCAUtil {
    * @param property the property name
    * @param newValue the new value of the property
    * @param defaultValue the default value of the property
-   *
-   * @since 1.5
    */
   public static void renderProperty( Widget widget,
                                      String property,
@@ -811,8 +779,6 @@ public final class WidgetLCAUtil {
    * @param property the property name
    * @param newValue the new value of the property
    * @param defaultValue the default value of the property
-   *
-   * @since 1.5
    */
   public static void renderProperty( Widget widget,
                                      String property,
@@ -838,8 +804,6 @@ public final class WidgetLCAUtil {
    * @param property the property name
    * @param newValue the new value of the property
    * @param defaultValue the default value of the property
-   *
-   * @since 1.5
    */
   public static void renderProperty( Widget widget,
                                      String property,
@@ -861,8 +825,6 @@ public final class WidgetLCAUtil {
    * @param property the property name
    * @param newValue the new value of the property
    * @param defaultValue the default value of the property
-   *
-   * @since 1.5
    */
   public static void renderProperty( Widget widget,
                                      String property,
@@ -892,8 +854,6 @@ public final class WidgetLCAUtil {
    * @param property the property name
    * @param newValue the new value of the property
    * @param defaultValue the default value of the property
-   *
-   * @since 1.5
    */
   public static void renderProperty( Widget widget,
                                      String property,
@@ -919,8 +879,6 @@ public final class WidgetLCAUtil {
    * @param property the property name
    * @param newValue the new value of the property
    * @param defaultValue the default value of the property
-   *
-   * @since 1.5
    */
   public static void renderProperty( Widget widget,
                                      String property,
@@ -946,8 +904,6 @@ public final class WidgetLCAUtil {
    * @param property the property name
    * @param newValue the new value of the property
    * @param defaultValue the default value of the property
-   *
-   * @since 1.5
    */
   public static void renderProperty( Widget widget,
                                      String property,
@@ -973,8 +929,6 @@ public final class WidgetLCAUtil {
    * @param property the property name
    * @param newValue the new value of the property
    * @param defaultValue the default value of the property
-   *
-   * @since 1.5
    */
   public static void renderProperty( Widget widget,
                                      String property,
@@ -997,8 +951,6 @@ public final class WidgetLCAUtil {
    * @param listener the listener type
    * @param newValue the new value of the listener (true if listener is attached, false otherwise)
    * @param defaultValue the default value of the listener
-   *
-   * @since 1.5
    */
   public static void renderListener( Widget widget,
                                      String listener,
@@ -1085,7 +1037,6 @@ public final class WidgetLCAUtil {
    * @param input the string to process
    * @param replacement the string to replace line feeds with
    * @return a new string with all line feeds replaced
-   * @since 1.1
    */
   public static String replaceNewLines( String input, String replacement ) {
     return EncodingUtil.replaceNewLines( input, replacement );
@@ -1100,7 +1051,6 @@ public final class WidgetLCAUtil {
    * @return the names of those styles from the <code>styles</code> parameter
    *         that are present in the given widget, i.e. where
    *         <code>( widget.getStyle() &amp; SWT.&lt;STYLE&gt; ) != 0</code>
-   * @since 1.5
    * @see SWT
    * @see Widget#getStyle()
    */

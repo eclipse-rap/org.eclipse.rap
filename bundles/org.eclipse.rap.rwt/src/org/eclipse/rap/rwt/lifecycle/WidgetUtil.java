@@ -72,7 +72,6 @@ public final class WidgetUtil {
    *
    * @see Widget#setData(String,Object)
    * @see #getId(Widget)
-   * @since 1.1
    */
   public static final String CUSTOM_WIDGET_ID = "org.eclipse.rap.rwt.customWidgetId";
 
@@ -81,7 +80,6 @@ public final class WidgetUtil {
    * @deprecated The system property has been moved to the internal class
    *             {@link RWTProperties}. Please look up the name in the
    *             documentation of {@link #CUSTOM_WIDGET_ID}.
-   * @since 1.1
    */
   @Deprecated
   public static final String ENABLE_UI_TESTS = RWTProperties.ENABLE_UI_TESTS;

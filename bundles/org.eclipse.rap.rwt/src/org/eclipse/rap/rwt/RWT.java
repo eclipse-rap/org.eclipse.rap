@@ -224,7 +224,6 @@ public final class RWT {
    * @see Display#setData(String,Object)
    * @see Display#addFilter(int, Listener)
    * @see RWT#CANCEL_KEYS
-   * @since 1.4
    */
   public static final String ACTIVE_KEYS = "org.eclipse.rap.rwt.activeKeys";
 
@@ -244,7 +243,6 @@ public final class RWT {
    *
    * @see Display#setData(String,Object)
    * @see RWT#ACTIVE_KEYS
-   * @since 1.5
    */
   public static final String CANCEL_KEYS = "org.eclipse.rap.rwt.cancelKeys";
 
@@ -263,7 +261,6 @@ public final class RWT {
    * </ul></p>
    *
    * @see Control#setData(String,Object)
-   * @since 1.5
    */
   public static final String CUSTOM_ITEM_HEIGHT = "org.eclipse.rap.rwt.customItemHeight";
 
@@ -346,7 +343,6 @@ public final class RWT {
    * </p>
    *
    * @see Control#setData(String,Object)
-   * @since 1.5
    */
   public static final String MARKUP_ENABLED = "org.eclipse.rap.rwt.markupEnabled";
 
@@ -369,7 +365,6 @@ public final class RWT {
    * </p>
    *
    * @see Control#setData(String,Object)
-   * @since 1.5
    */
   public static final String FIXED_COLUMNS = "org.eclipse.rap.rwt.fixedColumns";
 
@@ -379,7 +374,6 @@ public final class RWT {
    * contributions to the default theme.
    *
    * @see Application#addStyleSheet(String, String)
-   * @since 1.5
    */
   public static final String DEFAULT_THEME_ID = "org.eclipse.rap.rwt.theme.Default";
 

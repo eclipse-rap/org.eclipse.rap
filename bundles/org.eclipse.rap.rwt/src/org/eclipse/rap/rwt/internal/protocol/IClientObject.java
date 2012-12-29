@@ -17,8 +17,6 @@ import java.util.Map;
  * Instances of this interface are used to transfer changes to the remote object.
  *
  * @see ClientObjectFactory
- *
- * @since 1.5
  */
 public interface IClientObject {
 

@@ -24,7 +24,6 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
  * {@link IClientObject} for given objects.
  *
  * @see IClientObject
- * @since 1.5
  */
 public final class ClientObjectFactory {
 
