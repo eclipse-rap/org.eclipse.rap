@@ -18,14 +18,6 @@
             </message_arguments>
         </filter>
     </resource>
-    <resource path="src/org/eclipse/swt/graphics/Device.java" type="org.eclipse.swt.graphics.Device">
-        <filter id="388161617">
-            <message_arguments>
-                <message_argument value="org.eclipse.swt.graphics.Device"/>
-                <message_argument value="deviceLock"/>
-            </message_arguments>
-        </filter>
-    </resource>
     <resource path="src/org/eclipse/swt/widgets/TypedListener.java" type="org.eclipse.swt.widgets.TypedListener">
         <filter comment="See bug 334028" id="643842064">
             <message_arguments>
