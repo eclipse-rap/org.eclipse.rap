@@ -33,16 +33,18 @@ public class ClientObjectAdapter_Test {
   }
 
   @Test
-  public void testNewId() {
-    String id1 = new ClientObjectAdapter().getId();
-    String id2 = new ClientObjectAdapter().getId();
+  public void testGetId_returnsIdWithCustomPrefix() {
+    ClientObjectAdapter adapter = new ClientObjectAdapter( "x" );
 
-    assertFalse( id1.equals( id2 ) );
+    String id = adapter.getId();
+
+    assertTrue( id.startsWith( "x" ) );
   }
 
   @Test
-  public void testSameId() {
-    ClientObjectAdapter adapter = new ClientObjectAdapter();
+  public void testGetId_returnsStableId() {
+    ClientObjectAdapter adapter = new ClientObjectAdapter( "x" );
+
     String id1 = adapter.getId();
     String id2 = adapter.getId();
 
@@ -50,18 +52,11 @@ public class ClientObjectAdapter_Test {
   }
 
   @Test
-  public void testPrefix() {
-    ClientObjectAdapter adapter = new ClientObjectAdapter();
-    String id1 = adapter.getId();
+  public void testGetId_differsForDifferentAdapters() {
+    String id1 = new ClientObjectAdapter( "x" ).getId();
+    String id2 = new ClientObjectAdapter( "x" ).getId();
 
-    assertTrue( id1.startsWith( "o" ) );
+    assertFalse( id2.equals( id1 ) );
   }
 
-  @Test
-  public void testCustomPrefix() {
-    ClientObjectAdapter adapter = new ClientObjectAdapter( "gl" );
-    String id1 = adapter.getId();
-
-    assertTrue( id1.startsWith( "gl" ) );
-  }
 }

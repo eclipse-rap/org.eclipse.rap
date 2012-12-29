@@ -17,12 +17,8 @@ public class ClientObjectAdapter implements IClientObjectAdapter {
 
   private final String id;
 
-  public ClientObjectAdapter() {
-    this( "o" );
-  }
-
-  public ClientObjectAdapter( String customPrefix ) {
-    id = IdGeneratorProvider.getIdGenerator().createId( customPrefix );
+  public ClientObjectAdapter( String prefix ) {
+    id = IdGeneratorProvider.getIdGenerator().createId( prefix );
   }
 
   public String getId() {
