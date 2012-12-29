@@ -10,35 +10,39 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.eclipse.swt.internal.SerializableCompatibility;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
 
-/**
- * Utility class to generate ids for synchronizable widgets that are unique
- * within a session.
- * <p>
- * Note that this implementation is not synchronized. If multiple threads access
- * methods of this class concurrently, they <i>must</i> be synchronized
- * externally.
- * </p>
- */
 public final class IdGeneratorImpl implements IdGenerator, SerializableCompatibility {
 
-  private int lastId = 1;
+  // TODO [rst] Start from zero when hard-coded "w1" is gone
+  private final AtomicInteger sequence = new AtomicInteger( 1 );
 
   IdGeneratorImpl() {
     // prevent instantiation from outside
   }
 
   public String createId( Object object ) {
-    lastId++;
-    String prefix = "o";
-    if( object instanceof String ) {
-      prefix = ( String )object;
-    } else if( object instanceof Widget ) {
-      prefix = "w";
+    // TODO [rst] Remove dependencies on hard-coded "w1"
+    if( object instanceof Display ) {
+      return "w1";
     }
-    return prefix + lastId;
+    return getPrefix( object ) + sequence.incrementAndGet();
   }
+
+  private String getPrefix( Object object ) {
+    String prefix = "o";
+    if( object instanceof Widget || object instanceof Display ) {
+      prefix = "w";
+    } else if( object instanceof String ) {
+      // allow for using custom prefixes for non-widget types
+      prefix = ( String )object;
+    }
+    return prefix;
+  }
+
 }

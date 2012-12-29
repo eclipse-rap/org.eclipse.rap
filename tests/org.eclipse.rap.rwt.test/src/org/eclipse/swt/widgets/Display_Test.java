@@ -117,7 +117,6 @@ public class Display_Test {
     WidgetAdapter adapter2 = display.getAdapter( WidgetAdapter.class );
 
     assertNotSame( adapter1, adapter2 );
-    assertEquals( adapter1.getId(), adapter2.getId() );
   }
 
   @Test
