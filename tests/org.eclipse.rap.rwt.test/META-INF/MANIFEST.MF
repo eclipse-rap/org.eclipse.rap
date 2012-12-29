@@ -5,7 +5,8 @@ Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.rap.rwt.test
 Bundle-Version: 2.0.0.qualifier
 Bundle-ClassPath: .
-Require-Bundle: org.mockito;bundle-version="[1.8.4,2.0.0)",
+Require-Bundle: org.junit;bundle-version="4.8.2",
+ org.mockito;bundle-version="[1.8.4,2.0.0)",
  org.objenesis;bundle-version="[1.0.0,2.0.0)",
  org.eclipse.rap.rwt;bundle-version="[2.0.0,3.0.0)"
 Bundle-Localization: plugin
@@ -16,5 +17,4 @@ Import-Package: javax.servlet;version="[2.6.0,3.0.0)",
  org.eclipse.rap.rwt.testfixture.internal;version="[2.0.0,3.0.0)",
  org.eclipse.rap.rwt.testfixture.internal.engine;version="[2.0.0,3.0.0)",
  org.eclipse.rap.rwt.testfixture.internal.service;version="[2.0.0,3.0.0)",
- org.json,
- org.junit;version="4.8.2"
+ org.json
