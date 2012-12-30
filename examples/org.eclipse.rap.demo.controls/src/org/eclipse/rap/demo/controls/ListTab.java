@@ -27,10 +27,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -106,9 +108,8 @@ public class ListTab extends ExampleTab {
     listViewer.setContentProvider( new ArrayContentProvider() );
     listViewer.setLabelProvider( new LabelProvider() );
     listViewer.setInput( ELEMENTS );
-    list.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetDefaultSelected( SelectionEvent event ) {
+    list.addListener( SWT.DefaultSelection, new Listener() {
+      public void handleEvent( Event event ) {
         String item = list.getItem( list.getSelectionIndex() );
         String message = "Selected Item: " + item;
         MessageDialog.openInformation( getShell(), "Selection", message );
