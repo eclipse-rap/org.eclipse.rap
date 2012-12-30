@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
@@ -16,8 +17,9 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 
+
 class RestoreScrolledCompositeOriginsVisitor extends AllWidgetTreeVisitor {
-  
+
   public boolean doVisit( Widget widget ) {
     if( widget instanceof ScrolledComposite ) {
       restoreOrigin( ( ScrolledComposite )widget );
@@ -52,7 +54,7 @@ class RestoreScrolledCompositeOriginsVisitor extends AllWidgetTreeVisitor {
   private Point getBufferedContentSize( Control content ) {
     return ( Point )content.getData( TextSizeRecalculation.KEY_SCROLLED_COMPOSITE_CONTENT_SIZE );
   }
-  
+
   private Point getBufferedOrigin( ScrolledComposite composite ) {
     return ( Point )composite.getData( TextSizeRecalculation.KEY_SCROLLED_COMPOSITE_ORIGIN );
   }

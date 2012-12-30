@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,20 +27,20 @@ class PhaseListenerManager {
   private final ILifeCycle eventSource;
   private final Object lock;
   private final Set<PhaseListener> phaseListeners;
-  
+
   PhaseListenerManager( ILifeCycle eventSource ) {
     this.eventSource = eventSource;
     this.lock = new Object();
     this.phaseListeners = new HashSet<PhaseListener>();
   }
-  
+
   void addPhaseListener( PhaseListener phaseListener ) {
     ParamCheck.notNull( phaseListener, "phaseListener" );
     synchronized( lock ) {
       phaseListeners.add( phaseListener );
     }
   }
-  
+
   void addPhaseListeners( PhaseListener[] phaseListeners ) {
     ParamCheck.notNull( phaseListeners, "phaseListeners" );
     for( int i = 0; i < phaseListeners.length; i++ ) {
@@ -62,7 +62,7 @@ class PhaseListenerManager {
       return result;
     }
   }
-  
+
   void notifyBeforePhase( PhaseId phase ) {
     PhaseListener[] phaseListeners = getPhaseListeners();
     PhaseEvent event = new PhaseEvent( eventSource, phase );
@@ -92,7 +92,7 @@ class PhaseListenerManager {
       }
     }
   }
-  
+
   private static boolean mustNotify( PhaseId phase, PhaseId listenerPhase ) {
     return listenerPhase == PhaseId.ANY || listenerPhase == phase;
   }

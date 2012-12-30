@@ -1,14 +1,13 @@
 /*******************************************************************************
- *  Copyright: 2007, 2010 David Perez Carmona,
- *                        and EclipseSource
+ * Copyright (c) 2007, 2012 David Perez Carmona, EclipseSource, and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this
- * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
- *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
+ *    EclipseSource - adaptation for RAP
  ******************************************************************************/
 
 /**

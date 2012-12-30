@@ -1,16 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2007 NOMAD business software GmbH.
+ * Copyright (c) 2007, 2012 NOMAD business software GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Samy Abou-Shama NOMAD business software GmbH - initial Databinding migration
+ *    Samy Abou-Shama NOMAD business software GmbH - initial Databinding migration
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.demo.databinding;
 
 import org.eclipse.ui.*;
+
 
 public class DataBindingPerspective implements IPerspectiveFactory {
 

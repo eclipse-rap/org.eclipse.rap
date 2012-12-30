@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
@@ -18,18 +18,19 @@ import java.util.ListIterator;
 
 import org.eclipse.swt.internal.SerializableCompatibility;
 
+
 /**
- * This class is a <code>List</code> implementation that is designed for 
- * storing </code>Widget</code>s. The implementation is optimized for 
+ * This class is a <code>List</code> implementation that is designed for
+ * storing </code>Widget</code>s. The implementation is optimized for
  * minimal memory footprint, frequent reads and infrequent writes.
  * <p>Only those methods known to be used by the well-known consumers are
  * implemented. Other methods throw <code>UnsupportedOperationException</code>s.
- * </p> 
+ * </p>
  */
 public final class SlimList<E> implements List<E>, SerializableCompatibility {
 
   private static final Object[] EMPTY = new Object[ 0 ];
-  
+
   private Object[] data;
 
   public SlimList() {

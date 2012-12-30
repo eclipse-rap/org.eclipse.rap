@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,7 +73,7 @@ public class CssFileReader {
 
   private static StyleSheet parseStyleSheet( InputStream inputStream,
                                              String fileName,
-                                             ResourceLoader loader ) 
+                                             ResourceLoader loader )
     throws IOException
   {
     StyleSheet styleSheet;
@@ -120,7 +120,7 @@ public class CssFileReader {
     System.err.println( exception );
     problems.add( exception );
   }
-  
+
   private static class ErrorHandlerImpl implements ErrorHandler {
 
     private final List<CSSException> problems;

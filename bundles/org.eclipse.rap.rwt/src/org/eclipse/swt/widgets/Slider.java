@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+
 
 /**
  * Instances of this class are selectable user interface
@@ -107,8 +108,8 @@ public class Slider extends Control {
    * @see Widget#getStyle
    */
   public Slider( Composite parent, int style ) {
-  	super( parent, checkStyle (style) );
-  	increment = 1;
+    super( parent, checkStyle (style) );
+    increment = 1;
     maximum = 100;
     minimum = 0;
     pageIncrement = 10;
@@ -185,12 +186,12 @@ public class Slider extends Control {
   }
 
   static int checkStyle( int style ) {
-  	return checkBits( style, SWT.HORIZONTAL, SWT.VERTICAL, 0, 0, 0, 0 );
+    return checkBits( style, SWT.HORIZONTAL, SWT.VERTICAL, 0, 0, 0, 0 );
   }
 
   @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
-  	checkWidget();
+    checkWidget();
     int width, height;
     if( ( style & SWT.HORIZONTAL ) != 0 ) {
       width = PREFERRED_SIZE.x;
@@ -208,21 +209,21 @@ public class Slider extends Control {
     int border = getBorderWidth();
     width += border * 2;
     height += border * 2;
-  	return new Point( width, height );
+    return new Point( width, height );
   }
 
   @Override
   void createWidget() {
-  	increment = 1;
-  	pageIncrement = 10;
-  	maximum = 100;
-  	thumb = 10;
+    increment = 1;
+    pageIncrement = 10;
+    maximum = 100;
+    thumb = 10;
   }
 
   @Override
   public boolean getEnabled() {
-  	checkWidget();
-  	return( state & DISABLED ) == 0;
+    checkWidget();
+    return( state & DISABLED ) == 0;
   }
 
   /**
@@ -238,8 +239,8 @@ public class Slider extends Control {
    * </ul>
    */
   public int getIncrement() {
-  	checkWidget();
-  	return increment;
+    checkWidget();
+    return increment;
   }
 
   /**
@@ -253,8 +254,8 @@ public class Slider extends Control {
    * </ul>
    */
   public int getMaximum() {
-  	checkWidget();
-  	return maximum;
+    checkWidget();
+    return maximum;
   }
 
   /**
@@ -268,8 +269,8 @@ public class Slider extends Control {
    * </ul>
    */
   public int getMinimum() {
-  	checkWidget();
-  	return minimum;
+    checkWidget();
+    return minimum;
   }
 
   /**
@@ -285,8 +286,8 @@ public class Slider extends Control {
    * </ul>
    */
   public int getPageIncrement() {
-  	checkWidget();
-  	return pageIncrement;
+    checkWidget();
+    return pageIncrement;
   }
 
   /**
@@ -300,8 +301,8 @@ public class Slider extends Control {
    * </ul>
    */
   public int getSelection() {
-  	checkWidget();
-  	return selection;
+    checkWidget();
+    return selection;
   }
 
   /**
@@ -316,8 +317,8 @@ public class Slider extends Control {
    * </ul>
    */
   public int getThumb() {
-  	checkWidget();
-  	return thumb;
+    checkWidget();
+    return thumb;
   }
 
   /**
@@ -452,14 +453,14 @@ public class Slider extends Control {
    * </ul>
    */
   public void setThumb( int value ) {
-  	checkWidget();
-  	if( value >= 1 ) {
+    checkWidget();
+    if( value >= 1 ) {
       thumb = value;
     }
-  	if( value >= maximum - minimum ) {
-  	  thumb = maximum - minimum;
-  	  selection = minimum;
-  	}
+    if( value >= maximum - minimum ) {
+      thumb = maximum - minimum;
+      selection = minimum;
+    }
   }
 
   /**
@@ -490,9 +491,9 @@ public class Slider extends Control {
                          int increment,
                          int pageIncrement )
   {
-  	checkWidget();
-  	if( selection >= minimum && selection <= maximum ) {
-  	  this.selection = selection;
+    checkWidget();
+    if( selection >= minimum && selection <= maximum ) {
+      this.selection = selection;
     }
     if( 0 <= minimum && minimum < maximum ) {
       this.minimum = minimum;

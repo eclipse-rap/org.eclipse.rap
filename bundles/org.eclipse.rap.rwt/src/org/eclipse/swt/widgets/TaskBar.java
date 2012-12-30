@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,19 +16,19 @@ import org.eclipse.swt.SWTException;
 
 /**
  * Instances of this class represent the system task bar.
- * 
+ *
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd>(none)</dd>
  * <dt><b>Events:</b></dt>
  * <dd>(none)</dd>
  * </dl>
- * 
+ *
  * @see Display#getSystemTaskBar
  * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
- * 
+ *
  * @since 1.4
- * 
+ *
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class TaskBar extends Widget {
@@ -55,12 +55,12 @@ public class TaskBar extends Widget {
     }
     return null;
   }
-  
+
   /**
-   * Returns the <code>TaskItem</code> for the given <code>Shell</code> or the <code>TaskItem</code> 
+   * Returns the <code>TaskItem</code> for the given <code>Shell</code> or the <code>TaskItem</code>
    * for the application if the <code>Shell</code> parameter is <code>null</code>.
    * If the requested item is not supported by the platform it returns <code>null</code>.
-   * 
+   *
    * @param shell the shell for which the task item is requested, or null to request the application item
    * @return the task item for the given shell or the application
    *
@@ -73,7 +73,7 @@ public class TaskBar extends Widget {
     checkWidget();
     return new TaskItem( this, SWT.NONE );
   }
-  
+
   /**
    * Returns the number of items contained in the receiver.
    *
@@ -88,14 +88,14 @@ public class TaskBar extends Widget {
     checkWidget();
     return 0;
   }
-  
+
   /**
    * Returns an array of <code>TaskItem</code>s which are the items
-   * in the receiver. 
+   * in the receiver.
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its list of items, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    *
    * @return the items in the receiver

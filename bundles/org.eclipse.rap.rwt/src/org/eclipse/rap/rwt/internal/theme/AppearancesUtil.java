@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ public final class AppearancesUtil {
     = Pattern.compile( "(\\r|\\n).*?END TEMPLATE" );
   private static final Pattern BEGIN_TEMPLATE_PATTERN
     = Pattern.compile( "BEGIN TEMPLATE.*(\\r|\\n)" );
-  
+
   private AppearancesUtil() {
     // prevent instantiation
   }

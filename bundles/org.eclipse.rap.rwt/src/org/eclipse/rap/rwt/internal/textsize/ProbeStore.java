@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,13 +18,13 @@ import org.eclipse.swt.graphics.FontData;
 
 public class ProbeStore {
   private final Map<FontData,Probe> probes;
-  private final TextSizeStorage textSizeStorage; 
-  
+  private final TextSizeStorage textSizeStorage;
+
   public ProbeStore( TextSizeStorage textSizeStorage ) {
     this.textSizeStorage = textSizeStorage;
     this.probes = new HashMap<FontData,Probe>();
   }
-  
+
   Probe[] getProbes() {
     Probe[] result;
     synchronized( probes ) {
@@ -48,13 +48,13 @@ public class ProbeStore {
     textSizeStorage.storeFont( fontData );
     return result;
   }
-  
+
   Probe getProbe( FontData font ) {
     synchronized( probes ) {
       return probes.get( font );
     }
   }
-  
+
   int getSize() {
     synchronized( probes ) {
       return probes.size();

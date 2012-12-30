@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  *
  * Contributors:
  *    EclipseSource - initial API and implementation
- ******************************************************************************/ 
+ ******************************************************************************/
 package org.eclipse.rap.internal.design.example.stacks;
 
 import org.eclipse.rap.ui.interactiondesign.ConfigurationAction;

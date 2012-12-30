@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -227,9 +227,9 @@ public class CTabFolder extends Composite {
    * @return the tab items
    *
    * @exception SWTException <ul>
-   *		<li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
-   *		<li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
-   *	</ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   *  </ul>
    */
   public CTabItem[] getItems() {
     checkWidget();
@@ -291,9 +291,9 @@ public class CTabFolder extends Composite {
    * @return the number of tabs in the folder
    *
    * @exception SWTException <ul>
-   *		<li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
-   *		<li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
-   *	</ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   *  </ul>
    */
   public int getItemCount() {
     checkWidget();
@@ -367,9 +367,9 @@ public class CTabFolder extends Composite {
    * @return the index of the selected tab item or -1
    *
    * @exception SWTException <ul>
-   *		<li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
-   *		<li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
-   *	</ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   *  </ul>
    */
   public int getSelectionIndex() {
     checkWidget();
@@ -405,9 +405,9 @@ public class CTabFolder extends Composite {
    * @return the selected tab item, or null if none has been selected
    *
    * @exception SWTException <ul>
-   *		<li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
-   *		<li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
-   *	</ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   *  </ul>
    */
   public CTabItem getSelection() {
     checkWidget();
@@ -764,9 +764,9 @@ public class CTabFolder extends Composite {
    * @return the height of the tab
    *
    * @exception SWTException <ul>
-   *		<li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
-   *		<li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
-   *	</ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   *  </ul>
    */
   public int getTabHeight() {
     checkWidget();
@@ -861,9 +861,9 @@ public class CTabFolder extends Composite {
    * @return the position of the tab
    *
    * @exception SWTException <ul>
-   *		<li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
-   *		<li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
-   *	</ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   *  </ul>
    */
   public int getTabPosition() {
     checkWidget();

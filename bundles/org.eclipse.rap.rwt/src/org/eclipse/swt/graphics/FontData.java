@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * Application code does <em>not</em> need to explicitly release the
  * resources managed by each instance when those instances are no longer
  * required, and thus no <code>dispose()</code> method is provided.
- * 
+ *
  * @see Font
  * @since 1.0
  */
@@ -40,9 +40,9 @@ public final class FontData implements SerializableCompatibility {
     this( "", 12, SWT.NORMAL );
   }
 
-  /**  
+  /**
    * Constructs a new font data given a font name,
-   * the height of the desired font in points, 
+   * the height of the desired font in points,
    * and a font style.
    *
    * @param name the name of the font (must not be null)
@@ -74,11 +74,11 @@ public final class FontData implements SerializableCompatibility {
    * <!--
    * <p>
    * Note that the representation varies between platforms,
-   * and a FontData can only be created from a string that was 
+   * and a FontData can only be created from a string that was
    * generated on the same platform.
    * </p>
    * -->
-   * 
+   *
    * @param string the string representation of a <code>FontData</code> (must not be null)
    *
    * @exception IllegalArgumentException <ul>
@@ -145,7 +145,7 @@ public final class FontData implements SerializableCompatibility {
    * Returns a string representation of the receiver which is suitable for
    * constructing an equivalent instance using the <code>FontData(String)</code>
    * constructor.
-   * 
+   *
    * @return a string representation of the FontData
    */
   public String toString() {
@@ -162,7 +162,7 @@ public final class FontData implements SerializableCompatibility {
 
   /**
    * Returns the height of the receiver in points.
-   * 
+   *
    * @return the height of this FontData
    * @see #setHeight(int)
    */
@@ -171,7 +171,7 @@ public final class FontData implements SerializableCompatibility {
   }
   /**
    * Returns the name of the receiver.
-   * 
+   *
    * @return the name of this <code>FontData</code>
    * @see #setName
    */
@@ -180,10 +180,10 @@ public final class FontData implements SerializableCompatibility {
   }
 
   /**
-   * Returns the style of the receiver which is a bitwise OR of 
+   * Returns the style of the receiver which is a bitwise OR of
    * one or more of the <code>SWT</code> constants NORMAL, BOLD
    * and ITALIC.
-   * 
+   *
    * @return the style of this <code>FontData</code>
    * @see #setStyle
    */
@@ -204,7 +204,7 @@ public final class FontData implements SerializableCompatibility {
    * given language/country locale, the variant portion of the
    * locale will determine the character set.
    * </p>
-   * 
+   *
    * @return the <code>String</code> representing a Locale object
    * @since 1.3
    */
@@ -222,7 +222,7 @@ public final class FontData implements SerializableCompatibility {
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_INVALID_ARGUMENT - if the height is negative</li>
    * </ul>
-   * 
+   *
    * @see #getHeight
    * @since 1.4
    */
@@ -253,7 +253,7 @@ public final class FontData implements SerializableCompatibility {
 
   /**
    * Sets the style of the receiver to the argument which must
-   * be a bitwise OR of one or more of the <code>SWT</code> 
+   * be a bitwise OR of one or more of the <code>SWT</code>
    * constants NORMAL, BOLD and ITALIC.  All other style bits are
    * ignored.
    *
@@ -279,7 +279,7 @@ public final class FontData implements SerializableCompatibility {
    * given language/country locale, the variant portion of the
    * locale will determine the character set.
    * </p>
-   * 
+   *
    * @param locale the <code>String</code> representing a Locale object
    * @see java.util.Locale#toString
    * @since 1.4
@@ -328,11 +328,11 @@ public final class FontData implements SerializableCompatibility {
   }
 
   /**
-   * Returns an integer hash code for the receiver. Any two 
-   * objects that return <code>true</code> when passed to 
+   * Returns an integer hash code for the receiver. Any two
+   * objects that return <code>true</code> when passed to
    * <code>equals</code> must return the same value for this
    * method.
-   * 
+   *
    * @return the receiver's hash
    *
    * @see #equals

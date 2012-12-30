@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,7 +47,7 @@ public final class ThemeDefinitionReader {
   private static final String ELEM_STYLE = "style";
 
   private static final String ELEM_STATE = "state";
-  
+
   private static final String ATTR_NAME = "name";
 
   private static final String THEME_DEF_SCHEMA = "themedef.xsd";
@@ -202,11 +202,11 @@ public final class ThemeDefinitionReader {
 
     private String getPosition( SAXParseException spe ) {
       String result
-        = "in file '" 
-        + fileName 
-        + "' at line " 
-        + spe.getLineNumber() 
-        + ", col " 
+        = "in file '"
+        + fileName
+        + "' at line "
+        + spe.getLineNumber()
+        + ", col "
         + spe.getColumnNumber();
       return result;
     }

@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.ui.internal;
 
@@ -30,22 +30,22 @@ import org.osgi.framework.ServiceReference;
  * Helper class that registers a runnable that handles NLS for externalized
  * labels in plugin.xml files regarding the setting of
  * <code>{@link RWT#getLocale()}</code>.
- * 
+ *
  * <p>Note that this functionality only takes effect if the
  * <code>org.eclipse.rap.equinox.registry<code> fragment is available.</p>
  */
 public final class ResourceTranslatorHelper {
-  
+
   private static final Class[] PARAM_TYPE_ALGORITHM
     = new Class[] { Runnable.class };
   private static final String METHOD_SET_TRANSLATOR_ALGORITHM
     = "setTranslatorAlgorithm"; //$NON-NLS-1$
-	private static final String FIELD_ALGORITHM_IO = "algorithmIO"; //$NON-NLS-1$
+  private static final String FIELD_ALGORITHM_IO = "algorithmIO"; //$NON-NLS-1$
   private static final Class CLASS_REGISTRY_FACTORY = RegistryFactory.class;
-  
-  
+
+
   /**
-   * Pluggable runnable that handles translation of externalized labels 
+   * Pluggable runnable that handles translation of externalized labels
    * of extension declarations.
    */
   private static final class TranslatorAlgorithm implements Runnable {
@@ -93,7 +93,7 @@ public final class ResourceTranslatorHelper {
     }
   }
 
-  
+
   public static void registerAlgorithm() {
     if( isRWTLocalSpecificTranslationAllowed() ) {
       try {
@@ -105,10 +105,10 @@ public final class ResourceTranslatorHelper {
     }
   }
 
-  
+
   //////////////////
   // helping methods
-  
+
   private static boolean isRWTLocalSpecificTranslationAllowed() {
     boolean result = false;
     try {
@@ -132,7 +132,7 @@ public final class ResourceTranslatorHelper {
     return CLASS_REGISTRY_FACTORY.getDeclaredField( FIELD_ALGORITHM_IO );
   }
 
-  
+
   private ResourceTranslatorHelper() {
     // prevent instance creation
   }

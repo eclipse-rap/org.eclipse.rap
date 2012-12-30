@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,11 +19,11 @@ import org.eclipse.swt.dnd.TransferData;
 
 
 public final class DNDLCAUtil {
-  
+
   private DNDLCAUtil() {
     // prevent instantiation
   }
-  
+
   public static String[] convertTransferTypes( Transfer[] transfer ) {
     List<TransferData> allTypes = new ArrayList<TransferData>();
     for( int i = 0; i < transfer.length; i++ ) {
@@ -39,7 +39,7 @@ public final class DNDLCAUtil {
     }
     return result;
   }
-  
+
   public static String[] convertOperations( int operations ) {
     List<String> result = new ArrayList<String>();
     if( ( operations & DND.DROP_COPY ) != 0  ) {

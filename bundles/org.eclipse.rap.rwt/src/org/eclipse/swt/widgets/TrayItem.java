@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,7 @@ import org.eclipse.swt.events.SelectionListener;
  * @since 1.4
  */
 public class TrayItem extends Item {
-  
+
   private Tray parent;
 
   /**
@@ -77,7 +77,7 @@ public class TrayItem extends Item {
     this.parent = parent;
     checkWidget();
   }
-  
+
   /**
    * Returns the receiver's parent, which must be a <code>Tray</code>.
    *
@@ -87,7 +87,7 @@ public class TrayItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.4
    */
   public Tray getParent() {
@@ -215,7 +215,7 @@ public class TrayItem extends Item {
   public void setVisible( boolean visible ) {
     checkWidget();
   }
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the platform-specific context menu trigger
@@ -243,7 +243,7 @@ public class TrayItem extends Item {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
   }
-  
+
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when the platform-specific context menu trigger has
@@ -270,7 +270,7 @@ public class TrayItem extends Item {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
   }
-  
+
   /**
    * Sets the receiver's tool tip to the argument, which
    * may be null indicating that no tool tip should be shown.
@@ -281,13 +281,13 @@ public class TrayItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.4
    */
   public void setToolTip( ToolTip toolTip ) {
     checkWidget();
   }
-  
+
   /**
    * Returns the receiver's tool tip, or null if it has
    * not been set.
@@ -298,12 +298,12 @@ public class TrayItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.4
    */
   public ToolTip getToolTip() {
     checkWidget();
     return null;
   }
-  
+
 }

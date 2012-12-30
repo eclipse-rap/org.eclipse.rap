@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture.internal;
 
@@ -14,7 +15,7 @@ import org.eclipse.rap.rwt.lifecycle.*;
 
 
 public class PhaseListenerHelper {
-  
+
   private static class TestLifeCycle implements ILifeCycle {
     public void removePhaseListener( PhaseListener listener ) {
     }
@@ -41,7 +42,7 @@ public class PhaseListenerHelper {
   private static PhaseEvent createPhaseEvent( PhaseId phaseId ) {
     return new PhaseEvent( new TestLifeCycle(), phaseId );
   }
-  
+
   private PhaseListenerHelper() {
     // prevent instance creation
   }

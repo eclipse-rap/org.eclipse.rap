@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -310,7 +310,7 @@ public class Menu extends Widget {
     checkWidget();
     return parent.getShell();
   }
-  
+
   /**
    * Sets the orientation of the receiver, which must be one
    * of the constants <code>SWT.LEFT_TO_RIGHT</code> or <code>SWT.RIGHT_TO_LEFT</code>.
@@ -319,18 +319,18 @@ public class Menu extends Widget {
    * </p>
    *
    * @param orientation new orientation style
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.4  
+   *
+   * @since 1.4
    */
-  public void setOrientation( int orientation ) { 
+  public void setOrientation( int orientation ) {
     checkWidget();
   }
-  
+
   /**
    * Returns the orientation of the receiver, which will be one of the
    * constants <code>SWT.LEFT_TO_RIGHT</code> or <code>SWT.RIGHT_TO_LEFT</code>.
@@ -339,12 +339,12 @@ public class Menu extends Widget {
    * </p>
    *
    * @return the orientation style
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.4
    */
   public int getOrientation() {
@@ -591,17 +591,17 @@ public class Menu extends Widget {
   /**
    * Sets the default menu item to the argument or removes
    * the default emphasis when the argument is <code>null</code>.
-   * 
+   *
    * @param item the default menu item or null
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the menu item has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the menu item has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.4
    */
   public void setDefaultItem( MenuItem item ) {
@@ -619,7 +619,7 @@ public class Menu extends Widget {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.4
    */
   public MenuItem getDefaultItem() {

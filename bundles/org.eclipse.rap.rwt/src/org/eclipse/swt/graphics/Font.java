@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ import org.eclipse.swt.SWTException;
  * methods in class <code>Graphics</code> by providing a name, size and style
  * information or a <code>FontData</code> object which encapsulates this data.
  * </p>
- * 
+ *
  * @see FontData
  * @see Graphics
  * @see org.eclipse.rap.rwt.graphics.Graphics#getFont(FontData)
@@ -49,10 +49,10 @@ public final class Font extends Resource {
    * <p>
    * You must dispose the font when it is no longer required.
    * </p>
-   * 
+   *
    * <p><strong>Note</strong>, this constructor is provided for convenience when
    * single-sourcing code with SWT. For RWT, the recommended way to create fonts
-   * is to use one of the <code>getFont</code> methods in class 
+   * is to use one of the <code>getFont</code> methods in class
    * <code>Graphics</code>.
    * </p>
    *
@@ -87,7 +87,7 @@ public final class Font extends Resource {
    *
    * <p><strong>Note</strong>, this constructor is provided for convenience when
    * single-sourcing code with SWT. For RWT, the recommended way to create fonts
-   * is to use one of the <code>getFont</code> methods in class 
+   * is to use one of the <code>getFont</code> methods in class
    * <code>Graphics</code>.
    * </p>
    *

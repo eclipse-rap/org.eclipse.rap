@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,10 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 final class Utf8ResourceBundle {
-  
-  private final static Map<ResourceBundle,ResourceBundle> bundles 
+
+  private final static Map<ResourceBundle,ResourceBundle> bundles
     = new HashMap<ResourceBundle,ResourceBundle>();
-  
+
   static ResourceBundle getBundle( String baseName, Locale locale, ClassLoader loader ) {
     ResourceBundle bundle = ResourceBundle.getBundle( baseName, locale, loader );
     ResourceBundle result;
@@ -45,7 +45,7 @@ final class Utf8ResourceBundle {
     }
     return result;
   }
-  
+
   private static class Utf8PropertyResourceBundle extends ResourceBundle {
     private PropertyResourceBundle bundle;
 

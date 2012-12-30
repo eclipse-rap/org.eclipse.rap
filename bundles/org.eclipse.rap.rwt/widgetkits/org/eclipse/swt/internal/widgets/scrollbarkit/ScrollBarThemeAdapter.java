@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.ScrollBar;
 
 
 public class ScrollBarThemeAdapter extends AbstractThemeAdapter {
-  
+
   protected void configureMatcher( WidgetMatcher matcher ) {
     matcher.addStyle( "HORIZONTAL", SWT.HORIZONTAL );
     matcher.addStyle( "VERTICAL", SWT.VERTICAL );
@@ -26,5 +26,5 @@ public class ScrollBarThemeAdapter extends AbstractThemeAdapter {
   public int getScrollBarWidth( ScrollBar scrollbar ) {
     return getCssDimension( "ScrollBar", "width", scrollbar );
   }
-  
+
 }

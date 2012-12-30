@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class StylesUtil {
 
   private static final Map<String, Integer> availableStyles;
-  
+
   static {
     availableStyles = new LinkedHashMap<String, Integer>();
     initializeAvailableStyles();
@@ -42,14 +42,14 @@ public final class StylesUtil {
     String styleName = constant.getName();
     try {
       constant.setAccessible( true );
-      Integer value = new Integer( constant.getInt( null ) ); // use null because we access statics 
+      Integer value = new Integer( constant.getInt( null ) ); // use null because we access statics
       availableStyles.put( styleName, value );
     } catch( Exception e ) {
       String causeMessage = "Could not initialize SWT styles map with constant " + styleName;
       throw new RuntimeException( causeMessage );
     }
   }
-  
+
   public static String[] filterStyles( Widget widget, String... allowedStyles ) {
     List<String> containedStyles = findContainedStyles( widget, allowedStyles );
     if( containedStyles.isEmpty() ) {
