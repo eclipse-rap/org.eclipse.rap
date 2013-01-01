@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.graphics;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import java.io.InputStream;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
@@ -26,6 +27,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -71,7 +73,8 @@ public final class Graphics {
     if( rgb == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    return RWTFactory.getResourceFactory().getColor( rgb.red, rgb.green, rgb.blue );
+    ResourceFactory resourceFactory = getApplicationContext().getResourceFactory();
+    return resourceFactory.getColor( rgb.red, rgb.green, rgb.blue );
   }
 
   /**
@@ -96,7 +99,8 @@ public final class Graphics {
   @Deprecated
   public static Color getColor( int red, int green, int blue ) {
     checkThread();
-    return RWTFactory.getResourceFactory().getColor( red, green, blue );
+    ResourceFactory resourceFactory = getApplicationContext().getResourceFactory();
+    return resourceFactory.getColor( red, green, blue );
   }
 
   /**
@@ -122,7 +126,8 @@ public final class Graphics {
     if( data == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    return RWTFactory.getResourceFactory().getFont( data );
+    ResourceFactory resourceFactory = getApplicationContext().getResourceFactory();
+    return resourceFactory.getFont( data );
   }
 
   /**
@@ -150,7 +155,8 @@ public final class Graphics {
   @Deprecated
   public static Font getFont( String name, int height, int style ) {
     checkThread();
-    return RWTFactory.getResourceFactory().getFont( new FontData( name, height, style ) );
+    ResourceFactory resourceFactory = getApplicationContext().getResourceFactory();
+    return resourceFactory.getFont( new FontData( name, height, style ) );
   }
 
   /**
@@ -185,7 +191,7 @@ public final class Graphics {
     if( "".equals( path ) ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    return RWTFactory.getImageFactory().findImage( path );
+    return getApplicationContext().getImageFactory().findImage( path );
   }
 
   /**
@@ -219,7 +225,7 @@ public final class Graphics {
     if( "".equals( path ) ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    return RWTFactory.getImageFactory().findImage( path, imageLoader );
+    return getApplicationContext().getImageFactory().findImage( path, imageLoader );
   }
 
   /**
@@ -257,7 +263,7 @@ public final class Graphics {
     if( "".equals( path ) ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    return RWTFactory.getImageFactory().findImage( path, inputStream );
+    return getApplicationContext().getImageFactory().findImage( path, inputStream );
   }
 
   /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.service.ResourceManager;
@@ -141,7 +140,7 @@ public class Theme_Test {
       ThemeableWidget[] widgets = new ThemeableWidget[] { createSimpleButtonWidget() };
       defaultTheme.initialize( widgets );
 
-      ResourceManager resourceManager = RWTFactory.getResourceManager();
+      ResourceManager resourceManager = RWT.getApplicationContext().getResourceManager();
       defaultTheme.registerResources( resourceManager );
 
       assertTrue( resourceManager.isRegistered( "themes/images/9e78c44e.gif" ) );

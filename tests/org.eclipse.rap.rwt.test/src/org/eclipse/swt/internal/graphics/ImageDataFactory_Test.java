@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Image;
@@ -42,7 +41,7 @@ public class ImageDataFactory_Test {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
     Fixture.useDefaultResourceManager();
-    imageDataFactory = new ImageDataFactory( RWTFactory.getResourceManager() );
+    imageDataFactory = new ImageDataFactory( RWT.getApplicationContext().getResourceManager() );
     new Display();
   }
 

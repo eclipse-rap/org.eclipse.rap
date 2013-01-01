@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -26,7 +27,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
@@ -266,8 +266,8 @@ public class SimpleLifeCycle_Test {
   public void testContextOnShutdownFromBackgroundThread() throws Exception {
     final boolean[] log = new boolean[ 1 ];
     // Activate SimpleLifeCycle
-    RWTFactory.getLifeCycleFactory().deactivate();
-    RWTFactory.getLifeCycleFactory().activate();
+    getApplicationContext().getLifeCycleFactory().deactivate();
+    getApplicationContext().getLifeCycleFactory().activate();
     registerEntryPoint( TestEntryPoint.class );
     final UISessionImpl uiSession = ( UISessionImpl )RWT.getUISession();
     uiSession.addUISessionListener( new UISessionListener() {
@@ -305,7 +305,7 @@ public class SimpleLifeCycle_Test {
   }
 
   private static void registerEntryPoint( Class<? extends EntryPoint> type ) {
-    RWTFactory.getEntryPointManager().register( "/rap", type, null );
+    getApplicationContext().getEntryPointManager().register( "/rap", type, null );
   }
 
   private static void newSession() {

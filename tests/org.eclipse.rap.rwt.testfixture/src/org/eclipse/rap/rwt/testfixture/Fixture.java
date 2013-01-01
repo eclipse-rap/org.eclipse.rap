@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 EclipseSource and others.
+ * Copyright (c) 2002, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture;
+
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -43,7 +45,6 @@ import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.engine.RWTServletContextListener;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextHelper;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
@@ -493,7 +494,8 @@ public final class Fixture {
     IUIThreadHolder threadHolder = registerCurrentThreadAsUIThreadHolder();
     Thread serverThread = fakeRequestThread( threadHolder );
     simulateRequest( threadHolder, serverThread );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
+    RWTLifeCycle lifeCycle
+      = ( RWTLifeCycle )getApplicationContext().getLifeCycleFactory().getLifeCycle();
     while( LifeCycleUtil.getSessionDisplay().readAndDispatch() ) {
     }
     lifeCycle.sleep();
@@ -639,7 +641,8 @@ public final class Fixture {
   }
 
   private static void simulateRequest( IUIThreadHolder threadHolder, Thread serverThread ) {
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
+    RWTLifeCycle lifeCycle
+      = ( RWTLifeCycle )getApplicationContext().getLifeCycleFactory().getLifeCycle();
     synchronized( threadHolder.getLock() ) {
       serverThread.start();
       try {
@@ -651,7 +654,8 @@ public final class Fixture {
   }
 
   private static Thread fakeRequestThread( final IUIThreadHolder threadHolder ) {
-    final RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
+    final RWTLifeCycle lifeCycle
+      = ( RWTLifeCycle )getApplicationContext().getLifeCycleFactory().getLifeCycle();
     final ServiceContext context = ContextProvider.getContext();
     Thread result = new Thread( new Runnable() {
       public void run() {

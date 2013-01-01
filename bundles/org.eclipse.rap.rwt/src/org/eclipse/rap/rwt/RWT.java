@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rap.rwt;
+
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -27,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
@@ -38,9 +39,9 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.IServiceStore;
-import org.eclipse.rap.rwt.service.SettingStore;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.service.ServiceManager;
+import org.eclipse.rap.rwt.service.SettingStore;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -398,7 +399,7 @@ public final class RWT {
    * @return instance of {@link ILifeCycle}
    */
   public static ILifeCycle getLifeCycle() {
-    return RWTFactory.getLifeCycleFactory().getLifeCycle();
+    return ContextProvider.getApplicationContext().getLifeCycleFactory().getLifeCycle();
   }
 
   /**
@@ -430,7 +431,7 @@ public final class RWT {
    * @return the setting store for the current session, never <code>null</code>
    */
   public static SettingStore getSettingStore() {
-    return RWTFactory.getSettingStoreManager().getStore();
+    return ContextProvider.getApplicationContext().getSettingStoreManager().getStore();
   }
 
   /**
@@ -487,7 +488,7 @@ public final class RWT {
    */
   public static ApplicationContext getApplicationContext() {
     checkContext();
-    return RWTFactory.getApplicationContext();
+    return ContextProvider.getApplicationContext();
   }
 
   /**

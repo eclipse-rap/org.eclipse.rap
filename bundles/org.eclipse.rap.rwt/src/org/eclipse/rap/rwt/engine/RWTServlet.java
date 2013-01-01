@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.engine;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import java.io.IOException;
 import java.util.Enumeration;
 
@@ -20,10 +22,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 
 
 /**
@@ -85,7 +87,7 @@ public class RWTServlet extends HttpServlet {
     handleRequest( request, response );
   }
 
-  private void handleRequest( HttpServletRequest request, HttpServletResponse response )
+  private static void handleRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException, ServletException
   {
     if( request.getPathInfo() == null ) {
@@ -95,14 +97,14 @@ public class RWTServlet extends HttpServlet {
     }
   }
 
-  private void handleValidRequest( HttpServletRequest request, HttpServletResponse response )
+  private static void handleValidRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException, ServletException
   {
     ServiceContext context = createServiceContext( request, response );
     ContextProvider.setContext( context );
     try {
       createUISession();
-      RWTFactory.getServiceManager().getHandler().service( request, response );
+      getServiceHandler().service( request, response );
     } finally {
       ContextProvider.disposeContext();
     }
@@ -116,11 +118,15 @@ public class RWTServlet extends HttpServlet {
     return context;
   }
 
-  private void createUISession() {
+  private static void createUISession() {
     // Ensure that there is exactly one UISession per session created
     synchronized( RWTServlet.class ) {
       ContextProvider.getUISession();
     }
+  }
+
+  private static ServiceHandler getServiceHandler() {
+    return getApplicationContext().getServiceManager().getHandler();
   }
 
   static void handleInvalidRequest( HttpServletRequest request, HttpServletResponse response )

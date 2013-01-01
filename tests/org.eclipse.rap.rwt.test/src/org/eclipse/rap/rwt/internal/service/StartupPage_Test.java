@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -27,7 +28,7 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.internal.theme.QxImage;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -154,7 +155,8 @@ public class StartupPage_Test {
     String head = "<head />";
     properties.put( WebClient.HEAD_HTML, head );
     properties.put( WebClient.FAVICON, favIcon );
-    RWTFactory.getEntryPointManager().register( "/rap", TestEntryPoint.class, properties );
+    EntryPointManager entryPointManager = getApplicationContext().getEntryPointManager();
+    entryPointManager.register( "/rap", TestEntryPoint.class, properties );
     startupPage.activate();
     mockTemplate( variableFrom( StartupPageTemplate.TOKEN_HEADERS ) );
 
@@ -294,7 +296,7 @@ public class StartupPage_Test {
     if( propertyName != null ) {
       properties.put( propertyName, propertyValue );
     }
-    RWTFactory.getEntryPointManager().register( "/rap", TestEntryPoint.class, properties );
+    getApplicationContext().getEntryPointManager().register( "/rap", TestEntryPoint.class, properties );
   }
 
 }

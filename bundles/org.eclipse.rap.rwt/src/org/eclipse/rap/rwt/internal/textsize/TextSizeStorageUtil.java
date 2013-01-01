@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 
@@ -22,7 +23,7 @@ final class TextSizeStorageUtil {
     Point result = null;
     if( ProbeResultStore.getInstance().containsProbeResult( fontData ) ) {
       Integer key = getKey( fontData, string, wrapWidth, mode );
-      result = RWTFactory.getTextSizeStorage().lookupTextSize( key );
+      result = getApplicationContext().getTextSizeStorage().lookupTextSize( key );
     } else {
       MeasurementOperator.getInstance().addProbeToMeasure( fontData );
     }
@@ -37,7 +38,7 @@ final class TextSizeStorageUtil {
   {
     checkFontExists( fontData );
     Integer key = getKey( fontData, string, wrapWidth, mode );
-    RWTFactory.getTextSizeStorage().storeTextSize( key, measuredTextSize );
+    getApplicationContext().getTextSizeStorage().storeTextSize( key, measuredTextSize );
   }
 
   static Integer getKey( FontData fontData, String string, int wrapWidth, int mode ) {

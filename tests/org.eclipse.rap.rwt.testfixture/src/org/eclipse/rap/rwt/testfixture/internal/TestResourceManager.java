@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture.internal;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
 
@@ -51,7 +52,7 @@ public class TestResourceManager extends ResourceManagerImpl {
 
   private void createResourcesDirectory() {
     if( registeredResources.isEmpty() ) {
-      RWTFactory.getResourceDirectory().createDirectory();
+      getApplicationContext().getResourceDirectory().createDirectory();
     }
   }
 

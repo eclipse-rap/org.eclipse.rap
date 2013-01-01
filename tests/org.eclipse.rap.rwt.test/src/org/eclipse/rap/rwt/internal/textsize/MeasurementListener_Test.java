@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2013 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.METHOD_MEASURE_ITEMS;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.METHOD_STORE_MEASUREMENTS;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.PROPERTY_RESULTS;
@@ -24,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -168,7 +168,7 @@ public class MeasurementListener_Test {
   }
 
   private void createProbe() {
-    ProbeStore textSizeProbeStore = RWTFactory.getProbeStore();
+    ProbeStore textSizeProbeStore = getApplicationContext().getProbeStore();
     textSizeProbeStore.createProbe( FONT_DATA );
   }
 

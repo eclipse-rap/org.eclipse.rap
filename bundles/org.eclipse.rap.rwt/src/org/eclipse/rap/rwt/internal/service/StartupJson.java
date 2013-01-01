@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
+
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -69,7 +71,7 @@ public class StartupJson {
   }
 
   private static void appendLoadThemeDefinitions( ProtocolMessageWriter writer ) {
-    ThemeManager themeManager = RWTFactory.getThemeManager();
+    ThemeManager themeManager = getApplicationContext().getThemeManager();
     Theme fallbackTheme = themeManager.getTheme( ThemeManager.FALLBACK_THEME_ID );
     appendLoadTheme( writer, METHOD_LOAD_FALLBACK_THEME, fallbackTheme );
     // Get current theme from the entry point registration - see bug 396065
@@ -85,8 +87,9 @@ public class StartupJson {
 
   private static String getCurrentThemeId() {
     String result = RWT.DEFAULT_THEME_ID;
-    ThemeManager themeManager = RWTFactory.getThemeManager();
-    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
+    ApplicationContextImpl applicationContext = getApplicationContext();
+    ThemeManager themeManager = applicationContext.getThemeManager();
+    EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
     String servletPath = ContextProvider.getRequest().getServletPath();
     EntryPointRegistration registration = entryPointManager.getRegistrationByPath( servletPath );
     if( registration != null ) {

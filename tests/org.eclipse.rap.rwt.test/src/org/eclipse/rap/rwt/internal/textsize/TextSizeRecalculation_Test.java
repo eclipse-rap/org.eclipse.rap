@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2013 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -208,7 +208,7 @@ public class TextSizeRecalculation_Test {
 
   private void fakeMeasurementResults() {
     ProbeResultStore.getInstance().createProbeResult( new Probe( FONT_DATA ), new Point( 4, 20 ) );
-    RWTFactory.getTextSizeStorage().storeFont( FONT_DATA );
+    getApplicationContext().getTextSizeStorage().storeFont( FONT_DATA );
     TextSizeStorageUtil.store( FONT_DATA,
                                TEXT_TO_MEASURE,
                                SWT.DEFAULT,

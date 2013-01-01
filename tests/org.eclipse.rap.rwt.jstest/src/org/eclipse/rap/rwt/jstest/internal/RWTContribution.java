@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.jstest.internal;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.theme.QxAppearanceWriter;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.jstest.TestContribution;
@@ -60,7 +61,7 @@ public class RWTContribution implements TestContribution {
   }
 
   private String getAppearanceCode() {
-    ThemeManager themeManager = RWTFactory.getThemeManager();
+    ThemeManager themeManager = getApplicationContext().getThemeManager();
     List<String> customAppearances = themeManager.getAppearances();
     return QxAppearanceWriter.createQxAppearanceTheme( customAppearances );
   }

@@ -1,14 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ *    IBM Corporation - initial API and implementation
+ *    EclipseSource - adaptation for RAP
+ ******************************************************************************/
 package org.eclipse.jface.resource;
+
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -19,12 +22,13 @@ import java.io.InputStream;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.util.Policy;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 
 /**
  * An image descriptor that loads its image information from a file.
@@ -121,7 +125,8 @@ class FileImageDescriptor extends ImageDescriptor {
         InputStream inputStream = getStream();
         if( inputStream != null ) {
           try {
-            result = RWTFactory.getImageFactory().createImage( device, path, inputStream );
+            ImageFactory imageFactory = getApplicationContext().getImageFactory();
+            result = imageFactory.createImage( device, path, inputStream );
           } finally {
             try {
               inputStream.close();

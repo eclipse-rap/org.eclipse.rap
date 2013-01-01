@@ -1,14 +1,16 @@
 /*******************************************************************************
-* Copyright (c) 2010, 2012 EclipseSource and others.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*    EclipseSource - initial API and implementation
-*******************************************************************************/
+ * Copyright (c) 2010, 2013 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
 package org.eclipse.rap.rwt.themes.test;
+
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -16,7 +18,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
@@ -102,7 +103,7 @@ public class ThemesTestUtil {
     }
     Theme theme = new Theme( themeId, "Test Theme", styleSheet );
     ThemeManagerHelper.resetThemeManager();
-    ThemeManager themeManager = RWTFactory.getThemeManager();
+    ThemeManager themeManager = getApplicationContext().getThemeManager();
     themeManager.initialize();
     themeManager.registerTheme( theme );
     themeManager.activate();
@@ -110,7 +111,7 @@ public class ThemesTestUtil {
   }
 
   public static void cleanupThemes() {
-    ThemeManager themeManager = RWTFactory.getThemeManager();
+    ThemeManager themeManager = getApplicationContext().getThemeManager();
     themeManager.deactivate();
   }
 

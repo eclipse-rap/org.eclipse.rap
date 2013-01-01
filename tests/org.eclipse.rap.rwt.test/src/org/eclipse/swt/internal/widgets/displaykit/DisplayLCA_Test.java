@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package org.eclipse.swt.internal.widgets.displaykit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -35,7 +36,7 @@ import java.util.HashMap;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
@@ -214,10 +215,12 @@ public class DisplayLCA_Test {
 
   @Test
   public void testRenderInitiallyDisposed() {
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
-                                                      TestRenderInitiallyDisposedEntryPoint.class,
-                                                      null );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
+    ApplicationContextImpl applicationContext = getApplicationContext();
+    applicationContext.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
+                                                        TestRenderInitiallyDisposedEntryPoint.class,
+                                                        null );
+    RWTLifeCycle lifeCycle
+      = ( RWTLifeCycle )getApplicationContext().getLifeCycleFactory().getLifeCycle();
     LifeCycleUtil.setSessionDisplay( null );
     // ensure that life cycle execution succeeds with disposed display
     try {
@@ -229,10 +232,11 @@ public class DisplayLCA_Test {
 
   @Test
   public void testRenderDisposed() throws Exception {
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
-                                                      TestRenderDisposedEntryPoint.class,
-                                                      null );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
+    ApplicationContextImpl applicationContext = getApplicationContext();
+    applicationContext.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
+                                                        TestRenderDisposedEntryPoint.class,
+                                                        null );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )applicationContext.getLifeCycleFactory().getLifeCycle();
     LifeCycleUtil.setSessionDisplay( null );
     lifeCycle.execute();
     Fixture.fakeNewRequest();

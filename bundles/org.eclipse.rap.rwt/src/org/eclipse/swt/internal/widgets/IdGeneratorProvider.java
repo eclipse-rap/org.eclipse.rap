@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.RWTProperties;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.util.ClassInstantiationException;
 
 
@@ -31,10 +33,11 @@ public class IdGeneratorProvider {
 
   @SuppressWarnings( "unchecked" )
   private static Class<? extends IdGenerator> getIdGeneratorClass() {
-    Object result = RWTFactory.getApplicationContext().getAttribute( ATTR_ID_GENERATOR_CLASS );
+    ApplicationContextImpl applicationContext = getApplicationContext();
+    Object result = applicationContext.getAttribute( ATTR_ID_GENERATOR_CLASS );
     if( result == null ) {
       result = getGeneratorClass();
-      RWTFactory.getApplicationContext().setAttribute( ATTR_ID_GENERATOR_CLASS, result );
+      applicationContext.setAttribute( ATTR_ID_GENERATOR_CLASS, result );
     }
     return ( Class< ? extends IdGenerator> )result;
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -22,12 +23,13 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.ApplicationContext;
+import org.eclipse.rap.rwt.service.SettingStore;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
@@ -123,13 +125,14 @@ public class RWT_Test {
   @Test
   public void testRequestThreadExecDelegatesToLifeCycle() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    RWTFactory.getLifeCycleFactory().configure( TestLifeCycle.class );
-    RWTFactory.getLifeCycleFactory().activate();
+    LifeCycleFactory lifeCycleFactory = getApplicationContext().getLifeCycleFactory();
+    lifeCycleFactory.configure( TestLifeCycle.class );
+    lifeCycleFactory.activate();
     new Display();
 
     RWT.requestThreadExec( new NoOpRunnable() );
 
-    TestLifeCycle lifeCycle = ( TestLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
+    TestLifeCycle lifeCycle = ( TestLifeCycle )lifeCycleFactory.getLifeCycle();
     assertEquals( TestLifeCycle.REQUEST_THREAD_EXEC, lifeCycle.getInvocationLog() );
   }
 
@@ -206,11 +209,20 @@ public class RWT_Test {
 
   @Test
   public void testGetApplicationContext() {
-    ApplicationContext context = RWT.getApplicationContext();
+    ApplicationContext result = RWT.getApplicationContext();
 
-    ApplicationContext result = RWTFactory.getApplicationContext();
+    assertNotNull( result );
+    assertSame( ContextProvider.getApplicationContext(), result );
+  }
 
-    assertSame( context, result );
+  @Test
+  public void testGetSettingStore() {
+    ApplicationContextImpl applicationContext = ContextProvider.getApplicationContext();
+
+    SettingStore result = RWT.getSettingStore();
+
+    assertNotNull( result );
+    assertSame( applicationContext.getSettingStoreManager().getStore(), result );
   }
 
   @Test

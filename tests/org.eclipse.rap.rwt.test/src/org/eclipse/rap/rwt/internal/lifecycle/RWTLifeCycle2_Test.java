@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2010, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,7 +32,6 @@ import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
@@ -101,7 +101,7 @@ public class RWTLifeCycle2_Test {
   @Test
   public void testSessionRestartAfterExceptionInUIThread() throws Exception {
     Class<? extends EntryPoint> entryPoint = ExceptionInReadAndDispatchEntryPoint.class;
-    RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
+    getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );
     // send initial request - response is index.html
     runRWTServlet( newGetRequest() );
     runRWTServlet( newPostRequest( 0 ) );
@@ -141,7 +141,7 @@ public class RWTLifeCycle2_Test {
   @Test
   public void testSessionRestartAfterExceptionInInitialRequest() throws Exception {
     Class<? extends EntryPoint> entryPoint = ExceptionInCreateUIEntryPoint.class;
-    RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
+    getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );
     // send initial request - response creates UI
     try {
       runRWTServlet( newPostRequest( 0 ) );
@@ -166,7 +166,7 @@ public class RWTLifeCycle2_Test {
   @Test
   public void testSessionRestartWithStringMeasurementInDisplayDispose() throws Exception {
     Class<? extends EntryPoint> entryPoint = StringMeasurementInDisplayDisposeEntryPoint.class;
-    RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
+    getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );
     // send initial request - response creates UI
     runRWTServlet( newPostRequest( 0 ) );
 
@@ -178,7 +178,7 @@ public class RWTLifeCycle2_Test {
   @Test
   public void testEventProcessingOnSessionRestart() throws Exception {
     Class<? extends EntryPoint> entryPoint = EventProcessingOnSessionRestartEntryPoint.class;
-    RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
+    getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );
     // send 'application startup' request - response is JavaScript to create
     // client-side representation of what was created in EntryPoint#createUI
     runRWTServlet( newPostRequest( 0 ) );
@@ -198,7 +198,7 @@ public class RWTLifeCycle2_Test {
   @Test
   public void testSessionInvalidateWithDisposeInFinally() throws Exception {
     Class<? extends EntryPoint> clazz = TestSessionInvalidateWithDisposeInFinallyEntryPoint.class;
-    RWTFactory.getEntryPointManager().register( "/test", clazz, null );
+    getApplicationContext().getEntryPointManager().register( "/test", clazz, null );
     // send initial request - response creates UI
     runRWTServlet( newPostRequest( 0 ) );
     assertTrue( createUIEntered );
@@ -216,7 +216,7 @@ public class RWTLifeCycle2_Test {
    */
   @Test
   public void testClearUISessionOnSessionRestart() throws Exception {
-    RWTFactory.getEntryPointManager().register( "/test", TestEntryPoint.class, null );
+    getApplicationContext().getEntryPointManager().register( "/test", TestEntryPoint.class, null );
     // send initial request - response creates UI
     runRWTServlet( newPostRequest( 0 ) );
     assertTrue( createUIEntered );
@@ -236,7 +236,7 @@ public class RWTLifeCycle2_Test {
   @Test
   public void testGetRequestDoesNotClearUISession() throws Exception {
     Class<? extends EntryPoint> entryPoint = TestEntryPoint.class;
-    RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
+    getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );
     // initial GET request
     runRWTServlet( newGetRequest() );
     // initial POST request starts the UI thread
@@ -252,7 +252,7 @@ public class RWTLifeCycle2_Test {
   @Test
   public void testGetRequestAlwaysReturnsHtml() throws Exception {
     Class<? extends EntryPoint> entryPoint = TestEntryPoint.class;
-    RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
+    getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );
     // initial GET request
     runRWTServlet( newGetRequest() );
     // initial POST request starts the UI thread
@@ -267,7 +267,7 @@ public class RWTLifeCycle2_Test {
   @Test
   public void testPostRequestReturnsJsonAfterSessionTimeout() throws Exception {
     Class<? extends EntryPoint> entryPoint = TestEntryPoint.class;
-    RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
+    getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );
     // initial GET request
     runRWTServlet( newGetRequest() );
     // initial POST request starts the UI thread
@@ -287,7 +287,7 @@ public class RWTLifeCycle2_Test {
   @Test
   public void testGetLockOnUISession() throws Exception {
     Class<? extends EntryPoint> entryPoint = EntryPointWithSynchronizationOnUISession.class;
-    RWTFactory.getEntryPointManager().register( "/test", entryPoint, null );
+    getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );
     // initial POST request starts the UI thread
     runRWTServlet( newPostRequest( 0 ) );
 

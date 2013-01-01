@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
@@ -59,7 +58,7 @@ public final class BrowserNavigationImpl
     display = Display.getCurrent();
     entriesToAdd = new ArrayList<HistoryEntry>();
     listeners = new LinkedHashSet<BrowserNavigationListener>();
-    RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( this );
+    RWT.getLifeCycle().addPhaseListener( this );
     RWT.getUISession().addUISessionListener( this );
   }
 
@@ -119,7 +118,7 @@ public final class BrowserNavigationImpl
   // UISessionListener
 
   public void beforeDestroy( UISessionEvent event ) {
-    RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
+    RWT.getLifeCycle().removePhaseListener( this );
   }
 
   //////////////////

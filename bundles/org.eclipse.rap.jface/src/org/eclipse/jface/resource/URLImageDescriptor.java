@@ -1,14 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ *    IBM Corporation - initial API and implementation
+ *    EclipseSource - adaptation for RAP
+ ******************************************************************************/
 package org.eclipse.jface.resource;
+
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -18,12 +21,12 @@ import java.net.URL;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.util.Policy;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 
 /**
  * An ImageDescriptor that gets its information from a URL. This class is not
@@ -140,7 +143,7 @@ class URLImageDescriptor extends ImageDescriptor {
     InputStream stream = getStream();
     if( stream != null ) {
       try {
-        result = RWTFactory.getImageFactory().createImage( device, path, stream );
+        result = getApplicationContext().getImageFactory().createImage( device, path, stream );
       } finally {
         try {
           stream.close();

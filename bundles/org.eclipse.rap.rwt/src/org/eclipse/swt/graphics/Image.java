@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,12 +20,13 @@ import java.io.ObjectOutputStream;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.graphics.InternalImage;
+import org.eclipse.swt.internal.graphics.InternalImageFactory;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 
@@ -447,14 +448,19 @@ public final class Image extends Resource {
   }
 
   private static InternalImage findInternalImage( ImageData imageData ) {
-    return RWTFactory.getInternalImageFactory().findInternalImage( imageData );
+    return getInternalImageFactory().findInternalImage( imageData );
   }
 
   private static InternalImage findInternalImage( InputStream stream ) {
-    return RWTFactory.getInternalImageFactory().findInternalImage( stream );
+    return getInternalImageFactory().findInternalImage( stream );
   }
 
   private static InternalImage findInternalImage( String fileName ) {
-    return RWTFactory.getInternalImageFactory().findInternalImage( fileName );
+    return getInternalImageFactory().findInternalImage( fileName );
   }
+
+  private static InternalImageFactory getInternalImageFactory() {
+    return ContextProvider.getApplicationContext().getInternalImageFactory();
+  }
+
 }

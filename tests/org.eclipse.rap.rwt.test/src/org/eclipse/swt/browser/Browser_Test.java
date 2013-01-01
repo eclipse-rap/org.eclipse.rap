@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,17 +11,19 @@
  ******************************************************************************/
 package org.eclipse.swt.browser;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.junit.Assert.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -30,6 +32,9 @@ import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 
@@ -352,8 +357,8 @@ public class Browser_Test {
   @Test
   public void testExecute_JEE_COMPATIBILITY() {
     // Activate SimpleLifeCycle
-    RWTFactory.getLifeCycleFactory().deactivate();
-    RWTFactory.getLifeCycleFactory().activate();
+    getApplicationContext().getLifeCycleFactory().deactivate();
+    getApplicationContext().getLifeCycleFactory().activate();
     Browser browser = new Browser( shell, SWT.NONE );
 
     try {
@@ -367,8 +372,8 @@ public class Browser_Test {
   @Test
   public void testEvaluate_JEE_COMPATIBILITY() {
     // Activate SimpleLifeCycle
-    RWTFactory.getLifeCycleFactory().deactivate();
-    RWTFactory.getLifeCycleFactory().activate();
+    getApplicationContext().getLifeCycleFactory().deactivate();
+    getApplicationContext().getLifeCycleFactory().activate();
     Browser browser = new Browser( shell, SWT.NONE );
 
     try {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,15 +11,16 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
-import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.ResourceLoader;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -38,7 +39,7 @@ public final class ThemeUtil {
    * @return an array of the theme ids, never <code>null</code>
    */
   public static String[] getAvailableThemeIds() {
-    return RWTFactory.getThemeManager().getRegisteredThemeIds();
+    return getApplicationContext().getThemeManager().getRegisteredThemeIds();
   }
 
   /**
@@ -64,11 +65,11 @@ public final class ThemeUtil {
   }
 
   public static Theme getCurrentTheme() {
-    return RWTFactory.getThemeManager().getTheme( getCurrentThemeId() );
+    return getApplicationContext().getThemeManager().getTheme( getCurrentThemeId() );
   }
 
   private static Theme getFallbackTheme() {
-    ThemeManager themeManager = RWTFactory.getThemeManager();
+    ThemeManager themeManager = getApplicationContext().getThemeManager();
     return themeManager.getTheme( ThemeManager.FALLBACK_THEME_ID );
   }
 

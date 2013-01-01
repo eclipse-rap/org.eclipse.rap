@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -48,7 +48,7 @@ public class AbstractThemeAdapter_Test {
 
   @After
   public void tearDown() {
-    RWTFactory.getThemeManager().deactivate();
+    getApplicationContext().getThemeManager().deactivate();
     Fixture.tearDown();
   }
 
@@ -84,7 +84,7 @@ public class AbstractThemeAdapter_Test {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme theme = new Theme( "customId", "Custom Theme", styleSheet );
     ThemeManagerHelper.resetThemeManager();
-    ThemeManager themeManager = RWTFactory.getThemeManager();
+    ThemeManager themeManager = getApplicationContext().getThemeManager();
     themeManager.initialize();
     themeManager.registerTheme( theme );
     themeManager.activate();
@@ -109,7 +109,7 @@ public class AbstractThemeAdapter_Test {
     // borderWidth is not
     int customBorderWidth = adapter.getCssBorderWidth( "CustomWidget", "border", custom );
     assertTrue( defaultBorderWidth == customBorderWidth );
-    RWTFactory.getThemeManager().deactivate();
+    getApplicationContext().getThemeManager().deactivate();
   }
 
 }

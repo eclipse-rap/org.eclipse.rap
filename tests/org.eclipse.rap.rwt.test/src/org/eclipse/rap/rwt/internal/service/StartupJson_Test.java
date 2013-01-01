@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.service.StartupJson.DISPLAY_TYPE;
 import static org.eclipse.rap.rwt.internal.service.StartupJson.METHOD_LOAD_ACTIVE_THEME;
 import static org.eclipse.rap.rwt.internal.service.StartupJson.METHOD_LOAD_FALLBACK_THEME;
@@ -23,11 +24,12 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.theme.Theme;
+import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -50,8 +52,9 @@ public class StartupJson_Test {
   public void setUp() {
     Fixture.setUp();
     Fixture.useDefaultResourceManager();
-    ResourceManager resourceManager = RWTFactory.getResourceManager();
-    clientResources = new ClientResources( resourceManager, RWTFactory.getThemeManager() );
+    ResourceManager resourceManager = RWT.getApplicationContext().getResourceManager();
+    ThemeManager themeManager = getApplicationContext().getThemeManager();
+    clientResources = new ClientResources( resourceManager, themeManager );
   }
 
   @After
@@ -133,7 +136,7 @@ public class StartupJson_Test {
   }
 
   private void registerEntryPoint( HashMap<String, String> properties ) {
-    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
+    EntryPointManager entryPointManager = getApplicationContext().getEntryPointManager();
     EntryPointFactory factory = mock( EntryPointFactory.class );
     entryPointManager.register( EntryPointManager.DEFAULT_PATH, factory, properties );
   }

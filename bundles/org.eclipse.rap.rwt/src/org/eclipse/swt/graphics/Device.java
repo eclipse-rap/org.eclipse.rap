@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.theme.QxFont;
 import org.eclipse.rap.rwt.internal.theme.QxType;
@@ -68,7 +69,7 @@ public abstract class Device implements Drawable, SerializableCompatibility {
    */
   public Color getSystemColor( int id ) {
     checkDevice();
-    ResourceFactory resourceFactory = RWTFactory.getResourceFactory();
+    ResourceFactory resourceFactory = getApplicationContext().getResourceFactory();
     Color result;
     switch( id ) {
       case SWT.COLOR_WHITE:

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.resources;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,7 +32,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
@@ -46,7 +46,8 @@ public class ResourceManagerImpl_Test {
   @Before
   public void setUp() {
     Fixture.setUp();
-    resourceManager = new ResourceManagerImpl( RWTFactory.getResourceDirectory() );
+    ResourceDirectory resourceDirectory = getApplicationContext().getResourceDirectory();
+    resourceManager = new ResourceManagerImpl( resourceDirectory );
   }
 
   @After

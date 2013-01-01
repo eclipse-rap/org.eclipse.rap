@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
@@ -85,7 +86,7 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
   private static ThemeableWidget findThemeableWidget( Widget widget ) {
     ThemeableWidget result;
     Class widgetClass = widget.getClass();
-    ThemeManager manager = RWTFactory.getThemeManager();
+    ThemeManager manager = getApplicationContext().getThemeManager();
     result = manager.getThemeableWidget( widgetClass );
     while( ( result == null || result.elements == null ) && widgetClass.getSuperclass() != null ) {
       widgetClass = widgetClass.getSuperclass();
@@ -93,4 +94,5 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
     }
     return result;
   }
+
 }

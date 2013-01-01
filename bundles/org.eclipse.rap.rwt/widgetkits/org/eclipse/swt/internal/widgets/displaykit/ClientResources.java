@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.rap.rwt.internal.RWTProperties;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.resources.ContentBuffer;
 import org.eclipse.rap.rwt.internal.theme.QxAppearanceWriter;
 import org.eclipse.rap.rwt.internal.theme.Theme;
@@ -392,7 +393,7 @@ public final class ClientResources {
       inputStream.close();
     }
     String location = resourceManager.getLocation( name );
-    RWTFactory.getStartupPage().setClientJsLibrary( location );
+    getApplicationContext().getStartupPage().setClientJsLibrary( location );
   }
 
   private String readResourceContent( String location ) throws IOException {

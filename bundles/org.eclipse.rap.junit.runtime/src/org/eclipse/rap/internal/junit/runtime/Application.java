@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,11 @@
  ******************************************************************************/
 package org.eclipse.rap.internal.junit.runtime;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
@@ -75,7 +76,7 @@ public class Application implements EntryPoint, ITestHarness {
   }
 
   private EntryPoint getEntryPoint( String entryPointPath ) {
-    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
+    EntryPointManager entryPointManager = getApplicationContext().getEntryPointManager();
     EntryPointRegistration registration = entryPointManager.getRegistrationByPath( entryPointPath );
     if( registration == null ) {
       throw new IllegalArgumentException( entryPointPath );

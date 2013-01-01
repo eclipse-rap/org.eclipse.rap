@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -41,7 +40,7 @@ public final class JavaScriptExecutorImpl implements
   public JavaScriptExecutorImpl() {
     display = Display.getCurrent();
     codeBuilder = new StringBuilder();
-    RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( this );
+    RWT.getLifeCycle().addPhaseListener( this );
     RWT.getUISession().addUISessionListener( this );
   }
 
@@ -75,7 +74,7 @@ public final class JavaScriptExecutorImpl implements
   // UISessionListener
 
   public void beforeDestroy( UISessionEvent event ) {
-    RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
+    RWT.getLifeCycle().removePhaseListener( this );
   }
 
 }

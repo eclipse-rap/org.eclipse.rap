@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,13 +11,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.widgets;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -92,12 +93,13 @@ public class ExternalBrowser_Test {
    */
   @Test
   public void testExecutionOrder() throws IOException {
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
-                                                      TestExecutionOrderEntryPoint.class,
-                                                      null );
+    ApplicationContextImpl applicationContext = getApplicationContext();
+    applicationContext.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
+                                                        TestExecutionOrderEntryPoint.class,
+                                                        null );
     Fixture.fakeNewRequest();
 
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )applicationContext.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
 
     Message message = Fixture.getProtocolMessage();

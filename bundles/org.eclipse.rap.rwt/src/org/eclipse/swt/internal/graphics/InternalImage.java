@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Rectangle;
@@ -41,10 +42,11 @@ public final class InternalImage implements SerializableCompatibility {
   }
 
   public ImageData getImageData() {
-    return RWTFactory.getImageDataFactory().findImageData( this );
+    return getApplicationContext().getImageDataFactory().findImageData( this );
   }
 
   public String getResourceName() {
     return resourceName;
   }
+
 }

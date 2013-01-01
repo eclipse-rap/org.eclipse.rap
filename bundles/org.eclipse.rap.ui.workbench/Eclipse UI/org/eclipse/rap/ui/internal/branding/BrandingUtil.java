@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.branding;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -26,7 +27,7 @@ public final class BrandingUtil {
   public static final String ENTRY_POINT_BRANDING = "org.eclipse.rap.ui.branding";
 
   public static String getCurrentBrandingId() {
-    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
+    EntryPointManager entryPointManager = getApplicationContext().getEntryPointManager();
     HttpServletRequest request = ContextProvider.getRequest();
     EntryPointRegistration registration = entryPointManager.getEntryPointRegistration( request );
     Map<String, String> properties = registration.getProperties();

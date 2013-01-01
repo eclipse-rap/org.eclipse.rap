@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,13 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
@@ -133,8 +133,8 @@ public class FontDialog_Test {
   @Test
   public void testOpen_JEE_COMPATIBILITY() {
     // Activate SimpleLifeCycle
-    RWTFactory.getLifeCycleFactory().deactivate();
-    RWTFactory.getLifeCycleFactory().activate();
+    getApplicationContext().getLifeCycleFactory().deactivate();
+    getApplicationContext().getLifeCycleFactory().activate();
     FontDialog dialog = new FontDialog( shell );
 
     try {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2013 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture.internal.engine;
 
-import java.io.*;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +24,6 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.service.ResourceLoader;
@@ -58,7 +62,7 @@ public class ThemeManagerHelper {
         activated = true;
       } else {
         InputStream inputStream = new ByteArrayInputStream( "dummy".getBytes() );
-        RWTFactory.getResourceManager().register( "dummy", inputStream );
+        getApplicationContext().getResourceManager().register( "dummy", inputStream );
       }
       deactivated = false;
     }
@@ -153,7 +157,7 @@ public class ThemeManagerHelper {
   }
 
   private static void doThemeManagerReset() {
-    TestThemeManager themeManager = ( TestThemeManager )RWTFactory.getThemeManager();
+    TestThemeManager themeManager = ( TestThemeManager )getThemeManager();
     themeManager.resetInstanceInTestCases();
   }
 
@@ -176,10 +180,11 @@ public class ThemeManagerHelper {
   private static ThemeManager getThemeManager() {
     ThemeManager result = null;
     try {
-      result = RWTFactory.getThemeManager();
+      result = getApplicationContext().getThemeManager();
     } catch( IllegalStateException noApplicationContextAvailable ) {
     } catch( IllegalArgumentException noThemeManagerRegisterd ) {
     }
     return result;
   }
+
 }

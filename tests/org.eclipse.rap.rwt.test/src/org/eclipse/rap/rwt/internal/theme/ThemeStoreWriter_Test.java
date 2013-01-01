@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
 import org.junit.Before;
@@ -277,7 +277,7 @@ public class ThemeStoreWriter_Test {
 
   private void registerTheme( String themeId, String cssCode ) throws IOException {
     Theme theme = ThemeTestUtil.createTheme( themeId, cssCode, ThemeTestUtil.RESOURCE_LOADER );
-    theme.initialize( RWTFactory.getThemeManager().getAllThemeableWidgets() );
+    theme.initialize( getApplicationContext().getThemeManager().getAllThemeableWidgets() );
     themes.put( themeId, theme );
   }
 

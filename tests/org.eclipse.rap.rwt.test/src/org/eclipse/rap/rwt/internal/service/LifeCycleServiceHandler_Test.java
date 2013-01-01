@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -33,7 +34,7 @@ import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
@@ -68,8 +69,9 @@ public class LifeCycleServiceHandler_Test {
   @Before
   public void setUp() {
     Fixture.setUp();
-    RWTFactory.getEntryPointManager().register( "/rap", TestEntryPoint.class, null );
-    RWTFactory.getEntryPointManager().register( "/test", TestEntryPoint.class, null );
+    EntryPointManager entryPointManager = getApplicationContext().getEntryPointManager();
+    entryPointManager.register( "/rap", TestEntryPoint.class, null );
+    entryPointManager.register( "/test", TestEntryPoint.class, null );
   }
 
   @After
@@ -242,7 +244,8 @@ public class LifeCycleServiceHandler_Test {
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setMethod( HTTP.METHOD_GET );
 
-    service( new LifeCycleServiceHandler( getLifeCycleFactory(), RWTFactory.getStartupPage() ) );
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(),
+                                          getApplicationContext().getStartupPage() ) );
 
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
@@ -254,7 +257,7 @@ public class LifeCycleServiceHandler_Test {
     Fixture.fakeClient( mock( WebClient.class ) );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setMethod( HTTP.METHOD_GET );
-    StartupPage startupPage = RWTFactory.getStartupPage();
+    StartupPage startupPage = getApplicationContext().getStartupPage();
 
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), startupPage ) );
 
@@ -268,7 +271,7 @@ public class LifeCycleServiceHandler_Test {
     Fixture.fakeClient( mock( WebClient.class ) );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setMethod( "HEAD" );
-    StartupPage startupPage = RWTFactory.getStartupPage();
+    StartupPage startupPage = getApplicationContext().getStartupPage();
 
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), startupPage ) );
 
@@ -331,7 +334,7 @@ public class LifeCycleServiceHandler_Test {
   }
 
   private LifeCycleFactory getLifeCycleFactory() {
-    return RWTFactory.getLifeCycleFactory();
+    return getApplicationContext().getLifeCycleFactory();
   }
 
   private static StartupPage mockStartupPage() {

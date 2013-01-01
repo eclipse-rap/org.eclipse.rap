@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -18,9 +19,9 @@ import java.io.InputStream;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.RWTProperties;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.resources.TestUtil;
 import org.eclipse.rap.rwt.internal.theme.Theme;
+import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
@@ -32,13 +33,15 @@ public class ClientResources_Test {
 
   private ClientResources clientResources;
   private ResourceManager resourceManager;
+  private ThemeManager themeManager;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     Fixture.useDefaultResourceManager();
-    resourceManager = RWTFactory.getResourceManager();
-    clientResources = new ClientResources( resourceManager, RWTFactory.getThemeManager() );
+    resourceManager = RWT.getApplicationContext().getResourceManager();
+    themeManager = getApplicationContext().getThemeManager();
+    clientResources = new ClientResources( resourceManager, themeManager );
   }
 
   @After
@@ -52,7 +55,7 @@ public class ClientResources_Test {
 
     assertFalse( resourceManager.isRegistered( "qx/lang/Core.js" ) );
     assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
-    Theme defaultTheme = RWTFactory.getThemeManager().getTheme( RWT.DEFAULT_THEME_ID );
+    Theme defaultTheme = themeManager.getTheme( RWT.DEFAULT_THEME_ID );
     assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".json" ) );
   }
 
@@ -63,7 +66,7 @@ public class ClientResources_Test {
 
     assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
     assertFalse( resourceManager.isRegistered( "rwt/runtime/System.js" ) );
-    Theme defaultTheme = RWTFactory.getThemeManager().getTheme( RWT.DEFAULT_THEME_ID );
+    Theme defaultTheme = themeManager.getTheme( RWT.DEFAULT_THEME_ID );
     assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".json" ) );
   }
 

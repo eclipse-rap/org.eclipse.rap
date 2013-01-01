@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,13 +11,15 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 
 public class QxColor implements QxType {
@@ -54,10 +56,10 @@ public class QxColor implements QxType {
   }
 
   private QxColor() {
-    this.red = 0;
-    this.green = 0;
-    this.blue = 0;
-    this.alpha = 0f;
+    red = 0;
+    green = 0;
+    blue = 0;
+    alpha = 0f;
   }
 
   private QxColor( int red, int green, int blue, float alpha ) {
@@ -179,6 +181,7 @@ public class QxColor implements QxType {
     return result;
   }
 
+  @Override
   public boolean equals( Object obj ) {
     boolean result = false;
     if( obj == this ) {
@@ -193,6 +196,7 @@ public class QxColor implements QxType {
     return result;
   }
 
+  @Override
   public int hashCode() {
     int result = -1;
     if( !isTransparent() ) {
@@ -205,6 +209,7 @@ public class QxColor implements QxType {
     return result;
   }
 
+  @Override
   public String toString() {
     String colors = red + ", " + green + ", " + blue + ", " + alpha;
     return "QxColor{ " + ( isTransparent() ? TRANSPARENT_STR : colors ) + " }";
@@ -222,7 +227,8 @@ public class QxColor implements QxType {
   public static Color createColor( QxColor color ) {
     Color result = null;
     if( color.alpha != 0f ) {
-      result = RWTFactory.getResourceFactory().getColor( color.red, color.green, color.blue );
+      ResourceFactory resourceFactory = getApplicationContext().getResourceFactory();
+      result = resourceFactory.getColor( color.red, color.green, color.blue );
     }
     return result;
   }

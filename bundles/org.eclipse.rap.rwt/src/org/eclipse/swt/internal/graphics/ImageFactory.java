@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import java.io.InputStream;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
@@ -74,7 +75,7 @@ public class ImageFactory {
   }
 
   public Image createImage( Device device, String key, InputStream inputStream ) {
-    InternalImageFactory internalImageFactory = RWTFactory.getInternalImageFactory();
+    InternalImageFactory internalImageFactory = getApplicationContext().getInternalImageFactory();
     InternalImage internalImage = internalImageFactory.findInternalImage( key, inputStream );
     return createImageInstance( device, internalImage );
   }
