@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2013 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,15 +22,18 @@ import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerRegistry;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
+import org.eclipse.rap.rwt.internal.serverpush.ServerPushServiceHandler;
 import org.eclipse.rap.rwt.internal.service.ApplicationStoreImpl;
 import org.eclipse.rap.rwt.internal.service.LifeCycleServiceHandler;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.SettingStoreManager;
 import org.eclipse.rap.rwt.internal.service.StartupPage;
+import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.service.ApplicationContext;
+import org.eclipse.rap.rwt.service.FileSettingStoreFactory;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.swt.internal.graphics.FontDataFactory;
 import org.eclipse.swt.internal.graphics.ImageDataFactory;
@@ -51,6 +54,7 @@ public class ApplicationContextImpl implements ApplicationContext {
   //                implementation with an optimized version for testing purpose. Think about
   //                a less intrusive solution.
   private ThemeManager themeManager;
+  private final ApplicationConfiguration applicationConfiguration;
   private final ResourceDirectory resourceDirectory;
   private final ResourceManagerImpl resourceManager;
   private final PhaseListenerRegistry phaseListenerRegistry;
@@ -71,7 +75,6 @@ public class ApplicationContextImpl implements ApplicationContext {
   private final TextSizeStorage textSizeStorage;
   private final ProbeStore probeStore;
   private final ServletContext servletContext;
-  private final ApplicationContextConfigurator contextConfigurator;
   private final ApplicationContextActivator contextActivator;
   private final ClientSelector clientSelector;
   private boolean active;
@@ -79,6 +82,8 @@ public class ApplicationContextImpl implements ApplicationContext {
   public ApplicationContextImpl( ApplicationConfiguration applicationConfiguration,
                                  ServletContext servletContext )
   {
+    this.applicationConfiguration = applicationConfiguration;
+    this.servletContext = servletContext;
     applicationStore = new ApplicationStoreImpl();
     resourceDirectory = new ResourceDirectory();
     resourceManager = new ResourceManagerImpl( resourceDirectory );
@@ -99,11 +104,8 @@ public class ApplicationContextImpl implements ApplicationContext {
     displaysHolder = new DisplaysHolder();
     textSizeStorage = new TextSizeStorage();
     probeStore = new ProbeStore( textSizeStorage );
-    contextConfigurator = new ApplicationContextConfigurator( applicationConfiguration,
-                                                              servletContext );
     contextActivator = new ApplicationContextActivator( this );
     clientSelector = new ClientSelector();
-    this.servletContext = servletContext;
   }
 
   public void setAttribute( String name, Object value ) {
@@ -247,18 +249,51 @@ public class ApplicationContextImpl implements ApplicationContext {
   }
 
   private void doActivate() {
-    contextConfigurator.configure( this );
+    themeManager.initialize();
+    applicationConfiguration.configure( new ApplicationImpl( this, applicationConfiguration ) );
+    resourceDirectory.configure( getContextDirectory() );
+    addInternalPhaseListeners();
+    addInternalServiceHandlers();
+    setInternalSettingStoreFactory();
     contextActivator.activate();
   }
 
   private void doDeactivate() {
     contextActivator.deactivate();
-    contextConfigurator.reset( this );
+    entryPointManager.deregisterAll();
+    phaseListenerRegistry.removeAll();
+    resourceRegistry.clear();
+    settingStoreManager.deregisterFactory();
+    resourceDirectory.reset();
     applicationStore.reset();
   }
 
   private ServiceManagerImpl createServiceManager() {
     return new ServiceManagerImpl( new LifeCycleServiceHandler( lifeCycleFactory, startupPage ) );
+  }
+
+  private String getContextDirectory() {
+    String location
+      = ( String )servletContext.getAttribute( ApplicationConfiguration.RESOURCE_ROOT_LOCATION );
+    if( location == null ) {
+      location = servletContext.getRealPath( "/" );
+    }
+    return location;
+  }
+
+  private void addInternalPhaseListeners() {
+    phaseListenerRegistry.add( new MeasurementListener() );
+  }
+
+  private void addInternalServiceHandlers() {
+    serviceManager.registerServiceHandler( ServerPushServiceHandler.HANDLER_ID,
+                                           new ServerPushServiceHandler() );
+  }
+
+  private void setInternalSettingStoreFactory() {
+    if( !settingStoreManager.hasFactory() ) {
+      settingStoreManager.register( new FileSettingStoreFactory() );
+    }
   }
 
 }
