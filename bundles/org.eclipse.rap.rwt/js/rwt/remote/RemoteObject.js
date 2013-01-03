@@ -15,9 +15,9 @@ var server = rwt.remote.Server.getInstance();
 
 /**
  * @private
- * @class Instances of RemoteObject represents the server-side counterpart of a client object
- * and are used to write remote operations into the next protocol message.
- * @description This class is not available in the global namespace. Instances can only
+ * @class Instances of RemoteObject represent the server-side counterpart of a client object
+ * and are used to write operations into the next protocol message.
+ * @description This constructor is not available in the global namespace. Instances can only
  * be obtained from {@link rap.getRemoteObject}.
  * @exports rwt.remote.RemoteObject as RemoteObject
  * @since 2.0
@@ -35,25 +35,25 @@ rwt.remote.RemoteObject.prototype = {
    * Calling this method multiple times for the same property will overwrite the previous value,
    * the message will not become longer.
    * This method does not cause the message to be sent immediately.
-   * @param {string} property
-   * @param {var} value
+   * @param {string} property The name of the property.
+   * @param {var} value The value of the property.
    */
   set : function( key, value ) {
     server.getMessageWriter().appendSet( this._id, key, value );
   },
 
   /**
-   * @description Notifies the remote object a event of the given type occurred.
-   * The properties object may contain any number of additional properties/fields.
-   * It may also be null or omitted. Sending an event of a type the server is currently not
+   * @description Notifies the remote object that an event of the given type occurred.
+   * Sending an event of a type the server is currently not
    * listening for (see {@link rap.registerTypeHandler}, <b>handler.listeners</b>) is illegal usage
    * of the RAP protocol, but currently not prevented. Calling this method causes the message to be
    * sent to the server within a few milliseconds.
-   * @param {string} event
-   * @param {Object} properties
-   * @param {}
+   * @param {string} event The type of the event that occured.
+   * @param {Object|null} [properties] This object may contain any number of additional
+   * properties/fields associated with the event. It may also be null or omitted.
    */
-  notify : function( event, properties, suppressSend ) {
+  notify : function( event, properties ) {
+    var suppressSend = arguments[ 2 ];
    // TODO [tb]: suppressSend should be a temporary workaround for KeyEventSupport.js
     var actualProps = properties ? properties : {};
     server.getMessageWriter().appendNotify( this._id, event, actualProps );
@@ -64,11 +64,11 @@ rwt.remote.RemoteObject.prototype = {
 
   /**
    * @description Instructs the remote object to call the given method.
-   * The properties object may contain any number of additional properties/fields. It may also be
-   * null or omitted. Calling this method causes the message to be sent to the server within a
+   * Calling this method causes the message to be sent to the server within a
    * few milliseconds.
-   * @param {string} method
-   * @param {Object} properties
+   * @param {string} method The name of the method.
+   * @param {Object|null} [properties] This object may contain any number of additional
+   * properties/fields associated with the call. It may also be null or omitted.
    */
   call : function( method, properties ) {
     var actualProps = properties ? properties : {};

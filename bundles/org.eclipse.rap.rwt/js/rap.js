@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,16 @@ rap = {
   /**
    * @description Registers a RAP protocol type handler for a specific type of client objects.
    * The handler is used by the protocol message processor to process operations that target
-   * any client object of this type.
+   * any client object of this type. Example:
+   *
+   * @example
+   * rap.registerTypeHandler( "project.MyWidget", {
+   *   factory : function( properties ) {
+   *     return new MyWidget();
+   *   },
+   *   properties : [ "propA", "propB" ]
+   * } );
+   *
    * @param {string} type
    *
    * @param {Object} handler The handler object.
@@ -88,8 +97,8 @@ rap = {
    * If there is no object registered for the given id, null is returned.
    * For RAP internal objects (e.g. RWT widgets) a wrapper is returned instead of the real object.
    * @see Composite
-   * @param {string} id
-   * @returns {Object}
+   * @param {string} id The protocol id for a client object.
+   * @returns {Object} The client object associated with the id.
    */
   getObject : function( id ) {
     var entry = rwt.remote.ObjectRegistry.getEntry( id );
@@ -104,10 +113,11 @@ rap = {
 
   /**
    * @description Returns an instance of {@link RemoteObject} for the given client object.
-   * The object has to be one created by an type handler factory method, otherwise an exception
-   * is thrown. Multiple calls for the same object will return the same RemoteObject instance.
+   * A client object is any object that was created by an type handler factory method.
+   * Multiple calls for the same object will return the same RemoteObject
+   * instance.
    * @see rap.registerTypeHandler
-   * @param {Object} object
+   * @param {Object} object The client object.
    * @returns {RemoteObject}
    */
   getRemoteObject : function( object ) {
@@ -137,7 +147,7 @@ function getWrapperFor( obj ) {
 /**
  * @private
  * @class Wrapper for RWT Composite widgets
- * @description This class is not available in the global namespace. Instances can only
+ * @description This constructor is not available in the global namespace. Instances can only
  * be obtained from {@link rap.getObject}.
  * @name Composite
  * @since 2.0
@@ -156,9 +166,10 @@ function CompositeWrapper( widget ) {
   }
   /**
    * @name append
+   * @function
    * @memberOf Composite#
    * @description Adds a given HTMLElement to the Composite.
-   * @param {HTMLElement} childElement
+   * @param {HTMLElement} childElement The element to append.
    */
   this.append = function( childElement ) {
     if( children ) {
