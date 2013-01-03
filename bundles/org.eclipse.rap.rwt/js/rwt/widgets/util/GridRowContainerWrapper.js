@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2011, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-namespace( "org.eclipse.rwt" );
+namespace( "rwt.widgets.util" );
 
 rwt.widgets.util.GridRowContainerWrapper = function() {
   this._fixedColumns = 0;
