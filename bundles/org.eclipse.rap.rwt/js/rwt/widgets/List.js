@@ -53,7 +53,7 @@ rwt.qx.Class.define( "rwt.widgets.List", {
       if( items.length > 0 && items[ 0 ].isCreated() ) {
         var itemHeight = this.getManager().getItemHeight( items[ 0 ] );
         if( itemHeight > 0 ) {
-          this._clientArea.setScrollTop( newIndex * itemHeight );
+          this.setVBarSelection( newIndex * itemHeight );
         }
       }
     },
@@ -74,6 +74,11 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     _onAppear : function( evt ) {
       // [ad] Fix for Bug 277678
       // when #showSelection() is called for invisible widget
+      this._applyTopIndex( this._topIndex );
+    },
+
+    _updateScrollDimension : function() {
+      this.base( arguments );
       this._applyTopIndex( this._topIndex );
     },
 

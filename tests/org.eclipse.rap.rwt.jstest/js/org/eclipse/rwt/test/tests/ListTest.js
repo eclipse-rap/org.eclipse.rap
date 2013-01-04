@@ -229,6 +229,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.remote.MessageProcessor;
+
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -236,14 +237,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
         "properties" : {
           "style" : [ "MULTI" ],
           "parent" : "w2",
+          "bounds" : [ 0, 0, 100, 100 ],
           "items" : [ "a", "b", "c" ],
           "topIndex" : 2,
-          "itemDimensions" : [ 100, 10 ]
+          "itemDimensions" : [ 100, 100 ]
         }
       } );
+      TestUtil.flush();
+
       var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 2, widget._topIndex );
+      assertEquals( 200, widget.getVerticalBar().getValue() );
       shell.destroy();
       widget.destroy();
     },
@@ -697,16 +702,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.destroy();
     },
 
-    testScrollProgramatically : function() {
+    testAddItemsChangesScrollBarMaximum : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
-      this._addItems( list, 70 );
-      list.setItemDimensions( 500, 20 );
+      this._addItems( list, 5 );
+      list.setItemDimensions( 240, 25 );
       TestUtil.flush();
-      list.setHBarSelection( 10 );
-      list.setVBarSelection( 20 );
-      var position = this._getScrollPosition( list );
-      assertEquals( [ 10, 20 ], position );
+
+      this._addItems( list, 10 );
+      TestUtil.flush();
+
+      var item = list._clientArea.getFirstChild();
+      assertEquals( 240, list._horzScrollBar.getMaximum() );
+      assertEquals( 250, list._vertScrollBar.getMaximum() );
       list.destroy();
     },
 
@@ -719,46 +727,64 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
       list.hide();
       list.setHBarSelection( 10 );
-      list.setVBarSelection( 20 );
+      list.setTopIndex( 1 );
       list.show();
+      TestUtil.flush();
 
       var position = this._getScrollPosition( list );
       assertEquals( [ 10, 20 ], position );
       list.destroy();
     },
 
-//    testDispose: function() {
-//      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-//      var list = this._createDefaultList();
-//      this._setScrollDimension( list, 200, 200 );
-//      list.setHBarSelection( 10 );
-//      list.setVBarSelection( 20 );
-//      var clientArea = list._clientArea;
-//      var hbar = list._horzScrollBar;
-//      var vbar = list._vertScrollBar;
-//      var scrollNode = clientArea._getTargetNode();
-//      list.destroy();
-//      TestUtil.flush();
-//      assertNull( list._horzScrollBar );
-//      assertNull( list._vertScrollBar );
-//      assertNull( list._clientArea );
-//      assertTrue( list.isDisposed() );
-//      assertTrue( clientArea.isDisposed() );
-//      assertTrue( hbar.isDisposed() );
-//      assertTrue( vbar.isDisposed() );
-//      assertNull( list.hasEventListeners( "changeParent" ) );
-//      assertNull( clientArea.hasEventListeners( "appear" ) );
-//      assertNull( clientArea.hasEventListeners( "mousewheel" ) );
-//      assertNull( clientArea.hasEventListeners( "keypress" ) );
-//      assertNull( hbar.hasEventListeners( "changeValue" ) );
-//      assertNull( vbar.hasEventListeners( "changeValue" ) );
-//    },
+    testAddItemsAndScroll : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var list = this._createDefaultList();
+      list.setItemDimensions( 500, 20 );
+      this._addItems( list, 10 );
+      TestUtil.flush();
+
+      this._addItems( list, 70 );
+      list.setHBarSelection( 10 );
+      list.setTopIndex( 20 );
+      TestUtil.flush();
+      TestUtil.forceTimerOnce();
+
+      var position = this._getScrollPosition( list );
+      assertEquals( [ 10, 400 ], position );
+      list.destroy();
+    },
+
+    testDispose: function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var list = this._createDefaultList();
+      var clientArea = list._clientArea;
+      var hbar = list._horzScrollBar;
+      var vbar = list._vertScrollBar;
+      var scrollNode = clientArea._getTargetNode();
+
+      list.destroy();
+      TestUtil.flush();
+
+      assertNull( list._horzScrollBar );
+      assertNull( list._vertScrollBar );
+      assertNull( list._clientArea );
+      assertTrue( list.isDisposed() );
+      assertTrue( clientArea.isDisposed() );
+      assertTrue( hbar.isDisposed() );
+      assertTrue( vbar.isDisposed() );
+      assertNull( list.hasEventListeners( "changeParent" ) );
+      assertNull( clientArea.hasEventListeners( "appear" ) );
+      assertNull( clientArea.hasEventListeners( "mousewheel" ) );
+      assertNull( clientArea.hasEventListeners( "keypress" ) );
+      assertNull( hbar.hasEventListeners( "changeValue" ) );
+      assertNull( vbar.hasEventListeners( "changeValue" ) );
+    },
 
     testInitialPosition : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList( true );
       list.setHBarSelection( 10 );
-      list.setVBarSelection( 20 );
+      list.setTopIndex( 1 );
       this._addItems( list, 70 );
       list.setItemDimensions( 500, 20 );
       TestUtil.flush();

@@ -267,12 +267,30 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
         if( this._clientArea.getScrollLeft() !== scrollX ) {
           this._clientArea.setScrollLeft( scrollX );
         }
+        if( this._clientArea.getScrollLeft() !== scrollX ) {
+          this.addToQueue( "hSync" );
+        }
       }
       if( vert ) {
         var scrollY = this._vertScrollBar.getValue();
         if( this._clientArea.getScrollTop() !== scrollY ) {
           this._clientArea.setScrollTop( scrollY );
         }
+        if( this._clientArea.getScrollTop() !== scrollY ) {
+          this.addToQueue( "vSync" );
+        }
+      }
+    },
+
+    _layoutPost : function( changes ) {
+      this.base( arguments, changes );
+      if( changes.hSync || changes.vSync ) {
+        // delay because this is still before the client area might get bigger in the display flush
+        rwt.client.Timer.once( function() {
+          this._internalChangeFlag = true;
+          this._syncClientArea( changes.hSync, changes.vSync );
+          this._internalChangeFlag = false;
+        }, this, 0 );
       }
     },
 
