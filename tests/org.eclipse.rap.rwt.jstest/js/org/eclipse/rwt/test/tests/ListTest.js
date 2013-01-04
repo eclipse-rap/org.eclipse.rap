@@ -589,6 +589,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.destroy();
     },
 
+    testItemHasNoOverflow : function() {
+      var list = this._createDefaultList();
+      this._addItems( list, 1 );
+
+      var items = this._getItems( list );
+
+      assertEquals( "hidden", items[ 0 ].getOverflow() );
+      assertFalse( "hidden", items[ 0 ].getContainerOverflow() );
+      list.destroy();
+    },
+
     testSetItemDimensions : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
