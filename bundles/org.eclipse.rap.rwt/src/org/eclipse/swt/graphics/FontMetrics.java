@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 
 /**
@@ -51,7 +50,7 @@ public final class FontMetrics {
    * @return the height of the font
    */
   public int getHeight() {
-    return Graphics.getCharHeight( font );
+    return TextSizeUtil.getCharHeight( font );
   }
 
   /**

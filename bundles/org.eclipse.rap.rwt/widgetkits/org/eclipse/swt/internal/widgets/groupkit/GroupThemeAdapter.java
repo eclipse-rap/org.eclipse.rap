@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.groupkit;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
@@ -39,7 +39,7 @@ public final class GroupThemeAdapter extends ControlThemeAdapterImpl {
     int left = margin.x + padding.x + frameWidth;
     int top = margin.y + padding.y + frameWidth;
     Font font = group.getFont();
-    top = Math.max( top, Graphics.getCharHeight( font ) );
+    top = Math.max( top, TextSizeUtil.getCharHeight( font ) );
     int width = margin.width + padding.width + frameWidth * 2;
     int height = margin.height + padding.height + frameWidth * 2;
     return new Rectangle( left, top, width, height );

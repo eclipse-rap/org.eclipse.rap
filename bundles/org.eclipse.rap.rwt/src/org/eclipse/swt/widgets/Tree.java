@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2038,7 +2038,7 @@ public class Tree extends Composite {
     int result = 0;
     if( headerVisible ) {
       Font headerFont = getHeaderFont();
-      int textHeight = Graphics.getCharHeight( headerFont );
+      int textHeight = TextSizeUtil.getCharHeight( headerFont );
       int imageHeight = 0;
       for( int i = 0; i < getColumnCount(); i++ ) {
         TreeColumn column = columnHolder.getItem( i );
@@ -2071,7 +2071,7 @@ public class Tree extends Composite {
 
   private int computeItemHeight() {
     Rectangle padding = getCellPadding();
-    int textHeight = Graphics.getCharHeight( getFont() );
+    int textHeight = TextSizeUtil.getCharHeight( getFont() );
     textHeight += TEXT_MARGIN.height + padding.height;
     int itemImageHeight = getItemImageSize().y + padding.height;
     int result = Math.max( itemImageHeight, textHeight );

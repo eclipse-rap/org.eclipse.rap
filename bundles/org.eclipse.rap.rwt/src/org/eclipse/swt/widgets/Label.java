@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -298,7 +298,7 @@ public class Label extends Control {
       width = extent.x;
       height = extent.y + 2;
     } else {
-      height = Graphics.getCharHeight( getFont() );
+      height = TextSizeUtil.getCharHeight( getFont() );
     }
     if( wHint != SWT.DEFAULT ) {
       width = wHint;

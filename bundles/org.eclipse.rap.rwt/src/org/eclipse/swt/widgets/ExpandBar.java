@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ControlAdapter;
@@ -428,7 +428,7 @@ public class ExpandBar extends Composite {
   public void setFont( Font font ) {
     if( font != getFont() ) {
       super.setFont( font );
-      charHeight = Graphics.getCharHeight( getFont() ) + 4;
+      charHeight = TextSizeUtil.getCharHeight( getFont() ) + 4;
     }
   }
 

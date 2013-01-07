@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.swt.custom;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -584,7 +585,7 @@ public final class CCombo extends Composite {
    */
   public int getItemHeight() {
     checkWidget();
-    int charHeight = Graphics.getCharHeight( getFont() );
+    int charHeight = TextSizeUtil.getCharHeight( getFont() );
     int padding = 2 * LIST_ITEM_PADDING;
     return charHeight + padding;
   }
@@ -821,7 +822,7 @@ public final class CCombo extends Composite {
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
-    int height = Graphics.getCharHeight( getFont() );
+    int height = TextSizeUtil.getCharHeight( getFont() );
     if( wHint == SWT.DEFAULT || hHint == SWT.DEFAULT ) {
       String[] items = model.getItems();
       for( int i = 0; i < items.length; i++ ) {

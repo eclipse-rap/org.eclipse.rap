@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1860,7 +1860,7 @@ public class Table extends Composite {
     checkWidget();
     int result = customItemHeight;
     if( result == -1 ) {
-      int textHeight = Graphics.getCharHeight( getFont() );
+      int textHeight = TextSizeUtil.getCharHeight( getFont() );
       int paddingHeight = getCellPadding().height;
       textHeight += Math.max( paddingHeight, 4 );
       int itemImageHeight = getItemImageSize().y + paddingHeight;
@@ -1887,7 +1887,7 @@ public class Table extends Composite {
     int result = 0;
     if( headerVisible ) {
       Font headerFont = getHeaderFont();
-      int textHeight = Graphics.getCharHeight( headerFont );
+      int textHeight = TextSizeUtil.getCharHeight( headerFont );
       int imageHeight = 0;
       for( int i = 0; i < columnHolder.size(); i++ ) {
         TableColumn column = columnHolder.getItem( i );

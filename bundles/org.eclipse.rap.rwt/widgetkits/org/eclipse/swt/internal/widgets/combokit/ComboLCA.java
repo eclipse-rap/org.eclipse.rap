@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,9 +18,9 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
@@ -62,6 +62,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
   private static final int DEFAULT_VISIBLE_ITEM_COUNT = 5;
 
+  @Override
   public void preserveValues( Widget widget ) {
     Combo combo = ( Combo )widget;
     ControlLCAUtil.preserveValues( combo );
@@ -101,6 +102,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( combo );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Combo combo = ( Combo )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( combo );
@@ -109,6 +111,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     clientObject.set( "style", WidgetLCAUtil.getStyles( combo, ALLOWED_STYLES ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     Combo combo = ( Combo )widget;
     ControlLCAUtil.renderChanges( combo );
@@ -264,7 +267,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   private static int getItemHeight( Combo combo ) {
-    int charHeight = Graphics.getCharHeight( combo.getFont() );
+    int charHeight = TextSizeUtil.getCharHeight( combo.getFont() );
     int padding = 2 * LIST_ITEM_PADDING;
     return charHeight + padding;
   }
