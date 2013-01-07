@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ public final class CanvasLCA extends AbstractWidgetLCA {
   private static final String TYPE = "rwt.widgets.Canvas";
   private static final String TYPE_GC = "rwt.widgets.GC";
   private static final String[] ALLOWED_STYLES = new String[] { "NO_RADIO_GROUP", "BORDER" };
+  private static final String PROP_CLIENT_AREA = "clientArea";
 
   @Override
   public void preserveValues( Widget widget ) {
@@ -40,6 +41,8 @@ public final class CanvasLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveCustomVariant( widget );
     WidgetLCAUtil.preserveBackgroundGradient( widget );
     WidgetLCAUtil.preserveRoundedBorder( widget );
+    Canvas canvas = ( Canvas )widget;
+    WidgetLCAUtil.preserveProperty( canvas, PROP_CLIENT_AREA, canvas.getClientArea() );
   }
 
   public void readData( Widget widget ) {
@@ -66,6 +69,7 @@ public final class CanvasLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderBackgroundGradient( widget );
     WidgetLCAUtil.renderRoundedBorder( widget );
     WidgetLCAUtil.renderCustomVariant( widget );
+    renderClientArea( ( Canvas )widget );
     writeGCOperations( ( Canvas )widget );
   }
 
@@ -87,6 +91,10 @@ public final class CanvasLCA extends AbstractWidgetLCA {
   private static Adaptable getGC( Widget widget ) {
     WidgetAdapterImpl adapter = ( WidgetAdapterImpl )widget.getAdapter( WidgetAdapter.class );
     return adapter.getGCForClient();
+  }
+
+  public void renderClientArea( Canvas canvas ) {
+    WidgetLCAUtil.renderProperty( canvas, PROP_CLIENT_AREA, canvas.getClientArea(), null );
   }
 
 }

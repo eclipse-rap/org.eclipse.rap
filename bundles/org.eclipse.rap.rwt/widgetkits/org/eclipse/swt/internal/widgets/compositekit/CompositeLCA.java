@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,12 +28,15 @@ public class CompositeLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Composite";
   private static final String[] ALLOWED_STYLES = new String[] { "NO_RADIO_GROUP", "BORDER" };
+  private static final String PROP_CLIENT_AREA = "clientArea";
 
   public void preserveValues( Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
     WidgetLCAUtil.preserveCustomVariant( widget );
     WidgetLCAUtil.preserveBackgroundGradient( widget );
     WidgetLCAUtil.preserveRoundedBorder( widget );
+    Composite composite = ( Composite )widget;
+    WidgetLCAUtil.preserveProperty( composite, PROP_CLIENT_AREA, composite.getClientArea() );
   }
 
   public void readData( Widget widget ) {
@@ -55,6 +58,11 @@ public class CompositeLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderBackgroundGradient( widget );
     WidgetLCAUtil.renderRoundedBorder( widget );
     WidgetLCAUtil.renderCustomVariant( widget );
+    renderClientArea( ( Composite )widget );
+  }
+
+  public void renderClientArea( Composite composite ) {
+    WidgetLCAUtil.renderProperty( composite, PROP_CLIENT_AREA, composite.getClientArea(), null );
   }
 
 }

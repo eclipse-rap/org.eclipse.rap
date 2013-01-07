@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawLine;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
@@ -302,6 +303,51 @@ public class CanvasLCA_Test {
 
     assertNotNull( getGCOperation( canvas, "init" ) );
     assertNull( getGCOperation( canvas, "draw" ) );
+  }
+
+  @Test
+  public void testRenderClientArea() throws JSONException {
+    canvas.setSize( 110, 120 );
+
+    lca.renderClientArea( canvas );
+
+    Message message = Fixture.getProtocolMessage();
+    Rectangle clientArea = canvas.getClientArea();
+    assertEquals( clientArea, toRectangle( message.findSetProperty( canvas, "clientArea" ) ) );
+  }
+
+  @Test
+  public void testRenderClientArea_SizeZero() throws JSONException {
+    canvas.setSize( 0, 0 );
+
+    lca.renderClientArea( canvas );
+
+    Message message = Fixture.getProtocolMessage();
+    Rectangle clientArea = new Rectangle( 0, 0, 0, 0 );
+    assertEquals( clientArea, toRectangle( message.findSetProperty( canvas, "clientArea" ) ) );
+  }
+
+  @Test
+  public void testRenderClientArea_SizeUnchanged() {
+    Fixture.markInitialized( canvas );
+    canvas.setSize( 110, 120 );
+
+    lca.preserveValues( canvas );
+    lca.renderClientArea( canvas );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( canvas, "clientArea" ) );
+  }
+
+  private Rectangle toRectangle( Object property ) throws JSONException {
+    JSONArray jsonArray = ( JSONArray )property;
+    Rectangle result = new Rectangle(
+      jsonArray.getInt( 0 ),
+      jsonArray.getInt( 1 ),
+      jsonArray.getInt( 2 ),
+      jsonArray.getInt( 3 )
+    );
+    return result;
   }
 
   private static CallOperation getGCOperation( Canvas canvas, String method ) {
