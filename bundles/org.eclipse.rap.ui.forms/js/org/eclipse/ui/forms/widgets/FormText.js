@@ -91,8 +91,7 @@ rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
         height : bounds[ 3 ]
       } );
       if( font != null ) {
-        var widgetManager = rwt.remote.WidgetManager.getInstance();
-        widgetManager.setFont( textFragment, font[ 0 ], font[ 1 ], font[ 2 ], font[ 3 ] );
+        textFragment.setFont( rwt.html.Font.fromArray( font ) );
       }
       if( color != null ) {
         textFragment.setTextColor( rwt.util.Colors.rgbToRgbString( color ) );
