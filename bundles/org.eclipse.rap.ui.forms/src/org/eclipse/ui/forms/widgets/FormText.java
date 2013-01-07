@@ -16,7 +16,7 @@ import java.util.*;
 
 import org.eclipse.core.runtime.ListenerList;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 // RAP [if] accessibility not supported
@@ -366,7 +366,7 @@ public class FormText extends Canvas {
             String key = ( String )keys.nextElement();
             if( key.startsWith( "f." ) ) { //$NON-NLS-1$
               Font font = ( Font )resourceTable.get( key );
-              Float newValue = new Float( Graphics.getAvgCharWidth( font ) );
+              Float newValue = new Float( TextSizeUtil.getAvgCharWidth( font ) );
               Float preservedValue = ( Float )averageFontWidths.get( key );
               if( !newValue.equals( preservedValue ) ) {
                 averageFontWidths.put( key, newValue );

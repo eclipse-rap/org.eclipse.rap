@@ -13,8 +13,8 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.widgets.IDialogAdapter;
 import org.eclipse.rap.rwt.widgets.DialogCallback;
 import org.eclipse.swt.SWT;
@@ -251,7 +251,7 @@ public abstract class Dialog implements Adaptable, SerializableCompatibility {
 
   static int convertHorizontalDLUsToPixels( Control control, int dlus ) {
     Font dialogFont = control.getFont();
-    float charWidth = Graphics.getAvgCharWidth( dialogFont );
+    float charWidth = TextSizeUtil.getAvgCharWidth( dialogFont );
     float width = charWidth * dlus + HORIZONTAL_DIALOG_UNIT_PER_CHAR / 2;
     return ( int )( width / HORIZONTAL_DIALOG_UNIT_PER_CHAR );
   }

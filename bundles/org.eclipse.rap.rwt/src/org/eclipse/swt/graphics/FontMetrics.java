@@ -11,6 +11,7 @@
 package org.eclipse.swt.graphics;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 
 /**
  * Instances of this class provide measurement information about fonts <!-- including
@@ -39,7 +40,7 @@ public final class FontMetrics {
    * @return the average character width of the font
    */
   public int getAverageCharWidth() {
-    return ( int )Graphics.getAvgCharWidth( font );
+    return ( int )TextSizeUtil.getAvgCharWidth( font );
   }
 
   /**
@@ -62,6 +63,7 @@ public final class FontMetrics {
    *         <code>false</code> otherwise
    * @see #hashCode
    */
+  @Override
   public boolean equals( Object object ) {
     boolean result = false;
     if( object == this ) {
@@ -81,6 +83,7 @@ public final class FontMetrics {
    * @return the receiver's hash
    * @see #equals
    */
+  @Override
   public int hashCode() {
     return font.hashCode();
   }
