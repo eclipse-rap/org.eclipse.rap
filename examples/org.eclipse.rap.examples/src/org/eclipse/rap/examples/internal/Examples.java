@@ -70,7 +70,7 @@ public final class Examples {
     exampleCategories.add( createCategory( "Layouts",
                                            "grid-layout", "row-layout", "fill-layout" ) );
     exampleCategories.add( createCategory( "Custom Widgets",
-                                           "gmaps", "ckeditor", "oscilloscope", "carousel" ) );
+                                           "gmaps", "ckeditor", "oscilloscope", "carousel", "chart" ) );
     return exampleCategories;
   }
 
