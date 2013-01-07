@@ -23,7 +23,8 @@
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true&#13;&#10;-Dosgi.noShutdown=true&#13;&#10;-Dorg.eclipse.equinox.http.jetty.log.stderr.threshold=info"/>
 <stringAttribute key="org.eclipse.rap.launch.browserMode" value="INTERNAL"/>
 <stringAttribute key="org.eclipse.rap.launch.contextpath" value="/rapdemo"/>
-<stringAttribute key="org.eclipse.rap.launch.dataLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.rap.ui.launch/RAPExamplesDemo"/>
+<stringAttribute key="org.eclipse.rap.launch.dataLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.rap.tools.launch/RAPExamplesDemo"/>
+<booleanAttribute key="org.eclipse.rap.launch.developmentMode" value="true"/>
 <stringAttribute key="org.eclipse.rap.launch.entryPoint" value=""/>
 <stringAttribute key="org.eclipse.rap.launch.libraryVariant" value="DEBUG"/>
 <stringAttribute key="org.eclipse.rap.launch.logLevel" value="OFF"/>
