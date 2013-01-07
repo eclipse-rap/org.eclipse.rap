@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rap.rwt.widgets.DialogCallback;
 import org.eclipse.rap.rwt.widgets.DialogUtil;
@@ -209,8 +208,7 @@ public class FontDialog extends Dialog {
 
   private void initializeDefaults() {
     if( fontData == null ) {
-      Display display = parent.getDisplay();
-      FontData systemFontData = display.getSystemFont().getFontData()[ 0 ];
+      FontData systemFontData = getDisplay().getSystemFont().getFontData()[ 0 ];
       String fontName = getFirstFontName( systemFontData.getName() );
       int fontHeight = systemFontData.getHeight();
       int fontStyle = systemFontData.getStyle();
@@ -334,6 +332,7 @@ public class FontDialog extends Dialog {
   }
 
   private void createFontStyleGroup( Composite parent ) {
+    Display display = getDisplay();
     Group result = new Group( parent, SWT.NONE );
     result.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
     result.setText( RWTMessages.getMessage( "RWT_FontDialogFontStyleTitle" ) );
@@ -344,11 +343,11 @@ public class FontDialog extends Dialog {
     cbBold = new Button( result, SWT.CHECK );
     cbBold.setText( RWTMessages.getMessage( "RWT_FontDialogFontStyleBold" ) );
     FontData normalFont = cbBold.getFont().getFontData()[ 0 ];
-    Font boldFont = Graphics.getFont( normalFont.getName(), normalFont.getHeight(), SWT.BOLD );
+    Font boldFont = new Font( display, normalFont.getName(), normalFont.getHeight(), SWT.BOLD );
     cbBold.setFont( boldFont );
     cbItalic = new Button( result, SWT.CHECK );
     cbItalic.setText( RWTMessages.getMessage( "RWT_FontDialogFontStyleItalic" ) );
-    Font italicFont = Graphics.getFont( normalFont.getName(), normalFont.getHeight(), SWT.ITALIC );
+    Font italicFont = new Font( display, normalFont.getName(), normalFont.getHeight(), SWT.ITALIC );
     cbItalic.setFont( italicFont );
   }
 
@@ -412,8 +411,7 @@ public class FontDialog extends Dialog {
     GridData labelData = new GridData( SWT.FILL, SWT.CENTER, true, true );
     lblPreview.setLayoutData( labelData );
     lblPreview.setText( RWTMessages.getMessage( "RWT_FontDialogPreviewText" ) );
-    Display display = parent.getDisplay();
-    Color bgColor = display.getSystemColor( SWT.COLOR_LIST_BACKGROUND );
+    Color bgColor = getDisplay().getSystemColor( SWT.COLOR_LIST_BACKGROUND );
     previewArea.setBackground( bgColor );
     previewArea.setBackgroundMode( SWT.INHERIT_DEFAULT );
   }
@@ -459,7 +457,7 @@ public class FontDialog extends Dialog {
 
   private void fillAvailableFonts() {
     Collection<String> fontFamilies = new HashSet<String>();
-    FontData[] fontList = parent.getDisplay().getFontList( null, true );
+    FontData[] fontList = getDisplay().getFontList( null, true );
     if( fontList != null ) {
       for( int i = 0; i < fontList.length; i++ ) {
         fontFamilies.add( fontList[ i ].getName() );
@@ -495,9 +493,10 @@ public class FontDialog extends Dialog {
 
   private void updatePreview() {
     if( lblPreview != null ) {
-      Font font = Graphics.getFont( fontData );
+      Display display = getDisplay();
+      Font font = new Font( display, fontData );
       lblPreview.setFont( font );
-      Color color = Graphics.getColor( rgb );
+      Color color = new Color( display, rgb );
       lblPreview.setForeground( color );
       lblColor.setBackground( color );
       lblPreview.getParent().layout( true );
@@ -520,4 +519,9 @@ public class FontDialog extends Dialog {
     fontData = new FontData( name, height, style );
     updateControls();
   }
+
+  private Display getDisplay() {
+    return parent.getDisplay();
+  }
+
 }
