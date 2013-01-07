@@ -12,7 +12,6 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -293,7 +292,7 @@ public class Label extends Control {
       if( markupEnabled ) {
         extent = TextSizeUtil.markupExtent( getFont(), text, wrapWidth );
       } else {
-        extent = Graphics.textExtent( getFont(), text, wrapWidth );
+        extent = TextSizeUtil.textExtent( getFont(), text, wrapWidth );
       }
       width = extent.x;
       height = extent.y + 2;

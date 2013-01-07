@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -211,7 +211,7 @@ public class Link extends Control {
       // because the other will be escaped in
       // TextSizeUtil#createMeasureString()
       String string = escapeAmpersand( displayText );
-      Point extent = Graphics.textExtent( getFont(), string, wHint );
+      Point extent = TextSizeUtil.textExtent( getFont(), string, wHint );
       width = extent.x;
       height = extent.y;
     }

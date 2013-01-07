@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -433,7 +432,7 @@ public class CTabItem extends Item {
     Image image = getImage();
     int h = ( image == null ) ? 0 : image.getBounds().height;
     String text = getText();
-    h = Math.max( h, Graphics.textExtent( getFont(), text, 0 ).y );
+    h = Math.max( h, TextSizeUtil.textExtent( getFont(), text, 0 ).y );
     return h + parent.getItemPadding( isSelected ).height;
   }
 

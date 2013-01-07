@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.IShellProvider;
-import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Control;
@@ -61,7 +61,7 @@ public class ProgressManagerUtil {
 
 	/**
 	 * Return a status for the exception.
-	 * 
+	 *
 	 * @param exception
 	 * @return IStatus
 	 */
@@ -73,7 +73,7 @@ public class ProgressManagerUtil {
 
 	/**
 	 * Log the exception for debugging.
-	 * 
+	 *
 	 * @param exception
 	 */
 	static void logException(Throwable exception) {
@@ -90,18 +90,19 @@ public class ProgressManagerUtil {
 	// }
 	/**
 	 * Return a viewer comparator for looking at the jobs.
-	 * 
+	 *
 	 * @return ViewerComparator
 	 */
 	static ViewerComparator getProgressViewerComparator() {
 		return new ViewerComparator() {
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer,
 			 *      java.lang.Object, java.lang.Object)
 			 */
-			public int compare(Viewer testViewer, Object e1, Object e2) {
+			@Override
+      public int compare(Viewer testViewer, Object e1, Object e2) {
 				return ((Comparable) e1).compareTo(e2);
 			}
 		};
@@ -109,7 +110,7 @@ public class ProgressManagerUtil {
 
 	/**
 	 * Open the progress view in the supplied window.
-	 * 
+	 *
 	 * @param window
 	 */
 	static void openProgressView(WorkbenchWindow window) {
@@ -136,7 +137,7 @@ public class ProgressManagerUtil {
 	 * the given width. The default implementation replaces characters in the
 	 * center of the original string with an ellipsis ("..."). Override if you
 	 * need a different strategy.
-	 * 
+	 *
 	 * @param textValue
 	 * @param control
 	 * @return String
@@ -180,11 +181,11 @@ public class ProgressManagerUtil {
       }
       int maxWidth = control.getBounds().width - 5;
       Font font = control.getFont();
-      if (Graphics.textExtent(font, textValue, 0).x < maxWidth) {
+      if (TextSizeUtil.textExtent(font, textValue, 0).x < maxWidth) {
         return textValue;
       }
       int length = textValue.length();
-      int ellipsisWidth = Graphics.textExtent(font, getEllipsis(), 0).x;
+      int ellipsisWidth = TextSizeUtil.textExtent(font, getEllipsis(), 0).x;
       // Find the second space seperator and start from there
       int secondWord = findSecondWhitespace(textValue, font, maxWidth);
       int pivot = ((length - secondWord) / 2) + secondWord;
@@ -193,8 +194,8 @@ public class ProgressManagerUtil {
       while (start >= secondWord && end < length) {
         String s1 = textValue.substring(0, start);
         String s2 = textValue.substring(end, length);
-        int l1 = Graphics.textExtent(font, s1, 0).x;
-        int l2 = Graphics.textExtent(font, s2, 0).x;
+        int l1 = TextSizeUtil.textExtent(font, s1, 0).x;
+        int l2 = TextSizeUtil.textExtent(font, s2, 0).x;
         if (l1 + ellipsisWidth + l2 < maxWidth) {
           return s1 + getEllipsis() + s2;
         }
@@ -208,7 +209,7 @@ public class ProgressManagerUtil {
 //	/**
 //	 * Find the second index of a whitespace. Return the first index if there
 //	 * isn't one or 0 if there is no space at all.
-//	 * 
+//	 *
 //	 * @param textValue
 //	 * @param gc
 //	 *            The GC to test max length
@@ -247,8 +248,8 @@ public class ProgressManagerUtil {
 // RAP [fappel]: GC not supported
 //		if (gc.textExtent(textValue.substring(0, secondCharacter)).x > maxWidth) {
 //			if (gc.textExtent(textValue.substring(0, firstCharacter)).x > maxWidth) {
-        if (Graphics.textExtent(font, textValue.substring(0, secondCharacter), 0).x > maxWidth) {
-          if (Graphics.textExtent(font, textValue.substring(0, firstCharacter), 0).x > maxWidth) {
+        if (TextSizeUtil.textExtent(font, textValue.substring(0, secondCharacter), 0).x > maxWidth) {
+          if (TextSizeUtil.textExtent(font, textValue.substring(0, firstCharacter), 0).x > maxWidth) {
 		      return 0;
 			}
 			return firstCharacter;
@@ -260,7 +261,7 @@ public class ProgressManagerUtil {
 	 * If there are any modal shells open reschedule openJob to wait until they
 	 * are closed. Return true if it rescheduled, false if there is nothing
 	 * blocking it.
-	 * 
+	 *
 	 * @param openJob
 	 * @return boolean. true if the job was rescheduled due to modal dialogs.
 	 */
@@ -280,7 +281,7 @@ public class ProgressManagerUtil {
 	 * Return whether or not it is safe to open this dialog. If so then return
 	 * <code>true</code>. If not then set it to open itself when it has had
 	 * ProgressManager#longOperationTime worth of ticks.
-	 * 
+	 *
 	 * @param dialog
 	 *            ProgressMonitorJobsDialog that will be opening
 	 * @param excludedShell
@@ -298,14 +299,14 @@ public class ProgressManagerUtil {
 		dialog.watchTicks();
 		return false;
 	}
-	
+
 	/**
 	 * Return the modal shell that is currently open. If there isn't one then
 	 * return null. If there are stacked modal shells, return the top one.
-	 * 
+	 *
 	 * @param shell
 	 *            A shell to exclude from the search. May be <code>null</code>.
-	 * 
+	 *
 	 * @return Shell or <code>null</code>.
 	 */
 
@@ -320,11 +321,11 @@ public class ProgressManagerUtil {
 		// Start with the shell to exclude and check it's shells
 		return getModalChildExcluding(shell.getShells(), shell);
 	}
-	        
+
 	/**
 	 * Return the modal shell that is currently open. If there isn't one then
 	 * return null.
-	 * 
+	 *
 	 * @param toSearch shells to search for modal children
 	 * @param toExclude shell to ignore
 	 * @return the most specific modal child, or null if none
@@ -342,7 +343,7 @@ public class ProgressManagerUtil {
 			if(shell.equals(toExclude)) {
 				continue;
 			}
-			
+
 			// Check if this shell has a modal child
 			Shell[] children = shell.getShells();
 			Shell modalChild = getModalChildExcluding(children, toExclude);
@@ -358,13 +359,13 @@ public class ProgressManagerUtil {
 
 		return null;
 	}
-	 
+
 	/**
 	 * Utility method to get the best parenting possible for a dialog. If there
 	 * is a modal shell create it so as to avoid two modal dialogs. If not then
 	 * return the shell of the active workbench window. If neither can be found
 	 * return null.
-	 * 
+	 *
 	 * @return Shell or <code>null</code>
 	 */
 	public static Shell getDefaultParent() {
@@ -378,7 +379,7 @@ public class ProgressManagerUtil {
 
 	/**
 	 * Get the active non modal shell. If there isn't one return null.
-	 * 
+	 *
 	 * @return Shell
 	 */
 	public static Shell getNonModalShell() {
@@ -398,7 +399,7 @@ public class ProgressManagerUtil {
 	/**
 	 * Animate the closing of a window given the start position down to the
 	 * progress region.
-	 * 
+	 *
 	 * @param startPosition
 	 *            Rectangle. The position to start drawing from.
 	 */
@@ -419,17 +420,17 @@ public class ProgressManagerUtil {
 		Point windowLocation = internalWindow.getShell().getLocation();
 		endPosition.x += windowLocation.x;
 		endPosition.y += windowLocation.y;
-		
+
 		// RAP [bm]: Animations
 //		AnimationEngine.createTweakedAnimation(internalWindow.getShell(), 400, startPosition, endPosition);
-		// RAPEND: [bm] 
+		// RAPEND: [bm]
 
 	}
 
 	/**
 	 * Animate the opening of a window given the start position down to the
 	 * progress region.
-	 * 
+	 *
 	 * @param endPosition
 	 *            Rectangle. The position to end drawing at.
 	 */
@@ -450,11 +451,11 @@ public class ProgressManagerUtil {
 		startPosition.x += windowLocation.x;
 		startPosition.y += windowLocation.y;
 
-		// RAP [bm]: 
+		// RAP [bm]:
 //		RectangleAnimation animation = new RectangleAnimation(internalWindow
 //				.getShell(), startPosition, endPosition);
 //		animation.schedule();
-		// RAPEND: [bm] 
+		// RAPEND: [bm]
 
 	}
 
@@ -462,7 +463,7 @@ public class ProgressManagerUtil {
 	 * Get the shell provider to use in the progress support dialogs. This
 	 * provider will try to always parent off of an existing modal shell. If
 	 * there isn't one it will use the current workbench window.
-	 * 
+	 *
 	 * @return IShellProvider
 	 */
 	static IShellProvider getShellProvider() {
@@ -470,7 +471,7 @@ public class ProgressManagerUtil {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.jface.window.IShellProvider#getShell()
 			 */
 			public Shell getShell() {
@@ -481,7 +482,7 @@ public class ProgressManagerUtil {
 
 	/**
 	 * Get the icons root for the progress support.
-	 * 
+	 *
 	 * @return URL
 	 */
 	public static URL getIconsRoot() {
@@ -491,7 +492,7 @@ public class ProgressManagerUtil {
 
 	/**
 	 * Return the location of the progress spinner.
-	 * 
+	 *
 	 * @return URL or <code>null</code> if it cannot be found
 	 */
 	public static URL getProgressSpinnerLocation() {

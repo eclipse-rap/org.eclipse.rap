@@ -12,7 +12,6 @@
 package org.eclipse.swt.custom;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -205,7 +204,7 @@ public class CLabel extends Canvas {
       if( markupEnabled ) {
         extent = TextSizeUtil.markupExtent( getFont(), text, SWT.DEFAULT );
       } else {
-        extent = Graphics.textExtent( getFont(), text, SWT.DEFAULT );
+        extent = TextSizeUtil.textExtent( getFont(), text, SWT.DEFAULT );
       }
       size.x += extent.x;
       size.y = Math.max( size.y, extent.y );

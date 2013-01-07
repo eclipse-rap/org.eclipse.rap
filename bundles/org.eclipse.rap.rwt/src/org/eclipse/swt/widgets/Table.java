@@ -12,7 +12,6 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
@@ -1892,7 +1891,7 @@ public class Table extends Composite {
       for( int i = 0; i < columnHolder.size(); i++ ) {
         TableColumn column = columnHolder.getItem( i );
         if( column.getText().contains( "\n" ) ) {
-          int columnTextHeight = Graphics.textExtent( headerFont, column.getText(), 0 ).y;
+          int columnTextHeight = TextSizeUtil.textExtent( headerFont, column.getText(), 0 ).y;
           textHeight = Math.max( textHeight, columnTextHeight );
         }
         Image image = column.getImage();

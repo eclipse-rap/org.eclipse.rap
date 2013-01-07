@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.NotSerializableException;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -341,7 +340,7 @@ public class GC_Test {
     String string = "foo";
     Font systemFont = display.getSystemFont();
     Point gcTextExtent = gc.textExtent( string );
-    Point textExtent = Graphics.textExtent( systemFont, string, 0 );
+    Point textExtent = TextSizeUtil.textExtent( systemFont, string, 0 );
     assertEquals( gcTextExtent, textExtent );
   }
 

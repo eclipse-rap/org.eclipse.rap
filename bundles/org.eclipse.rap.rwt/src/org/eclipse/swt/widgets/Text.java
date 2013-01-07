@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -845,7 +844,7 @@ public class Text extends Scrollable {
         extent.x = Math.max( extent.x, messageExtent.x );
         extent.y = Math.max( extent.y, messageExtent.y );
       } else {
-        extent = Graphics.textExtent( getFont(), text, wrapWidth );
+        extent = TextSizeUtil.textExtent( getFont(), text, wrapWidth );
       }
       if( extent.x != 0 ) {
         width = extent.x;

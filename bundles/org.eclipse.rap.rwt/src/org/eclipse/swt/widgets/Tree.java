@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -2043,7 +2042,7 @@ public class Tree extends Composite {
       for( int i = 0; i < getColumnCount(); i++ ) {
         TreeColumn column = columnHolder.getItem( i );
         if( column.getText().contains( "\n" ) ) {
-          int columnTextHeight = Graphics.textExtent( headerFont, column.getText(), 0 ).y;
+          int columnTextHeight = TextSizeUtil.textExtent( headerFont, column.getText(), 0 ).y;
           textHeight = Math.max( textHeight, columnTextHeight );
         }
         Image image = getColumn( i ).getImage();

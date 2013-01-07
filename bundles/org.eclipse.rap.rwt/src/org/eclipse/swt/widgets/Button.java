@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -389,7 +388,7 @@ public class Button extends Control {
     if( hasText ) {
       Point extent;
       if( ( style & SWT.WRAP ) != 0 ) {
-        extent = Graphics.textExtent( getFont(), text, wHint );
+        extent = TextSizeUtil.textExtent( getFont(), text, wHint );
       } else {
         extent = TextSizeUtil.stringExtent( getFont(), text );
       }

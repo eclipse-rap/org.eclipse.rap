@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.graphics.FontUtil;
@@ -159,7 +158,7 @@ class ControlGC extends GCDelegate {
 
   @Override
   Point textExtent( String string, int wrapWidth ) {
-    return Graphics.textExtent( font, string, wrapWidth );
+    return TextSizeUtil.textExtent( font, string, wrapWidth );
   }
 
   @Override

@@ -12,7 +12,6 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -341,7 +340,7 @@ public class TreeColumn extends Item {
     Font font = parent.getHeaderFont();
     if( text.length() > 0 ) {
       if( text.indexOf( '\n' ) != -1 ) {
-        result = Graphics.textExtent( font, text, 0 ).x;
+        result = TextSizeUtil.textExtent( font, text, 0 ).x;
       } else {
         result = TextSizeUtil.stringExtent( font, text ).x;
       }
