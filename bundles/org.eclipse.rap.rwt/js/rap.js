@@ -178,6 +178,16 @@ function CompositeWrapper( widget ) {
       widget._getTargetNode().appendChild( childElement );
     }
   };
+  /**
+   * @name getClientArea
+   * @function
+   * @memberOf Composite#
+   * @description Returns the client Area of the Composite
+   * @returns {int[]} the client area as array [ x, y, width, height ]
+   */
+  this.getClientArea = function() {
+    return widget.getClientArea();
+  };
 }
 
 }());

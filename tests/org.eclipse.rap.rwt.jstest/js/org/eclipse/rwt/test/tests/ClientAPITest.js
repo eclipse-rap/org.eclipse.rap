@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -132,6 +132,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
       var composite = ObjectRegistry.getObject( "w3" );
       assertIdentical( composite._getTargetNode(), element.parentNode );
       assertIdentical( composite._getTargetNode(), otherElement.parentNode );
+    },
+
+    testCompositeWrapperGetClientArea : function() {
+      MessageProcessor.processOperationArray( [ "create", "w3", "rwt.widgets.Composite", {
+          "style" : [ "BORDER" ],
+          "parent" : "w2",
+          "clientArea" : [ 1, 2, 3, 4 ]
+        }
+      ] );
+
+      assertEquals( [ 1, 2, 3, 4 ], rap.getObject( "w3" ).getClientArea() );
+    },
+
+    testCompositeWrapperGetClientArea_returnsSaveCopy : function() {
+      MessageProcessor.processOperationArray( [ "create", "w3", "rwt.widgets.Composite", {
+          "style" : [ "BORDER" ],
+          "parent" : "w2",
+          "clientArea" : [ 1, 2, 3, 4 ]
+        }
+      ] );
+
+      rap.getObject( "w3" ).getClientArea()[ 1 ] = 100;
+      assertEquals( [ 1, 2, 3, 4 ], rap.getObject( "w3" ).getClientArea() );
     },
 
     setUp : function() {
