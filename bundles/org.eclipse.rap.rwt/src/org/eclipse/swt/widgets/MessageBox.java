@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@ package org.eclipse.swt.widgets;
 
 import java.util.StringTokenizer;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -270,7 +270,7 @@ public class MessageBox extends Dialog {
     StringTokenizer tokenizer = new StringTokenizer( message, "\n" );
     while( tokenizer.hasMoreTokens() ) {
       String line = tokenizer.nextToken();
-      int lineWidth = Graphics.stringExtent( font, line ).x;
+      int lineWidth = TextSizeUtil.stringExtent( font, line ).x;
       result = Math.max( result, lineWidth );
     }
     return result;

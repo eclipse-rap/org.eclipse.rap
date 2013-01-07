@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -839,8 +840,8 @@ public class Text extends Scrollable {
       Point extent;
       // Single-line text field should have same size as Combo, Spinner, etc.
       if( ( getStyle() & SWT.SINGLE ) != 0 ) {
-        extent = Graphics.stringExtent( getFont(), text );
-        Point messageExtent = Graphics.stringExtent( getFont(), message );
+        extent = TextSizeUtil.stringExtent( getFont(), text );
+        Point messageExtent = TextSizeUtil.stringExtent( getFont(), message );
         extent.x = Math.max( extent.x, messageExtent.x );
         extent.y = Math.max( extent.y, messageExtent.y );
       } else {

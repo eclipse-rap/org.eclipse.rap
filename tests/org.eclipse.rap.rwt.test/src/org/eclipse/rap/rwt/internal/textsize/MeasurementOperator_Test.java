@@ -299,9 +299,9 @@ public class MeasurementOperator_Test {
       Graphics.getFont( "helvetia, ms sans serif", 12, SWT.BOLD ),
       Graphics.getFont( "\"Bogus\" \\ Font \" Name", 12, SWT.BOLD )
     };
-    Graphics.stringExtent( fonts[ 0 ], "FirstString" );
-    Graphics.stringExtent( fonts[ 1 ], "SecondString" );
-    Graphics.stringExtent( fonts[ 2 ], "Weird \" String \\" );
+    TextSizeUtil.stringExtent( fonts[ 0 ], "FirstString" );
+    TextSizeUtil.stringExtent( fonts[ 1 ], "SecondString" );
+    TextSizeUtil.stringExtent( fonts[ 2 ], "Weird \" String \\" );
   }
 
 }

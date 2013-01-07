@@ -12,7 +12,6 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -1153,7 +1152,7 @@ public class List extends Scrollable {
 
   private int getItemWidth( String item ) {
     int margin = getItemPadding().width;
-    return Graphics.stringExtent( getFont(), item ).x + margin;
+    return TextSizeUtil.stringExtent( getFont(), item ).x + margin;
   }
 
   private int getMaxItemWidth() {

@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -827,7 +826,7 @@ public final class CCombo extends Composite {
       String[] items = model.getItems();
       for( int i = 0; i < items.length; i++ ) {
         if( !"".equals( items[ i ] ) ) {
-          Point extent = Graphics.stringExtent( getFont(), items[ i ] );
+          Point extent = TextSizeUtil.stringExtent( getFont(), items[ i ] );
           width = Math.max( width, extent.x + 10 );
         }
       }

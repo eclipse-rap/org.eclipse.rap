@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
@@ -221,7 +221,7 @@ public class TabItem extends Item {
       Rectangle padding = parent.getItemPadding( selected );
       String text = getText();
       if( text != null ) {
-        Point extent = Graphics.stringExtent( parent.getFont(), text );
+        Point extent = TextSizeUtil.stringExtent( parent.getFont(), text );
         result.width = extent.x;
         result.height = extent.y;
       }
@@ -267,6 +267,7 @@ public class TabItem extends Item {
     return ( parent.getStyle() & SWT.BOTTOM ) == 0;
   }
 
+  @Override
   public void setImage( Image image ) {
     checkWidget();
     int index = parent.indexOf( this );
@@ -314,6 +315,7 @@ public class TabItem extends Item {
   ///////////////////////////////////
   // Methods to dispose of the widget
 
+  @Override
   void releaseParent() {
     super.releaseParent();
     ItemHolder.getItemHolder( parent ).remove( this );

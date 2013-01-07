@@ -31,10 +31,10 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.engine.RWTServlet;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.service.UISession;
@@ -433,7 +433,7 @@ public class RWTLifeCycle2_Test {
       display.addListener( SWT.Dispose, new Listener() {
         public void handleEvent( Event event ) {
           try {
-            Graphics.stringExtent( event.display.getSystemFont(), "foo" );
+            TextSizeUtil.stringExtent( event.display.getSystemFont(), "foo" );
           } catch( UnsupportedOperationException exception ) {
             eventLog.add( exception );
           }

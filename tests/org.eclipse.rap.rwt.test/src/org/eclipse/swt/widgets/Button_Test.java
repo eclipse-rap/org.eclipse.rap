@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -194,7 +195,7 @@ public class Button_Test {
   public void testComputeSize() {
     // Text and image to use
     String text = "Click me!";
-    Point extent = Graphics.stringExtent( shell.getFont(), text );
+    Point extent = TextSizeUtil.stringExtent( shell.getFont(), text );
     assertEquals( new Point( 60, 16 ), extent );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
@@ -296,7 +297,7 @@ public class Button_Test {
 
     // Text and image to use
     String text = "Click me!";
-    Point extent = Graphics.stringExtent( shell.getFont(), text );
+    Point extent = TextSizeUtil.stringExtent( shell.getFont(), text );
     assertEquals( new Point( 60, 16 ), extent );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 

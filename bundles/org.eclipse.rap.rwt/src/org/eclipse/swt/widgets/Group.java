@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -137,6 +137,7 @@ public class Group extends Composite {
     return text;
   }
 
+  @Override
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
@@ -148,6 +149,7 @@ public class Group extends Composite {
     return new Rectangle( trimmings.x, trimmings.y, width, height );
   }
 
+  @Override
   public Rectangle computeTrim( int x, int y, int width, int height ) {
     GroupThemeAdapter themeAdapter
       = ( GroupThemeAdapter )getAdapter( IThemeAdapter.class );
@@ -159,13 +161,14 @@ public class Group extends Composite {
                               height + trimmings.height + 2 * border );
   }
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     Point result = super.computeSize( wHint, hHint, changed );
     int length = text.length();
     if( length != 0 ) {
       Font font = getFont();
-      Point stringExtent = Graphics.stringExtent( font, text );
+      Point stringExtent = TextSizeUtil.stringExtent( font, text );
       GroupThemeAdapter themeAdapter = ( GroupThemeAdapter )getAdapter( IThemeAdapter.class );
       Rectangle headTrimmings = themeAdapter.getHeaderTrimmingSize( this );
       int headerWidth = stringExtent.x + headTrimmings.width;
@@ -177,6 +180,7 @@ public class Group extends Composite {
   //////////////////
   // Helping methods
 
+  @Override
   String getNameText() {
     return getText();
   }

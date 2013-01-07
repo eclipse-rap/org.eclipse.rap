@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -390,7 +391,7 @@ public class Button extends Control {
       if( ( style & SWT.WRAP ) != 0 ) {
         extent = Graphics.textExtent( getFont(), text, wHint );
       } else {
-        extent = Graphics.stringExtent( getFont(), text );
+        extent = TextSizeUtil.stringExtent( getFont(), text );
       }
       width += extent.x;
       height = Math.max( height, extent.y );

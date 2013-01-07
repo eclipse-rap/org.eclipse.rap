@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -136,6 +136,7 @@ public class ExpandItem extends Item {
   ///////////////////
   // Widget overrides
 
+  @Override
   public void dispose() {
     if( !isDisposed() ) {
       parent.destroyItem( this );
@@ -244,7 +245,7 @@ public class ExpandItem extends Item {
           w += INTERNAL_SPACING;
         }
         Font parentFont = getParent().getFont();
-        w += Graphics.stringExtent( parentFont, text ).x;
+        w += TextSizeUtil.stringExtent( parentFont, text ).x;
       }
       result = w + LEFT_MARGIN + RIGHT_MARGIN;
     }
@@ -378,6 +379,7 @@ public class ExpandItem extends Item {
     }
   }
 
+  @Override
   public void setImage( Image image ) {
     checkWidget();
     if( image != getImage() ) {
@@ -397,6 +399,7 @@ public class ExpandItem extends Item {
     }
   }
 
+  @Override
   public void setText( String string ) {
     checkWidget();
     if( string == null ) {

@@ -2701,8 +2701,8 @@ public class Table extends Composite {
 
   private static TableItem max( TableItem item1, TableItem item2 ) {
     TableItem result;
-    int item1TextWidth = Graphics.stringExtent( item1.getFont(), item1.getText( 0 ) ).x;
-    int item2TextWidth = Graphics.stringExtent( item2.getFont(), item2.getText( 0 ) ).x;
+    int item1TextWidth = TextSizeUtil.stringExtent( item1.getFont(), item1.getText( 0 ) ).x;
+    int item2TextWidth = TextSizeUtil.stringExtent( item2.getFont(), item2.getText( 0 ) ).x;
     if( item1TextWidth > item2TextWidth ) {
       result = item1;
     } else {

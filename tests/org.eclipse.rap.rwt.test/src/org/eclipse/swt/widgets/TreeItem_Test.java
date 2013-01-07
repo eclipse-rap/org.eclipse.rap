@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -719,7 +720,7 @@ public class TreeItem_Test {
     Rectangle itemBounds = item.getBounds( 0 );
     assertTrue( subItemBounds.x > itemBounds.x );
     assertTrue( subItemBounds.y >= itemBounds.y + itemBounds.height );
-    Point stringExtent = Graphics.stringExtent( item.getFont(), "hello" );
+    Point stringExtent = TextSizeUtil.stringExtent( item.getFont(), "hello" );
     assertTrue( subItemBounds.height > stringExtent.y );
     assertTrue( subItemBounds.width > stringExtent.x );
   }
@@ -730,7 +731,7 @@ public class TreeItem_Test {
     Tree tree = new Tree( shell, SWT.NONE );
     tree.setSize( 200, 200 );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    Point stringExtent = Graphics.stringExtent( treeItem.getFont(), string );
+    Point stringExtent = TextSizeUtil.stringExtent( treeItem.getFont(), string );
     treeItem.setText( string );
     Rectangle withTextBounds = treeItem.getBounds( 0 );
     treeItem.setText( "" );
@@ -767,7 +768,7 @@ public class TreeItem_Test {
     Tree tree = new Tree( shell, SWT.NONE );
     tree.setSize( 200, 200 );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    Point stringExtent = Graphics.stringExtent( treeItem.getFont(), string );
+    Point stringExtent = TextSizeUtil.stringExtent( treeItem.getFont(), string );
     treeItem.setText( string );
     Rectangle boundsTextOnly = treeItem.getBounds( 0 );
     treeItem.setImage( image );

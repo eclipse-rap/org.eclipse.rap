@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.NotSerializableException;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -349,7 +350,7 @@ public class GC_Test {
     String string = "foo";
     Font systemFont = display.getSystemFont();
     Point gcStringExtent = gc.stringExtent( string );
-    Point stringExtent = Graphics.stringExtent( systemFont, string );
+    Point stringExtent = TextSizeUtil.stringExtent( systemFont, string );
     assertEquals( gcStringExtent, stringExtent );
   }
 

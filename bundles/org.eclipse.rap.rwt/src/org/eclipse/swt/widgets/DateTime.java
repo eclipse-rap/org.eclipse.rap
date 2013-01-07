@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -644,7 +644,7 @@ public class DateTime extends Composite {
     int width = MIN_CELL_WIDTH;
     int height = MIN_CELL_HEIGHT;
     for( int i = 0; i < weekdayShortNames.length; i++ ) {
-      Point nameSize = Graphics.stringExtent( getFont(), weekdayShortNames[ i ] );
+      Point nameSize = TextSizeUtil.stringExtent( getFont(), weekdayShortNames[ i ] );
       width = Math.max( width, nameSize.x + CELL_PADDING );
       height = Math.max( height, nameSize.y + CELL_PADDING );
     }
@@ -678,12 +678,12 @@ public class DateTime extends Composite {
     } else if( ( style & SWT.TIME ) != 0 ) {
       // Hours text field
       hoursTextFieldBounds = new Rectangle( padding.x, padding.y, 0, 0 );
-      hoursTextFieldBounds.width = Graphics.stringExtent( font, "88" ).x + H_PADDING;
-      hoursTextFieldBounds.height = Graphics.stringExtent( font, "88" ).y + V_PADDING;
+      hoursTextFieldBounds.width = TextSizeUtil.stringExtent( font, "88" ).x + H_PADDING;
+      hoursTextFieldBounds.height = TextSizeUtil.stringExtent( font, "88" ).y + V_PADDING;
       // Hours minutes separator
       separator3Bounds = new Rectangle( 0, padding.y, 0, 0 );
       separator3Bounds.x = hoursTextFieldBounds.x + hoursTextFieldBounds.width;
-      separator3Bounds.width = Graphics.stringExtent( font, ":" ).x;
+      separator3Bounds.width = TextSizeUtil.stringExtent( font, ":" ).x;
       separator3Bounds.height = hoursTextFieldBounds.height;
       // Minutes text field
       minutesTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
@@ -724,19 +724,19 @@ public class DateTime extends Composite {
     if( ( style & SWT.LONG ) != 0 ) {
       weekdayTextFieldBounds.width = getMaxWidth( weekdayNames ) + H_PADDING + 2;
     }
-    weekdayTextFieldBounds.height = Graphics.stringExtent( font, weekdayNames[1] ).y + V_PADDING;
+    weekdayTextFieldBounds.height = TextSizeUtil.stringExtent( font, weekdayNames[1] ).y + V_PADDING;
     // The weekday month separator bounds
     separator0Bounds = new Rectangle( 0, padding.y, 0, 0 );
     separator0Bounds.x = weekdayTextFieldBounds.x + weekdayTextFieldBounds.width;
     if( ( style & SWT.LONG ) != 0 ) {
-      separator0Bounds.width = Graphics.stringExtent( font, "," ).x;
+      separator0Bounds.width = TextSizeUtil.stringExtent( font, "," ).x;
     }
     separator0Bounds.height = weekdayTextFieldBounds.height;
     // The month text field bounds
     monthTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     monthTextFieldBounds.x = separator0Bounds.x + separator0Bounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      monthTextFieldBounds.width = Graphics.stringExtent( font, "88" ).x + H_PADDING;
+      monthTextFieldBounds.width = TextSizeUtil.stringExtent( font, "88" ).x + H_PADDING;
     } else {
       monthTextFieldBounds.width = getMaxWidth( monthNames ) + H_PADDING + 2;
     }
@@ -745,29 +745,29 @@ public class DateTime extends Composite {
     separator1Bounds = new Rectangle( 0, padding.y, 0, 0 );
     separator1Bounds.x = monthTextFieldBounds.x + monthTextFieldBounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      separator1Bounds.width = Graphics.stringExtent( font, dateSeparator ).x;
+      separator1Bounds.width = TextSizeUtil.stringExtent( font, dateSeparator ).x;
     }
     separator1Bounds.height = weekdayTextFieldBounds.height;
     // The date text field bounds
     dayTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     dayTextFieldBounds.x = separator1Bounds.x + separator1Bounds.width;
     if( ( style & SWT.SHORT ) == 0 ) {
-      dayTextFieldBounds.width = Graphics.stringExtent( font, "88" ).x + H_PADDING;
+      dayTextFieldBounds.width = TextSizeUtil.stringExtent( font, "88" ).x + H_PADDING;
     }
     dayTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The date year separator bounds
     separator2Bounds = new Rectangle( 0, padding.y, 0, 0 );
     separator2Bounds.x = dayTextFieldBounds.x + dayTextFieldBounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      separator2Bounds.width = Graphics.stringExtent( font, dateSeparator ).x;
+      separator2Bounds.width = TextSizeUtil.stringExtent( font, dateSeparator ).x;
     } else {
-      separator2Bounds.width = Graphics.stringExtent( font, "," ).x;
+      separator2Bounds.width = TextSizeUtil.stringExtent( font, "," ).x;
     }
     separator2Bounds.height = weekdayTextFieldBounds.height;
     // The year text field bounds
     yearTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     yearTextFieldBounds.x = separator2Bounds.x + separator2Bounds.width;
-    yearTextFieldBounds.width = Graphics.stringExtent( font, "8888" ).x + H_PADDING;
+    yearTextFieldBounds.width = TextSizeUtil.stringExtent( font, "8888" ).x + H_PADDING;
     yearTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The spinner bounds
     int spinnerButtonWidth = getSpinnerButtonWidth();
@@ -800,33 +800,33 @@ public class DateTime extends Composite {
     if( ( style & SWT.LONG ) != 0 ) {
       weekdayTextFieldBounds.width = getMaxWidth( weekdayNames ) + H_PADDING + 2;
     }
-    weekdayTextFieldBounds.height = Graphics.stringExtent( font, weekdayNames[1] ).y + V_PADDING;
+    weekdayTextFieldBounds.height = TextSizeUtil.stringExtent( font, weekdayNames[1] ).y + V_PADDING;
     // The weekday day separator bounds
     separator0Bounds = new Rectangle( 0, padding.y, 0, 0 );
     separator0Bounds.x = weekdayTextFieldBounds.x + weekdayTextFieldBounds.width;
     if( ( style & SWT.LONG ) != 0 ) {
-      separator0Bounds.width = Graphics.stringExtent( font, "," ).x;
+      separator0Bounds.width = TextSizeUtil.stringExtent( font, "," ).x;
     }
     separator0Bounds.height = weekdayTextFieldBounds.height;
     // The day text field bounds
     dayTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     dayTextFieldBounds.x = separator0Bounds.x + separator0Bounds.width;
     if( ( style & SWT.SHORT ) == 0 ) {
-      dayTextFieldBounds.width = Graphics.stringExtent( font, "88" ).x + H_PADDING;
+      dayTextFieldBounds.width = TextSizeUtil.stringExtent( font, "88" ).x + H_PADDING;
     }
     dayTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The day month separator bounds
     separator1Bounds = new Rectangle( 0, padding.y, 0, 0 );
     separator1Bounds.x = dayTextFieldBounds.x + dayTextFieldBounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      separator1Bounds.width = Graphics.stringExtent( font, dateSeparator ).x;
+      separator1Bounds.width = TextSizeUtil.stringExtent( font, dateSeparator ).x;
     }
     separator1Bounds.height = weekdayTextFieldBounds.height;
     // The month text field bounds
     monthTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     monthTextFieldBounds.x = separator1Bounds.x + separator1Bounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      monthTextFieldBounds.width = Graphics.stringExtent( font, "88" ).x + H_PADDING;
+      monthTextFieldBounds.width = TextSizeUtil.stringExtent( font, "88" ).x + H_PADDING;
     } else {
       monthTextFieldBounds.width = getMaxWidth( monthNames ) + H_PADDING + 2;
     }
@@ -835,15 +835,15 @@ public class DateTime extends Composite {
     separator2Bounds = new Rectangle( 0, padding.y, 0, 0 );
     separator2Bounds.x = monthTextFieldBounds.x + monthTextFieldBounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      separator2Bounds.width = Graphics.stringExtent( font, dateSeparator ).x;
+      separator2Bounds.width = TextSizeUtil.stringExtent( font, dateSeparator ).x;
     } else {
-      separator2Bounds.width = Graphics.stringExtent( font, "," ).x;
+      separator2Bounds.width = TextSizeUtil.stringExtent( font, "," ).x;
     }
     separator2Bounds.height = weekdayTextFieldBounds.height;
     // The year text field bounds
     yearTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     yearTextFieldBounds.x = separator2Bounds.x + separator2Bounds.width;
-    yearTextFieldBounds.width = Graphics.stringExtent( font, "8888" ).x + H_PADDING;
+    yearTextFieldBounds.width = TextSizeUtil.stringExtent( font, "8888" ).x + H_PADDING;
     yearTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The spinner bounds
     int spinnerButtonWidth = getSpinnerButtonWidth();
@@ -876,30 +876,30 @@ public class DateTime extends Composite {
     if( ( style & SWT.LONG ) != 0 ) {
       weekdayTextFieldBounds.width = getMaxWidth( weekdayNames ) + H_PADDING + 2;
     }
-    weekdayTextFieldBounds.height = Graphics.stringExtent( font, weekdayNames[1] ).y + V_PADDING;
+    weekdayTextFieldBounds.height = TextSizeUtil.stringExtent( font, weekdayNames[1] ).y + V_PADDING;
     // The weekday day separator bounds
     separator0Bounds = new Rectangle( 0, padding.y, 0, 0 );
     separator0Bounds.x = weekdayTextFieldBounds.x + weekdayTextFieldBounds.width;
     if( ( style & SWT.LONG ) != 0 ) {
-      separator0Bounds.width = Graphics.stringExtent( font, "," ).x;
+      separator0Bounds.width = TextSizeUtil.stringExtent( font, "," ).x;
     }
     separator0Bounds.height = weekdayTextFieldBounds.height;
     // The year text field bounds
     yearTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     yearTextFieldBounds.x = separator0Bounds.x + separator0Bounds.width;
-    yearTextFieldBounds.width = Graphics.stringExtent( font, "8888" ).x + H_PADDING;
+    yearTextFieldBounds.width = TextSizeUtil.stringExtent( font, "8888" ).x + H_PADDING;
     yearTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The year month separator bounds
     separator1Bounds = new Rectangle( 0, padding.y, 0, 0 );
     separator1Bounds.x = yearTextFieldBounds.x + yearTextFieldBounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      separator1Bounds.width = Graphics.stringExtent( font, dateSeparator ).x;
+      separator1Bounds.width = TextSizeUtil.stringExtent( font, dateSeparator ).x;
     }
     // The month text field bounds
     monthTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     monthTextFieldBounds.x = separator1Bounds.x + separator1Bounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      monthTextFieldBounds.width = Graphics.stringExtent( font, "88" ).x + H_PADDING;
+      monthTextFieldBounds.width = TextSizeUtil.stringExtent( font, "88" ).x + H_PADDING;
     } else {
       monthTextFieldBounds.width = getMaxWidth( monthNames ) + H_PADDING + 2;
     }
@@ -908,16 +908,16 @@ public class DateTime extends Composite {
     separator2Bounds = new Rectangle( 0, padding.y, 0, 0 );
     separator2Bounds.x = monthTextFieldBounds.x + monthTextFieldBounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      separator2Bounds.width = Graphics.stringExtent( font, dateSeparator ).x;
+      separator2Bounds.width = TextSizeUtil.stringExtent( font, dateSeparator ).x;
     } else {
-      separator2Bounds.width = Graphics.stringExtent( font, "," ).x;
+      separator2Bounds.width = TextSizeUtil.stringExtent( font, "," ).x;
     }
     separator2Bounds.height = weekdayTextFieldBounds.height;
     // The day text field bounds
     dayTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     dayTextFieldBounds.x = separator2Bounds.x + separator2Bounds.width;
     if( ( style & SWT.SHORT ) == 0 ) {
-      dayTextFieldBounds.width = Graphics.stringExtent( font, "88" ).x + H_PADDING;
+      dayTextFieldBounds.width = TextSizeUtil.stringExtent( font, "88" ).x + H_PADDING;
     }
     dayTextFieldBounds.height = weekdayTextFieldBounds.height;
 
@@ -985,7 +985,7 @@ public class DateTime extends Composite {
     Font font = getFont();
     int result = 0;
     for( int i = 0; i < strings.length; i++ ) {
-      int width = Graphics.stringExtent( font, strings[ i ] ).x;
+      int width = TextSizeUtil.stringExtent( font, strings[ i ] ).x;
       result = Math.max( result, width );
     }
     return result;

@@ -187,7 +187,7 @@ public class MeasurementListener_Test {
 
   private void checkTextMeasurementResultHasBeenStored() {
     Font font = Graphics.getFont( FONT_DATA );
-    assertEquals( new Point( 100, 10 ), Graphics.stringExtent( font, "text" ) );
+    assertEquals( new Point( 100, 10 ), TextSizeUtil.stringExtent( font, "text" ) );
   }
 
   private void fakeRequestWithProbeMeasurementResults() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2013 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.swt.graphics;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
 
 
@@ -36,102 +37,129 @@ class DeviceGC extends GCDelegate {
     this.lineJoin = SWT.JOIN_MITER;
   }
 
+  @Override
   void setBackground( Color color ) {
     background = color;
   }
 
+  @Override
   Color getBackground() {
     return background;
   }
 
+  @Override
   void setForeground( Color color ) {
     foreground = color;
   }
 
+  @Override
   Color getForeground() {
     return foreground;
   }
 
+  @Override
   void setFont( Font font ) {
     this.font = font;
   }
 
+  @Override
   Font getFont() {
     return font;
   }
 
+  @Override
   Font getDefaultFont() {
     return device.getSystemFont();
   }
 
+  @Override
   void setAlpha( int alpha ) {
     this.alpha = alpha;
   }
 
+  @Override
   int getAlpha() {
     return alpha;
   }
 
+  @Override
   void setLineWidth( int lineWidth ) {
     this.lineWidth = lineWidth;
   }
 
+  @Override
   int getLineWidth() {
     return lineWidth;
   }
 
+  @Override
   void setLineCap( int lineCap ) {
     this.lineCap = lineCap;
   }
 
+  @Override
   int getLineCap() {
     return lineCap;
   }
 
+  @Override
   void setLineJoin( int lineJoin ) {
     this.lineJoin = lineJoin;
   }
 
+  @Override
   int getLineJoin() {
     return lineJoin;
   }
 
+  @Override
   Rectangle getClipping() {
     return device.getBounds();
   }
 
+  @Override
   Point stringExtent( String string ) {
-    return Graphics.stringExtent( font, string );
+    return TextSizeUtil.stringExtent( font, string );
   }
 
+  @Override
   Point textExtent( String string, int wrapWidth ) {
     return Graphics.textExtent( font, string, wrapWidth );
   }
 
+  @Override
   void drawPoint( int x, int y ) {
   }
 
+  @Override
   void drawLine( int x1, int y1, int x2, int y2 ) {
   }
 
+  @Override
   void drawPolyline( int[] pointArray, boolean close, boolean fill ) {
   }
 
+  @Override
   void drawRectangle( Rectangle bounds, boolean fill ) {
   }
 
+  @Override
   void drawRoundRectangle( Rectangle bounds, int arcWidth, int arcHeight, boolean fill ) {
   }
 
+  @Override
   void fillGradientRectangle( Rectangle bounds, boolean vertical ) {
   }
 
+  @Override
   void drawArc( Rectangle boundsx, int startAngle, int arcAngle, boolean fill ) {
   }
 
+  @Override
   void drawImage( Image image, Rectangle src, Rectangle dest, boolean simple ) {
   }
 
+  @Override
   void drawText( String string, int x, int y, int flags ) {
   }
 }

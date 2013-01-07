@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -578,7 +577,7 @@ public class ToolItem extends Item {
     }
     if( hasText ) {
       Font font = parent.getFont();
-      result += Graphics.stringExtent( font, text ).x;
+      result += TextSizeUtil.stringExtent( font, text ).x;
     }
     if( hasText && hasImage ) {
       result += getSpacing();
