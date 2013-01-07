@@ -13,8 +13,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt;
 
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
