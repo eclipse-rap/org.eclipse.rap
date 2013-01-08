@@ -157,6 +157,102 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
       assertEquals( [ 1, 2, 3, 4 ], rap.getObject( "w3" ).getClientArea() );
     },
 
+
+    testCompositeWrapperAddResizeListener : function() {
+      MessageProcessor.processOperationArray( [ "create", "w3", "rwt.widgets.Composite", {
+          "style" : [ "BORDER" ],
+          "parent" : "w2",
+          "clientArea" : [ 1, 2, 3, 4 ]
+        }
+      ] );
+      var logger = TestUtil.getLogger();
+
+      rap.getObject( "w3" ).addListener( "Resize", logger.log );
+      TestUtil.protocolSet( "w3", {
+        "bounds" : [ 0, 0, 110, 120 ],
+        "clientArea" : [ 0, 0, 109, 119 ]
+      } );
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testCompositeWrapperAddResizeListener_UnkownTypeThrowsException : function() {
+      MessageProcessor.processOperationArray( [ "create", "w3", "rwt.widgets.Composite", {
+          "style" : [ "BORDER" ],
+          "parent" : "w2",
+          "clientArea" : [ 1, 2, 3, 4 ]
+        }
+      ] );
+      var logger = TestUtil.getLogger();
+
+      try {
+        rap.getObject( "w3" ).addListener( "resize", logger.log );
+        fail();
+      } catch( ex ) {
+        // expected
+      }
+    },
+
+    testCompositeWrapperAddResizeListener_FireEventAfterClientAreaChanged : function() {
+      MessageProcessor.processOperationArray( [ "create", "w3", "rwt.widgets.Composite", {
+          "style" : [ "BORDER" ],
+          "parent" : "w2",
+          "clientArea" : [ 1, 2, 3, 4 ]
+        }
+      ] );
+      var logger = TestUtil.getLogger();
+      rap.getObject( "w3" ).addListener( "Resize", function() {
+        logger.log( rap.getObject( "w3" ).getClientArea() );
+      } );
+
+      TestUtil.protocolSet( "w3", {
+        "bounds" : [ 0, 0, 110, 120 ],
+        "clientArea" : [ 0, 0, 109, 119 ]
+      } );
+
+      assertEquals( [ 0, 0, 109, 119 ], logger.getLog()[ 0 ] );
+    },
+
+    testCompositeWrapperAddResizeListener_NoEventObjectGiven : function() {
+      MessageProcessor.processOperationArray( [ "create", "w3", "rwt.widgets.Composite", {
+          "style" : [ "BORDER" ],
+          "parent" : "w2",
+          "clientArea" : [ 1, 2, 3, 4 ]
+        }
+      ] );
+      var logger = TestUtil.getLogger();
+      rap.getObject( "w3" ).addListener( "Resize", function() {
+        logger.log( arguments );
+      } );
+
+      TestUtil.protocolSet( "w3", {
+        "bounds" : [ 0, 0, 110, 120 ],
+        "clientArea" : [ 0, 0, 109, 119 ]
+      } );
+
+      var args = logger.getLog()[ 0 ];
+      assertTrue( args.length === 0 || args[ 0 ] === undefined );
+    },
+
+    testCompositeWrapperRemoveResizeListener : function() {
+      MessageProcessor.processOperationArray( [ "create", "w3", "rwt.widgets.Composite", {
+          "style" : [ "BORDER" ],
+          "parent" : "w2",
+          "clientArea" : [ 1, 2, 3, 4 ]
+        }
+      ] );
+      var logger = TestUtil.getLogger();
+      rap.getObject( "w3" ).addListener( "Resize", logger.log );
+      rap.getObject( "w3" ).removeListener( "Resize", logger.log );
+
+      TestUtil.protocolSet( "w3", {
+        "bounds" : [ 0, 0, 110, 120 ],
+        "clientArea" : [ 0, 0, 109, 119 ]
+      } );
+
+      assertEquals( 0, logger.getLog().length );
+    },
+
     setUp : function() {
       TestUtil.createShellByProtocol( "w2" );
     },

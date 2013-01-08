@@ -144,6 +144,16 @@ function getWrapperFor( obj ) {
   return result;
 }
 
+function convertEventType( type ) {
+  var result;
+  if( type === "Resize" ) {
+    result = "clientAreaChanged"; // works only for Composite
+  } else {
+    throw new Error( "Unkown event type " + type );
+  }
+  return result;
+}
+
 /**
  * @private
  * @class Wrapper for RWT Composite widgets
@@ -188,6 +198,31 @@ function CompositeWrapper( widget ) {
   this.getClientArea = function() {
     return widget.getClientArea();
   };
+
+  /**
+   * @name addListener
+   * @function
+   * @memberOf Composite#
+   * @description Register the function as a listener of the given type
+   * @param {string} type The type of the event (e.g. "Resize").
+   * @param {Function} listener The callback function
+   */
+  this.addListener = function( type, listener ) {
+    widget.addEventListener( convertEventType( type ), listener, window );
+  };
+
+  /**
+   * @name removeListener
+   * @function
+   * @memberOf Composite#
+   * @description De-register the function as a listener of the given type
+   * @param {string} type The type of the event (e.g. "Resize").
+   * @param {Function} listener The callback function
+   */
+  this.removeListener = function( type, listener ) {
+    widget.removeEventListener( convertEventType( type ), listener, window );
+  };
+
 }
 
 }());

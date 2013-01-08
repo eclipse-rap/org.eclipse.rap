@@ -45,6 +45,7 @@ rwt.qx.Class.define( "rwt.widgets.Composite", {
 
     setClientArea : function( clientArea ) {
       this._clientArea = clientArea;
+      this.dispatchSimpleEvent( "clientAreaChanged" );
     },
 
     getClientArea : function() {
