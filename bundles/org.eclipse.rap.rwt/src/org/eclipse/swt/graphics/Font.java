@@ -42,12 +42,6 @@ public final class Font extends Resource {
    * You must dispose the font when it is no longer required.
    * </p>
    *
-   * <p><strong>Note</strong>, this constructor is provided for convenience when
-   * single-sourcing code with SWT. For RWT, the recommended way to create fonts
-   * is to use one of the <code>getFont</code> methods in class
-   * <code>Graphics</code>.
-   * </p>
-   *
    * @param device the device to create the font on
    * @param fontData the FontData that describes the desired font (must not be null)
    *
@@ -75,12 +69,6 @@ public final class Font extends Resource {
    * appearance.
    * <p>
    * You must dispose the font when it is no longer required.
-   * </p>
-   *
-   * <p><strong>Note</strong>, this constructor is provided for convenience when
-   * single-sourcing code with SWT. For RWT, the recommended way to create fonts
-   * is to use one of the <code>getFont</code> methods in class
-   * <code>Graphics</code>.
    * </p>
    *
    * @param device the device to create the font on
