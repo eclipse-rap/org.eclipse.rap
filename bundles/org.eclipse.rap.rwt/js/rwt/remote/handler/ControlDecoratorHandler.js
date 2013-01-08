@@ -38,6 +38,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ControlDecorator", {
     "text" : function( widget, value ) {
       var EncodingUtil = rwt.util.Encoding;
       var text = EncodingUtil.escapeText( value, false );
+      text = EncodingUtil.replaceNewLines( text, "<br/>" );
       widget.setText( text );
     },
     "image" : function( widget, value ) {

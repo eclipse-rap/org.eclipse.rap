@@ -42,9 +42,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
     testSetTextByProtocol : function() {
       var widget = this._createControlDecoratorByProtocol( "w3", "w2", [ "LEFT", "CENTER" ] );
 
-      TestUtil.protocolSet( "w3", { "text" : "foo && <> \" bar" } );
+      TestUtil.protocolSet( "w3", { "text" : "foo\n && <> \" bar" } );
 
-      assertEquals( "foo &amp;&amp; &lt;&gt; &quot; bar", widget._text );
+      assertEquals( "foo<br/> &amp;&amp; &lt;&gt; &quot; bar", widget._text );
       shell.destroy();
       widget.destroy();
     },
