@@ -150,8 +150,7 @@ public abstract class Device implements Drawable, SerializableCompatibility {
    */
   public Font getSystemFont() {
     checkDevice();
-    QxType font
-      = ThemeUtil.getCssValue( "Display", "font", SimpleSelector.DEFAULT );
+    QxType font = ThemeUtil.getCssValue( "Display", "font", SimpleSelector.DEFAULT );
     return QxFont.createFont( ( QxFont )font );
   }
 
@@ -170,21 +169,16 @@ public abstract class Device implements Drawable, SerializableCompatibility {
    *
    * @since 1.3
    */
-  public FontData[] getFontList( String faceName, boolean scalable )
-  {
+  public FontData[] getFontList( String faceName, boolean scalable ) {
     checkDevice();
     FontData[] result = new FontData[ 0 ];
     if( scalable ) {
       QxFont fontList
-        = ( QxFont )ThemeUtil.getCssValue( "Display",
-                                           "rwt-fontlist",
-                                           SimpleSelector.DEFAULT );
+        = ( QxFont )ThemeUtil.getCssValue( "Display", "rwt-fontlist", SimpleSelector.DEFAULT );
       if( faceName == null ) {
         result = new FontData[ fontList.family.length ];
         for( int i = 0; i < result.length; i++ ) {
-          result[ i ] = new FontData( fontList.family[ i ],
-                                      0,
-                                      SWT.NORMAL );
+          result[ i ] = new FontData( fontList.family[ i ], 0, SWT.NORMAL );
         }
       } else {
         int counter = 0;
@@ -197,9 +191,7 @@ public abstract class Device implements Drawable, SerializableCompatibility {
         counter = 0;
         for( int i = 0; i < fontList.family.length; i++ ) {
           if( fontList.family[ i ].startsWith( faceName ) ) {
-            result[ counter++ ] = new FontData( fontList.family[ i ],
-                                                0,
-                                                SWT.NORMAL );
+            result[ counter++ ] = new FontData( fontList.family[ i ], 0, SWT.NORMAL );
           }
         }
       }
