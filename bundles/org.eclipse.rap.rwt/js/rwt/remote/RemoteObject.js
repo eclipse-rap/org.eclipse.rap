@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,10 @@ var server = rwt.remote.Server.getInstance();
  *
  */
 rwt.remote.RemoteObject = function( id ) {
-  this._id = id;
+  this._ = {
+    "id" : id,
+    "listen" : {}
+  };
 };
 
 rwt.remote.RemoteObject.prototype = {
@@ -39,7 +42,7 @@ rwt.remote.RemoteObject.prototype = {
    * @param {var} value The value of the property.
    */
   set : function( key, value ) {
-    server.getMessageWriter().appendSet( this._id, key, value );
+    server.getMessageWriter().appendSet( this._.id, key, value );
   },
 
   /**
@@ -56,7 +59,7 @@ rwt.remote.RemoteObject.prototype = {
     var suppressSend = arguments[ 2 ];
    // TODO [tb]: suppressSend should be a temporary workaround for KeyEventSupport.js
     var actualProps = properties ? properties : {};
-    server.getMessageWriter().appendNotify( this._id, event, actualProps );
+    server.getMessageWriter().appendNotify( this._.id, event, actualProps );
     if( suppressSend !== true ) {
       server.send();
     }
@@ -72,8 +75,12 @@ rwt.remote.RemoteObject.prototype = {
    */
   call : function( method, properties ) {
     var actualProps = properties ? properties : {};
-    server.getMessageWriter().appendCall( this._id, method, actualProps );
+    server.getMessageWriter().appendCall( this._.id, method, actualProps );
     server.send();
+  },
+
+  isListening : function( type ) {
+    return this._.listen[ type ] === true;
   }
 
 };

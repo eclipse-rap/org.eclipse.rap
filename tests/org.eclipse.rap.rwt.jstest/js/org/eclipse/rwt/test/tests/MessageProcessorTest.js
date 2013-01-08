@@ -9,6 +9,11 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var HandlerRegistry = rwt.remote.HandlerRegistry;
+var MessageProcessor = rwt.remote.MessageProcessor;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
 
   extend : rwt.qx.Object,
@@ -112,7 +117,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       registry.remove( "dummyType" );
     },
 
-
     testProcessCreate : function() {
       var registry = rwt.remote.HandlerRegistry;
       var processor = rwt.remote.MessageProcessor;
@@ -127,6 +131,33 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       var result = this._getTargetById( "dummyId" );
       assertEquals( "myclass", result.classname );
       registry.remove( "dummyType" );
+    },
+
+    testProcessCreate_RemoteObjectListenMapNotInitializedForEvents : function() {
+      HandlerRegistry.add( "dummyType", {
+        factory : function(){ return {}; },
+        events : [ "MyEventType", "MyOtherEventType" ]
+      } );
+
+      MessageProcessor.processOperationArray( [ "create", "dummyId", "dummyType", {} ] );
+
+      var remoteObject = rwt.remote.RemoteObjectFactory._getRemoteObject( "dummyId" );
+      assertFalse( remoteObject.isListening( "MyEventType" ) );
+      HandlerRegistry.remove( "dummyType" );
+    },
+
+    testProcessCreate_RemoteObjectListenMapInitializedForListeners : function() {
+      HandlerRegistry.add( "dummyType", {
+        factory : function(){ return {}; },
+        listeners : [ "MyEventType", "MyOtherEventType" ]
+      } );
+
+      MessageProcessor.processOperationArray( [ "create", "dummyId", "dummyType", {} ] );
+
+      var remoteObject = rwt.remote.RemoteObjectFactory._getRemoteObject( "dummyId" );
+      assertTrue( remoteObject.isListening( "MyEventType" ) );
+      assertFalse( remoteObject.isListening( "MyUnkownEventType" ) );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessCreateServiceFails : function() {
@@ -700,3 +731,5 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
   }
 
 } );
+
+}());

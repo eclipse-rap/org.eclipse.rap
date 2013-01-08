@@ -51,14 +51,15 @@ rap = {
    * Properties given by the server that are not in this list will be ignored completely.
    * <em>Optional.</em>
    *
-   * @param {Object} handler.propertyHandler A map with functions.
-   * If a property is to be applied, the message processor will first look in this map for the name
-   * of the property. If a function is defined for the property, it is called with the client object
-   * as the first argument, and the property-value as the second. If no function is defined for the
-   * property, the message processor will try to call a setter on the client object directly.
-   * <em>If no property handler are needed, this field is optional.</em>
+   * @param {string[]} handler.methods List of methods supported by this handler.
+   * The order in the list is meaningless, "call" operations are processed in the order in which
+   * they are given by the server. The client object has to implement a method of the same name,
+   * unless a custom method handler is defined (see <b>handler.methodHandler</b>). One argument
+   * will be given, which is a properties object with any number of properties/fields.
+   * A "call" operation for a method not in this list will be ignored. <em>Optional.</em>
    *
-   * @param {string[]} handler.listeners List of listener supported by this handler.
+   * @param {string[]} handler.events List of event types supported by this handler.
+   * TODOC
    * A "listen" operation instructs the client object to start
    * or stop notifying the server of events of the given event type. For each supported event a
    * matching "has[Type]Listener" method has to be implemented by the client object, unless a custom
@@ -67,25 +68,6 @@ rap = {
    * object. The value given will be <code>true</code> to start and <code>false</code> to stop
    * sending events. A "listen" operation for a type not in this list will be ignored.
    * <em>Optional.</em>
-   *
-   * @param {Object} handler.listenerHandler A map with functions.
-   * If a "listen" operation is processed, the message processor will first look in this map for the
-   * name of the event type. If a function is defined for the event type, it is called with the
-   * client object as the first argument, and the boolean value as the second.
-   * <em>If no listener handler are needed, this field is optional.</em>
-   *
-   * @param {string[]} handler.methods List of methods supported by this handler.
-   * The order in the list is meaningless, "call" operations are processed in the order in which
-   * they are given by the server. The client object has to implement a method of the same name,
-   * unless a custom method handler is defined (see <b>handler.methodHandler</b>). One argument
-   * will be given, which is a properties object with any number of properties/fields.
-   * A "call" operation for a method not in this list will be ignored. <em>Optional.</em>
-   *
-   * @param {Object} handler.methodHandler A map with functions.
-   * If a "call" operation is processed, the message processor will first look in this map for the
-   * name of the method. If a function is defined for the name of the method, it is called with the
-   * client object as the first argument, and the properties object as the second.
-   * <em>If no method handler are needed, this field is optional.</em>
    */
   registerTypeHandler : function( type, handler ) {
     handler.isPublic = true;

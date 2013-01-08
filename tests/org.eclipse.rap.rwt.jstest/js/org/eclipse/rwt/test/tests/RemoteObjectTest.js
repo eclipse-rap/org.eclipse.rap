@@ -80,6 +80,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.RemoteObjectTest", {
       assertEquals( {}, operation.properties );
     },
 
+    testIsListening_InitialValueIsFalse : function() {
+      assertFalse( remoteObject.isListening( "Modify" ) );
+    },
+
+    testListen_SetToTrue : function() {
+      remoteObject._.listen[ "Modify" ] = true;
+
+      assertTrue( remoteObject.isListening( "Modify" ) );
+    },
+
+    testListen_SetToFalse : function() {
+      remoteObject._.listen[ "Modify" ] = true;
+      remoteObject._.listen[ "Modify" ] = false;
+
+      assertFalse( remoteObject.isListening( "Modify" ) );
+    },
+
     setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );
       remoteObject = rwt.remote.RemoteObjectFactory.getRemoteObject( shell );
