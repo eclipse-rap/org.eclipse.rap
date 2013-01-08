@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.io.IOException;
 import java.io.InputStream;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -301,9 +302,20 @@ public class CoolItem extends Item {
 
   }
 
-  private Image createArrowImage () {
-    InputStream inputStream = getClass().getClassLoader().getResourceAsStream( CHEVRON_IMAGE );
-    return new Image( display, inputStream );
+  private Image createArrowImage() {
+    Image result;
+    ClassLoader classLoader = CoolItem.class.getClassLoader();
+    InputStream inputStream = classLoader.getResourceAsStream( CHEVRON_IMAGE );
+    try {
+      result = new Image( display, inputStream );
+    } finally {
+      try {
+        inputStream.close();
+      } catch( IOException unexpected ) {
+        throw new RuntimeException( "Failed to close image input stream", unexpected );
+      }
+    }
+    return result;
   }
 
   // Image createArrowImage (int width, int height) {
