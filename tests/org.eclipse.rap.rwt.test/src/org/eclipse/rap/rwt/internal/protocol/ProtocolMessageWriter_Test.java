@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2011, 2012 EclipseSource and others.
+* Copyright (c) 2011, 2013 EclipseSource and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -246,52 +246,66 @@ public class ProtocolMessageWriter_Test {
   }
 
   @Test
-  public void testMessageWithSet() {
-    Button button = new Button( shell, SWT.PUSH );
-    String buttonId = WidgetUtil.getId( button );
+  public void testAppendSet_appendsSequentialPropertiesToSameOperation() {
+    writer.appendSet( "id", "property-1", "value-1" );
+    writer.appendSet( "id", "property-2", 23 );
 
-    writer.appendSet( buttonId, "text", "newText" );
-    writer.appendSet( buttonId, "image", "aUrl" );
-    writer.appendSet( buttonId, "fake", 1 );
-
-    SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
-    assertEquals( buttonId, operation.getTarget() );
-    assertEquals( "newText", operation.getProperty( "text" ) );
-    assertEquals( "aUrl", operation.getProperty( "image" ) );
-    assertEquals( new Integer( 1 ), operation.getProperty( "fake" ) );
+    Message message = getMessage();
+    assertEquals( 1, message.getOperationCount() );
+    assertEquals( "value-1", message.getOperation( 0 ).getProperty( "property-1" ) );
+    assertEquals( Integer.valueOf( 23 ), message.getOperation( 0 ).getProperty( "property-2" ) );
   }
 
   @Test
-  public void testMessageWithSetTwice() {
-    Button button = new Button( shell, SWT.PUSH );
-    String shellId = WidgetUtil.getId( shell );
-    String buttonId = WidgetUtil.getId( button );
+  public void testAppendSet_createsSeparateOperationsForDifferentTargets() {
+    writer.appendSet( "id-1", "property", "value-1" );
+    writer.appendSet( "id-2", "property", "value-2" );
 
-    writer.appendSet( shellId, "text", "newText" );
-    writer.appendSet( shellId, "image", true );
-    writer.appendSet( shellId, "fake", 1 );
-    writer.appendSet( buttonId, "text", "newText" );
-    writer.appendSet( buttonId, "image", true );
-    writer.appendSet( buttonId, "fake", 1 );
-
-    SetOperation operation = ( SetOperation )getMessage().getOperation( 1 );
-    assertEquals( buttonId, operation.getTarget() );
-    assertEquals( "newText", operation.getProperty( "text" ) );
-    assertEquals( new Integer( 1 ), operation.getProperty( "fake" ) );
-    assertTrue( ( ( Boolean )operation.getProperty( "image" ) ).booleanValue() );
+    Message message = getMessage();
+    assertEquals( 2, message.getOperationCount() );
+    assertEquals( "id-1", message.getOperation( 0 ).getTarget() );
+    assertEquals( "value-2", message.getOperation( 1 ).getProperty( "property" ) );
+    assertEquals( "id-2", message.getOperation( 1 ).getTarget() );
+    assertEquals( "value-2", message.getOperation( 1 ).getProperty( "property" ) );
   }
 
   @Test
-  public void testMessageWithSetDuplicateProperty() {
-    Button button = new Button( shell, SWT.PUSH );
-    String buttonId = WidgetUtil.getId( button );
+  public void testAppendSet_overwritesDuplicatePropertyInSameOperation() {
+    writer.appendSet( "id", "property", "value-1" );
+    writer.appendSet( "id", "another-property", true );
+    writer.appendSet( "id", "property", "value-2" );
 
-    writer.appendSet( buttonId, "text", "newText" );
-    try {
-      writer.appendSet( buttonId, "text", "newText" );
-      fail();
-    } catch( IllegalArgumentException e ) {
-    }
+    Message message = getMessage();
+    assertEquals( 1, message.getOperationCount() );
+    assertEquals( "value-2", message.getOperation( 0 ).getProperty( "property" ) );
+  }
+
+  @Test
+  public void testAppendSet_createsNewOperationWhenInterruptedByAnotherOperation() {
+    writer.appendSet( "id", "property", "value-1" );
+    writer.appendCall( "id", "method", null );
+    writer.appendSet( "id", "property", "value-2" );
+
+    Message message = getMessage();
+    assertEquals( 3, message.getOperationCount() );
+    assertEquals( "value-1", message.getOperation( 0 ).getProperty( "property" ) );
+    assertEquals( "value-2", message.getOperation( 2 ).getProperty( "property" ) );
+  }
+
+  @Test
+  public void testAppendSet_createsNewOperationWhenInterruptedBySetForDifferentTarget() {
+    writer.appendSet( "id-1", "property", "value-1" );
+    writer.appendSet( "id-2", "property", "value-2" );
+    writer.appendSet( "id-1", "property", "value-3" );
+
+    Message message = getMessage();
+    assertEquals( 3, message.getOperationCount() );
+    assertEquals( "id-1", message.getOperation( 0 ).getTarget() );
+    assertEquals( "value-1", message.getOperation( 0 ).getProperty( "property" ) );
+    assertEquals( "id-2", message.getOperation( 1 ).getTarget() );
+    assertEquals( "value-2", message.getOperation( 1 ).getProperty( "property" ) );
+    assertEquals( "id-1", message.getOperation( 2 ).getTarget() );
+    assertEquals( "value-3", message.getOperation( 2 ).getProperty( "property" ) );
   }
 
   @Test
