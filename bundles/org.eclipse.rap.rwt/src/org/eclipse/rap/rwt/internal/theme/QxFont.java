@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,13 +11,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -126,6 +127,7 @@ public class QxFont implements QxType {
     return result.toString();
   }
 
+  @Override
   public boolean equals( Object obj ) {
     boolean result = false;
     if( obj == this ) {
@@ -140,6 +142,7 @@ public class QxFont implements QxType {
     return result;
   }
 
+  @Override
   public int hashCode() {
     int result = 23;
     for( int i = 0; i < family.length; i++ ) {
@@ -151,6 +154,7 @@ public class QxFont implements QxType {
     return result;
   }
 
+  @Override
   public String toString() {
     StringBuilder result = new StringBuilder();
     result.append( "QxFont{ " );
@@ -177,6 +181,6 @@ public class QxFont implements QxType {
       style |= SWT.ITALIC;
     }
     FontData data = new FontData( name, font.size, style );
-    return Graphics.getFont( data );
+    return getApplicationContext().getResourceFactory().getFont( data );
   }
 }
