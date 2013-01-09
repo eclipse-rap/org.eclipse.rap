@@ -32,9 +32,9 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -315,7 +315,7 @@ public class TableLCA_Test {
     Fixture.executeLifeCycleFromServerThread();
     // run actual request
     Fixture.fakeNewRequest();
-    ILifeCycle lifeCycle = getApplicationContext().getLifeCycleFactory().getLifeCycle();
+    LifeCycle lifeCycle = getApplicationContext().getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
       public void beforePhase( PhaseEvent event ) {

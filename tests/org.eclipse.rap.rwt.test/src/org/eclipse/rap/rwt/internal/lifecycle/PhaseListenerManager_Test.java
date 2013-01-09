@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,9 +24,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -43,12 +43,12 @@ public class PhaseListenerManager_Test {
 
   private List<Throwable> exceptionsInServletLog;
   private PhaseListenerManager phaseListenerManager;
-  private ILifeCycle lifeCycle;
+  private LifeCycle lifeCycle;
 
   @Before
   public void setUp() {
     Fixture.setUp();
-    lifeCycle = new TestLifeCycle();
+    lifeCycle = mock( LifeCycle.class );
     phaseListenerManager = new PhaseListenerManager( lifeCycle );
     exceptionsInServletLog = new LinkedList<Throwable>();
     setupServletContextLog();
@@ -275,7 +275,8 @@ public class PhaseListenerManager_Test {
     new Display();
     Fixture.fakeNewRequest();
     final List<PhaseId> log = new ArrayList<PhaseId>();
-    RWT.getLifeCycle().addPhaseListener( new PhaseListener() {
+    LifeCycle lifeCycle = getApplicationContext().getLifeCycleFactory().getLifeCycle();
+    lifeCycle.addPhaseListener( new PhaseListener() {
       public PhaseId getPhaseId() {
         return PhaseId.PROCESS_ACTION;
       }
@@ -304,13 +305,6 @@ public class PhaseListenerManager_Test {
 
   private static class TestError extends Error {
     private static final long serialVersionUID = 1L;
-  }
-
-  private static class TestLifeCycle implements ILifeCycle {
-    public void removePhaseListener( PhaseListener listener ) {
-    }
-    public void addPhaseListener( PhaseListener listener ) {
-    }
   }
 
   private static class EmptyPhaseListener implements PhaseListener {

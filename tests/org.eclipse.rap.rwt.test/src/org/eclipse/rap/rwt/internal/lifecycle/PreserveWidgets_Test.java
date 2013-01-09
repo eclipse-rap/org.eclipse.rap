@@ -22,7 +22,6 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -66,7 +65,7 @@ public class PreserveWidgets_Test {
     final Text text = new Text( shell, SWT.NONE );
     text.setText( "hello" );
     Fixture.markInitialized( display );
-    ILifeCycle lifeCycle = getApplicationContext().getLifeCycleFactory().getLifeCycle();
+    LifeCycle lifeCycle = getApplicationContext().getLifeCycleFactory().getLifeCycle();
     final StringBuilder log = new StringBuilder();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;

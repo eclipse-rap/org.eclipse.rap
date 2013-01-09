@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -52,7 +51,7 @@ public class RenderDispose_Test {
     Fixture.executeLifeCycleFromServerThread( );
     // create a button and dispose of it immediately
     Fixture.fakeNewRequest();
-    ILifeCycle lifeCycle = getApplicationContext().getLifeCycleFactory().getLifeCycle();
+    LifeCycle lifeCycle = getApplicationContext().getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       public PhaseId getPhaseId() {
         return PhaseId.RENDER;

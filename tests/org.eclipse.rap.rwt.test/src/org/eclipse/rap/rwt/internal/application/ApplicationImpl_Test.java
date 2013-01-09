@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,9 +23,9 @@ import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.junit.Before;
@@ -51,7 +51,7 @@ public class ApplicationImpl_Test {
   public void testDefaultOperationMode() {
     applicationContext.activate();
 
-    ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
+    LifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
     assertSame( SimpleLifeCycle.class, lifeCycle.getClass() );
   }
 
@@ -69,7 +69,7 @@ public class ApplicationImpl_Test {
     application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     applicationContext.activate();
 
-    ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
+    LifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
     assertSame( RWTLifeCycle.class, lifeCycle.getClass() );
   }
 
@@ -78,7 +78,7 @@ public class ApplicationImpl_Test {
     application.setOperationMode( OperationMode.JEE_COMPATIBILITY );
     applicationContext.activate();
 
-    ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
+    LifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
     assertSame( SimpleLifeCycle.class, lifeCycle.getClass() );
   }
 
@@ -90,7 +90,7 @@ public class ApplicationImpl_Test {
     application.setOperationMode( OperationMode.SESSION_FAILOVER );
     applicationContext.activate();
 
-    ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
+    LifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
     assertSame( SimpleLifeCycle.class, lifeCycle.getClass() );
     assertFilterRegistered( RWTClusterSupport.class );
   }
@@ -163,4 +163,5 @@ public class ApplicationImpl_Test {
   private FilterRegistration[] getFilterRegistrations() {
     return servletContext.getFilterRegistrations().values().toArray( new FilterRegistration[ 0 ] );
   }
+
 }

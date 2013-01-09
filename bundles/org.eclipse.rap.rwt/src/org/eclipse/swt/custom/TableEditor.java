@@ -1,16 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ *    IBM Corporation - initial API and implementation
+ *    EclipseSource - adaptation for RAP
+ ******************************************************************************/
 package org.eclipse.swt.custom;
 
-import org.eclipse.rap.rwt.RWT;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -205,13 +208,14 @@ void resize () {
 //		display.timerExec(-1, timer);
 //		display.timerExec(TIMEOUT, timer);
 //	}
-	// [rh] Adaption of the above code for RWT (see bug 364802)
-	RWT.getLifeCycle().addPhaseListener( new PhaseListener() {
+  // [rh] Adaption of the above code for RWT (see bug 364802)
+  final LifeCycle lifeCycle = getApplicationContext().getLifeCycleFactory().getLifeCycle();
+  lifeCycle.addPhaseListener( new PhaseListener() {
     public void beforePhase( PhaseEvent event ) {
     }
-    
+
     public void afterPhase( PhaseEvent event ) {
-      RWT.getLifeCycle().removePhaseListener( this );
+      lifeCycle.removePhaseListener( this );
       if( table != null && table.getDisplay() == Display.getCurrent() ) {
         layout();
       }

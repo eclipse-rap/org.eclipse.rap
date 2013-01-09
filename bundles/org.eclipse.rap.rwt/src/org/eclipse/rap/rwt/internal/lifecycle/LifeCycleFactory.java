@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,11 +14,11 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 
 
 public class LifeCycleFactory {
+
   private static final Class<? extends LifeCycle> DEFAULT_LIFE_CYCLE_CLASS = SimpleLifeCycle.class;
 
   private final ApplicationContextImpl applicationContext;
@@ -31,7 +31,7 @@ public class LifeCycleFactory {
     lifeCycleClass = DEFAULT_LIFE_CYCLE_CLASS;
   }
 
-  public ILifeCycle getLifeCycle() {
+  public LifeCycle getLifeCycle() {
     return lifeCycle;
   }
 
@@ -56,4 +56,5 @@ public class LifeCycleFactory {
     Object[] arguments = new Object[] { applicationContext };
     return ClassUtil.newInstance( lifeCycleClass, argumentTypes, arguments );
   }
+
 }

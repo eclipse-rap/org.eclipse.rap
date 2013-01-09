@@ -276,7 +276,7 @@ public class SimpleLifeCycle_Test {
       }
     } );
     // Initialize shutdown adapter
-    ( ( LifeCycle )RWT.getLifeCycle() ).execute();
+    getApplicationContext().getLifeCycleFactory().getLifeCycle().execute();
 
     Thread thread = new Thread( new Runnable() {
       public void run() {

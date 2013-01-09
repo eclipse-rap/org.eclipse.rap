@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.client;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValueAsString;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,7 +59,7 @@ public final class BrowserNavigationImpl
     display = Display.getCurrent();
     entriesToAdd = new ArrayList<HistoryEntry>();
     listeners = new LinkedHashSet<BrowserNavigationListener>();
-    RWT.getLifeCycle().addPhaseListener( this );
+    getApplicationContext().getLifeCycleFactory().getLifeCycle().addPhaseListener( this );
     RWT.getUISession().addUISessionListener( this );
   }
 
@@ -118,7 +119,7 @@ public final class BrowserNavigationImpl
   // UISessionListener
 
   public void beforeDestroy( UISessionEvent event ) {
-    RWT.getLifeCycle().removePhaseListener( this );
+    getApplicationContext().getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
   }
 
   //////////////////

@@ -584,7 +584,7 @@ public final class RWT {
     if( display == null || display.isDisposed() ) {
       SWT.error( SWT.ERROR_DEVICE_DISPOSED );
     }
-    LifeCycle lifeCycle = ( LifeCycle )getLifeCycle();
+    LifeCycle lifeCycle = ContextProvider.getApplicationContext().getLifeCycleFactory().getLifeCycle();
     lifeCycle.requestThreadExec( runnable );
   }
 
