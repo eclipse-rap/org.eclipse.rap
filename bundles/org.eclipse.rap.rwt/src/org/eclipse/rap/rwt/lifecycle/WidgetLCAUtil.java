@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,13 +11,19 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.protocol.StylesUtil;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.internal.util.EncodingUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.swt.SWT;
@@ -61,6 +67,7 @@ public final class WidgetLCAUtil {
   private static final String PROP_ROUNDED_BORDER_RADIUS = "roundedBorderRadius";
   private static final String PROP_ENABLED = "enabled";
   private static final String PROP_VARIANT = "variant";
+  private static final String PROP_DATA = "data";
   private static final String PROP_HELP_LISTENER = "Help";
 
   static final String LISTENER_PREFIX = "listener_";
@@ -295,6 +302,10 @@ public final class WidgetLCAUtil {
     adapter.preserve( PROP_VARIANT, variant );
   }
 
+  static void preserveData( Widget widget ) {
+    preserveProperty( widget, PROP_DATA, getDataAsArray( widget ) );
+  }
+
   /**
    * Preserves whether the given <code>widget</code> has one or more
    * <code>HelpListener</code>s attached.
@@ -351,6 +362,36 @@ public final class WidgetLCAUtil {
       IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( "customVariant", value );
     }
+  }
+
+  static void renderData( Widget widget ) {
+    Object[] newValue = getDataAsArray( widget );
+    if( WidgetLCAUtil.hasChanged( widget, PROP_DATA, newValue, new Object[ 0 ] ) ) {
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
+      Map<Object, Object> data = new HashMap<Object, Object>();
+      for( int i = 0; i < newValue.length; i++ ) {
+        data.put( newValue[ i ], newValue[ ++i ] );
+      }
+      clientObject.set( PROP_DATA, data );
+    }
+  }
+
+  private static Object[] getDataAsArray( Widget widget ) {
+    List<Object> result = new ArrayList<Object>();
+    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    String[] renderedDataKeys = uiSession.getRenderedDataKeys();
+    if( renderedDataKeys != null ) {
+      for( String key : renderedDataKeys ) {
+        if( key != null ) {
+          Object value = widget.getData( key );
+          if( value != null ) {
+            result.add( key );
+            result.add( value );
+          }
+        }
+      }
+    }
+    return result.toArray();
   }
 
   /**

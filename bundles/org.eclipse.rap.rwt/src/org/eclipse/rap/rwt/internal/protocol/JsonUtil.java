@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,6 +79,8 @@ final class JsonUtil {
       result = JsonArray.valueOf( ( boolean[] )value );
     } else if( value instanceof Object[] ) {
       result = createJsonArray( ( Object[] )value );
+    } else if( value instanceof Map ) {
+      result = createJsonObject( ( Map )value );
     } else if( value instanceof JsonValue ) {
       result = ( JsonValue )value;
     } else {

@@ -45,6 +45,7 @@ public final class UISessionImpl
 
   private static final String ATTR_SESSION_STORE = UISessionImpl.class.getName();
   private static final String ATTR_LOCALE = UISessionImpl.class.getName() + "#locale";
+  private static final String ATTR_DATA_KEYS = UISessionImpl.class.getName() + "#dataKeys";
 
   private final SerializableLock requestLock;
   private final SerializableLock lock;
@@ -166,6 +167,14 @@ public final class UISessionImpl
 
   public void setLocale( Locale locale ) {
     setAttribute( ATTR_LOCALE, locale );
+  }
+
+  public String[] getRenderedDataKeys() {
+    return ( String[] )getAttribute( ATTR_DATA_KEYS );
+  }
+
+  public void setRenderedDataKeys( String[] keys ) {
+    setAttribute( ATTR_DATA_KEYS, keys );
   }
 
   public void exec( Runnable runnable ) {

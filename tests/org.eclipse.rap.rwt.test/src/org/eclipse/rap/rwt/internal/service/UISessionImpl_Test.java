@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -583,6 +584,20 @@ public class UISessionImpl_Test {
     } );
 
     assertNotNull( localeCaptor.get() );
+  }
+
+  @Test
+  public void testSetRenderedDataKeys() {
+    String[] keys = new String[]{ "foo", "bar" };
+
+    uiSession.setRenderedDataKeys( keys );
+
+    assertTrue( Arrays.equals( keys, uiSession.getRenderedDataKeys() ) );
+  }
+
+  @Test
+  public void testGetRenderedKeys_NotSet() {
+    assertNull( uiSession.getRenderedDataKeys() );
   }
 
   @Test
