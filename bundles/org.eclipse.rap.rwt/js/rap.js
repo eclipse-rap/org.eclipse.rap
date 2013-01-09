@@ -43,30 +43,28 @@ rap = {
    * @param {Function} handler.destructor Called for destroy operations with the client object as
    * the first argument. <em>Optional</em>
    *
-   * @param {string[]} handler.properties List of properties supported by this handler.
+   * @param {string[]} handler.properties List of properties supported by this type.
    * The order in the list controls the order in which the properties are applied by the message
-   * processor. The client object has to implement a setter for each supported property, unless a
-   * custom property handler is defined (see <b>handler.propertyHandler</b>). For example, if
-   * the property is "bounds", <code>setBounds</code> will be called on the client object.
-   * Properties given by the server that are not in this list will be ignored completely.
+   * processor. The client object has to implement a setter for each supported property.
+   * For example, if the property is "bounds", <code>setBounds</code> will be called on the client
+   * object. Properties given by the server that are not in this list will be ignored. (One
+   * exception is the factory, which gets an object with <i>all</i> properties set by the server
+   * at that time.)  If the property changes on the client, {@link RemoteObject#set} can be
+   * used to synchronize the value with the server.
    * <em>Optional.</em>
    *
-   * @param {string[]} handler.methods List of methods supported by this handler.
+   * @param {string[]} handler.methods List of methods supported by this type.
    * The order in the list is meaningless, "call" operations are processed in the order in which
-   * they are given by the server. The client object has to implement a method of the same name,
-   * unless a custom method handler is defined (see <b>handler.methodHandler</b>). One argument
-   * will be given, which is a properties object with any number of properties/fields.
-   * A "call" operation for a method not in this list will be ignored. <em>Optional.</em>
+   * they are given by the server. The client object has to implement a method of the same name.
+   * One argument will be given, which is a properties object with any number of properties/fields.
+   * A "call" operation given by the server for a method that is not in this list will be ignored.
+   * <em>Optional.</em>
    *
-   * @param {string[]} handler.events List of event types supported by this handler.
-   * TODOC
-   * A "listen" operation instructs the client object to start
-   * or stop notifying the server of events of the given event type. For each supported event a
-   * matching "has[Type]Listener" method has to be implemented by the client object, unless a custom
-   * listener handler is defined (see <b>handler.listenerHandler</b>). For example, if the
-   * listener/event type is "Modify", <code>setHasModifyListener</code> will be called on the client
-   * object. The value given will be <code>true</code> to start and <code>false</code> to stop
-   * sending events. A "listen" operation for a type not in this list will be ignored.
+   * @param {string[]} handler.events List of event types supported by this type.
+   * The server may instruct the client object with "listen" operations to start or stop sending
+   * notifications when events of he given event type occur. Notifications may and can only be
+   * sent for types that are given in this list and are listend to by the server. See also
+   * {@link RemoteObject#notify}.
    * <em>Optional.</em>
    */
   registerTypeHandler : function( type, handler ) {

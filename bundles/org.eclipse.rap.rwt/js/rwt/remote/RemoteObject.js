@@ -36,8 +36,9 @@ rwt.remote.RemoteObject.prototype = {
   /**
    * @description Sets the specified property of the remote object to the given value.
    * Calling this method multiple times for the same property will overwrite the previous value,
-   * the message will not become longer.
-   * This method does not cause the message to be sent immediately.
+   * the message will not become longer. This method does not cause the message to be sent
+   * immediately. Instead it will be sent the next time a "notify" or "call" operation is
+   * written to the message.
    * @param {string} property The name of the property.
    * @param {var} value The value of the property.
    */
@@ -47,10 +48,11 @@ rwt.remote.RemoteObject.prototype = {
 
   /**
    * @description Notifies the remote object that an event of the given type occurred.
-   * Sending an event of a type the server is currently not
-   * listening for (see {@link rap.registerTypeHandler}, <b>handler.listeners</b>) is illegal usage
-   * of the RAP protocol, but currently not prevented. Calling this method causes the message to be
-   * sent to the server within a few milliseconds.
+   * Notifications can only be sent for types that the server is currently listening for
+   * (see {@link rap.registerTypeHandler}, <b>handler.events</b>). If this is not the
+   * case, no "notify" operation is written into the message and no request will be sent.
+   * Otherwise the message will be sent to the server within a few milliseconds. One message
+   * may contain several "notify" operations, if they are added consecutively.
    * @param {string} event The type of the event that occured.
    * @param {Object|null} [properties] This object may contain any number of additional
    * properties/fields associated with the event. It may also be null or omitted.
@@ -69,8 +71,9 @@ rwt.remote.RemoteObject.prototype = {
 
   /**
    * @description Instructs the remote object to call the given method.
-   * Calling this method causes the message to be sent to the server within a
-   * few milliseconds.
+   * Calling this method will write a "call" operation into the message, which will to be sent to
+   * the server within a few milliseconds. One message
+   * may contain several "call" operations, if they are added consecutively.
    * @param {string} method The name of the method.
    * @param {Object|null} [properties] This object may contain any number of additional
    * properties/fields associated with the call. It may also be null or omitted.
