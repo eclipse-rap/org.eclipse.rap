@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import static org.mockito.Mockito.mock;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
@@ -46,12 +45,12 @@ public class LifeCycleFactory_Test {
   @Test
   public void testActivateDeactivateCycle() {
     lifeCycleFactory.configure( TestLifeCycle.class );
-    ILifeCycle beforeActivate = lifeCycleFactory.getLifeCycle();
+    LifeCycle beforeActivate = lifeCycleFactory.getLifeCycle();
     lifeCycleFactory.activate();
-    ILifeCycle afterActivate = lifeCycleFactory.getLifeCycle();
-    ILifeCycle secondCall = lifeCycleFactory.getLifeCycle();
+    LifeCycle afterActivate = lifeCycleFactory.getLifeCycle();
+    LifeCycle secondCall = lifeCycleFactory.getLifeCycle();
     lifeCycleFactory.deactivate();
-    ILifeCycle afterDeactivate = lifeCycleFactory.getLifeCycle();
+    LifeCycle afterDeactivate = lifeCycleFactory.getLifeCycle();
 
     assertNull( beforeActivate );
     assertTrue( afterActivate instanceof TestLifeCycle );

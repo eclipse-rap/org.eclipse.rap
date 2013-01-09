@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,16 +14,16 @@ package org.eclipse.rap.rwt.lifecycle;
 import java.io.Serializable;
 import java.util.EventListener;
 
+import org.eclipse.rap.rwt.application.Application;
+
 
 /**
- * <p>
  * An interface implemented by objects that wish to be notified at the beginning
  * and ending of processing for each standard phase of the request processing
  * lifecycle.
- * </p>
+ *
  * @since 2.0
- * @see ILifeCycle#addPhaseListener(PhaseListener)
- * @see ILifeCycle#removePhaseListener(PhaseListener)
+ * @see Application#addPhaseListener(PhaseListener)
  */
 // TODO [rh] why is this Serializable?
 public interface PhaseListener extends EventListener, Serializable {

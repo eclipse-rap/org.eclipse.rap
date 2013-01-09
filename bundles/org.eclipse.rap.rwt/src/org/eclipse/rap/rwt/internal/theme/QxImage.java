@@ -11,12 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.zip.CRC32;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.ResourceLoader;
@@ -140,6 +141,7 @@ public class QxImage implements QxType, ThemeResource {
     return none ? NONE_INPUT : "";
   }
 
+  @Override
   public boolean equals( Object object ) {
     boolean result = false;
     if( object == this ) {
@@ -163,6 +165,7 @@ public class QxImage implements QxType, ThemeResource {
     return result;
   }
 
+  @Override
   public int hashCode() {
     CRC32 result = new CRC32();
     if( none ) {
@@ -185,6 +188,7 @@ public class QxImage implements QxType, ThemeResource {
     return ( int )result.getValue();
   }
 
+  @Override
   public String toString() {
     StringBuilder result = new StringBuilder();
     result.append( "QxImage{ " );
@@ -214,7 +218,7 @@ public class QxImage implements QxType, ThemeResource {
     }
     InputStream inputStream = image.loader.getResourceAsStream( image.path );
     try {
-      result = Graphics.getImage( image.path, inputStream );
+      result = getApplicationContext().getImageFactory().findImage( image.path, inputStream );
     } finally {
       inputStream.close();
     }

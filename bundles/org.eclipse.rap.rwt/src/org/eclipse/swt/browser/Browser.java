@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.browser;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
@@ -522,7 +523,7 @@ public class Browser extends Composite {
   }
 
   private void checkOperationMode() {
-    if( RWT.getLifeCycle() instanceof SimpleLifeCycle ) {
+    if( getApplicationContext().getLifeCycleFactory().getLifeCycle() instanceof SimpleLifeCycle ) {
       throw new UnsupportedOperationException( "Method not supported in JEE_COMPATIBILITY mode." );
     }
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.util.Set;
 
 import org.eclipse.rap.rwt.internal.service.ServletLog;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -24,14 +23,14 @@ import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 
 class PhaseListenerManager {
 
-  private final ILifeCycle eventSource;
+  private final LifeCycle eventSource;
   private final Object lock;
   private final Set<PhaseListener> phaseListeners;
 
-  PhaseListenerManager( ILifeCycle eventSource ) {
+  PhaseListenerManager( LifeCycle eventSource ) {
     this.eventSource = eventSource;
-    this.lock = new Object();
-    this.phaseListeners = new HashSet<PhaseListener>();
+    lock = new Object();
+    phaseListeners = new HashSet<PhaseListener>();
   }
 
   void addPhaseListener( PhaseListener phaseListener ) {

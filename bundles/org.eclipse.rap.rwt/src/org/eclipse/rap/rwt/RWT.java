@@ -25,16 +25,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.application.Application;
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
+import org.eclipse.rap.rwt.internal.remote.RemoteObject;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
+import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.ResourceManager;
@@ -395,7 +398,13 @@ public final class RWT {
    * Returns the instance of the life cycle which is currently processed.
    *
    * @return instance of {@link ILifeCycle}
+   * @deprecated As of 2.0, PhaseListeners should only be registered in an
+   *             {@link ApplicationConfiguration}. For new applications and custom widgets, consider
+   *             the (still internal) {@link RemoteObject} API which is going to replace
+   *             PhaseListener.
+   * @see Application#addPhaseListener(PhaseListener)
    */
+  @Deprecated
   public static ILifeCycle getLifeCycle() {
     return ContextProvider.getApplicationContext().getLifeCycleFactory().getLifeCycle();
   }
@@ -575,7 +584,7 @@ public final class RWT {
     if( display == null || display.isDisposed() ) {
       SWT.error( SWT.ERROR_DEVICE_DISPOSED );
     }
-    LifeCycle lifeCycle = ( LifeCycle )getLifeCycle();
+    LifeCycle lifeCycle = ContextProvider.getApplicationContext().getLifeCycleFactory().getLifeCycle();
     lifeCycle.requestThreadExec( runnable );
   }
 

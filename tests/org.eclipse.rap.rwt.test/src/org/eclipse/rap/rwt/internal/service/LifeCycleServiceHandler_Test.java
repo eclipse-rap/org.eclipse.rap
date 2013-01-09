@@ -41,7 +41,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -327,7 +326,7 @@ public class LifeCycleServiceHandler_Test {
   }
 
   private static LifeCycleFactory mockLifeCycleFactory() {
-    ILifeCycle lifecycle = mock( LifeCycle.class );
+    LifeCycle lifecycle = mock( LifeCycle.class );
     LifeCycleFactory lifeCycleFactory = mock( LifeCycleFactory.class );
     when( lifeCycleFactory.getLifeCycle() ).thenReturn( lifecycle );
     return lifeCycleFactory;

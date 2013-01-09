@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,16 +20,8 @@ import org.eclipse.swt.internal.graphics.ColorUtil;
  * Instances of this class manage resources that implement SWT's RGB color
  * model.
  *
- * <p>It is recommended to create a color by using one of the
- * <code>getColor</code> methods in class <code>Graphics</code> and either
- * specify the individual color components as integers in the range 0 to 255
- * or provide an instance of an <code>RGB</code>.
- * </p>
- *
  * @see RGB
  * @see Device#getSystemColor
- * @see org.eclipse.rap.rwt.graphics.Graphics#getColor(int, int, int)
- * @see org.eclipse.rap.rwt.graphics.Graphics#getColor(RGB)
  *
  * @since 1.0
  */
@@ -59,12 +51,6 @@ public class Color extends Resource {
    * You must dispose the color when it is no longer required.
    * </p>
    *
-   * <p><strong>Note</strong>, this constructor is provided for convenience when
-   * single-sourcing code with SWT. For RWT, the recommended way to create colors
-   * is to use one of the <code>getColor</code> methods in class
-   * <code>Graphics</code>.
-   * </p>
-   *
    * @param device the device on which to allocate the color
    * @param rgb the RGB values of the desired color
    *
@@ -75,8 +61,6 @@ public class Color extends Resource {
    * </ul>
    *
    * @see #dispose
-   * @see org.eclipse.rap.rwt.graphics.Graphics#getColor(int, int, int)
-   * @see org.eclipse.rap.rwt.graphics.Graphics#getColor(RGB)
    * @since 1.3
    */
   public Color( Device device, RGB rgb ) {
@@ -99,12 +83,6 @@ public class Color extends Resource {
    * You must dispose the color when it is no longer required.
    * </p>
    *
-   * <p><strong>Note</strong>, this constructor is provided for convenience when
-   * single-sourcing code with SWT. For RWT, the recommended way to create colors
-   * is to use one of the <code>getColor</code> methods in class
-   * <code>Graphics</code>.
-   * </p>
-   *
    * @param device the device on which to allocate the color
    * @param red the amount of red in the color
    * @param green the amount of green in the color
@@ -116,8 +94,6 @@ public class Color extends Resource {
    * </ul>
    *
    * @see #dispose
-   * @see org.eclipse.rap.rwt.graphics.Graphics#getColor(int, int, int)
-   * @see org.eclipse.rap.rwt.graphics.Graphics#getColor(RGB)
    * @since 1.3
    */
   public Color( Device device, int red, int green, int blue ) {
@@ -202,6 +178,7 @@ public class Color extends Resource {
    *         <code>false</code> otherwise
    * @see #hashCode
    */
+  @Override
   public boolean equals( Object object ) {
     boolean result;
     if( object == this ) {
@@ -223,6 +200,7 @@ public class Color extends Resource {
    * @return the receiver's hash
    * @see #equals
    */
+  @Override
   public int hashCode() {
     return colorNr;
   }
@@ -233,6 +211,7 @@ public class Color extends Resource {
    *
    * @return a string representation of the receiver
    */
+  @Override
   public String toString() {
     String result;
     if( isDisposed() ) {

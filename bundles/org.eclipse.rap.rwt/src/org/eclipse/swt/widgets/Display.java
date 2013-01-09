@@ -1175,7 +1175,7 @@ public class Display extends Device implements Adaptable {
    */
   public boolean sleep() {
     checkDevice();
-    LifeCycle lifeCycle = ( LifeCycle )getApplicationContext().getLifeCycleFactory().getLifeCycle();
+    LifeCycle lifeCycle = getApplicationContext().getLifeCycleFactory().getLifeCycle();
     lifeCycle.sleep();
     // return true as we cannot reliably determinate what actually caused
     // lifeCycle#sleep() to return

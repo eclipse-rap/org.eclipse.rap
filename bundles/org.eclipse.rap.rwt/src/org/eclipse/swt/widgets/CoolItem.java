@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.rap.rwt.graphics.Graphics;
+import java.io.IOException;
+import java.io.InputStream;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -37,7 +36,7 @@ import org.eclipse.swt.graphics.Rectangle;
  * @since 1.0
  */
 public class CoolItem extends Item {
-  
+
   Control control;
   CoolBar parent;
   boolean ideal;
@@ -49,16 +48,15 @@ public class CoolItem extends Item {
   static final int GRABBER_WIDTH = 2;
   static final int MINIMUM_WIDTH = (2 * MARGIN_WIDTH) + GRABBER_WIDTH;
 
+  private String CHEVRON_IMAGE = "resource/widget/rap/coolitem/chevron.gif";
   private int CHEVRON_HORIZONTAL_TRIM = -1; // platform dependent values
   private int CHEVRON_VERTICAL_TRIM = -1;
   private static final int CHEVRON_LEFT_MARGIN = 2;
-  private static final int CHEVRON_IMAGE_WIDTH = 8; // Width to draw the double
-                                                    // arrow
+  private static final int CHEVRON_IMAGE_WIDTH = 8; // Width to draw the double arrow
 
   ToolBar chevron;
   boolean wrap;
   Image arrowImage = null;
-  private List<SelectionListener> selectionListeners;
 
 //  private static final class CoolItemOrderComparator implements Comparator {
 //
@@ -202,18 +200,15 @@ public class CoolItem extends Item {
    */
   public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
-    if ( listener == null )
-      error( SWT.ERROR_NULL_ARGUMENT );
-    // TypedListener typedListener = new TypedListener (listener);
-    // addListener (SWT.Selection,typedListener);
-    // addListener (SWT.DefaultSelection,typedListener);
-    if ( selectionListeners == null ) {
-      selectionListeners = new ArrayList<SelectionListener>();
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    selectionListeners.add( listener );
-
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Selection, typedListener );
+    addListener( SWT.DefaultSelection, typedListener );
   }
 
+  @Override
   protected void checkSubclass() {
     // if (!isValidSubclass ()) error (SWT.ERROR_INVALID_SUBCLASS);
   }
@@ -281,6 +276,7 @@ public class CoolItem extends Item {
     return new Point( width, height );
   }
 
+  @Override
   public void dispose() {
     if ( isDisposed() )
       return;
@@ -301,9 +297,25 @@ public class CoolItem extends Item {
     if ( chevron != null && !chevron.isDisposed() )
       chevron.dispose();
     chevron = null;
-    // if (arrowImage != null && !arrowImage.isDisposed()) arrowImage.dispose();
+    if (arrowImage != null && !arrowImage.isDisposed()) arrowImage.dispose();
     arrowImage = null;
 
+  }
+
+  private Image createArrowImage() {
+    Image result;
+    ClassLoader classLoader = CoolItem.class.getClassLoader();
+    InputStream inputStream = classLoader.getResourceAsStream( CHEVRON_IMAGE );
+    try {
+      result = new Image( display, inputStream );
+    } finally {
+      try {
+        inputStream.close();
+      } catch( IOException unexpected ) {
+        throw new RuntimeException( "Failed to close image input stream", unexpected );
+      }
+    }
+    return result;
   }
 
   // Image createArrowImage (int width, int height) {
@@ -484,11 +496,7 @@ public class CoolItem extends Item {
     }
     // postEvent (SWT.Selection, event);
     event.widget = this;
-    for ( int i = 0; i < selectionListeners.size(); i++ ) {
-      selectionListeners.get( i )
-          .widgetSelected( new SelectionEvent( event ) );
-    }
-
+    notifyListeners( SWT.Selection, event );
   }
 
   /**
@@ -514,14 +522,11 @@ public class CoolItem extends Item {
    */
   public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
-    if ( listener == null )
-      error( SWT.ERROR_NULL_ARGUMENT );
-    // if (eventTable == null) return;
-    // eventTable.unhook (SWT.Selection, listener);
-    // eventTable.unhook (SWT.DefaultSelection,listener);
-    if( selectionListeners != null ) {
-      selectionListeners.remove( listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
+    removeListener( SWT.Selection, listener );
+    removeListener( SWT.DefaultSelection, listener );
   }
 
   void setBounds( int x, int y, int width, int height ) {
@@ -758,7 +763,7 @@ public class CoolItem extends Item {
       if ( (style & SWT.DROP_DOWN) != 0 && width < preferredWidth ) {
         if ( chevron == null ) {
           chevron = new ToolBar( parent, SWT.FLAT | SWT.NO_FOCUS );
-          chevron.setBackground( Graphics.getColor( 255, 0, 0 ) );
+          chevron.setBackground( new Color( display, 255, 0, 0 ) );
           ToolItem toolItem = new ToolItem( chevron, SWT.PUSH );
           toolItem.addListener( SWT.Selection, new Listener() {
             public void handleEvent( Event event ) {
@@ -780,10 +785,9 @@ public class CoolItem extends Item {
         int imageHeight = Math.max( 1, height - CHEVRON_VERTICAL_TRIM );
         if ( currentImageHeight != imageHeight ) {
           // Image image = createArrowImage (CHEVRON_IMAGE_WIDTH, imageHeight);
-          Image image = Graphics.getImage( "resource/widget/rap/coolitem/chevron.gif",
-              getClass().getClassLoader() );
+          Image image = createArrowImage();
           chevron.getItem( 0 ).setImage( image );
-          // if (arrowImage != null) arrowImage.dispose ();
+          if (arrowImage != null) arrowImage.dispose ();
           arrowImage = image;
         }
         chevron.setBackground( parent.getBackground() );

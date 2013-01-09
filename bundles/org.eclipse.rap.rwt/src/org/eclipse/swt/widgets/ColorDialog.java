@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -22,6 +21,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
@@ -332,7 +332,7 @@ public class ColorDialog extends Dialog {
   }
 
   private void updateColorDisplay() {
-    colorDisplay.setBackground( Graphics.getColor( rgb ) );
+    colorDisplay.setBackground( new Color( getDisplay(), rgb ) );
   }
 
   private void updateSpinners() {
@@ -343,7 +343,7 @@ public class ColorDialog extends Dialog {
 
   private Label createPaletteColorBox( Composite parent, RGB color ) {
     Label result = new Label( parent, SWT.BORDER | SWT.FLAT );
-    result.setBackground( Graphics.getColor( color ) );
+    result.setBackground( new Color( getDisplay(), color ) );
     GridData data = new GridData();
     data.widthHint = PALETTE_BOX_SIZE;
     data.heightHint = PALETTE_BOX_SIZE;
@@ -393,4 +393,9 @@ public class ColorDialog extends Dialog {
     updateColorDisplay();
     updateSpinners();
   }
+
+  private Display getDisplay() {
+    return parent.getDisplay();
+  }
+
 }

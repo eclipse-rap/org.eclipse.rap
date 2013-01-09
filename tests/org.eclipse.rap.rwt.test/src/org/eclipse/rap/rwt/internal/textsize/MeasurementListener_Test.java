@@ -20,16 +20,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.mock;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
+import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.internal.PhaseListenerHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -74,7 +76,7 @@ public class MeasurementListener_Test {
 
   @Test
   public void testAfterPhaseWithoutMeasurementItemsOrProbes() {
-    listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
+    listener.afterPhase( createPhaseEvent( PhaseId.RENDER ) );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
@@ -84,7 +86,7 @@ public class MeasurementListener_Test {
   public void testAfterPhaseWithMeasurementItems() {
     MeasurementOperator.getInstance().addItemToMeasure( createItem() );
 
-    listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
+    listener.afterPhase( createPhaseEvent( PhaseId.RENDER ) );
 
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
@@ -94,7 +96,7 @@ public class MeasurementListener_Test {
   public void testAfterPhaseWithProbes() {
     MeasurementOperator.getInstance().addProbeToMeasure( FONT_DATA );
 
-    listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
+    listener.afterPhase( createPhaseEvent( PhaseId.RENDER ) );
 
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
@@ -124,7 +126,7 @@ public class MeasurementListener_Test {
   public void testBeforePhaseWithMeasuredProbes() {
     fakeRequestWithProbeMeasurementResults();
 
-    listener.beforePhase( PhaseListenerHelper.createProcessActionEvent() );
+    listener.beforePhase( createPhaseEvent( PhaseId.PROCESS_ACTION ) );
 
     checkProbeResultHasBeenStored();
   }
@@ -134,7 +136,7 @@ public class MeasurementListener_Test {
     createShellWithResizeListener();
     fakeRequestWithItemMeasurementResults();
 
-    listener.beforePhase( PhaseListenerHelper.createProcessActionEvent() );
+    listener.beforePhase( createPhaseEvent( PhaseId.PROCESS_ACTION ) );
 
     checkTextMeasurementResultHasBeenStored();
     checkShellHasBeenResized();
@@ -144,7 +146,7 @@ public class MeasurementListener_Test {
   public void testBeforePhaseWithoutMeasuredItemsMustNotResizeShell() {
     createShellWithResizeListener();
 
-    listener.beforePhase( PhaseListenerHelper.createProcessActionEvent() );
+    listener.beforePhase( createPhaseEvent( PhaseId.PROCESS_ACTION ) );
 
     checkShellHasNotBeenResized();
   }
@@ -154,7 +156,7 @@ public class MeasurementListener_Test {
     createProbe();
     fakeRequestWithProbeMeasurementResults();
 
-    listener.beforePhase( PhaseListenerHelper.createPrepareUIRootEvent() );
+    listener.beforePhase( createPhaseEvent( PhaseId.PREPARE_UI_ROOT ) );
 
     checkProbeResultWasStored();
   }
@@ -192,7 +194,7 @@ public class MeasurementListener_Test {
 
   private void fakeRequestWithProbeMeasurementResults() {
     MeasurementOperator.getInstance().addProbeToMeasure( FONT_DATA );
-    listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
+    listener.afterPhase( createPhaseEvent( PhaseId.RENDER ) );
     Map<String, Object> parameters = new HashMap<String, Object>();
     Map<String, Object> results = new HashMap<String, Object>();
     results.put( MeasurementUtil.getId( FONT_DATA ), new int[] { 5, 10 }  );
@@ -212,9 +214,9 @@ public class MeasurementListener_Test {
   }
 
   private void executeNonRenderPhases() {
-    listener.afterPhase( PhaseListenerHelper.createPrepareUIRootEvent() );
-    listener.afterPhase( PhaseListenerHelper.createReadDataEvent() );
-    listener.afterPhase( PhaseListenerHelper.createProcessActionEvent() );
+    listener.afterPhase( createPhaseEvent( PhaseId.PREPARE_UI_ROOT ) );
+    listener.afterPhase( createPhaseEvent( PhaseId.READ_DATA ) );
+    listener.afterPhase( createPhaseEvent( PhaseId.PROCESS_ACTION ) );
   }
 
   private void createShellWithResizeListener() {
@@ -228,7 +230,12 @@ public class MeasurementListener_Test {
     } );
   }
 
-  private MeasurementItem createItem() {
+  private static MeasurementItem createItem() {
     return new MeasurementItem( "text", FONT_DATA, SWT.DEFAULT, TextSizeUtil.STRING_EXTENT );
   }
+
+  private static PhaseEvent createPhaseEvent( PhaseId phaseId ) {
+    return new PhaseEvent( mock( LifeCycle.class ), phaseId );
+  }
+
 }
