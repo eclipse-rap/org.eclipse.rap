@@ -59,9 +59,11 @@ rwt.remote.RemoteObject.prototype = {
     var suppressSend = arguments[ 2 ];
    // TODO [tb]: suppressSend should be a temporary workaround for KeyEventSupport.js
     var actualProps = properties ? properties : {};
-    server.getMessageWriter().appendNotify( this._.id, event, actualProps );
-    if( suppressSend !== true ) {
-      server.send();
+    if( this.isListening( event ) ) {
+      server.getMessageWriter().appendNotify( this._.id, event, actualProps );
+      if( suppressSend !== true ) {
+        server.send();
+      }
     }
   },
 

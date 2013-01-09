@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2013 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -1601,9 +1601,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
         }
       } );
       var tree = new rwt.widgets.Grid( argsMap );
-      rwt.remote.ObjectRegistry.add( "w2", tree );
-      rwt.remote.ObjectRegistry.add( "w2_vscroll", tree.getVerticalBar() );
-      rwt.remote.ObjectRegistry.add( "w2_hscroll", tree.getHorizontalBar() );
+      var gridHandler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Grid" );
+      var barHandler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.ScrollBar" );
+      rwt.remote.ObjectRegistry.add( "w2", tree, gridHandler );
+      rwt.remote.ObjectRegistry.add( "w2_vscroll", tree.getVerticalBar(), barHandler );
+      rwt.remote.ObjectRegistry.add( "w2_hscroll", tree.getHorizontalBar(), barHandler );
       tree.setUserData( "isControl", true );
       tree.setSpace( 13, 364, 27, 30 );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );

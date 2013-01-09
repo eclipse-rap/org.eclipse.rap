@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -112,7 +112,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       } );
       TestUtil.fakeResponse( true );
       var shell = new rwt.widgets.Shell( [ "APPLICATION_MODAL" ] );
-      rwt.remote.ObjectRegistry.add( "w222", shell );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Shell" );
+      rwt.remote.ObjectRegistry.add( "w222", shell, handler );
       shell.addState( "rwt_APPLICATION_MODAL" );
       shell.initialize();
       shell.open();
@@ -374,7 +375,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     testNotifyShellActivate : function() {
       rwt.remote.EventUtil.setSuspended( true );
       var shell = new rwt.widgets.Shell( {} );
-      rwt.remote.ObjectRegistry.add( "w222", shell );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Shell" );
+      rwt.remote.ObjectRegistry.add( "w222", shell, handler );
       shell.initialize();
       shell.open();
       rwt.remote.EventUtil.setSuspended( false );
@@ -389,7 +391,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     testNotifyShellClose : function() {
       rwt.remote.EventUtil.setSuspended( true );
       var shell = new rwt.widgets.Shell( {} );
-      rwt.remote.ObjectRegistry.add( "w222", shell );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Shell" );
+      rwt.remote.ObjectRegistry.add( "w222", shell, handler );
       shell.initialize();
       shell.open();
       rwt.remote.EventUtil.setSuspended( false );

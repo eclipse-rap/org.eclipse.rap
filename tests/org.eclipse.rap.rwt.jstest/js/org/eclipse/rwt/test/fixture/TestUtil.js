@@ -990,6 +990,12 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     var w1 = rwt.remote.ObjectRegistry._map[ "w1" ];
     rwt.remote.ObjectRegistry._map = { "w1" : w1 };
     rwt.remote.ObjectRegistry._callbacks = {};
+    rwt.remote.RemoteObjectFactory._db = {};
+  },
+
+  resetWindowManager : function() {
+    var manager = rwt.widgets.base.Window.getDefaultWindowManager();
+    manager._objects = {};
   },
 
   getXMLHttpRequests : function() {

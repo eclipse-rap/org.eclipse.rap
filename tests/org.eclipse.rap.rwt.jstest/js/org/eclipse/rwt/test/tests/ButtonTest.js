@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -364,7 +364,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       //this test is also valid for toggle button
       var button = new rwt.widgets.Button( "check" );
       button.addState( "rwt_CHECK" );
-      rwt.remote.WidgetManager.getInstance().add( button, "w11" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+      rwt.remote.ObjectRegistry.add( "w11", button, handler );
       button.addToDocument();
       TestUtil.flush();
 
@@ -380,7 +381,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       //this test is also valid for toggle button
       var button = new rwt.widgets.Button( "check" );
       button.addState( "rwt_CHECK" );
-      rwt.remote.WidgetManager.getInstance().add( button, "w11" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+      rwt.remote.ObjectRegistry.add( "w11", button, handler );
       button.addToDocument();
       TestUtil.flush();
       TestUtil.clearRequestLog();
@@ -400,14 +402,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     testExecuteRadioButton : function() {
       var button = new rwt.widgets.Button( "radio" );
       button.addState( "rwt_RADIO" );
-      rwt.remote.WidgetManager.getInstance().add( button, "w11" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+      rwt.remote.ObjectRegistry.add( "w11", button, handler );
       button.addToDocument();
       TestUtil.flush();
       TestUtil.click( button );
       var button2 = new rwt.widgets.Button( "radio" );
       button.setHasSelectionListener( true );
       button2.addState( "rwt_RADIO" );
-      rwt.remote.WidgetManager.getInstance().add( button2, "w2" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+      rwt.remote.ObjectRegistry.add( "w2", button2, handler );
       button2.addToDocument();
       TestUtil.flush();
       button2.setHasSelectionListener( true );
@@ -429,13 +433,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     testExecuteRadioButton_NoRadioGroup : function() {
       var button1 = new rwt.widgets.Button( "radio" );
       button1.addState( "rwt_RADIO" );
-      rwt.remote.WidgetManager.getInstance().add( button1, "w11" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+      rwt.remote.ObjectRegistry.add( "w11", button1, handler );
       button1.setNoRadioGroup( true );
       button1.setHasSelectionListener( true );
       button1.addToDocument();
       var button2 = new rwt.widgets.Button( "radio" );
       button2.addState( "rwt_RADIO" );
-      rwt.remote.WidgetManager.getInstance().add( button2, "w2" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+      rwt.remote.ObjectRegistry.add( "w2", button2, handler );
       button2.setNoRadioGroup( true );
       button2.setHasSelectionListener( true );
       button2.addToDocument();
@@ -465,7 +471,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       button.addState( "rwt_PUSH" );
       button.addToDocument();
       TestUtil.flush();
-      rwt.remote.WidgetManager.getInstance().add( button, "w11" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+      rwt.remote.ObjectRegistry.add( "w11", button, handler );
       TestUtil.clearRequestLog();
       TestUtil.click( button );
       assertEquals( 0, TestUtil.getRequestsSend() );
@@ -488,7 +495,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       button.addToDocument();
       button.setHasSelectionListener( true );
       TestUtil.flush();
-      rwt.remote.WidgetManager.getInstance().add( button, "w11" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+      rwt.remote.ObjectRegistry.add( "w11", button, handler );
 
       TestUtil.shiftClick( button );
 

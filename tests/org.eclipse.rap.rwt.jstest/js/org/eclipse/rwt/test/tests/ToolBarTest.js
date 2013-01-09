@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -366,7 +366,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.addToDocument();
       rwt.widgets.base.Widget.flushGlobalQueues();
       var lineStyle = item.getCellNode( 3 ).style;
-      rwt.remote.WidgetManager.getInstance().add( item, "w1" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.ToolItem" );
+      rwt.remote.ObjectRegistry.add( "w1", item, handler );
       this.TestUtil.clearRequestLog();
       item.setHasSelectionListener( true );
       this.TestUtil.fakeMouseClick( item, 103, 103 );

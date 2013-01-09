@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = rwt.remote.MessageProcessor;
-var ObjectManager = rwt.remote.ObjectRegistry;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
 var Font = rwt.html.Font;
 var Border = rwt.html.Border;
 var Client = rwt.client.Client;
@@ -39,7 +39,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertTrue( text instanceof rwt.widgets.Text );
       assertIdentical( shell, text.getParent() );
       assertTrue( text.getUserData( "isControl") );
@@ -60,7 +60,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertTrue( text.hasState( "rwt_MULTI" ) );
       assertEquals( "text-area", text.getAppearance() );
       assertFalse( text.getWrap() );
@@ -76,7 +76,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertTrue( text.hasState( "rwt_MULTI" ) );
       assertEquals( "text-area", text.getAppearance() );
       assertTrue( text.getWrap() );
@@ -93,7 +93,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "echoChar" : "?"
         }
       } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertTrue( text.hasState( "rwt_PASSWORD" ) );
       assertEquals( "text-field", text.getAppearance() );
       assertEquals( "password", text._inputType );
@@ -112,7 +112,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       TestUtil.flush();
 
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertTrue( text.hasState( "rwt_SEARCH" ) );
       assertEquals( "text-field", text.getAppearance() );
       assertNull( text._searchIconElement );
@@ -132,7 +132,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       TestUtil.flush();
 
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertTrue( text.hasState( "rwt_SEARCH" ) );
       assertEquals( "text-field", text.getAppearance() );
       assertNotNull( text._getIconElement( "search" ) );
@@ -154,7 +154,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "message" : "some text"
         }
       } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertEquals( "some text", text.getMessage() );
     },
 
@@ -169,7 +169,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "message" : "some text"
         }
       } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertNull( text.getUserData( "messageLabel" ) );
     },
 
@@ -184,7 +184,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "message" : "some text"
         }
       } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
 
       Processor.processOperation( {
         "target" : "w3",
@@ -205,7 +205,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "echoChar" : "?"
         }
       } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertEquals( "password", text._inputType );
     },
 
@@ -220,7 +220,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "echoChar" : "?"
         }
       } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertTrue( text._inputType !== "password" );
     },
 
@@ -235,7 +235,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "editable" : false
         }
       } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertTrue( text.getReadOnly() );
     },
 
@@ -250,7 +250,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "selection" : [ 1, 3 ]
         }
       } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertEquals( 1, text._selectionStart );
       assertEquals( 2, text._selectionLength );
     },
@@ -266,7 +266,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "textLimit" : 30
         }
       } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertEquals( 30, text.getMaxLength() );
     },
 
@@ -281,7 +281,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "textLimit" : 30
         }
       } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertEquals( 30, text.getMaxLength() );
     },
 
@@ -296,7 +296,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertTrue( text.hasSelectionListener() );
     },
 
@@ -311,7 +311,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertFalse( text.hasSelectionListener() );
     },
 
@@ -325,7 +325,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      var defaultButton = ObjectManager.getObject( "w4" );
+      var defaultButton = ObjectRegistry.getObject( "w4" );
       shell.setDefaultButton( defaultButton );
       Processor.processOperation( {
         "target" : "w3",
@@ -338,7 +338,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       } );
       TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
       TestUtil.flush();
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertFalse( text.hasSelectionListener() );
     },
 
@@ -353,7 +353,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "Modify" : true } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertTrue( text.hasModifyListener() );
     },
 
@@ -368,7 +368,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "text" : "foo\nbar"
         }
       } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertEquals( "foo bar", text.getValue() );
     },
 
@@ -383,7 +383,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "text" : "foo\nbar"
         }
       } );
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertEquals( "foo\nbar", text.getValue() );
     },
 
@@ -1181,7 +1181,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       TestUtil.flush();
 
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertEquals( "19px", text._inputElement.style.marginLeft );
       assertEquals( "42px", text._inputElement.style.width );
     },
@@ -1201,7 +1201,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       TestUtil.flush();
 
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertEquals( "29px", text._messageElement.style.left );
       assertEquals( "42px", text._messageElement.style.width );
     },
@@ -1222,7 +1222,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       TestUtil.flush();
 
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       assertEquals( "0px", text._messageElement.style.width );
     },
 
@@ -1240,7 +1240,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       TestUtil.flush();
 
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       var style = text._searchIconElement.style;
       assertEquals( "2px", style.top );
       assertEquals( "", style.left );
@@ -1266,7 +1266,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       } );
 
       TestUtil.flush();
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       text.setHasDefaultSelectionListener( true );
       TestUtil.clickDOM( text._searchIconElement, 5, 5 );
 
@@ -1287,7 +1287,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       } );
 
       TestUtil.flush();
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       text.setHasDefaultSelectionListener( true );
       TestUtil.clickDOM( text._cancelIconElement, 5, 5 );
 
@@ -1309,7 +1309,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       } );
 
       TestUtil.flush();
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       TestUtil.clickDOM( text._cancelIconElement, 5, 5 );
 
       assertEquals( "", text.getValue() );
@@ -1329,7 +1329,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       } );
 
       TestUtil.flush();
-      text = ObjectManager.getObject( "w3" );
+      text = ObjectRegistry.getObject( "w3" );
       text.setFont( new Font( 10 ) );
 
       assertEquals( "10px", text._messageElement.style.fontSize );
@@ -1359,7 +1359,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
 var createText = function( noflush, arg ) {
   text = new rwt.widgets.Text( arg ? arg : false );
-  ObjectManager.add( "w3", text, null );
+  var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Text" );
+  ObjectRegistry.add( "w3", text, handler );
   text.setParent( shell );
   if( noflush !== true ) {
     TestUtil.flush();

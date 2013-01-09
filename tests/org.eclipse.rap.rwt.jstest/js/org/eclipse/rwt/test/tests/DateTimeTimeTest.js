@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -235,7 +235,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
       var style = "medium";
       var dateTime = new rwt.widgets.DateTimeTime( style );
       var widgetManager = rwt.remote.WidgetManager.getInstance();
-      widgetManager.add( dateTime, "w3", true );
+      widgetManager.add( dateTime, "w3", true, rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.DateTime" ) );
       dateTime.setSpace( 3, 115, 3, 20 );
       dateTime.addToDocument();
       TestUtil.flush();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,9 @@ var MessageProcessor = rwt.remote.MessageProcessor;
 var Menu = rwt.widgets.Menu;
 var MenuItem = rwt.widgets.MenuItem;
 var MenuBar = rwt.widgets.MenuBar;
+
+var menuHandler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Menu" );
+var menuItemHandler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.MenuItem" );
 
 var menuItem;
 var menuBar;
@@ -709,7 +712,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testMenuShowEvent : function() {
       createMenuBar( "push" );
-      rwt.remote.WidgetManager.getInstance().add( menu, "w3" );
+      rwt.remote.ObjectRegistry.add( "w3", menu, menuHandler );
       TestUtil.clearRequestLog();
       TestUtil.flush();
       TestUtil.click( menuBarItem );
@@ -744,7 +747,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testExecutePushItem : function() {
       createSimpleMenu( "push" );
-      rwt.remote.WidgetManager.getInstance().add( menuItem, "w3" );
+      rwt.remote.ObjectRegistry.add( "w3", menuItem, menuItemHandler );
       TestUtil.flush();
       TestUtil.clearRequestLog();
       TestUtil.click( menuItem );
@@ -762,7 +765,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testExecuteCheckItem: function() {
       createSimpleMenu( "check" );
-      rwt.remote.WidgetManager.getInstance().add( menuItem, "w3" );
+      rwt.remote.ObjectRegistry.add( "w3", menuItem, menuItemHandler );
       TestUtil.flush();
       TestUtil.clearRequestLog();
       TestUtil.click( menuItem );
@@ -787,7 +790,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testExecuteRadioButton : function() {
       createSimpleMenu( "radio" );
-      rwt.remote.WidgetManager.getInstance().add( menuItem, "w3" );
+      rwt.remote.ObjectRegistry.add( "w3", menuItem, menuItemHandler );
       TestUtil.flush();
       TestUtil.clearRequestLog();
       TestUtil.click( menuItem );
@@ -806,7 +809,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
       var item2 = new MenuItem( "radio" );
       menu.addMenuItemAt( item2, 0 );
-      rwt.remote.WidgetManager.getInstance().add( item2, "w2" );
+      rwt.remote.ObjectRegistry.add( "w2", item2, menuItemHandler );
       item2.setHasSelectionListener( true );
       TestUtil.clearRequestLog();
       TestUtil.flush();
@@ -830,12 +833,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testExecuteRadioButton_NoRadioGroup : function() {
       createSimpleMenu( "radio" );
-      rwt.remote.WidgetManager.getInstance().add( menuItem, "w3" );
+      rwt.remote.ObjectRegistry.add( "w3", menuItem, menuItemHandler );
       menuItem.setNoRadioGroup( true );
       menuItem.setHasSelectionListener( true );
       var menuItem2 = new MenuItem( "radio" );
       menu.addMenuItemAt( menuItem2, 0 );
-      rwt.remote.WidgetManager.getInstance().add( menuItem2, "w2" );
+      rwt.remote.ObjectRegistry.add( "w2", menuItem2, menuItemHandler );
       menuItem2.setNoRadioGroup( true );
       menuItem2.setHasSelectionListener( true );
       TestUtil.clearRequestLog();
@@ -946,7 +949,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( subMenu.isSeeable() );
       assertTrue( TestUtil.isActive( subMenu ) );
       assertTrue( subMenuItem.hasState( "over" ) );
-      rwt.remote.WidgetManager.getInstance().add( subMenuItem, "w3" );
+      rwt.remote.ObjectRegistry.add( "w3", subMenuItem, menuItemHandler );
       subMenuItem.setHasSelectionListener( true );
       rwt.remote.Server.getInstance().send();
       TestUtil.clearRequestLog();
@@ -1196,7 +1199,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testDisposeWithRunningAnimaton : function() {
       createSimpleMenu( "push" );
-      rwt.remote.ObjectRegistry.add( "w321", menu );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Menu" );
+      rwt.remote.ObjectRegistry.add( "w321", menu, handler );
       menu.hide();
       TestUtil.flush();
       menu.setAnimation( {

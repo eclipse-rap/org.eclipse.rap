@@ -89,7 +89,6 @@ rwt.remote.MessageProcessor = {
     }
     var targetObject = handler.factory( properties );
     this._addTarget( targetObject, targetId, handler );
-    this._initRemoteObject( targetObject, handler );
     this._processSetImpl( targetObject, handler, properties );
   },
 
@@ -240,16 +239,6 @@ rwt.remote.MessageProcessor = {
 
   _getListenerSetterName : function( eventType ) {
     return "setHas" + rwt.util.Strings.toFirstUp( eventType ) + "Listener";
-  },
-
-  _initRemoteObject : function( targetObject, handler ) {
-    if( handler.listeners ) {
-      var remoteObject = rwt.remote.RemoteObjectFactory.getRemoteObject( targetObject );
-      for( var i = 0; i < handler.listeners.length; i++ ) {
-        var type = handler.listeners[ i ];
-        remoteObject._.listen[ type ] = true;
-      }
-    }
   }
 
 };

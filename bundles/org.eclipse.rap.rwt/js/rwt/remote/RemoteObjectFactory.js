@@ -19,7 +19,7 @@ rwt.remote.RemoteObjectFactory = { // TODO [tb] : merge with Server.js? (not a f
 
   getRemoteObject : function( target ) {
     var id = ObjectManager.getId( target );
-    if( id === null ){
+    if( id == null ){
       throw new Error( "Invalid target for ServerObject, or target not in ObjectManager" );
     }
     return this._getRemoteObject( id );
@@ -32,8 +32,20 @@ rwt.remote.RemoteObjectFactory = { // TODO [tb] : merge with Server.js? (not a f
   _getRemoteObject : function( id ) {
     if( this._db[ id ] == null ) {
       this._db[ id ] = new rwt.remote.RemoteObject( id );
+      this._initRemoteObject( id );
     }
     return this._db[ id ];
+  },
+
+  _initRemoteObject : function( id ) {
+    var remoteObject = this._db[ id ];
+    var handler = ObjectManager.getEntry( id ).handler;
+    if( handler && handler.listeners ) {
+      for( var i = 0; i < handler.listeners.length; i++ ) {
+        var type = handler.listeners[ i ];
+        remoteObject._.listen[ type ] = true;
+      }
+    }
   }
 
 };

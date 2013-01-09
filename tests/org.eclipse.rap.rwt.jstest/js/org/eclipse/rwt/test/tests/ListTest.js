@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -580,7 +580,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       TestUtil.flush();
       var item = this._getItems( list )[ 1 ];
       list.setHasSelectionListener( true );
-      rwt.remote.WidgetManager.getInstance().add( list, "w3" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.List" );
+      rwt.remote.ObjectRegistry.add( "w3", list, handler );
 
       TestUtil.click( item );
 
@@ -627,7 +628,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       TestUtil.flush();
       var item = this._getItems( list )[ 1 ];
       list.setHasDefaultSelectionListener( true );
-      rwt.remote.WidgetManager.getInstance().add( list, "w3" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.List" );
+      rwt.remote.ObjectRegistry.add( "w3", list, handler );
 
       TestUtil.doubleClick( item );
 
@@ -961,7 +963,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.setItemDimensions( 100, 20 );
       list.addToDocument();
       list.setSpace( 5, 238, 5, 436 );
-      rwt.remote.ObjectRegistry.add( "w3", list );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.List" );
+      rwt.remote.ObjectRegistry.add( "w3", list, handler );
       this._createProtocolScrollBars( "w3" );
       if( noflush !== true ) {
         TestUtil.flush();

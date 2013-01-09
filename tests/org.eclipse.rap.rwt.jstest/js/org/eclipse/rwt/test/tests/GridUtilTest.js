@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2011, 2013 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -423,7 +423,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       var tree = this._createSplitTree();
       for( var i = 0; i < 5; i++ ) {
         var column = new rwt.widgets.GridColumn( tree );
-        rwt.remote.ObjectRegistry.add( "col", column );
+        var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.GridColumn" );
+        rwt.remote.ObjectRegistry.add( "col", column, handler );
         column.setLeft( tree.getRenderConfig().itemLeft[ i ] );
         column.setWidth( tree.getRenderConfig().itemWidth[ i ] );
         if( i < 2 ) {
@@ -539,9 +540,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       if( !noflush ) {
         TestUtil.flush();
       }
-      rwt.remote.ObjectRegistry.add( "w3", tree );
-      rwt.remote.ObjectRegistry.add( "w3_vscroll", tree.getVerticalBar() );
-      rwt.remote.ObjectRegistry.add( "w3_hscroll", tree.getHorizontalBar() );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Grid" );
+      var barHandler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.ScrollBar" );
+      rwt.remote.ObjectRegistry.add( "w3", tree, handler );
+      rwt.remote.ObjectRegistry.add( "w3_vscroll", tree.getVerticalBar(), barHandler );
+      rwt.remote.ObjectRegistry.add( "w3_hscroll", tree.getHorizontalBar(), barHandler );
       return tree;
     },
 

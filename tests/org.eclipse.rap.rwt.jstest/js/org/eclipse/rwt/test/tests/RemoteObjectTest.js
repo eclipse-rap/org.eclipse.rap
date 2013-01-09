@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.RemoteObjectTest", {
       assertEquals( "aString", operation.properties[ "key5" ] );
     },
 
+    testNotifyWithoutListen : function() {
+      remoteObject.notify( "method", { "key" : "a" } );
+
+      assertEquals( 0, TestUtil.getRequestsSend() );
+    },
+
     testNotify : function() {
+      remoteObject._.listen[ "method" ] = true;
       remoteObject.notify( "method", { "key" : "a" } );
 
       var operation = TestUtil.getMessageObject().getOperation( 0 );
@@ -51,6 +58,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.RemoteObjectTest", {
     },
 
     testNotifyWithoutProperties : function() {
+      remoteObject._.listen[ "method" ] = true;
       remoteObject.notify( "method" );
 
       var operation = TestUtil.getMessageObject().getOperation( 0 );
