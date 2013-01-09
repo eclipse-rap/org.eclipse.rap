@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -139,6 +139,7 @@ rwt.qx.Class.define( "rwt.remote.Server", {
       } else {
         this._flushEvent();
         this.dispatchSimpleEvent( "send" );
+        rap._.notify( "send" );
         this._flushEvent();
         this._sendTimer.stop();
         if( this._requestCounter != null ) {
@@ -219,6 +220,7 @@ rwt.qx.Class.define( "rwt.remote.Server", {
         rwt.remote.EventUtil.setSuspended( true );
         Processor.processMessage( messageObject );
         Widget.flushGlobalQueues();
+        rap._.notify( "render" );
         EventUtil.setSuspended( false );
         ServerPush.getInstance().sendUICallBackRequest();
         this.dispatchSimpleEvent( "received" );

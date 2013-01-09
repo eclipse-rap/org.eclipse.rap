@@ -102,6 +102,42 @@ rap = {
    */
   getRemoteObject : function( object ) {
     return rwt.remote.Server.getInstance().getRemoteObject( object );
+  },
+
+  /**
+   * @description Register the function as a listener of the given type
+   * @param {string} type The type of the event (e.g. "send").
+   * @param {Function} listener The callback function. It is executed in global context.
+   */
+   on : function( type, handler ) {
+     if( this._.events[ type ] ) {
+       this._.events[ type ].push( handler );
+     } else {
+       throw new Error( "Unkown type " + type );
+     }
+   },
+
+   _ : {
+    events : {
+      /**
+       * @event
+       * @description Sent right before a message is send to the server.
+       * @name rap#send
+       */
+      "render" : [],
+      /**
+       * @event
+       * @description Sent after a message has been processed.
+       * @name rap#render
+       */
+      "send" : []
+    },
+    notify : function( type ) {
+      var listener = this.events[ type ];
+      for( var i = 0; i < listener.length; i++ ) {
+        listener[ i ]();
+      }
+    }
   }
 
 };
@@ -124,6 +160,12 @@ function getWrapperFor( obj ) {
   return result;
 }
 
+// TODO [tb] : propper class/namespace for this event? (Control? SWT? RWT? rap? rwt.widget?)
+/**
+ * @event
+ * @description Sent when widget changes size.
+ * @name Composite#Resize
+ */
 function convertEventType( type ) {
   var result;
   if( type === "Resize" ) {
@@ -136,12 +178,13 @@ function convertEventType( type ) {
 
 /**
  * @private
- * @class Wrapper for RWT Composite widgets
+ * @class Represents RWT Composite widgets
  * @description This constructor is not available in the global namespace. Instances can only
  * be obtained from {@link rap.getObject}.
  * @name Composite
  * @since 2.0
  */
+ // TODO [tb] : where to put this? rap.CompositeWrapper? rwt.widget.Composite? in CompositeHandler?
 function CompositeWrapper( widget ) {
   var children = null;
   if( !widget.isCreated() ) {
@@ -185,7 +228,7 @@ function CompositeWrapper( widget ) {
    * @memberOf Composite#
    * @description Register the function as a listener of the given type
    * @param {string} type The type of the event (e.g. "Resize").
-   * @param {Function} listener The callback function
+   * @param {Function} listener The callback function. It is executed in global context.
    */
   this.addListener = function( type, listener ) {
     widget.addEventListener( convertEventType( type ), listener, window );

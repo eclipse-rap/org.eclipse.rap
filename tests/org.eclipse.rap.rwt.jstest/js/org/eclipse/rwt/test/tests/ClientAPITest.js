@@ -16,6 +16,8 @@ var AdapterRegistry = rwt.remote.HandlerRegistry;
 var MessageProcessor = rwt.remote.MessageProcessor;
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
+var shell;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
 
   extend : rwt.qx.Object,
@@ -253,12 +255,61 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
       assertEquals( 0, logger.getLog().length );
     },
 
+    testOn_UnkownTypeThrowsException : function() {
+      try {
+        rap.on( "unkownType", function() {} );
+        fail();
+      } catch( ex ) {
+        // expected
+      }
+    },
+
+    testOn_RegisterAndFireSendEvent : function() {
+      var logger = TestUtil.getLogger();
+
+      rap.on( "send", logger.log );
+      rap.getRemoteObject( shell ).call( "foo" );
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testOn_FireSendEventBeforeSend : function() {
+      var logger = TestUtil.getLogger();
+
+      rap.on( "send", function(){ logger.log( TestUtil.getRequestsSend() ); } );
+      rap.getRemoteObject( shell ).call( "foo" );
+
+      assertEquals( 0, logger.getLog()[ 0 ] );
+    },
+
+    testOn_RegisterAndFireRenderEvent : function() {
+      var logger = TestUtil.getLogger();
+
+      rap.on( "render", logger.log );
+      rap.getRemoteObject( shell ).call( "foo" );
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testOn_FireRenderEventAfterProcess : function() {
+      var logger = TestUtil.getLogger();
+      var server = rwt.remote.Server.getInstance();
+      var now = server.getRequestCounter();
+
+      rap.on( "render", function(){ logger.log( server.getRequestCounter() ); } );
+      rap.getRemoteObject( shell ).call( "foo" );
+
+      assertEquals( now + 1, logger.getLog()[ 0 ] );
+    },
+
+
     setUp : function() {
-      TestUtil.createShellByProtocol( "w2" );
+      shell = TestUtil.createShellByProtocol( "w2" );
     },
 
     tearDown : function() {
       MessageProcessor.processOperationArray( [ "destroy", "w2"] );
+      shell = null;
     }
 
 
