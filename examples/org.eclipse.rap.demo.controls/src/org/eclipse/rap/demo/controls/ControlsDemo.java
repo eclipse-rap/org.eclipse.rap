@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,58 +15,44 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.application.EntryPoint;
+import org.eclipse.rap.rwt.application.AbstractEntryPoint;
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
-import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
 
-@SuppressWarnings("restriction")
-public class ControlsDemo implements EntryPoint, Serializable {
+public class ControlsDemo extends AbstractEntryPoint implements Serializable {
 
+  private Composite header;
   private Tree tree;
   private Composite exampleParent;
+  private Color backgroundColor;
 
-  public int createUI() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.TITLE );
-    shell.setBackground( display.getSystemColor( SWT.COLOR_GRAY ) );
-    createContent( shell );
-    // These special characters must be ignored
-    shell.setText( "RWT\u2028 Controls\u2029 Demo" );
-    Image image = Util.loadImage( display, "resources/shell.gif" );
-    shell.setImage( image );
-    shell.layout();
-    shell.setMaximized( true );
-    shell.open();
-    if( RWT.getLifeCycle() instanceof RWTLifeCycle ) {
-      while( !shell.isDisposed() ) {
-        if( !display.readAndDispatch() ) {
-          display.sleep();
-        }
-      }
-      display.dispose();
-    }
-    return 0;
-  }
-
-  private void createContent( Composite parent ) {
+  @Override
+  protected void createContents( Composite parent ) {
     parent.setLayout( new FormLayout() );
+    backgroundColor = new Color( parent.getDisplay(), 0x31, 0x61, 0x9C );
+    header = new Composite( parent, SWT.NONE );
+    header.setBackground( backgroundColor );
+    header.setBackgroundMode( SWT.INHERIT_DEFAULT );
+    header.setLayoutData( createLayoutDataForHeader() );
+    Label label = new Label( header, SWT.NONE );
+    label.setText( "RAP Controls Demo" );
+    label.setForeground( parent.getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
+    label.setBounds( 40, 30, 250, 30 );
     tree = new Tree( parent, SWT.FULL_SELECTION );
     tree.setLayoutData( createLayoutDataForTree() );
     exampleParent = new Composite( parent, SWT.NONE );
@@ -116,10 +102,19 @@ public class ControlsDemo implements EntryPoint, Serializable {
     exampleParent.layout();
   }
 
-  private FormData createLayoutDataForTree() {
+  private FormData createLayoutDataForHeader() {
     FormData layoutData = new FormData();
     layoutData.left = new FormAttachment( 0, 0 );
+    layoutData.right = new FormAttachment( 100, 0 );
     layoutData.top = new FormAttachment( 0, 0 );
+    layoutData.height = 80;
+    return layoutData;
+  }
+
+  private FormData createLayoutDataForTree() {
+    FormData layoutData = new FormData();
+    layoutData.top = new FormAttachment( header, 0 );
+    layoutData.left = new FormAttachment( 0, 0 );
     layoutData.bottom = new FormAttachment( 100, 0 );
     layoutData.width = 190;
     return layoutData;
@@ -127,8 +122,8 @@ public class ControlsDemo implements EntryPoint, Serializable {
 
   private FormData createLayoutDataForExampleParent() {
     FormData layoutData = new FormData();
+    layoutData.top = new FormAttachment( header, 0 );
     layoutData.left = new FormAttachment( tree, 10 );
-    layoutData.top = new FormAttachment( 0, 0 );
     layoutData.right = new FormAttachment( 100, 0 );
     layoutData.bottom = new FormAttachment( 100, 0 );
     return layoutData;

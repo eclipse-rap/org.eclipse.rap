@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExampleContribution;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.application.EntryPoint;
+import org.eclipse.rap.rwt.application.AbstractEntryPoint;
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
@@ -40,7 +40,7 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.Version;
 
 
-public class MainUi implements EntryPoint {
+public class MainUi extends AbstractEntryPoint {
 
   private static final String RAP_PAGE_URL = "http://eclipse.org/rap/";
   private static final int CONTENT_MIN_HEIGHT = 800;
@@ -51,30 +51,21 @@ public class MainUi implements EntryPoint {
   private Navigation navigation;
   private Composite navBar;
 
-  public int createUI() {
-    Display display = new Display();
-    Shell shell = createMainShell( display );
-    shell.setLayout( new FillLayout() );
-    ScrolledComposite scrolledArea = createScrolledArea( shell );
+  @Override
+  protected Shell createShell( Display display ) {
+    Shell shell = super.createShell( display );
+    shell.setData( RWT.CUSTOM_VARIANT, "mainshell" );
+    return shell;
+  }
+
+  @Override
+  protected void createContents( Composite parent ) {
+    parent.setLayout( new FillLayout() );
+    ScrolledComposite scrolledArea = createScrolledArea( parent );
     Composite content = createContent( scrolledArea );
     scrolledArea.setContent( content );
     attachHistoryListener();
-    shell.open();
     selectInitialContribution();
-    while( !shell.isDisposed() ) {
-      if( !display.readAndDispatch() ) {
-        display.sleep();
-      }
-    }
-    display.dispose();
-    return 0;
-  }
-
-  private void selectInitialContribution() {
-    IExampleContribution contribution = Examples.getInstance().findInitialContribution();
-    if( contribution != null ) {
-      selectContribution( contribution );
-    }
   }
 
   private void attachHistoryListener() {
@@ -92,11 +83,11 @@ public class MainUi implements EntryPoint {
     }
   }
 
-  private Shell createMainShell( Display display ) {
-    Shell shell = new Shell( display, SWT.NO_TRIM );
-    shell.setMaximized( true );
-    shell.setData( RWT.CUSTOM_VARIANT, "mainshell" );
-    return shell;
+  private void selectInitialContribution() {
+    IExampleContribution contribution = Examples.getInstance().findInitialContribution();
+    if( contribution != null ) {
+      selectContribution( contribution );
+    }
   }
 
   private ScrolledComposite createScrolledArea( Composite parent ) {
