@@ -3,12 +3,12 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.rap.demo.controls;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: javax.servlet.http;version="[2.3.0,4.0.0)"
-Export-Package: org.eclipse.rap.demo.controls;version="1.0.0",
- org.eclipse.rap.demo.controls.internal;version="1.0.0";x-internal:=true
+Export-Package: org.eclipse.rap.demo.controls;version="2.0.0",
+ org.eclipse.rap.demo.controls.internal;version="2.0.0";x-internal:=true
 Require-Bundle: org.eclipse.rap.rwt;bundle-version="[2.0.0,3.0.0)",
  org.eclipse.rap.jface;bundle-version="[2.0.0,3.0.0)",
  org.eclipse.core.runtime;bundle-version="3.8.0"

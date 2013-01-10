@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.rap.examples.pages
-Bundle-Version: 1.5.100.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-Name: Pages for RAP Examples Demo
 Bundle-Vendor: Eclipse.org - RAP
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
@@ -9,9 +9,9 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.4.0,4.0.0)",
  org.eclipse.rap.rwt;bundle-version="[2.0.0,3.0.0)",
  org.eclipse.rap.jface;bundle-version="[2.0.0,3.0.0)"
-Export-Package: org.eclipse.rap.examples.pages;version="1.5.100",
- org.eclipse.rap.examples.pages.internal;version="1.5.100";x-internal:=true
+Export-Package: org.eclipse.rap.examples.pages;version="2.0.0",
+ org.eclipse.rap.examples.pages.internal;version="2.0.0";x-internal:=true
 Bundle-Activator: org.eclipse.rap.examples.pages.internal.Activator
 Import-Package: javax.servlet.http;version="[2.5.0,4.0.0)",
- org.eclipse.rap.examples;version="[1.5.100,2.0.0)",
+ org.eclipse.rap.examples;version="[2.0.0,3.0.0)",
  org.osgi.framework;version="[1.6.0,2.0.0)"

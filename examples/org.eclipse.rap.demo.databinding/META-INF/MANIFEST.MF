@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.demo.databinding;singleton:=true
-Bundle-Version: 1.5.100.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.rap.jface.databinding;bundle-version="[2.0.0,3.0.0)",
@@ -11,5 +11,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.rap.ui;bundle-version="[2.0.0,3.0.0)"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Localization: plugin
-Export-Package: org.eclipse.rap.demo.databinding;version="1.5.100";x-internal:=true,
- org.eclipse.rap.demo.databinding.nestedselection;version="1.5.100";x-internal:=true
+Export-Package: org.eclipse.rap.demo.databinding;version="2.0.0";x-internal:=true,
+ org.eclipse.rap.demo.databinding.nestedselection;version="2.0.0";x-internal:=true
