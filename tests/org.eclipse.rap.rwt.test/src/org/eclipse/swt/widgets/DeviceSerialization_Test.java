@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
@@ -54,19 +53,6 @@ public class DeviceSerialization_Test {
     TestDevice deserializedDevice = Fixture.serializeAndDeserialize( device );
 
     assertFalse( deserializedDevice.isDisposed() );
-  }
-
-  @Test
-  public void testDPIAndColorDepthIsSerializable() throws Exception {
-    Fixture.fakeSetParameter( "w1", "dpi", new int[] { 1, 2 } );
-    Fixture.fakeSetParameter( "w1", "colorDepth", Integer.valueOf( 32 ) );
-    TestDevice device = new TestDevice();
-
-    TestDevice deserializedDevice = Fixture.serializeAndDeserialize( device );
-
-    assertEquals( 1, deserializedDevice.getDPI().x );
-    assertEquals( 2, deserializedDevice.getDPI().y );
-    assertEquals( 32, deserializedDevice.getDepth() );
   }
 
   private static class TestDevice extends Device {

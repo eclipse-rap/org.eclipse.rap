@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -144,6 +146,8 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 public class Display extends Device implements Adaptable {
 
   private final static String BOUNDS = "bounds";
+  private final static String DPI = "dpi";
+  private final static String COLOR_DEPTH = "colorDepth";
   private static final String ATTR_INVALIDATE_FOCUS
     = DisplayAdapter.class.getName() + "#invalidateFocus";
   private static final String APP_NAME = Display.class.getName() + "#appName";
@@ -207,6 +211,8 @@ public class Display extends Device implements Adaptable {
   private transient Thread thread;
   private final UISession uiSession;
   private final Rectangle bounds;
+  private final Point dpi;
+  private final int depth;
   private final Point cursorLocation;
   private Shell activeShell;
   private Collection<Control> redrawControls;
@@ -261,6 +267,8 @@ public class Display extends Device implements Adaptable {
     monitor = new Monitor( this );
     cursorLocation = new Point( 0, 0 );
     bounds = readInitialBounds();
+    dpi = readDPI();
+    depth = readDepth();
     synchronizer = new Synchronizer( this );
     register();
   }
@@ -279,6 +287,18 @@ public class Display extends Device implements Adaptable {
   public Rectangle getBounds() {
     checkDevice();
     return new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
+  }
+
+  @Override
+  public Point getDPI() {
+    checkDevice();
+    return new Point( dpi.x, dpi.y );
+  }
+
+  @Override
+  public int getDepth() {
+    checkDevice();
+    return depth;
   }
 
   /**
@@ -1328,25 +1348,6 @@ public class Display extends Device implements Adaptable {
     return null;
   }
 
-  /**
-   * Returns the matching standard color for the given
-   * constant, which should be one of the color constants
-   * specified in class <code>SWT</code>. Any value other
-   * than one of the SWT color constants which is passed
-   * in will result in the color black. This color should
-   * not be free'd because it was allocated by the system,
-   * not the application.
-   *
-   * @param id the color constant
-   * @return the matching color
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
-   * </ul>
-   *
-   * @see SWT
-   */
   @Override
   public Color getSystemColor( int id ) {
     checkDevice();
@@ -2219,7 +2220,7 @@ public class Display extends Device implements Adaptable {
   }
 
   boolean isValidThread () {
-    return thread == Thread.currentThread ();
+    return thread == Thread.currentThread();
   }
 
   @Override
@@ -2247,9 +2248,26 @@ public class Display extends Device implements Adaptable {
   }
 
   private Rectangle readInitialBounds() {
-    Rectangle result = ProtocolUtil.readPropertyValueAsRectangle( "w1",  Display.BOUNDS );
+    Rectangle result = ProtocolUtil.readPropertyValueAsRectangle( getId( this ), BOUNDS );
     if( result == null ) {
       result = new Rectangle( 0, 0, 1024, 768 );
+    }
+    return result;
+  }
+
+  private Point readDPI() {
+    Point result = ProtocolUtil.readPropertyValueAsPoint( getId( this ), DPI );
+    if( result == null ) {
+      result = new Point( 0, 0 );
+    }
+    return result;
+  }
+
+  private int readDepth() {
+    int result = 16;
+    String parameter = ProtocolUtil.readPropertyValueAsString( getId( this ), COLOR_DEPTH );
+    if( parameter != null ) {
+      result = Integer.parseInt( parameter );
     }
     return result;
   }
