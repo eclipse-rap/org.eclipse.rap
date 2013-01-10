@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,10 @@ package org.eclipse.rap.demo.controls;
 
 import java.util.Iterator;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -41,14 +41,14 @@ public class TextSizeTab extends ExampleTab {
   }
 
   @Override
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "WRAP", SWT.WRAP );
     createFontChooser();
     final Button fixedSizeButton = createPropertyButton( "Fixed Size" );
     fixedSizeButton.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         propFixedSize = fixedSizeButton.getSelection();
         createNew();
       }
@@ -56,7 +56,7 @@ public class TextSizeTab extends ExampleTab {
     Button nextButton = createPropertyButton( "Next Text", SWT.PUSH );
     nextButton.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         switchText();
         createNew();
       }
@@ -64,17 +64,18 @@ public class TextSizeTab extends ExampleTab {
   }
 
   @Override
-  protected void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( Composite parent ) {
     int style = getStyle();
+    Color background = new Color( parent.getDisplay(), 0xcc, 0xb7, 0x91 );
 
     Label label1 = new Label( parent, style );
-    label1.setBackground( Graphics.getColor( 0xcc, 0xb7, 0x91 ) );
+    label1.setBackground( background );
     label1.setText( labelText );
     label1.setLocation( 10, 10 );
     registerControl( label1 );
 
     Text text1 = new Text( parent, style );
-    text1.setBackground( Graphics.getColor( 0xcc, 0xb7, 0x91 ) );
+    text1.setBackground( background );
     text1.setText( labelText );
     text1.setLocation( 10, 100 );
     registerControl( text1 );
@@ -133,7 +134,7 @@ public class TextSizeTab extends ExampleTab {
     button.setText( "Font" );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         FontDialog fontChooser = new FontDialog( getShell(), SWT.NONE );
         Control control = controls.get( 0 );
         fontChooser.setFontList( control.getFont().getFontData() );

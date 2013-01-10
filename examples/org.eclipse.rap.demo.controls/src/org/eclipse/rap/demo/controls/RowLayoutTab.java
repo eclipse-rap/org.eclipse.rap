@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -37,7 +36,7 @@ class RowLayoutTab extends ExampleTab {
   }
 
   @Override
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );
     createStyleButton( "VERTICAL", SWT.VERTICAL );
     final Button prefSizeButton = createPropertyButton( "Preferred Size" );
@@ -51,7 +50,7 @@ class RowLayoutTab extends ExampleTab {
     final Button wrapButton = createPropertyButton( "Wrap" );
     wrapButton.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         propWrap = wrapButton.getSelection();
         createNew();
       }
@@ -61,13 +60,13 @@ class RowLayoutTab extends ExampleTab {
   }
 
   @Override
-  protected void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( Composite parent ) {
     int style = getStyle();
     GridLayout parentLayout = new GridLayout();
     parentLayout.marginWidth = 5;
     parent.setLayout( parentLayout );
     Composite comp = new Composite( parent, SWT.NONE );
-    comp.setBackground( BG_COLOR_BROWN );
+    comp.setBackground( bgColors[ BG_COLOR_BROWN ] );
     RowLayout layout = new RowLayout( style );
     layout.wrap = propWrap;
     comp.setLayout( layout );
@@ -93,12 +92,11 @@ class RowLayoutTab extends ExampleTab {
     registerControl( comp );
   }
 
-  private void createSomeImages( final Composite parent ) {
-    ClassLoader imageLoader = getClass().getClassLoader();
-    Image image1 = Graphics.getImage( "icons/info.gif", imageLoader );
-    Image image2 = Graphics.getImage( "icons/lockkey.gif", imageLoader );
-    Image image3 = Graphics.getImage( "icons/test-100x50.png", imageLoader );
-    Image image4 = Graphics.getImage( "icons/test-50x100.png", imageLoader );
+  private void createSomeImages( Composite parent ) {
+    Image image1 = Util.loadImage( parent.getDisplay(), "icons/info.gif" );
+    Image image2 = Util.loadImage( parent.getDisplay(), "icons/lockkey.gif" );
+    Image image3 = Util.loadImage( parent.getDisplay(), "icons/test-100x50.png" );
+    Image image4 = Util.loadImage( parent.getDisplay(), "icons/test-50x100.png" );
     Label l1 = new Label( parent, SWT.BORDER );
     l1.setImage( image1 );
     Label l2 = new Label( parent, SWT.BORDER );
@@ -109,7 +107,7 @@ class RowLayoutTab extends ExampleTab {
     l4.setImage( image4 );
   }
 
-  private TabFolder createTabFolder( final Composite parent ) {
+  private TabFolder createTabFolder( Composite parent ) {
     TabFolder tf = new TabFolder( parent, SWT.BORDER );
     TabItem tab1 = new TabItem( tf, SWT.NONE );
     tab1.setText( "Tab1" );

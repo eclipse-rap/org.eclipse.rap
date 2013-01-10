@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -153,9 +152,7 @@ public final class CanvasTab extends ExampleTab {
   private void paintTexts( final Display display, final GC gc ) {
     gc.setForeground( display.getSystemColor( SWT.COLOR_WHITE ) );
     gc.drawString( "Hello RAP World!", 200, 280, false );
-    Font font = Graphics.getFont( "Arial, Verdana, Tahoma",
-                                  16,
-                                  SWT.BOLD | SWT.ITALIC );
+    Font font = new Font( display, "Arial, Verdana, Tahoma", 16, SWT.BOLD | SWT.ITALIC );
     gc.setFont( font );
     gc.setForeground( display.getSystemColor( SWT.COLOR_RED ) );
     gc.drawText( "\tHello RAP World!\nAgain!", 200, 350, true );

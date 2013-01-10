@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,13 +44,13 @@ public class ContainmentTab extends ExampleTab {
     layout.marginWidth = 20;
     layout.marginHeight = 20;
     comp1 = new Composite( parent, style );
-    comp1.setBackground( BG_COLOR_GREEN );
+    comp1.setBackground( bgColors[ BG_COLOR_GREEN ] );
     comp1.setLayout( layout );
     comp2 = new Composite( comp1, style );
-    comp2.setBackground( BG_COLOR_BLUE );
+    comp2.setBackground( bgColors[ BG_COLOR_BLUE ] );
     comp2.setLayout( layout );
     comp3 = new Composite( comp2, style );
-    comp3.setBackground( BG_COLOR_BROWN );
+    comp3.setBackground( bgColors[ BG_COLOR_BROWN ] );
     comp3.setLayout( layout );
     Button button = new Button( comp3, SWT.PUSH );
     button.setText( "Button" );

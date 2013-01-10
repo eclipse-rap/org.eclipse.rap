@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -23,6 +22,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -70,7 +70,7 @@ public class ShellTab extends ExampleTab {
   }
 
   @Override
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "SHELL_TRIM", SWT.SHELL_TRIM, true );
     createStyleButton( "DIALOG_TRIM", SWT.DIALOG_TRIM );
@@ -94,11 +94,10 @@ public class ShellTab extends ExampleTab {
   }
 
   @Override
-  protected void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( Composite parent ) {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     if( shellImage == null ) {
-      ClassLoader classLoader = getClass().getClassLoader();
-      shellImage = Graphics.getImage( ICON_IMAGE_PATH, classLoader );
+      shellImage = Util.loadImage( parent.getDisplay(), ICON_IMAGE_PATH );
     }
     Button openShellButton = new Button( parent, SWT.PUSH );
     openShellButton.setText( "Open Shell" );
@@ -112,7 +111,7 @@ public class ShellTab extends ExampleTab {
     bringFirstToTopButton.setText( "Bring first Shell to top" );
     bringFirstToTopButton.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         Shell[] shells = getShells();
         if( shells.length > 0 ) {
           shells[ 0 ].open();
@@ -124,7 +123,7 @@ public class ShellTab extends ExampleTab {
     showAllButton.setText( "Show All Shells" );
     showAllButton.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         setShellsVisible( true );
       }
     } );
@@ -133,7 +132,7 @@ public class ShellTab extends ExampleTab {
     hideAllButton.setText( "Hide All Shells" );
     hideAllButton.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         setShellsVisible( false );
       }
     } );
@@ -142,7 +141,7 @@ public class ShellTab extends ExampleTab {
     MaximizeAllButton.setText( "Maximize All Shells" );
     MaximizeAllButton.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         setShellsMaximized( true );
       }
     } );
@@ -151,7 +150,7 @@ public class ShellTab extends ExampleTab {
     minimizeAllButton.setText( "Minimize All Shells" );
     minimizeAllButton.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         setShellsMinimized( true );
       }
     } );
@@ -160,7 +159,7 @@ public class ShellTab extends ExampleTab {
     restoreAllButton.setText( "Restore All Shells" );
     restoreAllButton.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         setShellsMinimized( false );
         setShellsMaximized( false );
       }
@@ -170,7 +169,7 @@ public class ShellTab extends ExampleTab {
     enableAllButton.setText( "Enable All Shells" );
     enableAllButton.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         setShellsEnabled( true );
       }
     } );
@@ -179,7 +178,7 @@ public class ShellTab extends ExampleTab {
     disableAllButton.setText( "Disable All Shells" );
     disableAllButton.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         setShellsEnabled( false );
       }
     } );
@@ -188,12 +187,12 @@ public class ShellTab extends ExampleTab {
     closeAllButton.setText( "Close All Shells" );
     closeAllButton.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         closeShells();
       }} );
   }
 
-  private void createAlphaControls( final Composite parent ) {
+  private void createAlphaControls( Composite parent ) {
     Composite comp = new Composite( parent, SWT.NONE );
     comp.setLayout( new GridLayout( 3, false ) );
     Label label = new Label( comp, SWT.NONE );
@@ -204,10 +203,10 @@ public class ShellTab extends ExampleTab {
     button.setText( "set" );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent event ) {
         try {
           alpha = Integer.parseInt( text.getText() );
-        } catch( NumberFormatException e1 ) {
+        } catch( NumberFormatException ignore ) {
           // ignore
         }
       }
@@ -245,8 +244,8 @@ public class ShellTab extends ExampleTab {
     final Composite comp2 = new Composite( shell, SWT.NONE );
     comp2.moveAbove( comp1 );
     if( showClientAreaButton.getSelection() ) {
-      comp1.setBackground( Graphics.getColor( 200, 0, 0 ) );
-      comp2.setBackground( Graphics.getColor( 200, 200, 200 ) );
+      comp1.setBackground( new Color( shell.getDisplay(), 200, 0, 0 ) );
+      comp2.setBackground( new Color( shell.getDisplay(), 200, 200, 200 ) );
     }
     Rectangle area = shell.getClientArea();
     comp1.setBounds( area.x, area.y, area.width, area.height );
@@ -274,7 +273,7 @@ public class ShellTab extends ExampleTab {
     } );
   }
 
-  private void createMenuBar( final Shell shell ) {
+  private void createMenuBar( Shell shell ) {
     // menu bar
     Menu menuBar = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menuBar );
@@ -356,28 +355,28 @@ public class ShellTab extends ExampleTab {
     }
   }
 
-  private void setShellsVisible( final boolean visible ) {
+  private void setShellsVisible( boolean visible ) {
     Shell[] shells = getShells();
     for( int i = 0; i < shells.length; i++ ) {
       shells[ i ].setVisible( visible );
     }
   }
 
-  private void setShellsEnabled( final boolean enabled ) {
+  private void setShellsEnabled( boolean enabled ) {
     Shell[] shells = getShells();
     for( int i = 0; i < shells.length; i++ ) {
       shells[ i ].setEnabled( enabled );
     }
   }
 
-  private void setShellsMinimized( final boolean minimized ) {
+  private void setShellsMinimized( boolean minimized ) {
     Shell[] shells = getShells();
     for( int i = 0; i < shells.length; i++ ) {
       shells[ i ].setMinimized( minimized );
     }
   }
 
-  private void setShellsMaximized( final boolean maximized ) {
+  private void setShellsMaximized( boolean maximized ) {
     Shell[] shells = getShells();
     for( int i = 0; i < shells.length; i++ ) {
       shells[ i ].setMaximized( maximized );

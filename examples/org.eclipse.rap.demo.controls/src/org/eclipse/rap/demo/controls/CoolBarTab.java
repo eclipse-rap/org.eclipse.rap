@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -31,13 +30,12 @@ import org.eclipse.swt.widgets.ToolItem;
 
 public class CoolBarTab extends ExampleTab {
 
-  private final Image image1;
+  private static final String TOOL_ITEM_IMAGE_PATH = "resources/newfile_wiz.gif";
+
   private CoolBar coolBar;
 
   public CoolBarTab() {
     super( "CoolBar" );
-    ClassLoader loader = getClass().getClassLoader();
-    image1 = Graphics.getImage( "resources/newfile_wiz.gif", loader );
   }
 
   @Override
@@ -99,7 +97,8 @@ public class CoolBarTab extends ExampleTab {
     ToolBar toolBar = new ToolBar( parent, style );
     ToolItem item1 = new ToolItem( toolBar, SWT.PUSH );
     item1.setText( "new" + id );
-    item1.setImage( image1 );
+    Image image = Util.loadImage( parent.getDisplay(), TOOL_ITEM_IMAGE_PATH );
+    item1.setImage( image );
     ToolItem item2 = new ToolItem( toolBar, SWT.PUSH );
     item2.setText( "open" + id );
     ToolItem item3 = new ToolItem( toolBar, SWT.PUSH );

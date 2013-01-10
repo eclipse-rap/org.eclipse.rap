@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,15 +50,15 @@ public class ZOrderTab extends ExampleTab {
 
     final Label labelA = createLabel( comp, 15, 45 );
     labelA.setText( "A" );
-    labelA.setBackground( BG_COLOR_BLUE );
+    labelA.setBackground( bgColors[ BG_COLOR_BLUE ] );
 
     final Label labelB = createLabel( comp, 35, 65 );
     labelB.setText( "B" );
-    labelB.setBackground( BG_COLOR_GREEN );
+    labelB.setBackground( bgColors[ BG_COLOR_GREEN ] );
 
     final Label labelC = createLabel( comp, 55, 85 );
     labelC.setText( "C" );
-    labelC.setBackground( BG_COLOR_BROWN );
+    labelC.setBackground( bgColors[ BG_COLOR_BROWN ] );
 
     label = new Label( comp , SWT.CENTER );
     FormData fdData = fdComp;

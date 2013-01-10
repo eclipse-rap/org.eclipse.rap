@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ExpandEvent;
 import org.eclipse.swt.events.ExpandListener;
@@ -68,14 +67,13 @@ class ExpandBarTab extends ExampleTab {
   @Override
   protected void createExampleControls( Composite parent ) {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
-    ClassLoader classLoader = getClass().getClassLoader();
     expandBar = new ExpandBar( parent, getStyle() );
     if( hasCreateProperty( PROP_CONTEXT_MENU ) ) {
       Menu expandBarMenu = new Menu( expandBar );
       MenuItem expandBarMenuItem = new MenuItem( expandBarMenu, SWT.PUSH );
       expandBarMenuItem.addSelectionListener( new SelectionAdapter() {
         @Override
-        public void widgetSelected( final SelectionEvent event ) {
+        public void widgetSelected( SelectionEvent event ) {
           String message = "You requested a context menu for the expand bar";
           MessageDialog.openInformation( expandBar.getShell(),
                                          "Information",
@@ -87,11 +85,11 @@ class ExpandBarTab extends ExampleTab {
     }
     if( hasCreateProperty( PROP_EXPAND_LISTENER ) ) {
       expandBar.addExpandListener( new ExpandListener() {
-        public void itemCollapsed( final ExpandEvent e ) {
+        public void itemCollapsed( ExpandEvent event ) {
           int index = 0;
           int itemCount = expandBar.getItemCount();
           for( int i = 0; i < itemCount; i++ ) {
-            if( expandBar.getItem( i ) == e.item ) {
+            if( expandBar.getItem( i ) == event.item ) {
               index = i;
             }
           }
@@ -101,11 +99,11 @@ class ExpandBarTab extends ExampleTab {
                                          message );
         }
 
-        public void itemExpanded( final ExpandEvent e ) {
+        public void itemExpanded( ExpandEvent event ) {
           int index = 0;
           int itemCount = expandBar.getItemCount();
           for( int i = 0; i < itemCount; i++ ) {
-            if( expandBar.getItem( i ) == e.item ) {
+            if( expandBar.getItem( i ) == event.item ) {
               index = i;
             }
           }
@@ -127,8 +125,7 @@ class ExpandBarTab extends ExampleTab {
     item.setText( "What is your favorite button?" );
     item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
     item.setControl( composite );
-    item.setImage( Graphics.getImage( "resources/newfolder_wiz.gif",
-                                      classLoader ) );
+    item.setImage( Util.loadImage( display, "resources/newfolder_wiz.gif" ) );
     composite = new Composite( expandBar, SWT.NONE );
     composite.setLayout( new GridLayout( 2, false ) );
     Image image = display.getSystemImage( SWT.ICON_ERROR );
@@ -147,8 +144,7 @@ class ExpandBarTab extends ExampleTab {
     item.setText( "What is your favorite icon?" );
     item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
     item.setControl( composite );
-    item.setImage( Graphics.getImage( "resources/newprj_wiz.gif",
-                                      classLoader ) );
+    item.setImage( Util.loadImage( display, "resources/newprj_wiz.gif" ) );
     item.setExpanded( true );
     expandBar.computeSize( SWT.DEFAULT, SWT.DEFAULT );
     registerControl( expandBar );
@@ -167,8 +163,7 @@ class ExpandBarTab extends ExampleTab {
     spinner.setMinimum( 0 );
     spinner.setMaximum( 20 );
     spinner.addModifyListener( new ModifyListener() {
-
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
         int spacing = spinner.getSelection();
         expandBar.setSpacing( spacing );
       }
@@ -180,14 +175,11 @@ class ExpandBarTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Insert ExpandItem before first item" );
     button.addSelectionListener( new SelectionAdapter() {
-
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
-        ClassLoader classLoader = getClass().getClassLoader();
+      public void widgetSelected( SelectionEvent event ) {
         ExpandItem item = new ExpandItem( expandBar, SWT.NONE, 0 );
         item.setText( "ExpandItem text" );
-        item.setImage( Graphics.getImage( "resources/newfile_wiz.gif",
-                                          classLoader ) );
+        item.setImage( Util.loadImage( item.getDisplay(), "resources/newfile_wiz.gif" ) );
         item.setExpanded( false );
         createItemContent( item );
       }
@@ -200,7 +192,7 @@ class ExpandBarTab extends ExampleTab {
     button.addSelectionListener( new SelectionAdapter() {
 
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         ExpandItem item = expandBar.getItem( 0 );
         item.dispose();
       }
@@ -217,4 +209,5 @@ class ExpandBarTab extends ExampleTab {
       item.setControl( content );
     }
   }
+
 }

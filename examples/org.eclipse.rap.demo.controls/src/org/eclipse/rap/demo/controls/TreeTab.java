@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -63,16 +62,18 @@ public class TreeTab extends ExampleTab {
   private Image columnImage;
   private boolean columnsMoveable;
   private boolean addMouseListener;
+  private ServerPushSession pushSession;
 
   public TreeTab() {
     super( "Tree" );
     showImages = true;
     headerVisible = true;
+    pushSession = new ServerPushSession();
   }
 
   @Override
   protected void createStyleControls( Composite parent ) {
-    treeImage = Graphics.getImage( "resources/tree_item.gif", getClass().getClassLoader() );
+    treeImage = Util.loadImage( parent.getDisplay(), "resources/tree_item.gif" );
     columnImage = loadImage( "resources/shell.gif" );
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "CHECK", SWT.CHECK );
@@ -181,7 +182,6 @@ public class TreeTab extends ExampleTab {
         public void handleEvent( Event event ) {
           final TreeItem item = ( TreeItem )event.item;
           if( updateVirtualItemsDelayed ) {
-            final String id = TreeTab.class.getName() + Integer.toString( item.hashCode() );
             final Display display = event.display;
             Job job = new Job( "Delayed Tree Item Update" ) {
               @Override
@@ -189,13 +189,13 @@ public class TreeTab extends ExampleTab {
                 display.asyncExec( new Runnable() {
                   public void run() {
                     updateItem( item );
-                    UICallBack.deactivate( id );
+                    pushSession.stop();
                   }
                 } );
                 return Status.OK_STATUS;
               }
             };
-            UICallBack.activate( id );
+            pushSession.start();
             job.schedule( 1000 );
           } else {
             updateItem( item );
@@ -576,7 +576,7 @@ public class TreeTab extends ExampleTab {
       @Override
       public void widgetSelected( SelectionEvent e ) {
         if( getTree().getItemCount() > 0 ) {
-          Color color = btn.getSelection() ? FG_COLOR_ORANGE  : null;
+          Color color = btn.getSelection() ? fgColors[ FG_COLOR_ORANGE ]  : null;
           getTree().getItem( 0 ).setForeground( color );
         }
       }
@@ -590,7 +590,7 @@ public class TreeTab extends ExampleTab {
       @Override
       public void widgetSelected( SelectionEvent e ) {
         if( getTree().getItemCount() > 0 ) {
-          Color color = btn.getSelection() ? BG_COLOR_BROWN  : null;
+          Color color = btn.getSelection() ? bgColors[ BG_COLOR_BROWN ]  : null;
           getTree().getItem( 0 ).setBackground( color );
         }
       }
@@ -599,11 +599,9 @@ public class TreeTab extends ExampleTab {
 
   private void createItemFontControl() {
     final Button btn = new Button( styleComp, SWT.TOGGLE );
+    final Font customFont = new Font( btn.getDisplay(), "Courier", 11, SWT.BOLD );
     btn.setText( "Item 0 Font" );
     btn.addSelectionListener( new SelectionAdapter() {
-
-      Font customFont = Graphics.getFont( "Courier", 11, SWT.BOLD );
-
       @Override
       public void widgetSelected( SelectionEvent e ) {
         if( getTree().getItemCount() > 0 ) {
@@ -621,7 +619,7 @@ public class TreeTab extends ExampleTab {
       @Override
       public void widgetSelected( SelectionEvent e ) {
         if( getTree().getItemCount() > 0 ) {
-          Color color = btn.getSelection() ? FG_COLOR_RED  : null;
+          Color color = btn.getSelection() ? fgColors[ FG_COLOR_RED ]  : null;
           getTree().getItem( 0 ).setForeground( 0, color );
         }
       }
@@ -635,7 +633,7 @@ public class TreeTab extends ExampleTab {
       @Override
       public void widgetSelected( SelectionEvent e ) {
         if( getTree().getItemCount() > 0 ) {
-          Color color = btn.getSelection() ? BG_COLOR_GREEN  : null;
+          Color color = btn.getSelection() ? bgColors[ BG_COLOR_GREEN ]  : null;
           getTree().getItem( 0 ).setBackground( 0, color );
         }
       }
@@ -644,11 +642,9 @@ public class TreeTab extends ExampleTab {
 
   private void createCellFontControl() {
     final Button btn = new Button( styleComp, SWT.TOGGLE );
+    final Font cellFont = new Font( btn.getDisplay(), "Times", 13, SWT.ITALIC );
     btn.setText( "Cell 0,0 Font" );
     btn.addSelectionListener( new SelectionAdapter() {
-
-      Font cellFont = Graphics.getFont( "Times", 13, SWT.ITALIC );
-
       @Override
       public void widgetSelected( SelectionEvent e ) {
         if( getTree().getItemCount() > 0 ) {

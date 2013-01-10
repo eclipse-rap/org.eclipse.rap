@@ -106,7 +106,7 @@ public final class CompositeTab extends ExampleTab {
     list.add( "Item 2" );
     list.add( "Item 3" );
     Composite composite2 = new Composite( composite, SWT.NONE );
-    composite2.setBackground( BG_COLOR_GREEN );
+    composite2.setBackground( bgColors[ BG_COLOR_GREEN ] );
     Group group = new Group( composite, SWT.NONE );
     group.setText( "Group" );
   }

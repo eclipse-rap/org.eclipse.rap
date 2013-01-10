@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.SWT;
@@ -56,12 +55,22 @@ import org.eclipse.swt.widgets.Text;
 @SuppressWarnings("restriction")
 abstract class ExampleTab implements Serializable {
 
+  public static final int BG_COLOR_GREEN = 1;
+  public static final int BG_COLOR_BLUE = 2;
+  public static final int BG_COLOR_BROWN = 3;
+  public static final int FG_COLOR_RED = 1;
+  public static final int FG_COLOR_BLUE = 2;
+  public static final int FG_COLOR_ORANGE = 3;
+  public static final int BGG_COLOR_GREEN = 1;
+  public static final int BGG_COLOR_BLUE = 2;
+
   protected final List<Control> controls;
 
   private Composite exampleComp;
   protected Composite styleComp;
   protected Color[] bgColors;
   protected Color[] fgColors;
+  protected Color[] gradientColors;
   private Font font;
   private int fgIndex;
   private int bgIndex;
@@ -79,16 +88,6 @@ abstract class ExampleTab implements Serializable {
   private int defaultStyle = SWT.NONE;
   private final Set<String> properties = new HashSet<String>();
   private Object data;
-
-  public static final Color BG_COLOR_GREEN = Graphics.getColor( 154, 205, 50 );
-  public static final Color BG_COLOR_BLUE = Graphics.getColor( 105, 89, 205 );
-  public static final Color BG_COLOR_BROWN = Graphics.getColor( 192, 172, 137 );
-  public static final Color FG_COLOR_RED = Graphics.getColor( 194, 0, 23 );
-  public static final Color FG_COLOR_BLUE = Graphics.getColor( 28, 96, 141 );
-  public static final Color FG_COLOR_ORANGE = Graphics.getColor( 249, 158, 0 );
-
-  public static final Color BGG_COLOR_GREEN = Graphics.getColor( 0, 255, 0 );
-  public static final Color BGG_COLOR_BLUE = Graphics.getColor( 0, 0, 255 );
 
   private static final String[] SWT_CURSORS = {
     "null",
@@ -146,7 +145,7 @@ abstract class ExampleTab implements Serializable {
   public void createContents( Composite parent ) {
     shell = parent.getShell();
     createSashForm( parent );
-    initColors();
+    initColors( parent.getDisplay() );
     createExampleControls( exampleComp );
     createStyleControls( styleComp );
     exampleComp.layout();
@@ -240,18 +239,25 @@ abstract class ExampleTab implements Serializable {
     return formData;
   }
 
-  private void initColors() {
+  private void initColors( Display display ) {
     bgColors = new Color[] {
       null,
-      BG_COLOR_GREEN,
-      BG_COLOR_BLUE,
-      BG_COLOR_BROWN
+      new Color( display, 154, 205, 50 ),
+      new Color( display, 105, 89, 205 ),
+      new Color( display, 192, 172, 137 )
     };
     fgColors = new Color[] {
       null,
-      FG_COLOR_RED,
-      FG_COLOR_BLUE,
-      FG_COLOR_ORANGE
+      new Color( display, 194, 0, 23 ),
+      new Color( display, 28, 96, 141 ),
+      new Color( display, 249, 158, 0 )
+    };
+    gradientColors = new Color[] {
+      new Color( display, 0, 0, 255 ),
+      new Color( display, 0, 255, 0 ),
+      new Color( display, 0, 0, 255 ),
+      new Color( display, 0, 255, 0 ),
+      new Color( display, 0, 0, 255 )
     };
   }
 
@@ -678,13 +684,6 @@ abstract class ExampleTab implements Serializable {
       Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
       IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
       if( showBgGradient ) {
-        Color[] gradientColors = new Color[] {
-          BGG_COLOR_BLUE,
-          BGG_COLOR_GREEN,
-          BGG_COLOR_BLUE,
-          BGG_COLOR_GREEN,
-          BGG_COLOR_BLUE
-        };
         int[] percents = new int[] { 0, 25, 50, 75, 100 };
         gfxAdapter.setBackgroundGradient( gradientColors, percents, true );
       } else {

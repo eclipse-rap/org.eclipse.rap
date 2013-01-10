@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,9 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -41,8 +39,6 @@ public class VariantsTab extends ExampleTab {
     "special-blue"
   };
 
-  private final Image buttonImage;
-
   private Combo variantsCombo;
 
   private Button myButton;
@@ -55,8 +51,6 @@ public class VariantsTab extends ExampleTab {
 
   public VariantsTab() {
     super( "Variants" );
-    ClassLoader classLoader = getClass().getClassLoader();
-    buttonImage = Graphics.getImage( BUTTON_IMAGE_PATH, classLoader );
   }
 
   @Override
@@ -82,7 +76,7 @@ public class VariantsTab extends ExampleTab {
     int style = getStyle();
     myButton = new Button( parent, style | SWT.PUSH );
     myButton.setText( "Push Button" );
-    myButton.setImage( buttonImage );
+    myButton.setImage( Util.loadImage( myButton.getDisplay(), BUTTON_IMAGE_PATH ) );
     myButton.setData( RWT.CUSTOM_VARIANT, getVariant() );
     registerControl( myButton );
 

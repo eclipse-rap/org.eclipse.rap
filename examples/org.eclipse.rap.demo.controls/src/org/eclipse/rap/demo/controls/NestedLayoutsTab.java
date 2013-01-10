@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -33,7 +32,7 @@ class NestedLayoutsTab extends ExampleTab {
   }
 
   @Override
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     final Button prefSizeButton = createPropertyButton( "Preferred Size" );
     prefSizeButton.addSelectionListener( new SelectionAdapter() {
       @Override
@@ -45,10 +44,10 @@ class NestedLayoutsTab extends ExampleTab {
   }
 
   @Override
-  protected void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( Composite parent ) {
     parent.setLayout( new GridLayout() );
     Composite comp = new Composite( parent, SWT.NONE );
-    comp.setBackground( BG_COLOR_BROWN );
+    comp.setBackground( bgColors[ BG_COLOR_BROWN ] );
     comp.setLayout( new GridLayout() );
     if( propPrefSize ) {
       comp.setLayoutData( new GridData() );
@@ -58,8 +57,7 @@ class NestedLayoutsTab extends ExampleTab {
 
     // Image label
     Label imageLabel = new Label( comp, SWT.NONE );
-    imageLabel.setImage( Graphics.getImage( "icons/lockkey.gif",
-                         this.getClass().getClassLoader() ) );
+    imageLabel.setImage( Util.loadImage( parent.getDisplay(), "icons/lockkey.gif" ) );
     imageLabel.setLayoutData( new GridData( 32, 32 ) );
 
     // Login data

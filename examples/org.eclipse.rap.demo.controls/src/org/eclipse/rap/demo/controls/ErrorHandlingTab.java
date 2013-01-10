@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -120,14 +120,14 @@ public class ErrorHandlingTab extends ExampleTab {
     } );
     final Button btnStartUICallback = new Button( parent, SWT.CHECK );
     btnStartUICallback.setText( "Enabled UICallback" );
+    final ServerPushSession serverPush = new ServerPushSession();
     btnStartUICallback.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( final SelectionEvent event ) {
-        String uiCallbackId = ErrorHandlingTab.class.getName();
         if( btnStartUICallback.getSelection() ) {
-          UICallBack.activate( uiCallbackId );
+          serverPush.start();
         } else {
-          UICallBack.deactivate( uiCallbackId );
+          serverPush.stop();
         }
       }
     } );

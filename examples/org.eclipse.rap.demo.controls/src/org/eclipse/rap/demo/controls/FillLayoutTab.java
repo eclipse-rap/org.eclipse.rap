@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -31,13 +31,13 @@ public class FillLayoutTab extends ExampleTab {
   }
 
   @Override
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );
     createStyleButton( "VERTICAL", SWT.VERTICAL );
     final Button prefSizeButton = createPropertyButton( "Preferred Size" );
     prefSizeButton.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         propPrefSize = prefSizeButton.getSelection();
         createNew();
       }
@@ -45,14 +45,14 @@ public class FillLayoutTab extends ExampleTab {
   }
 
   @Override
-  protected void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( Composite parent ) {
     int style = getStyle();
     GridLayout parentLayout = new GridLayout();
     parentLayout.marginWidth = 5;
     parent.setLayout( parentLayout );
 
     Composite comp = new Composite( parent, SWT.NONE );
-    comp.setBackground( Graphics.getColor( 0xcc, 0xb7, 0x91 ) );
+    comp.setBackground( new Color( parent.getDisplay(), 0xcc, 0xb7, 0x91 ) );
 
     FillLayout fillLayout = new FillLayout( style );
     fillLayout.marginWidth = 3;

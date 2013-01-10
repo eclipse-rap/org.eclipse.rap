@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -63,9 +62,11 @@ public class TableTab extends ExampleTab {
   private Image itemImage;
   private Image smallImage;
   private Image largeImage;
+  private ServerPushSession pushSession;
 
   public TableTab() {
     super( "Table" );
+    pushSession = new ServerPushSession();
   }
 
   @Override
@@ -141,7 +142,6 @@ public class TableTab extends ExampleTab {
         public void handleEvent( Event event ) {
           final TableItem item = ( TableItem )event.item;
           if( updateVirtualItemsDelayed ) {
-            final String id = TableTab.class.getName() + Integer.toString( item.hashCode() );
             final Display display = event.display;
             Job job = new Job( "Delayed Table Item Update" ) {
               @Override
@@ -149,13 +149,13 @@ public class TableTab extends ExampleTab {
                 display.asyncExec( new Runnable() {
                   public void run() {
                     updateItem( item );
-                    UICallBack.deactivate( id );
+                    pushSession.stop();
                   }
                 } );
                 return Status.OK_STATUS;
               }
             };
-            UICallBack.activate( id );
+            pushSession.start();
             job.schedule( 1000 );
           } else {
             updateItem( item );
@@ -702,7 +702,7 @@ public class TableTab extends ExampleTab {
         Display display = getTable().getDisplay();
         FontData fontData = getTable().getFont().getFontData()[ 0 ];
         String fontName = fontData.getName();
-        Font font = Graphics.getFont( fontName, fontData.getHeight(), SWT.BOLD );
+        Font font = new Font( display, fontName, fontData.getHeight(), SWT.BOLD );
         Color background = display.getSystemColor( SWT.COLOR_DARK_GREEN );
         Color foreground = display.getSystemColor( SWT.COLOR_DARK_CYAN );
         TableItem[] items = getTable().getItems();
@@ -779,7 +779,7 @@ public class TableTab extends ExampleTab {
       @Override
       public void widgetSelected( SelectionEvent e ) {
         if( getTable().getItemCount() > 0 ) {
-          Color color = btn.getSelection() ? FG_COLOR_ORANGE  : null;
+          Color color = btn.getSelection() ? fgColors[ FG_COLOR_ORANGE ]  : null;
           getTable().getItem( 0 ).setForeground( color );
         }
       }
@@ -793,7 +793,7 @@ public class TableTab extends ExampleTab {
       @Override
       public void widgetSelected( SelectionEvent e ) {
         if( getTable().getItemCount() > 0 ) {
-          Color color = btn.getSelection() ? BG_COLOR_BROWN  : null;
+          Color color = btn.getSelection() ? bgColors[ BG_COLOR_BROWN ]  : null;
           getTable().getItem( 0 ).setBackground( color );
         }
       }
@@ -802,11 +802,9 @@ public class TableTab extends ExampleTab {
 
   private void createItemFontControl() {
     final Button btn = new Button( styleComp, SWT.TOGGLE );
+    final Font customFont = new Font( btn.getDisplay(), "Courier", 11, SWT.BOLD );
     btn.setText( "Item 0 Font" );
     btn.addSelectionListener( new SelectionAdapter() {
-
-      Font customFont = Graphics.getFont( "Courier", 11, SWT.BOLD );
-
       @Override
       public void widgetSelected( SelectionEvent e ) {
         if( getTable().getItemCount() > 0 ) {
@@ -824,7 +822,7 @@ public class TableTab extends ExampleTab {
       @Override
       public void widgetSelected( SelectionEvent e ) {
         if( getTable().getItemCount() > 0 ) {
-          Color color = btn.getSelection() ? FG_COLOR_RED  : null;
+          Color color = btn.getSelection() ? fgColors[ FG_COLOR_RED ]  : null;
           getTable().getItem( 0 ).setForeground( 0, color );
         }
       }
@@ -838,7 +836,7 @@ public class TableTab extends ExampleTab {
       @Override
       public void widgetSelected( SelectionEvent e ) {
         if( getTable().getItemCount() > 0 ) {
-          Color color = btn.getSelection() ? BG_COLOR_GREEN  : null;
+          Color color = btn.getSelection() ? bgColors[ BG_COLOR_GREEN ]  : null;
           getTable().getItem( 0 ).setBackground( 0, color );
         }
       }
@@ -847,11 +845,9 @@ public class TableTab extends ExampleTab {
 
   private void createCellFontControl() {
     final Button btn = new Button( styleComp, SWT.TOGGLE );
+    final Font cellFont = new Font( btn.getDisplay(), "Times", 13, SWT.ITALIC );
     btn.setText( "Cell 0,0 Font" );
     btn.addSelectionListener( new SelectionAdapter() {
-
-      Font cellFont = Graphics.getFont( "Times", 13, SWT.ITALIC );
-
       @Override
       public void widgetSelected( SelectionEvent e ) {
         if( getTable().getItemCount() > 0 ) {

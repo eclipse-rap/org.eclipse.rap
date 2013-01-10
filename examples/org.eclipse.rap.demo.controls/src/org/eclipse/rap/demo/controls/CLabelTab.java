@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,10 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -69,15 +67,14 @@ public class CLabelTab extends ExampleTab {
     int style = getStyle();
     left = new CLabel( parent, style );
     left.setText( "Some Text" );
-    ClassLoader classLoader = getClass().getClassLoader();
-    Image image1 = Graphics.getImage( IMAGE1, classLoader );
+    Image image1 = Util.loadImage( parent.getDisplay(), IMAGE1 );
     left.setImage( image1 );
     center = new CLabel( parent, style );
     center.setText( "First Line\nSecond Line\n" );
     right = new CLabel( parent, style );
     right.setData( RWT.MARKUP_ENABLED, markupEnabled ? Boolean.TRUE : null );
     right.setText( markup );
-    Image image2 = Graphics.getImage( IMAGE2, classLoader );
+    Image image2 = Util.loadImage( parent.getDisplay(), IMAGE2 );
     right.setImage( image2 );
     registerControl( left );
     registerControl( center );
@@ -132,13 +129,6 @@ public class CLabelTab extends ExampleTab {
 
   private void updateBgGradient() {
     if( showBgGradient ) {
-      Color[] gradientColors = new Color[] {
-        BGG_COLOR_BLUE,
-        BGG_COLOR_GREEN,
-        BGG_COLOR_BLUE,
-        BGG_COLOR_GREEN,
-        BGG_COLOR_BLUE
-      };
       int[] percents = new int[] { 25, 50, 75, 100 };
       left.setBackground( gradientColors, percents );
       center.setBackground( gradientColors, percents, true );

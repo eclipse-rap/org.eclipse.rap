@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package org.eclipse.rap.demo.controls;
 import java.util.Iterator;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -61,7 +60,7 @@ public class CTabFolderTab extends ExampleTab {
   private boolean showSelectionBgGradient = false;
   private boolean showSelectionBgImage = false;
   private boolean customFontOnItem;
-  private static Font customFont = Graphics.getFont( "Courier", 12, SWT.ITALIC );
+  private Font customFont;
   private Button[] tabRadios;
 
   public CTabFolderTab() {
@@ -251,8 +250,7 @@ public class CTabFolderTab extends ExampleTab {
     int count = folder.getItemCount();
     item.setText( "Tab " + count );
     if( setImage ) {
-      ClassLoader classLoader = getClass().getClassLoader();
-      ctabImage = Graphics.getImage( CTAB_IMAGE_PATH, classLoader );
+      ctabImage = Util.loadImage( item.getDisplay(), CTAB_IMAGE_PATH );
       item.setImage( ctabImage );
     } else {
       item.setImage( null );
@@ -260,8 +258,8 @@ public class CTabFolderTab extends ExampleTab {
     if( count != 3 ) {
       Text content = new Text( folder, SWT.WRAP | SWT.MULTI );
       if( count % 2 != 0 ) {
-        content.setBackground( BG_COLOR_BROWN );
-        content.setForeground( FG_COLOR_BLUE );
+        content.setBackground( bgColors[ BG_COLOR_BROWN ] );
+        content.setForeground( fgColors[ FG_COLOR_BLUE ] );
       }
       content.setText( "Some Content " + count );
       item.setControl( content );
@@ -353,8 +351,7 @@ public class CTabFolderTab extends ExampleTab {
     CTabItem[] items = folder.getItems();
     for( int i = 0; i < items.length; i++ ) {
       if( setImage ) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        ctabImage = Graphics.getImage( CTAB_IMAGE_PATH, classLoader );
+        ctabImage = Util.loadImage( folder.getDisplay(), CTAB_IMAGE_PATH );
         items[ i ].setImage( ctabImage );
       } else {
         items[ i ].setImage( null );
@@ -362,12 +359,19 @@ public class CTabFolderTab extends ExampleTab {
     }
     if( items.length > 1 ) {
       items[ 1 ].setShowClose( showClose );
-      items[ 1 ].setFont( customFontOnItem ? customFont : null );
+      items[ 1 ].setFont( customFontOnItem ? getCustomFont( folder.getDisplay() ) : null );
     }
     folder.setMinimizeVisible( minVisible );
     folder.setMaximizeVisible( maxVisible );
     folder.setUnselectedCloseVisible( unselectedCloseVisible );
     folder.setUnselectedImageVisible( unselectedImageVisible );
+  }
+
+  private Font getCustomFont( Display display ) {
+    if( customFont == null ) {
+      customFont = new Font( display, "Courier", 12, SWT.ITALIC );
+    }
+    return customFont;
   }
 
   private void updateTopRightControl() {
@@ -415,13 +419,13 @@ public class CTabFolderTab extends ExampleTab {
       if( control instanceof CTabFolder ) {
         CTabFolder folder = ( CTabFolder )control;
         if( showSelectionBgGradient ) {
-          Color[] gradientColors = new Color[] {
-            BGG_COLOR_BLUE,
-            BGG_COLOR_GREEN,
-            BGG_COLOR_BLUE
+          Color[] colors = new Color[] {
+            gradientColors[ BGG_COLOR_BLUE ],
+            gradientColors[ BGG_COLOR_GREEN ],
+            gradientColors[ BGG_COLOR_BLUE ]
           };
           int[] percents = new int[] { 50, 100 };
-          folder.setSelectionBackground( gradientColors, percents );
+          folder.setSelectionBackground( colors, percents );
         } else {
           folder.setSelectionBackground( null, null );
         }

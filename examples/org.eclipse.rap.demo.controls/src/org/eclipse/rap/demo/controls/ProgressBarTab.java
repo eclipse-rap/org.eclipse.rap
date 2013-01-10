@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -31,9 +31,11 @@ public class ProgressBarTab extends ExampleTab {
 
   private static final int COUNT = 20;
   private ProgressBar progressBar;
+  private ServerPushSession serverPush;
 
   public ProgressBarTab() {
     super( "ProgressBar" );
+    serverPush = new ServerPushSession();
   }
 
   @Override
@@ -51,8 +53,8 @@ public class ProgressBarTab extends ExampleTab {
       @Override
       public void widgetSelected( final SelectionEvent evt ) {
         button.setEnabled( false );
-        // activate UI-callback mechanism
-        UICallBack.activate( ProgressBarTab.class.getName() );
+        // activate server push mechanism
+        serverPush.start();
         // create and start background thread that updates the progress bar
         Thread thread = new Thread( createRunnable( progressBar, button ) );
         thread.setDaemon( true );
@@ -104,9 +106,7 @@ public class ProgressBarTab extends ExampleTab {
     } );
   }
 
-  private Runnable createRunnable( final ProgressBar progressBar,
-                                   final Button button )
-  {
+  private Runnable createRunnable( final ProgressBar progressBar, final Button button ) {
     final int maximum = progressBar.getMaximum();
     final Display display = progressBar.getDisplay();
     Runnable result = new Runnable() {
@@ -129,9 +129,8 @@ public class ProgressBarTab extends ExampleTab {
                   progressBar.setSelection( selection );
                   if( selection == maximum ) {
                     button.setEnabled( true );
-                    // deactivate UI-callback mechanism
-                    String id = ProgressBarTab.class.getName();
-                    UICallBack.deactivate( id );
+                    // deactivate server push mechanism
+                    serverPush.stop();
                     if( panel[ 0 ] != null ) {
                       panel[ 0 ].dispose();
                     }
