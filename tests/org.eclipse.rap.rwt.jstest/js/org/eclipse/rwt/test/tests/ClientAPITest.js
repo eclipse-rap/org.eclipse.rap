@@ -291,6 +291,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
       assertEquals( 1, logger.getLog().length );
     },
 
+    testOn_RegisterSameEventWithSameListenerTwice : function() {
+      var logger = TestUtil.getLogger();
+
+      rap.on( "render", logger.log );
+      rap.on( "render", logger.log );
+      rap.getRemoteObject( shell ).call( "foo" );
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
     testOn_FireRenderEventAfterProcess : function() {
       var logger = TestUtil.getLogger();
       var server = rwt.remote.Server.getInstance();
@@ -302,6 +312,34 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
       assertEquals( now + 1, logger.getLog()[ 0 ] );
     },
 
+    testOff_DeregisterFirstListener : function() {
+      var logger = TestUtil.getLogger();
+
+      rap.on( "render", logger.log );
+      rap.on( "send", logger.log );
+      rap.off( "render", logger.log );
+      rap.getRemoteObject( shell ).call( "foo" );
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testOff_DeregisterSecondListener : function() {
+      var logger = TestUtil.getLogger();
+
+      rap.on( "render", logger.log );
+      rap.on( "send", logger.log );
+      rap.off( "render", logger.log );
+      rap.getRemoteObject( shell ).call( "foo" );
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testOff_DeregisterWithoutRegister : function() {
+      var logger = TestUtil.getLogger();
+
+      rap.off( "render", logger.log );
+      // succeeds by not crashing
+    },
 
     setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );

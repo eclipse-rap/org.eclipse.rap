@@ -105,15 +105,30 @@ rap = {
   },
 
   /**
-   * @description Register the function as a listener of the given type
+   * @description Register the function as a listener of the given type. Registering unkown
+   * types throws an Error.
    * @param {string} type The type of the event (e.g. "send").
    * @param {Function} listener The callback function. It is executed in global context.
    */
    on : function( type, handler ) {
      if( this._.events[ type ] ) {
-       this._.events[ type ].push( handler );
+       if( this._.events[ type ].indexOf( handler ) === -1 ) {
+         this._.events[ type ].push( handler );
+       }
      } else {
        throw new Error( "Unkown type " + type );
+     }
+   },
+
+  /**
+   * @description De-register the function as a listener of the given type.
+   * @param {string} type The type of the event
+   * @param {Function} listener The callback function
+   */
+   off : function( type, handler ) {
+     if( this._.events[ type ] ) {
+       var index = this._.events[ type ].indexOf( handler );
+       rwt.util.Arrays.removeAt( this._.events[ type ], index );
      }
    },
 
