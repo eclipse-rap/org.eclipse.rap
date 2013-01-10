@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,9 +20,10 @@ import static org.mockito.Mockito.mock;
 import java.util.Date;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.SWT;
@@ -410,8 +411,8 @@ public class WidgetLCAUtil_Test {
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
     Color[] gradientColors = new Color[] {
-      Graphics.getColor( 0, 255, 0 ),
-      Graphics.getColor( 0, 0, 255 )
+      new Color( display, 0, 255, 0 ),
+      new Color( display, 0, 0, 255 )
     };
     int[] percents = new int[] { 0, 100 };
 
@@ -435,8 +436,8 @@ public class WidgetLCAUtil_Test {
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
     Color[] gradientColors = new Color[] {
-      Graphics.getColor( 0, 255, 0 ),
-      Graphics.getColor( 0, 0, 255 )
+      new Color( display, 0, 255, 0 ),
+      new Color( display, 0, 0, 255 )
     };
     int[] percents = new int[] { 0, 100 };
 
@@ -462,8 +463,8 @@ public class WidgetLCAUtil_Test {
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
     Color[] gradientColors = new Color[] {
-      Graphics.getColor( 0, 255, 0 ),
-      Graphics.getColor( 0, 0, 255 )
+      new Color( display, 0, 255, 0 ),
+      new Color( display, 0, 0, 255 )
     };
     int[] percents = new int[] { 0, 100 };
 
@@ -483,8 +484,8 @@ public class WidgetLCAUtil_Test {
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
     Color[] gradientColors = new Color[] {
-      Graphics.getColor( 0, 255, 0 ),
-      Graphics.getColor( 0, 0, 255 )
+      new Color( display, 0, 255, 0 ),
+      new Color( display, 0, 0, 255 )
     };
     int[] percents = new int[] { 0, 100 };
     gfxAdapter.setBackgroundGradient( gradientColors, percents, true );
@@ -502,7 +503,7 @@ public class WidgetLCAUtil_Test {
     Widget widget = new Composite( shell, SWT.NONE );
     Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
-    Color color = Graphics.getColor( 0, 255, 0 );
+    Color color = new Color( display, 0, 255, 0 );
 
     graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
     WidgetLCAUtil.renderRoundedBorder( widget );
@@ -525,7 +526,7 @@ public class WidgetLCAUtil_Test {
     Fixture.markInitialized( widget );
     Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
-    Color color = Graphics.getColor( 0, 255, 0 );
+    Color color = new Color( display, 0, 255, 0 );
     graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
 
     WidgetLCAUtil.preserveRoundedBorder( widget );
@@ -542,7 +543,7 @@ public class WidgetLCAUtil_Test {
     Fixture.markInitialized( widget );
     Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
-    Color color = Graphics.getColor( 0, 255, 0 );
+    Color color = new Color( display, 0, 255, 0 );
     graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
     WidgetLCAUtil.preserveRoundedBorder( widget );
 
@@ -589,6 +590,66 @@ public class WidgetLCAUtil_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( JSONObject.NULL, message.findSetProperty( widget, "menu" ) );
+  }
+
+  @Test
+  public void testRenderInitialData() {
+    WidgetLCAUtil.renderData( widget );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
+  }
+
+  @Test
+  public void testRenderData() throws JSONException {
+    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    uiSession.setRenderedDataKeys( new String[]{ "foo", "bar" } );
+    widget.setData( "foo", "string" );
+    widget.setData( "bar", Integer.valueOf( 1 ) );
+
+    WidgetLCAUtil.renderData( widget );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONObject data = ( JSONObject )message.findSetProperty( widget, "data" );
+    assertEquals( "string", data.getString( "foo" ) );
+    assertEquals( Integer.valueOf( 1 ), Integer.valueOf( data.getInt( "bar" ) ) );
+  }
+
+  @Test
+  public void testRenderData_MissingData() {
+    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    uiSession.setRenderedDataKeys( new String[]{ "missing" } );
+
+    WidgetLCAUtil.renderData( widget );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
+  }
+
+  @Test
+  public void testRenderData_NullKey() {
+    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    uiSession.setRenderedDataKeys( new String[]{ null } );
+
+    WidgetLCAUtil.renderData( widget );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
+  }
+
+  @Test
+  public void testRenderRoundedDataUnchanged() {
+    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    uiSession.setRenderedDataKeys( new String[]{ "foo" } );
+    widget.setData( "foo", "string" );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( widget );
+
+    Fixture.preserveWidgets();
+    WidgetLCAUtil.renderData( widget );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
   }
 
 }
