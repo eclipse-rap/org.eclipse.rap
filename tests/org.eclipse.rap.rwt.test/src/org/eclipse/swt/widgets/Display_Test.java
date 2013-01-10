@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1860,6 +1860,59 @@ public class Display_Test {
     verifyZeroInteractions( listener );
   }
 
+  @Test
+  public void testReadInitialBounds() {
+    Fixture.fakeSetParameter( "w1", "bounds", new int[] { 1, 2, 3, 4 } );
+
+    Display display = new Display();
+
+    Rectangle bounds = display.getBounds();
+    assertEquals( 1, bounds.x );
+    assertEquals( 2, bounds.y );
+    assertEquals( 3, bounds.width );
+    assertEquals( 4, bounds.height );
+  }
+
+  @Test
+  public void testReadDPI() {
+    Fixture.fakeSetParameter( "w1", "dpi", new int[] { 1, 2 } );
+
+    Display display = new Display();
+
+    Point dpi = display.getDPI();
+    assertEquals( 1, dpi.x );
+    assertEquals( 2, dpi.y );
+  }
+
+  @Test
+  public void testReadColorDepth() {
+    Fixture.fakeSetParameter( "w1", "colorDepth", Integer.valueOf( 32 ) );
+
+    Display display = new Display();
+
+    assertEquals( 32, display.getDepth() );
+  }
+
+  @Test
+  public void testBoundsDPIAndColorDepthIsSerializable() throws Exception {
+    Fixture.fakeSetParameter( "w1", "bounds", new int[] { 1, 2, 3, 4 } );
+    Fixture.fakeSetParameter( "w1", "dpi", new int[] { 1, 2 } );
+    Fixture.fakeSetParameter( "w1", "colorDepth", Integer.valueOf( 32 ) );
+    TestDisplay display = new TestDisplay();
+
+    TestDisplay deserializedDisplay = Fixture.serializeAndDeserialize( display );
+
+    Rectangle bounds = deserializedDisplay.getBounds();
+    assertEquals( 1, bounds.x );
+    assertEquals( 2, bounds.y );
+    assertEquals( 3, bounds.width );
+    assertEquals( 4, bounds.height );
+    Point dpi = deserializedDisplay.getDPI();
+    assertEquals( 1, dpi.x );
+    assertEquals( 2, dpi.y );
+    assertEquals( 32, deserializedDisplay.getDepth() );
+  }
+
   private static void setCursorLocation( Display display, int x, int y ) {
     IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     adapter.setCursorLocation( x, y );
@@ -1871,6 +1924,12 @@ public class Display_Test {
       Shell shell = new Shell( display );
       WidgetUtil.getId( shell );
       return 0;
+    }
+  }
+
+  private static class TestDisplay extends Display {
+    @Override
+    protected void checkDevice() {
     }
   }
 

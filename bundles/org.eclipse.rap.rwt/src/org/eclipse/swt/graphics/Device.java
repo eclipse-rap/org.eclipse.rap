@@ -13,7 +13,6 @@ package org.eclipse.swt.graphics;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.theme.QxFont;
 import org.eclipse.rap.rwt.internal.theme.QxType;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
@@ -39,13 +38,9 @@ public abstract class Device implements Drawable, SerializableCompatibility {
   // 'deviceLock'.
   protected final SerializableLock deviceLock;
   private boolean disposed;
-  private Point dpi;
-  private int depth;
 
   public Device() {
     deviceLock = new SerializableLock();
-    readDPI();
-    readDepth();
   }
 
   /**
@@ -230,7 +225,7 @@ public abstract class Device implements Drawable, SerializableCompatibility {
    */
   public int getDepth() {
     checkDevice();
-    return depth;
+    return 16;
   }
 
   /**
@@ -247,7 +242,7 @@ public abstract class Device implements Drawable, SerializableCompatibility {
    */
   public Point getDPI() {
     checkDevice();
-    return new Point( dpi.x, dpi.y );
+    return new Point( 0, 0 );
   }
 
   /**
@@ -366,22 +361,6 @@ public abstract class Device implements Drawable, SerializableCompatibility {
   protected void checkDevice() {
     if( disposed ) {
       SWT.error( SWT.ERROR_DEVICE_DISPOSED );
-    }
-  }
-
-  private void readDPI() {
-    dpi = ProtocolUtil.readPropertyValueAsPoint( "w1", "dpi" );
-    if( dpi == null ) {
-      dpi = new Point( 0, 0 );
-    }
-  }
-
-  private void readDepth() {
-    String parameter = ProtocolUtil.readPropertyValueAsString( "w1", "colorDepth" );
-    if( parameter != null ) {
-      depth = Integer.parseInt( parameter );
-    } else {
-      depth = 16;
     }
   }
 }
