@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2013 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -113,6 +114,7 @@ public class ServiceContext_Test {
 
   @Test
   public void testGetApplicationContextFromBackgroundThread() throws Throwable {
+    SingletonManager.install( uiSession );
     ServiceContext serviceContext = createContext( applicationContext );
     ContextProvider.setContext( serviceContext );
     final ApplicationContextImpl[] backgroundApplicationContext = { null };

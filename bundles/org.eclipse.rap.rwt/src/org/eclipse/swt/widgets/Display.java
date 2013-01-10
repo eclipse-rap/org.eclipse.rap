@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -2246,7 +2248,7 @@ public class Display extends Device implements Adaptable {
   }
 
   private Rectangle readInitialBounds() {
-    Rectangle result = ProtocolUtil.readPropertyValueAsRectangle( "w1", BOUNDS );
+    Rectangle result = ProtocolUtil.readPropertyValueAsRectangle( getId( this ), BOUNDS );
     if( result == null ) {
       result = new Rectangle( 0, 0, 1024, 768 );
     }
@@ -2254,7 +2256,7 @@ public class Display extends Device implements Adaptable {
   }
 
   private Point readDPI() {
-    Point result = ProtocolUtil.readPropertyValueAsPoint( "w1", DPI );
+    Point result = ProtocolUtil.readPropertyValueAsPoint( getId( this ), DPI );
     if( result == null ) {
       result = new Point( 0, 0 );
     }
@@ -2263,7 +2265,7 @@ public class Display extends Device implements Adaptable {
 
   private int readDepth() {
     int result = 16;
-    String parameter = ProtocolUtil.readPropertyValueAsString( "w1", COLOR_DEPTH );
+    String parameter = ProtocolUtil.readPropertyValueAsString( getId( this ), COLOR_DEPTH );
     if( parameter != null ) {
       result = Integer.parseInt( parameter );
     }
