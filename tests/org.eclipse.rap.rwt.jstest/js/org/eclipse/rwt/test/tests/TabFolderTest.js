@@ -83,6 +83,66 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       assertFalse( item3.getChecked() );
     },
 
+    testSetBoundsByProtocol : function() {
+      var processor = rwt.remote.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.TabFolder",
+        "properties" : {
+          "style" : [ "TOP" ],
+          "parent" : "w2",
+          "bounds" : [ 10, 10, 100, 100 ]
+        }
+      } );
+      TestUtil.flush();
+
+      TestUtil.protocolSet( "w3", { "bounds" : [ 20, 30, 120, 130 ] } );
+      TestUtil.flush();
+
+      var ObjectManager = rwt.remote.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w3" );
+      var style = widget.getElement().style;
+      var paneStyle = widget.getPane().getElement().style;
+      var barStyle = widget.getBar().getElement().style;
+      assertEquals( "20px", style.left );
+      assertEquals( "30px", style.top );
+      assertEquals( "120px", style.width );
+      assertEquals( "130px", style.height );
+    },
+
+    testInternalLayoutChange : function() {
+      var processor = rwt.remote.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.TabFolder",
+        "properties" : {
+          "style" : [ "TOP" ],
+          "parent" : "w2",
+          "bounds" : [ 10, 10, 100, 100 ]
+        }
+      } );
+      this._createTabItemByProtocol( "w4", "w3" );
+      TestUtil.flush();
+
+      TestUtil.protocolSet( "w3", { "bounds" : [ 20, 30, 120, 130 ] } );
+      TestUtil.flush();
+
+      var ObjectManager = rwt.remote.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w3" );
+      var paneStyle = widget.getPane().getElement().style;
+      var barStyle = widget.getBar().getElement().style;
+      var barHeight = parseInt( barStyle.height, 10 );
+      assertEquals( "0px", barStyle.left );
+      assertEquals( "0px", barStyle.top );
+      assertEquals( "120px", barStyle.width );
+      assertEquals( "0px", paneStyle.left );
+      assertEquals( barHeight - 1, parseInt( paneStyle.top, 10 ) );
+      assertEquals( "120px", paneStyle.width );
+      assertEquals( 130 - barHeight + 1, parseInt( paneStyle.height, 10 ) );
+    },
+
     testCreateTabItemByProtocol : function() {
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
