@@ -497,6 +497,72 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       targetObject.destroy();
     },
 
+    testProcessListenUpdatesRemoteHandlerListen_ListenTrue : function() {
+      var registry = rwt.remote.HandlerRegistry;
+      var processor = rwt.remote.MessageProcessor;
+      registry.add( "dummyType", {
+        events : [ "foo", "bar" ]
+      } );
+      var targetObject = this._getDummyTarget( "dummyId" );
+
+      processor.processOperationArray( [ "listen", "dummyId", { "foo" : true } ] );
+
+      var remoteObject = rwt.remote.RemoteObjectFactory._getRemoteObject( "dummyId" );
+      assertTrue( remoteObject.isListening( "foo" ) );
+      HandlerRegistry.remove( "dummyType" );
+      targetObject.destroy();
+    },
+
+    testProcessListenUpdatesRemoteHandlerListen_ListenForUnkownType : function() {
+      var registry = rwt.remote.HandlerRegistry;
+      var processor = rwt.remote.MessageProcessor;
+      registry.add( "dummyType", {
+        events : [ "foo", "bar" ]
+      } );
+      var targetObject = this._getDummyTarget( "dummyId" );
+
+      processor.processOperationArray( [ "listen", "dummyId", { "foox" : true } ] );
+
+      var remoteObject = rwt.remote.RemoteObjectFactory._getRemoteObject( "dummyId" );
+      assertFalse( remoteObject.isListening( "foox" ) );
+      HandlerRegistry.remove( "dummyType" );
+      targetObject.destroy();
+    },
+
+    testProcessListenUpdatesRemoteHandlerListen_ListenFalse : function() {
+      var registry = rwt.remote.HandlerRegistry;
+      var processor = rwt.remote.MessageProcessor;
+      registry.add( "dummyType", {
+        events : [ "foo", "bar" ]
+      } );
+      var targetObject = this._getDummyTarget( "dummyId" );
+
+      processor.processOperationArray( [ "listen", "dummyId", { "foo" : true } ] );
+      processor.processOperationArray( [ "listen", "dummyId", { "foo" : false } ] );
+
+      var remoteObject = rwt.remote.RemoteObjectFactory._getRemoteObject( "dummyId" );
+      assertFalse( remoteObject.isListening( "foo" ) );
+      HandlerRegistry.remove( "dummyType" );
+      targetObject.destroy();
+    },
+
+    testProcessListenDoesNotUpdateRemoteHandlerListen_ListenFalse : function() {
+      var registry = rwt.remote.HandlerRegistry;
+      var processor = rwt.remote.MessageProcessor;
+      registry.add( "dummyType", {
+        listeners : [ "foo", "bar" ]
+      } );
+      var targetObject = this._getDummyTarget( "dummyId" );
+
+      processor.processOperationArray( [ "listen", "dummyId", { "foo" : true } ] );
+      processor.processOperationArray( [ "listen", "dummyId", { "foo" : false } ] );
+
+      var remoteObject = rwt.remote.RemoteObjectFactory._getRemoteObject( "dummyId" );
+      assertTrue( remoteObject.isListening( "foo" ) );
+      HandlerRegistry.remove( "dummyType" );
+      targetObject.destroy();
+    },
+
     testProcessMessage : function() {
       var registry = rwt.remote.HandlerRegistry;
       var processor = rwt.remote.MessageProcessor;

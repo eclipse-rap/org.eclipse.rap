@@ -150,7 +150,17 @@ rwt.remote.MessageProcessor = {
     var objectEntry = rwt.remote.ObjectRegistry.getEntry( targetId );
     var handler = objectEntry.handler;
     var targetObject = objectEntry.object;
-    if( handler.listeners instanceof Array ) {
+    if( handler.events instanceof Array ) {
+      var remoteObject = rwt.remote.RemoteObjectFactory.getRemoteObject( targetObject );
+      for( var i = 0; i < handler.events.length; i++ ) {
+        var type = handler.events[ i ];
+        if( properties[ type ] === true ) {
+          remoteObject._.listen[ type ] = true;
+        } if( properties[ type ] === false ) {
+          remoteObject._.listen[ type ] = false;
+        }
+      }
+    } else if( handler.listeners instanceof Array ) {
       for( var i = 0; i < handler.listeners.length; i++ ) {
         var type = handler.listeners[ i ];
         if( properties[ type ] === true ) {
