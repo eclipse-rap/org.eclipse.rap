@@ -129,6 +129,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       TestUtil.protocolSet( "w3", { "bounds" : [ 20, 30, 120, 130 ] } );
       TestUtil.flush();
 
+      var gecko = rwt.client.Client.isGecko();
       var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var paneStyle = widget.getPane().getElement().style;
@@ -136,10 +137,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       var barHeight = parseInt( barStyle.height, 10 );
       assertEquals( "0px", barStyle.left );
       assertEquals( "0px", barStyle.top );
-      assertEquals( "120px", barStyle.width );
+      assertEquals( gecko ? "" : "120px", barStyle.width );
       assertEquals( "0px", paneStyle.left );
       assertEquals( barHeight - 1, parseInt( paneStyle.top, 10 ) );
-      assertEquals( "120px", paneStyle.width );
+      assertEquals( gecko ? "" : "120px", paneStyle.width );
       assertEquals( 130 - barHeight + 1, parseInt( paneStyle.height, 10 ) );
     },
 
