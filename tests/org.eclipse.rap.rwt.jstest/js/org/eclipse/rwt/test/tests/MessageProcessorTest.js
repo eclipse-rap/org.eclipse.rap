@@ -303,6 +303,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       registry.remove( "dummyType" );
     },
 
+    testProcessDestroy_CallDestroyMethodDirectlyWhenNameIsGiven : function() {
+      var registry = rwt.remote.HandlerRegistry;
+      var processor = rwt.remote.MessageProcessor;
+      registry.add( "dummyType", {
+        "destructor" : "destroy"
+      } );
+      var target = this._getDummyTarget( "dummyId" );
+
+      processor.processOperationArray( [ "destroy", "dummyId" ] );
+
+      assertEquals( [ "destroy" ], target.getLog() );
+      assertNull( target.getParent() );
+      assertTrue( this._getTargetById( "dummyId" ) == null );
+      registry.remove( "dummyType" );
+    },
+
     testProcessDestroyWithDestructor : function() {
       var registry = rwt.remote.HandlerRegistry;
       var processor = rwt.remote.MessageProcessor;

@@ -40,12 +40,13 @@ rap = {
    * properties/fields set by the server. Has to return a "client object" representing an instance
    * of the type of this handler. <em>Required for all type handler</em>.
    *
-   * @param {Function} handler.destructor Called for destroy operations with the client object as
-   * the first argument. <em>Optional</em>
+   * @param {string} handler.destructor Name of the method that is called for destroy operations.
+   * If the string is given, the client object <em>has</em> to implement a method with the given
+   * name. <em>Optional</em>
    *
    * @param {string[]} handler.properties List of properties supported by this type.
    * The order in the list controls the order in which the properties are applied by the message
-   * processor. The client object has to implement a setter for each supported property.
+   * processor. The client object <em>has</em> to implement a setter for each supported property.
    * For example, if the property is "bounds", <code>setBounds</code> will be called on the client
    * object. Properties given by the server that are not in this list will be ignored. (One
    * exception is the factory, which gets an object with <i>all</i> properties set by the server

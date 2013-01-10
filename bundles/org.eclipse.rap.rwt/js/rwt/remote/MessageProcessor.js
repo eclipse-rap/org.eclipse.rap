@@ -99,8 +99,11 @@ rwt.remote.MessageProcessor = {
     var children =   handler.getDestroyableChildren
                    ? handler.getDestroyableChildren( targetObject )
                    : null;
-    if( handler.destructor ) {
+    if( handler.destructor instanceof Function ) {
       handler.destructor( targetObject );
+    } else if( typeof handler.destructor === "string" ) {
+      var destructorName = handler.destructor;
+      targetObject[ destructorName ]();
     }
     rwt.remote.ObjectRegistry.remove( targetId );
     rwt.remote.RemoteObjectFactory.remove( targetId );
