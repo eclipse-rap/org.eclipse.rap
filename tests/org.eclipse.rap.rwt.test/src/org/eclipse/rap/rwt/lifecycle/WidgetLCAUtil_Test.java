@@ -16,14 +16,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Date;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.Client;
+import org.eclipse.rap.rwt.internal.client.WidgetDataWhiteList;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.SWT;
@@ -602,8 +603,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderData() throws JSONException {
-    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
-    uiSession.setRenderedDataKeys( new String[]{ "foo", "bar" } );
+    fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
     widget.setData( "foo", "string" );
     widget.setData( "bar", Integer.valueOf( 1 ) );
 
@@ -616,9 +616,18 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
+  public void testRenderDataWithoutDataWhiteListService() {
+    widget.setData( "foo", "string" );
+
+    WidgetLCAUtil.renderData( widget );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
+  }
+
+  @Test
   public void testRenderData_MissingData() {
-    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
-    uiSession.setRenderedDataKeys( new String[]{ "missing" } );
+    fakeWidgetDataWhiteList( new String[]{ "missing" } );
 
     WidgetLCAUtil.renderData( widget );
 
@@ -628,8 +637,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderData_NullKey() {
-    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
-    uiSession.setRenderedDataKeys( new String[]{ null } );
+    fakeWidgetDataWhiteList( new String[]{ null } );
 
     WidgetLCAUtil.renderData( widget );
 
@@ -639,8 +647,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderRoundedDataUnchanged() {
-    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
-    uiSession.setRenderedDataKeys( new String[]{ "foo" } );
+    fakeWidgetDataWhiteList( new String[]{ "foo" } );
     widget.setData( "foo", "string" );
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
@@ -650,6 +657,14 @@ public class WidgetLCAUtil_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
+  }
+
+  private void fakeWidgetDataWhiteList( String[] keys ) {
+    WidgetDataWhiteList service = mock( WidgetDataWhiteList.class );
+    when( service.getKeys() ).thenReturn( keys );
+    Client client = mock( Client.class );
+    when( client.getService( WidgetDataWhiteList.class ) ).thenReturn( service );
+    Fixture.fakeClient( client );
   }
 
 }

@@ -17,13 +17,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.client.WidgetDataWhiteList;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.protocol.StylesUtil;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.internal.util.EncodingUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.swt.SWT;
@@ -378,10 +378,10 @@ public final class WidgetLCAUtil {
 
   private static Object[] getDataAsArray( Widget widget ) {
     List<Object> result = new ArrayList<Object>();
-    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
-    String[] renderedDataKeys = uiSession.getRenderedDataKeys();
-    if( renderedDataKeys != null ) {
-      for( String key : renderedDataKeys ) {
+    WidgetDataWhiteList service = RWT.getClient().getService( WidgetDataWhiteList.class );
+    String[] dataKeys = service == null ? null : service.getKeys();
+    if( dataKeys != null ) {
+      for( String key : dataKeys ) {
         if( key != null ) {
           Object value = widget.getData( key );
           if( value != null ) {

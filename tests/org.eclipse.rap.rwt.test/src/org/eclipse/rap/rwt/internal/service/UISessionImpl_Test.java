@@ -26,7 +26,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -584,20 +583,6 @@ public class UISessionImpl_Test {
     } );
 
     assertNotNull( localeCaptor.get() );
-  }
-
-  @Test
-  public void testSetRenderedDataKeys() {
-    String[] keys = new String[]{ "foo", "bar" };
-
-    uiSession.setRenderedDataKeys( keys );
-
-    assertTrue( Arrays.equals( keys, uiSession.getRenderedDataKeys() ) );
-  }
-
-  @Test
-  public void testGetRenderedKeys_NotSet() {
-    assertNull( uiSession.getRenderedDataKeys() );
   }
 
   @Test
