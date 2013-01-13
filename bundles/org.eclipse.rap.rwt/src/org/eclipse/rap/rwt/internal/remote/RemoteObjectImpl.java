@@ -20,7 +20,7 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.rap.rwt.remote.RemoteOperationHandler;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 
 
 public class RemoteObjectImpl implements RemoteObject, Serializable {
@@ -28,7 +28,7 @@ public class RemoteObjectImpl implements RemoteObject, Serializable {
   private final String id;
   private final List<RenderRunnable> renderQueue;
   private boolean destroyed;
-  private RemoteOperationHandler handler;
+  private OperationHandler handler;
 
   public RemoteObjectImpl( final String id, final String createType ) {
     this.id = id;
@@ -131,7 +131,7 @@ public class RemoteObjectImpl implements RemoteObject, Serializable {
     return destroyed;
   }
 
-  public void setHandler( RemoteOperationHandler handler ) {
+  public void setHandler( OperationHandler handler ) {
     this.handler = handler;
   }
 

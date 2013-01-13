@@ -29,7 +29,7 @@ import java.util.Map;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.remote.RemoteOperationHandler;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.junit.After;
@@ -358,7 +358,7 @@ public class RemoteObjectImpl_Test {
 
   @Test
   public void testHandleSetDelegatesToHandler() {
-    RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
+    OperationHandler handler = mock( OperationHandler.class );
     remoteObject.setHandler( handler );
     Map<String, Object> properties = mockProperties();
 
@@ -374,7 +374,7 @@ public class RemoteObjectImpl_Test {
 
   @Test
   public void testHandleCallDelegatesToHandler() {
-    RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
+    OperationHandler handler = mock( OperationHandler.class );
     remoteObject.setHandler( handler );
     Map<String, Object> properties = mockProperties();
 
@@ -391,7 +391,7 @@ public class RemoteObjectImpl_Test {
   @Test
   public void testHandleNotifyDelegatesToHandler() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
+    OperationHandler handler = mock( OperationHandler.class );
     remoteObject.setHandler( handler );
     Map<String, Object> properties = mockProperties();
 
@@ -403,7 +403,7 @@ public class RemoteObjectImpl_Test {
   @Test
   public void testHandleNotifyDelegatesToHandlerNotInReadData() {
     Fixture.fakePhase( PhaseId.READ_DATA );
-    RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
+    OperationHandler handler = mock( OperationHandler.class );
     remoteObject.setHandler( handler );
     Map<String, Object> properties = mockProperties();
 
@@ -415,7 +415,7 @@ public class RemoteObjectImpl_Test {
   @Test
   public void testHandleNotifyDelegatesToHandlerNotInRender() {
     Fixture.fakePhase( PhaseId.RENDER );
-    RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
+    OperationHandler handler = mock( OperationHandler.class );
     remoteObject.setHandler( handler );
     Map<String, Object> properties = mockProperties();
 

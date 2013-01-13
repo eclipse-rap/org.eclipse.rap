@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.rap.rwt.remote.RemoteOperationHandler;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.junit.After;
@@ -73,7 +73,7 @@ public class CientInfoImpl_Test {
     RemoteObject remoteObject = mock( RemoteObject.class );
     fakeRemoteObjectFactory( remoteObject );
     ClientInfoImpl clientInfo = new ClientInfoImpl();
-    RemoteOperationHandler handler = getHandler( remoteObject );
+    OperationHandler handler = getHandler( remoteObject );
 
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( "timezoneOffset", new Integer( -90 ) );
@@ -141,9 +141,9 @@ public class CientInfoImpl_Test {
     assertEquals( new Locale( "en-US" ), clientInfo.getLocales()[ 0 ] );
   }
 
-  private static RemoteOperationHandler getHandler( RemoteObject remoteObject ) {
-    ArgumentCaptor<RemoteOperationHandler> captor
-      = ArgumentCaptor.forClass( RemoteOperationHandler.class );
+  private static OperationHandler getHandler( RemoteObject remoteObject ) {
+    ArgumentCaptor<OperationHandler> captor
+      = ArgumentCaptor.forClass( OperationHandler.class );
     verify( remoteObject ).setHandler( captor.capture() );
     return captor.getValue();
   }
