@@ -27,6 +27,8 @@
     <signing-plugin-version>1.0.5</signing-plugin-version>
     <base-platform>4.3milestones/S-4.3M4-201212140730/</base-platform>
     <base-platform-repository>http://download.eclipse.org/eclipse/updates/${base-platform}</base-platform-repository>
+    <base-platform-juno>4.2/R-4.2.1-201209141800/</base-platform-juno>
+    <base-platform-repository-juno>http://download.eclipse.org/eclipse/updates/${base-platform-juno}</base-platform-repository-juno>
     <baseline-repository>http://download.eclipse.org/rt/rap/nightly/runtime/</baseline-repository>
   </properties>
 
@@ -35,7 +37,10 @@
   </prerequisites>
 
   <modules>
+    <module>../../features/org.eclipse.rap.equinox.juno.target.feature</module>
     <module>../../features/org.eclipse.rap.equinox.target.feature</module>
+    <module>repository.juno</module>
+    <module>repository.kepler</module>
     <module>repository</module>
   </modules>
 
@@ -45,17 +50,6 @@
       <layout>p2</layout>
       <url>${runtimeRepo}</url>
     </repository>
-    <repository>
-      <id>base-platform-repository</id>
-      <layout>p2</layout>
-      <url>${base-platform-repository}</url>
-    </repository>
-    <repository>
-      <id>base-platform-repository-with-ICU-bundle</id>
-      <layout>p2</layout>
-      <!-- This repository is required in order to pull in the base ICU bundle -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/2.0/M4/runtime-base</url>
-    </repository>    
     <repository>
       <id>extra-dependencies-repository</id>
       <layout>p2</layout>

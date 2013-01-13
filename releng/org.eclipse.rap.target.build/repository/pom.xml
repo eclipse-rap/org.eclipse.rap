@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (c) 2011, 2012 EclipseSource and others.
+  Copyright (c) 2011, 2013 EclipseSource and others.
   All rights reserved. This program and the accompanying materials
   are made available under the terms of the Eclipse Public License v1.0
   which accompanies this distribution, and is available at
@@ -21,20 +21,11 @@
   </parent>
 
   <artifactId>org.eclipse.rap.runtime-aggregation-repository</artifactId>
-  <packaging>eclipse-repository</packaging>
+  <packaging>pom</packaging>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-p2-repository-plugin</artifactId>
-        <version>${tycho-version}</version>
-        <configuration>
-          <repositoryName>RAP Runtime</repositoryName>
-          <includeAllDependencies>false</includeAllDependencies>
-          <compress>true</compress>
-        </configuration>
-      </plugin>
+
       <plugin>
         <groupId>org.eclipse.tycho.extras</groupId>
         <artifactId>tycho-p2-extras-plugin</artifactId>
@@ -42,29 +33,26 @@
         <executions>
           <execution>
             <phase>prepare-package</phase>
-              <goals>
-                <goal>mirror</goal>
-              </goals>
+            <goals>
+              <goal>mirror</goal>
+            </goals>
           </execution>
         </executions>
         <configuration>
           <source>
             <repository>
-              <url>${base-platform-repository}</url>
+              <url>repository.kepler/target/repository/</url>
+              <layout>p2</layout>
+            </repository>
+            <repository>
+              <url>repository.juno/target/repository/</url>
               <layout>p2</layout>
             </repository>
           </source>
-          <ius>
-            <iu>
-              <id>a.jre.javase</id>
-            </iu>
-          </ius>
-          <includeOptional>false</includeOptional>
-          <includeNonGreedy>false</includeNonGreedy>
-          <latestVersionOnly>true</latestVersionOnly>
-          <mirrorMetadataOnly>true</mirrorMetadataOnly>
+          <destination>${project.build.directory}/repository</destination>
         </configuration>
-      </plugin>      
+      </plugin>
+
     </plugins>
   </build>
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2011, 2013 EclipseSource and others
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Public License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/legal/epl-v10.html
+
+  Contributors:
+     EclipseSource - initial implementation
+-->
+<site>
+
+  <category-def
+      name="org.eclipse.rap.category"
+      label="Rich Ajax Platform (RAP)" />
+
+  <feature url="http://eclipse.org/rap"
+      id="org.eclipse.rap.feature"
+      version="2.0.0.qualifier">
+    <category name="org.eclipse.rap.category"/>
+  </feature>
+
+  <feature url="http://eclipse.org/rap"
+      id="org.eclipse.rap.examples.feature"
+      version="2.0.0.qualifier">
+    <category name="org.eclipse.rap.category"/>
+  </feature>
+
+  <feature url="http://eclipse.org/rap"
+      id="org.eclipse.rap.equinox.target.feature"
+      version="2.0.0.qualifier">
+    <category name="org.eclipse.rap.category"/>
+  </feature>
+
+</site>
