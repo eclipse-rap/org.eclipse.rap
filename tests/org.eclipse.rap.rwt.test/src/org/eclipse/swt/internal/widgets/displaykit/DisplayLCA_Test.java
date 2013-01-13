@@ -55,6 +55,7 @@ import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
@@ -446,8 +447,10 @@ public class DisplayLCA_Test {
 
   @Test
   public void testReadDataDelegatesToRemoteObjects() {
+    OperationHandler handler = mock( OperationHandler.class );
     RemoteObjectImpl remoteObject = mock( RemoteObjectImpl.class );
     when( remoteObject.getId() ).thenReturn( "id" );
+    when( remoteObject.getHandler() ).thenReturn( handler );
     RemoteObjectRegistry.getInstance().register( remoteObject );
     HashMap<String, Object> properties = new HashMap<String, Object>();
     properties.put( "foo", "bar" );
@@ -455,7 +458,7 @@ public class DisplayLCA_Test {
 
     displayLCA.readData( display );
 
-    verify( remoteObject ).handleCall( eq( "method" ), eq( properties ) );
+    verify( handler ).handleCall( eq( "method" ), eq( properties ) );
   }
 
   private static void setEnableUiTests( boolean value ) {

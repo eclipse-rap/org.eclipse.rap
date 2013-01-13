@@ -409,7 +409,7 @@ public final class Fixture {
                                      Map<String, Object> properties )
   {
     RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
-    remoteObjectImpl.handleNotify( eventName, properties );
+    remoteObjectImpl.getHandler().handleNotify( eventName, properties );
   }
 
   public static void dispatchCall( RemoteObject remoteObject,
@@ -417,12 +417,12 @@ public final class Fixture {
                                    Map<String, Object> parameters )
   {
     RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
-    remoteObjectImpl.call( methodName, parameters );
+    remoteObjectImpl.getHandler().handleCall( methodName, parameters );
   }
 
   public static void dispatchSet( RemoteObject remoteObject, Map<String, Object> properties ) {
     RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
-    remoteObjectImpl.handleSet( properties );
+    remoteObjectImpl.getHandler().handleSet( properties );
   }
 
   public static void fakeNotifyOperation( String target,
