@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.lifecycle;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.eclipse.rap.rwt.internal.remote.RemoteObject;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 
 
 /**

@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.remote;
+package org.eclipse.rap.rwt.remote;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -17,6 +17,7 @@ import java.util.Map;
 /**
  * NOTE: This class is PROVISIONAL and may be exchanged with another mechanism of processing
  * operations from a remote object.
+ * @since 2.0
  */
 public class RemoteOperationHandler implements Serializable {
 

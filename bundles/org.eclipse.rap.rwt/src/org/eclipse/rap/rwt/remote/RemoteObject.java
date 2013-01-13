@@ -8,9 +8,11 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  *******************************************************************************/
-package org.eclipse.rap.rwt.internal.remote;
+package org.eclipse.rap.rwt.remote;
 
 import java.util.Map;
+
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 
 
 /**
@@ -18,6 +20,7 @@ import java.util.Map;
  * object, use {@link RemoteObjectFactory#createRemoteObject(String)}.
  *
  * @see RemoteObjectFactory
+ * @since 2.0
  */
 public interface RemoteObject {
 
