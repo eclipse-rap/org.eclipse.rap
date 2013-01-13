@@ -62,6 +62,12 @@ $MVN -e clean package -DruntimeRepo="file://$WORKSPACE/runtimeRepo" -Dmaven.repo
 zipFileName=rap-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
 compatZipFileName=rap-compatibility-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
 
+if [ -d repository/target/repository ]; then
+  cd repository/target/repository
+  zip -rq ../$zipFileName . || exit 1
+  cd ../../..
+fi
+
 if [ -d repository/target/fixedSigned ]; then
   mv repository/target/fixedSigned/*.zip "$WORKSPACE/$zipFileName" || exit 1
 else
