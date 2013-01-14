@@ -46,6 +46,7 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -1203,17 +1204,15 @@ public class Display extends Device implements Adaptable {
   }
 
   /**
-   * Notifies the client side to send a life cycle request as UI thread to
-   * perform UI-updates. Note that this method may be called from any thread.
-   *
-   * <p>Note that this only works as expected if the
-   * <code>{@link org.eclipse.rap.rwt.lifecycle.UICallBack UICallBack}</code>
-   * mechanism is activated.</p>
+   * Notifies the client to send a request in order to wake up a sleeping UI thread and to perform
+   * pending UI updates. Note that this method may be called from any thread.
+   * <p>
+   * Note that this method has no effect unless a {@link ServerPushSession} is active.
+   * </p>
    *
    * @exception SWTException <ul>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   *
    */
   public void wake() {
     synchronized( deviceLock ) {
