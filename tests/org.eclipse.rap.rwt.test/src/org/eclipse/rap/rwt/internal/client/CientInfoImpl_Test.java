@@ -24,8 +24,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
-import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.junit.After;
@@ -142,8 +142,7 @@ public class CientInfoImpl_Test {
   }
 
   private static OperationHandler getHandler( RemoteObject remoteObject ) {
-    ArgumentCaptor<OperationHandler> captor
-      = ArgumentCaptor.forClass( OperationHandler.class );
+    ArgumentCaptor<OperationHandler> captor = ArgumentCaptor.forClass( OperationHandler.class );
     verify( remoteObject ).setHandler( captor.capture() );
     return captor.getValue();
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,22 +10,27 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.remote;
 
-import java.io.Serializable;
 import java.util.Map;
 
 
 /**
- * Instances of this class are used to handle operations from a remote object. Implementations must
- * apply the operations to the corresponding target object.
+ * Classes that implement this interface are used to handle operations from a remote object.
+ * Implementations must apply the operations to the corresponding target object.
  * <p>
- * Note: The classes and interfaces in the package <em>org.eclipse.rap.rwt.remote</em> are still
- * considered <strong>provisional</strong>. They have been made available to enable the development
- * of custom components with the new API.
+ * It is recommended to extend {@link AbstractOperationHandler} rather than to implement this
+ * interface.
+ * </p>
+ * <p>
+ * <strong>Note:</strong> The classes and interfaces in the package
+ * <em>org.eclipse.rap.rwt.remote</em> are still considered <strong>provisional</strong>. They are
+ * expected to evolve over the next releases, which may lead to slight changes. We make the package
+ * available to enable the development of custom components with the new API.
  * </p>
  *
+ * @see AbstractOperationHandler
  * @since 2.0
  */
-public abstract class OperationHandler implements Serializable {
+public interface OperationHandler {
 
   /**
    * Handles a <em>set</em> operation from the remote object. With a set operation, the remote
@@ -35,9 +40,7 @@ public abstract class OperationHandler implements Serializable {
    *
    * @param properties a map with the properties
    */
-  public void handleSet( Map<String, Object> properties ) {
-    throw new UnsupportedOperationException( "set operations not supported by this handler" );
-  }
+  public abstract void handleSet( Map<String, Object> properties );
 
   /**
    * Handles a <em>call</em> operation from the remote object. With a call operation, the remote
@@ -47,9 +50,7 @@ public abstract class OperationHandler implements Serializable {
    * @param method the name of the method to call
    * @param parameters the parameters for the method call, may be empty, but never <code>null</code>
    */
-  public void handleCall( String method, Map<String, Object> parameters ) {
-    throw new UnsupportedOperationException( "call operations not supported by this handler" );
-  }
+  public abstract void handleCall( String method, Map<String, Object> parameters );
 
   /**
    * Handles a <em>notify</em> operation from the remote object. With a notify operation, the remote
@@ -59,8 +60,6 @@ public abstract class OperationHandler implements Serializable {
    * @param event the name of the event that occurred
    * @param properties the event properties, maybe empty but never <code>null</code>
    */
-  public void handleNotify( String event, Map<String, Object> properties ) {
-    throw new UnsupportedOperationException( "notify operations not supported by this handler" );
-  }
+  public abstract void handleNotify( String event, Map<String, Object> properties );
 
 }

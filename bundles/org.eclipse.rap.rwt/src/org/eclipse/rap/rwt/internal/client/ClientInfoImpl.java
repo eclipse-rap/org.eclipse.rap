@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
 
 
 public class ClientInfoImpl implements ClientInfo, Serializable {
@@ -60,7 +60,7 @@ public class ClientInfoImpl implements ClientInfo, Serializable {
     return locales == null ? new Locale[ 0 ] : locales.clone();
   }
 
-  private final class InfoOperationHandler extends OperationHandler {
+  private final class InfoOperationHandler extends AbstractOperationHandler {
     @Override
     public void handleSet( Map<String, Object> properties ) {
       if( properties.containsKey( "timezoneOffset" ) ) {
