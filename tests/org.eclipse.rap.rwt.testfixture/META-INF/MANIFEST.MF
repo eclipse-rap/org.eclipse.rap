@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.rap.rwt.testfixture
-Bundle-Version: 1.5.1.qualifier
+Bundle-Version: 1.5.2.qualifier
 Require-Bundle: org.junit,
  org.eclipse.rap.rwt;bundle-version="[1.5.1,2.0.0)"
 Bundle-Localization: plugin

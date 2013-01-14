@@ -17,13 +17,13 @@
 
   <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.runtime"
-      version="1.5.1.qualifier">
+      version="1.5.2.qualifier">
     <category name="org.eclipse.rap.category"/>
   </feature>
 
   <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.runtime.requirements"
-      version="1.5.1.qualifier">
+      version="1.5.2.qualifier">
     <category name="org.eclipse.rap.category"/>
   </feature>
 

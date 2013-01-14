@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.rap.runtime.requirements"
       label="Rich Ajax Platform (RAP) Basic Target Requirements"
-      version="1.5.1.qualifier"
+      version="1.5.2.qualifier"
       provider-name="Eclipse.org - RAP">
 
    <description url="http://eclipse.org/rap/">
@@ -344,49 +344,49 @@
          version="0.0.0"
          unpack="false"/>
 
-     <plugin
+   <plugin
          id="org.eclipse.equinox.console.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-     <plugin
+   <plugin
          id="org.apache.felix.gogo.command"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-     <plugin
+   <plugin
          id="org.apache.felix.gogo.command.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-     <plugin
+   <plugin
          id="org.apache.felix.gogo.runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-     <plugin
+   <plugin
          id="org.apache.felix.gogo.runtime.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-     <plugin
+   <plugin
          id="org.apache.felix.gogo.shell"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-     <plugin
+   <plugin
          id="org.apache.felix.gogo.shell.source"
          download-size="0"
          install-size="0"

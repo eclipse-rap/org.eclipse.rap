@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.rap.runtime"
       label="Rich Ajax Platform (RAP) Target Components"
-      version="1.5.1.qualifier"
+      version="1.5.2.qualifier"
       provider-name="Eclipse.org - RAP">
 
    <description url="http://www.eclipse.org/rap/">
