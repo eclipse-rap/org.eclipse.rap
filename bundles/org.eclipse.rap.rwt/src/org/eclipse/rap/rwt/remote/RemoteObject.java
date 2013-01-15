@@ -12,12 +12,10 @@ package org.eclipse.rap.rwt.remote;
 
 import java.util.Map;
 
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
-
 
 /**
  * Instances of this interface are used to transfer changes to the remote object. To create a remote
- * object, use {@link RemoteObjectFactory#createRemoteObject(String)}.
+ * object, use {@link Connection#createRemoteObject(String)}.
  * <p>
  * <strong>Note:</strong> The classes and interfaces in the package
  * <em>org.eclipse.rap.rwt.remote</em> are still considered <strong>provisional</strong>. They are
@@ -25,7 +23,7 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
  * available to enable the development of custom components with the new API.
  * </p>
  *
- * @see RemoteObjectFactory
+ * @see Connection
  * @since 2.0
  */
 public interface RemoteObject {

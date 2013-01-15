@@ -18,11 +18,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
+import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 
 
 public class ClientInfoImpl implements ClientInfo, Serializable {
@@ -35,8 +36,8 @@ public class ClientInfoImpl implements ClientInfo, Serializable {
   }
 
   private void initialize() {
-    RemoteObjectFactory factory = RemoteObjectFactory.getInstance();
-    RemoteObject remoteObject = factory.createServiceObject( "rwt.client.ClientInfo" );
+    ConnectionImpl connection = ( ConnectionImpl )RWT.getUISession().getConnection();
+    RemoteObject remoteObject = connection.createServiceObject( "rwt.client.ClientInfo" );
     remoteObject.setHandler( new InfoOperationHandler() );
     HttpServletRequest request = ContextProvider.getRequest();
     if( request.getHeader( "Accept-Language" ) != null ) {

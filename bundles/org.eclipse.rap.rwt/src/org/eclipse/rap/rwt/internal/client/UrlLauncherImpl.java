@@ -13,8 +13,9 @@ package org.eclipse.rap.rwt.internal.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
+import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 
 
@@ -22,7 +23,8 @@ public class UrlLauncherImpl implements UrlLauncher {
 
   private static final String TYPE = "rwt.client.UrlLauncher";
   private static final String OPEN_URL = "openURL";
-  private RemoteObject remoteObject = RemoteObjectFactory.getInstance().createServiceObject( TYPE );
+  private final RemoteObject remoteObject
+    = ( ( ConnectionImpl )RWT.getUISession().getConnection() ).createServiceObject( TYPE );
 
   public void openURL( String url ) {
     Map< String, Object > properties = new HashMap< String, Object >();

@@ -13,8 +13,9 @@ package org.eclipse.rap.rwt.internal.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
+import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 
 
@@ -26,7 +27,8 @@ public final class JavaScriptExecutorImpl implements JavaScriptExecutor {
   private final RemoteObject remoteObject;
 
   public JavaScriptExecutorImpl() {
-    remoteObject = RemoteObjectFactory.getInstance().createServiceObject( REMOTE_ID );
+    ConnectionImpl connection = ( ConnectionImpl )RWT.getUISession().getConnection();
+    remoteObject = connection.createServiceObject( REMOTE_ID );
   }
 
   public void execute( String code ) {

@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
+import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Display;
@@ -49,18 +49,18 @@ public class UrlLauncherImpl_Test {
 
   @Test
   public void testCreatesRemoteObjectWithCorrectId() {
-    RemoteObjectFactory factory = fakeRemoteObjectFactory( mock( RemoteObject.class ) );
+    ConnectionImpl connection = fakeConnection( mock( RemoteObject.class ) );
 
     UrlLauncher launcher = new UrlLauncherImpl();
     launcher.openURL( URL );
 
-    verify( factory ).createServiceObject( eq( "rwt.client.UrlLauncher" ) );
+    verify( connection ).createServiceObject( eq( "rwt.client.UrlLauncher" ) );
   }
 
   @Test
   public void testWritesCallOperation() {
     RemoteObject remoteObject = mock( RemoteObject.class );
-    fakeRemoteObjectFactory( remoteObject );
+    fakeConnection( remoteObject );
 
     UrlLauncher launcher = new UrlLauncherImpl();
     launcher.openURL( URL );
@@ -68,11 +68,11 @@ public class UrlLauncherImpl_Test {
     assertEquals( URL, getURL( remoteObject ) );
   }
 
-  private RemoteObjectFactory fakeRemoteObjectFactory( RemoteObject remoteObject ) {
-    RemoteObjectFactory factory = mock( RemoteObjectFactory.class );
-    when( factory.createServiceObject( anyString() ) ).thenReturn( remoteObject );
-    Fixture.fakeRemoteObjectFactory( factory );
-    return factory;
+  private ConnectionImpl fakeConnection( RemoteObject remoteObject ) {
+    ConnectionImpl connection = mock( ConnectionImpl.class );
+    when( connection.createServiceObject( anyString() ) ).thenReturn( remoteObject );
+    Fixture.fakeConnection( connection );
+    return connection;
   }
 
   @SuppressWarnings( "unchecked" )

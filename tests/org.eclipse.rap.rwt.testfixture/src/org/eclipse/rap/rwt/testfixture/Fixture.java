@@ -55,17 +55,18 @@ import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
+import org.eclipse.rap.rwt.internal.service.UISessionTestAdapter;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.service.UISession;
@@ -320,9 +321,9 @@ public final class Fixture {
     ContextProvider.getUISession().setAttribute( ClientSelector.SELECTED_CLIENT, client );
   }
 
-  public static void fakeRemoteObjectFactory( RemoteObjectFactory factory ) {
+  public static void fakeConnection( Connection connection ) {
     UISession uiSession = ContextProvider.getUISession();
-    uiSession.setAttribute( RemoteObjectFactory.class.getName() + "#instance", factory );
+    UISessionTestAdapter.setConnection( uiSession, connection );
   }
 
   public static TestRequest fakeNewRequest() {

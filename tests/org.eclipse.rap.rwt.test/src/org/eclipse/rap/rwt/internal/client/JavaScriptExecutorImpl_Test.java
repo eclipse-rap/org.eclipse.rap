@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
+import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
@@ -47,17 +47,17 @@ public class JavaScriptExecutorImpl_Test {
 
   @Test
   public void testExecute_createsRemoteObjectWithCorrectId() {
-    RemoteObjectFactory factory = fakeRemoteObjectFactory( mock( RemoteObject.class ) );
+    ConnectionImpl connection = fakeConnection( mock( RemoteObject.class ) );
 
     new JavaScriptExecutorImpl();
 
-    verify( factory ).createServiceObject( eq( REMOTE_ID ) );
+    verify( connection ).createServiceObject( eq( REMOTE_ID ) );
   }
 
   @Test
   public void testExecute_createsCallOperation() {
     RemoteObject remoteObject = mock( RemoteObject.class );
-    fakeRemoteObjectFactory( remoteObject );
+    fakeConnection( remoteObject );
     JavaScriptExecutorImpl executor = new JavaScriptExecutorImpl();
 
     executor.execute( "code 1" );
@@ -68,7 +68,7 @@ public class JavaScriptExecutorImpl_Test {
   @Test
   public void testExecute_createsSeparateOperationForEveryCall() {
     RemoteObject remoteObject = mock( RemoteObject.class );
-    fakeRemoteObjectFactory( remoteObject );
+    fakeConnection( remoteObject );
     JavaScriptExecutorImpl executor = new JavaScriptExecutorImpl();
 
     executor.execute( "code 1" );
@@ -85,11 +85,11 @@ public class JavaScriptExecutorImpl_Test {
     return properties;
   }
 
-  private static RemoteObjectFactory fakeRemoteObjectFactory( RemoteObject remoteObject ) {
-    RemoteObjectFactory factory = mock( RemoteObjectFactory.class);
-    when( factory.createServiceObject( anyString() ) ).thenReturn( remoteObject );
-    Fixture.fakeRemoteObjectFactory( factory );
-    return factory;
+  private static ConnectionImpl fakeConnection( RemoteObject remoteObject ) {
+    ConnectionImpl connection = mock( ConnectionImpl.class);
+    when( connection.createServiceObject( anyString() ) ).thenReturn( remoteObject );
+    Fixture.fakeConnection( connection );
+    return connection;
   }
 
 }
