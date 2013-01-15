@@ -20,7 +20,7 @@ import java.util.Map;
  * <p>
  * Subclasses only need to override those methods that are needed to handle the expected operations
  * for the corresponding remote type. Methods that are not overridden will throw an
- * {@link UnsupportedOperationException} if called.
+ * {@link UnsupportedOperationException}.
  * </p>
  * <p>
  * It is recommended to extend this base class rather than to implement the OperationHandler

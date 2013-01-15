@@ -14,8 +14,9 @@ import java.util.Map;
 
 
 /**
- * Instances of this interface are used to transfer changes to the remote object. To create a remote
- * object, use {@link Connection#createRemoteObject(String)}.
+ * Instances of this interface represent an object on the client that is synchronized with an object
+ * on the server. A RemoteObject is used to transfer changes to the remote object. To create a
+ * remote object, use {@link Connection#createRemoteObject(String)}.
  * <p>
  * <strong>Note:</strong> The classes and interfaces in the package
  * <em>org.eclipse.rap.rwt.remote</em> are still considered <strong>provisional</strong>. They are

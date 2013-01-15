@@ -28,6 +28,7 @@ import java.util.Map;
  * </p>
  *
  * @see AbstractOperationHandler
+ * @see RemoteObject
  * @since 2.0
  */
 public interface OperationHandler {
