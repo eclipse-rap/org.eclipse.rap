@@ -45,9 +45,12 @@ public class RemoteObjectLifeCycleAdapter {
   }
 
   private static void dispatchOperations( RemoteObjectImpl remoteObject ) {
-    OperationHandler handler = getHandler( remoteObject );
-    for( Operation operation : getOperations( remoteObject ) ) {
-      dispatchOperation( handler, operation );
+    List<Operation> operations = getOperations( remoteObject );
+    if( !operations.isEmpty() ) {
+      OperationHandler handler = getHandler( remoteObject );
+      for( Operation operation : operations ) {
+        dispatchOperation( handler, operation );
+      }
     }
   }
 

@@ -103,7 +103,14 @@ public class RemoteObjectLifeCycleAdapter_Test {
   }
 
   @Test
-  public void testReadData_failsWhenNoHandlerRegistered() {
+  public void testReadData_doesNotFailWhenNoHandlerRegistered() {
+    mockAndRegisterRemoteObject( "id", null );
+
+    RemoteObjectLifeCycleAdapter.readData();
+  }
+
+  @Test
+  public void testReadData_failsWhenNoHandlerRegisteredForOperations() {
     mockAndRegisterRemoteObject( "id", null );
     Fixture.fakeCallOperation( "id", "method", createTestProperties() );
 
