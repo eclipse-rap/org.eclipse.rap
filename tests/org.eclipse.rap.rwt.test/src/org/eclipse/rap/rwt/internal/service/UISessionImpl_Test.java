@@ -41,6 +41,7 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.ISessionShutdownAdapter;
+import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
@@ -518,6 +519,20 @@ public class UISessionImpl_Test {
     Client result = uiSession.getClient();
 
     assertSame( client, result );
+  }
+
+  @Test
+  public void testGetConnection_returnsAnObject() {
+    Connection result = uiSession.getConnection();
+
+    assertNotNull( result );
+  }
+
+  @Test
+  public void testGetConnection_returnsSameObject() {
+    Connection result = uiSession.getConnection();
+
+    assertSame( uiSession.getConnection(), result );
   }
 
   @Test

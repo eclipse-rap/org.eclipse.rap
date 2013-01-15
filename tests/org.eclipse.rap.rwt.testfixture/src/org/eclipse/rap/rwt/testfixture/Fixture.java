@@ -55,18 +55,19 @@ import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.remote.RemoteObject;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
+import org.eclipse.rap.rwt.internal.service.UISessionTestAdapter;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.Connection;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
@@ -320,9 +321,9 @@ public final class Fixture {
     ContextProvider.getUISession().setAttribute( ClientSelector.SELECTED_CLIENT, client );
   }
 
-  public static void fakeRemoteObjectFactory( RemoteObjectFactory factory ) {
+  public static void fakeConnection( Connection connection ) {
     UISession uiSession = ContextProvider.getUISession();
-    uiSession.setAttribute( RemoteObjectFactory.class.getName() + "#instance", factory );
+    UISessionTestAdapter.setConnection( uiSession, connection );
   }
 
   public static TestRequest fakeNewRequest() {
@@ -409,7 +410,7 @@ public final class Fixture {
                                      Map<String, Object> properties )
   {
     RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
-    remoteObjectImpl.handleNotify( eventName, properties );
+    remoteObjectImpl.getHandler().handleNotify( eventName, properties );
   }
 
   public static void dispatchCall( RemoteObject remoteObject,
@@ -417,12 +418,12 @@ public final class Fixture {
                                    Map<String, Object> parameters )
   {
     RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
-    remoteObjectImpl.call( methodName, parameters );
+    remoteObjectImpl.getHandler().handleCall( methodName, parameters );
   }
 
   public static void dispatchSet( RemoteObject remoteObject, Map<String, Object> properties ) {
     RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
-    remoteObjectImpl.handleSet( properties );
+    remoteObjectImpl.getHandler().handleSet( properties );
   }
 
   public static void fakeNotifyOperation( String target,

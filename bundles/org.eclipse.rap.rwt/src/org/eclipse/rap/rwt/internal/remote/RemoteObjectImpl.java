@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,8 @@ import java.util.Map;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.remote.RemoteObject;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 
 
 public class RemoteObjectImpl implements RemoteObject, Serializable {
@@ -26,7 +27,7 @@ public class RemoteObjectImpl implements RemoteObject, Serializable {
   private final String id;
   private final List<RenderRunnable> renderQueue;
   private boolean destroyed;
-  private RemoteOperationHandler handler;
+  private OperationHandler handler;
 
   public RemoteObjectImpl( final String id, final String createType ) {
     this.id = id;
@@ -129,34 +130,12 @@ public class RemoteObjectImpl implements RemoteObject, Serializable {
     return destroyed;
   }
 
-  public void setHandler( RemoteOperationHandler handler ) {
+  public void setHandler( OperationHandler handler ) {
     this.handler = handler;
   }
 
-  public void handleSet( Map<String, Object> properties ) {
-    if( handler != null ) {
-      handler.handleSet( properties );
-    }
-  }
-
-  public void handleCall( String method, Map<String, Object> properties ) {
-    if( handler != null ) {
-      handler.handleCall( method, properties );
-    }
-  }
-
-  public void handleNotify( String event, Map<String, Object> properties ) {
-    if( handler != null ) {
-      scheduleNotifyHandling( event, properties );
-    }
-  }
-
-  private void scheduleNotifyHandling( final String event, final Map<String, Object> properties ) {
-    ProcessActionRunner.add( new Runnable() {
-      public void run() {
-        handler.handleNotify( event, properties );
-      }
-    } );
+  public OperationHandler getHandler() {
+    return handler;
   }
 
   public void render( ProtocolMessageWriter writer ) {

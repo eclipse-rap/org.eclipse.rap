@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,11 +18,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
-import org.eclipse.rap.rwt.internal.remote.RemoteObject;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
-import org.eclipse.rap.rwt.internal.remote.RemoteOperationHandler;
+import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 
 
 public class ClientInfoImpl implements ClientInfo, Serializable {
@@ -35,8 +36,8 @@ public class ClientInfoImpl implements ClientInfo, Serializable {
   }
 
   private void initialize() {
-    RemoteObjectFactory factory = RemoteObjectFactory.getInstance();
-    RemoteObject remoteObject = factory.createServiceObject( "rwt.client.ClientInfo" );
+    ConnectionImpl connection = ( ConnectionImpl )RWT.getUISession().getConnection();
+    RemoteObject remoteObject = connection.createServiceObject( "rwt.client.ClientInfo" );
     remoteObject.setHandler( new InfoOperationHandler() );
     HttpServletRequest request = ContextProvider.getRequest();
     if( request.getHeader( "Accept-Language" ) != null ) {
@@ -60,7 +61,7 @@ public class ClientInfoImpl implements ClientInfo, Serializable {
     return locales == null ? new Locale[ 0 ] : locales.clone();
   }
 
-  private final class InfoOperationHandler extends RemoteOperationHandler {
+  private final class InfoOperationHandler extends AbstractOperationHandler {
     @Override
     public void handleSet( Map<String, Object> properties ) {
       if( properties.containsKey( "timezoneOffset" ) ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,17 +7,25 @@
  *
  * Contributors:
  *    EclipseSource - initial API and implementation
- *******************************************************************************/
-package org.eclipse.rap.rwt.internal.remote;
+ ******************************************************************************/
+package org.eclipse.rap.rwt.remote;
 
 import java.util.Map;
 
 
 /**
- * Instances of this interface are used to transfer changes to the remote object. To create a remote
- * object, use {@link RemoteObjectFactory#createRemoteObject(String)}.
+ * Instances of this interface represent an object on the client that is synchronized with an object
+ * on the server. A RemoteObject is used to transfer changes to the remote object. To create a
+ * remote object, use {@link Connection#createRemoteObject(String)}.
+ * <p>
+ * <strong>Note:</strong> The classes and interfaces in the package
+ * <em>org.eclipse.rap.rwt.remote</em> are still considered <strong>provisional</strong>. They are
+ * expected to evolve over the next releases, which may lead to slight changes. We make the package
+ * available to enable the development of custom components with the new API.
+ * </p>
  *
- * @see RemoteObjectFactory
+ * @see Connection
+ * @since 2.0
  */
 public interface RemoteObject {
 
@@ -87,8 +95,8 @@ public interface RemoteObject {
   /**
    * Set a handler to process incoming operations from the remote object.
    *
-   * @param the handler that processes incoming operation
+   * @param handler the handler that processes incoming operation
    */
-  void setHandler( RemoteOperationHandler remoteOperationHandler );
+  void setHandler( OperationHandler handler );
 
 }

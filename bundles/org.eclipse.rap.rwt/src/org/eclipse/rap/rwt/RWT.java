@@ -31,13 +31,13 @@ import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rap.rwt.internal.remote.RemoteObject;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.ResourceManager;
@@ -400,8 +400,7 @@ public final class RWT {
    * @return instance of {@link ILifeCycle}
    * @deprecated As of 2.0, PhaseListeners should only be registered in an
    *             {@link ApplicationConfiguration}. For new applications and custom widgets, consider
-   *             the (still internal) {@link RemoteObject} API which is going to replace
-   *             PhaseListener.
+   *             the (provisional) {@link RemoteObject} API which is going to replace PhaseListener.
    * @see Application#addPhaseListener(PhaseListener)
    */
   @Deprecated

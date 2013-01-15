@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.internal.remote.RemoteObject;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
-import org.eclipse.rap.rwt.internal.remote.RemoteOperationHandler;
+import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
+import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.junit.After;
@@ -48,18 +48,18 @@ public class CientInfoImpl_Test {
 
   @Test
   public void testCreatesRemoteObjectWithCorrectId() {
-    RemoteObjectFactory factory = fakeRemoteObjectFactory( mock( RemoteObject.class ) );
+    ConnectionImpl connection = fakeConnection( mock( RemoteObject.class ) );
 
     new ClientInfoImpl();
 
-    verify( factory ).createServiceObject( eq( "rwt.client.ClientInfo" ) );
+    verify( connection ).createServiceObject( eq( "rwt.client.ClientInfo" ) );
   }
 
   @Test
   public void testGetTimezoneOffset_failsWhenTimezoneOffsetNotSet() {
-    fakeRemoteObjectFactory( mock( RemoteObject.class ) );
-
+    fakeConnection( mock( RemoteObject.class ) );
     ClientInfoImpl clientInfo = new ClientInfoImpl();
+
     try {
       clientInfo.getTimezoneOffset();
       fail();
@@ -71,9 +71,9 @@ public class CientInfoImpl_Test {
   @Test
   public void testGetTimezoneOffset_readsTimezoneOffsetFromHandler() {
     RemoteObject remoteObject = mock( RemoteObject.class );
-    fakeRemoteObjectFactory( remoteObject );
+    fakeConnection( remoteObject );
     ClientInfoImpl clientInfo = new ClientInfoImpl();
-    RemoteOperationHandler handler = getHandler( remoteObject );
+    OperationHandler handler = getHandler( remoteObject );
 
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( "timezoneOffset", new Integer( -90 ) );
@@ -85,7 +85,7 @@ public class CientInfoImpl_Test {
   @Test
   public void testGetLocale_returnsNullWhenLocaleNotSet() {
     Fixture.fakeNewGetRequest();
-    fakeRemoteObjectFactory();
+    fakeConnection();
 
     ClientInfoImpl clientInfo = new ClientInfoImpl();
 
@@ -95,7 +95,7 @@ public class CientInfoImpl_Test {
   @Test
   public void testGetLocales_returnsEmptyArrayWhenLocaleNotSet() {
     Fixture.fakeNewGetRequest();
-    fakeRemoteObjectFactory();
+    fakeConnection();
 
     ClientInfoImpl clientInfo = new ClientInfoImpl();
 
@@ -105,7 +105,7 @@ public class CientInfoImpl_Test {
   @Test
   public void testGetLocale_readsLocaleFromRequest() {
     TestRequest request = Fixture.fakeNewGetRequest();
-    fakeRemoteObjectFactory();
+    fakeConnection();
 
     request.setHeader( "Accept-Language", "anything" );
     request.setLocales( new Locale( "en-US" ) );
@@ -117,7 +117,7 @@ public class CientInfoImpl_Test {
   @Test
   public void testGetLocales_readsLocalesFromRequest() {
     TestRequest request = Fixture.fakeNewGetRequest();
-    fakeRemoteObjectFactory();
+    fakeConnection();
 
     request.setHeader( "Accept-Language", "anything" );
     request.setLocales( new Locale( "en-US" ), new Locale( "de-DE" ) );
@@ -131,7 +131,7 @@ public class CientInfoImpl_Test {
   @Test
   public void testReturnsSaveLocalesCopy() {
     TestRequest request = Fixture.fakeNewGetRequest();
-    fakeRemoteObjectFactory();
+    fakeConnection();
 
     request.setHeader( "Accept-Language", "anything" );
     request.setLocales( new Locale( "en-US" ) );
@@ -141,22 +141,21 @@ public class CientInfoImpl_Test {
     assertEquals( new Locale( "en-US" ), clientInfo.getLocales()[ 0 ] );
   }
 
-  private static RemoteOperationHandler getHandler( RemoteObject remoteObject ) {
-    ArgumentCaptor<RemoteOperationHandler> captor
-      = ArgumentCaptor.forClass( RemoteOperationHandler.class );
+  private static OperationHandler getHandler( RemoteObject remoteObject ) {
+    ArgumentCaptor<OperationHandler> captor = ArgumentCaptor.forClass( OperationHandler.class );
     verify( remoteObject ).setHandler( captor.capture() );
     return captor.getValue();
   }
 
-  private void fakeRemoteObjectFactory() {
-    fakeRemoteObjectFactory( mock( RemoteObject.class ) );
+  private void fakeConnection() {
+    fakeConnection( mock( RemoteObject.class ) );
   }
 
-  private RemoteObjectFactory fakeRemoteObjectFactory( RemoteObject remoteObject ) {
-    RemoteObjectFactory factory = mock( RemoteObjectFactory.class );
-    when( factory.createServiceObject( anyString() ) ).thenReturn( remoteObject );
-    Fixture.fakeRemoteObjectFactory( factory );
-    return factory;
+  private ConnectionImpl fakeConnection( RemoteObject remoteObject ) {
+    ConnectionImpl connection = mock( ConnectionImpl.class );
+    when( connection.createServiceObject( anyString() ) ).thenReturn( remoteObject );
+    Fixture.fakeConnection( connection );
+    return connection;
   }
 
 }

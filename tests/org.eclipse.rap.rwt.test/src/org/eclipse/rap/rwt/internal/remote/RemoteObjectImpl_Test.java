@@ -1,25 +1,21 @@
 /*******************************************************************************
-* Copyright (c) 2012 EclipseSource and others.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*    EclipseSource - initial API and implementation
-*******************************************************************************/
+ * Copyright (c) 2012, 2013 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -28,7 +24,7 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.junit.After;
@@ -356,76 +352,13 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testHandleSetDelegatesToHandler() {
-    RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
+  public void testSetHandler() {
+    OperationHandler handler = mock( OperationHandler.class );
     remoteObject.setHandler( handler );
-    Map<String, Object> properties = mockProperties();
 
-    remoteObject.handleSet( properties );
+    OperationHandler result = remoteObject.getHandler();
 
-    verify( handler ).handleSet( eq( properties ) );
-  }
-
-  @Test
-  public void testHandleSetDoesNotFailWithoutHandler() {
-    remoteObject.handleSet( mockProperties() );
-  }
-
-  @Test
-  public void testHandleCallDelegatesToHandler() {
-    RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
-    remoteObject.setHandler( handler );
-    Map<String, Object> properties = mockProperties();
-
-    remoteObject.handleCall( "method", properties );
-
-    verify( handler ).handleCall( eq( "method" ), eq( properties ) );
-  }
-
-  @Test
-  public void testHandleCallDoesNotFailWithoutHandler() {
-    remoteObject.handleCall( "method", mockProperties() );
-  }
-
-  @Test
-  public void testHandleNotifyDelegatesToHandler() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
-    remoteObject.setHandler( handler );
-    Map<String, Object> properties = mockProperties();
-
-    remoteObject.handleNotify( "event", properties );
-
-    verify( handler ).handleNotify( eq( "event" ), eq( properties ) );
-  }
-
-  @Test
-  public void testHandleNotifyDelegatesToHandlerNotInReadData() {
-    Fixture.fakePhase( PhaseId.READ_DATA );
-    RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
-    remoteObject.setHandler( handler );
-    Map<String, Object> properties = mockProperties();
-
-    remoteObject.handleNotify( "event", properties );
-
-    verify( handler, never() ).handleNotify( eq( "event" ), eq( properties ) );
-  }
-
-  @Test
-  public void testHandleNotifyDelegatesToHandlerNotInRender() {
-    Fixture.fakePhase( PhaseId.RENDER );
-    RemoteOperationHandler handler = mock( RemoteOperationHandler.class );
-    remoteObject.setHandler( handler );
-    Map<String, Object> properties = mockProperties();
-
-    remoteObject.handleNotify( "event", properties );
-
-    verify( handler, never() ).handleNotify( eq( "event" ), eq( properties ) );
-  }
-
-  @Test
-  public void testHandleNotifyDoesNotFailWithoutHandler() {
-    remoteObject.handleNotify( "event", mockProperties() );
+    assertEquals( handler, result );
   }
 
   private static void runInBackgroundThread( Runnable runnable ) {
