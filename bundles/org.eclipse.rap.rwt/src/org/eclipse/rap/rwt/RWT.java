@@ -508,8 +508,10 @@ public final class RWT {
   /**
    * Returns the <code>HttpServletRequest</code> that is currently processed.
    * <p>
-   * Typical application code rarely needs to call this method. It can be used to obtain request
-   * details, e.g. certain request headers.
+   * <strong>Note:</strong> This method is <strong>not recommended</strong>. Typical application
+   * code should not need to call this method. Processing requests from the client is up to the
+   * framework. In rare cases, an application may be wish to access request details such as certain
+   * HTTP headers.
    * </p>
    *
    * @return the currently processed request
@@ -523,7 +525,10 @@ public final class RWT {
    * Returns the <code>HttpServletResponse</code> that will be sent to the client after processing
    * the current request.
    * <p>
-   * Typical application code <em>never</em> needs to call this method.
+   * <strong>Note:</strong> This method is <strong>not recommended</strong>. Typical application
+   * code should not need to call this method. The response should only be written and modified by
+   * the framework. In rare cases, an application may wish to access the response, e.g. to add a
+   * Cookie.
    * </p>
    *
    * @return the response object that will be sent to the client
