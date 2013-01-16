@@ -135,32 +135,31 @@ public interface Application {
                       Map<String, String> properties );
 
   /**
-   * Adds a stylesheet that contains a theme or a theme contribution to the
-   * application. If a theme with the given theme id exists already, then the
-   * stylesheet is handled as a contribution to this theme, otherwise it is
-   * registered as a new theme with the given id. The stylesheet file will be
-   * loaded with the classloader of the <code>ApplicationConfiguration</code>.
+   * Adds the given stylesheet to a theme. If a theme with the given ID does not exist, it is
+   * created and initialized with the stylesheet. If the theme exists already, the stylesheet is
+   * appended to the theme. The stylesheet file will be loaded with the classloader of the
+   * <code>ApplicationConfiguration</code>.
    *
    * @param themeId the id of the theme to register or to contribute to
-   * @param styleSheetLocation the location of the CSS file in the format
-   *          accepted by {@link ClassLoader#getResource(String)}
+   * @param styleSheetLocation the location of the CSS file in the format accepted by
+   *          {@link ClassLoader#getResource(String)}
    * @see ApplicationConfiguration
    * @see RWT#DEFAULT_THEME_ID
    */
   void addStyleSheet( String themeId, String styleSheetLocation );
 
   /**
-   * Adds a stylesheet that contains a theme or a theme contribution to the
-   * application. If a theme with the given theme id exists already, then the
-   * stylesheet is handled as a contribution to this theme, otherwise it is
-   * registered as a new theme with the given id. The stylesheet file will be
-   * loaded using the given resource loader.
+   * Adds the given stylesheet to a theme. If a theme with the given ID does not exist, it is
+   * created and initialized with the stylesheet. If the theme exists already, the stylesheet is
+   * appended to the theme. The stylesheet file will be loaded with the classloader of the
+   * <code>ApplicationConfiguration</code>. The stylesheet file will be loaded using the given
+   * resource loader.
    *
    * @param themeId the id of the theme to register or to contribute to
-   * @param styleSheetLocation the location of the CSS file in the format
-   *          accepted by the given resource loader
-   * @param resourceLoader the resource loader that is able to load the style
-   *          sheet from the given location
+   * @param styleSheetLocation the location of the CSS file in the format accepted by the given
+   *          resource loader
+   * @param resourceLoader the resource loader that is able to load the style sheet from the given
+   *          location
    * @see RWT#DEFAULT_THEME_ID
    */
   void addStyleSheet( String themeId, String styleSheetLocation, ResourceLoader resourceLoader );
