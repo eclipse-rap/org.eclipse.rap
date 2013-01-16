@@ -60,28 +60,25 @@ $MVN -e clean package -DruntimeRepo="file://$WORKSPACE/runtimeRepo" -Dmaven.repo
 
 # Example: rap-1.5.0-N-20110814-2110.zip
 zipFileName=rap-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
-compatZipFileName=rap-compatibility-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
+junoZipFileName=rap-juno-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
 
-if [ -d repository/target/repository ]; then
-  cd repository/target/repository
-  zip -rq ../$zipFileName . || exit 1
-  cd ../../..
-fi
-
-if [ -d repository/target/fixedSigned ]; then
-  mv repository/target/fixedSigned/*.zip "$WORKSPACE/$zipFileName" || exit 1
+if [ -d repository.juno/target/fixedSigned ]; then
+  mv repository.juno/target/fixedSigned/*.zip "$WORKSPACE/$junoZipFileName" || exit 1
 else
-  mv repository/target/*.zip "$WORKSPACE/$zipFileName" || exit 1
+  mv repository.juno/target/*.zip "$WORKSPACE/$junoZipFileName" || exit 1
 fi
 
-if [ "$sign" == "true" -a -d compatibility-repository/target ]; then
-  mv compatibility-repository/target/*.zip "$WORKSPACE/$compatZipFileName" || exit 1
+if [ -d repository.kepler/target/fixedSigned ]; then
+  mv repository.kepler/target/fixedSigned/*.zip "$WORKSPACE/$zipFileName" || exit 1
+else
+  mv repository.kepler/target/*.zip "$WORKSPACE/$zipFileName" || exit 1
 fi
 
 ######################################################################
-# Include legal files in zip
+# Include legal files in zip files
 
 cd "$WORKSPACE"
 cp -f org.eclipse.rap/releng/org.eclipse.rap.build/legal/notice.html .
 cp -f org.eclipse.rap/releng/org.eclipse.rap.build/legal/epl-v10.html .
 zip "$zipFileName" notice.html epl-v10.html
+zip "$junoZipFileName" notice.html epl-v10.html

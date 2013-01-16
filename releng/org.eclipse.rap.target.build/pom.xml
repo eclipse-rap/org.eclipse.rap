@@ -41,7 +41,6 @@
     <module>../../features/org.eclipse.rap.equinox.target.feature</module>
     <module>repository.juno</module>
     <module>repository.kepler</module>
-    <module>repository</module>
   </modules>
 
   <repositories>
