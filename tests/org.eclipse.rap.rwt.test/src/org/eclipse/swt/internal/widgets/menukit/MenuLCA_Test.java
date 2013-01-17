@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,6 @@ import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ArmListener;
 import org.eclipse.swt.events.HelpListener;
-import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -362,12 +361,42 @@ public class MenuLCA_Test {
 
   @Test
   public void testRenderAddMenuListener() throws Exception {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( menu );
+    Fixture.preserveWidgets();
+
+    menu.addMenuListener( mock( MenuListener.class ) );
+    lca.renderChanges( menu );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( menu, "Show" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( menu, "Hide" ) );
+  }
+
+  @Test
+  public void testRenderAddMenuListener_MenuBar() throws Exception {
     Menu menu = new Menu( shell, SWT.BAR );
     Fixture.markInitialized( display );
     Fixture.markInitialized( menu );
     Fixture.preserveWidgets();
 
-    menu.addMenuListener( new MenuAdapter() {} );
+    menu.addMenuListener( mock( MenuListener.class ) );
+    lca.renderChanges( menu );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( menu, "Show" ) );
+    assertNull( message.findListenOperation( menu, "Hide" ) );
+  }
+
+  @Test
+  public void testRenderAddMenuListener_DropDown() throws Exception {
+    Menu menu = new Menu( shell, SWT.DROP_DOWN );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( menu );
+    Fixture.preserveWidgets();
+
+    menu.addMenuListener( mock( MenuListener.class ) );
     lca.renderChanges( menu );
 
     Message message = Fixture.getProtocolMessage();
@@ -377,7 +406,7 @@ public class MenuLCA_Test {
 
   @Test
   public void testRenderAddMenuListener_ArmListener() throws Exception {
-    Menu menu = new Menu( shell, SWT.BAR );
+    Menu menu = new Menu( shell, SWT.POP_UP );
     MenuItem item = new MenuItem( menu, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( menu );
@@ -392,8 +421,8 @@ public class MenuLCA_Test {
 
   @Test
   public void testRenderRemoveMenuListener() throws Exception {
-    Menu menu = new Menu( shell, SWT.BAR );
-    MenuListener listener = new MenuAdapter() { };
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuListener listener = mock( MenuListener.class );
     menu.addMenuListener( listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( menu );
@@ -409,12 +438,12 @@ public class MenuLCA_Test {
 
   @Test
   public void testRenderMenuListenerUnchanged() throws Exception {
-    Menu menu = new Menu( shell, SWT.BAR );
+    Menu menu = new Menu( shell, SWT.POP_UP );
     Fixture.markInitialized( display );
     Fixture.markInitialized( menu );
     Fixture.preserveWidgets();
 
-    menu.addMenuListener( new MenuAdapter() {} );
+    menu.addMenuListener( mock( MenuListener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( menu );
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,7 @@ final class MenuLCAUtil {
     WidgetLCAUtil.preserveCustomVariant( menu );
     preserveProperty( menu, PROP_ENABLED, menu.getEnabled() );
     preserveListener( menu, PROP_SHOW_LISTENER, hasShowListener( menu ) );
-    preserveListener( menu, PROP_HIDE_LISTENER, menu.isListening( SWT.Hide ) );
+    preserveListener( menu, PROP_HIDE_LISTENER, hasHideListener( menu ) );
     WidgetLCAUtil.preserveHelpListener( menu );
   }
 
@@ -59,7 +59,7 @@ final class MenuLCAUtil {
     WidgetLCAUtil.renderCustomVariant( menu );
     renderProperty( menu, PROP_ENABLED, menu.getEnabled(), true );
     renderListener( menu, PROP_SHOW_LISTENER, hasShowListener( menu ), false );
-    renderListener( menu, PROP_HIDE_LISTENER, menu.isListening( SWT.Hide ), false );
+    renderListener( menu, PROP_HIDE_LISTENER, hasHideListener( menu ), false );
     WidgetLCAUtil.renderListenHelp( menu );
   }
 
@@ -90,13 +90,25 @@ final class MenuLCAUtil {
   // Helping methods
 
   private static boolean hasShowListener( Menu menu ) {
-    boolean result = menu.isListening( SWT.Show );
-    if( !result ) {
-      MenuItem[] items = menu.getItems();
-      for( int i = 0; !result && i < items.length && !result; i++ ) {
-        result = items[ i ].isListening( SWT.Arm );
+    boolean result = false;
+    if( ( menu.getStyle() & SWT.BAR ) == 0 ) {
+      result = menu.isListening( SWT.Show );
+      if( !result ) {
+        MenuItem[] items = menu.getItems();
+        for( int i = 0; !result && i < items.length && !result; i++ ) {
+          result = items[ i ].isListening( SWT.Arm );
+        }
       }
     }
     return result;
   }
+
+  private static boolean hasHideListener( Menu menu ) {
+    boolean result = false;
+    if( ( menu.getStyle() & SWT.BAR ) == 0 ) {
+      result = menu.isListening( SWT.Hide );
+    }
+    return result;
+  }
+
 }
