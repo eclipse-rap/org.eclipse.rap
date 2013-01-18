@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1121,6 +1121,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         assertFalse( org.eclipse.rwt.EventHandlerUtil.wasStopped( event ) );
       }
     } ),
+
+    // See Bug 392810
+    testMessageLayoutWithOnePixelWidth : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SEARCH" ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 1, 1 ],
+          "message" : "foo"
+        }
+      } );
+
+      TestUtil.flush();
+
+      text = ObjectManager.getObject( "w3" );
+      assertEquals( "0px", text._messageElement.style.width );
+    },
 
     /////////
     // Helper
