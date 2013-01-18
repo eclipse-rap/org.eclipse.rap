@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2013 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.widgets.Menu", {  
@@ -82,6 +83,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
         var pageX = qx.event.type.MouseEvent.getPageX();
         var pageY = qx.event.type.MouseEvent.getPageY();
         contextMenu.setLocation( pageX, pageY );
+        contextMenu.setOpener( control );
         contextMenu.show();
       }
     },

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -483,20 +483,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     },
 
     testContextMenuOpenOnControl : function() {
-      var menu1 = new org.eclipse.rwt.widgets.Menu();
-      menu1.setHasMenuListener( true );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = this._createControl();
-      parent.addToDocument();    
-      parent.setContextMenu( menu1 );
-      this._addContextMenuListener( parent );      
-      var widget = new qx.ui.basic.Atom( "bla" );
+      parent.addToDocument();
+      var widget = new qx.ui.basic.Atom( "foo" );
       widget.setParent( parent );
-      this.TestUtil.flush();
-      assertFalse( menu1.isSeeable() );
-      this.TestUtil.rightClick( widget );
-      assertTrue( menu1.isSeeable() );
-      menu1.destroy();            
-      widget.destroy();
+      var menu = new org.eclipse.rwt.widgets.Menu();
+      menu.addToDocument();
+      var menuItem = new org.eclipse.rwt.widgets.MenuItem( "push" );
+      menu.addMenuItemAt( menuItem, 0 );
+      parent.setContextMenu( menu );
+      this._addContextMenuListener( parent );
+      TestUtil.flush();
+
+      TestUtil.rightClick( widget );
+      TestUtil.flush();
+
+      assertTrue( menu.isSeeable() );
+      assertIdentical( parent, menu.getOpener() ); // important for getting focusRoot on key events
+      menu.destroy();
       parent.destroy();
     },
 
