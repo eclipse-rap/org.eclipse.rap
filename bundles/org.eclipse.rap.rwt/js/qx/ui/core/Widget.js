@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -104,10 +104,10 @@ qx.Class.define( "qx.ui.core.Widget", {
 
     _initAutoFlush : function( phase ) {
       if( qx.ui.core.Widget._autoFlushTimeout == null ) {
-        // RAP: Fix for bug 303162 
-        if(    !qx.ui.core.Widget._inFlushGlobalQueues 
+        // RAP: Fix for bug 303162
+        if(    !qx.ui.core.Widget._inFlushGlobalQueues
             || phase < qx.ui.core.Widget._flushGlobalQueuesPhase ) {
-          qx.ui.core.Widget._autoFlushTimeout 
+          qx.ui.core.Widget._autoFlushTimeout
             = window.setTimeout( qx.ui.core.Widget._autoFlushHelper, 0 );
         }
       }
@@ -125,7 +125,7 @@ qx.Class.define( "qx.ui.core.Widget", {
         qx.ui.core.Widget._autoFlushTimeout = null;
         if( !qx.core.Object.inGlobalDispose() ) {
           qx.ui.core.Widget.flushGlobalQueues();
-        } 
+        }
       }catch( ex ) {
         org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
@@ -268,7 +268,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     flushGlobalJobQueue : function() {
-      qx.ui.core.Widget._flushGlobalQueuesPhase 
+      qx.ui.core.Widget._flushGlobalQueuesPhase
         = qx.ui.core.Widget._FLUSH_PHASE_JOB;
       var vQueue = qx.ui.core.Widget._globalJobQueue, vLength, vWidget;
       while ((vLength = vQueue.length) > 0) {
@@ -417,7 +417,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     flushGlobalDisposeQueue : function() {
-      qx.ui.core.Widget._flushGlobalQueuesPhase 
+      qx.ui.core.Widget._flushGlobalQueuesPhase
         = qx.ui.core.Widget._FLUSH_PHASE_DISPOSE;
       var vQueue = qx.ui.core.Widget._globalDisposeQueue, vLength, vWidget;
       while ((vLength = vQueue.length) > 0) {
@@ -433,7 +433,7 @@ qx.Class.define( "qx.ui.core.Widget", {
 
     /////////////////
     // Global Helpers
-    
+
     getActiveSiblingHelperIgnore : function(vIgnoreClasses, vInstance) {
       for (var j=0; j<vIgnoreClasses.length; j++) {
         if (vInstance instanceof vIgnoreClasses[j]) {
@@ -460,7 +460,7 @@ qx.Class.define( "qx.ui.core.Widget", {
       return vInstance;
     },
 
-    ///////////////////////  
+    ///////////////////////
     //  APPLY LAYOUT STYLES
 
     TYPE_NULL : 0,
@@ -475,37 +475,37 @@ qx.Class.define( "qx.ui.core.Widget", {
       var style = "this._style.";
       var cssValue = "=((v==null)?0:v)+'px'";
       var parameter = "v";
-      var properties = [ 
-        "left", 
-        "right", 
-        "top", 
-        "bottom", 
-        "width", 
-        "height", 
-        "minWidth", 
-        "maxWidth", 
-        "minHeight", 
-        "maxHeight" 
+      var properties = [
+        "left",
+        "right",
+        "top",
+        "bottom",
+        "width",
+        "height",
+        "minWidth",
+        "maxWidth",
+        "minHeight",
+        "maxHeight"
       ];
-      var propertiesUpper = [ 
-        "Left", 
-        "Right", 
-        "Top", 
-        "Bottom", 
-        "Width", 
-        "Height", 
-        "MinWidth", 
-        "MaxWidth", 
-        "MinHeight", 
-        "MaxHeight" 
+      var propertiesUpper = [
+        "Left",
+        "Right",
+        "Top",
+        "Bottom",
+        "Width",
+        "Height",
+        "MinWidth",
+        "MaxWidth",
+        "MinHeight",
+        "MaxHeight"
       ];
       var applyMargin = applyRuntime + "Margin";
       var resetMargin = resetRuntime + "Margin";
       var styleMargin = style + "margin";
       for (var i=0; i<4; i++) {
-        members[applyMargin + propertiesUpper[i]] 
+        members[applyMargin + propertiesUpper[i]]
           = new Function(parameter, styleMargin + propertiesUpper[i] + cssValue);
-        members[resetMargin + propertiesUpper[i]] 
+        members[resetMargin + propertiesUpper[i]]
           = new Function(styleMargin + propertiesUpper[i] + "=''");
       }
       var applyPadding = applyRuntime + "Padding";
@@ -513,9 +513,9 @@ qx.Class.define( "qx.ui.core.Widget", {
       var stylePadding = style + "padding";
       // need to use setStyleProperty to keep compatibility with enhanced cross browser borders
       for (var i=0; i<4; i++) {
-        members[applyPadding + propertiesUpper[i]] 
+        members[applyPadding + propertiesUpper[i]]
           = new Function(parameter, "this.setStyleProperty('padding" + propertiesUpper[i] + "', ((v==null)?0:v)+'px')");
-        members[resetPadding + propertiesUpper[i]] 
+        members[resetPadding + propertiesUpper[i]]
           = new Function("this.removeStyleProperty('padding" + propertiesUpper[i] + "')");
       }
 
@@ -531,7 +531,7 @@ qx.Class.define( "qx.ui.core.Widget", {
         to reset the value. This seems to work again.
       */
       for (var i=0; i<properties.length; i++) {
-        members[applyRuntime + propertiesUpper[i]] 
+        members[applyRuntime + propertiesUpper[i]]
           = new Function(parameter, style + properties[i] + cssValue);
         members[resetRuntime + propertiesUpper[i]] = new Function(style + properties[i] + "=''");
       }
@@ -543,17 +543,17 @@ qx.Class.define( "qx.ui.core.Widget", {
     layoutPropertyTypes : {},
 
     __initLayoutProperties : function(statics) {
-      var a = [ 
-        "width", 
-        "height", 
-        "minWidth", 
-        "maxWidth", 
-        "minHeight", 
-        "maxHeight", 
-        "left", 
-        "right", 
-        "top", 
-        "bottom" 
+      var a = [
+        "width",
+        "height",
+        "minWidth",
+        "maxWidth",
+        "minHeight",
+        "maxHeight",
+        "left",
+        "right",
+        "top",
+        "bottom"
       ];
       for (var i=0, l=a.length, p, b, t; i<l; i++) {
         p = a[i];
@@ -574,7 +574,7 @@ qx.Class.define( "qx.ui.core.Widget", {
 
     //////////////////
     //  SCROLL-BLOCKER
-    
+
     disableScrolling : function( widget ) {
       var el = widget._getTargetNode();
       if( el ) {
@@ -583,16 +583,16 @@ qx.Class.define( "qx.ui.core.Widget", {
         widget.addEventListener( "appear", this._blockScrollingOnAppear, widget );
       }
     },
-    
+
     enableScrolling : function( widget ) {
       var el = widget._getTargetNode();
       if( el ) {
         qx.html.Scroll.enableScrolling( el );
       } else {
         widget.removeEventListener( "appear", this._blockScrollingOnAppear, widget );
-      }     
+      }
     },
-    
+
     _blockScrollingOnAppear : function() {
       var func = qx.ui.core.Widget._blockScrollingOnAppear;
       this.removeEventListener( "appear", func, this );
@@ -731,13 +731,13 @@ qx.Class.define( "qx.ui.core.Widget", {
       event : "changeBackgroundColor",
       themeable : true
     },
-    
+
     backgroundGradient : {
       check : "Array",
       nullable : true,
       init : null,
       apply : "_applyBackgroundGradient",
-      event : "changeBackgroundGradient",      
+      event : "changeBackgroundGradient",
       themeable : true
     },
 
@@ -758,7 +758,7 @@ qx.Class.define( "qx.ui.core.Widget", {
       nullable : true,
       init : null,
       apply : "_applyShadow",
-      event : "changeShadow",      
+      event : "changeShadow",
       themeable : true
     },
 
@@ -767,7 +767,7 @@ qx.Class.define( "qx.ui.core.Widget", {
       nullable : true,
       init : null,
       apply : "_applyTextShadow",
-      event : "changeTextShadow",      
+      event : "changeTextShadow",
       themeable : true
    },
 
@@ -895,7 +895,7 @@ qx.Class.define( "qx.ui.core.Widget", {
       themeable : true,
       init : null
     },
-    
+
     /**
      * Enables/disables overflow on the outer element for enhanced borders.
      */
@@ -1488,7 +1488,7 @@ qx.Class.define( "qx.ui.core.Widget", {
 
     ///////////////
     // apply layout
-    
+
     _applyLeft : function(value, old) {
       this._unitDetectionPixelPercent("left", value);
       this.addToQueue("left");
@@ -1631,8 +1631,8 @@ qx.Class.define( "qx.ui.core.Widget", {
 
     _handleDisplayable : function( vHint ) {
       var vDisplayable = this._computeDisplayable();
-      if(    this._isDisplayable == vDisplayable 
-          && !( vDisplayable && vHint == "parent" ) ) 
+      if(    this._isDisplayable == vDisplayable
+          && !( vDisplayable && vHint == "parent" ) )
       {
         return true;
       }
@@ -1752,7 +1752,7 @@ qx.Class.define( "qx.ui.core.Widget", {
           this._innerStyle.width = width;
           this._innerStyle.height = height;
         }
-      }, 
+      },
       "default" : qx.lang.Function.returnTrue
     } ),
 
@@ -1790,7 +1790,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     isSeeable : function() {
       return this._isSeeable;
     },
-    
+
     isInDom : function() {
       return this._isInDom;
     },
@@ -1849,11 +1849,11 @@ qx.Class.define( "qx.ui.core.Widget", {
         }
       }
     },
-    
+
     _markInDispose : function() {
       this._isInGlobalDisposeQueue = true;
     },
-    
+
     ///////////////////////
     // DOM ELEMENT HANDLING
 
@@ -1944,9 +1944,9 @@ qx.Class.define( "qx.ui.core.Widget", {
       var vRecomputeOuterHeight = vQueue.marginTop || vQueue.marginBottom;
       var vRecomputeInnerWidth = vQueue.frameWidth;
       var vRecomputeInnerHeight = vQueue.frameHeight;
-      var vRecomputeParentPreferredInnerWidth 
+      var vRecomputeParentPreferredInnerWidth
         = (vQueue.frameWidth || vQueue.preferredInnerWidth) && this._recomputePreferredBoxWidth();
-      var vRecomputeParentPreferredInnerHeight 
+      var vRecomputeParentPreferredInnerHeight
         = (vQueue.frameHeight || vQueue.preferredInnerHeight) && this._recomputePreferredBoxHeight();
       if (vRecomputeParentPreferredInnerWidth) {
         var vPref = this.getPreferredBoxWidth();
@@ -2018,24 +2018,24 @@ qx.Class.define( "qx.ui.core.Widget", {
           for (var i=0; i<chl; i++) {
             ch[i].addToLayoutChanges("parentPaddingRight");
           }
-        } 
+        }
         if (vQueue.paddingTop) {
           for (var i=0; i<chl; i++) {
             ch[i].addToLayoutChanges("parentPaddingTop");
           }
-        } 
+        }
         if (vQueue.paddingBottom) {
           for (var i=0; i<chl; i++) {
             ch[i].addToLayoutChanges("parentPaddingBottom");
           }
         }
-      } 
-      if (vRecomputeInnerWidth) { 
+      }
+      if (vRecomputeInnerWidth) {
         this._recomputeInnerWidth();
-      } 
+      }
       if (vRecomputeInnerHeight) {
         this._recomputeInnerHeight();
-      } 
+      }
       if (this._initialLayoutDone) {
         if (vLayoutImpl) {
           vLayoutImpl.updateChildrenOnJobQueueFlush(vQueue);
@@ -2181,7 +2181,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     // RECOMPUTE RANGES
 
     _recomputeRangeX : qx.core.Variant.select("qx.client", {
-      "mshtml|opera|webkit" : function() {
+      "mshtml|newmshtml|opera|webkit" : function() {
         if (this._computedLeftTypeNull || this._computedRightTypeNull) {
           return false;
         }
@@ -2194,7 +2194,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     } ),
 
     _recomputeRangeY : qx.core.Variant.select("qx.client", {
-      "mshtml|opera|webkit" : function() {
+      "mshtml|newmshtml|opera|webkit" : function() {
         if (this._computedTopTypeNull || this._computedBottomTypeNull) {
           return false;
         }
@@ -2210,7 +2210,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     // RECOMPUTE STRETCHING
 
     _recomputeStretchingX : qx.core.Variant.select("qx.client", {
-      "mshtml|opera|webkit" : function() {
+      "mshtml|newmshtml|opera|webkit" : function() {
         if (this.getAllowStretchX() && this._computedWidthTypeNull) {
           this._computedWidthValue = null;
           this.addToLayoutChanges("width");
@@ -2227,7 +2227,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     } ),
 
     _recomputeStretchingY : qx.core.Variant.select("qx.client", {
-      "mshtml|opera|webkit" : function() {
+      "mshtml|newmshtml|opera|webkit" : function() {
         if (this.getAllowStretchY() && this._computedHeightTypeNull) {
           this._computedHeightValue = null;
           this.addToLayoutChanges("height");
@@ -2838,7 +2838,7 @@ qx.Class.define( "qx.ui.core.Widget", {
 
     /////////////////
     // STATE HANDLING
-    
+
     setCustomVariant : function( value ) {
       if( this._customVariant !== null ) {
         this.removeState( this._customVariant );
@@ -2902,7 +2902,7 @@ qx.Class.define( "qx.ui.core.Widget", {
         this[unstyler[data[i]]]();
       }
     },
-    
+
     _prepareStyleMap : qx.core.Variant.select("qx.client", {
       "mshtml" : function( map ) {
         if( map.shadow && map.border && map.border.getStyle() !== "rounded" ) {
@@ -2937,9 +2937,9 @@ qx.Class.define( "qx.ui.core.Widget", {
       var vAppearance = this.getAppearance();
       if (vAppearance) {
         var vAppearanceManager = qx.theme.manager.Appearance.getInstance();
-        var vOldAppearanceProperties 
+        var vOldAppearanceProperties
           = vAppearanceManager.styleFromTheme(vOldAppearanceTheme, vAppearance, this.__states);
-        var vNewAppearanceProperties 
+        var vNewAppearanceProperties
           = vAppearanceManager.styleFromTheme(vNewAppearanceTheme, vAppearance, this.__states);
         var vUnstyleList = [];
         for (var prop in vOldAppearanceProperties) {
@@ -3170,7 +3170,7 @@ qx.Class.define( "qx.ui.core.Widget", {
         elem.style[propName] = (value == null) ? "" : value;
       }
     },
-    
+
     /////////////////////////
     // ENABLE/DISABLE SUPPORT
 
@@ -3510,7 +3510,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     _applyCommand : function(value, old) {
       // place holder
     },
-    
+
     ///////////////////////////
     // BACKGROUND IMAGE SUPPORT
 
@@ -3564,7 +3564,7 @@ qx.Class.define( "qx.ui.core.Widget", {
       return this.setStyleProperty("clip", ("rect(" + vTop + "," + vRight + "," + vBottom + "," + vLeft + ")"));
     },
 
-    ///////////////////  
+    ///////////////////
     // OVERFLOW SUPPORT
 
     _applyOverflow : qx.core.Variant.select("qx.client", {
@@ -3637,23 +3637,23 @@ qx.Class.define( "qx.ui.core.Widget", {
             case "scrollX":
               pn = "overflowX";
               pv = "scroll";
-            break;  
+            break;
             case "scrollY":
               pn = "overflowY";
               pv = "scroll";
             break;
           }
           // Clear up concurrenting rules
-          var a = [ "overflow", "overflowX", "overflowY" ];  
+          var a = [ "overflow", "overflowX", "overflowY" ];
           for( var i = 0; i < a.length; i++ ) {
             if( a[ i ] != pn ) {
               this.removeStyleProperty( a[ i ] );
             }
-          }  
+          }
           switch( value ) {
             case "scrollX":
               this.setStyleProperty( "overflowY", "hidden" );
-            break;  
+            break;
             case "scrollY":
               this.setStyleProperty( "overflowX", "hidden" );
             break;
@@ -3681,7 +3681,7 @@ qx.Class.define( "qx.ui.core.Widget", {
       var vOverflow = this.getOverflow();
       return vOverflow == "scrollX" ? "hidden" : vOverflow;
     },
-    
+
     _applyContainerOverflow : function( value, oldValue ) {
       if( this._innerStyle ) {
         this._style.overflow = value ? "" : "hidden";
@@ -3704,11 +3704,11 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     _applyShadow : function( value, oldValue ) {
-      org.eclipse.rwt.HtmlUtil.setBoxShadow( this, value );      
+      org.eclipse.rwt.HtmlUtil.setBoxShadow( this, value );
     },
 
     _applyTextShadow : function( value, oldValue ) {
-      org.eclipse.rwt.HtmlUtil.setTextShadow( this, value );      
+      org.eclipse.rwt.HtmlUtil.setTextShadow( this, value );
     },
 
     _styleBackgroundColor : function( value ) {
@@ -3725,7 +3725,7 @@ qx.Class.define( "qx.ui.core.Widget", {
        },
       "newmshtml" : function() {
         this.setStyleProperty( "backgroundColor", "rgba( 0, 0, 0, 0 )" );
-      } 
+      }
     } ),
 
     _applyTextColor : function(value, old) {
@@ -3764,8 +3764,8 @@ qx.Class.define( "qx.ui.core.Widget", {
           }
         };
       }
-      return result;      
-    } )(), 
+      return result;
+    } )(),
 
     _queueBorder : function( value ) {
       this.addToQueue( "border" );
@@ -3866,8 +3866,8 @@ qx.Class.define( "qx.ui.core.Widget", {
         this._element.appendChild( this._targetNode );
         if( this.isInDom() ) {
           // TODO [tb] : check if this works for ProgressBar
-          this._afterRemoveDom(); 
-          this._afterInsertDom(); 
+          this._afterRemoveDom();
+          this._afterInsertDom();
         }
       }
     },
@@ -4046,10 +4046,10 @@ qx.Class.define( "qx.ui.core.Widget", {
       // Default behavior is to allow drop only if not dropping onto self
       return (this != dragCache.sourceWidget);
     },
-    
+
     //////////////////
     // Adapter Support
-    
+
     getAdapter : function( clazz ) {
       if( this._adapters === undefined ) {
         this._adapters = {};
@@ -4068,7 +4068,7 @@ qx.Class.define( "qx.ui.core.Widget", {
         this.setHtmlAttribute( "id", id );
       }
     }
-    
+
   },
 
   ////////
@@ -4094,7 +4094,7 @@ qx.Class.define( "qx.ui.core.Widget", {
       members._renderRuntimeWidth = function(v) {
         this._style.pixelWidth = (v==null)?0:v;
         if( this._targetNodeEnabled ) {
-          var innerValue = this._usesComplexBorder && v != null ? v - 2 : v; 
+          var innerValue = this._usesComplexBorder && v != null ? v - 2 : v;
           this._innerStyle.pixelWidth = innerValue == null ? 0 : innerValue;
         }
       };
@@ -4144,21 +4144,21 @@ qx.Class.define( "qx.ui.core.Widget", {
       }
     }
     this._disposeObjectDeep( "_adapters", 1 );
-    this._disposeFields( 
-      "_isCreated", 
-      "_inlineEvents", 
-      "_element", 
+    this._disposeFields(
+      "_isCreated",
+      "_inlineEvents",
+      "_element",
       "_style",
-      "_targetNode", 
-      "_innerStyle", 
-      "_oldParent", 
+      "_targetNode",
+      "_innerStyle",
+      "_oldParent",
       "_styleProperties",
-      "_htmlProperties", 
-      "_htmlAttributes", 
-      "__states", 
+      "_htmlProperties",
+      "_htmlAttributes",
+      "__states",
       "_jobQueue",
-      "_layoutChanges", 
-      "__borderObject" 
+      "_layoutChanges",
+      "__borderObject"
     );
   }
 } );

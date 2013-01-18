@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -90,6 +90,73 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       item1.destroy();
       item2.destroy();
       item3.destroy();
+    },
+
+    testSetBoundsByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.TabFolder",
+        "properties" : {
+          "style" : [ "TOP" ],
+          "parent" : "w2",
+          "bounds" : [ 10, 10, 100, 100 ]
+        }
+      } );
+      TestUtil.flush();
+
+      TestUtil.protocolSet( "w3", { "bounds" : [ 20, 30, 120, 130 ] } );
+      TestUtil.flush();
+
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
+      var style = widget.getElement().style;
+      var paneStyle = widget.getPane().getElement().style;
+      var barStyle = widget.getBar().getElement().style;
+      assertEquals( "20px", style.left );
+      assertEquals( "30px", style.top );
+      assertEquals( "120px", style.width );
+      assertEquals( "130px", style.height );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testInternalLayoutChange : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.TabFolder",
+        "properties" : {
+          "style" : [ "TOP" ],
+          "parent" : "w2",
+          "bounds" : [ 10, 10, 100, 100 ]
+        }
+      } );
+      this._createTabItemByProtocol( "w4", "w3" );
+      TestUtil.flush();
+
+      TestUtil.protocolSet( "w3", { "bounds" : [ 20, 30, 120, 130 ] } );
+      TestUtil.flush();
+
+      var gecko = org.eclipse.rwt.Client.isGecko();
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
+      var paneStyle = widget.getPane().getElement().style;
+      var barStyle = widget.getBar().getElement().style;
+      var barHeight = parseInt( barStyle.height, 10 );
+      assertEquals( "0px", barStyle.left );
+      assertEquals( "0px", barStyle.top );
+      assertEquals( gecko ? "" : "120px", barStyle.width );
+      assertEquals( "0px", paneStyle.left );
+      assertEquals( barHeight - 1, parseInt( paneStyle.top, 10 ) );
+      assertEquals( gecko ? "" : "120px", paneStyle.width );
+      assertEquals( 130 - barHeight + 1, parseInt( paneStyle.height, 10 ) );
+      shell.destroy();
+      widget.destroy();
     },
 
     testCreateTabItemByProtocol : function() {
@@ -256,5 +323,5 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     }
 
   }
-  
+
 } );
