@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -418,10 +418,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     
     _reDispatch : function( event ) {
       var originalTarget = event.getTarget();
-      var originalTargetParent = originalTarget.getParent();
-      if(    originalTargetParent === this._list
-          || originalTargetParent === this._list._vertScrollBar )
-      {
+      if( this._list.contains( originalTarget ) ) {
         // TODO [tb] : should be disposed automatically, test
         originalTarget.dispatchEvent( event, false );
         event.stopPropagation();

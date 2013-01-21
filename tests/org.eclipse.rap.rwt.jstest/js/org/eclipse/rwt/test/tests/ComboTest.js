@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -486,6 +486,40 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertFalse( checkbox.hasState( "selected" ) );
       combo.destroy();
       checkbox.destroy();
+    },
+
+    // bug 388717
+    testEventRedispatch_3 : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var log = 0;
+      shell.addEventListener( "mousedown", function() {
+        log++;
+      } );
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Combo",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      var combo = org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" );
+      combo.setSpace( 10, 81, 6, 23 );
+      combo.setItemHeight( 19 );
+      combo.setEditable( false );
+      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
+      combo.setVisibleItemCount( 5 );
+      TestUtil.flush();
+      combo.setListVisible( true );
+      TestUtil.flush();
+
+      TestUtil.click( combo._list.getItems()[ 1 ] );
+
+      assertEquals( 0, log );
+      combo.destroy();
+      shell.destroy();
     },
 
     testButtonClick : function() {
