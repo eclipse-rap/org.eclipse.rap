@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.DragSource", {
     }
   },
 
-  methods : [ "changeFeedback", "changeDetail", "changeDataType" ],
+  methods : [ "changeFeedback", "changeDetail", "changeDataType", "cancel" ],
   
   methodHandler : {
     "changeFeedback" : function( source, properties ) {
@@ -52,6 +52,10 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.DragSource", {
       var control = org.eclipse.rwt.protocol.ObjectManager.getObject( properties.control );
       var dataType = properties.dataType;
       dnd.setDataType( control, dataType );
+    },
+    "cancel" : function( source, properties ) {
+      var dnd = org.eclipse.rwt.DNDSupport.getInstance();
+      dnd.cancel();
     }
   }
 

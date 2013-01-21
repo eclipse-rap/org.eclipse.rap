@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011, 2013 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
@@ -1510,8 +1511,55 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.flush();
     },
 
+    testCancelDragFromServerSide : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
+      dndHandler.__dragCache = null;
+      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      TestUtil.prepareTimerUse();
+      TestUtil.initRequestLog();
+      var source = this.createSource();
+      var dragSource = this.createDragSourceByProtocol( "w123", "w11" );
+      var sourceNode = source._getTargetNode();
+      var doc = document.body;
+      // drag
+      TestUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
+      TestUtil.clearRequestLog();
+      TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
+      var request = TestUtil.getRequestLog()[ 0 ];      
+      var dragStart = "org.eclipse.swt.dnd.dragStart=w11";
+      assertTrue( request.search( dragStart ) != -1 );
+
+      TestUtil.protocolCall( "w123", "cancel", {} );
+      assertNull( dndHandler.__dragCache );
+
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : "w123",
+        "action" : "destroy"
+      } );
+      dndSupport.deregisterDragSource( source );
+      source.setParent( null );
+      source.destroy();
+      TestUtil.flush();
+    },
+
     /////////
     // Helper
+
+    createDragSourceByProtocol : function( id, controlId ) {
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : id,
+        "action" : "create",
+        "type" : "rwt.widgets.DragSource",
+        "properties" : {
+          "control" : controlId,
+          "style" : [ "DROP_COPY", "DROP_MOVE" ],
+          "transfer" : [ "default" ]
+        }
+      } );
+      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+    },
     
     createSource : function() {
       var result = new qx.ui.basic.Atom();
