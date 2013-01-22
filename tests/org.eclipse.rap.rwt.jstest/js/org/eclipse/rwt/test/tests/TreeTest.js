@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2174,6 +2174,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( 0, parseInt( headerNode.style.top ) );
       assertEquals( 30, parseInt( headerNode.style.height ) );
       assertEquals( 600, parseInt( headerNode.style.width ) );
+      assertEquals( 2000, parseInt( headerNode.style.zIndex ) );
       tree.destroy();
     },
 
