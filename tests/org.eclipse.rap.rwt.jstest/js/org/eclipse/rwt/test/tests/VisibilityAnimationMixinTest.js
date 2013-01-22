@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2013 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 (function(){
@@ -130,57 +131,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
       assertEquals( 40, animation.getDefaultRenderer().getLastValue() );
       assertEquals( 40, TestUtil.getElementBounds( shell.getElement() ).top );
     },
-
-    testShellFlyInRightStartDelayFocus : function() {
-      shell.setAnimation( { "flyInRight" : [ 400, "linear" ] } );
-      shell.hide();
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Button",
-        "properties" : {
-          "style" : [ "PUSH" ],
-          "parent" : "w2"
-        }
-      } );
-      Processor.processOperation( {
-        "target" : "w1",
-        "action" : "set",
-        "properties" : {
-          "focusControl" : [ "w3" ]
-        }
-      } );
-      var widget = ObjectManager.getObject( "w3" );
-
-      shell.show();
-      TestUtil.flush();
-      Animation._mainLoop();
-      assertEquals( 0, document.body.scrollLeft );
-      var animation = this.getAppearAnimation( shell );
-      animation._loop( ( new Date().getTime() ) + 401 );
-  
-      assertEquals( 0, document.body.scrollLeft );
-      assertFalse( animation.isRunning() );
-      assertTrue( widget.getFocused() );
-      var left = qx.html.Window.getInnerWidth( window );
-      assertEquals( 60, animation.getDefaultRenderer().getLastValue() );
-      assertEquals( 60, TestUtil.getElementBounds( shell.getElement() ).left );
-    },
-
-    testShellFlyInTopStart : function() {
-      shell.setAnimation( { "flyInTop" : [ 400, "linear" ] } );
-      shell.hide();
-      
-      shell.show();
-      TestUtil.flush();
-      
-      var animation = this.getAppearAnimation( shell );
-      assertTrue( animation.isStarted() );
-      assertTrue( shell.isSeeable() );
-      assertEquals( -50, animation.getDefaultRenderer().getStartValue() );
-      assertEquals( 40, animation.getDefaultRenderer().getEndValue() );
-      assertEquals( -50, TestUtil.getElementBounds( shell.getElement() ).top );
-    },    
 
     testShellFlyOutTopConfigureNoAppearAnimation : function() {
       shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );

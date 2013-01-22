@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,6 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
   
   construct : function() {
     this.hide(); // forces _applyVisibility to be called on show() - not a good practice
-    this.addEventListener( "beforeAppear", this._blockFocus, this );
     this.addEventListener( "changeVisibility", this._blockUserEvents, this );
     this.addEventListener( "destroy", this._onDestroyAnim, this );
     if( this instanceof org.eclipse.swt.widgets.Composite ) {
@@ -129,7 +128,6 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
     _getAppearAnimation : function() {
       if( this._appearAnimation === null ) {
         this._appearAnimation = new Animation();
-        this._appearAnimation.addEventListener( "cancel", this._releaseFocus, this );
         if( org.eclipse.rwt.Client.isMshtml() && this instanceof org.eclipse.swt.widgets.Shell) {
           this._appearAnimation.setExclusive( true );
         }
@@ -254,22 +252,6 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
       var element = this.getElement();
       if( element ) {
         EventHandlerUtil.blockUserDomEvents( element, !changeEvent.getValue() );
-      }
-    },
-    
-    _blockFocus : function() {
-      if( this._appearAnimation && this._appearAnimation.getDefaultRenderer().isActive() ) {
-        qx.event.handler.FocusHandler.blockFocus = true;
-      }
-    },
-
-    _releaseFocus : function() {
-      if( qx.event.handler.FocusHandler.blockFocus ) {
-        qx.event.handler.FocusHandler.blockFocus = false;
-        var focused = this.getFocusRoot() ? this.getFocusRoot().getFocusedChild() : null;
-        if( focused ) {
-          focused._visualizeFocus();
-        }
       }
     },
     
