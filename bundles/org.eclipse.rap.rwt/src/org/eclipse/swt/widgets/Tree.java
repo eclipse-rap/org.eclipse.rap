@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -236,7 +236,7 @@ public class Tree extends Composite {
     super.setFont( font );
     for( int i = 0; i < itemCount; i++ ) {
       if( items[ i ] != null ) {
-        items[ i ].clearPreferredWidthBuffers();
+        items[ i ].clearPreferredWidthBuffers( true );
       }
     }
     layoutCache.invalidateItemHeight();
@@ -1102,7 +1102,7 @@ public class Tree extends Composite {
     for( int i = 0; i < itemCount; i++ ) {
       TreeItem item = items[ i ];
       if( item != null ) {
-        item.clearPreferredWidthBuffers();
+        item.clearPreferredWidthBuffers( true );
       }
     }
   }
@@ -1764,7 +1764,7 @@ public class Tree extends Composite {
       if( item != null && item.isCached() ) {
         int indention = columnIndex == 0 ? level * getIndentionWidth() : 0; // TODO [tb] : test
         if( clearBuffer ) {
-          item.clearPreferredWidthBuffers();
+          item.clearPreferredWidthBuffers( false );
         }
         int itemWidth = item.getPreferredWidth( columnIndex, false ) + indention;
         maxInnerWidth = Math.max( maxInnerWidth, itemWidth );

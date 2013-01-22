@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2049,6 +2049,18 @@ public class TreeItem_Test extends TestCase {
     assertEquals( "clear item1", log.get( 1 ) );
     assertEquals( "setItemCount", log.get( 2 ) );
     assertEquals( "item0#SetData", log.get( 3 ) );
+  }
+
+  public void testClearPreferredWidthBuffersRecursive() {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem rootItem = new TreeItem( tree, SWT.NONE );
+    TreeItem subItem = new TreeItem( rootItem, SWT.NONE );
+    rootItem.setExpanded( true );
+
+    tree.changed( new Control[ 0 ] );
+
+    assertFalse( rootItem.hasPreferredWidthBuffer( 0 ) );
+    assertFalse( subItem.hasPreferredWidthBuffer( 0 ) );
   }
 
   //////////////////
