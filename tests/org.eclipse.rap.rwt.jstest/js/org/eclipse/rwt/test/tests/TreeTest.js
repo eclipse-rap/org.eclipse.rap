@@ -3374,6 +3374,48 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( tree.isFocusItem( root.getChild( 99 ) ) );
       tree.destroy();
     },
+
+    testKeyboardNavigationEndThenAddItems : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      tree.setHeight( 416 );
+      tree.setItemHeight( 28 );
+      this._fillTree( tree, 2 );
+      var root = tree.getRootItem();
+      TestUtil.flush();
+      TestUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
+      tree.setItemCount( 21 );
+
+      TestUtil.press( tree, "End" );
+      assertEquals( 7, tree._topItemIndex );
+      tree.setItemCount( 26 );
+      TestUtil.flush();
+
+      assertEquals( 7, tree._topItemIndex );
+      tree.destroy();
+    },
+
+    testScrollWheelToEndThenAddItems : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      tree.setHeight( 416 );
+      tree.setItemHeight( 28 );
+      this._fillTree( tree, 2 );
+      var root = tree.getRootItem();
+      TestUtil.flush();
+      TestUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
+      tree.setItemCount( 21 );
+
+      for( var i = 0; i < 10; i++ ) {
+        TestUtil.fakeWheel( tree._rowContainer, -1 );
+      }
+      assertEquals( 7, tree._topItemIndex );
+      tree.setItemCount( 26 );
+      TestUtil.flush();
+
+      assertEquals( 7, tree._topItemIndex );
+      tree.destroy();
+    },
    
     testDeselectionOnCollapseByMouse : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
