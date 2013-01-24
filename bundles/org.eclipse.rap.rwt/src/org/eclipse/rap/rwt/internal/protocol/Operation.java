@@ -46,8 +46,7 @@ final class Operation {
 
   void appendProperties( Map<String, Object> properties ) {
     if( properties != null && !properties.isEmpty() ) {
-      Set<String> keySet = properties.keySet();
-      for( String key : keySet ) {
+      for( String key : properties.keySet() ) {
         appendProperty( key, JsonUtil.createJsonValue( properties.get( key ) ) );
       }
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,42 +60,48 @@ public abstract class JsonValue {
   }
 
   static String quoteAndEscapeString( String string ) {
-    StringBuilder resultBuffer = new StringBuilder();
-    resultBuffer.append( '"' );
-    resultBuffer.append( escapeString( string ) );
-    resultBuffer.append( '"' );
-    return resultBuffer.toString();
+    StringBuilder buffer = new StringBuilder( string.length() + 2 );
+    appendQuotedAndEscapedString( buffer, string );
+    return buffer.toString();
   }
 
-  static String escapeString( String string ) {
-    StringBuilder resultBuffer = new StringBuilder();
-    int length = string.length();
+  static void appendQuotedAndEscapedString( StringBuilder buffer, String string ) {
+    buffer.append( '"' );
+    appendEscapedString( buffer, string );
+    buffer.append( '"' );
+  }
+
+  static void appendEscapedString( StringBuilder buffer, String string ) {
+    char[] chars = string.toCharArray();
+    int length = chars.length;
     for( int i = 0; i < length; i++ ) {
-      char ch = string.charAt( i );
+      char ch = chars[ i ];
       if( ch == '"' || ch == '\\' ) {
-        resultBuffer.append( '\\' );
-        resultBuffer.append( ch );
+        buffer.append( '\\' );
+        buffer.append( ch );
       } else if( ch == '\n' ) {
-        resultBuffer.append( "\\n" );
+        buffer.append( '\\' );
+        buffer.append( 'n' );
       } else if( ch == '\r' ) {
-        resultBuffer.append( "\\r" );
+        buffer.append( '\\' );
+        buffer.append( 'r' );
       } else if( ch == '\t' ) {
-        resultBuffer.append( "\\t" );
+        buffer.append( '\\' );
+        buffer.append( 't' );
       } else if( ch == '\u2028' ) {
-        resultBuffer.append( "\\u2028" );
+        buffer.append( "\\u2028" );
       } else if( ch == '\u2029' ) {
-        resultBuffer.append( "\\u2029" );
+        buffer.append( "\\u2029" );
       } else if( ch >= CONTROL_CHARACTERS_START && ch <= CONTROL_CHARACTERS_END ) {
-        resultBuffer.append( "\\u00" );
+        buffer.append( "\\u00" );
         if( ch <= 0x000f ) {
-          resultBuffer.append( "0" );
+          buffer.append( '0' );
         }
-        resultBuffer.append( Integer.toHexString( ch ) );
+        buffer.append( Integer.toHexString( ch ) );
       } else {
-        resultBuffer.append( ch );
+        buffer.append( ch );
       }
     }
-    return resultBuffer.toString();
   }
 
   private static class JsonPrimitive extends JsonValue {
@@ -106,6 +112,7 @@ public abstract class JsonValue {
       this.value = value;
     }
 
+    @Override
     public String toString() {
       return value;
     }

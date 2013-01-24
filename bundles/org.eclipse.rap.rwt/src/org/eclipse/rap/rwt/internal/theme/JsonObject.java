@@ -49,6 +49,7 @@ public final class JsonObject extends JsonValue {
     }
   }
 
+  @Override
   public String toString() {
     String tail = count == 0 ? "}" : "\n}";
     return buffer.toString() + tail;
@@ -56,7 +57,7 @@ public final class JsonObject extends JsonValue {
 
   private void doAppend( String key, String valueStr ) {
     buffer.append( count == 0 ? "\n" : ",\n" );
-    buffer.append( quoteAndEscapeString( key ) );
+    appendQuotedAndEscapedString( buffer, key );
     buffer.append( ": " );
     buffer.append( valueStr );
     count++;

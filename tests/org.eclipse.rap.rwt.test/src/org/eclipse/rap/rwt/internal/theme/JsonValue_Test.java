@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -82,28 +82,28 @@ public class JsonValue_Test {
   @Test
   public void testEscapeStringWithQuotes() {
     // escape a\b -> "a\\b"
-    assertEquals( "a\\\\b", JsonValue.escapeString( "a\\b" ) );
+    assertEquals( "a\\\\b", escapeString( "a\\b" ) );
     // escape a"b -> "a\"b"
-    assertEquals( "a\\\"b", JsonValue.escapeString( "a\"b" ) );
+    assertEquals( "a\\\"b", escapeString( "a\"b" ) );
     // escape a\"b\" -> "a\\\"b\\\""
-    assertEquals( "a\\\\\\\"b\\\\\\\"", JsonValue.escapeString( "a\\\"b\\\"" ) );
+    assertEquals( "a\\\\\\\"b\\\\\\\"", escapeString( "a\\\"b\\\"" ) );
   }
 
   @Test
   public void testEscapeStringWithNewLines() {
-    assertEquals( "a\\n", JsonValue.escapeString( "a\n" ) );
-    assertEquals( "a\\r\\nb", JsonValue.escapeString( "a\r\nb" ) );
+    assertEquals( "a\\n", escapeString( "a\n" ) );
+    assertEquals( "a\\r\\nb", escapeString( "a\r\nb" ) );
   }
 
   @Test
   public void testEscapeStringWithTabs() {
-    assertEquals( "a\\tb", JsonValue.escapeString( "a\tb" ) );
+    assertEquals( "a\\tb", escapeString( "a\tb" ) );
   }
 
   @Test
   public void testEscapeStringWithSpecialCharacters() {
     String expected = "\\u2028foo\\u2029";
-    assertEquals( expected, JsonValue.escapeString( "\u2028foo\u2029" ) );
+    assertEquals( expected, escapeString( "\u2028foo\u2029" ) );
   }
 
   @Test
@@ -124,6 +124,12 @@ public class JsonValue_Test {
     assertEquals( "\"hel\\u0008lo\"", JsonValue.valueOf( String.valueOf( data ) ).toString() );
     data = new char[] { 'h', 'e', 'l', 15, 'l', 'o' };
     assertEquals( "\"hel\\u000flo\"", JsonValue.valueOf( String.valueOf( data ) ).toString() );
+  }
+
+  private static String escapeString( String string ) {
+    StringBuilder result = new StringBuilder();
+    JsonValue.appendEscapedString( result, string );
+    return result.toString();
   }
 
 }
