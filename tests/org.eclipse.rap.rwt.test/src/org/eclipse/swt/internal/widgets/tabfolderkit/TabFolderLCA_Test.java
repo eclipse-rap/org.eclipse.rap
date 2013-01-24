@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
@@ -299,6 +300,27 @@ public class TabFolderLCA_Test {
     Fixture.readDataAndProcessAction( folder );
 
     assertSame( item, folder.getSelection()[ 0 ] );
+  }
+
+  @Test
+  public void testResetSelectionInSelectionEvent() {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+    final TabItem item1 = new TabItem( folder, SWT.NONE );
+    TabItem item2 = new TabItem( folder, SWT.NONE );
+    folder.setSelection( item1 );
+    folder.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        folder.setSelection( item1 );
+      }
+    } );
+
+    fakeWidgetSelected( folder, item2 );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( WidgetUtil.getId( item1 ), message.findSetProperty( folder, "selection" ) );
   }
 
   private void fakeWidgetSelected( TabFolder folder, TabItem item ) {
