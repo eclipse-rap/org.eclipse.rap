@@ -1067,8 +1067,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertNotNull( tree._rootItem );
       assertNotNull( tree._focusItem );
       assertNotNull( tree._leadItem );
+
+      item.dispose(); // The fix for Bug 394643 causes the server to always render a item dispose
       tree.destroy();
       TestUtil.flush();
+
       assertTrue( element.parentNode !== document.body );
       assertTrue( tree.isDisposed() );
       assertTrue( row.isDisposed() );

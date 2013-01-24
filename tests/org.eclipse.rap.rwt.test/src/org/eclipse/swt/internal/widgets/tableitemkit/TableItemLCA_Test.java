@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -232,9 +232,9 @@ public class TableItemLCA_Test extends TestCase {
     table.dispose();
     lca.renderDispose( tableItem );
 
-    // when the whole table is disposed of, the tableitem's dispose must not be rendered
+    // render item destroy - see bug 394643
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findDestroyOperation( tableItem ) );
+    assertNotNull( message.findDestroyOperation( tableItem ) );
     assertTrue( tableItem.isDisposed() );
   }
 

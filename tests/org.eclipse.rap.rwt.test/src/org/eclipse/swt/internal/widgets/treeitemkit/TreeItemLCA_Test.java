@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -306,7 +306,7 @@ public class TreeItemLCA_Test extends TestCase {
     lca.renderDispose( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( 0, message.getOperationCount() );
+    assertEquals( 1, message.getOperationCount() );
   }
 
   public void testRenderDisposeWithDisposedParentItem() throws IOException {
@@ -317,7 +317,7 @@ public class TreeItemLCA_Test extends TestCase {
     lca.renderDispose( subitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( 0, message.getOperationCount() );
+    assertEquals( 1, message.getOperationCount() );
   }
 
   public void testRenderParent() throws IOException {

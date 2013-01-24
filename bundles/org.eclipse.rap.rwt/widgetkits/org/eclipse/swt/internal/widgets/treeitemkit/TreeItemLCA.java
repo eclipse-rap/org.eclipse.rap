@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -139,12 +139,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
 
   @Override
   public void renderDispose( Widget widget ) throws IOException {
-    TreeItem item = ( TreeItem )widget;
-    ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
-    if( !itemAdapter.isParentDisposed() ) {
-      // The tree disposes the items itself on the client (faster)
-      ClientObjectFactory.getClientObject( widget ).destroy();
-    }
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   //////////////////
