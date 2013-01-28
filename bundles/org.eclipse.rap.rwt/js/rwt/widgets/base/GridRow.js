@@ -60,9 +60,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
   members : {
 
-    renderItem : function( item, config, selected, hoverTarget, scrolling ) {
+    renderItem : function( item, config, selected, hoverTargetArg, scrolling ) {
       this._usedMiscNodes = 0;
       if( item !== null ) {
+        var hoverTarget = config.fullSelection ? hoverTargetArg : null;
         var renderSelected = this._renderAsSelected( config, selected );
         var renderFullSelected = renderSelected && config.fullSelection;
         var heightChanged = this._renderHeight( item, config );
@@ -183,20 +184,17 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderBackground : function( item, config, selected ) {
-      var color = null;
-      var image = null;
-      var gradient = null;
-      if( this._hasOverlayBackground() ) {
-        // TODO [tb] : would currently not behave in an actual overlay (if semi-transparent)
+      var color = this._styleMap.background;
+      var image = this._styleMap.backgroundImage;
+      var gradient = this._styleMap.backgroundGradient;
+      if( this._hasOverlayBackground() && !this._rendersOverlayElement( config, selected ) ) {
         color = this._overlayStyleMap.background;
         image = this._overlayStyleMap.backgroundImage;
         gradient = this._overlayStyleMap.backgroundGradient;
       } else if( config.enabled !== false && item !== null && item.getBackground() !== null ) {
         color = item.getBackground();
-      } else {
-        color = this._styleMap.background;
-        image = this._styleMap.backgroundImage;
-        gradient = this._styleMap.backgroundGradient;
+        image = null;
+        gradient = null;
       }
       // Note: "undefined" is a string stored in the themestore
       this.setBackgroundColor( color !== "undefined" ? color : null );
@@ -322,7 +320,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       for( var i = 0; i < columns; i++ ) {
         var isTreeColumn = this._isTreeColumn( i, config );
         if( this._getItemWidth( item, i, config ) > 0 ) {
-          this._renderCellBackground( item, i, config, contentOnly );
+          this._renderCellBackground( item, i, config, contentOnly, selected );
           if( !config.fullSelection && isTreeColumn ) {
             this._renderStates( item, config, selected, hoverTarget );
             this._renderCellCheckBox( item, i, config, isTreeColumn, contentOnly, hoverTarget );
@@ -344,14 +342,19 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderOverlay : function( item, cell, config, selected ) {
-      var overlayBg = this._overlayStyleMap.background;
-      var itemBg = this._styleMap.background;
-      var hasOverlayBg = overlayBg !== "undefined" && overlayBg !== null;
-      var hasItemBg = selected && cell !== -1 && itemBg !== "undefined" && itemBg !== null;
-      if( item && ( hasItemBg || hasOverlayBg ) ) {
+      if( item && this._rendersOverlayElement( config, selected ) ) {
+        var overlayBg = this._overlayStyleMap.background;
+        var itemBg = this._styleMap.background;
+        var hasOverlayBg = overlayBg !== "undefined" && overlayBg !== null;
         var element = this._getOverlayElement();
         element.style.backgroundColor = hasOverlayBg ? overlayBg : itemBg;
-        if( !config.fullSelection ) {
+        var height = this.getHeight();
+        var left;
+        var width;
+        if( config.fullSelection ) {
+          left = 0;
+          width = this.getWidth();
+        } else {
           var padding = config.selectionPadding;
           var left = this._getItemTextLeft( item, cell, config );
           left -= padding[ 0 ];
@@ -360,16 +363,27 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           var visualWidth  = this._getVisualTextWidth( item, cell, config );
           visualWidth  += padding[ 0 ] + padding[ 1 ];
           width = Math.min( width, visualWidth );
-          var height = this.getHeight();
-          this._setBounds( element, left, 0, width, height );
         }
+        this._setBounds( element, left, 0, width, height );
       } else if( this._overlayElement ){
         this._overlayElement.style.display = "none";
       }
     },
 
-    _renderCellBackground : function( item, cell, config, contentOnly ) {
-      var background = this._getCellBackgroundColor( item, cell, config );
+    _rendersOverlayElement : function( config, selected ) {
+      var singleSelection = selected && !config.fullSelection && config.treeColumn !== -1;
+      var overlayBg = this._overlayStyleMap.background;
+      var itemBg = this._styleMap.background;
+      var hasOverlayBgColor = overlayBg !== "undefined" && overlayBg !== null;
+      var canNotRenderOverlay =    this._overlayStyleMap.backgroundImage !== null
+                                || this._overlayStyleMap.backgroundGradient !== null;
+      var useItemBg = singleSelection && itemBg !== "undefined" && itemBg !== null;
+      var useOverlayBg = hasOverlayBgColor && ( !canNotRenderOverlay || singleSelection );
+      return useItemBg || useOverlayBg;
+    },
+
+    _renderCellBackground : function( item, cell, config, contentOnly, selected ) {
+      var background = this._getCellBackgroundColor( item, cell, config, selected );
       var renderBounds = false;
       if( background !== "undefined" && background != this._styleMap.backgroundColor ) {
         renderBounds = !contentOnly || !this._cellBackgrounds[ cell ];
@@ -522,10 +536,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       HtmlUtil.setTextShadow( element, this._styleMap.textShadow );
     },
 
-    _getCellBackgroundColor : function( item, cell, config ) {
+    _getCellBackgroundColor : function( item, cell, config, selected ) {
       var result;
       if(    config.enabled === false
-          || this._overlayStyleMap.background !== "undefined"
+          || ( this._hasOverlayBackground() && !this._rendersOverlayElement( config, selected ) )
       ) {
         result = "undefined";
       } else {
