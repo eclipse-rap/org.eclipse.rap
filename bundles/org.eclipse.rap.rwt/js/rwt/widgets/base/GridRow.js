@@ -32,6 +32,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     this._variant = null;
     this._expandElement = null;
     this._checkBoxElement = null;
+    this._overlayElement = null;
     this._treeColumnElements = [];
     this._cellLabels = [];
     this._cellImages = [];
@@ -328,8 +329,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
             var labelElement = this._renderCellLabel( item, i, config, isTreeColumn, contentOnly );
             this._treeColumnElements = [ imageElement, labelElement ];
             if( selected ) {
-              this._renderSelectionBackground( item, i, config );
+              this._renderOverlay( item, i, config );
               this._renderStates( item, config, false, hoverTarget);
+            } else {
+              this._renderOverlay( null, -1, null );
             }
           } else {
             this._renderCellCheckBox( item, i, config, isTreeColumn, contentOnly, hoverTarget );
@@ -343,24 +346,28 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this._cellsRendered = columns;
     },
 
-    _renderSelectionBackground : function( item, cell, config ) {
-      var overlayBg = this._overlayStyleMap.background;
-      var itemBg = this._styleMap.background;
-      var hasOverlayBg = overlayBg !== "undefined" && overlayBg !== null;
-      var hasItemBg = itemBg !== "undefined" && itemBg !== null;
-      if( hasItemBg || hasOverlayBg ) {
-        var element = this._getMiscBackground();
-        element.style.backgroundColor = hasOverlayBg ? overlayBg : itemBg;
-        var padding = config.selectionPadding;
-        var left = this._getItemTextLeft( item, cell, config );
-        left -= padding[ 0 ];
-        var width = this._getItemTextWidth( item, cell, config );
-        width += width > 0 ? padding[ 0 ] : 0;
-        var visualWidth  = this._getVisualTextWidth( item, cell, config );
-        visualWidth  += padding[ 0 ] + padding[ 1 ];
-        width = Math.min( width, visualWidth );
-        var height = this.getHeight();
-        this._setBounds( element, left, 0, width, height );
+    _renderOverlay : function( item, cell, config ) {
+      if( item ) {
+        var overlayBg = this._overlayStyleMap.background;
+        var itemBg = this._styleMap.background;
+        var hasOverlayBg = overlayBg !== "undefined" && overlayBg !== null;
+        var hasItemBg = itemBg !== "undefined" && itemBg !== null;
+        if( hasItemBg || hasOverlayBg ) {
+          var element = this._getOverlayElement();
+          element.style.backgroundColor = hasOverlayBg ? overlayBg : itemBg;
+          var padding = config.selectionPadding;
+          var left = this._getItemTextLeft( item, cell, config );
+          left -= padding[ 0 ];
+          var width = this._getItemTextWidth( item, cell, config );
+          width += width > 0 ? padding[ 0 ] : 0;
+          var visualWidth  = this._getVisualTextWidth( item, cell, config );
+          visualWidth  += padding[ 0 ] + padding[ 1 ];
+          width = Math.min( width, visualWidth );
+          var height = this.getHeight();
+          this._setBounds( element, left, 0, width, height );
+        }
+      } else if( this._overlayElement ){
+        this._overlayElement.style.display = "none";
       }
     },
 
@@ -699,11 +706,12 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       return result;
     },
 
-    _getMiscBackground : function() {
-      var result = this._getMiscElement( 2 );
-      result.style.backgroundImage = "";
-      result.innerHTML = "";
-      return result;
+    _getOverlayElement : function() {
+      if( this._overlayElement === null ) {
+        this._overlayElement = this._createElement( 2 );
+      }
+      this._overlayElement.style.display = "";
+      return this._overlayElement;
     },
 
     _getBackgroundElement : function( cell ) {
@@ -765,6 +773,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( this._checkBoxElement ) {
         this._checkBoxElement.style.backgroundImage = "";
       }
+      this._renderOverlay( null, -1, null);
       this._hideRemainingElements();
     },
 

@@ -1797,11 +1797,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
 //    testFullSelectionOverlayCreatesElement : function() {
 //      this._createTree( false, false, "fullSelection" );
-//      TestUtil.fakeAppearance( "tree-row", {
+//      TestUtil.fakeAppearance( "tree-row-overlay", {
 //        style : function( states ) {
-//          var result = {};
-//          result.overlayBackground = "#ff0000";
-//          return result;
+//          return {
+//            "background" : "#ff0000",
+//            "foreground" : "undefined",
+//            "backgroundImage" : null,
+//            "backgroundGradient" : null
+//          };
 //        }
 //      } );
 //      row.setAppearance( "tree-row" );
@@ -1810,8 +1813,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 //
 //      row.renderItem( item, tree._config, true, null );
 //
-//      var element = this._getSelectionElement( row );
-//      assertIdentical( row._getTargetElement(), element );
+//      var element = this._getOverlayElement( row );
+//      assertIdentical( row._getTargetNode(), element.parentNode );
 //    },
 
     testRenderThemingItemForeground : function() {
@@ -2089,13 +2092,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       item.setTexts( [ "Test1" ] );
       var selectionPadding = 4;
       tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 100 );
+
       row.renderItem( item, tree._config, true, null );
-      var rowNode = row._getTargetNode();
-      var color = rowNode.childNodes[ 2 ].style.backgroundColor;
+
+      var overlay = this._getOverlayElement( row );
+      var color = overlay.style.backgroundColor;
       assertEquals( "blue", color );
       var textWidth = row._getVisualTextWidth( item, 0, tree._config );
-      //parseInt( rowNode.childNodes[ 1 ].style.width );
-      var selectionWidth = parseInt( rowNode.childNodes[ 2 ].style.width, 10 );
+      var selectionWidth = parseInt( overlay.style.width, 10 );
       assertEquals( textWidth + selectionPadding, selectionWidth );
     },
 
@@ -2119,9 +2123,81 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
       row.renderItem( item, tree._config, true, null );
 
-      var rowNode = row._getTargetNode();
-      var color = rowNode.childNodes[ 2 ].style.backgroundColor;
+      var color = this._getOverlayElement( row ).style.backgroundColor;
       assertEquals( "red", color );
+    },
+
+    testSelectionBackgroundHidesOverlayAfterDeselection : function() {
+      TestUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          var result = {};
+          if( states.selected ) {
+            result.background = "red";
+          } else {
+            result.background = "undefined";
+          }
+          result.backgroundGradient = null;
+          result.backgroundImage = null;
+          return result;
+        }
+      } );
+      var item = new rwt.widgets.GridItem( tree.getRootItem() );
+      item.setTexts( [ "Test1" ] );
+      tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 100 );
+
+      row.renderItem( item, tree._config, true, null );
+      row.renderItem( item, tree._config, false, null );
+
+      assertEquals( "none", this._getOverlayElement( row ).style.display );
+    },
+
+    testSelectionBackgroundHidesOverlayOnEmptyRow : function() {
+      TestUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          var result = {};
+          if( states.selected ) {
+            result.background = "red";
+          } else {
+            result.background = "undefined";
+          }
+          result.backgroundGradient = null;
+          result.backgroundImage = null;
+          return result;
+        }
+      } );
+      var item = new rwt.widgets.GridItem( tree.getRootItem() );
+      item.setTexts( [ "Test1" ] );
+      tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 100 );
+
+      row.renderItem( item, tree._config, true, null );
+      row.renderItem( null, tree._config, false, null );
+
+      assertEquals( "none", this._getOverlayElement( row ).style.display );
+    },
+
+    testSelectionBackgroundShowsOverlayOnSecondSelection : function() {
+      TestUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          var result = {};
+          if( states.selected ) {
+            result.background = "red";
+          } else {
+            result.background = "undefined";
+          }
+          result.backgroundGradient = null;
+          result.backgroundImage = null;
+          return result;
+        }
+      } );
+      var item = new rwt.widgets.GridItem( tree.getRootItem() );
+      item.setTexts( [ "Test1" ] );
+      tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 100 );
+
+      row.renderItem( item, tree._config, true, null );
+      row.renderItem( item, tree._config, false, null );
+      row.renderItem( item, tree._config, true, null );
+
+      assertEquals( "", this._getOverlayElement( row ).style.display );
     },
 
     testSelectionBackgroundRendering_Bug373900 : rwt.util.Variant.select( "qx.client", {
@@ -2168,10 +2244,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       item.setTexts( [ "Test1" ] );
       var selectionPadding = 3; // only the left side
       tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 25 );
+
       row.renderItem( item, tree._config, true, null );
+
       var rowNode = row._getTargetNode();
       var textWidth = parseInt( rowNode.childNodes[ 1 ].style.width, 10 );
-      var selectionWidth = parseInt( rowNode.childNodes[ 2 ].style.width, 10 );
+      var selectionWidth = parseInt( this._getOverlayElement( row ).style.width, 10 );
       assertEquals( textWidth + selectionPadding, selectionWidth );
     },
 
@@ -2192,9 +2270,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = new rwt.widgets.GridItem( tree.getRootItem() );
       item.setTexts( [ "Test1" ] );
       tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 0 );
+
       row.renderItem( item, tree._config, true, null );
+
       var rowNode = row._getTargetNode();
-      var selectionWidth = parseInt( rowNode.childNodes[ 2 ].style.width, 10 );
+      var selectionWidth = parseInt( this._getOverlayElement( row ).style.width, 10 );
       assertEquals( 0, selectionWidth );
     },
 
@@ -2416,8 +2496,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       } );
     },
 
-    _getSelectionElement : function( row ) {
-      return row._miscNodes[ 0 ];
+    _getOverlayElement : function( row ) {
+      return row._overlayElement;
     },
 
     setUp : function() {
