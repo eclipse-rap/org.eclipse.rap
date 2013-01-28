@@ -54,7 +54,7 @@ var appearances = {
           borderColors[ 3 ] = gridColor;
           borderWidths[ 3 ] = 1;
         }
-      } 
+      }
       var borderBottom = tv.getCssBorder( "TableColumn", "border-bottom" );
       borderWidths[ 2 ] = borderBottom.getWidthBottom();
       borderStyles[ 2 ] = borderBottom.getStyleBottom();
@@ -88,16 +88,24 @@ var appearances = {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       var result = {};
-      result.itemBackground = tv.getCssColor( "TableItem", "background-color" );
-      result.itemBackgroundImage = tv.getCssImage( "TableItem", "background-image" );
-      result.itemBackgroundGradient = tv.getCssGradient( "TableItem", "background-image" );
-      result.itemForeground = tv.getCssColor( "TableItem", "color" );
-      result.overlayBackground = tv.getCssColor( "Table-RowOverlay", "background-color" );
-      result.overlayBackgroundImage = tv.getCssImage( "Table-RowOverlay", "background-image" );
-      result.overlayBackgroundGradient = tv.getCssGradient( "Table-RowOverlay", "background-image" );
-      result.overlayForeground = tv.getCssColor( "Table-RowOverlay", "color" );
+      result.background = tv.getCssColor( "TableItem", "background-color" );
+      result.backgroundImage = tv.getCssImage( "TableItem", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "TableItem", "background-image" );
+      result.foreground = tv.getCssColor( "TableItem", "color" );
       result.textDecoration = tv.getCssIdentifier( "TableItem", "text-decoration" );
       result.textShadow = tv.getCssShadow( "TableItem", "text-shadow" );
+      return result;
+    }
+  },
+
+  "table-row-overlay" : {
+    style : function( states ) {
+      var tv = new rwt.theme.ThemeValues( states );
+      var result = {};
+      result.background = tv.getCssColor( "Table-RowOverlay", "background-color" );
+      result.backgroundImage = tv.getCssImage( "Table-RowOverlay", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Table-RowOverlay", "background-image" );
+      result.foreground = tv.getCssColor( "Table-RowOverlay", "color" );
       return result;
     }
   },

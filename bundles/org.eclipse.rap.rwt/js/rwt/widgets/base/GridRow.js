@@ -28,6 +28,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     this.setSelectable( false ); // Prevents user from selecting text
     this.setHeight( 16 );
     this._styleMap = null;
+    this._overlayStyleMap = null;
     this._variant = null;
     this._expandElement = null;
     this._checkBoxElement = null;
@@ -131,6 +132,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this._renderVariant( item.getVariant() );
       this._renderOverState( hoverTarget );
       this._styleMap = this._getStyleMap();
+      this._overlayStyleMap = this._getOverlayStyleMap();
     },
 
     _renderVariant : function( variant ) {
@@ -165,6 +167,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       return manager.styleFrom( this.getAppearance(), this.__states );
     },
 
+    _getOverlayStyleMap : function() {
+      var manager = rwt.theme.AppearanceManager.getInstance();
+      return manager.styleFrom( this.getAppearance() + "-overlay", this.__states );
+    },
+
     _styleFromMap : function() {
       // TODO [tb] : Overwrites (now) useless function from Widget.js
       //             Find a clean way to disable renderAppearance.
@@ -177,15 +184,15 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var gradient = null;
       if( this._hasOverlayBackground() ) {
         // TODO [tb] : would currently not behave in an actual overlay (if semi-transparent)
-        color = this._styleMap.overlayBackground;
-        image = this._styleMap.overlayBackgroundImage;
-        gradient = this._styleMap.overlayBackgroundGradient;
+        color = this._overlayStyleMap.background;
+        image = this._overlayStyleMap.backgroundImage;
+        gradient = this._overlayStyleMap.backgroundGradient;
       } else if( config.enabled !== false && item !== null && item.getBackground() !== null ) {
         color = item.getBackground();
       } else {
-        color = this._styleMap.itemBackground;
-        image = this._styleMap.itemBackgroundImage;
-        gradient = this._styleMap.itemBackgroundGradient;
+        color = this._styleMap.background;
+        image = this._styleMap.backgroundImage;
+        gradient = this._styleMap.backgroundGradient;
       }
       // Note: "undefined" is a string stored in the themestore
       this.setBackgroundColor( color !== "undefined" ? color : null );
@@ -194,9 +201,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _hasOverlayBackground : function() {
-      var result =    this._styleMap.overlayBackground !== "undefined"
-                   || this._styleMap.overlayBackgroundImage !== null
-                   || this._styleMap.overlayBackgroundGradient !== null;
+      var result =    this._overlayStyleMap.background !== "undefined"
+                   || this._overlayStyleMap.backgroundImage !== null
+                   || this._overlayStyleMap.backgroundGradient !== null;
       return result;
     },
 
@@ -337,8 +344,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderSelectionBackground : function( item, cell, config ) {
-      var overlayBg = this._styleMap.overlayBackground;
-      var itemBg = this._styleMap.itemBackground;
+      var overlayBg = this._overlayStyleMap.background;
+      var itemBg = this._styleMap.background;
       var hasOverlayBg = overlayBg !== "undefined" && overlayBg !== null;
       var hasItemBg = itemBg !== "undefined" && itemBg !== null;
       if( hasItemBg || hasOverlayBg ) {
@@ -514,7 +521,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _getCellBackgroundColor : function( item, cell, config ) {
       var result;
       if(    config.enabled === false
-          || this._styleMap.overlayBackground !== "undefined"
+          || this._overlayStyleMap.background !== "undefined"
       ) {
         result = "undefined";
       } else {
@@ -525,12 +532,12 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _getCellColor : function( item, cell, config ) {
       var result = null;
-      if( this._styleMap.overlayForeground !== "undefined" ) {
-        result = this._styleMap.overlayForeground;
+      if( this._overlayStyleMap.foreground !== "undefined" ) {
+        result = this._overlayStyleMap.foreground;
       } else if( config.enabled !== false && item.getCellForeground( cell ) ) {
         result = item.getCellForeground( cell );
       } else {
-        result = this._styleMap.itemForeground;
+        result = this._styleMap.foreground;
         if( result === "undefined" ) {
           result = config.textColor;
         }
