@@ -212,9 +212,9 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
       var result = null;
       var win = this.getContentWindow();
       // NOTE: This mimics the behavior of the evaluate method in SWT:
-      if( value instanceof win.Function ) {
+      if( value instanceof win.Function || value instanceof Function ) {
         result = this.toJSON( [ [] ] );
-      } else if( value instanceof win.Array ) {
+      } else if( value instanceof win.Array || value instanceof Array ) {
         result = this.toJSON( [ value ] );
       } else if( typeof value !== "object" && typeof value !== "function" ) {
         // above: some browser say regular expressions of the type "function"

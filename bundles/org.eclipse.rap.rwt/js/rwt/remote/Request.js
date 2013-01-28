@@ -57,6 +57,9 @@ rwt.remote.Request.prototype = {
       this._request.open( this._method, url, this._async );
       this._configRequest();
       this._request.send( post ? this._data : undefined );
+      if( !this._shouldUseStateListener() ) {
+        this._onReadyStateChange();
+      }
       if( !this._async ) {
         this.dispose();
       }
@@ -92,7 +95,18 @@ rwt.remote.Request.prototype = {
       }
       var contentType = "application/json; charset=UTF-8";
       this._request.setRequestHeader( "Content-Type", contentType );
-      this._request.onreadystatechange = rwt.util.Functions.bind( this._onReadyStateChange, this );
+      if( this._shouldUseStateListener() ) {
+        this._request.onreadystatechange = rwt.util.Functions.bind( this._onReadyStateChange, this );
+      }
+    },
+
+    _shouldUseStateListener : function() {
+      var result = true;
+      if( !this._async && Client.isGecko() && Client.getMajor() < 4 ) {
+        // see Bug 398951 - RAP does not start in Firefox 3.x 
+        result = false;
+      }
+      return result;
     },
 
     _onReadyStateChange : function() {

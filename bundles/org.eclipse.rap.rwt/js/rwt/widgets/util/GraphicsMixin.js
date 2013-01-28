@@ -26,7 +26,7 @@ rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
         this._shadowSupport = false;
         switch( engine ) {
           case "gecko":
-            this._shadowSupport = version >= 1.9;
+            this._shadowSupport = version >= 4;
           break;
           case "mshtml":
             this._shadowSupport = version >= 7;
