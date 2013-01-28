@@ -338,6 +338,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", 
       var animation = this.getDisappearAnimation( shell );
       animation._loop( ( new Date().getTime() ) + 401 );
       assertFalse( shell.hasState( "active" ) );
+      anotherShell.destroy();
     },
 
     /////////
