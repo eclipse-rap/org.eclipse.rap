@@ -1795,6 +1795,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "white", children[ 2 ].style.color );
     },
 
+//foo
 //    testFullSelectionOverlayCreatesElement : function() {
 //      this._createTree( false, false, "fullSelection" );
 //      TestUtil.fakeAppearance( "tree-row-overlay", {
