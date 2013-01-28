@@ -74,6 +74,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         }
         this._renderCheckBox( item, config, hoverTarget, contentOnly );
         this._renderCells( item, config, renderSelected, hoverTarget, contentOnly );
+        if( config.fullSelection || config.treeColumn === -1 ) {
+          this._renderOverlay( item, -1, config, selected );
+        }
         this._hideRemainingElements();
       } else {
         this.setBackgroundColor( null );
@@ -344,20 +347,22 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var overlayBg = this._overlayStyleMap.background;
       var itemBg = this._styleMap.background;
       var hasOverlayBg = overlayBg !== "undefined" && overlayBg !== null;
-      var hasItemBg = selected && itemBg !== "undefined" && itemBg !== null;
+      var hasItemBg = selected && cell !== -1 && itemBg !== "undefined" && itemBg !== null;
       if( item && ( hasItemBg || hasOverlayBg ) ) {
         var element = this._getOverlayElement();
         element.style.backgroundColor = hasOverlayBg ? overlayBg : itemBg;
-        var padding = config.selectionPadding;
-        var left = this._getItemTextLeft( item, cell, config );
-        left -= padding[ 0 ];
-        var width = this._getItemTextWidth( item, cell, config );
-        width += width > 0 ? padding[ 0 ] : 0;
-        var visualWidth  = this._getVisualTextWidth( item, cell, config );
-        visualWidth  += padding[ 0 ] + padding[ 1 ];
-        width = Math.min( width, visualWidth );
-        var height = this.getHeight();
-        this._setBounds( element, left, 0, width, height );
+        if( !config.fullSelection ) {
+          var padding = config.selectionPadding;
+          var left = this._getItemTextLeft( item, cell, config );
+          left -= padding[ 0 ];
+          var width = this._getItemTextWidth( item, cell, config );
+          width += width > 0 ? padding[ 0 ] : 0;
+          var visualWidth  = this._getVisualTextWidth( item, cell, config );
+          visualWidth  += padding[ 0 ] + padding[ 1 ];
+          width = Math.min( width, visualWidth );
+          var height = this.getHeight();
+          this._setBounds( element, left, 0, width, height );
+        }
       } else if( this._overlayElement ){
         this._overlayElement.style.display = "none";
       }

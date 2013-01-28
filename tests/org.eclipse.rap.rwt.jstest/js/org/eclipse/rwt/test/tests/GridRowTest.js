@@ -1795,28 +1795,27 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "white", children[ 2 ].style.color );
     },
 
-//foo
-//    testFullSelectionOverlayCreatesElement : function() {
-//      this._createTree( false, false, "fullSelection" );
-//      TestUtil.fakeAppearance( "tree-row-overlay", {
-//        style : function( states ) {
-//          return {
-//            "background" : "#ff0000",
-//            "foreground" : "undefined",
-//            "backgroundImage" : null,
-//            "backgroundGradient" : null
-//          };
-//        }
-//      } );
-//      row.setAppearance( "tree-row" );
-//      var item = this._createItem( tree );
-//      item.setTexts( [ "Test1" ] );
-//
-//      row.renderItem( item, tree._config, true, null );
-//
-//      var element = this._getOverlayElement( row );
-//      assertIdentical( row._getTargetNode(), element.parentNode );
-//    },
+    testFullSelectionOverlayCreatesElement : function() {
+      this._createTree( false, false, "fullSelection" );
+      TestUtil.fakeAppearance( "tree-row-overlay", {
+        style : function( states ) {
+          return {
+            "background" : "#ff0000",
+            "foreground" : "undefined",
+            "backgroundImage" : null,
+            "backgroundGradient" : null
+          };
+        }
+      } );
+      row.setAppearance( "tree-row" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1" ] );
+
+      row.renderItem( item, tree._config, true, null );
+
+      var element = this._getOverlayElement( row );
+      assertIdentical( row._getTargetNode(), element.parentNode );
+    },
 
     testRenderThemingItemForeground : function() {
       var item = this._createItem( tree );
