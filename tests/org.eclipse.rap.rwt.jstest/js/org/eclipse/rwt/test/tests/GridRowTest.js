@@ -1870,6 +1870,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertIdentical( row._getTargetNode(), element.parentNode );
     },
 
+    testFullSelectionOverlayWithAlpha : function() {
+      this._createTree( false, false, "fullSelection" );
+      TestUtil.fakeAppearance( "tree-row-overlay", {
+        style : function( states ) {
+          return {
+            "background" : "#ff0000",
+            "backgroundAlpha" : 0.4,
+            "foreground" : "undefined",
+            "backgroundImage" : null,
+            "backgroundGradient" : null
+          };
+        }
+      } );
+      row.setAppearance( "tree-row" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1" ] );
+
+      row.renderItem( item, tree._config, true, null );
+
+      var element = this._getOverlayElement( row );
+      assertTrue( TestUtil.hasElementOpacity( element ) );
+      if( rwt.client.Client.isWebkit() ) {
+        assertEquals( 0.4, element.style.opacity );
+      }
+    },
+
     testFullSelectionOverlayLayout : function() {
       this._createTree( false, false, "fullSelection" );
       TestUtil.fakeAppearance( "tree-row-overlay", {

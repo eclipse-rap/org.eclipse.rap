@@ -43,6 +43,7 @@ var appearances = {
       var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.background = tv.getCssColor( "Tree-RowOverlay", "background-color" );
+      result.backgroundAlpha = tv.getCssAlpha( "Tree-RowOverlay", "background-color" );
       result.backgroundImage = tv.getCssImage( "Tree-RowOverlay", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "Tree-RowOverlay", "background-image" );
       result.foreground = tv.getCssColor( "Tree-RowOverlay", "color" );

@@ -103,6 +103,7 @@ var appearances = {
       var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.background = tv.getCssColor( "Table-RowOverlay", "background-color" );
+      result.backgroundAlpha = tv.getCssAlpha( "Table-RowOverlay", "background-color" );
       result.backgroundImage = tv.getCssImage( "Table-RowOverlay", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "Table-RowOverlay", "background-image" );
       result.foreground = tv.getCssColor( "Table-RowOverlay", "color" );

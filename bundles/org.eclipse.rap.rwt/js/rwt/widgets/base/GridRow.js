@@ -347,6 +347,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         var hasOverlayBg = overlayBg !== "undefined" && overlayBg !== null;
         var element = this._getOverlayElement();
         element.style.backgroundColor = hasOverlayBg ? overlayBg : itemBg;
+        if( hasOverlayBg ) {
+          rwt.html.Style.setOpacity( element, this._overlayStyleMap.backgroundAlpha );
+        }
         var height = this.getHeight();
         var left;
         var width;
