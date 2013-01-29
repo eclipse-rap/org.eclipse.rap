@@ -45,7 +45,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ThemeStoreTest", {
 
     testLoadActiveTheme : function() {
       scheduleResponse( {
-        "values" : { "colors" :  { "abc" : "#00ff00" } },
+        "values" : { "colors" :  { "abc" : [ 0, 255, 0, 1 ] } },
         "theme" : {
           "mywidget" : {
             "background-color" : [ [ [], "abc" ] ]
