@@ -49,6 +49,10 @@ rwt.qx.Class.define( "rwt.theme.ThemeValues", {
       return this._store.getColor( element, this._states, key );
     },
 
+    getCssAlpha : function( element, key ) {
+      return this._store.getAlpha( element, this._states, key );
+    },
+
     getCssNamedColor : function( name ) {
       return this._store.getNamedColor( name );
     },

@@ -143,6 +143,18 @@ rwt.qx.Class.define( "rwt.theme.ThemeStore", {
       return result;
     },
 
+    getAlpha : function( element, states, property, theme ) {
+      var key = this._getCssValue( element, states, property, theme );
+      var color = this._values.colors[ key ];
+      var result = 1;
+      if( color instanceof Array ) {
+        result = color[ 3 ];
+      } else if( color === "transparent" ) {
+        result = 0;
+      }
+      return result;
+    },
+
     getNamedColor : function( name ) {
       var result = this._namedColors[ name ];
       return result ? result : name;
