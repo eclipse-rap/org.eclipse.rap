@@ -56,8 +56,8 @@ public class ThemeStoreWriter_Test {
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
     String output = storeWriter.createJson();
     // register colors
-    assertTrue( output.contains( "\"#000000\"" ) );
-    assertTrue( output.contains( "\"#ff0000\"" ) );
+    assertTrue( output.contains( "[ 0, 0, 0, 1.0 ]" ) );
+    assertTrue( output.contains( "[ 255, 0, 0, 1.0 ]" ) );
     // register images, with sizes
     String expected;
     expected = "\"ba873d77.png\": [ 50, 100 ]";
@@ -166,8 +166,8 @@ public class ThemeStoreWriter_Test {
     String output = storeWriter.createJson();
     String expected =   "\"colors\": {\n"
                       + "\"ffffffff\": \"undefined\",\n"
-                      + "\"400339c0\": \"#ff0000\",\n"
-                      + "\"3ffe9078\": \"#cecece\"\n"
+                      + "\"400339c0\": [ 255, 0, 0, 1.0 ],\n"
+                      + "\"3ffe9078\": [ 206, 206, 206, 1.0 ]\n"
                       + "}";
     assertTrue( output.contains( expected ) );
     expected =
