@@ -60,10 +60,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
   members : {
 
-    renderItem : function( item, config, selected, hoverTargetArg, scrolling ) {
+    renderItem : function( item, config, selected, hoverTarget, scrolling ) {
       this._usedMiscNodes = 0;
       if( item !== null ) {
-        var hoverTarget = config.fullSelection ? hoverTargetArg : null;
         var renderSelected = this._renderAsSelected( config, selected );
         var renderFullSelected = renderSelected && config.fullSelection;
         var heightChanged = this._renderHeight( item, config );
@@ -135,7 +134,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this.setState( "parent_unfocused", this._renderAsUnfocused( config ) );
       this.setState( "selected", selected );
       this._renderVariant( item.getVariant() );
-      this._renderOverState( hoverTarget );
+      this._renderOverState( hoverTarget, config );
       this._styleMap = this._getStyleMap();
       this._overlayStyleMap = this._getOverlayStyleMap();
     },
@@ -152,8 +151,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       }
     },
 
-    _renderOverState : function( hoverTarget ) {
-      this.setState( "over", hoverTarget !== null );
+    _renderOverState : function( hoverTarget, config ) {
+      this.setState( "over", hoverTarget !== null && config.fullSelection );
     },
 
     setState : function( state, value ) {
@@ -293,7 +292,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         var states = this.__states;
         this.setState( "over", hoverTarget && hoverTarget[ 0 ] === "checkBox" );
         var image = this._getImageFromAppearance( "check-box", states );
-        this._renderOverState( hoverTarget );
+        this.setState( "over", hoverTarget !== null );
         if( this._checkBoxElement === null ) {
           this._checkBoxElement = this._createElement( 3 );
           this._checkBoxElement.style.backgroundRepeat = "no-repeat";

@@ -1044,7 +1044,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       // drop
       TestUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
       assertTrue( row._getTargetNode().lastChild.style.display == "none" );
-      assertEquals( "#b5b5b5", tree._rowContainer._children[ 1 ].getBackgroundColor() );
+      // NOTE: hover effect temporarily disabled on trees without FULL_SELECTION
+      //assertEquals( "#b5b5b5", tree._rowContainer._children[ 1 ].getBackgroundColor() );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
       dndSupport.cancel();
@@ -1588,15 +1589,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeAppearance( "tree-row",  {
         style : function( states ) {
           return {
-            "itemBackground" : states.over ? "#b5b5b5" : "undefined",
-            "itemBackgroundGradient" : "undefined",
-            "itemBackgroundImage" : "undefined",
-            "itemForeground" : "undefined",
-            "checkBox" : null,
-            "overlayBackground" : states.selected ? "blue" : "undefined",
-            "overlayBackgroundImage" : null,
-            "overlayBackgroundGradient" : null,
-            "overlayForeground" : "undefined"
+            "background" : states.selected ? "blue" : states.over ? "#b5b5b5" : "undefined",
+            "backgroundGradient" : "undefined",
+            "backgroundImage" : "undefined",
+            "foreground" : "undefined",
+            "checkBox" : null
           };
         }
       } );
