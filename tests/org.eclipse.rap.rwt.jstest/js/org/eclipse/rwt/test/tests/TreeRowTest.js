@@ -2115,6 +2115,38 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       assertIdentical( row._getTargetNode(), element.parentNode );
     },
 
+    testFullSelectionOverlayWithAlpha : function() {
+      var tree = this._createTree( false, false, "fullSelection" );
+      TestUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          return {
+            "overlayBackground" : "#ff0000",
+            "overlayBackgroundAlpha" : 0.4,
+            "overlayForeground" : "undefined",
+            "overlayBackgroundImage" : null,
+            "overlayBackgroundGradient" : null,
+            "itemBackground" : "#ff0000",
+            "itemForeground" : "undefined",
+            "itemBackgroundImage" : null,
+            "itemBackgroundGradient" : null
+          };
+        }
+      } );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      row.setAppearance( "tree-row" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1" ] );
+
+      row.renderItem( item, tree._config, true, null );
+
+      var element = this._getOverlayElement( row );
+      assertTrue( TestUtil.hasElementOpacity( element ) );
+      if( org.eclipse.rwt.Client.isWebkit() ) {
+        assertEquals( 0.4, element.style.opacity );
+      }
+    },
+
     testFullSelectionOverlayLayout : function() {
       var tree = this._createTree( false, false, "fullSelection" );
       TestUtil.fakeAppearance( "tree-row", {

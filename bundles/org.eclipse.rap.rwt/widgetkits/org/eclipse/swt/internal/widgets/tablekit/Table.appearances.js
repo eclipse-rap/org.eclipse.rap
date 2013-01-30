@@ -92,6 +92,7 @@ var appearances = {
       result.overlayBackgroundImage = tv.getCssImage( "Table-RowOverlay", "background-image" );
       result.overlayBackgroundGradient = tv.getCssGradient( "Table-RowOverlay", "background-image" );
       result.overlayForeground = tv.getCssColor( "Table-RowOverlay", "color" );
+      result.overlayBackgroundAlpha = tv.getCssAlpha( "Table-RowOverlay", "background-color" );
       result.textDecoration = tv.getCssIdentifier( "TableItem", "text-decoration" );
       result.textShadow = tv.getCssShadow( "TableItem", "text-shadow" );
       return result;

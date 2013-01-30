@@ -12,7 +12,7 @@
 
 
 /**
- * An adapter class for accessing theme values. 
+ * An adapter class for accessing theme values.
  * Values for the widget state given in the construtor are selected if available.
  */
 qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
@@ -30,7 +30,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     this._states = states;
     this._store = org.eclipse.swt.theme.ThemeStore.getInstance();
   },
-  
+
   statics : {
     NONE_IMAGE : null,
     NONE_IMAGE_SIZED : [ null, 0, 0 ]
@@ -48,6 +48,10 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
 
     getCssColor : function( element, key ) {
       return this._store.getColor( element, this._states, key );
+    },
+
+    getCssAlpha : function( element, key ) {
+      return this._store.getAlpha( element, this._states, key );
     },
 
     getCssNamedColor : function( name ) {
@@ -79,11 +83,11 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     },
 
     getCssImage : function( element, key ) {
-      return this._store.getImage( element, this._states, key );      
+      return this._store.getImage( element, this._states, key );
     },
 
     getCssSizedImage : function( element, key ) {
-      return this._store.getSizedImage( element, this._states, key );      
+      return this._store.getSizedImage( element, this._states, key );
     },
 
     getCssGradient : function( element, key ) {

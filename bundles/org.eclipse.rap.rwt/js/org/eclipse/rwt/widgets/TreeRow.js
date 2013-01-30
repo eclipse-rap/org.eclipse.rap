@@ -324,6 +324,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         if( item && ( hasItemBg || hasOverlayBg ) ) {
           var element = this._getMiscBackground();
           element.style.backgroundColor = hasOverlayBg ? overlayBg : itemBg;
+          if( hasOverlayBg ) {
+            org.eclipse.rwt.HtmlUtil.setOpacity( element, this._styleMap.overlayBackgroundAlpha );
+          }
           var height = this.getHeight();
           var left;
           var width;
