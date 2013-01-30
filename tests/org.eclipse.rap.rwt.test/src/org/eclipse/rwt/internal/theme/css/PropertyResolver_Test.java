@@ -73,7 +73,7 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testColorWithAlpha() throws Exception {
     String input = "rgba( 1, 2, 3, 0.25 )";
-    QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    QxColor result = PropertyResolver.readColor( parseProperty( input ) );
     assertNotNull( result );
     assertEquals( 1, result.red );
     assertEquals( 2, result.green );
@@ -83,7 +83,7 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testColorWithAlpha_Percents() throws Exception {
     String input = "rgba( 0%, 50%, 100%, 0.25 )";
-    QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    QxColor result = PropertyResolver.readColor( parseProperty( input ) );
     assertNotNull( result );
     assertEquals( 0, result.red );
     assertEquals( 127, result.green );
@@ -93,13 +93,13 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testColorWithAlpha_NoTransparency() throws Exception {
     String input = "rgba( 0, 0, 0, 1 )";
-    QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    QxColor result = PropertyResolver.readColor( parseProperty( input ) );
     assertSame( QxColor.BLACK, result );
   }
 
   public void testColorWithAlpha_NormalizeNegativeAlpha() throws Exception {
     String input = "rgba( 1, 2, 3, -0.1 )";
-    QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    QxColor result = PropertyResolver.readColor( parseProperty( input ) );
     assertNotNull( result );
     assertEquals( 1, result.red );
     assertEquals( 2, result.green );
@@ -109,7 +109,7 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testColorWithAlpha_NormalizePositiveAlpha() throws Exception {
     String input = "rgba( 1, 2, 3, 1.1 )";
-    QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    QxColor result = PropertyResolver.readColor( parseProperty( input ) );
     assertNotNull( result );
     assertEquals( 1, result.red );
     assertEquals( 2, result.green );
@@ -119,7 +119,7 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testColorWithAlpha_NormalizeColorValue() throws Exception {
     String input = "rgba( -10, 127, 300, 0.25 )";
-    QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    QxColor result = PropertyResolver.readColor( parseProperty( input ) );
     assertNotNull( result );
     assertEquals( 0, result.red );
     assertEquals( 127, result.green );
@@ -130,7 +130,7 @@ public class PropertyResolver_Test extends TestCase {
   public void testColorWithAlpha_MixedValues() throws Exception {
     String input = "rgba( 0%, 50, 100, 0.25 )";
     try {
-      PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+      PropertyResolver.readColor( parseProperty( input ) );
       fail();
     } catch( IllegalArgumentException e ) {
       // expected
