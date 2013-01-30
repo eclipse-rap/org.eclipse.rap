@@ -167,7 +167,12 @@ public final class ThemePropertyAdapterRegistry {
       if( color.isTransparent() ) {
         result = JsonValue.valueOf( "undefined" );
       } else {
-        result = JsonValue.valueOf( QxColor.toHtmlString( color.red, color.green, color.blue ) );
+        JsonArray colorArray = new JsonArray();
+        colorArray.append( color.red );
+        colorArray.append( color.green );
+        colorArray.append( color.blue );
+        colorArray.append( color.alpha );
+        result = colorArray;
       }
       return result;
     }
