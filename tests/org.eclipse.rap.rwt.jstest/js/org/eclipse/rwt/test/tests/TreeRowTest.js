@@ -84,26 +84,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.destroy();
       row.destroy();
     },
-    
+
     testRenderItemWithMarkupEnabled_Bug377746 : function() {
       var tree = this._createTree( false, "markupEnabled" );
       var row = this._createRow( tree );
       this._addToDom( row );
       var item = this._createItem( tree );
-      
+
       item.setTexts( [ "<b>Test</b>" ] );
       row.renderItem( item, tree._config, false, null );
       item.setTexts( [ "" ] );
       row.renderItem( item, tree._config, false, null );
       item.setTexts( [ "<b>Test</b>" ] );
       row.renderItem( item, tree._config, false, null );
-      
+
       assertEquals( 2, row._getTargetNode().childNodes.length );
       assertEquals( "<b>test</b>", row._getTargetNode().childNodes[ 1 ].innerHTML.toLowerCase() );
       tree.destroy();
       row.destroy();
     },
-    
+
 
     testRenderEmptyItem : function() {
       var tree = this._createTree();
@@ -303,7 +303,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.destroy();
       row.destroy();
     },
-    
+
     testChangeItemLabelMetricsWithNullItemThenScroll : function() {
       var tree = this._createTree( true );
       var row = this._createRow( tree, true );
@@ -312,14 +312,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
       tree.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
-      
+
       row.renderItem( null, tree._config, false, null, false ); // render empty with metrics 1
       row.renderItem( item, tree._config, false, null, true ); // scroll to content, create node
       row.renderItem( null, tree._config, false, null, true ); // scroll back
       tree.setItemMetrics( 0, 4, 66, 24, 10, 10, 41 ); // change metrics
       row.renderItem( null, tree._config, false, null, false ); // re-render
       row.renderItem( item, tree._config, false, null, true ); // scroll to content
-      
+
       var node = row._getTargetNode();
       assertEquals( 1, node.childNodes.length );
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -341,14 +341,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item.setImages( [ "url.jpg" ] );
       var emptyItem = this._createItem( tree );
       tree.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
-      
+
       row.renderItem( emptyItem, tree._config, false, null, false ); // render empty with metrics 1
       row.renderItem( item, tree._config, false, null, true ); // scroll to content, create node
       row.renderItem( emptyItem, tree._config, false, null, true ); // scroll back
       tree.setItemMetrics( 0, 4, 66, 18, 20, 5, 45 ); // change metrics
       row.renderItem( emptyItem, tree._config, false, null, false ); // re-render
       row.renderItem( item, tree._config, false, null, true ); // scroll to content
-      
+
       var node = row._getTargetNode();
       assertEquals( 1, node.childNodes.length );
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -394,14 +394,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item.setCellBackgrounds( [ "#ffffff" ] );
       var emptyItem = this._createItem( tree );
       tree.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
-      
+
       row.renderItem( emptyItem, tree._config, false, null, false ); // render empty with metrics 1
       row.renderItem( item, tree._config, false, null, true ); // scroll to content, create node
       row.renderItem( emptyItem, tree._config, false, null, true ); // scroll back
       tree.setItemMetrics( 0, 10, 50, 24, 10, 5, 45 ); // change metrics
       row.renderItem( emptyItem, tree._config, false, null, false ); // re-render
       row.renderItem( item, tree._config, false, null, true ); // scroll to content
-      
+
       var node = row._getTargetNode();
       assertEquals( 1, node.childNodes.length );
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -420,14 +420,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var item = this._createItem( tree );
       item.setCellBackgrounds( [ "#ffffff" ] );
       tree.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
-      
+
       row.renderItem( null, tree._config, false, null, false ); // render empty with metrics 1
       row.renderItem( item, tree._config, false, null, true ); // scroll to content, create node
       row.renderItem( null, tree._config, false, null, true ); // scroll back
       tree.setItemMetrics( 0, 10, 50, 24, 10, 10, 45 ); // change metrics
       row.renderItem( null, tree._config, false, null, false ); // re-render
       row.renderItem( item, tree._config, false, null, true ); // scroll to content
-      
+
       var node = row._getTargetNode();
       assertEquals( 1, node.childNodes.length );
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -1996,7 +1996,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
 
-    testFullSelectionOverlayOverwritesTheming : function() {
+    testFullSelectionOverlayWithSolidColorIsIgnoredByItemBackground : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree( false, false, "fullSelection" );
       TestUtil.fakeAppearance( "tree-row", {
@@ -2032,17 +2032,121 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       assertEquals( "#888888", row.getBackgroundColor() );
       assertEquals( "red", children[ 1 ].style.backgroundColor );
       assertEquals( "yellow", children[ 2 ].style.color );
-      
+
       row.renderItem( item, tree._config, true, null );
-      
-      assertEquals( "blue", row.getBackgroundColor() );
-      assertEquals( "transparent", children[ 1 ].style.backgroundColor );
+
+      assertEquals( "yellow", row.getBackgroundColor() );
+      assertEquals( "red", children[ 1 ].style.backgroundColor );
       assertEquals( "white", children[ 2 ].style.color );
       tree.destroy();
       row.destroy();
     },
 
-    testRenderThemingItemForeground : function() {
+    testFullSelectionOverlayWithGradientOverwritesItemBackground : function() {
+      var tree = this._createTree( false, false, "fullSelection" );
+      var gradient = this._gradient;
+      TestUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          var result = {};
+          result.itemBackgroundGradient = null;
+          result.itemBackgroundImage = null;
+          result.overlayBackgroundImage = null;
+          result.overlayBackgroundGradient = null;
+          if( states.selected ) {
+            result.itemBackground = "yellow";
+            result.itemForeground = "yellow";
+            result.overlayBackgroundGradient = gradient;
+            result.overlayBackground = "blue";
+            result.overlayForeground = "white";
+          } else {
+            result.itemBackground = "#888888";
+            result.itemForeground = "black";
+            result.overlayBackground = "undefined";
+            result.overlayForeground = "undefined";
+          }
+          return result;
+        }
+      } );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      row.setAppearance( "tree-row" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1" ] );
+      item.setCellBackgrounds( [ "red" ] );
+      item.setCellForegrounds( [ "yellow" ] );
+      row.renderItem( item, tree._config, false, null );
+      var children = row._getTargetNode().childNodes;
+      assertEquals( "#888888", row.getBackgroundColor() );
+      assertEquals( "red", children[ 1 ].style.backgroundColor );
+      assertEquals( "yellow", children[ 2 ].style.color );
+
+      row.renderItem( item, tree._config, true, null );
+
+      assertNotNull( row.getBackgroundGradient() );
+      assertEquals( "transparent", children[ 1 ].style.backgroundColor );
+      assertEquals( "white", children[ 2 ].style.color );
+      assertTrue( this._getOverlayElement( row ) == null );
+    },
+
+    testFullSelectionOverlayCreatesElement : function() {
+      var tree = this._createTree( false, false, "fullSelection" );
+      TestUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          return {
+            "itemBackground" : "undefined",
+            "itemForeground" : "undefined",
+            "itemBackgroundImage" : null,
+            "itemBackgroundGradient" : null,
+            "overlayBackground" : "#ff0000",
+            "overlayBackgroundImage" : null,
+            "overlayBackgroundGradient" : null
+          };
+        }
+      } );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      row.setAppearance( "tree-row" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1" ] );
+
+      row.renderItem( item, tree._config, true, null );
+
+      var element = this._getOverlayElement( row );
+      assertIdentical( row._getTargetNode(), element.parentNode );
+    },
+
+    testFullSelectionOverlayLayout : function() {
+      var tree = this._createTree( false, false, "fullSelection" );
+      TestUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          return {
+            "itemBackground" : "undefined",
+            "itemForeground" : "undefined",
+            "itemBackgroundImage" : null,
+            "itemBackgroundGradient" : null,
+            "overlayBackground" : "#ff0000",
+            "overlayForeground" : "undefined",
+            "overlayBackgroundImage" : null,
+            "overlayBackgroundGradient" : null
+          };
+        }
+      } );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      row.setAppearance( "tree-row" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1" ] );
+
+      row.renderItem( item, tree._config, true, null );
+
+      var bounds = TestUtil.getElementBounds( this._getOverlayElement( row ) );
+      assertEquals( 0, bounds.left );
+      assertEquals( 0, bounds.top );
+      assertEquals( row.getHeight(), bounds.height );
+      assertEquals( row.getWidth(), bounds.width );
+     },
+
+         testRenderThemingItemForeground : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree();
       var row = this._createRow( tree );
@@ -2135,7 +2239,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item.setCellForegrounds( [ "red", "red" ] );
 
       row.renderItem( item, tree._config, true, null );
-      
+
       var nodes = row._getTargetNode().childNodes;
       assertEquals( "red", nodes[ 1 ].style.color );
       assertEquals( "red", nodes[ 2 ].style.color );
@@ -2403,7 +2507,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.destroy();
       row.destroy();
     },
-    
+
     testSelectionBackgroundUsesItemColor : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree();
@@ -2431,7 +2535,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 100 );
 
       row.renderItem( item, tree._config, true, null );
-      
+
       var rowNode = row._getTargetNode();
       var color = rowNode.childNodes[ 2 ].style.backgroundColor;
       assertEquals( "red", color );
@@ -2574,6 +2678,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
        } else {
          result.setAppearance( "tree-row" );
        }
+       result.setWidth( 400 );
        return result;
      },
 
@@ -2687,7 +2792,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             "itemBackgroundGradient" : null,
             "itemBackgroundImage" : null,
             "checkBox" : null,
-            "overlayBackground" : value,
+            "overlayBackground" : "undefined",
             "overlayBackgroundImage" : null,
             "overlayBackgroundGradient" : null,
             "overlayForeground" : "undefined"
@@ -2751,6 +2856,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           };
         }
       } );
+    },
+
+    _getOverlayElement : function( row ) {
+      return row._miscNodes[ 1 ]; // first is always the single.gif
     }
 
   }

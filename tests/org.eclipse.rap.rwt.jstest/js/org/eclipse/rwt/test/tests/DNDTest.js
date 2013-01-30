@@ -10,15 +10,15 @@
 
 qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
   extend : qx.core.Object,
-  
+
   construct : function() {
     this.base( arguments );
   },
-  
+
   members : {
 
     TARGETPLATFORM : [ "win", "mac", "unix", "other" ], // touch devices dont suport DND (yet)
-    
+
     testCreateDragSourceByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
@@ -45,7 +45,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
         }
       } );
 
-      var button = ObjectManager.getObject( "w3" );      
+      var button = ObjectManager.getObject( "w3" );
       assertTrue( dndSupport.isDragSource( button ) );
       var actions = dndSupport._dragSources[ button.toHashCode() ].actions;
       var expected = {
@@ -82,7 +82,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
         }
       } );
 
-      var button = ObjectManager.getObject( "w3" );      
+      var button = ObjectManager.getObject( "w3" );
       assertTrue( dndSupport.isDragSource( button ) );
 
       processor.processOperation( {
@@ -120,7 +120,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
         }
       } );
 
-      var button = ObjectManager.getObject( "w3" );      
+      var button = ObjectManager.getObject( "w3" );
       assertTrue( dndSupport.isDragSource( button ) );
       var types = dndSupport._dragSources[ button.toHashCode() ].dataTypes;
       var expected = [ "my", "transfer" ];
@@ -154,7 +154,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
         }
       } );
 
-      var button = ObjectManager.getObject( "w3" );      
+      var button = ObjectManager.getObject( "w3" );
       assertTrue( dndSupport.isDropTarget( button ) );
       var actions = dndSupport._dropTargets[ button.toHashCode() ].actions;
       var expected = {
@@ -191,7 +191,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
         }
       } );
 
-      var button = ObjectManager.getObject( "w3" );      
+      var button = ObjectManager.getObject( "w3" );
       assertTrue( dndSupport.isDropTarget( button ) );
 
       processor.processOperation( {
@@ -229,7 +229,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
         }
       } );
 
-      var button = ObjectManager.getObject( "w3" );      
+      var button = ObjectManager.getObject( "w3" );
       assertTrue( dndSupport.isDropTarget( button ) );
       var types = button.getDropDataTypes();
       var expected = [ "my", "transfer" ];
@@ -263,7 +263,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       target.destroy();
       TestUtil.flush();
     },
-    
+
     testHashMaps : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
@@ -294,7 +294,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       target.destroy();
       TestUtil.flush();
     },
-     
+
     testDragStartAndFinish : function() {
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -353,7 +353,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.clearRequestLog();
       TestUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 19, 19 );
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var request = TestUtil.getRequestLog()[ 0 ];      
+      var request = TestUtil.getRequestLog()[ 0 ];
       var dragStart = "org.eclipse.swt.dnd.dragStart=w11";
       assertTrue( request.search( dragStart ) != -1 );
       TestUtil.clearRequestLog();
@@ -372,7 +372,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
       var leftButton = qx.event.type.MouseEvent.buttons.left;
-      // request uses SWT-like event-names: 
+      // request uses SWT-like event-names:
       var dragStart = "org.eclipse.swt.dnd.dragStart";
       var dragOver = "org.eclipse.swt.dnd.dragEnter";
       var dragMove = "org.eclipse.swt.dnd.dragOver";
@@ -401,7 +401,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertTrue( TestUtil.getTimerOnceLog().length > 0 );
       TestUtil.forceTimerOnce();
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var request = TestUtil.getRequestLog()[ 0 ];      
+      var request = TestUtil.getRequestLog()[ 0 ];
       assertTrue( request.search( dragOver + "=w2" ) != -1 );
       assertTrue( request.search( dragOver + ".source=w11" ) != -1 );
       assertTrue( request.search( dragOver + ".x=32" ) != -1 );
@@ -453,7 +453,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
       var leftButton = qx.event.type.MouseEvent.buttons.left;
-      // request uses SWT-like event-names: 
+      // request uses SWT-like event-names:
       var dragStart = "org.eclipse.swt.dnd.dragStart";
       var dragOver = "org.eclipse.swt.dnd.dragEnter";
       var dragMove = "org.eclipse.swt.dnd.dragOver";
@@ -471,9 +471,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton, 11, 25 );
       TestUtil.forceTimerOnce();
       assertEquals( 2, TestUtil.getRequestsSend() );
-      var request = TestUtil.getRequestLog()[ 0 ];      
+      var request = TestUtil.getRequestLog()[ 0 ];
       assertTrue( request.search( dragStart + "=w11" ) != -1 );
-      request = TestUtil.getRequestLog()[ 1 ];      
+      request = TestUtil.getRequestLog()[ 1 ];
       assertTrue( request.search( dragOver + "=w2" ) != -1 );
       assertTrue( request.search( dragMove + "=w2" ) != -1 );
       TestUtil.clearTimerOnceLog();
@@ -494,7 +494,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
       var leftButton = qx.event.type.MouseEvent.buttons.left;
-      // request uses SWT-like event-names: 
+      // request uses SWT-like event-names:
       var dragOver = "org.eclipse.swt.dnd.dragEnter";
       var dragMove = "org.eclipse.swt.dnd.dragOver";
       TestUtil.prepareTimerUse();
@@ -513,7 +513,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton, 32, 15 );
       TestUtil.forceTimerOnce();
       assertEquals( 2, TestUtil.getRequestsSend() );
-      var request = TestUtil.getRequestLog()[ 1 ];      
+      var request = TestUtil.getRequestLog()[ 1 ];
       assertTrue( request.search( dragOver + "=w2" ) != -1 );
       assertTrue( request.search( dragOver + ".dataType=null" ) != -1 );
       assertTrue( request.search( dragOver + ".operation=move" ) != -1 );
@@ -529,7 +529,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.forceTimerOnce();
       assertEquals( 1, TestUtil.getRequestsSend() );
       var request = TestUtil.getRequestLog()[ 0 ];
-      assertTrue( request.search( dragMove + "=w2" ) != -1 );      
+      assertTrue( request.search( dragMove + "=w2" ) != -1 );
       assertTrue( request.search( dragMove + ".operation=copy" ) != -1 );
       assertTrue( request.search( dragMove + ".dataType=76135" ) != -1 );
       TestUtil.clearTimerOnceLog();
@@ -564,21 +564,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       target.setParent( parentTarget );
       var targetLog = [];
       var parentTargetLog = [];
-      var addToTargetLog = function( value ){ 
-        targetLog.push( value ); 
+      var addToTargetLog = function( value ){
+        targetLog.push( value );
       };
-      var addToParentTargetLog = function( value ){ 
-        parentTargetLog.push( value ); 
+      var addToParentTargetLog = function( value ){
+        parentTargetLog.push( value );
       };
-      parentTarget.addEventListener( "dragover", addToParentTargetLog ); 
-      parentTarget.addEventListener( "dragmove", addToParentTargetLog ); 
-      parentTarget.addEventListener( "dragout", addToParentTargetLog ); 
-      parentTarget.addEventListener( "dragdrop", addToParentTargetLog ); 
-      target.addEventListener( "dragover", addToTargetLog ); 
-      target.addEventListener( "dragmove", addToTargetLog ); 
-      target.addEventListener( "dragout", addToTargetLog ); 
-      target.addEventListener( "dragdrop", addToTargetLog ); 
-      org.eclipse.rwt.test.fixture.TestUtil.flush();      
+      parentTarget.addEventListener( "dragover", addToParentTargetLog );
+      parentTarget.addEventListener( "dragmove", addToParentTargetLog );
+      parentTarget.addEventListener( "dragout", addToParentTargetLog );
+      parentTarget.addEventListener( "dragdrop", addToParentTargetLog );
+      target.addEventListener( "dragover", addToTargetLog );
+      target.addEventListener( "dragmove", addToTargetLog );
+      target.addEventListener( "dragout", addToTargetLog );
+      target.addEventListener( "dragdrop", addToTargetLog );
+      org.eclipse.rwt.test.fixture.TestUtil.flush();
       var sourceNode = source._getTargetNode();
       var targetNode = target._getTargetNode();
       var doc = document.body;
@@ -592,11 +592,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton, 33, 15 );
       // Out
       TestUtil.fakeMouseEventDOM( targetNode, "mouseout", leftButton, 41, 15 );
-      TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 42, 15 );      
+      TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 42, 15 );
       // Over + move
       TestUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton, 31, 15 );
       TestUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton, 32, 15 );
-      // Drop 
+      // Drop
       TestUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton, 32, 16 );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
@@ -643,9 +643,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( targetNode, "mouseout", leftButton, 41, 15 );
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 42, 15 );
       assertTrue( TestUtil.getTimerOnceLog().length > 0 );
-      TestUtil.forceTimerOnce();      
+      TestUtil.forceTimerOnce();
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var request = TestUtil.getRequestLog()[ 0 ];      
+      var request = TestUtil.getRequestLog()[ 0 ];
       assertFalse( request.search( dragOut ) != -1 );
       assertFalse( request.search( dragMove ) != -1 );
       assertFalse( request.search( dragOver ) != -1 );
@@ -660,7 +660,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       target.destroy();
       TestUtil.flush();
     },
-    
+
     testIgnorePassOverTargetAfterLeave : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
@@ -724,7 +724,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       target.destroy();
       TestUtil.flush();
     },
-    
+
     testDragStartAndDrop : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
@@ -766,7 +766,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       // Drop
       TestUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton, 32, 16 );
       //assertTrue( TestUtil.getTimerOnceLog().length > 0 );
-      //TestUtil.forceTimerOnce();      
+      //TestUtil.forceTimerOnce();
       assertEquals( 1, TestUtil.getRequestsSend() );
       var request = TestUtil.getRequestLog()[ 0 ];
       assertTrue( request.search( dragDrop + "=w2" ) != -1 );
@@ -783,8 +783,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       target.destroy();
       TestUtil.flush();
     },
- 
-    
+
+
     testFakeMouseEvents : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
@@ -854,7 +854,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       // drag
       TestUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
-      // Over      
+      // Over
       TestUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton, 31, 15 );
       TestUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton, 32, 15 );
       // mouseup out of document
@@ -877,7 +877,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.clearRequestLog();
       dndSupport.cancel();
       dndSupport.deregisterDragSource( source );
-      dndSupport.deregisterDropTarget( target );  
+      dndSupport.deregisterDropTarget( target );
       source.setParent( null );
       source.destroy();
       target.setParent( null );
@@ -896,10 +896,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var item0 = this.createTreeItem( 1, tree, tree );
       var item1 = this.createTreeItem( 2, tree, item0 );
       var source = this.createSource();
-      item0.setExpanded( true ); 
+      item0.setExpanded( true );
       TestUtil.flush();
       var sourceNode = source._getTargetNode();
-      var targetNode = tree._rowContainer._children[ 1 ]._getTargetNode(); 
+      var targetNode = tree._rowContainer._children[ 1 ]._getTargetNode();
       var treeNode = tree.getElement();
       var doc = document.body;
       // drag
@@ -953,10 +953,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var item0 = this.createTreeItem( 1, tree, tree );
       var item1 = this.createTreeItem( 2, tree, item0 );
       var source = this.createSource();
-      item0.setExpanded( true ); 
+      item0.setExpanded( true );
       TestUtil.flush();
       var sourceNode = source._getTargetNode();
-      var targetNode = tree._rowContainer._children[ 1 ]._getTargetNode(); 
+      var targetNode = tree._rowContainer._children[ 1 ]._getTargetNode();
       var treeNode = tree.getElement();
       var doc = document.body;
       // drag
@@ -1010,7 +1010,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var item0 = this.createTreeItem( 0, tree, tree );
       var item1 = this.createTreeItem( 1, tree, item0 );
       var source = this.createSource();
-      item0.setExpanded( true ); 
+      item0.setExpanded( true );
       TestUtil.flush();
       var sourceNode = source._getTargetNode();
       var targetNode = tree._rowContainer._children[ 1 ]._getTargetNode();
@@ -1037,7 +1037,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       // drop
       TestUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
       assertTrue( tree._rowContainer._children[ 1 ]._getTargetNode().lastChild.style.display == "none" );
-      assertEquals( "#b5b5b5", tree._rowContainer._children[ 1 ].getBackgroundColor() );
+      //assertEquals( "#b5b5b5", tree._rowContainer._children[ 1 ].getBackgroundColor() );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
       dndSupport.cancel();
@@ -1114,7 +1114,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var targetNode = tree._rowContainer._children[ 1 ]._getTargetNode();
       var treeNode = tree.getElement();
       var doc = document.body;
-      // drag 
+      // drag
       TestUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
       assertNotNull( dndHandler.__dragCache );
@@ -1137,11 +1137,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.clearTimerOnceLog();
       // scroll to item 3
       TestUtil.forceInterval( dndSupport._dropFeedbackRenderer._scrollTimer );
-      TestUtil.flush();   
+      TestUtil.flush();
       assertEquals( 1, tree._topItemIndex );
       assertTrue( TestUtil.getTimerOnceLog().length > 0 );
       TestUtil.forceTimerOnce();
-      
+
       // scroll to item 4
       TestUtil.forceInterval( dndSupport._dropFeedbackRenderer._scrollTimer );
       TestUtil.flush();
@@ -1177,7 +1177,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var targetNode = tree._rowContainer._children[ 1 ]._getTargetNode();
       var treeNode = tree.getElement();
       var doc = document.body;
-      // drag 
+      // drag
       TestUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
       assertNotNull( dndHandler.__dragCache );
@@ -1213,7 +1213,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var targetNode = tree._rowContainer._getTargetNode();
       var treeNode = tree.getElement();
       var doc = document.body;
-      // drag 
+      // drag
       TestUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
       assertNotNull( dndHandler.__dragCache );
@@ -1252,7 +1252,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var targetNode = tree._rowContainer.getChildren()[ 0 ]._getTargetNode();
       var treeNode = tree.getElement();
       var doc = document.body;
-      // drag 
+      // drag
       TestUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
       assertNotNull( dndHandler.__dragCache );
@@ -1298,7 +1298,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var itemNode1 = tree._rowContainer._children[ 1 ]._getTargetNode();
       var treeNode = tree.getElement();
       var doc = document.body;
-      // drag 
+      // drag
       TestUtil.fakeMouseEventDOM( itemNode0, "mousedown", leftButton, 11, 11 );
       TestUtil.fakeMouseEventDOM( itemNode0, "mousemove", leftButton, 25, 15 );
       assertNotNull( dndHandler.__dragCache );
@@ -1341,7 +1341,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var itemNode1 = tree._rowContainer._children[ 1 ]._getTargetNode();
       var treeNode = tree.getElement();
       var doc = document.body;
-      // drag 
+      // drag
       TestUtil.initRequestLog();
       TestUtil.clearTimerOnceLog();
       TestUtil.fakeMouseEventDOM( itemNode0, "mousedown", leftButton, 11, 11 );
@@ -1372,7 +1372,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
         "selectionPadding" : [ 2, 2 ]
       };
       var tree = new org.eclipse.rwt.widgets.Tree( argsMap );
-      tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );      
+      tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );
       org.eclipse.swt.WidgetManager.getInstance().add( tree, "w2" );
       tree.setUserData( "isControl", true );
       tree.setSpace( 13, 364, 27, 30 );
@@ -1444,14 +1444,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       tree.destroy();
       TestUtil.flush();
     },
-    
+
     testOperationChanged : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
       dndHandler.__dragCache = null;
       var leftButton = qx.event.type.MouseEvent.buttons.left;
-      // request uses SWT-like event-names: 
+      // request uses SWT-like event-names:
       var dragStart = "org.eclipse.swt.dnd.dragStart";
       var dragOver = "org.eclipse.swt.dnd.dragEnter";
       var dragMove = "org.eclipse.swt.dnd.dragOver";
@@ -1476,11 +1476,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton, 32, 15 );
       assertTrue( TestUtil.getTimerOnceLog().length > 0 );
       TestUtil.forceTimerOnce();
-      request = TestUtil.getRequestLog()[ 0 ];      
+      request = TestUtil.getRequestLog()[ 0 ];
       assertTrue( request.search( dragOver + "=w2" ) != -1 );
       assertFalse( request.search( actionChanged ) != -1 );
       TestUtil.clearTimerOnceLog();
-      TestUtil.clearRequestLog();      
+      TestUtil.clearRequestLog();
       // Move
       TestUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton, 33, 15 );
       assertTrue( TestUtil.getTimerOnceLog().length > 0 );
@@ -1497,7 +1497,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       request = TestUtil.getRequestLog()[ 0 ];
       assertTrue( request.search( actionChanged + "=w2" ) != -1 );
-      assertFalse( request.search( actionChanged + ".detail=none") != -1 );      
+      assertFalse( request.search( actionChanged + ".detail=none") != -1 );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
       dndSupport.cancel();
@@ -1512,7 +1512,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
     /////////
     // Helper
-    
+
     createSource : function() {
       var result = new qx.ui.basic.Atom();
       result.setLocation( 10, 10 );
@@ -1527,7 +1527,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       org.eclipse.rwt.test.fixture.TestUtil.flush();
       return result;
     },
-    
+
     createTarget : function() {
       var result = new qx.ui.basic.Atom();
       result.setLocation( 30, 10 );
@@ -1542,7 +1542,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       org.eclipse.rwt.test.fixture.TestUtil.flush();
       return result;
     },
-    
+
     createTreeTarget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
@@ -1564,7 +1564,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
             "overlayForeground" : "undefined"
           };
         }
-      } );       
+      } );
       var tree = new org.eclipse.rwt.widgets.Tree( argsMap );
       org.eclipse.swt.WidgetManager.getInstance().add( tree, "w2" );
       tree.setUserData( "isControl", true );
@@ -1576,7 +1576,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       dndSupport.setDropTargetTransferTypes( tree, [ "default" ] );
       return tree;
     },
-    
+
     createTreeItem : function( itemNr, tree, parent ) {
       var nr = itemNr + 2;
       var parentItem = org.eclipse.rwt.widgets.TreeItem._getItem( parent );
@@ -1588,7 +1588,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       item.setImages( [ null ] );
       return item;
     },
-    
+
     createTable : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var table = new org.eclipse.swt.widgets.Table( "w2", "|multi" );
@@ -1642,5 +1642,5 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       org.eclipse.rwt.test.fixture.TestUtil.flush();
     }
   }
- 
+
 } );
