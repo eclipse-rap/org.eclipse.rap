@@ -36,6 +36,7 @@ var appearances = {
       result.overlayBackgroundImage = tv.getCssImage( "Tree-RowOverlay", "background-image" );
       result.overlayBackgroundGradient = tv.getCssGradient( "Tree-RowOverlay", "background-image" );
       result.overlayForeground = tv.getCssColor( "Tree-RowOverlay", "color" );
+      result.overlayBackgroundAlpha = tv.getCssAlpha( "Tree-RowOverlay", "background-color" );
       result.textDecoration = tv.getCssIdentifier( "TreeItem", "text-decoration" );
       result.textShadow = tv.getCssShadow( "TreeItem", "text-shadow" );
       return result;

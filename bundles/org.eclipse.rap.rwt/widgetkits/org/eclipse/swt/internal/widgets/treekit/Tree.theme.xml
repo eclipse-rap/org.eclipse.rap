@@ -59,13 +59,13 @@
 
       <state name="even"
           description="Applies when the tree item has an even visible index" />
-          
+
       <state name="disabled"
           description="Applies to the items of a disabled tree." />
 
       <state name="linesvisible"
           description="Applies to items of a tree with gridlines." />
-          
+
       <state name="hover"
           description="Mouse over state." />
 
@@ -78,7 +78,7 @@
           description="Tree item text color" />
 
       <property name="background-color"
-          description="Tree item background color" />
+          description="Tree item background color. Supports rgba values" />
 
       <property name="background-image"
           description="Tree item background image/gradient" />
@@ -105,7 +105,7 @@
 
     <element name="TreeColumn"
         description="Column header of Tree controls">
-        
+
       <property name="color"
           description="Text color for tree column headers" />
 
@@ -151,7 +151,7 @@
       </element>
 
     </element>
-    
+
     <element name="Tree-Cell"
         description="A single cell in a multi-column Tree">
 
@@ -162,7 +162,7 @@
           description="Defines the spacing between image and text within a tree cell." />
 
     </element>
-    
+
     <element name="Tree-GridLine"
         description="Grid lines in Tree controls">
 
@@ -179,7 +179,7 @@
 
     <element name="Tree-Checkbox"
         description="Checkboxes in Tree controls">
-        
+
       <property name="margin"
           description="Space around the check boxes" />
 
@@ -201,40 +201,40 @@
 
     </element>
 
-    <element name="Tree-Indent" 
+    <element name="Tree-Indent"
         description="The area freed by indenting an item for one level." >
-        
+
       <property name="width">
         <description>
-           The indention-width of one level. This property can not be 
+           The indention-width of one level. This property can not be
            influenced by the states of the element.
         </description>
       </property>
 
       <property name="background-image">
         <description>
-          Background image for the indention. It is centered within 
+          Background image for the indention. It is centered within
           the available area, defined by the "width"-property and the height
-          of the item. The overflow is not visible. 
+          of the item. The overflow is not visible.
         </description>
       </property>
 
       <state name="line">
         <description>
-          Indicates that the level continues after this item. Never used for 
-          the final level and therefore never combined with the other states. 
+          Indicates that the level continues after this item. Never used for
+          the final level and therefore never combined with the other states.
         </description>
-      </state>  
-      
+      </state>
+
       <state name="first"
         description="Used for the final level if the item has no previous sibling." />
-    
+
       <state name="last"
         description="Used for the final level if the item has no next sibling." />
-    
+
       <state name="collapsed"
         description="Used for the final level if the item has children." />
-    
+
       <state name="expanded"
         description="Used for the final level if the item is expanded" />
 
