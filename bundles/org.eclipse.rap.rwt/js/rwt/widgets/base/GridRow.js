@@ -152,7 +152,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderOverState : function( hoverTarget, config ) {
-      this.setState( "over", hoverTarget !== null && config.fullSelection );
+      var fullOverState = hoverTarget !== null && config.fullSelection;
+      var singleOverState = hoverTarget != null && hoverTarget[ 0 ] === "treeColumn";
+      this.setState( "over", fullOverState || singleOverState );
     },
 
     setState : function( state, value ) {
@@ -373,7 +375,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _rendersOverlayElement : function( config, selected ) {
-      var singleSelection = selected && !config.fullSelection && config.treeColumn !== -1;
+      var singleSelection = !config.fullSelection && config.treeColumn !== -1;
       var overlayBg = this._overlayStyleMap.background;
       var itemBg = this._styleMap.background;
       var hasOverlayBgColor = overlayBg !== "undefined" && overlayBg !== null;

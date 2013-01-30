@@ -2384,6 +2384,35 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 0, selectionWidth );
     },
 
+    testSelectionBackgroundHover : function() {
+      TestUtil.fakeAppearance( "tree-row-overlay", {
+        style : function( states ) {
+          var result = {};
+          result.background = "undefined";
+          result.backgroundImage = null;
+          result.backgroundGradient = null;
+          result.foreground = "undefined";
+          if( states.selected ) {
+            result.background = "blue";
+          } else if( states.over) {
+            result.background = "green";
+          }
+          return result;
+        }
+      } );
+      var item = new rwt.widgets.GridItem( tree.getRootItem() );
+      item.setTexts( [ "Test1" ] );
+      var selectionPadding = 4;
+      tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 100 );
+
+      row.renderItem( item, tree._config, false, null );
+      row.renderItem( item, tree._config, false, [ "treeColumn" ] );
+
+      var overlay = this._getOverlayElement( row );
+      var color = overlay.style.backgroundColor;
+      assertEquals( "green", color );
+    },
+
     testTreeRowFiresItemRenderedEvent : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       testUtil.flush();
