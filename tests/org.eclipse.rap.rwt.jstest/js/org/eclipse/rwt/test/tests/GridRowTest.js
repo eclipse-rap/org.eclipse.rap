@@ -1790,6 +1790,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
       row.renderItem( item, tree._config, true, null );
 
+      children = row._getTargetNode().childNodes; // IE (quirksmode) needs to get it again
       assertEquals( "yellow", row.getBackgroundColor() );
       assertEquals( "red", children[ 1 ].style.backgroundColor );
       assertEquals( "white", children[ 2 ].style.color );
@@ -1842,6 +1843,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
       row.renderItem( item, tree._config, true, null );
 
+      children = row._getTargetNode().childNodes; // IE (quirksmode) needs to get it again
       assertNotNull( row.getBackgroundGradient() );
       assertEquals( "transparent", children[ 1 ].style.backgroundColor );
       assertEquals( "white", children[ 2 ].style.color );
