@@ -126,7 +126,11 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
 
     getColor : function( element, states, property, theme ) {
       var key = this._getCssValue( element, states, property, theme );
-      return this._values.colors[ key ];
+      var result = this._values.colors[ key ];
+      if( result instanceof Array ) {
+        result = "#" + qx.util.ColorUtil.rgbToHexString( result );
+      }
+      return result;
     },
 
     getNamedColor : function( name ) {
