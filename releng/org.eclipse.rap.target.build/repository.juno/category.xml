@@ -13,7 +13,7 @@
 
   <category-def
       name="org.eclipse.rap.category"
-      label="Rich Ajax Platform (RAP)" />
+      label="Remote Application Platform (RAP)" />
 
   <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.feature"
