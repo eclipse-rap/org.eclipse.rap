@@ -1601,13 +1601,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       tree.setColumnCount( 2 );
       var item = this._createItem( tree );
       item.setTexts( [ "T1", "T2" ] );
-      this._setItemBackground( "green" );
+      this._setOverlayBackground( "green" );
 
       row.renderItem( item, tree._config, true, null );
 
-      assertEquals( "green", row.getBackgroundColor() );
+      assertNull( row.getBackgroundColor() );
       assertEquals( 4, row._getTargetNode().childNodes.length );
-      var selNode = row._getTargetNode().childNodes[ 2 ];
+      var selNode = row._overlayElement;
       assertEquals( "", selNode.innerHTML );
       var width = parseInt( selNode.style.width, 10 );
       assertEquals( "green", selNode.style.backgroundColor );
@@ -1622,13 +1622,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       tree.setColumnCount( 2 );
       var item = this._createItem( tree );
       item.setTexts( [ "Teeeeeeeeeeeeessssst1", "T2" ] );
-      this._setItemBackground( "green" );
+      this._setOverlayBackground( "green" );
 
       row.renderItem( item, tree._config, true, null );
 
-      assertEquals( "green", row.getBackgroundColor() );
-      assertEquals( 4, row._getTargetNode().childNodes.length );
-      var selNode = row._getTargetNode().childNodes[ 2 ];
+      var selNode = row._overlayElement;
       assertEquals( "", selNode.innerHTML );
       var width = parseInt( selNode.style.width, 10 );
       assertEquals( "green", selNode.style.backgroundColor );
@@ -1644,11 +1642,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row._isInGlobalDisplayQueue = true; // prevent add to display queue
       var item = this._createItem( tree );
       item.setTexts( [ "T1", "T2" ] );
-      this._setItemBackground( "green" );
+      this._setOverlayBackground( "green" );
+
       row.renderItem( item, tree._config, true, null );
-      assertEquals( "green", row.getBackgroundColor() );
-      assertEquals( 4, row._getTargetNode().childNodes.length );
-      var selNode = row._getTargetNode().childNodes[ 2 ];
+
+      var selNode = row._overlayElement;
       var width = parseInt( selNode.style.width, 10 );
       assertEquals( "green", selNode.style.backgroundColor );
       // Since we dont know the scrollwidth of the node, this is a bit fuzzy:
@@ -1796,7 +1794,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "white", children[ 2 ].style.color );
     },
 
-    testFullSelectionOverlayWithGradientOverwritesItemBackground : function() {
+    testFullSelectionOverlayWithGradientIgnoredByItemBackground : function() {
       this._createTree( false, false, "fullSelection" );
       TestUtil.fakeAppearance( "tree-row", {
         style : function( states ) {
@@ -1844,10 +1842,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.renderItem( item, tree._config, true, null );
 
       children = row._getTargetNode().childNodes; // IE (quirksmode) needs to get it again
-      assertNotNull( row.getBackgroundGradient() );
-      assertEquals( "transparent", children[ 1 ].style.backgroundColor );
+      assertNull( row.getBackgroundGradient() );
+      assertEquals( "yellow", row.getBackgroundColor() );
+      assertEquals( "red", children[ 1 ].style.backgroundColor );
       assertEquals( "white", children[ 2 ].style.color );
-      assertNull( row._overlayElement );
+      assertNotNull( row._overlayElement );
     },
 
     testFullSelectionOverlayCreatesElement : function() {
@@ -2210,7 +2209,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testSelectionBackgroundUsesItemColor : function() {
-      TestUtil.fakeAppearance( "tree-row", {
+      TestUtil.fakeAppearance( "tree-row-overlay", {
         style : function( states ) {
           var result = {};
           if( states.selected ) {
@@ -2234,7 +2233,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testSelectionBackgroundHidesOverlayAfterDeselection : function() {
-      TestUtil.fakeAppearance( "tree-row", {
+      TestUtil.fakeAppearance( "tree-row-overlay", {
         style : function( states ) {
           var result = {};
           if( states.selected ) {
@@ -2258,7 +2257,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testSelectionBackgroundHidesOverlayOnEmptyRow : function() {
-      TestUtil.fakeAppearance( "tree-row", {
+      TestUtil.fakeAppearance( "tree-row-overlay", {
         style : function( states ) {
           var result = {};
           if( states.selected ) {
@@ -2282,7 +2281,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testSelectionBackgroundShowsOverlayOnSecondSelection : function() {
-      TestUtil.fakeAppearance( "tree-row", {
+      TestUtil.fakeAppearance( "tree-row-overlay", {
         style : function( states ) {
           var result = {};
           if( states.selected ) {
@@ -2333,7 +2332,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     } ),
 
     testSelectionBackgroundLayoutCutOff : function() {
-      TestUtil.fakeAppearance( "tree-row", {
+      TestUtil.fakeAppearance( "tree-row-overlay", {
         style : function( states ) {
           var result = {};
           if( states.selected ) {
@@ -2360,7 +2359,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testSelectionBackgroundLayoutInvisible : function() {
-      TestUtil.fakeAppearance( "tree-row", {
+      TestUtil.fakeAppearance( "tree-row-overlay", {
         style : function( states ) {
           var result = {};
           if( states.selected ) {
@@ -2452,8 +2451,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     _createTree : function( isTable, option, option2 ) {
-      if( tree != null ) {
-      }
       var base = isTable ? "table" : "tree";
       TestUtil.fakeAppearance( base + "-row",  {
         style : function( states ) {
@@ -2558,6 +2555,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
     _setItemBackground : function( value ) {
       TestUtil.fakeAppearance( "tree-row",  {
+        style : function( states ) {
+          return {
+            "background" : value,
+            "foreground" : "undefined",
+            "backgroundGradient" : null,
+            "backgroundImage" : null,
+            "checkBox" : null
+          };
+        }
+      } );
+    },
+
+    _setOverlayBackground : function( value ) {
+      TestUtil.fakeAppearance( "tree-row-overlay",  {
         style : function( states ) {
           return {
             "background" : value,

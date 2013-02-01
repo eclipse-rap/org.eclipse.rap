@@ -188,11 +188,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var color = this._styleMap.background;
       var image = this._styleMap.backgroundImage;
       var gradient = this._styleMap.backgroundGradient;
-      if( this._hasOverlayBackground() && !this._rendersOverlayElement( config, selected ) ) {
-        color = this._overlayStyleMap.background;
-        image = this._overlayStyleMap.backgroundImage;
-        gradient = this._overlayStyleMap.backgroundGradient;
-      } else if( config.enabled !== false && item !== null && item.getBackground() !== null ) {
+      if( config.enabled !== false && item !== null && item.getBackground() !== null ) {
         color = item.getBackground();
         image = null;
         gradient = null;
@@ -343,15 +339,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderOverlay : function( item, cell, config, selected ) {
-      if( item && this._rendersOverlayElement( config, selected ) ) {
-        var overlayBg = this._overlayStyleMap.background;
-        var itemBg = this._styleMap.background;
-        var hasOverlayBg = overlayBg !== "undefined" && overlayBg !== null;
+      if( item && this._rendersOverlayElement() ) {
         var element = this._getOverlayElement();
-        element.style.backgroundColor = hasOverlayBg ? overlayBg : itemBg;
-        if( hasOverlayBg ) {
-          rwt.html.Style.setOpacity( element, this._overlayStyleMap.backgroundAlpha );
-        }
+        element.style.backgroundColor = this._overlayStyleMap.background;
+        rwt.html.Style.setOpacity( element, this._overlayStyleMap.backgroundAlpha );
         var height = this.getHeight();
         var left;
         var width;
@@ -374,16 +365,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       }
     },
 
-    _rendersOverlayElement : function( config, selected ) {
-      var singleSelection = !config.fullSelection && config.treeColumn !== -1;
+    _rendersOverlayElement : function() {
       var overlayBg = this._overlayStyleMap.background;
-      var itemBg = this._styleMap.background;
-      var hasOverlayBgColor = overlayBg !== "undefined" && overlayBg !== null;
-      var canNotRenderOverlay =    this._overlayStyleMap.backgroundImage !== null
-                                || this._overlayStyleMap.backgroundGradient !== null;
-      var useItemBg = singleSelection && itemBg !== "undefined" && itemBg !== null;
-      var useOverlayBg = hasOverlayBgColor && ( !canNotRenderOverlay || singleSelection );
-      return useItemBg || useOverlayBg;
+      return overlayBg !== "undefined" && overlayBg !== null;
     },
 
     _renderCellBackground : function( item, cell, config, contentOnly, selected ) {
@@ -542,9 +526,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _getCellBackgroundColor : function( item, cell, config, selected ) {
       var result;
-      if(    config.enabled === false
-          || ( this._hasOverlayBackground() && !this._rendersOverlayElement( config, selected ) )
-      ) {
+      if( config.enabled === false ) {
         result = "undefined";
       } else {
         result = item.getCellBackground( cell );
