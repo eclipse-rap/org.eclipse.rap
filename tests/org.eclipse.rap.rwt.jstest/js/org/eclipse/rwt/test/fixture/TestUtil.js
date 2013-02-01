@@ -139,6 +139,21 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     return node.style.cssText.search( "user-select: none" ) == -1;
   },
 
+  getCssGradient : function( element ) {
+    var result = "";
+    var background = element.style.background;
+    var start = background.indexOf( "gradient(" );
+    if( start !== -1 ) {
+      var end = background.indexOf( ") repeat", start );
+      if( end != -1 ) {
+        result = background.slice( start, end + 1 );
+      } else {
+        result = background.slice( start );
+      }
+    }
+    return result;
+  },
+
   /////////////////////////////
   // Event handling - DOM layer
 

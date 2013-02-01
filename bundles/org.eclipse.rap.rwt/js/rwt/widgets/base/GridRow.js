@@ -339,10 +339,15 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderOverlay : function( item, cell, config, selected ) {
-      if( item && this._rendersOverlayElement() ) {
+      if( item && this._hasOverlayBackground() ) {
         var element = this._getOverlayElement();
-        element.style.backgroundColor = this._overlayStyleMap.background;
-        rwt.html.Style.setOpacity( element, this._overlayStyleMap.backgroundAlpha );
+        var gradient = this._overlayStyleMap.backgroundGradient;
+        if( gradient ) {
+          rwt.html.Style.setBackgroundGradient( element, gradient );
+        } else {
+          element.style.backgroundColor = this._overlayStyleMap.background;
+          rwt.html.Style.setOpacity( element, this._overlayStyleMap.backgroundAlpha );
+        }
         var height = this.getHeight();
         var left;
         var width;
@@ -363,11 +368,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       } else if( this._overlayElement ){
         this._overlayElement.style.display = "none";
       }
-    },
-
-    _rendersOverlayElement : function() {
-      var overlayBg = this._overlayStyleMap.background;
-      return overlayBg !== "undefined" && overlayBg !== null;
     },
 
     _renderCellBackground : function( item, cell, config, contentOnly, selected ) {
