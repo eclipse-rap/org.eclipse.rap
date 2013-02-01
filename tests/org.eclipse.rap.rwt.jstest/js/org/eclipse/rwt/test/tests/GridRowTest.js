@@ -1806,12 +1806,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
         var gradient = TestUtil.getCssGradient( row._overlayElement );
         var expected1 = "gradient(-90deg, red 0%, yellow 100%)";
         var expected2 = "gradient(linear, 0% 0%, 0% 100%, from(red), to(yellow))";
-        console.log( gradient );
         assertTrue( gradient === expected1 || gradient === expected2 );
       }
     },
 
-    testOverlayWithGfxGradient : function() {
+    testOverlayWithGfxGradientCreatesCanvas : function() {
       if( !rwt.client.Client.supportsCss3() ) {
         this._setOverlayGradient( this._gradient );
         row.setAppearance( "tree-row" );
@@ -1820,8 +1819,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
         row.renderItem( item, tree._config, false, null );
 
-        var canvas = row._overlayElement;
-        assertTrue( canvas.rwtObject instanceof rwt.widgets.GC );
+        assertIdentical( row._overlayElement, row._graphicsOverlay.canvas.node );
+      }
+    },
+
+    testOverlayWithGfxGradientCreatesShape : function() {
+      if( !rwt.client.Client.supportsCss3() ) {
+        this._setOverlayGradient( this._gradient );
+        row.setAppearance( "tree-row" );
+        var item = this._createItem( tree );
+        item.setTexts( [ "Test1" ] );
+
+        row.renderItem( item, tree._config, false, null );
+
+        var type = row._graphicsOverlay.shape.type;
+        assertTrue( type === "svgRoundRect" || type === "vmlRoundRect" );
       }
     },
 

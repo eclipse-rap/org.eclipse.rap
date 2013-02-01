@@ -16,7 +16,7 @@
 
 (function() {
 
-var HtmlUtil = rwt.html.Style;
+var Style = rwt.html.Style;
 var Variant = rwt.util.Variant;
 
 rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
@@ -30,6 +30,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     this._styleMap = {};
     this._overlayStyleMap = {};
     this._variant = null;
+    this._graphicsOverlay = null;
     this._expandElement = null;
     this._checkBoxElement = null;
     this._overlayElement = null;
@@ -45,6 +46,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
   destruct : function() {
     this._expandElement = null;
+    this._graphicsOverlay = null;
     this._checkBoxElement = null;
     this._treeColumnElements = null;
     this._cellLabels = null;
@@ -340,46 +342,52 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _renderOverlay : function( item, config ) {
       if( item && this._hasOverlayBackground() ) {
-        var element = this._getOverlayElement();
-        this._styleOverlay( element, item, config );
-        this._layoutOverlay( element, item, config );
+        this._styleOverlay( item, config );
+        this._layoutOverlay( item, config );
       } else if( this._overlayElement ){
         this._overlayElement.style.display = "none";
       }
     },
 
-    _styleOverlay : function( element, item, config ) {
+    _styleOverlay : function( item, config ) {
+      var element = this._getOverlayElement();
       var styleMap = this._overlayStyleMap;
       var gradient = styleMap.backgroundGradient;
       if( gradient ) {
         this._renderOverlayGradient( element, gradient );
       } else {
         element.style.backgroundColor = styleMap.background;
-        rwt.html.Style.setOpacity( element, styleMap.backgroundAlpha );
+        Style.setOpacity( element, styleMap.backgroundAlpha );
       }
     },
 
     _renderOverlayGradient : function( element, gradient ) {
       if( rwt.client.Client.supportsCss3() ) {
-        rwt.html.Style.setBackgroundGradient( element, gradient );
+        Style.setBackgroundGradient( element, gradient );
       } else {
-        var gc = this._getOverlayGC();
+        rwt.graphics.GraphicsUtil.setFillGradient( this._getOverlayShape(), gradient );
       }
     },
 
-    _getOverlayGC : function() {
-      if( !this._overlayElement.rwtObject ) {
-        var gc = new rwt.widgets.GC( this );
-        var canvas = gc._canvas;
-        this._getTargetNode().replaceChild( canvas, this._overlayElement );
-        this._getTargetNode().removeChild( gc._textCanvas ); // TODO [tb] : optimize GC
-        this._overlayElement = canvas;
+    _getOverlayShape : function() {
+      if( !this._graphicsOverlay ) {
+        var GraphicsUtil = rwt.graphics.GraphicsUtil;
+        var canvas = GraphicsUtil.createCanvas();
+        var shape = GraphicsUtil.createShape( "roundrect" );
+        GraphicsUtil.addToCanvas( canvas, shape );
+        this._graphicsOverlay = {
+          "canvas" : canvas,
+          "shape" : shape
+        };
+        this._getTargetNode().replaceChild( canvas.node, this._overlayElement );
+        this._overlayElement = canvas.node;
         this._overlayElement.style.zIndex = 2;
       }
-      return this._overlayElement.rwtObject;
+      return this._graphicsOverlay.shape;
     },
 
-    _layoutOverlay : function( element, item, config ) {
+    _layoutOverlay : function( item, config ) {
+      var element = this._getOverlayElement();
       var height = this.getHeight();
       var left;
       var width;
@@ -397,7 +405,16 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         visualWidth  += padding[ 0 ] + padding[ 1 ];
         width = Math.min( width, visualWidth );
       }
-      this._setBounds( element, left, 0, width, height );
+      if( this._graphicsOverlay ) {
+        var GraphicsUtil = rwt.graphics.GraphicsUtil;
+        var shape = this._graphicsOverlay.shape;
+        element.style.left = left + "px";
+        element.style.top = "0px";
+        var radii = [ 0, 0, 0, 0 ];
+        GraphicsUtil.setRoundRectLayout( shape, 0, 0, width, height, radii );
+      } else {
+        this._setBounds( element, left, 0, width, height );
+      }
     },
 
     _renderCellBackground : function( item, cell, config, contentOnly ) {
@@ -551,7 +568,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this._setForeground( element, this._getCellColor( item, cell, config ) );
       this._setFont( element, this._getCellFont( item, cell, config ) );
       this._setTextDecoration( element, this._styleMap.textDecoration );
-      HtmlUtil.setTextShadow( element, this._styleMap.textShadow );
+      Style.setTextShadow( element, this._styleMap.textShadow );
     },
 
     _getCellBackgroundColor : function( item, cell, config ) {
@@ -695,7 +712,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       element.style.backgroundImage = src ? "URL(" + src + ")" : "none";
       if( enabled !== null ) {
         var opacity = enabled ? 1 : 0.3;
-        HtmlUtil.setOpacity( element, opacity );
+        Style.setOpacity( element, opacity );
       }
     },
 
