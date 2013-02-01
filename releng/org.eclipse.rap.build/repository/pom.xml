@@ -30,7 +30,7 @@
         <artifactId>tycho-p2-repository-plugin</artifactId>
         <version>${tycho-version}</version>
         <configuration>
-          <repositoryName>Rich Ajax Platform (RAP) Runtime</repositoryName>
+          <repositoryName>Remote Application Platform (RAP) Runtime</repositoryName>
           <includeAllDependencies>false</includeAllDependencies>
           <compress>true</compress>
         </configuration>
