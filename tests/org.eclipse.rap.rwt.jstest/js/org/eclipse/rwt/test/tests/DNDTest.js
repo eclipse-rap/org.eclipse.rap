@@ -1040,10 +1040,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var row = tree._rowContainer._children[ 1 ];
       assertTrue( row.hasState( "dnd_selected") );
       assertNull( row.getBackgroundColor() ); // hover disabled
-      assertTrue( row._getTargetNode().lastChild.style.backgroundColor !== "" );
+      assertTrue( row._overlayElement.style.backgroundColor !== "" );
       // drop
       TestUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
-      assertTrue( row._getTargetNode().lastChild.style.display == "none" );
+      assertTrue( row._overlayElement.style.display == "none" );
       // NOTE: hover effect temporarily disabled on trees without FULL_SELECTION
       //assertEquals( "#b5b5b5", tree._rowContainer._children[ 1 ].getBackgroundColor() );
       TestUtil.clearTimerOnceLog();
@@ -1589,9 +1589,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeAppearance( "tree-row",  {
         style : function( states ) {
           return {
-            "background" : states.selected ? "blue" : states.over ? "#b5b5b5" : "undefined",
-            "backgroundGradient" : "undefined",
-            "backgroundImage" : "undefined",
+            "background" : states.over ? "#b5b5b5" : "undefined",
+            "backgroundGradient" : null,
+            "backgroundImage" : null,
+            "foreground" : "undefined",
+            "checkBox" : null
+          };
+        }
+      } );
+      TestUtil.fakeAppearance( "tree-row-overlay",  {
+        style : function( states ) {
+          return {
+            "background" : states.selected ? "blue" : "undefined",
+            "backgroundGradient" : null,
+            "backgroundImage" : null,
             "foreground" : "undefined",
             "checkBox" : null
           };

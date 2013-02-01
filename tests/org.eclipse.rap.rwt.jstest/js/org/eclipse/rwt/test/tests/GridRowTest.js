@@ -1805,7 +1805,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var gradient = TestUtil.getCssGradient( row._overlayElement );
       var expected1 = "gradient(-90deg, red 0%, yellow 100%)";
       var expected2 = "gradient(linear, 0% 0%, 0% 100%, from(red), to(yellow))";
-      console.log( gradient );
       assertTrue( gradient === expected1 || gradient === expected2 );
     },
 
@@ -1976,7 +1975,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 3, nodes.length );
       assertEquals( "black", nodes[ 1 ].style.color );
       assertEquals( "black", nodes[ 2 ].style.color );
+
       row.renderItem( item, tree._config, true, null );
+
       assertEquals( "white", nodes[ 1 ].style.color );
       assertEquals( "black", nodes[ 2 ].style.color );
     },
