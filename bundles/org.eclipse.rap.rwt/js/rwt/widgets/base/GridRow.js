@@ -352,11 +352,31 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var styleMap = this._overlayStyleMap;
       var gradient = styleMap.backgroundGradient;
       if( gradient ) {
-        rwt.html.Style.setBackgroundGradient( element, gradient );
+        this._renderOverlayGradient( element, gradient );
       } else {
         element.style.backgroundColor = styleMap.background;
         rwt.html.Style.setOpacity( element, styleMap.backgroundAlpha );
       }
+    },
+
+    _renderOverlayGradient : function( element, gradient ) {
+      if( rwt.client.Client.supportsCss3() ) {
+        rwt.html.Style.setBackgroundGradient( element, gradient );
+      } else {
+        var gc = this._getOverlayGC();
+      }
+    },
+
+    _getOverlayGC : function() {
+      if( !this._overlayElement.rwtObject ) {
+        var gc = new rwt.widgets.GC( this );
+        var canvas = gc._canvas;
+        this._getTargetNode().replaceChild( canvas, this._overlayElement );
+        this._getTargetNode().removeChild( gc._textCanvas ); // TODO [tb] : optimize GC
+        this._overlayElement = canvas;
+        this._overlayElement.style.zIndex = 2;
+      }
+      return this._overlayElement.rwtObject;
     },
 
     _layoutOverlay : function( element, item, config ) {

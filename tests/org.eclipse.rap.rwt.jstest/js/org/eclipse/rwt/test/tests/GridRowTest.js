@@ -1794,18 +1794,35 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "white", children[ 2 ].style.color );
     },
 
-    testOverlayWithGradient : function() {
-      this._setOverlayGradient( this._gradient );
-      row.setAppearance( "tree-row" );
-      var item = this._createItem( tree );
-      item.setTexts( [ "Test1" ] );
+    testOverlayWithCssGradient : function() {
+      if( rwt.client.Client.supportsCss3() ) {
+        this._setOverlayGradient( this._gradient );
+        row.setAppearance( "tree-row" );
+        var item = this._createItem( tree );
+        item.setTexts( [ "Test1" ] );
 
-      row.renderItem( item, tree._config, false, null );
+        row.renderItem( item, tree._config, false, null );
 
-      var gradient = TestUtil.getCssGradient( row._overlayElement );
-      var expected1 = "gradient(-90deg, red 0%, yellow 100%)";
-      var expected2 = "gradient(linear, 0% 0%, 0% 100%, from(red), to(yellow))";
-      assertTrue( gradient === expected1 || gradient === expected2 );
+        var gradient = TestUtil.getCssGradient( row._overlayElement );
+        var expected1 = "gradient(-90deg, red 0%, yellow 100%)";
+        var expected2 = "gradient(linear, 0% 0%, 0% 100%, from(red), to(yellow))";
+        console.log( gradient );
+        assertTrue( gradient === expected1 || gradient === expected2 );
+      }
+    },
+
+    testOverlayWithGfxGradient : function() {
+      if( !rwt.client.Client.supportsCss3() ) {
+        this._setOverlayGradient( this._gradient );
+        row.setAppearance( "tree-row" );
+        var item = this._createItem( tree );
+        item.setTexts( [ "Test1" ] );
+
+        row.renderItem( item, tree._config, false, null );
+
+        var canvas = row._overlayElement;
+        assertTrue( canvas.rwtObject instanceof rwt.widgets.GC );
+      }
     },
 
     testFullSelectionOverlayWithGradientIgnoredByItemBackground : function() {
