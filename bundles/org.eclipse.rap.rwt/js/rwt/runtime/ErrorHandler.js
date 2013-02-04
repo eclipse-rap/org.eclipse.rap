@@ -77,6 +77,8 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       this._overlay = this._createOverlay();
       this._box = this._createErrorBoxArea( 400, 100 );
       this._box.innerHTML = html;
+      this._box.style.backgroundColor = "#dae9f7";
+      this._box.style.border = "1px solid black";
       var hyperlink = this._box.getElementsByTagName( "a" )[ 0 ];
       if( hyperlink ) {
         hyperlink.style.outline = "none";
@@ -84,9 +86,24 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       }
     },
 
+    showWaitHint : function() {
+      this._overlay = this._createOverlay();
+      var themeStore = rwt.theme.ThemeStore.getInstance();
+      var cssElement = "SystemMessage-DisplayOverlay";
+      var icon = themeStore.getSizedImage( cssElement, {}, "background-image" );
+      if( icon && icon[ 0 ] ) {
+        this._box = this._createErrorBoxArea( icon[ 1 ], icon[ 2 ] );
+        rwt.html.Style.setBackgroundImage( this._box, icon[ 0 ] );
+        this._box.style.backgroundColor = "transparent";
+        this._box.style.border = "none";
+      }
+    },
+
     hideErrorBox : function() {
       if( this._box ) {
         this._box.parentElement.removeChild( this._box );
+      }
+      if( this._overlay ) {
         this._overlay.parentElement.removeChild( this._overlay );
       }
     },
@@ -122,12 +139,16 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
 
     _createOverlay : function() {
       var element = document.createElement( "div" );
+      var themeStore = rwt.theme.ThemeStore.getInstance();
+      var color = themeStore.getColor( "SystemMessage-DisplayOverlay", {}, "background-color" );
+      var alpha = themeStore.getAlpha( "SystemMessage-DisplayOverlay", {}, "background-color" );
       var style = element.style;
       style.position = "absolute";
       style.width = "100%";
       style.height = "100%";
-      style.backgroundColor = "#808080";
-      rwt.html.Style.setOpacity( element, 0.2 );
+      console.log( color );
+      style.backgroundColor = color === "undefined" ? "transparent" : color;
+      rwt.html.Style.setOpacity( element, alpha );
       style.zIndex = 100000000;
       document.body.appendChild( element );
       return element;
@@ -158,8 +179,6 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       var top = ( doc.getClientHeight() - height ) / 2;
       style.left = ( left < 0 ? 0 : left ) + "px";
       style.top = ( top < 0 ? 0 : top ) + "px";
-      style.backgroundColor = "#dae9f7";
-      style.border = "1px solid black";
       style.zIndex = 100000001;
       style.overflow = "auto";
       style.padding = "10px";

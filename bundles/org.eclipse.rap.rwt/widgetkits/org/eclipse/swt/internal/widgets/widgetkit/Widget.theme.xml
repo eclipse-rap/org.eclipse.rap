@@ -65,7 +65,7 @@
         Color used to mark selected items like TreeColumns and TabViews.
       </description>
     </property>
-    
+
     <property name="rwt-infobackground-color">
       <description>
         Color used by PopupDialog for its background.
@@ -107,7 +107,7 @@
         Also returned by Display#getSystemImage().
       </description>
     </property>
-    
+
     <property name="rwt-fontlist">
       <description>
         The font list returned by Display#getFontList().
@@ -119,7 +119,7 @@
         Background image for the display (client area of the browser window).
       </description>
     </property>
-    
+
     <property name="font">
       <description>
         The default system font. Returned by Display#getSystemFont().
@@ -158,7 +158,7 @@
     <property name="font"
         description="Text font for tooltips." />
 
-    <property name="opacity" 
+    <property name="opacity"
         description="The opacity of the tooltip. A value between 0 and 1." />
 
     <property name="animation">
@@ -183,9 +183,26 @@
     <property name="font"/>
 
     <property name="border"/>
-    
+
     <property name="padding"/>
 
   </element>
+
+  <element name="SystemMessage-DisplayOverlay">
+
+    <property name="background-image">
+      <description>
+        Background image positioned in the center of the overlay
+      </description>
+    </property>
+
+    <property name="background-color">
+      <description>
+        Background color of the overlay. Supports rgba values.
+      </description>
+    </property>
+
+  </element>
+
 
 </theme>

@@ -301,7 +301,7 @@ rwt.qx.Class.define( "rwt.remote.Server", {
     _showWaitHint : function() {
       this._waitHintTimer.stop();
       ClientDocument.getInstance().setGlobalCursor( "progress" );
-      ErrorHandler.showErrorBox( "", false );
+      ErrorHandler.showWaitHint();
     },
 
     _hideWaitHint : function() {

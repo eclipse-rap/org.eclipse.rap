@@ -60,6 +60,11 @@ Display {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
+SystemMessage-DisplayOverlay {
+  background-color: rgba( 128, 128, 128, 0.2 );
+  background-image: url( resource/widget/rap/display/loading.gif );
+}
+
 /* Default theme for all controls */
 
 * {
@@ -1165,7 +1170,7 @@ Text[MULTI][BORDER]:focused {
 }
 
 Text[BORDER]:disabled,
-Text[MULTI][BORDER]:disabled, 
+Text[MULTI][BORDER]:disabled,
 Text[BORDER]:read-only,
 Text[MULTI][BORDER]:read-only {
   box-shadow: none;
