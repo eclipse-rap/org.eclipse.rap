@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
@@ -388,7 +389,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         var widget = this._createWidget();
         widget.setBackgroundGradient( gradient );
         TestUtil.flush();
-        var result = this._getCssGradient( widget.getElement() );
+        var result = TestUtil.getCssGradient( widget.getElement() );
         var expected1 = "gradient(-90deg, rgb(255, 0, 255) 0%, rgb(0, 255, 0) 100%)";
         var expected2 = "gradient(linear, 0% 0%, 0% 100%, from(rgb(255, 0, 255)), to(rgb(0, 255, 0)))";
         assertTrue( result === expected1 || result === expected2 );
@@ -402,11 +403,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         var widget = this._createWidget();
         widget.setBackgroundGradient( gradient );
         TestUtil.flush();
-        var result = this._getCssGradient( widget.getElement() );
+        var result = TestUtil.getCssGradient( widget.getElement() );
         assertFalse( result === "" );
         widget.setBackgroundGradient( null );
         TestUtil.flush();
-        var result = this._getCssGradient( widget.getElement() );
+        var result = TestUtil.getCssGradient( widget.getElement() );
         assertTrue( result === "" );
         widget.destroy();
       }
@@ -451,7 +452,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         var widget = this._createWidget();
         widget.setBackgroundGradient( gradient );
         TestUtil.flush();
-        var result = this._getCssGradient( widget.getElement() );
+        var result = TestUtil.getCssGradient( widget.getElement() );
         var expected1 = "gradient(0deg, rgb(255, 0, 255) 0%, rgb(0, 255, 0) 100%)";
         var expected2 = "gradient(linear, 0% 0%, 100% 0%, from(rgb(255, 0, 255)), to(rgb(0, 255, 0)))";
         assertTrue( result === expected1 || result === expected2 );
@@ -469,7 +470,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         var widget = this._createWidget();
         widget.setBackgroundGradient( gradient );
         TestUtil.flush();
-        var result = this._getCssGradient( widget.getElement() );
+        var result = TestUtil.getCssGradient( widget.getElement() );
         var expected1 =   "gradient(-90deg, rgb(255, 0, 255) 0%, "
                         + "rgb(255, 128, 255) 33%, rgb(0, 255, 0) 100%)";
         var expected2 = "gradient(linear, 0% 0%, 0% 100%, from(rgb(255, 0, 255)), color-stop(0.33, rgb(255, 128, 255)), to(rgb(0, 255, 0)))";
@@ -697,21 +698,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     _getComplexBorder : function() {
       return new rwt.html.Border( 2, "complex", "green", "red" );
-    },
-
-    _getCssGradient : function( element ) {
-      var result = "";
-      var background = element.style.background;
-      var start = background.indexOf( "gradient(" );
-      if( start !== -1 ) {
-        var end = background.indexOf( ") repeat", start );
-        if( end != -1 ) {
-          result = background.slice( start, end + 1 );
-        } else {
-          result = background.slice( start );
-        }
-      }
-      return result;
     },
 
     _getCssShadow : function( element ) {

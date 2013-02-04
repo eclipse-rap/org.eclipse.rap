@@ -45,7 +45,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ThemeStoreTest", {
 
     testLoadActiveTheme : function() {
       scheduleResponse( {
-        "values" : { "colors" :  { "abc" : "#00ff00" } },
+        "values" : { "colors" :  { "abc" : [ 0, 255, 0, 1 ] } },
         "theme" : {
           "mywidget" : {
             "background-color" : [ [ [], "abc" ] ]
@@ -57,6 +57,64 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ThemeStoreTest", {
 
       assertEquals( "rwt-resource/myTheme", themeStore.getCurrentTheme() );
       assertEquals( "#00ff00", themeStore.getColor( "mywidget", {}, "background-color" ) );
+    },
+
+    testGetColorAlpha : function() {
+      scheduleResponse( {
+        "values" : {
+          "colors" :  {
+            "def" : [ 128, 255, 200, 0.5 ]
+          }
+        },
+        "theme" : {
+          "mywidget" : {
+            "background-color" : [ [ [], "def" ] ]
+          }
+        }
+      } );
+
+      loadActiveTheme( "rwt-resource/myTheme" );
+
+      assertEquals( 0.5, themeStore.getAlpha( "mywidget", {}, "background-color" ) );
+    },
+
+    testGetTransparentColorAlpha : function() {
+      scheduleResponse( {
+        "values" : {
+          "colors" :  {
+            "ghi" : "transparent"
+          }
+        },
+        "theme" : {
+          "mywidget" : {
+            "background-color" : [ [ [], "ghi"] ]
+          }
+        }
+      } );
+
+      loadActiveTheme( "rwt-resource/myTheme" );
+
+      assertEquals( 0, themeStore.getAlpha( "mywidget", {}, "background-color" ) );
+    },
+
+    testGetNamedColorAlpha : function() {
+      scheduleResponse( {
+        "values" : {
+          "colors" :  {
+            "abc" : [ 0, 255, 0, 0.5 ]
+          }
+        },
+        "theme" : {
+          "mywidget" : {
+            "background-color" : [ [ [], "red" ] ]
+          }
+        }
+      } );
+
+      loadActiveTheme( "rwt-resource/myTheme" );
+
+      assertEquals( "rwt-resource/myTheme", themeStore.getCurrentTheme() );
+      assertEquals( 1, themeStore.getAlpha( "mywidget", {}, "background-color" ) );
     },
 
     testLoadFallbackTheme : function() {

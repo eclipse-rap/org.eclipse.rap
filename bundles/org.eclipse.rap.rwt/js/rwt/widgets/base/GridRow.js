@@ -16,7 +16,7 @@
 
 (function() {
 
-var HtmlUtil = rwt.html.Style;
+var Style = rwt.html.Style;
 var Variant = rwt.util.Variant;
 
 rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
@@ -27,10 +27,13 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     this.base( arguments );
     this.setSelectable( false ); // Prevents user from selecting text
     this.setHeight( 16 );
-    this._styleMap = null;
+    this._styleMap = {};
+    this._overlayStyleMap = {};
     this._variant = null;
+    this._graphicsOverlay = null;
     this._expandElement = null;
     this._checkBoxElement = null;
+    this._overlayElement = null;
     this._treeColumnElements = [];
     this._cellLabels = [];
     this._cellImages = [];
@@ -43,6 +46,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
   destruct : function() {
     this._expandElement = null;
+    this._graphicsOverlay = null;
     this._checkBoxElement = null;
     this._treeColumnElements = null;
     this._cellLabels = null;
@@ -62,16 +66,16 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this._usedMiscNodes = 0;
       if( item !== null ) {
         var renderSelected = this._renderAsSelected( config, selected );
-        var renderFullSelected = renderSelected && config.fullSelection;
         var heightChanged = this._renderHeight( item, config );
         var contentOnly = scrolling && !heightChanged;
-        this._renderStates( item, config, renderFullSelected, hoverTarget );
+        this._renderStates( item, config, renderSelected, hoverTarget );
         this._renderBackground( item, config, renderSelected );
         if( config.treeColumn !== -1 ) {
           this._renderIndention( item, config, hoverTarget );
         }
         this._renderCheckBox( item, config, hoverTarget, contentOnly );
         this._renderCells( item, config, renderSelected, hoverTarget, contentOnly );
+        this._renderOverlay( item, config );
         this._hideRemainingElements();
       } else {
         this.setBackgroundColor( null );
@@ -127,10 +131,16 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this.setState( "checked", item.isChecked() );
       this.setState( "grayed", item.isGrayed() );
       this.setState( "parent_unfocused", this._renderAsUnfocused( config ) );
-      this.setState( "selected", selected );
+      this.setState( "selected", config.fullSelection ? selected : false );
       this._renderVariant( item.getVariant() );
-      this._renderOverState( hoverTarget );
+      this._renderOverState( hoverTarget, config );
       this._styleMap = this._getStyleMap();
+      this.setState( "selected", selected );
+      if( config.fullSelection ) {
+        this._overlayStyleMap = this._getOverlayStyleMap();
+      } else {
+        this._overlayStyleMap = this._getTreeColumnStyleMap();
+      }
     },
 
     _renderVariant : function( variant ) {
@@ -145,8 +155,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       }
     },
 
-    _renderOverState : function( hoverTarget ) {
-      this.setState( "over", hoverTarget !== null );
+    _renderOverState : function( hoverTarget, config ) {
+      var fullOverState = hoverTarget !== null && config.fullSelection;
+      var singleOverState = hoverTarget != null && hoverTarget[ 0 ] === "treeColumn";
+      this.setState( "over", fullOverState || singleOverState );
     },
 
     setState : function( state, value ) {
@@ -165,6 +177,19 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       return manager.styleFrom( this.getAppearance(), this.__states );
     },
 
+    _getOverlayStyleMap : function() {
+      var manager = rwt.theme.AppearanceManager.getInstance();
+      return manager.styleFrom( this.getAppearance() + "-overlay", this.__states );
+    },
+
+    _getTreeColumnStyleMap : function() {
+      var manager = rwt.theme.AppearanceManager.getInstance();
+      var rowMap = manager.styleFrom( this.getAppearance(), this.__states );
+      var overlayMap = manager.styleFrom( this.getAppearance() + "-overlay", this.__states );
+      overlayMap.rowForeground = rowMap.foreground;
+      return overlayMap;
+    },
+
     _styleFromMap : function() {
       // TODO [tb] : Overwrites (now) useless function from Widget.js
       //             Find a clean way to disable renderAppearance.
@@ -172,20 +197,13 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderBackground : function( item, config, selected ) {
-      var color = null;
-      var image = null;
-      var gradient = null;
-      if( this._hasOverlayBackground() ) {
-        // TODO [tb] : would currently not behave in an actual overlay (if semi-transparent)
-        color = this._styleMap.overlayBackground;
-        image = this._styleMap.overlayBackgroundImage;
-        gradient = this._styleMap.overlayBackgroundGradient;
-      } else if( config.enabled !== false && item !== null && item.getBackground() !== null ) {
+      var color = this._styleMap.background;
+      var image = this._styleMap.backgroundImage;
+      var gradient = this._styleMap.backgroundGradient;
+      if( config.enabled !== false && item !== null && item.getBackground() !== null ) {
         color = item.getBackground();
-      } else {
-        color = this._styleMap.itemBackground;
-        image = this._styleMap.itemBackgroundImage;
-        gradient = this._styleMap.itemBackgroundGradient;
+        image = null;
+        gradient = null;
       }
       // Note: "undefined" is a string stored in the themestore
       this.setBackgroundColor( color !== "undefined" ? color : null );
@@ -194,9 +212,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _hasOverlayBackground : function() {
-      var result =    this._styleMap.overlayBackground !== "undefined"
-                   || this._styleMap.overlayBackgroundImage !== null
-                   || this._styleMap.overlayBackgroundGradient !== null;
+      var result =    this._overlayStyleMap.background !== "undefined"
+                   || this._overlayStyleMap.backgroundImage !== null
+                   || this._overlayStyleMap.backgroundGradient !== null;
       return result;
     },
 
@@ -284,7 +302,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         var states = this.__states;
         this.setState( "over", hoverTarget && hoverTarget[ 0 ] === "checkBox" );
         var image = this._getImageFromAppearance( "check-box", states );
-        this._renderOverState( hoverTarget );
+        this.setState( "over", hoverTarget !== null );
         if( this._checkBoxElement === null ) {
           this._checkBoxElement = this._createElement( 3 );
           this._checkBoxElement.style.backgroundRepeat = "no-repeat";
@@ -305,29 +323,15 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( this._cellsRendered > columns ) {
         this._removeCells( columns, this._cellsRendered );
       }
-      if( !config.fullSelection && selected ) {
-        this._renderStates( item, config, false, hoverTarget );
-      }
       for( var i = 0; i < columns; i++ ) {
         var isTreeColumn = this._isTreeColumn( i, config );
         if( this._getItemWidth( item, i, config ) > 0 ) {
           this._renderCellBackground( item, i, config, contentOnly );
+          this._renderCellCheckBox( item, i, config, isTreeColumn, contentOnly, hoverTarget );
+          var imageElement = this._renderCellImage( item, i, config, isTreeColumn, contentOnly );
+          var labelElement = this._renderCellLabel( item, i, config, isTreeColumn, contentOnly );
           if( !config.fullSelection && isTreeColumn ) {
-            if( selected ) {
-              this._renderStates( item, config, true, hoverTarget );
-            }
-            this._renderCellCheckBox( item, i, config, isTreeColumn, contentOnly, hoverTarget );
-            var imageElement = this._renderCellImage( item, i, config, isTreeColumn, contentOnly );
-            var labelElement = this._renderCellLabel( item, i, config, isTreeColumn, contentOnly );
             this._treeColumnElements = [ imageElement, labelElement ];
-            if( selected ) {
-              this._renderSelectionBackground( item, i, config );
-              this._renderStates( item, config, false, hoverTarget);
-            }
-          } else {
-            this._renderCellCheckBox( item, i, config, isTreeColumn, contentOnly, hoverTarget );
-            this._renderCellImage( item, i, config, isTreeColumn, contentOnly );
-            this._renderCellLabel( item, i, config, isTreeColumn, contentOnly );
           }
         } else {
           this._removeCell( i );
@@ -336,23 +340,79 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this._cellsRendered = columns;
     },
 
-    _renderSelectionBackground : function( item, cell, config ) {
-      var overlayBg = this._styleMap.overlayBackground;
-      var itemBg = this._styleMap.itemBackground;
-      var hasOverlayBg = overlayBg !== "undefined" && overlayBg !== null;
-      var hasItemBg = itemBg !== "undefined" && itemBg !== null;
-      if( hasItemBg || hasOverlayBg ) {
-        var element = this._getMiscBackground();
-        element.style.backgroundColor = hasOverlayBg ? overlayBg : itemBg;
+    _renderOverlay : function( item, config ) {
+      if( item && this._hasOverlayBackground() ) {
+        this._styleOverlay( item, config );
+        this._layoutOverlay( item, config );
+      } else if( this._overlayElement ){
+        this._overlayElement.style.display = "none";
+      }
+    },
+
+    _styleOverlay : function( item, config ) {
+      var element = this._getOverlayElement();
+      var styleMap = this._overlayStyleMap;
+      var gradient = styleMap.backgroundGradient;
+      if( gradient ) {
+        this._renderOverlayGradient( element, gradient );
+      } else {
+        element.style.backgroundColor = styleMap.background;
+        Style.setOpacity( element, styleMap.backgroundAlpha );
+      }
+    },
+
+    _renderOverlayGradient : function( element, gradient ) {
+      if( rwt.client.Client.supportsCss3() ) {
+        Style.setBackgroundGradient( element, gradient );
+      } else {
+        rwt.graphics.GraphicsUtil.setFillGradient( this._getOverlayShape(), gradient );
+      }
+    },
+
+    _getOverlayShape : function() {
+      if( !this._graphicsOverlay ) {
+        var GraphicsUtil = rwt.graphics.GraphicsUtil;
+        var canvas = GraphicsUtil.createCanvas();
+        var shape = GraphicsUtil.createShape( "roundrect" );
+        GraphicsUtil.addToCanvas( canvas, shape );
+        this._graphicsOverlay = {
+          "canvas" : canvas,
+          "shape" : shape
+        };
+        this._getTargetNode().replaceChild( canvas.node, this._overlayElement );
+        this._overlayElement = canvas.node;
+        this._overlayElement.style.zIndex = 2;
+      }
+      return this._graphicsOverlay.shape;
+    },
+
+    _layoutOverlay : function( item, config ) {
+      var element = this._getOverlayElement();
+      var height = this.getHeight();
+      var left;
+      var width;
+      if( config.fullSelection ) {
+        left = 0;
+        width = this.getWidth();
+      } else {
+        var cell = config.treeColumn;
         var padding = config.selectionPadding;
-        var left = this._getItemTextLeft( item, cell, config );
+        left = this._getItemTextLeft( item, cell, config );
         left -= padding[ 0 ];
-        var width = this._getItemTextWidth( item, cell, config );
+        width = this._getItemTextWidth( item, cell, config );
         width += width > 0 ? padding[ 0 ] : 0;
         var visualWidth  = this._getVisualTextWidth( item, cell, config );
         visualWidth  += padding[ 0 ] + padding[ 1 ];
         width = Math.min( width, visualWidth );
-        var height = this.getHeight();
+      }
+      if( this._graphicsOverlay ) {
+        var GraphicsUtil = rwt.graphics.GraphicsUtil;
+        var shape = this._graphicsOverlay.shape;
+        element.style.left = left + "px";
+        element.style.top = "0px";
+        var radii = [ 0, 0, 0, 0 ];
+        GraphicsUtil.setRoundRectLayout( shape, 0, 0, width, height, radii );
+      } else {
         this._setBounds( element, left, 0, width, height );
       }
     },
@@ -508,14 +568,12 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this._setForeground( element, this._getCellColor( item, cell, config ) );
       this._setFont( element, this._getCellFont( item, cell, config ) );
       this._setTextDecoration( element, this._styleMap.textDecoration );
-      HtmlUtil.setTextShadow( element, this._styleMap.textShadow );
+      Style.setTextShadow( element, this._styleMap.textShadow );
     },
 
     _getCellBackgroundColor : function( item, cell, config ) {
       var result;
-      if(    config.enabled === false
-          || this._styleMap.overlayBackground !== "undefined"
-      ) {
+      if( config.enabled === false ) {
         result = "undefined";
       } else {
         result = item.getCellBackground( cell );
@@ -525,12 +583,21 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _getCellColor : function( item, cell, config ) {
       var result = null;
-      if( this._styleMap.overlayForeground !== "undefined" ) {
-        result = this._styleMap.overlayForeground;
+      var foreground = this._styleMap.foreground;
+      var overlayForeground = this._overlayStyleMap.foreground;
+      if( !config.fullSelection ) {
+        if( this._isTreeColumn( cell, config ) ){
+          foreground = this._overlayStyleMap.rowForeground;
+        } else {
+          overlayForeground = "undefined";
+        }
+      }
+      if( overlayForeground !== "undefined" ) {
+        result = overlayForeground;
       } else if( config.enabled !== false && item.getCellForeground( cell ) ) {
         result = item.getCellForeground( cell );
       } else {
-        result = this._styleMap.itemForeground;
+        result = foreground;
         if( result === "undefined" ) {
           result = config.textColor;
         }
@@ -645,7 +712,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       element.style.backgroundImage = src ? "URL(" + src + ")" : "none";
       if( enabled !== null ) {
         var opacity = enabled ? 1 : 0.3;
-        HtmlUtil.setOpacity( element, opacity );
+        Style.setOpacity( element, opacity );
       }
     },
 
@@ -692,11 +759,12 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       return result;
     },
 
-    _getMiscBackground : function() {
-      var result = this._getMiscElement( 2 );
-      result.style.backgroundImage = "";
-      result.innerHTML = "";
-      return result;
+    _getOverlayElement : function() {
+      if( this._overlayElement === null ) {
+        this._overlayElement = this._createElement( 2 );
+      }
+      this._overlayElement.style.display = "";
+      return this._overlayElement;
     },
 
     _getBackgroundElement : function( cell ) {
@@ -758,6 +826,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( this._checkBoxElement ) {
         this._checkBoxElement.style.backgroundImage = "";
       }
+      this._renderOverlay( null );
       this._hideRemainingElements();
     },
 

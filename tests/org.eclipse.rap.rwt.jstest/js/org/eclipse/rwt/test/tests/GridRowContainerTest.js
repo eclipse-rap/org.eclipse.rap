@@ -138,15 +138,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       TestUtil.fakeAppearance( "tree-row", {
         style : function( states ) {
           return {
-            "itemBackground" : states.selected ? "red" : "blue",
-            "itemBackgroundGradient" : states.selected ?  grad1 : grad2,
-            "itemBackgroundImage" : states.selected ? "foo.jpg" : "bar.jpg",
-            "itemForeground" : "undefined",
-            "overlayBackground" : states.selected ? "red" : "blue",
-            "overlayBackgroundGradient" : states.selected ?  grad1 : grad2,
-            "overlayBackgroundImage" : states.selected ? "foo.jpg" : "bar.jpg",
-            "overlayForeground" : "undefined",
-            "backgroundImage" : null
+            "background" : states.selected ? "red" : "blue",
+            "backgroundGradient" : states.selected ?  grad1 : grad2,
+            "backgroundImage" : states.selected ? "foo.jpg" : "bar.jpg",
+            "foreground" : "undefined"
+          };
+        }
+      } );
+      TestUtil.fakeAppearance( "tree-row-overlay", {
+        style : function( states ) {
+          return {
+            "background" : states.selected ? "red" : "blue",
+            "backgroundGradient" : states.selected ?  grad1 : grad2,
+            "backgroundImage" : states.selected ? "foo.jpg" : "bar.jpg",
+            "foreground" : "undefined"
           };
         }
       } );
@@ -308,20 +313,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       var empty = {
         style : function( states ) {
           return {
-            "itemBackground" : "undefined",
-            "itemBackgroundGradient" : "undefined",
-            "itemBackgroundImage" : null,
-            "itemForeground" : "undefined",
-            "overlayBackground" : "undefined",
-            "overlayBackgroundGradient" : "undefined",
-            "overlayBackgroundImage" : null,
-            "overlayForeground" : "undefined",
-            "backgroundImage" : null
-          }
+            "background" : "undefined",
+            "backgroundGradient" : null,
+            "backgroundImage" : null,
+            "foreground" : "undefined"
+          };
         }
       };
       TestUtil.fakeAppearance( "tree-indent", empty );
       TestUtil.fakeAppearance( "tree-row", empty );
+      TestUtil.fakeAppearance( "tree-row-overlay", empty );
     },
 
     _createContainer : function() {

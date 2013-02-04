@@ -2128,12 +2128,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.fakeAppearance( "tree-row",  {
         style : function( states ) {
           return {
-            itemBackground : states.over ? "red" : "green",
-            itemBackgroundGradient : null,
-            itemBackgroundImage : null,
-            overlayBackground : states.over ? "red" : "green",
-            overlayBackgroundGradient : null,
-            overlayBackgroundImage : null
+            background : states.over ? "red" : "green",
+            backgroundGradient : null,
+            backgroundImage : null,
+            foreground : "undefined"
           };
         }
       } );
@@ -2156,12 +2154,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.fakeAppearance( "tree-row",  {
         style : function( states ) {
           return {
-            itemBackground : states.over ? "red" : "green",
-            itemBackgroundGradient : null,
-            itemBackgroundImage : null,
-            overlayBackground : states.over ? "red" : "green",
-            overlayBackgroundGradient : null,
-            overlayBackgroundImage : null
+            background : states.over ? "red" : "green",
+            backgroundGradient : null,
+            backgroundImage : null
           };
         }
       } );
@@ -3132,16 +3127,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         style : function( states ) {
           var result = {};
           if( states.selected ) {
-            result.itemBackground = "blue";
-            result.overlayBackground = "blue";
+            result.background = "blue";
           } else {
-            result.itemBackground = "white";
-            result.overlayBackground = "white";
+            result.background = "white";
           }
-          result.itemBackgroundGradient = null;
-          result.itemBackgroundImage = null;
-          result.overlayBackgroundGradient = null;
-          result.overlayBackgroundImage = null;
+          result.backgroundGradient = null;
+          result.backgroundImage = null;
           return result;
         }
       } );
@@ -4271,20 +4262,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var empty = {
         style : function( states ) {
           return {
-            "itemBackground" : "undefined",
-            "itemBackgroundGradient" : "undefined",
-            "itemBackgroundImage" : null,
-            "itemForeground" : "undefined",
-            "overlayBackground" : "undefined",
-            "overlayBackgroundGradient" : "undefined",
-            "overlayBackgroundImage" : null,
-            "overlayForeground" : "undefined",
-            "backgroundImage" : null
+            "background" : "undefined",
+            "backgroundGradient" : null,
+            "backgroundImage" : null,
+            "foreground" : "undefined"
           };
         }
       };
       TestUtil.fakeAppearance( "tree-row-indent", empty );
       TestUtil.fakeAppearance( "tree-row", empty );
+      TestUtil.fakeAppearance( "tree-row-overlay", empty );
     },
 
     _fakeCheckBoxAppearance : function() {

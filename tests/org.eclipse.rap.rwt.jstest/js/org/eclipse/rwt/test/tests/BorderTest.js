@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
@@ -12,7 +13,7 @@
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
 
   extend : rwt.qx.Object,
-  
+
   members : {
 
     testSimpleBorderConstructor : function() {
@@ -68,7 +69,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       assertEquals( style[ 3 ], border.getStyleLeft() );
       border.dispose();
     },
-    
+
     testRoundedBorderConstructor : function() {
       // NOTE: Render RoundedBorder Tests are only in GraphicsMixinTest for now
       var border = new rwt.html.Border( 3, "rounded", "#FF00F0", [ 0, 1, 2, 3 ] );
@@ -79,7 +80,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
     },
 
     testRoundedBorderWithoutRadii : function() {
-      try{ 
+      try{
         var border = new rwt.html.Border( 3, "rounded", "#FF00F0" );
         fail();
       } catch( ex ) {
@@ -90,12 +91,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
     testRoundedBorderWithSingleRadius: function() {
       var border = new rwt.html.Border( 3, "rounded", "#FF00F0", 4 );
       assertEquals( [ 4, 4, 4, 4 ], border.getRadii() );
-      border.dispose();    
+      border.dispose();
     },
-    
+
     testRoundedBorderWithMultipleColors : function() {
       var colors = [ "#FF00EF", "#FF00EE", "#FF0EFF", "#FFE0FF" ];
-      try{ 
+      try{
         var border = new rwt.html.Border( 3, "rounded", colors, [ 3, 3, 3, 3 ] );
         fail();
       } catch( ex ) {
@@ -156,7 +157,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       widget.destroy();
       border.dispose();
     },
-    
+
     testRemoveSimpleBorder : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var border = new rwt.html.Border( 2, "solid", "#FF00FF" );
@@ -171,7 +172,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       widget.destroy();
       border.dispose();
     },
-    
+
     testRenderDifferendEdges : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var color = [ "#FF00EF", "#FF00EE", "#FF0EFF", "#FFE0FF" ];
@@ -192,7 +193,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var colorOuter = [ "#FF00EF", "#FF00EE", "#FF0EFF", "#FFE0FF" ];
       var colorInner = [ "#DD00EF", "#DD00EE", "#DD0EFF", "#DDE0FF" ];
-      var border = new rwt.html.Border( 2, "complex", colorOuter, colorInner ); 
+      var border = new rwt.html.Border( 2, "complex", colorOuter, colorInner );
       var widget = this._createWidget();
       widget.setBorder( border );
       TestUtil.flush();
@@ -201,7 +202,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       assertEquals( solidStyles, this._getBorderStyles( widget._style ) );
       assertEquals( colorOuter, this._getBorderColors( widget._style ) );
       if( rwt.client.Client.isGecko() ) {
-        assertEquals( [ 2, 2, 2, 2 ], this._getBorderWidths( widget._style ) );        
+        assertEquals( [ 2, 2, 2, 2 ], this._getBorderWidths( widget._style ) );
         assertEquals( "rgb(255, 0, 239) rgb(221, 0, 239)", widget._style.MozBorderTopColors );
         assertEquals( "rgb(255, 0, 238) rgb(221, 0, 238)", widget._style.MozBorderRightColors );
         assertEquals( "rgb(255, 14, 255) rgb(221, 14, 255)", widget._style.MozBorderBottomColors );
@@ -259,7 +260,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       var outsetStyles = [ "outset", "outset", "outset", "outset" ];
       assertEquals( colorSimple, this._getBorderColors( widget._style ) );
       assertEquals( outsetStyles, this._getBorderStyles( widget._style ) );
-      assertEquals( [ 2, 2, 2, 2 ], this._getBorderWidths( widget._style ) );        
+      assertEquals( [ 2, 2, 2, 2 ], this._getBorderWidths( widget._style ) );
       if( rwt.client.Client.isGecko() ) {
         assertEquals( "", widget._style.MozBorderTopColors );
         assertEquals( "", widget._style.MozBorderRightColors );
@@ -274,14 +275,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       simpleBorder.dispose();
       complexBorder.dispose();
     },
-    
+
     // NOTE : This tests relies on the fact that the push-button has a rounded border
     //        that doesnt change on hover. Should the change in the default theme, the test
     //        looses its validity.
     testCacheRoundedBorder : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var button = new rwt.widgets.Button( "push" ); 
-      button.addState( "rwt_PUSH" );       
+      var button = new rwt.widgets.Button( "push" );
+      button.addState( "rwt_PUSH" );
       button.addToDocument();
       TestUtil.flush();
       var borderOne = button.getBorder();
@@ -290,8 +291,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       var borderTwo = button.getBorder();
       assertIdentical( borderOne, borderTwo );
     },
-    
+
     testRenderRoundedBorder : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       // NOTE: Tests for non-css3 browser are in GraphicsMixinTest
       if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
@@ -313,8 +315,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
         border.dispose();
       }
     },
-    
+
     testRemoveRoundedBorder : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       // NOTE: Tests for non-css3 browser are in GraphicsMixinTest
       if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
@@ -333,6 +336,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
     },
 
     testRemoveRadiiWithSimpleBorder : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       // NOTE: Tests for non-css3 browser are in GraphicsMixinTest
       if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
@@ -349,6 +353,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
     },
 
     testRemoveRadiiWithComplexBorder : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       // NOTE: Tests for non-css3 browser are in GraphicsMixinTest
       if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
@@ -388,7 +393,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
 
     //////////////
     // helper
-    
+
     _createWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new rwt.widgets.base.MultiCellWidget( [] );
@@ -396,39 +401,40 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       TestUtil.flush();
       return widget;
     },
-    
+
     _getBorderColors : function( style ) {
       var ColorUtil = rwt.util.Colors;
       var result = [];
-      result[ 0 ] = style.borderTopColor; 
+      result[ 0 ] = style.borderTopColor;
       result[ 1 ] = style.borderRightColor;
-      result[ 2 ] = style.borderBottomColor; 
+      result[ 2 ] = style.borderBottomColor;
       result[ 3 ] = style.borderLeftColor;
       for( var i = 0; i < 4; i++ ) {
         try {
           result[ i ] = "#" + ColorUtil.rgbToHexString( ColorUtil.stringToRgb( result [ i ] ) );
+          result[ i ] = result[ i ].toUpperCase();
         } catch( ex ) {
           // no color defined
         }
       }
       return result;
     },
-    
+
     _getBorderStyles : function( style ) {
       var result = [];
-      result[ 0 ] = style.borderTopStyle; 
+      result[ 0 ] = style.borderTopStyle;
       result[ 1 ] = style.borderRightStyle;
-      result[ 2 ] = style.borderBottomStyle; 
+      result[ 2 ] = style.borderBottomStyle;
       result[ 3 ] = style.borderLeftStyle;
       for( var i = 0; i < 4; i++ ) {
-        result[ i ] = result[ i ] === "none" ? "" : result[ i ]; 
+        result[ i ] = result[ i ] === "none" ? "" : result[ i ];
       }
       return result;
     },
-    
+
     _getBorderWidths : function( style ) {
       var result = [];
-      result[ 0 ] = parseInt( style.borderTopWidth ); 
+      result[ 0 ] = parseInt( style.borderTopWidth );
       result[ 1 ] = parseInt( style.borderRightWidth );
       result[ 2 ] = parseInt( style.borderBottomWidth );
       result[ 3 ] = parseInt( style.borderLeftWidth );
@@ -437,7 +443,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       }
       return result;
     },
-    
+
     _getBorderRadii : function( style ) {
       var result = [];
       var props = rwt.html.Border._BORDERRADII;
@@ -452,5 +458,5 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
     }
 
   }
-  
+
 } );

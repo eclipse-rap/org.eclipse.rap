@@ -28,16 +28,25 @@ var appearances = {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       var result = {};
-      result.itemBackground = tv.getCssColor( "TreeItem", "background-color" );
-      result.itemBackgroundImage = tv.getCssImage( "TreeItem", "background-image" );
-      result.itemBackgroundGradient = tv.getCssGradient( "TreeItem", "background-image" );
-      result.itemForeground = tv.getCssColor( "TreeItem", "color" );
-      result.overlayBackground = tv.getCssColor( "Tree-RowOverlay", "background-color" );
-      result.overlayBackgroundImage = tv.getCssImage( "Tree-RowOverlay", "background-image" );
-      result.overlayBackgroundGradient = tv.getCssGradient( "Tree-RowOverlay", "background-image" );
-      result.overlayForeground = tv.getCssColor( "Tree-RowOverlay", "color" );
+      result.background = tv.getCssColor( "TreeItem", "background-color" );
+      result.backgroundImage = tv.getCssImage( "TreeItem", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "TreeItem", "background-image" );
+      result.foreground = tv.getCssColor( "TreeItem", "color" );
       result.textDecoration = tv.getCssIdentifier( "TreeItem", "text-decoration" );
       result.textShadow = tv.getCssShadow( "TreeItem", "text-shadow" );
+      return result;
+    }
+  },
+
+  "tree-row-overlay" : {
+    style : function( states ) {
+      var tv = new rwt.theme.ThemeValues( states );
+      var result = {};
+      result.background = tv.getCssColor( "Tree-RowOverlay", "background-color" );
+      result.backgroundAlpha = tv.getCssAlpha( "Tree-RowOverlay", "background-color" );
+      result.backgroundImage = tv.getCssImage( "Tree-RowOverlay", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Tree-RowOverlay", "background-image" );
+      result.foreground = tv.getCssColor( "Tree-RowOverlay", "color" );
       return result;
     }
   },
