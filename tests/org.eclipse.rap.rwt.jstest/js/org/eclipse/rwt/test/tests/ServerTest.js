@@ -14,6 +14,7 @@
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
 var server = rwt.remote.Server.getInstance();
+var ClientDocument = rwt.widgets.base.ClientDocument;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
 
@@ -197,6 +198,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       }
 
       assertEquals( 1, logger.getLog().length );
+    },
+
+    testWaitHintChangesCursor : function() {
+      server.getWaitHintTimer().setEnabled( true );
+
+      TestUtil.forceInterval( server.getWaitHintTimer() );
+
+      assertEquals( "progress", ClientDocument.getInstance().getGlobalCursor() );
+      server._hideWaitHint();
+      assertNull( ClientDocument.getInstance().getGlobalCursor() );
     }
 
   }

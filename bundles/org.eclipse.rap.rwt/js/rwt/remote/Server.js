@@ -173,6 +173,10 @@ rwt.qx.Class.define( "rwt.remote.Server", {
       this.addEventListener( "send", func, context );
     },
 
+    getWaitHintTimer : function() {
+      return this._waitHintTimer;
+    },
+
     _removeSendListeners : function() {
       for( var i = 0; i < this._sendListeners.length; i++ ) {
         var item = this._sendListeners[ i ];
