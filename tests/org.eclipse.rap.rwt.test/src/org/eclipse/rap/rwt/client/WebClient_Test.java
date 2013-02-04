@@ -25,6 +25,7 @@ import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.eclipse.rap.rwt.internal.client.BrowserNavigationImpl;
 import org.eclipse.rap.rwt.internal.client.ClientInfoImpl;
+import org.eclipse.rap.rwt.internal.client.ConnectionMessagesImpl;
 import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
@@ -105,6 +106,12 @@ public class WebClient_Test {
   public void testGetExitConfirmationService() {
     ClientService service = client.getService( ExitConfirmation.class );
     assertTrue( service instanceof ExitConfirmationImpl );
+  }
+
+  @Test
+  public void testGetConnectionMessagesService() {
+    ClientService service = client.getService( ConnectionMessages.class );
+    assertTrue( service instanceof ConnectionMessagesImpl );
   }
 
   @Test
