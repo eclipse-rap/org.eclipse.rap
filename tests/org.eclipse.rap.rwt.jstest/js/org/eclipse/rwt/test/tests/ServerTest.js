@@ -218,6 +218,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       assertIdentical( document.body, rwt.runtime.ErrorHandler._box.parentNode );
       server._hideWaitHint();
       assertTrue( rwt.runtime.ErrorHandler._box.parentNode == null );
+    },
+
+    testSetWaitHintTimeoutByProtocol : function() {
+      TestUtil.protocolSet( "rwt.client.ConnectionMessages", { "waitHintTimeout" : 1999 } );
+
+      assertEquals( 1999, server.getWaitHintTimer().getInterval() );
     }
 
   }

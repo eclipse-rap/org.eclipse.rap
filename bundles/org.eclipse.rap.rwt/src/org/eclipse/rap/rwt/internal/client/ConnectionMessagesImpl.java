@@ -10,18 +10,32 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.ConnectionMessages;
+import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 
 
 public class ConnectionMessagesImpl implements ConnectionMessages {
 
+  private static final String REMOTE_ID = "rwt.client.ConnectionMessages";
   private int waitHintTimeout = 1000;
+  private RemoteObject remoteObject;
+
+
+  public ConnectionMessagesImpl() {
+    ConnectionImpl connection = ( ConnectionImpl )RWT.getUISession().getConnection();
+    remoteObject = connection.createServiceObject( REMOTE_ID );
+  }
 
   public int getWaitHintTimeout() {
     return waitHintTimeout;
   }
 
   public void setWaitHintTimeout( int timeout ) {
+    if( waitHintTimeout != timeout ) {
+      remoteObject.set( "waitHintTimeout", timeout );
+    }
     waitHintTimeout = timeout;
   }
 

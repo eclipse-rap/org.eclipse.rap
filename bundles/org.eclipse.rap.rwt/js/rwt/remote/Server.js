@@ -40,7 +40,7 @@ rwt.qx.Class.define( "rwt.remote.Server", {
       this._delayTimer.stop();
       this.send();
     }, this );
-    this._waitHintTimer = new Timer( 500 );
+    this._waitHintTimer = new Timer( 1000 );
     this._waitHintTimer.addEventListener( "interval", this._showWaitHint, this );
     this._retryHandler = null;
     this._sendListeners = [];

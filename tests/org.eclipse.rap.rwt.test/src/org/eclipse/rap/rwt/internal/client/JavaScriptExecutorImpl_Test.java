@@ -21,7 +21,6 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -86,7 +85,7 @@ public class JavaScriptExecutorImpl_Test {
   }
 
   private static ConnectionImpl fakeConnection( RemoteObject remoteObject ) {
-    ConnectionImpl connection = mock( ConnectionImpl.class);
+    ConnectionImpl connection = mock( ConnectionImpl.class );
     when( connection.createServiceObject( anyString() ) ).thenReturn( remoteObject );
     Fixture.fakeConnection( connection );
     return connection;
