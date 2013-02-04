@@ -314,7 +314,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
         style : function( states ) {
           return {
             "background" : "undefined",
-            "backgroundGradient" : "undefined",
+            "backgroundGradient" : null,
             "backgroundImage" : null,
             "foreground" : "undefined"
           };

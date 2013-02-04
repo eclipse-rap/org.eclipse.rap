@@ -1832,8 +1832,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
         row.renderItem( item, tree._config, false, null );
 
-        var type = row._graphicsOverlay.shape.type;
-        assertTrue( type === "svgRoundRect" || type === "vmlRoundRect" );
+        var shape = row._graphicsOverlay.shape;
+        assertTrue( shape.type === "svgRoundRect" || shape.node.tagName === "shape" );
       }
     },
 
