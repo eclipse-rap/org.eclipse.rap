@@ -254,7 +254,7 @@ rwt.qx.Class.define( "rwt.remote.Server", {
 
     _retry : function() {
       try {
-        rwt.runtime.ErrorHandler.hideErrorBox();
+        ErrorHandler.hideErrorBox();
         this._showWaitHint();
         this._retryHandler();
       } catch( ex ) {
@@ -301,10 +301,12 @@ rwt.qx.Class.define( "rwt.remote.Server", {
     _showWaitHint : function() {
       this._waitHintTimer.stop();
       ClientDocument.getInstance().setGlobalCursor( "progress" );
+      ErrorHandler.showErrorBox( "", false );
     },
 
     _hideWaitHint : function() {
       this._waitHintTimer.stop();
+      ErrorHandler.hideErrorBox();
       ClientDocument.getInstance().setGlobalCursor( null );
     }
 

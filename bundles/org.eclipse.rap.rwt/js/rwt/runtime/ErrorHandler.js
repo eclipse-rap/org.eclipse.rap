@@ -78,8 +78,10 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       this._box = this._createErrorBoxArea( 400, 100 );
       this._box.innerHTML = html;
       var hyperlink = this._box.getElementsByTagName( "a" )[ 0 ];
-      hyperlink.style.outline = "none";
-      hyperlink.focus();
+      if( hyperlink ) {
+        hyperlink.style.outline = "none";
+        hyperlink.focus();
+      }
     },
 
     hideErrorBox : function() {

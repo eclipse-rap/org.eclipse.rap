@@ -208,6 +208,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       assertEquals( "progress", ClientDocument.getInstance().getGlobalCursor() );
       server._hideWaitHint();
       assertNull( ClientDocument.getInstance().getGlobalCursor() );
+    },
+
+    testWaitHintShowsErrorBox : function() {
+      server.getWaitHintTimer().setEnabled( true );
+
+      TestUtil.forceInterval( server.getWaitHintTimer() );
+
+      assertIdentical( document.body, rwt.runtime.ErrorHandler._box.parentNode );
+      server._hideWaitHint();
+      assertTrue( rwt.runtime.ErrorHandler._box.parentNode == null );
     }
 
   }
