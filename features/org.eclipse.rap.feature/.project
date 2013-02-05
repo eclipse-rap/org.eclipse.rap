@@ -2,7 +2,7 @@
 <projectDescription>
 	<name>org.eclipse.rap.feature</name>
 	<comment></comment> 
-	<projects>
+	<projects> 
 	</projects>
 	<buildSpec>
 		<buildCommand>
