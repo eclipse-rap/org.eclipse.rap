@@ -1335,6 +1335,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( "10px", text._messageElement.style.fontSize );
     },
 
+    testVerticalAlignment : function() {
+      createText();
+      text.setHeight( 100 );
+      TestUtil.flush();
+
+      var textHeight= text.getInputElement().offsetHeight;
+      if( rwt.client.Client.isMshtml() ) {
+        textHeight -= 2;
+      }
+      var expected = Math.floor( 100 / 2 - textHeight / 2 - 1 );
+      assertEquals( expected, parseInt( text.getElement().style.paddingTop, 10 ) );
+    },
+
     /////////
     // Helper
 
