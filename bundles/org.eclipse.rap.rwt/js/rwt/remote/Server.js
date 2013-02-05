@@ -199,6 +199,7 @@ rwt.qx.Class.define( "rwt.remote.Server", {
     // Handle request events
 
     _handleError : function( event ) {
+      this._hideWaitHint();
       if( this._isConnectionError( event.status ) ) {
         this._handleConnectionError( event );
       } else {
@@ -215,7 +216,6 @@ rwt.qx.Class.define( "rwt.remote.Server", {
           ErrorHandler.showErrorPage( msg );
         }
       }
-      this._hideWaitHint();
     },
 
     _handleSuccess : function( event ) {
