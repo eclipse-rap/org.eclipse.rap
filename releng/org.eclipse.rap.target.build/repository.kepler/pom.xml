@@ -33,7 +33,7 @@
       <id>base-platform-repository-with-ICU-bundle</id>
       <layout>p2</layout>
       <!-- This repository is required in order to pull in the base ICU bundle -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/2.0/M4/runtime-base</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/2.0/M5/runtime-base</url>
     </repository>
   </repositories>
 
