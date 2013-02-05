@@ -606,7 +606,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
 
     _getInputElementHeight : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
-        var result = this._inputElement.offsetWidth;
+        var result = this._inputElement.offsetHeight;
         if( result !== 0 ) {
           result -= 2;
         }

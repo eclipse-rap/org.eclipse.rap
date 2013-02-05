@@ -1336,6 +1336,67 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    testClickOnNotCheckableCellCheckBoxDoesNotToggle : function() {
+      var tree = this._createDefaultTree( false, false );
+      tree.setCellCheck( 0, true );
+      this._fakeCheckBoxAppearance();
+      tree.setItemCount( 1 );
+      var item = this._createItem( tree.getRootItem(), 0 );
+      item.setCellCheckable( [ false ] );
+      rwt.remote.ObjectRegistry.add( "w11", tree, gridHandler );
+      rwt.remote.ObjectRegistry.add( "w2", item, itemHandler );
+      TestUtil.flush();
+      var checkNode = tree.getRowContainer().getChildren()[ 0 ]._getTargetNode().childNodes[ 0 ];
+
+      TestUtil.clickDOM( checkNode );
+
+      assertTrue( item.isCellChecked( 0 ) === undefined );
+      tree.destroy();
+    },
+
+    testClickOnNotCheckableCellCheckBoxDoesNotSendChange : function() {
+      var tree = this._createDefaultTree( false, false );
+      tree.setCellCheck( 0, true );
+      TestUtil.initRequestLog();
+      this._fakeCheckBoxAppearance();
+      tree.setItemCount( 1 );
+      var item = this._createItem( tree.getRootItem(), 0 );
+      item.setCellCheckable( [ false ] );
+      rwt.remote.ObjectRegistry.add( "w11", tree, gridHandler );
+      rwt.remote.ObjectRegistry.add( "w2", item, itemHandler );
+      TestUtil.flush();
+      var checkNode = tree.getRowContainer().getChildren()[ 0 ]._getTargetNode().childNodes[ 0 ];
+
+      TestUtil.clickDOM( checkNode );
+
+      rwt.remote.Server.getInstance().send();
+      var message = TestUtil.getMessageObject();
+      assertNull( message.findSetOperation( "w2", "cellChecked" ) );
+      tree.destroy();
+    },
+
+    testClickOnNotCheckableCellCheckBoxDoesNotSendEvent : function() {
+      var tree = this._createDefaultTree( false, false );
+      tree.setCellCheck( 0, true );
+      TestUtil.initRequestLog();
+      this._fakeCheckBoxAppearance();
+      tree.setItemCount( 1 );
+      tree.setHasSelectionListener( true );
+      var item = this._createItem( tree.getRootItem(), 0 );
+      item.setCellCheckable( [ false ] );
+      rwt.remote.ObjectRegistry.add( "w11", tree, gridHandler );
+      rwt.remote.ObjectRegistry.add( "w2", item, itemHandler );
+      TestUtil.flush();
+      var checkNode = tree.getRowContainer().getChildren()[ 0 ]._getTargetNode().childNodes[ 0 ];
+
+      TestUtil.clickDOM( checkNode );
+      rwt.remote.Server.getInstance().send();
+
+      var message = TestUtil.getMessageObject();
+      assertNull( message.findNotifyOperation( "w11", "Selection" ) );
+      tree.destroy();
+    },
+
     testClickOnCellCheckBoxSendChangeMoreColumns : function() {
       var tree = this._createDefaultTree( false, false );
       tree.setCellCheck( 0, true );
