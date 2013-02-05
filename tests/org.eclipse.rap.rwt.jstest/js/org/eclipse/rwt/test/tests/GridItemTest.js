@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -419,6 +419,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       assertTrue( item.isCellGrayed( 0 ) );
       assertTrue( item.isCellGrayed( 1 ) );
       assertFalse( item.isCellGrayed( 2 ) );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetCellCheckableByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [ "CHECK" ] );
+      var processor = rwt.remote.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.GridItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "cellCheckable" : [ true, true, false ]
+        }
+      } );
+      var ObjectManager = rwt.remote.ObjectRegistry;
+      var item = ObjectManager.getObject( "w4" );
+      assertTrue( item.isCellCheckable( 0 ) );
+      assertTrue( item.isCellCheckable( 1 ) );
+      assertFalse( item.isCellCheckable( 2 ) );
       shell.destroy();
       tree.destroy();
     },

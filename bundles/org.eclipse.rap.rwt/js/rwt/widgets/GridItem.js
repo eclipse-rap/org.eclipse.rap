@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     this._grayed = false;
     this._cellChecked = [];
     this._cellGrayed = [];
+    this._cellCheckable = [];
     this._variant = null;
     if( this._parent != null ) {
       this._level = this._parent.getLevel() + 1;
@@ -76,6 +77,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     this._cellBackgrounds = null;
     this._cellChecked = null;
     this._cellGrayed = null;
+    this._cellCheckable = null;
     this._rootItem = null;
   },
 
@@ -268,6 +270,14 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
 
     isCellGrayed : function( column ) {
       return this._cellGrayed[ column ];
+    },
+
+    setCellCheckable : function( value ) {
+      this._cellCheckable = value;
+    },
+
+    isCellCheckable : function( column ) {
+      return this._cellCheckable[ column ] === undefined ? true : this._cellCheckable[ column ];
     },
 
     setVariant : function( variant ) {
