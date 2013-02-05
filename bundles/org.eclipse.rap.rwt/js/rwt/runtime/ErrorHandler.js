@@ -79,6 +79,7 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       this._box.innerHTML = html;
       this._box.style.backgroundColor = "#dae9f7";
       this._box.style.border = "1px solid black";
+      this._box.style.overflow = "auto";
       var hyperlink = this._box.getElementsByTagName( "a" )[ 0 ];
       if( hyperlink ) {
         hyperlink.style.outline = "none";
@@ -96,15 +97,18 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
         rwt.html.Style.setBackgroundImage( this._box, icon[ 0 ] );
         this._box.style.backgroundColor = "transparent";
         this._box.style.border = "none";
+        this._box.style.overflow = "hidden";
       }
     },
 
     hideErrorBox : function() {
       if( this._box ) {
-        this._box.parentElement.removeChild( this._box );
+        this._box.parentNode.removeChild( this._box );
+        this._box = null;
       }
       if( this._overlay ) {
-        this._overlay.parentElement.removeChild( this._overlay );
+        this._overlay.parentNode.removeChild( this._overlay );
+        this._overlay = null;
       }
     },
 
@@ -179,7 +183,6 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       style.left = ( left < 0 ? 0 : left ) + "px";
       style.top = ( top < 0 ? 0 : top ) + "px";
       style.zIndex = 100000001;
-      style.overflow = "auto";
       style.padding = "10px";
       style.textAlign = "center";
       style.fontFamily = 'verdana,"lucida sans",arial,helvetica,sans-serif';

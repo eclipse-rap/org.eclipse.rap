@@ -23,7 +23,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ErrorHandlerTest", {
       ErrorHandler.showWaitHint();
 
       var element = rwt.runtime.ErrorHandler._overlay;
-      assertEquals( document.body, element.parentNode );
+      assertIdentical( document.body, element.parentNode );
       assertEquals( "100%", element.style.width );
       assertEquals( "100%", element.style.height );
       assertEquals( "100%", element.style.height );

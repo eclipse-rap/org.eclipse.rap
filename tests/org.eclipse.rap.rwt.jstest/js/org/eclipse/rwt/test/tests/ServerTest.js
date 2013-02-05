@@ -216,8 +216,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       TestUtil.forceInterval( server.getWaitHintTimer() );
 
       assertIdentical( document.body, rwt.runtime.ErrorHandler._overlay.parentNode );
+      var overlay = rwt.runtime.ErrorHandler._overlay;
       server._hideWaitHint();
-      assertTrue( rwt.runtime.ErrorHandler._overlay.parentNode == null );
+      assertTrue( overlay.parentNode != document.body );
+      assertNull( rwt.runtime.ErrorHandler._overlay );
     },
 
     testSetWaitHintTimeoutByProtocol : function() {
