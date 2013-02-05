@@ -25,6 +25,7 @@ import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.eclipse.rap.rwt.internal.client.BrowserNavigationImpl;
 import org.eclipse.rap.rwt.internal.client.ClientInfoImpl;
+import org.eclipse.rap.rwt.internal.client.ConnectionMessages;
 import org.eclipse.rap.rwt.internal.client.ConnectionMessagesImpl;
 import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;

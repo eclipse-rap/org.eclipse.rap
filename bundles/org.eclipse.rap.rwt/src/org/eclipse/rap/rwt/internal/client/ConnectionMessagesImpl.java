@@ -11,7 +11,6 @@
 package org.eclipse.rap.rwt.internal.client;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.client.ConnectionMessages;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 

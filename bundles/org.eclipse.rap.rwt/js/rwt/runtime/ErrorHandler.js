@@ -146,7 +146,6 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       style.position = "absolute";
       style.width = "100%";
       style.height = "100%";
-      console.log( color );
       style.backgroundColor = color === "undefined" ? "transparent" : color;
       rwt.html.Style.setOpacity( element, alpha );
       style.zIndex = 100000000;
