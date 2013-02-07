@@ -54,6 +54,7 @@ public class SliderLCA extends AbstractWidgetLCA {
   private static final int DEFAULT_PINCREMENT = 10;
   private static final int DEFAULT_THUMB = 10;
 
+  @Override
   public void preserveValues( Widget widget ) {
     Slider slider = ( Slider )widget;
     ControlLCAUtil.preserveValues( slider );
@@ -74,10 +75,13 @@ public class SliderLCA extends AbstractWidgetLCA {
       slider.setSelection( NumberFormatUtil.parseInt( value ) );
     }
     ControlLCAUtil.processSelection( slider, null, true );
+    ControlLCAUtil.processKeyEvents( slider );
+    ControlLCAUtil.processMouseEvents( slider );
     ControlLCAUtil.processMenuDetect( slider );
     WidgetLCAUtil.processHelp( slider );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Slider slider = ( Slider )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( slider );
@@ -87,6 +91,7 @@ public class SliderLCA extends AbstractWidgetLCA {
   }
 
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     Slider slider = ( Slider )widget;
     ControlLCAUtil.renderChanges( slider );

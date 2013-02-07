@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,14 +15,16 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -30,6 +32,8 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -43,6 +47,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -114,6 +119,17 @@ public class ScaleLCA_Test {
     assertTrue( event.doit );
   }
 
+  @Test
+  public void testMouseEvent() {
+    MouseListener listener = mock( MouseListener.class );
+    scale.addMouseListener( listener );
+
+    fakeMouseDownNotifyOperation( scale, 1, 2 );
+    Fixture.readDataAndProcessAction( scale );
+
+    verify( listener ).mouseDown( any( MouseEvent.class ) );
+  }
+
   private void testPreserveControlProperties( Scale scale ) {
     // bound
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
@@ -157,11 +173,11 @@ public class ScaleLCA_Test {
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
     Fixture.clearPreserved();
     //foreground background font
-    Color background = Graphics.getColor( 122, 33, 203 );
+    Color background = new Color( display, 122, 33, 203 );
     scale.setBackground( background );
-    Color foreground = Graphics.getColor( 211, 178, 211 );
+    Color foreground = new Color( display, 211, 178, 211 );
     scale.setForeground( foreground );
-    Font font = Graphics.getFont( "font", 12, SWT.BOLD );
+    Font font = new Font( display, "font", 12, SWT.BOLD );
     scale.setFont( font );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( scale );
@@ -398,5 +414,14 @@ public class ScaleLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( scale, "selection" ) );
+  }
+
+  private static void fakeMouseDownNotifyOperation( Widget widget, int x, int y ) {
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_BUTTON, Integer.valueOf( 1 ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( x ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( y ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_TIME, Integer.valueOf( 0 ) );
+    Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_MOUSE_DOWN, parameters );
   }
 }

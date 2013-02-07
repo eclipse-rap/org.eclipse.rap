@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ public final class ScaleLCA extends AbstractWidgetLCA {
   private static final int DEFAULT_INCREMENT = 1;
   private static final int DEFAULT_PAGE_INCREMENT = 10;
 
+  @Override
   public void preserveValues( Widget widget ) {
     Scale scale = ( Scale )widget;
     ControlLCAUtil.preserveValues( scale );
@@ -72,10 +73,12 @@ public final class ScaleLCA extends AbstractWidgetLCA {
     }
     ControlLCAUtil.processSelection( scale, null, true );
     ControlLCAUtil.processKeyEvents( scale );
+    ControlLCAUtil.processMouseEvents( scale );
     ControlLCAUtil.processMenuDetect( scale );
     WidgetLCAUtil.processHelp( scale );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Scale scale = ( Scale )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( scale );
@@ -85,6 +88,7 @@ public final class ScaleLCA extends AbstractWidgetLCA {
   }
 
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     Scale scale = ( Scale )widget;
     ControlLCAUtil.renderChanges( scale );
