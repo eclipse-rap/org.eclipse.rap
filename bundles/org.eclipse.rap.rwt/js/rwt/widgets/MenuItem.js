@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2009, 2013 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,27 +34,22 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
       case "bar" :
        this._isSelectable = false;
        this._isDeselectable = false;
-       this._sendEvent = false;
        this.addState( "onMenuBar" );
       break;
       case "push" :
        this._isSelectable = false;
        this._isDeselectable = false;
-       this._sendEvent = true;
       break;
       case "check":
        this._isSelectable = true;
        this._isDeselectable = true;
-       this._sendEvent = true;
       break;
       case "cascade":
        this._isSelectable = false;
        this._isDeselectable = false;
-       this._sendEvent = false;
       break;
       case "radio":
        this._isSelectable = true;
-       this._sendEvent = true;
        this.setNoRadioGroup( false );
        rwt.widgets.util.RadioButtonUtil.registerExecute( this );
       break;
@@ -245,14 +240,18 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
       }
     },
 
-    // Not using EventUtil since no event should be sent (for radio at least)
+    // Not using EventUtil since no event should be sent (for cascade at least)
     _sendChanges : function() {
       if(    !rwt.remote.EventUtil.getSuspended()
           && this._hasSelectionListener
-          && this._sendEvent )
+          && this._shouldSendEvent() )
       {
         rwt.remote.EventUtil.notifySelected( this );
       }
+    },
+
+    _shouldSendEvent : function() {
+      return !this.hasState( "rwt_CASCADE" );
     },
 
     _onmouseup : function( event ) {

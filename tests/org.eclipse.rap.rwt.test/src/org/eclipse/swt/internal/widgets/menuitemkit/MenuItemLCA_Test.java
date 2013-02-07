@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -110,7 +110,7 @@ public class MenuItemLCA_Test {
   }
 
   @Test
-  public void testWidgetSelected() {
+  public void testSelectionEvent() {
     shell.setMenu( menu );
     MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
     SelectionListener listener = mock( SelectionListener.class );
@@ -120,7 +120,7 @@ public class MenuItemLCA_Test {
     Fixture.readDataAndProcessAction( menuItem );
 
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
+    verify( listener ).widgetSelected( captor.capture() );
     SelectionEvent event = captor.getValue();
     assertEquals( menuItem, event.getSource() );
     assertEquals( null, event.item );
@@ -130,6 +130,19 @@ public class MenuItemLCA_Test {
     assertEquals( 0, event.width );
     assertEquals( 0, event.height );
     assertTrue( event.doit );
+  }
+
+  @Test
+  public void testSelectionEventOnBarItem() {
+    shell.setMenuBar( menuBar );
+    MenuItem menuItem = new MenuItem( menuBar, SWT.PUSH );
+    SelectionListener listener = mock( SelectionListener.class );
+    menuItem.addSelectionListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( menuItem ), ClientMessageConst.EVENT_SELECTION, null );
+    Fixture.readDataAndProcessAction( menuItem );
+
+    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   @Test

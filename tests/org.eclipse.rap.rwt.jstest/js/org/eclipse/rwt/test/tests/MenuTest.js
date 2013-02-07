@@ -763,6 +763,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       disposeMenu();
     },
 
+    testExecutePushItemInMenuBar : function() {
+      createMenuBar( "push" );
+      rwt.remote.ObjectRegistry.add( "w3", menuBarItem, menuItemHandler );
+      TestUtil.flush();
+      TestUtil.clearRequestLog();
+      TestUtil.click( menuBarItem );
+      assertEquals( 0, TestUtil.getRequestsSend() );
+      menuBarItem.setHasSelectionListener( true );
+      TestUtil.clearRequestLog();
+      TestUtil.click( menuBarItem );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Selection" ) );
+      TestUtil.clearRequestLog();
+      disposeMenuBar();
+    },
+
     testExecuteCheckItem: function() {
       createSimpleMenu( "check" );
       rwt.remote.ObjectRegistry.add( "w3", menuItem, menuItemHandler );
