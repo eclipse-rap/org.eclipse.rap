@@ -54,16 +54,8 @@ public class Scrollable_Test {
 
   @Test
   public void testComputeTrimWithPadding() {
-    final Rectangle padding = new Rectangle( 10, 10, 10, 10 );
+    final Rectangle padding = new Rectangle( 1, 2, 3, 4 );
     Composite scrollable = new Composite( shell, SWT.BORDER ) {
-      @Override
-      int getVScrollBarWidth() {
-        return 20;
-      }
-      @Override
-      int getHScrollBarHeight() {
-        return 20;
-      }
       @Override
       Rectangle getPadding() {
         return padding;
@@ -73,8 +65,19 @@ public class Scrollable_Test {
     Rectangle trim = scrollable.computeTrim( 20, 30, 200, 300 );
     assertEquals( 20 - padding.x - borderWidth, trim.x );
     assertEquals( 30 - padding.y - borderWidth, trim.y );
-    assertEquals( 232, trim.width );
-    assertEquals( 332, trim.height );
+    assertEquals( 205, trim.width );
+    assertEquals( 306, trim.height );
+  }
+
+  @Test
+  public void testComputeTrimWithScrollbars() {
+    Composite scrollable = new Composite( shell, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL );
+    int borderWidth = scrollable.getBorderWidth();
+    Rectangle trim = scrollable.computeTrim( 20, 30, 200, 300 );
+    assertEquals( 20 - borderWidth, trim.x );
+    assertEquals( 30 - borderWidth, trim.y );
+    assertEquals( 212, trim.width );
+    assertEquals( 312, trim.height );
   }
 
   @Test

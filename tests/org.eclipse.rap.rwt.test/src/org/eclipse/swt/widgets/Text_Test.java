@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -30,6 +29,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.junit.After;
@@ -93,9 +93,9 @@ public class Text_Test {
   @Test
   public void testGetLineHeight() {
     Text text = new Text( shell, SWT.MULTI );
-    // default theme font is 11px
+    // default theme font is 14px
     assertEquals( 16, text.getLineHeight() );
-    text.setFont( Graphics.getFont( "Helvetica", 12, SWT.NORMAL ) );
+    text.setFont( new Font( display, "Helvetica", 12, SWT.NORMAL ) );
     assertEquals( 14, text.getLineHeight() );
     text.setFont( null );
     assertEquals( 16, text.getLineHeight() );
@@ -443,9 +443,9 @@ public class Text_Test {
     assertEquals( expected, text.computeTrim( 10, 10, 100, 100 ) );
 
     text = new Text( shell, SWT.H_SCROLL );
-    expected = new Rectangle( -10, -5, 21, 10 );
+    expected = new Rectangle( -10, -5, 21, 20 );
     assertEquals( expected, text.computeTrim( 0, 0, 0, 0 ) );
-    expected = new Rectangle( 0, 5, 121, 110 );
+    expected = new Rectangle( 0, 5, 121, 120 );
     assertEquals( expected, text.computeTrim( 10, 10, 100, 100 ) );
 
     text = new Text( shell, SWT.BORDER );
