@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package org.eclipse.rap.rwt.engine;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.ServletRegistration;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
@@ -34,11 +35,11 @@ import org.eclipse.rap.rwt.internal.util.ClassUtil;
 public class RWTServletContextListener implements ServletContextListener {
 
   /*
-   * This parameter has been used prior to RAP 1.5 to register entrypoints.
-   * It is considered obsolete but still supported in 1.5.
-   * It is still used by the RWTLauncher.
+   * These parameters have been used prior to RAP 1.5 to register entrypoints.
+   * They are still used by the RWTLauncher.
    */
   static final String ENTRY_POINTS_PARAM = "org.eclipse.rwt.entryPoints";
+  static final String RWT_SERVLET_NAME = "rwtServlet";
 
   private ApplicationRunner applicationRunner;
 
@@ -90,10 +91,18 @@ public class RWTServletContextListener implements ServletContextListener {
   private ApplicationConfiguration doReadEntryPointRunnerConfiguration( ServletContext context )
     throws ClassNotFoundException
   {
+    String servletPath = "/rap";
+    ServletRegistration servletRegistration = context.getServletRegistration( RWT_SERVLET_NAME );
+    if( servletRegistration != null ) {
+      String[] mappings = servletRegistration.getMappings().toArray( new String[ 0 ] );
+      if( mappings.length > 0 ) {
+        servletPath = mappings[ 0 ];
+      }
+    }
     String className = context.getInitParameter( ENTRY_POINTS_PARAM );
-    ClassLoader loader = getClassLoader();
-    Class<?> entryPointClass = loader.loadClass( className );
-    return new EntryPointRunnerConfiguration( ( Class<? extends EntryPoint> )entryPointClass );
+    Class<?> entryPointClass = getClassLoader().loadClass( className );
+    return new EntryPointRunnerConfiguration( servletPath,
+                                              ( Class<? extends EntryPoint> )entryPointClass );
   }
 
   private ClassLoader getClassLoader() {
@@ -106,14 +115,18 @@ public class RWTServletContextListener implements ServletContextListener {
 
   private static class EntryPointRunnerConfiguration implements ApplicationConfiguration {
 
+    private final String servletPath;
     private final Class<? extends EntryPoint> entryPointClass;
 
-    private EntryPointRunnerConfiguration( Class<? extends EntryPoint> entryPointClass ) {
+    private EntryPointRunnerConfiguration( String servletPath,
+                                           Class<? extends EntryPoint> entryPointClass )
+    {
+      this.servletPath = servletPath;
       this.entryPointClass = entryPointClass;
     }
 
     public void configure( Application application ) {
-      application.addEntryPoint( "/rap", entryPointClass, null );
+      application.addEntryPoint( servletPath, entryPointClass, null );
     }
   }
 

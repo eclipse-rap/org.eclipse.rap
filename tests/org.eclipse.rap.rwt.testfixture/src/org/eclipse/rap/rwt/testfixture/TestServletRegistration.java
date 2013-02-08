@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.testfixture;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,10 +24,12 @@ import javax.servlet.ServletSecurityElement;
 class TestServletRegistration implements ServletRegistration.Dynamic {
   private final String servletName;
   private final String className;
+  private final Set<String> mappings;
 
   TestServletRegistration( String servletName, Servlet servlet ) {
     this.servletName = servletName;
     this.className = servlet.getClass().getName();
+    mappings = new HashSet<String>();
   }
 
   public String getName() {
@@ -54,11 +57,14 @@ class TestServletRegistration implements ServletRegistration.Dynamic {
   }
 
   public Set<String> addMapping( String... urlPatterns ) {
-    return null;
+    for( String pattern : urlPatterns ) {
+      mappings.add( pattern );
+    }
+    return mappings;
   }
 
   public Collection<String> getMappings() {
-    return null;
+    return mappings;
   }
 
   public String getRunAsRole() {
