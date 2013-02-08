@@ -189,6 +189,30 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.destroy();
     },
 
+    testDefaultButtonGainFocusOnExecute : function() {
+      var shell = TestUtil.createShellByProtocol( "w3" );
+      rwt.event.EventHandler.setFocusRoot( shell );
+      MessageProcessor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w3"
+        }
+      } );
+      var button = ObjectRegistry.getObject( "w4" );
+      shell.setDefaultButton( button );
+      TestUtil.flush();
+      assertFalse( button.getFocused() );
+
+      TestUtil.keyDown( shell.getElement(), "Enter", 0 );
+
+      assertTrue( button.getFocused() );
+      button.destroy();
+      shell.destroy();
+    },
+
     testFiresParentShellChangedEvent : function() {
       var shell = this._createDefaultShell( {} );
       var parentShell = this._createDefaultShell( {} );
