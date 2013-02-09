@@ -19,12 +19,14 @@ Gregoire Dupe
 		<xsl:apply-templates />
 	</xsl:template>
 
+
 	<xsl:template match="repository/properties">
 		<properties size='{@size+1}'>
 			<xsl:copy-of select="property" />
 			<property name='p2.statsURI' value='http://download.eclipse.org/stats/rt/rap' />
 		</properties>
 	</xsl:template>
+
 
 	<xsl:template match="artifact[@classifier='osgi.bundle' and @id='org.eclipse.rap.rwt']/properties">
 		<xsl:call-template name="artifact_properties"/>
@@ -38,6 +40,7 @@ Gregoire Dupe
 		<xsl:call-template name="artifact_properties"/>
 	</xsl:template>
 
+
  	<xsl:template name="artifact_properties">
  		<properties size='{@size+1}'>
 			<xsl:copy-of select="property" />
@@ -49,21 +52,35 @@ Gregoire Dupe
 	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.feature']/properties">
 		<xsl:call-template name="artifact_properties_feature"/>
 	</xsl:template>
-	
+
 	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.equinox.target.feature']/properties">
 		<xsl:call-template name="artifact_properties_feature"/>
 	</xsl:template>
-	
+
+	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.equinox.juno.target.feature']/properties">
+		<xsl:call-template name="artifact_properties_feature"/>
+	</xsl:template>
+
+	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.examples.feature']/properties">
+		<xsl:call-template name="artifact_properties_feature"/>
+	</xsl:template>
+
 	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.tools.feature']/properties">
 		<xsl:call-template name="artifact_properties_feature"/>
 	</xsl:template>
-	
+
+	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.tools']/properties">
+		<xsl:call-template name="artifact_properties_feature"/>
+	</xsl:template>
+
+
  	<xsl:template name="artifact_properties_feature">
  		<properties size='{@size+1}'>
 			<xsl:copy-of select="property" />
 			<property name='download.stats' value='{../@id}-{../@version}' />
 		</properties>
 	</xsl:template>
+
 
 	<xsl:template match="*">
 		<xsl:copy>
@@ -73,5 +90,6 @@ Gregoire Dupe
 			<xsl:apply-templates />
 		</xsl:copy>
 	</xsl:template>
+
 
 </xsl:stylesheet>
