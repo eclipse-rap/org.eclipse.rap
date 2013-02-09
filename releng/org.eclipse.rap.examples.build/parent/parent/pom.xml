@@ -16,23 +16,26 @@
     <assembly-version>2.2.1</assembly-version>
     <replacer-version>1.3.8</replacer-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <rap-repository>http://download.eclipse.org/rt/rap/nightly/runtime/</rap-repository>
+    <rap-incubator-repository>http://download.eclipse.org/rt/rap/incubator/nightly/</rap-incubator-repository>
+    <eclipse-simultaneous-release-repository>http://download.eclipse.org/releases/juno/</eclipse-simultaneous-release-repository>
   </properties>
 
   <repositories>
     <repository>
-      <id>rap-nightly</id>
+      <id>rap-repository</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/rt/rap/nightly/runtime/</url>
+      <url>${rap-repository}</url>
     </repository>
     <repository>
-      <id>rap-incubator-nightly</id>
+      <id>rap-incubator-repository</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/rt/rap/incubator/nightly/</url>
+      <url>${rap-incubator-repository}</url>
     </repository>
     <repository>
-      <id>eclipse-juno</id>
+      <id>eclipse-simultaneous-release-repository</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/juno/</url>
+      <url>${eclipse-simultaneous-release-repository}</url>
     </repository>
   </repositories>
 
