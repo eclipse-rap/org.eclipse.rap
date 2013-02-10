@@ -37,6 +37,11 @@
       <layout>p2</layout>
       <url>${eclipse-simultaneous-release-repository}</url>
     </repository>
+    <repository>
+      <id>local-examples-repository</id>
+      <layout>p2</layout>
+      <url>file:${basedir}/../../localrepo</url>
+    </repository>
   </repositories>
 
   <build>

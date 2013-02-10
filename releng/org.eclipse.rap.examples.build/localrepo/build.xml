@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     Update and build a local p2 repository from the bundles located in the
+     subdirectory 'plugins/'.                                                       
+     ====================================================================== -->
+<project name="p2.repo.creator" default="default">
+
+    <target name="default" description="update and build local p2 repository">
+        <p2.publish.featuresAndBundles 
+            repositoryname="RAP Examples local p2 repository" 
+            repository="file:${basedir}" 
+        	append="false">
+            <bundles dir="plugins"/>
+        </p2.publish.featuresAndBundles>
+    </target>
+
+</project>
