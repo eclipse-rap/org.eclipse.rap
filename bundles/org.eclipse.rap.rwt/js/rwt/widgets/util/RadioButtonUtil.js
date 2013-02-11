@@ -123,10 +123,12 @@ rwt.qx.Class.define( "rwt.widgets.util.RadioButtonUtil", {
             }
           } while( !allRadioButtons[ nextSelectedRbIndex ].getEnabled() );
         }
-        var nextRb = allRadioButtons[ nextSelectedRbIndex ];
-        this._unselectSiblings( nextRb );
-        nextRb.setSelection( true );
-        nextRb.setFocused( true );
+        if( nextSelectedRbIndex !== currentRbIndex ) {
+          var nextRb = allRadioButtons[ nextSelectedRbIndex ];
+          this._unselectSiblings( nextRb );
+          nextRb.setSelection( true );
+          nextRb.setFocused( true );
+        }
       }
     },
 
