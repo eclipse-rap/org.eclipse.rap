@@ -8,7 +8,7 @@
  *
  *  Contributors:
  *    1&1 Internet AG and others - original API and implementation
- *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
+ *    EclipseSource - adaptation for the Eclipse Remote Application Platform
  ******************************************************************************/
 
 /** This singleton manage all rwt.html.ImagePreloader instances. */
