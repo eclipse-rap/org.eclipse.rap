@@ -466,6 +466,56 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertFalse( TestUtil.getMessageObject().findSetProperty( "w2", "selection" ) );
     },
 
+    testSelectNextRadioButtonByKeyboard : function() {
+      var radios = [];
+      for( var i = 0; i < 3; i++ ) {
+        radios[ i ] = new rwt.widgets.Button( "radio" );
+        radios[ i ].addState( "rwt_RADIO" );
+        radios[ i ].addToDocument();
+      }
+      TestUtil.flush();
+      radios[ 0 ].setSelection( true );
+      radios[ 0 ].setFocused( true );
+      radios[ 1 ].setEnabled( false );
+
+      TestUtil.pressOnce( radios[ 0 ].getElement(), "Right", 0 );
+
+      assertFalse( radios[ 0 ]._selected );
+      assertFalse( radios[ 0 ].getFocused() );
+      assertFalse( radios[ 1 ]._selected );
+      assertFalse( radios[ 1 ].getFocused() );
+      assertTrue( radios[ 2 ]._selected );
+      assertTrue( radios[ 2 ].getFocused() );
+      for( var i = 0; i < 3; i++ ) {
+        radios[ i ].destroy();
+      }
+    },
+
+    testSelectPreviousRadioButtonByKeyboard : function() {
+      var radios = [];
+      for( var i = 0; i < 3; i++ ) {
+        radios[ i ] = new rwt.widgets.Button( "radio" );
+        radios[ i ].addState( "rwt_RADIO" );
+        radios[ i ].addToDocument();
+      }
+      TestUtil.flush();
+      radios[ 2 ].setSelection( true );
+      radios[ 2 ].setFocused( true );
+      radios[ 1 ].setEnabled( false );
+
+      TestUtil.pressOnce( radios[ 2 ].getElement(), "Left", 0 );
+
+      assertFalse( radios[ 2 ]._selected );
+      assertFalse( radios[ 2 ].getFocused() );
+      assertFalse( radios[ 1 ]._selected );
+      assertFalse( radios[ 1 ].getFocused() );
+      assertTrue( radios[ 0 ]._selected );
+      assertTrue( radios[ 0 ].getFocused() );
+      for( var i = 0; i < 3; i++ ) {
+        radios[ i ].destroy();
+      }
+    },
+
     testExecutePushButton : function() {
       var button = new rwt.widgets.Button( "push" );
       button.addState( "rwt_PUSH" );
