@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -381,7 +381,7 @@ public class TreeViewerExample implements IExamplePage {
 
     @Override
     public void drop( DropTargetEvent event ) {
-      if( event.data == null ) {
+      if( event.data == null || event.item == null ) {
         event.detail = DND.DROP_NONE;
       } else {
         TreeObject draggedObject = ( TreeObject )event.data;
@@ -642,8 +642,8 @@ public class TreeViewerExample implements IExamplePage {
       this.style = style;
       cityFont = createFont( "Times New Roman", 13, SWT.NONE );
       continentFont = createFont( "Arial", 14, SWT.ITALIC );
-      timezoneTextColor = Graphics.getColor( 239, 41, 41 );
-      offsetTextColor = Graphics.getColor( 252, 175, 62 );
+      timezoneTextColor = new Color( device, 239, 41, 41 );
+      offsetTextColor = new Color( device, 252, 175, 62 );
       if( style == MODERN_STYLE ) {
         continentImage = createImage( ICON_EARTH );
         cityImage = createImage( ICON_GREENDOT );
