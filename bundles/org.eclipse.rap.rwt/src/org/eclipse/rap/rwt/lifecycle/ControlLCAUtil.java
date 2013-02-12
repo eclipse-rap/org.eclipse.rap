@@ -13,10 +13,12 @@ package org.eclipse.rap.rwt.lifecycle;
 
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_TEXT;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 
 import java.lang.reflect.Field;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
@@ -563,7 +565,10 @@ public class ControlLCAUtil {
       result.detail = SWT.ICON_SEARCH;
     } else if( "cancel".equals( detail ) ) {
       result.detail = SWT.ICON_CANCEL;
+    } else if( "hyperlink".equals( detail ) ) {
+      result.detail = RWT.HYPERLINK;
     }
+    result.text = readEventPropertyValue( widget, eventName, EVENT_PARAM_TEXT );
     return result;
   }
 

@@ -134,6 +134,9 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _registerListeners : function() {
       this._rootItem.addEventListener( "update", this._onItemUpdate, this );
+      this.addEventListener( "mousedown", this._handleHyperlinkActivation, this );
+      this.addEventListener( "mouseup", this._handleHyperlinkActivation, this );
+      this.addEventListener( "click", this._handleHyperlinkActivation, this );
       this.addEventListener( "mousedown", this._onMouseDown, this );
       this.addEventListener( "mouseup", this._onMouseUp, this );
       this.addEventListener( "mouseout", this._onMouseOut, this );
@@ -534,7 +537,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     _onMouseDown : function( event ) {
       this._delayedSelection = false;
       var target = event.getOriginalTarget();
-      if( target instanceof rwt.widgets.base.GridRow ) {
+      if( target instanceof rwt.widgets.base.GridRow && !this._isHyperlinkTarget( event ) ) {
         this._onRowMouseDown( target, event );
       }
     },
@@ -561,6 +564,31 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
           this._onSelectionClick( event, item );
         }
       }
+    },
+
+    _handleHyperlinkActivation : function( event ) {
+      if( this._isRWTHyperlinkTarget( event ) ) {
+        event.setDefaultPrevented( true );
+        if( event.getType() === "click" ) {
+          var domTarget = event.getDomTarget();
+          var row = event.getOriginalTarget();
+          var item = this._rowContainer.findItemByRow( row );
+          var text = domTarget.getAttribute( "href" );
+          if( !text ) {
+            text = domTarget.innerHTML;
+          }
+          this._sendSelectionEvent( item, false, "hyperlink", undefined, text );
+        }
+      }
+    },
+
+    _isHyperlinkTarget : function( event ) {
+      return event.getDomTarget().tagName.toLowerCase() === "a";
+    },
+
+    _isRWTHyperlinkTarget : function( event ) {
+      var domTarget = event.getDomTarget();
+      return this._isHyperlinkTarget( event ) && domTarget.getAttribute( "target" ) === "_rwt";
     },
 
     _isSelectionClick : function( identifier ) {
@@ -1041,14 +1069,15 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       }
     },
 
-    _sendSelectionEvent : function( item, defaultSelected, detail, index ) {
+    _sendSelectionEvent : function( item, defaultSelected, detail, index, text ) {
       if(    ( this._hasSelectionListener && !defaultSelected )
           || ( this._hasDefaultSelectionListener && defaultSelected ) )
       {
         var properties = {
           "item" : this._getItemId( item ),
           "detail" : detail,
-          "index" : !isNaN( index ) ? index : undefined
+          "index" : !isNaN( index ) ? index : undefined,
+          "text" : text
         };
         if( defaultSelected ) {
           rwt.remote.EventUtil.notifyDefaultSelected( this, properties );

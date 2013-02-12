@@ -1433,6 +1433,54 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    testClickOnRWTHyperlinkWithHref : function() {
+      var tree = this._createDefaultTree( false, false );
+      tree.getRenderConfig().markupEnabled = true;
+      tree.setHasSelectionListener( true );
+      this._fakeCheckBoxAppearance();
+      tree.setItemCount( 1 );
+      var item = this._createItem( tree.getRootItem(), 0 );
+      item.setTexts( [ "<a href=\"foo\" target=\"_rwt\">Test</a>" ] );
+      rwt.remote.ObjectRegistry.add( "w11", tree, gridHandler );
+      rwt.remote.ObjectRegistry.add( "w2", item, itemHandler );
+      TestUtil.flush();
+      TestUtil.initRequestLog();
+      var node = tree._rowContainer._getTargetNode().childNodes[ 0 ].childNodes[ 0 ].childNodes[ 0 ];
+
+      TestUtil.clickDOM( node );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "w2", message.findNotifyProperty( "w11", "Selection", "item" ) );
+      assertEquals( "hyperlink", message.findNotifyProperty( "w11", "Selection", "detail" ) );
+      assertEquals( "foo", message.findNotifyProperty( "w11", "Selection", "text" ) );
+      tree.destroy();
+    },
+
+    testClickOnRWTHyperlinkWithoutHref : function() {
+      var tree = this._createDefaultTree( false, false );
+      tree.getRenderConfig().markupEnabled = true;
+      tree.setHasSelectionListener( true );
+      this._fakeCheckBoxAppearance();
+      tree.setItemCount( 1 );
+      var item = this._createItem( tree.getRootItem(), 0 );
+      item.setTexts( [ "<a target=\"_rwt\">Test</a>" ] );
+      rwt.remote.ObjectRegistry.add( "w11", tree, gridHandler );
+      rwt.remote.ObjectRegistry.add( "w2", item, itemHandler );
+      TestUtil.flush();
+      TestUtil.initRequestLog();
+      var node = tree._rowContainer._getTargetNode().childNodes[ 0 ].childNodes[ 0 ].childNodes[ 0 ];
+
+      TestUtil.clickDOM( node );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "w2", message.findNotifyProperty( "w11", "Selection", "item" ) );
+      assertEquals( "hyperlink", message.findNotifyProperty( "w11", "Selection", "detail" ) );
+      assertEquals( "Test", message.findNotifyProperty( "w11", "Selection", "text" ) );
+      tree.destroy();
+    },
+
     testHasFullSelection : function() {
       var tree = this._createDefaultTree();
       assertTrue( tree.getRenderConfig().fullSelection );

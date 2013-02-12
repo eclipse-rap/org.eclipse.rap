@@ -395,6 +395,21 @@ public final class RWT {
   public static final String CUSTOM_VARIANT = "org.eclipse.rap.rwt.customVariant";
 
   /**
+   * Used as extra detail information about the selection event processed by the Tree and Table.
+   * Indicates that hyperlink in the item markup text is clicked.
+   *
+   * <p><b>Used By:</b><ul>
+   * <li><code>Table</code></li>
+   * <li><code>Tree</code></li>
+   * </ul></p>
+   *
+   * @see RWT#MARKUP_ENABLED
+   * @see org.eclipse.swt.events.SelectionEvent#detail
+   * @since 2.1
+   */
+  public static final int HYPERLINK = 1 << 26;
+
+  /**
    * Returns the instance of the life cycle which is currently processed.
    *
    * @return instance of {@link ILifeCycle}

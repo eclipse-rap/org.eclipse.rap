@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
@@ -147,6 +148,20 @@ public class ControlLCAUtil_Test {
   }
 
   @Test
+  public void testProcessSelectionWithText() {
+    SelectionListener listener = mock( SelectionListener.class );
+    control.addSelectionListener( listener );
+
+    fakeSelectionEvent( control, ClientMessageConst.EVENT_PARAM_TEXT, "foo" );
+    ControlLCAUtil.processSelection( control, null, false );
+
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( event.text, "foo" );
+  }
+
+  @Test
   public void testProcessSelectionWithoutReadingBounds() {
     Listener listener = mock( Listener.class );
     control.addListener( SWT.Selection, listener );
@@ -177,6 +192,20 @@ public class ControlLCAUtil_Test {
     verify( listener ).widgetSelected( captor.capture() );
     SelectionEvent event = captor.getValue();
     assertEquals( SWT.CHECK, event.detail );
+  }
+
+  @Test
+  public void testProcessSelectionWithDetailHyperlink() {
+    SelectionListener listener = mock( SelectionListener.class );
+    control.addSelectionListener( listener );
+
+    fakeSelectionEvent( control, ClientMessageConst.EVENT_PARAM_DETAIL, "hyperlink" );
+    ControlLCAUtil.processSelection( control, null, false );
+
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( RWT.HYPERLINK, event.detail );
   }
 
   @Test

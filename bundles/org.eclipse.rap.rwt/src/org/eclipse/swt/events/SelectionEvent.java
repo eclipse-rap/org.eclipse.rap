@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,6 +99,7 @@ public class SelectionEvent extends TypedEvent {
    * -->
    * </ul></p><p><b>Table and Tree</b><ul>
    * <li>{@link org.eclipse.swt.SWT#CHECK}</li>
+   * <li>{@link org.eclipse.rap.rwt.RWT#HYPERLINK}</li>
    * <!--
    * </ul></p><p><b>Text</b><ul>
    * <li>{@link org.eclipse.swt.SWT#CANCEL}</li>
