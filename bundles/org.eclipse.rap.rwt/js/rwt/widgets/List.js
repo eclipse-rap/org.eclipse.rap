@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,9 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     var selMgr = this.getManager();
     selMgr.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
     selMgr.addEventListener( "changeSelection", this._onSelectionChange, this );
+    this.addEventListener( "mousedown", this._handleHyperlinkActivation, this );
+    this.addEventListener( "mouseup", this._handleHyperlinkActivation, this );
+    this.addEventListener( "click", this._handleHyperlinkActivation, this );
     this.addEventListener( "focus", this._onFocusIn, this );
     this.addEventListener( "blur", this._onFocusOut, this );
     this.addEventListener( "dblclick", this._onDblClick, this );
@@ -35,6 +38,9 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     var selMgr = this.getManager();
     selMgr.removeEventListener( "changeLeadItem", this._onChangeLeadItem, this );
     selMgr.removeEventListener( "changeSelection", this._onSelectionChange, this );
+    this.removeEventListener( "mousedown", this._handleHyperlinkActivation, this );
+    this.removeEventListener( "mouseup", this._handleHyperlinkActivation, this );
+    this.removeEventListener( "click", this._handleHyperlinkActivation, this );
     this.removeEventListener( "focus", this._onFocusIn, this );
     this.removeEventListener( "blur", this._onFocusOut, this );
     this.removeEventListener( "dblclick", this._onDblClick, this );
@@ -131,6 +137,29 @@ rwt.qx.Class.define( "rwt.widgets.List", {
       if( !rwt.remote.EventUtil.getSuspended() && this._hasDefaultSelectionListener ) {
         rwt.remote.EventUtil.notifyDefaultSelected( this );
       }
+    },
+
+    _handleHyperlinkActivation : function( event ) {
+      if( this._isRWTHyperlinkTarget( event ) ) {
+        event.setDefaultPrevented( true );
+        if( event.getType() === "click" && this._hasSelectionListener ) {
+          var domTarget = event.getDomTarget();
+          var text = domTarget.getAttribute( "href" );
+          if( !text ) {
+            text = domTarget.innerHTML;
+          }
+          var properties = {
+            "detail" : "hyperlink",
+            "text" : text
+          };
+          rwt.remote.EventUtil.notifySelected( this, properties );
+        }
+      }
+    },
+
+    _isRWTHyperlinkTarget : function( event ) {
+      var domTarget = event.getDomTarget();
+      return this._isHyperlinkTarget( event ) && domTarget.getAttribute( "target" ) === "_rwt";
     },
 
     _onFocusIn : function( evt ) {

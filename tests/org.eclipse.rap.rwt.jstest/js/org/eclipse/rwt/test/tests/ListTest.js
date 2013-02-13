@@ -9,6 +9,12 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
+var MessageProcessor = rwt.remote.MessageProcessor;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
   extend : rwt.qx.Object,
@@ -16,10 +22,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
   members : {
 
     testCreateListByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -28,8 +32,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.List );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -40,10 +43,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testCreateListWithMultiByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -52,18 +53,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget.getManager().getMultiSelection() );
       shell.destroy();
       widget.destroy();
     },
 
     testCreateListWithMarkupEnabled : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -73,18 +71,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "markupEnabled" : true
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget._markupEnabled );
       shell.destroy();
       widget.destroy();
     },
 
     testSetItemsByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -94,8 +89,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "items" : [ "a", "b", "c" ]
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       var items = widget.getItems();
       assertEquals( 3, widget.getItemsCount() );
       assertEquals( "a", items[ 0 ].getLabel() );
@@ -106,10 +100,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetItemsEscapeTextByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -119,8 +111,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "items" : [ "  foo &\nbar " ]
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       var items = widget.getItems();
       assertEquals( "&nbsp; foo &amp; bar&nbsp;", items[ 0 ].getLabel() );
       shell.destroy();
@@ -128,10 +119,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetItemsWithMarkupEnabledByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -142,8 +131,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "items" : [ "<b>bold</b>  </br>  <i>italic</i>" ]
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       var items = widget.getItems();
       assertEquals( "<b>bold</b>  </br>  <i>italic</i>", items[ 0 ].getLabel() );
       shell.destroy();
@@ -151,10 +139,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetSingleSelectionIndicesByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -165,8 +151,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "selectionIndices" : [ 2 ]
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       var items = widget.getSelectedItems();
       assertEquals( 1, items.length );
       assertEquals( "c", items[ 0 ].getLabel() );
@@ -175,10 +160,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetMultiSelectionIndicesByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -189,8 +172,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "selectionIndices" : [ 0, 2 ]
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       var items = widget.getSelectedItems();
       assertEquals( 2, items.length );
       assertEquals( "a", items[ 0 ].getLabel() );
@@ -200,10 +182,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetAllSelectionIndicesByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -214,8 +194,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "selectionIndices" : [ 0, 1, 2 ]
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       var items = widget.getSelectedItems();
       assertEquals( 3, items.length );
       assertEquals( "a", items[ 0 ].getLabel() );
@@ -226,11 +205,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetTopIndexByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
 
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -245,8 +222,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       } );
       TestUtil.flush();
 
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( 2, widget._topIndex );
       assertEquals( 200, widget.getVerticalBar().getValue() );
       shell.destroy();
@@ -254,10 +230,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetFocusIndexByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -268,8 +242,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "focusIndex" : 2
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       var focusItem = widget.getManager().getLeadItem();
       assertEquals( "c", focusItem.getLabel() );
       shell.destroy();
@@ -277,11 +250,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetScrollBarsNotVisibleByDefault : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
 
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -291,8 +262,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
         }
       } );
 
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertFalse( widget._horzScrollBar.getDisplay() );
       assertFalse( widget._vertScrollBar.getDisplay() );
       shell.destroy();
@@ -300,10 +270,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetScrollBarsVisibleByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -317,8 +285,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       TestUtil.protocolSet( "w3_vscroll", { "visibility" : true } );
       TestUtil.protocolSet( "w3_hscroll", { "visibility" : true } );
 
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget._horzScrollBar.getDisplay() );
       assertTrue( widget._vertScrollBar.getDisplay() );
       shell.destroy();
@@ -326,10 +293,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetItemDimensionsByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -339,8 +304,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "itemDimensions" : [ 10, 20 ]
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( 10, widget._itemWidth );
       assertEquals( 20, widget._itemHeight );
       shell.destroy();
@@ -348,10 +312,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetHasSelectionListenerByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -361,18 +323,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "Selection" : true } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
       widget.destroy();
     },
 
     testSetHasDefaultSelectionListenerByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -382,18 +341,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget._hasDefaultSelectionListener );
       shell.destroy();
       widget.destroy();
     },
 
     testSetHasFocusListenerByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -404,8 +360,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       } );
       TestUtil.protocolListen( "w3", { "FocusIn" : true } );
       TestUtil.protocolListen( "w3", { "FocusOut" : true } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget.hasEventListeners( "focusin" ) );
       assertTrue( widget.hasEventListeners( "focusout" ) );
       shell.destroy();
@@ -413,7 +368,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testCreateDispose : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       assertTrue( list instanceof rwt.widgets.List );
       list.destroy();
@@ -422,7 +376,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetItems : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 3 );
       TestUtil.flush();
@@ -435,7 +388,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testHoverItem : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       this._fakeAppearance();
       var list = this._createDefaultList();
       this._addItems( list, 3 );
@@ -452,7 +404,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testHoverEvenItem : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       this._fakeAppearance();
       var list = this._createDefaultList();
       this._addItems( list, 3 );
@@ -469,7 +420,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSelectItem : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 3 );
       TestUtil.flush();
@@ -481,7 +431,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSelectItemByCharacter : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setItems( [ "Akira", "Boogiepop", "C something", "Daria" ] );
       TestUtil.flush();
@@ -493,11 +442,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSelectMarkupItemByCharacter : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -507,7 +453,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "markupEnabled" : true
         }
       } );
-      var list = ObjectManager.getObject( "w3" );
+      var list = ObjectRegistry.getObject( "w3" );
 
       list.setItems( [ "Akira", "Boogiepop", "<i>C</i> something", "Daria" ] );
       TestUtil.flush();
@@ -521,7 +467,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSelectItems : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 3 );
       TestUtil.flush();
@@ -534,7 +479,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSelectAll : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 3 );
       TestUtil.flush();
@@ -548,7 +492,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testFocusItem : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setItems( [ "item0", "item1", "item2" ] );
       list.focusItem( 1 );
@@ -559,7 +502,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSendVerticalScrollPosition : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 300 );
       TestUtil.flush();
@@ -574,14 +516,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSendSelection : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setItems( [ "item0", "item1", "item2" ] );
       TestUtil.flush();
       var item = this._getItems( list )[ 1 ];
       list.setHasSelectionListener( true );
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.List" );
-      rwt.remote.ObjectRegistry.add( "w3", list, handler );
+      ObjectRegistry.add( "w3", list, handler );
 
       TestUtil.click( item );
 
@@ -602,7 +543,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetItemDimensions : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setItemDimensions( 200, 20 );
       this._addItems( list, 3 );
@@ -622,14 +562,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSendDefaultSelected : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setItems( [ "item0", "item1", "item2" ] );
       TestUtil.flush();
       var item = this._getItems( list )[ 1 ];
       list.setHasDefaultSelectionListener( true );
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.List" );
-      rwt.remote.ObjectRegistry.add( "w3", list, handler );
+      ObjectRegistry.add( "w3", list, handler );
 
       TestUtil.doubleClick( item );
 
@@ -640,8 +579,45 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.destroy();
     },
 
+    testClickOnRWTHyperlinkWithHref : function() {
+      var list = this._createDefaultList();
+      list.setMarkupEnabled( true );
+      list.setItems( [ "<a href=\"foo\" target=\"_rwt\">Test</a>" ] );
+      list.setHasSelectionListener( true );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.List" );
+      ObjectRegistry.add( "w3", list, handler );
+      TestUtil.flush();
+      TestUtil.initRequestLog();
+      var node = this._getItems( list )[ 0 ]._getTargetNode().childNodes[ 0 ].childNodes[ 0 ];
+
+      TestUtil.clickDOM( node );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "hyperlink", message.findNotifyProperty( "w3", "Selection", "detail" ) );
+      assertEquals( "foo", message.findNotifyProperty( "w3", "Selection", "text" ) );
+    },
+
+    testClickOnRWTHyperlinkWithoutHref : function() {
+      var list = this._createDefaultList();
+      list.setMarkupEnabled( true );
+      list.setItems( [ "<a target=\"_rwt\">Test</a>" ] );
+      list.setHasSelectionListener( true );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.List" );
+      ObjectRegistry.add( "w3", list, handler );
+      TestUtil.flush();
+      TestUtil.initRequestLog();
+      var node = this._getItems( list )[ 0 ]._getTargetNode().childNodes[ 0 ].childNodes[ 0 ];
+
+      TestUtil.clickDOM( node );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "hyperlink", message.findNotifyProperty( "w3", "Selection", "detail" ) );
+      assertEquals( "Test", message.findNotifyProperty( "w3", "Selection", "text" ) );
+    },
+
     testBasicLayout : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       var client = list._clientArea;
       var hbar = list._horzScrollBar;
@@ -667,7 +643,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testScrollBarVisibility : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setScrollBarsVisible( false, false );
       TestUtil.flush();
@@ -689,7 +664,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testRelayoutOnScrollBarShowHide : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setScrollBarsVisible( false, true );
       TestUtil.flush();
@@ -704,7 +678,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testScrollBarMaximum : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 10 );
       list.setItemDimensions( 240, 25 );
@@ -716,7 +689,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testAddItemsChangesScrollBarMaximum : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 5 );
       list.setItemDimensions( 240, 25 );
@@ -732,7 +704,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testScrollWhileInvisible : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setItemDimensions( 500, 20 );
       this._addItems( list, 70 );
@@ -750,7 +721,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testAddItemsAndScroll : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setItemDimensions( 500, 20 );
       this._addItems( list, 10 );
@@ -768,7 +738,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testDispose: function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       var clientArea = list._clientArea;
       var hbar = list._horzScrollBar;
@@ -794,7 +763,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testInitialPosition : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList( true );
       list.setHBarSelection( 10 );
       list.setTopIndex( 1 );
@@ -807,7 +775,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSyncScrollBars : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 70 );
       list.setItemDimensions( 500, 20 );
@@ -821,7 +788,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testNoScrollStyle : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 70 );
       list.setItemDimensions( 500, 20 );
@@ -837,7 +803,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testOnlyHScrollStyle : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 70 );
       list.setItemDimensions( 500, 20 );
@@ -853,7 +818,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testOnlyVScrollStyle : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 70 );
       list.setItemDimensions( 500, 20 );
@@ -868,10 +832,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testApplyCustomVariantToExistingItems : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -884,8 +846,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
       TestUtil.protocolSet( "w3", { "customVariant" : "variant_myVariant" } );
 
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       var items = widget.getItems();
       assertTrue( items[ 0 ].hasState( "variant_myVariant" ) );
       assertTrue( items[ 1 ].hasState( "variant_myVariant" ) );
@@ -895,10 +856,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testApplyCustomVariantToNewItems : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -912,8 +871,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
       TestUtil.protocolSet( "w3", { "items" : [ "a", "b", "c" ] } );
 
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       var items = widget.getItems();
       assertTrue( items[ 0 ].hasState( "variant_myVariant" ) );
       assertTrue( items[ 1 ].hasState( "variant_myVariant" ) );
@@ -923,10 +881,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testReplaceCustomVariant : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.List",
@@ -941,8 +897,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
       TestUtil.protocolSet( "w3", { "customVariant" : "variant_other" } );
 
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       var items = widget.getItems();
       assertFalse( items[ 0 ].hasState( "variant_myVariant" ) );
       assertFalse( items[ 1 ].hasState( "variant_myVariant" ) );
@@ -958,13 +913,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     // Helpers
 
     _createDefaultList : function( noflush ) {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = new rwt.widgets.List( true );
       list.setItemDimensions( 100, 20 );
       list.addToDocument();
       list.setSpace( 5, 238, 5, 436 );
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.List" );
-      rwt.remote.ObjectRegistry.add( "w3", list, handler );
+      ObjectRegistry.add( "w3", list, handler );
       this._createProtocolScrollBars( "w3" );
       if( noflush !== true ) {
         TestUtil.flush();
@@ -1013,7 +967,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     _fakeAppearance : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.fakeAppearance( "list-item", {
         style : function( states ) {
           var result = {
@@ -1067,3 +1020,5 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
   }
 
 } );
+
+}());

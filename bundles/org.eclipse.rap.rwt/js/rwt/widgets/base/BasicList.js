@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -95,30 +95,38 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
     },
 
     _onmousedown : function( event ) {
-      var vItem = this.getListItemTarget( event.getTarget() );
-      if( vItem ) {
-        this._manager.handleMouseDown( vItem, event );
+      if( !this._isHyperlinkTarget( event ) ) {
+        var vItem = this.getListItemTarget( event.getTarget() );
+        if( vItem ) {
+          this._manager.handleMouseDown( vItem, event );
+        }
       }
     },
 
     _onmouseup : function( event ) {
-      var vItem = this.getListItemTarget( event.getTarget() );
-      if( vItem ) {
-        this._manager.handleMouseUp( vItem, event );
+      if( !this._isHyperlinkTarget( event ) ) {
+        var vItem = this.getListItemTarget( event.getTarget() );
+        if( vItem ) {
+          this._manager.handleMouseUp( vItem, event );
+        }
       }
     },
 
     _onclick : function( event ) {
-      var vItem = this.getListItemTarget( event.getTarget() );
-      if( vItem ) {
-        this._manager.handleClick( vItem, event );
+      if( !this._isHyperlinkTarget( event ) ) {
+        var vItem = this.getListItemTarget( event.getTarget() );
+        if( vItem ) {
+          this._manager.handleClick( vItem, event );
+        }
       }
     },
 
     _ondblclick : function( event ) {
-      var vItem = this.getListItemTarget( event.getTarget() );
-      if( vItem ) {
-        this._manager.handleDblClick( vItem, event );
+      if( !this._isHyperlinkTarget( event ) ) {
+        var vItem = this.getListItemTarget( event.getTarget() );
+        if( vItem ) {
+          this._manager.handleDblClick( vItem, event );
+        }
       }
     },
 
@@ -361,6 +369,10 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
 
     _onListItemMouseOut : function( evt ) {
       evt.getTarget().removeState( "over" );
+    },
+
+    _isHyperlinkTarget : function( event ) {
+      return event.getDomTarget().tagName.toLowerCase() === "a";
     }
 
   }
