@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,10 +57,8 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     // API
 
     setMessage : function( value ) {
-      if( this._inputTag !== "textarea" ) {
-        this._message = value;
-        this._updateMessage();
-      }
+      this._message = value;
+      this._updateMessage();
     },
 
     getMessage : function() {
@@ -495,8 +493,14 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
                     - this._getIconOuterWidth( "cancel" );
         style.width = Math.max( 0, width ) + "px";
         var messageHeight = parseInt( style.height, 10 );
-        style.top = Math.round( this.getInnerHeight() / 2 - messageHeight / 2 ) + "px";
-        style.left = ( this._getIconOuterWidth( "search" ) + styleMap.paddingLeft ) + "px";
+        if( this._inputTag == "textarea" ) {
+          // The text-area padding is hard codded in the appearances
+          style.top = "0px";
+          style.left = "3px";
+        } else {
+          style.top = Math.round( this.getInnerHeight() / 2 - messageHeight / 2 ) + "px";
+          style.left = ( this._getIconOuterWidth( "search" ) + styleMap.paddingLeft ) + "px";
+        }
       }
     },
 

@@ -170,7 +170,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         }
       } );
       text = ObjectRegistry.getObject( "w3" );
-      assertNull( text.getUserData( "messageLabel" ) );
+      assertEquals( "some text", text.getMessage() );
     },
 
     testDestroySingleTextByProtocol : function() {
@@ -833,7 +833,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       text.setMessage( "konnichiwa" );
 
-      assertEquals( 1, text._getTargetNode().childNodes.length );
+      var element = text._getTargetNode().firstChild;
+      assertEquals( "konnichiwa", element.innerHTML );
     },
 
     testSetMessageBeforeCreate : function() {
