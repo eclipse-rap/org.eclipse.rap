@@ -177,6 +177,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         this._config.markupEnabled = true;
       }
       this._hasFixedColumns = map.splitContainer;
+      this._config.baseAppearance = map.appearance;
       this._rowContainer.setBaseAppearance( map.appearance );
       this.setAppearance( map.appearance );
     },

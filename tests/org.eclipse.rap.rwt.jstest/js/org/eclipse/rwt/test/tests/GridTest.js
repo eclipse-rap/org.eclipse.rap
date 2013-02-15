@@ -47,6 +47,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
       assertEquals( "tree", widget.getAppearance() );
+      assertEquals( "tree", widget.getRenderConfig().baseAppearance );
       assertFalse( widget.getRenderConfig().fullSelection );
       assertFalse( widget.getRenderConfig().hideSelection );
       assertFalse( widget.getRenderConfig().hasCheckBoxes );

@@ -224,9 +224,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row._getTargetNode();
       assertEquals( 2, node.childNodes.length );
       var bounds = TestUtil.getElementBounds( node.childNodes[ 1 ] );
-      assertEquals( 0, bounds.top );
+      assertEquals( 6, bounds.top );
       assertEquals( 21, bounds.left );
-      assertEquals( 15, bounds.height );
+      assertEquals( 9, bounds.height );
       assertEquals( 45, bounds.width );
     },
 
@@ -240,9 +240,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row._getTargetNode();
       assertEquals( 1, node.childNodes.length );
       var bounds = TestUtil.getElementBounds( node.childNodes[ 0 ] );
-      assertEquals( 0, bounds.top );
+      assertEquals( 6, bounds.top );
       assertEquals( 5, bounds.left );
-      assertEquals( 15, bounds.height );
+      assertEquals( 9, bounds.height );
       assertEquals( 45, bounds.width );
     },
 
@@ -257,8 +257,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row._getTargetNode();
       assertEquals( 1, node.childNodes.length );
       var bounds = TestUtil.getElementBounds( node.childNodes[ 0 ] );
-      assertEquals( 0, bounds.top );
-      assertEquals( 40, bounds.height );
+      assertEquals( 6, bounds.top );
+      assertEquals( 34, bounds.height );
     },
 
     testRenderLabelBoundsAfterCustomHeightItemContentOnly : function() {
@@ -275,8 +275,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row._getTargetNode();
       assertEquals( 1, node.childNodes.length );
       var bounds = TestUtil.getElementBounds( node.childNodes[ 0 ] );
-      assertEquals( 0, bounds.top );
-      assertEquals( 15, bounds.height );
+      assertEquals( 6, bounds.top );
+      assertEquals( 9, bounds.height );
     },
 
     testChangeItemLabelMetricsWithEmptyItemThenScroll : function() {
@@ -298,9 +298,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row._getTargetNode();
       assertEquals( 1, node.childNodes.length );
       var bounds = TestUtil.getElementBounds( node.childNodes[ 0 ] );
-      assertEquals( 0, bounds.top );
+      assertEquals( 6, bounds.top );
       assertEquals( 10, bounds.left );
-      assertEquals( 15, bounds.height );
+      assertEquals( 9, bounds.height );
       assertEquals( 45, bounds.width );
     },
 
@@ -322,9 +322,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row._getTargetNode();
       assertEquals( 1, node.childNodes.length );
       var bounds = TestUtil.getElementBounds( node.childNodes[ 0 ] );
-      assertEquals( 0, bounds.top );
+      assertEquals( 6, bounds.top );
       assertEquals( 10, bounds.left );
-      assertEquals( 15, bounds.height );
+      assertEquals( 9, bounds.height );
       assertEquals( 41, bounds.width );
     },
 
@@ -750,7 +750,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var font = TestUtil.getElementFont( node );
       assertTrue( font.indexOf( "monospace" ) != -1 );
       assertTrue( font.indexOf( "12px" ) != -1 );
-      assertEquals( node.style.height, node.style.lineHeight );
     },
 
     testRenderCellFont : function() {
@@ -1038,9 +1037,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row._getTargetNode();
       assertEquals( 2, node.childNodes.length );
       var style = node.childNodes[ 1 ].style;
-      assertEquals( 0, parseInt( style.top, 10 ) );
+      assertEquals( 6, parseInt( style.top, 10 ) );
       assertEquals( 5 + 2 * 16, parseInt( style.left, 10 ) );
-      assertEquals( 15, parseInt( style.height, 10 ) );
+      assertEquals( 9, parseInt( style.height, 10 ) );
       assertEquals( 33, parseInt( style.width, 10 ) );
     },
 
@@ -1386,7 +1385,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = this._createItem( tree );
       item.setCellChecked( [ true ] );
       this._setCheckBox( "mycheckbox.gif" );
-      var log = []
+      var log = [];
 
       row.renderItem( item, tree._config, false, null );
       row.addEventListener( "mousedown", function( event ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -143,6 +143,16 @@ var appearances = {
         result.backgroundImage = [ source, 10, 7 ];
       }
       return result;
+    }
+  },
+
+  "tree-cell" : {
+    style : function( states ) {
+       var tv = new rwt.theme.ThemeValues( states );
+       var result = {};
+       result.spacing = tv.getCssDimension( "Tree-Cell", "spacing" );
+       result.padding = tv.getCssBoxDimensions( "Tree-Cell", "padding" );
+       return result;
     }
   }
 

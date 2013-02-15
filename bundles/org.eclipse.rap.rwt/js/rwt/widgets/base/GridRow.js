@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -533,8 +533,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( element ) {
         var left = this._getItemTextLeft( item, cell, config );
         var width = this._getItemTextWidth( item, cell, config );
-        this._setBounds( element, left, 0, width, this.getHeight() );
-        element.style.lineHeight = config.markupEnabled ? "" : element.style.height;
+        var top = this._getCellPadding( config )[ 0 ];
+        this._setBounds( element, left, top, width, this.getHeight() - top );
       }
     },
 
@@ -955,6 +955,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         result = this._correctWidth( result, offset, columnIndex, config );
       }
       return result;
+    },
+
+    _getCellPadding : function( config ) {
+      var manager = rwt.theme.AppearanceManager.getInstance();
+      return manager.styleFrom( config.baseAppearance + "-cell", {} ).padding;
     },
 
     _correctOffset : function( offset, item, config ) {
