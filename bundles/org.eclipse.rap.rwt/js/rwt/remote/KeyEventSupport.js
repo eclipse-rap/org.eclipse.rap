@@ -171,7 +171,7 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
         "keyCode" : keyCode,
         "charCode" : finalCharCode
       };
-      rwt.remote.EventUtil.addModifierToProperties( properties );
+      rwt.remote.EventUtil.addModifierToProperties( properties, domEvent );
       if( this._shouldSendTraverse( keyCode, charCode, domEvent, widget ) ) {
         remoteObject.notify( "Traverse", properties, true );
       }

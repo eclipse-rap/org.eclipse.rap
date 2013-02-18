@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -104,12 +104,12 @@ rwt.qx.Class.define( "rwt.remote.EventUtil", {
       }
     },
 
-    addModifierToProperties : function( properties ) {
-      var commandKey
-        = rwt.client.Client.getPlatform() === "mac" && rwt.remote.EventUtil._metaKey;
-      properties.shiftKey = rwt.remote.EventUtil._shiftKey;
-      properties.ctrlKey = rwt.remote.EventUtil._ctrlKey || commandKey;
-      properties.altKey = rwt.remote.EventUtil._altKey;
+    addModifierToProperties : function( properties, event ) {
+      var isMac = rwt.client.Client.getPlatform() === "mac";
+      var commandKey = isMac && ( event ? event.metaKey : rwt.remote.EventUtil._metaKey );
+      properties.shiftKey = event ? event.shiftKey : rwt.remote.EventUtil._shiftKey;
+      properties.ctrlKey = ( event ? event.ctrlKey : rwt.remote.EventUtil._ctrlKey ) || commandKey;
+      properties.altKey = event ? event.altKey : rwt.remote.EventUtil._altKey;
     },
 
     _getKeyModifier : function() {

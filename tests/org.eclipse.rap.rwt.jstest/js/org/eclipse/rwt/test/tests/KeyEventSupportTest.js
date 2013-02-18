@@ -617,6 +617,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       this._disposeTextWidget( text );
     },
 
+    testActiveCancelKeySequence_Bug399989 : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var text = this._createTextWidget();
+      this._setActiveKeys( text, [ "#90", "SHIFT+#90" ] );
+      this._setCancelKeys( text, [ "#90", "SHIFT+#90" ] );
+      var dom = rwt.event.DomEvent;
+
+      TestUtil.press( text, "z", false, 0 );
+      TestUtil.press( text, "z", false, dom.SHIFT_MASK );
+      TestUtil.press( text, "z", false, 0 );
+
+      var messages = TestUtil.getMessages();
+      assertFalse( messages[ 0 ].findNotifyProperty( "w3", "KeyDown", "shiftKey" ) );
+      assertTrue( messages[ 1 ].findNotifyProperty( "w3", "KeyDown", "shiftKey" ) );
+      assertFalse( messages[ 2 ].findNotifyProperty( "w3", "KeyDown", "shiftKey" ) );
+      this._disposeTextWidget( text );
+    },
+
     testCancelKeySequenceNotProcessed : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
