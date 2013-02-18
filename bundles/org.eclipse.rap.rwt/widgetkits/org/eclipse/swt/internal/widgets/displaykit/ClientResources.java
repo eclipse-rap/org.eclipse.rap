@@ -282,6 +282,7 @@ public final class ClientResources {
     "rwt/remote/handler/JavaScriptLoaderHandler.js",
     "rwt/runtime/System.js",
     "rwt/remote/handler/ClientInfoHandler.js",
+    "rwt/widgets/util/MnemonicHandler.js",
     "rap.js"
   };
 
