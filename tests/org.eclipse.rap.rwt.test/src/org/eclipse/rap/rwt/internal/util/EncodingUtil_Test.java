@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.lifecycle;
+package org.eclipse.rap.rwt.internal.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
