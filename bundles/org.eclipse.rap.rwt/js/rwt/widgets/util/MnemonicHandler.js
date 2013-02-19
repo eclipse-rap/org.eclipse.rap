@@ -11,7 +11,7 @@
 
 (function(){
 
-var EventHandlerUtil = rwt.event.EventHandlerUtil
+var EventHandlerUtil = rwt.event.EventHandlerUtil;
 
 rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
@@ -21,6 +21,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
   construct : function() {
     this.base( arguments );
     this._activator = null;
+    this._active = false;
   },
 
   members : {
@@ -36,10 +37,20 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
       }
     },
 
+    deactivate : function() {
+      this._active = false;
+    },
+
     handleKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
       if( this._isActivation( eventType, keyCode, charCode, domEvent ) ) {
         this.dispatchSimpleEvent( "mnemonic", {
           "type" : "show"
+        } );
+        this._active = true;
+      } else if( this._isTrigger( eventType, keyCode, charCode, domEvent ) ) {
+        this.dispatchSimpleEvent( "mnemonic", {
+          "type" : "trigger",
+          "charCode" : String.fromCharCode( charCode ).toUpperCase().charCodeAt( 0 )
         } );
       }
     },
@@ -52,8 +63,11 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
                  && this._activator.shiftKey === domEvent.shiftKey;
       }
       return result;
-    }
+    },
 
+    _isTrigger : function( eventType, keyCode, charCode, domEvent ) {
+      return this._active && eventType === "keypress" && !isNaN( charCode ) && charCode > 0;
+     }
 
   }
 

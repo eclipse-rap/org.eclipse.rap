@@ -24,6 +24,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
 
     setUp : function() {
       handler.setActivator( null );
+      handler.deactivate();
       shell = TestUtil.createShellByProtocol( "w2" );
       TestUtil.flush();
     },
@@ -88,7 +89,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
         type.push( event.type );
       } );
 
-      TestUtil.press( shell, "a", false, ( DomEvent.CTRL_MASK | DomEvent.ALT_MASK ) );
+      TestUtil.press( shell, "B", false, ( DomEvent.CTRL_MASK | DomEvent.ALT_MASK ) );
 
       assertEquals( [], type );
     },
@@ -102,8 +103,75 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       TestUtil.press( shell, "Control", false, ( DomEvent.CTRL_MASK | DomEvent.ALT_MASK ) );
 
       assertEquals( [], type );
-    }
+    },
 
+    testDoNotFireActivateWithoutShow : function() {
+      var type = [];
+      handler.setActivator( "CTRL" );
+      handler.addEventListener( "mnemonic", function( event ) {
+        type.push( event.type );
+      } );
+
+      TestUtil.press( shell, "B", false, DomEvent.CTRL_MASK );
+
+      assertEquals( [], type );
+    },
+
+    testDoNotFireTriggerWithoutShow : function() {
+      var type = [];
+      handler.setActivator( "CTRL" );
+      handler.addEventListener( "mnemonic", function( event ) {
+        type.push( event.type );
+      } );
+
+      TestUtil.press( shell, "B", false, DomEvent.CTRL_MASK );
+
+      assertEquals( [], type );
+    },
+
+    testFireTrigger : function() {
+      var type = [];
+      handler.setActivator( "CTRL" );
+      handler.addEventListener( "mnemonic", function( event ) {
+        type.push( event.type );
+      } );
+
+      TestUtil.press( shell, "Control", false, DomEvent.CTRL_MASK );
+      TestUtil.press( shell, "B", false, DomEvent.CTRL_MASK );
+
+      assertEquals( [ "show", "trigger" ], type );
+    },
+
+    testFireTrigger_CharCodeIsSet : function() {
+      var character = [];
+      handler.setActivator( "CTRL" );
+      handler.addEventListener( "mnemonic", function( event ) {
+        if( event.type === "trigger" ) {
+          character.push( event.charCode );
+        }
+      } );
+
+      TestUtil.press( shell, "Control", false, DomEvent.CTRL_MASK );
+      TestUtil.press( shell, "B", false, DomEvent.CTRL_MASK );
+
+      assertEquals( [ 66 ], character );
+    },
+
+    // Alwasy use upper key char code to prevent confusion and support shift
+    testFireTrigger_CharCodeIsAlwaysUpper : function() {
+      var character = [];
+      handler.setActivator( "CTRL" );
+      handler.addEventListener( "mnemonic", function( event ) {
+        if( event.type === "trigger" ) {
+          character.push( event.charCode );
+        }
+      } );
+
+      TestUtil.press( shell, "Control", false, DomEvent.CTRL_MASK );
+      TestUtil.press( shell, "b", false, DomEvent.CTRL_MASK );
+
+      assertEquals( [ 66 ], character );
+    }
 
   }
 
