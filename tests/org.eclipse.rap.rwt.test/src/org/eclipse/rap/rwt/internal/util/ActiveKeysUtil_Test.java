@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -155,6 +155,18 @@ public class ActiveKeysUtil_Test {
   }
 
   @Test
+  public void testPreserveMnemonicActivator() {
+    Fixture.markInitialized( display );
+    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+
+    display.setData( RWT.MNEMONIC_ACTIVATOR, "ALT+CTRL" );
+    Fixture.preserveWidgets();
+
+    String preserved = ( String )adapter.getPreserved( ActiveKeysUtil.PROP_MNEMONIC_ACTIVATOR );
+    assertEquals( "ALT+CTRL+", preserved );
+  }
+
+  @Test
   public void testWriteKeyBindings() throws JSONException {
     Fixture.fakeNewRequest();
 
@@ -238,6 +250,33 @@ public class ActiveKeysUtil_Test {
     SetOperation operation = message.findSetOperation( shell, "cancelKeys" );
     JSONArray renderedKeys = ( JSONArray )operation.getProperty( "cancelKeys" );
     assertEquals( expected, renderedKeys.join( "," ) );
+  }
+
+  @Test
+  public void testWriteMnemonicActivator() {
+    Fixture.fakeNewRequest();
+    display.setData( RWT.MNEMONIC_ACTIVATOR, "ALT+CTRL" );
+
+    ActiveKeysUtil.renderMnemonicActivator( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "ALT+CTRL+", message.findSetProperty( "w1", "mnemonicActivator" ) );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testWriteMnemonicActivator_NotString() {
+    Fixture.fakeNewRequest();
+    display.setData( RWT.MNEMONIC_ACTIVATOR, Boolean.TRUE );
+
+    ActiveKeysUtil.renderMnemonicActivator( display );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testWriteMnemonicActivator_NotOnlyModifiers() {
+    Fixture.fakeNewRequest();
+    display.setData( RWT.MNEMONIC_ACTIVATOR, "ALT+CTRL+1" );
+
+    ActiveKeysUtil.renderMnemonicActivator( display );
   }
 
   @Test

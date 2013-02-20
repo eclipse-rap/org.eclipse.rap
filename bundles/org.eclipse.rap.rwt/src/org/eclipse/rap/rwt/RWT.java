@@ -249,6 +249,30 @@ public final class RWT {
   public static final String CANCEL_KEYS = "org.eclipse.rap.rwt.cancelKeys";
 
   /**
+   * The property to use in <code>Display.setData()</code> in order to set the key combination for
+   * mnemonics activation. The value for this property has to be a String.
+   * <p>
+   * Valid string for key sequence consist of any number of modifier keys, separated by
+   * <code>+</code>.
+   * </p>
+   * <p>
+   * Mnemonics are currently supported by <code>MenuItem</code>, <code>Button</code>,
+   * <code>Label</code>, <code>CLabel</code>, <code>Group</code>, <code>ToolItem</code>,
+   * <code>TabItem</code> and <code>CTabItem</code>. Mnemonics are not supported on a widgets
+   * with enabled markup.
+   * </p>
+   * <p>
+   * Example code:<code><pre>
+   * display.setData( RWT.MNEMONIC_ACTIVATOR, &quot;ALT+CTRL&quot; );
+   * </pre></code>
+   * </p>
+   *
+   * @see Display#setData(String,Object)
+   * @since 2.1
+   */
+  public static final String MNEMONIC_ACTIVATOR = "org.eclipse.rap.rwt.mnemonicActivator";
+
+  /**
    * The property to use in <code>Control.setData()</code> in order to set a custom item height.
    * The custom item height must be specified as an <code>Integer</code> and passed to
    * <code>setData()</code> with this constant as the key.

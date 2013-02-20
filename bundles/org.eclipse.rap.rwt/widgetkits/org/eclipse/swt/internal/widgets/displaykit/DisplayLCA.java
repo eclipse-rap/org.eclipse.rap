@@ -95,6 +95,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     adapter.preserve( PROP_EXIT_CONFIRMATION, getExitConfirmation() );
     ActiveKeysUtil.preserveActiveKeys( display );
     ActiveKeysUtil.preserveCancelKeys( display );
+    ActiveKeysUtil.preserveMnemonicActivator( display );
     if( adapter.isInitialized() ) {
       Shell[] shells = getShells( display );
       for( int i = 0; i < shells.length; i++ ) {
@@ -122,6 +123,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     markInitialized( display );
     ActiveKeysUtil.renderActiveKeys( display );
     ActiveKeysUtil.renderCancelKeys( display );
+    ActiveKeysUtil.renderMnemonicActivator( display );
     RemoteObjectLifeCycleAdapter.render();
   }
 
