@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,13 +23,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -68,13 +68,13 @@ import org.junit.Test;
 
 
 // TODO [rst] Split into different test classes for button types
-@SuppressWarnings("deprecation")
 public class ButtonLCA_Test {
 
   private static final String PROP_SELECTION_LISTENER = "listener_Selection";
 
   private Display display;
   private Shell shell;
+  private Button button;
   private ButtonLCA lca;
 
   @Before
@@ -82,6 +82,7 @@ public class ButtonLCA_Test {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    button = new Button( shell, SWT.PUSH );
     lca = new ButtonLCA();
     Fixture.fakeNewRequest();
   }
@@ -93,7 +94,7 @@ public class ButtonLCA_Test {
 
   @Test
   public void testControlListeners() throws IOException {
-    Button button = new Button( shell, SWT.NONE );
+    button = new Button( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( button );
     ControlLCATestUtil.testFocusListener( button );
     ControlLCATestUtil.testMouseListener( button );
@@ -104,41 +105,41 @@ public class ButtonLCA_Test {
   }
 
   @Test
-  public void testRadioPreserveValues() {
-    Button button = new Button( shell, SWT.RADIO );
+  public void testRadioPreserveValues() throws IOException {
+    button = new Button( shell, SWT.RADIO );
     Fixture.markInitialized( display );
     testPreserveValues( display, button );
     button.setSelection( true );
     Fixture.preserveWidgets();
     WidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( "selection" ) );
   }
 
   @Test
-  public void testCheckPreserveValues() {
-    Button button = new Button( shell, SWT.CHECK );
+  public void testCheckPreserveValues() throws IOException {
+    button = new Button( shell, SWT.CHECK );
     Fixture.markInitialized( display );
     testPreserveValues( display, button );
     button.setSelection( true );
     button.setGrayed( true );
     Fixture.preserveWidgets();
     WidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_GRAYED ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( "selection" ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( "grayed" ) );
   }
 
   @Test
-  public void testTogglePreserveValues() {
-    Button button = new Button( shell, SWT.TOGGLE );
+  public void testTogglePreserveValues() throws IOException {
+    button = new Button( shell, SWT.TOGGLE );
     Fixture.markInitialized( display );
     testPreserveValues( display, button );
     button.setSelection( true );
     Fixture.preserveWidgets();
     WidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( "selection" ) );
   }
 
-  private void testPreserveValues( Display display, Button button ) {
+  private void testPreserveValues( Display display, Button button ) throws IOException {
     Boolean hasListeners;
     // Text,Image
     WidgetAdapter adapter = WidgetUtil.getAdapter( button );
@@ -149,7 +150,7 @@ public class ButtonLCA_Test {
       Object object = adapter.getPreserved( Props.TEXT );
       assertEquals( "abc", object );
       Fixture.clearPreserved();
-      Image image = Graphics.getImage( Fixture.IMAGE1 );
+      Image image = createImage( Fixture.IMAGE1 );
       button.setImage( image );
       Fixture.preserveWidgets();
       adapter = WidgetUtil.getAdapter( button );
@@ -211,11 +212,11 @@ public class ButtonLCA_Test {
     Fixture.clearPreserved();
     button.setEnabled( true );
     // foreground background font
-    Color background = Graphics.getColor( 122, 33, 203 );
+    Color background = new Color( display, 122, 33, 203 );
     button.setBackground( background );
-    Color foreground = Graphics.getColor( 211, 178, 211 );
+    Color foreground = new Color( display, 211, 178, 211 );
     button.setForeground( foreground );
-    Font font = Graphics.getFont( "font", 12, SWT.BOLD );
+    Font font = new Font( display, "font", 12, SWT.BOLD );
     button.setFont( font );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
@@ -237,7 +238,7 @@ public class ButtonLCA_Test {
 
   @Test
   public void testDisabledButtonSelection() {
-    final Button button = new Button( shell, SWT.NONE );
+    button = new Button( shell, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     button.addListener( SWT.Activate, new Listener() {
       public void handleEvent( Event event ) {
@@ -259,7 +260,6 @@ public class ButtonLCA_Test {
 
   @Test
   public void testSelectionEvent() {
-    Button button = new Button( shell, SWT.PUSH );
     SelectionListener listener = mock( SelectionListener.class );
     button.addSelectionListener( listener );
 
@@ -271,7 +271,7 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRadioSelectionEvent() {
-    Button button = new Button( shell, SWT.RADIO );
+    button = new Button( shell, SWT.RADIO );
     SelectionListener listener = mock( SelectionListener.class );
     button.addSelectionListener( listener );
 
@@ -286,7 +286,7 @@ public class ButtonLCA_Test {
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872
   @Test
   public void testRadioDeselectionEvent() {
-    Button button = new Button( shell, SWT.RADIO );
+    button = new Button( shell, SWT.RADIO );
     button.setSelection( true );
     SelectionListener listener = mock( SelectionListener.class );
     button.addSelectionListener( listener );
@@ -348,7 +348,7 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderWrap() throws Exception {
-    Button button = new Button( shell, SWT.PUSH | SWT.WRAP );
+    button = new Button( shell, SWT.PUSH | SWT.WRAP );
     Fixture.fakeResponseWriter();
     PushButtonDelegateLCA lca = new PushButtonDelegateLCA();
 
@@ -399,8 +399,6 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderInitialText() throws IOException {
-    Button button = new Button( shell, SWT.PUSH );
-
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
@@ -409,8 +407,6 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderText() throws IOException {
-    Button button = new Button( shell, SWT.PUSH );
-
     button.setText( "test" );
     lca.renderChanges( button );
 
@@ -420,8 +416,6 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderTextWithQuotationMarks() throws IOException {
-    Button button = new Button( shell, SWT.PUSH );
-
     button.setText( "te\"s't" );
     lca.renderChanges( button );
 
@@ -430,9 +424,16 @@ public class ButtonLCA_Test {
   }
 
   @Test
-  public void testRenderTextWithNewlines() throws IOException {
-    Button button = new Button( shell, SWT.PUSH );
+  public void testRenderTextWithMnemonic() throws IOException {
+    button.setText( "te&st" );
+    lca.renderChanges( button );
 
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "test", message.findSetProperty( button, "text" ) );
+  }
+
+  @Test
+  public void testRenderTextWithNewlines() throws IOException {
     button.setText( "\ntes\r\nt\n" );
     lca.renderChanges( button );
 
@@ -442,7 +443,6 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderTextUnchanged() throws IOException {
-    Button button = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
 
@@ -456,8 +456,6 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderInitialAlignment() throws IOException {
-    Button button = new Button( shell, SWT.PUSH );
-
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
@@ -466,7 +464,7 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderInitialAlignment_Arrow() throws IOException {
-    Button button = new Button( shell, SWT.ARROW );
+    button = new Button( shell, SWT.ARROW );
 
     lca.renderChanges( button );
 
@@ -476,8 +474,6 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderAlignment() throws IOException {
-    Button button = new Button( shell, SWT.PUSH );
-
     button.setAlignment( SWT.RIGHT );
     lca.renderChanges( button );
 
@@ -487,7 +483,7 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderAlignment_Arrow() throws IOException {
-    Button button = new Button( shell, SWT.ARROW | SWT.DOWN );
+    button = new Button( shell, SWT.ARROW | SWT.DOWN );
 
     lca.renderChanges( button );
 
@@ -497,7 +493,6 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderAlignmentUnchanged() throws IOException {
-    Button button = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
 
@@ -511,7 +506,6 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderAddSelectionListener() throws Exception {
-    Button button = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
     Fixture.preserveWidgets();
@@ -525,7 +519,6 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderRemoveSelectionListener() throws Exception {
-    Button button = new Button( shell, SWT.PUSH );
     SelectionListener listener = new SelectionAdapter() { };
     button.addSelectionListener( listener );
     Fixture.markInitialized( display );
@@ -541,7 +534,6 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    Button button = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
     Fixture.preserveWidgets();
@@ -556,8 +548,6 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderInitialImage() throws IOException {
-    Button button = new Button( shell, SWT.PUSH );
-
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
@@ -566,8 +556,7 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderImage() throws IOException, JSONException {
-    Button button = new Button( shell, SWT.PUSH );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( Fixture.IMAGE_100x50 );
 
     button.setImage( image );
     lca.renderChanges( button );
@@ -581,10 +570,9 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderImageUnchanged() throws IOException {
-    Button button = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( Fixture.IMAGE_100x50 );
 
     button.setImage( image );
     Fixture.preserveWidgets();
@@ -596,10 +584,9 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderImageReset() throws IOException {
-    Button button = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( Fixture.IMAGE_100x50 );
     button.setImage( image );
 
     Fixture.preserveWidgets();
@@ -612,7 +599,7 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderInitialSelection() throws IOException {
-    Button button = new Button( shell, SWT.CHECK );
+    button = new Button( shell, SWT.CHECK );
 
     lca.renderChanges( button );
 
@@ -622,7 +609,7 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderSelection() throws IOException {
-    Button button = new Button( shell, SWT.CHECK );
+    button = new Button( shell, SWT.CHECK );
 
     button.setSelection( true );
     lca.renderChanges( button );
@@ -633,7 +620,7 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderSelectionUnchanged() throws IOException {
-    Button button = new Button( shell, SWT.CHECK );
+    button = new Button( shell, SWT.CHECK );
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
 
@@ -647,7 +634,7 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderInitialGrayed() throws IOException {
-    Button button = new Button( shell, SWT.CHECK );
+    button = new Button( shell, SWT.CHECK );
 
     lca.renderChanges( button );
 
@@ -657,7 +644,7 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderGrayed() throws IOException {
-    Button button = new Button( shell, SWT.CHECK );
+    button = new Button( shell, SWT.CHECK );
 
     button.setGrayed( true );
     lca.renderChanges( button );
@@ -668,7 +655,7 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderGrayedUnchanged() throws IOException {
-    Button button = new Button( shell, SWT.CHECK );
+    button = new Button( shell, SWT.CHECK );
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
 
@@ -680,9 +667,62 @@ public class ButtonLCA_Test {
     assertNull( message.findSetOperation( button, "grayed" ) );
   }
 
+  @Test
+  public void testRenderInitialMnemonicIndex() throws IOException {
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( button, "mnemonicIndex" ) );
+  }
+
+  @Test
+  public void testRenderMnemonicIndex() throws IOException {
+    button.setText( "te&st" );
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( button, "mnemonicIndex" ) );
+  }
+
+  @Test
+  public void testRenderMnemonic_OnTextChange() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( button );
+
+    button.setText( "te&st" );
+    Fixture.preserveWidgets();
+    button.setText( "aa&bb" );
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( button, "mnemonicIndex" ) );
+  }
+
+  @Test
+  public void testRenderMnemonicIndexUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( button );
+
+    button.setText( "te&st" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( button, "mnemonicIndex" ) );
+  }
+
   private void fakeActiveControl( Control control ) {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "activeControl", getId( control ) );
     Fixture.fakeSetOperation( getId( control.getShell() ), properties );
   }
+
+  private Image createImage( String imagePath ) throws IOException {
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( imagePath );
+    Image result = new Image( display, stream );
+    stream.close();
+    return result;
+  }
+
 }

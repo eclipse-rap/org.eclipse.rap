@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ public class GroupLCA_Test {
 
   private Display display;
   private Shell shell;
+  private Group group;
   private GroupLCA lca;
 
   @Before
@@ -41,6 +42,7 @@ public class GroupLCA_Test {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
+    group = new Group( shell, SWT.NONE );
     lca = new GroupLCA();
     Fixture.fakeNewRequest();
   }
@@ -52,7 +54,6 @@ public class GroupLCA_Test {
 
   @Test
   public void testControlListeners() throws IOException {
-    Group group = new Group( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( group );
     ControlLCATestUtil.testMouseListener( group );
     ControlLCATestUtil.testKeyListener( group );
@@ -63,8 +64,6 @@ public class GroupLCA_Test {
 
   @Test
   public void testRenderCreate() throws IOException {
-    Group group = new Group( shell, SWT.NONE );
-
     lca.renderInitialization( group );
 
     Message message = Fixture.getProtocolMessage();
@@ -74,8 +73,6 @@ public class GroupLCA_Test {
 
   @Test
   public void testRenderParent() throws IOException {
-    Group group = new Group( shell, SWT.NONE );
-
     lca.renderInitialization( group );
 
     Message message = Fixture.getProtocolMessage();
@@ -85,8 +82,6 @@ public class GroupLCA_Test {
 
   @Test
   public void testRenderInitialText() throws IOException {
-    Group group = new Group( shell, SWT.NONE );
-
     lca.render( group );
 
     Message message = Fixture.getProtocolMessage();
@@ -96,8 +91,6 @@ public class GroupLCA_Test {
 
   @Test
   public void testRenderText() throws IOException {
-    Group group = new Group( shell, SWT.NONE );
-
     group.setText( "foo" );
     lca.renderChanges( group );
 
@@ -106,8 +99,16 @@ public class GroupLCA_Test {
   }
 
   @Test
+  public void testRenderTextWithMnemonic() throws IOException {
+    group.setText( "te&st" );
+    lca.renderChanges( group );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "test", message.findSetProperty( group, "text" ) );
+  }
+
+  @Test
   public void testRenderTextUnchanged() throws IOException {
-    Group group = new Group( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( group );
 
@@ -117,6 +118,36 @@ public class GroupLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( group, "text" ) );
+  }
+
+  @Test
+  public void testRenderInitialMnemonicIndex() throws IOException {
+    lca.renderChanges( group );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( group, "mnemonicIndex" ) );
+  }
+
+  @Test
+  public void testRenderMnemonicIndex() throws IOException {
+    group.setText( "te&st" );
+    lca.renderChanges( group );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( group, "mnemonicIndex" ) );
+  }
+
+  @Test
+  public void testRenderMnemonicIndexUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( group );
+
+    group.setText( "te&st" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( group );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( group, "mnemonicIndex" ) );
   }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ rwt.qx.Class.define( "rwt.widgets.Label", {
       if( !this._markupEnabled ) {
         var EncodingUtil = rwt.util.Encoding;
         // Order is important here: escapeText, replace line breaks
-        text = EncodingUtil.escapeText( value, true );
+        text = EncodingUtil.escapeText( value, false );
         text = EncodingUtil.replaceNewLines( text, "<br/>" );
         text = EncodingUtil.replaceWhiteSpaces( text ); // fixes bug 192634
       }

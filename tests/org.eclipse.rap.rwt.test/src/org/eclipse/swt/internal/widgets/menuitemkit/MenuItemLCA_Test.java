@@ -23,12 +23,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -63,7 +63,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-@SuppressWarnings("deprecation")
 public class MenuItemLCA_Test {
 
   private Display display;
@@ -526,7 +525,7 @@ public class MenuItemLCA_Test {
   }
 
   @Test
-  public void testRenderInitialTexts() throws IOException {
+  public void testRenderInitialText() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
 
     lca.render( item );
@@ -537,7 +536,7 @@ public class MenuItemLCA_Test {
   }
 
   @Test
-  public void testRenderTexts() throws IOException {
+  public void testRenderText() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
 
     item.setText( "foo" );
@@ -548,7 +547,18 @@ public class MenuItemLCA_Test {
   }
 
   @Test
-  public void testRenderTextsUnchanged() throws IOException {
+  public void testRenderText_WithMnemonic() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+
+    item.setText( "f&oo" );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "foo", message.findSetProperty( item, "text" ) );
+  }
+
+  @Test
+  public void testRenderTextUnchanged() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
@@ -559,6 +569,56 @@ public class MenuItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "text" ) );
+  }
+
+  @Test
+  public void testRenderInitialMnemonicIndex() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "mnemonicIndex" ) );
+  }
+
+  @Test
+  public void testRenderMnemonicIndex() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+
+    item.setText( "te&st" );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( item, "mnemonicIndex" ) );
+  }
+
+  @Test
+  public void testRenderMnemonicIndex_OnTextChange() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setText( "te&st" );
+    Fixture.preserveWidgets();
+    item.setText( "aa&bb" );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( item, "mnemonicIndex" ) );
+  }
+
+  @Test
+  public void testRenderMnemonicIndexUnchanged() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setText( "te&st" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "mnemonicIndex" ) );
   }
 
   @Test
@@ -575,7 +635,7 @@ public class MenuItemLCA_Test {
   @Test
   public void testRenderImages() throws IOException, JSONException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( Fixture.IMAGE1 );
 
     item.setImage( image );
     lca.renderChanges( item );
@@ -591,7 +651,7 @@ public class MenuItemLCA_Test {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( Fixture.IMAGE1 );
 
     item.setImage( image );
     Fixture.preserveWidgets();
@@ -701,4 +761,13 @@ public class MenuItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( item, "help" ) );
   }
+
+  private Image createImage( String imagePath ) throws IOException {
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( imagePath );
+    Image result = new Image( display, stream );
+    stream.close();
+    return result;
+  }
+
 }

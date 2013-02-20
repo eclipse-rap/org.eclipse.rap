@@ -12,12 +12,12 @@
 package org.eclipse.swt.internal.widgets.groupkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
@@ -40,7 +40,9 @@ public class GroupLCA extends AbstractWidgetLCA {
   };
 
   private static final String PROP_TEXT = "text";
+  private static final String PROP_MNEMONIC_INDEX = "mnemonicIndex";
 
+  @Override
   public void preserveValues( Widget widget ) {
     Group group = ( Group )widget;
     ControlLCAUtil.preserveValues( group );
@@ -55,6 +57,7 @@ public class GroupLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( widget );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Group group = ( Group )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( group );
@@ -63,11 +66,36 @@ public class GroupLCA extends AbstractWidgetLCA {
     clientObject.set( "style", WidgetLCAUtil.getStyles( group, ALLOWED_STYLES ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     Group group = ( Group )widget;
     ControlLCAUtil.renderChanges( group );
     WidgetLCAUtil.renderCustomVariant( group );
-    renderProperty( group, PROP_TEXT, group.getText(), "" );
+    renderText( group );
+    renderMnemonicIndex( group );
+  }
+
+  //////////////////
+  // Helping methods
+
+  private static void renderText( Group group ) {
+    String newValue = group.getText();
+    if( WidgetLCAUtil.hasChanged( group, PROP_TEXT, newValue, "" ) ) {
+      String text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( group );
+      clientObject.set( PROP_TEXT, text );
+    }
+  }
+
+  private static void renderMnemonicIndex( Group group ) {
+    String text = group.getText();
+    if( WidgetLCAUtil.hasChanged( group, PROP_TEXT, text, "" ) ) {
+      int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
+      if( mnemonicIndex != -1 ) {
+        IClientObject clientObject = ClientObjectFactory.getClientObject( group );
+        clientObject.set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+      }
+    }
   }
 
 }

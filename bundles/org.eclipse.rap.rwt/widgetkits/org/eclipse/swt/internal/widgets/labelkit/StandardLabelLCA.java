@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -32,12 +33,14 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
   private static final String[] ALLOWED_STYLES = new String[] { "WRAP", "BORDER" };
 
   private static final String PROP_TEXT = "text";
+  private static final String PROP_MNEMONIC_INDEX = "mnemonicIndex";
   private static final String PROP_ALIGNMENT = "alignment";
   private static final String PROP_IMAGE = "image";
   private static final String PROP_MARKUP_ENABLED = "markupEnabled";
 
   private static final String DEFAULT_ALIGNMENT = "left";
 
+  @Override
   void preserveValues( Label label ) {
     ControlLCAUtil.preserveValues( label );
     WidgetLCAUtil.preserveCustomVariant( label );
@@ -46,6 +49,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
     preserveProperty( label, PROP_ALIGNMENT, getAlignment( label ) );
   }
 
+  @Override
   void readData( Label label ) {
     ControlLCAUtil.processEvents( label );
     ControlLCAUtil.processKeyEvents( label );
@@ -53,6 +57,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
     WidgetLCAUtil.processHelp( label );
   }
 
+  @Override
   void renderInitialization( Label label ) throws IOException {
     IClientObject clientObject = ClientObjectFactory.getClientObject( label );
     clientObject.create( TYPE );
@@ -61,10 +66,12 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
     renderProperty( label, PROP_MARKUP_ENABLED, isMarkupEnabled( label ), false );
   }
 
+  @Override
   void renderChanges( Label label ) throws IOException {
     ControlLCAUtil.renderChanges( label );
     WidgetLCAUtil.renderCustomVariant( label );
-    renderProperty( label, PROP_TEXT, label.getText(), "" );
+    renderText( label );
+    renderMnemonicIndex( label );
     renderProperty( label, PROP_IMAGE, label.getImage(), null );
     renderProperty( label, PROP_ALIGNMENT, getAlignment( label ), DEFAULT_ALIGNMENT );
   }
@@ -90,4 +97,30 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
     }
     return result;
   }
+
+  private static void renderText( Label label ) {
+    String newValue = label.getText();
+    if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, newValue, "" ) ) {
+      String text = newValue;
+      if( !isMarkupEnabled( label ) ) {
+        text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
+      }
+      IClientObject clientObject = ClientObjectFactory.getClientObject( label );
+      clientObject.set( PROP_TEXT, text );
+    }
+  }
+
+  private static void renderMnemonicIndex( Label label ) {
+    if( !isMarkupEnabled( label ) ) {
+      String text = label.getText();
+      if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, text, "" ) ) {
+        int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
+        if( mnemonicIndex != -1 ) {
+          IClientObject clientObject = ClientObjectFactory.getClientObject( label );
+          clientObject.set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+        }
+      }
+    }
+  }
+
 }

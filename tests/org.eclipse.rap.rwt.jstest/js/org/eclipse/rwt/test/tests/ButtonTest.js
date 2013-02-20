@@ -140,7 +140,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
         "properties" : {
           "style" : [ "PUSH" ],
           "parent" : "w2",
-          "text" : "text\n && \"text"
+          "text" : "text\n & \"text"
         }
       } );
       var widget = ObjectManager.getObject( "w3" );
@@ -162,7 +162,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
         }
       } );
       var widget = ObjectManager.getObject( "w3" );
-      assertEquals( "text<br/> &amp; &quot;text", widget.getCellContent( 2 ) );
+      assertEquals( "text<br/> &amp;&amp; &quot;text", widget.getCellContent( 2 ) );
       shell.destroy();
       widget.destroy();
     },

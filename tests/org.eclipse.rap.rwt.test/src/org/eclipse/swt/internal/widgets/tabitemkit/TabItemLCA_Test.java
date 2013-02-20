@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -40,7 +40,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings("deprecation")
 public class TabItemLCA_Test {
 
   private Display display;
@@ -78,11 +77,9 @@ public class TabItemLCA_Test {
     Fixture.clearPreserved();
     folder.setSelection( 1 );
     item.setText( "some text" );
-    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     item.setToolTipText( "tooltip text" );
     Fixture.preserveWidgets();
     assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
-    assertEquals( Graphics.getImage( Fixture.IMAGE1 ), adapter.getPreserved( Props.IMAGE ) );
     assertEquals( "tooltip text", adapter.getPreserved( "toolTip" ) );
   }
 
@@ -156,6 +153,15 @@ public class TabItemLCA_Test {
   }
 
   @Test
+  public void testRenderText_WithMnemonic() throws IOException {
+    item.setText( "foo&bar" );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "foobar", message.findSetProperty( item, "text" ) );
+  }
+
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
@@ -178,7 +184,7 @@ public class TabItemLCA_Test {
 
   @Test
   public void testRenderImage() throws IOException, JSONException {
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( Fixture.IMAGE_100x50 );
 
     item.setImage( image );
     lca.renderChanges( item );
@@ -194,7 +200,7 @@ public class TabItemLCA_Test {
   public void testRenderImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( Fixture.IMAGE_100x50 );
 
     item.setImage( image );
     Fixture.preserveWidgets();
@@ -208,7 +214,7 @@ public class TabItemLCA_Test {
   public void testRenderImageReset() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( Fixture.IMAGE_100x50 );
     item.setImage( image );
 
     Fixture.preserveWidgets();
@@ -252,6 +258,58 @@ public class TabItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "control" ) );
+  }
+
+  @Test
+  public void testRenderInitialMnemonicIndex() throws IOException {
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "mnemonicIndex" ) );
+  }
+
+  @Test
+  public void testRenderMnemonicIndex() throws IOException {
+    item.setText( "te&st" );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( item, "mnemonicIndex" ) );
+  }
+
+  @Test
+  public void testRenderMnemonicIndex_OnTextChange() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setText( "te&st" );
+    Fixture.preserveWidgets();
+    item.setText( "aa&bb" );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( item, "mnemonicIndex" ) );
+  }
+
+  @Test
+  public void testRenderMnemonicIndexUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setText( "te&st" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "mnemonicIndex" ) );
+  }
+
+  private Image createImage( String imagePath ) throws IOException {
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( imagePath );
+    Image result = new Image( display, stream );
+    stream.close();
+    return result;
   }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,10 +18,10 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -49,17 +49,20 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-@SuppressWarnings("deprecation")
 public class LabelLCA_Test {
 
   private Display display;
   private Shell shell;
+  private Label label;
+  private LabelLCA lca;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    label = new Label( shell, SWT.NONE );
+    lca = new LabelLCA();
     Fixture.fakeNewRequest();
   }
 
@@ -71,7 +74,6 @@ public class LabelLCA_Test {
 
   @Test
   public void testControlListeners() throws IOException {
-    Label label = new Label( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( label );
     ControlLCATestUtil.testMouseListener( label );
     ControlLCATestUtil.testKeyListener( label );
@@ -81,8 +83,7 @@ public class LabelLCA_Test {
   }
 
   @Test
-  public void testStandardPreserveValues() {
-    Label label = new Label( shell, SWT.NONE );
+  public void testStandardPreserveValues() throws IOException {
     Fixture.markInitialized( display );
     testPreserveValues( display, label );
     //Text
@@ -96,7 +97,7 @@ public class LabelLCA_Test {
     assertEquals( label.getText(), adapter.getPreserved( Props.TEXT ) );
     Fixture.clearPreserved();
     //Image
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( Fixture.IMAGE1 );
     label.setImage( image );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
@@ -169,11 +170,11 @@ public class LabelLCA_Test {
     Fixture.clearPreserved();
     label.setEnabled( true );
     //foreground background font
-    Color background = Graphics.getColor( 122, 33, 203 );
+    Color background = new Color( display, 122, 33, 203 );
     label.setBackground( background );
-    Color foreground = Graphics.getColor( 211, 178, 211 );
+    Color foreground = new Color( display, 211, 178, 211 );
     label.setForeground( foreground );
-    Font font = Graphics.getFont( "font", 12, SWT.BOLD );
+    Font font = new Font( display, "font", 12, SWT.BOLD );
     label.setFont( font );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
@@ -194,17 +195,13 @@ public class LabelLCA_Test {
 
   @Test
   public void testSeparatorPreserveValues() {
-    int style = SWT.SEPARATOR | SWT.HORIZONTAL;
-    Label label = new Label( shell, style );
+    label = new Label( shell, SWT.SEPARATOR | SWT.HORIZONTAL );
     Fixture.markInitialized( display );
     testPreserveValues( display, label );
   }
 
   @Test
   public void testRenderInitialText() throws IOException {
-    Label label = new Label( shell, SWT.NONE );
-    LabelLCA lca = new LabelLCA();
-
     lca.renderChanges( label );
 
     Message message = Fixture.getProtocolMessage();
@@ -213,9 +210,6 @@ public class LabelLCA_Test {
 
   @Test
   public void testRenderText() throws IOException {
-    Label label = new Label( shell, SWT.NONE );
-    LabelLCA lca = new LabelLCA();
-
     label.setText( "test" );
     lca.renderChanges( label );
 
@@ -225,9 +219,6 @@ public class LabelLCA_Test {
 
   @Test
   public void testRenderTextWithQuotationMarks() throws IOException {
-    Label label = new Label( shell, SWT.NONE );
-    LabelLCA lca = new LabelLCA();
-
     label.setText( "te\"s't" );
     lca.renderChanges( label );
 
@@ -236,10 +227,16 @@ public class LabelLCA_Test {
   }
 
   @Test
-  public void testRenderTextWithNewlines() throws IOException {
-    Label label = new Label( shell, SWT.NONE );
-    LabelLCA lca = new LabelLCA();
+  public void testRenderTextWithMnemonic() throws IOException {
+    label.setText( "te&st" );
+    lca.renderChanges( label );
 
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "test", message.findSetProperty( label, "text" ) );
+  }
+
+  @Test
+  public void testRenderTextWithNewlines() throws IOException {
     label.setText( "\ntes\r\nt\n" );
     lca.renderChanges( label );
 
@@ -249,10 +246,8 @@ public class LabelLCA_Test {
 
   @Test
   public void testRenderTextUnchanged() throws IOException {
-    Label label = new Label( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( label );
-    LabelLCA lca = new LabelLCA();
 
     label.setText( "foo" );
 
@@ -265,7 +260,6 @@ public class LabelLCA_Test {
 
   @Test
   public void testRenderDispose() throws IOException {
-    Label label = new Label( shell, SWT.NONE );
     label.dispose();
     LabelLCA labelLCA = new LabelLCA();
 
@@ -278,8 +272,7 @@ public class LabelLCA_Test {
 
   @Test
   public void testRenderCreate() throws IOException {
-    Label label = new Label( shell, SWT.WRAP );
-    LabelLCA lca = new LabelLCA();
+    label = new Label( shell, SWT.WRAP );
 
     lca.renderInitialization( label );
 
@@ -293,9 +286,8 @@ public class LabelLCA_Test {
 
   @Test
   public void testRenderCreateWithMarkupEnabled() throws IOException {
-    Label label = new Label( shell, SWT.WRAP );
+    label = new Label( shell, SWT.WRAP );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
-    LabelLCA lca = new LabelLCA();
 
     lca.renderInitialization( label );
 
@@ -306,9 +298,6 @@ public class LabelLCA_Test {
 
   @Test
   public void testRenderInitialImage() throws IOException {
-    Label label = new Label( shell, SWT.NONE );
-    LabelLCA lca = new LabelLCA();
-
     lca.renderChanges( label );
 
     Message message = Fixture.getProtocolMessage();
@@ -317,9 +306,7 @@ public class LabelLCA_Test {
 
   @Test
   public void testRenderImage() throws IOException, JSONException {
-    Label label = new Label( shell, SWT.NONE );
-    LabelLCA lca = new LabelLCA();
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( Fixture.IMAGE_100x50 );
 
     label.setImage( image );
     lca.renderChanges( label );
@@ -333,11 +320,9 @@ public class LabelLCA_Test {
 
   @Test
   public void testRenderImageUnchanged() throws IOException {
-    Label label = new Label( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( label );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
-    LabelLCA lca = new LabelLCA();
+    Image image = createImage( Fixture.IMAGE_100x50 );
 
     label.setImage( image );
     Fixture.preserveWidgets();
@@ -349,11 +334,9 @@ public class LabelLCA_Test {
 
   @Test
   public void testRenderImageReset() throws IOException {
-    Label label = new Label( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( label );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
-    LabelLCA lca = new LabelLCA();
+    Image image = createImage( Fixture.IMAGE_100x50 );
     label.setImage( image );
 
     Fixture.preserveWidgets();
@@ -366,9 +349,6 @@ public class LabelLCA_Test {
 
   @Test
   public void testRenderInitialAlignment() throws IOException {
-    Label label = new Label( shell, SWT.NONE );
-    LabelLCA lca = new LabelLCA();
-
     lca.renderChanges( label );
 
     Message message = Fixture.getProtocolMessage();
@@ -377,9 +357,6 @@ public class LabelLCA_Test {
 
   @Test
   public void testRenderAlignment() throws IOException {
-    Label label = new Label( shell, SWT.NONE );
-    LabelLCA lca = new LabelLCA();
-
     label.setAlignment( SWT.RIGHT );
     lca.renderChanges( label );
 
@@ -389,10 +366,8 @@ public class LabelLCA_Test {
 
   @Test
   public void testRenderAlignmentUnchanged() throws IOException {
-    Label label = new Label( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( label );
-    LabelLCA lca = new LabelLCA();
 
     label.setAlignment( SWT.RIGHT );
     Fixture.preserveWidgets();
@@ -404,8 +379,7 @@ public class LabelLCA_Test {
 
   @Test
   public void testRenderCreateSeparator() throws IOException {
-    Label label = new Label( shell, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.VERTICAL );
-    LabelLCA lca = new LabelLCA();
+    label = new Label( shell, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.VERTICAL );
 
     lca.renderInitialization( label );
 
@@ -415,6 +389,44 @@ public class LabelLCA_Test {
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "SHADOW_IN" ) );
     assertTrue( Arrays.asList( styles ).contains( "VERTICAL" ) );
+  }
+
+  @Test
+  public void testRenderInitialMnemonicIndex() throws IOException {
+    lca.renderChanges( label );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( label, "mnemonicIndex" ) );
+  }
+
+  @Test
+  public void testRenderMnemonicIndex() throws IOException {
+    label.setText( "te&st" );
+    lca.renderChanges( label );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( label, "mnemonicIndex" ) );
+  }
+
+  @Test
+  public void testRenderMnemonicIndexUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( label );
+
+    label.setText( "te&st" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( label );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( label, "mnemonicIndex" ) );
+  }
+
+  private Image createImage( String imagePath ) throws IOException {
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( imagePath );
+    Image result = new Image( display, stream );
+    stream.close();
+    return result;
   }
 
 }
