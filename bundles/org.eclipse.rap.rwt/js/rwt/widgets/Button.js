@@ -90,7 +90,18 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
     },
 
     _onMnemonic : function( event ) {
-      this._applyText( true );
+      switch( event.type ) {
+        case "show":
+          this._applyText( true );
+        break;
+        case "trigger":
+          var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
+          if( event.charCode === charCode ) {
+            this.setFocused( true );
+            this.execute();
+          }
+        break;
+      }
     },
 
     _applyText : function( mnemonic ) {

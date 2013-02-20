@@ -629,8 +629,58 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       rwt.widgets.util.MnemonicHandler.getInstance().activate();
       TestUtil.flush();
 
-      //console.log( "f<span style=\"text-decoration:underline\">o</span>o", button.getCellContent( 2 ) );
       assertEquals( "f<span style=\"text-decoration:underline\">o</span>o", button.getCellContent( 2 ) );
+      button.destroy();
+    },
+
+    testTriggerMnemonic_WrongCharacterDoesNothing : function() {
+      var button = new rwt.widgets.Button( "push" );
+      button.addState( "rwt_PUSH" );
+      button.addToDocument();
+      button.setText( "foo" );
+      button.setMnemonicIndex( 1 );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      rwt.widgets.util.MnemonicHandler.getInstance().trigger( "f" );
+      TestUtil.flush();
+
+      assertFalse( button.getFocused() );
+      button.destroy();
+    },
+
+    testTriggerMnemonic_FocusesButton : function() {
+      var button = new rwt.widgets.Button( "push" );
+      button.addState( "rwt_PUSH" );
+      button.addToDocument();
+      button.setText( "foo" );
+      button.setMnemonicIndex( 1 );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      rwt.widgets.util.MnemonicHandler.getInstance().trigger( "o" );
+      TestUtil.flush();
+
+      assertTrue( button.getFocused() );
+      button.destroy();
+    },
+
+    testTriggerMnemonic_SendsSelection : function() {
+      var button = new rwt.widgets.Button( "push" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+      rwt.remote.ObjectRegistry.add( "w11", button, handler );
+      button.addState( "rwt_PUSH" );
+      button.addToDocument();
+      button.setText( "foo" );
+      button.setMnemonicIndex( 1 );
+      button.setHasSelectionListener( true );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      rwt.widgets.util.MnemonicHandler.getInstance().trigger( "o" );
+      TestUtil.flush();
+
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "Selection" ) );
       button.destroy();
     }
 
