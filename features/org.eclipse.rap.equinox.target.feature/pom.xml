@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (C) 2011, 2012 EclipseSource and others
+  Copyright (C) 2011, 2013 EclipseSource and others
   All rights reserved. This program and the accompanying materials
   are made available under the terms of the Eclipse Public License v1.0
   which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@
   <parent>
     <groupId>org.eclipse.rap</groupId>
     <artifactId>org.eclipse.rap.runtime.target-parent</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.1.0-SNAPSHOT</version>
     <relativePath>../../releng/org.eclipse.rap.target.build/pom.xml</relativePath>
   </parent>
 
@@ -34,7 +34,7 @@
       <id>base-platform-repository-with-ICU-bundle</id>
       <layout>p2</layout>
       <!-- This repository is required in order to pull in the base ICU bundle -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/2.0/M4/runtime-base</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/2.1/M1/runtime-base</url>
     </repository>
   </repositories>
 
