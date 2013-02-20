@@ -268,6 +268,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       widget.destroy();
     },
 
+    testSetTextByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
+      var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
+      this._setPropertyByProtocol( "w4", { "text" : "text\n & \"text" } );
+      assertEquals( "text\n &amp; &quot;text", widget.getCellContent( 2 ) );
+      shell.destroy();
+      toolbar.destroy();
+      widget.destroy();
+    },
+
     testSetCustomVariantByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
@@ -422,8 +434,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       var padding = item.getPaddingTop() + item.getPaddingBottom();
       var inner = item.getInnerHeight();
       var targetHeight = inner + padding;
-      assertTrue( targetHeight <= parseInt( lineNode.style.height ) );
-      assertTrue( 0 >= parseInt( lineNode.style.top ) );
+      assertTrue( targetHeight <= parseInt( lineNode.style.height, 10 ) );
+      assertTrue( 0 >= parseInt( lineNode.style.top, 10 ) );
       item.destroy();
       this.item = null;
     },
@@ -610,7 +622,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
         log++;
       } );
 
-      this.TestUtil.fakeMouseClick( item, 103 + parseInt( lineStyle.left ), 103 );
+      this.TestUtil.fakeMouseClick( item, 103 + parseInt( lineStyle.left, 10 ), 103 );
 
       assertTrue( log > 0 );
       this.TestUtil.clearRequestLog();

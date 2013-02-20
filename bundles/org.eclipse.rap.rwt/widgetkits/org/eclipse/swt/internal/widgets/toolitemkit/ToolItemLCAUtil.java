@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -39,6 +40,7 @@ final class ToolItemLCAUtil {
 
   private static final String PROP_VISIBLE = "visible";
   private static final String PROP_TEXT = "text";
+  private static final String PROP_MNEMONIC_INDEX = "mnemonicIndex";
   private static final String PROP_IMAGE = "image";
   private static final String PROP_HOT_IMAGE = "hotImage";
   private static final String PROP_CONTROL = "control";
@@ -83,8 +85,9 @@ final class ToolItemLCAUtil {
     WidgetLCAUtil.renderEnabled( toolItem, toolItem.getEnabled() );
     WidgetLCAUtil.renderToolTip( toolItem, toolItem.getToolTipText() );
     WidgetLCAUtil.renderCustomVariant( toolItem );
+    renderText( toolItem );
+    renderMnemonicIndex( toolItem );
     renderProperty( toolItem, PROP_VISIBLE, isVisible( toolItem ), true );
-    renderProperty( toolItem, PROP_TEXT, toolItem.getText(), "" );
     renderProperty( toolItem, PROP_IMAGE, getImage( toolItem ), null );
     renderProperty( toolItem, PROP_HOT_IMAGE, toolItem.getHotImage(), null );
     renderProperty( toolItem, PROP_CONTROL, toolItem.getControl(), null );
@@ -114,6 +117,26 @@ final class ToolItemLCAUtil {
     Object adapter = toolItem.getAdapter( IToolItemAdapter.class );
     IToolItemAdapter toolItemAdapter = ( IToolItemAdapter )adapter;
     return toolItemAdapter.getVisible();
+  }
+
+  private static void renderText( ToolItem toolItem ) {
+    String newValue = toolItem.getText();
+    if( WidgetLCAUtil.hasChanged( toolItem, PROP_TEXT, newValue, "" ) ) {
+      String text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( toolItem );
+      clientObject.set( PROP_TEXT, text );
+    }
+  }
+
+  private static void renderMnemonicIndex( ToolItem toolItem ) {
+    String text = toolItem.getText();
+    if( WidgetLCAUtil.hasChanged( toolItem, PROP_TEXT, text, "" ) ) {
+      int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
+      if( mnemonicIndex != -1 ) {
+        IClientObject clientObject = ClientObjectFactory.getClientObject( toolItem );
+        clientObject.set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+      }
+    }
   }
 
   static Image getImage( ToolItem toolItem ) {
