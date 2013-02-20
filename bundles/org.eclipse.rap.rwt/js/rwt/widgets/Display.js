@@ -85,6 +85,10 @@ rwt.widgets.Display.prototype = {
     }
   },
 
+  setMnemonicActivator : function( value ) {
+    rwt.widgets.util.MnemonicHandler.getInstance().setActivator( value );
+  },
+
   setEnableUiTests : function( value ) {
     rwt.widgets.base.Widget._renderHtmlIds = value;
   },

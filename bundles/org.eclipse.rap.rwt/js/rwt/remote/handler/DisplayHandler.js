@@ -19,6 +19,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Display", {
 
   properties : [
     "exitConfirmation",
+    "mnemonicActivator",
     "focusControl",
     "enableUiTests",
     "activeKeys",
