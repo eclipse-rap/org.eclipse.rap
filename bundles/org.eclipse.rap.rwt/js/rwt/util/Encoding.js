@@ -39,8 +39,9 @@ rwt.util.Encoding = {
    * Note: In contrast to SWT, the characters following an ampersand are currently not underlined.
    *
    * @param text the input text
-   * @param mnemonics if true, the function is mnemonic aware,
-   *        otherwise all ampersand characters are directly rendered.
+   * @param mnemonics if true, the function removes the firest "&"
+   *                  if a numbner, underlines that character (other option will be removed)
+   *
    * @return the resulting text
    */
   // Note [rst]: Single quotes are not escaped as the entity &apos; is not
@@ -52,10 +53,14 @@ rwt.util.Encoding = {
     }
     var result;
     this._mnemonicFound = false; // first found mnemonic may be resolved
-    if( mnemonics ) {
+    if( mnemonics === true ) {
       result = text.replace( this._escapeRegExpMnemonics, this._getEscapeResolverMnemonics() );
     } else {
-      result = text.replace( this._escapeRegExp, this._getEscapeResolver() );
+      if( typeof mnemonics === "number" ) {
+        result = this._escapeWithMnemonic( text, mnemonics );
+      } else {
+        result = text.replace( this._escapeRegExp, this._getEscapeResolver() );
+      }
     }
     return this.truncateAtZero( result );
   },
@@ -147,6 +152,17 @@ rwt.util.Encoding = {
 
   /////////
   // Helper
+
+  _escapeWithMnemonic : function( text, index ) {
+    var split = [
+      text.slice( 0, index ).replace( this._escapeRegExp, this._getEscapeResolver() ),
+      "<span style=\"text-decoration:underline\">",
+      text.charAt( index ).replace( this._escapeRegExp, this._getEscapeResolver() ),
+      "</span>",
+      text.slice( index + 1 ).replace( this._escapeRegExp, this._getEscapeResolver() )
+    ];
+    return split.join( "" );
+  },
 
   _getEscapeResolverMnemonics : function() {
     if( this._escapeResolverMnemonics ===  null ) {

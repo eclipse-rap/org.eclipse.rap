@@ -23,13 +23,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
   members : {
 
     setUp : function() {
-      handler.setActivator( null );
-      handler.deactivate();
       shell = TestUtil.createShellByProtocol( "w2" );
       TestUtil.flush();
     },
 
     tearDown : function() {
+      handler.setActivator( null );
+      handler.deactivate();
       shell.destroy();
       shell = null;
     },

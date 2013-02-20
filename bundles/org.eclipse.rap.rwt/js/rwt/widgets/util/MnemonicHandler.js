@@ -43,16 +43,24 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
     handleKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
       if( this._isActivation( eventType, keyCode, charCode, domEvent ) ) {
-        this.dispatchSimpleEvent( "mnemonic", {
-          "type" : "show"
-        } );
-        this._active = true;
+        this.activate();
       } else if( this._isTrigger( eventType, keyCode, charCode, domEvent ) ) {
-        this.dispatchSimpleEvent( "mnemonic", {
-          "type" : "trigger",
-          "charCode" : String.fromCharCode( charCode ).toUpperCase().charCodeAt( 0 )
-        } );
+        this.trigger( String.fromCharCode( charCode ) );
       }
+    },
+
+    activate : function() {
+      this._active = true;
+      this.dispatchSimpleEvent( "mnemonic", {
+        "type" : "show"
+      } );
+    },
+
+    trigger : function( string ) {
+      this.dispatchSimpleEvent( "mnemonic", {
+        "type" : "trigger",
+        "charCode" : string.toUpperCase().charCodeAt( 0 )
+      } );
     },
 
     _isActivation : function( eventType, keyCode, charCode, domEvent ) {
