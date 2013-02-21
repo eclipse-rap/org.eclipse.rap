@@ -40,6 +40,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       button.destroy();
     },
 
+    testSetMnemonicActivatorByProtocol : function() {
+      TestUtil.protocolSet( "w1", { "mnemonicActivator" : "CTRL" } );
+
+      var handler = rwt.widgets.util.MnemonicHandler.getInstance();
+      assertTrue( handler._activator.ctrlKey );
+      assertFalse( handler._activator.altKey );
+      assertFalse( handler._activator.shiftKey );
+      handler.setActivator( null );
+    },
+
     testSendFocusControlByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       shell.open();

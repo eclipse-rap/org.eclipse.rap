@@ -149,6 +149,45 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       widget.destroy();
     },
 
+    testSetMnemonicIndexByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w2",
+          "text" : "asdfjkloeqwerty",
+          "mnemonicIndex" : 6
+        }
+      } );
+      var widget = ObjectManager.getObject( "w3" );
+      assertEquals( 6, widget.getMnemonicIndex() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetTextResetsMnemonicIndex : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w2",
+          "text" : "asdfjkloeqwerty",
+          "mnemonicIndex" : 6
+        }
+      } );
+      TestUtil.protocolSet( "w3", { "text" : "blue" } );
+      var widget = ObjectManager.getObject( "w3" );
+      assertNull( widget.getMnemonicIndex() );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testSetTextByProtocolWithWrap : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       Processor.processOperation( {
@@ -563,6 +602,85 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       button.setWrap( true );
       TestUtil.flush();
       assertEquals( 2, button._flexibleCell );
+      button.destroy();
+    },
+
+    testRenderMnemonic_NotInitially : function() {
+      var button = new rwt.widgets.Button( "push" );
+      button.addState( "rwt_PUSH" );
+      button.addToDocument();
+      button.setText( "foo" );
+
+      button.setMnemonicIndex( 1 );
+      TestUtil.flush();
+
+      assertEquals( "foo", button.getCellContent( 2 ) );
+      button.destroy();
+    },
+
+    testRenderMnemonic_OnActivate : function() {
+      var button = new rwt.widgets.Button( "push" );
+      button.addState( "rwt_PUSH" );
+      button.addToDocument();
+      button.setText( "foo" );
+      button.setMnemonicIndex( 1 );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      TestUtil.flush();
+
+      assertEquals( "f<span style=\"text-decoration:underline\">o</span>o", button.getCellContent( 2 ) );
+      button.destroy();
+    },
+
+    testTriggerMnemonic_WrongCharacterDoesNothing : function() {
+      var button = new rwt.widgets.Button( "push" );
+      button.addState( "rwt_PUSH" );
+      button.addToDocument();
+      button.setText( "foo" );
+      button.setMnemonicIndex( 1 );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      rwt.widgets.util.MnemonicHandler.getInstance().trigger( "f" );
+      TestUtil.flush();
+
+      assertFalse( button.getFocused() );
+      button.destroy();
+    },
+
+    testTriggerMnemonic_FocusesButton : function() {
+      var button = new rwt.widgets.Button( "push" );
+      button.addState( "rwt_PUSH" );
+      button.addToDocument();
+      button.setText( "foo" );
+      button.setMnemonicIndex( 1 );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      rwt.widgets.util.MnemonicHandler.getInstance().trigger( "o" );
+      TestUtil.flush();
+
+      assertTrue( button.getFocused() );
+      button.destroy();
+    },
+
+    testTriggerMnemonic_SendsSelection : function() {
+      var button = new rwt.widgets.Button( "push" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+      rwt.remote.ObjectRegistry.add( "w11", button, handler );
+      button.addState( "rwt_PUSH" );
+      button.addToDocument();
+      button.setText( "foo" );
+      button.setMnemonicIndex( 1 );
+      button.setHasSelectionListener( true );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      rwt.widgets.util.MnemonicHandler.getInstance().trigger( "o" );
+      TestUtil.flush();
+
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "Selection" ) );
       button.destroy();
     }
 

@@ -61,6 +61,8 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
 
     _onKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
       var control = this._getTargetControl();
+      var mHandler = rwt.widgets.util.MnemonicHandler.getInstance();
+      mHandler.handleKeyEvent( eventType, keyCode, charCode, domEvent );
       if( this._shouldSend( eventType, this._currentKeyCode, charCode, domEvent, control ) ) {
         this._sendKeyEvent( control, this._currentKeyCode, charCode, domEvent );
       }

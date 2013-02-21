@@ -40,6 +40,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Button", {
 
   properties : rwt.remote.HandlerUtil.extendControlProperties( [
     "text",
+    "mnemonicIndex",
     "alignment",
     "image",
     "selection",
@@ -47,14 +48,6 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Button", {
   ] ),
 
   propertyHandler : rwt.remote.HandlerUtil.extendControlPropertyHandler( {
-    "text" : function( widget, value ) {
-      var EncodingUtil = rwt.util.Encoding;
-      var text = EncodingUtil.escapeText( value, false );
-      if( widget.hasState( "rwt_WRAP" ) ) {
-        text = EncodingUtil.replaceNewLines( text, "<br/>" );
-      }
-      widget.setText( text === "" ? null : text );
-    },
     "image" : function( widget, value ) {
       if( value === null ) {
         widget.setImage( value );
