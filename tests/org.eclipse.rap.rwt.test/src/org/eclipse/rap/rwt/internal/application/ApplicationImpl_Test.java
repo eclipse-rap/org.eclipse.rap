@@ -21,6 +21,7 @@ import javax.servlet.Servlet;
 
 import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.application.ExceptionHandler;
 import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
@@ -148,7 +149,25 @@ public class ApplicationImpl_Test {
     } catch( NullPointerException expected ) {
     }
   }
+  
+  @Test
+  public void testSetExceptionHandler() {
+    ExceptionHandler exceptionHandler = mock( ExceptionHandler.class );
+    
+    application.setExceptionHandler( exceptionHandler );
+    
+    assertSame( exceptionHandler, applicationContext.getExceptionHandler() );
+  }
 
+  @Test
+  public void testSetExceptionHandlerWithNullArgument() {
+    try {
+      application.setExceptionHandler( null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+  
   private void assertFilterRegistered( Class<RWTClusterSupport> filterClass ) {
     FilterRegistration[] filterRegistrations = getFilterRegistrations();
     boolean found = false;

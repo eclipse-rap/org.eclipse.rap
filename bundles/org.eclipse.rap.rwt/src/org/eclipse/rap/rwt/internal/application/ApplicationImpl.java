@@ -20,6 +20,7 @@ import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
+import org.eclipse.rap.rwt.application.ExceptionHandler;
 import org.eclipse.rap.rwt.internal.client.ClientProvider;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.theme.Theme;
@@ -73,6 +74,11 @@ public class ApplicationImpl implements Application {
     ParamCheck.notNull( settingStoreFactory, "settingStoreFactory" );
 
     applicationContext.getSettingStoreManager().register( settingStoreFactory );
+  }
+  
+  public void setExceptionHandler( ExceptionHandler exceptionHandler ) {
+    ParamCheck.notNull( exceptionHandler, "exceptionHandler" );
+    applicationContext.setExceptionHandler( exceptionHandler );
   }
 
   public void addEntryPoint( String path,
@@ -148,6 +154,10 @@ public class ApplicationImpl implements Application {
     applicationContext.setAttribute( name, value );
   }
 
+  public ApplicationContextImpl getApplicationContext() {
+    return applicationContext;
+  }
+
   private ClassLoader getClassLoader() {
     return configuration.getClass().getClassLoader();
   }
@@ -163,10 +173,6 @@ public class ApplicationImpl implements Application {
       throw new IllegalArgumentException( msg );
     }
     return result;
-  }
-
-  public ApplicationContextImpl getApplicationContext() {
-    return applicationContext;
   }
 
   static class ResourceLoaderImpl implements ResourceLoader {

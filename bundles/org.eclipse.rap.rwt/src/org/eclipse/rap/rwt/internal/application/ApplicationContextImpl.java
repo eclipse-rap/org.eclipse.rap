@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.application;
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.application.ExceptionHandler;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
@@ -77,6 +78,7 @@ public class ApplicationContextImpl implements ApplicationContext {
   private final ServletContext servletContext;
   private final ApplicationContextActivator contextActivator;
   private final ClientSelector clientSelector;
+  private ExceptionHandler exceptionHandler;
   private boolean active;
 
   public ApplicationContextImpl( ApplicationConfiguration applicationConfiguration,
@@ -107,7 +109,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     contextActivator = new ApplicationContextActivator( this );
     clientSelector = new ClientSelector();
   }
-
+  
   public void setAttribute( String name, Object value ) {
     applicationStore.setAttribute( name, value );
   }
@@ -234,6 +236,14 @@ public class ApplicationContextImpl implements ApplicationContext {
 
   public ClientSelector getClientSelector() {
     return clientSelector;
+  }
+  
+  public ExceptionHandler getExceptionHandler() {
+    return exceptionHandler;
+  }
+  
+  public void setExceptionHandler( ExceptionHandler exceptionHandler ) {
+    this.exceptionHandler = exceptionHandler;
   }
 
   private void checkIsNotActivated() {
