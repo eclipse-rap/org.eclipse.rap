@@ -319,16 +319,22 @@ public class ShellTab extends ExampleTab {
     item = new MenuItem( searchMenu, SWT.PUSH );
     item.setText( "Disabled" );
     item.setEnabled( false );
-    new MenuItem( searchMenu, SWT.PUSH ).setText( "Push" );
+    item = new MenuItem( searchMenu, SWT.PUSH );
+    item.setText( "Push\tCtrl+Shift+P" );
+    item.setAccelerator( SWT.MOD1 + SWT.MOD2 + 'P' );
     new MenuItem( searchMenu, SWT.SEPARATOR );
     item = new MenuItem( searchMenu, SWT.CHECK );
-    item.setText( "Check" );
+    item.setText( "Check\tCtrl+Shift+C" );
+    item.setAccelerator( SWT.MOD1 + SWT.MOD2 + 'C' );
     item = new MenuItem( searchMenu, SWT.RADIO );
-    item.setText( "Radio 1" );
+    item.setText( "Radio 1\tCtrl+Shift+1" );
+    item.setAccelerator( SWT.MOD1 + SWT.MOD2 + '1' );
     item = new MenuItem( searchMenu, SWT.RADIO );
-    item.setText( "Radio 2" );
+    item.setText( "Radio 2\tCtrl+Shift+2" );
+    item.setAccelerator( SWT.MOD1 + SWT.MOD2 + '2' );
     item = new MenuItem( searchMenu, SWT.RADIO );
-    item.setText( "Radio 3" );
+    item.setText( "Radio 3\tCtrl+Shift+3" );
+    item.setAccelerator( SWT.MOD1 + SWT.MOD2 + '3' );
     item.setEnabled( false );
     // disabled
     Menu disabledMenu = new Menu( shell, SWT.DROP_DOWN );

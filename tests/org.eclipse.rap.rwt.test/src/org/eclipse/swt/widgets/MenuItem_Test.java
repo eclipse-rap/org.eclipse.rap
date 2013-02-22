@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -18,25 +19,42 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ArmListener;
 import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 
 public class MenuItem_Test {
 
   private Display display;
   private Shell shell;
+  private Menu menuBar;
+  private Menu menu;
+  private MenuItem menuItem;
 
   @Before
   public void setUp() {
@@ -44,6 +62,10 @@ public class MenuItem_Test {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
+    menuBar = new Menu( shell, SWT.BAR );
+    shell.setMenuBar( menuBar );
+    menu = new Menu( shell, SWT.POP_UP );
+    menuItem = new MenuItem( menu, SWT.PUSH );
   }
 
   @After
@@ -53,7 +75,6 @@ public class MenuItem_Test {
 
   @Test
   public void testConstructor() {
-    Menu menu = new Menu( shell );
     MenuItem item = new MenuItem( menu, SWT.CASCADE );
     assertEquals( "", item.getText() );
     assertSame( display, item.getDisplay() );
@@ -68,8 +89,6 @@ public class MenuItem_Test {
 
   @Test
   public void testSetMenu() {
-    Menu menuBar = new Menu( shell, SWT.BAR );
-    shell.setMenuBar( menuBar );
     MenuItem fileMenuItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu fileMenu = new Menu( menuBar );
     // Test 'normal' usage of setMenu
@@ -115,7 +134,6 @@ public class MenuItem_Test {
 
   @Test
   public void testSelection() {
-    Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
     menuBarItem.setMenu( menu );
@@ -148,17 +166,15 @@ public class MenuItem_Test {
     assertTrue( radioItem2.getSelection() );
   }
 
-  @SuppressWarnings("deprecation")
   @Test
-  public void testImage() {
-    Menu menuBar = new Menu( shell, SWT.BAR );
+  public void testImage() throws IOException {
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
     menuBarItem.setMenu( menu );
     MenuItem separator = new MenuItem( menu, SWT.SEPARATOR );
 
     // Don't allow an image to be set on a separator menu item
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( Fixture.IMAGE1 );
     assertNotNull( image );
     separator.setImage( image );
     assertEquals( null, separator.getImage() );
@@ -194,27 +210,20 @@ public class MenuItem_Test {
 
   @Test
   public void testId() {
-    Menu menu = new Menu( shell, SWT.BAR );
-    MenuItem item = new MenuItem( menu, SWT.CASCADE );
+    MenuItem item = new MenuItem( menuBar, SWT.CASCADE );
     item.setID( 123 );
     assertEquals( 123, item.getID() );
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void testId_InvalidValue() {
-    Menu menu = new Menu( shell, SWT.BAR );
-    MenuItem item = new MenuItem( menu, SWT.CASCADE );
-    try {
-      item.setID( -100 );
-      fail( "negative ids not allowed" );
-    } catch( IllegalArgumentException expected ) {
-    }
+    MenuItem item = new MenuItem( menuBar, SWT.CASCADE );
+    item.setID( -100 );
   }
 
   @Test
   public void testAddArmListener() {
-    Menu menu = new Menu( shell, SWT.BAR );
-    MenuItem item = new MenuItem( menu, SWT.CASCADE );
+    MenuItem item = new MenuItem( menuBar, SWT.CASCADE );
 
     item.addArmListener( mock( ArmListener.class ) );
 
@@ -223,8 +232,7 @@ public class MenuItem_Test {
 
   @Test
   public void testRemoveArmListener() {
-    Menu menu = new Menu( shell, SWT.BAR );
-    MenuItem item = new MenuItem( menu, SWT.CASCADE );
+    MenuItem item = new MenuItem( menuBar, SWT.CASCADE );
     ArmListener listener = mock( ArmListener.class );
     item.addArmListener( listener );
 
@@ -233,32 +241,18 @@ public class MenuItem_Test {
     assertFalse( item.isListening( SWT.Arm ) );
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void testAddArmListenerWithNullArgument() {
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
-
-    try {
-      menuItem.addArmListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+    menuItem.addArmListener( null );
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void testRemoveArmListenerWithNullArgument() {
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
-
-    try {
-      menuItem.removeArmListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+    menuItem.removeArmListener( null );
   }
 
   @Test
   public void testAddHelpListener() {
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
     menuItem.addHelpListener( mock( HelpListener.class ) );
 
     assertTrue( menuItem.isListening( SWT.Help ) );
@@ -266,8 +260,6 @@ public class MenuItem_Test {
 
   @Test
   public void testRemoveHelpListener() {
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
     HelpListener listener = mock( HelpListener.class );
     menuItem.addHelpListener( listener );
 
@@ -276,33 +268,18 @@ public class MenuItem_Test {
     assertFalse( menuItem.isListening( SWT.Help ) );
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void testAddHelpListenerWithNullArgument() {
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
-
-    try {
-      menuItem.addHelpListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+    menuItem.addHelpListener( null );
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void testRemoveHelpListenerWithNullArgument() {
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
-
-    try {
-      menuItem.removeHelpListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+    menuItem.removeHelpListener( null );
   }
 
   @Test
   public void testAddSelectionListener() {
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
-
     menuItem.addSelectionListener( mock( SelectionListener.class ) );
 
     assertTrue( menuItem.isListening( SWT.Selection ) );
@@ -311,8 +288,6 @@ public class MenuItem_Test {
 
   @Test
   public void testRemoveSelectionListener() {
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
     SelectionListener listener = mock( SelectionListener.class );
     menuItem.addSelectionListener( listener );
 
@@ -322,25 +297,321 @@ public class MenuItem_Test {
     assertFalse( menuItem.isListening( SWT.DefaultSelection ) );
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void testAddSelectionListenerWithNullArgument() {
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
+    menuItem.addSelectionListener( null );
+  }
 
-    try {
-      menuItem.addSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+  @Test(expected = IllegalArgumentException.class)
+  public void testRemoveSelectionListenerWithNullArgument() {
+    menuItem.removeSelectionListener( null );
   }
 
   @Test
-  public void testRemoveSelectionListenerWithNullArgument() {
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
+  public void testSetAccelerator() {
+    menuItem.setAccelerator( SWT.ALT | 'A' );
 
-    try {
-      menuItem.removeSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+    assertEquals( SWT.ALT | 'A', menuItem.getAccelerator() );
   }
+
+  @Test
+  public void testSetAccelerator_OnSeparator() {
+    menuItem = new MenuItem( menu, SWT.SEPARATOR );
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+
+    assertEquals( SWT.ALT | 'A', menuItem.getAccelerator() );
+  }
+
+  @Test
+  public void testSetAccelerator_AddActiveKey() {
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+
+    String[] activeKeys = ( String[] )display.getData( RWT.ACTIVE_KEYS );
+    assertTrue( Arrays.asList( activeKeys ).contains( "ALT+A" ) );
+  }
+
+  @Test
+  public void testSetAccelerator_RemoveActiveKey() {
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+
+    menuItem.setAccelerator( 0 );
+
+    String[] activeKeys = ( String[] )display.getData( RWT.ACTIVE_KEYS );
+    assertFalse( Arrays.asList( activeKeys ).contains( "ALT+A" ) );
+  }
+
+  @Test
+  public void testSetAccelerator_KeepExistingActiveKey() {
+    display.setData( RWT.ACTIVE_KEYS, new String[] { "CTRL+B" } );
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+
+    menuItem.setAccelerator( 0 );
+
+    String[] activeKeys = ( String[] )display.getData( RWT.ACTIVE_KEYS );
+    assertTrue( Arrays.asList( activeKeys ).contains( "CTRL+B" ) );
+  }
+
+  @Test
+  public void testSetAccelerator_AddCancelKey() {
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+
+    String[] activeKeys = ( String[] )display.getData( RWT.CANCEL_KEYS );
+    assertTrue( Arrays.asList( activeKeys ).contains( "ALT+A" ) );
+  }
+
+  @Test
+  public void testDisposedItem_RemoveActiveKey() {
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+
+    menuItem.dispose();
+
+    String[] activeKeys = ( String[] )display.getData( RWT.ACTIVE_KEYS );
+    assertFalse( Arrays.asList( activeKeys ).contains( "ALT+A" ) );
+  }
+
+  @Test
+  public void testSetAccelerator_RemoveCancelKey() {
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+
+    menuItem.setAccelerator( 0 );
+
+    String[] activeKeys = ( String[] )display.getData( RWT.CANCEL_KEYS );
+    assertFalse( Arrays.asList( activeKeys ).contains( "ALT+A" ) );
+  }
+
+  @Test
+  public void testSetAccelerator_KeepExistingCancelKey() {
+    display.setData( RWT.CANCEL_KEYS, new String[] { "CTRL+B" } );
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+
+    menuItem.setAccelerator( 0 );
+
+    String[] activeKeys = ( String[] )display.getData( RWT.CANCEL_KEYS );
+    assertTrue( Arrays.asList( activeKeys ).contains( "CTRL+B" ) );
+  }
+
+  @Test
+  public void testDisposedItem_RemoveCancelKey() {
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+
+    menuItem.dispose();
+
+    String[] activeKeys = ( String[] )display.getData( RWT.CANCEL_KEYS );
+    assertFalse( Arrays.asList( activeKeys ).contains( "ALT+A" ) );
+  }
+
+  @Test
+  public void testSelectionEvent_TriggeredByAccelerator() {
+    SelectionListener listener = mock( SelectionListener.class );
+    menuItem.addSelectionListener( listener );
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+    shell.open();
+
+    Fixture.fakeNewRequest();
+    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
+    Fixture.readDataAndProcessAction( display );
+
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertSame( menuItem, event.widget );
+  }
+
+  @Test
+  public void testSelectionEvent_TriggeredByAccelerator_OnSeparator() {
+    SelectionListener listener = mock( SelectionListener.class );
+    menuItem = new MenuItem( menu, SWT.SEPARATOR );
+    menuItem.addSelectionListener( listener );
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+    shell.open();
+
+    Fixture.fakeNewRequest();
+    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
+    Fixture.readDataAndProcessAction( display );
+
+    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  @Test
+  public void testSelectionEvent_TriggeredByAccelerator_OnDisabledItem() {
+    menuItem.setEnabled( false );
+    SelectionListener listener = mock( SelectionListener.class );
+    menuItem.addSelectionListener( listener );
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+    shell.open();
+
+    Fixture.fakeNewRequest();
+    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
+    Fixture.readDataAndProcessAction( display );
+
+    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  @Test
+  public void testSelectionEvent_TriggeredByAccelerator_OnDisabledMenu() {
+    menu.setEnabled( false );
+    SelectionListener listener = mock( SelectionListener.class );
+    menuItem.addSelectionListener( listener );
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+    shell.open();
+
+    Fixture.fakeNewRequest();
+    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
+    Fixture.readDataAndProcessAction( display );
+
+    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  @Test
+  public void testSelectionEvent_TriggeredByAccelerator_WithDifferentAcceleratorKey() {
+    SelectionListener listener = mock( SelectionListener.class );
+    menuItem.addSelectionListener( listener );
+    menuItem.setAccelerator( SWT.ALT | 'B' );
+    shell.open();
+
+    Fixture.fakeNewRequest();
+    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
+    Fixture.readDataAndProcessAction( display );
+
+    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  @Test
+  public void testSelectionEvent_TriggeredByAccelerator_WithDifferentAcceleratorModifier() {
+    SelectionListener listener = mock( SelectionListener.class );
+    menuItem.addSelectionListener( listener );
+    menuItem.setAccelerator( SWT.CTRL | 'A' );
+    shell.open();
+
+    Fixture.fakeNewRequest();
+    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
+    Fixture.readDataAndProcessAction( display );
+
+    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  @Test
+  public void testSelectionEvent_WithoutAccelerator() {
+    SelectionListener listener = mock( SelectionListener.class );
+    menuItem.addSelectionListener( listener );
+    shell.open();
+
+    Fixture.fakeNewRequest();
+    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
+    Fixture.readDataAndProcessAction( display );
+
+    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  @Test
+  public void testAcceleratorFilter_FilterKeyDownEvent() {
+    KeyListener listener = mock( KeyListener.class );
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+    shell.addKeyListener( listener );
+    shell.open();
+
+    Fixture.fakeNewRequest();
+    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
+    Fixture.readDataAndProcessAction( display );
+
+    verify( listener, times( 0 ) ).keyPressed( any( KeyEvent.class) );
+  }
+
+  @Test
+  public void testToggleSelection_TriggeredByAccelerator_OnCheck() {
+    menuItem = new MenuItem( menu, SWT.CHECK );
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+    shell.open();
+
+    Fixture.fakeNewRequest();
+    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
+    Fixture.readDataAndProcessAction( display );
+
+    assertTrue( menuItem.getSelection() );
+
+    Fixture.fakeNewRequest();
+    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
+    Fixture.readDataAndProcessAction( display );
+
+    assertFalse( menuItem.getSelection() );
+  }
+
+  @Test
+  public void testSetSelection_TriggeredByAccelerator_OnRadio() {
+    menuItem = new MenuItem( menu, SWT.RADIO );
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+    shell.open();
+
+    Fixture.fakeNewRequest();
+    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
+    Fixture.readDataAndProcessAction( display );
+
+    assertTrue( menuItem.getSelection() );
+
+    Fixture.fakeNewRequest();
+    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
+    Fixture.readDataAndProcessAction( display );
+
+    assertTrue( menuItem.getSelection() );
+  }
+
+  @Test
+  public void testDeselectOtherRadios_TriggeredByAccelerator() {
+    menuItem = new MenuItem( menu, SWT.RADIO );
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+    MenuItem menuItem1 = new MenuItem( menu, SWT.RADIO );
+    menuItem1.setSelection( true );
+    MenuItem menuItem2 = new MenuItem( menu, SWT.CHECK );
+    menuItem2.setSelection( true );
+    shell.open();
+
+    Fixture.fakeNewRequest();
+    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
+    Fixture.readDataAndProcessAction( display );
+
+    assertFalse( menuItem1.getSelection() );
+    assertTrue( menuItem2.getSelection() );
+  }
+
+  @Test
+  public void testDeselectionEvent_TriggeredByAccelerator() {
+    menuItem = new MenuItem( menu, SWT.RADIO );
+    menuItem.setAccelerator( SWT.ALT | 'A' );
+    MenuItem menuItem1 = new MenuItem( menu, SWT.RADIO );
+    menuItem1.setSelection( true );
+    SelectionListener listener = mock( SelectionListener.class );
+    menuItem1.addSelectionListener( listener );
+    shell.open();
+
+    Fixture.fakeNewRequest();
+    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
+    Fixture.readDataAndProcessAction( display );
+
+    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  private Image createImage( String imagePath ) throws IOException {
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( imagePath );
+    Image result = new Image( display, stream );
+    stream.close();
+    return result;
+  }
+
+  private static void fakeKeyDownRequest( Widget widget,
+                                          boolean altKey,
+                                          boolean ctrlKey,
+                                          boolean shiftKey,
+                                          int keyCode,
+                                          int charCode )
+  {
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "altKey", Boolean.valueOf( altKey ) );
+    parameters.put( "ctrlKey", Boolean.valueOf( ctrlKey ) );
+    parameters.put( "shiftKey", Boolean.valueOf( shiftKey ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_KEY_CODE, Integer.valueOf( keyCode ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_CHAR_CODE, Integer.valueOf( charCode ) );
+    Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_KEY_DOWN, parameters );
+  }
+
 }
