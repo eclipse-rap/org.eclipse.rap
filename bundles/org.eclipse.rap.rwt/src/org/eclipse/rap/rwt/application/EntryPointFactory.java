@@ -15,7 +15,7 @@ package org.eclipse.rap.rwt.application;
 /**
  * Implementations of this interface can be used to register entrypoints with the framework. It is
  * also possible to register the class that implements {@link EntryPoint} directly, but using a
- * factory provides more flexibility as it leaves the creation of the class to the framework.
+ * factory provides more flexibility as it leaves the creation of the class to the application.
  *
  * @since 2.0
  */
