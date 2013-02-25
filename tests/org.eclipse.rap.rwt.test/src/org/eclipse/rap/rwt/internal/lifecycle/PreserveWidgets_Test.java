@@ -30,6 +30,7 @@ import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
@@ -119,7 +120,7 @@ public class PreserveWidgets_Test {
   @Test
   public void testStartup() throws Exception {
     ApplicationContextImpl applicationContext = getApplicationContext();
-    applicationContext.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
+    applicationContext.getEntryPointManager().register( TestRequest.DEFAULT_SERVLET_PATH,
                                                         TestEntryPointWithShell.class,
                                                         null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )applicationContext.getLifeCycleFactory().getLifeCycle();

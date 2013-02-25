@@ -19,13 +19,13 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;
 import org.junit.Before;
@@ -94,7 +94,7 @@ public class ExternalBrowser_Test {
   @Test
   public void testExecutionOrder() throws IOException {
     ApplicationContextImpl applicationContext = getApplicationContext();
-    applicationContext.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
+    applicationContext.getEntryPointManager().register( TestRequest.DEFAULT_SERVLET_PATH,
                                                         TestExecutionOrderEntryPoint.class,
                                                         null );
     Fixture.fakeNewRequest();

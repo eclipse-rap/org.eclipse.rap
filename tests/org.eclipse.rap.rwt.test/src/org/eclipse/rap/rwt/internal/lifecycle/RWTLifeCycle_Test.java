@@ -97,7 +97,7 @@ public class RWTLifeCycle_Test {
 
   @Test
   public void testDefaultEntryPoint() throws IOException {
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH,
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH,
                                 TestEntryPointWithLog.class,
                                 null );
     RWTLifeCycle lifeCycle = getLifeCycle();
@@ -131,7 +131,7 @@ public class RWTLifeCycle_Test {
 
   @Test
   public void testPhases() throws IOException {
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH,
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH,
                                 TestPhasesEntryPoint.class,
                                 null );
     RWTLifeCycle lifeCycle = getLifeCycle();
@@ -226,7 +226,7 @@ public class RWTLifeCycle_Test {
   @Test
   public void testErrorInLifeCycle() throws IOException {
     Class<TestErrorInLifeCycleEntryPoint> type = TestErrorInLifeCycleEntryPoint.class;
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, type, null );
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, type, null );
     RWTLifeCycle lifeCycle = getLifeCycle();
     LifeCycleUtil.setSessionDisplay( null );
     try {
@@ -241,7 +241,7 @@ public class RWTLifeCycle_Test {
 
   @Test
   public void testExceptionInPhaseListener() throws IOException {
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH,
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH,
                                 TestEntryPoint.class,
                                 null );
     RWTLifeCycle lifeCycle = getLifeCycle();
@@ -265,7 +265,7 @@ public class RWTLifeCycle_Test {
 
   @Test
   public void testRender() throws IOException {
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, TestEntryPoint.class, null );
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, TestEntryPoint.class, null );
     RWTLifeCycle lifeCycle = getLifeCycle();
 
     lifeCycle.execute();
@@ -276,7 +276,7 @@ public class RWTLifeCycle_Test {
 
   @Test
   public void testPhaseListenerRegistration() throws IOException {
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, TestEntryPoint.class, null );
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, TestEntryPoint.class, null );
     final PhaseListener[] callbackHandler = new PhaseListener[ 1 ];
     PhaseListener listener = new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -362,7 +362,7 @@ public class RWTLifeCycle_Test {
     int returnValue = lifeCycle.createUI();
     assertEquals( -1, returnValue );
 
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, MainStartup.class, null );
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, MainStartup.class, null );
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IInterruptible() {
         public PhaseId execute(Display display) throws IOException {
@@ -566,7 +566,7 @@ public class RWTLifeCycle_Test {
 
   @Test
   public void testUIRunnable() throws InterruptedException {
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, MainStartup.class, null );
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, MainStartup.class, null );
     RWTLifeCycle lifeCycle = getLifeCycle();
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IInterruptible() {
@@ -726,7 +726,7 @@ public class RWTLifeCycle_Test {
 
   @Test
   public void testErrorHandlingInCreateUI() throws IOException {
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, ErrorStartup.class, null );
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, ErrorStartup.class, null );
     try {
       getLifeCycle().execute();
       fail();
@@ -750,7 +750,7 @@ public class RWTLifeCycle_Test {
     } );
     // Register and 'run' entry point with readAndDispatch/sleep loop
     Class<? extends EntryPoint> entryPointClass = SessionInvalidateWithEventLoopEntryPoint.class;
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, entryPointClass, null );
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, entryPointClass, null );
     RWTLifeCycle lifeCycle = getLifeCycle();
     lifeCycle.execute();
     // Store some values for later comparison
@@ -769,8 +769,8 @@ public class RWTLifeCycle_Test {
 
   @Test
   public void testExceptionInRender() {
-    fakeServletPath( EntryPointManager.DEFAULT_PATH );
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH,
+    fakeServletPath( TestRequest.DEFAULT_SERVLET_PATH );
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH,
                                 ExceptionInRenderEntryPoint.class,
                                 null );
     RWTLifeCycle lifeCycle = getLifeCycle();
@@ -798,7 +798,7 @@ public class RWTLifeCycle_Test {
     } );
     // Register and 'run' entry point with readAndDispatch/sleep loop
     Class<? extends EntryPoint> entryPoint = SessionInvalidateWithoutEventLoopEntryPoint.class;
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, entryPoint, null );
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, entryPoint, null );
     RWTLifeCycle lifeCycle = getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -826,7 +826,7 @@ public class RWTLifeCycle_Test {
     UISession uiSession = ContextProvider.getUISession();
     ContextProvider.getContext().getApplicationContext();
     Class<? extends EntryPoint> clazz = DisposeDisplayOnSessionTimeoutEntryPoint.class;
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, clazz, null );
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, clazz, null );
     RWTLifeCycle lifeCycle = getLifeCycle();
     lifeCycle.execute();
     invalidateSession( uiSession );
@@ -837,7 +837,7 @@ public class RWTLifeCycle_Test {
   public void testOrderOfDisplayDisposeAndSessionUnbound() throws Throwable {
     UISession uiSession = ContextProvider.getUISession();
     Class<? extends EntryPoint> clazz = TestOrderOfDisplayDisposeAndSessionUnboundEntryPoint.class;
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, clazz, null );
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, clazz, null );
     RWTLifeCycle lifeCycle = getLifeCycle();
     lifeCycle.execute();
     invalidateSession( uiSession );
@@ -877,7 +877,7 @@ public class RWTLifeCycle_Test {
 
   @Test
   public void testGetUIThreadWhileLifeCycleInExecute() throws IOException {
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, TestEntryPoint.class, null );
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, TestEntryPoint.class, null );
     RWTLifeCycle lifeCycle = new RWTLifeCycle( ApplicationContextUtil.getInstance() );
     final Thread[] currentThread = { null };
     final Thread[] uiThread = { null };
@@ -901,7 +901,7 @@ public class RWTLifeCycle_Test {
 
   @Test
   public void testGetUIThreadAfterLifeCycleExecuted() throws IOException {
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, TestEntryPoint.class, null );
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, TestEntryPoint.class, null );
     RWTLifeCycle lifeCycle = new RWTLifeCycle( ApplicationContextUtil.getInstance() );
     lifeCycle.execute();
 

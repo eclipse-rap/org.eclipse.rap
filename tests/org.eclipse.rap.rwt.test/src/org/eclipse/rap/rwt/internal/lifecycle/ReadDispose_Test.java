@@ -17,6 +17,7 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -51,7 +52,7 @@ public class ReadDispose_Test {
     // Run requests to initialize the 'system'
     Fixture.fakeNewRequest();
     ApplicationContextImpl applicationContext = getApplicationContext();
-    applicationContext.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
+    applicationContext.getEntryPointManager().register( TestRequest.DEFAULT_SERVLET_PATH,
                                                         WidgetDisposalEntryPoint.class,
                                                         null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )applicationContext.getLifeCycleFactory().getLifeCycle();

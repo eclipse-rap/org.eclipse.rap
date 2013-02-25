@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,8 +39,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
-
 
 /**
  * <p>
@@ -55,6 +53,7 @@ public final class TestRequest implements HttpServletRequest {
   public static final String DEFAULT_REQUEST_URI = "/fooapp/rap";
   public static final String DEFAULT_CONTEX_PATH = "/fooapp";
   public static final String DEFAULT_SERVER_NAME = "fooserver";
+  public static final String DEFAULT_SERVLET_PATH = "/rap";
   public static final int PORT = 8080;
 
   private final StringBuffer requestURL;
@@ -80,7 +79,7 @@ public final class TestRequest implements HttpServletRequest {
     serverName = DEFAULT_SERVER_NAME;
     contextPath = DEFAULT_CONTEX_PATH;
     requestURI = DEFAULT_REQUEST_URI;
-    servletPath = EntryPointManager.DEFAULT_PATH;
+    servletPath = DEFAULT_SERVLET_PATH;
     parameters = new HashMap<String,String[]>();
     headers = new HashMap<String, String>();
     attributes = new HashMap<String,Object>();
