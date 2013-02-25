@@ -12,18 +12,19 @@ package org.eclipse.rap.rwt.application;
 
 
 /**
- * This interface allows application code to be informed of exceptions that occurr while 
- * running the event loop. 
- * 
+ * This interface allows application code to be informed of exceptions that occur while
+ * running the event loop.
+ *
  * @see Application#setExceptionHandler(ExceptionHandler)
  * @since 2.1
  */
 public interface ExceptionHandler {
-  
+
   /**
-   * Called if an exception occured. 
-   * 
-   * @param throwable the exception that occured, never <code>null</code>
+   * Called if an exception occurred.
+   *
+   * @param throwable the exception that occurred, never <code>null</code>
    */
   void handleException( Throwable throwable );
+
 }

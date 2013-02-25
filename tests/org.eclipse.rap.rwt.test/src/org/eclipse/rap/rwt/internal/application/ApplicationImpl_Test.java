@@ -149,25 +149,21 @@ public class ApplicationImpl_Test {
     } catch( NullPointerException expected ) {
     }
   }
-  
+
   @Test
   public void testSetExceptionHandler() {
     ExceptionHandler exceptionHandler = mock( ExceptionHandler.class );
-    
+
     application.setExceptionHandler( exceptionHandler );
-    
+
     assertSame( exceptionHandler, applicationContext.getExceptionHandler() );
   }
 
-  @Test
-  public void testSetExceptionHandlerWithNullArgument() {
-    try {
-      application.setExceptionHandler( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
+  @Test( expected = NullPointerException.class )
+  public void testSetExceptionHandler_failsWithNullArgument() {
+    application.setExceptionHandler( null );
   }
-  
+
   private void assertFilterRegistered( Class<RWTClusterSupport> filterClass ) {
     FilterRegistration[] filterRegistrations = getFilterRegistrations();
     boolean found = false;

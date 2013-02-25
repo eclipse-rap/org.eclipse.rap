@@ -10,13 +10,14 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.application.ExceptionHandler;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
@@ -27,118 +28,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.events.EventList;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 
-public class DisplayExceptionHandler_Test extends TestCase {
-  
+public class DisplayExceptionHandler_Test {
+
   private ExceptionHandler exceptionHandler;
   private Display display;
   private Shell shell;
-  
-  public void testRuntimeExceptionInListenerWithExceptionHandler() {
-    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
-    RuntimeException exception = new RuntimeException();
-    addMaliciousListener( SWT.Resize, exception );
-    generateEvent( shell, SWT.Resize );
-    
-    display.readAndDispatch();
-    
-    verify( exceptionHandler ).handleException( exception );
-  }
-
-  public void testRuntimeExceptionInListenerWithoutExceptionHandler() {
-    RuntimeException exception = new RuntimeException();
-    addMaliciousListener( SWT.Resize, exception );
-    generateEvent( shell, SWT.Resize );
-    
-    try {
-      display.readAndDispatch();
-      fail();
-    } catch( RuntimeException expected ) {
-      assertSame( exception, expected );
-    }
-  }
-  
-  public void testErrorInListenerWithExceptionHandler() {
-    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
-    Error error = new Error();
-    addMaliciousListener( SWT.Resize, error );
-    generateEvent( shell, SWT.Resize );
-    
-    try {
-      display.readAndDispatch();
-      fail();
-    } catch( Error expected ) {
-      assertSame( error, expected );
-    }
-
-    verify( exceptionHandler ).handleException( error );
-  }
-
-  public void testErrorInListenerWithoutExceptionHandler() {
-    Error error = new Error();
-    addMaliciousListener( SWT.Resize, error );
-    generateEvent( shell, SWT.Resize );
-    
-    try {
-      display.readAndDispatch();
-      fail();
-    } catch( Error expected ) {
-      assertSame( error, expected );
-    }
-  }
-  
-  public void testExceptionInExceptionHandler() {
-    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
-    RuntimeException exceptionInHandler = new RuntimeException();
-    doThrow( exceptionInHandler ).when( exceptionHandler ).handleException( any( Throwable.class ) );
-    addMaliciousListener( SWT.Resize, exceptionInHandler );
-    generateEvent( shell, SWT.Resize );
-    
-    try {
-      display.readAndDispatch();
-      fail();
-    } catch( Exception expected ) {
-      assertSame( exceptionInHandler, expected );
-    }
-  }
-  
-  public void testReSkinningIsRunWithinExceptionHandler() {
-    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
-    RuntimeException exception = new RuntimeException();
-    Listener listener = mock( Listener.class );
-    doThrow( exception ).when( listener ).handleEvent( any( Event.class ) );
-    display.addListener( SWT.Skin, listener );
-    display.addSkinnableWidget( shell );
-    
-    display.readAndDispatch();
-    
-    verify( exceptionHandler ).handleException( exception );
-  }
-  
-  public void testDeferredLayoutIsRunWithinExceptionHandler() {
-    shell = spy( shell );
-    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
-    RuntimeException exception = new RuntimeException();
-    doThrow( exception ).when( shell ).setLayoutDeferred( anyBoolean() );
-    display.addLayoutDeferred( shell );
-
-    display.readAndDispatch();
-    
-    verify( exceptionHandler ).handleException( exception );
-  }
-  
-  public void testProcessActionRunnableIsRunWithinExceptionHandler() {
-    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
-    RuntimeException exception = new RuntimeException();
-    Runnable runnable = mock( Runnable.class );
-    doThrow( exception ).when( runnable ).run();
-    addProcessActionRunnable( runnable );
-
-    display.readAndDispatch();
-    
-    verify( exceptionHandler ).handleException( exception );
-  }
 
   @Before
   public void setUp() {
@@ -152,6 +49,119 @@ public class DisplayExceptionHandler_Test extends TestCase {
   @After
   public void tearDown() {
     Fixture.tearDown();
+  }
+
+  @Test
+  public void testRuntimeExceptionInListenerWithExceptionHandler() {
+    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
+    RuntimeException exception = new RuntimeException();
+    addMaliciousListener( SWT.Resize, exception );
+    generateEvent( shell, SWT.Resize );
+
+    display.readAndDispatch();
+
+    verify( exceptionHandler ).handleException( exception );
+  }
+
+  @Test
+  public void testRuntimeExceptionInListenerWithoutExceptionHandler() {
+    RuntimeException exception = new RuntimeException();
+    addMaliciousListener( SWT.Resize, exception );
+    generateEvent( shell, SWT.Resize );
+
+    try {
+      display.readAndDispatch();
+      fail();
+    } catch( RuntimeException expected ) {
+      assertSame( exception, expected );
+    }
+  }
+
+  @Test
+  public void testErrorInListenerWithExceptionHandler() {
+    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
+    Error error = new Error();
+    addMaliciousListener( SWT.Resize, error );
+    generateEvent( shell, SWT.Resize );
+
+    try {
+      display.readAndDispatch();
+      fail();
+    } catch( Error expected ) {
+      assertSame( error, expected );
+    }
+
+    verify( exceptionHandler ).handleException( error );
+  }
+
+  @Test
+  public void testErrorInListenerWithoutExceptionHandler() {
+    Error error = new Error();
+    addMaliciousListener( SWT.Resize, error );
+    generateEvent( shell, SWT.Resize );
+
+    try {
+      display.readAndDispatch();
+      fail();
+    } catch( Error expected ) {
+      assertSame( error, expected );
+    }
+  }
+
+  @Test
+  public void testExceptionInExceptionHandler() {
+    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
+    RuntimeException exceptionInHandler = new RuntimeException();
+    doThrow( exceptionInHandler ).when( exceptionHandler ).handleException( any( Throwable.class ) );
+    addMaliciousListener( SWT.Resize, exceptionInHandler );
+    generateEvent( shell, SWT.Resize );
+
+    try {
+      display.readAndDispatch();
+      fail();
+    } catch( Exception expected ) {
+      assertSame( exceptionInHandler, expected );
+    }
+  }
+
+  @Test
+  public void testReSkinningIsRunWithinExceptionHandler() {
+    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
+    RuntimeException exception = new RuntimeException();
+    Listener listener = mock( Listener.class );
+    doThrow( exception ).when( listener ).handleEvent( any( Event.class ) );
+    display.addListener( SWT.Skin, listener );
+    display.addSkinnableWidget( shell );
+
+    display.readAndDispatch();
+
+    verify( exceptionHandler ).handleException( exception );
+  }
+
+  @Test
+  public void testDeferredLayoutIsRunWithinExceptionHandler() {
+    shell = spy( shell );
+    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
+    RuntimeException exception = new RuntimeException();
+    doThrow( exception ).when( shell ).setLayoutDeferred( anyBoolean() );
+    display.addLayoutDeferred( shell );
+
+    display.readAndDispatch();
+
+    verify( exceptionHandler ).handleException( exception );
+  }
+
+  @Test
+  public void testProcessActionRunnableIsRunWithinExceptionHandler() {
+    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
+    RuntimeException exception = new RuntimeException();
+    Runnable runnable = mock( Runnable.class );
+    doThrow( exception ).when( runnable ).run();
+    addProcessActionRunnable( runnable );
+
+    display.readAndDispatch();
+
+    verify( exceptionHandler ).handleException( exception );
   }
 
   private void addMaliciousListener( int eventType, Throwable throwable ) {

@@ -157,7 +157,7 @@ public class Display extends Device implements Adaptable {
   private static final String APP_VERSION = Display.class.getName() + "#appVersion";
   private static final int DOUBLE_CLICK_TIME = 500; // Keep in sync with client-side (EventUtil.js)
   private static final int GROW_SIZE = 1024;
-  
+
   static final String PACKAGE_PREFIX = "org.eclipse.swt.widgets.";
 
   private static final ExceptionHandler DEFAULT_EXCEPTION_HANDLER = new ExceptionHandler() {
@@ -1212,7 +1212,7 @@ public class Display extends Device implements Adaptable {
     }
     return result;
   }
-  
+
   /**
    * Causes the user-interface thread to <em>sleep</em> (that is,
    * to be put in a state where it does not consume CPU cycles)
@@ -2432,5 +2432,5 @@ public class Display extends Device implements Adaptable {
       beep = false;
     }
   }
-  
+
 }

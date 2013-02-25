@@ -109,7 +109,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     contextActivator = new ApplicationContextActivator( this );
     clientSelector = new ClientSelector();
   }
-  
+
   public void setAttribute( String name, Object value ) {
     applicationStore.setAttribute( name, value );
   }
@@ -237,11 +237,11 @@ public class ApplicationContextImpl implements ApplicationContext {
   public ClientSelector getClientSelector() {
     return clientSelector;
   }
-  
+
   public ExceptionHandler getExceptionHandler() {
     return exceptionHandler;
   }
-  
+
   public void setExceptionHandler( ExceptionHandler exceptionHandler ) {
     this.exceptionHandler = exceptionHandler;
   }

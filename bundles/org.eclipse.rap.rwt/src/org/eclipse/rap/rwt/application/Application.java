@@ -190,21 +190,22 @@ public interface Application {
    * @see SettingStore
    */
   void setSettingStoreFactory( SettingStoreFactory settingStoreFactory );
-  
+
   /**
-   * The exception handler to which exceptions should be forwarded that occur while running 
-   * the event loop. 
+   * Sets the exception handler to which exceptions should be forwarded that occur while running
+   * the event loop.
    * <p>
-   * To give an exception handler the chance to log errors it called for all classes of exceptions.  
-   * <code>Error</code>s however are re-thrown after the handler was called so that they cannot be 
-   * swallowed. 
+   * To give an exception handler the chance to log errors it called for all classes of exceptions.
+   * <code>Error</code>s however are re-thrown after the handler was called so that they cannot be
+   * swallowed.
    * </p>
    * <p>
-   * The default implementation throws the given exception, resulting in a HTTP 500 response. 
+   * The default implementation throws the given exception, resulting in a HTTP 500 response.
    * </p>
-   * 
+   *
    * @param the exception handler to use, must not be <code>null</code>
    * @see ExceptionHandler
+   * @since 2.1
    */
   void setExceptionHandler( ExceptionHandler exceptionHandler );
 
