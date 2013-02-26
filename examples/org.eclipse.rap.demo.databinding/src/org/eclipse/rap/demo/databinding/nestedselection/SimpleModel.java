@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2012 David Orme <djo@coconut-palm-software.com> and others.
+ * Copyright (c) 2005, 2013 David Orme <djo@coconut-palm-software.com> and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ public class SimpleModel {
     personList.add( new SimplePerson( "Elmo", "1234", "Chicago", "IL" ) );
   }
   // Now a PersonList property...
-  LinkedList personList = new LinkedList();
+  LinkedList<SimplePerson> personList = new LinkedList<SimplePerson>();
 
   public LinkedList getPersonList() {
     return personList;

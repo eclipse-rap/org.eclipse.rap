@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
-import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.examples.pages.internal.ImageUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
@@ -266,27 +267,27 @@ public class InputExamplePage implements IExamplePage {
     button.setText( "Cancel" );
     Button button1 = new Button( compositeL1, SWT.PUSH );
     button1.setText( "Add" );
-    ClassLoader classLoader = getClass().getClassLoader();
-    Image imgAdd = Graphics.getImage( "resources/add_obj.gif", classLoader );
+    Display display = parent.getDisplay();
+    Image imgAdd = ImageUtil.getImage( display, "add_obj.gif" );
     button1.setImage( imgAdd );
     Button button2 = new Button( compositeL1, SWT.PUSH );
     button2.setText( "Delete" );
-    Image imgDelete = Graphics.getImage( "resources/delete_obj.gif", classLoader );
+    Image imgDelete = ImageUtil.getImage( display, "delete_obj.gif" );
     button2.setImage( imgDelete );
 
     Button button3 = new Button( compositeR, SWT.PUSH );
-    Image imageDownload = Graphics.getImage( "resources/go-bottom.png", classLoader );
+    Image imageDownload = ImageUtil.getImage( display, "go-bottom.png" );
     button3.setImage( imageDownload );
     button3.setToolTipText( "Download" );
 
     Button toggle1 = new Button( compositeL2, SWT.TOGGLE );
-    Image imgSynced = Graphics.getImage( "resources/synced.gif", classLoader );
+    Image imgSynced = ImageUtil.getImage( display, "synced.gif" );
     toggle1.setImage( imgSynced );
     toggle1.setToolTipText( "Keep in sync" );
     final Button toggle2 = new Button( compositeL2, SWT.TOGGLE | SWT.LEFT );
     toggle2.setText( "Unlocked" );
-    final Image imgLocked = Graphics.getImage( "resources/lockedstate.gif", classLoader );
-    final Image imgUnlocked = Graphics.getImage( "resources/unlockedstate.gif", classLoader );
+    final Image imgLocked = ImageUtil.getImage( display, "lockedstate.gif" );
+    final Image imgUnlocked = ImageUtil.getImage( display, "unlockedstate.gif" );
     toggle2.setImage( imgUnlocked );
     toggle2.addSelectionListener( new SelectionAdapter() {
       @Override

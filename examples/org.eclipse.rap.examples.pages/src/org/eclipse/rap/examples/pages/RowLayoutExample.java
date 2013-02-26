@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@ package org.eclipse.rap.examples.pages;
 
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
-import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.examples.pages.internal.ImageUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -23,6 +23,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Layout;
 
 public class RowLayoutExample implements IExamplePage {
@@ -60,20 +61,20 @@ public class RowLayoutExample implements IExamplePage {
     layoutComp.setLayout( layout );
     Button button1 = new Button( layoutComp, SWT.PUSH );
     button1.setText( "Add" );
-    ClassLoader classLoader = getClass().getClassLoader();
-    Image imgAdd = Graphics.getImage( "resources/add_obj.gif", classLoader );
+    Display display = button1.getDisplay();
+    Image imgAdd = ImageUtil.getImage( display, "add_obj.gif" );
     button1.setImage( imgAdd );
     Button button2 = new Button( layoutComp, SWT.PUSH );
     button2.setText( "Remove" );
-    Image imgDelete = Graphics.getImage( "resources/delete_obj.gif", classLoader );
+    Image imgDelete = ImageUtil.getImage( display, "delete_obj.gif" );
     button2.setImage( imgDelete );
     Button button3 = new Button( layoutComp, SWT.PUSH );
     button3.setText( "Up" );
-    Image imgUp = Graphics.getImage( "resources/up.gif", classLoader );
+    Image imgUp = ImageUtil.getImage( display, "up.gif" );
     button3.setImage( imgUp );
     Button button4 = new Button( layoutComp, SWT.PUSH );
     button4.setText( "Down" );
-    Image imgDown = Graphics.getImage( "resources/down.gif", classLoader );
+    Image imgDown = ImageUtil.getImage( display, "down.gif" );
     button4.setImage( imgDown );
     Button button5 = new Button( layoutComp, SWT.PUSH );
     button5.setText( "Clear" );

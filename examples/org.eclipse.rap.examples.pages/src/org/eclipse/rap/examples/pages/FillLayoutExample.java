@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package org.eclipse.rap.examples.pages;
 
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -30,8 +29,6 @@ import org.eclipse.swt.widgets.Spinner;
 
 
 public class FillLayoutExample implements IExamplePage {
-
-  private static final Color BG_COLOR = Graphics.getColor( 220, 220, 200 );
 
   private Composite contentComp;
   private int propSpacing = 5;
@@ -65,7 +62,7 @@ public class FillLayoutExample implements IExamplePage {
     layoutArea.layout();
   }
 
-  private void createLayoutComp( final Composite parent, final int style ) {
+  private void createLayoutComp( Composite parent, int style ) {
     Composite layoutCompContainer = new Composite( parent, SWT.NONE );
     layoutCompContainer.setLayout( ExampleUtil.createGridLayout( 1, false, false, false ) );
     String orientString = style == SWT.VERTICAL ? "Vertical" : "Horizontal";
@@ -81,13 +78,14 @@ public class FillLayoutExample implements IExamplePage {
     layout.spacing = propSpacing;
     layoutComp.setLayout( layout );
     int count = style == SWT.VERTICAL ? 2 : 3;
+    Color background = new Color( parent.getDisplay(), 220, 220, 200 );
     for( int i = 0; i < count ; i++ ) {
       Composite childComp = new Composite( layoutComp, SWT.BORDER );
-      childComp.setBackground( BG_COLOR );
+      childComp.setBackground( background );
     }
   }
 
-  private void createControlButtons( final Composite parent ) {
+  private void createControlButtons( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
     gridData.horizontalSpan = 2;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,14 +19,13 @@ import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.rap.demo.DemoActionBarAdvisor;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.application.*;
 
 
@@ -36,9 +35,6 @@ import org.eclipse.ui.application.*;
 public class DemoPresentationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
   private static final int BANNER_HEIGTH = 88;
-  private static final Color COLOR_BANNER_BG = Graphics.getColor( 27, 87, 144 );
-  private static final Color COLOR_BANNER_FG = Graphics.getColor( 255, 255, 255 );
-  private static final Color COLOR_SHELL_BG = Graphics.getColor( 255, 255, 255 );
 
   public DemoPresentationWorkbenchWindowAdvisor( IWorkbenchWindowConfigurer configurer ) {
     super( configurer );
@@ -69,13 +65,14 @@ public class DemoPresentationWorkbenchWindowAdvisor extends WorkbenchWindowAdvis
 
   @Override
   public void createWindowContents( Shell shell ) {
-    shell.setBackground( COLOR_SHELL_BG );
+    shell.setBackground( shell.getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
     shell.setLayout( new FormLayout() );
     createBanner( shell );
     createPageComposite( shell );
   }
 
   private void createBanner( Shell shell ) {
+    Display display = shell.getDisplay();
     Composite banner = new Composite( shell, SWT.NONE );
     banner.setBackgroundMode( SWT.INHERIT_DEFAULT );
     banner.setData( RWT.CUSTOM_VARIANT, "banner" );
@@ -91,8 +88,8 @@ public class DemoPresentationWorkbenchWindowAdvisor extends WorkbenchWindowAdvis
 
     Label label = new Label( banner, SWT.NONE );
     label.setText( "RAP Demo" );
-    label.setForeground( COLOR_BANNER_FG );
-    label.setFont( Graphics.getFont( "Verdana", 38, SWT.BOLD ) );
+    label.setForeground( display.getSystemColor( SWT.COLOR_WHITE ) );
+    label.setFont( new Font( display, "Verdana", 38, SWT.BOLD ) );
     label.pack();
     FormData fdLabel = new FormData();
     label.setLayoutData( fdLabel );
@@ -232,14 +229,14 @@ public class DemoPresentationWorkbenchWindowAdvisor extends WorkbenchWindowAdvis
 //    fdActionBar.left = new FormAttachment( 100, -actionBar.getSize().x );
 //  }
 
-  private void switchPerspective( int perspectiveIndex ) {
-    IWorkbench workbench = PlatformUI.getWorkbench();
-    IPerspectiveRegistry registry = workbench.getPerspectiveRegistry();
-    final IPerspectiveDescriptor[] perspectives = registry.getPerspectives();
-    IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-    final IWorkbenchPage page = window.getActivePage();
-    page.setPerspective( perspectives[ perspectiveIndex ] );
-  }
+//  private void switchPerspective( int perspectiveIndex ) {
+//    IWorkbench workbench = PlatformUI.getWorkbench();
+//    IPerspectiveRegistry registry = workbench.getPerspectiveRegistry();
+//    final IPerspectiveDescriptor[] perspectives = registry.getPerspectives();
+//    IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+//    final IWorkbenchPage page = window.getActivePage();
+//    page.setPerspective( perspectives[ perspectiveIndex ] );
+//  }
 
   private void createCoolBar( Composite banner, Control leftControl ) {
     IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
@@ -262,8 +259,7 @@ public class DemoPresentationWorkbenchWindowAdvisor extends WorkbenchWindowAdvis
     fdMenuBar.left = new FormAttachment( 0, 10 );
     fdMenuBar.bottom = new FormAttachment( 100, -8 );
 
-    final ApplicationWindow window
-      = ( ApplicationWindow )getWindowConfigurer().getWindow();
+    final ApplicationWindow window = ( ApplicationWindow )getWindowConfigurer().getWindow();
     MenuManager menuBarManager = window.getMenuBarManager();
     IContributionItem[] menuBarItems = menuBarManager.getItems();
     List<Action> actions = new ArrayList<Action>();
@@ -282,6 +278,7 @@ public class DemoPresentationWorkbenchWindowAdvisor extends WorkbenchWindowAdvis
         @Override
         public void run() {
           final Shell shell = window.getShell();
+          final Color background = new Color( shell.getDisplay(), 9, 34, 60 );
           final PopupDialog popupDialog = new PopupDialog( shell,
                            SWT.RESIZE | SWT.ON_TOP,
                            false,
@@ -292,11 +289,11 @@ public class DemoPresentationWorkbenchWindowAdvisor extends WorkbenchWindowAdvis
                            null )
           {
             @Override
-            protected Control createDialogArea( final Composite parent ) {
+            protected Control createDialogArea( Composite parent ) {
               final Composite popup = new Composite( parent, SWT.NONE );
               popup.setBackgroundMode( SWT.INHERIT_FORCE );
               popup.setLayout( new FormLayout() );
-              popup.setBackground( Graphics.getColor( 9, 34, 60 ) );
+              popup.setBackground( background );
 
               Label roundedCornerLeft = new Label( popup, SWT.NONE );
               roundedCornerLeft.setImage( Images.IMG_BANNER_ROUNDED_LEFT );
@@ -325,8 +322,7 @@ public class DemoPresentationWorkbenchWindowAdvisor extends WorkbenchWindowAdvis
               for( int j = 0; j < menuItems.length; j++ ) {
                 IContributionItem contributionItem = menuItems[ j ];
                 if( contributionItem instanceof ActionContributionItem ) {
-                  ActionContributionItem actionItem
-                    = ( ActionContributionItem )contributionItem;
+                  ActionContributionItem actionItem = ( ActionContributionItem )contributionItem;
                   Action action = ( Action )actionItem.getAction();
                   new ActionBarButton( action, content ) {
                     @Override
@@ -386,14 +382,14 @@ public class DemoPresentationWorkbenchWindowAdvisor extends WorkbenchWindowAdvis
           }
           content.pack();
 
-          popup.setBackground( Graphics.getColor( 9, 34, 60 ) );
+          popup.setBackground( background );
           Rectangle popUpBounds = calculatePopUpBounds( banner,
                                                         menuBar,
                                                         content );
           popup.setBounds( popUpBounds );
           shell.addControlListener( new ControlAdapter() {
             @Override
-            public void controlResized( final ControlEvent e ) {
+            public void controlResized( ControlEvent e ) {
               Rectangle popUpBounds = calculatePopUpBounds( banner,
                                                             menuBar,
                                                             content );
@@ -438,18 +434,15 @@ public class DemoPresentationWorkbenchWindowAdvisor extends WorkbenchWindowAdvis
 
         }
 
-        private Rectangle calculatePopUpBounds( final Composite banner,
-                                                final Composite menuBar,
-                                                final Composite content )
+        private Rectangle calculatePopUpBounds( Composite banner,
+                                                Composite menuBar,
+                                                Composite content )
         {
           Rectangle menuBarBounds = menuBar.getBounds();
           Rectangle bannerBounds = banner.getBounds();
           Display display = menuBar.getDisplay();
           Shell shell = menuBar.getShell();
-          Point menuBarPosition
-            = display.map( menuBar.getParent(), shell, menuBar.getLocation() );
-          Point bannerPosition
-            = display.map( banner.getParent(), shell, banner.getLocation() );
+          Point bannerPosition = display.map( banner.getParent(), shell, banner.getLocation() );
 
           return new Rectangle( bannerPosition.x,
                                 bannerBounds.height - 5,
@@ -461,9 +454,10 @@ public class DemoPresentationWorkbenchWindowAdvisor extends WorkbenchWindowAdvis
     ActionBar.create( actions, menuBar );
   }
 
-  private void createPageComposite( final Shell shell ) {
+  private void createPageComposite( Shell shell ) {
+    final Color shellBackground = shell.getDisplay().getSystemColor( SWT.COLOR_WHITE );
     Composite content = new Composite( shell, SWT.NONE );
-    content.setBackground( COLOR_SHELL_BG );
+    content.setBackground( shellBackground );
     FormData fdContent = new FormData();
     content.setLayoutData( fdContent );
     fdContent.top = new FormAttachment( 0, BANNER_HEIGTH + 4 );
@@ -475,14 +469,13 @@ public class DemoPresentationWorkbenchWindowAdvisor extends WorkbenchWindowAdvis
     content.setLayout( fillLayout );
     IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
     // add a hack to set the bgcolor of the inner page composite
-    final Composite composite
-      = ( Composite )configurer.createPageComposite( content );
+    final Composite composite = ( Composite )configurer.createPageComposite( content );
     composite.addControlListener( new ControlAdapter() {
       @Override
       public void controlResized( final ControlEvent e ) {
         Control[] children = composite.getChildren();
         for( int i = 0; i < children.length; i++ ) {
-          children[ i ].setBackground( COLOR_SHELL_BG );
+          children[ i ].setBackground( shellBackground );
         }
       }
     } );

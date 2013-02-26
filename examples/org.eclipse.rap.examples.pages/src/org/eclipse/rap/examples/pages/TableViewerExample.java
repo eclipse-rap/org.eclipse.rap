@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,6 @@ import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.examples.pages.Elements.Element;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -43,6 +42,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -71,26 +71,15 @@ public class TableViewerExample implements IExamplePage {
   private TableViewerColumn groupColumn;
   private TableViewerColumn periodColumn;
 
+  private static Color[] seriesColors;
 
-  private static Color[] SERIES_COLORS = new Color[] {
-    null,
-    Graphics.getColor( 239, 41, 41 ),
-    Graphics.getColor( 233, 185, 110 ),
-    Graphics.getColor( 252, 233, 79 ),
-    Graphics.getColor( 114, 159, 207 ),
-    Graphics.getColor( 173, 127, 168 ),
-    Graphics.getColor( 173, 127, 168 ),
-    Graphics.getColor( 252, 175, 62 ),
-    Graphics.getColor( 238, 238, 236 ),
-    Graphics.getColor( 156, 159, 153 ),
-    Graphics.getColor( 138, 226, 52 ),
-  };
   public TableViewerExample() {
     viewerFilter = new ElementsFilter();
     labelProvider = new ElementsLabelProvider();
   }
 
   public void createControl( Composite parent ) {
+    initColors( parent.getDisplay() );
     parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
     parent.setLayout( ExampleUtil.createGridLayout( 1, true, true, true ) );
     parent.setLayoutData( ExampleUtil.createFillData() );
@@ -100,6 +89,22 @@ public class TableViewerExample implements IExamplePage {
     createLabelHelp( parent );
     viewer.getTable().forceFocus();
     handleSelection( true );
+  }
+
+  private void initColors( Display display ) {
+    seriesColors = new Color[] {
+      null,
+      new Color( display, 239, 41, 41 ),
+      new Color( display, 233, 185, 110 ),
+      new Color( display, 252, 233, 79 ),
+      new Color( display, 114, 159, 207 ),
+      new Color( display, 173, 127, 168 ),
+      new Color( display, 173, 127, 168 ),
+      new Color( display, 252, 175, 62 ),
+      new Color( display, 238, 238, 236 ),
+      new Color( display, 156, 159, 153 ),
+      new Color( display, 138, 226, 52 ),
+    };
   }
 
   private void createTextFilter( Composite parent ) {
@@ -332,7 +337,7 @@ public class TableViewerExample implements IExamplePage {
           break;
         case SERIES:
           cell.setText( element.getSeriesName() );
-          cell.setBackground( SERIES_COLORS[ element.series ] );
+          cell.setBackground( seriesColors[ element.series ] );
           break;
       }
     }

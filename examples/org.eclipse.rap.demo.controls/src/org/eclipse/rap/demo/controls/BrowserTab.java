@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,10 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.eclipse.rap.rwt.widgets.BrowserCallback;
 import org.eclipse.rap.rwt.widgets.BrowserUtil;
-import org.eclipse.rap.rwt.widgets.ExternalBrowser;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
@@ -161,46 +162,22 @@ final class BrowserTab extends ExampleTab {
   private void createExternalBrowserSelector( Composite parent ) {
     Group group = new Group( parent, SWT.NONE );
     group.setLayout( new GridLayout( 2, false ) );
-    group.setText( "External Browser" );
-    Label lblId = new Label( group, SWT.NONE );
-    lblId.setText( "Id" );
-    final Text txtId = new Text( group, SWT.BORDER );
-    txtId.setLayoutData( grapExcessHorizontalSpace() );
-    txtId.setText( "1" );
+    group.setText( "UrlLauncher" );
     Label lblUrl = new Label( group, SWT.NONE );
     lblUrl.setText( "URL" );
     final Text txtUrl = new Text( group, SWT.BORDER );
     txtUrl.setLayoutData( grapExcessHorizontalSpace() );
     txtUrl.setText( "http://eclipse.org/rap" );
-    final Button cbLocationBar = new Button( group, SWT.CHECK );
-    cbLocationBar.setLayoutData( horizontalSpan2() );
-    cbLocationBar.setText( "LOCATION_BAR" );
-    final Button cbNavigationBar = new Button( group, SWT.CHECK );
-    cbNavigationBar.setLayoutData( horizontalSpan2() );
-    cbNavigationBar.setText( "NAVIGATION_BAR" );
-    final Button cbStatusBar = new Button( group, SWT.CHECK );
-    cbStatusBar.setLayoutData( horizontalSpan2() );
-    cbStatusBar.setText( "STATUS" );
     Button btnOpen = new Button( group, SWT.PUSH );
     btnOpen.setLayoutData( horizontalSpan2() );
-    btnOpen.setText( "open( id, url, style )" );
+    btnOpen.setText( "openURL( url )" );
     btnOpen.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
-        boolean locationBar = cbLocationBar.getSelection();
-        boolean statusBar = cbStatusBar.getSelection();
-        boolean navigationBar = cbNavigationBar.getSelection();
-        int style = computeStyle( locationBar, statusBar, navigationBar );
-        ExternalBrowser.open( txtId.getText(), txtUrl.getText(), style );
-      }
-    } );
-    Button btnClose = new Button( group, SWT.PUSH );
-    btnClose.setLayoutData( horizontalSpan2() );
-    btnClose.setText( "close( id )" );
-    btnClose.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( final SelectionEvent event ) {
-        ExternalBrowser.close( txtId.getText() );
+      public void widgetSelected( SelectionEvent event ) {
+        UrlLauncher service = RWT.getClient().getService( UrlLauncher.class );
+        if( service != null ) {
+          service.openURL( txtUrl.getText() );
+        }
       }
     } );
     Button btnMailTo = new Button( group, SWT.PUSH );
@@ -209,12 +186,10 @@ final class BrowserTab extends ExampleTab {
     btnMailTo.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( final SelectionEvent event ) {
-        boolean locationBar = cbLocationBar.getSelection();
-        boolean statusBar = cbStatusBar.getSelection();
-        boolean navigationBar = cbNavigationBar.getSelection();
-        int style = computeStyle( locationBar, statusBar, navigationBar );
-        ExternalBrowser.open( "mailto", "mailto:someone@nowhere.org", style );
-        ExternalBrowser.close( "mailto" );
+        UrlLauncher service = RWT.getClient().getService( UrlLauncher.class );
+        if( service != null ) {
+          service.openURL( "mailto:someone@nowhere.org" );
+        }
       }
     } );
   }
@@ -272,20 +247,6 @@ final class BrowserTab extends ExampleTab {
     GridData result = new GridData( SWT.FILL, SWT.CENTER, true, false );
 //    result.grabExcessHorizontalSpace = true;
     return result;
-  }
-
-  private static int computeStyle( boolean locationBar, boolean statusBar, boolean navigationBar ) {
-    int style = 0;
-    if( locationBar ) {
-      style |= ExternalBrowser.LOCATION_BAR;
-    }
-    if( navigationBar ) {
-      style |= ExternalBrowser.NAVIGATION_BAR;
-    }
-    if( statusBar ) {
-      style |= ExternalBrowser.STATUS;
-    }
-    return style;
   }
 
   private String createBrowserFunctionHTML() {

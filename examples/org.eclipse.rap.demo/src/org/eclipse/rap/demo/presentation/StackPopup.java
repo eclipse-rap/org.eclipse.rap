@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,9 @@
 package org.eclipse.rap.demo.presentation;
 
 import org.eclipse.jface.dialogs.PopupDialog;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.presentations.IPresentablePart;
 
@@ -24,7 +22,7 @@ final class StackPopup extends PopupDialog {
   private final Control contentProxy;
   private final Object[] parts;
   private final SelectionListener selectionListener;
-  
+
   StackPopup( final Shell parent,
               final Control contentProxy,
               final Object[] parts,
@@ -43,10 +41,11 @@ final class StackPopup extends PopupDialog {
     this.selectionListener = selectionListener;
   }
 
+  @Override
   protected void adjustBounds() {
     Display display = contentProxy.getDisplay();
-    Point position = display.map( contentProxy.getParent(), 
-                                  null, 
+    Point position = display.map( contentProxy.getParent(),
+                                  null,
                                   contentProxy.getLocation() );
     getShell().setBounds( position.x - 1,
                           position.y + 1,
@@ -54,6 +53,7 @@ final class StackPopup extends PopupDialog {
                           contentProxy.getSize().y + 2 );
   }
 
+  @Override
   public int open() {
     int result = super.open();
     Listener closeListener = new Listener() {
@@ -73,14 +73,17 @@ final class StackPopup extends PopupDialog {
     return result;
   }
 
+  @Override
   protected Control createDialogArea( final Composite parent ) {
     final Table result = new Table( parent, SWT.NONE );
     FontData fontData = result.getFont().getFontData()[ 0 ];
-    result.setFont( Graphics.getFont( fontData.getName(),
-                                      fontData.getHeight() + 4,
-                                      fontData.getStyle() ) );
+    result.setFont( new Font( parent.getDisplay(),
+                              fontData.getName(),
+                              fontData.getHeight() + 4,
+                              fontData.getStyle() ) );
     result.setBackgroundImage( Images.IMG_MIDDLE_CENTER );
     result.addControlListener( new ControlAdapter() {
+      @Override
       public void controlResized( final ControlEvent evt ) {
         result.removeControlListener( this );
         Point size = result.getSize();

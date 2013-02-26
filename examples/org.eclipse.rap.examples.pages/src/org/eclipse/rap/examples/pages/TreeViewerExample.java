@@ -35,8 +35,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.examples.pages.internal.ImageUtil;
 import org.eclipse.rap.rwt.SingletonUtil;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceAdapter;
@@ -620,9 +620,9 @@ public class TreeViewerExample implements IExamplePage {
   }
 
   private static final class TreeLabelProvider extends CellLabelProvider {
-    private static final String ICON_GREENDOT = "resources/greendot.gif";
-    private static final String ICON_WORLD = "resources/world.gif";
-    private static final String ICON_EARTH = "resources/earth-icon.png";
+    private static final String ICON_GREENDOT = "greendot.gif";
+    private static final String ICON_WORLD = "world.gif";
+    private static final String ICON_EARTH = "earth-icon.png";
 
     private static final int COLUMN_TEXT = 0;
     private static final int COLUMN_OFFSET = 2;
@@ -645,11 +645,11 @@ public class TreeViewerExample implements IExamplePage {
       timezoneTextColor = new Color( device, 239, 41, 41 );
       offsetTextColor = new Color( device, 252, 175, 62 );
       if( style == MODERN_STYLE ) {
-        continentImage = createImage( ICON_EARTH );
-        cityImage = createImage( ICON_GREENDOT );
+        continentImage = ImageUtil.getImage( device, ICON_EARTH );
+        cityImage = ImageUtil.getImage( device, ICON_GREENDOT );
       } else {
-        continentImage = createImage( ICON_WORLD );
-        cityImage = createImage( ICON_GREENDOT );
+        continentImage = ImageUtil.getImage( device, ICON_WORLD );
+        cityImage = ImageUtil.getImage( device, ICON_GREENDOT );
       }
     }
 
@@ -718,11 +718,6 @@ public class TreeViewerExample implements IExamplePage {
     private Font createFont( String name, int size, int style ) {
       FontData fontData = new FontData( name, size, style );
       return new Font( device, fontData );
-    }
-
-    private Image createImage( String name ) {
-      ClassLoader classLoader = getClass().getClassLoader();
-      return Graphics.getImage( name, classLoader );
     }
 
     private static String getUTCOffset( City city ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.examples.Infobox;
-import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.examples.pages.internal.ImageUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -24,6 +24,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 
 public class ButtonExamplePage implements IExamplePage {
@@ -59,25 +60,25 @@ public class ButtonExamplePage implements IExamplePage {
     Button button1 = new Button( composite, SWT.PUSH );
     button1.setText( "Add" );
     button1.setLayoutData( ExampleUtil.createHorzFillData() );
-    ClassLoader classLoader = getClass().getClassLoader();
-    Image imgAdd = Graphics.getImage( "resources/add_obj.png", classLoader );
+    Display display = parent.getDisplay();
+    Image imgAdd = ImageUtil.getImage( display, "add_obj.png" );
     button1.setImage( imgAdd );
     Button button2 = new Button( composite, SWT.PUSH );
     button2.setLayoutData( ExampleUtil.createHorzFillData() );
     button2.setText( "Delete" );
-    Image imgDelete = Graphics.getImage( "resources/delete_obj.png", classLoader );
+    Image imgDelete = ImageUtil.getImage( display, "delete_obj.png" );
     button2.setImage( imgDelete );
 
     Button toggle1 = new Button( composite, SWT.TOGGLE );
     toggle1.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
-    Image imgSynced = Graphics.getImage( "resources/synced.png", classLoader );
+    Image imgSynced = ImageUtil.getImage( display, "synced.png" );
     toggle1.setImage( imgSynced );
     toggle1.setToolTipText( "Keep in sync" );
     final Button toggle2 = new Button( composite, SWT.TOGGLE | SWT.LEFT );
     toggle2.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, true ) );
     toggle2.setText( "Unlocked" );
-    final Image imgLocked = Graphics.getImage( "resources/lockedstate.png", classLoader );
-    final Image imgUnlocked = Graphics.getImage( "resources/unlockedstate.png", classLoader );
+    final Image imgLocked = ImageUtil.getImage( display, "lockedstate.png" );
+    final Image imgUnlocked = ImageUtil.getImage( display, "unlockedstate.png" );
     toggle2.setImage( imgUnlocked );
     toggle2.addSelectionListener( new SelectionAdapter() {
       @Override
@@ -90,7 +91,7 @@ public class ButtonExamplePage implements IExamplePage {
 
     Button button3 = new Button( composite, SWT.PUSH );
     button3.setLayoutData( ExampleUtil.createFillData() );
-    Image imageDownload = Graphics.getImage( "resources/go-bottom.png", classLoader );
+    Image imageDownload = ImageUtil.getImage( display, "go-bottom.png" );
     button3.setImage( imageDownload );
     button3.setToolTipText( "Download" );
   }
