@@ -25,7 +25,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +33,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ArmListener;
 import org.eclipse.swt.events.HelpListener;
@@ -174,7 +174,7 @@ public class MenuItem_Test {
     MenuItem separator = new MenuItem( menu, SWT.SEPARATOR );
 
     // Don't allow an image to be set on a separator menu item
-    Image image = createImage( Fixture.IMAGE1 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE1 );
     assertNotNull( image );
     separator.setImage( image );
     assertEquals( null, separator.getImage() );
@@ -588,14 +588,6 @@ public class MenuItem_Test {
     Fixture.readDataAndProcessAction( display );
 
     verify( listener ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  private Image createImage( String imagePath ) throws IOException {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( imagePath );
-    Image result = new Image( display, stream );
-    stream.close();
-    return result;
   }
 
   private static void fakeKeyDownRequest( Widget widget,

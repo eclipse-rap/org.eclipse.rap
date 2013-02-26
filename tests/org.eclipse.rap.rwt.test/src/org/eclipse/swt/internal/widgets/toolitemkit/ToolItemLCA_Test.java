@@ -20,7 +20,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +31,7 @@ import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -174,8 +174,8 @@ public class ToolItemLCA_Test {
   public void testGetImage() throws IOException {
     ToolItem item = new ToolItem( toolbar, SWT.CHECK );
 
-    Image enabledImage = createImage( Fixture.IMAGE1 );
-    Image disabledImage = createImage( Fixture.IMAGE2 );
+    Image enabledImage = TestUtil.createImage( display, Fixture.IMAGE1 );
+    Image disabledImage = TestUtil.createImage( display, Fixture.IMAGE2 );
     assertNull( ToolItemLCAUtil.getImage( item ) );
 
     item.setImage( enabledImage );
@@ -448,7 +448,7 @@ public class ToolItemLCA_Test {
 
   @Test
   public void testRenderImage() throws IOException, JSONException {
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
 
     toolitem.setImage( image );
     lca.renderChanges( toolitem );
@@ -464,7 +464,7 @@ public class ToolItemLCA_Test {
   public void testRenderImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
 
     toolitem.setImage( image );
     Fixture.preserveWidgets();
@@ -484,7 +484,7 @@ public class ToolItemLCA_Test {
 
   @Test
   public void testRenderHotImage() throws IOException, JSONException {
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
 
     toolitem.setHotImage( image );
     lca.renderChanges( toolitem );
@@ -500,7 +500,7 @@ public class ToolItemLCA_Test {
   public void testRenderHotImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
 
     toolitem.setHotImage( image );
     Fixture.preserveWidgets();
@@ -514,7 +514,7 @@ public class ToolItemLCA_Test {
   public void testRenderImageReset() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
     toolitem.setImage( image );
 
     Fixture.preserveWidgets();
@@ -684,14 +684,6 @@ public class ToolItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "mnemonicIndex" ) );
-  }
-
-  private Image createImage( String imagePath ) throws IOException {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( imagePath );
-    Image result = new Image( display, stream );
-    stream.close();
-    return result;
   }
 
 }

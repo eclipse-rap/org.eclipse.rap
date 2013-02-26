@@ -18,7 +18,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
@@ -29,6 +28,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -97,7 +97,7 @@ public class LabelLCA_Test {
     assertEquals( label.getText(), adapter.getPreserved( Props.TEXT ) );
     Fixture.clearPreserved();
     //Image
-    Image image = createImage( Fixture.IMAGE1 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE1 );
     label.setImage( image );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
@@ -306,7 +306,7 @@ public class LabelLCA_Test {
 
   @Test
   public void testRenderImage() throws IOException, JSONException {
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
 
     label.setImage( image );
     lca.renderChanges( label );
@@ -322,7 +322,7 @@ public class LabelLCA_Test {
   public void testRenderImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( label );
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
 
     label.setImage( image );
     Fixture.preserveWidgets();
@@ -336,7 +336,7 @@ public class LabelLCA_Test {
   public void testRenderImageReset() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( label );
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
     label.setImage( image );
 
     Fixture.preserveWidgets();
@@ -419,14 +419,6 @@ public class LabelLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( label, "mnemonicIndex" ) );
-  }
-
-  private Image createImage( String imagePath ) throws IOException {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( imagePath );
-    Image result = new Image( display, stream );
-    stream.close();
-    return result;
   }
 
 }
