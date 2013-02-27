@@ -45,7 +45,7 @@ public final class UISessionImpl
   implements UISession, HttpSessionBindingListener, SerializableCompatibility
 {
 
-  private static final String ATTR_SESSION_STORE = UISessionImpl.class.getName();
+  private static final String ATTR_UI_SESSION = UISessionImpl.class.getName();
   private static final String ATTR_LOCALE = UISessionImpl.class.getName() + "#locale";
 
   private final SerializableLock requestLock;
@@ -181,6 +181,26 @@ public final class UISessionImpl
     ContextUtil.runNonUIThreadWithFakeContext( this, runnable );
   }
 
+  public void shutdown() {
+    if( shutdownAdapter != null ) {
+      shutdownAdapter.interceptShutdown();
+    } else {
+      boolean fakeContext = false;
+      if( !ContextProvider.hasContext() ) {
+        fakeContext = true;
+        ServiceContext context = ContextUtil.createFakeContext( this );
+        ContextProvider.setContext( context );
+      }
+      try {
+        destroy();
+      } finally {
+        if( fakeContext ) {
+          ContextProvider.releaseContextHolder();
+        }
+      }
+    }
+  }
+
   public boolean addSessionStoreListener( UISessionListener listener ) {
     return addUISessionListener( listener );
   }
@@ -221,31 +241,19 @@ public final class UISessionImpl
   }
 
   public void valueUnbound( HttpSessionBindingEvent event ) {
-    if( shutdownAdapter != null ) {
-      shutdownAdapter.interceptShutdown();
-    } else {
-      boolean fakeContext = false;
-      if( !ContextProvider.hasContext() ) {
-        fakeContext = true;
-        ServiceContext context = ContextUtil.createFakeContext( this );
-        ContextProvider.setContext( context );
-      }
-      try {
-        destroy();
-      } finally {
-        if( fakeContext ) {
-          ContextProvider.releaseContextHolder();
-        }
-      }
-    }
+    shutdown();
   }
 
   public static UISessionImpl getInstanceFromSession( HttpSession httpSession ) {
-    return ( UISessionImpl )httpSession.getAttribute( ATTR_SESSION_STORE );
+    return ( UISessionImpl )httpSession.getAttribute( ATTR_UI_SESSION );
+  }
+
+  public static void removeInstanceFromSession( HttpSession httpSession, UISession uiSession ) {
+    httpSession.removeAttribute( ATTR_UI_SESSION );
   }
 
   public static void attachInstanceToSession( HttpSession httpSession, UISession uiSession ) {
-    httpSession.setAttribute( ATTR_SESSION_STORE, uiSession );
+    httpSession.setAttribute( ATTR_UI_SESSION, uiSession );
   }
 
   /*

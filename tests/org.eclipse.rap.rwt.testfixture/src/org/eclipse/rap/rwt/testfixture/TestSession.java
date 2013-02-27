@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,16 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
+import javax.servlet.http.HttpSessionContext;
 
 
 /**
@@ -108,8 +114,7 @@ public class TestSession implements HttpSession {
 
   public void setAttribute( String arg0, Object arg1 ) {
     if( arg1 instanceof HttpSessionBindingListener ) {
-      HttpSessionBindingListener listener
-        = ( HttpSessionBindingListener )arg1;
+      HttpSessionBindingListener listener = ( HttpSessionBindingListener )arg1;
       listener.valueBound( new HttpSessionBindingEvent( this, arg0, arg1 ) );
     }
     attributes.put( arg0, arg1 );
@@ -121,10 +126,8 @@ public class TestSession implements HttpSession {
   public void removeAttribute( String arg0 ) {
     Object removed = attributes.remove( arg0 );
     if( removed instanceof HttpSessionBindingListener ) {
-      HttpSessionBindingListener listener
-        = ( HttpSessionBindingListener )removed;
-      HttpSessionBindingEvent evt
-        = new HttpSessionBindingEvent( this, arg0, removed );
+      HttpSessionBindingListener listener = ( HttpSessionBindingListener )removed;
+      HttpSessionBindingEvent evt = new HttpSessionBindingEvent( this, arg0, removed );
       listener.valueUnbound( evt );
     }
   }
@@ -136,10 +139,10 @@ public class TestSession implements HttpSession {
     Object[] keys = attributes.keySet().toArray();
     for( int i = 0; i < keys.length; i++ ) {
       String key = ( String )keys[ i ];
-      Object val = attributes.get( key );
-      if( val instanceof HttpSessionBindingListener ) {
-        HttpSessionBindingListener lsnr = ( HttpSessionBindingListener )val;
-        lsnr.valueUnbound( new HttpSessionBindingEvent( this, key, val ) );
+      Object value = attributes.get( key );
+      if( value instanceof HttpSessionBindingListener ) {
+        HttpSessionBindingListener listener = ( HttpSessionBindingListener )value;
+        listener.valueUnbound( new HttpSessionBindingEvent( this, key, value ) );
       }
     }
     attributes.clear();
