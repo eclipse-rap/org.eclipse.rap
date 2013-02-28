@@ -44,8 +44,8 @@ var appearances = {
       var borderWidths = [ 0, 0, 0, 0 ];
       var borderStyles = [ "solid", "solid", "solid", "solid" ];
       if( !states.dummy ) {
-        var verticalState = { "vertical" : true };
-        var tvGrid = new rwt.theme.ThemeValues( verticalState );
+        var gridLineStates = { "vertical" : true, "header" : true };
+        var tvGrid = new rwt.theme.ThemeValues( gridLineStates );
         var gridColor = tvGrid.getCssColor( "Table-GridLine", "color" );
         gridColor = gridColor == "undefined" ? "transparent" : gridColor;
         borderColors[ 1 ] = gridColor;
