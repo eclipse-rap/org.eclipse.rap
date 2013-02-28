@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       server.send();
 
       assertEquals( "number", typeof TestUtil.getMessageObject().getHead()[ "requestCounter" ] );
+    },
+
+    testSendUISessionId : function() {
+      server.setUISessionId( "foo" );
+
+      server.send();
+
+      assertEquals( "foo", TestUtil.getMessageObject().getHead()[ "uiSessionId" ] );
     },
 
     testSendSetParameter : function() {

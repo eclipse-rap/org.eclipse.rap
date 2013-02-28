@@ -29,6 +29,9 @@ rwt.remote.MessageProcessor = {
     if( head.requestCounter !== undefined ) {
       server.setRequestCounter( head.requestCounter );
     }
+    if( head.uiSessionId !== undefined ) {
+      server.setUISessionId( head.uiSessionId );
+    }
     if( head.redirect !== undefined ) {
       document.location = head.redirect;
     }

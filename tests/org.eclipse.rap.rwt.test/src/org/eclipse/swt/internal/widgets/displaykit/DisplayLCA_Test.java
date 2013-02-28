@@ -47,6 +47,7 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -349,6 +350,15 @@ public class DisplayLCA_Test {
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findCallOperation( displayId, "beep" ) );
     assertFalse( display.getAdapter( IDisplayAdapter.class ).isBeepCalled() );
+  }
+
+  @Test
+  public void testRenderUISessionId() throws IOException {
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    String expected = ContextProvider.getUISession().getId();
+    assertEquals( expected, message.findHeadProperty( "uiSessionId" ) );
   }
 
   @Test
