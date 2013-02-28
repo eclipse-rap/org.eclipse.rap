@@ -11,8 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static junit.framework.Assert.assertNotSame;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -114,6 +116,47 @@ public class LifeCycleServiceHandler_Test {
     service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
 
     assertNull( uiSession.getAttribute( SESSION_STORE_ATTRIBUTE ) );
+  }
+
+  @Test
+  public void testShutdownUISession() throws IOException {
+    initializeUISession();
+    UISession uiSession = ContextProvider.getUISession();
+
+    LifeCycleServiceHandler.markSessionStarted();
+    simulateShutdownUiRequest();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+
+    assertFalse( uiSession.isBound() );
+  }
+
+  @Test
+  public void testShutdownUISession_RemoveUISessionFromHttpSession() throws IOException {
+    initializeUISession();
+    UISession uiSession = ContextProvider.getUISession();
+    HttpSession httpSession = uiSession.getHttpSession();
+
+    LifeCycleServiceHandler.markSessionStarted();
+    simulateShutdownUiRequest();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+
+    assertNull( UISessionImpl.getInstanceFromSession( httpSession ) );
+  }
+
+  @Test
+  public void testStartUISession_AfterPreviousShutdown() throws IOException {
+    initializeUISession();
+    UISession oldUiSession = ContextProvider.getUISession();
+
+    LifeCycleServiceHandler.markSessionStarted();
+    simulateShutdownUiRequest();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+
+    simulateInitialUiRequest();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+
+    UISession newUiSession = ContextProvider.getUISession();
+    assertNotSame( oldUiSession, newUiSession );
   }
 
   @Test
@@ -308,6 +351,13 @@ public class LifeCycleServiceHandler_Test {
   private void simulateInitialUiRequest() {
     Fixture.fakeNewRequest();
     Fixture.fakeHeadParameter( RequestParams.RWT_INITIALIZE, "true" );
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setServletPath( "/test" );
+  }
+
+  private void simulateShutdownUiRequest() {
+    Fixture.fakeNewRequest();
+    Fixture.fakeHeadParameter( RequestParams.RWT_SHUTDOWN, "true" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
   }

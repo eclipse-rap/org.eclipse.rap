@@ -463,7 +463,7 @@ public class UISessionImpl_Test {
       }
     } );
 
-    uiSession.valueUnbound( null );
+    uiSession.shutdown();
 
     assertTrue( interceptShutdownWasCalled[ 0 ] );
     assertTrue( uiSession.isBound() );
