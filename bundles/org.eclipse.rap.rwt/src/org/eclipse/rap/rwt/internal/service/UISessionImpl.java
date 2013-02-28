@@ -181,26 +181,6 @@ public final class UISessionImpl
     ContextUtil.runNonUIThreadWithFakeContext( this, runnable );
   }
 
-  public void shutdown() {
-    if( shutdownAdapter != null ) {
-      shutdownAdapter.interceptShutdown();
-    } else {
-      boolean fakeContext = false;
-      if( !ContextProvider.hasContext() ) {
-        fakeContext = true;
-        ServiceContext context = ContextUtil.createFakeContext( this );
-        ContextProvider.setContext( context );
-      }
-      try {
-        destroy();
-      } finally {
-        if( fakeContext ) {
-          ContextProvider.releaseContextHolder();
-        }
-      }
-    }
-  }
-
   public boolean addSessionStoreListener( UISessionListener listener ) {
     return addUISessionListener( listener );
   }
@@ -241,7 +221,23 @@ public final class UISessionImpl
   }
 
   public void valueUnbound( HttpSessionBindingEvent event ) {
-    shutdown();
+    if( shutdownAdapter != null ) {
+      shutdownAdapter.interceptShutdown();
+    } else {
+      boolean fakeContext = false;
+      if( !ContextProvider.hasContext() ) {
+        fakeContext = true;
+        ServiceContext context = ContextUtil.createFakeContext( this );
+        ContextProvider.setContext( context );
+      }
+      try {
+        destroy();
+      } finally {
+        if( fakeContext ) {
+          ContextProvider.releaseContextHolder();
+        }
+      }
+    }
   }
 
   public static UISessionImpl getInstanceFromSession( HttpSession httpSession ) {
