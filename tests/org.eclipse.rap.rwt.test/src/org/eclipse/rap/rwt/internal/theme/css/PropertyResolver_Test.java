@@ -35,6 +35,7 @@ import org.eclipse.rap.rwt.internal.theme.QxCursor;
 import org.eclipse.rap.rwt.internal.theme.QxDimension;
 import org.eclipse.rap.rwt.internal.theme.QxFloat;
 import org.eclipse.rap.rwt.internal.theme.QxFont;
+import org.eclipse.rap.rwt.internal.theme.QxIdentifier;
 import org.eclipse.rap.rwt.internal.theme.QxImage;
 import org.eclipse.rap.rwt.internal.theme.QxShadow;
 import org.eclipse.rap.rwt.internal.theme.QxType;
@@ -936,6 +937,49 @@ public class PropertyResolver_Test {
     } catch( IllegalArgumentException e ) {
       assertTrue( e.getMessage().contains( "color darkslategray" ) );
     }
+  }
+
+  @Test
+  public void testIsBackgroundRepeat() {
+    assertTrue( PropertyResolver.isBackgroundRepeatProperty( "background-repeat" ) );
+  }
+
+  @Test
+  public void testBackgroundRepeat_Valid() throws Exception {
+    QxIdentifier identifier = PropertyResolver.readBackgroundRepeat( parseProperty( "repeat" ) );
+
+    assertEquals( "repeat", identifier.value );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testBackgroundRepeat_Invalid() throws Exception {
+    PropertyResolver.readBackgroundRepeat( parseProperty( "foo" ) );
+  }
+
+  @Test
+  public void testIsBackgroundPosition() {
+    assertTrue( PropertyResolver.isBackgroundPositionProperty( "background-position" ) );
+  }
+
+  @Test
+  public void testBackgroundPosition_Valid() throws Exception {
+    LexicalUnit input = parseProperty( "left top" );
+    QxIdentifier identifier = PropertyResolver.readBackgroundPosition( input );
+
+    assertEquals( "left top", identifier.value );
+  }
+
+  @Test
+  public void testBackgroundPosition_ValidOneKeyword() throws Exception {
+    LexicalUnit input = parseProperty( "left" );
+    QxIdentifier identifier = PropertyResolver.readBackgroundPosition( input );
+
+    assertEquals( "left center", identifier.value );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testBackgroundposition_Invalid() throws Exception {
+    PropertyResolver.readBackgroundRepeat( parseProperty( "foo bar" ) );
   }
 
   private static LexicalUnit parseProperty( String input )

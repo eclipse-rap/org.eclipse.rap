@@ -83,6 +83,8 @@ Composite {
   opacity: 1;
   background-color: #ffffff;
   background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   border: none;
   box-shadow: none;
   animation: none;
@@ -98,6 +100,8 @@ Composite[BORDER] {
 Button {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   border: none;
   border-radius: 2px;
   padding: 6px 15px;
@@ -2062,6 +2066,8 @@ FileUpload {
     from( #f9f9f9 ),
     to( #e4e4e4 )
   );
+  background-repeat: repeat;
+  background-position: left top;
   border: 1px solid #bdbdbd;
   border-radius: 2px;
   padding: 6px 15px;

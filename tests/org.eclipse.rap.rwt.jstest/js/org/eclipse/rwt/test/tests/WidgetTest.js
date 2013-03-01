@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
@@ -709,6 +708,62 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
       assertEquals( 0, widget.getBoxHeight() );
       widget.destroy();
+    },
+
+    testRenderBackgroundRepeat : function() {
+      var widget = this._createWidget();
+
+      widget.setBackgroundRepeat( "no-repeat" );
+      TestUtil.flush();
+
+      assertEquals( "no-repeat", widget.getElement().style.backgroundRepeat );
+      widget.destroy();
+    },
+
+    testRenderBackgroundPosition : function() {
+      var widget = this._createWidget();
+
+      widget.setBackgroundPosition( "right bottom" );
+      TestUtil.flush();
+
+      assertEquals( "right bottom", widget.getElement().style.backgroundPosition );
+      widget.destroy();
+    },
+
+    testRenderBackgroundRepeatAndPositionWhenRenderImage : function() {
+      var widget = this._createWidget();
+      widget.setBackgroundRepeat( "no-repeat" );
+      widget.setBackgroundPosition( "right bottom" );
+      var element = widget.getElement();
+      element.style.background = "";
+
+      widget.setBackgroundImage( "bla.png" );
+      TestUtil.flush();
+
+      assertEquals( "no-repeat", element.style.backgroundRepeat );
+      assertEquals( "right bottom", element.style.backgroundPosition );
+      widget.destroy();
+    },
+
+    testRenderBackgroundRepeatAndPositionWhenRemoveGradient : function() {
+      if( rwt.client.Client.supportsCss3() ) {
+        var widget = this._createWidget();
+        widget.setBackgroundImage( "bla.png" );
+        widget.setBackgroundRepeat( "no-repeat" );
+        widget.setBackgroundPosition( "right bottom" );
+        TestUtil.flush();
+        var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
+        widget.setBackgroundGradient( gradient );
+        TestUtil.flush();
+
+        widget.setBackgroundGradient( null );
+        TestUtil.flush();
+
+        var element = widget.getElement();
+        assertEquals( "no-repeat", element.style.backgroundRepeat );
+        assertEquals( "right bottom", element.style.backgroundPosition );
+        widget.destroy();
+      }
     },
 
     /////////

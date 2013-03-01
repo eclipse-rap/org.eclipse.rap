@@ -14,6 +14,8 @@
 Composite {
   background-color: #ffffff;
   background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   border: none;
   animation: none;
 }

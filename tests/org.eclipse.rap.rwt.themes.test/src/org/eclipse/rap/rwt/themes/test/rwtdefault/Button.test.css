@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ Button[TOGGLE][FLAT] {
     from( #f9f9f9 ),
     to( #e4e4e4 )
   );
+  background-repeat: repeat;
+  background-position: left top;
   padding: 6px 15px;
   spacing: 2px;
   border: 1px solid #bdbdbd;
@@ -49,6 +51,8 @@ Button[ARROW][FLAT] {
     from( #f9f9f9 ),
     to( #e4e4e4 )
   );
+  background-repeat: repeat;
+  background-position: left top;
   padding: 10px;
   spacing: 2px;
   border: 1px solid #bdbdbd;
@@ -131,6 +135,8 @@ Button[RADIO] {
   color: #4a4a4a;
   background-color: #ffffff;
   background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   padding: 3px 3px 3px 0;
   spacing: 7px;
   border: none;

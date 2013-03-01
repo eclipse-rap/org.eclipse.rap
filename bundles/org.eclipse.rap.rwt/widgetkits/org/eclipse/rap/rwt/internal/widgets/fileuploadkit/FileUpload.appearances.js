@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ var appearances = {
       result.textColor = tv.getCssColor( "FileUpload", "color" );
       result.backgroundColor = tv.getCssColor( "FileUpload", "background-color" );
       result.backgroundImage = tv.getCssImage( "FileUpload", "background-image" );
+      result.backgroundRepeat = tv.getCssIdentifier( "FileUpload", "background-repeat" );
+      result.backgroundPosition = tv.getCssIdentifier( "FileUpload", "background-position" );
       result.backgroundGradient = tv.getCssGradient( "FileUpload", "background-image" );
       result.border = tv.getCssBorder( "FileUpload", "border" );
       result.spacing = tv.getCssDimension( "FileUpload", "spacing" );

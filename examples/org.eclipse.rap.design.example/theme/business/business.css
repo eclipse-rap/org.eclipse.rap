@@ -49,9 +49,9 @@ Display {
   rwt-question-image: url( theme/resources/dialog/question.png );
   rwt-warning-image: url( theme/resources/dialog/warning.png );
   rwt-working-image: url( theme/resources/dialog/information.png );
-  
+
   rwt-fontlist: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode';
-  
+
   background-image: url( theme/resources/display/browser_bg.png );
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
@@ -74,6 +74,8 @@ Composite {
   opacity: 1;
   background-color: #ffffff;
   background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   border: none;
   box-shadow: none;
   animation: none;
@@ -88,6 +90,8 @@ Composite[BORDER] {
 
 Button {
   background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   padding: 4px 5px;
   spacing: 2px;
   cursor: default;
@@ -252,7 +256,7 @@ Button-ArrowIcon[RIGHT] {
 }
 
 Button-FocusIndicator[ARROW], Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
-  background-color: transparent; 
+  background-color: transparent;
   border: 1px dotted #b8b8b8;
   margin: 2px;
   padding: 0px;
@@ -260,7 +264,7 @@ Button-FocusIndicator[ARROW], Button-FocusIndicator[PUSH], Button-FocusIndicator
 }
 
 Button-FocusIndicator[CHECK], Button-FocusIndicator[RADIO] {
-  background-color: transparent; 
+  background-color: transparent;
   border: 1px dotted #b8b8b8;
   padding: 2px 2px 2px 1px;
   margin: 0px;
@@ -311,7 +315,7 @@ Combo-Button {
   );
   width: 18px;
 }
-  
+
 Combo-Button:pressed {
   background-image: gradient(
     linear, left top, left bottom,
@@ -323,7 +327,7 @@ Combo-Button:pressed {
 
 Combo-Button-Icon {
   background-image: url( theme/resources/ccombo/down.png );
-} 
+}
 
 Combo-Button-Icon:hover {
   background-image: url( theme/resources/ccombo/down-hover.png );
@@ -340,7 +344,7 @@ Combo-Field {
 }
 
 Combo-FocusIndicator {
-  background-color: transparent; 
+  background-color: transparent;
   border: 1px dotted #b8b8b8;
   margin: 1px 19px 1px 1px;
   opacity: 1;
@@ -396,7 +400,7 @@ CTabFolder-DropDownButton-Icon:hover {
 
 Group {
   color: #4a4a4a;
-  background-color: white;  
+  background-color: white;
 }
 
 Group-Frame {
@@ -443,7 +447,7 @@ Label-SeparatorLine {
   width: 2px;
 }
 
-Label-SeparatorLine[SHADOW_IN] {  
+Label-SeparatorLine[SHADOW_IN] {
   border: 1px inset;
 }
 
@@ -1002,7 +1006,7 @@ Table-GridLine:horizontal {
 }
 
 Table-Checkbox {
-  /* 
+  /*
   For backward compatibility we have to keep the width property.
   Deprecated, use "margin" instead.
   */
@@ -1546,7 +1550,7 @@ DateTime-DownButton:pressed {
     color-stop( 52%, #e0e0e0 ),
     to( #ffffff )
   );
-}  
+}
 
 DateTime-DropDownButton {
   cursor: default;
@@ -1915,7 +1919,7 @@ CCombo-Button:pressed {
 
 CCombo-Button-Icon {
   background-image: url( theme/resources/ccombo/down.png );
-} 
+}
 
 CCombo-Button-Icon:hover {
   background-image: url( theme/resources/ccombo/down-hover.png );
@@ -1940,7 +1944,7 @@ CCombo-Field {
 }
 
 CCombo-FocusIndicator {
-  background-color: transparent; 
+  background-color: transparent;
   border: 1px dotted #b8b8b8;
   margin: 1px 19px 1px 1px;
   opacity: 1;
@@ -2619,6 +2623,8 @@ FileUpload {
     color-stop( 52%, #e0e0e0 ),
     to( #ffffff )
   );
+  background-repeat: repeat;
+  background-position: left top;
   animation: hoverOut 500ms ease-out;
   cursor: pointer;
   text-shadow: none;
@@ -2651,7 +2657,7 @@ FileUpload:pressed {
 }
 
 FileUpload-FocusIndicator {
-  background-color: transparent; 
+  background-color: transparent;
   border: 1px dotted #b8b8b8;
   margin: 2px;
   padding: 0px;

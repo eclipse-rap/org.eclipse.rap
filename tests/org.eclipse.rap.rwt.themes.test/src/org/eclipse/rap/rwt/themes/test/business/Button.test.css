@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,8 @@ Button[PUSH], Button[TOGGLE] {
     color-stop( 52%, #e0e0e0 ),
     to( #ffffff )
   );
+  background-repeat: repeat;
+  background-position: left top;
   border: 1px solid #a4a4a4;
   border-radius: 3px;
   cursor: pointer;
@@ -44,6 +46,8 @@ Button[ARROW] {
     color-stop( 52%, #e0e0e0 ),
     to( #ffffff )
   );
+  background-repeat: repeat;
+  background-position: left top;
   border: 1px solid #a4a4a4;
   border-radius: 3px;
   cursor: pointer;
@@ -147,6 +151,8 @@ Button[RADIO] {
   color: #4a4a4a;
   background-color: white;
   background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   border: none;
   cursor: default;
   padding: 4px 5px 4px 5px;

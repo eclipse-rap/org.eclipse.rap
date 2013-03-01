@@ -204,6 +204,25 @@ public class ThemeStoreWriter_Test {
     assertTrue( output.contains( expected ) );
   }
 
+  @Test
+  public void testWriteImages_BackgroundRepeatAndPosition() {
+    ThemeCssElement element = new ThemeCssElement( "Button" );
+    element.addProperty( "background-image" );
+    element.addProperty( "background-repeat" );
+    element.addProperty( "background-position" );
+    Theme theme = getTheme( THEME_WRITE_IMAGES );
+    IThemeCssElement[] elements = new IThemeCssElement[] { element };
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    String output = storeWriter.createJson();
+    String expected =
+        "\"Button\":{"
+      + "\"background-image\":[[[\".special\"],\"154e1724\"],[[],\"c84ae54c.png\"]],"
+      + "\"background-repeat\":[[[],\"repeat-x\"]],"
+      + "\"background-position\":[[[],\"left top\"]]"
+      + "}";
+    assertTrue( output.contains( expected ) );
+  }
+
   private void initializeThemesOnFirstSetUp() throws Exception {
     if( themes == null ) {
       themes = new HashMap<String,Theme>();
@@ -218,7 +237,9 @@ public class ThemeStoreWriter_Test {
   }
 
   private void registerThemeForTestWriteImages() throws IOException {
-    String cssCode =   "Button { background-image: url( " + Fixture.IMAGE_100x50 + " ); }\n"
+    String cssCode = "Button { background-image: url( " + Fixture.IMAGE_100x50 + " );\n"
+    + "  background-repeat: repeat-x;\n"
+    + "  background-position: left top; }\n"
     + "Button.special { background-image: gradient( linear, left top, left bottom,\n"
     + "  from( #000000 ),\n"
     + "  to( #ffffff )\n"

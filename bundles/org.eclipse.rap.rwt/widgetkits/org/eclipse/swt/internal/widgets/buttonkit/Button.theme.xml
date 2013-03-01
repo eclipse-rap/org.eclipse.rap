@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -26,6 +26,12 @@
 
     <property name="background-image"
         description="Background image for buttons." />
+
+    <property name="background-position"
+        description="Background image position for buttons." />
+
+    <property name="background-repeat"
+        description="Background image repetition for buttons." />
 
     <property name="border"
         description="Border for buttons." />
@@ -163,7 +169,7 @@
 
     </element>
 
-    <element name="Button-FocusIndicator" 
+    <element name="Button-FocusIndicator"
           description="The frame that is drawn when the button is focused." >
 
       <property name="background-color"
@@ -171,26 +177,26 @@
 
       <property name="border">
         <description>
-          The border of the frame. 
+          The border of the frame.
           3D-styles inset, outset, etc are not supported.
         </description>
       </property>
 
       <property name="padding">
         <description>
-          The padding between the frame and the buttons text. 
-          If this is set to "0px", margin will be used to layout the FocusIndicator. 
+          The padding between the frame and the buttons text.
+          If this is set to "0px", margin will be used to layout the FocusIndicator.
         </description>
       </property>
 
       <property name="margin">
         <description>
-          The margin between the buttons border and the frame. 
-          Only used if padding is set to "0px".        
+          The margin between the buttons border and the frame.
+          Only used if padding is set to "0px".
         </description>
       </property>
 
-      <property name="opacity" 
+      <property name="opacity"
           description="The opacity of the indicator. A value between 0 and 1." />
 
       <style name="ARROW"

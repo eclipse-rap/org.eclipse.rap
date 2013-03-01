@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,9 +8,9 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
- 
+
 /* FileUpload default theme */
- 
+
 FileUpload {
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border: 1px solid #A4A4A4;
@@ -26,6 +26,8 @@ FileUpload {
     color-stop( 52%, #e0e0e0 ),
     to( #ffffff )
   );
+  background-repeat: repeat;
+  background-position: left top;
   animation: hoverOut 500ms ease-out;
   cursor: pointer;
   text-shadow: none;
@@ -58,7 +60,7 @@ FileUpload:pressed {
 }
 
 FileUpload-FocusIndicator {
-  background-color: transparent; 
+  background-color: transparent;
   border: 1px dotted #b8b8b8;
   margin: 2px;
   padding: 0px;

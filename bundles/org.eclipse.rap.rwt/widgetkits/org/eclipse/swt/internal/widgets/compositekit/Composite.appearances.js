@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ var appearances = {
       var tv = new rwt.theme.ThemeValues( states );
       result.backgroundColor = tv.getCssColor( "Composite", "background-color" );
       result.backgroundImage = tv.getCssImage( "Composite", "background-image" );
+      result.backgroundRepeat = tv.getCssIdentifier( "Composite", "background-repeat" );
+      result.backgroundPosition = tv.getCssIdentifier( "Composite", "background-position" );
       result.backgroundGradient = tv.getCssGradient( "Composite", "background-image" );
       result.border = tv.getCssBorder( "Composite", "border" );
       result.opacity = tv.getCssFloat( "Composite", "opacity" );

@@ -868,9 +868,21 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
      * Mapping to native style property background-repeat.
      */
     backgroundRepeat : {
-      check : "String",
+      check : [ "repeat", "repeat-x", "repeat-y", "no-repeat" ],
       nullable : true,
       apply : "_applyBackgroundRepeat",
+      themeable : true
+    },
+
+    /**
+     * Mapping to native style property background-position.
+     */
+    backgroundPosition : {
+      check : [ "left top", "left center", "left bottom",
+                "right top", "right center", "right bottom",
+                "center top", "center center", "center bottom" ],
+      nullable : true,
+      apply : "_applyBackgroundPosition",
       themeable : true
     },
 
@@ -3537,6 +3549,8 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     _styleBackgroundImage : function( value ) {
       if( value ) {
         this.setStyleProperty( "backgroundImage", "url(" + value + ")");
+        this.setStyleProperty( "backgroundRepeat", this.getStyleProperty( "backgroundRepeat" ) );
+        this.setStyleProperty( "backgroundPosition", this.getStyleProperty( "backgroundPosition" ) );
       } else {
         this.removeStyleProperty( "backgroundImage" );
         if( rwt.client.Client.supportsCss3() ) {
@@ -3550,6 +3564,14 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
         this.setStyleProperty( "backgroundRepeat", value );
       } else {
         this.removeStyleProperty( "backgroundRepeat" );
+      }
+    },
+
+    _applyBackgroundPosition : function( value, old ) {
+      if( value ) {
+        this.setStyleProperty( "backgroundPosition", value );
+      } else {
+        this.removeStyleProperty( "backgroundPosition" );
       }
     },
 
@@ -3718,6 +3740,8 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       rwt.html.Style.setBackgroundGradient( this, value );
       if( value === null ) {
         this.setStyleProperty( "backgroundImage", this.getStyleProperty( "backgroundImage" ) );
+        this.setStyleProperty( "backgroundRepeat", this.getStyleProperty( "backgroundRepeat" ) );
+        this.setStyleProperty( "backgroundPosition", this.getStyleProperty( "backgroundPosition" ) );
         this.setStyleProperty( "backgroundColor", this.getStyleProperty( "backgroundColor" ) );
       }
     },
