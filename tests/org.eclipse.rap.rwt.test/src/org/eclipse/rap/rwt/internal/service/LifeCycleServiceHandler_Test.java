@@ -18,7 +18,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -45,6 +48,8 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
@@ -157,6 +162,23 @@ public class LifeCycleServiceHandler_Test {
 
     UISession newUiSession = ContextProvider.getUISession();
     assertNotSame( oldUiSession, newUiSession );
+  }
+
+  @Test
+  public void testUISessionListerenerCalledOnce_AfterPreviousShutdown() throws IOException {
+    initializeUISession();
+    UISession uiSession = ContextProvider.getUISession();
+    UISessionListener listener = mock( UISessionListener.class );
+    uiSession.addUISessionListener(listener );
+
+    LifeCycleServiceHandler.markSessionStarted();
+    simulateShutdownUiRequest();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+
+    simulateInitialUiRequest();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+
+    verify( listener, times( 1 ) ).beforeDestroy( any( UISessionEvent.class ) );
   }
 
   @Test
