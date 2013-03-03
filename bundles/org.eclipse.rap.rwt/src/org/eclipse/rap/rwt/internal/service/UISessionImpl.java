@@ -87,6 +87,10 @@ public final class UISessionImpl
     return shutdownAdapter;
   }
 
+  public void shutdown() {
+    getHttpSession().removeAttribute( ATTR_UI_SESSION );
+  }
+
   public Object getAttribute( String name ) {
     ParamCheck.notNull( name, "name" );
     Object result = null;
@@ -242,10 +246,6 @@ public final class UISessionImpl
 
   public static UISessionImpl getInstanceFromSession( HttpSession httpSession ) {
     return ( UISessionImpl )httpSession.getAttribute( ATTR_UI_SESSION );
-  }
-
-  public static void removeInstanceFromSession( HttpSession httpSession, UISession uiSession ) {
-    httpSession.removeAttribute( ATTR_UI_SESSION );
   }
 
   public static void attachInstanceToSession( HttpSession httpSession, UISession uiSession ) {

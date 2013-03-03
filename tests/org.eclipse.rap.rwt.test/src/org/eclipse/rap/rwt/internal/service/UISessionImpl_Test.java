@@ -110,6 +110,14 @@ public class UISessionImpl_Test {
   }
 
   @Test
+  public void testShutdown() {
+    uiSession.shutdown();
+
+    assertNull( UISessionImpl.getInstanceFromSession( httpSession ) );
+    assertFalse( uiSession.isBound() );
+  }
+
+  @Test
   public void testGetId() {
     assertNotNull( uiSession.getId() );
   }
@@ -463,7 +471,7 @@ public class UISessionImpl_Test {
       }
     } );
 
-    uiSession.valueUnbound( null );
+    uiSession.shutdown();
 
     assertTrue( interceptShutdownWasCalled[ 0 ] );
     assertTrue( uiSession.isBound() );

@@ -132,8 +132,8 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   }
 
   private static void handleSessionShutdown( HttpServletRequest request ) {
-    UISession uiSession = ContextProvider.getUISession();
-    UISessionImpl.removeInstanceFromSession( request.getSession(), uiSession );
+    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    uiSession.shutdown();
   }
 
   private static void handleInvalidRequestCounter( HttpServletResponse response ) {
@@ -170,7 +170,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
     Map<String, String[]> bufferedParameters = RequestParameterBuffer.getBufferedParameters();
     ApplicationContextImpl applicationContext = ApplicationContextUtil.get( uiSession );
-    uiSession.valueUnbound( null );
+    uiSession.shutdown();
     UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
     uiSession = ( UISessionImpl )builder.buildUISession();
     ContextProvider.getContext().setUISession( uiSession );
