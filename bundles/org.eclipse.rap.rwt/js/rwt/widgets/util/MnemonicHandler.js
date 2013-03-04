@@ -16,7 +16,7 @@ var EventHandlerUtil = rwt.event.EventHandlerUtil;
 rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
   type : "singleton",
-  extend : rwt.qx.Target,
+  extend : rwt.qx.Object,
 
   construct : function() {
     this.base( arguments );
@@ -29,15 +29,10 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
     add : function( widget, listener ) {
       this._map[ widget.toHashCode() ] = [ widget, listener ];
-      this.addEventListener( "mnemonic", listener, widget );
     },
 
     remove : function( widget ) {
-      if( this._map[ widget.toHashCode() ] ) {
-        var listener = this._map[ widget.toHashCode() ][ 1 ];
-        this.removeEventListener( "mnemonic", listener, widget );
-        delete this._map[ widget.toHashCode() ];
-      }
+      delete this._map[ widget.toHashCode() ];
     },
 
     setActivator : function( str ) {
@@ -61,9 +56,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
     activate : function() {
       this._active = true;
-      this.dispatchSimpleEvent( "mnemonic", {
-        "type" : "show"
-      } );
+      this._fire( { "type" : "show" } );
     },
 
     deactivate : function() {
@@ -71,10 +64,17 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     },
 
     trigger : function( charCode ) {
-      this.dispatchSimpleEvent( "mnemonic", {
+      this._fire( {
         "type" : "trigger",
         "charCode" : charCode
       } );
+    },
+
+    _fire : function( event ) {
+      for( var key in this._map ) {
+        var entry = this._map[ key ];
+        entry[ 1 ].call( entry[ 0 ], event );
+      }
     },
 
     _isActivation : function( eventType, keyCode, charCode, domEvent ) {
