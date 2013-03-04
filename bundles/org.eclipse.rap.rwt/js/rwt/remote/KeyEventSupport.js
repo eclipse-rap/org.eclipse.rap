@@ -52,10 +52,11 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
       if( eventType === "keydown" ) {
         this._currentKeyCode = keyCode;
       }
-      var mHandler = rwt.widgets.util.MnemonicHandler.getInstance();
-      mHandler.handleKeyEvent( eventType, keyCode, charCode, domEvent );
       var control = this._getTargetControl();
-      if( this._shouldCancel( this._currentKeyCode, charCode, domEvent, control ) ) {
+      var mHandler = rwt.widgets.util.MnemonicHandler.getInstance();
+      if(    mHandler.handleKeyEvent( eventType, keyCode, charCode, domEvent )
+          || this._shouldCancel( this._currentKeyCode, charCode, domEvent, control ) )
+      {
         rwt.event.EventHandlerUtil.stopDomEvent( domEvent );
         domEvent._noProcess = true;
       }

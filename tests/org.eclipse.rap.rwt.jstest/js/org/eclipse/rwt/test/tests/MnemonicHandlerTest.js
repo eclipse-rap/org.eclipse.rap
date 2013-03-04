@@ -18,6 +18,8 @@ var shell;
 var widget;
 var typeLog;
 var charLog;
+var keyLog;
+var success;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
 
@@ -28,12 +30,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
     setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );
       widget = TestUtil.createWidgetByProtocol( "w3", "w2" );
+      success = false;
       typeLog = [];
       charLog = [];
+      keyLog = [];
+      var keylogger = function( event ) {
+        keyLog.push( event.getType() );
+      };
+      widget.addEventListener( "keydown", keylogger );
+      widget.addEventListener( "keypress", keylogger );
+      widget.addEventListener( "keyup", keylogger );
       handler.add( widget, function( event ) {
         typeLog.push( event.type );
         if( event.type === "trigger" ) {
           charLog.push( event.charCode );
+          event.success = success;
         }
       } );
       TestUtil.flush();
@@ -155,6 +166,27 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       TestUtil.keyDown( shell, "b", DomEvent.CTRL_MASK );
 
       assertEquals( [ 66 ], charLog );
+    },
+
+    testFireTrigger_NoSuccessAllowsKeyEvent : function() {
+      handler.setActivator( "CTRL" );
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+
+      widget.focus();
+      TestUtil.keyDown( widget, "B", DomEvent.CTRL_MASK );
+
+      assertEquals( [ "keydown", "keypress" ], keyLog );
+    },
+
+    testFireTrigger_SuccessStopsKeyEvent : function() {
+      handler.setActivator( "CTRL" );
+      success = true;
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+
+      widget.focus();
+      TestUtil.keyDown( widget, "B", DomEvent.CTRL_MASK );
+
+      assertEquals( [], keyLog );
     }
 
   }

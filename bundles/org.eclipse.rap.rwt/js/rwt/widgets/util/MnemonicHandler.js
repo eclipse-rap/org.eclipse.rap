@@ -47,13 +47,15 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     },
 
     handleKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
+      var result = false;
       if( this._isActivation( eventType, keyCode, charCode, domEvent ) ) {
         this.activate();
       } else if( this._isDeactivation( eventType, keyCode, charCode, domEvent ) ) {
         this.deactivate();
       } else if( this._isTrigger( eventType, keyCode, charCode, domEvent ) ) {
-        this.trigger( keyCode );
+        result = this.trigger( keyCode );
       }
+      return result;
     },
 
     activate : function() {
@@ -67,10 +69,13 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     },
 
     trigger : function( charCode ) {
-      this._fire( {
+      var event = {
         "type" : "trigger",
-        "charCode" : charCode
-      } );
+        "charCode" : charCode,
+        "success" : false
+      };
+      this._fire( event );
+      return event.success;
     },
 
     _fire : function( event ) {
