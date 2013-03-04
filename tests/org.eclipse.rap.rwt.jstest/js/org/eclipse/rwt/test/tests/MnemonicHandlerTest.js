@@ -95,6 +95,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( [ "show", "hide" ], typeLog );
     },
 
+    testFireHideMnemonics_ShellDeActivate : function() {
+      handler.setActivator( "CTRL" );
+
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      shell.setActive( false );
+
+      assertEquals( [ "show", "hide" ], typeLog );
+    },
+
     testDoNotFireShowMnemonics_WrongModifier : function() {
       handler.setActivator( "CTRL" );
 
