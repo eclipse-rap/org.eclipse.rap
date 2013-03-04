@@ -63,9 +63,9 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
       this._mnemonicIndex = value;
       var mnemonicHandler = rwt.widgets.util.MnemonicHandler.getInstance();
       if( value ) {
-        mnemonicHandler.addEventListener( "mnemonic", this._onMnemonic, this );
+        mnemonicHandler.add( this, this._onMnemonic );
       } else {
-        mnemonicHandler.removeEventListener( "mnemonic", this._onMnemonic, this );
+        mnemonicHandler.remove( this );
       }
     },
 

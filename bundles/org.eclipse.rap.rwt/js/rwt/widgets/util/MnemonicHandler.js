@@ -20,11 +20,25 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
   construct : function() {
     this.base( arguments );
+    this._map = {};
     this._activator = null;
     this._active = false;
   },
 
   members : {
+
+    add : function( widget, listener ) {
+      this._map[ widget.toHashCode() ] = [ widget, listener ];
+      this.addEventListener( "mnemonic", listener, widget );
+    },
+
+    remove : function( widget ) {
+      if( this._map[ widget.toHashCode() ] ) {
+        var listener = this._map[ widget.toHashCode() ][ 1 ];
+        this.removeEventListener( "mnemonic", listener, widget );
+        delete this._map[ widget.toHashCode() ];
+      }
+    },
 
     setActivator : function( str ) {
       if( str ) {
@@ -35,10 +49,6 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
       } else {
         this._activator = null;
       }
-    },
-
-    deactivate : function() {
-      this._active = false;
     },
 
     handleKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
@@ -54,6 +64,10 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
       this.dispatchSimpleEvent( "mnemonic", {
         "type" : "show"
       } );
+    },
+
+    deactivate : function() {
+      this._active = false;
     },
 
     trigger : function( charCode ) {
