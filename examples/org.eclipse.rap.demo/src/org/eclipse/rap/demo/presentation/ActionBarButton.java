@@ -15,13 +15,11 @@ package org.eclipse.rap.demo.presentation;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.*;
 
 class ActionBarButton
   extends MouseAdapter
@@ -29,21 +27,23 @@ class ActionBarButton
 {
   private final Action action;
   private final Label label;
-  
-  ActionBarButton( final Action action, final Composite actionBar ) {
+  private final Display display;
+
+  ActionBarButton( Action action, Composite actionBar ) {
     this.action = action;
     this.label = new Label( actionBar, SWT.NONE );
+    this.display = label.getDisplay();
     label.setText( action.getText() );
     FontData fontData = label.getFont().getFontData()[ 0 ];
-    label.setFont( Graphics.getFont( fontData.getName(),
-                                     fontData.getHeight() + 2,
-                                     fontData.getStyle() ) );
+    int height = fontData.getHeight() + 2;
+    label.setFont( new Font( display, fontData.getName(), height, fontData.getStyle() ) );
     label.pack();
     action.addPropertyChangeListener( this );
     adjustEnablement( action.isEnabled() );
   }
 
-  public void mouseUp( final MouseEvent event ) {
+  @Override
+  public void mouseUp( MouseEvent event ) {
     run();
   }
 
@@ -51,7 +51,7 @@ class ActionBarButton
     action.run();
   }
 
-  public void propertyChange( final PropertyChangeEvent event ) {
+  public void propertyChange( PropertyChangeEvent event ) {
     if( "enabled".equals( event.getProperty() ) ) {
       adjustEnablement( ( ( Boolean )event.getNewValue() ).booleanValue() );
     }
@@ -60,10 +60,10 @@ class ActionBarButton
   private void adjustEnablement( boolean booleanValue ) {
     if( booleanValue ) {
       label.addMouseListener( this );
-      label.setForeground( Graphics.getColor( 255, 255, 255 ) );
+      label.setForeground( display.getSystemColor( SWT.COLOR_WHITE ) );
     } else {
       label.removeMouseListener( this );
-      label.setForeground( Graphics.getColor( 192, 192, 192 ) );
+      label.setForeground( new Color( display, 192, 192, 192 ) );
     }
   }
 }

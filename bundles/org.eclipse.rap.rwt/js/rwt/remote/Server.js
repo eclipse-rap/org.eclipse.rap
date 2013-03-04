@@ -75,6 +75,14 @@ rwt.qx.Class.define( "rwt.remote.Server", {
       return this._requestCounter;
     },
 
+    setUISessionId : function( uiSessionId ) {
+      this._uiSessionId = uiSessionId;
+    },
+
+    getUISessionId : function() {
+      return this._uiSessionId;
+    },
+
     /**
      * Adds a request parameter to the next request with the given name and value
      */
@@ -146,6 +154,9 @@ rwt.qx.Class.define( "rwt.remote.Server", {
           this.getMessageWriter().appendHead( "requestCounter", this._requestCounter );
         }
         this._requestCounter = -1;
+        if( this._uiSessionId != null ) {
+          this.getMessageWriter().appendHead( "uiSessionId", this._uiSessionId );
+        }
         var request = this._createRequest();
         request.setAsynchronous( async );
         request.setData( this.getMessageWriter().createMessage() );

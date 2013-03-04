@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: RWT Cluster Tests
 Bundle-SymbolicName: org.eclipse.rap.rwt.cluster.test
-Bundle-Version: 2.0.0.qualifier
+Bundle-Version: 2.1.0.qualifier
 Bundle-Vendor: Eclipse.org - RAP
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.rap.rwt;bundle-version="[2.0.0,3.0.0)",

@@ -15,7 +15,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -23,6 +22,7 @@ import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
@@ -184,7 +184,7 @@ public class TabItemLCA_Test {
 
   @Test
   public void testRenderImage() throws IOException, JSONException {
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
 
     item.setImage( image );
     lca.renderChanges( item );
@@ -200,7 +200,7 @@ public class TabItemLCA_Test {
   public void testRenderImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
 
     item.setImage( image );
     Fixture.preserveWidgets();
@@ -214,7 +214,7 @@ public class TabItemLCA_Test {
   public void testRenderImageReset() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
     item.setImage( image );
 
     Fixture.preserveWidgets();
@@ -302,14 +302,6 @@ public class TabItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "mnemonicIndex" ) );
-  }
-
-  private Image createImage( String imagePath ) throws IOException {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( imagePath );
-    Image result = new Image( display, stream );
-    stream.close();
-    return result;
   }
 
 }

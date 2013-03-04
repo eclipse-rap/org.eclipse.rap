@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,6 +92,14 @@ TreeColumn-SortIndicator:down {
 Tree-Cell {
   spacing: 3px;
   padding: 2px 3px 3px 3px;
+}
+
+Tree-GridLine {
+  color: #d0d0d0;
+}
+
+Tree-GridLine:header {
+  color: #d0d0d0;
 }
 
 Tree-Indent {

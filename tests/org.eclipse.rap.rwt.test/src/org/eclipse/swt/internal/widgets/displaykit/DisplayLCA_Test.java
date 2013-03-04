@@ -39,7 +39,6 @@ import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
@@ -48,6 +47,7 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -60,6 +60,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -217,7 +218,7 @@ public class DisplayLCA_Test {
   @Test
   public void testRenderInitiallyDisposed() {
     ApplicationContextImpl applicationContext = getApplicationContext();
-    applicationContext.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
+    applicationContext.getEntryPointManager().register( TestRequest.DEFAULT_SERVLET_PATH,
                                                         TestRenderInitiallyDisposedEntryPoint.class,
                                                         null );
     RWTLifeCycle lifeCycle
@@ -234,7 +235,7 @@ public class DisplayLCA_Test {
   @Test
   public void testRenderDisposed() throws Exception {
     ApplicationContextImpl applicationContext = getApplicationContext();
-    applicationContext.getEntryPointManager().register( EntryPointManager.DEFAULT_PATH,
+    applicationContext.getEntryPointManager().register( TestRequest.DEFAULT_SERVLET_PATH,
                                                         TestRenderDisposedEntryPoint.class,
                                                         null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )applicationContext.getLifeCycleFactory().getLifeCycle();
@@ -349,6 +350,15 @@ public class DisplayLCA_Test {
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findCallOperation( displayId, "beep" ) );
     assertFalse( display.getAdapter( IDisplayAdapter.class ).isBeepCalled() );
+  }
+
+  @Test
+  public void testRenderUISessionId() throws IOException {
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    String expected = ContextProvider.getUISession().getId();
+    assertEquals( expected, message.findHeadProperty( "uiSessionId" ) );
   }
 
   @Test

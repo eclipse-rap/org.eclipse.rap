@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@ package org.eclipse.rap.examples.pages;
 
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
-import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.examples.pages.internal.ImageUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -20,6 +20,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
@@ -78,12 +79,10 @@ public class LabelExample implements IExamplePage {
     Composite comp = new Composite( group, SWT.NONE );
     comp.setLayoutData( new GridData( SWT.CENTER, SWT.TOP, true, false ) );
     comp.setLayout( ExampleUtil.createGridLayout( 5, false, true, true ) );
-    ClassLoader classLoader = getClass().getClassLoader();
-    Image image1 = Graphics.getImage( "resources/emblem-system.png",
-                                      classLoader );
-    Image image2 = Graphics.getImage( "resources/go-bottom.png", classLoader );
-    Image image3 = Graphics.getImage( "resources/system-search.png",
-                                      classLoader );
+    Display display = parent.getDisplay();
+    Image image1 = ImageUtil.getImage( display, "emblem-system.png" );
+    Image image2 = ImageUtil.getImage( display, "go-bottom.png" );
+    Image image3 = ImageUtil.getImage( display, "system-search.png" );
     Label imageLabel1 = new Label( comp, SWT.NONE );
     imageLabel1.setImage( image1 );
     new Label( comp, SWT.SEPARATOR | SWT.VERTICAL );
@@ -99,9 +98,7 @@ public class LabelExample implements IExamplePage {
     group.setText( "CLabel" );
     group.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
     group.setLayout( ExampleUtil.createGridLayout( 3, false, true, true ) );
-    ClassLoader classLoader = getClass().getClassLoader();
-    Image image4 = Graphics.getImage( "resources/button-image.gif",
-                                      classLoader );
+    Image image4 = ImageUtil.getImage( parent.getDisplay(), "button-image.gif" );
     CLabel cLabel1 = new CLabel( group, SWT.NONE );
     cLabel1.setText( "Image and text" );
     cLabel1.setImage( image4 );

@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.rap.equinox.juno.target.feature"
       label="RAP Basic Equinox Target for Juno"
-      version="2.0.0.qualifier"
+      version="2.1.0.qualifier"
       provider-name="Eclipse.org - RAP">
 
    <description url="http://eclipse.org/rap/">
@@ -18,11 +18,11 @@
    </license>
 
    <url>
-      <update label="Rich Ajax Platform (RAP) 2.0 Repository" url="http://download.eclipse.org/rt/rap/2.0/"/>
+      <update label="Rich Ajax Platform (RAP) 2.1 Repository" url="http://download.eclipse.org/rt/rap/2.1/"/>
    </url>
 
    <requires>
-      <import feature="org.eclipse.rap.feature" version="2.0.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.rap.feature" version="2.1.0" match="greaterOrEqual"/>
       <!--
       <import plugin="javax.servlet"/>
       <import plugin="javax.servlet.source"/>

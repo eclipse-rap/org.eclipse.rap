@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,14 +20,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-class DemoCoolBarManager
-  extends ContributionManager
-  implements ICoolBarManager2
-{
-  
+@SuppressWarnings( "restriction" )
+class DemoCoolBarManager extends ContributionManager implements ICoolBarManager2 {
+
   private Composite control;
 
-  public Control createControl2( final Composite parent ) {
+  public Control createControl2( Composite parent ) {
     control = new Composite( parent, SWT.NONE );
     return control;
   }
@@ -45,10 +43,10 @@ class DemoCoolBarManager
   public void resetItemOrder() {
   }
 
-  public void setItems( final IContributionItem[] newItems ) {
+  public void setItems( IContributionItem[] newItems ) {
   }
 
-  public void add( final IToolBarManager toolBarManager ) {
+  public void add( IToolBarManager toolBarManager ) {
   }
 
   public IMenuManager getContextMenuManager() {
@@ -63,25 +61,23 @@ class DemoCoolBarManager
     return 0;
   }
 
-  public void setContextMenuManager( final IMenuManager menuManager ) {
+  public void setContextMenuManager( IMenuManager menuManager ) {
   }
 
-  public void setLockLayout( final boolean value ) {
+  public void setLockLayout( boolean value ) {
   }
 
-  public void update( final boolean force ) {
+  public void update( boolean force ) {
     IContributionItem[] contributionItems = getItems();
-    List actions = new ArrayList();
+    List<Object> actions = new ArrayList<Object>();
     for( int i = 0; i < contributionItems.length; i++ ) {
       if( contributionItems[ i ] instanceof ToolBarContributionItem ) {
-        ToolBarContributionItem contributionItem
-          = ( ToolBarContributionItem )contributionItems[ i ];
-        if( contributionItem.isVisible() ) {
-          IToolBarManager toolBarManager = contributionItem.getToolBarManager();
+        ToolBarContributionItem item = ( ToolBarContributionItem )contributionItems[ i ];
+        if( item.isVisible() ) {
+          IToolBarManager toolBarManager = item.getToolBarManager();
           IContributionItem[] toolBarItems = toolBarManager.getItems();
           for( int j = 0; j < toolBarItems.length; j++ ) {
-            ActionContributionItem actionItem
-              = ( ActionContributionItem )toolBarItems[ j ];
+            ActionContributionItem actionItem = ( ActionContributionItem )toolBarItems[ j ];
             actions.add( actionItem.getAction() );
           }
         }
@@ -92,7 +88,7 @@ class DemoCoolBarManager
         actions.add( "Separator" );
       }
     }
-   
+
     ActionBar.create( actions, control );
   }
 }

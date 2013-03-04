@@ -25,7 +25,7 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.Util;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -87,7 +87,7 @@ public class ContentProposalAdapter implements Serializable {
       if( oldCancelKeys == null ) {
         oldCancelKeys = new String[ 0 ];
       }
-      ArrayList cancelKeys = new ArrayList( Arrays.asList( oldCancelKeys ) );
+      ArrayList<String> cancelKeys = new ArrayList<String>( Arrays.asList( oldCancelKeys ) );
       for( int i = 0; i < keysToUpdate.length; i++ ) {
         if( add ) {
           cancelKeys.add( keysToUpdate[ i ] );
@@ -1011,9 +1011,9 @@ public class ContentProposalAdapter implements Serializable {
 			// If we do not already have a pending update, then
 			// create a thread now that will show the proposal description
 			if (!pendingDescriptionUpdate) {
-// RAP [if] Activate/deactivate the UICallBack
-			    final String id = ContentProposalAdapter.class.getName() + "#showProposalDescription"; //$NON-NLS-1$
-			    UICallBack.activate( id );
+// RAP [if] Activate/deactivate the ServerPushSession
+			    final ServerPushSession serverPush = new ServerPushSession();
+			    serverPush.start();
 // ENDRAP
 				// Create a thread that will sleep for the specified delay
 				// before creating the popup. We do not use Jobs since this
@@ -1058,8 +1058,8 @@ public class ContentProposalAdapter implements Serializable {
 										infoPopup.close();
 									}
 									pendingDescriptionUpdate = false;
-// RAP [if] Activate/deactivate the UICallBack
-									UICallBack.deactivate( id );
+// RAP [if] Activate/deactivate the ServerPushSession
+									serverPush.stop();
 // ENDRAP
 								}
 							}
@@ -2149,9 +2149,9 @@ public class ContentProposalAdapter implements Serializable {
 	 */
 	private void autoActivate() {
 		if (autoActivationDelay > 0) {
-// RAP [if] Activate/deactivate the UICallBack
-		    final String id = ContentProposalAdapter.class.getName() + "#autoActivate"; //$NON-NLS-1$
-		    UICallBack.activate( id );
+// RAP [if] Activate/deactivate the ServerPushSession
+		    final ServerPushSession serverPush = new ServerPushSession();
+            serverPush.start();
 // ENDRAP
 			Runnable runnable = new Runnable() {
 				public void run() {
@@ -2167,8 +2167,8 @@ public class ContentProposalAdapter implements Serializable {
 					display.syncExec(new Runnable() {
 						public void run() {
 							openProposalPopup(true);
-// RAP [if] Activate/deactivate the UICallBack
-							UICallBack.deactivate( id );
+// RAP [if] Activate/deactivate the ServerPushSession
+							serverPush.stop();
 // ENDRAP
 						}
 					});

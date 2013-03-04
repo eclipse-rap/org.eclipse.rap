@@ -11,12 +11,17 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static junit.framework.Assert.assertNotSame;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -43,6 +48,8 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
@@ -114,6 +121,64 @@ public class LifeCycleServiceHandler_Test {
     service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
 
     assertNull( uiSession.getAttribute( SESSION_STORE_ATTRIBUTE ) );
+  }
+
+  @Test
+  public void testShutdownUISession() throws IOException {
+    initializeUISession();
+    UISession uiSession = ContextProvider.getUISession();
+
+    LifeCycleServiceHandler.markSessionStarted();
+    simulateShutdownUiRequest();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+
+    assertFalse( uiSession.isBound() );
+  }
+
+  @Test
+  public void testShutdownUISession_RemoveUISessionFromHttpSession() throws IOException {
+    initializeUISession();
+    UISession uiSession = ContextProvider.getUISession();
+    HttpSession httpSession = uiSession.getHttpSession();
+
+    LifeCycleServiceHandler.markSessionStarted();
+    simulateShutdownUiRequest();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+
+    assertNull( UISessionImpl.getInstanceFromSession( httpSession ) );
+  }
+
+  @Test
+  public void testStartUISession_AfterPreviousShutdown() throws IOException {
+    initializeUISession();
+    UISession oldUiSession = ContextProvider.getUISession();
+
+    LifeCycleServiceHandler.markSessionStarted();
+    simulateShutdownUiRequest();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+
+    simulateInitialUiRequest();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+
+    UISession newUiSession = ContextProvider.getUISession();
+    assertNotSame( oldUiSession, newUiSession );
+  }
+
+  @Test
+  public void testUISessionListerenerCalledOnce_AfterPreviousShutdown() throws IOException {
+    initializeUISession();
+    UISession uiSession = ContextProvider.getUISession();
+    UISessionListener listener = mock( UISessionListener.class );
+    uiSession.addUISessionListener(listener );
+
+    LifeCycleServiceHandler.markSessionStarted();
+    simulateShutdownUiRequest();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+
+    simulateInitialUiRequest();
+    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+
+    verify( listener, times( 1 ) ).beforeDestroy( any( UISessionEvent.class ) );
   }
 
   @Test
@@ -308,6 +373,13 @@ public class LifeCycleServiceHandler_Test {
   private void simulateInitialUiRequest() {
     Fixture.fakeNewRequest();
     Fixture.fakeHeadParameter( RequestParams.RWT_INITIALIZE, "true" );
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setServletPath( "/test" );
+  }
+
+  private void simulateShutdownUiRequest() {
+    Fixture.fakeNewRequest();
+    Fixture.fakeHeadParameter( RequestParams.RWT_SHUTDOWN, "true" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2012 David Orme <djo@coconut-palm-software.com> and others.
+ * Copyright (c) 2005, 2013 David Orme <djo@coconut-palm-software.com> and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,9 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.databinding.nestedselection;
 
-import java.util.*;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SimplePerson extends ModelObject {
 
@@ -20,7 +22,7 @@ public class SimplePerson extends ModelObject {
   private String address = "";
   private String city = "";
   private String state = "";
-  private final List orders = new LinkedList();
+  private final List<SimpleOrder> orders = new LinkedList<SimpleOrder>();
 
   public SimplePerson( final String name,
                        final String address,

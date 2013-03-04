@@ -8,6 +8,7 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  *    EclipseSource - ongoing development
+ *    Rüdiger Herrmann - exception handler (bug 367773)
  ******************************************************************************/
 package org.eclipse.rap.rwt.application;
 
@@ -185,10 +186,28 @@ public interface Application {
   /**
    * Configure this application to use a custom setting store implementation.
    *
-   * @param the setting store implementation to use
+   * @param the setting store implementation to use, must not be <code>null</code>
    * @see SettingStore
    */
   void setSettingStoreFactory( SettingStoreFactory settingStoreFactory );
+
+  /**
+   * Sets the exception handler to which exceptions should be forwarded that occur while running
+   * the event loop.
+   * <p>
+   * To give an exception handler the chance to log errors it called for all classes of exceptions.
+   * <code>Error</code>s however are re-thrown after the handler was called so that they cannot be
+   * swallowed.
+   * </p>
+   * <p>
+   * The default implementation throws the given exception, resulting in a HTTP 500 response.
+   * </p>
+   *
+   * @param the exception handler to use, must not be <code>null</code>
+   * @see ExceptionHandler
+   * @since 2.1
+   */
+  void setExceptionHandler( ExceptionHandler exceptionHandler );
 
   /**
    * Register a themeable widget for this application. A themeable widget is a

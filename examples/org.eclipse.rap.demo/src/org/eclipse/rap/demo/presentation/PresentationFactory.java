@@ -13,34 +13,35 @@ package org.eclipse.rap.demo.presentation;
 
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.internal.provisional.action.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.internal.provisional.presentations.IActionBarPresentationFactory;
 import org.eclipse.ui.presentations.*;
 
 
+@SuppressWarnings( "restriction" )
 public class PresentationFactory
   extends AbstractPresentationFactory
   implements IActionBarPresentationFactory
 {
 
-  public StackPresentation createEditorPresentation(
-    final Composite parent,
-    final IStackPresentationSite site )
+  @Override
+  public StackPresentation createEditorPresentation( Composite parent,
+                                                     IStackPresentationSite site )
   {
     return new StackPresentationImpl( site, parent );
   }
 
-  public StackPresentation createStandaloneViewPresentation(
-    final Composite parent,
-    final IStackPresentationSite site,
-    final boolean showTitle )
+  @Override
+  public StackPresentation createStandaloneViewPresentation( Composite parent,
+                                                             IStackPresentationSite site,
+                                                             boolean showTitle )
   {
     return new StackPresentationImpl( site, parent );
   }
 
-  public StackPresentation createViewPresentation(
-    final Composite parent,
-    final IStackPresentationSite site )
+  @Override
+  public StackPresentation createViewPresentation( Composite parent,
+                                                   IStackPresentationSite site )
   {
     return new StackPresentationImpl( site, parent );
   }
@@ -49,8 +50,8 @@ public class PresentationFactory
     return new DemoCoolBarManager();
   }
 
-  public IToolBarContributionItem createToolBarContributionItem(
-    final IToolBarManager toolBarManager, final String id )
+  public IToolBarContributionItem createToolBarContributionItem( IToolBarManager toolBarManager,
+                                                                 String id )
   {
     return new DemoToolBarContributionItem();
   }

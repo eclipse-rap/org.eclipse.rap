@@ -45,7 +45,7 @@ public final class UISessionImpl
   implements UISession, HttpSessionBindingListener, SerializableCompatibility
 {
 
-  private static final String ATTR_SESSION_STORE = UISessionImpl.class.getName();
+  private static final String ATTR_UI_SESSION = UISessionImpl.class.getName();
   private static final String ATTR_LOCALE = UISessionImpl.class.getName() + "#locale";
 
   private final SerializableLock requestLock;
@@ -85,6 +85,12 @@ public final class UISessionImpl
 
   public ISessionShutdownAdapter getShutdownAdapter() {
     return shutdownAdapter;
+  }
+
+  public void shutdown() {
+    // Removing the object from the httpSession will trigger the valueUnbound method,
+    // which actually kills the session
+    getHttpSession().removeAttribute( ATTR_UI_SESSION );
   }
 
   public Object getAttribute( String name ) {
@@ -241,11 +247,11 @@ public final class UISessionImpl
   }
 
   public static UISessionImpl getInstanceFromSession( HttpSession httpSession ) {
-    return ( UISessionImpl )httpSession.getAttribute( ATTR_SESSION_STORE );
+    return ( UISessionImpl )httpSession.getAttribute( ATTR_UI_SESSION );
   }
 
   public static void attachInstanceToSession( HttpSession httpSession, UISession uiSession ) {
-    httpSession.setAttribute( ATTR_SESSION_STORE, uiSession );
+    httpSession.setAttribute( ATTR_UI_SESSION, uiSession );
   }
 
   /*

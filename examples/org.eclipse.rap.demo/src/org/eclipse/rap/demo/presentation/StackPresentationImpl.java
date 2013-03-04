@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.jface.util.Geometry;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -28,7 +27,7 @@ import org.eclipse.ui.presentations.*;
 class StackPresentationImpl extends StackPresentation {
 
   private static final int TITLE_HEIGHT = 30;
-  private List presentableParts = new ArrayList();
+  private List<IPresentablePart> presentableParts = new ArrayList<IPresentablePart>();
   private Control control;
   private IPresentablePart current;
   private Label content;
@@ -38,11 +37,12 @@ class StackPresentationImpl extends StackPresentation {
                                    final Composite parent )
   {
     super( stackSite );
+    Display display = parent.getDisplay();
     Composite background = new Composite( parent, SWT.NONE );
     background.setBackgroundMode( SWT.INHERIT_FORCE );
     background.setLayout( new FormLayout() );
     content = new Label( background, SWT.NONE );
-    content.setBackground( Graphics.getColor( 255, 255, 255 ) );
+    content.setBackground( display.getSystemColor( SWT.COLOR_WHITE ) );
     FormData fdContent = createFormData( content );
     fdContent.top = new FormAttachment( 0, TITLE_HEIGHT );
     fdContent.left = new FormAttachment( 0, 2 );
@@ -50,24 +50,28 @@ class StackPresentationImpl extends StackPresentation {
     fdContent.bottom = new FormAttachment( 100, -2 );
     content.addControlListener( new ControlAdapter() {
 
+      @Override
       public void controlResized( final ControlEvent evt ) {
         layout();
       }
     } );
     head = new Button( background, SWT.PUSH | SWT.FLAT | SWT.LEAD );
     FontData fontData = head.getFont().getFontData()[ 0 ];
-    head.setFont( Graphics.getFont( fontData.getName(),
-                                    fontData.getHeight() + 2,
-                                    fontData.getStyle() ) );
+    head.setFont( new Font( display,
+                            fontData.getName(),
+                            fontData.getHeight() + 2,
+                            fontData.getStyle() ) );
     FormData fdHead = createFormData( head );
     fdHead.top = new FormAttachment( 0, -1 );
     fdHead.left = new FormAttachment( 0, -1 );
     fdHead.height = TITLE_HEIGHT + 1;
     fdHead.right = new FormAttachment( 100, 1 );
     head.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent evt ) {
         Object[] parts = presentableParts.toArray();
         SelectionListener listener = new SelectionAdapter() {
+          @Override
           public void widgetSelected( final SelectionEvent evt ) {
             TableItem item = ( TableItem )evt.item;
             IPresentablePart part = ( IPresentablePart )item.getData();
@@ -156,25 +160,31 @@ class StackPresentationImpl extends StackPresentation {
     return result;
   }
 
+  @Override
   public void addPart( final IPresentablePart newPart, final Object cookie ) {
     presentableParts.add( newPart );
   }
 
+  @Override
   public void dispose() {
   }
 
+  @Override
   public Control getControl() {
     return control;
   }
 
+  @Override
   public Control[] getTabList( final IPresentablePart part ) {
     return null;
   }
 
+  @Override
   public void removePart( final IPresentablePart oldPart ) {
     presentableParts.remove( oldPart );
   }
 
+  @Override
   public void selectPart( final IPresentablePart toSelect ) {
     if( toSelect != null ) {
       toSelect.setVisible( true );
@@ -200,9 +210,11 @@ class StackPresentationImpl extends StackPresentation {
     }
   }
 
+  @Override
   public void setActive( final int newState ) {
   }
 
+  @Override
   public void setBounds( final Rectangle bounds ) {
     control.setBounds( bounds.x + 4,
                        bounds.y + 4,
@@ -210,18 +222,23 @@ class StackPresentationImpl extends StackPresentation {
                        bounds.height - 8 );
   }
 
+  @Override
   public void setState( final int state ) {
   }
 
+  @Override
   public void setVisible( final boolean isVisible ) {
   }
 
+  @Override
   public void showPaneMenu() {
   }
 
+  @Override
   public void showSystemMenu() {
   }
 
+  @Override
   public StackDropResult dragOver( final Control currentControl,
                                    final Point location )
   {

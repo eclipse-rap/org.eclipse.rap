@@ -26,8 +26,6 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 public class EntryPointManager {
 
-  public static final String DEFAULT_PATH = "/rap";
-
   private final Map<String, EntryPointRegistration> entryPoints;
 
   public EntryPointManager() {

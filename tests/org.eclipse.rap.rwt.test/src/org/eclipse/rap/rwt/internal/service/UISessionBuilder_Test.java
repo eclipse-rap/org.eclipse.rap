@@ -159,7 +159,7 @@ public class UISessionBuilder_Test {
   private void registerEntryPoint( HashMap<String, String> properties ) {
     EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
     EntryPointFactory factory = mock( EntryPointFactory.class );
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, factory, properties );
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, factory, properties );
   }
 
   private void assertSingletonManagerIsInstalled( UISession uiSession ) {

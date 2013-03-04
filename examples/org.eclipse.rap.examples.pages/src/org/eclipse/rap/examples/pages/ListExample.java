@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
-import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.examples.pages.internal.ImageUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DND;
@@ -38,8 +38,8 @@ import org.eclipse.swt.widgets.List;
 public class ListExample implements IExamplePage {
 
   private static final int LIST_STYLE = SWT.BORDER | SWT.MULTI | SWT.V_SCROLL;
-  private static final String IMG_ADD = "resources/forward_nav.gif";
-  private static final String IMG_REMOVE = "resources/backward_nav.gif";
+  private static final String IMG_ADD = "forward_nav.gif";
+  private static final String IMG_REMOVE = "backward_nav.gif";
   private static final String[] ELEMENTS = new String[]{
     "Dansk",
     "Deutsch",
@@ -120,13 +120,10 @@ public class ListExample implements IExamplePage {
     } );
   }
 
-  private Button createButton( final Composite parent,
-                                    final String text,
-                                    final String image )
-  {
+  private Button createButton( Composite parent, String text, String image ) {
     Button result = new Button( parent, SWT.PUSH | SWT.LEFT );
     result.setText( text );
-    result.setImage( Graphics.getImage( image, getClass().getClassLoader() )  );
+    result.setImage( ImageUtil.getImage( result.getDisplay(), image )  );
     return result;
   }
 

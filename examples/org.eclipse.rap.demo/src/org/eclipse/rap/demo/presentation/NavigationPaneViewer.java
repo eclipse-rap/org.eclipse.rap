@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,11 +16,11 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.*;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.part.PageBook;
@@ -30,13 +30,13 @@ public class NavigationPaneViewer extends Composite
   implements ISelectionProvider, ISelectionChangedListener
 {
 
-  private static final Color COLOR_WHITE = Graphics.getColor( 255, 255, 255 );
   private final static int BUTTON_HEIGHT = 30;
   private Label title;
   private PageBook pageBook;
   private NavigationPaneContent[] content = {};
   private Composite selectorArea;
-  private final Set selectionListener = new HashSet();
+  private final Set<ISelectionChangedListener> selectionListener
+    = new HashSet<ISelectionChangedListener>();
   private ISelection selection = StructuredSelection.EMPTY;
 
   private final class Selector extends SelectionAdapter {
@@ -86,11 +86,12 @@ public class NavigationPaneViewer extends Composite
 
   private void createTitleArea( Composite parent ) {
     title = new Label( parent, SWT.NONE );
-    title.setBackground( COLOR_WHITE );
+    title.setBackground( title.getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
     FontData fontData = title.getFont().getFontData()[ 0 ];
-    Font titleFont = Graphics.getFont( fontData.getName(),
-                                       18,
-                                       fontData.getStyle() | SWT.BOLD );
+    Font titleFont = new Font( title.getDisplay(),
+                               fontData.getName(),
+                               18,
+                               fontData.getStyle() | SWT.BOLD );
     title.setFont( titleFont );
     FormData fd = new FormData();
     title.setLayoutData( fd );
@@ -110,7 +111,7 @@ public class NavigationPaneViewer extends Composite
     fd.right = new FormAttachment( 100, 0 );
     int bottom = -BUTTON_HEIGHT * ( content.length + 1 ) - 1;
     fd.bottom = new FormAttachment( 100, bottom );
-    pageBook.setBackground( COLOR_WHITE );
+    pageBook.setBackground( parent.getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
 
     for( int i = 0; i < content.length; i++ ) {
       createPage( i );
@@ -119,7 +120,7 @@ public class NavigationPaneViewer extends Composite
 
   private Control createPage( int pageIndex ) {
     Composite result = new Composite( pageBook, SWT.NONE );
-    result.setBackground( COLOR_WHITE );
+    result.setBackground( result.getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
     result.setLayout( new FillLayout() );
     content[ pageIndex ].setControl( result );
     content[ pageIndex ].createControl( result );
@@ -168,8 +169,7 @@ public class NavigationPaneViewer extends Composite
     selectionListener.add( listener );
   }
 
-  public void removeSelectionChangedListener( ISelectionChangedListener listener )
-  {
+  public void removeSelectionChangedListener( ISelectionChangedListener listener ) {
     selectionListener.remove( listener );
   }
 
@@ -186,12 +186,9 @@ public class NavigationPaneViewer extends Composite
     }
     if( !oldSelection.equals( selection ) ) {
       SelectionChangedEvent evt = new SelectionChangedEvent( this, selection );
-      Object[] listeners = selectionListener.toArray();
-      for( int i = 0; i < listeners.length; i++ ) {
+      for( ISelectionChangedListener listener: selectionListener ) {
         try {
-          ISelectionChangedListener lsnr
-            = ( ISelectionChangedListener )listeners[ i ];
-          lsnr.selectionChanged( evt );
+          listener.selectionChanged( evt );
         } catch( RuntimeException re ) {
           // TODO Auto-generated catch block
           re.printStackTrace();

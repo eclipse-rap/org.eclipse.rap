@@ -23,7 +23,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,6 +36,7 @@ import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -150,7 +150,7 @@ public class ButtonLCA_Test {
       Object object = adapter.getPreserved( Props.TEXT );
       assertEquals( "abc", object );
       Fixture.clearPreserved();
-      Image image = createImage( Fixture.IMAGE1 );
+      Image image = TestUtil.createImage( display, Fixture.IMAGE1 );
       button.setImage( image );
       Fixture.preserveWidgets();
       adapter = WidgetUtil.getAdapter( button );
@@ -556,7 +556,7 @@ public class ButtonLCA_Test {
 
   @Test
   public void testRenderImage() throws IOException, JSONException {
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
 
     button.setImage( image );
     lca.renderChanges( button );
@@ -572,7 +572,7 @@ public class ButtonLCA_Test {
   public void testRenderImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
 
     button.setImage( image );
     Fixture.preserveWidgets();
@@ -586,7 +586,7 @@ public class ButtonLCA_Test {
   public void testRenderImageReset() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
     button.setImage( image );
 
     Fixture.preserveWidgets();
@@ -715,14 +715,6 @@ public class ButtonLCA_Test {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "activeControl", getId( control ) );
     Fixture.fakeSetOperation( getId( control.getShell() ), properties );
-  }
-
-  private Image createImage( String imagePath ) throws IOException {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( imagePath );
-    Image result = new Image( display, stream );
-    stream.close();
-    return result;
   }
 
 }

@@ -35,6 +35,7 @@ import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.swt.internal.widgets.displaykit.ClientResources;
 import org.junit.After;
@@ -138,7 +139,7 @@ public class StartupJson_Test {
   private void registerEntryPoint( HashMap<String, String> properties ) {
     EntryPointManager entryPointManager = getApplicationContext().getEntryPointManager();
     EntryPointFactory factory = mock( EntryPointFactory.class );
-    entryPointManager.register( EntryPointManager.DEFAULT_PATH, factory, properties );
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, factory, properties );
   }
 
 }

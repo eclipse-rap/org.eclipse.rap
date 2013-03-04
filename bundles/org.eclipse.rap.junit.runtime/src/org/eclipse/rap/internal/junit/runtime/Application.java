@@ -18,7 +18,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.WorkbenchAdvisor;
@@ -36,7 +36,8 @@ public class Application implements EntryPoint, ITestHarness {
   private TestableObject fTestableObject;
 
   public int createUI() {
-    UICallBack.activate( Application.class.getName() );
+    ServerPushSession serverPush = new ServerPushSession();
+    serverPush.start();
 
     fTestableObject = PlatformUI.getTestableObject();
     fTestableObject.setTestHarness( this );

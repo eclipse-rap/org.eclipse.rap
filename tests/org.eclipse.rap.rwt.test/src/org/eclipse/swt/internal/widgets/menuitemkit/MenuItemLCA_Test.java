@@ -23,7 +23,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +37,7 @@ import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
+import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ArmEvent;
 import org.eclipse.swt.events.ArmListener;
@@ -635,7 +635,7 @@ public class MenuItemLCA_Test {
   @Test
   public void testRenderImages() throws IOException, JSONException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
-    Image image = createImage( Fixture.IMAGE1 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE1 );
 
     item.setImage( image );
     lca.renderChanges( item );
@@ -651,7 +651,7 @@ public class MenuItemLCA_Test {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
-    Image image = createImage( Fixture.IMAGE1 );
+    Image image = TestUtil.createImage( display, Fixture.IMAGE1 );
 
     item.setImage( image );
     Fixture.preserveWidgets();
@@ -760,14 +760,6 @@ public class MenuItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( item, "help" ) );
-  }
-
-  private Image createImage( String imagePath ) throws IOException {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( imagePath );
-    Image result = new Image( display, stream );
-    stream.close();
-    return result;
   }
 
 }

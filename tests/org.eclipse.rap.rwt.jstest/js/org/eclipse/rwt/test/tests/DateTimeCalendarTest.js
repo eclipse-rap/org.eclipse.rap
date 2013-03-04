@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,12 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
+
+(function(){
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
+var MessageProcessor = rwt.remote.MessageProcessor;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
 
@@ -38,7 +44,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
                           "Sat" ],
 
     testCreateDateTimeDateByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
       assertTrue( widget instanceof rwt.widgets.DateTimeCalendar );
@@ -54,7 +59,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
     },
 
     testSetYearByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
       TestUtil.protocolSet( "w3", { "year" : 2000 } );
@@ -64,7 +68,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
     },
 
     testSetMonthByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
       TestUtil.protocolSet( "w3", { "month" : 6 } );
@@ -74,7 +77,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
     },
 
     testSetDayByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
       TestUtil.protocolSet( "w3", { "day" : 10 } );
@@ -84,7 +86,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
     },
 
     testSetHasSelectionListenerByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
       TestUtil.protocolListen( "w3", { "Selection" : true } );
@@ -93,8 +94,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
       widget.destroy();
     },
 
+    // see bug 401780
+    testKeypressEscape : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+      TestUtil.flush();
+      widget.setFocused( true );
+
+      TestUtil.pressOnce( widget.getElement(), "Escape", 0 );
+
+      shell.destroy();
+      widget.destroy();
+    },
+
     testCreateDispose : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       rwt.widgets.base.Calendar.CELL_WIDTH = 24;
       rwt.widgets.base.Calendar.CELL_HEIGHT = 16;
       var months = [
@@ -134,7 +147,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
 
     _createDefaultDateTimeByProtocol : function( id, parentId ) {
       var styles =  [ "CALENDAR", "MEDIUM" ];
-      rwt.remote.MessageProcessor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.DateTime",
@@ -146,9 +159,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
           "weekdayShortNames" : this.weekdayShortNames
         }
       } );
-      return rwt.remote.ObjectRegistry.getObject( "w3" );
+      return ObjectRegistry.getObject( "w3" );
     }
 
   }
 
 } );
+
+}());

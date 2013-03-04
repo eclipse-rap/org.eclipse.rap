@@ -34,8 +34,8 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.ServiceHandler;
+import org.eclipse.rap.rwt.service.UISession;
 
 
 public class LifeCycleServiceHandler implements ServiceHandler {
@@ -70,7 +70,9 @@ public class LifeCycleServiceHandler implements ServiceHandler {
       try {
         handlePostRequest( request, response );
       } finally {
-        markSessionStarted();
+        if( !isSessionShutdown() ) {
+          markSessionStarted();
+        }
       }
     } else {
       handleGetRequest( request, response );
@@ -93,7 +95,9 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     throws IOException
   {
     setJsonResponseHeaders( response );
-    if( isSessionTimeout() ) {
+    if( isSessionShutdown() ) {
+      handleSessionShutdown( request );
+    } else if( isSessionTimeout() ) {
       handleSessionTimeout( response );
     } else if( !isRequestCounterValid() ) {
       handleInvalidRequestCounter( response );
@@ -125,6 +129,11 @@ public class LifeCycleServiceHandler implements ServiceHandler {
 
   private static boolean isRequestCounterValid() {
     return hasInitializeParameter() || RequestCounter.getInstance().isValid();
+  }
+
+  private static void handleSessionShutdown( HttpServletRequest request ) {
+    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    uiSession.shutdown();
   }
 
   private static void handleInvalidRequestCounter( HttpServletResponse response ) {
@@ -161,7 +170,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
     Map<String, String[]> bufferedParameters = RequestParameterBuffer.getBufferedParameters();
     ApplicationContextImpl applicationContext = ApplicationContextUtil.get( uiSession );
-    uiSession.valueUnbound( null );
+    uiSession.shutdown();
     UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
     uiSession = ( UISessionImpl )builder.buildUISession();
     ContextProvider.getContext().setUISession( uiSession );
@@ -197,6 +206,10 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   private static boolean isSessionStarted() {
     UISession uiSession = ContextProvider.getUISession();
     return Boolean.TRUE.equals( uiSession.getAttribute( SESSION_STARTED ) );
+  }
+
+  private static boolean isSessionShutdown() {
+    return "true".equals( ProtocolUtil.readHeadPropertyValue( RequestParams.RWT_SHUTDOWN ) );
   }
 
   private static boolean hasInitializeParameter() {

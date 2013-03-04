@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ArmListener;
@@ -46,6 +50,8 @@ public class MenuItem extends Item {
   private DisposeListener menuDisposeListener;
   private boolean selection;
   private int userId;
+  private int accelerator;
+  private Listener acceleratorFilter;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -274,6 +280,62 @@ public class MenuItem extends Item {
     if( ( style & SWT.SEPARATOR ) == 0 ) {
       super.setImage( image );
     }
+  }
+
+  /**
+   * Sets the widget accelerator.  An accelerator is the bit-wise
+   * OR of zero or more modifier masks and a key. Examples:
+   * <code>SWT.MOD1 | SWT.MOD2 | 'T', SWT.MOD3 | SWT.F2</code>.
+   * <code>SWT.CONTROL | SWT.SHIFT | 'T', SWT.ALT | SWT.F2</code>.
+   * The default value is zero, indicating that the menu item does
+   * not have an accelerator.
+   *
+   * @param accelerator an integer that is the bit-wise OR of masks and a key
+   *
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 2.1
+   */
+  public void setAccelerator( int accelerator ) {
+    checkWidget();
+    if( this.accelerator != accelerator ) {
+      int oldAccelerator = this.accelerator;
+      this.accelerator = accelerator;
+      if( ( style & SWT.SEPARATOR ) == 0 ) {
+        updateDisplayActiveKeys( oldAccelerator, accelerator );
+        if( accelerator == 0 ) {
+          removeAcceleratorDisplayFilter();
+        } else {
+          addAcceleratorDisplayFilter();
+        }
+      }
+    }
+  }
+
+  /**
+   * Returns the widget accelerator.  An accelerator is the bit-wise
+   * OR of zero or more modifier masks and a key. Examples:
+   * <code>SWT.CONTROL | SWT.SHIFT | 'T', SWT.ALT | SWT.F2</code>.
+   * The default value is zero, indicating that the menu item does
+   * not have an accelerator.
+   *
+   * @return the accelerator or 0
+   *
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 2.1
+   */
+  public int getAccelerator() {
+    checkWidget();
+    return accelerator;
   }
 
   //////////
@@ -555,6 +617,15 @@ public class MenuItem extends Item {
   // Item overrides
 
   @Override
+  void releaseWidget() {
+    super.releaseWidget();
+    if( accelerator != 0 ) {
+      updateDisplayActiveKeys( accelerator, 0 );
+      removeAcceleratorDisplayFilter();
+    }
+  }
+
+  @Override
   final void releaseChildren() {
     if( menu != null ) {
       removeMenuDisposeListener();
@@ -603,6 +674,75 @@ public class MenuItem extends Item {
     }
   }
 
+  private void updateDisplayActiveKeys( int oldAccelerator, int newAccelerator ) {
+    updateDisplayActiveKeys( RWT.ACTIVE_KEYS, oldAccelerator, newAccelerator );
+    updateDisplayActiveKeys( RWT.CANCEL_KEYS, oldAccelerator, newAccelerator );
+  }
+
+  private void updateDisplayActiveKeys( String keysType, int oldAccelerator, int newAccelerator ) {
+    String[] oldActiveKeys = ( String[] )display.getData( keysType );
+    if( oldActiveKeys == null ) {
+      oldActiveKeys = new String[ 0 ];
+    }
+    ArrayList<String> activeKeys = new ArrayList<String>( Arrays.asList( oldActiveKeys ) );
+    if( oldAccelerator != 0 ) {
+      activeKeys.remove( acceleratorAsString( oldAccelerator ) );
+    }
+    if( newAccelerator != 0 ) {
+      activeKeys.add( acceleratorAsString( newAccelerator ) );
+    }
+    display.setData( keysType, activeKeys.toArray( new String[ 0 ] ) );
+  }
+
+  private String acceleratorAsString( int accelerator ) {
+    String result = "";
+    if( ( accelerator & SWT.ALT ) != 0 ) {
+      result += "ALT+";
+    }
+    if( ( accelerator & SWT.CTRL ) != 0 ) {
+      result += "CTRL+";
+    }
+    if( ( accelerator & SWT.SHIFT ) != 0 ) {
+      result += "SHIFT+";
+    }
+    char key = ( char )( accelerator & SWT.KEY_MASK );
+    result += Character.toString( Character.toUpperCase( key ) );
+    return result;
+  }
+
+  private void addAcceleratorDisplayFilter() {
+    if( acceleratorFilter == null ) {
+      acceleratorFilter = new AcceleratorFilter();
+      display.addFilter( SWT.KeyDown, acceleratorFilter );
+    }
+  }
+
+  private void removeAcceleratorDisplayFilter() {
+    if( acceleratorFilter != null ) {
+      display.removeFilter( SWT.KeyDown, acceleratorFilter );
+      acceleratorFilter = null;
+    }
+  }
+
+  private void updateSelection() {
+    if( ( style & SWT.CHECK ) != 0 ) {
+      selection = !selection;
+    } else if ( ( style & SWT.RADIO ) != 0 ) {
+      deselectOtherRadios();
+      selection = true;
+    }
+    notifyListeners( SWT.Selection, new Event() );
+  }
+
+  private void deselectOtherRadios() {
+    for( MenuItem item : parent.getItems() ) {
+      if( item != this && ( item.getStyle() & SWT.RADIO ) != 0 && item.getSelection() ) {
+        item.setSelection( false );
+        item.notifyListeners( SWT.Selection, new Event() );
+      }
+    }
+  }
+
   ///////////////////////////////////////
   // Helping methods to verify arguments
 
@@ -626,4 +766,30 @@ public class MenuItem extends Item {
     }
     super.reskinChildren( flags );
   }
+
+  ////////////////
+  // Inner classes
+
+  private final class AcceleratorFilter implements Listener {
+    public void handleEvent( Event event ) {
+      if( isRelevantEvent( event ) && isEnabled() ) {
+        updateSelection();
+        event.type = SWT.NONE;
+     }
+    }
+
+    private boolean isRelevantEvent( Event event ) {
+      boolean result = false;
+      if( event.type == SWT.KeyDown ) {
+        if( ( accelerator & SWT.MODIFIER_MASK ) == event.stateMask ) {
+          char key = Character.toUpperCase( ( char )( accelerator & SWT.KEY_MASK ) );
+          if( key == event.character ) {
+            result = true;
+          }
+        }
+      }
+      return result;
+    }
+  }
+
 }
