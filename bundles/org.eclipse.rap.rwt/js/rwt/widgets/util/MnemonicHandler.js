@@ -49,6 +49,8 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     handleKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
       if( this._isActivation( eventType, keyCode, charCode, domEvent ) ) {
         this.activate();
+      } else if( this._isDeactivation( eventType, keyCode, charCode, domEvent ) ) {
+        this.deactivate();
       } else if( this._isTrigger( eventType, keyCode, charCode, domEvent ) ) {
         this.trigger( keyCode );
       }
@@ -61,6 +63,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
     deactivate : function() {
       this._active = false;
+      this._fire( { "type" : "hide" } );
     },
 
     trigger : function( charCode ) {
@@ -78,13 +81,20 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     },
 
     _isActivation : function( eventType, keyCode, charCode, domEvent ) {
-      var result = false;
-      if( this._activator && eventType === "keydown" && EventHandlerUtil.isModifier( keyCode ) ) {
-        result =    this._activator.ctrlKey === domEvent.ctrlKey
-                 && this._activator.altKey === domEvent.altKey
-                 && this._activator.shiftKey === domEvent.shiftKey;
-      }
-      return result;
+      return    this._activator
+             && eventType === "keydown"
+             && EventHandlerUtil.isModifier( keyCode )
+             && this._isActivatorCombo( domEvent );
+    },
+
+    _isDeactivation : function( eventType, keyCode, charCode, domEvent ) {
+      return this._active && !this._isActivatorCombo( domEvent );
+    },
+
+    _isActivatorCombo : function( domEvent ) {
+      return    this._activator.ctrlKey === domEvent.ctrlKey
+             && this._activator.altKey === domEvent.altKey
+             && this._activator.shiftKey === domEvent.shiftKey;
     },
 
     _isTrigger : function( eventType, keyCode, charCode, domEvent ) {

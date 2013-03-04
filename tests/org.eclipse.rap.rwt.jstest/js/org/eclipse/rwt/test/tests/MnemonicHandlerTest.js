@@ -52,7 +52,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
     testFireShowMnemonics : function() {
       handler.setActivator( "CTRL" );
 
-      TestUtil.press( shell, "Control", false, DomEvent.CTRL_MASK );
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
 
       assertEquals( [ "show" ], typeLog );
     },
@@ -60,15 +60,33 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
     testFireShowMnemonics_MultipleModifier : function() {
       handler.setActivator( "CTRL+ALT" );
 
-      TestUtil.press( shell, "Control", false, ( DomEvent.CTRL_MASK | DomEvent.ALT_MASK ) );
+      TestUtil.keyDown( shell, "Control", ( DomEvent.CTRL_MASK | DomEvent.ALT_MASK ) );
 
       assertEquals( [ "show" ], typeLog );
+    },
+
+    testFireHideMnemonics : function() {
+      handler.setActivator( "CTRL" );
+
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyUp( shell, "Control", 0 );
+
+      assertEquals( [ "show", "hide" ], typeLog );
+    },
+
+    testFireHideMnemonics_MultipleModifier : function() {
+      handler.setActivator( "CTRL+ALT" );
+
+      TestUtil.keyDown( shell, "Control", ( DomEvent.CTRL_MASK | DomEvent.ALT_MASK ) );
+      TestUtil.keyUp( shell, "Control", DomEvent.ALT_MASK );
+
+      assertEquals( [ "show", "hide" ], typeLog );
     },
 
     testDoNotFireShowMnemonics_WrongModifier : function() {
       handler.setActivator( "CTRL" );
 
-      TestUtil.press( shell, "Alt", false, DomEvent.ALT_MASK );
+      TestUtil.keyDown( shell, "Alt", DomEvent.ALT_MASK );
 
       assertEquals( [], typeLog );
     },
@@ -76,7 +94,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
     testDoNotFireShowMnemonics_WrongSecondModifier : function() {
       handler.setActivator( "CTRL+ALT" );
 
-      TestUtil.press( shell, "Shift", false, DomEvent.ALT_MASK );
+      TestUtil.keyDown( shell, "Shift", DomEvent.ALT_MASK );
 
       assertEquals( [], typeLog );
     },
@@ -84,13 +102,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
     testDoNotFireShowMnemonics_NotModifierKey : function() {
       handler.setActivator( "CTRL+ALT" );
 
-      TestUtil.press( shell, "B", false, ( DomEvent.CTRL_MASK | DomEvent.ALT_MASK ) );
+      TestUtil.keyDown( shell, "B", ( DomEvent.CTRL_MASK | DomEvent.ALT_MASK ) );
 
       assertEquals( [], typeLog );
     },
 
     testDoNotFireShowMnemonics_NoActivatorSet : function() {
-      TestUtil.press( shell, "Control", false, ( DomEvent.CTRL_MASK | DomEvent.ALT_MASK ) );
+      TestUtil.keyDown( shell, "Control", ( DomEvent.CTRL_MASK | DomEvent.ALT_MASK ) );
 
       assertEquals( [], typeLog );
     },
@@ -98,7 +116,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
     testDoNotFireActivateWithoutShow : function() {
       handler.setActivator( "CTRL" );
 
-      TestUtil.press( shell, "B", false, DomEvent.CTRL_MASK );
+      TestUtil.keyDown( shell, "B", DomEvent.CTRL_MASK );
 
       assertEquals( [], typeLog );
     },
@@ -106,7 +124,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
     testDoNotFireTriggerWithoutShow : function() {
       handler.setActivator( "CTRL" );
 
-      TestUtil.press( shell, "B", false, DomEvent.CTRL_MASK );
+      TestUtil.keyDown( shell, "B", DomEvent.CTRL_MASK );
 
       assertEquals( [], typeLog );
     },
@@ -114,8 +132,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
     testFireTrigger : function() {
       handler.setActivator( "CTRL" );
 
-      TestUtil.press( shell, "Control", false, DomEvent.CTRL_MASK );
-      TestUtil.press( shell, "B", false, DomEvent.CTRL_MASK );
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyDown( shell, "B", DomEvent.CTRL_MASK );
 
       assertEquals( [ "show", "trigger" ], typeLog );
     },
@@ -123,8 +141,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
     testFireTrigger_CharCodeIsSet : function() {
       handler.setActivator( "CTRL" );
 
-      TestUtil.press( shell, "Control", false, DomEvent.CTRL_MASK );
-      TestUtil.press( shell, "B", false, DomEvent.CTRL_MASK );
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyDown( shell, "B", DomEvent.CTRL_MASK );
 
       assertEquals( [ 66 ], charLog );
     },
@@ -133,8 +151,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
     testFireTrigger_CharCodeIsAlwaysUpper : function() {
       handler.setActivator( "CTRL" );
 
-      TestUtil.press( shell, "Control", false, DomEvent.CTRL_MASK );
-      TestUtil.press( shell, "b", false, DomEvent.CTRL_MASK );
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyDown( shell, "b", DomEvent.CTRL_MASK );
 
       assertEquals( [ 66 ], charLog );
     }

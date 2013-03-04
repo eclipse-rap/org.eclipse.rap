@@ -94,6 +94,9 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
         case "show":
           this._applyText( true );
         break;
+        case "hide":
+          this._applyText( false );
+        break;
         case "trigger":
           var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
           if( event.charCode === charCode ) {

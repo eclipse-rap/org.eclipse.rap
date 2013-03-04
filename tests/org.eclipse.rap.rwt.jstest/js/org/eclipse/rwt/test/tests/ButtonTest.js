@@ -633,6 +633,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       button.destroy();
     },
 
+    testDoNotRenderMnemonic_OnDeactivate : function() {
+      var button = new rwt.widgets.Button( "push" );
+      button.addState( "rwt_PUSH" );
+      button.addToDocument();
+      button.setText( "foo" );
+      button.setMnemonicIndex( 1 );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      rwt.widgets.util.MnemonicHandler.getInstance().deactivate();
+      TestUtil.flush();
+
+      assertEquals( "foo", button.getCellContent( 2 ) );
+      button.destroy();
+    },
+
     testTriggerMnemonic_WrongCharacterDoesNothing : function() {
       var button = new rwt.widgets.Button( "push" );
       button.addState( "rwt_PUSH" );
