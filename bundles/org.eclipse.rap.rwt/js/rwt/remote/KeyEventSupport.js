@@ -54,17 +54,19 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
       }
       var control = this._getTargetControl();
       var mHandler = rwt.widgets.util.MnemonicHandler.getInstance();
-      if(    mHandler.handleKeyEvent( eventType, keyCode, charCode, domEvent )
-          || this._shouldCancel( this._currentKeyCode, charCode, domEvent, control ) )
-      {
+      var mnemonic = mHandler.handleKeyEvent( eventType, keyCode, charCode, domEvent );
+      if( mnemonic || this._shouldCancel( this._currentKeyCode, charCode, domEvent, control ) ) {
         rwt.event.EventHandlerUtil.stopDomEvent( domEvent );
         domEvent._noProcess = true;
+        domEvent._mnemonic = mnemonic;
       }
     },
 
     _onKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
       var control = this._getTargetControl();
-      if( this._shouldSend( eventType, this._currentKeyCode, charCode, domEvent, control ) ) {
+      if(    !domEvent._mnemonic
+          && this._shouldSend( eventType, this._currentKeyCode, charCode, domEvent, control ) )
+      {
         this._sendKeyEvent( control, this._currentKeyCode, charCode, domEvent );
       }
       if( eventType === "keypress" || eventType === "keyup" ) {

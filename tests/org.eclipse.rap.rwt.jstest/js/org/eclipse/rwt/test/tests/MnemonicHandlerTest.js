@@ -187,6 +187,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       TestUtil.keyDown( widget, "B", DomEvent.CTRL_MASK );
 
       assertEquals( [], keyLog );
+    },
+
+    testFireTrigger_SuccessStopsActiveKey : function() {
+      handler.setActivator( "CTRL" );
+      success = true;
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
+      keyUtil.setKeyBindings( { "CTRL+#66" : true } );
+
+      widget.focus();
+      TestUtil.keyDown( widget, "B", DomEvent.CTRL_MASK );
+
+      assertEquals( 0, TestUtil.getRequestsSend() );
     }
 
   }
