@@ -618,6 +618,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       button.destroy();
     },
 
+    testRenderMnemonic_FirstChar : function() {
+      var button = new rwt.widgets.Button( "push" );
+      button.addState( "rwt_PUSH" );
+      button.addToDocument();
+      button.setText( "foo" );
+      button.setMnemonicIndex( 0 );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      TestUtil.flush();
+
+      assertEquals( "<span style=\"text-decoration:underline\">f</span>oo", button.getCellContent( 2 ) );
+      button.destroy();
+    },
+
     testRenderMnemonic_OnActivate : function() {
       var button = new rwt.widgets.Button( "push" );
       button.addState( "rwt_PUSH" );

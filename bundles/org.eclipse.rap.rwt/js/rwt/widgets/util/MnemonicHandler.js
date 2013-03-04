@@ -64,14 +64,12 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     },
 
     activate : function() {
-      if( this._active == null ) {
-        var root = rwt.widgets.base.Window.getDefaultWindowManager().getActiveWindow();
-        if( root == null ) {
-          root = rwt.widgets.base.ClientDocument.getInstance();
-        }
-        this._active = root.toHashCode();
-        this._fire( { "type" : "show" } );
+      var root = rwt.widgets.base.Window.getDefaultWindowManager().getActiveWindow();
+      if( root == null ) {
+        root = rwt.widgets.base.ClientDocument.getInstance();
       }
+      this._active = root.toHashCode();
+      this._fire( { "type" : "show" } );
     },
 
     deactivate : function() {
@@ -95,6 +93,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
       if( !this._map[ root.toHashCode() ] ) {
         this._map[ root.toHashCode() ] = {};
         root.addEventListener( "dispose", function() {
+          this.deactivate();
           delete this._map[ root.toHashCode() ];
         }, this );
         root.addEventListener( "changeActive", this.deactivate, this );

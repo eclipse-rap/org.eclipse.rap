@@ -62,7 +62,7 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
     setMnemonicIndex : function( value ) {
       this._mnemonicIndex = value;
       var mnemonicHandler = rwt.widgets.util.MnemonicHandler.getInstance();
-      if( value ) {
+      if( ( typeof value === "number" ) && ( value >= 0 ) ) {
         mnemonicHandler.add( this, this._onMnemonic );
       } else {
         mnemonicHandler.remove( this );
