@@ -29,11 +29,6 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.FileUpload", {
   ] ),
 
   propertyHandler : rwt.remote.HandlerUtil.extendControlPropertyHandler( {
-    "text" : function( widget, value ) {
-      var EncodingUtil = rwt.util.Encoding;
-      var text = EncodingUtil.escapeText( value, true );
-      widget.setText( text === "" ? null : text );
-    },
     "image" : function( widget, value ) {
       if( value === null ) {
         widget.setImage( value );
