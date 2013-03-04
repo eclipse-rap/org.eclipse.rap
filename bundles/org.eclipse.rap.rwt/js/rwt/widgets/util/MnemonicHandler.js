@@ -28,11 +28,16 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
   members : {
 
     add : function( widget, listener ) {
-      this._map[ widget.toHashCode() ] = [ widget, listener ];
+      var root = widget.getFocusRoot();
+      this._registerFocusRoot( root );
+      this._map[ root.toHashCode() ][ widget.toHashCode() ] = [ widget, listener ];
     },
 
     remove : function( widget ) {
-      delete this._map[ widget.toHashCode() ];
+      // NOTE: The focus root may be gone if the widget is in dispose, therefore we have to search:
+      for( var key in this._map ) {
+        delete this._map[ key ][ widget.toHashCode() ];
+      }
     },
 
     setActivator : function( str ) {
@@ -78,10 +83,23 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
       return event.success;
     },
 
+    _registerFocusRoot : function( root ) {
+      if( !this._map[ root.toHashCode() ] ) {
+        this._map[ root.toHashCode() ] = {};
+      }
+    },
+
     _fire : function( event ) {
-      for( var key in this._map ) {
-        var entry = this._map[ key ];
-        entry[ 1 ].call( entry[ 0 ], event );
+      var active = rwt.widgets.base.Window.getDefaultWindowManager().getActiveWindow();
+      if( active == null ) {
+        active = rwt.widgets.base.ClientDocument.getInstance();
+      }
+      if( this._map[ active.toHashCode() ] ) {
+        var handlers = this._map[ active.toHashCode() ];
+        for( var key in handlers ) {
+          var entry = handlers[ key ];
+          entry[ 1 ].call( entry[ 0 ], event );
+        }
       }
     },
 

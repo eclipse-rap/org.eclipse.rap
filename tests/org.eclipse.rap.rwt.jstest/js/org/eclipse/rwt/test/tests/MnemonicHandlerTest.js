@@ -48,6 +48,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
         }
       } );
       TestUtil.flush();
+      shell.setActive( true );
     },
 
     tearDown : function() {
@@ -98,6 +99,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       handler.setActivator( "CTRL" );
 
       TestUtil.keyDown( shell, "Alt", DomEvent.ALT_MASK );
+
+      assertEquals( [], typeLog );
+    },
+
+    testDoNotFireShowMnemonics_ShellNotActive : function() {
+      handler.setActivator( "CTRL" );
+      shell.setActive( false );
+
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
 
       assertEquals( [], typeLog );
     },
@@ -195,10 +205,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
       var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       keyUtil.setKeyBindings( { "CTRL+#66" : true } );
-
       widget.focus();
-      TestUtil.keyDown( widget, "B", DomEvent.CTRL_MASK );
+      TestUtil.clearRequestLog();
 
+      TestUtil.keyDown( widget, "B", DomEvent.CTRL_MASK );
       assertEquals( 0, TestUtil.getRequestsSend() );
     }
 
