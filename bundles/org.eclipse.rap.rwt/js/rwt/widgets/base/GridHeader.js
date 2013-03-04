@@ -249,7 +249,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
       if( this._footer ) {
         label.addState( "footer" );
       } else if( column.getResizeable() ) {
-        label.setResizeCursor( "e-resize" );
+        label.setResizeCursor( "col-resize" );
       }
       if( column.isGroup() ) {
         label.addState( "group" );
