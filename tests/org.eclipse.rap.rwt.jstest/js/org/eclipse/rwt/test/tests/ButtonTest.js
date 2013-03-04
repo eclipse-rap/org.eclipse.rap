@@ -658,7 +658,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       TestUtil.flush();
 
       rwt.widgets.util.MnemonicHandler.getInstance().activate();
-      rwt.widgets.util.MnemonicHandler.getInstance().trigger( "o" );
+      rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
       TestUtil.flush();
 
       assertTrue( button.getFocused() );
@@ -677,7 +677,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       TestUtil.flush();
 
       rwt.widgets.util.MnemonicHandler.getInstance().activate();
-      rwt.widgets.util.MnemonicHandler.getInstance().trigger( "o" );
+      rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
       TestUtil.flush();
 
       assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "Selection" ) );

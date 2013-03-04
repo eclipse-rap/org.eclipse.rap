@@ -45,7 +45,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
       if( this._isActivation( eventType, keyCode, charCode, domEvent ) ) {
         this.activate();
       } else if( this._isTrigger( eventType, keyCode, charCode, domEvent ) ) {
-        this.trigger( String.fromCharCode( charCode ) );
+        this.trigger( keyCode );
       }
     },
 
@@ -56,10 +56,10 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
       } );
     },
 
-    trigger : function( string ) {
+    trigger : function( charCode ) {
       this.dispatchSimpleEvent( "mnemonic", {
         "type" : "trigger",
-        "charCode" : string.toUpperCase().charCodeAt( 0 )
+        "charCode" : charCode
       } );
     },
 
@@ -74,7 +74,8 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     },
 
     _isTrigger : function( eventType, keyCode, charCode, domEvent ) {
-      return this._active && eventType === "keypress" && !isNaN( charCode ) && charCode > 0;
+      var isChar = !isNaN( keyCode ) && rwt.event.EventHandlerUtil.isAlphaNumericKeyCode( keyCode );
+      return this._active && eventType === "keydown" && isChar;
      }
 
   }

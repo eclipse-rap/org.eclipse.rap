@@ -351,7 +351,7 @@ rwt.qx.Class.define( "rwt.event.EventHandlerUtil", {
         result = this._keyCodeToIdentifierMap[ keyCode ];
       } else if( this._specialCharCodeMap[ keyCode ] !== undefined ) {
         result = this._specialCharCodeMap[ keyCode ];
-      } else if( this._isAlphaNumericKeyCode( keyCode ) ) {
+      } else if( this.isAlphaNumericKeyCode( keyCode ) ) {
         result = String.fromCharCode( keyCode );
       }
       return result;
@@ -384,7 +384,7 @@ rwt.qx.Class.define( "rwt.event.EventHandlerUtil", {
       return keyCode >= 16 && keyCode <= 20 && keyCode !== 19;
     },
 
-    _isAlphaNumericKeyCode : function( keyCode ) {
+    isAlphaNumericKeyCode : function( keyCode ) {
       var result = false;
       if(    ( keyCode >= this._charCodeA && keyCode <= this._charCodeZ )
           || ( keyCode >= this._charCode0 && keyCode <= this._charCode9 ) )
