@@ -64,6 +64,8 @@ final class BrowserTab extends ExampleTab {
     createStyleButton( "BORDER", SWT.BORDER );
     createVisibilityButton();
     createEnablementButton();
+    createBgColorButton();
+    createBgImageButton();
     createUrlAndHTMLSelector( parent );
     createPropertyCheckbox( "Add Progress Listener", PROP_PROGRESS_LISTENER );
     final Button cbUseBrowserCallback = new Button( parent, SWT.CHECK );
