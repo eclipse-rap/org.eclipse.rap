@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,9 @@
 qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
 
   statics : {
+
+    _overlay : null,
+    _box : null,
 
     processJavaScriptErrorInResponse : function( script, error, currentRequest ) {
       var content = "<p>Could not process server response:</p><pre>";
@@ -59,7 +62,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       this._createErrorPageArea().innerHTML = content;
     },
 
-    showErrorBox : function( content ) {
+    showErrorBox : function( content, freeze ) {
       var location = String( window.location );
       var index = location.indexOf( "#" );
       if( index != -1 ) {
@@ -68,13 +71,46 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       var hrefAttr = "href=\"" + location + "\"";
       var html = content.replace( /\{HREF_URL\}/, hrefAttr );
       html = org.eclipse.rwt.protocol.EncodingUtil.replaceNewLines( html, "<br/>" );
-      this._freezeApplication();
-      this._createOverlay();
-      var element = this._createErrorBoxArea( 400, 100 );
-      element.innerHTML = html;
-      var hyperlink = element.getElementsByTagName( "a" )[ 0 ];
-      hyperlink.style.outline = "none";
-      hyperlink.focus();
+      if( freeze ) {
+        this._freezeApplication();
+      }
+      this._overlay = this._createOverlay();
+      this._box = this._createErrorBoxArea( 400, 100 );
+      this._box.innerHTML = html;
+      this._box.style.backgroundColor = "#dae9f7";
+      this._box.style.border = "1px solid black";
+      this._box.style.overflow = "auto";
+      var hyperlink = this._box.getElementsByTagName( "a" )[ 0 ];
+      if( hyperlink ) {
+        hyperlink.style.outline = "none";
+        hyperlink.focus();
+      }
+    },
+
+    showWaitHint : function() {
+      this.hideErrorBox();
+      this._overlay = this._createOverlay();
+      var themeStore = org.eclipse.swt.theme.ThemeStore.getInstance();
+      var cssElement = "SystemMessage-DisplayOverlay";
+      var icon = themeStore.getSizedImage( cssElement, {}, "background-image" );
+      if( icon && icon[ 0 ] ) {
+        this._box = this._createErrorBoxArea( icon[ 1 ], icon[ 2 ] );
+        org.eclipse.rwt.HtmlUtil.setBackgroundImage( this._box, icon[ 0 ] );
+        this._box.style.backgroundColor = "transparent";
+        this._box.style.border = "none";
+        this._box.style.overflow = "hidden";
+      }
+    },
+
+    hideErrorBox : function() {
+      if( this._box ) {
+        this._box.parentNode.removeChild( this._box );
+        this._box = null;
+      }
+      if( this._overlay ) {
+        this._overlay.parentNode.removeChild( this._overlay );
+        this._overlay = null;
+      }
     },
 
     _gatherErrorInfo : function( error, script, currentRequest ) {
@@ -88,7 +124,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
           for( var key in error ) { // NOTE : does not work in webkit (no iteration)
             info.push( key + ": " + error[ key ] );
           }
-          if( error.stack ) { // ensures stack is printed in webkit, might be printed twice in gecko  
+          if( error.stack ) { // ensures stack is printed in webkit, might be printed twice in gecko
             info.push( "Stack: " + error.stack );
           }
        }
@@ -108,12 +144,15 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
 
     _createOverlay : function() {
       var element = document.createElement( "div" );
+      var themeStore = org.eclipse.swt.theme.ThemeStore.getInstance();
+      var color = themeStore.getColor( "SystemMessage-DisplayOverlay", {}, "background-color" );
+      var alpha = themeStore.getAlpha( "SystemMessage-DisplayOverlay", {}, "background-color" );
       var style = element.style;
       style.position = "absolute";
       style.width = "100%";
       style.height = "100%";
-      style.backgroundColor = "#808080";
-      org.eclipse.rwt.HtmlUtil.setOpacity( element, 0.2 );
+      style.backgroundColor = color === "undefined" ? "transparent" : color;
+      org.eclipse.rwt.HtmlUtil.setOpacity( element, alpha );
       style.zIndex = 100000000;
       document.body.appendChild( element );
       return element;
@@ -144,10 +183,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       var top = ( doc.getClientHeight() - height ) / 2;
       style.left = ( left < 0 ? 0 : left ) + "px";
       style.top = ( top < 0 ? 0 : top ) + "px";
-      style.backgroundColor = "#dae9f7";
-      style.border = "1px solid black";
       style.zIndex = 100000001;
-      style.overflow = "auto";
       style.padding = "10px";
       style.textAlign = "center";
       style.fontFamily = 'verdana,"lucida sans",arial,helvetica,sans-serif';
