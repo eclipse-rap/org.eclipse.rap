@@ -83,7 +83,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       var targetNode = widget._getTargetNode();
       var isMshtml = rwt.client.Client.isMshtml();
       if( isMshtml ) {
-        var bounds = TestUtil.getElementBounds( targetNode )
+        var bounds = TestUtil.getElementBounds( targetNode );
         var expected = {
           "top" : 0,
           "left" : 0,
@@ -109,7 +109,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       var targetNode = widget._getTargetNode();
       var isMshtml = rwt.client.Client.isMshtml();
       if( isMshtml ) {
-        var bounds = TestUtil.getElementBounds( targetNode )
+        var bounds = TestUtil.getElementBounds( targetNode );
         var expected = {
           "top" : 0,
           "left" : 0,
@@ -189,7 +189,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       var log = [];
       var logger = function( event ) {
         log.push( child1.getElement().parentNode );
-      }
+      };
       child1.addEventListener( "insertDom", logger );
       TestUtil.flush();
       assertEquals( [ parent.getElement() ], log );
@@ -207,7 +207,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       var log = [];
       var logger = function( event ) {
         log.push( child.getElement().parentNode );
-      }
+      };
       child.addEventListener( "insertDom", logger );
       TestUtil.flush();
       assertEquals( [ parent.getElement() ], log );
@@ -224,7 +224,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       var log = [];
       var logger = function( event ) {
         log.push( child.getElement().parentNode );
-      }
+      };
       child.addEventListener( "insertDom", logger );
       child.setParent( parent );
       parent.setBorder( new rwt.html.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] ) );
@@ -258,7 +258,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       var log = [];
       var logger = function( event ) {
         log.push( null );
-      }
+      };
       parent.addEventListener( "insertDom", logger );
       child.addEventListener( "insertDom", logger );
       TestUtil.flush();
@@ -338,7 +338,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       var adapter = widget.getAdapter( rwt.widgets.util.WidgetRenderAdapter );
       var log = [];
       var logger = function( args ) {
-        log.push( args[ 0 ] )
+        log.push( args[ 0 ] );
         return false;
       };
       adapter.addRenderListener( "visibility", logger, this );
@@ -353,14 +353,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       var adapter = widget.getAdapter( rwt.widgets.util.WidgetRenderAdapter );
       var log = [];
       var logger = function( args ) {
-        log.push( args[ 0 ] )
+        log.push( args[ 0 ] );
         return false;
       };
       adapter.addRenderListener( "visibility", logger, this );
       widget.hide();
       assertEquals( 1, log.length );
       assertEquals( "", widget.getStyleProperty( "display" ) );
-      adapter.forceRender( "visibility", false )
+      adapter.forceRender( "visibility", false );
       assertEquals( "none", widget.getStyleProperty( "display" ) );
       assertEquals( 1, log.length );
       widget.destroy();
@@ -502,8 +502,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
           assertTrue( result.indexOf( "3px 5px 1px" ) !== -1 );
           assertTrue( result.indexOf( "rgba(9, 8, 7, 0." ) !== -1 );
         } else {
-          expected1 = "3px 5px 1px rgba(9, 8, 7, 0.4)"
-          expected2 = "3px 5px 1px rgba(9,8,7,0.4)"
+          var expected1 = "3px 5px 1px rgba(9, 8, 7, 0.4)";
+          var expected2 = "3px 5px 1px rgba(9,8,7,0.4)";
           assertTrue( result === expected1 || result === expected2 );
         }
         widget.destroy();
