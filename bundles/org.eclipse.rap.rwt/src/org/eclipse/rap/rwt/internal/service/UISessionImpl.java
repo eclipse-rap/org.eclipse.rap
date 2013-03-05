@@ -71,6 +71,14 @@ public final class UISessionImpl
     connection = new ConnectionImpl();
   }
 
+  public static UISessionImpl getInstanceFromSession( HttpSession httpSession ) {
+    return ( UISessionImpl )httpSession.getAttribute( ATTR_UI_SESSION );
+  }
+
+  public void attachToHttpSession( HttpSession httpSession ) {
+    httpSession.setAttribute( ATTR_UI_SESSION, this );
+  }
+
   public void setShutdownAdapter( ISessionShutdownAdapter adapter ) {
     shutdownAdapter = adapter;
     if( shutdownAdapter != null ) {
@@ -244,14 +252,6 @@ public final class UISessionImpl
         }
       }
     }
-  }
-
-  public static UISessionImpl getInstanceFromSession( HttpSession httpSession ) {
-    return ( UISessionImpl )httpSession.getAttribute( ATTR_UI_SESSION );
-  }
-
-  public static void attachInstanceToSession( HttpSession httpSession, UISession uiSession ) {
-    httpSession.setAttribute( ATTR_UI_SESSION, uiSession );
   }
 
   /*

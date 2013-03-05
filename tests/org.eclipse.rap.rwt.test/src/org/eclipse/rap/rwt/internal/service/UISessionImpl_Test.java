@@ -68,7 +68,7 @@ public class UISessionImpl_Test {
     Fixture.setUp();
     httpSession = new TestSession();
     uiSession = new UISessionImpl( httpSession );
-    UISessionImpl.attachInstanceToSession( httpSession, uiSession );
+    uiSession.attachToHttpSession( httpSession );
     ContextProvider.getContext().setUISession( uiSession );
     servletLogEntries = new LinkedList<Throwable>();
     TestServletContext servletContext = ( TestServletContext )httpSession.getServletContext();

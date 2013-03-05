@@ -95,7 +95,7 @@ public class ImageSerialzation_Test {
     TestSession session = ( TestSession )ContextProvider.getRequest().getSession();
     ApplicationContextUtil.set( session.getServletContext(), applicationContext );
     UISessionImpl uiSession = ( UISessionImpl )getUISession( device );
-    UISessionImpl.attachInstanceToSession( session, uiSession );
+    uiSession.attachToHttpSession( session );
     uiSession.attachHttpSession( session );
   }
 
