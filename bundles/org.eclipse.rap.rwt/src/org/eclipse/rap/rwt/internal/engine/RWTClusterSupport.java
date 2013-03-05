@@ -64,7 +64,7 @@ public class RWTClusterSupport implements Filter {
   private static void attachApplicationContext( UISession uiSession ) {
     ServletContext servletContext = uiSession.getHttpSession().getServletContext();
     ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
-    ApplicationContextUtil.set( uiSession, applicationContext );
+    ( ( UISessionImpl )uiSession ).setApplicationContext( applicationContext );
   }
 
   private static void afterService( ServletRequest request ) {

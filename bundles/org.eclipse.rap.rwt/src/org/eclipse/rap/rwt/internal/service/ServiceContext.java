@@ -168,7 +168,7 @@ public final class ServiceContext {
 
   private void bufferApplicationContextInSession() {
     if( uiSession != null ) {
-      ApplicationContextUtil.set( uiSession, applicationContext );
+      ( ( UISessionImpl )uiSession ).setApplicationContext( applicationContext );
     }
   }
 
@@ -182,7 +182,7 @@ public final class ServiceContext {
 
   private void getApplicationContextFromSession() {
     if( uiSession != null ) {
-      ApplicationContextImpl fromSession = ApplicationContextUtil.get( uiSession );
+      ApplicationContextImpl fromSession = ( ( UISessionImpl )uiSession ).getApplicationContext();
       if( fromSession != null && fromSession.isActive() ) {
         applicationContext = fromSession;
       }

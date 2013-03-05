@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2013 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,14 +12,12 @@
 package org.eclipse.rap.rwt.internal.application;
 
 import java.io.File;
-import java.io.Serializable;
 
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.service.UISession;
 
 
 public class ApplicationContextUtil {
@@ -27,18 +25,6 @@ public class ApplicationContextUtil {
     = new ThreadLocal<ApplicationContextImpl>();
   private final static String ATTR_APPLICATION_CONTEXT
     = ApplicationContextImpl.class.getName() + "#instance";
-
-  private static class TransientValue implements Serializable {
-    private final transient Object value;
-
-    TransientValue( Object value ) {
-      this.value = value;
-    }
-
-    Object getValue() {
-      return value;
-    }
-  }
 
   public static void set( ServletContext servletContext, ApplicationContextImpl applicationContext )
   {
@@ -51,20 +37,6 @@ public class ApplicationContextUtil {
 
   public static void remove( ServletContext servletContext ) {
     servletContext.removeAttribute( ATTR_APPLICATION_CONTEXT );
-  }
-
-  public static void set( UISession uiSession, ApplicationContextImpl applicationContext ) {
-    TransientValue transientValue = new TransientValue( applicationContext );
-    uiSession.setAttribute( ATTR_APPLICATION_CONTEXT, transientValue );
-  }
-
-  public static ApplicationContextImpl get( UISession uiSession ) {
-    ApplicationContextImpl result = null;
-    TransientValue value = ( TransientValue )uiSession.getAttribute( ATTR_APPLICATION_CONTEXT );
-    if( value != null ) {
-      result = ( ApplicationContextImpl )value.getValue();
-    }
-    return result;
   }
 
   public static ApplicationContextImpl getInstance() {
@@ -131,4 +103,5 @@ public class ApplicationContextUtil {
       throw new IllegalStateException( "Could not delete: " + toDelete.getPath() );
     }
   }
+
 }

@@ -27,7 +27,6 @@ import javax.servlet.http.HttpSessionBindingListener;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.ContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.ISessionShutdownAdapter;
@@ -58,6 +57,7 @@ public final class UISessionImpl
   private boolean bound;
   private boolean inDestroy;
   private transient ISessionShutdownAdapter shutdownAdapter;
+  private transient ApplicationContextImpl applicationContext;
 
   public UISessionImpl( HttpSession httpSession ) {
     ParamCheck.notNull( httpSession, "httpSession" );
@@ -77,6 +77,14 @@ public final class UISessionImpl
 
   public void attachToHttpSession( HttpSession httpSession ) {
     httpSession.setAttribute( ATTR_UI_SESSION, this );
+  }
+
+  public void setApplicationContext( ApplicationContextImpl applicationContext ) {
+    this.applicationContext = applicationContext;
+  }
+
+  public ApplicationContextImpl getApplicationContext() {
+    return applicationContext;
   }
 
   public void setShutdownAdapter( ISessionShutdownAdapter adapter ) {
@@ -163,7 +171,6 @@ public final class UISessionImpl
   }
 
   public Client getClient() {
-    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( this );
     ClientSelector clientSelector = applicationContext.getClientSelector();
     return clientSelector.getSelectedClient( this );
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
@@ -127,9 +125,9 @@ public class ContextProvider_Test {
   public void testApplicationContextIsAttachedToUISession() {
     Fixture.createServiceContext();
 
-    UISession uiSession = ContextProvider.getUISession();
+    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
 
-    assertNotNull( ApplicationContextUtil.get( uiSession ) );
+    assertNotNull( uiSession.getApplicationContext() );
   }
 
 }

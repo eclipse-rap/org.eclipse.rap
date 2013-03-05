@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2013 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import java.io.IOException;
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
-import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
@@ -64,9 +63,9 @@ public class ApplicationContextUtil_Test {
     UISessionImpl uiSession = new UISessionImpl( new TestSession() );
     ApplicationContextImpl applicationContext = new ApplicationContextImpl( null, null );
 
-    ApplicationContextUtil.set( uiSession, applicationContext );
+    uiSession.setApplicationContext( applicationContext );
 
-    assertSame( applicationContext, ApplicationContextUtil.get( uiSession ) );
+    assertSame( applicationContext, uiSession.getApplicationContext() );
   }
 
   @Test
@@ -142,7 +141,7 @@ public class ApplicationContextUtil_Test {
   public void testGetInstance() {
     ServletContext servletContext = Fixture.createServletContext();
     Fixture.createServiceContext();
-    ApplicationContextUtil.set( servletContext, applicationContext );    
+    ApplicationContextUtil.set( servletContext, applicationContext );
 
     ApplicationContextImpl found = ApplicationContextUtil.getInstance();
 
@@ -176,11 +175,11 @@ public class ApplicationContextUtil_Test {
   @Test
   public void testApplicationContextInUISessionIsNotSerialized() throws Exception {
     UISessionImpl uiSession = new UISessionImpl( new TestSession() );
-    ApplicationContextUtil.set( uiSession, applicationContext );
+    uiSession.setApplicationContext( applicationContext );
 
-    UISession deserializedUiSession = Fixture.serializeAndDeserialize( uiSession );
+    UISessionImpl deserializedUiSession = Fixture.serializeAndDeserialize( uiSession );
 
-    ApplicationContextImpl appContext = ApplicationContextUtil.get( deserializedUiSession );
+    ApplicationContextImpl appContext = deserializedUiSession.getApplicationContext();
 
     assertNull( appContext );
   }

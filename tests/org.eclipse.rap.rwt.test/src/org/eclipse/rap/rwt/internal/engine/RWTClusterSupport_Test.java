@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.engine;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -26,6 +26,7 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.junit.Before;
@@ -79,14 +80,15 @@ public class RWTClusterSupport_Test {
 
   @Test
   public void testDoFilter_attachesApplicationContextToUISession() throws Exception {
-    HttpSession httpSession = mockHttpSession();
+    ApplicationContext applicationContext = mock( ApplicationContextImpl.class );
+    HttpSession httpSession = mockHttpSession( mockServletContext( applicationContext ) );
     request.setSession( httpSession );
     UISessionImpl uiSession = new UISessionImpl( httpSession );
     setUISession( httpSession, uiSession );
 
     rwtClusterSupport.doFilter( request, response, chain );
 
-    assertNotNull( uiSession.getAttribute( ATTR_APPLICATION_CONTEXT ) );
+    assertSame( applicationContext, uiSession.getApplicationContext() );
   }
 
   @Test
@@ -112,10 +114,19 @@ public class RWTClusterSupport_Test {
   }
 
   private static HttpSession mockHttpSession() {
+    return mockHttpSession( mock( ServletContext.class ) );
+  }
+
+  private static HttpSession mockHttpSession( ServletContext servletContext ) {
     HttpSession httpSession = mock( HttpSession.class );
-    ServletContext servletContext = mock( ServletContext.class );
     when( httpSession.getServletContext() ).thenReturn( servletContext );
     return httpSession;
+  }
+
+  private static ServletContext mockServletContext( ApplicationContext applicationContext ) {
+    ServletContext servletContext = mock( ServletContext.class );
+    when( servletContext.getAttribute( eq( ATTR_APPLICATION_CONTEXT ) ) ).thenReturn( applicationContext );
+    return servletContext;
   }
 
   private static void setUISession( HttpSession httpSession, UISessionImpl uiSession ) {

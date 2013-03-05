@@ -52,8 +52,8 @@ public class SimpleLifeCycle_Test {
   @Before
   public void setUp() {
     Fixture.setUp();
-    UISession uiSession = ContextProvider.getUISession();
-    ApplicationContextUtil.set( uiSession, ApplicationContextUtil.getInstance() );
+    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    uiSession.setApplicationContext( ApplicationContextUtil.getInstance() );
     lifeCycle = new SimpleLifeCycle( ApplicationContextUtil.getInstance() );
   }
 

@@ -20,7 +20,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
@@ -43,7 +42,7 @@ public class UISessionBuilder {
 
   public UISession buildUISession() {
     uiSession.attachToHttpSession( httpSession );
-    ApplicationContextUtil.set( uiSession, applicationContext );
+    uiSession.setApplicationContext( applicationContext );
     SingletonManager.install( uiSession );
     setCurrentTheme();
     selectClient();

@@ -50,7 +50,8 @@ public class ImageSerialzation_Test {
     Fixture.createServiceContext();
     Fixture.useDefaultResourceManager();
     applicationContext = ApplicationContextUtil.getInstance();
-    ApplicationContextUtil.set( ContextProvider.getUISession(), applicationContext );
+    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    uiSession.setApplicationContext( applicationContext );
     display = new Display();
   }
 
