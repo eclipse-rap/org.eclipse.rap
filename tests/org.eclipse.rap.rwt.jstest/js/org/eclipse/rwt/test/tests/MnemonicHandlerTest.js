@@ -168,6 +168,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( [ "show", "trigger" ], typeLog );
     },
 
+    testFireTrigger_ToSeeableWidgetsOnly : function() {
+      handler.setActivator( "CTRL" );
+      widget.setVisibility( false );
+
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyDown( shell, "B", DomEvent.CTRL_MASK );
+
+      assertEquals( [ "show" ], typeLog );
+    },
+
     testFireTrigger_CharCodeIsSet : function() {
       handler.setActivator( "CTRL" );
 

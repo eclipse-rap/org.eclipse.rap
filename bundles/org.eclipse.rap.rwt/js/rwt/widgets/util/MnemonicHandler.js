@@ -85,7 +85,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
         "charCode" : charCode,
         "success" : false
       };
-      this._fire( event );
+      this._fire( event, true );
       return event.success;
     },
 
@@ -100,12 +100,14 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
       }
     },
 
-    _fire : function( event ) {
+    _fire : function( event, onlyVisible ) {
       if( this._map[ this._active ] ) {
         var handlers = this._map[ this._active ];
         for( var key in handlers ) {
           var entry = handlers[ key ];
-          entry[ 1 ].call( entry[ 0 ], event );
+          if( !onlyVisible || entry[ 0 ].isSeeable() ) {
+            entry[ 1 ].call( entry[ 0 ], event );
+          }
         }
       }
     },
