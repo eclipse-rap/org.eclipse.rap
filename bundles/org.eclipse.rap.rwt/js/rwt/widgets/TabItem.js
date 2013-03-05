@@ -24,11 +24,17 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
     this.base( arguments, vText, vIcon, vIconWidth, vIconHeight, vFlash );
     this.initChecked();
     this.initTabIndex();
+    this._rawText = null;
+    this._mnemonicIndex = null;
     this.addEventListener("mouseover", this._onmouseover);
     this.addEventListener("mouseout", this._onmouseout);
     this.addEventListener("mousedown", this._onmousedown);
     this.addEventListener("keydown", this._onkeydown);
     this.addEventListener("keypress", this._onkeypress);
+  },
+
+  destruct : function() {
+    this.setMnemonicIndex( null );
   },
 
   events: {
@@ -96,6 +102,54 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
   },
 
   members : {
+
+    setText : function( value ) {
+      this._rawText = value;
+      this._mnemonicIndex = null;
+      this._applyText( false );
+    },
+
+    setMnemonicIndex : function( value ) {
+      this._mnemonicIndex = value;
+      var mnemonicHandler = rwt.widgets.util.MnemonicHandler.getInstance();
+      if( ( typeof value === "number" ) && ( value >= 0 ) ) {
+        mnemonicHandler.add( this, this._onMnemonic );
+      } else {
+        mnemonicHandler.remove( this );
+      }
+    },
+
+    getMnemonicIndex : function() {
+      return this._mnemonicIndex;
+    },
+
+    _applyText : function( mnemonic ) {
+      if( this._rawText ) {
+        var mnemonicIndex = mnemonic ? this._mnemonicIndex : undefined;
+        var text = rwt.util.Encoding.escapeText( this._rawText, mnemonicIndex );
+        this.setLabel( text );
+      } else {
+        this.setLabel( null );
+      }
+    },
+
+    _onMnemonic : function( event ) {
+      switch( event.type ) {
+        case "show":
+          this._applyText( true );
+        break;
+        case "hide":
+          this._applyText( false );
+        break;
+        case "trigger":
+          var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
+          if( event.charCode === charCode ) {
+            this.setChecked( true );
+            event.success = true;
+          }
+        break;
+      }
+    },
 
     /**
      * TODOC

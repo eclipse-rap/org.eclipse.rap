@@ -153,6 +153,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       var ObjectManager = rwt.remote.ObjectRegistry;
       var page = ObjectManager.getObject( "w4pg" );
       assertTrue( page instanceof rwt.widgets.base.TabFolderPage );
+      folder.destroy();
     },
 
     testDestroyTabItemByProtocol : function() {
@@ -169,6 +170,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       assertTrue( page.isDisposed() );
       assertEquals( undefined, ObjectManager.getObject( "w4" ) );
       assertEquals( undefined, ObjectManager.getObject( "w4pg" ) );
+      folder.destroy();
     },
 
     testDestroyChildrenWithFolderByProtocol : function() {
@@ -211,6 +213,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
         }
       } );
       assertEquals( "foo&lt;&gt;&quot; bar", item.getLabel().toString() );
+      folder.destroy();
+    },
+
+    testSetMnemonicIndexByProtocol : function() {
+      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+      var item = this._createTabItemByProtocol( "w4", "w3" );
+      TestUtil.protocolSet( "w4", { "text" : "test first" } );
+
+      TestUtil.protocolSet( "w4", { "mnemonicIndex" : 6 } );
+
+      assertEquals( 6, item.getMnemonicIndex() );
+      folder.destroy();
+    },
+
+    testSetTextResetsMnemonicIndex : function() {
+      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+      var item = this._createTabItemByProtocol( "w4", "w3" );
+      TestUtil.protocolSet( "w4", { "mnemonicIndex" : 6 } );
+
+      TestUtil.protocolSet( "w4", { "text" : "blue" } );
+
+      assertNull( item.getMnemonicIndex() );
+      folder.destroy();
     },
 
     testSetImageByProtocol : function() {
@@ -224,6 +249,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
         }
       } );
       assertEquals( "image.png", item.getIcon() );
+      folder.destroy();
     },
 
     testSetControlByProtocol : function() {
@@ -241,6 +267,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       } );
       assertTrue( control.getParent() instanceof rwt.widgets.base.TabFolderPage );
       assertIdentical( widgetManager.findWidgetById( "w4pg" ), control.getParent() );
+      folder.destroy();
     },
 
     testSetToolTipByProtocol : function() {
@@ -255,6 +282,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       } );
       assertEquals( "hello blue world", item.getUserData( "toolTipText" ) );
       assertTrue( item.getToolTip() !== null );
+      folder.destroy();
     },
 
     testSetCustomVariantByProtocol : function() {
@@ -279,6 +307,52 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
 
       var message = TestUtil.getMessageObject();
       assertEquals( "w4", message.findNotifyProperty( "w3", "Selection", "item" ) );
+    },
+
+    testRenderMnemonic_OnActivate : function() {
+      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+      var item = this._createTabItemByProtocol( "w4", "w3" );
+      item.setText( "foo" );
+      item.setMnemonicIndex( 1 );
+      shell.setActive( true );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      TestUtil.flush();
+
+      assertEquals( "f<span style=\"text-decoration:underline\">o</span>o", item.getLabel() );
+    },
+
+    testRenderMnemonic_OnDeactivate : function() {
+      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+      var item = this._createTabItemByProtocol( "w4", "w3" );
+      item.setText( "foo" );
+      item.setMnemonicIndex( 1 );
+      shell.setActive( true );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      rwt.widgets.util.MnemonicHandler.getInstance().deactivate();
+      TestUtil.flush();
+
+      assertEquals( "foo", item.getLabel() );
+    },
+
+    testRenderMnemonic_Trigger : function() {
+      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+      var item = this._createTabItemByProtocol( "w4", "w3" );
+      item.setText( "foo" );
+      item.setMnemonicIndex( 1 );
+      shell.setActive( true );
+      TestUtil.flush();
+      var success = false;
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      success = rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      TestUtil.flush();
+
+      assertTrue( success );
+      assertTrue( item.getChecked() );
     },
 
     //////////////////

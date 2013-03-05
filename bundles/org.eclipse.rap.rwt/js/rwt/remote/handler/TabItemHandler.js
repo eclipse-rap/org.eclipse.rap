@@ -34,6 +34,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.TabItem", {
 
   properties : [
     "text",
+    "mnemonicIndex",
     "image",
     "control",
     "toolTip",
@@ -41,11 +42,6 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.TabItem", {
   ],
 
   propertyHandler : {
-    "text" : function( widget, value ) {
-      var EncodingUtil = rwt.util.Encoding;
-      var text = EncodingUtil.escapeText( value, false );
-      widget.setLabel( text );
-    },
     "image" : function( widget, value ) {
       if( value === null ) {
         widget.setIcon( null );
