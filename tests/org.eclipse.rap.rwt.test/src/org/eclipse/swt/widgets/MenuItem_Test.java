@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -320,6 +321,16 @@ public class MenuItem_Test {
     menuItem.setAccelerator( SWT.ALT | 'A' );
 
     assertEquals( SWT.ALT | 'A', menuItem.getAccelerator() );
+  }
+
+  @Test
+  public void testSetAccelerator_doesNotInterfereWithActiveKeys() {
+    display.setData( RWT.ACTIVE_KEYS, new String[] { "CTRL+S", "CTRL+T"} );
+    menuItem.setAccelerator( SWT.CTRL | 'T' );
+
+    menuItem.setAccelerator( SWT.NONE );
+
+    assertArrayEquals( new String[] { "CTRL+S", "CTRL+T" }, (String[])display.getData( RWT.ACTIVE_KEYS ) );
   }
 
   @Test
