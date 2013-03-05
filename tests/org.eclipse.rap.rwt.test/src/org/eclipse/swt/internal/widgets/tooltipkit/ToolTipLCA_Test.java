@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2013 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -238,7 +237,7 @@ public class ToolTipLCA_Test {
   @Test
   public void testRenderRoundedBorder() throws IOException, JSONException {
     IWidgetGraphicsAdapter graphicsAdapter = toolTip.getAdapter( IWidgetGraphicsAdapter.class );
-    Color color = Graphics.getColor( 0, 255, 0 );
+    Color color = new Color( display, 0, 255, 0 );
 
     graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
     lca.renderChanges( toolTip );
@@ -257,7 +256,7 @@ public class ToolTipLCA_Test {
   @Test
   public void testRenderRoundedBorderUnchanged() throws IOException {
     IWidgetGraphicsAdapter graphicsAdapter = toolTip.getAdapter( IWidgetGraphicsAdapter.class );
-    Color color = Graphics.getColor( 0, 255, 0 );
+    Color color = new Color( display, 0, 255, 0 );
     Fixture.markInitialized( toolTip );
 
     graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
@@ -281,8 +280,8 @@ public class ToolTipLCA_Test {
   public void testRenderBackgroundGradient() throws IOException, JSONException {
     IWidgetGraphicsAdapter graphicsAdapter = toolTip.getAdapter( IWidgetGraphicsAdapter.class );
     Color[] gradientColors = new Color[] {
-      Graphics.getColor( 0, 255, 0 ),
-      Graphics.getColor( 0, 0, 255 )
+      new Color( display, 0, 255, 0 ),
+      new Color( display, 0, 0, 255 )
     };
     int[] percents = new int[] { 0, 100 };
 
@@ -304,8 +303,8 @@ public class ToolTipLCA_Test {
   public void testRenderBackgroundGradientUnchanged() throws IOException {
     IWidgetGraphicsAdapter graphicsAdapter = toolTip.getAdapter( IWidgetGraphicsAdapter.class );
     Color[] gradientColors = new Color[] {
-      Graphics.getColor( 0, 255, 0 ),
-      Graphics.getColor( 0, 0, 255 )
+      new Color( display, 0, 255, 0 ),
+      new Color( display, 0, 0, 255 )
     };
     int[] percents = new int[] { 0, 100 };
     Fixture.markInitialized( toolTip );

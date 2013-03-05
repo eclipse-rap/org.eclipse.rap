@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mock;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -38,13 +37,14 @@ import org.junit.Test;
 
 public class List_Test {
 
+  private Display display;
   private Shell shell;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
+    display = new Display();
     shell = new Shell( display );
   }
 
@@ -1300,7 +1300,7 @@ public class List_Test {
     // change font
     list.setItem( 0, "short" );
     assertFalse( list.hasHScrollBar() );
-    Font bigFont = Graphics.getFont( "Helvetica", 50, SWT.BOLD );
+    Font bigFont = new Font( display, "Helvetica", 50, SWT.BOLD );
     list.setFont( bigFont );
     assertTrue( list.hasHScrollBar() );
     list.setFont( null );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -81,7 +80,7 @@ public class WidgetGraphicsAdapter_Test {
   @Test
   public void testRoundedBorderColor() {
     WidgetGraphicsAdapter graphicsAdapter = new WidgetGraphicsAdapter();
-    Color blue = Graphics.getColor( 0, 0, 255 );
+    Color blue = new Color( display, 0, 0, 255 );
     graphicsAdapter.setRoundedBorder( 2, blue, 1, 2, 3, 4 );
     assertEquals( 2, graphicsAdapter.getRoundedBorderWidth() );
     assertEquals( blue, graphicsAdapter.getRoundedBorderColor() );
@@ -96,8 +95,8 @@ public class WidgetGraphicsAdapter_Test {
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
     assertNull( graphicsAdapter.getBackgroundGradientColors() );
     assertNull( graphicsAdapter.getBackgroundGradientPercents() );
-    Color blue = Graphics.getColor( 0, 0, 255 );
-    Color green = Graphics.getColor( 0, 255, 0 );
+    Color blue = new Color( display, 0, 0, 255 );
+    Color green = new Color( display, 0, 255, 0 );
     Color[] gradientColors = new Color[] { blue, green, blue };
     int[] percents = new int[] { 0, 50, 100 };
     graphicsAdapter.setBackgroundGradient( gradientColors, percents, false );
@@ -134,7 +133,7 @@ public class WidgetGraphicsAdapter_Test {
   public void testBackgroundGradientSafeCopy() {
     Object adapter = shell.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
-    Color[] colors = { Graphics.getColor( new RGB( 1, 2, 3 ) ) };
+    Color[] colors = { new Color( display, new RGB( 1, 2, 3 ) ) };
     int[] percentages = { 1 };
     graphicsAdapter.setBackgroundGradient( colors, percentages, true );
     percentages[ 0 ] = 2;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import java.io.IOException;
+
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -119,11 +121,11 @@ public class Composite_Test {
   }
 
   @Test
-  public void testComputeSize() {
+  public void testComputeSize() throws IOException {
     Composite composite = new Composite( shell, SWT.BORDER );
     assertEquals( 1, composite.getBorderWidth() );
     composite.setLayout( new FillLayout( SWT.HORIZONTAL ) );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
     new Label( composite, SWT.NONE ).setImage( image );
     new Label( composite, SWT.NONE ).setImage( image );
     new Label( composite, SWT.NONE ).setImage( image );

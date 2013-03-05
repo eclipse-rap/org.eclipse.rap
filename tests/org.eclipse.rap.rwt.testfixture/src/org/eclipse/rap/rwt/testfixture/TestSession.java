@@ -30,6 +30,7 @@ import javax.servlet.http.HttpSessionContext;
  * your own risk.
  * </p>
  */
+@SuppressWarnings( "deprecation" )
 public class TestSession implements HttpSession {
 
   private final Map<String,Object> attributes;
