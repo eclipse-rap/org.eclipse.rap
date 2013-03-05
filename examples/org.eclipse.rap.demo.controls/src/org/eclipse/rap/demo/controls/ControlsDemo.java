@@ -173,6 +173,7 @@ public class ControlsDemo extends AbstractEntryPoint implements Serializable {
       new ErrorHandlingTab(),
       new ClientServicesTab(),
       new NLSTab(),
+      new MnemonicsTab()
     };
   }
 
