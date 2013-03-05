@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,9 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -31,13 +31,14 @@ import org.junit.Test;
 
 public class ControlThemeAdapter_Test {
 
+  private Display display;
   private Shell shell;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     Fixture.fakeNewRequest();
-    Display display = new Display();
+    display = new Display();
     shell = new Shell( display );
   }
 
@@ -52,8 +53,8 @@ public class ControlThemeAdapter_Test {
     ControlThemeAdapterImpl cta = ( ControlThemeAdapterImpl )label.getAdapter( IThemeAdapter.class );
 
     assertEquals( 1, cta.getBorderWidth( label ) );
-    assertEquals( Graphics.getColor( 74, 74, 74 ), cta.getForeground( label ) );
-    assertEquals( Graphics.getColor( 255, 255, 255 ), cta.getBackground( label ) );
+    assertEquals( new Color( display, 74, 74, 74 ), cta.getForeground( label ) );
+    assertEquals( new Color( display, 255, 255, 255 ), cta.getBackground( label ) );
   }
 
   @Test
@@ -63,7 +64,7 @@ public class ControlThemeAdapter_Test {
     ControlThemeAdapterImpl cta = ( ControlThemeAdapterImpl )label.getAdapter( IThemeAdapter.class );
 
     // even though the label is grayed out, getForeground() shows the original color in SWT
-    assertEquals( Graphics.getColor( 74, 74, 74 ), cta.getForeground( label ) );
+    assertEquals( new Color( display, 74, 74, 74 ), cta.getForeground( label ) );
   }
 
   @Test

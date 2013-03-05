@@ -15,8 +15,6 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicatio
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -30,13 +28,14 @@ import org.junit.Test;
 
 public class TextSizeUtil_Test {
 
+  private Display display;
   private static final String TEST_STRING = "test";
   private static final FontData FONT_DATA = new FontData( "arial", 10, SWT.NORMAL );
 
   @Before
   public void setUp() {
     Fixture.setUp();
-    new Display();
+    display = new Display();
   }
 
   @After
@@ -178,7 +177,7 @@ public class TextSizeUtil_Test {
     String textToMeasure = "multi\nline\ntext";
     fakeMeasurement( textToMeasure, 2, TextSizeUtil.TEXT_EXTENT, new Point( 6, 10 ) );
 
-    Point size = TextSizeUtil.textExtent( Graphics.getFont( FONT_DATA ), textToMeasure, 2 );
+    Point size = TextSizeUtil.textExtent( new Font( display, FONT_DATA ), textToMeasure, 2 );
 
     assertEquals( 40, size.y );
   }
@@ -198,7 +197,7 @@ public class TextSizeUtil_Test {
   }
 
   private Font getFont() {
-    return Graphics.getFont( FONT_DATA );
+    return new Font( display, FONT_DATA );
   }
 
 }

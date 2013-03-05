@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.internal.textsize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -27,13 +26,14 @@ import org.junit.Test;
 
 public class TextSizeEstimation_Test {
 
+  private Display display;
   private Font font10;
 
   @Before
   public void setUp() {
     Fixture.setUp();
-    new Display();
-    font10 = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
+    display = new Display();
+    font10 = new Font( display, "Helvetica", 10, SWT.NORMAL );
   }
 
   @After
@@ -72,7 +72,7 @@ public class TextSizeEstimation_Test {
     assertTrue( extent10.x < 60 );
     assertTrue( extent10.y >= charHeight );
     assertTrue( extent10.y < charHeight * 2 );
-    Font font12 = Graphics.getFont( "Helvetica", 12, SWT.NORMAL );
+    Font font12 = new Font( display, "Helvetica", 12, SWT.NORMAL );
     Point extent12 = TextSizeEstimation.stringExtent( font12 , string );
     assertTrue( extent12.x > extent10.x );
     string = "Test1 Test2 Test3 Test4 Test5";
@@ -113,7 +113,7 @@ public class TextSizeEstimation_Test {
   // Test for a case where text width == wrapWidth
   @Test
   public void testEndlessLoopProblem() {
-    Font font = Graphics.getFont( "Helvetica", 11, SWT.NORMAL );
+    Font font = new Font( display, "Helvetica", 11, SWT.NORMAL );
     Point extent = TextSizeEstimation.textExtent( font, "Zusatzinfo (Besuch)", 100 );
     assertEquals( 100, extent.x );
   }

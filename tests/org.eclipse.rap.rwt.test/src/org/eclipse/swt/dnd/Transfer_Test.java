@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.dnd;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -19,7 +20,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import java.io.IOException;
+
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
@@ -32,11 +34,13 @@ import org.junit.Test;
 
 public class Transfer_Test {
 
+  private Display display;
+
   @Before
   public void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
-    new Display();
+    display = new Display();
   }
 
   @After
@@ -103,11 +107,11 @@ public class Transfer_Test {
   }
 
   @Test
-  public void testImageTransferConversion() {
+  public void testImageTransferConversion() throws IOException {
     Fixture.useDefaultResourceManager();
     Transfer transfer = ImageTransfer.getInstance();
     TransferData data = transfer.getSupportedTypes()[ 0 ];
-    Image image = Graphics.getImage( Fixture.IMAGE1, Fixture.class.getClassLoader() );
+    Image image = createImage( display, Fixture.IMAGE1 );
     ImageData imageData = image.getImageData();
     transfer.javaToNative( imageData, data );
     assertEquals( 1, data.result );

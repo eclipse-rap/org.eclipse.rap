@@ -25,7 +25,6 @@ import static org.mockito.Mockito.mock;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
@@ -49,6 +48,7 @@ public class MeasurementListener_Test {
   private static final int EXPAND_AND_RESTORE = 2;
   private static final FontData FONT_DATA = new FontData( "arial", 12, SWT.BOLD );
 
+  private Display display;
   private MeasurementListener listener;
   private int resizeCount;
 
@@ -57,7 +57,7 @@ public class MeasurementListener_Test {
     listener = new MeasurementListener();
 
     Fixture.setUp();
-    new Display();
+    display = new Display();
     Fixture.fakeNewRequest();
     initResizeCount();
   }
@@ -188,7 +188,7 @@ public class MeasurementListener_Test {
   }
 
   private void checkTextMeasurementResultHasBeenStored() {
-    Font font = Graphics.getFont( FONT_DATA );
+    Font font = new Font( display, FONT_DATA );
     assertEquals( new Point( 100, 10 ), TextSizeUtil.stringExtent( font, "text" ) );
   }
 

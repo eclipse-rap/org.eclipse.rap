@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,18 +11,21 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.clabelkit.CLabelThemeAdapter;
@@ -76,12 +79,12 @@ public class CLabel_Test {
   }
 
   @Test
-  public void testSetImage() {
+  public void testSetImage() throws IOException {
     CLabel label = new CLabel( shell, SWT.RIGHT );
     assertEquals( label.getImage(), null );
-    label.setImage( Graphics.getImage( Fixture.IMAGE1, getClass().getClassLoader() ) );
-    assertEquals( label.getImage(),
-                  Graphics.getImage( Fixture.IMAGE1, getClass().getClassLoader() ) );
+    Image image = createImage( display, Fixture.IMAGE1 );
+    label.setImage( image );
+    assertEquals( image, label.getImage() );
   }
 
   @Test
@@ -92,16 +95,15 @@ public class CLabel_Test {
     assertEquals( label.getText(), "bar" );
   }
 
-  @SuppressWarnings("deprecation")
   @Test
-  public void testComputeSize() {
+  public void testComputeSize() throws IOException {
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Point expected = new Point( 12, 26 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     label.setText( "bar" );
     expected = new Point( 32, 30 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    label.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    label.setImage( createImage( display, Fixture.IMAGE_100x50 ) );
     expected = new Point( 137, 62 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     label.setMargins( 1, 2, 3, 4 );
