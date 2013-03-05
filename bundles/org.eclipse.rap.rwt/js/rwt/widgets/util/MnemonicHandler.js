@@ -114,6 +114,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
     _isActivation : function( eventType, keyCode, charCode, domEvent ) {
       return    this._activator
+             && this._active == null
              && eventType === "keydown"
              && EventHandlerUtil.isModifier( keyCode )
              && this._isActivatorCombo( domEvent );

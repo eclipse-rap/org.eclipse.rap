@@ -25,9 +25,15 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
       this.setCellContent( 3, "" );
     }
     this._separatorBorder = null;
+    this._rawText = null;
+    this._mnemonicIndex = null;
     this.setAppearance( "toolbar-button" );
     this.removeEventListener( "keydown", this._onKeyDown );
     this.removeEventListener( "keyup", this._onKeyUp );
+  },
+
+  destruct : function() {
+    this.setMnemonicIndex( null );
   },
 
   properties : {
@@ -60,6 +66,53 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
       // give to toolBar for keyboard control (left/right keys):
       this.getParent().dispatchEvent( event );
       this.base( arguments, event );
+    },
+
+    setText : function( value ) {
+      this._rawText = value;
+      this._mnemonicIndex = null;
+      this._applyText( false );
+    },
+
+    setMnemonicIndex : function( value ) {
+      this._mnemonicIndex = value;
+      var mnemonicHandler = rwt.widgets.util.MnemonicHandler.getInstance();
+      if( ( typeof value === "number" ) && ( value >= 0 ) ) {
+        mnemonicHandler.add( this, this._onMnemonic );
+      } else {
+        mnemonicHandler.remove( this );
+      }
+    },
+
+    getMnemonicIndex : function() {
+      return this._mnemonicIndex;
+    },
+
+    _applyText : function( mnemonic ) {
+      if( this._rawText ) {
+        var mnemonicIndex = mnemonic ? this._mnemonicIndex : undefined;
+        var text = rwt.util.Encoding.escapeText( this._rawText, mnemonicIndex );
+        this.setCellContent( 2, text );
+      } else {
+        this.setCellContent( 2, null );
+      }
+    },
+
+    _onMnemonic : function( event ) {
+      switch( event.type ) {
+        case "show":
+          this._applyText( true );
+        break;
+        case "hide":
+          this._applyText( false );
+        break;
+        case "trigger":
+          var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
+          if( event.charCode === charCode ) {
+            this.execute();
+          }
+        break;
+      }
     },
 
     ////////////////////

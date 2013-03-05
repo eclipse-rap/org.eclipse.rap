@@ -673,7 +673,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       TestUtil.flush();
 
       rwt.widgets.util.MnemonicHandler.getInstance().activate();
-      rwt.widgets.util.MnemonicHandler.getInstance().trigger( "f" );
+      rwt.widgets.util.MnemonicHandler.getInstance().trigger( 78 );
       TestUtil.flush();
 
       assertFalse( button.getFocused() );

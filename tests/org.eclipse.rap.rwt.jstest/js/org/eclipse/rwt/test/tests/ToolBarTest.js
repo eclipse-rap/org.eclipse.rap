@@ -9,6 +9,11 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+
+(function(){
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
 
   extend : rwt.qx.Object,
@@ -21,7 +26,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
   members : {
 
     testCreateTooBarByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
@@ -45,7 +49,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testCreateTooBarWithFlatByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
@@ -65,8 +68,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       widget.destroy();
     },
 
-    testCreatePushTooItemByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    testCreatePushToolItemByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -81,8 +83,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       widget.destroy();
     },
 
-    testCreateRadioTooItemByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    testCreateRadioToolItemByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget =  this._createToolItemByProtocol( "w4", "w3", [ "RADIO" ] );
@@ -97,8 +98,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       widget.destroy();
     },
 
-    testCreateCheckTooItemByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    testCreateCheckToolItemByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget =  this._createToolItemByProtocol( "w4", "w3", [ "CHECK" ] );
@@ -113,8 +113,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       widget.destroy();
     },
 
-    testCreateDropDownTooItemByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    testCreateDropDownToolItemByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget =  this._createToolItemByProtocol( "w4", "w3", [ "DROP_DOWN" ] );
@@ -129,8 +128,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       widget.destroy();
     },
 
-    testCreateSeparatorTooItemByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    testCreateSeparatorToolItemByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [ "FLAT" ] );
       var widget =  this._createToolItemByProtocol( "w4", "w3", [ "SEPARATOR" ] );
@@ -145,8 +143,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       widget.destroy();
     },
 
-    testCreateVerticalSeparatorTooItemByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    testCreateVerticalSeparatorToolItemByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [ "VERTICAL" ] );
       var widget =  this._createToolItemByProtocol( "w4", "w3", [ "SEPARATOR" ] );
@@ -160,8 +157,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       widget.destroy();
     },
 
-    testCreateTooItemWithIndexByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    testCreateToolItemWithIndexByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var pushToolItem = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -179,7 +175,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testCreateDestroyTooltemByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -196,7 +191,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testDestroyTooltemWithToolBarByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -217,7 +211,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetBoundsByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -232,7 +225,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetVisibleByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -244,7 +236,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetEnabledByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -256,7 +247,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetToolTipByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -269,7 +259,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetTextByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -280,8 +269,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       widget.destroy();
     },
 
+    testSetMnemonicIndexByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
+      var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
+
+      TestUtil.protocolSet( "w4", { "mnemonicIndex" : 6 } );
+
+      assertEquals( 6, widget.getMnemonicIndex() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetTextResetsMnemonicIndex : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
+      var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
+      TestUtil.protocolSet( "w4", { "mnemonicIndex" : 6 } );
+
+      TestUtil.protocolSet( "w4", { "text" : "blue" } );
+
+      assertNull( widget.getMnemonicIndex() );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testSetCustomVariantByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -293,7 +306,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetImageByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -307,7 +319,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetHotImageByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -321,7 +332,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetControlByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [ "FLAT" ] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "SEPARATOR" ] );
@@ -333,7 +343,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetSelectionByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "CHECK" ] );
@@ -345,7 +354,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetNoRadioGroupByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [ "NO_RADIO_GROUP" ] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "RADIO" ] );
@@ -356,7 +364,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetHasSelectionListenerByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "RADIO" ] );
@@ -630,6 +637,54 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.item = null;
     },
 
+    testRenderMnemonic_OnActivate : function() {
+      var item = new rwt.widgets.ToolItem( "push" );
+      item.setText( "foo" );
+      item.addToDocument();
+      item.setMnemonicIndex( 1 );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      TestUtil.flush();
+
+      assertEquals( "f<span style=\"text-decoration:underline\">o</span>o", item.getCellContent( 2 ) );
+      item.destroy();
+    },
+
+
+    testRenderMnemonic_OnDeactivate : function() {
+      var item = new rwt.widgets.ToolItem( "push" );
+      item.setText( "foo" );
+      item.addToDocument();
+      item.setMnemonicIndex( 1 );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      rwt.widgets.util.MnemonicHandler.getInstance().deactivate();
+      TestUtil.flush();
+
+      assertEquals( "foo", item.getCellContent( 2 ) );
+      item.destroy();
+    },
+
+    testTriggerMnemonic_SendsSelection : function() {
+      var item = new rwt.widgets.ToolItem( "push" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.ToolItem" );
+      rwt.remote.ObjectRegistry.add( "w11", item, handler );
+      item.setText( "foo" );
+      item.addToDocument();
+      item.setMnemonicIndex( 1 );
+      item.setHasSelectionListener( true );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      TestUtil.flush();
+
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "Selection" ) );
+      item.destroy();
+    },
+
     /////////
     // Helper
 
@@ -640,9 +695,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.toolItem2 = new rwt.widgets.ToolItem( "push", false  );
       this.toolItem3 = new rwt.widgets.ToolItem( "push", false  );
       this.separator = new rwt.widgets.ToolItemSeparator( "push" );
-      this.toolItem1.setText( 1 );
-      this.toolItem2.setText( 2 );
-      this.toolItem3.setText( 3 );
+      this.toolItem1.setText( "1" );
+      this.toolItem2.setText( "2" );
+      this.toolItem3.setText( "3" );
       this.toolBar.addAt( this.toolItem1, 0 );
       this.toolBar.addAt( this.toolItem2, 1 );
       this.toolBar.addAt( this.separator, 2 );
@@ -710,3 +765,5 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
   }
 
 } );
+
+}());

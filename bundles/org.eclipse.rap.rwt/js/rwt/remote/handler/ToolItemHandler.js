@@ -49,6 +49,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ToolItem", {
     "customVariant",
     "toolTip",
     "text",
+    "mnemonicIndex",
     "image",
     "hotImage",
     "control",
@@ -61,11 +62,6 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ToolItem", {
       widget.setVisibility( value );
     },
     "toolTip" : rwt.remote.HandlerUtil.getControlPropertyHandler( "toolTip" ),
-    "text" : function( widget, value ) {
-      var EncodingUtil = rwt.util.Encoding;
-      var text = EncodingUtil.escapeText( value, false );
-      widget.setText( text );
-    },
     "image" : function( widget, value ) {
       if( value === null ) {
         widget.setImage( null );
