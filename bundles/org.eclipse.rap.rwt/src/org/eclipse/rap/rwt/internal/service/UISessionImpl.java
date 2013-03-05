@@ -88,6 +88,8 @@ public final class UISessionImpl
   }
 
   public void shutdown() {
+    // Removing the object from the httpSession will trigger the valueUnbound method,
+    // which actually kills the session
     getHttpSession().removeAttribute( ATTR_UI_SESSION );
   }
 
