@@ -10,7 +10,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -64,6 +66,28 @@ public class AcceleratorBinding_Test {
   }
 
   @Test
+  public void testSetAcceleratorTwice_addsDisplayFilterOnce() {
+    display = mock( Display.class );
+    menuItem.display = display;
+
+    acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
+    acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
+
+    verify( display, times( 1 ) ).addFilter( SWT.KeyDown, acceleratorSupport );
+  }
+
+  @Test
+  public void testSetAcceleratorToZero_removesDisplayFilter() {
+    display = mock( Display.class );
+    menuItem.display = display;
+    acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
+
+    acceleratorSupport.setAccelerator( SWT.NONE );
+
+    verify( display, times( 1 ) ).removeFilter( SWT.KeyDown, acceleratorSupport );
+  }
+
+  @Test
   public void testSetAccelerator_addsActiveKey() {
     acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
 
@@ -96,108 +120,108 @@ public class AcceleratorBinding_Test {
   }
 
   @Test
-    public void testRelease_callsSetWithZero() {
-      acceleratorSupport = spy( acceleratorSupport );
+  public void testRelease_callsSetWithZero() {
+    acceleratorSupport = spy( acceleratorSupport );
 
-      acceleratorSupport.release();
+    acceleratorSupport.release();
 
-      verify( acceleratorSupport ).setAccelerator( 0 );
-    }
-
-  @Test
-    public void testRelease_removesActiveKey() {
-      acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
-
-      acceleratorSupport.release();
-
-      assertTrue( getActiveKeys().isEmpty() );
-    }
+    verify( acceleratorSupport ).setAccelerator( 0 );
+  }
 
   @Test
-    public void testRelease_removesCancelKey() {
-      acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
+  public void testRelease_removesActiveKey() {
+    acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
 
-      acceleratorSupport.release();
+    acceleratorSupport.release();
 
-      assertFalse( getActiveKeys().contains( "ALT+A" ) );
-    }
-
-  @Test
-    public void testRelease_doesNotRemoveExistingActiveKeys() {
-      setActiveKeys( "CTRL+S", "CTRL+T" );
-      acceleratorSupport.setAccelerator( SWT.CTRL | 'T' );
-
-      acceleratorSupport.release();
-
-      assertTrue( getActiveKeys().contains( "CTRL+T" ) );
-    }
+    assertTrue( getActiveKeys().isEmpty() );
+  }
 
   @Test
-    public void testRelease_doesNotRemoveExistingCancelKeys() {
-      setCancelKeys( "CTRL+S", "CTRL+T" );
-      acceleratorSupport.setAccelerator( SWT.CTRL | 'T' );
+  public void testRelease_removesCancelKey() {
+    acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
 
-      acceleratorSupport.release();
+    acceleratorSupport.release();
 
-      assertTrue( getCancelKeys().contains( "CTRL+T" ) );
-    }
+    assertFalse( getActiveKeys().contains( "ALT+A" ) );
+  }
 
   @Test
-  public void testKeyDownEvent_triggersUpdateSelection() {
+  public void testRelease_doesNotRemoveExistingActiveKeys() {
+    setActiveKeys( "CTRL+S", "CTRL+T" );
+    acceleratorSupport.setAccelerator( SWT.CTRL | 'T' );
+
+    acceleratorSupport.release();
+
+    assertTrue( getActiveKeys().contains( "CTRL+T" ) );
+  }
+
+  @Test
+  public void testRelease_doesNotRemoveExistingCancelKeys() {
+    setCancelKeys( "CTRL+S", "CTRL+T" );
+    acceleratorSupport.setAccelerator( SWT.CTRL | 'T' );
+
+    acceleratorSupport.release();
+
+    assertTrue( getCancelKeys().contains( "CTRL+T" ) );
+  }
+
+  @Test
+  public void testKeyDownEvent_triggersHandleAcceleratorActivation() {
     acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
     when( Boolean.valueOf( menuItem.isEnabled() ) ).thenReturn( Boolean.TRUE );
 
     display.sendEvent( SWT.KeyDown, mockKeyDownEvent( SWT.ALT, 'A' ) );
 
-    verify( menuItem ).updateSelection();
+    verify( menuItem ).handleAcceleratorActivation();
   }
 
   @Test
-  public void testKeyDownEvent_doesNotTriggerUpdateSelection_onDisabledItem() {
+  public void testKeyDownEvent_doesNotTriggerHandleAcceleratorActivation_onDisabledItem() {
     acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
 
     display.sendEvent( SWT.KeyDown, mockKeyDownEvent( SWT.ALT, 'A' ) );
 
-    verify( menuItem, times( 0 ) ).updateSelection();
+    verify( menuItem, times( 0 ) ).handleAcceleratorActivation();
   }
 
   @Test
-  public void testKeyDownEvent_doesNotTriggerUpdateSelection_withDifferentKey() {
+  public void testKeyDownEvent_doesNotTriggerHandleAcceleratorActivation_withDifferentKey() {
     acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
     when( Boolean.valueOf( menuItem.isEnabled() ) ).thenReturn( Boolean.TRUE );
 
     display.sendEvent( SWT.KeyDown, mockKeyDownEvent( SWT.ALT, 'B' ) );
 
-    verify( menuItem, times( 0 ) ).updateSelection();
+    verify( menuItem, times( 0 ) ).handleAcceleratorActivation();
   }
 
   @Test
-  public void testKeyDownEvent_doesNotTriggerUpdateSelection_withDifferentModifier() {
+  public void testKeyDownEvent_doesNotTriggerHandleAcceleratorActivation_withDifferentModifier() {
     acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
     when( Boolean.valueOf( menuItem.isEnabled() ) ).thenReturn( Boolean.TRUE );
 
     display.sendEvent( SWT.KeyDown, mockKeyDownEvent( SWT.CTRL, 'A' ) );
 
-    verify( menuItem, times( 0 ) ).updateSelection();
+    verify( menuItem, times( 0 ) ).handleAcceleratorActivation();
   }
 
   @Test
-  public void testKeyDownEvent_doesNotTriggerUpdateSelection_withDifferentType() {
+  public void testKeyDownEvent_doesNotTriggerHandleAcceleratorActivation_withDifferentType() {
     acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
     when( Boolean.valueOf( menuItem.isEnabled() ) ).thenReturn( Boolean.TRUE );
 
     display.sendEvent( SWT.KeyUp, mockKeyDownEvent( SWT.ALT, 'A' ) );
 
-    verify( menuItem, times( 0 ) ).updateSelection();
+    verify( menuItem, times( 0 ) ).handleAcceleratorActivation();
   }
 
   @Test
-  public void testKeyDownEvent_doesNotTriggerUpdateSelection_withoutAccelerator() {
+  public void testKeyDownEvent_doesNotTriggerHandleAcceleratorActivation_withoutAccelerator() {
     when( Boolean.valueOf( menuItem.isEnabled() ) ).thenReturn( Boolean.TRUE );
 
     display.sendEvent( SWT.KeyDown, mockKeyDownEvent( SWT.ALT, 'A' ) );
 
-    verify( menuItem, times( 0 ) ).updateSelection();
+    verify( menuItem, times( 0 ) ).handleAcceleratorActivation();
   }
 
   @Test

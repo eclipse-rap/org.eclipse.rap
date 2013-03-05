@@ -666,7 +666,7 @@ public class MenuItem extends Item {
     }
   }
 
-  void updateSelection() {
+  void handleAcceleratorActivation() {
     if( ( style & SWT.CHECK ) != 0 ) {
       selection = !selection;
     } else if ( ( style & SWT.RADIO ) != 0 ) {

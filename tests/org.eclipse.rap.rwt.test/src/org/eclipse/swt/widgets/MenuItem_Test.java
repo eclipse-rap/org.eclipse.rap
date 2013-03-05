@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -22,24 +20,16 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ArmListener;
 import org.eclipse.swt.events.HelpListener;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -309,6 +299,11 @@ public class MenuItem_Test {
   }
 
   @Test
+  public void testGetAccelerator_Initial() {
+    assertEquals( 0, menuItem.getAccelerator() );
+  }
+
+  @Test
   public void testSetAccelerator() {
     menuItem.setAccelerator( SWT.ALT | 'A' );
 
@@ -324,103 +319,12 @@ public class MenuItem_Test {
   }
 
   @Test
-  public void testSetAccelerator_doesNotInterfereWithActiveKeys() {
-    display.setData( RWT.ACTIVE_KEYS, new String[] { "CTRL+S", "CTRL+T"} );
-    menuItem.setAccelerator( SWT.CTRL | 'T' );
-
-    menuItem.setAccelerator( SWT.NONE );
-
-    assertArrayEquals( new String[] { "CTRL+S", "CTRL+T" }, (String[])display.getData( RWT.ACTIVE_KEYS ) );
-  }
-
-  @Test
-  public void testSetAccelerator_AddActiveKey() {
-    menuItem.setAccelerator( SWT.ALT | 'A' );
-
-    String[] activeKeys = ( String[] )display.getData( RWT.ACTIVE_KEYS );
-    assertTrue( Arrays.asList( activeKeys ).contains( "ALT+A" ) );
-  }
-
-  @Test
-  public void testSetAccelerator_RemoveActiveKey() {
-    menuItem.setAccelerator( SWT.ALT | 'A' );
-
-    menuItem.setAccelerator( 0 );
-
-    String[] activeKeys = ( String[] )display.getData( RWT.ACTIVE_KEYS );
-    assertFalse( Arrays.asList( activeKeys ).contains( "ALT+A" ) );
-  }
-
-  @Test
-  public void testSetAccelerator_KeepExistingActiveKey() {
-    display.setData( RWT.ACTIVE_KEYS, new String[] { "CTRL+B" } );
-    menuItem.setAccelerator( SWT.ALT | 'A' );
-
-    menuItem.setAccelerator( 0 );
-
-    String[] activeKeys = ( String[] )display.getData( RWT.ACTIVE_KEYS );
-    assertTrue( Arrays.asList( activeKeys ).contains( "CTRL+B" ) );
-  }
-
-  @Test
-  public void testSetAccelerator_AddCancelKey() {
-    menuItem.setAccelerator( SWT.ALT | 'A' );
-
-    String[] activeKeys = ( String[] )display.getData( RWT.CANCEL_KEYS );
-    assertTrue( Arrays.asList( activeKeys ).contains( "ALT+A" ) );
-  }
-
-  @Test
-  public void testDisposedItem_RemoveActiveKey() {
-    menuItem.setAccelerator( SWT.ALT | 'A' );
-
-    menuItem.dispose();
-
-    String[] activeKeys = ( String[] )display.getData( RWT.ACTIVE_KEYS );
-    assertFalse( Arrays.asList( activeKeys ).contains( "ALT+A" ) );
-  }
-
-  @Test
-  public void testSetAccelerator_RemoveCancelKey() {
-    menuItem.setAccelerator( SWT.ALT | 'A' );
-
-    menuItem.setAccelerator( 0 );
-
-    String[] activeKeys = ( String[] )display.getData( RWT.CANCEL_KEYS );
-    assertFalse( Arrays.asList( activeKeys ).contains( "ALT+A" ) );
-  }
-
-  @Test
-  public void testSetAccelerator_KeepExistingCancelKey() {
-    display.setData( RWT.CANCEL_KEYS, new String[] { "CTRL+B" } );
-    menuItem.setAccelerator( SWT.ALT | 'A' );
-
-    menuItem.setAccelerator( 0 );
-
-    String[] activeKeys = ( String[] )display.getData( RWT.CANCEL_KEYS );
-    assertTrue( Arrays.asList( activeKeys ).contains( "CTRL+B" ) );
-  }
-
-  @Test
-  public void testDisposedItem_RemoveCancelKey() {
-    menuItem.setAccelerator( SWT.ALT | 'A' );
-
-    menuItem.dispose();
-
-    String[] activeKeys = ( String[] )display.getData( RWT.CANCEL_KEYS );
-    assertFalse( Arrays.asList( activeKeys ).contains( "ALT+A" ) );
-  }
-
-  @Test
   public void testSelectionEvent_TriggeredByAccelerator() {
     SelectionListener listener = mock( SelectionListener.class );
     menuItem.addSelectionListener( listener );
     menuItem.setAccelerator( SWT.ALT | 'A' );
-    shell.open();
 
-    Fixture.fakeNewRequest();
-    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
-    Fixture.readDataAndProcessAction( display );
+    menuItem.handleAcceleratorActivation();
 
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
     verify( listener ).widgetSelected( captor.capture() );
@@ -429,120 +333,16 @@ public class MenuItem_Test {
   }
 
   @Test
-  public void testSelectionEvent_TriggeredByAccelerator_OnSeparator() {
-    SelectionListener listener = mock( SelectionListener.class );
-    menuItem = new MenuItem( menu, SWT.SEPARATOR );
-    menuItem.addSelectionListener( listener );
-    menuItem.setAccelerator( SWT.ALT | 'A' );
-    shell.open();
-
-    Fixture.fakeNewRequest();
-    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
-    Fixture.readDataAndProcessAction( display );
-
-    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testSelectionEvent_TriggeredByAccelerator_OnDisabledItem() {
-    menuItem.setEnabled( false );
-    SelectionListener listener = mock( SelectionListener.class );
-    menuItem.addSelectionListener( listener );
-    menuItem.setAccelerator( SWT.ALT | 'A' );
-    shell.open();
-
-    Fixture.fakeNewRequest();
-    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
-    Fixture.readDataAndProcessAction( display );
-
-    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testSelectionEvent_TriggeredByAccelerator_OnDisabledMenu() {
-    menu.setEnabled( false );
-    SelectionListener listener = mock( SelectionListener.class );
-    menuItem.addSelectionListener( listener );
-    menuItem.setAccelerator( SWT.ALT | 'A' );
-    shell.open();
-
-    Fixture.fakeNewRequest();
-    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
-    Fixture.readDataAndProcessAction( display );
-
-    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testSelectionEvent_TriggeredByAccelerator_WithDifferentAcceleratorKey() {
-    SelectionListener listener = mock( SelectionListener.class );
-    menuItem.addSelectionListener( listener );
-    menuItem.setAccelerator( SWT.ALT | 'B' );
-    shell.open();
-
-    Fixture.fakeNewRequest();
-    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
-    Fixture.readDataAndProcessAction( display );
-
-    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testSelectionEvent_TriggeredByAccelerator_WithDifferentAcceleratorModifier() {
-    SelectionListener listener = mock( SelectionListener.class );
-    menuItem.addSelectionListener( listener );
-    menuItem.setAccelerator( SWT.CTRL | 'A' );
-    shell.open();
-
-    Fixture.fakeNewRequest();
-    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
-    Fixture.readDataAndProcessAction( display );
-
-    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testSelectionEvent_WithoutAccelerator() {
-    SelectionListener listener = mock( SelectionListener.class );
-    menuItem.addSelectionListener( listener );
-    shell.open();
-
-    Fixture.fakeNewRequest();
-    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
-    Fixture.readDataAndProcessAction( display );
-
-    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testAcceleratorFilter_FilterKeyDownEvent() {
-    KeyListener listener = mock( KeyListener.class );
-    menuItem.setAccelerator( SWT.ALT | 'A' );
-    shell.addKeyListener( listener );
-    shell.open();
-
-    Fixture.fakeNewRequest();
-    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
-    Fixture.readDataAndProcessAction( display );
-
-    verify( listener, times( 0 ) ).keyPressed( any( KeyEvent.class) );
-  }
-
-  @Test
   public void testToggleSelection_TriggeredByAccelerator_OnCheck() {
     menuItem = new MenuItem( menu, SWT.CHECK );
     menuItem.setAccelerator( SWT.ALT | 'A' );
     shell.open();
 
-    Fixture.fakeNewRequest();
-    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
-    Fixture.readDataAndProcessAction( display );
+    menuItem.handleAcceleratorActivation();
 
     assertTrue( menuItem.getSelection() );
 
-    Fixture.fakeNewRequest();
-    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
-    Fixture.readDataAndProcessAction( display );
+    menuItem.handleAcceleratorActivation();
 
     assertFalse( menuItem.getSelection() );
   }
@@ -553,15 +353,11 @@ public class MenuItem_Test {
     menuItem.setAccelerator( SWT.ALT | 'A' );
     shell.open();
 
-    Fixture.fakeNewRequest();
-    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
-    Fixture.readDataAndProcessAction( display );
+    menuItem.handleAcceleratorActivation();
 
     assertTrue( menuItem.getSelection() );
 
-    Fixture.fakeNewRequest();
-    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
-    Fixture.readDataAndProcessAction( display );
+    menuItem.handleAcceleratorActivation();
 
     assertTrue( menuItem.getSelection() );
   }
@@ -574,11 +370,8 @@ public class MenuItem_Test {
     menuItem1.setSelection( true );
     MenuItem menuItem2 = new MenuItem( menu, SWT.CHECK );
     menuItem2.setSelection( true );
-    shell.open();
 
-    Fixture.fakeNewRequest();
-    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
-    Fixture.readDataAndProcessAction( display );
+    menuItem.handleAcceleratorActivation();
 
     assertFalse( menuItem1.getSelection() );
     assertTrue( menuItem2.getSelection() );
@@ -592,29 +385,10 @@ public class MenuItem_Test {
     menuItem1.setSelection( true );
     SelectionListener listener = mock( SelectionListener.class );
     menuItem1.addSelectionListener( listener );
-    shell.open();
 
-    Fixture.fakeNewRequest();
-    fakeKeyDownRequest( shell, true, false, false, 65, 65 );
-    Fixture.readDataAndProcessAction( display );
+    menuItem.handleAcceleratorActivation();
 
     verify( listener ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  private static void fakeKeyDownRequest( Widget widget,
-                                          boolean altKey,
-                                          boolean ctrlKey,
-                                          boolean shiftKey,
-                                          int keyCode,
-                                          int charCode )
-  {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "altKey", Boolean.valueOf( altKey ) );
-    parameters.put( "ctrlKey", Boolean.valueOf( ctrlKey ) );
-    parameters.put( "shiftKey", Boolean.valueOf( shiftKey ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_KEY_CODE, Integer.valueOf( keyCode ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_CHAR_CODE, Integer.valueOf( charCode ) );
-    Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_KEY_DOWN, parameters );
   }
 
 }

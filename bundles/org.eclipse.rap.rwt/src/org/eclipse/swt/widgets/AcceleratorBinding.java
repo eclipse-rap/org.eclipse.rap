@@ -29,7 +29,7 @@ class AcceleratorBinding implements Listener {
 
   public void handleEvent( Event event ) {
     if( isRelevantEvent( event ) && menuItem.isEnabled() ) {
-      menuItem.updateSelection();
+      menuItem.handleAcceleratorActivation();
       event.type = SWT.NONE;
     }
   }
