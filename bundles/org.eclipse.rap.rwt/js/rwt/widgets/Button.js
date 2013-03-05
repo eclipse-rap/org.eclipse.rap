@@ -102,6 +102,7 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
           if( event.charCode === charCode ) {
             this.setFocused( true );
             this.execute();
+            event.success = true;
           }
         break;
       }

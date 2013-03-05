@@ -110,6 +110,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
           var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
           if( event.charCode === charCode ) {
             this.execute();
+            event.success = true;
           }
         break;
       }

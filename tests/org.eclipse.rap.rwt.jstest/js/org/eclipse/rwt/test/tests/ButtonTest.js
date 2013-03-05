@@ -706,11 +706,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       button.setMnemonicIndex( 1 );
       button.setHasSelectionListener( true );
       TestUtil.flush();
+      var success = false;
 
       rwt.widgets.util.MnemonicHandler.getInstance().activate();
-      rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      success = rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
       TestUtil.flush();
 
+      assertTrue( success );
       assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "Selection" ) );
       button.destroy();
     }
