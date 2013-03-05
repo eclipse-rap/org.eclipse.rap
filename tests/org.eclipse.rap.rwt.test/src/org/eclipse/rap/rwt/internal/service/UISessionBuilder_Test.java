@@ -77,7 +77,7 @@ public class UISessionBuilder_Test {
     registerEntryPoint( null );
 
     UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
-    UISessionImpl uiSession = ( UISessionImpl )builder.buildUISession();
+    UISessionImpl uiSession = builder.buildUISession();
 
     assertEquals( applicationContext, uiSession.getApplicationContext() );
   }

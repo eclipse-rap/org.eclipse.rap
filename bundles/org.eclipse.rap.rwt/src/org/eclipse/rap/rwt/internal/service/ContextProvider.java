@@ -192,7 +192,7 @@ public class ContextProvider {
         ServletContext servletContext = httpSession.getServletContext();
         ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
         UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
-        uiSession = ( UISessionImpl )builder.buildUISession();
+        uiSession = builder.buildUISession();
       }
       getContext().setUISession( uiSession );
     }

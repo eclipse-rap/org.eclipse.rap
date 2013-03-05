@@ -23,7 +23,6 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
-import org.eclipse.rap.rwt.service.UISession;
 
 
 public class UISessionBuilder {
@@ -40,7 +39,7 @@ public class UISessionBuilder {
     uiSession = new UISessionImpl( httpSession );
   }
 
-  public UISession buildUISession() {
+  public UISessionImpl buildUISession() {
     uiSession.attachToHttpSession( httpSession );
     uiSession.setApplicationContext( applicationContext );
     SingletonManager.install( uiSession );

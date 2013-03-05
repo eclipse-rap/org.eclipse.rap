@@ -171,7 +171,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     ApplicationContextImpl applicationContext = uiSession.getApplicationContext();
     uiSession.shutdown();
     UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
-    uiSession = ( UISessionImpl )builder.buildUISession();
+    uiSession = builder.buildUISession();
     ContextProvider.getContext().setUISession( uiSession );
     if( bufferedParameters != null ) {
       RequestParameterBuffer.store( bufferedParameters );
