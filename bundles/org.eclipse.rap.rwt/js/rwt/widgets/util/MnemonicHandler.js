@@ -51,6 +51,10 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
       }
     },
 
+    isActive : function() {
+      return this._active != null;
+    },
+
     handleKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
       var result = false;
       if( this._isActivation( eventType, keyCode, charCode, domEvent ) ) {
@@ -64,12 +68,14 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     },
 
     activate : function() {
-      var root = rwt.widgets.base.Window.getDefaultWindowManager().getActiveWindow();
-      if( root == null ) {
-        root = rwt.widgets.base.ClientDocument.getInstance();
+      if( this._noMenuOpen() ) {
+        var root = rwt.widgets.base.Window.getDefaultWindowManager().getActiveWindow();
+        if( root == null ) {
+          root = rwt.widgets.base.ClientDocument.getInstance();
+        }
+        this._active = root.toHashCode();
+        this._fire( { "type" : "show" } );
       }
-      this._active = root.toHashCode();
-      this._fire( { "type" : "show" } );
     },
 
     deactivate : function() {
@@ -101,6 +107,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     },
 
     _fire : function( event, onlyVisible ) {
+      var result = null;
       if( this._map[ this._active ] ) {
         var handlers = this._map[ this._active ];
         for( var key in handlers ) {
@@ -110,6 +117,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
           }
         }
       }
+      return result;
     },
 
     _isActivation : function( eventType, keyCode, charCode, domEvent ) {
@@ -121,7 +129,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     },
 
     _isDeactivation : function( eventType, keyCode, charCode, domEvent ) {
-      return this._active != null && !this._isActivatorCombo( domEvent );
+      return this._activator != null && this._active != null && !this._isActivatorCombo( domEvent );
     },
 
     _isActivatorCombo : function( domEvent ) {
@@ -133,6 +141,10 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     _isTrigger : function( eventType, keyCode, charCode, domEvent ) {
       var isChar = !isNaN( keyCode ) && rwt.event.EventHandlerUtil.isAlphaNumericKeyCode( keyCode );
       return this._active != null && eventType === "keydown" && isChar;
+     },
+
+     _noMenuOpen : function() {
+       return rwt.util.Objects.isEmpty( rwt.widgets.util.MenuManager.getInstance().getAll() );
      }
 
   }

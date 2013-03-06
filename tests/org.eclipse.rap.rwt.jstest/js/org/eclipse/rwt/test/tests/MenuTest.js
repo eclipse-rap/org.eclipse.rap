@@ -170,6 +170,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.destroy();
     },
 
+    testCreateMenuItemWithMnemonicByProtocol : function() {
+      var menu = createPopUpMenuByProtocol( "w3" );
+      var item = createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
+
+      TestUtil.protocolSet( "w4", { "mnemonicIndex" : 1 } );
+
+      assertEquals( 1, item.getMnemonicIndex() );
+      menu.destroy();
+      item.destroy();
+    },
+
+    testSetTextResetsMnemonic : function() {
+      var menu = createPopUpMenuByProtocol( "w3" );
+      var item = createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
+      TestUtil.protocolSet( "w4", { "mnemonicIndex" : 1 } );
+
+      TestUtil.protocolSet( "w4", { "text" : "foo" } );
+
+      assertNull( item.getMnemonicIndex() );
+      menu.destroy();
+      item.destroy();
+    },
+
     testDestroyMenuItemWithPopupMenuByProtocol : function() {
       var menu = createPopUpMenuByProtocol( "w3" );
       var item = createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -470,6 +493,63 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.click( TestUtil.getDocument() );
       TestUtil.flush();
       assertFalse( menu.isSeeable() );
+      disposeMenuBar();
+    },
+
+    testMenuBarItemWithMnemonic_RenderMnemonic : function() {
+      createMenuBar( "push" );
+      menuBarItem.setText( "foo" );
+      menuBarItem.setMnemonicIndex( 1 );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      TestUtil.flush();
+
+      assertEquals( "f<span style=\"text-decoration:underline\">o</span>o", menuBarItem.getCellContent( 2 ) );
+      disposeMenuBar();
+    },
+
+    testMenuBarItemWithMnemonic_HideMnemonic : function() {
+      createMenuBar( "push" );
+      menuBarItem.setText( "foo" );
+      menuBarItem.setMnemonicIndex( 1 );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      rwt.widgets.util.MnemonicHandler.getInstance().deactivate();
+      TestUtil.flush();
+
+      assertEquals( "foo", menuBarItem.getCellContent( 2 ) );
+      disposeMenuBar();
+    },
+
+    testMenuBarItemWithMnemonic_Trigger : function() {
+      createMenuBar( "push" );
+      menuBarItem.setText( "foo" );
+      menuBarItem.setMnemonicIndex( 1 );
+      TestUtil.flush();
+      var success = false;
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      success = rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      TestUtil.flush();
+
+      assertTrue( success );
+      assertTrue( menu.isSeeable() );
+      assertFalse( rwt.widgets.util.MnemonicHandler.getInstance().isActive() );
+      disposeMenuBar();
+    },
+
+    testMenuBarItemWithMnemonic_NoShowWhileVisible : function() {
+      createMenuBar( "push" );
+      menuBarItem.setText( "foo" );
+      menuBarItem.setMnemonicIndex( 1 );
+      TestUtil.flush();
+      TestUtil.click( menuBarItem );
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+
+      assertFalse( rwt.widgets.util.MnemonicHandler.getInstance().isActive() );
       disposeMenuBar();
     },
 

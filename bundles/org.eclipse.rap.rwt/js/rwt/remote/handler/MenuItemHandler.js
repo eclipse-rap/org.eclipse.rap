@@ -45,6 +45,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.MenuItem", {
     "menu",
     "enabled",
     "text",
+    "mnemonicIndex",
     "image",
     "selection",
     "customVariant"
@@ -60,14 +61,12 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.MenuItem", {
     },
     "text" : function( widget, value ) {
       if( !widget.hasState( "rwt_SEPARATOR" ) ) {
-        var EncodingUtil = rwt.util.Encoding;
         var text = value;
         // Strip accelerator text
         var index = text.indexOf( "\t" );
         if( index != -1 ) {
           text = text.substring( 0, index );
         }
-        text = EncodingUtil.escapeText( text, false );
         widget.setText( text );
       }
     },

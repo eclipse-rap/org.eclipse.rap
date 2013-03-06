@@ -18,6 +18,8 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
     this._hasSelectionListener = false;
     this._selected = false;
     this._parentMenu = null;
+    this._rawText = null;
+    this._mnemonicIndex = null;
     this._subMenu = null;
     this._subMenuOpen = false;
     this._preferredCellWidths = null;
@@ -62,6 +64,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
 
   destruct : function() {
     this._disposeFields( "_parentMenu", "_subMenu" );
+    this.setMnemonicIndex( null );
   },
 
   properties : {
@@ -95,6 +98,58 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
   },
 
   members : {
+
+   setText : function( value ) {
+      this._rawText = value;
+      this._mnemonicIndex = null;
+      this._applyText( false );
+    },
+
+    setMnemonicIndex : function( value ) {
+      this._mnemonicIndex = value;
+      var mnemonicHandler = rwt.widgets.util.MnemonicHandler.getInstance();
+      if( ( typeof value === "number" ) && ( value >= 0 ) ) {
+        mnemonicHandler.add( this, this._onMnemonic );
+      } else {
+        mnemonicHandler.remove( this );
+      }
+    },
+
+    getMnemonicIndex : function() {
+      return this._mnemonicIndex;
+    },
+
+    _applyText : function( mnemonic ) {
+      if( this._rawText ) {
+        var mnemonicIndex = mnemonic ? this._mnemonicIndex : undefined;
+        var text = rwt.util.Encoding.escapeText( this._rawText, mnemonicIndex );
+        this._setText( text );
+      } else {
+        this._setText( null );
+      }
+    },
+
+    _onMnemonic : function( event ) {
+      switch( event.type ) {
+        case "show":
+          this._applyText( true );
+        break;
+        case "hide":
+          this._applyText( false );
+        break;
+        case "trigger":
+          var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
+          if( event.charCode === charCode ) {
+            if( this._parentMenu instanceof rwt.widgets.MenuBar ) {
+              this._parentMenu.setOpenItem( this );
+            } else {
+              //this.execute();
+            }
+            event.success = true;
+          }
+        break;
+      }
+    },
 
     setParentMenu : function( menu ) {
       this._parentMenu = menu;
@@ -156,7 +211,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
       this._setPreferredCellWidth( 1, width );
     },
 
-    setText : function( value ) {
+    _setText : function( value ) {
       this.setCellContent( 2, value );
       this.setCellDimension( 2, null, null ); // force to recompute the width
       this._setPreferredCellWidth( 2, this.getCellWidth( 2 ) );
