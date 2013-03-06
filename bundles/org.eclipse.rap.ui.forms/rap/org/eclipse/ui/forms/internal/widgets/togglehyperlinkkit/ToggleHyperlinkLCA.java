@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,15 @@
 package org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit;
 
 import java.io.IOException;
+import java.io.InputStream;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.widgets.*;
 
@@ -93,25 +95,44 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
    *   collapsedNormal, collapsedHover, expandedNormal, expandedHover
    */
   private static Image[] getImages( ToggleHyperlink hyperlink ) {
-    ClassLoader classLoader = ToggleHyperlinkLCA.class.getClassLoader();
+    Display display = hyperlink.getDisplay();
     Image[] result;
     if( hyperlink instanceof TreeNode ) {
       result = new Image[] {
-        Graphics.getImage( MINUS_GIF, classLoader ),
+        getImage( display, MINUS_GIF ),
         null,
-        Graphics.getImage( PLUS_GIF, classLoader ),
+        getImage( display, PLUS_GIF ),
         null
       };
     } else if( hyperlink instanceof Twistie ) {
       result = new Image[] {
-        Graphics.getImage( TWISTIE_COLLAPSE_GIF, classLoader ),
-        Graphics.getImage( TWISTIE_COLLAPSE_HOVER_GIF, classLoader ),
-        Graphics.getImage( TWISTIE_EXPAND_GIF, classLoader ),
-        Graphics.getImage( TWISTIE_EXPAND_HOVER_GIF, classLoader )
+        getImage( display, TWISTIE_COLLAPSE_GIF ),
+        getImage( display, TWISTIE_COLLAPSE_HOVER_GIF ),
+        getImage( display, TWISTIE_EXPAND_GIF ),
+        getImage( display, TWISTIE_EXPAND_HOVER_GIF )
       };
     } else {
       result = new Image[] { null, null, null, null };
     }
     return result;
   }
+
+  public static Image getImage( Device device, String path ) {
+    ClassLoader classLoader = ToggleHyperlinkLCA.class.getClassLoader();
+    InputStream inputStream = classLoader.getResourceAsStream( path );
+    Image result = null;
+    if( inputStream != null ) {
+      try {
+        result = new Image( device, inputStream );
+      } finally {
+        try {
+          inputStream.close();
+        } catch( IOException e ) {
+          // ignore
+        }
+      }
+    }
+    return result;
+  }
+
 }

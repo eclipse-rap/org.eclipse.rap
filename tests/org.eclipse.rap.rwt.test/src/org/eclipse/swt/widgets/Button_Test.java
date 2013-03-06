@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -21,7 +22,6 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -34,7 +34,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings("deprecation")
 public class Button_Test {
 
   private Display display;
@@ -53,20 +52,22 @@ public class Button_Test {
   }
 
   @Test
-  public void testImage() {
+  public void testImage() throws IOException {
     Button button = new Button( shell, SWT.NONE );
-    button.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
-    assertSame( Graphics.getImage( Fixture.IMAGE1 ), button.getImage() );
+    Image image = createImage( display, Fixture.IMAGE1 );
+    button.setImage( image );
+    assertSame( image, button.getImage() );
 
     Button button2 = new Button( shell, SWT.NONE );
-    button2.setImage( Graphics.getImage( Fixture.IMAGE2 ) );
-    assertSame( Graphics.getImage( Fixture.IMAGE2 ), button2.getImage() );
+    Image image2 = createImage( display, Fixture.IMAGE2 );
+    button2.setImage( image2 );
+    assertSame( image2, button2.getImage() );
 
     button2.setImage( null );
     assertEquals( null, button2.getImage() );
 
     Button arrowButton = new Button( shell, SWT.ARROW );
-    arrowButton.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    arrowButton.setImage( image );
     assertEquals( null, arrowButton.getImage() );
 
   }
@@ -192,12 +193,12 @@ public class Button_Test {
   }
 
   @Test
-  public void testComputeSize() {
+  public void testComputeSize() throws IOException {
     // Text and image to use
     String text = "Click me!";
     Point extent = TextSizeUtil.stringExtent( shell.getFont(), text );
     assertEquals( new Point( 60, 16 ), extent );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
 
     // PUSH button
     Button button = new Button( shell, SWT.PUSH );
@@ -299,7 +300,7 @@ public class Button_Test {
     String text = "Click me!";
     Point extent = TextSizeUtil.stringExtent( shell.getFont(), text );
     assertEquals( new Point( 60, 16 ), extent );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
 
     // PUSH button
     Button button = new Button( shell, SWT.PUSH );

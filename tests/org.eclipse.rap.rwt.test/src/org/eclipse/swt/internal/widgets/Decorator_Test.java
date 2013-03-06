@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -17,7 +18,8 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import java.io.IOException;
+
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -34,17 +36,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings("deprecation")
 // TODO [rh] rename to ControlDecorator_Test
 public class Decorator_Test {
 
+  private Display display;
   private Shell shell;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
+    display = new Display();
     shell = new Shell( display , SWT.NONE );
   }
 
@@ -103,13 +105,13 @@ public class Decorator_Test {
   }
 
   @Test
-  public void testImage() {
+  public void testImage() throws IOException {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
     assertNull( decoration.getImage() );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), decoration.getBounds() );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( display, Fixture.IMAGE1 );
     decoration.setImage( image );
     assertSame( image, decoration.getImage() );
     assertEquals( image.getBounds().width, decoration.getBounds().width );
@@ -192,14 +194,14 @@ public class Decorator_Test {
   }
 
   @Test
-  public void testVisible() {
+  public void testVisible() throws IOException {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     Control button = new Button( composite, SWT.PUSH );
     ControlDecorator decoration
       = new ControlDecorator( control, SWT.RIGHT, null );
     assertFalse( decoration.isVisible() );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( display, Fixture.IMAGE1 );
     decoration.setImage( image );
     shell.open();
     assertTrue( decoration.isVisible() );

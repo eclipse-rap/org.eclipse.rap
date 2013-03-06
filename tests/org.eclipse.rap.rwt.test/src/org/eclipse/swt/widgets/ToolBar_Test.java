@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,26 +10,28 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import java.io.IOException;
+
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings("deprecation")
 public class ToolBar_Test {
 
   private Display display;
@@ -49,7 +51,7 @@ public class ToolBar_Test {
   }
 
   @Test
-  public void testCreation() {
+  public void testCreation() throws IOException {
     ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
     assertEquals( 0, toolBar.getItemCount() );
     assertEquals( 0, toolBar.getItems().length );
@@ -74,15 +76,16 @@ public class ToolBar_Test {
     // search operation indexOf
     ToolItem item1 = new ToolItem( toolBar, SWT.PUSH );
     ToolItem item2 = new ToolItem( toolBar, SWT.RADIO );
-    item2.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
-    assertSame( Graphics.getImage( Fixture.IMAGE1 ), item2.getImage() );
+    Image image = createImage( display, Fixture.IMAGE1 );
+    item2.setImage( image );
+    assertSame( image, item2.getImage() );
     assertEquals( 3, toolBar.getItemCount() );
     assertEquals( 3, toolBar.getItems().length );
     assertEquals( 1, toolBar.indexOf( item1 ) );
     assertEquals( item1, toolBar.getItem( 1 ) );
     assertEquals( item2, toolBar.getItem( 2 ) );
     ToolItem item3 = new ToolItem( toolBar, SWT.SEPARATOR );
-    item3.setImage( Graphics.getImage( Fixture.IMAGE2 ) );
+    item3.setImage( createImage( display, Fixture.IMAGE2 ) );
     assertNull( item3.getImage() );
   }
 

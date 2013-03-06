@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets.shellkit;
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_ACTIVATE;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -27,7 +28,6 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
@@ -68,19 +68,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings("deprecation")
 public class ShellLCA_Test {
 
   private Display display;
   private Shell shell;
+  private Image image;
 
   @Before
-  public void setUp() {
+  public void setUp() throws IOException {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
     Fixture.fakeNewRequest();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    image = createImage( display, Fixture.IMAGE1 );
   }
 
   @After
@@ -122,7 +123,6 @@ public class ShellLCA_Test {
     shellAdapter.setActiveControl( button );
     shell.addShellListener( new ShellAdapter() { } );
     shell.setMaximized( true );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
     shell.setImage( image );
     shell.setMinimumSize( 100, 100 );
     Fixture.preserveWidgets();
@@ -176,11 +176,11 @@ public class ShellLCA_Test {
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
     // foreground background font
-    Color background = Graphics.getColor( 122, 33, 203 );
+    Color background =new Color( display, 122, 33, 203 );
     shell.setBackground( background );
-    Color foreground = Graphics.getColor( 211, 178, 211 );
+    Color foreground =new Color( display, 211, 178, 211 );
     shell.setForeground( foreground );
-    Font font = Graphics.getFont( "font", 12, SWT.BOLD );
+    Font font = new Font( display, "font", 12, SWT.BOLD );
     shell.setFont( font );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
@@ -734,7 +734,7 @@ public class ShellLCA_Test {
     Fixture.preserveWidgets();
     ShellLCA lca = new ShellLCA();
 
-    shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    shell.setImage( image );
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
@@ -752,7 +752,7 @@ public class ShellLCA_Test {
     Fixture.preserveWidgets();
     ShellLCA lca = new ShellLCA();
 
-    shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    shell.setImage( image );
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
@@ -767,7 +767,7 @@ public class ShellLCA_Test {
     Fixture.preserveWidgets();
     ShellLCA lca = new ShellLCA();
 
-    shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    shell.setImage( image );
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
@@ -785,7 +785,7 @@ public class ShellLCA_Test {
     Fixture.preserveWidgets();
     ShellLCA lca = new ShellLCA();
 
-    shell.setImages( new Image[] { Graphics.getImage( Fixture.IMAGE1 ) } );
+    shell.setImages( new Image[] { image } );
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();

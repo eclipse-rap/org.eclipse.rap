@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
@@ -35,7 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings( "deprecation" )
 public class Image_Test {
 
   @Before
@@ -54,7 +55,7 @@ public class Image_Test {
   //////////////////////////
   // InputStream constructor
 
-  private Device device;
+  private Display device;
 
   @Test
   public void testStreamConstructorWithNullDevice() {
@@ -88,7 +89,7 @@ public class Image_Test {
 
   @Test
   public void testStreamConstructor() throws IOException {
-    Image image = createImage(Fixture.IMAGE1);
+    Image image = createImage( device, Fixture.IMAGE1 );
 
     assertEquals( new Rectangle( 0, 0, 58, 12 ), image.getBounds() );
   }
@@ -171,7 +172,7 @@ public class Image_Test {
 
   @Test
   public void testImageConstructorWithIllegalFlag() throws IOException {
-    Image image = createImage( Fixture.IMAGE1 );
+    Image image = createImage( device, Fixture.IMAGE1 );
 
     try {
       new Image( device, image, SWT.PUSH );
@@ -182,7 +183,7 @@ public class Image_Test {
 
   @Test
   public void testImageConstructor() throws IOException {
-    Image image = createImage( Fixture.IMAGE1 );
+    Image image = createImage( device, Fixture.IMAGE1 );
     Image copiedImage = new Image( device, image, SWT.IMAGE_COPY );
     assertEquals( image.getBounds(), copiedImage.getBounds() );
     assertSame( image.internalImage, copiedImage.internalImage );
@@ -273,16 +274,16 @@ public class Image_Test {
 
   @Test
   public void testGetBounds() throws IOException {
-    Image image1 = createImage( Fixture.IMAGE_100x50 );
+    Image image1 = createImage( device, Fixture.IMAGE_100x50 );
     assertEquals( new Rectangle( 0, 0, 100, 50 ), image1.getBounds() );
 
-    Image image2 = createImage( Fixture.IMAGE_100x50 );
+    Image image2 = createImage( device, Fixture.IMAGE_100x50 );
     assertEquals( new Rectangle( 0, 0, 100, 50 ), image2.getBounds() );
   }
 
   @Test
   public void testGetBoundsWhenDisposed() throws IOException {
-    Image image = createImage( Fixture.IMAGE1 );
+    Image image = createImage( device, Fixture.IMAGE1 );
     image.dispose();
 
     try {
@@ -308,7 +309,7 @@ public class Image_Test {
 
   @Test
   public void testGetImageDataWhenDisposed() throws IOException {
-    Image image = createImage(Fixture.IMAGE1);
+    Image image = createImage( device, Fixture.IMAGE1 );
     image.dispose();
     try {
       image.getImageData();
@@ -334,7 +335,7 @@ public class Image_Test {
 
   @Test
   public void testSetBackgroundWithDisposedColor() throws IOException {
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( device, Fixture.IMAGE_100x50 );
     Color disposedColor = new Color( device, 0, 0, 0 );
     disposedColor.dispose();
     try {
@@ -346,7 +347,7 @@ public class Image_Test {
 
   @Test
   public void testSetBackgroundWithNullColor() throws IOException {
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( device, Fixture.IMAGE_100x50 );
     try {
       image.setBackground( null );
       fail( "setBackground must not accept null-color" );
@@ -356,14 +357,14 @@ public class Image_Test {
 
   @Test
   public void testGetBackground() throws IOException {
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( device, Fixture.IMAGE_100x50 );
 
     assertNull( image.getBackground() );
   }
 
   @Test
   public void testGetBackgroundWhenDisposed() throws IOException {
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( device, Fixture.IMAGE_100x50 );
     image.dispose();
 
     try {
@@ -376,7 +377,7 @@ public class Image_Test {
 
   @Test
   public void testDispose() throws IOException {
-    Image image = createImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( device, Fixture.IMAGE_100x50 );
     image.dispose();
 
     assertTrue( image.isDisposed() );
@@ -401,11 +402,11 @@ public class Image_Test {
     assertTrue( image1.equals( image2 ) );
     assertFalse( image1.equals( anotherImage ) );
 
-    image1 = createImage( Fixture.IMAGE1 );
-    image2 = createImage( Fixture.IMAGE1 );
+    image1 = createImage( device, Fixture.IMAGE1 );
+    image2 = createImage( device, Fixture.IMAGE1 );
     assertFalse( image1.equals( image2 ) );
 
-    image1 = createImage( Fixture.IMAGE1 );
+    image1 = createImage( device, Fixture.IMAGE1 );
     image2 = Graphics.getImage( Fixture.IMAGE1 );
     assertFalse( image1.equals( image2 ) );
   }
@@ -415,16 +416,9 @@ public class Image_Test {
     Image image1 = Graphics.getImage( Fixture.IMAGE1 );
     Image image2 = Graphics.getImage( Fixture.IMAGE1 );
     assertSame( image1, image2 );
-    image1 = createImage( Fixture.IMAGE1 );
+    image1 = createImage( device, Fixture.IMAGE1 );
     image2 = Graphics.getImage( Fixture.IMAGE1 );
     assertNotSame( image1, image2 );
-  }
-
-  private Image createImage( String resourceName ) throws IOException {
-    InputStream stream = Fixture.class.getClassLoader().getResourceAsStream( resourceName );
-    Image result = new Image( device, stream );
-    stream.close();
-    return result;
   }
 
 }

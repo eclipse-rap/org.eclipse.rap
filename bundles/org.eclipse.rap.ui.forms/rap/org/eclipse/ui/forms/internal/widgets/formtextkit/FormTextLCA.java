@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,12 @@
 package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -30,6 +30,7 @@ import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.internal.forms.widgets.*;
 
 
+@SuppressWarnings("restriction")
 public class FormTextLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "forms.widgets.FormText"; //$NON-NLS-1$
@@ -48,6 +49,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
   private static final String PROP_HYPERLINK_ACTIVE_FOREGROUND = "hyperlinkActiveForeground"; //$NON-NLS-1$
   private static final String PROP_RESOURCE_TABLE = "resourceTable"; //$NON-NLS-1$
 
+  @Override
   public void preserveValues( Widget widget ) {
     FormText formText = ( FormText )widget;
     ControlLCAUtil.preserveValues( formText );
@@ -65,6 +67,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveProperty( widget, PROP_RESOURCE_TABLE, getResourceTable( formText ) );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     FormText formText = ( FormText )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( formText );
@@ -79,6 +82,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processKeyEvents( formText );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     FormText formText = ( FormText )widget;
     ControlLCAUtil.renderChanges( formText );
@@ -112,7 +116,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
         || hasBoundsChanged( formText ) )
     {
       Paragraph[] paragraphs = getParagraphs( formText );
-      ArrayList buffer = new ArrayList();
+      ArrayList<Object> buffer = new ArrayList<Object>();
       for( int i = 0; i < paragraphs.length; i++ ) {
         Paragraph paragraph = paragraphs[ i ];
         if( paragraph instanceof BulletParagraph ) {
@@ -127,7 +131,10 @@ public class FormTextLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void appendBullet( FormText formText, BulletParagraph bullet, ArrayList buffer ) {
+  private static void appendBullet( FormText formText,
+                                    BulletParagraph bullet,
+                                    ArrayList<Object> buffer )
+  {
     int style = bullet.getBulletStyle();
     Image image = getBulletImage( formText, bullet );
     String imageName = ImageFactory.getImagePath( image );
@@ -149,7 +156,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
 
   private static void appendSegments( FormText formText,
                                       ParagraphSegment[] segments,
-                                      ArrayList buffer )
+                                      ArrayList<Object> buffer )
   {
     for( int i = 0; i < segments.length; i++ ) {
       ParagraphSegment segment = segments[ i ];
@@ -169,7 +176,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
 
   private static void appendTextHyperlinkSegment( FormText formText,
                                                   TextHyperlinkSegment segment,
-                                                  ArrayList buffer )
+                                                  ArrayList<Object> buffer )
   {
     String[] textFragments = getTextFragments( segment );
     String tooltipText = segment.getTooltipText();
@@ -193,7 +200,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
 
   private static void appendTextSegment( FormText formText,
                                          TextSegment segment,
-                                         ArrayList buffer )
+                                         ArrayList<Object> buffer )
   {
     String[] textFragments = getTextFragments( segment );
     Rectangle[] textFragmentsBounds = getTextFragmentsBounds( segment );
@@ -221,7 +228,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
 
   private static void appendImageHyperlinkSegment( FormText formText,
                                                    ImageHyperlinkSegment segment,
-                                                   ArrayList buffer )
+                                                   ArrayList<Object> buffer )
   {
     String tooltipText = segment.getTooltipText();
     Rectangle bounds = segment.getBounds();
@@ -238,7 +245,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
 
   private static void appendImageSegment( FormText formText,
                                           ImageSegment segment,
-                                          ArrayList buffer )
+                                          ArrayList<Object> buffer )
   {
     Rectangle bounds = segment.getBounds();
     Image image = segment.getImage( getResourceTable( formText ) );
@@ -253,7 +260,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
 
   private static void appendAggregateHyperlinkSegment( FormText formText,
                                                        AggregateHyperlinkSegment segment,
-                                                       ArrayList buffer )
+                                                       ArrayList<Object> buffer )
   {
     Object[] segments = getHyperlinkSegments( segment );
     for( int i = 0; i < segments.length; i++ ) {
@@ -323,8 +330,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
   }
 
   private static Image getBulletImage( FormText formText, BulletParagraph bullet ) {
-    ClassLoader classLoader = FormTextLCA.class.getClassLoader();
-    Image bulletImage = Graphics.getImage( BULLET_CIRCLE_GIF, classLoader );
+    Image bulletImage = getImage( formText.getDisplay(), BULLET_CIRCLE_GIF );
     if( bullet.getBulletStyle() == BulletParagraph.IMAGE ) {
       String text = bullet.getBulletText();
       if( text != null ) {
@@ -414,4 +420,23 @@ public class FormTextLCA extends AbstractWidgetLCA {
     }
     return result;
   }
+
+  public static Image getImage( Device device, String path ) {
+    ClassLoader classLoader = FormTextLCA.class.getClassLoader();
+    InputStream inputStream = classLoader.getResourceAsStream( path );
+    Image result = null;
+    if( inputStream != null ) {
+      try {
+        result = new Image( device, inputStream );
+      } finally {
+        try {
+          inputStream.close();
+        } catch( IOException e ) {
+          // ignore
+        }
+      }
+    }
+    return result;
+  }
+
 }

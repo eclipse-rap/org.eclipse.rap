@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -30,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -70,7 +70,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-@SuppressWarnings("deprecation")
 public class ControlLCAUtil_Test {
 
   private Display display;
@@ -678,8 +677,8 @@ public class ControlLCAUtil_Test {
   }
 
   @Test
-  public void testRenderBackgroundImage() throws JSONException {
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+  public void testRenderBackgroundImage() throws JSONException, IOException {
+    Image image = createImage( display, Fixture.IMAGE1 );
 
     control.setBackgroundImage( image );
     ControlLCAUtil.renderBackgroundImage( control );
@@ -692,10 +691,10 @@ public class ControlLCAUtil_Test {
   }
 
   @Test
-  public void testRenderBackgroundImageUnchanged() {
+  public void testRenderBackgroundImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
-    control.setBackgroundImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    control.setBackgroundImage( createImage( display, Fixture.IMAGE1 ) );
 
     Fixture.preserveWidgets();
     ControlLCAUtil.renderBackgroundImage( control );

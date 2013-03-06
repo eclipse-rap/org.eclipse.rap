@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.treekit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -29,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -75,7 +75,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings("deprecation")
 public class TreeLCA_Test {
 
   private Display display;
@@ -110,9 +109,9 @@ public class TreeLCA_Test {
   }
 
   @Test
-  public void testGetItemMetricsImageWidth() {
-    Image image1 = Graphics.getImage( Fixture.IMAGE_100x50 );
-    Image image2 = Graphics.getImage( Fixture.IMAGE_50x100 );
+  public void testGetItemMetricsImageWidth() throws IOException {
+    Image image1 = createImage( display, Fixture.IMAGE_100x50 );
+    Image image2 = createImage( display, Fixture.IMAGE_50x100 );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
     tree.setHeaderVisible( true );
@@ -138,9 +137,9 @@ public class TreeLCA_Test {
   }
 
   @Test
-  public void testGetItemMetricsImageLeft() {
-    Image image1 = Graphics.getImage( Fixture.IMAGE_100x50 );
-    Image image2 = Graphics.getImage( Fixture.IMAGE_50x100 );
+  public void testGetItemMetricsImageLeft() throws IOException {
+    Image image1 = createImage( display, Fixture.IMAGE_100x50 );
+    Image image2 = createImage( display, Fixture.IMAGE_50x100 );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
     tree.setHeaderVisible( true );
@@ -207,10 +206,10 @@ public class TreeLCA_Test {
   }
 
   @Test
-  public void testGetItemMetricsTextLeftWithImage() {
+  public void testGetItemMetricsTextLeftWithImage() throws IOException {
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
     tree.setHeaderVisible( true );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     column.setText( "column1" );
@@ -228,10 +227,10 @@ public class TreeLCA_Test {
   }
 
   @Test
-  public void testGetItemMetricsTextLeftWithCheckbox() {
+  public void testGetItemMetricsTextLeftWithCheckbox() throws IOException {
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
     Tree tree = new Tree( shell, SWT.CHECK );
     tree.setHeaderVisible( true );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
@@ -245,10 +244,10 @@ public class TreeLCA_Test {
   }
 
   @Test
-  public void testGetItemMetricsTextWidthWithCheckbox() {
+  public void testGetItemMetricsTextWidthWithCheckbox() throws IOException {
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
     Tree tree = new Tree( shell, SWT.CHECK );
     tree.setHeaderVisible( true );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
@@ -262,7 +261,7 @@ public class TreeLCA_Test {
   }
 
   @Test
-  public void testPreserveValues() {
+  public void testPreserveValues() throws IOException {
     Fixture.markInitialized( display );
     TreeColumn child1 = new TreeColumn( tree, SWT.NONE, 0 );
     child1.setText( "child1" );
@@ -274,7 +273,7 @@ public class TreeLCA_Test {
     WidgetAdapter adapter = WidgetUtil.getAdapter( tree );
     // item height
     TreeItem item = new TreeItem( tree, SWT.NONE );
-    item.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    item.setImage( createImage( display, Fixture.IMAGE_100x50 ) );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     Fixture.clearPreserved();
@@ -321,11 +320,11 @@ public class TreeLCA_Test {
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
     // foreground background font
-    Color background = Graphics.getColor( 122, 33, 203 );
+    Color background = new Color( display, 122, 33, 203 );
     tree.setBackground( background );
-    Color foreground = Graphics.getColor( 211, 178, 211 );
+    Color foreground = new Color( display, 211, 178, 211 );
     tree.setForeground( foreground );
-    Font font = Graphics.getFont( "font", 12, SWT.BOLD );
+    Font font = new Font( display, "font", 12, SWT.BOLD );
     tree.setFont( font );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
@@ -845,7 +844,7 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderItemHeight() throws IOException {
-    Font font = Graphics.getFont( "Arial", 26, SWT.NONE );
+    Font font = new Font( display, "Arial", 26, SWT.NONE );
 
     tree.setFont( font );
     lca.renderChanges( tree );
@@ -856,7 +855,7 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderItemHeightUnchanged() throws IOException {
-    Font font = Graphics.getFont( "Arial", 26, SWT.NONE );
+    Font font = new Font( display, "Arial", 26, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
 
