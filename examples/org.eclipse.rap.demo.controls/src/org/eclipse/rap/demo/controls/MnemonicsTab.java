@@ -13,6 +13,8 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
@@ -33,8 +35,7 @@ public class MnemonicsTab extends ExampleTab {
 
   private static final String DEFAULT_ACTIVATOR = "CTRL+ALT";
   private static final String[] DEFAULT_SHORTCUT = new String[]{ "CTRL+ALT+Y" };
-  private TabFolder folder;
-  private TabItem[] tabItems;
+  protected boolean useCTabFolder;
 
   public MnemonicsTab() {
     super( "Mnemonics" );
@@ -44,6 +45,7 @@ public class MnemonicsTab extends ExampleTab {
   protected void createStyleControls( Composite parent ) {
     createActivatorControls( parent );
     createShortcutControls( parent );
+    createCTabFolderButton( parent );
   }
 
   private void createShortcutControls( Composite parent ) {
@@ -84,22 +86,45 @@ public class MnemonicsTab extends ExampleTab {
     } );
   }
 
+  private void createCTabFolderButton( Composite parent ) {
+    final Button ctabFolderButton = new Button( parent, SWT.TOGGLE );
+    ctabFolderButton.setText( "use CTabFolder" );
+    ctabFolderButton.addListener( SWT.Selection, new Listener() {
+      public void handleEvent( Event event ) {
+        useCTabFolder = ctabFolderButton.getSelection();
+        createNew();
+      }
+    } );
+  }
+
   @Override
   protected void createExampleControls( Composite parent ) {
     parent.setLayout( new FillLayout() );
-    folder = new TabFolder( parent, getStyle() );
-    tabItems = new TabItem[ 3 ];
-    for( int i = 0; i < 3; i++ ) {
-      tabItems[ i ] = new TabItem( folder, SWT.NONE );
-      tabItems[ i ].setText( "TabItem &" + i );
-      Composite content = new Composite( folder, SWT.NONE );
-      content.setLayout( new GridLayout( 4, false ) );
-      createItemContent( content, i );
-      tabItems[ i ].setControl( content );
+    if( useCTabFolder ) {
+      CTabFolder folder = new CTabFolder( parent, getStyle() );
+      CTabItem[] tabItems = new CTabItem[ 3 ];
+      for( int i = 0; i < 3; i++ ) {
+        tabItems[ i ] = new CTabItem( folder, SWT.NONE );
+        tabItems[ i ].setText( "CTabItem &" + ( i + 1) );
+        Composite content = createItemContent( folder, i );
+        tabItems[ i ].setControl( content );
+      }
+      folder.setSelection( 0 );
+    } else {
+      TabFolder folder = new TabFolder( parent, getStyle() );
+      TabItem[] tabItems = new TabItem[ 3 ];
+      for( int i = 0; i < 3; i++ ) {
+        tabItems[ i ] = new TabItem( folder, SWT.NONE );
+        tabItems[ i ].setText( "TabItem &" + ( i + 1 ) );
+        Composite content = createItemContent( folder, i );
+        tabItems[ i ].setControl( content );
+      }
     }
   }
 
-  private void createItemContent( Composite content, int index ) {
+  private Composite createItemContent( Composite folder, int index ) {
+    Composite content = new Composite( folder, SWT.NONE );
+    content.setLayout( new GridLayout( 4, false ) );
     switch( index ) {
       case 0:
         createButtonExample( content );
@@ -108,6 +133,7 @@ public class MnemonicsTab extends ExampleTab {
         createToolBarExample( content );
       break;
     }
+    return content;
   }
 
   private void createButtonExample( Composite content ) {

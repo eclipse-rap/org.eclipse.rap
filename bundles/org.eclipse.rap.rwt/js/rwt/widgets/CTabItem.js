@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,8 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     this.setLabel( "" );
     this._selected = false;
     this._showClose = false;
+    this._rawText = null;
+    this._mnemonicIndex = null;
     this._canClose = canClose;
     this.updateForeground();
     this.updateBackground();
@@ -69,6 +71,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     wm.setToolTip( this._closeButton, null );
     this._closeButton.dispose();
     this._closeButton = null;
+    this.setMnemonicIndex( null );
   },
 
   statics : {
@@ -80,6 +83,36 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
   },
 
   members : {
+
+   setText : function( value ) {
+      this._rawText = value;
+      this._mnemonicIndex = null;
+      this._applyText( false );
+    },
+
+    setMnemonicIndex : function( value ) {
+      this._mnemonicIndex = value;
+      var mnemonicHandler = rwt.widgets.util.MnemonicHandler.getInstance();
+      if( ( typeof value === "number" ) && ( value >= 0 ) ) {
+        mnemonicHandler.add( this, this._onMnemonic );
+      } else {
+        mnemonicHandler.remove( this );
+      }
+    },
+
+    getMnemonicIndex : function() {
+      return this._mnemonicIndex;
+    },
+
+    _applyText : function( mnemonic ) {
+      if( this._rawText ) {
+        var mnemonicIndex = mnemonic ? this._mnemonicIndex : undefined;
+        var text = rwt.util.Encoding.escapeText( this._rawText, mnemonicIndex );
+        this.setLabel( text );
+      } else {
+        this.setLabel( null );
+      }
+    },
 
     setTabPosition : function( tabPosition ) {
       if( tabPosition === "top" ) {
@@ -103,6 +136,24 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
         this.updateBackgroundImage();
         this.updateBackgroundGradient();
         this.updateCloseButton();
+      }
+    },
+
+    _onMnemonic : function( event ) {
+      switch( event.type ) {
+        case "show":
+          this._applyText( true );
+        break;
+        case "hide":
+          this._applyText( false );
+        break;
+        case "trigger":
+          var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
+          if( event.charCode === charCode ) {
+            this._parent._notifyItemClick( this );
+            event.success = true;
+          }
+        break;
       }
     },
 

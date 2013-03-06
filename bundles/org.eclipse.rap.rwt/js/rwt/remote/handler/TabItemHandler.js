@@ -29,7 +29,6 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.TabItem", {
     if( parent ) {
       rwt.remote.HandlerUtil.removeDestroyableChild( parent, widget );
     }
-
   },
 
   properties : [

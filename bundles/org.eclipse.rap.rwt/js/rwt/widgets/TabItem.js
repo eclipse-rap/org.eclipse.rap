@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -31,10 +31,6 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
     this.addEventListener("mousedown", this._onmousedown);
     this.addEventListener("keydown", this._onkeydown);
     this.addEventListener("keypress", this._onkeypress);
-  },
-
-  destruct : function() {
-    this.setMnemonicIndex( null );
   },
 
   events: {
@@ -438,6 +434,7 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
 
   destruct : function() {
     this._disposeObjects( "_closeButtonImage" );
+    this.setMnemonicIndex( null );
   }
 
 } );

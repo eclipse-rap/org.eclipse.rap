@@ -29,6 +29,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.CTabItem", {
     "bounds",
     "font",
     "text",
+    "mnemonicIndex",
     "image",
     "toolTip",
     "customVariant",
@@ -49,11 +50,6 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.CTabItem", {
       widget.setHeight( bounds[ 3 ] );
     },
     "font" : rwt.remote.HandlerUtil.getControlPropertyHandler( "font" ),
-    "text" : function( widget, value ) {
-      var EncodingUtil = rwt.util.Encoding;
-      var text = EncodingUtil.escapeText( value, false );
-      widget.setLabel( text );
-    },
     "image" : function( widget, value ) {
       if( value === null ) {
         widget.setIcon( null );
