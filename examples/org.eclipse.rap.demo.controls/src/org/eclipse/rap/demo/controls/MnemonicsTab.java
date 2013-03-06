@@ -24,6 +24,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
@@ -132,8 +135,69 @@ public class MnemonicsTab extends ExampleTab {
       case 1:
         createToolBarExample( content );
       break;
+      case 2:
+        createMenuExample( content );
+      break;
     }
     return content;
+  }
+
+  private void createMenuExample( final Composite content ) {
+    final Button button = new Button( content, SWT.PUSH );
+    button.setText( "Open Shell Menu" );
+    button.addListener( SWT.Selection, new Listener() {
+      public void handleEvent( Event event ) {
+        Shell shell = new Shell( content.getShell(), SWT.BORDER  );
+        createMenuBar( shell );
+        shell.setLocation( content.toDisplay( 0, 0 ) );
+        shell.setSize( content.getSize() );
+        shell.open();
+      }
+    } );
+  }
+
+  private void createMenuBar( final Shell shell) {
+    String[] items = new String[] {
+      "&File", "&Edit", "E&xit"
+    };
+    Menu bar = new Menu( shell, SWT.BAR );
+    shell.setMenuBar( bar );
+    for( String text : items ) {
+      MenuItem menuItem = new MenuItem( bar, SWT.CASCADE );
+      menuItem.setText( text );
+      Menu dropdown = new Menu( shell, SWT.DROP_DOWN );
+      menuItem.setMenu( dropdown );
+    }
+    createMenuItem( bar.getItem( 0 ).getMenu(), SWT.PUSH, "Push &One" );
+    createMenuItem( bar.getItem( 0 ).getMenu(), SWT.PUSH, "Push &Two" );
+    createMenuItem( bar.getItem( 0 ).getMenu(), SWT.CHECK, "&Check" );
+    createMenuItem( bar.getItem( 0 ).getMenu(), SWT.RADIO, "Radio &X" );
+    createMenuItem( bar.getItem( 0 ).getMenu(), SWT.RADIO, "Radio &Y" );
+    createMenuItem( bar.getItem( 0 ).getMenu(), SWT.RADIO, "Radio &Z" );
+    createMenuItem( bar.getItem( 1 ).getMenu(), SWT.PUSH, "Push &Three" );
+    MenuItem casc = createMenuItem( bar.getItem( 1 ).getMenu(), SWT.CASCADE, "&Submenu" );
+    Menu submenu = new Menu( shell, SWT.DROP_DOWN );
+    casc.setMenu( submenu );
+    createMenuItem( submenu, SWT.CHECK, "Ch&eck" );
+    createMenuItem( submenu, SWT.RADIO, "Radio &8" );
+    createMenuItem( submenu, SWT.RADIO, "Radio &9" );
+    MenuItem close = createMenuItem( bar.getItem( 2 ).getMenu(), SWT.PUSH, "Close &Shell" );
+    close.addListener( SWT.Selection, new Listener() {
+      public void handleEvent( Event event ) {
+        shell.dispose();
+      }
+    } );
+  }
+
+  private MenuItem createMenuItem( Menu menu, int style, String text ) {
+    final MenuItem item = new MenuItem( menu, style );
+    item.setText( text );
+    item.addListener( SWT.Selection, new Listener() {
+      public void handleEvent( Event e ) {
+        log( item.getText() );
+      }
+    } );
+    return item;
   }
 
   private void createButtonExample( Composite content ) {
