@@ -2000,13 +2000,24 @@ public class Table_Test {
   }
 
   @Test
+  public void testGetVisibleItemCount_WithBorder() {
+    Table table = new Table( shell, SWT.NO_SCROLL | SWT.BORDER );
+    createTableItems( table, 10 );
+    int itemHeight = table.getItemHeight();
+    int borderWidth = table.getBorderWidth();
+    table.setSize( 100, 5 * itemHeight + 2 * borderWidth );
+    assertEquals( 5, table.getVisibleItemCount( true ) );
+    assertEquals( 5, table.getVisibleItemCount( false ) );
+  }
+
+  @Test
   public void testGetVisibleItemCountWithPartiallyVisibleItem() {
     Table table = new Table( shell, SWT.NO_SCROLL );
     createTableItems( table, 10 );
     int itemHeight = table.getItemHeight();
     table.setSize( 100, ( 5 * itemHeight ) + ( itemHeight / 2 ) );
-    assertEquals( 5, table.getVisibleItemCount( false ) );
     assertEquals( 6, table.getVisibleItemCount( true ) );
+    assertEquals( 5, table.getVisibleItemCount( false ) );
   }
 
   @Test
