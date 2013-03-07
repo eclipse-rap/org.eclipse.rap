@@ -68,6 +68,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         }
         this._renderCheckBox( item, config, hoverElement, contentOnly );
         this._renderCells( item, config, renderSelected, hoverElement, contentOnly );
+        if( config.fullSelection || config.treeColumn === -1 ) {
+          this._renderOverlay( item, -1, config, selected );
+        }
         this._hideRemainingElements();
       } else {
         this.setBackgroundColor( null );
@@ -112,7 +115,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       this.setState( "parent_unfocused", this._renderAsUnfocused( config ) );
       this.setState( "selected", selected );
       this._renderVariant( item.getVariant() );
-      this._renderOverState( hoverElement );
+      this._renderOverState( hoverElement, config );
       this._styleMap = this._getStyleMap();
     },
 
@@ -128,8 +131,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       }
     },
 
-    _renderOverState : function( hoverElement ) {
-      this.setState( "over", hoverElement !== null );
+
+    _renderOverState : function( hoverElement, config ) {
+      this.setState( "over", hoverElement !== null && config.fullSelection );
     },
 
     setState : function( state, value ) {
@@ -155,20 +159,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     _renderBackground : function( item, config, selected ) {
-      var color = null;
-      var image = null;
-      var gradient = null;
-      if( this._hasOverlayBackground() ) {
+      var color = this._styleMap.itemBackground;
+      var image = this._styleMap.itemBackgroundImage;
+      var gradient = this._styleMap.itemBackgroundGradient;
+      if( this._hasOverlayBackground() && !this._rendersOverlayElement( config, selected ) ) {
         // TODO [tb] : would currently not behave in an actual overlay (if semi-transparent)
         color = this._styleMap.overlayBackground;
         image = this._styleMap.overlayBackgroundImage;
         gradient = this._styleMap.overlayBackgroundGradient;
       } else if( config.enabled !== false && item !== null && item.getBackground() !== null ) {
         color = item.getBackground();
-      } else {
-        color = this._styleMap.itemBackground;
-        image = this._styleMap.itemBackgroundImage;
-        gradient = this._styleMap.itemBackgroundGradient;
+        image = null;
+        gradient = null;
       }
       // Note: "undefined" is a string stored in the themestore
       this.setBackgroundColor( color !== "undefined" ? color : null );
@@ -182,7 +184,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
                    || this._styleMap.overlayBackgroundGradient !== null;
       return result;
     },
-    
+
     _renderIndention : function( item, config, hoverElement ) {
       var expandSymbol = this._getExpandSymbol( item, config, hoverElement );
       if( expandSymbol != null ) {
@@ -267,7 +269,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         var states = this.__states;
         this.setState( "over", hoverElement !== null && hoverElement === "checkBox" );
         var image = this._getImageFromAppearance( "check-box", states );
-        this._renderOverState( hoverElement );
+        this.setState( "over", hoverElement !== null );
         if( this._checkBoxElement === null ) {
           this._checkBoxElement = this._createElement( 3 );
           this._checkBoxElement.style.backgroundRepeat = "no-repeat";
@@ -294,18 +296,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       for( var i = 0; i < columns; i++ ) {
         var isTreeColumn = this._isTreeColumn( i, config );
         if( this._getItemWidth( item, i, config ) > 0 ) {
-          this._renderCellBackground( item, i, config, contentOnly );
+          this._renderCellBackground( item, i, config, contentOnly, selected );
           if( !config.fullSelection && isTreeColumn ) {
-            if( selected ) {
-              this._renderStates( item, config, true, hoverElement );
-            }
+            this._renderStates( item, config, selected, hoverElement );
             var imageElement = this._renderCellImage( item, i, config, isTreeColumn, contentOnly );
             var labelElement = this._renderCellLabel( item, i, config, isTreeColumn, contentOnly );
             this._treeColumnElements = [ imageElement, labelElement ];
-            if( selected ) {
-              this._renderSelectionBackground( item, i, config );
-              this._renderStates( item, config, false, hoverElement);
-            }
+            this._renderOverlay( item, i, config, selected );
+            this._renderStates( item, config, false, hoverElement );
           } else {
             this._renderCellImage( item, i, config, isTreeColumn, contentOnly );
             this._renderCellLabel( item, i, config, isTreeColumn, contentOnly );
@@ -317,25 +315,47 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       this._cellsRendered = columns;
     },
 
-    _renderSelectionBackground : function( item, cell, config ) {
+    _renderOverlay : function( item, cell, config, selected ) {
+      if( item && this._rendersOverlayElement( config, selected ) ) {
+        var overlayBg = this._styleMap.overlayBackground;
+        var itemBg = this._styleMap.itemBackground;
+        var hasOverlayBg = overlayBg !== "undefined" && overlayBg !== null;
+        var hasItemBg = selected && cell !== -1 && itemBg !== "undefined" && itemBg !== null;
+        if( item && ( hasItemBg || hasOverlayBg ) ) {
+          var element = this._getMiscBackground();
+          element.style.backgroundColor = hasOverlayBg ? overlayBg : itemBg;
+          var height = this.getHeight();
+          var left;
+          var width;
+          if( config.fullSelection ) {
+            left = 0;
+            width = this.getWidth();
+          } else {
+            var padding = config.selectionPadding;
+            left = this._getItemTextLeft( item, cell, config );
+            left -= padding[ 0 ];
+            width = this._getItemTextWidth( item, cell, config );
+            width += width > 0 ? padding[ 0 ] : 0;
+            var visualWidth  = this._getVisualTextWidth( item, cell, config );
+            visualWidth  += padding[ 0 ] + padding[ 1 ];
+            width = Math.min( width, visualWidth );
+            var height = this.getHeight();
+          }
+          this._setBounds( element, left, 0, width, height );
+        }
+      }
+    },
+
+    _rendersOverlayElement : function( config, selected ) {
+      var singleSelection = selected && !config.fullSelection && config.treeColumn !== -1;
       var overlayBg = this._styleMap.overlayBackground;
       var itemBg = this._styleMap.itemBackground;
-      var hasOverlayBg = overlayBg !== "undefined" && overlayBg !== null;
-      var hasItemBg = itemBg !== "undefined" && itemBg !== null;
-      if( hasItemBg || hasOverlayBg ) {
-        var element = this._getMiscBackground();
-        element.style.backgroundColor = hasOverlayBg ? overlayBg : itemBg;
-        var padding = config.selectionPadding;
-        var left = this._getItemTextLeft( item, cell, config );
-        left -= padding[ 0 ];
-        var width = this._getItemTextWidth( item, cell, config );
-        width += width > 0 ? padding[ 0 ] : 0;
-        var visualWidth  = this._getVisualTextWidth( item, cell, config );
-        visualWidth  += padding[ 0 ] + padding[ 1 ];
-        width = Math.min( width, visualWidth );
-        var height = this.getHeight();
-        this._setBounds( element, left, 0, width, height );
-      }
+      var hasOverlayBgColor = overlayBg !== "undefined" && overlayBg !== null;
+      var canNotRenderOverlay =    this._styleMap.overlayBackgroundImage !== null
+                                || this._styleMap.overlayBackgroundGradient !== null;
+      var useItemBg = singleSelection && itemBg !== "undefined" && itemBg !== null;
+      var useOverlayBg = hasOverlayBgColor && ( !canNotRenderOverlay || singleSelection );
+      return useItemBg || useOverlayBg;
     },
 
     _renderCellBackground : function( item, cell, config, contentOnly ) {
@@ -353,7 +373,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         this._renderCellBackgroundBounds( item, cell, config );
       }
     },
-    
+
     _renderCellBackgroundBounds : function( item, cell, config ) {
       var element = this._cellBackgrounds[ cell ];
       if( element ) {
@@ -385,7 +405,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       }
       return element;
     },
-    
+
     _renderCellImageBounds : function( item, cell, config ) {
       var element = this._cellImages[ cell ];
       if( element ) {
@@ -419,7 +439,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       }
       return element;
     },
-    
+
     _renderCellLabelBounds : function( item, cell, config ) {
       var element = this._cellLabels[ cell ];
       if( element ) {
@@ -463,10 +483,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       HtmlUtil.setTextShadow( element, this._styleMap.textShadow );
     },
 
-    _getCellBackgroundColor : function( item, cell, config ) {
+    _getCellBackgroundColor : function( item, cell, config, selected ) {
       var result;
-      if(    config.enabled === false 
-          || this._styleMap.overlayBackground !== "undefined" 
+      if(    config.enabled === false
+          || ( this._hasOverlayBackground() && !this._rendersOverlayElement( config, selected ) )
       ) {
         result = "undefined";
       } else {
@@ -609,7 +629,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         result.style.whiteSpace = "nowrap";
         if( org.eclipse.rwt.Client.isNewMshtml() ) {
           result.style.backgroundColor = "rgba(0, 0, 0, 0)";
-        }        
+        }
         this._cellLabels[ cell ] = result;
       }
       return result;
@@ -701,7 +721,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var columns = this._getColumnCount( config );
       for( var i = 0; i < columns; i++ ) {
         // tree column bounds can not be rendered without item, is rendered always anyway
-        if( !this._isTreeColumn( i, config ) ) { 
+        if( !this._isTreeColumn( i, config ) ) {
           this._renderCellLabelBounds( null, i, config );
           this._renderCellImageBounds( null, i, config );
         }
