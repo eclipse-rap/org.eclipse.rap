@@ -69,6 +69,8 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
     activate : function() {
       if( this._noMenuOpen() ) {
+        // TODO : The Active shell is not always the focus root - why?
+        //var root = rwt.event.EventHandler.getFocusRoot();
         var root = rwt.widgets.base.Window.getDefaultWindowManager().getActiveWindow();
         if( root == null ) {
           root = rwt.widgets.base.ClientDocument.getInstance();
@@ -113,7 +115,16 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
         for( var key in handlers ) {
           var entry = handlers[ key ];
           if( !onlyVisible || entry[ 0 ].isSeeable() ) {
-            entry[ 1 ].call( entry[ 0 ], event );
+            try{
+              entry[ 1 ].call( entry[ 0 ], event );
+            } catch( ex ) {
+              var msg = "Could not handle mnemonic " + event.type + ". ";
+              if( entry[ 0 ].isDisposed() ) {
+                msg +=  entry[ 0 ].classname + " is disposed. ";
+              }
+              msg += ex.message;
+              throw new Error( msg );
+            }
           }
         }
       }

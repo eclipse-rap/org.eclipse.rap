@@ -22,6 +22,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
     this._maxCellWidths = null;
     this._menuLayoutScheduled = false;
     this._opener = null;
+    this._mnemonics = false;
     this._hoverItem = null;
     this._openTimer = null;
     this._closeTimer = null;
@@ -44,6 +45,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
     this.addEventListener( "mouseout", this._onMouseOut );
     this.addEventListener( "mouseover", this._onMouseOver );
     this.addEventListener( "keypress", this._onKeyPress );
+    this.addEventListener( "keydown", this._onKeyDown );
     this._openTimer = new rwt.client.Timer( 250 );
     this._openTimer.addEventListener( "interval", this._onopentimer, this );
     this._closeTimer = new rwt.client.Timer( 250 );
@@ -137,6 +139,16 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
 
     getOpener : function( value ) {
       return this._opener;
+    },
+
+    setMnemonics : function( value ) {
+      if( this._mnemonics !== value ) {
+        this._mnemonics = value;
+        var items = this._layout.getChildren();
+        for( var i = 0; i < items.length; i++ ) {
+          items[ i ].setShowMnemonic( value );
+        }
+      }
     },
 
     // Overwritten:
@@ -263,7 +275,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       this.dispatchSimpleEvent( "changeHoverItem" );
     },
 
-    getHoverItem : function( value ) {
+    getHoverItem : function() {
       return this._hoverItem;
     },
 
@@ -396,12 +408,19 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       this.setOpenItem( null );
     },
 
-    setOpenItem : function( item ) {
+    openByMnemonic : function( item ) {
+      this.setOpenItem( item, true );
+      this.setHoverItem( null, true );
+    },
+
+    setOpenItem : function( item, byMnemonic ) {
       if( this._openItem && this._openItem.getMenu() ) {
         this._openItem.setSubMenuOpen( false );
         var oldMenu = this._openItem.getMenu();
         oldMenu.hide();
-        this._makeActive();
+        if( this.getFocusRoot() ) {
+          this._makeActive();
+        }
       }
       this._openItem = item;
       // in theory an item could have lost it's assigned menu (by eval-code)
@@ -417,7 +436,11 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
         subMenu.setLeft(   rwt.html.Location.getLeft( thisNode )
                          + thisNode.offsetWidth
                          - 3 );
+        subMenu.setMnemonics( byMnemonic === true );
         subMenu.show();
+        if( byMnemonic ) {
+          subMenu.hoverFirstItem();
+        }
       }
     },
 
@@ -449,6 +472,26 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
      }
    },
 
+   _onKeyDown :function( event ) {
+     if( this._mnemonics ) {
+       var keyCode = event.getKeyCode();
+       var isChar =    !isNaN( keyCode )
+                    && rwt.event.EventHandlerUtil.isAlphaNumericKeyCode( keyCode );
+       if( isChar ) {
+         var event = {
+           "type" : "trigger",
+           "charCode" : keyCode,
+           "success" : false
+         };
+         var items = this._layout.getChildren();
+         for( var i = 0; i < items.length; i++ ) {
+           items[ i ].handleMnemonic( event );
+         }
+       }
+     }
+
+   },
+
     _onKeyPress : function( event ) {
       switch( event.getKeyIdentifier() ) {
         case "Up":
@@ -471,7 +514,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
 
     _handleKeyUp : function( event ) {
       if( this._openItem ) {
-       this._openItem.getMenu()._hoverPreviousItem();
+        this._openItem.getMenu()._hoverPreviousItem();
       } else {
         this._hoverPreviousItem();
       }
@@ -481,7 +524,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
 
     _handleKeyDown : function( event ) {
       if( this._openItem ) {
-       this._openItem.getMenu()._hoverNextItem();
+        this._openItem.getMenu()._hoverNextItem();
       } else {
         this._hoverNextItem();
       }

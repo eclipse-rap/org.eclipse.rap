@@ -63,8 +63,8 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
   },
 
   destruct : function() {
-    this._disposeFields( "_parentMenu", "_subMenu" );
     this.setMnemonicIndex( null );
+    this._disposeFields( "_parentMenu", "_subMenu" );
   },
 
   properties : {
@@ -107,16 +107,26 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
 
     setMnemonicIndex : function( value ) {
       this._mnemonicIndex = value;
-      var mnemonicHandler = rwt.widgets.util.MnemonicHandler.getInstance();
-      if( ( typeof value === "number" ) && ( value >= 0 ) ) {
-        mnemonicHandler.add( this, this._onMnemonic );
-      } else {
-        mnemonicHandler.remove( this );
+      if( this._parentMenu instanceof rwt.widgets.MenuBar ) {
+        var mnemonicHandler = rwt.widgets.util.MnemonicHandler.getInstance();
+        if( ( typeof value === "number" ) && ( value >= 0 ) ) {
+          mnemonicHandler.add( this, this._onMnemonic );
+        } else {
+          mnemonicHandler.remove( this );
+        }
       }
+    },
+
+    setShowMnemonic : function( value ) {
+      this._applyText( value );
     },
 
     getMnemonicIndex : function() {
       return this._mnemonicIndex;
+    },
+
+    handleMnemonic : function( event ) {
+      this._onMnemonic( event );
     },
 
     _applyText : function( mnemonic ) {
@@ -140,10 +150,11 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
         case "trigger":
           var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
           if( event.charCode === charCode ) {
-            if( this._parentMenu instanceof rwt.widgets.MenuBar ) {
-              this._parentMenu.setOpenItem( this );
+            if( this.hasState( "bar" ) || this.hasState( "cascade" ) ) {
+              this._parentMenu.openByMnemonic( this );
             } else {
-              //this.execute();
+              this.execute();
+              rwt.widgets.util.MenuManager.getInstance().update();
             }
             event.success = true;
           }

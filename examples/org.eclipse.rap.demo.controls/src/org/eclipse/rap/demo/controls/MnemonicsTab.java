@@ -16,6 +16,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.Button;
@@ -148,7 +149,12 @@ public class MnemonicsTab extends ExampleTab {
     button.addListener( SWT.Selection, new Listener() {
       public void handleEvent( Event event ) {
         Shell shell = new Shell( content.getShell(), SWT.BORDER  );
+        shell.setLayout( new GridLayout() );
         createMenuBar( shell );
+        // Bug? - Without a widget in the shell it doesn't get correctly focused
+        Button test = new Button( shell, SWT.PUSH );
+        test.setText( "foo" );
+        test.setLayoutData( new GridData( 100, 100 ) );
         shell.setLocation( content.toDisplay( 0, 0 ) );
         shell.setSize( content.getSize() );
         shell.open();

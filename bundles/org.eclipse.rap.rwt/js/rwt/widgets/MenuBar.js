@@ -80,7 +80,11 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
       this._hoverItem = item;
     },
 
-    setOpenItem : function( item ) {
+    openByMnemonic : function( item ) {
+      this.setOpenItem( item, true );
+    },
+
+    setOpenItem : function( item, byMnemonic ) {
       var oldItem = this._openItem;
       if( oldItem != null && oldItem.getMenu() != null ) {
         oldItem.setSubMenuOpen( false );
@@ -96,6 +100,7 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
         // the position is relative to the document, therefore we need helper
         subMenu.setTop( rwt.html.Location.getTop( itemNode ) + itemNode.offsetHeight );
         subMenu.setLeft( rwt.html.Location.getLeft( itemNode ) );
+        subMenu.setMnemonics( byMnemonic === true );
         subMenu.show();
       } else {
         this._openItem = null;
