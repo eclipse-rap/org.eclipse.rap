@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -153,7 +153,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         this._runningRequestCount++;
         // notify user when request takes longer than 500 ms
         if( this._runningRequestCount === 1 ) {
-          qx.client.Timer.once( this._showWaitHint, this, 500 );
+          qx.client.Timer.once( this._showWaitHint, this, 700 );
         }
         // clear the parameter list
         this._parameters = {};
@@ -225,7 +225,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
         giveUp = !this._handleConnectionError( evt );
       }
       if( giveUp ) {
-        this._hideWaitHint();
         var request = exchange.getImplementation().getRequest();
         var text = request.responseText;
         // [if] typeof(..) == "unknown" is IE specific. Used to prevent error:
@@ -236,7 +235,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         if( text && text.length > 0 ) {
           if( this._isJsonResponse( request ) ) {
             var messageObject = JSON.parse( text );
-            org.eclipse.rwt.ErrorHandler.showErrorBox( messageObject.meta.message );
+            org.eclipse.rwt.ErrorHandler.showErrorBox( messageObject.meta.message, true );
           } else {
             org.eclipse.rwt.ErrorHandler.showErrorPage( text );
           }
@@ -245,6 +244,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
           text = "<p>Request failed.</p><pre>HTTP Status Code: " + statusCode + "</pre>";
           org.eclipse.rwt.ErrorHandler.showErrorPage( text );
         }
+        this._hideWaitHint();
       }
       // [if] Dispose only finished transport - see bug 301261, 317616
       exchange.dispose();
@@ -285,6 +285,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         + "Would you like to retry?";
       var result = confirm( msg );
       if( result ) {
+        org.eclipse.rwt.ErrorHandler.hideErrorBox();
         var request = this._createRequest();
         var failedRequest = this._currentRequest;
         request.setAsynchronous( failedRequest.getAsynchronous() );
@@ -358,6 +359,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
       if( this._runningRequestCount > 0 ) {
         var doc = qx.ui.core.ClientDocument.getInstance();
         doc.setGlobalCursor( qx.constant.Style.CURSOR_PROGRESS );
+        org.eclipse.rwt.ErrorHandler.showWaitHint();
       }
     },
 
@@ -365,6 +367,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
       if( this._runningRequestCount === 0 ) {
         var doc = qx.ui.core.ClientDocument.getInstance();
         doc.setGlobalCursor( null );
+        org.eclipse.rwt.ErrorHandler.hideErrorBox();
       }
     },
 
