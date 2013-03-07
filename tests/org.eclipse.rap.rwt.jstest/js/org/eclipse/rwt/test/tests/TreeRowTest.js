@@ -2083,6 +2083,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.renderItem( item, tree._config, true, null );
 
       assertNotNull( row.getBackgroundGradient() );
+      children = row._getTargetNode().childNodes; // IE needs this, ALL VERSIONS
       assertEquals( "transparent", children[ 1 ].style.backgroundColor );
       assertEquals( "white", children[ 2 ].style.color );
       assertTrue( this._getOverlayElement( row ) == null );
