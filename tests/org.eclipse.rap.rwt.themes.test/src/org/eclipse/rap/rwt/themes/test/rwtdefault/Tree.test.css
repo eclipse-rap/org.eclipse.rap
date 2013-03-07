@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,32 +47,17 @@ TreeItem:selected {
 
 Table-RowOverlay:hover {
   color: #4a4a4a;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
+  background-color: rgba( 186, 186, 186, 0.4 );
 }
 
 Table-RowOverlay:selected {
  color: #ffffff;
-  background-color: #5882b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
+  background-color: rgba( 88, 130, 181, 0.4 );
 }
 
 Table-RowOverlay:selected:unfocused {
   color: #ffffff;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b5b5b5 ),
-    to( #818181 )
-  );
+  background-color: rgba( 181, 181, 181, 0.4 );
 }
 
 TreeColumn {

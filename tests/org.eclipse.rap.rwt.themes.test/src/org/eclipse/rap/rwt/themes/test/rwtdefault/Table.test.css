@@ -52,76 +52,41 @@ TableItem:linesvisible:even {
   color: inherit;
 }
 
+Table-RowOverlay {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+}
+
 Table-RowOverlay:hover {
-  color: #4a4a4a;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
+  background-color: rgba( 186, 186, 186, 0.4 );
 }
 
 Table-RowOverlay:selected {
+  background-color: rgba( 88, 130, 181, 0.4 );
   color: #ffffff;
-  background-color: #5882b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
+  background-image: none;
 }
 
 Table-RowOverlay:selected:unfocused {
+  background-color: rgba( 181, 181, 181, 0.4 );
   color: #ffffff;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b5b5b5 ),
-    to( #818181 )
-  );
-}
-
-Table-RowOverlay:selected:unfocused {
-  color: #ffffff;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b5b5b5 ),
-    to( #818181 )
-  );
+  background-image: none;
 }
 
 Table-RowOverlay:linesvisible:even:hover {
-  color: #4a4a4a;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
+  background-color: rgba( 181, 181, 181, 0.4 );
 }
 
 Table-RowOverlay:linesvisible:even:selected {
-  color: #ffffff;
-  background-color: #5882b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
+  background-color: rgba( 88, 130, 181, 0.4 );
+  color: white;
 }
 
 Table-RowOverlay:linesvisible:even:selected:unfocused {
-  background-color: #959595;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b5b5b5 ),
-    to( #818181 )
-  );
+  background-color: rgba( 149, 149, 149, 0.4 );
   color: #ffffff;
 }
-
 
 TableColumn {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
@@ -171,7 +136,7 @@ Table-GridLine:horizontal {
 }
 
 Table-Checkbox {
-  /* 
+  /*
   For backward compatibility we have to keep the width property.
   Deprecated, use "margin" instead.
   */
