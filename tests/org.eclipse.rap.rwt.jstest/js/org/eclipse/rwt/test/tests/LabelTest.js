@@ -21,7 +21,7 @@ var labelWidget;
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LabelTest", {
 
   extend : rwt.qx.Object,
-  
+
   members : {
 
     testCreateByProtocol : function() {
@@ -85,6 +85,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LabelTest", {
       assertTrue( content === "bla&nbsp; <br>&lt;" || content === "bla&nbsp; <br/>&lt;" );
     },
 
+    testSetTextWithMnemonic : function() {
+      this.createLabel( [ "LEFT" ], {
+        "text" : "foo",
+        "mnemonicIndex" : 1
+      } );
+
+      assertEquals( 1, labelWidget.getMnemonicIndex() );
+    },
+
+    testSetTextResetsMnemonic : function() {
+      this.createLabel( [ "LEFT" ], {
+        "text" : "foo",
+        "mnemonicIndex" : 1
+      } );
+
+      TestUtil.protocolSet( "w3", { "text" : "bar" } );
+
+      assertEquals( null, labelWidget.getMnemonicIndex() );
+    },
+
     testSetTextWithMarkupEnabled : function() {
       Processor.processOperation( {
         "target" : "w3",
@@ -112,7 +132,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LabelTest", {
 
     testReSetImage : function() {
       this.createLabel( [ "LEFT" ], { "image" : [ "image.png", 10, 20 ] } );
-      
+
       labelWidget.setImage( null );
       TestUtil.flush();
 
@@ -121,33 +141,131 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LabelTest", {
     },
 
     testSetAlignmentByProtocol : function() {
-      this.createLabel( [ "LEFT" ], { "alignment" : "right", "text" : "bla" } ); 
+      this.createLabel( [ "LEFT" ], { "alignment" : "right", "text" : "bla" } );
 
       assertEquals( "right", labelWidget.getHorizontalChildrenAlign() );
       assertEquals( "right", labelWidget.getElement().style.textAlign );
     },
-    
+
     testSetMarginByProtocol : function() {
-      this.createLabel( [ "LEFT" ], { 
-        "leftMargin" : 1, 
-        "topMargin" : 2, 
-        "rightMargin" : 3, 
+      this.createLabel( [ "LEFT" ], {
+        "leftMargin" : 1,
+        "topMargin" : 2,
+        "rightMargin" : 3,
         "bottomMargin" : 4
-      } ); 
+      } );
 
       assertEquals( 1, labelWidget.getPaddingLeft() );
       assertEquals( 2, labelWidget.getPaddingTop() );
       assertEquals( 3, labelWidget.getPaddingRight() );
       assertEquals( 4, labelWidget.getPaddingBottom() );
     },
-    
+
+    testLabelWithMnemonics_Show : function() {
+      this.createLabel( [ "LEFT" ], {
+        "text" : "foo",
+        "mnemonicIndex" : 1
+      } );
+      shell.setActive( true );
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      TestUtil.flush();
+
+      assertEquals(
+        "f<span style=\"text-decoration:underline\">o</span>o",
+        this.getTextContent()
+      );
+    },
+
+    testLabelWithMnemonics_Hide : function() {
+      this.createLabel( [ "LEFT" ], {
+        "text" : "foo",
+        "mnemonicIndex" : 1
+      } );
+      shell.setActive( true );
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      rwt.widgets.util.MnemonicHandler.getInstance().deactivate();
+      TestUtil.flush();
+
+      assertEquals( "foo", this.getTextContent() );
+    },
+
+    testLabelWithMnemonics_TriggerFocusesNextWidget : function() {
+      this.createLabel( [ "LEFT" ], {
+        "text" : "foo",
+        "mnemonicIndex" : 1
+      } );
+      TestUtil.createWidgetByProtocol( "w5", "w2", "rwt.widgets.Text" );
+      shell.setActive( true );
+      var success = false;
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      success = rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      TestUtil.flush();
+
+      assertTrue( success );
+      assertTrue( ObjectManager.getObject( "w5" ).getFocused() );
+    },
+
+    testLabelWithMnemonics_TriggerNoWidgetToFocus : function() {
+      this.createLabel( [ "LEFT" ], {
+        "text" : "foo",
+        "mnemonicIndex" : 1
+      } );
+      shell.setActive( true );
+      var success = false;
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      success = rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      TestUtil.flush();
+
+      assertTrue( success );
+    },
+
+    testLabelWithMnemonics_TriggerDoesNotFocusDisabled : function() {
+      this.createLabel( [ "LEFT" ], {
+        "text" : "foo",
+        "mnemonicIndex" : 1
+      } );
+      TestUtil.createWidgetByProtocol( "w5", "w2", "rwt.widgets.Text" );
+      ObjectManager.getObject( "w5" ).setEnabled( false );
+      shell.setActive( true );
+      var success = false;
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      success = rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      TestUtil.flush();
+
+      assertTrue( success );
+      assertFalse( ObjectManager.getObject( "w5" ).getFocused() );
+    },
+
+    testLabelWithMnemonics_TriggerDoesNotFocusInvisible : function() {
+      this.createLabel( [ "LEFT" ], {
+        "text" : "foo",
+        "mnemonicIndex" : 1
+      } );
+      TestUtil.createWidgetByProtocol( "w5", "w2", "rwt.widgets.Text" );
+      ObjectManager.getObject( "w5" ).setVisibility( false );
+      shell.setActive( true );
+      var success = false;
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      success = rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      TestUtil.flush();
+
+      assertTrue( success );
+      assertFalse( ObjectManager.getObject( "w5" ).getFocused() );
+    },
+
     /////////
     // helper
-    
+
     setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );
     },
-    
+
     tearDown : function() {
       shell.destroy();
       shell = null;
@@ -156,7 +274,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LabelTest", {
       }
       labelWidget = null;
     },
-    
+
     createLabel : function( styles, properties ) {
       Processor.processOperation( {
         "target" : "w3",
@@ -178,11 +296,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LabelTest", {
       TestUtil.flush(); // LabelUtil delays setter for some BS reason...
       TestUtil.flush(); // TWICE!!
     },
-    
+
     getTextElement : function() {
       return labelWidget.getCellNode( 1 );
     },
-    
+
     getTextContent : function() {
       var el = this.getTextElement();
       return el ? el.innerHTML.toLowerCase().replace( /^\s+|\s+$/g, "" ) : "";
@@ -193,7 +311,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LabelTest", {
     }
 
   }
-  
+
 } );
 
 }());

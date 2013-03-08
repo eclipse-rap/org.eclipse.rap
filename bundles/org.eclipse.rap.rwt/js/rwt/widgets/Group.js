@@ -79,6 +79,59 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
 
   members : {
 
+    setText : function( value ) {
+      this._rawText = value;
+      this._mnemonicIndex = null;
+      this._applyText( false );
+    },
+
+    setMnemonicIndex : function( value ) {
+      this._mnemonicIndex = value;
+      var mnemonicHandler = rwt.widgets.util.MnemonicHandler.getInstance();
+      if( ( typeof value === "number" ) && ( value >= 0 ) ) {
+        mnemonicHandler.add( this, this._onMnemonic );
+      } else {
+        mnemonicHandler.remove( this );
+      }
+    },
+
+    getMnemonicIndex : function() {
+      return this._mnemonicIndex;
+    },
+
+    _onMnemonic : function( event ) {
+      switch( event.type ) {
+        case "show":
+          this._applyText( true );
+        break;
+        case "hide":
+          this._applyText( false );
+        break;
+        case "trigger":
+          var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
+          if( event.charCode === charCode ) {
+//            this.setFocused( true );
+//            this.execute();
+//            event.success = true;
+          }
+        break;
+      }
+    },
+
+    _applyText : function( mnemonic ) {
+      var EncodingUtil = rwt.util.Encoding;
+      if( this._rawText ) {
+        var mnemonicIndex = mnemonic ? this._mnemonicIndex : undefined;
+        var text = EncodingUtil.escapeText( this._rawText, mnemonicIndex );
+        if( this.hasState( "rwt_WRAP" ) ) {
+          text = EncodingUtil.replaceNewLines( text, "<br/>" );
+        }
+        this.setLegend( text );
+      } else {
+        this.setLegend( null );
+      }
+    },
+
     addState : function( state ) {
       this.base( arguments, state );
       if( state.substr( 0, 8 ) == "variant_" ) {

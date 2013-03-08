@@ -24,16 +24,11 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Group", {
   getDestroyableChildren : rwt.remote.HandlerUtil.getDestroyableChildrenFinder(),
 
   properties : rwt.remote.HandlerUtil.extendControlProperties( [
-    "text"
+    "text",
+    "mnemonicIndex"
   ] ),
 
-  propertyHandler : rwt.remote.HandlerUtil.extendControlPropertyHandler( {
-    "text" : function( widget, value ) {
-      var EncodingUtil = rwt.util.Encoding;
-      var text = EncodingUtil.escapeText( value, false );
-      widget.setLegend( text );
-    }
-  } ),
+  propertyHandler : rwt.remote.HandlerUtil.extendControlPropertyHandler( {} ),
 
   listeners : rwt.remote.HandlerUtil.extendControlListeners( [] ),
 

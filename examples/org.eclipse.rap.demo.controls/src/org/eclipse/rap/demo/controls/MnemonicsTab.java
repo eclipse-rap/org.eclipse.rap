@@ -13,6 +13,7 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.layout.FillLayout;
@@ -23,6 +24,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -104,10 +106,11 @@ public class MnemonicsTab extends ExampleTab {
   @Override
   protected void createExampleControls( Composite parent ) {
     parent.setLayout( new FillLayout() );
+    int tabCount = 4;
     if( useCTabFolder ) {
       CTabFolder folder = new CTabFolder( parent, getStyle() );
-      CTabItem[] tabItems = new CTabItem[ 3 ];
-      for( int i = 0; i < 3; i++ ) {
+      CTabItem[] tabItems = new CTabItem[ tabCount ];
+      for( int i = 0; i < tabCount; i++ ) {
         tabItems[ i ] = new CTabItem( folder, SWT.NONE );
         tabItems[ i ].setText( "CTabItem &" + ( i + 1) );
         Composite content = createItemContent( folder, i );
@@ -116,8 +119,8 @@ public class MnemonicsTab extends ExampleTab {
       folder.setSelection( 0 );
     } else {
       TabFolder folder = new TabFolder( parent, getStyle() );
-      TabItem[] tabItems = new TabItem[ 3 ];
-      for( int i = 0; i < 3; i++ ) {
+      TabItem[] tabItems = new TabItem[ tabCount ];
+      for( int i = 0; i < tabCount; i++ ) {
         tabItems[ i ] = new TabItem( folder, SWT.NONE );
         tabItems[ i ].setText( "TabItem &" + ( i + 1 ) );
         Composite content = createItemContent( folder, i );
@@ -135,8 +138,12 @@ public class MnemonicsTab extends ExampleTab {
       break;
       case 1:
         createToolBarExample( content );
+        createLabelExample( content );
       break;
       case 2:
+        createGroupExample( content );
+      break;
+      case 3:
         createMenuExample( content );
       break;
     }
@@ -145,23 +152,26 @@ public class MnemonicsTab extends ExampleTab {
 
   private void createMenuExample( final Composite content ) {
     final Button button = new Button( content, SWT.PUSH );
-    button.setText( "Open Shell Menu" );
+    button.setText( "Open Shell with Menu" );
     button.addListener( SWT.Selection, new Listener() {
       public void handleEvent( Event event ) {
-        Shell shell = new Shell( content.getShell(), SWT.BORDER  );
-        shell.setLayout( new GridLayout() );
-        createMenuBar( shell );
-        // Bug? - Without a widget in the shell it doesn't get correctly focused
-        Button test = new Button( shell, SWT.PUSH );
-        test.setText( "foo" );
-        test.setLayoutData( new GridData( 100, 100 ) );
-        shell.setLocation( content.toDisplay( 0, 0 ) );
-        shell.setSize( content.getSize() );
-        shell.open();
+        createShellWithMenu( content );
       }
     } );
   }
 
+  private void createShellWithMenu( final Composite content ) {
+    Shell shell = new Shell( content.getShell(), SWT.BORDER  );
+    shell.setLayout( new GridLayout() );
+    createMenuBar( shell );
+    // Bug? - Without a widget in the shell it doesn't get correctly focused
+    Button test = new Button( shell, SWT.PUSH );
+    test.setText( "foo" );
+    test.setLayoutData( new GridData( 100, 100 ) );
+    shell.setLocation( content.toDisplay( 0, 0 ) );
+    shell.setSize( content.getSize() );
+    shell.open();
+  }
   private void createMenuBar( final Shell shell) {
     String[] items = new String[] {
       "&File", "&Edit", "&Lazy", "E&xit"
@@ -236,6 +246,54 @@ public class MnemonicsTab extends ExampleTab {
     createToolItem( bar, SWT.CHECK, "Toggl&e" );
     createToolItem( bar, SWT.RADIO, "Radio &8" );
     createToolItem( bar, SWT.RADIO, "Radio &9" );
+    GridData layoutData = new GridData();
+    layoutData.horizontalSpan = 3;
+    bar.setLayoutData( layoutData );
+  }
+
+  private void createGroupExample( Composite content ) {
+    content.setLayout(new GridLayout( 3, false ) );
+    Group groupA = new Group( content, SWT.SHADOW_IN );
+    groupA.setText( "Group &A" );
+    groupA.setLayout( new GridLayout() );
+    groupA.setLayoutData( new GridData( SWT.FILL, SWT.FILL, false, false ) );
+    createText( groupA );
+    Group groupB = new Group( content, SWT.SHADOW_IN );
+    groupB.setText( "Group &B with Composite" );
+    groupB.setLayoutData( new GridData( SWT.FILL, SWT.FILL, false, false ) );
+    groupB.setLayout( new FillLayout() );
+    Composite comp = new Composite( groupB, SWT.BORDER );
+    comp.setLayout( new GridLayout() );
+    createText( comp );
+    Group groupC = new Group( content, SWT.SHADOW_IN );
+    groupC.setText( "Group &C" );
+    groupC.setLayout( new GridLayout() );
+    groupC.setLayoutData( new GridData( SWT.FILL, SWT.FILL, false, false ) );
+    createText( groupC ).setEnabled( false );
+    createText( groupC ).setVisible( false );
+    createText( groupC );
+  }
+
+  private void createLabelExample( Composite content ) {
+    Label label = new Label( content, SWT.NONE );
+    label.setText( "L&abel:" );
+    createText( content );
+    CLabel clabel = new CLabel( content, SWT.NONE );
+    clabel.setText( "&CLabel:" );
+    Button button = new Button( content, SWT.CHECK );
+    button.setText( "Button" );
+    Label labelForDisabled = new Label( content, SWT.NONE );
+    labelForDisabled.setText( "D&isabled:" );
+    createText( content ).setEnabled( false );
+    Label labelForInvisible = new Label( content, SWT.NONE );
+    labelForInvisible.setText( "In&visible:" );
+    createText( content ).setVisible( false );
+  }
+
+  private Text createText( Composite content ) {
+    Text text = new Text( content, SWT.BORDER );
+    text.setText( "Text" );
+    return text;
   }
 
   private void createButton( Composite content, int style, String text ) {

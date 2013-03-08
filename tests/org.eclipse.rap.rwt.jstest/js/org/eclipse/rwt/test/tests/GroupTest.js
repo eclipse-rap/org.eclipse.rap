@@ -9,6 +9,8 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
 
   extend : rwt.qx.Object,
@@ -89,8 +91,57 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
       assertEquals( "foo &amp; &lt;&gt; &quot; bar", widget.getLegend() );
       shell.destroy();
       widget.destroy();
-    }
+    },
 
+    testSetMnemonicIndexByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+
+      var group = createMnemonicGroup();
+
+      assertEquals( 1, group.getMnemonicIndex() );
+      shell.destroy();
+    },
+
+    testSetTextResetsMnemonicIndex : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var group = createMnemonicGroup();
+      TestUtil.protocolSet( "w3", { "text" : "baa" } );
+
+      assertEquals( null, group.getMnemonicIndex() );
+
+      shell.destroy();
+    },
+
+    testRenderMnemonic_OnActivate : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var group = createMnemonicGroup();
+      TestUtil.flush();
+      shell.setActive( true );
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      TestUtil.flush();
+
+      assertEquals( "f<span style=\"text-decoration:underline\">o</span>o", group.getLegend() );
+      shell.destroy();
+    },
+
+    testRenderMnemonic_OnDeActivate : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var group = createMnemonicGroup();
+      TestUtil.flush();
+      shell.setActive( true );
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      rwt.widgets.util.MnemonicHandler.getInstance().deactivate();
+      TestUtil.flush();
+
+      assertEquals( "foo", group.getLegend() );
+      shell.destroy();
+    }
 
     // TODO [tb] : breaks IE7 (commented to be able to run all other tests)
 //    testApplyGroupLabelId : function(){
@@ -119,3 +170,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
   }
 
 } );
+
+var createMnemonicGroup = function() {
+  var processor = rwt.remote.MessageProcessor;
+  processor.processOperation( {
+    "target" : "w3",
+    "action" : "create",
+    "type" : "rwt.widgets.Group",
+    "properties" : {
+      "style" : [],
+      "parent" : "w2",
+      "text" : "foo",
+      "mnemonicIndex" : 1
+    }
+  } );
+  return rwt.remote.ObjectRegistry.getObject( "w3" );
+};
+
+}());

@@ -24,6 +24,12 @@ rwt.qx.Class.define( "rwt.widgets.Label", {
       this.setFlexibleCell( 1 );
     }
     this._markupEnabled = styles.MARKUP_ENABLED === true;
+    this._rawText = null;
+    this._mnemonicIndex = null;
+  },
+
+  destruct : function() {
+    this.setMnemonicIndex( null );
   },
 
   members : {
@@ -45,15 +51,61 @@ rwt.qx.Class.define( "rwt.widgets.Label", {
     },
 
     setText : function( value ) {
-      var text = value;
-      if( !this._markupEnabled ) {
-        var EncodingUtil = rwt.util.Encoding;
-        // Order is important here: escapeText, replace line breaks
-        text = EncodingUtil.escapeText( value, false );
-        text = EncodingUtil.replaceNewLines( text, "<br/>" );
-        text = EncodingUtil.replaceWhiteSpaces( text ); // fixes bug 192634
+      this._rawText = value;
+      this._applyText( false );
+      this._mnemonicIndex = null;
+    },
+
+    setMnemonicIndex : function( value ) {
+      this._mnemonicIndex = value;
+      var mnemonicHandler = rwt.widgets.util.MnemonicHandler.getInstance();
+      if( ( typeof value === "number" ) && ( value >= 0 ) ) {
+        mnemonicHandler.add( this, this._onMnemonic );
+      } else {
+        mnemonicHandler.remove( this );
       }
-      this.setCellContent( 1, text );
+    },
+
+    getMnemonicIndex : function() {
+      return this._mnemonicIndex;
+    },
+
+    _applyText : function( mnemonic ) {
+      var text = this._rawText;
+      if( text ) {
+        if( !this._markupEnabled ) {
+          var EncodingUtil = rwt.util.Encoding;
+          var mnemonicIndex = mnemonic ? this._mnemonicIndex : undefined;
+          // Order is important here: escapeText, replace line breaks
+          text = EncodingUtil.escapeText( this._rawText, mnemonicIndex );
+          text = EncodingUtil.replaceNewLines( text, "<br/>" );
+          text = EncodingUtil.replaceWhiteSpaces( text ); // fixes bug 192634
+        }
+        this.setCellContent( 1, text );
+      } else {
+        this.setCellContent( 1, null );
+      }
+    },
+
+    _onMnemonic : function( event ) {
+      switch( event.type ) {
+        case "show":
+          this._applyText( true );
+        break;
+        case "hide":
+          this._applyText( false );
+        break;
+        case "trigger":
+          var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
+          if( event.charCode === charCode ) {
+            var focusWidget = this.getNextSibling();
+            if( focusWidget && focusWidget.getVisibility() && focusWidget.getEnabled() ) {
+              focusWidget.focus();
+            }
+            event.success = true;
+          }
+        break;
+      }
     },
 
     setTopMargin : function( value ) {

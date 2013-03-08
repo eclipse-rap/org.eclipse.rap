@@ -27,6 +27,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Label", {
 
   properties : rwt.remote.HandlerUtil.extendControlProperties( [
     "text",
+    "mnemonicIndex",
     "image",
     "alignment",
     "appearance",
