@@ -38,6 +38,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
+import org.eclipse.swt.internal.widgets.WidgetDataUtil;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
@@ -684,6 +685,34 @@ public class ToolItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "mnemonicIndex" ) );
+  }
+
+  @Test
+  public void testRenderData() throws JSONException, IOException {
+    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
+    toolitem.setData( "foo", "string" );
+    toolitem.setData( "bar", Integer.valueOf( 1 ) );
+
+    lca.renderChanges( toolitem );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONObject data = ( JSONObject )message.findSetProperty( toolitem, "data" );
+    assertEquals( "string", data.getString( "foo" ) );
+    assertEquals( Integer.valueOf( 1 ), Integer.valueOf( data.getInt( "bar" ) ) );
+  }
+
+  @Test
+  public void testRenderDataUnchanged() throws IOException {
+    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo" } );
+    toolitem.setData( "foo", "string" );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( toolitem );
+
+    Fixture.preserveWidgets();
+    lca.renderChanges( toolitem );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
   }
 
 }

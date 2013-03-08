@@ -46,6 +46,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     CTabItem item = ( CTabItem )widget;
     WidgetLCAUtil.preserveCustomVariant( item );
+    WidgetLCAUtil.preserveData( item );
     WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
     WidgetLCAUtil.preserveBounds( item, item.getBounds() );
     WidgetLCAUtil.preserveFont( item, getFont( item ) );
@@ -73,6 +74,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   public void renderChanges( Widget widget ) throws IOException {
     CTabItem item = ( CTabItem )widget;
     WidgetLCAUtil.renderCustomVariant( item );
+    WidgetLCAUtil.renderData( item );
     WidgetLCAUtil.renderToolTip( item, item.getToolTipText() );
     WidgetLCAUtil.renderBounds( item, item.getBounds() );
     WidgetLCAUtil.renderFont( item, getFont( item ) );

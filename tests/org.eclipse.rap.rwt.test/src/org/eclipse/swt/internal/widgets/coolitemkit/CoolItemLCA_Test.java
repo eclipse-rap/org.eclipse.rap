@@ -29,6 +29,7 @@ import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.WidgetDataUtil;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.CoolItem;
@@ -36,6 +37,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -150,6 +152,34 @@ public class CoolItemLCA_Test {
     Fixture.readDataAndProcessAction( display );
 
     assertTrue( oldX != item.getBounds().x );
+  }
+
+  @Test
+  public void testRenderData() throws JSONException, IOException {
+    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
+    item.setData( "foo", "string" );
+    item.setData( "bar", Integer.valueOf( 1 ) );
+
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONObject data = ( JSONObject )message.findSetProperty( item, "data" );
+    assertEquals( "string", data.getString( "foo" ) );
+    assertEquals( Integer.valueOf( 1 ), Integer.valueOf( data.getInt( "bar" ) ) );
+  }
+
+  @Test
+  public void testRenderDataUnchanged() throws IOException {
+    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo" } );
+    item.setData( "foo", "string" );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
   }
 
 }

@@ -42,6 +42,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
+import org.eclipse.swt.internal.widgets.WidgetDataUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
@@ -373,6 +374,34 @@ public class ExpandItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( expandItem, "headerHeight" ) );
+  }
+
+  @Test
+  public void testRenderData() throws JSONException, IOException {
+    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
+    expandItem.setData( "foo", "string" );
+    expandItem.setData( "bar", Integer.valueOf( 1 ) );
+
+    lca.renderChanges( expandItem );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONObject data = ( JSONObject )message.findSetProperty( expandItem, "data" );
+    assertEquals( "string", data.getString( "foo" ) );
+    assertEquals( Integer.valueOf( 1 ), Integer.valueOf( data.getInt( "bar" ) ) );
+  }
+
+  @Test
+  public void testRenderDataUnchanged() throws IOException {
+    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo" } );
+    expandItem.setData( "foo", "string" );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( expandItem );
+
+    Fixture.preserveWidgets();
+    lca.renderChanges( expandItem );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
   }
 
   private static void fakeExpandEvent( ExpandItem item, String eventName ) {

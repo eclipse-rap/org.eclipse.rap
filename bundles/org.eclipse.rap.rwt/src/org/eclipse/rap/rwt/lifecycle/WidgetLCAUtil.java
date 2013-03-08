@@ -302,7 +302,7 @@ public final class WidgetLCAUtil {
     adapter.preserve( PROP_VARIANT, variant );
   }
 
-  static void preserveData( Widget widget ) {
+  public static void preserveData( Widget widget ) {
     preserveProperty( widget, PROP_DATA, getDataAsArray( widget ) );
   }
 
@@ -364,7 +364,7 @@ public final class WidgetLCAUtil {
     }
   }
 
-  static void renderData( Widget widget ) {
+  public static void renderData( Widget widget ) {
     Object[] newValue = getDataAsArray( widget );
     if( WidgetLCAUtil.hasChanged( widget, PROP_DATA, newValue, new Object[ 0 ] ) ) {
       IClientObject clientObject = ClientObjectFactory.getClientObject( widget );

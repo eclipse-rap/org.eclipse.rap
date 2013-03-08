@@ -56,6 +56,7 @@ final class ToolItemLCAUtil {
     WidgetLCAUtil.preserveEnabled( toolItem, toolItem.getEnabled() );
     WidgetLCAUtil.preserveToolTipText( toolItem, toolItem.getToolTipText() );
     WidgetLCAUtil.preserveCustomVariant( toolItem );
+    WidgetLCAUtil.preserveData( toolItem );
     preserveProperty( toolItem, PROP_VISIBLE, isVisible( toolItem ) );
     preserveProperty( toolItem, PROP_TEXT, toolItem.getText() );
     preserveProperty( toolItem, PROP_IMAGE, getImage( toolItem ) );
@@ -85,6 +86,7 @@ final class ToolItemLCAUtil {
     WidgetLCAUtil.renderEnabled( toolItem, toolItem.getEnabled() );
     WidgetLCAUtil.renderToolTip( toolItem, toolItem.getToolTipText() );
     WidgetLCAUtil.renderCustomVariant( toolItem );
+    WidgetLCAUtil.renderData( toolItem );
     renderText( toolItem );
     renderMnemonicIndex( toolItem );
     renderProperty( toolItem, PROP_VISIBLE, isVisible( toolItem ), true );

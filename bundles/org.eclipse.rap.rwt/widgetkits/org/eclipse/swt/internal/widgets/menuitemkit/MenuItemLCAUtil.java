@@ -44,6 +44,7 @@ final class MenuItemLCAUtil {
 
   static void preserveValues( MenuItem item ) {
     WidgetLCAUtil.preserveCustomVariant( item );
+    WidgetLCAUtil.preserveData( item );
     preserveProperty( item, PROP_TEXT, item.getText() );
     preserveProperty( item, PROP_IMAGE, item.getImage() );
     preserveProperty( item, PROP_MENU, item.getMenu() );
@@ -64,6 +65,7 @@ final class MenuItemLCAUtil {
 
   static void renderChanges( MenuItem item ) {
     WidgetLCAUtil.renderCustomVariant( item );
+    WidgetLCAUtil.renderData( item );
     renderText( item );
     renderMnemonicIndex( item );
     renderProperty( item, PROP_IMAGE, item.getImage(), null );

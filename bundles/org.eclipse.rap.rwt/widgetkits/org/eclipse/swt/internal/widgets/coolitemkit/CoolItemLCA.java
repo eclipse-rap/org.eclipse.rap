@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,8 @@ import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.graphics.Rectangle;
@@ -47,22 +47,23 @@ public class CoolItemLCA extends AbstractWidgetLCA {
    */
   @Override
   public void preserveValues( Widget widget ) {
-    CoolItem coolItem = ( CoolItem )widget;
-    WidgetAdapter adapter = WidgetUtil.getAdapter( coolItem );
-    adapter.preserve( PROP_CONTROL, coolItem.getControl() );
-    adapter.preserve( Props.BOUNDS, coolItem.getBounds() );
-    WidgetLCAUtil.preserveCustomVariant( coolItem );
+    CoolItem item = ( CoolItem )widget;
+    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    adapter.preserve( PROP_CONTROL, item.getControl() );
+    adapter.preserve( Props.BOUNDS, item.getBounds() );
+    WidgetLCAUtil.preserveCustomVariant( item );
+    WidgetLCAUtil.preserveData( item );
   }
 
   public void readData( Widget widget ) {
-    final CoolItem coolItem = ( CoolItem )widget;
+    final CoolItem item = ( CoolItem )widget;
     String methodName = "move";
-    if( ProtocolUtil.wasCallSend( getId( coolItem ), methodName ) ) {
-      String left = readCallPropertyValueAsString( getId( coolItem ), methodName, "left" );
+    if( ProtocolUtil.wasCallSend( getId( item ), methodName ) ) {
+      String left = readCallPropertyValueAsString( getId( item ), methodName, "left" );
       final int newLeft = NumberFormatUtil.parseInt( left );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          moveItem( coolItem, newLeft );
+          moveItem( item, newLeft );
         }
       } );
     }
@@ -83,6 +84,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderBounds( item, item.getBounds() );
     renderProperty( item, PROP_CONTROL, item.getControl(), null );
     WidgetLCAUtil.renderCustomVariant( item );
+    WidgetLCAUtil.renderData( item );
   }
 
   ///////////////////////////////

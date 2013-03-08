@@ -40,6 +40,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     TabItem item = ( TabItem )widget;
     WidgetLCAUtil.preserveCustomVariant( item );
+    WidgetLCAUtil.preserveData( item );
     WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
     preserveProperty( item, PROP_TEXT, item.getText() );
     preserveProperty( item, PROP_IMAGE, item.getImage() );
@@ -51,45 +52,46 @@ public class TabItemLCA extends AbstractWidgetLCA {
 
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
-    TabItem tabItem = ( TabItem )widget;
-    TabFolder parent = tabItem.getParent();
-    IClientObject clientObject = ClientObjectFactory.getClientObject( tabItem );
+    TabItem item = ( TabItem )widget;
+    TabFolder parent = item.getParent();
+    IClientObject clientObject = ClientObjectFactory.getClientObject( item );
     clientObject.create( TYPE );
     // TODO [tb] : Do not render id!
-    clientObject.set( "id", WidgetUtil.getId( tabItem ) );
+    clientObject.set( "id", WidgetUtil.getId( item ) );
     clientObject.set( "parent", WidgetUtil.getId( parent ) );
-    clientObject.set( "index", parent.indexOf( tabItem ) ) ;
+    clientObject.set( "index", parent.indexOf( item ) ) ;
   }
 
   @Override
   public void renderChanges( Widget widget ) throws IOException {
-    TabItem tabItem = ( TabItem )widget;
-    WidgetLCAUtil.renderCustomVariant( tabItem );
-    WidgetLCAUtil.renderToolTip( tabItem, tabItem.getToolTipText() );
-    renderText( tabItem );
-    renderMnemonicIndex( tabItem );
-    renderProperty( tabItem, PROP_IMAGE, tabItem.getImage(), null );
-    renderProperty( tabItem, PROP_CONTROL, tabItem.getControl(), null );
+    TabItem item = ( TabItem )widget;
+    WidgetLCAUtil.renderCustomVariant( item );
+    WidgetLCAUtil.renderData( item );
+    WidgetLCAUtil.renderToolTip( item, item.getToolTipText() );
+    renderText( item );
+    renderMnemonicIndex( item );
+    renderProperty( item, PROP_IMAGE, item.getImage(), null );
+    renderProperty( item, PROP_CONTROL, item.getControl(), null );
   }
 
   //////////////////
   // Helping methods
 
-  private static void renderText( TabItem tabItem ) {
-    String newValue = tabItem.getText();
-    if( WidgetLCAUtil.hasChanged( tabItem, PROP_TEXT, newValue, "" ) ) {
+  private static void renderText( TabItem item ) {
+    String newValue = item.getText();
+    if( WidgetLCAUtil.hasChanged( item, PROP_TEXT, newValue, "" ) ) {
       String text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
-      IClientObject clientObject = ClientObjectFactory.getClientObject( tabItem );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( item );
       clientObject.set( PROP_TEXT, text );
     }
   }
 
-  private static void renderMnemonicIndex( TabItem tabItem ) {
-    String text = tabItem.getText();
-    if( WidgetLCAUtil.hasChanged( tabItem, PROP_TEXT, text, "" ) ) {
+  private static void renderMnemonicIndex( TabItem item ) {
+    String text = item.getText();
+    if( WidgetLCAUtil.hasChanged( item, PROP_TEXT, text, "" ) ) {
       int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
       if( mnemonicIndex != -1 ) {
-        IClientObject clientObject = ClientObjectFactory.getClientObject( tabItem );
+        IClientObject clientObject = ClientObjectFactory.getClientObject( item );
         clientObject.set( PROP_MNEMONIC_INDEX, mnemonicIndex );
       }
     }

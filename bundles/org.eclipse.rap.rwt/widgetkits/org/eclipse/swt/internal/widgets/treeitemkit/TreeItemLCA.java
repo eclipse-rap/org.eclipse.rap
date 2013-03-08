@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,6 +64,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       WidgetLCAUtil.preserveForeground( item, getUserForeground( item ) );
       WidgetLCAUtil.preserveFont( item, getUserFont( item ) );
       WidgetLCAUtil.preserveCustomVariant( item );
+      WidgetLCAUtil.preserveData( item );
       preserveProperty( item, PROP_CELL_BACKGROUNDS, getCellBackgrounds( item ) );
       preserveProperty( item, PROP_CELL_FOREGROUNDS, getCellForegrounds( item ) );
       preserveProperty( item, PROP_CELL_FONTS, getCellFonts( item ) );
@@ -119,6 +120,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       WidgetLCAUtil.renderForeground( item, getUserForeground( item ) );
       WidgetLCAUtil.renderFont( item, getUserFont( item ) );
       WidgetLCAUtil.renderCustomVariant( item );
+      WidgetLCAUtil.renderData( item );
       renderProperty( item,
                       PROP_CELL_BACKGROUNDS,
                       getCellBackgrounds( item ),
