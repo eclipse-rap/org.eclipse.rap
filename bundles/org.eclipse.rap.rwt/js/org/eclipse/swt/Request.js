@@ -39,6 +39,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
     requestQueue.setMaxConcurrentRequests( 1 );
     // References the currently running request or null if no request is active
     this._currentRequest = null;
+    this._waitHintTime = 700;
   },
 
   destruct : function() {
@@ -153,7 +154,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         this._runningRequestCount++;
         // notify user when request takes longer than 500 ms
         if( this._runningRequestCount === 1 ) {
-          qx.client.Timer.once( this._showWaitHint, this, 700 );
+          qx.client.Timer.once( this._showWaitHint, this, this._waitHintTime );
         }
         // clear the parameter list
         this._parameters = {};
