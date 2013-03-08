@@ -164,7 +164,7 @@ public class MnemonicsTab extends ExampleTab {
 
   private void createMenuBar( final Shell shell) {
     String[] items = new String[] {
-      "&File", "&Edit", "E&xit"
+      "&File", "&Edit", "&Lazy", "E&xit"
     };
     Menu bar = new Menu( shell, SWT.BAR );
     shell.setMenuBar( bar );
@@ -187,10 +187,22 @@ public class MnemonicsTab extends ExampleTab {
     createMenuItem( submenu, SWT.CHECK, "Ch&eck" );
     createMenuItem( submenu, SWT.RADIO, "Radio &8" );
     createMenuItem( submenu, SWT.RADIO, "Radio &9" );
-    MenuItem close = createMenuItem( bar.getItem( 2 ).getMenu(), SWT.PUSH, "Close &Shell" );
+    createMenuItem( bar.getItem( 2 ).getMenu(), SWT.PUSH, "Default &Item" );
+    crateLazyMenu( bar.getItem( 2 ) );
+    MenuItem close = createMenuItem( bar.getItem( 3 ).getMenu(), SWT.PUSH, "Close &Shell" );
     close.addListener( SWT.Selection, new Listener() {
       public void handleEvent( Event event ) {
         shell.dispose();
+      }
+    } );
+  }
+
+  private void crateLazyMenu( MenuItem item ) {
+    final Menu menu = item.getMenu();
+    menu.addListener( SWT.Show, new Listener() {
+      public void handleEvent( Event event ) {
+        menu.getItem( 0 ).dispose();
+        createMenuItem( menu, SWT.PUSH, "&Generated Item" );
       }
     } );
   }

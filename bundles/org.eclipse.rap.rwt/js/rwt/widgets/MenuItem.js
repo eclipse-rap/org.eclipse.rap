@@ -102,7 +102,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
    setText : function( value ) {
       this._rawText = value;
       this._mnemonicIndex = null;
-      this._applyText( false );
+      this.renderText();
     },
 
     setMnemonicIndex : function( value ) {
@@ -114,11 +114,18 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
         } else {
           mnemonicHandler.remove( this );
         }
+      } else if( value != null && this._isMnemonicMenu() ) {
+        this.renderText();
       }
     },
 
-    setShowMnemonic : function( value ) {
-      this._applyText( value );
+    renderText : function() {
+      this._applyText( this._isMnemonicMenu() );
+    },
+
+    _isMnemonicMenu : function() {
+      return     this._parentMenu instanceof rwt.widgets.Menu
+              && this._parentMenu.getMnemonics();
     },
 
     getMnemonicIndex : function() {

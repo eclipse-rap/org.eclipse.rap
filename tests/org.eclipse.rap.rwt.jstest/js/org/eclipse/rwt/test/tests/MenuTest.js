@@ -569,6 +569,28 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       disposeMenuBar();
     },
 
+    testMenuWithMnemonic_RenderMnemonicsOnNewItems : function() {
+      createMenuBar( "push" );
+      menuBarItem.setText( "foo" );
+      menuBarItem.setMnemonicIndex( 1 );
+      TestUtil.flush();
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      TestUtil.flush();
+
+      var newMenuItem = new MenuItem( "push" );
+      menu.addMenuItemAt( newMenuItem, 0 );
+      newMenuItem.setText( "foo" );
+      newMenuItem.setMnemonicIndex( 1 );
+      TestUtil.flush();
+
+      assertEquals(
+        "f<span style=\"text-decoration:underline\">o</span>o",
+        newMenuItem.getCellContent( 2 )
+      );
+      disposeMenuBar();
+    },
+
     testMenuWithMnemonic_TriggerSendsSelection : function() {
       createMenuBar( "push" );
       menuBarItem.setText( "foo" );

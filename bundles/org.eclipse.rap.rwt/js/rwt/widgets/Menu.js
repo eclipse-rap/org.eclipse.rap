@@ -146,9 +146,15 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
         this._mnemonics = value;
         var items = this._layout.getChildren();
         for( var i = 0; i < items.length; i++ ) {
-          items[ i ].setShowMnemonic( value );
+          if( items[ i ].renderText ) {
+            items[ i ].renderText();
+          }
         }
       }
+    },
+
+    getMnemonics : function() {
+      return this._mnemonics;
     },
 
     // Overwritten:
