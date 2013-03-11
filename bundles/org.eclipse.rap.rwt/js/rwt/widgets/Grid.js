@@ -577,6 +577,8 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
           var text = domTarget.getAttribute( "href" );
           if( !text ) {
             text = domTarget.innerHTML;
+          } else if( text.indexOf( "/" ) !== 0 ) {
+            text = text.slice( text.lastIndexOf( "/" ) + 1 );
           }
           this._sendSelectionEvent( item, false, "hyperlink", undefined, text );
         }
