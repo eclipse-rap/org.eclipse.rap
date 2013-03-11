@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -140,11 +139,11 @@ public class CComboLCA_Test {
     assertEquals( Boolean.FALSE, adapter.getPreserved( CComboLCA.PROP_EDITABLE ) );
     Fixture.clearPreserved();
     // foreground background font
-    Color background = Graphics.getColor( 122, 33, 203 );
+    Color background = new Color( display, 122, 33, 203 );
     ccombo.setBackground( background );
-    Color foreground = Graphics.getColor( 211, 178, 211 );
+    Color foreground = new Color( display, 211, 178, 211 );
     ccombo.setForeground( foreground );
-    Font font = Graphics.getFont( "font", 12, SWT.BOLD );
+    Font font = new Font( display, "font", 12, SWT.BOLD );
     ccombo.setFont( font );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( ccombo );
@@ -393,7 +392,7 @@ public class CComboLCA_Test {
 
   @Test
   public void testRenderItemHeight() throws IOException {
-    ccombo.setFont( Graphics.getFont( "Arial", 16, SWT.NONE ) );
+    ccombo.setFont( new Font( display, "Arial", 16, SWT.NONE ) );
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
@@ -405,7 +404,7 @@ public class CComboLCA_Test {
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
 
-    ccombo.setFont( Graphics.getFont( "Arial", 16, SWT.NONE ) );
+    ccombo.setFont( new Font( display, "Arial", 16, SWT.NONE ) );
     Fixture.preserveWidgets();
     lca.renderChanges( ccombo );
 

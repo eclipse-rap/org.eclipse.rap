@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import java.io.IOException;
+
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -27,7 +29,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings("deprecation")
 public class ExpandItem_Test {
 
   private Display display;
@@ -95,19 +96,19 @@ public class ExpandItem_Test {
   }
 
   @Test
-  public void testText() {
+  public void testText() throws IOException {
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
     assertEquals( "", item.getText() );
     item.setText( "abc" );
     assertEquals( "abc", item.getText() );
     item = new ExpandItem( expandBar, SWT.NONE );
-    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    item.setImage( createImage( display, Fixture.IMAGE1 ) );
     assertEquals( "", item.getText() );
   }
 
   @Test
-  public void testImage() {
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+  public void testImage() throws IOException {
+    Image image = createImage( display, Fixture.IMAGE1 );
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
     assertEquals( null, item.getImage() );
     item.setImage( image );
@@ -137,7 +138,7 @@ public class ExpandItem_Test {
     assertEquals( 24, item.getHeaderHeight() );
     item.setImage( display.getSystemImage( SWT.ICON_WARNING ) );
     assertEquals( 32, item.getHeaderHeight() );
-    Font font = Graphics.getFont( "font", 30, SWT.BOLD );
+    Font font = new Font( display, "font", 30, SWT.BOLD );
     expandBar.setFont( font );
     assertEquals( 34, item.getHeaderHeight() );
   }

@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -295,9 +294,9 @@ public class MeasurementOperator_Test {
 
   private void askForTextSizes() {
     Font[] fonts = new Font[] {
-      Graphics.getFont( "arial", 10, SWT.BOLD ),
-      Graphics.getFont( "helvetia, ms sans serif", 12, SWT.BOLD ),
-      Graphics.getFont( "\"Bogus\" \\ Font \" Name", 12, SWT.BOLD )
+      new Font( display, "arial", 10, SWT.BOLD ),
+      new Font( display, "helvetia, ms sans serif", 12, SWT.BOLD ),
+      new Font( display, "\"Bogus\" \\ Font \" Name", 12, SWT.BOLD )
     };
     TextSizeUtil.stringExtent( fonts[ 0 ], "FirstString" );
     TextSizeUtil.stringExtent( fonts[ 1 ], "SecondString" );

@@ -2103,8 +2103,8 @@ public class Tree extends Composite {
     }
   }
 
-  private int getVisibleRowCount( boolean includePartlyVisible ) {
-    int clientHeight = getBounds().height - getHeaderHeight() - getHScrollBarHeight();
+  final int getVisibleRowCount( boolean includePartlyVisible ) {
+    int clientHeight = getClientArea().height - getHeaderHeight();
     int result = 0;
     if( clientHeight >= 0 ) {
       int itemHeight = getItemHeight();

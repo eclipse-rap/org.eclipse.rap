@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -28,6 +27,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
@@ -773,7 +773,7 @@ public class CCombo_Test {
     CCombo combo = new CCombo( shell, SWT.NONE );
     // default theme font is 11px
     assertEquals( 16, combo.getTextHeight() );
-    combo.setFont( Graphics.getFont( "Helvetica", 12, SWT.NORMAL ) );
+    combo.setFont( new Font( display, "Helvetica", 12, SWT.NORMAL ) );
     assertEquals( 14, combo.getTextHeight() );
     combo.setFont( null );
     assertEquals( 16, combo.getTextHeight() );

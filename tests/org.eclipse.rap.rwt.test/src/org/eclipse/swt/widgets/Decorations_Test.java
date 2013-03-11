@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,14 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import java.io.IOException;
+
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Image;
@@ -24,7 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings("deprecation")
 public class Decorations_Test {
 
   @Before
@@ -57,13 +58,13 @@ public class Decorations_Test {
   }
 
   @Test
-  public void testGetImages() {
+  public void testGetImages() throws IOException {
     Display display = new Display();
     Decorations shell = new Shell( display );
     assertNotNull( shell.getImages() );
     assertEquals( 0, shell.getImages().length );
-    Image image1 = Graphics.getImage( Fixture.IMAGE1 );
-    Image image2 = Graphics.getImage( Fixture.IMAGE2 );
+    Image image1 = createImage( display, Fixture.IMAGE1 );
+    Image image2 = createImage( display, Fixture.IMAGE2 );
     shell.setImages( new Image[]{ image1, image2 } );
     Image[] images = shell.getImages();
     assertEquals( 2, images.length );
@@ -72,11 +73,11 @@ public class Decorations_Test {
   }
 
   @Test
-  public void testSetImage() {
+  public void testSetImage() throws IOException {
     Display display = new Display();
     Decorations shell = new Shell( display );
     assertNull( shell.getImage() );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( display, Fixture.IMAGE1 );
     shell.setImage( image );
     assertEquals( image, shell.getImage() );
   }

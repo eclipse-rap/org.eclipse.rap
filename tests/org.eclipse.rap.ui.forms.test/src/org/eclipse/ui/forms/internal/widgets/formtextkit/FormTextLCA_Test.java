@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,21 +13,23 @@ package org.eclipse.ui.forms.internal.widgets.formtextkit;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.HyperlinkSettings;
 import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
-import org.eclipse.ui.forms.widgets.*;
+import org.eclipse.ui.forms.widgets.FormText;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+
+@SuppressWarnings( "restriction" )
 public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
 
   private FormText formText;
   private FormTextLCA lca;
 
+  @Override
   protected void setUp() {
     super.setUp();
     formText = new FormText( shell, SWT.NONE );

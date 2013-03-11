@@ -11,10 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ArmListener;
@@ -50,8 +46,7 @@ public class MenuItem extends Item {
   private DisposeListener menuDisposeListener;
   private boolean selection;
   private int userId;
-  private int accelerator;
-  private Listener acceleratorFilter;
+  private AcceleratorBinding acceleratorBinding;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -302,17 +297,14 @@ public class MenuItem extends Item {
    */
   public void setAccelerator( int accelerator ) {
     checkWidget();
-    if( this.accelerator != accelerator ) {
-      int oldAccelerator = this.accelerator;
-      this.accelerator = accelerator;
-      if( ( style & SWT.SEPARATOR ) == 0 ) {
-        updateDisplayActiveKeys( oldAccelerator, accelerator );
-        if( accelerator == 0 ) {
-          removeAcceleratorDisplayFilter();
-        } else {
-          addAcceleratorDisplayFilter();
-        }
+    if( accelerator != 0 ) {
+      if( acceleratorBinding == null ) {
+        acceleratorBinding = new AcceleratorBinding( this );
       }
+      acceleratorBinding.setAccelerator( accelerator );
+    } else if( acceleratorBinding != null ) {
+      acceleratorBinding.release();
+      acceleratorBinding = null;
     }
   }
 
@@ -335,7 +327,7 @@ public class MenuItem extends Item {
    */
   public int getAccelerator() {
     checkWidget();
-    return accelerator;
+    return acceleratorBinding != null ? acceleratorBinding.getAccelerator() : 0;
   }
 
   //////////
@@ -619,9 +611,9 @@ public class MenuItem extends Item {
   @Override
   void releaseWidget() {
     super.releaseWidget();
-    if( accelerator != 0 ) {
-      updateDisplayActiveKeys( accelerator, 0 );
-      removeAcceleratorDisplayFilter();
+    if( acceleratorBinding != null ) {
+      acceleratorBinding.release();
+      acceleratorBinding = null;
     }
   }
 
@@ -660,7 +652,7 @@ public class MenuItem extends Item {
         menuDisposeListener = new DisposeListener() {
 
           public void widgetDisposed( DisposeEvent event ) {
-            MenuItem.this.menu = null;
+            menu = null;
           }
         };
       }
@@ -674,57 +666,7 @@ public class MenuItem extends Item {
     }
   }
 
-  private void updateDisplayActiveKeys( int oldAccelerator, int newAccelerator ) {
-    updateDisplayActiveKeys( RWT.ACTIVE_KEYS, oldAccelerator, newAccelerator );
-    updateDisplayActiveKeys( RWT.CANCEL_KEYS, oldAccelerator, newAccelerator );
-  }
-
-  private void updateDisplayActiveKeys( String keysType, int oldAccelerator, int newAccelerator ) {
-    String[] oldActiveKeys = ( String[] )display.getData( keysType );
-    if( oldActiveKeys == null ) {
-      oldActiveKeys = new String[ 0 ];
-    }
-    ArrayList<String> activeKeys = new ArrayList<String>( Arrays.asList( oldActiveKeys ) );
-    if( oldAccelerator != 0 ) {
-      activeKeys.remove( acceleratorAsString( oldAccelerator ) );
-    }
-    if( newAccelerator != 0 ) {
-      activeKeys.add( acceleratorAsString( newAccelerator ) );
-    }
-    display.setData( keysType, activeKeys.toArray( new String[ 0 ] ) );
-  }
-
-  private String acceleratorAsString( int accelerator ) {
-    String result = "";
-    if( ( accelerator & SWT.ALT ) != 0 ) {
-      result += "ALT+";
-    }
-    if( ( accelerator & SWT.CTRL ) != 0 ) {
-      result += "CTRL+";
-    }
-    if( ( accelerator & SWT.SHIFT ) != 0 ) {
-      result += "SHIFT+";
-    }
-    char key = ( char )( accelerator & SWT.KEY_MASK );
-    result += Character.toString( Character.toUpperCase( key ) );
-    return result;
-  }
-
-  private void addAcceleratorDisplayFilter() {
-    if( acceleratorFilter == null ) {
-      acceleratorFilter = new AcceleratorFilter();
-      display.addFilter( SWT.KeyDown, acceleratorFilter );
-    }
-  }
-
-  private void removeAcceleratorDisplayFilter() {
-    if( acceleratorFilter != null ) {
-      display.removeFilter( SWT.KeyDown, acceleratorFilter );
-      acceleratorFilter = null;
-    }
-  }
-
-  private void updateSelection() {
+  void handleAcceleratorActivation() {
     if( ( style & SWT.CHECK ) != 0 ) {
       selection = !selection;
     } else if ( ( style & SWT.RADIO ) != 0 ) {
@@ -765,31 +707,6 @@ public class MenuItem extends Item {
       menu.reskin( flags );
     }
     super.reskinChildren( flags );
-  }
-
-  ////////////////
-  // Inner classes
-
-  private final class AcceleratorFilter implements Listener {
-    public void handleEvent( Event event ) {
-      if( isRelevantEvent( event ) && isEnabled() ) {
-        updateSelection();
-        event.type = SWT.NONE;
-     }
-    }
-
-    private boolean isRelevantEvent( Event event ) {
-      boolean result = false;
-      if( event.type == SWT.KeyDown ) {
-        if( ( accelerator & SWT.MODIFIER_MASK ) == event.stateMask ) {
-          char key = Character.toUpperCase( ( char )( accelerator & SWT.KEY_MASK ) );
-          if( key == event.character ) {
-            result = true;
-          }
-        }
-      }
-      return result;
-    }
   }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2009, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -29,7 +30,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -62,7 +62,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings("deprecation")
 public class Control_Test {
 
   private Display display;
@@ -272,13 +271,13 @@ public class Control_Test {
     assertSame( display.getSystemFont(), control.getFont() );
 
     // Setting a parents' font must not affect the childrens font
-    Font compositeFont = Graphics.getFont( "Composite Font", 12, SWT.NORMAL );
+    Font compositeFont = new Font( display, "Composite Font", 12, SWT.NORMAL );
     composite.setFont( compositeFont );
     assertNotSame( control.getFont(), compositeFont );
 
     // (re)setting a font to null assigns the system font to the control
     Label label = new Label( composite, SWT.NONE );
-    Font labelFont = Graphics.getFont( "label font", 14, SWT.BOLD );
+    Font labelFont = new Font( display, "label font", 14, SWT.BOLD );
     label.setFont( labelFont );
     assertSame( labelFont, label.getFont() );
     label.setFont( null );
@@ -351,11 +350,11 @@ public class Control_Test {
   }
 
   @Test
-  public void testBackgroundMode() {
+  public void testBackgroundMode() throws IOException {
     Color red = display.getSystemColor( SWT.COLOR_RED );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
     Color widgetBg = display.getSystemColor( SWT.COLOR_WIDGET_BACKGROUND );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( display, Fixture.IMAGE1 );
     Composite comp = new Composite( shell, SWT.NONE );
     Control control = new Label( comp, SWT.NONE );
 
@@ -403,11 +402,11 @@ public class Control_Test {
   }
 
   @Test
-  public void testBackgroundTransparency() {
+  public void testBackgroundTransparency() throws IOException {
     Composite comp = new Composite( shell, SWT.NONE );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
     comp.setBackground( blue );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( display, Fixture.IMAGE1 );
     comp.setBackgroundImage( image );
     Control control = new Label( comp, SWT.NONE );
     IControlAdapter adapter = ControlUtil.getControlAdapter( control );
@@ -1055,10 +1054,10 @@ public class Control_Test {
 
   @Test
   public void testSetFont() {
-    Font controlFont = Graphics.getFont( "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
+    Font controlFont = new Font( display, "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
     shell.setFont( controlFont );
     assertSame( controlFont, shell.getFont() );
-    Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
+    Font itemFont = new Font( display, "ItemFont", 40, SWT.NORMAL );
     shell.setFont( itemFont );
     assertSame( itemFont, shell.getFont() );
     shell.setFont( null );

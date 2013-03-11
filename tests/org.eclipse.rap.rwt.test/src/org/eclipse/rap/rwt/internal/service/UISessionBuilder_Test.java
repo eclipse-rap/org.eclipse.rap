@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,6 @@ import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.theme.Theme;
@@ -78,9 +77,9 @@ public class UISessionBuilder_Test {
     registerEntryPoint( null );
 
     UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
-    UISession uiSession = builder.buildUISession();
+    UISessionImpl uiSession = builder.buildUISession();
 
-    assertEquals( applicationContext, ApplicationContextUtil.get( uiSession ) );
+    assertEquals( applicationContext, uiSession.getApplicationContext() );
   }
 
   @Test

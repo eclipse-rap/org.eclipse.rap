@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.internal.widgets.controldecoratorkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -22,7 +23,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -52,7 +52,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-@SuppressWarnings("deprecation")
 public class ControlDecoratorLCA_Test {
 
   private Display display;
@@ -182,7 +181,7 @@ public class ControlDecoratorLCA_Test {
 
   @Test
   public void testRenderBounds() throws IOException, JSONException {
-    decorator.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    decorator.setImage( createImage( display, Fixture.IMAGE_100x50 ) );
     lca.renderChanges( decorator );
 
     Message message = Fixture.getProtocolMessage();
@@ -193,7 +192,7 @@ public class ControlDecoratorLCA_Test {
 
   @Test
   public void testRenderBoundsUnchanged() throws IOException {
-    decorator.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    decorator.setImage( createImage( display, Fixture.IMAGE_100x50 ) );
     Fixture.markInitialized( display );
     Fixture.markInitialized( decorator );
 
@@ -245,7 +244,7 @@ public class ControlDecoratorLCA_Test {
 
   @Test
   public void testRenderImage() throws IOException, JSONException {
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
 
     decorator.setImage( image );
     lca.renderChanges( decorator );
@@ -261,7 +260,7 @@ public class ControlDecoratorLCA_Test {
   public void testRenderImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( decorator );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
 
     decorator.setImage( image );
     Fixture.preserveWidgets();
@@ -275,7 +274,7 @@ public class ControlDecoratorLCA_Test {
   public void testRenderImageReset() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( decorator );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
     decorator.setImage( image );
 
     Fixture.preserveWidgets();
@@ -298,7 +297,7 @@ public class ControlDecoratorLCA_Test {
   @Test
   public void testRenderVisible() throws IOException {
     shell.open();
-    decorator.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    decorator.setImage( createImage( display, Fixture.IMAGE_100x50 ) );
 
     decorator.show();
     lca.renderChanges( decorator );
@@ -313,7 +312,7 @@ public class ControlDecoratorLCA_Test {
     shell.open();
     Fixture.markInitialized( display );
     Fixture.markInitialized( decorator );
-    decorator.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    decorator.setImage( createImage( display, Fixture.IMAGE_100x50 ) );
 
     decorator.show();
     Fixture.preserveWidgets();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
+@SuppressWarnings( "deprecation" )
 public class ImageSerialzation_Test {
 
   private Display display;
@@ -49,7 +50,8 @@ public class ImageSerialzation_Test {
     Fixture.createServiceContext();
     Fixture.useDefaultResourceManager();
     applicationContext = ApplicationContextUtil.getInstance();
-    ApplicationContextUtil.set( ContextProvider.getUISession(), applicationContext );
+    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    uiSession.setApplicationContext( applicationContext );
     display = new Display();
   }
 
@@ -94,7 +96,7 @@ public class ImageSerialzation_Test {
     TestSession session = ( TestSession )ContextProvider.getRequest().getSession();
     ApplicationContextUtil.set( session.getServletContext(), applicationContext );
     UISessionImpl uiSession = ( UISessionImpl )getUISession( device );
-    UISessionImpl.attachInstanceToSession( session, uiSession );
+    uiSession.attachToHttpSession( session );
     uiSession.attachHttpSession( session );
   }
 

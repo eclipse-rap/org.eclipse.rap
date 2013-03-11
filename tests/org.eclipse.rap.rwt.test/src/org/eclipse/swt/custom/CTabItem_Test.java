@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -19,7 +20,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -214,9 +214,8 @@ public class CTabItem_Test {
     assertFalse( item.getShowClose() );
   }
 
-  @SuppressWarnings("deprecation")
   @Test
-  public void testShowImage() {
+  public void testShowImage() throws IOException {
     CTabItem item1, item2;
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -227,9 +226,9 @@ public class CTabItem_Test {
     ICTabFolderAdapter adapter
       = folder.getAdapter( ICTabFolderAdapter.class );
     item1 = new CTabItem( folder, SWT.NONE );
-    item1.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    item1.setImage( createImage( display, Fixture.IMAGE1 ) );
     item2 = new CTabItem( folder, SWT.NONE );
-    item2.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    item2.setImage( createImage( display, Fixture.IMAGE1 ) );
     folder.setSelection( item1 );
     assertTrue( adapter.showItemImage( item1 ) );
     assertTrue( adapter.showItemImage( item2 ) );
@@ -238,9 +237,9 @@ public class CTabItem_Test {
     folder.setSize( 120, 120 );
     folder.setUnselectedImageVisible( false );
     item1 = new CTabItem( folder, SWT.NONE );
-    item1.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    item1.setImage( createImage( display, Fixture.IMAGE1 ) );
     item2 = new CTabItem( folder, SWT.NONE );
-    item2.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    item2.setImage( createImage( display, Fixture.IMAGE1 ) );
     folder.setSelection( item1 );
     assertTrue( adapter.showItemImage( item1 ) );
     assertFalse( adapter.showItemImage( item2 ) );
@@ -254,12 +253,10 @@ public class CTabItem_Test {
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Font folderFont = folder.getFont();
     CTabItem item = new CTabItem( folder, SWT.NONE );
-    Font cTabFont = Graphics.getFont( "BeautifullyCraftedTreeFont",
-                                      15,
-                                      SWT.BOLD );
+    Font cTabFont = new Font( display, "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
     item.setFont( cTabFont );
     assertSame( cTabFont, item.getFont() );
-    Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
+    Font itemFont = new Font( display, "ItemFont", 40, SWT.NORMAL );
     item.setFont( itemFont );
     assertSame( itemFont, item.getFont() );
     item.setFont( null );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -21,7 +22,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -50,7 +50,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings("deprecation")
 public class TreeItemLCA_Test {
 
   private Display display;
@@ -74,7 +73,7 @@ public class TreeItemLCA_Test {
   }
 
   @Test
-  public void testPreserveValues() {
+  public void testPreserveValues() throws IOException {
     Fixture.markInitialized( display );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     new TreeColumn( tree, SWT.NONE, 0 );
@@ -83,7 +82,7 @@ public class TreeItemLCA_Test {
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     treeItem.setText( "qwert" );
     new TreeItem( treeItem, SWT.NONE, 0 );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( display, Fixture.IMAGE1 );
     treeItem.setImage( image );
     treeItem.setExpanded( true );
     Fixture.preserveWidgets();
@@ -108,31 +107,34 @@ public class TreeItemLCA_Test {
     treeItem.setText( 0, "item11" );
     treeItem.setText( 1, "item12" );
     treeItem.setText( 2, "item13" );
-    treeItem.setImage( 0, Graphics.getImage( Fixture.IMAGE1 ) );
-    treeItem.setImage( 1, Graphics.getImage( Fixture.IMAGE2 ) );
-    treeItem.setImage( 2, Graphics.getImage( Fixture.IMAGE3 ) );
+    Image image1 = createImage( display, Fixture.IMAGE1 );
+    Image image2 = createImage( display, Fixture.IMAGE2 );
+    Image image3 = createImage( display, Fixture.IMAGE3 );
+    treeItem.setImage( 0, image1 );
+    treeItem.setImage( 1, image2 );
+    treeItem.setImage( 2, image3 );
     tree.setSelection( treeItem );
-    background = Graphics.getColor( 234, 113, 34 );
+    background =new Color( display, 234, 113, 34 );
     treeItem.setBackground( ( Color )background );
-    foreground = Graphics.getColor( 122, 232, 45 );
+    foreground =new Color( display, 122, 232, 45 );
     treeItem.setForeground( ( Color )foreground );
-    Font font1 = Graphics.getFont( "font1", 10, 1 );
+    Font font1 = new Font( display, "font1", 10, 1 );
     treeItem.setFont( 0, font1 );
-    Font font2 = Graphics.getFont( "font1", 8, 1 );
+    Font font2 = new Font( display, "font1", 8, 1 );
     treeItem.setFont( 1, font2 );
-    Font font3 = Graphics.getFont( "font1", 6, 1 );
+    Font font3 = new Font( display, "font1", 6, 1 );
     treeItem.setFont( 2, font3 );
-    Color background1 = Graphics.getColor( 234, 230, 54 );
+    Color background1 = new Color( display, 234, 230, 54 );
     treeItem.setBackground( 0, background1 );
-    Color background2 = Graphics.getColor( 145, 222, 134 );
+    Color background2 = new Color( display, 145, 222, 134 );
     treeItem.setBackground( 1, background2 );
-    Color background3 = Graphics.getColor( 143, 134, 34 );
+    Color background3 = new Color( display, 143, 134, 34 );
     treeItem.setBackground( 2, background3 );
-    Color foreground1 = Graphics.getColor( 77, 77, 54 );
+    Color foreground1 = new Color( display, 77, 77, 54 );
     treeItem.setForeground( 0, foreground1 );
-    Color foreground2 = Graphics.getColor( 156, 45, 134 );
+    Color foreground2 = new Color( display, 156, 45, 134 );
     treeItem.setForeground( 1, foreground2 );
-    Color foreground3 = Graphics.getColor( 88, 134, 34 );
+    Color foreground3 = new Color( display, 88, 134, 34 );
     treeItem.setForeground( 2, foreground3 );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( treeItem );
@@ -141,9 +143,9 @@ public class TreeItemLCA_Test {
     assertEquals( "item12", texts[ 1 ] );
     assertEquals( "item13", texts[ 2 ] );
     images = ( Image[] )adapter.getPreserved( TreeItemLCA.PROP_IMAGES );
-    assertEquals( Graphics.getImage( Fixture.IMAGE1 ), images[ 0 ] );
-    assertEquals( Graphics.getImage( Fixture.IMAGE2 ), images[ 1 ] );
-    assertEquals( Graphics.getImage( Fixture.IMAGE3 ), images[ 2 ] );
+    assertEquals( image1, images[ 0 ] );
+    assertEquals( image2, images[ 1 ] );
+    assertEquals( image3, images[ 2 ] );
     assertEquals( background, adapter.getPreserved( TreeItemLCA.PROP_BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( TreeItemLCA.PROP_FOREGROUND ) );
     fonts = ( Font[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FONTS );
@@ -432,7 +434,7 @@ public class TreeItemLCA_Test {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( display, Fixture.IMAGE1 );
 
     item.setImage( new Image[] { null, image } );
     lca.renderChanges( item );
@@ -451,7 +453,7 @@ public class TreeItemLCA_Test {
     TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( display, Fixture.IMAGE1 );
 
     item.setImage( new Image[] { null, image } );
     Fixture.preserveWidgets();
@@ -550,7 +552,7 @@ public class TreeItemLCA_Test {
   public void testRenderFont() throws IOException, JSONException {
     TreeItem item = new TreeItem( tree, SWT.NONE );
 
-    item.setFont( Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    item.setFont( new Font( display, "Arial", 20, SWT.BOLD ) );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -567,7 +569,7 @@ public class TreeItemLCA_Test {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
-    item.setFont( Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    item.setFont( new Font( display, "Arial", 20, SWT.BOLD ) );
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 
@@ -682,7 +684,7 @@ public class TreeItemLCA_Test {
     new TreeColumn( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
 
-    item.setFont( 1, Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    item.setFont( 1, new Font( display, "Arial", 20, SWT.BOLD ) );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -703,7 +705,7 @@ public class TreeItemLCA_Test {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
-    item.setFont( 1, Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    item.setFont( 1, new Font( display, "Arial", 20, SWT.BOLD ) );
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 

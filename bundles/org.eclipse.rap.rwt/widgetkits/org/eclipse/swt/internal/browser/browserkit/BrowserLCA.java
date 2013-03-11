@@ -52,7 +52,9 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   private static final String TYPE = "rwt.widgets.Browser";
   private static final String[] ALLOWED_STYLES = new String[] { "BORDER" };
 
-  static final String BLANK_HTML = "<html><script></script></html>";
+  // Background color is set due to bug 401300 and 401278
+  static final String BLANK_HTML
+    = "<html><script></script><body style=\"background-color: transparent;\"></body></html>";
 
   public static final String EVENT_PROGRESS = "Progress";
 

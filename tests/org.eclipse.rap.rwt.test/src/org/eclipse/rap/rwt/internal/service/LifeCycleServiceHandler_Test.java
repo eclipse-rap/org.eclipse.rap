@@ -214,13 +214,12 @@ public class LifeCycleServiceHandler_Test {
   public void testApplicationContextAfterSessionRestart() throws IOException {
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
-    UISession uiSession = ContextProvider.getUISession();
     ApplicationContextImpl applicationContext = ApplicationContextUtil.getInstance();
 
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
-    uiSession = ContextProvider.getUISession();
-    assertSame( applicationContext, ApplicationContextUtil.get( uiSession ) );
+    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    assertSame( applicationContext, uiSession.getApplicationContext() );
   }
 
   @Test
@@ -416,7 +415,7 @@ public class LifeCycleServiceHandler_Test {
     UISession uiSession = ContextProvider.getUISession();
     ServletContext servletContext = Fixture.getServletContext();
     ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
-    ApplicationContextUtil.set( uiSession, applicationContext );
+    ( ( UISessionImpl )uiSession ).setApplicationContext( applicationContext );
   }
 
   private static void service( LifeCycleServiceHandler serviceHandler ) throws IOException {

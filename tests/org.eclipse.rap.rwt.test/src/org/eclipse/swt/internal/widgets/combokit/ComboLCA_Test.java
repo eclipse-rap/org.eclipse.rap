@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -135,11 +134,11 @@ public class ComboLCA_Test {
     assertEquals( Boolean.FALSE, adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
     Fixture.clearPreserved();
     //foreground background font
-    Color background = Graphics.getColor( 122, 33, 203 );
+    Color background = new Color( display, 122, 33, 203 );
     combo.setBackground( background );
-    Color foreground = Graphics.getColor( 211, 178, 211 );
+    Color foreground = new Color( display, 211, 178, 211 );
     combo.setForeground( foreground );
-    Font font = Graphics.getFont( "font", 12, SWT.BOLD );
+    Font font = new Font( display, "font", 12, SWT.BOLD );
     combo.setFont( font );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
@@ -379,7 +378,7 @@ public class ComboLCA_Test {
 
   @Test
   public void testRenderItemHeight() throws IOException {
-    combo.setFont( Graphics.getFont( "Arial", 16, SWT.NONE ) );
+    combo.setFont( new Font( display, "Arial", 16, SWT.NONE ) );
     lca.renderChanges( combo );
 
     Message message = Fixture.getProtocolMessage();
@@ -391,7 +390,7 @@ public class ComboLCA_Test {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
 
-    combo.setFont( Graphics.getFont( "Arial", 16, SWT.NONE ) );
+    combo.setFont( new Font( display, "Arial", 16, SWT.NONE ) );
     Fixture.preserveWidgets();
     lca.renderChanges( combo );
 

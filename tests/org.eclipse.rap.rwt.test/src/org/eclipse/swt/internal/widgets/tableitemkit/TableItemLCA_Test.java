@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.tableitemkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -20,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
@@ -50,7 +50,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings("deprecation")
 public class TableItemLCA_Test {
 
   private Display display;
@@ -74,7 +73,7 @@ public class TableItemLCA_Test {
   }
 
   @Test
-  public void testPreserveValues() {
+  public void testPreserveValues() throws IOException {
     Table table = new Table( shell, SWT.BORDER );
     new TableColumn( table, SWT.CENTER );
     new TableColumn( table, SWT.CENTER );
@@ -109,29 +108,29 @@ public class TableItemLCA_Test {
     item1.setText( 0, "item11" );
     item1.setText( 1, "item12" );
     item1.setText( 2, "item13" );
-    Font font1 = Graphics.getFont( "font1", 10, 1 );
+    Font font1 = new Font( display, "font1", 10, 1 );
     item1.setFont( 0, font1 );
-    Font font2 = Graphics.getFont( "font2", 8, 1 );
+    Font font2 = new Font( display, "font2", 8, 1 );
     item1.setFont( 1, font2 );
-    Font font3 = Graphics.getFont( "font3", 6, 1 );
+    Font font3 = new Font( display, "font3", 6, 1 );
     item1.setFont( 2, font3 );
-    Image image1 = Graphics.getImage( Fixture.IMAGE1 );
-    Image image2 = Graphics.getImage( Fixture.IMAGE2 );
-    Image image3 = Graphics.getImage( Fixture.IMAGE3 );
+    Image image1 = createImage( display, Fixture.IMAGE1 );
+    Image image2 = createImage( display, Fixture.IMAGE2 );
+    Image image3 = createImage( display, Fixture.IMAGE3 );
     item1.setImage( new Image[]{
       image1, image2, image3
     } );
-    Color background1 = Graphics.getColor( 234, 230, 54 );
+    Color background1 =new Color( display, 234, 230, 54 );
     item1.setBackground( 0, background1 );
-    Color background2 = Graphics.getColor( 145, 222, 134 );
+    Color background2 =new Color( display, 145, 222, 134 );
     item1.setBackground( 1, background2 );
-    Color background3 = Graphics.getColor( 143, 134, 34 );
+    Color background3 =new Color( display, 143, 134, 34 );
     item1.setBackground( 2, background3 );
-    Color foreground1 = Graphics.getColor( 77, 77, 54 );
+    Color foreground1 =new Color( display, 77, 77, 54 );
     item1.setForeground( 0, foreground1 );
-    Color foreground2 = Graphics.getColor( 156, 45, 134 );
+    Color foreground2 =new Color( display, 156, 45, 134 );
     item1.setForeground( 1, foreground2 );
-    Color foreground3 = Graphics.getColor( 88, 134, 34 );
+    Color foreground3 =new Color( display, 88, 134, 34 );
     item1.setForeground( 2, foreground3 );
     table.setSelection( 0 );
     ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
@@ -379,7 +378,7 @@ public class TableItemLCA_Test {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( display, Fixture.IMAGE1 );
 
     item.setImage( new Image[] { null, image } );
     lca.renderChanges( item );
@@ -398,7 +397,7 @@ public class TableItemLCA_Test {
     TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( display, Fixture.IMAGE1 );
 
     item.setImage( new Image[] { null, image } );
     Fixture.preserveWidgets();
@@ -497,7 +496,7 @@ public class TableItemLCA_Test {
   public void testRenderFont() throws IOException, JSONException {
     TableItem item = new TableItem( table, SWT.NONE );
 
-    item.setFont( Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    item.setFont( new Font( display, "Arial", 20, SWT.BOLD ) );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -514,7 +513,7 @@ public class TableItemLCA_Test {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
-    item.setFont( Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    item.setFont( new Font( display, "Arial", 20, SWT.BOLD ) );
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 
@@ -629,7 +628,7 @@ public class TableItemLCA_Test {
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
 
-    item.setFont( 1, Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    item.setFont( 1, new Font( display, "Arial", 20, SWT.BOLD ) );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -650,7 +649,7 @@ public class TableItemLCA_Test {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
-    item.setFont( 1, Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    item.setFont( 1, new Font( display, "Arial", 20, SWT.BOLD ) );
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 

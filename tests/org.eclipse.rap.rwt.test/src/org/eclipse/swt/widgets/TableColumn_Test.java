@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -19,10 +20,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -154,7 +155,7 @@ public class TableColumn_Test {
   }
 
   @Test
-  public void testPack() {
+  public void testPack() throws IOException {
     final java.util.List<Widget> log = new ArrayList<Widget>();
     ControlAdapter resizeListener = new ControlAdapter() {
       @Override
@@ -186,8 +187,7 @@ public class TableColumn_Test {
 
     // Test that an image on a column is taken into account
     column = new TableColumn( table, SWT.NONE );
-    Image image = Graphics.getImage( "resources/images/test-50x100.png",
-                                     TableColumn_Test.class.getClassLoader() );
+    Image image = createImage( display, Fixture.IMAGE_50x100 );
     column.setImage( image );
     column.pack();
     assertTrue( column.getWidth() >= image.getBounds().width );

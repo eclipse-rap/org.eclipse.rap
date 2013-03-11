@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -31,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
@@ -79,7 +79,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-@SuppressWarnings("deprecation")
 public class CTabFolderLCA_Test {
 
   private Display display;
@@ -170,11 +169,11 @@ public class CTabFolderLCA_Test {
     Fixture.clearPreserved();
     folder.setEnabled( true );
     // foreground background font
-    Color controlBackground = Graphics.getColor( 122, 33, 203 );
+    Color controlBackground = new Color( display, 122, 33, 203 );
     folder.setBackground( controlBackground );
-    Color controlForeground = Graphics.getColor( 211, 178, 211 );
+    Color controlForeground = new Color( display, 211, 178, 211 );
     folder.setForeground( controlForeground );
-    Font font = Graphics.getFont( "font", 12, SWT.BOLD );
+    Font font = new Font( display, "font", 12, SWT.BOLD );
     folder.setFont( font );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( folder );
@@ -784,7 +783,7 @@ public class CTabFolderLCA_Test {
 
   @Test
   public void testRenderSelectionBackgroundImage() throws IOException, JSONException {
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
 
     folder.setSelectionBackground( image );
     lca.renderChanges( folder );
@@ -800,7 +799,7 @@ public class CTabFolderLCA_Test {
   public void testRenderSelectionBackgroundImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
 
     folder.setSelectionBackground( image );
     Fixture.preserveWidgets();

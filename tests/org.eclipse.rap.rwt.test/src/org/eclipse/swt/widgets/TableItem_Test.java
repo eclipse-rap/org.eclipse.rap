@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -23,7 +24,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -41,18 +41,21 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings("deprecation")
 public class TableItem_Test {
 
   private Display display;
   private Shell shell;
+  private Image image;
+  private Image image100x50;
 
   @Before
-  public void setUp() {
+  public void setUp() throws IOException {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    image = createImage( display, Fixture.IMAGE1 );
+    image100x50 = createImage( display, Fixture.IMAGE_100x50 );
   }
 
   @After
@@ -278,8 +281,7 @@ public class TableItem_Test {
     TableColumn column = new TableColumn( table, SWT.NONE );
     column.setWidth( 200 );
 
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
-    item.setImage( 0, image );
+    item.setImage( 0, image100x50 );
     assertTrue( item.getTextBounds( 0 ).x > image.getBounds().width );
     item.setImage( 0, null );
     assertTrue( item.getTextBounds( 0 ).x < image.getBounds().width );
@@ -291,7 +293,7 @@ public class TableItem_Test {
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( "abc" );
     Rectangle origBounds = item.getTextBounds( 0 );
-    item.setFont( Graphics.getFont( "Helvetica", 50, SWT.BOLD ) );
+    item.setFont( new Font( display, "Helvetica", 50, SWT.BOLD ) );
     Rectangle actualBounds = item.getTextBounds( 0 );
     assertTrue( actualBounds.width > origBounds.width );
     item.setFont( null );
@@ -306,7 +308,7 @@ public class TableItem_Test {
     item.setText( "abc" );
     Rectangle origBounds = item.getTextBounds( 0 );
 
-    table.setFont( Graphics.getFont( "Helvetica", 50, SWT.BOLD ) );
+    table.setFont( new Font( display, "Helvetica", 50, SWT.BOLD ) );
     Rectangle actualBounds = item.getTextBounds( 0 );
 
     assertTrue( actualBounds.width > origBounds.width );
@@ -390,7 +392,7 @@ public class TableItem_Test {
     assertTrue( bounds.height > 0 );
 
     // Set an actual image - its size rules the bounds returned
-    item.setImage( 0, Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    item.setImage( 0, image100x50 );
     bounds = item.getImageBounds( 0 );
     assertEquals( 62, bounds.height );
     assertEquals( 100, bounds.width );
@@ -416,7 +418,7 @@ public class TableItem_Test {
     // Bounds of an image of a column that provides enough space are ruled by
     // the images size
     column.setWidth( 1000 );
-    item.setImage( 0, Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    item.setImage( 0, image100x50 );
     bounds = item.getImageBounds( 0 );
     assertEquals( 62, bounds.height );
     assertEquals( 100, bounds.width );
@@ -424,7 +426,7 @@ public class TableItem_Test {
     // A column width that is smaller than the images width does not clip the
     // image bounds
     column.setWidth( 20 );
-    item.setImage( 0, Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    item.setImage( 0, image100x50 );
     bounds = item.getImageBounds( 0 );
     assertEquals( 62, bounds.height );
     assertEquals( 100, bounds.width );
@@ -441,7 +443,7 @@ public class TableItem_Test {
   public void testImageBoundsWithScroll() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
-    item.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    item.setImage( image100x50 );
     TableColumn column0 = new TableColumn( table, SWT.NONE );
     column0.setWidth( 100 );
     TableColumn column1 = new TableColumn( table, SWT.NONE );
@@ -462,7 +464,7 @@ public class TableItem_Test {
     column0.setWidth( 50 );
     TableColumn column1 = new TableColumn( table, SWT.NONE );
     column1.setWidth( 100 );
-    item.setImage( 0, Graphics.getImage( Fixture.IMAGE1 ) );
+    item.setImage( 0, image );
 
     ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( 20 );
@@ -537,7 +539,7 @@ public class TableItem_Test {
     item.setText( "yes" );
     assertEquals( "yes", item.getText() );
     item = new TableItem( table, SWT.NONE );
-    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    item.setImage( image );
     assertEquals( "", item.getText() );
 
     // Test with columns
@@ -551,13 +553,12 @@ public class TableItem_Test {
     item.setText( 5, "abc" );
     assertEquals( "", item.getText( 5 ) );
     item = new TableItem( table, SWT.NONE );
-    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    item.setImage( image );
     assertEquals( "", item.getText() );
   }
 
   @Test
   public void testImage() throws IOException {
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
     Table table = new Table( shell, SWT.NONE );
     // Test with no columns at all
     TableItem item = new TableItem( table, SWT.NONE );
@@ -598,9 +599,9 @@ public class TableItem_Test {
     Table table = new Table( shell, SWT.CHECK );
     TableItem tableItem = new TableItem( table, 0 );
     Image[] images = new Image[]{
-      Graphics.getImage( Fixture.IMAGE1 ),
-      Graphics.getImage( Fixture.IMAGE2 ),
-      Graphics.getImage( Fixture.IMAGE3 )
+      image,
+      createImage( display, Fixture.IMAGE2 ),
+      createImage( display, Fixture.IMAGE3 )
     };
     assertNull( tableItem.getImage( 1 ) );
     tableItem.setImage( -1, null );
@@ -638,13 +639,13 @@ public class TableItem_Test {
     // Test for a disposed Image in the array
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Image image = new Image( display, stream );
+    Image image4 = new Image( display, stream );
     stream.close();
-    image.dispose();
+    image4.dispose();
     Image[] images2 = new Image[]{
-      Graphics.getImage( Fixture.IMAGE1 ),
       image,
-      Graphics.getImage( Fixture.IMAGE3 )
+      image4,
+      createImage( display, Fixture.IMAGE3 )
     };
     try {
       tableItem.setImage( images2 );
@@ -701,13 +702,13 @@ public class TableItem_Test {
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
-    Font rowFont = Graphics.getFont( "row-font", 10, SWT.NORMAL );
+    Font rowFont = new Font( display, "row-font", 10, SWT.NORMAL );
 
     // Test initial value
     assertEquals( table.getFont(), item.getFont() );
 
     // Test setting font for an item that is out of column bounds
-    Font font = Graphics.getFont( "Arial", 10, SWT.NORMAL );
+    Font font = new Font( display, "Arial", 10, SWT.NORMAL );
     item.setFont( 100, font );
     assertEquals( table.getFont(), item.getFont( 100 ) );
 
@@ -717,7 +718,7 @@ public class TableItem_Test {
     assertEquals( rowFont, item.getFont( 0 ) );
 
     // Test setting and resetting font for a specific cell
-    Font cellFont = Graphics.getFont( "cell-font", 10, SWT.NORMAL );
+    Font cellFont = new Font( display, "cell-font", 10, SWT.NORMAL );
     item.setFont( 0, cellFont );
     assertEquals( cellFont, item.getFont( 0 ) );
     item.setFont( 0, null );
@@ -733,13 +734,13 @@ public class TableItem_Test {
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
-    Color rowBackground = Graphics.getColor( 1, 1, 1 );
+    Color rowBackground =new Color( display, 1, 1, 1 );
 
     // Test initial value
     assertEquals( table.getBackground(), item.getBackground() );
 
     // Test setting background for an item that is out of column bounds
-    Color color = Graphics.getColor( 2, 2, 2 );
+    Color color =new Color( display, 2, 2, 2 );
     item.setBackground( 100, color );
     assertEquals( table.getBackground(), item.getBackground( 100 ) );
 
@@ -749,7 +750,7 @@ public class TableItem_Test {
     assertEquals( rowBackground, item.getBackground( 0 ) );
 
     // Test setting and resetting background for a specific cell
-    Color cellBackground = Graphics.getColor( 3, 3, 3 );
+    Color cellBackground =new Color( display, 3, 3, 3 );
     item.setBackground( 0, cellBackground );
     assertEquals( cellBackground, item.getBackground( 0 ) );
     item.setBackground( 0, null );
@@ -765,13 +766,13 @@ public class TableItem_Test {
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
-    Color rowForeground = Graphics.getColor( 1, 1, 1 );
+    Color rowForeground =new Color( display, 1, 1, 1 );
 
     // Test initial value
     assertEquals( table.getForeground(), item.getForeground() );
 
     // Test setting foreground for an item that is out of column bounds
-    Color color = Graphics.getColor( 2, 2, 2 );
+    Color color =new Color( display, 2, 2, 2 );
     item.setForeground( 100, color );
     assertEquals( table.getForeground(), item.getForeground( 100 ) );
 
@@ -781,7 +782,7 @@ public class TableItem_Test {
     assertEquals( rowForeground, item.getForeground( 0 ) );
 
     // Test setting and resetting foreground for a specific cell
-    Color cellForeground = Graphics.getColor( 3, 3, 3 );
+    Color cellForeground =new Color( display, 3, 3, 3 );
     item.setForeground( 0, cellForeground );
     assertEquals( cellForeground, item.getForeground( 0 ) );
     item.setForeground( 0, null );
@@ -925,9 +926,9 @@ public class TableItem_Test {
   public void testGetFont() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
-    Font tableFont = Graphics.getFont( "TableFont", 11, SWT.ITALIC );
-    Font itemFont = Graphics.getFont( "ItemFont", 12, SWT.BOLD );
-    Font cellFont = Graphics.getFont( "CellFont", 13, SWT.NORMAL );
+    Font tableFont = new Font( display, "TableFont", 11, SWT.ITALIC );
+    Font itemFont = new Font( display, "ItemFont", 12, SWT.BOLD );
+    Font cellFont = new Font( display, "CellFont", 13, SWT.NORMAL );
     Object adapter = item.getAdapter( ITableItemAdapter.class );
     ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
     // simple case: no explicit fonts at all
@@ -999,11 +1000,11 @@ public class TableItem_Test {
   public void testSetFont() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
-    Font tableFont = Graphics.getFont( "BeautifullyCraftedTableFont", 15, SWT.BOLD );
+    Font tableFont = new Font( display, "BeautifullyCraftedTableFont", 15, SWT.BOLD );
     tableItem.setFont( tableFont );
     table.setFont( tableFont );
     assertSame( tableFont, tableItem.getFont() );
-    Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
+    Font itemFont = new Font( display, "ItemFont", 40, SWT.NORMAL );
     tableItem.setFont( itemFont );
     assertSame( itemFont, tableItem.getFont() );
     tableItem.setFont( null );
@@ -1027,11 +1028,11 @@ public class TableItem_Test {
   public void testSetFontI() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
-    Font tableFont = Graphics.getFont( "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
+    Font tableFont = new Font( display, "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
     tableItem.setFont( 0, tableFont );
     table.setFont( tableFont );
     assertSame( tableFont, tableItem.getFont( 0 ) );
-    Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
+    Font itemFont = new Font( display, "ItemFont", 40, SWT.NORMAL );
     tableItem.setFont( itemFont );
     assertSame( itemFont, tableItem.getFont() );
     tableItem.setFont( null );
@@ -1123,7 +1124,6 @@ public class TableItem_Test {
       new TableColumn( table, SWT.NONE );
     }
     TableItem item = new TableItem( table, SWT.NONE );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
     for( int i = 0; i < 3; i++ ) {
       item.setImage( i, image );
     }
@@ -1142,7 +1142,7 @@ public class TableItem_Test {
     }
     TableItem item = new TableItem( table, SWT.NONE );
     for( int i = 0; i < 3; i++ ) {
-      Font font = Graphics.getFont( "Arial", 20 + i, SWT.BOLD );
+      Font font = new Font( display, "Arial", 20 + i, SWT.BOLD );
       item.setFont( i, font );
     }
     new TableColumn( table, SWT.NONE, 1 );
@@ -1160,7 +1160,7 @@ public class TableItem_Test {
     }
     TableItem item = new TableItem( table, SWT.NONE );
     for( int i = 0; i < 3; i++ ) {
-      Color color = Graphics.getColor( 20 + i, 0, 0 );
+      Color color =new Color( display, 20 + i, 0, 0 );
       item.setForeground( i, color );
     }
     new TableColumn( table, SWT.NONE, 1 );
@@ -1178,7 +1178,7 @@ public class TableItem_Test {
     }
     TableItem item = new TableItem( table, SWT.NONE );
     for( int i = 0; i < 3; i++ ) {
-      Color color = Graphics.getColor( 20 + i, 0, 0 );
+      Color color =new Color( display, 20 + i, 0, 0 );
       item.setBackground( i, color );
     }
     new TableColumn( table, SWT.NONE, 1 );

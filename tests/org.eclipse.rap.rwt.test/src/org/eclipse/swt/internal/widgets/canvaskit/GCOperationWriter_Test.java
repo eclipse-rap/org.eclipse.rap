@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,13 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
+import java.io.IOException;
+
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -466,8 +468,8 @@ public class GCOperationWriter_Test {
   }
 
   @Test
-  public void testDrawImage() {
-    Image image = Graphics.getImage( Fixture.IMAGE_50x100, canvas.getClass().getClassLoader() );
+  public void testDrawImage() throws IOException {
+    Image image = createImage( display, Fixture.IMAGE_50x100 );
     String imageLocation = ImageFactory.getImagePath( image );
 
     gc.drawImage( image, 10, 50 );
@@ -478,8 +480,8 @@ public class GCOperationWriter_Test {
   }
 
   @Test
-  public void testDrawImagePart() {
-    Image image = Graphics.getImage( Fixture.IMAGE_50x100, canvas.getClass().getClassLoader() );
+  public void testDrawImagePart() throws IOException {
+    Image image = createImage( display,( Fixture.IMAGE_50x100 ) );
     String imageLocation = ImageFactory.getImagePath( image );
 
     gc.drawImage( image, 10, 20, 30, 40, 100, 110, 400, 500  );

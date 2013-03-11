@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.expanditemkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -26,7 +27,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -39,6 +39,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ExpandEvent;
 import org.eclipse.swt.events.ExpandListener;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Display;
@@ -54,7 +55,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-@SuppressWarnings("deprecation")
 public class ExpandItemLCA_Test {
 
   private Display display;
@@ -303,7 +303,7 @@ public class ExpandItemLCA_Test {
 
   @Test
   public void testRenderImage() throws IOException, JSONException {
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
 
     expandItem.setImage( image );
     lca.renderChanges( expandItem );
@@ -319,7 +319,7 @@ public class ExpandItemLCA_Test {
   public void testRenderImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( expandItem );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
 
     expandItem.setImage( image );
     Fixture.preserveWidgets();
@@ -333,7 +333,7 @@ public class ExpandItemLCA_Test {
   public void testRenderImageReset() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( expandItem );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
     expandItem.setImage( image );
 
     Fixture.preserveWidgets();
@@ -355,7 +355,7 @@ public class ExpandItemLCA_Test {
 
   @Test
   public void testRenderHeaderHeight() throws IOException {
-    expandBar.setFont( Graphics.getFont( "Arial", 22, SWT.BOLD )  );
+    expandBar.setFont( new Font( display, "Arial", 22, SWT.BOLD )  );
     lca.renderChanges( expandItem );
 
     Message message = Fixture.getProtocolMessage();
@@ -367,7 +367,7 @@ public class ExpandItemLCA_Test {
     Fixture.markInitialized( display );
     Fixture.markInitialized( expandItem );
 
-    expandBar.setFont( Graphics.getFont( "Arial", 22, SWT.BOLD )  );
+    expandBar.setFont( new Font( display, "Arial", 22, SWT.BOLD )  );
     Fixture.preserveWidgets();
     lca.renderChanges( expandItem );
 

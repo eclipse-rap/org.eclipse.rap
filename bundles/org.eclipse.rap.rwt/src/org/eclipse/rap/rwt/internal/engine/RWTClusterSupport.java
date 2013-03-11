@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,11 +45,6 @@ public class RWTClusterSupport implements Filter {
   public void destroy() {
   }
 
-  private static HttpSession getHttpSession( ServletRequest request ) {
-    HttpServletRequest httpRequest = ( HttpServletRequest )request;
-    return httpRequest.getSession( false );
-  }
-
   private static void beforeService( ServletRequest request ) {
     HttpSession httpSession = getHttpSession( request );
     if( httpSession != null ) {
@@ -69,7 +64,7 @@ public class RWTClusterSupport implements Filter {
   private static void attachApplicationContext( UISession uiSession ) {
     ServletContext servletContext = uiSession.getHttpSession().getServletContext();
     ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
-    ApplicationContextUtil.set( uiSession, applicationContext );
+    ( ( UISessionImpl )uiSession ).setApplicationContext( applicationContext );
   }
 
   private static void afterService( ServletRequest request ) {
@@ -84,9 +79,21 @@ public class RWTClusterSupport implements Filter {
   }
 
   private static void markSessionChanged( HttpSession httpSession ) {
+    // If a session attribute changes, the servlet engine must be told to replicate the change.
+    // Unfortunately the Servlet specs do not specify how this should be done.
+    // The most common way is to call HttpSession.setAttribute() to flag the object as changed.
+    // See http://wiki.eclipse.org/RAP/RWT_Cluster#Serializable_Session_Data
+    // See also: J2EE clustering, Part 2, section Session-storage guidelines
+    // http://java.sun.com/developer/technicalArticles/J2EE/clustering/
     UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
-    UISessionImpl.attachInstanceToSession( httpSession, uiSession );
+    if( uiSession != null ) {
+      uiSession.attachToHttpSession( httpSession );
+    }
     RequestCounter.reattachToHttpSession( httpSession );
+  }
+
+  private static HttpSession getHttpSession( ServletRequest request ) {
+    return ( ( HttpServletRequest )request ).getSession( false );
   }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.util.LinkedList;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -2001,13 +2000,24 @@ public class Table_Test {
   }
 
   @Test
+  public void testGetVisibleItemCount_WithBorder() {
+    Table table = new Table( shell, SWT.NO_SCROLL | SWT.BORDER );
+    createTableItems( table, 10 );
+    int itemHeight = table.getItemHeight();
+    int borderWidth = table.getBorderWidth();
+    table.setSize( 100, 5 * itemHeight + 2 * borderWidth );
+    assertEquals( 5, table.getVisibleItemCount( true ) );
+    assertEquals( 5, table.getVisibleItemCount( false ) );
+  }
+
+  @Test
   public void testGetVisibleItemCountWithPartiallyVisibleItem() {
     Table table = new Table( shell, SWT.NO_SCROLL );
     createTableItems( table, 10 );
     int itemHeight = table.getItemHeight();
     table.setSize( 100, ( 5 * itemHeight ) + ( itemHeight / 2 ) );
-    assertEquals( 5, table.getVisibleItemCount( false ) );
     assertEquals( 6, table.getVisibleItemCount( true ) );
+    assertEquals( 5, table.getVisibleItemCount( false ) );
   }
 
   @Test
@@ -2141,7 +2151,7 @@ public class Table_Test {
     // change font
     item.setText( "short" );
     assertFalse( table.hasHScrollBar() );
-    Font bigFont = Graphics.getFont( "Helvetica", 50, SWT.BOLD );
+    Font bigFont = new Font( display, "Helvetica", 50, SWT.BOLD );
     item.setFont( bigFont );
     assertTrue( table.hasHScrollBar() );
     item.setFont( null );

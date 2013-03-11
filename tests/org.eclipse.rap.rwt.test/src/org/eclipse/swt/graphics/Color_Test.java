@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
+@SuppressWarnings( "deprecation" )
 public class Color_Test {
 
   private Device device;
@@ -45,7 +46,7 @@ public class Color_Test {
 
   @Test
   public void testColorFromRGB() {
-    Color salmon = Graphics.getColor( new RGB( 250, 128, 114 ) );
+    Color salmon = new Color( device, new RGB( 250, 128, 114 ) );
     assertEquals( 250, salmon.getRed() );
     assertEquals( 128, salmon.getGreen() );
     assertEquals( 114, salmon.getBlue() );
@@ -53,7 +54,7 @@ public class Color_Test {
 
   @Test
   public void testColorFromInt() {
-    Color salmon = Graphics.getColor( 250, 128, 114 );
+    Color salmon = new Color( device, 250, 128, 114 );
     assertEquals( 250, salmon.getRed() );
     assertEquals( 128, salmon.getGreen() );
     assertEquals( 114, salmon.getBlue() );
@@ -69,9 +70,9 @@ public class Color_Test {
 
   @Test
   public void testEquality() {
-    Color salmon1 = Graphics.getColor( 250, 128, 114 );
-    Color salmon2 = Graphics.getColor( 250, 128, 114 );
-    Color chocolate = Graphics.getColor( 210, 105, 30 );
+    Color salmon1 = new Color( device, 250, 128, 114 );
+    Color salmon2 = new Color( device, 250, 128, 114 );
+    Color chocolate = new Color( device, 210, 105, 30 );
     assertTrue( salmon1.equals( salmon2 ) );
     assertFalse( salmon1.equals( chocolate ) );
     salmon1 = new Color( device, 250, 128, 114 );
@@ -95,7 +96,7 @@ public class Color_Test {
   @Test
   public void testGetRGB() {
     RGB rgbSalmon = new RGB( 250, 128, 114 );
-    assertEquals( rgbSalmon, Graphics.getColor( rgbSalmon ).getRGB() );
+    assertEquals( rgbSalmon, new Color( device, rgbSalmon ).getRGB() );
   }
 
   @Test

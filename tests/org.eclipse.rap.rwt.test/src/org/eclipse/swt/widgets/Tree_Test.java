@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -20,13 +21,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -50,7 +51,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings("deprecation")
 public class Tree_Test {
 
   private Display display;
@@ -82,16 +82,18 @@ public class Tree_Test {
   }
 
   @Test
-  public void testImage() {
+  public void testImage() throws IOException {
     Tree tree = new Tree( composite, SWT.NONE );
 
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
-    item1.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
-    assertSame( Graphics.getImage( Fixture.IMAGE1 ), item1.getImage() );
+    Image image = createImage( display, Fixture.IMAGE1 );
+    item1.setImage( image );
+    assertSame( image, item1.getImage() );
 
     TreeItem item2 = new TreeItem( tree, SWT.NONE );
-    item2.setImage( Graphics.getImage( Fixture.IMAGE2 ) );
-    assertSame( Graphics.getImage( Fixture.IMAGE2 ), item2.getImage() );
+    image = createImage( display, Fixture.IMAGE2 );
+    item2.setImage( image );
+    assertSame( image, item2.getImage() );
   }
 
   @Test
@@ -882,7 +884,7 @@ public class Tree_Test {
   }
 
   @Test
-  public void testUpdateScrollBarOnItemWidthChange() {
+  public void testUpdateScrollBarOnItemWidthChange() throws IOException {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 60, 60 );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -894,7 +896,7 @@ public class Tree_Test {
     item.setText( "" );
     assertFalse( tree.hasHScrollBar() );
 
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
     item.setImage( image );
     assertTrue( tree.hasHScrollBar() );
 
@@ -946,7 +948,7 @@ public class Tree_Test {
   }
 
   @Test
-  public void testUpdateScrollBarItemWidthChangeWithColumn() {
+  public void testUpdateScrollBarItemWidthChangeWithColumn() throws IOException {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 20, 20 );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
@@ -958,7 +960,7 @@ public class Tree_Test {
     item.setText( "Very long long long long long long long long text" );
     assertFalse( tree.hasHScrollBar() );
 
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
     item.setImage( image );
     assertFalse( tree.hasHScrollBar() );
   }
@@ -1087,19 +1089,19 @@ public class Tree_Test {
   }
 
   @Test
-  public void testImageCutOff() {
+  public void testImageCutOff() throws IOException {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 200, 200 );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     column.setWidth( 20 );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
-    item1.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    item1.setImage( createImage( display, Fixture.IMAGE_100x50 ) );
 
     assertTrue( tree.getItemImageSize( 0 ).x <= 20 );
   }
 
   @Test
-  public void testImageCutOffMultiColumn() {
+  public void testImageCutOffMultiColumn() throws IOException {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 500, 500 );
     TreeColumn column1 = new TreeColumn( tree, SWT.LEFT );
@@ -1108,8 +1110,8 @@ public class Tree_Test {
     column2.setWidth( 200 );
 
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
-    item1.setImage( 0, Graphics.getImage( Fixture.IMAGE_100x50 ) );
-    item1.setImage( 1, Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    item1.setImage( 0, createImage( display, Fixture.IMAGE_100x50 ) );
+    item1.setImage( 1, createImage( display, Fixture.IMAGE_100x50 ) );
     assertEquals( 100, tree.getItemImageSize( 0 ).x );
     assertEquals( 100, tree.getItemImageSize( 1 ).x );
 
@@ -1119,12 +1121,12 @@ public class Tree_Test {
   }
 
   @Test
-  public void testImageCutOffAndRestore() {
+  public void testImageCutOffAndRestore() throws IOException {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 200, 200 );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
-    item1.setImage( Graphics.getImage( Fixture.IMAGE_100x50) );
+    item1.setImage( createImage( display, Fixture.IMAGE_100x50) );
 
     column.setWidth( 200 );
     assertEquals( 100, tree.getItemImageSize( 0 ).x );
@@ -1148,12 +1150,12 @@ public class Tree_Test {
   }
 
   @Test
-  public void testHideColumnWidthImage() {
+  public void testHideColumnWidthImage() throws IOException {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 200, 200 );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
-    item1.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    item1.setImage( createImage( display, Fixture.IMAGE1 ) );
     column.setWidth( 0 );
 
     assertEquals( 0, tree.getItemImageSize( 0 ).x );
@@ -1592,7 +1594,7 @@ public class Tree_Test {
   }
 
   @Test
-  public void testPreferredWidthBufferHandlingOfTreeItem() {
+  public void testPreferredWidthBufferHandlingOfTreeItem() throws IOException {
     Tree tree = new Tree( composite, SWT.NONE );
 
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
@@ -1607,7 +1609,7 @@ public class Tree_Test {
     // unfortunately tree doesn't allow to set images with different sizes
     // therefore the size of the first image gets cached -> we only test
     // the setImage(int,image) method
-    item1.setImage( 0, Graphics.getImage( Fixture.IMAGE1 ) );
+    item1.setImage( 0, createImage( display, Fixture.IMAGE1 ) );
     assertEquals( 146, item1.getPreferredWidthBuffer( 0 ) );
 
     tree.setFont( new Font( display, "arial", 40, SWT.BOLD ) );
@@ -2091,6 +2093,37 @@ public class Tree_Test {
     tree.dispose();
 
     assertTrue( cellEditor.isDisposed() );
+  }
+
+  @Test
+  public void testGetVisibleRowCount() {
+    Tree tree = new Tree( composite, SWT.NO_SCROLL );
+    createTreeItems( tree, 10 );
+    int itemHeight = tree.getItemHeight();
+    tree.setSize( 100, 5 * itemHeight );
+    assertEquals( 5, tree.getVisibleRowCount( true ) );
+    assertEquals( 5, tree.getVisibleRowCount( false ) );
+  }
+
+  @Test
+  public void testGetVisibleRowCount_WithBorder() {
+    Tree tree = new Tree( composite, SWT.NO_SCROLL | SWT.BORDER );
+    createTreeItems( tree, 10 );
+    int itemHeight = tree.getItemHeight();
+    int borderWidth = tree.getBorderWidth();
+    tree.setSize( 100, 5 * itemHeight + 2 * borderWidth );
+    assertEquals( 5, tree.getVisibleRowCount( true ) );
+    assertEquals( 5, tree.getVisibleRowCount( false ) );
+  }
+
+  @Test
+  public void testGetVisibleItemCountWithPartiallyVisibleItem() {
+    Tree tree = new Tree( composite, SWT.NO_SCROLL );
+    createTreeItems( tree, 10 );
+    int itemHeight = tree.getItemHeight();
+    tree.setSize( 100, ( 5 * itemHeight ) + ( itemHeight / 2 ) );
+    assertEquals( 6, tree.getVisibleRowCount( true ) );
+    assertEquals( 5, tree.getVisibleRowCount( false ) );
   }
 
   /////////

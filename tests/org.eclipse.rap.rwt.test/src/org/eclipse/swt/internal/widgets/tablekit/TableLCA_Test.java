@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.tablekit;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -31,7 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
@@ -79,7 +79,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-@SuppressWarnings("deprecation")
 public class TableLCA_Test {
 
   private Display display;
@@ -159,11 +158,11 @@ public class TableLCA_Test {
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
     // foreground background font
-    Color background = Graphics.getColor( 122, 33, 203 );
+    Color background = new Color( display, 122, 33, 203 );
     table.setBackground( background );
-    Color foreground = Graphics.getColor( 211, 178, 211 );
+    Color foreground = new Color( display, 211, 178, 211 );
     table.setForeground( foreground );
-    Font font = Graphics.getFont( "font", 12, SWT.BOLD );
+    Font font = new Font( display, "font", 12, SWT.BOLD );
     table.setFont( font );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
@@ -439,8 +438,8 @@ public class TableLCA_Test {
   }
 
   @Test
-  public void testGetItemMetrics() {
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+  public void testGetItemMetrics() throws IOException {
+    Image image = createImage( display, Fixture.IMAGE1 );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
     table.setHeaderVisible( true );
@@ -490,8 +489,8 @@ public class TableLCA_Test {
   }
 
   @Test
-  public void testGetItemMetricsWithCheckBox() {
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+  public void testGetItemMetricsWithCheckBox() throws IOException {
+    Image image = createImage( display, Fixture.IMAGE1 );
     shell.setBounds( 0, 0, 200, 200 );
     shell.setLayout( new FillLayout() );
     table = new Table( shell, SWT.CHECK );
@@ -517,8 +516,8 @@ public class TableLCA_Test {
   }
 
   @Test
-  public void testGetItemMetricsImageCutOffInSecondColumn() {
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+  public void testGetItemMetricsImageCutOffInSecondColumn() throws IOException {
+    Image image = createImage( display, Fixture.IMAGE1 );
     shell.setBounds( 0, 0, 200, 200 );
     shell.setLayout( new FillLayout() );
     table.setHeaderVisible( true );
@@ -543,8 +542,8 @@ public class TableLCA_Test {
   }
 
   @Test
-  public void testGetItemMetricsWithoutColumns() {
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+  public void testGetItemMetricsWithoutColumns() throws IOException {
+    Image image = createImage( display, Fixture.IMAGE1 );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
     table.setHeaderVisible( true );
@@ -753,10 +752,10 @@ public class TableLCA_Test {
   }
 
   @Test
-  public void testRenderNonNegativeImageWidth() {
+  public void testRenderNonNegativeImageWidth() throws IOException {
     TableColumn column = new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( display, Fixture.IMAGE1 );
     item.setImage( image );
     column.setWidth( 2 );
     ItemMetrics[] metrics = TableLCA.getItemMetrics( table );
@@ -925,7 +924,7 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderItemHeight() throws IOException {
-    Font font = Graphics.getFont( "Arial", 26, SWT.NONE );
+    Font font = new Font( display, "Arial", 26, SWT.NONE );
 
     table.setFont( font );
     lca.renderChanges( table );
@@ -936,7 +935,7 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderItemHeightUnchanged() throws IOException {
-    Font font = Graphics.getFont( "Arial", 26, SWT.NONE );
+    Font font = new Font( display, "Arial", 26, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
 

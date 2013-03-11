@@ -285,7 +285,7 @@ public class SessionFailover_Test {
     UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( session );
     ServletContext servletContext = session.getServletContext();
     ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
-    ApplicationContextUtil.set( uiSession, applicationContext );
+    uiSession.setApplicationContext( applicationContext );
   }
 
   private static void attachCurrentThreadToDisplay( IServletEngine servletEngine ) {

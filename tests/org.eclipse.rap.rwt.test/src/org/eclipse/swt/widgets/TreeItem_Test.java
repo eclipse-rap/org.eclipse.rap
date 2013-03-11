@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -24,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -42,7 +42,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings("deprecation")
 public class TreeItem_Test {
 
   private Display display;
@@ -137,11 +136,11 @@ public class TreeItem_Test {
   @Test
   public void testFont() {
     Tree tree = new Tree( shell, SWT.NONE );
-    Font treeFont = Graphics.getFont( "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
+    Font treeFont = new Font( display, "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
     tree.setFont( treeFont );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     assertSame( treeFont, item.getFont() );
-    Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
+    Font itemFont = new Font( display, "ItemFont", 40, SWT.NORMAL );
     item.setFont( itemFont );
     assertSame( itemFont, item.getFont() );
     item.setFont( null );
@@ -205,7 +204,7 @@ public class TreeItem_Test {
   }
 
   @Test
-  public void testClear() {
+  public void testClear() throws IOException {
     Tree tree = new Tree( shell, SWT.SINGLE | SWT.CHECK );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeItem subItem = new TreeItem( item, SWT.NONE );
@@ -216,7 +215,7 @@ public class TreeItem_Test {
     subItem.setForeground( display.getSystemColor( SWT.COLOR_CYAN ) );
     subItem.setFont( new Font( display, "Arial", 22, SWT.NORMAL ) );
     subItem.setText( "foo" );
-    subItem.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    subItem.setImage( createImage( display, Fixture.IMAGE1 ) );
     subItem.setChecked( true );
     item.clear( 0, false );
     assertEquals( "", subItem.getText() );
@@ -360,13 +359,13 @@ public class TreeItem_Test {
   }
 
   @Test
-  public void testSetImage() {
+  public void testSetImage() throws IOException {
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Image[] images = new Image[]{
-      Graphics.getImage( Fixture.IMAGE1 ),
-      Graphics.getImage( Fixture.IMAGE2 ),
-      Graphics.getImage( Fixture.IMAGE3 )
+      createImage( display, Fixture.IMAGE1 ),
+      createImage( display, Fixture.IMAGE2 ),
+      createImage( display, Fixture.IMAGE3 )
     };
     assertNull( treeItem.getImage( 1 ) );
     treeItem.setImage( -1, null );
@@ -407,9 +406,9 @@ public class TreeItem_Test {
     Image image = new Image( display, stream );
     image.dispose();
     Image[] images2 = new Image[]{
-      Graphics.getImage( Fixture.IMAGE1 ),
+      createImage( display, Fixture.IMAGE1 ),
       image,
-      Graphics.getImage( Fixture.IMAGE3 )
+      createImage( display, Fixture.IMAGE3 )
     };
     try {
       treeItem.setImage( images2 );
@@ -428,13 +427,13 @@ public class TreeItem_Test {
   }
 
   @Test
-  public void testSetImageI() {
+  public void testSetImageI() throws IOException {
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Image[] images = new Image[]{
-      Graphics.getImage( Fixture.IMAGE1 ),
-      Graphics.getImage( Fixture.IMAGE2 ),
-      Graphics.getImage( Fixture.IMAGE3 )
+      createImage( display, Fixture.IMAGE1 ),
+      createImage( display, Fixture.IMAGE2 ),
+      createImage( display, Fixture.IMAGE3 )
     };
     // no columns
     assertEquals( null, treeItem.getImage( 0 ) );
@@ -563,7 +562,7 @@ public class TreeItem_Test {
   public void testSetFontI() {
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    Font font = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
+    Font font = new Font( display, "Helvetica", 10, SWT.NORMAL );
     // no columns
     assertTrue( tree.getFont().equals( treeItem.getFont( 0 ) ) );
     assertTrue( treeItem.getFont().equals( treeItem.getFont( 0 ) ) );
@@ -582,7 +581,7 @@ public class TreeItem_Test {
     assertTrue( font.equals( treeItem.getFont( 0 ) ) );
     treeItem.setFont( 0, null );
     assertTrue( tree.getFont().equals( treeItem.getFont( 0 ) ) );
-    Font font2 = Graphics.getFont( "Helvetica", 20, SWT.NORMAL );
+    Font font2 = new Font( display, "Helvetica", 20, SWT.NORMAL );
     treeItem.setFont( 0, font );
     treeItem.setFont( font2 );
     assertTrue( font.equals( treeItem.getFont( 0 ) ) );
@@ -604,11 +603,11 @@ public class TreeItem_Test {
   @Test
   public void testSetFont() {
     Tree tree = new Tree( shell, SWT.NONE );
-    Font treeFont = Graphics.getFont( "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
+    Font treeFont = new Font( display, "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
     tree.setFont( treeFont );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     assertSame( treeFont, item.getFont() );
-    Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
+    Font itemFont = new Font( display, "ItemFont", 40, SWT.NORMAL );
     item.setFont( itemFont );
     assertSame( itemFont, item.getFont() );
     item.setFont( null );
@@ -744,8 +743,8 @@ public class TreeItem_Test {
   }
 
   @Test
-  public void testGetBoundsWithImage() {
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+  public void testGetBoundsWithImage() throws IOException {
+    Image image = createImage( display, Fixture.IMAGE1 );
     Rectangle imageBounds = image.getBounds();
     Tree tree = new Tree( shell, SWT.NONE );
     tree.setSize( 200, 200 );
@@ -761,8 +760,8 @@ public class TreeItem_Test {
   }
 
   @Test
-  public void testGetBoundsWithTextAndImage() {
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+  public void testGetBoundsWithTextAndImage() throws IOException {
+    Image image = createImage( display, Fixture.IMAGE1 );
     Rectangle imageBounds = image.getBounds();
     String string = "hello";
     Tree tree = new Tree( shell, SWT.NONE );
@@ -904,7 +903,7 @@ public class TreeItem_Test {
     assertTrue( Arrays.equals( new Font[ 3 ], adapter.getCellFonts() ) );
     Color bgColor = display.getSystemColor( SWT.COLOR_YELLOW );
     Color fgColor = display.getSystemColor( SWT.COLOR_BLUE );
-    Font font = Graphics.getFont( "Helvetica", 12, SWT.NORMAL );
+    Font font = new Font( display, "Helvetica", 12, SWT.NORMAL );
     item.setBackground( 0, bgColor );
     item.setForeground( 0, fgColor );
     item.setFont( 1, font );
@@ -928,7 +927,7 @@ public class TreeItem_Test {
   }
 
   @Test
-  public void testGetImageBoundsColumns() {
+  public void testGetImageBoundsColumns() throws IOException {
     Tree tree = new Tree( shell, SWT.SINGLE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeColumn c1 = new TreeColumn( tree, SWT.NONE );
@@ -954,7 +953,7 @@ public class TreeItem_Test {
     assertTrue( col0Bounds.x > 0 ); // > 0 as we have an indent
     assertEquals( 106, col1Bounds.x );
     assertEquals( 206, col2Bounds.x );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( display, Fixture.IMAGE1 );
     item.setImage( 0, image );
     item.setImage( 1, image );
     item.setImage( 2, image );
@@ -976,7 +975,7 @@ public class TreeItem_Test {
   }
 
   @Test
-  public void testGetImageBoundsIndexOutOfBoundsBug() {
+  public void testGetImageBoundsIndexOutOfBoundsBug() throws IOException {
     Tree tree = new Tree( shell, SWT.SINGLE );
     new TreeItem( tree, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
@@ -1005,7 +1004,7 @@ public class TreeItem_Test {
     assertTrue( col0Bounds.x > 0 ); // > 0 as we have an indent
     assertEquals( 106, col1Bounds.x );
     assertEquals( 206, col2Bounds.x );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage( display, Fixture.IMAGE1 );
     item.setImage( 0, image );
     item.setImage( 1, image );
     item.setImage( 2, image );
@@ -1027,29 +1026,29 @@ public class TreeItem_Test {
   }
 
   @Test
-  public void testGetImageBoundsForTreeColumn() {
+  public void testGetImageBoundsForTreeColumn() throws IOException {
     Tree tree = new Tree( shell, SWT.SINGLE );
     createColumns( tree, 1 );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    treeItem.setImage( 1, Graphics.getImage( Fixture.IMAGE1 ) );
+    treeItem.setImage( 1, createImage( display, Fixture.IMAGE1 ) );
 
     assertEquals( treeItem.getImageBounds( 0 ).x, tree.getVisualCellLeft( 0, treeItem ) );
   }
 
   @Test
-  public void testDynamicColumnCountAttributes() {
+  public void testDynamicColumnCountAttributes() throws IOException {
     Tree tree = new Tree( shell, SWT.SINGLE );
     createColumns( tree, 1 );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     treeItem.setFont( 0, display.getSystemFont() );
     treeItem.setForeground( 0, display.getSystemColor( SWT.COLOR_BLACK ) );
     treeItem.setBackground( 0, display.getSystemColor( SWT.COLOR_BLACK ) );
-    treeItem.setImage( 0, Graphics.getImage( Fixture.IMAGE1 ) );
+    treeItem.setImage( 0, createImage( display, Fixture.IMAGE1 ) );
     createColumns( tree, 1 );
     treeItem.setFont( 1, display.getSystemFont() );
     treeItem.setForeground( 1, display.getSystemColor( SWT.COLOR_BLACK ) );
     treeItem.setBackground( 1, display.getSystemColor( SWT.COLOR_BLACK ) );
-    treeItem.setImage( 1, Graphics.getImage( Fixture.IMAGE1 ) );
+    treeItem.setImage( 1, createImage( display, Fixture.IMAGE1 ) );
   }
 
   @Test
@@ -1081,13 +1080,13 @@ public class TreeItem_Test {
   }
 
   @Test
-  public void testTextBoundsWithImageAndColumns() {
+  public void testTextBoundsWithImageAndColumns() throws IOException {
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     column.setWidth( 200 );
 
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
     item.setImage( 0, image );
     assertTrue( item.getTextBounds( 0 ).x > image.getBounds().width );
     item.setImage( 0, null );
@@ -1100,7 +1099,7 @@ public class TreeItem_Test {
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( "abc" );
     Rectangle origBounds = item.getTextBounds( 0 );
-    item.setFont( Graphics.getFont( "Helvetica", 50, SWT.BOLD ) );
+    item.setFont( new Font( display, "Helvetica", 50, SWT.BOLD ) );
     Rectangle actualBounds = item.getTextBounds( 0 );
     assertTrue( actualBounds.width > origBounds.width );
     item.setFont( null );

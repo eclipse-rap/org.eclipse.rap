@@ -2525,7 +2525,7 @@ public class Table extends Composite {
 
 
   final int getVisibleItemCount( boolean includePartlyVisible ) {
-    int clientHeight = getBounds().height - getHeaderHeight() - getHScrollBarHeight();
+    int clientHeight = getClientArea().height - getHeaderHeight();
     int result = 0;
     if( clientHeight >= 0 ) {
       int itemHeight = getItemHeight();

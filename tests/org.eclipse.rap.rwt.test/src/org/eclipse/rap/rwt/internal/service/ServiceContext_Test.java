@@ -64,7 +64,7 @@ public class ServiceContext_Test {
     ServiceContext context = createContext( applicationContext );
 
     ApplicationContextImpl foundInContext = context.getApplicationContext();
-    ApplicationContextImpl foundInSession = ApplicationContextUtil.get( uiSession );
+    ApplicationContextImpl foundInSession = uiSession.getApplicationContext();
     assertSame( applicationContext, foundInContext );
     assertSame( applicationContext, foundInSession );
   }
@@ -83,7 +83,7 @@ public class ServiceContext_Test {
   public void testGetApplicationContextFromUISession() {
     ServiceContext context = createContext();
     applicationContext.activate();
-    ApplicationContextUtil.set( uiSession, applicationContext );
+    uiSession.setApplicationContext( applicationContext );
 
     ApplicationContextImpl found = context.getApplicationContext();
 
@@ -93,7 +93,7 @@ public class ServiceContext_Test {
   @Test
   public void testGetApplicationContextFromUISessionWithDeactivatedApplicationContext() {
     ServiceContext context = createContext();
-    ApplicationContextUtil.set( uiSession, applicationContext );
+    uiSession.setApplicationContext( applicationContext );
 
     ApplicationContextImpl found = context.getApplicationContext();
 

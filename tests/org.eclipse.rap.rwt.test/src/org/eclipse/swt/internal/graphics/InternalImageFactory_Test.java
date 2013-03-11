@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -25,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -111,12 +111,11 @@ public class InternalImageFactory_Test {
     assertSame( internalImage1, internalImage2 );
   }
 
-  @SuppressWarnings("deprecation")
   @Test
-  public void testInternalImagesFromImageDataAreCached() {
-    new Display();
+  public void testInternalImagesFromImageDataAreCached() throws IOException {
+    Display display = new Display();
     Fixture.useDefaultResourceManager();
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage( display, Fixture.IMAGE_100x50 );
     ImageData imageData1 = image.getImageData();
     ImageData imageData2 = image.getImageData();
     assertNotSame( imageData1, imageData2 );

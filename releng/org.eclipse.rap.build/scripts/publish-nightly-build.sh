@@ -13,7 +13,7 @@
 #
 # Usage: publishNightlyBuild.sh (tooling|runtime)
 
-RAP_STREAM=2.1
+RAP_STREAM=head
 
 TMP_DIR=/shared/rt/rap/tmp
 JOBS_DIR=/shared/jobs

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,13 +13,13 @@ package org.eclipse.rap.examples.pages;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -36,10 +36,7 @@ public class LoginDialog extends Dialog {
   private String username;
   private String password;
 
-  public LoginDialog( final Shell parent,
-                      final String title,
-                      final String message )
-  {
+  public LoginDialog( Shell parent, String title, String message ) {
     super( parent );
     this.title = title;
     this.message = message;
@@ -49,7 +46,7 @@ public class LoginDialog extends Dialog {
     return password;
   }
 
-  public void setUsername( final String username ) {
+  public void setUsername( String username ) {
     this.username = username;
   }
 
@@ -58,23 +55,21 @@ public class LoginDialog extends Dialog {
   }
 
   @Override
-  protected void configureShell( final Shell shell ) {
+  protected void configureShell( Shell shell ) {
     super.configureShell( shell );
     if( title != null ) {
       shell.setText( title );
     }
     // Workaround for RWT Text Size Determination
-    shell.addControlListener( new ControlAdapter() {
-
-      @Override
-      public void controlResized( ControlEvent e ) {
+    shell.addListener( SWT.Resize, new Listener() {
+      public void handleEvent( Event event ) {
         initializeBounds();
       }
     } );
   }
 
   @Override
-  protected Control createDialogArea( final Composite parent ) {
+  protected Control createDialogArea( Composite parent ) {
     Composite composite = ( Composite )super.createDialogArea( parent );
     composite.setLayout( new GridLayout( 2, false ) );
     mesgLabel = new Label( composite, SWT.NONE );
@@ -94,13 +89,13 @@ public class LoginDialog extends Dialog {
   }
 
   @Override
-  protected void createButtonsForButtonBar( final Composite parent ) {
+  protected void createButtonsForButtonBar( Composite parent ) {
     createButton( parent, IDialogConstants.CANCEL_ID, "Cancel", false );
     createButton( parent, LOGIN_ID, "Login", true );
   }
 
   @Override
-  protected void buttonPressed( final int buttonId ) {
+  protected void buttonPressed( int buttonId ) {
     if( buttonId == LOGIN_ID ) {
       username = userText.getText();
       password = passText.getText();
@@ -121,4 +116,5 @@ public class LoginDialog extends Dialog {
     }
     userText.setFocus();
   }
+
 }
