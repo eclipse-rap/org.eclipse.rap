@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,6 +66,7 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
                                                 this._onMouseOut,
                                                 this );
     this._disposeObjects("_legendObject", "_frameObject");
+    this.setMnemonicIndex( null );
   },
 
   properties :
@@ -110,9 +111,11 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
         case "trigger":
           var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
           if( event.charCode === charCode ) {
-//            this.setFocused( true );
-//            this.execute();
-//            event.success = true;
+            var widget = this._findFirstFocusableChild( this );
+            if( widget != null ) {
+              widget.focus();
+            }
+            event.success = true;
           }
         break;
       }
@@ -294,6 +297,22 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
      */
     getIcon : function() {
       this._legendObject.getIcon();
+    },
+
+    _findFirstFocusableChild : function( parent ) {
+      var ObjectRegistry = rwt.remote.ObjectRegistry;
+      var WidgetUtil = rwt.widgets.util.WidgetUtil;
+      var result = null;
+      var ids = WidgetUtil.getChildIds( parent );
+      for( var i = 0; i < ids.length && result === null; i++ ) {
+        var child = ObjectRegistry.getObject( ids[ i ] );
+        if( WidgetUtil.getChildIds( child ) ) {
+          result = this._findFirstFocusableChild( child );
+        } else if( child.isSeeable() && child.isEnabled() ) {
+          result = child;
+        }
+      }
+      return result;
     }
 
 

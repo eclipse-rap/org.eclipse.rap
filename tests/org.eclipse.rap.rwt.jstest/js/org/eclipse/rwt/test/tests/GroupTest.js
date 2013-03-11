@@ -141,6 +141,107 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
 
       assertEquals( "foo", group.getLegend() );
       shell.destroy();
+    },
+
+    testMnemonicTrigger_FocusFirstChild : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var group = createMnemonicGroup();
+      TestUtil.protocolSet( "w3", { "children" : [ "w4", "w5" ] } );
+      var widget = TestUtil.createWidgetByProtocol( "w4", "w3", "rwt.widgets.Text" );
+      TestUtil.createWidgetByProtocol( "w5", "w3", "rwt.widgets.Text" );
+      TestUtil.flush();
+      shell.setActive( true );
+      var success = false;
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      success = rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      TestUtil.flush();
+
+      assertTrue( success );
+      assertTrue( widget.getFocused() );
+      shell.destroy();
+    },
+
+    testMnemonicTrigger_FocusFirstVisibleChild : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var group = createMnemonicGroup();
+      TestUtil.protocolSet( "w3", { "children" : [ "w4", "w5" ] } );
+      TestUtil.createWidgetByProtocol( "w4", "w3", "rwt.widgets.Text" ).setVisibility( false );
+      var widget = TestUtil.createWidgetByProtocol( "w5", "w3", "rwt.widgets.Text" );
+      TestUtil.flush();
+      shell.setActive( true );
+      var success = false;
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      success = rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      TestUtil.flush();
+
+      assertTrue( success );
+      assertTrue( widget.getFocused() );
+      shell.destroy();
+    },
+
+    testMnemonicTrigger_FocusFirstEnabledChild : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var group = createMnemonicGroup();
+      TestUtil.protocolSet( "w3", { "children" : [ "w4", "w5" ] } );
+      TestUtil.createWidgetByProtocol( "w4", "w3", "rwt.widgets.Text" ).setEnabled( false );
+      var widget = TestUtil.createWidgetByProtocol( "w5", "w3", "rwt.widgets.Text" );
+      TestUtil.flush();
+      shell.setActive( true );
+      var success = false;
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      success = rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      TestUtil.flush();
+
+      assertTrue( success );
+      assertTrue( widget.getFocused() );
+      shell.destroy();
+    },
+
+    testMnemonicTrigger_FocusChildInComposite : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var group = createMnemonicGroup();
+      TestUtil.protocolSet( "w3", { "children" : [ "w4" ] } );
+      TestUtil.createWidgetByProtocol( "w4", "w3", "rwt.widgets.Composite" );
+      TestUtil.protocolSet( "w4", { "children" : [ "w5" ] } );
+      var widget = TestUtil.createWidgetByProtocol( "w5", "w4", "rwt.widgets.Text" );
+      TestUtil.flush();
+      shell.setActive( true );
+      var success = false;
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      success = rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      TestUtil.flush();
+
+      assertTrue( success );
+      assertTrue( widget.getFocused() );
+      shell.destroy();
+    },
+
+    testMnemonicTrigger_FocusNothing : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var group = createMnemonicGroup();
+      TestUtil.protocolSet( "w3", { "children" : [ "w4" ] } );
+      var widget = TestUtil.createWidgetByProtocol( "w4", "w3", "rwt.widgets.Text" );
+      widget.setEnabled( false );
+      TestUtil.flush();
+      shell.setActive( true );
+      var success = false;
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      success = rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      TestUtil.flush();
+
+      assertTrue( success );
+      assertFalse( widget.getFocused() );
+      shell.destroy();
     }
 
     // TODO [tb] : breaks IE7 (commented to be able to run all other tests)
