@@ -29,7 +29,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       var shape = GraphicsUtil.createShape( "rect" );
       GraphicsUtil.addToCanvas( canvas, shape );
       parentNode.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
-      GraphicsUtil.handleAppear( canvas );      
+      GraphicsUtil.handleAppear( canvas );
       var canvasNode = parentNode.firstChild;
       assertEquals( "svg", canvasNode.tagName );
       assertEquals( "rect", canvasNode.lastChild.tagName );
@@ -38,7 +38,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       parent.destroy();
       TestUtil.flush();
     },
-    
+
     testFillColor : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var GraphicsUtil = rwt.graphics.GraphicsUtil;
@@ -53,11 +53,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       assertEquals( null, GraphicsUtil.getFillType( shape ) );
       assertEquals( null, GraphicsUtil.getFillColor( shape ) );
       assertEquals( "none", shape.node.getAttribute( "fill" ) );
-      GraphicsUtil.setFillColor( shape, "green" );      
+      GraphicsUtil.setFillColor( shape, "green" );
       assertEquals( "green", shape.node.getAttribute( "fill" ) );
       assertEquals( "color", GraphicsUtil.getFillType( shape ) );
       assertEquals( "green", GraphicsUtil.getFillColor( shape ) );
-      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );      
+      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
 
     testFillGradient : function() {
@@ -73,20 +73,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       parentNode.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
       GraphicsUtil.setFillGradient( shape, [ [ 0, "red" ], [ 1, "green" ] ] );
       assertEquals( "gradient", GraphicsUtil.getFillType( shape ) );
-      var expected = "url(#gradient_" + hash + ")"; 
+      var expected = "url(#gradient_" + hash + ")";
       assertEquals( expected, shape.node.getAttribute( "fill" ) );
       var gradNode = canvas.defsNode.firstChild;
-      assertEquals( "linearGradient", gradNode.tagName ); 
-      assertEquals( "gradient_" + hash, gradNode.getAttribute( "id" ) ); 
-      assertEquals( "0", gradNode.firstChild.getAttribute( "offset" ) ); 
-      assertEquals( "red", gradNode.firstChild.getAttribute( "stop-color" ) ); 
-      assertEquals( "1", gradNode.lastChild.getAttribute( "offset" ) ); 
+      assertEquals( "linearGradient", gradNode.tagName );
+      assertEquals( "gradient_" + hash, gradNode.getAttribute( "id" ) );
+      assertEquals( "0", gradNode.firstChild.getAttribute( "offset" ) );
+      assertEquals( "red", gradNode.firstChild.getAttribute( "stop-color" ) );
+      assertEquals( "1", gradNode.lastChild.getAttribute( "offset" ) );
       assertEquals( 0, gradNode.getAttribute( "x1" ) );
       assertEquals( 0, gradNode.getAttribute( "y1" ) );
       assertEquals( 0, gradNode.getAttribute( "x2" ) );
-      assertEquals( 1, gradNode.getAttribute( "y2" ) );      
-      assertEquals( "green", gradNode.lastChild.getAttribute( "stop-color" ) ); 
-      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );      
+      assertEquals( 1, gradNode.getAttribute( "y2" ) );
+      assertEquals( "green", gradNode.lastChild.getAttribute( "stop-color" ) );
+      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
 
     testFillGradientHorizontal : function() {
@@ -104,15 +104,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       gradient.horizontal = true;
       GraphicsUtil.setFillGradient( shape, gradient );
       assertEquals( "gradient", GraphicsUtil.getFillType( shape ) );
-      var expected = "url(#gradient_" + hash + ")"; 
+      var expected = "url(#gradient_" + hash + ")";
       assertEquals( expected, shape.node.getAttribute( "fill" ) );
       var gradNode = canvas.defsNode.firstChild;
-      assertEquals( "linearGradient", gradNode.tagName ); 
+      assertEquals( "linearGradient", gradNode.tagName );
       assertEquals( 0, gradNode.getAttribute( "x1" ) );
       assertEquals( 0, gradNode.getAttribute( "y1" ) );
       assertEquals( 1, gradNode.getAttribute( "x2" ) );
       assertEquals( 0, gradNode.getAttribute( "y2" ) );
-      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );      
+      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
 
     testChangeGradientOrientation : function() {
@@ -146,8 +146,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       assertEquals( 0, gradNode.getAttribute( "y1" ) );
       assertEquals( 1, gradNode.getAttribute( "x2" ) );
       assertEquals( 0, gradNode.getAttribute( "y2" ) );
-      
-      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );      
+
+      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
 
     testDrawRoundRect : function() {
@@ -202,7 +202,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       var expected = "M 10 20 A 10 10 0 0 1 20 10 L 30 10 30 10 L 30 30 30 30 L 10 30 10 30 Z";
       if( rwt.client.Client.isNewMshtml() ) {
         expected = "M 10 20 A 10 10 0 0 1 20 10 L 30 10 L 30 10 L 30 30 L 30 30 L 10 30 L 10 30 Z";
-      } 
+      }
       assertEquals( expected, shape.node.getAttribute( "d" ) );
       parent.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
@@ -221,7 +221,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       GraphicsUtil.addToCanvas( canvas, shape );
       GraphicsUtil.setDisplay( shape, false );
       parentNode.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
-      GraphicsUtil.handleAppear( canvas );      
+      GraphicsUtil.handleAppear( canvas );
       var canvasNode = parentNode.firstChild;
       assertEquals( "none", shape.node.getAttribute( "display" ) );
       assertFalse( GraphicsUtil.getDisplay( shape ) );
@@ -245,7 +245,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       assertEquals( "rect", shape.node.tagName );
       assertEquals( "pattern", canvas.defsNode.firstChild.tagName );
       var patternId = canvas.defsNode.firstChild.getAttribute( "id" );
-      assertTrue(  shape.node.getAttribute( "fill").search( patternId ) != -1 );      
+      assertTrue(  shape.node.getAttribute( "fill").search( patternId ) != -1 );
       var imageNode = canvas.defsNode.firstChild.firstChild;
       assertEquals( "image", imageNode.tagName );
       assertEquals( 70, imageNode.getAttribute( "width" ) );
@@ -270,21 +270,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       parent.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
       GraphicsUtil.handleAppear( canvas );
       var hash = rwt.qx.Object.toHashCode( shape );
-      var expected = "url(#filter_" + hash + ")"; 
+      var ieTen = rwt.client.Client.isNewMshtml() && rwt.client.Client.getMajor() > 9;
+      var expected = ieTen ? "url(\"#filter_" + hash + "\")" : "url(#filter_" + hash + ")";
       assertEquals( expected, shape.node.getAttribute( "filter" ) );
       var filterNode = canvas.defsNode.firstChild;
-      assertEquals( "filter", filterNode.tagName ); 
-      assertEquals( "filter_" + hash, filterNode.getAttribute( "id" ) ); 
-      assertEquals( "feGaussianBlur", filterNode.firstChild.tagName ); 
-      assertEquals( "2", filterNode.firstChild.getAttribute( "stdDeviation" ) ); 
-      assertEquals( "4", GraphicsUtil.getBlur( shape ) ); 
+      assertEquals( "filter", filterNode.tagName );
+      assertEquals( "filter_" + hash, filterNode.getAttribute( "id" ) );
+      assertEquals( "feGaussianBlur", filterNode.firstChild.tagName );
+      assertEquals( "2", filterNode.firstChild.getAttribute( "stdDeviation" ) );
+      assertEquals( "4", GraphicsUtil.getBlur( shape ) );
       GraphicsUtil.setBlur( shape, 0 );
       assertEquals( "none", shape.node.getAttribute( "filter" ) );
-      assertEquals( "0", GraphicsUtil.getBlur( shape ) ); 
+      assertEquals( "0", GraphicsUtil.getBlur( shape ) );
       GraphicsUtil.setBlur( shape, 2 );
       assertEquals( expected, shape.node.getAttribute( "filter" ) );
       assertEquals( "1", filterNode.firstChild.getAttribute( "stdDeviation" ) );
-      assertEquals( "2", GraphicsUtil.getBlur( shape ) ); 
+      assertEquals( "2", GraphicsUtil.getBlur( shape ) );
       GraphicsUtil.setBlur( shape, 2 );
       parent.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
@@ -305,7 +306,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       assertEquals( 0.4, GraphicsUtil.getOpacity( shape ) );
       parent.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
-    
+
     testNodeOrder : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var GraphicsUtil = rwt.graphics.GraphicsUtil;
@@ -325,7 +326,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       assertIdentical( nodes[ 3 ], shape3.node );
       parent.removeChild( canvas.node );
     },
-    
+
     testEnableOverflow : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var GraphicsUtil = rwt.graphics.GraphicsUtil;
@@ -369,5 +370,5 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
     }
 
   }
-  
+
 } );

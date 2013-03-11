@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -246,7 +246,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = TestUtil.getElementBounds( client.getElement() );
       var targetBounds = TestUtil.getElementBounds( client._getTargetNode() );
-      if( rwt.client.Client.isNewMshtml() ) {
+      if( rwt.client.Client.isNewMshtml() && rwt.client.Client.getMajor() === 9 ) {
         assertEquals( elementBounds.width + ( barWidth * 2 ), targetBounds.width );
         assertEquals( elementBounds.height + ( barWidth * 2 ), targetBounds.height );
       } else {
@@ -534,7 +534,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = TestUtil.getElementBounds( client.getElement() );
       var targetBounds = TestUtil.getElementBounds( client._getTargetNode() );
-      if( rwt.client.Client.isNewMshtml() ) {
+      if( rwt.client.Client.isNewMshtml()  && rwt.client.Client.getMajor() === 9 ) {
         assertEquals( elementBounds.width + ( barWidth * 2 ), targetBounds.width );
         assertEquals( elementBounds.height + ( barWidth * 2 ), targetBounds.height );
       } else {

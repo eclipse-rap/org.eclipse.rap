@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -185,42 +185,45 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
       rwt.html.Scroll.disableScrolling( this._clientArea.getElement() );
     },
 
-    _onClientLayout : rwt.util.Variant.select( "qx.client", {
-      "default" : function() {
-        var barWidth = rwt.widgets.base.Scrollable.getNativeScrollBarWidth();
-        var node = this._clientArea._getTargetNode();
-        var el = this._clientArea.getElement();
-        var overflow = this._clientArea.getOverflow();
-        var width = parseInt( el.style.width, 10 );
-        var height = parseInt( el.style.height, 10 );
-        if( overflow === "scroll" || overflow === "scrollY" ) {
-          width += barWidth;
-        }
-        if( overflow === "scroll" || overflow === "scrollX" ) {
-          height += barWidth;
-        }
-        node.style.width = width + "px";
-        node.style.height = height + "px";
-      },
-      "newmshtml" : function() {
-        // NOTE [tb] : there is a bug in IE where the scrollbar is substracted from the inner size
-        //             of an element, not added. Therefore add the barWidth twice.
-        var barWidth = rwt.widgets.base.Scrollable.getNativeScrollBarWidth();
-        var node = this._clientArea._getTargetNode();
-        var el = this._clientArea.getElement();
-        var overflow = this._clientArea.getOverflow();
-        var width = parseInt( el.style.width, 10 );
-        var height = parseInt( el.style.height, 10 );
-        if( overflow === "scroll" || overflow === "scrollY" ) {
-          width += ( 2 * barWidth );
-        }
-        if( overflow === "scroll" || overflow === "scrollX" ) {
-          height += ( 2 * barWidth );
-        }
-        node.style.width = width + "px";
-        node.style.height = height + "px";
+    _onClientLayout : ( function() {
+      if( rwt.client.Client.isNewMshtml() && rwt.client.Client.getMajor() === 9 ) {
+        return function() {
+          // NOTE [tb] : there is a bug in IE9 where the scrollbar is substracted from the inner
+          //             size of an element, not added. Therefore add the barWidth twice.
+          var barWidth = rwt.widgets.base.Scrollable.getNativeScrollBarWidth();
+          var node = this._clientArea._getTargetNode();
+          var el = this._clientArea.getElement();
+          var overflow = this._clientArea.getOverflow();
+          var width = parseInt( el.style.width, 10 );
+          var height = parseInt( el.style.height, 10 );
+          if( overflow === "scroll" || overflow === "scrollY" ) {
+            width += ( 2 * barWidth );
+          }
+          if( overflow === "scroll" || overflow === "scrollX" ) {
+            height += ( 2 * barWidth );
+          }
+          node.style.width = width + "px";
+          node.style.height = height + "px";
+        };
+      } else {
+        return function() {
+          var barWidth = rwt.widgets.base.Scrollable.getNativeScrollBarWidth();
+          var node = this._clientArea._getTargetNode();
+          var el = this._clientArea.getElement();
+          var overflow = this._clientArea.getOverflow();
+          var width = parseInt( el.style.width, 10 );
+          var height = parseInt( el.style.height, 10 );
+          if( overflow === "scroll" || overflow === "scrollY" ) {
+            width += barWidth;
+          }
+          if( overflow === "scroll" || overflow === "scrollX" ) {
+            height += barWidth;
+          }
+          node.style.width = width + "px";
+          node.style.height = height + "px";
+        };
       }
-    } ),
+    }() ),
 
     ////////////
     // Scrolling
