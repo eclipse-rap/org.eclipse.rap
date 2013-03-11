@@ -60,6 +60,9 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
         domEvent._noProcess = true;
         domEvent._mnemonic = mnemonic;
       }
+      if( mnemonic ) {
+        this._ignoreNextKeypress = true;
+      }
     },
 
     _onKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
@@ -69,7 +72,7 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
       {
         this._sendKeyEvent( control, this._currentKeyCode, charCode, domEvent );
       }
-      if( eventType === "keypress" || eventType === "keyup" ) {
+      if( !domEvent._mnemonic && ( eventType === "keypress" || eventType === "keyup" ) ) {
         this._ignoreNextKeypress = false;
       }
       return !domEvent._noProcess;

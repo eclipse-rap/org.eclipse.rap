@@ -171,9 +171,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LabelTest", {
       rwt.widgets.util.MnemonicHandler.getInstance().activate();
       TestUtil.flush();
 
-      assertEquals(
-        "f<span style=\"text-decoration:underline\">o</span>o",
-        this.getTextContent()
+      var actual = this.getTextContent();
+      assertTrue(
+           actual === "f<span style=\"text-decoration:underline\">o</span>o"
+        || actual === "f<span style=\"text-decoration: underline\">o</span>o" // IE8
+        || actual === "f<span style=\"text-decoration: underline;\">o</span>o" // IE9
       );
     },
 

@@ -59,8 +59,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = createFileUploadByProtocol( "w3", "w2" );
       TestUtil.protocolSet( "w3", { "text" : "text\n & \"text" } );
-      console.log( "text\n &amp; &quot;text" );
-      console.log(  widget.getCellContent( 2 ) );
       assertEquals( "text\n &amp; &quot;text", widget.getCellContent( 2 ) );
       shell.destroy();
       widget.destroy();

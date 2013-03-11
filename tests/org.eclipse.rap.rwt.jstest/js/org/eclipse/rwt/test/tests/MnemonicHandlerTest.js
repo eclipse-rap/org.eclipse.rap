@@ -215,7 +215,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       widget.focus();
       TestUtil.keyDown( widget, "B", DomEvent.CTRL_MASK );
 
-      assertEquals( [], keyLog );
+      var expected = rwt.client.Client.isGecko() ? [ "keypress" ] : [];
+      assertEquals( expected, keyLog );
     },
 
     testFireTrigger_SuccessStopsActiveKey : function() {

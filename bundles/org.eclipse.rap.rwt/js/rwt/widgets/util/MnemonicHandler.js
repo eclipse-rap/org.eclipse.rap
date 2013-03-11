@@ -140,7 +140,10 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     },
 
     _isDeactivation : function( eventType, keyCode, charCode, domEvent ) {
-      return this._activator != null && this._active != null && !this._isActivatorCombo( domEvent );
+      return    this._activator != null
+             && this._active != null
+             && eventType != "keypress"
+             && !this._isActivatorCombo( domEvent );
     },
 
     _isActivatorCombo : function( domEvent ) {
