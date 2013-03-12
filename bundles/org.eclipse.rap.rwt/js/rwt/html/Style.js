@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -513,7 +513,7 @@ rwt.qx.Class.define( "rwt.html.Style", {
 
     setBoxShadow: function( target, shadowObject ) {
       var property;
-      if( rwt.client.Client.isWebkit() ) {
+      if( rwt.client.Client.isWebkit() && !rwt.client.Client.isMobileChrome() ) {
         property = this.BROWSER_PREFIX + "box-shadow";
       } else {
         property = "boxShadow";

@@ -845,7 +845,9 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   // Misc
 
   isMobileWebkit : function() {
-    return rwt.client.Client.isMobileSafari() || rwt.client.Client.isAndroidBrowser();
+    return    rwt.client.Client.isMobileSafari()
+           || rwt.client.Client.isAndroidBrowser()
+           || rwt.client.Client.isMobileChrome();
   },
 
   isFocused : function( widget ) {

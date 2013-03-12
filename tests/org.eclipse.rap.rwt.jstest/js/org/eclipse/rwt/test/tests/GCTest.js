@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -183,7 +183,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       assertEquals( 4, gc._context.lineWidth );
       assertEquals( "round", gc._context.lineCap );
       assertEquals( "bevel", gc._context.lineJoin );
-      if( !( rwt.client.Client.isWebkit() && rwt.client.Client.getMajor() === 537 ) ) {
+      if( !( rwt.client.Client.isWebkit() && rwt.client.Client.getMajor() >= 535 ) ) {
         assertTrue(    gc._context.font === "italic bold 16px Arial"
                     || gc._context.font === "bold italic 16px Arial" );
       }
