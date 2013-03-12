@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -527,7 +527,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testIsDraggableShell : function() {
-      var widget = new rwt.widgets.Shell( {} );
+      var widget = TestUtil.createShellByProtocol( "w2" );
       widget.addToDocument();
       widget.initialize();
       widget.open();
@@ -907,6 +907,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       if( !rwt.client.Client.isAndroidBrowser() ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var composite = new rwt.widgets.ScrolledComposite();
+        TestUtil.addToRegistry( "w4", composite );
+        composite.setScrollBarsVisible( true, true );
         composite.setLeft( 10 );
         composite.setTop( 10 );
         composite.setWidth( 100 );

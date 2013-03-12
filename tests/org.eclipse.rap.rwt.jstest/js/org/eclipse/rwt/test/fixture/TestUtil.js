@@ -939,6 +939,14 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   ///////////////////
   // Protocol ralated
 
+  addToRegistry : function( id, object ) {
+    rwt.remote.ObjectRegistry.add(
+      id,
+      object,
+      rwt.remote.HandlerRegistry.getHandler( object.classname )
+    );
+  },
+
   createShellByProtocol : function( id ) {
     rwt.remote.EventUtil.setSuspended( true );
     rwt.remote.MessageProcessor.processOperation( {
