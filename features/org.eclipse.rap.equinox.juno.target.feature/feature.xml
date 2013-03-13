@@ -18,90 +18,11 @@
    </license>
 
    <url>
-      <update label="Rich Ajax Platform (RAP) 2.1 Repository" url="http://download.eclipse.org/rt/rap/2.1/"/>
+      <update label="RAP 2.1 Repository" url="http://download.eclipse.org/rt/rap/2.1/"/>
    </url>
 
    <requires>
       <import feature="org.eclipse.rap.feature" version="2.1.0" match="greaterOrEqual"/>
-      <!--
-      <import plugin="javax.servlet"/>
-      <import plugin="javax.servlet.source"/>
-      <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.help.source"/>
-      <import plugin="com.ibm.icu.base"/>
-      <import plugin="com.ibm.icu.base.source"/>
-      <import plugin="org.eclipse.core.commands"/>
-      <import plugin="org.eclipse.core.commands.source"/>
-      <import plugin="org.eclipse.core.expressions"/>
-      <import plugin="org.eclipse.core.expressions.source"/>
-      <import plugin="org.eclipse.core.contenttype"/>
-      <import plugin="org.eclipse.core.contenttype.source"/>
-      <import plugin="org.eclipse.core.jobs"/>
-      <import plugin="org.eclipse.core.jobs.source"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.runtime.source"/>
-      <import plugin="org.eclipse.core.databinding"/>
-      <import plugin="org.eclipse.core.databinding.source"/>
-      <import plugin="org.eclipse.core.databinding.beans"/>
-      <import plugin="org.eclipse.core.databinding.beans.source"/>
-      <import plugin="org.eclipse.core.databinding.observable"/>
-      <import plugin="org.eclipse.core.databinding.observable.source"/>
-      <import plugin="org.eclipse.core.databinding.property"/>
-      <import plugin="org.eclipse.core.databinding.property.source"/>
-      <import plugin="org.eclipse.equinox.app"/>
-      <import plugin="org.eclipse.equinox.app.source"/>
-      <import plugin="org.eclipse.equinox.common"/>
-      <import plugin="org.eclipse.equinox.common.source"/>
-      <import plugin="org.eclipse.equinox.ds"/>
-      <import plugin="org.eclipse.equinox.ds.source"/>
-      <import plugin="org.eclipse.equinox.util"/>
-      <import plugin="org.eclipse.equinox.util.source"/>
-      <import plugin="org.eclipse.equinox.preferences"/>
-      <import plugin="org.eclipse.equinox.preferences.source"/>
-      <import plugin="org.eclipse.equinox.registry"/>
-      <import plugin="org.eclipse.equinox.registry.source"/>
-      <import plugin="org.eclipse.equinox.http.jetty"/>
-      <import plugin="org.eclipse.equinox.http.jetty.source"/>
-      <import plugin="org.eclipse.equinox.http.registry"/>
-      <import plugin="org.eclipse.equinox.http.registry.source"/>
-      <import plugin="org.eclipse.equinox.http.servlet"/>
-      <import plugin="org.eclipse.equinox.http.servlet.source"/>
-      <import plugin="org.eclipse.equinox.http.servletbridge"/>
-      <import plugin="org.eclipse.equinox.servletbridge"/>
-      <import plugin="org.eclipse.equinox.servletbridge.extensionbundle"/>
-      <import plugin="org.eclipse.equinox.console"/>
-      <import plugin="org.eclipse.equinox.console.source"/>
-      <import plugin="org.apache.felix.gogo.command"/>
-      <import plugin="org.apache.felix.gogo.command.source"/>
-      <import plugin="org.apache.felix.gogo.runtime"/>
-      <import plugin="org.apache.felix.gogo.runtime.source"/>
-      <import plugin="org.apache.felix.gogo.shell"/>
-      <import plugin="org.apache.felix.gogo.shell.source"/>
-      <import plugin="org.eclipse.jdt.junit.runtime"/>
-      <import plugin="org.eclipse.jdt.junit.runtime.source"/>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.eclipse.osgi.source"/>
-      <import plugin="org.eclipse.osgi.services"/>
-      <import plugin="org.eclipse.osgi.services.source"/>
-      <import plugin="org.junit"/>
-      <import plugin="org.junit.source"/>
-      <import plugin="org.eclipse.jetty.continuation"/>
-      <import plugin="org.eclipse.jetty.continuation.source"/>
-      <import plugin="org.eclipse.jetty.http"/>
-      <import plugin="org.eclipse.jetty.http.source"/>
-      <import plugin="org.eclipse.jetty.io"/>
-      <import plugin="org.eclipse.jetty.io.source"/>
-      <import plugin="org.eclipse.jetty.security"/>
-      <import plugin="org.eclipse.jetty.security.source"/>
-      <import plugin="org.eclipse.jetty.server"/>
-      <import plugin="org.eclipse.jetty.server.source"/>
-      <import plugin="org.eclipse.jetty.servlet"/>
-      <import plugin="org.eclipse.jetty.servlet.source"/>
-      <import plugin="org.eclipse.jetty.util"/>
-      <import plugin="org.eclipse.jetty.util.source"/>
-      <import plugin="org.json"/>
-      <import plugin="javax.xml"/>
-      -->
    </requires>
 
    <plugin
