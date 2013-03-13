@@ -183,7 +183,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       assertEquals( 4, gc._context.lineWidth );
       assertEquals( "round", gc._context.lineCap );
       assertEquals( "bevel", gc._context.lineJoin );
-      if( !( rwt.client.Client.isWebkit() && rwt.client.Client.getMajor() >= 535 ) ) {
+      if( !( rwt.client.Client.isWebkit() && rwt.client.Client.getMajor() >= 534 ) ) {
         assertTrue(    gc._context.font === "italic bold 16px Arial"
                     || gc._context.font === "bold italic 16px Arial" );
       }

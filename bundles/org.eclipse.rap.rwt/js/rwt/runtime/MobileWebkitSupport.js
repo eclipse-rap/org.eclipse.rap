@@ -236,7 +236,9 @@ rwt.qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
         domEvent.preventDefault();
       }
       this._moveMouseTo( target, domEvent );
-      this._fireMouseEvent( "mousedown", target, domEvent, pos );
+      if( this._touchSession.type.click ) {
+        this._fireMouseEvent( "mousedown", target, domEvent, pos );
+      }
       if( this._touchSession.type.virtualScroll ) {
         this._initVirtualScroll( widgetTarget );
       }
@@ -274,13 +276,17 @@ rwt.qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
       var pos = [ touch.clientX, touch.clientY ];
       var target = domEvent.target;
       if( this._touchSession !== null ) {
-        if( this._touchSession.type.click ) {
+        var type = this._touchSession.type;
+        if( type.delayedClick ) {
+          this._fireMouseEvent( "mousedown", target, domEvent, pos );
+        }
+        if( type.click || type.delayedClick ) {
           this._fireMouseEvent( "mouseup", target, domEvent, pos );
         }
         if( this._touchSession.type.virtualScroll ) {
           this._finishVirtualScroll();
         }
-        if( this._touchSession.type.click && this._touchSession.initialTarget === target ) {
+        if( ( type.click || type.delayedClick ) && this._touchSession.initialTarget === target ) {
           this._fireMouseEvent( "click", target, domEvent, pos );
           this._touchSession = null;
           if( this._isDoubleClick( domEvent ) ) {
@@ -297,7 +303,11 @@ rwt.qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
 
     _getSessionType : function( widgetTarget ) {
       var result = {};
-      result.click = true;
+      if( this._isSelectableWidget( widgetTarget ) ) {
+        result.delayedClick = true;
+      } else {
+        result.click = true;
+      }
       if( this._isDraggableWidget( widgetTarget ) ) {
         result.drag = true;
       } else if( this._isGridRow( widgetTarget ) ) {
@@ -375,6 +385,16 @@ rwt.qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
 
     _isGridRow : function( widgetTarget ) {
       return widgetTarget instanceof rwt.widgets.base.GridRow;
+    },
+
+    _isSelectableWidget : function( widgetTarget ) {
+      var result = false;
+      if(    widgetTarget instanceof rwt.widgets.ListItem
+          || widgetTarget instanceof rwt.widgets.base.GridRow )
+      {
+        result = true;
+      }
+      return result;
     },
 
     _findScrollable : function( widget ) {
@@ -463,6 +483,7 @@ rwt.qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
       if( this._touchSession !== null ) {
         this._fireMouseEvent( "mouseup", dummy, domEvent, [ 0, 0 ] );
         delete this._touchSession.type.click;
+        delete this._touchSession.type.delayedClick;
       }
     },
 

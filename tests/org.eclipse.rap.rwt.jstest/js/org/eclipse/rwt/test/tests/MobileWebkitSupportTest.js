@@ -512,6 +512,67 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       this.resetMobileWebkitSupport();
     },
 
+    testDelayedClick : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var log = [];
+      var logger = function( event ){
+        log.push( event.getType() );
+      };
+      var grid = this._createGridByProtocol();
+      grid.setScrollBarsVisible( false, true );
+      grid.setItemCount( 50 );
+      grid.setItemHeight( 20 );
+      grid.addEventListener( "mousedown", logger );
+      grid.addEventListener( "mouseup", logger );
+      grid.addEventListener( "click", logger );
+      for( var i = 0; i < 50; i++ ) {
+        new rwt.widgets.GridItem( grid.getRootItem(), i );
+      }
+      TestUtil.flush();
+      var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+
+      log.push( "touchstart" );
+      this.touchAt( node, "touchstart", 0, 500 );
+      //this.touchAt( node, "touchmove", 0, 450 );
+      log.push( "touchend" );
+      this.touchAt( node, "touchend", 0, 500 );
+
+      var expected = [ "touchstart", "touchend", "mousedown", "mouseup", "click" ];
+      assertEquals( expected, log );
+      grid.destroy();
+    },
+
+    testDelayedClickAborted : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var log = [];
+      var logger = function( event ){
+        log.push( event.getType() );
+      };
+      var grid = this._createGridByProtocol();
+      grid.setScrollBarsVisible( false, true );
+      grid.setItemCount( 50 );
+      grid.setItemHeight( 20 );
+      grid.addEventListener( "mousedown", logger );
+      grid.addEventListener( "mouseup", logger );
+      grid.addEventListener( "click", logger );
+      for( var i = 0; i < 50; i++ ) {
+        new rwt.widgets.GridItem( grid.getRootItem(), i );
+      }
+      TestUtil.flush();
+      var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+
+      log.push( "touchstart" );
+      this.touchAt( node, "touchstart", 0, 500 );
+      log.push( "touchmove" );
+      this.touchAt( node, "touchmove", 0, 450 );
+      log.push( "touchend" );
+      this.touchAt( node, "touchend", 0, 500 );
+
+      var expected = [ "touchstart", "touchmove", "touchend" ];
+      assertEquals( expected, log );
+      grid.destroy();
+    },
+
     testNoClickOnDifferentTargets : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new rwt.widgets.base.Terminator();
@@ -1068,7 +1129,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         this.touchAt( node, "touchend", 0, 450 );
 
         assertEquals( 3, grid._topItemIndex );
-        assertEquals( [ false, true ], preventLog );
+        assertEquals( [ true ], preventLog );
         grid.destroy();
       }
     },
@@ -1100,7 +1161,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         this.touchAt( node, "touchend", 0, 550 );
 
         assertEquals( 0, grid._topItemIndex );
-        assertEquals( [ false, false ], preventLog );
+        assertEquals( [ false ], preventLog );
         grid.destroy();
       }
     },
@@ -1132,7 +1193,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         this.touchAt( node, "touchend", 0, 480 );
 
         assertEquals( 1, grid._topItemIndex );
-        assertEquals( [ false, true ], preventLog );
+        assertEquals( [ true ], preventLog );
         grid.destroy();
       }
     },
@@ -1163,7 +1224,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         this.touchAt( node, "touchend", 0, 450 );
 
         assertEquals( 25, grid._topItemIndex );
-        assertEquals( [ false, false ], preventLog );
+        assertEquals( [ false ], preventLog );
         grid.destroy();
       }
     },
@@ -1198,7 +1259,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         this.touchAt( node, "touchend", 0, 480 );
 
         assertEquals( 24, grid._topItemIndex );
-        assertEquals( [ false, true ], preventLog );
+        assertEquals( [ true ], preventLog );
         grid.destroy();
       }
     },
