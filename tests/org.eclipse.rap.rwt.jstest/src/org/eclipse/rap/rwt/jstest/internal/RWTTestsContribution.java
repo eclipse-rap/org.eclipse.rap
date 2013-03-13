@@ -97,7 +97,6 @@ public class RWTTestsContribution implements TestContribution {
     "tests/ProgressBarTest.js",
     "tests/TabFolderTest.js",
     "tests/CTabFolderTest.js",
-    "tests/BrowserTest.js",
     "tests/FileUploadTest.js",
     "tests/ServerPushTest.js",
     "tests/ToolTipTest.js",
@@ -112,7 +111,8 @@ public class RWTTestsContribution implements TestContribution {
     "tests/MessageTest.js",
     "tests/ServerTest.js",
     "tests/RemoteObjectTest.js",
-    "tests/RemoteObjectFactoryTest.js"
+    "tests/RemoteObjectFactoryTest.js",
+    "tests/BrowserTest.js"
   };
 
   public String getName() {

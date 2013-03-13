@@ -36,7 +36,7 @@ public final class ClientResources {
   private static final String[] JAVASCRIPT_FILES = new String[] {
     "debug-settings.js",
     "rwt/runtime/Bootstrap.js",
-    "rwt/runtime/PrototypeExtender.js",
+    "rwt/runtime/BrowserFixes.js",
     "rwt/util/Arrays.js",
     "rwt/util/Variant.js",
     "rwt/client/Client.js",
