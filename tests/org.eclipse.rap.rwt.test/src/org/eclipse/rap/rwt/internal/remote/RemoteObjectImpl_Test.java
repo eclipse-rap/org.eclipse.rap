@@ -16,9 +16,11 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.util.Map;
 
@@ -96,7 +98,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testSetIntIsRendered() {
+  public void testSet_int_isRendered() {
     remoteObject.set( "property", 23 );
 
     remoteObject.render( writer );
@@ -105,7 +107,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testChecksNameForSetInt() {
+  public void testSet_int_checksName() {
     try {
       remoteObject.set( null, 23 );
       fail();
@@ -114,7 +116,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testChecksStateForSetInt() {
+  public void testSet_int_checksState() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
     remoteObjectSpy.set( "property", 23 );
@@ -123,7 +125,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testSetDoubleIsRendered() {
+  public void testSet_double_isRendered() {
     remoteObject.set( "property", 47.11 );
 
     remoteObject.render( writer );
@@ -132,7 +134,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testChecksNameForSetDouble() {
+  public void testSet_double_checksName() {
     try {
       remoteObject.set( null, 47.11 );
       fail();
@@ -141,7 +143,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testChecksStateForSetDouble() {
+  public void testSet_double_checksState() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
     remoteObjectSpy.set( "property", 47.11 );
@@ -150,7 +152,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testSetBooleanIsRendered() {
+  public void testSet_boolean_isRendered() {
     remoteObject.set( "property", true );
 
     remoteObject.render( writer );
@@ -159,7 +161,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testChecksNameForSetBoolean() {
+  public void testSet_boolean_checksName() {
     try {
       remoteObject.set( null, true );
       fail();
@@ -168,7 +170,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testChecksStateForSetBoolean() {
+  public void testSet_boolean_checksState() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
     remoteObjectSpy.set( "property", true );
@@ -177,7 +179,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testSetStringIsRendered() {
+  public void testSet_string_isRendered() {
     remoteObject.set( "property", "foo" );
 
     remoteObject.render( writer );
@@ -186,7 +188,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testChecksNameForSetString() {
+  public void testSet_string_checksName() {
     try {
       remoteObject.set( null, "foo" );
       fail();
@@ -195,7 +197,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testChecksStateForSetString() {
+  public void testSet_string_checksState() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
     remoteObjectSpy.set( "property", "foo" );
@@ -204,7 +206,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testSetObjectIsRendered() {
+  public void testSet_object_isRendered() {
     Object object = new Object();
     remoteObject.set( "property", object );
 
@@ -214,7 +216,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testChecksNameForSetObject() {
+  public void testSet_object_checksName() {
     try {
       remoteObject.set( null, new Object() );
       fail();
@@ -223,7 +225,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testChecksStateForSetObject() {
+  public void testSet_object_checksState() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
     remoteObjectSpy.set( "property", new Object() );
@@ -232,7 +234,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testListenIsRendered() {
+  public void testListen_isRendered() {
     remoteObject.listen( "event", true );
 
     remoteObject.render( writer );
@@ -241,7 +243,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testChecksNameForListen() {
+  public void testListen_checksName() {
     try {
       remoteObject.listen( null, true );
       fail();
@@ -250,7 +252,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testChecksStateForListen() {
+  public void testListen_checksState() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
     remoteObjectSpy.listen( "event", true );
@@ -259,7 +261,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testCallIsRendered() {
+  public void testCall_isRendered() {
     Map<String, Object> properties = mockProperties();
     remoteObject.call( "method", properties );
 
@@ -269,7 +271,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testChecksNameForCall() {
+  public void testCall_checksName() {
     try {
       remoteObject.call( null, mockProperties() );
       fail();
@@ -278,7 +280,7 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testChecksStateForCall() {
+  public void testCall_checksState() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
     remoteObjectSpy.call( "method", mockProperties() );
@@ -287,16 +289,18 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testDestroyIsRendered() {
-    remoteObject.destroy();
+  public void testDestroy_isRendered() {
+    remoteObject.render( writer );
+    reset( writer );
 
+    remoteObject.destroy();
     remoteObject.render( writer );
 
     verify( writer ).appendDestroy( eq( objectId ) );
   }
 
   @Test
-  public void testChecksStateForDestroy() {
+  public void testDestroy_checksState() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
     remoteObjectSpy.destroy();
@@ -359,6 +363,15 @@ public class RemoteObjectImpl_Test {
     OperationHandler result = remoteObject.getHandler();
 
     assertEquals( handler, result );
+  }
+
+  @Test
+  public void testRender_omitsImmediatelyDestroyedObjects() {
+    remoteObject.destroy();
+
+    remoteObject.render( writer );
+
+    verifyZeroInteractions( writer );
   }
 
   private static void runInBackgroundThread( Runnable runnable ) {

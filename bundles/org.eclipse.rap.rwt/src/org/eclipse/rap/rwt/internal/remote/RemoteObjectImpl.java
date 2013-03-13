@@ -26,6 +26,7 @@ public class RemoteObjectImpl implements RemoteObject, Serializable {
 
   private final String id;
   private final List<RenderRunnable> renderQueue;
+  private boolean created;
   private boolean destroyed;
   private OperationHandler handler;
 
@@ -139,8 +140,13 @@ public class RemoteObjectImpl implements RemoteObject, Serializable {
   }
 
   public void render( ProtocolMessageWriter writer ) {
-    for( RenderRunnable runnable : renderQueue ) {
-      runnable.render( writer );
+    if( destroyed && !created ) {
+      // skip rendering for objects that are disposed just after creation (see bug 395272)
+    } else {
+      for( RenderRunnable runnable : renderQueue ) {
+        runnable.render( writer );
+      }
+      created = true;
     }
     renderQueue.clear();
   }
