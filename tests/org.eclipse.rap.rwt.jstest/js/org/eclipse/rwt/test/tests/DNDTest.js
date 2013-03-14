@@ -1395,6 +1395,40 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.flush();
     },
 
+    testFeedbackWidgetEscape : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
+      var argsMap = {
+        "appearance" : "tree",
+        "selectionPadding" : [ 2, 2 ]
+      };
+      var tree = new rwt.widgets.Grid( argsMap );
+      tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );
+      rwt.remote.WidgetManager.getInstance().add( tree, "w2" );
+      tree.setUserData( "isControl", true );
+      tree.setSpace( 13, 364, 27, 30 );
+      tree.addToDocument();
+      var actions = [ "copy", "move", "alias" ];
+      dndSupport.registerDragSource( tree, actions );
+      dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
+      this.createTreeItem( 0, tree, tree ).setTexts( [ "te&st" ] );
+      TestUtil.flush();
+      var sourceNode = tree._rowContainer._children[ 0 ]._getTargetNode();
+
+      TestUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
+      TestUtil.fakeMouseEventDOM( document.body, "mousemove", leftButton, 25, 15 );
+      tree._scheduleUpdate(); // rendering that could crash
+      TestUtil.flush();
+
+      var widget = dndSupport._dragFeedbackWidget;
+      assertEquals( "te&amp;st", widget.getCellContent( 1 ) );
+      dndSupport.cancel();
+      dndSupport.deregisterDragSource( tree );
+      tree.destroy();
+    },
+
     testFeedbackWidgetTreeWithImage : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = rwt.remote.DNDSupport.getInstance();

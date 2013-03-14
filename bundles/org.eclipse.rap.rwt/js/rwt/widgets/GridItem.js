@@ -150,13 +150,23 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
       this._update( "content" );
     },
 
+    /**
+     * Id doEscape is true, the text is permanantly ecaped, unescaped text can no longer
+     * be provided. If it is undefined the text is escaped, but not permanently.
+     */
     getText : function( column, doEscape ) {
       var result = this._texts[ column ];
       if( ( typeof result ) === "string" ) {
         if( doEscape !== false && !this._escaped ) {
-          this._escapeTexts();
-          this._escaped = true;
-          result = this._texts[ column ];
+          if( doEscape === true ) {
+            this._escapeTexts();
+            this._escaped = true;
+            result = this._texts[ column ];
+          } else {
+            result = this._escape( this._texts[ column ] );
+          }
+        } if( doEscape === false && this._escaped ) {
+          throw new Error( "Unescaped text requested from GridItem, but is already escaped" );
         }
       } else {
         result = "";
@@ -717,15 +727,20 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     // Helper
 
     _escapeTexts : function() {
-      var EncodingUtil = rwt.util.Encoding;
       for( var i = 0; i < this._texts.length; i++ ) {
         var text = this._texts[ i ];
         if( text ) {
-          text = EncodingUtil.escapeText( text, false );
-          text = EncodingUtil.replaceWhiteSpaces( text );
+          text = this._escape( text );
         }
         this._texts[ i ] = text;
       }
+    },
+
+    _escape : function( text ) {
+      var EncodingUtil = rwt.util.Encoding;
+      var result = EncodingUtil.escapeText( text, false );
+      result = EncodingUtil.replaceWhiteSpaces( result );
+      return result;
     },
 
     _computeVisibleChildrenCount : function() {

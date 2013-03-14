@@ -575,6 +575,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       assertEquals( "<i>Test2</i>", item.getText( 1, false ) );
     },
 
+    testTextGetUnEscapedTextAfterPermanentEscape : function() {
+      var item = new rwt.widgets.GridItem();
+      item.setTexts( [ "<b>Test</b>", "<i>Test2</i>" ] );
+      item.getText( 1, true );
+
+      try {
+        item.getText( 1, false );
+        fail();
+      } catch( ex ) {
+        // expected
+      }
+    },
+
     testItemFont : function() {
       var item = new rwt.widgets.GridItem();
       item.setFont( "Arial" );
