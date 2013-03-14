@@ -88,7 +88,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
       this._renderLabelLeft( label, column );
       label.setWidth( column.getWidth() );
       label.setHoverEffect( column.getMoveable() );
-      label.setVisibility( column.getVisibility() );
+      label.setVisibility( column.getVisibility() && column.getWidth() > 0 );
       if( this._footer ) {
         label.setText( column.getFooterText() );
         label.setImage( column.getFooterImage() );

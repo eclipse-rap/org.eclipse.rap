@@ -1148,6 +1148,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
+    testRenderColumnBoundsZero : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 0 } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertEquals( 0, label.getWidth() );
+      assertFalse( label.getVisibility() );
+      column.dispose();
+      tree.destroy();
+    },
+
     testRenderGroupBounds : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       tree.setHeaderHeight( 50 );

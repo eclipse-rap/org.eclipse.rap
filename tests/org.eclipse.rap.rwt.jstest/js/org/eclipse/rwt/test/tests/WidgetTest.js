@@ -670,6 +670,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       widget.destroy();
     },
 
+    testBoxWidthZero : function() {
+      var widget = this._createWidget();
+      widget.setLeft( 10 );
+      widget._computePreferredInnerWidth = function(){ return 99; };
+
+      widget.setWidth( 0 );
+      TestUtil.flush();
+
+      assertEquals( 0, widget.getBoxWidth() );
+      widget.destroy();
+    },
+
+    testBoxHeightZero : function() {
+      var widget = this._createWidget();
+      widget.setTop( 10 );
+      widget._computePreferredInnerHeight = function(){ return 99; };
+
+      widget.setHeight( 0 );
+      TestUtil.flush();
+
+      assertEquals( 0, widget.getBoxHeight() );
+      widget.destroy();
+    },
 
     /////////
     // Helper
