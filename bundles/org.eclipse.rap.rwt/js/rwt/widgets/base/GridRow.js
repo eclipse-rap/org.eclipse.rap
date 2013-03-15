@@ -547,8 +547,12 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
             element.rap_Markup = html;
           }
         } else {
-          // innerText is faster, does the escaping itself
-          element.innerText = item ? item.getText( cell, false ) : "";
+          // innerText is faster, but works correctly onlw when seeable
+          if( this.isSeeable() ) {
+            element.innerText = item ? item.getText( cell, false ) : "";
+          } else {
+            element.innerHTML = item ? item.getText( cell ) : "";
+          }
         }
       },
       "default" : function( element, item, cell, markupEnabled ) {

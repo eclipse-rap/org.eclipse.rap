@@ -56,6 +56,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "&lt;b&gt;Test&lt;/b&gt;", row._getTargetNode().childNodes[ 1 ].innerHTML );
     },
 
+    testRenderItemWithMultipleSpacesWhileNotVisible_Bug395822 : function() {
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test   Test" ] );
+      row.setDisplay( false );
+
+      row.renderItem( item, tree._config, false, null );
+      row.setDisplay( true );
+
+      var actual = row._getTargetNode().childNodes[ 1 ].innerHTML;
+      assertEquals( "Test&nbsp;&nbsp; Test", actual );
+    },
+
     testRenderItemWithMarkupEnabled_Bug374263 : function() {
       this._createTree( false, "markupEnabled" );
       var item = this._createItem( tree );
