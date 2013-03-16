@@ -302,6 +302,11 @@ public final class WidgetLCAUtil {
     adapter.preserve( PROP_VARIANT, variant );
   }
 
+  /**
+   * Preserves custom data for the given widget.
+   *
+   * @since 2.1
+   */
   public static void preserveData( Widget widget ) {
     preserveProperty( widget, PROP_DATA, getDataAsArray( widget ) );
   }
@@ -364,6 +369,11 @@ public final class WidgetLCAUtil {
     }
   }
 
+  /**
+   * Renders custom data changes for the given widget.
+   *
+   * @since 2.1
+   */
   public static void renderData( Widget widget ) {
     Object[] newValue = getDataAsArray( widget );
     if( WidgetLCAUtil.hasChanged( widget, PROP_DATA, newValue, new Object[ 0 ] ) ) {
