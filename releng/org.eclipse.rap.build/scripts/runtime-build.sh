@@ -60,13 +60,6 @@ $MVN -e clean package -DruntimeRepo="file://$WORKSPACE/runtimeRepo" -Dmaven.repo
 
 # Example: rap-1.5.0-N-20110814-2110.zip
 zipFileName=rap-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
-junoZipFileName=rap-juno-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
-
-if [ -d repository.juno/target/fixedSigned ]; then
-  mv repository.juno/target/fixedSigned/*.zip "$WORKSPACE/$junoZipFileName" || exit 1
-else
-  mv repository.juno/target/*.zip "$WORKSPACE/$junoZipFileName" || exit 1
-fi
 
 if [ -d repository.kepler/target/fixedSigned ]; then
   mv repository.kepler/target/fixedSigned/*.zip "$WORKSPACE/$zipFileName" || exit 1
@@ -81,4 +74,3 @@ cd "$WORKSPACE"
 cp -f org.eclipse.rap/releng/org.eclipse.rap.build/legal/notice.html .
 cp -f org.eclipse.rap/releng/org.eclipse.rap.build/legal/epl-v10.html .
 zip "$zipFileName" notice.html epl-v10.html
-zip "$junoZipFileName" notice.html epl-v10.html
