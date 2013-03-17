@@ -72,6 +72,7 @@
     -->
     <!-- Packaging projects -->
     <module>../../features/org.eclipse.rap.feature</module>
+    <module>../../features/org.eclipse.rap.sdk.feature</module>
     <module>../../features/org.eclipse.rap.examples.feature</module>
     <module>repository</module>
   </modules>

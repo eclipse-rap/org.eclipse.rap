@@ -22,6 +22,12 @@
   </feature>
 
   <feature url="http://eclipse.org/rap"
+      id="org.eclipse.rap.sdk.feature"
+      version="2.1.0.qualifier">
+    <category name="org.eclipse.rap.category"/>
+  </feature>
+
+  <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.examples.feature"
       version="2.1.0.qualifier">
     <category name="org.eclipse.rap.category"/>
