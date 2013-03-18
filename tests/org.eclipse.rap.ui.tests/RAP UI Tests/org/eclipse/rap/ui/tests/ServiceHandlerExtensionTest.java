@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource Corporation and others.
+ * Copyright (c) 2010, 2013 EclipseSource Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,28 +17,34 @@ import javax.servlet.ServletException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.ui.tests.impl.ServiceHandler1;
 import org.eclipse.rap.ui.tests.impl.ServiceHandler2;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.service.IServiceHandler;
 
 public class ServiceHandlerExtensionTest extends TestCase {
 
   public static String log = "";
 
   public void testServiceHandler1Registration() throws IOException, ServletException {
-    Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, "myHandler1" );
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setParameter( ServiceManagerImpl.REQUEST_PARAM, "myHandler1" );
 
-    RWTFactory.getServiceManager().getHandler().service();
+    ServiceManagerImpl serviceManagerImpl = ( ServiceManagerImpl )RWT.getServiceManager();
+    serviceManagerImpl.getHandler().service( request, RWT.getResponse() );
 
     assertEquals( log, ServiceHandler1.class.getName() );
   }
 
   public void testServiceHandler2Registration() throws IOException, ServletException {
-    Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, "myHandler2" );
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setParameter( ServiceManagerImpl.REQUEST_PARAM, "myHandler2" );
 
-    RWTFactory.getServiceManager().getHandler().service();
+    ServiceManagerImpl serviceManagerImpl = ( ServiceManagerImpl )RWT.getServiceManager();
+    serviceManagerImpl.getHandler().service( RWT.getRequest(), RWT.getResponse() );
 
     assertEquals( log, ServiceHandler2.class.getName() );
   }
@@ -49,7 +55,6 @@ public class ServiceHandlerExtensionTest extends TestCase {
   }
 
   protected void tearDown() {
-    Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, null );
     log = "";
   }
 }
