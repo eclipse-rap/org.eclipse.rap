@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -302,6 +302,28 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
 
     isGroup : function() {
       return this._isGroup;
+    },
+
+    /**
+     * Implemented for UI testing. Implementation mostly identical to Widget.js
+     */
+    setHtmlAttribute : function( propName, value ) {
+      if( !this._htmlAttributes ) {
+        this._htmlAttributes = {};
+      }
+      this._htmlAttributes[ propName ] = value;
+      this._update();
+      return true;
+    },
+
+    applyHtmlAttributes : function( widget ) {
+      var attributes = this._htmlAttributes;
+      if( attributes ) {
+        var propName;
+        for( propName in attributes ) {
+          widget.setHtmlAttribute( propName, attributes[ propName ] );
+        }
+      }
     },
 
     _update : function() {
