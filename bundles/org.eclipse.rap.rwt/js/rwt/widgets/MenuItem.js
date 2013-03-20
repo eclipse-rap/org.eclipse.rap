@@ -14,7 +14,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
   extend : rwt.widgets.base.MultiCellWidget,
 
   construct : function( menuItemType ) {
-    this.base( arguments, [ "image", "image", "label", "image" ] );
+    this.base( arguments, [ "image", "image", "label", "label", "image" ] );
     this._hasSelectionListener = false;
     this._selected = false;
     this._parentMenu = null;
@@ -56,7 +56,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
        rwt.widgets.util.RadioButtonUtil.registerExecute( this );
       break;
     }
-    this._preferredCellWidths = [ 0, 0, 0, 13 ];
+    this._preferredCellWidths = [ 0, 0, 0, 0, 13 ];
     if( this._isSelectable ) {
       this.setCellContent( 0, "" );
     }
@@ -105,6 +105,18 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
       this.renderText();
     },
 
+    setAccelerator : function( value ) {
+      var acc = null;
+      if( value ) {
+        // assumign a tab is rendered as four spaces
+        acc = rwt.util.Encoding.escapeText( value );
+        acc = rwt.util.Encoding.replaceWhiteSpaces( "    " + acc );
+      }
+      this.setCellContent( 3, acc );
+      this.setCellDimension( 3, null, null ); // force to recompute the width
+      this._setPreferredCellWidth( 3, this.getCellWidth( 3 ) );
+    },
+
     setMnemonicIndex : function( value ) {
       this._mnemonicIndex = value;
       if( this._parentMenu instanceof rwt.widgets.MenuBar ) {
@@ -143,6 +155,12 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
         this._setText( text );
       } else {
         this._setText( null );
+      }
+    },
+
+    _afterRenderLayout : function( changes ) {
+      if( changes.createContent && this.getCellNode( 3 ) ) {
+        this.getCellNode( 3 ).style.textAlign = "right";
       }
     },
 
@@ -244,14 +262,14 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
       var url = value ? value[ 0 ] : null;
       var width = value ? value[ 1 ] : 13;
       var height = value ? value[ 2 ] : 0;
-      this.setCellContent( 3, url );
-      this.setCellHeight( 3, height );
-      this._setPreferredCellWidth( 3, width );
+      this.setCellContent( 4, url );
+      this.setCellHeight( 4, height );
+      this._setPreferredCellWidth( 4, width );
     },
 
     _beforeComputeInnerWidth : function() {
       if( this._parentMenu instanceof rwt.widgets.Menu ) {
-        for( var i = 0; i < 4; i++ ) {
+        for( var i = 0; i < 5; i++ ) {
           this._setCellWidth( i, this._parentMenu.getMaxCellWidth( i ) );
         }
       }

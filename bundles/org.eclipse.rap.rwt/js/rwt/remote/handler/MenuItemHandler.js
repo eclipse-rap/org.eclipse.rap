@@ -64,10 +64,13 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.MenuItem", {
         var text = value;
         // Strip accelerator text
         var index = text.indexOf( "\t" );
+        var accelerator = null;
         if( index != -1 ) {
+          accelerator = text.substring( index + 1 );
           text = text.substring( 0, index );
         }
         widget.setText( text );
+        widget.setAccelerator( accelerator );
       }
     },
     "image" : function( widget, value ) {

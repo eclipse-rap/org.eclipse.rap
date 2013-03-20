@@ -31,7 +31,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
     this._hoverFirstItemFlag = false;
     this.setHeight( "auto" );
     this.setWidth( "auto" );
-    this._maxCellWidths = [ null, null, null, null ];
+    this._maxCellWidths = [ null, null, null, null, null ];
     this._layout = new rwt.widgets.base.VerticalBoxLayout();
     this._layout.set( {
       top : 0,
@@ -226,7 +226,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
     },
 
     invalidateAllMaxCellWidths : function() {
-      for( var i = 0; i < 4; i++ ) {
+      for( var i = 0; i < 5; i++ ) {
         this._maxCellWidths[ i ] = null;
       }
     },
@@ -361,7 +361,6 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       vRoot.setFocusedChild( this._lastFocus );
     },
 
-
     _beforeAppear : function() {
       // original qooxdoo code: (1 line)
       rwt.widgets.base.Parent.prototype._beforeAppear.call( this );
@@ -393,7 +392,6 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       }
       this._menuHidden();
     },
-
 
     //////////
     // Submenu

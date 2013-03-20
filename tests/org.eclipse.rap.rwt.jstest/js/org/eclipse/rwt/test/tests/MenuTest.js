@@ -193,6 +193,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       item.destroy();
     },
 
+    testAccelerator_SetWithText : function() {
+      var menu = createPopUpMenuByProtocol( "w3" );
+      var item = createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
+
+      TestUtil.protocolSet( "w4", { "text" : "foo\tac&c" } );
+
+      assertEquals( "foo", item.getCellContent( 2 ) );
+      assertEquals( "&nbsp;&nbsp;&nbsp; ac&amp;c", item.getCellContent( 3 ) );
+      menu.destroy();
+    },
+
+    testAccelerator_HasTextAlignRight : function() {
+      var menu = createPopUpMenuByProtocol( "w3" );
+      var item = createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
+
+      TestUtil.protocolSet( "w4", { "text" : "foo\tac&c" } );
+      menu.show();
+      TestUtil.flush();
+
+      assertEquals( "right", item.getCellNode( 3 ).style.textAlign );
+      menu.destroy();
+    },
+
     testDestroyMenuItemWithPopupMenuByProtocol : function() {
       var menu = createPopUpMenuByProtocol( "w3" );
       var item = createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -357,16 +380,28 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       disposeMenu();
     },
 
-    testArrowOnly : function() {
+    testArrowUrl : function() {
       createSimpleMenu( "push" );
+
       menuItem.setArrow( [ "url.jpg", 13, 13 ] );
       TestUtil.flush();
+
       assertEquals( 1, menuItem._getTargetNode().childNodes.length );
       var node = menuItem._getTargetNode().firstChild;
-      assertContains(
-        "url.jpg",
-        TestUtil.getCssBackgroundImage( node )
-      );
+      assertContains( "url.jpg", TestUtil.getCssBackgroundImage( node ) );
+      disposeMenu();
+    },
+
+    testArrowDimension : function() {
+      createSimpleMenu( "push" );
+
+      menuItem.setArrow( [ "url.jpg", 13, 14 ] );
+      TestUtil.flush();
+
+      var node = menuItem._getTargetNode().firstChild;
+      var bounds = TestUtil.getElementBounds( node );
+      assertEquals( 13, bounds.width );
+      assertEquals( 14, bounds.height );
       disposeMenu();
     },
 

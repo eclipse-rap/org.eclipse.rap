@@ -184,9 +184,15 @@ public class MnemonicsTab extends ExampleTab {
       Menu dropdown = new Menu( shell, SWT.DROP_DOWN );
       menuItem.setMenu( dropdown );
     }
-    createMenuItem( bar.getItem( 0 ).getMenu(), SWT.PUSH, "Push &One" );
-    createMenuItem( bar.getItem( 0 ).getMenu(), SWT.PUSH, "Push &Two" );
-    createMenuItem( bar.getItem( 0 ).getMenu(), SWT.CHECK, "&Check" );
+    MenuItem pushOne
+      = createMenuItem( bar.getItem( 0 ).getMenu(), SWT.PUSH, "Push &One\tCtrl+Shift+1" );
+    pushOne.setAccelerator( SWT.CTRL | SWT.SHIFT | '1' );
+    MenuItem pushTwo
+      = createMenuItem( bar.getItem( 0 ).getMenu(), SWT.PUSH, "Push &Two\tCtrl+Shift+2" );
+    pushTwo.setAccelerator( SWT.CTRL | SWT.SHIFT | '2' );
+    MenuItem check
+      = createMenuItem( bar.getItem( 0 ).getMenu(), SWT.CHECK, "&Check\tCtrl+C" );
+    check.setAccelerator( SWT.CTRL | 'c' );
     createMenuItem( bar.getItem( 0 ).getMenu(), SWT.RADIO, "Radio &X" );
     createMenuItem( bar.getItem( 0 ).getMenu(), SWT.RADIO, "Radio &Y" );
     createMenuItem( bar.getItem( 0 ).getMenu(), SWT.RADIO, "Radio &Z" );
