@@ -943,6 +943,63 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.destroy();
     },
 
+    testPropagateEscKey_ListIsVisible : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Combo",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      TestUtil.flush();
+      var widget = ObjectManager.getObject( "w3" );
+      widget.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
+      widget._toggleListVisibility();
+      var propagated = false;
+      shell.addEventListener( "keydown", function( event ) {
+        if( event.getKeyIdentifier() == "Escape" ) {
+          propagated = true;
+        }
+      } );
+
+      TestUtil.press( widget, "Escape" );
+
+      assertFalse( propagated );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testPropagateEscKey_ListIsNotVisible : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Combo",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      TestUtil.flush();
+      var widget = ObjectManager.getObject( "w3" );
+      widget.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
+      var propagated = false;
+      shell.addEventListener( "keydown", function( event ) {
+        if( event.getKeyIdentifier() == "Escape" ) {
+          propagated = true;
+        }
+      } );
+
+      TestUtil.press( widget, "Escape" );
+
+      assertTrue( propagated );
+      shell.destroy();
+      widget.destroy();
+    },
+
     //////////
     // Helpers
 
