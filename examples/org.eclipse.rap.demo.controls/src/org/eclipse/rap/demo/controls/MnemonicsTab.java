@@ -1,13 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Innoopract Informationssysteme GmbH - initial API and implementation
- *    EclipseSource - ongoing development
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
@@ -62,7 +61,7 @@ public class MnemonicsTab extends ExampleTab {
     shortcutText.setText( DEFAULT_SHORTCUT[ 0 ] );
     shortcutText.setLayoutData( new RowData( 110, SWT.DEFAULT ) );
     Button setShortcut = new Button( parent, SWT.PUSH );
-    setShortcut.setText( "set global shortcut" );
+    setShortcut.setText( "Set global shortcut" );
     setShortcut.addListener( SWT.Selection, new Listener() {
       public void handleEvent( Event event ) {
         String[] shortcut = new String[]{ shortcutText.getText() };
@@ -84,7 +83,7 @@ public class MnemonicsTab extends ExampleTab {
     activatorText.setText( DEFAULT_ACTIVATOR );
     activatorText.setLayoutData( new RowData( 110, SWT.DEFAULT ) );
     Button setActivator = new Button( parent, SWT.PUSH );
-    setActivator.setText( "set activator" );
+    setActivator.setText( "Set activator" );
     setActivator.addListener( SWT.Selection, new Listener() {
       public void handleEvent( Event event ) {
         display.setData( RWT.MNEMONIC_ACTIVATOR, activatorText.getText() );
@@ -94,7 +93,7 @@ public class MnemonicsTab extends ExampleTab {
 
   private void createCTabFolderButton( Composite parent ) {
     final Button ctabFolderButton = new Button( parent, SWT.TOGGLE );
-    ctabFolderButton.setText( "use CTabFolder" );
+    ctabFolderButton.setText( "Use CTabFolder" );
     ctabFolderButton.addListener( SWT.Selection, new Listener() {
       public void handleEvent( Event event ) {
         useCTabFolder = ctabFolderButton.getSelection();
@@ -160,18 +159,28 @@ public class MnemonicsTab extends ExampleTab {
     } );
   }
 
-  private void createShellWithMenu( final Composite content ) {
-    Shell shell = new Shell( content.getShell(), SWT.BORDER  );
+  private void createShellWithMenu( Composite content ) {
+    final Shell shell = new Shell( content.getShell(), SWT.BORDER  );
     shell.setLayout( new GridLayout() );
     createMenuBar( shell );
     // Bug? - Without a widget in the shell it doesn't get correctly focused
-    Button test = new Button( shell, SWT.PUSH );
-    test.setText( "foo" );
-    test.setLayoutData( new GridData( 100, 100 ) );
+    Button closeButton = new Button( shell, SWT.PUSH );
+    closeButton.setText( "Close" );
+    closeButton.addListener( SWT.Selection, new Listener() {
+      public void handleEvent( Event event ) {
+        shell.dispose();
+      }
+    } );
     shell.setLocation( content.toDisplay( 0, 0 ) );
     shell.setSize( content.getSize() );
     shell.open();
+    content.addListener( SWT.Dispose, new Listener() {
+      public void handleEvent( Event event ) {
+        shell.dispose();
+      }
+    } );
   }
+
   private void createMenuBar( final Shell shell) {
     String[] items = new String[] {
       "&File", "&Edit", "&Lazy", "E&xit"
