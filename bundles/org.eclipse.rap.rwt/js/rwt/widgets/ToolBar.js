@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,6 +101,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolBar", {
 
     _hoverNext : function( backwards ) {
       if( this._hoverItem != null ) {
+        var oldHoverItem = this._hoverItem;
         this._hoverItem.removeState( "over" );
         do {
           if( backwards ) {
@@ -114,7 +115,8 @@ rwt.qx.Class.define( "rwt.widgets.ToolBar", {
               this._hoverItem = this.getFirstChild();
             }
           }
-        } while( !( this._isToolItem( this._hoverItem ) && this._hoverItem.isEnabled() ) );
+        } while( !( this._isToolItem( this._hoverItem ) && this._hoverItem.isEnabled() )
+                 && this._hoverItem !== oldHoverItem );
         this._hoverItem.addState( "over" );
       }
     }

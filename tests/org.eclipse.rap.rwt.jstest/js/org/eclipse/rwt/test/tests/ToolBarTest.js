@@ -560,6 +560,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.disposeToolBar();
     },
 
+    testKeyboardControlLeft_WithAllItemsDisabled : function() {
+      this.createDefaultToolBar();
+      this.toolItem1.setEnabled( false );
+      this.toolItem3.setEnabled( false );
+      this.toolBar.focus();
+      assertTrue( this.toolItem1.hasState( "over" ) );
+
+      this.TestUtil.press( this.toolBar, "Left" );
+
+      assertTrue( this.toolItem1.hasState( "over" ) );
+      assertFalse( this.toolItem2.hasState( "over" ) );
+      assertFalse( this.toolItem3.hasState( "over" ) );
+      this.disposeToolBar();
+    },
+
     testKeyboardControlRight : function() {
       this.createDefaultToolBar();
       this.toolBar.focus();
@@ -569,6 +584,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       assertTrue( this.toolItem3.hasState( "over" ) );
       this.TestUtil.press( this.toolBar, "Right" );
       assertTrue( this.toolItem1.hasState( "over" ) );
+      assertFalse( this.toolItem3.hasState( "over" ) );
+      this.disposeToolBar();
+    },
+
+    testKeyboardControlRight_WithAllItemsDisabled : function() {
+      this.createDefaultToolBar();
+      this.toolItem1.setEnabled( false );
+      this.toolItem3.setEnabled( false );
+      this.toolBar.focus();
+      assertTrue( this.toolItem1.hasState( "over" ) );
+
+      this.TestUtil.press( this.toolBar, "Right" );
+
+      assertTrue( this.toolItem1.hasState( "over" ) );
+      assertFalse( this.toolItem2.hasState( "over" ) );
       assertFalse( this.toolItem3.hasState( "over" ) );
       this.disposeToolBar();
     },
@@ -716,6 +746,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.toolItem2.dispose();
       this.toolItem3.dispose();
       this.separator.dispose();
+      this.toolItem1 = null;
+      this.toolItem2 = null;
+      this.toolItem3 = null;
       this.toolBar.dispose();
     },
 
