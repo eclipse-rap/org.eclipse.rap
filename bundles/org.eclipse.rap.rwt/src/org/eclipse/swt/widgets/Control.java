@@ -2348,7 +2348,7 @@ public abstract class Control extends Widget implements Drawable {
       Control focusControl = null;
       Control parent = this.parent;
       while( focusControl == null && parent != null ) {
-        if( !parent.isDisposed() ) {
+        if( !parent.isInDispose() ) {
           focusControl = parent;
         } else {
           parent = parent.getParent();

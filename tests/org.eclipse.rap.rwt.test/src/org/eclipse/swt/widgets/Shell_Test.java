@@ -19,7 +19,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 
@@ -894,6 +897,18 @@ public class Shell_Test {
       shell.removeShellListener( null );
     } catch( IllegalArgumentException expected ) {
     }
+  }
+
+  @Test
+  public void testActivateEventNotFiredOnShellInDispose() {
+    ShellListener listener = mock( ShellListener.class );
+    shell.addShellListener( listener );
+    Shell childShell = new Shell( shell );
+    childShell.open();
+
+    display.dispose();
+
+    verify( listener, times( 0 ) ).shellActivated( any( ShellEvent.class ) );
   }
 
 }
