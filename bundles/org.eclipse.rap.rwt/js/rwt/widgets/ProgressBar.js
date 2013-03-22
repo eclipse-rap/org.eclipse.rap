@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -350,17 +350,11 @@ rwt.qx.Class.define( "rwt.widgets.ProgressBar", {
 
     _styleIndicatorFill : function() {
       var GraphicsUtil = rwt.graphics.GraphicsUtil;
-      if(    this.getIndicatorImage() != null
-          && this.getIndicatorImage()[ 0 ] != null )
-      {
+      if( this.getIndicatorImage() != null && this.getIndicatorImage()[ 0 ] != null ) {
         var image = this.getIndicatorImage();
-        GraphicsUtil.setFillPattern( this._indicatorShape,
-                                image[ 0 ],
-                                image[ 1 ],
-                                image[ 2 ] );
+        GraphicsUtil.setFillPattern( this._indicatorShape, image[ 0 ], image[ 1 ], image[ 2 ] );
       } else if( this.getIndicatorGradient() != null ) {
-        GraphicsUtil.setFillGradient( this._indicatorShape,
-                                 this.getIndicatorGradient() );
+        GraphicsUtil.setFillGradient( this._indicatorShape, this.getIndicatorGradient() );
       } else {
         GraphicsUtil.setFillColor( this._indicatorShape, this.getIndicatorColor() );
       }
@@ -369,20 +363,13 @@ rwt.qx.Class.define( "rwt.widgets.ProgressBar", {
 
     _styleBackgroundFill : function() {
       var GraphicsUtil = rwt.graphics.GraphicsUtil;
-      if(    this.getBackgroundImageSized() != null
-          && this.getBackgroundImageSized()[ 0 ] != null )
-      {
+      if( this.getBackgroundImageSized() != null && this.getBackgroundImageSized()[ 0 ] != null ) {
         var image = this.getBackgroundImageSized();
-        GraphicsUtil.setFillPattern( this._backgroundShape,
-                                image[ 0 ],
-                                image[ 1 ],
-                                image[ 2 ] );
+        GraphicsUtil.setFillPattern( this._backgroundShape, image[ 0 ], image[ 1 ], image[ 2 ] );
       } else if( this.getBackgroundGradient() != null ) {
-        GraphicsUtil.setFillGradient( this._backgroundShape,
-                                 this.getBackgroundGradient() );
+        GraphicsUtil.setFillGradient( this._backgroundShape, this.getBackgroundGradient() );
       } else {
-        GraphicsUtil.setFillColor( this._backgroundShape,
-                              this.getBackgroundColor() );
+        GraphicsUtil.setFillColor( this._backgroundShape, this.getBackgroundColor() );
       }
     },
 
@@ -397,18 +384,18 @@ rwt.qx.Class.define( "rwt.widgets.ProgressBar", {
       if( this._useBorderShape ) {
         radii = this.getBorder().getRadii();
         GraphicsUtil.setRoundRectLayout( this._borderShape,
-                                    this._gfxBorderWidth / 2,
-                                    this._gfxBorderWidth / 2,
-                                    width - this._gfxBorderWidth,
-                                    height - this._gfxBorderWidth,
-                                    radii );
+                                         this._gfxBorderWidth / 2,
+                                         this._gfxBorderWidth / 2,
+                                         width - this._gfxBorderWidth,
+                                         height - this._gfxBorderWidth,
+                                         radii );
       }
       GraphicsUtil.setRoundRectLayout( this._backgroundShape,
-                                  this._gfxBorderWidth / 2,
-                                  this._gfxBorderWidth / 2,
-                                  width - this._gfxBorderWidth,
-                                  height - this._gfxBorderWidth,
-                                  radii );
+                                       this._gfxBorderWidth / 2,
+                                       this._gfxBorderWidth / 2,
+                                       width - this._gfxBorderWidth,
+                                       height - this._gfxBorderWidth,
+                                       radii );
     },
 
     _renderIndicatorSelection : function() {
@@ -578,7 +565,7 @@ rwt.qx.Class.define( "rwt.widgets.ProgressBar", {
           position = -length;
         }
       } else if( position >= fullLength ) {
-          position = -length;
+        position = -length;
       }
       this._indicatorVirtualPosition = position;
       return position;
