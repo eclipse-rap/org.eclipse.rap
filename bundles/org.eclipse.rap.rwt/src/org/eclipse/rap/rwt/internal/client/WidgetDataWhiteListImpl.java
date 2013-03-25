@@ -10,17 +10,18 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
-import org.eclipse.rap.rwt.client.service.ClientService;
 
 
-/**
- * The WidgetDataWhiteList service allows to specify which widget data (by their keys) to be
- * rendered to the client.
- */
-public interface WidgetDataWhiteList extends ClientService {
+public class WidgetDataWhiteListImpl implements WidgetDataWhiteList {
 
-  String[] getKeys();
+  private String[] keys = null;
 
-  void setKeys( String[] keys );
+  public String[] getKeys() {
+    return keys != null ? keys.clone() : null;
+  }
+
+  public void setKeys( String[] keys ) {
+    this.keys = keys;
+  }
 
 }

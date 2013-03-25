@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,8 @@ import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
 import org.eclipse.rap.rwt.internal.client.UrlLauncherImpl;
+import org.eclipse.rap.rwt.internal.client.WidgetDataWhiteList;
+import org.eclipse.rap.rwt.internal.client.WidgetDataWhiteListImpl;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoader;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoaderImpl;
 import org.eclipse.rap.rwt.service.ResourceLoader;
@@ -135,6 +137,8 @@ public class WebClient implements Client {
       result = ( T )getServiceImpl( ExitConfirmationImpl.class );
     } else if( type == ConnectionMessages.class ) {
       result = ( T )getServiceImpl( ConnectionMessagesImpl.class );
+    } else if( type == WidgetDataWhiteList.class ) {
+      result = ( T )getServiceImpl( WidgetDataWhiteListImpl.class );
     } else if( type == ClientInfo.class ) {
       result = ( T )getServiceImpl( ClientInfoImpl.class );
     }

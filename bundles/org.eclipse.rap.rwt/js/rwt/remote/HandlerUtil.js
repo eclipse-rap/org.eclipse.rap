@@ -13,6 +13,8 @@ namespace( "rwt.remote" );
 
 rwt.remote.HandlerUtil = {
 
+  SERVER_DATA : "org.eclipse.swt.widgets.Widget#data",
+
   _controlDestructor : function( widget ) {
     rwt.remote.HandlerUtil._widgetDestructor( widget );
   },
@@ -46,10 +48,15 @@ rwt.remote.HandlerUtil = {
     "font",
     "menu",
     "activeKeys",
-    "cancelKeys"
+    "cancelKeys",
+    "data"
   ],
 
   _controlPropertyHandler : {
+    "data" : function( target, value ) {
+      var map = rwt.remote.HandlerUtil.getServerData( target );
+      rwt.util.Objects.mergeWith( map, value );
+    },
     "children" : function( widget, value ) {
       if( value !== null ) {
         var childrenCount = value.length;
@@ -441,6 +448,15 @@ rwt.remote.HandlerUtil = {
     var result = [];
     for( var key in list ) {
       result.push( list[ key ] );
+    }
+    return result;
+  },
+
+  getServerData : function( target ) {
+    var result = target.getUserData( rwt.remote.HandlerUtil.SERVER_DATA );
+    if( result == null ) {
+      result = {};
+      target.setUserData( rwt.remote.HandlerUtil.SERVER_DATA, result );
     }
     return result;
   }

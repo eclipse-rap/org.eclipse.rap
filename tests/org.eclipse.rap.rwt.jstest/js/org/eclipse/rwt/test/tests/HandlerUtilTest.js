@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -169,6 +169,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
       assertTrue( child.isDisposed() );
       assertEquals( [], rwt.remote.HandlerUtil.getDestroyableChildren( parent ) );
       parent.destroy();
+    },
+
+    testDataHandler : function() {
+      var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "data" );
+      var widget = new rwt.widgets.Composite();
+
+      handler( widget, { "foo" : "bar", "one" : "two" } );
+
+      var map = rwt.remote.HandlerUtil.getServerData( widget );
+      assertEquals( "bar", map.foo );
+      assertEquals( "two", map.one );
+      widget.destroy();
     }
 
   }
