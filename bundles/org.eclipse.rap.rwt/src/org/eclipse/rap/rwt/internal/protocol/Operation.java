@@ -14,8 +14,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.rap.rwt.internal.theme.JsonArray;
-import org.eclipse.rap.rwt.internal.theme.JsonValue;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonUtil;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 
 
 final class Operation {
@@ -69,17 +70,17 @@ final class Operation {
 
   JsonValue toJson() {
     JsonArray json = new JsonArray();
-    json.append( action );
-    json.append( target );
+    json.add( action );
+    json.add( target );
     if( !details.isEmpty() ) {
       Set<String> keySet = details.keySet();
       for( String key : keySet ) {
-        json.append( JsonUtil.createJsonValue( details.get( key ) ) );
+        json.add( JsonUtil.createJsonValue( details.get( key ) ) );
       }
     }
     if( !properties.isEmpty() ) {
       JsonValue jsonObject = JsonUtil.createJsonObject( properties );
-      json.append( jsonObject );
+      json.add( jsonObject );
     }
     return json;
   }

@@ -22,9 +22,10 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.OPERATIONS
 
 import java.util.Map;
 
-import org.eclipse.rap.rwt.internal.theme.JsonArray;
-import org.eclipse.rap.rwt.internal.theme.JsonObject;
-import org.eclipse.rap.rwt.internal.theme.JsonValue;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonUtil;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 
 
 public class ProtocolMessageWriter {
@@ -53,7 +54,7 @@ public class ProtocolMessageWriter {
 
   public void appendHead( String property, JsonValue value ) {
     ensureMessagePending();
-    head.append( property, value );
+    head.add( property, value );
   }
 
   public void appendCreate( String target, String type ) {
@@ -124,9 +125,9 @@ public class ProtocolMessageWriter {
 
   private JsonObject createMessageObject() {
     JsonObject message = new JsonObject();
-    message.append( HEAD, head );
+    message.add( HEAD, head );
     appendPendingOperation();
-    message.append( OPERATIONS, operations );
+    message.add( OPERATIONS, operations );
     return message;
   }
 
@@ -145,7 +146,7 @@ public class ProtocolMessageWriter {
 
   private void appendPendingOperation() {
     if( pendingOperation != null ) {
-      operations.append( pendingOperation.toJson() );
+      operations.add( pendingOperation.toJson() );
     }
   }
 

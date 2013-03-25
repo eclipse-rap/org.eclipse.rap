@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonUtil;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
 
@@ -34,8 +38,8 @@ public final class ThemeStoreWriter {
     QxType[] allValues = theme.getValuesMap().getAllValues();
     Map valuesMap = createValuesMap( allValues );
     JsonObject json = new JsonObject();
-    json.append( "values", createJsonFromValuesMap( valuesMap ) );
-    json.append( "theme", createThemeJson() );
+    json.add( "values", createJsonFromValuesMap( valuesMap ) );
+    json.add( "theme", createThemeJson() );
     return json.toString();
   }
 
@@ -46,7 +50,7 @@ public final class ThemeStoreWriter {
       IThemeCssElement element = allThemeableWidgetElements[ i ];
       String elementName = element.getName();
       JsonObject elementObj = createThemeJsonForElement( valuesMap, element );
-      result.append( elementName, elementObj );
+      result.add( elementName, elementObj );
     }
     return result;
   }
@@ -65,14 +69,14 @@ public final class ThemeStoreWriter {
       for( int j = 0; j < values.length; j++ ) {
         ConditionalValue conditionalValue = values[ j ];
         JsonArray array = new JsonArray();
-        array.append( JsonArray.valueOf( conditionalValue.constraints ) );
+        array.add( JsonUtil.createJsonArray( conditionalValue.constraints ) );
         QxType value = conditionalValue.value;
         ThemePropertyAdapter adapter = registry.getPropertyAdapter( value.getClass() );
         String cssKey = adapter.getKey( value );
-        array.append( cssKey );
-        valuesArray.append( array );
+        array.add( cssKey );
+        valuesArray.add( array );
       }
-      result.append( propertyName, valuesArray );
+      result.add( propertyName, valuesArray );
     }
     return result;
   }
@@ -95,7 +99,7 @@ public final class ThemeStoreWriter {
         JsonValue value = adapter.getValue( propertyValue );
         if( value != null ) {
           JsonObject slotObject = getSlot( valuesMap, slot );
-          slotObject.append( key, value );
+          slotObject.add( key, value );
         }
       }
     }
@@ -109,7 +113,7 @@ public final class ThemeStoreWriter {
       Entry entry = ( Entry )keyIterator.next();
       String key = ( String )entry.getKey();
       JsonValue value = ( JsonValue )entry.getValue();
-      result.append( key, value );
+      result.add( key, value );
     }
     return result;
   }

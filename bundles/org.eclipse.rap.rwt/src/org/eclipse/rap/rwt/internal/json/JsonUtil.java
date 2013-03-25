@@ -8,52 +8,19 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.protocol;
+package org.eclipse.rap.rwt.internal.json;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.internal.theme.JsonArray;
-import org.eclipse.rap.rwt.internal.theme.JsonObject;
-import org.eclipse.rap.rwt.internal.theme.JsonValue;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
-final class JsonUtil {
+public final class JsonUtil {
 
-  static JsonValue createJsonObject( Map properties ) {
-    JsonValue result;
-    if( properties != null ) {
-      JsonObject object = new JsonObject();
-      Object[] keys = properties.keySet().toArray();
-      for( int i = 0; i < keys.length; i++ ) {
-        String key = ( String )keys[ i ];
-        object.append( key, createJsonValue( properties.get( key ) ) );
-      }
-      result = object;
-    } else {
-      result = JsonValue.NULL;
-    }
-    return result;
-  }
-
-  static JsonValue createJsonArray( Object[] values ) {
-    JsonValue result;
-    if( values != null ) {
-      JsonArray array = new JsonArray();
-      for( int i = 0; i < values.length; i++ ) {
-        array.append( createJsonValue( values[ i ] ) );
-      }
-      result = array;
-    } else {
-      result = JsonValue.NULL;
-    }
-    return result;
-  }
-
-  static JsonValue createJsonValue( Object value ) {
+  public static JsonValue createJsonValue( Object value ) {
     JsonValue result;
     if( value == null ) {
       result = JsonValue.NULL;
@@ -74,9 +41,9 @@ final class JsonUtil {
     } else if( value instanceof Boolean ) {
       result = JsonObject.valueOf( ( ( Boolean )value ).booleanValue() );
     } else if( value instanceof int[] ) {
-      result = JsonArray.valueOf( ( int[] )value );
+      result = createJsonArray( ( int[] )value );
     } else if( value instanceof boolean[] ) {
-      result = JsonArray.valueOf( ( boolean[] )value );
+      result = createJsonArray( ( boolean[] )value );
     } else if( value instanceof Object[] ) {
       result = createJsonArray( ( Object[] )value );
     } else if( value instanceof Map ) {
@@ -86,6 +53,92 @@ final class JsonUtil {
     } else {
       String message = "Parameter object can not be converted to JSON value: " + value;
       throw new IllegalArgumentException( message );
+    }
+    return result;
+  }
+
+  public static JsonValue createJsonObject( Map properties ) {
+    JsonValue result;
+    if( properties != null ) {
+      JsonObject object = new JsonObject();
+      Object[] keys = properties.keySet().toArray();
+      for( int i = 0; i < keys.length; i++ ) {
+        String key = ( String )keys[ i ];
+        object.add( key, createJsonValue( properties.get( key ) ) );
+      }
+      result = object;
+    } else {
+      result = JsonValue.NULL;
+    }
+    return result;
+  }
+
+  public static JsonValue createJsonArray( int[] values ) {
+    JsonValue result;
+    if( values != null ) {
+      JsonArray array = new JsonArray();
+      for( int i = 0; i < values.length; i++ ) {
+        array.add( values[ i ] );
+      }
+      result = array;
+    } else {
+      result = JsonValue.NULL;
+    }
+    return result;
+  }
+
+  public static JsonValue createJsonArray( float[] values ) {
+    JsonValue result;
+    if( values != null ) {
+      JsonArray array = new JsonArray();
+      for( int i = 0; i < values.length; i++ ) {
+        array.add( values[ i ] );
+      }
+      result = array;
+    } else {
+      result = JsonValue.NULL;
+    }
+    return result;
+  }
+
+  public static JsonValue createJsonArray( boolean[] values ) {
+    JsonValue result;
+    if( values != null ) {
+      JsonArray array = new JsonArray();
+      for( int i = 0; i < values.length; i++ ) {
+        array.add( values[ i ] );
+      }
+      result = array;
+    } else {
+      result = JsonValue.NULL;
+    }
+    return result;
+  }
+
+  public static JsonValue createJsonArray( String[] values ) {
+    JsonValue result;
+    if( values != null ) {
+      JsonArray array = new JsonArray();
+      for( int i = 0; i < values.length; i++ ) {
+        array.add( values[ i ] );
+      }
+      result = array;
+    } else {
+      result = JsonValue.NULL;
+    }
+    return result;
+  }
+
+  public static JsonValue createJsonArray( Object[] values ) {
+    JsonValue result;
+    if( values != null ) {
+      JsonArray array = new JsonArray();
+      for( int i = 0; i < values.length; i++ ) {
+        array.add( createJsonValue( values[ i ] ) );
+      }
+      result = array;
+    } else {
+      result = JsonValue.NULL;
     }
     return result;
   }
