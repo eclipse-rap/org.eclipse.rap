@@ -87,7 +87,7 @@ rap = {
     if( entry && entry.handler.isPublic ) {
       result = entry.object;
     } else {
-      result = getWrapperFor( entry.object );
+      result = this._.getWrapperFor( entry.object );
     }
     return result;
   },
@@ -134,6 +134,7 @@ rap = {
    },
 
    _ : {
+    wrapperMap : {},
     events : {
       /**
        * @event
@@ -153,28 +154,32 @@ rap = {
       for( var i = 0; i < listener.length; i++ ) {
         listener[ i ]();
       }
+    },
+    getWrapperFor : function( obj ) {
+      var result = null;
+      if( obj instanceof Object ) {
+        var hash = rwt.qx.Object.toHashCode( obj );
+        if( this.wrapperMap[ hash ] == null ) {
+          if( obj instanceof rwt.widgets.Composite ) {
+            result = new CompositeWrapper( obj );
+          } else {
+            result = {};
+          }
+          this.wrapperMap[ hash ] = result;
+        }
+        result = this.wrapperMap[ hash ];
+      }
+      return result;
+    },
+    removeWrapper : function( obj ) {
+      if( obj instanceof Object ) {
+        var hash = rwt.qx.Object.toHashCode( obj );
+        delete this.wrapperMap[ hash ];
+      }
     }
   }
 
 };
-
-var wrapperMap = {};
-
-function getWrapperFor( obj ) {
-  var result = null;
-  if( obj instanceof Object ) {
-    var hash = rwt.qx.Object.toHashCode( obj );
-    if( wrapperMap[ hash ] == null ) {
-      if( obj instanceof rwt.widgets.Composite ) {
-        wrapperMap[ hash ] = new CompositeWrapper( obj );
-      } else {
-        wrapperMap[ hash ] = {};
-      }
-    }
-    result = wrapperMap[ hash ];
-  }
-  return result;
-}
 
 // TODO [tb] : propper class/namespace for this event? (Control? SWT? RWT? rap? rwt.widget?)
 /**

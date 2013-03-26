@@ -70,6 +70,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
       assertTrue( resultOne === resultTwo );
     },
 
+    testDisposeWrapperObjectWithOriginal : function() {
+      var wrapper = rap.getObject( "w2" );
+      var hash = shell.toHashCode();
+      assertIdentical( wrapper, rap._.wrapperMap[ hash ] );
+
+      MessageProcessor.processOperationArray( [ "destroy", "w2"] );
+      shell = null;
+
+      assertEquals( undefined, rap._.wrapperMap[ hash ] );
+    },
+
     testCompositeWrapperAppend : function() {
       MessageProcessor.processOperationArray( [ "create", "w3", "rwt.widgets.Composite", {
           "style" : [ "BORDER" ],
@@ -346,8 +357,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
     },
 
     tearDown : function() {
-      MessageProcessor.processOperationArray( [ "destroy", "w2"] );
-      shell = null;
+      if( shell != null ) {
+        MessageProcessor.processOperationArray( [ "destroy", "w2"] );
+        shell = null;
+      }
     }
 
 

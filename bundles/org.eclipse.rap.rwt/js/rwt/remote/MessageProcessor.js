@@ -99,6 +99,7 @@ rwt.remote.MessageProcessor = {
     var objectEntry = rwt.remote.ObjectRegistry.getEntry( targetId );
     var handler = objectEntry.handler;
     var targetObject = objectEntry.object;
+    rap._.removeWrapper( targetObject );
     var children =   handler.getDestroyableChildren
                    ? handler.getDestroyableChildren( targetObject )
                    : null;
