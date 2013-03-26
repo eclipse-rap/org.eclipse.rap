@@ -105,6 +105,5 @@ Export-Package: org.eclipse.rap.rwt;version="2.0.0",
  org.eclipse.swt.internal.widgets.treekit;x-internal:=true,
  org.eclipse.swt.layout,
  org.eclipse.swt.widgets,
- org.json;version="1.0.0";x-friends:="org.eclipse.rap.rwt.test",
  org.w3c.css.sac;version="1.1.0";x-internal:=true
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

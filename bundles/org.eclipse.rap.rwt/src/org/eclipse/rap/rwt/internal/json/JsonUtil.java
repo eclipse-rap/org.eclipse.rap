@@ -11,11 +11,8 @@
 package org.eclipse.rap.rwt.internal.json;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public final class JsonUtil {
@@ -143,37 +140,51 @@ public final class JsonUtil {
     return result;
   }
 
-  public static Object[] jsonToJava( JSONArray object ) {
-    Object[] result = new Object[ object.length() ];
+  public static Object jsonToJava( JsonValue object ) {
+    Object result = null;
+    if( object != null ) {
+      if( object.isNull() ) {
+        result = object;
+      } else if( object.isBoolean() ) {
+        result = Boolean.valueOf( object.asBoolean() );
+      } else if( object.isString() ) {
+        result = object.asString();
+      } else if( object.isNumber() ) {
+        try {
+          result = Integer.valueOf( object.asInt() );
+        } catch( NumberFormatException e ) {
+          result = Double.valueOf( object.asDouble() );
+        }
+      } else if( object instanceof JsonArray ) {
+        result = jsonToJava( ( JsonArray )object );
+      } else if( object instanceof JsonObject ) {
+        result = jsonToJava( ( JsonObject )object );
+      }
+    }
+    return result;
+  }
+
+  private static Object[] jsonToJava( JsonArray object ) {
+    Object[] result = new Object[ object.size() ];
     try {
       for( int i = 0; i < result.length; i++ ) {
         result[ i ] = jsonToJava( object.get( i ) );
       }
-    } catch( JSONException e ) {
-      // do nothing - keep result as json string
+    } catch( Exception e ) {
+      throw new RuntimeException( "Unable to convert JsonArray to Java: " + object );
     }
     return result;
   }
 
-  public static Object jsonToJava( JSONObject object ) {
+  private static Map<String,Object> jsonToJava( JsonObject object ) {
     Map<String,Object> result = new HashMap<String, Object>();
-    String[] propertiyNames = JSONObject.getNames( object );
-    for( int i = 0; i < propertiyNames.length; i++ ) {
+    List<String> names = object.names();
+    for( String name : names ) {
       try {
-        result.put( propertiyNames[ i ], jsonToJava( object.get( propertiyNames[ i ] ) ) );
-      } catch( JSONException e ) {
-        throw new RuntimeException( "Unable to convert JSONObject to Java: " + object );
+        result.put( name, jsonToJava( object.get( name ) ) );
+      } catch( Exception e ) {
+        throw new RuntimeException( "Unable to convert JsonObject to Java: " + object );
       }
-    }
-    return result;
-  }
-
-  private static Object jsonToJava( Object object ) {
-    Object result = object;
-    if( object instanceof JSONArray ) {
-      result = jsonToJava( ( JSONArray )object );
-    } else if( object instanceof JSONObject ) {
-      result = jsonToJava( ( JSONObject )object );
     }
     return result;
   }

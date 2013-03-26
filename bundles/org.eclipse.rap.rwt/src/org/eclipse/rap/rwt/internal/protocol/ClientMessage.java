@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,16 +12,14 @@ package org.eclipse.rap.rwt.internal.protocol;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.json.JsonUtil;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public class ClientMessage {
@@ -32,34 +30,34 @@ public class ClientMessage {
   public static final String OPERATION_NOTIFY = "notify";
   public static final String OPERATION_CALL = "call";
 
-  private final JSONObject message;
-  private final JSONObject head;
+  private final JsonObject message;
+  private final JsonObject head;
   private final HashMap<String,List<Operation>> operationsMap;
   private final List<Operation> operationsList;
 
   public ClientMessage( String json ) {
     ParamCheck.notNull( json, "json" );
     try {
-      message = new JSONObject( json );
-    } catch( JSONException e ) {
+      message = JsonObject.readFrom( json );
+    } catch( Exception e ) {
       throw new IllegalArgumentException( "Could not parse json message: " + json );
     }
     try {
-      head = message.getJSONObject( PROP_HEAD );
-    } catch( JSONException exception ) {
+      head = message.get( PROP_HEAD ).asObject();
+    } catch( Exception exception ) {
       throw new IllegalArgumentException( "Missing header object: " + json );
     }
-    JSONArray operations;
+    JsonArray operations;
     try {
-      operations = message.getJSONArray( PROP_OPERATIONS );
-    } catch( JSONException exception ) {
+      operations = message.get( PROP_OPERATIONS ).asArray();
+    } catch( Exception exception ) {
       throw new IllegalArgumentException( "Missing operations array: " + json );
     }
     try {
       operationsMap = new HashMap<String,List<Operation>>();
       operationsList = new ArrayList<Operation>();
       processOperations( operations );
-    } catch( JSONException exception ) {
+    } catch( UnsupportedOperationException exception ) {
       throw new IllegalArgumentException( "Invalid operations array: " + json );
     }
   }
@@ -115,31 +113,26 @@ public class ClientMessage {
 
   public Object getHeadProperty( String key ) {
     Object result = null;
-    try {
-      result = head.get( key );
-    } catch( JSONException exception ) {
-      // do nothing
+    JsonValue value = head.get( key );
+    if( value != null ) {
+      result = JsonUtil.jsonToJava( value );
     }
     return result;
   }
 
   @Override
   public String toString() {
-    try {
-      return message.toString( 2 );
-    } catch( JSONException e ) {
-      throw new RuntimeException( "Formatting failed" );
-    }
+    return message.toString();
   }
 
-  private void processOperations( JSONArray operations ) throws JSONException {
-    for( int i = 0; i < operations.length(); i++ ) {
-      Operation operation = createOperation( operations.getJSONArray( i ) );
+  private void processOperations( JsonArray operations ) {
+    for( int i = 0; i < operations.size(); i++ ) {
+      Operation operation = createOperation( operations.get( i ).asArray() );
       appendOperation( operation );
     }
   }
 
-  private Operation createOperation( JSONArray data ) {
+  private Operation createOperation( JsonArray data ) {
     Operation result = null;
     String action = getOperationAction( data );
     if( action.equals( OPERATION_SET ) ) {
@@ -165,11 +158,11 @@ public class ClientMessage {
     operationsList.add( operation );
   }
 
-  private String getOperationAction( JSONArray operation ) {
+  private String getOperationAction( JsonArray operation ) {
     String result;
     try {
-      result = operation.getString( 0 );
-    } catch( JSONException e ) {
+      result = operation.get( 0 ).asString();
+    } catch( Exception e ) {
       throw new IllegalArgumentException( "Could not find action for operation " + operation );
     }
     return result;
@@ -194,10 +187,10 @@ public class ClientMessage {
 
     private final String target;
 
-    private Operation( JSONArray operation ) {
+    private Operation( JsonArray operation ) {
       try {
-        target = operation.getString( 1 );
-      } catch( JSONException e ) {
+        target = operation.get( 1 ).asString();
+      } catch( Exception e ) {
         throw new IllegalArgumentException( "Invalid operation target", e );
       }
     }
@@ -206,50 +199,43 @@ public class ClientMessage {
       return target;
     }
 
-    @SuppressWarnings( "unchecked" )
     public List<String> getPropertyNames() {
-      JSONObject properties = getProperties();
-      String[] names = JSONObject.getNames( properties );
-      return names == null ? Collections.EMPTY_LIST : Arrays.asList( names );
+      return getProperties().names();
     }
 
     public Object getProperty( String key ) {
       Object result = null;
-      JSONObject properties = getProperties();
+      JsonObject properties = getProperties();
       try {
-        Object value = properties.get( key );
-        if( value instanceof JSONObject ) {
-          result = JsonUtil.jsonToJava( ( JSONObject )value );
-        } else if( value instanceof JSONArray ) {
-          result = JsonUtil.jsonToJava( ( JSONArray )value );
-        } else {
-          result = value;
+        JsonValue value = properties.get( key );
+        if( value != null ) {
+          result = JsonUtil.jsonToJava( value );
         }
-      } catch( JSONException exception ) {
+      } catch( Exception exception ) {
         // do nothing
       }
       return result;
     }
 
-    abstract protected JSONObject getProperties();
+    abstract protected JsonObject getProperties();
 
   }
 
   public final class SetOperation extends Operation {
 
-    private final JSONObject properties;
+    private final JsonObject properties;
 
-    private SetOperation( JSONArray operation ) {
+    private SetOperation( JsonArray operation ) {
       super( operation );
       try {
-        properties = operation.getJSONObject( 2 );
-      } catch( JSONException e ) {
+        properties = operation.get( 2 ).asObject();
+      } catch( Exception e ) {
         throw new IllegalArgumentException( "Properties object missing in operation", e );
       }
     }
 
     @Override
-    protected JSONObject getProperties() {
+    protected JsonObject getProperties() {
       return properties;
     }
 
@@ -258,18 +244,18 @@ public class ClientMessage {
   public final class NotifyOperation extends Operation {
 
     private final String eventName;
-    private final JSONObject properties;
+    private final JsonObject properties;
 
-    private NotifyOperation( JSONArray operation ) {
+    private NotifyOperation( JsonArray operation ) {
       super( operation );
       try {
-        eventName = operation.getString( 2 );
-      } catch( JSONException e ) {
+        eventName = operation.get( 2 ).asString();
+      } catch( Exception e ) {
         throw new IllegalArgumentException( "Event type missing in operation", e );
       }
       try {
-        properties = operation.getJSONObject( 3 );
-      } catch( JSONException e ) {
+        properties = operation.get( 3 ).asObject();
+      } catch( Exception e ) {
         throw new IllegalArgumentException( "Properties object missing in operation", e );
       }
     }
@@ -279,7 +265,7 @@ public class ClientMessage {
     }
 
     @Override
-    protected JSONObject getProperties() {
+    protected JsonObject getProperties() {
       return properties;
     }
 
@@ -288,18 +274,18 @@ public class ClientMessage {
   public final class CallOperation extends Operation {
 
     private final String methodName;
-    private final JSONObject properties;
+    private final JsonObject properties;
 
-    private CallOperation( JSONArray operation ) {
+    private CallOperation( JsonArray operation ) {
       super( operation );
       try {
-        methodName = operation.getString( 2 );
-      } catch( JSONException e ) {
+        methodName = operation.get( 2 ).asString();
+      } catch( Exception e ) {
         throw new IllegalArgumentException( "Method name missing in operation", e );
       }
       try {
-        properties = operation.getJSONObject( 3 );
-      } catch( JSONException e ) {
+        properties = operation.get( 3 ).asObject();
+      } catch( Exception e ) {
         throw new IllegalArgumentException( "Properties object missing in operation", e );
       }
     }
@@ -309,7 +295,7 @@ public class ClientMessage {
     }
 
     @Override
-    protected JSONObject getProperties() {
+    protected JsonObject getProperties() {
       return properties;
     }
 
