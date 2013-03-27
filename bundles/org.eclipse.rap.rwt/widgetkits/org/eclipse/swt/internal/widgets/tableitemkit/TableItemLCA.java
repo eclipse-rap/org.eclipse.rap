@@ -43,6 +43,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.GridItem";
 
+  static final String PROP_INDEX = "index";
   static final String PROP_TEXTS = "texts";
   static final String PROP_IMAGES = "images";
   static final String PROP_BACKGROUND = "background";
@@ -59,6 +60,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     TableItem item = ( TableItem )widget;
     if( isCached( item ) ) {
+      preserveProperty( item, PROP_INDEX, getIndex( item ) );
       preserveProperty( item, PROP_TEXTS, getTexts( item ) );
       preserveProperty( item, PROP_IMAGES, getImages( item ) );
       WidgetLCAUtil.preserveBackground( item, getUserBackground( item ) );
@@ -84,11 +86,9 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   public void renderInitialization( Widget widget ) throws IOException {
     TableItem item = ( TableItem )widget;
     Table parent = item.getParent();
-    int index = parent.indexOf( item );
     IClientObject clientObject = ClientObjectFactory.getClientObject( item );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( parent ) );
-    clientObject.set( "index", index );
   }
 
   @Override
@@ -126,6 +126,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   // RenderChanges helper
 
   private static void renderProperties( TableItem item ) {
+    renderProperty( item, PROP_INDEX, getIndex( item ), -1 );
     renderProperty( item, PROP_TEXTS, getTexts( item ), getDefaultTexts( item ) );
     renderProperty( item, PROP_IMAGES, getImages( item ), new Image[ getColumnCount( item ) ] );
     WidgetLCAUtil.renderBackground( item, getUserBackground( item ) );
@@ -156,6 +157,10 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   //////////////////
   // Helping methods
+
+  private static int getIndex( TableItem item ) {
+    return item.getParent().indexOf( item );
+  }
 
   private static boolean isCached( TableItem item ) {
     Table table = item.getParent();

@@ -282,7 +282,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderCreate() throws IOException {
-    new TreeItem( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
 
     lca.renderInitialization( item );
@@ -290,7 +289,6 @@ public class TreeItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertEquals( "rwt.widgets.GridItem", operation.getType() );
-    assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
   }
 
   @Test
@@ -336,6 +334,56 @@ public class TreeItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertEquals( WidgetUtil.getId( item.getParent() ), operation.getParent() );
+  }
+
+  @Test
+  public void testRenderInitialIndex() throws IOException {
+    new TreeItem( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
+  }
+
+  @Test
+  public void testRenderIndex() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    new TreeItem( tree, SWT.NONE, 0 );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( item, "index" ) );
+  }
+
+  @Test
+  public void testRenderIndexWithParentItem() throws IOException {
+    TreeItem rootItem = new TreeItem( tree, SWT.NONE );
+    new TreeItem( rootItem, SWT.NONE );
+    TreeItem item = new TreeItem( rootItem, SWT.NONE );
+
+    new TreeItem( rootItem, SWT.NONE, 0 );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( item, "index" ) );
+  }
+
+  @Test
+  public void testRenderIndexUnchanged() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    new TreeItem( tree, SWT.NONE, 0 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "index" ) );
   }
 
   @Test

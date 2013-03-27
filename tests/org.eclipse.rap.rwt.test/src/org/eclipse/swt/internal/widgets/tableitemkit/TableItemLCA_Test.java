@@ -296,7 +296,6 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderCreate() throws IOException {
-    new TableItem( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
 
     lca.renderInitialization( item );
@@ -304,7 +303,6 @@ public class TableItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertEquals( "rwt.widgets.GridItem", operation.getType() );
-    assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
   }
 
   @Test
@@ -316,6 +314,43 @@ public class TableItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertEquals( WidgetUtil.getId( item.getParent() ), operation.getParent() );
+  }
+
+  @Test
+  public void testRenderInitialIndex() throws IOException {
+    new TableItem( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
+  }
+
+  @Test
+  public void testRenderIndex() throws IOException {
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    new TableItem( table, SWT.NONE, 0 );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( item, "index" ) );
+  }
+
+  @Test
+  public void testRenderIndexUnchanged() throws IOException {
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    new TableItem( table, SWT.NONE, 0 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "index" ) );
   }
 
   @Test
