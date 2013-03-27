@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolitemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.join;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -20,6 +21,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -35,9 +38,6 @@ import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.CoolItem;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -114,14 +114,14 @@ public class CoolItemLCA_Test {
   }
 
   @Test
-  public void testRenderBounds() throws IOException, JSONException {
+  public void testRenderBounds() throws IOException {
     item.setSize( 10, 20 );
     lca.renderInitialization( item );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    String bounds = ( ( JSONArray )operation.getProperty( "bounds" ) ).join( "," );
+    String bounds = join( ( JsonArray )operation.getProperty( "bounds" ), "," );
     assertEquals( "0,0,0,20", bounds );
   }
 
@@ -155,7 +155,7 @@ public class CoolItemLCA_Test {
   }
 
   @Test
-  public void testRenderData() throws JSONException, IOException {
+  public void testRenderData() throws IOException {
     WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
     item.setData( "foo", "string" );
     item.setData( "bar", Integer.valueOf( 1 ) );
@@ -163,9 +163,9 @@ public class CoolItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONObject data = ( JSONObject )message.findSetProperty( item, "data" );
-    assertEquals( "string", data.getString( "foo" ) );
-    assertEquals( Integer.valueOf( 1 ), Integer.valueOf( data.getInt( "bar" ) ) );
+    JsonObject data = ( JsonObject )message.findSetProperty( item, "data" );
+    assertEquals( "string", data.get( "foo" ).asString() );
+    assertEquals( 1, data.get( "bar" ).asInt() );
   }
 
   @Test

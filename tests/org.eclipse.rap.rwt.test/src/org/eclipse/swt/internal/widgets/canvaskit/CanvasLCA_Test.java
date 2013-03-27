@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.join;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -18,6 +19,7 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.Adaptable;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -42,8 +44,6 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -97,7 +97,7 @@ public class CanvasLCA_Test {
   }
 
   @Test
-  public void testWriqteSingleGCOperation() throws IOException, JSONException {
+  public void testWriqteSingleGCOperation() throws IOException {
     canvas.setSize( 50, 50 );
     canvas.setFont( new Font( display, "Arial", 11, SWT.NORMAL ) );
     Fixture.markInitialized( display );
@@ -111,18 +111,18 @@ public class CanvasLCA_Test {
     CallOperation init = getGCOperation( canvas, "init" );
     assertEquals( new Integer( 50 ), init.getProperty( "width" ) );
     assertEquals( new Integer( 50 ), init.getProperty( "height" ) );
-    JSONArray fontArray = ( JSONArray )init.getProperty( "font" );
-    assertEquals( "Arial", fontArray.getJSONArray( 0 ).getString( 0 ) );
-    assertEquals( 11, fontArray.getInt( 1 ) );
-    assertFalse( fontArray.getBoolean( 2 ) );
-    assertFalse( fontArray.getBoolean( 3 ) );
-    String fillStyle = ( ( JSONArray )init.getProperty( "fillStyle" ) ).join( "," );
-    String strokeStyle = ( ( JSONArray )init.getProperty( "strokeStyle" ) ).join( "," );
+    JsonArray fontArray = ( JsonArray )init.getProperty( "font" );
+    assertEquals( "Arial", fontArray.get( 0 ).asArray().get( 0 ).asString() );
+    assertEquals( 11, fontArray.get( 1 ).asInt() );
+    assertFalse( fontArray.get( 2 ).asBoolean() );
+    assertFalse( fontArray.get( 3 ).asBoolean() );
+    String fillStyle = join( ( JsonArray )init.getProperty( "fillStyle" ), "," );
+    String strokeStyle = join( ( JsonArray )init.getProperty( "strokeStyle" ), "," );
     assertEquals( "255,255,255,255", fillStyle );
     assertEquals( "74,74,74,255", strokeStyle );
     CallOperation draw = getGCOperation( canvas, "draw" );
-    JSONArray operations = ( JSONArray )draw.getProperty( "operations" );
-    assertEquals( 4, operations.length() );
+    JsonArray operations = ( JsonArray )draw.getProperty( "operations" );
+    assertEquals( 4, operations.size() );
   }
 
   @Test
@@ -139,8 +139,8 @@ public class CanvasLCA_Test {
     new CanvasLCA().renderChanges( canvas );
 
     CallOperation draw = getGCOperation( canvas, "draw" );
-    JSONArray operations = ( JSONArray )draw.getProperty( "operations" );
-    assertEquals( 8, operations.length() );
+    JsonArray operations = ( JsonArray )draw.getProperty( "operations" );
+    assertEquals( 8, operations.size() );
   }
 
   // see bug 323080
@@ -185,8 +185,8 @@ public class CanvasLCA_Test {
     new CanvasLCA().renderChanges( canvas );
 
     CallOperation draw = getGCOperation( canvas, "draw" );
-    JSONArray operations = ( JSONArray )draw.getProperty( "operations" );
-    assertEquals( 8, operations.length() );
+    JsonArray operations = ( JsonArray )draw.getProperty( "operations" );
+    assertEquals( 8, operations.size() );
     assertEquals( 0, adapter.getGCOperations().length );
   }
 
@@ -255,8 +255,8 @@ public class CanvasLCA_Test {
     assertEquals( new Integer( 150 ), init.getProperty( "width" ) );
     assertEquals( new Integer( 150 ), init.getProperty( "height" ) );
     CallOperation draw = getGCOperation( canvas, "draw" );
-    JSONArray operations = ( JSONArray )draw.getProperty( "operations" );
-    assertEquals( 8, operations.length() );
+    JsonArray operations = ( JsonArray )draw.getProperty( "operations" );
+    assertEquals( 8, operations.size() );
   }
 
   @Test
@@ -279,8 +279,8 @@ public class CanvasLCA_Test {
     new CanvasLCA().renderChanges( canvas );
 
     CallOperation draw = getGCOperation( canvas, "draw" );
-    JSONArray operations = ( JSONArray )draw.getProperty( "operations" );
-    assertEquals( 8, operations.length() );
+    JsonArray operations = ( JsonArray )draw.getProperty( "operations" );
+    assertEquals( 8, operations.size() );
   }
 
   @Test
@@ -306,7 +306,7 @@ public class CanvasLCA_Test {
   }
 
   @Test
-  public void testRenderClientArea() throws JSONException {
+  public void testRenderClientArea() {
     canvas.setSize( 110, 120 );
 
     lca.renderClientArea( canvas );
@@ -317,7 +317,7 @@ public class CanvasLCA_Test {
   }
 
   @Test
-  public void testRenderClientArea_SizeZero() throws JSONException {
+  public void testRenderClientArea_SizeZero() {
     canvas.setSize( 0, 0 );
 
     lca.renderClientArea( canvas );
@@ -339,13 +339,13 @@ public class CanvasLCA_Test {
     assertNull( message.findSetOperation( canvas, "clientArea" ) );
   }
 
-  private Rectangle toRectangle( Object property ) throws JSONException {
-    JSONArray jsonArray = ( JSONArray )property;
+  private Rectangle toRectangle( Object property ) {
+    JsonArray jsonArray = ( JsonArray )property;
     Rectangle result = new Rectangle(
-      jsonArray.getInt( 0 ),
-      jsonArray.getInt( 1 ),
-      jsonArray.getInt( 2 ),
-      jsonArray.getInt( 3 )
+      jsonArray.get( 0 ).asInt(),
+      jsonArray.get( 1 ).asInt(),
+      jsonArray.get( 2 ).asInt(),
+      jsonArray.get( 3 ).asInt()
     );
     return result;
   }

@@ -19,6 +19,8 @@ import static org.junit.Assert.fail;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -32,9 +34,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,13 +70,13 @@ public class ProtocolMessageWriter_Test {
   }
 
   @Test
-  public void testEmptyMessage() throws JSONException {
+  public void testEmptyMessage() {
     String messageString = writer.createMessage();
-    JSONObject message = new JSONObject( messageString );
-    JSONObject head = message.getJSONObject( "head" );
-    assertEquals( 0, head.length() );
-    JSONArray operations = message.getJSONArray( "operations" );
-    assertEquals( 0, operations.length() );
+    JsonObject message = JsonObject.readFrom( messageString );
+    JsonObject head = message.get( "head" ).asObject();
+    assertEquals( 0, head.size() );
+    JsonArray operations = message.get( "operations" ).asArray();
+    assertEquals( 0, operations.size() );
   }
 
   @Test
@@ -427,15 +426,16 @@ public class ProtocolMessageWriter_Test {
   }
 
   @Test
-  public void testAppendArrayParameter() throws JSONException {
+  public void testAppendArrayParameter() {
     String shellId = WidgetUtil.getId( shell );
     Integer[] arrayParameter = new Integer[] { new Integer( 1 ), new Integer( 2 ) };
 
     writer.appendSet( shellId, "key", arrayParameter );
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
-    assertEquals( 1, ( ( JSONArray )operation.getProperty( "key" ) ).getInt( 0 ) );
-    assertEquals( 2, ( ( JSONArray )operation.getProperty( "key" ) ).getInt( 1 ) );
+    JsonArray property = ( JsonArray )operation.getProperty( "key" );
+    assertEquals( 1, property.get( 0 ).asInt() );
+    assertEquals( 2, property.get( 1 ).asInt() );
   }
 
   @Test
@@ -446,19 +446,22 @@ public class ProtocolMessageWriter_Test {
     writer.appendSet( shellId, "key", emptyArray );
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
-    assertEquals( 0, ( ( JSONArray )operation.getProperty( "key" ) ).length() );
+    JsonArray property = ( JsonArray )operation.getProperty( "key" );
+    assertEquals( 0, property.size() );
   }
 
   @Test
-  public void testAppendMixedArrayParameter() throws JSONException {
+  public void testAppendMixedArrayParameter() {
     String shellId = WidgetUtil.getId( shell );
     Object[] mixedArray = new Object[] { new Integer( 23 ), "Hello" };
 
     writer.appendSet( shellId, "key", mixedArray );
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
-    assertEquals( 2, ( ( JSONArray )operation.getProperty( "key" ) ).length() );
-    assertEquals( "Hello", ( ( JSONArray )operation.getProperty( "key" ) ).get( 1 ) );
+    JsonArray property = ( JsonArray )operation.getProperty( "key" );
+    assertEquals( 2, property.size() );
+    assertEquals( 23, property.get( 0 ).asInt() );
+    assertEquals( "Hello", property.get( 1 ).asString() );
   }
 
   private Message getMessage() {

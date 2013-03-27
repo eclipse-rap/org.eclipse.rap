@@ -10,13 +10,15 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tabitemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -33,9 +35,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -184,7 +183,7 @@ public class TabItemLCA_Test {
   }
 
   @Test
-  public void testRenderImage() throws IOException, JSONException {
+  public void testRenderImage() throws IOException {
     Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
 
     item.setImage( image );
@@ -193,8 +192,8 @@ public class TabItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     String expected = "[\"" + imageLocation + "\", 100, 50 ]";
-    JSONArray actual = ( JSONArray )message.findSetProperty( item, "image" );
-    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( item, "image" );
+    assertTrue( jsonEquals( expected, actual ) );
   }
 
   @Test
@@ -223,7 +222,7 @@ public class TabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( item, "image" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( item, "image" ) );
   }
 
   @Test
@@ -306,7 +305,7 @@ public class TabItemLCA_Test {
   }
 
   @Test
-  public void testRenderData() throws JSONException, IOException {
+  public void testRenderData() throws IOException {
     WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
     item.setData( "foo", "string" );
     item.setData( "bar", Integer.valueOf( 1 ) );
@@ -314,9 +313,9 @@ public class TabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONObject data = ( JSONObject )message.findSetProperty( item, "data" );
-    assertEquals( "string", data.getString( "foo" ) );
-    assertEquals( Integer.valueOf( 1 ), Integer.valueOf( data.getInt( "bar" ) ) );
+    JsonObject data = ( JsonObject )message.findSetProperty( item, "data" );
+    assertEquals( "string", data.get( "foo" ).asString() );
+    assertEquals( 1, data.get( "bar" ).asInt() );
   }
 
   @Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.textkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -30,8 +31,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -56,9 +58,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -554,19 +553,19 @@ public class TextLCA_Test {
   }
 
   @Test
-  public void testRenderSelection() throws IOException, JSONException {
+  public void testRenderSelection() throws IOException {
     text.setText( "foo bar" );
 
     text.setSelection( 1, 3 );
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( text, "selection" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 3 ]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( text, "selection" );
+    assertTrue( jsonEquals( "[ 1, 3 ]", actual ) );
   }
 
   @Test
-  public void testRenderSelectionAfterTextChange() throws IOException, JSONException {
+  public void testRenderSelectionAfterTextChange() throws IOException {
     // See bug 376957
     text.setText( "foo bar" );
     text.selectAll();
@@ -579,8 +578,8 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( text, "selection" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ 0, 7 ]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( text, "selection" );
+    assertTrue( jsonEquals( "[ 0, 7 ]", actual ) );
   }
 
   @Test
@@ -638,7 +637,7 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( text, "textLimit" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( text, "textLimit" ) );
   }
 
   @Test
@@ -652,7 +651,7 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( text, "textLimit" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( text, "textLimit" ) );
   }
 
   @Test

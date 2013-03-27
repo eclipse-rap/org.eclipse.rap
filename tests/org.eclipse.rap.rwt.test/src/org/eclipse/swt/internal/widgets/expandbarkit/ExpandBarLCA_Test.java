@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -42,8 +43,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -176,23 +175,23 @@ public class ExpandBarLCA_Test {
   }
 
   @Test
-  public void testRenderInitialBottomSpacingBounds() throws IOException, JSONException {
+  public void testRenderInitialBottomSpacingBounds() throws IOException {
     lca.render( expandBar );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray bounds = ( JSONArray )message.findCreateProperty( expandBar, "bottomSpacingBounds" );
-    assertTrue( bounds.getInt( 2 ) > 0 );
-    assertTrue( bounds.getInt( 3 ) > 0 );
+    JsonArray bounds = ( JsonArray )message.findCreateProperty( expandBar, "bottomSpacingBounds" );
+    assertTrue( bounds.get( 2 ).asInt() > 0 );
+    assertTrue( bounds.get( 3 ).asInt() > 0 );
   }
 
   @Test
-  public void testRenderBottomSpacingBounds() throws IOException, JSONException {
+  public void testRenderBottomSpacingBounds() throws IOException {
     lca.renderChanges( expandBar );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray bounds = ( JSONArray )message.findSetProperty( expandBar, "bottomSpacingBounds" );
-    assertTrue( bounds.getInt( 2 ) > 0 );
-    assertTrue( bounds.getInt( 3 ) > 0 );
+    JsonArray bounds = ( JsonArray )message.findSetProperty( expandBar, "bottomSpacingBounds" );
+    assertTrue( bounds.get( 2 ).asInt() > 0 );
+    assertTrue( bounds.get( 3 ).asInt() > 0 );
   }
 
   @Test

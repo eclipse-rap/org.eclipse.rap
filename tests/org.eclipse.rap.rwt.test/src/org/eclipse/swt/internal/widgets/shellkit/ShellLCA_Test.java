@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.shellkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_ACTIVATE;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
@@ -28,8 +29,9 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -61,8 +63,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -456,7 +456,7 @@ public class ShellLCA_Test {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( shell, "mode" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( shell, "mode" ) );
   }
 
   @Test
@@ -520,7 +520,7 @@ public class ShellLCA_Test {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( shell, "defaultButton" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( shell, "defaultButton" ) );
   }
 
   @Test
@@ -539,7 +539,7 @@ public class ShellLCA_Test {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( shell, "defaultButton" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( shell, "defaultButton" ) );
   }
 
   @Test
@@ -595,7 +595,7 @@ public class ShellLCA_Test {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( shell, "activeControl" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( shell, "activeControl" ) );
   }
 
   @Test
@@ -740,8 +740,8 @@ public class ShellLCA_Test {
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( shell.getImage() );
     String expected = "[\"" + imageLocation + "\", 58, 12 ]";
-    JSONArray actual = ( JSONArray )message.findSetProperty( shell, "image" );
-    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( shell, "image" );
+    assertTrue( jsonEquals( expected, actual ) );
   }
 
   @Test
@@ -773,8 +773,8 @@ public class ShellLCA_Test {
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( shell.getImage() );
     String expected = "[\"" + imageLocation + "\", 58, 12 ]";
-    JSONArray actual = ( JSONArray )message.findSetProperty( shell, "image" );
-    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( shell, "image" );
+    assertTrue( jsonEquals( expected, actual ) );
   }
 
   @Test
@@ -791,8 +791,8 @@ public class ShellLCA_Test {
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( shell.getImages()[ 0 ] );
     String expected = "[\"" + imageLocation + "\", 58, 12 ]";
-    JSONArray actual = ( JSONArray )message.findSetProperty( shell, "image" );
-    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( shell, "image" );
+    assertTrue( jsonEquals( expected, actual ) );
   }
 
   @Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,13 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -95,13 +94,9 @@ public class JavaScriptLoaderImpl_Test {
 
   private static List<String> getFiles( Operation operation ) {
     List<String> result = new ArrayList<String>();
-    JSONArray files = ( JSONArray )operation.getProperty( "files" );
-    for( int i = 0; i < files.length(); i++ ) {
-      try {
-        result.add( files.getString( i ) );
-      } catch( JSONException e ) {
-        throw new RuntimeException( e );
-      }
+    JsonArray files = ( JsonArray )operation.getProperty( "files" );
+    for( int i = 0; i < files.size(); i++ ) {
+      result.add( files.get( i ).asString() );
     }
     return result;
   }

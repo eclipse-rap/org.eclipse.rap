@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
@@ -22,7 +23,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -43,9 +45,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -388,7 +387,7 @@ public class TreeItemLCA_Test {
   }
 
   @Test
-  public void testRenderTexts() throws IOException, JSONException {
+  public void testRenderTexts() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -397,8 +396,8 @@ public class TreeItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( item, "texts" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[\"item 0.0\",\"item 0.1\"]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( item, "texts" );
+    assertTrue( jsonEquals( "[\"item 0.0\",\"item 0.1\"]", actual ) );
   }
 
   @Test
@@ -431,7 +430,7 @@ public class TreeItemLCA_Test {
   }
 
   @Test
-  public void testRenderImages() throws IOException, JSONException {
+  public void testRenderImages() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -441,10 +440,10 @@ public class TreeItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( item, "images" );
+    JsonArray actual = ( JsonArray )message.findSetProperty( item, "images" );
     String expected = "[\"rwt-resources/generated/90fb0bfe.gif\",58,12]";
-    assertEquals( JSONObject.NULL, actual.get( 0 ) );
-    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual.getJSONArray( 1 ) ) );
+    assertEquals( JsonObject.NULL, actual.get( 0 ) );
+    assertTrue( jsonEquals( expected, actual.get( 1 ).asArray() ) );
   }
 
   @Test
@@ -476,15 +475,15 @@ public class TreeItemLCA_Test {
   }
 
   @Test
-  public void testRenderBackground() throws IOException, JSONException {
+  public void testRenderBackground() throws IOException {
     TreeItem item = new TreeItem( tree, SWT.NONE );
 
     item.setBackground( display.getSystemColor( SWT.COLOR_GREEN ) );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( item, "background" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( item, "background" );
+    assertTrue( jsonEquals( "[0,255,0,255]", actual ) );
   }
 
   @Test
@@ -513,15 +512,15 @@ public class TreeItemLCA_Test {
   }
 
   @Test
-  public void testRenderForeground() throws IOException, JSONException {
+  public void testRenderForeground() throws IOException {
     TreeItem item = new TreeItem( tree, SWT.NONE );
 
     item.setForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( item, "foreground" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( item, "foreground" );
+    assertTrue( jsonEquals( "[0,255,0,255]", actual ) );
   }
 
   @Test
@@ -550,18 +549,18 @@ public class TreeItemLCA_Test {
   }
 
   @Test
-  public void testRenderFont() throws IOException, JSONException {
+  public void testRenderFont() throws IOException {
     TreeItem item = new TreeItem( tree, SWT.NONE );
 
     item.setFont( new Font( display, "Arial", 20, SWT.BOLD ) );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( item, "font" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[\"Arial\"]", actual.getJSONArray( 0 ) ) );
-    assertEquals( Integer.valueOf( 20 ), actual.get( 1 ) );
-    assertEquals( Boolean.TRUE, actual.get( 2 ) );
-    assertEquals( Boolean.FALSE, actual.get( 3 ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( item, "font" );
+    assertTrue( jsonEquals( "[\"Arial\"]", actual.get( 0 ).asArray() ) );
+    assertEquals( 20, actual.get( 1 ).asInt() );
+    assertTrue( actual.get( 2 ).asBoolean() );
+    assertFalse( actual.get( 3 ).asBoolean() );
   }
 
   @Test
@@ -592,7 +591,7 @@ public class TreeItemLCA_Test {
   }
 
   @Test
-  public void testRenderCellBackgrounds() throws IOException, JSONException {
+  public void testRenderCellBackgrounds() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -601,9 +600,9 @@ public class TreeItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( item, "cellBackgrounds" );
-    assertEquals( JSONObject.NULL, actual.get( 0 ) );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual.getJSONArray( 1 ) ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( item, "cellBackgrounds" );
+    assertEquals( JsonObject.NULL, actual.get( 0 ) );
+    assertTrue( jsonEquals( "[0,255,0,255]", actual.get( 1 ).asArray() ) );
   }
 
   @Test
@@ -636,7 +635,7 @@ public class TreeItemLCA_Test {
   }
 
   @Test
-  public void testRenderCellForegrounds() throws IOException, JSONException {
+  public void testRenderCellForegrounds() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -645,9 +644,9 @@ public class TreeItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( item, "cellForegrounds" );
-    assertEquals( JSONObject.NULL, actual.get( 0 ) );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual.getJSONArray( 1 ) ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( item, "cellForegrounds" );
+    assertEquals( JsonObject.NULL, actual.get( 0 ) );
+    assertTrue( jsonEquals( "[0,255,0,255]", actual.get( 1 ).asArray() ) );
   }
 
   @Test
@@ -680,7 +679,7 @@ public class TreeItemLCA_Test {
   }
 
   @Test
-  public void testRenderCellFonts() throws IOException, JSONException {
+  public void testRenderCellFonts() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -689,13 +688,13 @@ public class TreeItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( item, "cellFonts" );
-    assertEquals( JSONObject.NULL, actual.get( 0 ) );
-    JSONArray cellFont = actual.getJSONArray( 1 );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[\"Arial\"]", cellFont.getJSONArray( 0 ) ) );
-    assertEquals( Integer.valueOf( 20 ), cellFont.get( 1 ) );
-    assertEquals( Boolean.TRUE, cellFont.get( 2 ) );
-    assertEquals( Boolean.FALSE, cellFont.get( 3 ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( item, "cellFonts" );
+    assertEquals( JsonObject.NULL, actual.get( 0 ) );
+    JsonArray cellFont = actual.get( 1 ).asArray();
+    assertTrue( jsonEquals( "[\"Arial\"]", cellFont.get( 0 ).asArray() ) );
+    assertEquals( 20, cellFont.get( 1 ).asInt() );
+    assertTrue( cellFont.get( 2 ).asBoolean() );
+    assertFalse( cellFont.get( 3 ).asBoolean() );
   }
 
   @Test
@@ -867,7 +866,7 @@ public class TreeItemLCA_Test {
   }
 
   @Test
-  public void testRenderData() throws JSONException, IOException {
+  public void testRenderData() throws IOException {
     TreeItem item = new TreeItem( tree, SWT.NONE );
     WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
     item.setData( "foo", "string" );
@@ -876,9 +875,9 @@ public class TreeItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONObject data = ( JSONObject )message.findSetProperty( item, "data" );
-    assertEquals( "string", data.getString( "foo" ) );
-    assertEquals( Integer.valueOf( 1 ), Integer.valueOf( data.getInt( "bar" ) ) );
+    JsonObject data = ( JsonObject )message.findSetProperty( item, "data" );
+    assertEquals( "string", data.get( "foo" ).asString() );
+    assertEquals( 1, data.get( "bar" ).asInt() );
   }
 
   @Test

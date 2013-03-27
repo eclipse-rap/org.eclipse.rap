@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,8 +29,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -56,9 +58,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -635,7 +634,7 @@ public class MenuItemLCA_Test {
   }
 
   @Test
-  public void testRenderImages() throws IOException, JSONException {
+  public void testRenderImages() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     Image image = TestUtil.createImage( display, Fixture.IMAGE1 );
 
@@ -643,9 +642,9 @@ public class MenuItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( item, "image" );
+    JsonArray actual = ( JsonArray )message.findSetProperty( item, "image" );
     String expected = "[\"rwt-resources/generated/90fb0bfe.gif\",58,12]";
-    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+    assertTrue( jsonEquals( expected, actual ) );
   }
 
   @Test
@@ -765,7 +764,7 @@ public class MenuItemLCA_Test {
   }
 
   @Test
-  public void testRenderData() throws JSONException, IOException {
+  public void testRenderData() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.PUSH );
     WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
     item.setData( "foo", "string" );
@@ -774,9 +773,9 @@ public class MenuItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONObject data = ( JSONObject )message.findSetProperty( item, "data" );
-    assertEquals( "string", data.getString( "foo" ) );
-    assertEquals( Integer.valueOf( 1 ), Integer.valueOf( data.getInt( "bar" ) ) );
+    JsonObject data = ( JsonObject )message.findSetProperty( item, "data" );
+    assertEquals( "string", data.get( "foo" ).asString() );
+    assertEquals( 1, data.get( "bar" ).asInt() );
   }
 
   @Test

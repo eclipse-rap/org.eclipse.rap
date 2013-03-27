@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.droptargetkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.join;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -32,8 +34,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class DropTargetLCA_Test {
   }
 
   @Test
-  public void testRenderCreate() throws IOException, JSONException {
+  public void testRenderCreate() throws IOException {
     DropTarget target = new DropTarget( control, DND.DROP_MOVE | DND.DROP_COPY );
     lca.renderInitialization( target );
 
@@ -71,12 +71,12 @@ public class DropTargetLCA_Test {
     CreateOperation operation = message.findCreateOperation( target );
     assertEquals( "rwt.widgets.DropTarget", operation.getType() );
     assertEquals( WidgetUtil.getId( control ), operation.getProperty( "control" ) );
-    String result = ( ( JSONArray )operation.getProperty( "style" ) ).join( "," );
+    String result = join( ( JsonArray )operation.getProperty( "style" ), "," );
     assertEquals( "\"DROP_COPY\",\"DROP_MOVE\"", result );
   }
 
   @Test
-  public void testRenderTransfer() throws IOException, JSONException {
+  public void testRenderTransfer() throws IOException {
     DropTarget target = new DropTarget( control, DND.DROP_MOVE | DND.DROP_COPY );
     Fixture.markInitialized( target );
     Fixture.preserveWidgets();
@@ -89,7 +89,7 @@ public class DropTargetLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     SetOperation setOperation = message.findSetOperation( target, "transfer" );
-    String result = ( ( JSONArray )setOperation.getProperty( "transfer" ) ).join( "," );
+    String result = join( ( JsonArray )setOperation.getProperty( "transfer" ), "," );
     String expected = "\"";
     expected += TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
     expected += "\",\"";

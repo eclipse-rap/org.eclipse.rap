@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -57,8 +58,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -547,7 +546,7 @@ public class DNDSupport_Test {
   }
 
   @Test
-  public void testResponseFeedbackChangedOnEnter() throws JSONException {
+  public void testResponseFeedbackChangedOnEnter() {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     dropTarget.addDropListener( new DropTargetAdapter() {
@@ -567,13 +566,13 @@ public class DNDSupport_Test {
     CallOperation call = message.findCallOperation( dragSource, "changeFeedback" );
     assertEquals( getId( targetControl ), call.getProperty( "control" ) );
     assertEquals( new Integer( DND.FEEDBACK_SELECT ), call.getProperty( "flags" ) );
-    JSONArray feedbackArr = ( JSONArray )call.getProperty( "feedback" );
-    assertEquals( 1, feedbackArr.length() );
-    assertEquals( "FEEDBACK_SELECT", feedbackArr.getString( 0 ) );
+    JsonArray feedbackArr = ( JsonArray )call.getProperty( "feedback" );
+    assertEquals( 1, feedbackArr.size() );
+    assertEquals( "FEEDBACK_SELECT", feedbackArr.get( 0 ).asString() );
   }
 
   @Test
-  public void testResponseFeedbackChangedOnOver() throws JSONException {
+  public void testResponseFeedbackChangedOnOver() {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     dropTarget.addDropListener( new DropTargetAdapter() {
@@ -594,10 +593,10 @@ public class DNDSupport_Test {
     assertEquals( getId( targetControl ), call.getProperty( "control" ) );
     Integer expectedFlags = new Integer( DND.FEEDBACK_SCROLL | DND.FEEDBACK_EXPAND );
     assertEquals( expectedFlags, call.getProperty( "flags" ) );
-    JSONArray feedbackArr = ( JSONArray )call.getProperty( "feedback" );
-    assertEquals( 2, feedbackArr.length() );
-    assertEquals( "FEEDBACK_EXPAND", feedbackArr.getString( 0 ) );
-    assertEquals( "FEEDBACK_SCROLL", feedbackArr.getString( 1 ) );
+    JsonArray feedbackArr = ( JsonArray )call.getProperty( "feedback" );
+    assertEquals( 2, feedbackArr.size() );
+    assertEquals( "FEEDBACK_EXPAND", feedbackArr.get( 0 ).asString() );
+    assertEquals( "FEEDBACK_SCROLL", feedbackArr.get( 1 ).asString() );
 
   }
 

@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tooltipkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -23,8 +24,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -40,8 +41,6 @@ import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolTip;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -235,7 +234,7 @@ public class ToolTipLCA_Test {
   }
 
   @Test
-  public void testRenderRoundedBorder() throws IOException, JSONException {
+  public void testRenderRoundedBorder() throws IOException {
     IWidgetGraphicsAdapter graphicsAdapter = toolTip.getAdapter( IWidgetGraphicsAdapter.class );
     Color color = new Color( display, 0, 255, 0 );
 
@@ -243,14 +242,14 @@ public class ToolTipLCA_Test {
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray border = ( JSONArray )message.findSetProperty( toolTip, "roundedBorder" );
-    assertEquals( 6, border.length() );
-    assertEquals( 2, border.getInt( 0 ) );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", border.getJSONArray( 1 ) ) );
-    assertEquals( 5, border.getInt( 2 ) );
-    assertEquals( 6, border.getInt( 3 ) );
-    assertEquals( 7, border.getInt( 4 ) );
-    assertEquals( 8, border.getInt( 5 ) );
+    JsonArray border = ( JsonArray )message.findSetProperty( toolTip, "roundedBorder" );
+    assertEquals( 6, border.size() );
+    assertEquals( 2, border.get( 0 ).asInt() );
+    assertTrue( jsonEquals( "[0,255,0,255]", border.get( 1 ).asArray() ) );
+    assertEquals( 5, border.get( 2 ).asInt() );
+    assertEquals( 6, border.get( 3 ).asInt() );
+    assertEquals( 7, border.get( 4 ).asInt() );
+    assertEquals( 8, border.get( 5 ).asInt() );
   }
 
   @Test
@@ -277,7 +276,7 @@ public class ToolTipLCA_Test {
   }
 
   @Test
-  public void testRenderBackgroundGradient() throws IOException, JSONException {
+  public void testRenderBackgroundGradient() throws IOException {
     IWidgetGraphicsAdapter graphicsAdapter = toolTip.getAdapter( IWidgetGraphicsAdapter.class );
     Color[] gradientColors = new Color[] {
       new Color( display, 0, 255, 0 ),
@@ -289,14 +288,14 @@ public class ToolTipLCA_Test {
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray gradient = ( JSONArray )message.findSetProperty( toolTip, "backgroundGradient" );
-    JSONArray colors = ( JSONArray )gradient.get( 0 );
-    JSONArray stops = ( JSONArray )gradient.get( 1 );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", colors.getJSONArray( 0 ) ) );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,255,255]", colors.getJSONArray( 1 ) ) );
-    assertEquals( new Integer( 0 ), stops.get( 0 ) );
-    assertEquals( new Integer( 100 ), stops.get( 1 ) );
-    assertEquals( Boolean.TRUE, gradient.get( 2 ) );
+    JsonArray gradient = ( JsonArray )message.findSetProperty( toolTip, "backgroundGradient" );
+    JsonArray colors = gradient.get( 0 ).asArray();
+    JsonArray stops = gradient.get( 1 ).asArray();
+    assertTrue( jsonEquals( "[0,255,0,255]", colors.get( 0 ).asArray() ) );
+    assertTrue( jsonEquals( "[0,0,255,255]", colors.get( 1 ).asArray() ) );
+    assertEquals( 0, stops.get( 0 ).asInt() );
+    assertEquals( 100, stops.get( 1 ).asInt() );
+    assertTrue( gradient.get( 2 ).asBoolean() );
   }
 
   @Test
@@ -413,13 +412,13 @@ public class ToolTipLCA_Test {
   }
 
   @Test
-  public void testRenderLocation() throws IOException, JSONException {
+  public void testRenderLocation() throws IOException {
     toolTip.setLocation( 10, 20 );
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( toolTip, "location" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[10,20]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( toolTip, "location" );
+    assertTrue( jsonEquals( "[10,20]", actual ) );
   }
 
   @Test

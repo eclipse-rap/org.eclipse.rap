@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.widgets.fileuploadkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
@@ -23,7 +24,8 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -44,9 +46,6 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -200,7 +199,7 @@ public class FileUploadLCA_Test {
   }
 
   @Test
-  public void testRenderImage() throws IOException, JSONException {
+  public void testRenderImage() throws IOException {
     Image image = createImage( display, Fixture.IMAGE_100x50 );
 
     fileUpload.setImage( image );
@@ -209,8 +208,8 @@ public class FileUploadLCA_Test {
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     String expected = "[\"" + imageLocation + "\", 100, 50 ]";
-    JSONArray actual = ( JSONArray )message.findSetProperty( fileUpload, "image" );
-    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( fileUpload, "image" );
+    assertTrue( jsonEquals( expected, actual ) );
   }
 
   @Test
@@ -239,7 +238,7 @@ public class FileUploadLCA_Test {
     lca.renderChanges( fileUpload );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( fileUpload, "image" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( fileUpload, "image" ) );
   }
 
   @Test

@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
@@ -32,8 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
@@ -71,8 +72,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -403,8 +402,8 @@ public class CTabFolderLCA_Test {
     lca.renderInitialization( folder );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray texts = ( JSONArray )message.findCreateProperty( folder, "toolTipTexts" );
-    assertEquals( 5, texts.length() );
+    JsonArray texts = ( JsonArray )message.findCreateProperty( folder, "toolTipTexts" );
+    assertEquals( 5, texts.size() );
   }
 
   @Test
@@ -532,15 +531,15 @@ public class CTabFolderLCA_Test {
   }
 
   @Test
-  public void testRenderMinimizeBoundsAndVisible() throws IOException, JSONException {
+  public void testRenderMinimizeBoundsAndVisible() throws IOException {
     folder.setSize( 150, 150 );
 
     folder.setMinimizeVisible( true );
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( folder, "minimizeBounds" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[129,4,18,18]", actual )  );
+    JsonArray actual = ( JsonArray )message.findSetProperty( folder, "minimizeBounds" );
+    assertTrue( jsonEquals( "[129,4,18,18]", actual )  );
     assertEquals( Boolean.TRUE, message.findSetProperty( folder, "minimizeVisible" ) );
   }
 
@@ -572,15 +571,15 @@ public class CTabFolderLCA_Test {
   }
 
   @Test
-  public void testRenderMaximizeBoundsAndVisible() throws IOException, JSONException {
+  public void testRenderMaximizeBoundsAndVisible() throws IOException {
     folder.setSize( 150, 150 );
 
     folder.setMaximizeVisible( true );
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( folder, "maximizeBounds" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[129,4,18,18]", actual )  );
+    JsonArray actual = ( JsonArray )message.findSetProperty( folder, "maximizeBounds" );
+    assertTrue( jsonEquals( "[129,4,18,18]", actual )  );
     assertEquals( Boolean.TRUE, message.findSetProperty( folder, "maximizeVisible" ) );
   }
 
@@ -612,7 +611,7 @@ public class CTabFolderLCA_Test {
   }
 
   @Test
-  public void testRenderChevronBoundsAndVisible() throws IOException, JSONException {
+  public void testRenderChevronBoundsAndVisible() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
     folder.setSize( 150, 150 );
@@ -621,8 +620,8 @@ public class CTabFolderLCA_Test {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( folder, "chevronBounds" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[120,6,27,18]", actual )  );
+    JsonArray actual = ( JsonArray )message.findSetProperty( folder, "chevronBounds" );
+    assertTrue( jsonEquals( "[120,6,27,18]", actual )  );
     assertEquals( Boolean.TRUE, message.findSetProperty( folder, "chevronVisible" ) );
   }
 
@@ -718,13 +717,13 @@ public class CTabFolderLCA_Test {
   }
 
   @Test
-  public void testRenderSelectionBackground() throws IOException, JSONException {
+  public void testRenderSelectionBackground() throws IOException {
     folder.setSelectionBackground( display.getSystemColor( SWT.COLOR_BLUE ) );
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( folder, "selectionBackground" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,255,255]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( folder, "selectionBackground" );
+    assertTrue( jsonEquals( "[0,0,255,255]", actual ) );
   }
 
   @Test
@@ -750,13 +749,13 @@ public class CTabFolderLCA_Test {
   }
 
   @Test
-  public void testRenderSelectionForeground() throws IOException, JSONException {
+  public void testRenderSelectionForeground() throws IOException {
     folder.setSelectionForeground( display.getSystemColor( SWT.COLOR_BLUE ) );
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( folder, "selectionForeground" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,255,255]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( folder, "selectionForeground" );
+    assertTrue( jsonEquals( "[0,0,255,255]", actual ) );
   }
 
   @Test
@@ -782,7 +781,7 @@ public class CTabFolderLCA_Test {
   }
 
   @Test
-  public void testRenderSelectionBackgroundImage() throws IOException, JSONException {
+  public void testRenderSelectionBackgroundImage() throws IOException {
     Image image = createImage( display, Fixture.IMAGE_100x50 );
 
     folder.setSelectionBackground( image );
@@ -791,8 +790,8 @@ public class CTabFolderLCA_Test {
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     String expected = "[\"" + imageLocation + "\", 100, 50 ]";
-    JSONArray actual = ( JSONArray )message.findSetProperty( folder, "selectionBackgroundImage" );
-    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( folder, "selectionBackgroundImage" );
+    assertTrue( jsonEquals( expected, actual ) );
   }
 
   @Test
@@ -819,7 +818,7 @@ public class CTabFolderLCA_Test {
   }
 
   @Test
-  public void testRenderSelectionBackgroundGradient() throws IOException, JSONException {
+  public void testRenderSelectionBackgroundGradient() throws IOException {
     Color[] gradientColors = new Color[] {
       display.getSystemColor( SWT.COLOR_RED ),
       display.getSystemColor( SWT.COLOR_GREEN )
@@ -829,15 +828,15 @@ public class CTabFolderLCA_Test {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray gradient
-      = ( JSONArray )message.findSetProperty( folder, "selectionBackgroundGradient" );
-    JSONArray colors = ( JSONArray )gradient.get( 0 );
-    JSONArray stops = ( JSONArray )gradient.get( 1 );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[255,0,0,255]", colors.getJSONArray( 0 ) ) );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", colors.getJSONArray( 1 ) ) );
-    assertEquals( Integer.valueOf( 0 ), stops.get( 0 ) );
-    assertEquals( Integer.valueOf( 50 ), stops.get( 1 ) );
-    assertEquals( Boolean.FALSE, gradient.get( 2 ) );
+    JsonArray gradient
+      = ( JsonArray )message.findSetProperty( folder, "selectionBackgroundGradient" );
+    JsonArray colors = gradient.get( 0 ).asArray();
+    JsonArray stops = gradient.get( 1 ).asArray();
+    assertTrue( jsonEquals( "[255,0,0,255]", colors.get( 0 ).asArray() ) );
+    assertTrue( jsonEquals( "[0,255,0,255]", colors.get( 1 ).asArray() ) );
+    assertEquals( 0, stops.get( 0 ).asInt() );
+    assertEquals( 50, stops.get( 1 ).asInt() );
+    assertFalse( gradient.get( 2 ).asBoolean() );
   }
 
   @Test

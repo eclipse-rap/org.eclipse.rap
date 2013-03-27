@@ -16,6 +16,8 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.SWT;
@@ -23,7 +25,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
-import org.json.*;
 
 
 @SuppressWarnings( "restriction" )
@@ -56,7 +57,7 @@ public class ImageHyperlinkLCA_Test extends TestCase {
     assertNull( message.findSetOperation( hyperlink, "image" ) );
   }
 
-  public void testRenderImage() throws IOException, JSONException {
+  public void testRenderImage() throws IOException {
     ImageHyperlink hyperlink = new ImageHyperlink( shell, SWT.NONE );
     Image image = createImage( display, Fixture.IMAGE_100x50 );
 
@@ -64,10 +65,10 @@ public class ImageHyperlinkLCA_Test extends TestCase {
     lca.renderChanges( hyperlink );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( hyperlink, "image" );
+    JsonArray actual = ( JsonArray )message.findSetProperty( hyperlink, "image" );
     assertNotNull( actual.get( 0 ) );
-    assertEquals( 100, actual.get( 1 ) );
-    assertEquals( 50, actual.get( 2 ) );
+    assertEquals( 100, actual.get( 1 ).asInt() );
+    assertEquals( 50, actual.get( 2 ).asInt() );
   }
 
   public void testRenderImageUnchanged() throws IOException {
@@ -96,6 +97,6 @@ public class ImageHyperlinkLCA_Test extends TestCase {
     lca.renderChanges( hyperlink );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( hyperlink, "image" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( hyperlink, "image" ) );
   }
 }

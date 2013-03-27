@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonValue;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
 import java.io.BufferedInputStream;
@@ -26,6 +27,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,8 @@ import org.eclipse.rap.rwt.engine.RWTServletContextListener;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextHelper;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
@@ -63,8 +67,8 @@ import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.service.UISessionTestAdapter;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -76,9 +80,6 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 /**
@@ -357,13 +358,9 @@ public final class Fixture {
   }
 
   public static String createEmptyMessage() {
-    JSONObject result = new JSONObject();
-    try {
-      result.put( ClientMessage.PROP_HEAD, new JSONObject() );
-      result.put( ClientMessage.PROP_OPERATIONS, new JSONArray() );
-    } catch( JSONException exception ) {
-      throw new IllegalStateException( "Failed to create json message", exception );
-    }
+    JsonObject result = new JsonObject();
+    result.add( ClientMessage.PROP_HEAD, new JsonObject() );
+    result.add( ClientMessage.PROP_OPERATIONS, new JsonArray() );
     return result.toString();
   }
 
@@ -372,11 +369,11 @@ public final class Fixture {
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     String json = request.getBody();
     try {
-      JSONObject message = new JSONObject( json );
-      JSONObject header = message.getJSONObject( ClientMessage.PROP_HEAD );
-      header.put( key, value );
+      JsonObject message = createModifiableMessage( json );
+      JsonObject header = message.get( ClientMessage.PROP_HEAD ).asObject();
+      header.add( key, createJsonValue( value ) );
       request.setBody( message.toString() );
-    } catch( JSONException exception ) {
+    } catch( Exception exception ) {
       throw new RuntimeException( "Failed to add header parameter", exception );
     }
   }
@@ -387,22 +384,71 @@ public final class Fixture {
     fakeSetOperation( target, parameters );
   }
 
-  public static void fakeSetOperation( String target, Map<String, Object> parameters ) {
+  public static void fakeSetOperation( String target, Map<String, Object> properties ) {
     checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     String json = request.getBody();
     try {
-      JSONObject message = new JSONObject( json );
-      JSONArray operations = message.getJSONArray( ClientMessage.PROP_OPERATIONS );
-      JSONArray newOperation = new JSONArray();
-      newOperation.put( ClientMessage.OPERATION_SET );
-      newOperation.put( target );
-      newOperation.put( new JSONObject( parameters ) );
-      operations.put( newOperation );
+      JsonObject message = createModifiableMessage( json );
+      JsonArray operations = message.get( ClientMessage.PROP_OPERATIONS ).asArray();
+      JsonArray newOperation = new JsonArray();
+      newOperation.add( ClientMessage.OPERATION_SET );
+      newOperation.add( target );
+      newOperation.add( createJsonValue( ensureProperties( properties ) ) );
+      operations.add( newOperation );
       request.setBody( message.toString() );
-    } catch( JSONException exception ) {
+    } catch( Exception exception ) {
       throw new RuntimeException( "Failed to add set operation", exception );
     }
+  }
+
+  public static void fakeNotifyOperation( String target,
+                                          String eventName,
+                                          Map<String, Object> properties )
+  {
+    checkMessage();
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    String json = request.getBody();
+    try {
+      JsonObject message = createModifiableMessage( json );
+      JsonArray operations = message.get( ClientMessage.PROP_OPERATIONS ).asArray();
+      JsonArray newOperation = new JsonArray();
+      newOperation.add( ClientMessage.OPERATION_NOTIFY );
+      newOperation.add( target );
+      newOperation.add( eventName );
+      newOperation.add( createJsonValue( ensureProperties( properties ) ) );
+      operations.add( newOperation );
+      request.setBody( message.toString() );
+    } catch( Exception exception ) {
+      throw new RuntimeException( "Failed to add notify operation", exception );
+    }
+  }
+
+  public static void fakeCallOperation( String target,
+                                        String methodName,
+                                        Map<String, Object> properties )
+  {
+    checkMessage();
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    String json = request.getBody();
+    try {
+      JsonObject message = createModifiableMessage( json );
+      JsonArray operations = message.get( ClientMessage.PROP_OPERATIONS ).asArray();
+      JsonArray newOperation = new JsonArray();
+      newOperation.add( ClientMessage.OPERATION_CALL );
+      newOperation.add( target );
+      newOperation.add( methodName );
+      newOperation.add( createJsonValue( ensureProperties( properties ) ) );
+      operations.add( newOperation );
+      request.setBody( message.toString() );
+    } catch( Exception exception ) {
+      throw new RuntimeException( "Failed to add call operation", exception );
+    }
+  }
+
+  public static void dispatchSet( RemoteObject remoteObject, Map<String, Object> properties ) {
+    RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
+    remoteObjectImpl.getHandler().handleSet( properties );
   }
 
   public static void dispatchNotify( RemoteObject remoteObject,
@@ -421,59 +467,24 @@ public final class Fixture {
     remoteObjectImpl.getHandler().handleCall( methodName, parameters );
   }
 
-  public static void dispatchSet( RemoteObject remoteObject, Map<String, Object> properties ) {
-    RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
-    remoteObjectImpl.getHandler().handleSet( properties );
-  }
-
-  public static void fakeNotifyOperation( String target,
-                                          String eventName,
-                                          Map<String, Object> properties )
-  {
-    checkMessage();
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    String json = request.getBody();
-    try {
-      JSONObject message = new JSONObject( json );
-      JSONArray operations = message.getJSONArray( ClientMessage.PROP_OPERATIONS );
-      JSONArray newOperation = new JSONArray();
-      newOperation.put( ClientMessage.OPERATION_NOTIFY );
-      newOperation.put( target );
-      newOperation.put( eventName );
-      newOperation.put( new JSONObject( properties ) );
-      operations.put( newOperation );
-      request.setBody( message.toString() );
-    } catch( JSONException exception ) {
-      throw new RuntimeException( "Failed to add notify operation", exception );
-    }
-  }
-
-  public static void fakeCallOperation( String target,
-                                        String methodName,
-                                        Map<String, Object> parameters )
-  {
-    checkMessage();
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    String json = request.getBody();
-    try {
-      JSONObject message = new JSONObject( json );
-      JSONArray operations = message.getJSONArray( ClientMessage.PROP_OPERATIONS );
-      JSONArray newOperation = new JSONArray();
-      newOperation.put( ClientMessage.OPERATION_CALL );
-      newOperation.put( target );
-      newOperation.put( methodName );
-      newOperation.put( new JSONObject( parameters ) );
-      operations.put( newOperation );
-      request.setBody( message.toString() );
-    } catch( JSONException exception ) {
-      throw new RuntimeException( "Failed to add call operation", exception );
-    }
-  }
-
   private static void checkMessage() {
     if( ProtocolUtil.isClientMessageProcessed() ) {
       throw new IllegalStateException( "Client message is already processed" );
     }
+  }
+
+  private static JsonObject createModifiableMessage( String json ) {
+    JsonObject message = JsonObject.readFrom( json );
+    JsonObject header = message.get( ClientMessage.PROP_HEAD ).asObject();
+    JsonArray operations = message.get( ClientMessage.PROP_OPERATIONS ).asArray();
+    JsonObject result = new JsonObject();
+    result.add( ClientMessage.PROP_HEAD, new JsonObject( header ) );
+    result.add( ClientMessage.PROP_OPERATIONS, new JsonArray( operations ) );
+    return result;
+  }
+
+  private static Map ensureProperties( Map<String,Object> properties ) {
+    return properties == null ? Collections.EMPTY_MAP : properties;
   }
 
   public static void fakeResourceManager( ResourceManager resourceManager ) {
