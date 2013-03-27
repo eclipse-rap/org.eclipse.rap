@@ -1,6 +1,6 @@
 
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -441,6 +441,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         widget.setBackgroundGradient( null );
         TestUtil.flush();
         assertTrue( TestUtil.getCssBackgroundImage( widget.getElement() ).indexOf( "bla.png" ) !== -1 );
+        widget.destroy();
+      }
+    },
+
+    testRemoveBackgroundImageAndRestoreBackgroundGradient : function() {
+      if( rwt.client.Client.supportsCss3() ) {
+        var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
+        var widget = this._createWidget();
+        widget.setBackgroundGradient( gradient );
+        TestUtil.flush();
+        widget.setBackgroundImage( "bla.png" );
+        assertTrue( TestUtil.getCssBackgroundImage( widget.getElement() ).indexOf( "bla.png" ) !== -1 );
+        TestUtil.flush();
+        widget.setBackgroundImage( null );
+        TestUtil.flush();
+        var result = TestUtil.getCssGradient( widget.getElement() );
+        assertTrue( result !== "" );
         widget.destroy();
       }
     },
