@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -27,8 +28,6 @@ import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -196,7 +195,7 @@ public class JavaScriptModuleLoaderImpl_Test {
   }
 
   @Test
-  public void testLoadMultipleFilesInOrder() throws JSONException {
+  public void testLoadMultipleFilesInOrder() {
     ensureFiles( new String[]{ JS_FILE_1, JS_FILE_2 } );
     Fixture.executeLifeCycleFromServerThread();
 
@@ -204,9 +203,9 @@ public class JavaScriptModuleLoaderImpl_Test {
     String expectedOne = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
     String expectedTwo = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_2;
     CallOperation operation = findLoadOperation( message, expectedOne );
-    JSONArray files = ( JSONArray )operation.getProperty( "files" );
-    assertEquals( expectedOne, files.getString( 0 ) );
-    assertEquals( expectedTwo, files.getString( 1 ) );
+    JsonArray files = ( JsonArray )operation.getProperty( "files" );
+    assertEquals( expectedOne, files.get( 0 ).asString() );
+    assertEquals( expectedTwo, files.get( 1 ).asString() );
   }
 
   @Test
@@ -289,14 +288,10 @@ public class JavaScriptModuleLoaderImpl_Test {
         if(    operation.getTarget().equals( "rwt.client.JavaScriptLoader" )
             && "load".equals( operation.getMethodName() )
         ) {
-          JSONArray files = ( JSONArray )operation.getProperty( "files" );
-          for( int j = 0; j < files.length(); j++ ) {
-            try {
-              if( files.getString( j ).equals( file ) ) {
-                result = operation;
-              }
-            } catch( JSONException e ) {
-              throw new RuntimeException( e );
+          JsonArray files = ( JsonArray )operation.getProperty( "files" );
+          for( int j = 0; j < files.size(); j++ ) {
+            if( files.get( j ).asString().equals( file ) ) {
+              result = operation;
             }
           }
         }

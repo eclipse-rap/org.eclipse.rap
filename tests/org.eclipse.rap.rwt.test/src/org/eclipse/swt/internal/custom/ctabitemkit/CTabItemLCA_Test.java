@@ -10,7 +10,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabitemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -18,7 +20,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -35,9 +38,6 @@ import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.WidgetDataUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -185,23 +185,23 @@ public class CTabItemLCA_Test {
   }
 
   @Test
-  public void testRenderInitialBounds() throws IOException, JSONException {
+  public void testRenderInitialBounds() throws IOException {
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray bounds = ( JSONArray )message.findCreateProperty( item, "bounds" );
-    assertTrue( bounds.getInt( 2 ) > 0 );
-    assertTrue( bounds.getInt( 3 ) > 0 );
+    JsonArray bounds = ( JsonArray )message.findCreateProperty( item, "bounds" );
+    assertTrue( bounds.get( 2 ).asInt() > 0 );
+    assertTrue( bounds.get( 3 ).asInt() > 0 );
   }
 
   @Test
-  public void testRenderBounds() throws IOException, JSONException {
+  public void testRenderBounds() throws IOException {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray bounds = ( JSONArray )message.findSetProperty( item, "bounds" );
-    assertTrue( bounds.getInt( 2 ) > 0 );
-    assertTrue( bounds.getInt( 3 ) > 0 );
+    JsonArray bounds = ( JsonArray )message.findSetProperty( item, "bounds" );
+    assertTrue( bounds.get( 2 ).asInt() > 0 );
+    assertTrue( bounds.get( 3 ).asInt() > 0 );
   }
 
   @Test
@@ -226,16 +226,16 @@ public class CTabItemLCA_Test {
   }
 
   @Test
-  public void testRenderFont() throws IOException, JSONException {
+  public void testRenderFont() throws IOException {
     item.setFont( new Font( display, "Arial", 20, SWT.BOLD ) );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( item, "font" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[\"Arial\"]", actual.getJSONArray( 0 ) ) );
-    assertEquals( Integer.valueOf( 20 ), actual.get( 1 ) );
-    assertEquals( Boolean.TRUE, actual.get( 2 ) );
-    assertEquals( Boolean.FALSE, actual.get( 3 ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( item, "font" );
+    assertTrue( jsonEquals( "[\"Arial\"]", actual.get( 0 ).asArray() ) );
+    assertEquals( 20, actual.get( 1 ).asInt() );
+    assertTrue( actual.get( 2 ).asBoolean() );
+    assertFalse( actual.get( 3 ).asBoolean() );
   }
 
   @Test
@@ -300,7 +300,7 @@ public class CTabItemLCA_Test {
   }
 
   @Test
-  public void testRenderImage() throws IOException, JSONException {
+  public void testRenderImage() throws IOException {
     Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
 
     item.setImage( image );
@@ -310,8 +310,8 @@ public class CTabItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     String expected = "[\"" + imageLocation + "\", 100, 50 ]";
-    JSONArray actual = ( JSONArray )message.findSetProperty( item, "image" );
-    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( item, "image" );
+    assertTrue( jsonEquals( expected, actual ) );
   }
 
   @Test
@@ -342,7 +342,7 @@ public class CTabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( item, "image" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( item, "image" ) );
   }
 
   @Test
@@ -455,7 +455,7 @@ public class CTabItemLCA_Test {
   }
 
   @Test
-  public void testRenderData() throws JSONException, IOException {
+  public void testRenderData() throws IOException {
     WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
     item.setData( "foo", "string" );
     item.setData( "bar", Integer.valueOf( 1 ) );
@@ -463,9 +463,9 @@ public class CTabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JSONObject data = ( JSONObject )message.findSetProperty( item, "data" );
-    assertEquals( "string", data.getString( "foo" ) );
-    assertEquals( Integer.valueOf( 1 ), Integer.valueOf( data.getInt( "bar" ) ) );
+    JsonObject data = ( JsonObject )message.findSetProperty( item, "data" );
+    assertEquals( "string", data.get( "foo" ).asString() );
+    assertEquals( 1, data.get( "bar" ).asInt() );
   }
 
   @Test

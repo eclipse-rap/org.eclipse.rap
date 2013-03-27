@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablekit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
@@ -32,9 +33,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -71,8 +72,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -870,7 +869,7 @@ public class TableLCA_Test {
   }
 
   @Test
-  public void testRenderCreateWithCheck() throws IOException, JSONException {
+  public void testRenderCreateWithCheck() throws IOException {
     table = new Table( shell, SWT.CHECK );
 
     lca.renderInitialization( table );
@@ -879,8 +878,8 @@ public class TableLCA_Test {
     CreateOperation operation = message.findCreateOperation( table );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "CHECK" ) );
-    JSONArray actual = ( JSONArray )operation.getProperty( "checkBoxMetrics" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[4,21]", actual ) );
+    JsonArray actual = ( JsonArray )operation.getProperty( "checkBoxMetrics" );
+    assertTrue( jsonEquals( "[4,21]", actual ) );
   }
 
   @Test
@@ -956,15 +955,15 @@ public class TableLCA_Test {
   }
 
   @Test
-  public void testRenderItemMetrics() throws IOException, JSONException {
+  public void testRenderItemMetrics() throws IOException {
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( "foo" );
 
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( table, "itemMetrics" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,26,3,0,3,20]", ( JSONArray )actual.get( 0 ) ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( table, "itemMetrics" );
+    assertTrue( jsonEquals( "[0,0,26,3,0,3,20]", actual.get( 0 ).asArray() ) );
   }
 
   @Test
@@ -1249,7 +1248,7 @@ public class TableLCA_Test {
   }
 
   @Test
-  public void testRenderSelection() throws IOException, JSONException {
+  public void testRenderSelection() throws IOException {
     table = new Table( shell, SWT.MULTI );
     createTableItems( table, 3 );
 
@@ -1257,14 +1256,14 @@ public class TableLCA_Test {
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( table, "selection" );
+    JsonArray actual = ( JsonArray )message.findSetProperty( table, "selection" );
     StringBuilder expected = new StringBuilder();
-    expected.append( "[" );
+    expected.append( "[\"" );
     expected.append( WidgetUtil.getId( table.getItem( 2 ) ) );
-    expected.append( "," );
+    expected.append( "\",\"" );
     expected.append( WidgetUtil.getId( table.getItem( 0 ) ) );
-    expected.append( "]" );
-    assertTrue( ProtocolTestUtil.jsonEquals( expected.toString(), actual ) );
+    expected.append( "\"]" );
+    assertTrue( jsonEquals( expected.toString(), actual ) );
   }
 
   @Test

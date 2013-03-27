@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,18 +15,18 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.HyperlinkSettings;
 import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.internal.widgets.IHyperlinkAdapter;
 import org.eclipse.ui.forms.widgets.Hyperlink;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 @SuppressWarnings("restriction")
 public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
@@ -186,16 +186,16 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertTrue( operation.getPropertyNames().indexOf( "activeBackground" ) == -1 );
   }
 
-  public void testRenderActiveBackground() throws IOException, JSONException {
+  public void testRenderActiveBackground() throws IOException {
     getAdapter( hyperlink ).setActiveBackground( display.getSystemColor( SWT.COLOR_GREEN ) );
     lca.renderChanges( hyperlink );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( hyperlink, "activeBackground" );
-    assertEquals( 0, actual.getInt( 0 ) );
-    assertEquals( 255, actual.getInt( 1 ) );
-    assertEquals( 0, actual.getInt( 2 ) );
-    assertEquals( 255, actual.getInt( 3 ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( hyperlink, "activeBackground" );
+    assertEquals( 0, actual.get( 0 ).asInt() );
+    assertEquals( 255, actual.get( 1 ).asInt() );
+    assertEquals( 0, actual.get( 2 ).asInt() );
+    assertEquals( 255, actual.get( 3 ).asInt() );
   }
 
   public void testRenderActiveBackgroundUnchanged() throws IOException {
@@ -218,16 +218,16 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertTrue( operation.getPropertyNames().indexOf( "activeForeground" ) == -1 );
   }
 
-  public void testRenderActiveForeground() throws IOException, JSONException {
+  public void testRenderActiveForeground() throws IOException {
     getAdapter( hyperlink ).setActiveForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
     lca.renderChanges( hyperlink );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( hyperlink, "activeForeground" );
-    assertEquals( 0, actual.getInt( 0 ) );
-    assertEquals( 255, actual.getInt( 1 ) );
-    assertEquals( 0, actual.getInt( 2 ) );
-    assertEquals( 255, actual.getInt( 3 ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( hyperlink, "activeForeground" );
+    assertEquals( 0, actual.get( 0 ).asInt() );
+    assertEquals( 255, actual.get( 1 ).asInt() );
+    assertEquals( 0, actual.get( 2 ).asInt() );
+    assertEquals( 255, actual.get( 3 ).asInt() );
   }
 
   public void testRenderActiveForegroundUnchanged() throws IOException {

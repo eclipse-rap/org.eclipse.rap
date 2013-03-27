@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -43,9 +45,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -95,11 +94,11 @@ public class MenuLCA_Test {
     shell.setMenuBar( null );
     lca.renderChanges( menuBar );
     message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( menuBar, "parent" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( menuBar, "parent" ) );
   }
 
   @Test
-  public void testRenderBoundsForMenuBar() throws JSONException {
+  public void testRenderBoundsForMenuBar() {
     Menu menuBar = new Menu( shell, SWT.BAR );
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -116,8 +115,8 @@ public class MenuLCA_Test {
     Fixture.executeLifeCycleFromServerThread( );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray bounds = ( JSONArray )message.findSetProperty( menuBar, "bounds" );
-    assertEquals( 1234, bounds.getInt( 2 ) );
+    JsonArray bounds = ( JsonArray )message.findSetProperty( menuBar, "bounds" );
+    assertEquals( 1234, bounds.get( 2 ).asInt() );
     assertNotNull( message.findSetOperation( menuBar, "bounds" ) );
   }
 

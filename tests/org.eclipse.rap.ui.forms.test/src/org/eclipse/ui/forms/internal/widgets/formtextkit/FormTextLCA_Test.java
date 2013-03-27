@@ -12,6 +12,7 @@ package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -19,8 +20,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.HyperlinkSettings;
 import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.widgets.FormText;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 
 @SuppressWarnings( "restriction" )
@@ -53,7 +52,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( WidgetUtil.getId( formText.getParent() ), operation.getParent() );
   }
 
-  public void testRenderHyperlinkSettings() throws IOException, JSONException {
+  public void testRenderHyperlinkSettings() throws IOException {
     HyperlinkSettings settings = new HyperlinkSettings( display );
     settings.setForeground( display.getSystemColor( SWT.COLOR_BLUE ) );
     settings.setActiveForeground( display.getSystemColor( SWT.COLOR_CYAN ) );
@@ -62,18 +61,18 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( formText );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( formText, "hyperlinkSettings" );
-    assertEquals( 3, actual.getInt( 0 ) );
-    JSONArray foreground = actual.getJSONArray( 1 );
-    assertEquals( 0, foreground.getInt( 0 ) );
-    assertEquals( 0, foreground.getInt( 1 ) );
-    assertEquals( 255, foreground.getInt( 2 ) );
-    assertEquals( 255, foreground.getInt( 3 ) );
-    JSONArray activeForeground = actual.getJSONArray( 2 );
-    assertEquals( 0, activeForeground.getInt( 0 ) );
-    assertEquals( 255, activeForeground.getInt( 1 ) );
-    assertEquals( 255, activeForeground.getInt( 2 ) );
-    assertEquals( 255, activeForeground.getInt( 3 ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( formText, "hyperlinkSettings" );
+    assertEquals( 3, actual.get( 0 ).asInt() );
+    JsonArray foreground = actual.get( 1 ).asArray();
+    assertEquals( 0, foreground.get( 0 ).asInt() );
+    assertEquals( 0, foreground.get( 1 ).asInt() );
+    assertEquals( 255, foreground.get( 2 ).asInt() );
+    assertEquals( 255, foreground.get( 3 ).asInt() );
+    JsonArray activeForeground = actual.get( 2 ).asArray();
+    assertEquals( 0, activeForeground.get( 0 ).asInt() );
+    assertEquals( 255, activeForeground.get( 1 ).asInt() );
+    assertEquals( 255, activeForeground.get( 2 ).asInt() );
+    assertEquals( 255, activeForeground.get( 3 ).asInt() );
   }
 
   public void testRenderHyperlinkSettingsUnchanged() throws IOException {
@@ -91,7 +90,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     assertNull( message.findSetOperation( formText, "hyperlinkSettings" ) );
   }
 
-  public void testRenderText() throws IOException, JSONException {
+  public void testRenderText() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( formText );
     String text = "<form>"
@@ -107,23 +106,23 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( formText );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( formText, "text" );
-    assertEquals( "text", actual.getJSONArray( 0 ).getString( 0 ) );
-    assertEquals( "First paragraph", actual.getJSONArray( 0 ).getString( 1 ) );
-    assertEquals( "bullet", actual.getJSONArray( 1 ).getString( 0 ) );
-    assertEquals( "text", actual.getJSONArray( 2 ).getString( 0 ) );
-    assertEquals( "First bullet", actual.getJSONArray( 2 ).getString( 1 ) );
-    assertEquals( "bullet", actual.getJSONArray( 3 ).getString( 0 ) );
-    assertEquals( "text", actual.getJSONArray( 4 ).getString( 0 ) );
-    assertEquals( "Second bullet", actual.getJSONArray( 4 ).getString( 1 ) );
-    assertEquals( "bullet", actual.getJSONArray( 5 ).getString( 0 ) );
-    assertEquals( "text", actual.getJSONArray( 6 ).getString( 0 ) );
-    assertEquals( "Third bullet", actual.getJSONArray( 6 ).getString( 1 ) );
-    assertEquals( "text", actual.getJSONArray( 7 ).getString( 0 ) );
-    assertEquals( "Second paragraph", actual.getJSONArray( 7 ).getString( 1 ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( formText, "text" );
+    assertEquals( "text", actual.get( 0 ).asArray().get( 0 ).asString() );
+    assertEquals( "First paragraph", actual.get( 0 ).asArray().get( 1 ).asString() );
+    assertEquals( "bullet", actual.get( 1 ).asArray().get( 0 ).asString() );
+    assertEquals( "text", actual.get( 2 ).asArray().get( 0 ).asString() );
+    assertEquals( "First bullet", actual.get( 2 ).asArray().get( 1 ).asString() );
+    assertEquals( "bullet", actual.get( 3 ).asArray().get( 0 ).asString() );
+    assertEquals( "text", actual.get( 4 ).asArray().get( 0 ).asString() );
+    assertEquals( "Second bullet", actual.get( 4 ).asArray().get( 1 ).asString() );
+    assertEquals( "bullet", actual.get( 5 ).asArray().get( 0 ).asString() );
+    assertEquals( "text", actual.get( 6 ).asArray().get( 0 ).asString() );
+    assertEquals( "Third bullet", actual.get( 6 ).asArray().get( 1 ).asString() );
+    assertEquals( "text", actual.get( 7 ).asArray().get( 0 ).asString() );
+    assertEquals( "Second paragraph", actual.get( 7 ).asArray().get( 1 ).asString() );
   }
 
-  public void testRenderTextWithChangedResourceTable() throws IOException, JSONException {
+  public void testRenderTextWithChangedResourceTable() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( formText );
     String text = "<form>"
@@ -140,13 +139,13 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( formText );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( formText, "text" );
-    assertEquals( "text", actual.getJSONArray( 0 ).getString( 0 ) );
-    assertEquals( "First paragraph", actual.getJSONArray( 0 ).getString( 1 ) );
-    assertEquals( "[0,0,255,255]", actual.getJSONArray( 0 ).getString( 4 ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( formText, "text" );
+    assertEquals( "text", actual.get( 0 ).asArray().get( 0 ).asString() );
+    assertEquals( "First paragraph", actual.get( 0 ).asArray().get( 1 ).asString() );
+    assertEquals( "[0,0,255,255]", actual.get( 0 ).asArray().get( 4 ).toString() );
   }
 
-  public void testRenderTextWithChangedBounds() throws IOException, JSONException {
+  public void testRenderTextWithChangedBounds() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( formText );
     String text = "<form>"
@@ -162,9 +161,9 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( formText );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( formText, "text" );
-    assertEquals( "text", actual.getJSONArray( 0 ).getString( 0 ) );
-    assertEquals( "First paragraph", actual.getJSONArray( 0 ).getString( 1 ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( formText, "text" );
+    assertEquals( "text", actual.get( 0 ).asArray().get( 0 ).asString() );
+    assertEquals( "First paragraph", actual.get( 0 ).asArray().get( 1 ).asString() );
   }
 
 }

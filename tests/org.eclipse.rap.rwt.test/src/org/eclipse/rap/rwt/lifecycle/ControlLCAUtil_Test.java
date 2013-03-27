@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
@@ -31,8 +32,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.SWT;
@@ -61,9 +63,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -453,24 +452,24 @@ public class ControlLCAUtil_Test {
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
   @Test
-  public void testRenderBoundsIntiallyZero() throws JSONException {
+  public void testRenderBoundsIntiallyZero() {
     control = new Button( shell, SWT.PUSH );
     ControlLCAUtil.renderBounds( control );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray bounds = ( JSONArray )message.findSetProperty( control, "bounds" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ 0, 0, 0, 0 ]", bounds ) );
+    JsonArray bounds = ( JsonArray )message.findSetProperty( control, "bounds" );
+    assertTrue( jsonEquals( "[ 0, 0, 0, 0 ]", bounds ) );
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
   @Test
-  public void testRenderBoundsInitiallySet() throws JSONException {
+  public void testRenderBoundsInitiallySet() {
     control.setBounds( 10, 20, 100, 200 );
     ControlLCAUtil.renderBounds( control );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray bounds = ( JSONArray )message.findSetProperty( control, "bounds" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ 10, 20, 100, 200 ]", bounds ) );
+    JsonArray bounds = ( JsonArray )message.findSetProperty( control, "bounds" );
+    assertTrue( jsonEquals( "[ 10, 20, 100, 200 ]", bounds ) );
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
@@ -488,24 +487,25 @@ public class ControlLCAUtil_Test {
   }
 
   @Test
-  public void testRenderIntialChildren() throws JSONException {
+  public void testRenderIntialChildren() {
     ControlLCAUtil.renderChildren( shell );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( shell, "children" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[" +  WidgetUtil.getId( control ) + "]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( shell, "children" );
+    assertTrue( jsonEquals( "[\"" +  WidgetUtil.getId( control ) + "\"]", actual ) );
   }
 
   @Test
-  public void testRenderChildren() throws JSONException {
+  public void testRenderChildren() {
     Button button = new Button( shell, SWT.PUSH );
     control.moveBelow( button );
     ControlLCAUtil.renderChildren( shell );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( shell, "children" );
-    String expected = "[" + WidgetUtil.getId( button ) + "," + WidgetUtil.getId( control ) + "]";
-    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( shell, "children" );
+    String expected = "[\"" + WidgetUtil.getId( button )
+                    + "\",\"" + WidgetUtil.getId( control ) + "\"]";
+    assertTrue( jsonEquals( expected, actual ) );
   }
 
   @Test
@@ -677,7 +677,7 @@ public class ControlLCAUtil_Test {
   }
 
   @Test
-  public void testRenderBackgroundImage() throws JSONException, IOException {
+  public void testRenderBackgroundImage() throws IOException {
     Image image = createImage( display, Fixture.IMAGE1 );
 
     control.setBackgroundImage( image );
@@ -685,9 +685,9 @@ public class ControlLCAUtil_Test {
 
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
-    JSONArray args = ( JSONArray )message.findSetProperty( control, "backgroundImage" );
+    JsonArray args = ( JsonArray )message.findSetProperty( control, "backgroundImage" );
     String expected = "[ \"" + imageLocation + "\", 58, 12 ]";
-    assertTrue( ProtocolTestUtil.jsonEquals( expected, args ) );
+    assertTrue( jsonEquals( expected, args ) );
   }
 
   @Test
@@ -712,50 +712,50 @@ public class ControlLCAUtil_Test {
   }
 
   @Test
-  public void testRenderFont() throws JSONException {
+  public void testRenderFont() {
     control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
     ControlLCAUtil.renderFont( control );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray result = ( JSONArray )message.findSetProperty( control, "font" );
-    assertEquals( 4, result.length() );
-    assertEquals( "Arial", ( ( JSONArray )result.get( 0 ) ).getString( 0 ) );
-    assertEquals( 12, result.getInt( 1 ) );
-    assertFalse( result.getBoolean( 2 ) );
-    assertFalse( result.getBoolean( 3 ) );
+    JsonArray result = ( JsonArray )message.findSetProperty( control, "font" );
+    assertEquals( 4, result.size() );
+    assertEquals( "Arial", result.get( 0 ).asArray().get( 0 ).asString() );
+    assertEquals( 12, result.get( 1 ).asInt() );
+    assertFalse( result.get( 2 ).asBoolean() );
+    assertFalse( result.get( 3 ).asBoolean() );
   }
 
   @Test
-  public void testRenderFontBold() throws JSONException {
+  public void testRenderFontBold() {
     control.setFont( new Font( display, "Arial", 12, SWT.BOLD ) );
     ControlLCAUtil.renderFont( control );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray result = ( JSONArray )message.findSetProperty( control, "font" );
-    assertTrue( result.getBoolean( 2 ) );
-    assertFalse( result.getBoolean( 3 ) );
+    JsonArray result = ( JsonArray )message.findSetProperty( control, "font" );
+    assertTrue( result.get( 2 ).asBoolean() );
+    assertFalse( result.get( 3 ).asBoolean() );
   }
 
   @Test
-  public void testRenderFontItalic() throws JSONException {
+  public void testRenderFontItalic() {
     control.setFont( new Font( display, "Arial", 12, SWT.ITALIC ) );
     ControlLCAUtil.renderFont( control );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray result = ( JSONArray )message.findSetProperty( control, "font" );
-    assertFalse( result.getBoolean( 2 ) );
-    assertTrue( result.getBoolean( 3 ) );
+    JsonArray result = ( JsonArray )message.findSetProperty( control, "font" );
+    assertFalse( result.get( 2 ).asBoolean() );
+    assertTrue( result.get( 3 ).asBoolean() );
   }
 
   @Test
-  public void testRenderFontItalicAndBold() throws JSONException {
+  public void testRenderFontItalicAndBold() {
     control.setFont( new Font( display, "Arial", 12, SWT.ITALIC | SWT.BOLD ) );
     ControlLCAUtil.renderFont( control );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray result = ( JSONArray )message.findSetProperty( control, "font" );
-    assertTrue( result.getBoolean( 2 ) );
-    assertTrue( result.getBoolean( 3 ) );
+    JsonArray result = ( JsonArray )message.findSetProperty( control, "font" );
+    assertTrue( result.get( 2 ).asBoolean() );
+    assertTrue( result.get( 3 ).asBoolean() );
   }
 
   @Test
@@ -782,7 +782,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderFont( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( control, "font" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( control, "font" ) );
   }
 
   @Test
@@ -826,7 +826,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderCursor( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( control, "cursor" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( control, "cursor" ) );
   }
 
   @Test

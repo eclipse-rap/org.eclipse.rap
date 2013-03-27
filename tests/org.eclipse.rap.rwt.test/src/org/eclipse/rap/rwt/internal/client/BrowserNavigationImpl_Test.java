@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -24,15 +25,13 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.swt.widgets.Display;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -215,16 +214,16 @@ public class BrowserNavigationImpl_Test {
   }
 
   @Test
-  public void testRenderAddToHistory() throws JSONException {
+  public void testRenderAddToHistory() {
     navigation.pushState( "testId", "testText" );
 
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( TYPE, "addToHistory" );
-    JSONArray entries = ( JSONArray )operation.getProperty( "entries" );
-    JSONArray actual1 = entries.getJSONArray( 0 );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[\"testId\",\"testText\"]", actual1 ) );
+    JsonArray entries = ( JsonArray )operation.getProperty( "entries" );
+    JsonArray actual1 = entries.get( 0 ).asArray();
+    assertTrue( jsonEquals( "[\"testId\",\"testText\"]", actual1 ) );
   }
 
   @Test
@@ -240,7 +239,7 @@ public class BrowserNavigationImpl_Test {
   }
 
   @Test
-  public void testRenderAddToHistoryOrder() throws JSONException {
+  public void testRenderAddToHistoryOrder() {
     navigation.pushState( "testId1", "testText1" );
     navigation.pushState( "testId2", "testText2" );
 
@@ -248,11 +247,11 @@ public class BrowserNavigationImpl_Test {
 
     Message message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( TYPE, "addToHistory" );
-    JSONArray entries = ( JSONArray )operation.getProperty( "entries" );
-    JSONArray actual1 = entries.getJSONArray( 0 );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[\"testId1\",\"testText1\"]", actual1 ) );
-    JSONArray actual2 = entries.getJSONArray( 1 );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[\"testId2\",\"testText2\"]", actual2 ) );
+    JsonArray entries = ( JsonArray )operation.getProperty( "entries" );
+    JsonArray actual1 = entries.get( 0 ).asArray();
+    assertTrue( jsonEquals( "[\"testId1\",\"testText1\"]", actual1 ) );
+    JsonArray actual2 = entries.get( 1 ).asArray();
+    assertTrue( jsonEquals( "[\"testId2\",\"testText2\"]", actual2 ) );
   }
 
 }

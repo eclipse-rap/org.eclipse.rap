@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -29,8 +30,6 @@ import org.eclipse.rap.rwt.testfixture.Message.ListenOperation;
 import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -95,15 +94,15 @@ public class ClientObject_Test {
   }
 
   @Test
-  public void testSetPropertyForIntArray() throws JSONException {
+  public void testSetPropertyForIntArray() {
     clientObject.set( "key", new int[]{ 1, 2, 3 } );
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
-    JSONArray result = ( JSONArray )operation.getProperty( "key" );
-    assertEquals( 3, result.length() );
-    assertEquals( 1, result.getInt( 0 ) );
-    assertEquals( 2, result.getInt( 1 ) );
-    assertEquals( 3, result.getInt( 2 ) );
+    JsonArray result = ( JsonArray )operation.getProperty( "key" );
+    assertEquals( 3, result.size() );
+    assertEquals( 1, result.get( 0 ).asInt() );
+    assertEquals( 2, result.get( 1 ).asInt() );
+    assertEquals( 3, result.get( 2 ).asInt() );
   }
 
   @Test

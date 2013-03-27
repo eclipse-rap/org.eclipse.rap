@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ccombokit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -22,8 +23,9 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -49,9 +51,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -453,14 +452,14 @@ public class CComboLCA_Test {
   }
 
   @Test
-  public void testRenderItems() throws IOException, JSONException {
+  public void testRenderItems() throws IOException {
     ccombo.setItems( new String[] { "a", "b", "c" } );
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
     String expected = "[ \"a\", \"b\", \"c\" ]";
-    JSONArray actual = ( JSONArray )message.findSetProperty( ccombo, "items" );
-    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( ccombo, "items" );
+    assertTrue( jsonEquals( expected, actual ) );
   }
 
   @Test
@@ -635,15 +634,15 @@ public class CComboLCA_Test {
   }
 
   @Test
-  public void testRenderSelection() throws IOException, JSONException {
+  public void testRenderSelection() throws IOException {
     ccombo.setText( "foo bar" );
 
     ccombo.setSelection( new Point( 1, 3 ) );
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( ccombo, "selection" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 3 ]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( ccombo, "selection" );
+    assertTrue( jsonEquals( "[ 1, 3 ]", actual ) );
   }
 
   @Test
@@ -689,7 +688,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( ccombo, "textLimit" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( ccombo, "textLimit" ) );
   }
 
   @Test
@@ -716,7 +715,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( ccombo, "textLimit" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( ccombo, "textLimit" ) );
   }
 
   @Test
@@ -730,7 +729,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( ccombo, "textLimit" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( ccombo, "textLimit" ) );
   }
 
   @Test

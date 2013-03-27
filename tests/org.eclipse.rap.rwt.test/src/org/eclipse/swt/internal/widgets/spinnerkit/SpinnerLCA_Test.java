@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -49,7 +50,6 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -514,7 +514,7 @@ public class SpinnerLCA_Test {
     lca.renderChanges( spinner );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( spinner, "textLimit" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( spinner, "textLimit" ) );
   }
 
   @Test
@@ -528,7 +528,7 @@ public class SpinnerLCA_Test {
     lca.renderChanges( spinner );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( spinner, "textLimit" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( spinner, "textLimit" ) );
   }
 
   @Test

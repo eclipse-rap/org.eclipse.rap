@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -46,9 +48,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -231,22 +230,22 @@ public class LinkLCA_Test {
   }
 
   @Test
-  public void testRenderText() throws IOException, JSONException {
+  public void testRenderText() throws IOException {
     link.setText( "foo <a>123</a> bar" );
     lca.renderChanges( link );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray text = ( JSONArray )message.findSetProperty( link, "text" );
-    assertEquals( 3, text.length() );
-    JSONArray segment1 = ( JSONArray )text.get( 0 );
-    JSONArray segment2 = ( JSONArray )text.get( 1 );
-    JSONArray segment3 = ( JSONArray )text.get( 2 );
-    assertEquals( "foo ", segment1.get( 0 ) );
-    assertEquals( JSONObject.NULL, segment1.get( 1 ) );
-    assertEquals( "123", segment2.get( 0 ) );
-    assertEquals( new Integer( 0 ), segment2.get( 1 ) );
-    assertEquals( " bar", segment3.get( 0 ) );
-    assertEquals( JSONObject.NULL, segment3.get( 1 ) );
+    JsonArray text = ( JsonArray )message.findSetProperty( link, "text" );
+    assertEquals( 3, text.size() );
+    JsonArray segment1 = text.get( 0 ).asArray();
+    JsonArray segment2 = text.get( 1 ).asArray();
+    JsonArray segment3 = text.get( 2 ).asArray();
+    assertEquals( "foo ", segment1.get( 0 ).asString() );
+    assertEquals( JsonObject.NULL, segment1.get( 1 ) );
+    assertEquals( "123", segment2.get( 0 ).asString() );
+    assertEquals( 0, segment2.get( 1 ).asInt() );
+    assertEquals( " bar", segment3.get( 0 ).asString() );
+    assertEquals( JsonObject.NULL, segment3.get( 1 ) );
   }
 
   @Test
@@ -260,8 +259,8 @@ public class LinkLCA_Test {
     lca.renderChanges( link );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray text = ( JSONArray )message.findSetProperty( link, "text" );
-    assertEquals( 0, text.length() );
+    JsonArray text = ( JsonArray )message.findSetProperty( link, "text" );
+    assertEquals( 0, text.size() );
   }
 
   @Test

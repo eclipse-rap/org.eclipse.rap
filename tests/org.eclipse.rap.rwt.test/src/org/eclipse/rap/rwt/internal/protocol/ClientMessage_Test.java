@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,7 +71,7 @@ public class ClientMessage_Test {
   @Test
   public void testConstructWithoutOperations() {
     try {
-      new ClientMessage( "{ " + ClientMessage.PROP_HEAD + " : {}, \"foo\": 23 }" );
+      new ClientMessage( "{ \"head\" : {}, \"foo\": 23 }" );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Missing operations array" ) );
@@ -80,9 +80,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testGetHeaderParameter() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : { \"abc\" : \"foo\" },"
-                + ClientMessage.PROP_OPERATIONS + " : [] }";
+    String json = "{ \"head\" : { \"abc\" : \"foo\" }, \"operations\" : [] }";
     ClientMessage message = new ClientMessage( json );
 
     assertEquals( "foo", message.getHeadProperty( "abc" ) );
@@ -90,9 +88,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testGetHeaderParameter_NoParameter() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : [] }";
+    String json = "{ \"head\" : {}, \"operations\" : [] }";
     ClientMessage message = new ClientMessage( json );
 
     assertNull( message.getHeadProperty( "abc" ) );
@@ -100,9 +96,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testConstructWithInvalidOperations() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : 23 }";
+    String json = "{ \"head\" : {}, \"operations\" : 23 }";
 
     try {
       new ClientMessage( json );
@@ -114,9 +108,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testConstructWithOperationUnknownType() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
+    String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"abc\", \"w3\", { \"action\" : \"foo\" } ]"
                 + "] }";
     try {
@@ -129,9 +121,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testGetAllOperationsFor() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-    		    + ClientMessage.PROP_OPERATIONS + " : ["
+    String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
@@ -147,9 +137,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testGetAllOperationsFor_NoOperations() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
+    String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
@@ -163,9 +151,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testGetAllOperations() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
+    String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
@@ -179,9 +165,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testGetLastSetOperation_ByProperty() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
+    String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"set\", \"w3\", { \"p2\" : \"foo\" } ],"
                 + "[ \"set\", \"w3\", { \"p1\" : \"bar\" } ]"
@@ -195,9 +179,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testGetLastNotifyOperation() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
+    String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", {} ],"
@@ -214,13 +196,11 @@ public class ClientMessage_Test {
 
   @Test
   public void testGetLastNotifyOperation_WithoutTarget() {
-    String json = "{ "
-        + ClientMessage.PROP_HEAD + " : {},"
-        + ClientMessage.PROP_OPERATIONS + " : ["
-        + "[ \"notify\", \"w4\", \"widgetSelected\", {} ],"
-        + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
-        + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
-        + "] }";
+    String json = "{ \"head\" : {}, \"operations\" : ["
+                + "[ \"notify\", \"w4\", \"widgetSelected\", {} ],"
+                + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
+                + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
+                + "] }";
     ClientMessage message = new ClientMessage( json );
 
     NotifyOperation operation = message.getLastNotifyOperationFor( null, "widgetSelected" );
@@ -231,13 +211,11 @@ public class ClientMessage_Test {
 
   @Test
   public void testGetLastNotifyOperation_WithoutTargetAndName() {
-    String json = "{ "
-        + ClientMessage.PROP_HEAD + " : {},"
-        + ClientMessage.PROP_OPERATIONS + " : ["
-        + "[ \"notify\", \"w4\", \"widgetSelected\", {} ],"
-        + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
-        + "[ \"notify\", \"w3\", \"widgetDefaultSelected\", {} ]"
-        + "] }";
+    String json = "{ \"head\" : {}, \"operations\" : ["
+                + "[ \"notify\", \"w4\", \"widgetSelected\", {} ],"
+                + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
+                + "[ \"notify\", \"w3\", \"widgetDefaultSelected\", {} ]"
+                + "] }";
     ClientMessage message = new ClientMessage( json );
 
     NotifyOperation operation = message.getLastNotifyOperationFor( null, null );
@@ -248,13 +226,11 @@ public class ClientMessage_Test {
 
   @Test
   public void testGetAllCallOperations() {
-    String json = "{ "
-        + ClientMessage.PROP_HEAD + " : {},"
-        + ClientMessage.PROP_OPERATIONS + " : ["
-        + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
-        + "[ \"call\", \"w2\", \"store\", {} ],"
-        + "[ \"call\", \"w3\", \"foo\", {} ]"
-        + "] }";
+    String json = "{ \"head\" : {}, \"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+                + "[ \"call\", \"w2\", \"store\", {} ],"
+                + "[ \"call\", \"w3\", \"foo\", {} ]"
+                + "] }";
     ClientMessage message = new ClientMessage( json );
 
     CallOperation[] operations = message.getAllCallOperationsFor( null, null );
@@ -266,9 +242,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testGetAllCallOperations_ByTarget() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
+    String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"call\", \"w3\", \"store\", {} ],"
                 + "[ \"call\", \"w4\", \"foo\", {} ]"
@@ -283,14 +257,12 @@ public class ClientMessage_Test {
 
   @Test
   public void testGetAllCallOperations_ByTargetAnMethodName() {
-    String json = "{ "
-        + ClientMessage.PROP_HEAD + " : {},"
-        + ClientMessage.PROP_OPERATIONS + " : ["
-        + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
-        + "[ \"call\", \"w3\", \"store\", {} ],"
-        + "[ \"call\", \"w4\", \"foo\", { \"p1\" : \"abc\" } ],"
-        + "[ \"call\", \"w4\", \"foo\", { \"p2\" : \"def\" } ]"
-        + "] }";
+    String json = "{ \"head\" : {}, \"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+                + "[ \"call\", \"w3\", \"store\", {} ],"
+                + "[ \"call\", \"w4\", \"foo\", { \"p1\" : \"abc\" } ],"
+                + "[ \"call\", \"w4\", \"foo\", { \"p2\" : \"def\" } ]"
+                + "] }";
     ClientMessage message = new ClientMessage( json );
 
     CallOperation[] operations = message.getAllCallOperationsFor( "w4", "foo" );
@@ -302,9 +274,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testSetOperation_WithoutTarget() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
+    String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"set\", { \"p1\" : \"foo\", \"p2\" : true } ]"
                 + "] }";
 
@@ -317,9 +287,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testSetOperation_WithoutProperties() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
+    String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"set\", \"w3\" ]"
                 + "] }";
 
@@ -332,9 +300,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testNotifyOperation_WithoutEventType() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
+    String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"notify\", \"w3\", { \"check\" : true } ]"
                 + "] }";
 
@@ -347,9 +313,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testNotifyOperation_WithoutProperties() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
+    String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"notify\", \"w3\", \"widgetSelected\""
                 + "] }";
 
@@ -362,9 +326,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testCallOperation() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
+    String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"call\", \"w3\", \"store\", { \"id\" : 123 } ]"
                 + "] }";
     ClientMessage message = new ClientMessage( json );
@@ -378,9 +340,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testCallOperation_WithoutMethodName() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
+    String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"call\", \"w3\", { \"id\" : 123 } ]"
                 + "] }";
 
@@ -393,9 +353,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testCallOperation_WithoutProperties() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
+    String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"call\", \"w3\", \"store\""
                 + "] }";
 
@@ -408,9 +366,7 @@ public class ClientMessage_Test {
 
   @Test
   public void testOperationGetPropertyAsArray() {
-    String json = "{ "
-                + ClientMessage.PROP_HEAD + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
+    String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"set\", \"w3\", { \"result\" : [1,2] } ]"
                 + "] }";
     ClientMessage message = new ClientMessage( json );
@@ -423,11 +379,9 @@ public class ClientMessage_Test {
 
   @Test
   public void testOperationGetProperty_MixedArray() {
-    String json = "{ "
-        + ClientMessage.PROP_HEAD + " : {},"
-        + ClientMessage.PROP_OPERATIONS + " : ["
-        + "[ \"set\", \"w3\", { \"result\" : [1,\"foo\",3,4] } ]"
-        + "] }";
+    String json = "{ \"head\" : {}, \"operations\" : ["
+                + "[ \"set\", \"w3\", { \"result\" : [1,\"foo\",3,4] } ]"
+                + "] }";
     ClientMessage message = new ClientMessage( json );
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
@@ -442,11 +396,9 @@ public class ClientMessage_Test {
 
   @Test
   public void testOperationGetPropertyAsMap() {
-    String json = "{ "
-        + ClientMessage.PROP_HEAD + " : {},"
-        + ClientMessage.PROP_OPERATIONS + " : ["
-        + "[ \"set\", \"w3\", { \"result\" : { \"p1\" : \"foo\", \"p2\" : \"bar\" } } ]"
-        + "] }";
+    String json = "{ \"head\" : {}, \"operations\" : ["
+                + "[ \"set\", \"w3\", { \"result\" : { \"p1\" : \"foo\", \"p2\" : \"bar\" } } ]"
+                + "] }";
     ClientMessage message = new ClientMessage( json );
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
@@ -460,11 +412,9 @@ public class ClientMessage_Test {
 
   @Test
   public void testOperationGetPropertyAsMap_WithArray() {
-    String json = "{ "
-        + ClientMessage.PROP_HEAD + " : {},"
-        + ClientMessage.PROP_OPERATIONS + " : ["
-        + "[ \"set\", \"w3\", { \"result\" : { \"p1\" : [1,2], \"p2\" : \"bar\" } } ]"
-        + "] }";
+    String json = "{ \"head\" : {}, \"operations\" : ["
+                + "[ \"set\", \"w3\", { \"result\" : { \"p1\" : [1,2], \"p2\" : \"bar\" } } ]"
+                + "] }";
     ClientMessage message = new ClientMessage( json );
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
@@ -498,8 +448,7 @@ public class ClientMessage_Test {
   }
 
   private static Operation createOperation( String operationJson ) {
-    String json = "{ " + ClientMessage.PROP_HEAD + " : {},"
-        + ClientMessage.PROP_OPERATIONS + " : [" + operationJson + "] }";
+    String json = "{ \"head\" : {}, \"operations\" : [" + operationJson + "] }";
     ClientMessage message = new ClientMessage( json );
     return message.getAllOperations()[ 0 ];
   }

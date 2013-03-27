@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.clabelkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -20,7 +21,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -33,9 +35,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -170,7 +169,7 @@ public class CLabelLCA_Test {
   }
 
   @Test
-  public void testRenderImage() throws IOException, JSONException {
+  public void testRenderImage() throws IOException {
     Image image = TestUtil.createImage( display, Fixture.IMAGE_100x50 );
 
     clabel.setImage( image );
@@ -179,8 +178,8 @@ public class CLabelLCA_Test {
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     String expected = "[\"" + imageLocation + "\", 100, 50 ]";
-    JSONArray actual = ( JSONArray )message.findSetProperty( clabel, "image" );
-    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( clabel, "image" );
+    assertTrue( jsonEquals( expected, actual ) );
   }
 
   @Test
@@ -209,7 +208,7 @@ public class CLabelLCA_Test {
     lca.renderChanges( clabel );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( clabel, "image" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( clabel, "image" ) );
   }
 
   @Test
@@ -378,7 +377,7 @@ public class CLabelLCA_Test {
   }
 
   @Test
-  public void testRenderBackgroundGradient() throws IOException, JSONException {
+  public void testRenderBackgroundGradient() throws IOException {
     Color[] gradientColors = new Color[] {
       display.getSystemColor( SWT.COLOR_RED ),
       display.getSystemColor( SWT.COLOR_GREEN )
@@ -388,14 +387,14 @@ public class CLabelLCA_Test {
     lca.renderChanges( clabel );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray gradient = ( JSONArray )message.findSetProperty( clabel, "backgroundGradient" );
-    JSONArray colors = ( JSONArray )gradient.get( 0 );
-    JSONArray stops = ( JSONArray )gradient.get( 1 );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[255,0,0,255]", colors.getJSONArray( 0 ) ) );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", colors.getJSONArray( 1 ) ) );
-    assertEquals( new Integer( 0 ), stops.get( 0 ) );
-    assertEquals( new Integer( 50 ), stops.get( 1 ) );
-    assertEquals( Boolean.FALSE, gradient.get( 2 ) );
+    JsonArray gradient = ( JsonArray )message.findSetProperty( clabel, "backgroundGradient" );
+    JsonArray colors = gradient.get( 0 ).asArray();
+    JsonArray stops = gradient.get( 1 ).asArray();
+    assertTrue( jsonEquals( "[255,0,0,255]", colors.get( 0 ).asArray() ) );
+    assertTrue( jsonEquals( "[0,255,0,255]", colors.get( 1 ).asArray() ) );
+    assertEquals( 0, stops.get( 0 ).asInt() );
+    assertEquals( 50, stops.get( 1 ).asInt() );
+    assertFalse( gradient.get( 2 ).asBoolean() );
   }
 
   @Test

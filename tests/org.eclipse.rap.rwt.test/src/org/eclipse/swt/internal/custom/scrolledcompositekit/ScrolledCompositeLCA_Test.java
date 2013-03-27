@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.scrolledcompositekit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -46,8 +47,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -263,7 +262,7 @@ public class ScrolledCompositeLCA_Test {
   }
 
   @Test
-  public void testRenderOrigin() throws IOException, JSONException {
+  public void testRenderOrigin() throws IOException {
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
 
@@ -271,12 +270,12 @@ public class ScrolledCompositeLCA_Test {
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( sc, "origin" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 2 ]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( sc, "origin" );
+    assertTrue( jsonEquals( "[ 1, 2 ]", actual ) );
   }
 
   @Test
-  public void testRenderOrigin_SetByScrollbar() throws IOException, JSONException {
+  public void testRenderOrigin_SetByScrollbar() throws IOException {
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
 
@@ -285,8 +284,8 @@ public class ScrolledCompositeLCA_Test {
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( sc, "origin" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 2 ]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( sc, "origin" );
+    assertTrue( jsonEquals( "[ 1, 2 ]", actual ) );
   }
 
   @Test

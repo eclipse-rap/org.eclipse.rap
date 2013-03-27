@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.util;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.join;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -18,6 +19,7 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -27,8 +29,6 @@ import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -167,7 +167,7 @@ public class ActiveKeysUtil_Test {
   }
 
   @Test
-  public void testWriteKeyBindings() throws JSONException {
+  public void testWriteKeyBindings() {
     Fixture.fakeNewRequest();
 
     String[] keyBindings = new String[] {
@@ -204,12 +204,12 @@ public class ActiveKeysUtil_Test {
         + "\",\"";
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
-    JSONArray activeKeys = ( JSONArray )operation.getProperty( "activeKeys" );
-    assertEquals( expected, activeKeys.join( "," ) );
+    JsonArray activeKeys = ( JsonArray )operation.getProperty( "activeKeys" );
+    assertEquals( expected, join( activeKeys, "," ) );
   }
 
   @Test
-  public void testWriteKeyBindingsOnWidget() throws JSONException {
+  public void testWriteKeyBindingsOnWidget() {
     Fixture.fakeNewRequest();
     Shell shell = new Shell( display );
     String[] activeKeys = new String[] { "x", "ALT+x", };
@@ -219,12 +219,12 @@ public class ActiveKeysUtil_Test {
     String expected = "\"#88\",\"ALT+#88\"";
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( shell, "activeKeys" );
-    JSONArray renderedKeys = ( JSONArray )operation.getProperty( "activeKeys" );
-    assertEquals( expected, renderedKeys.join( "," ) );
+    JsonArray renderedKeys = ( JsonArray )operation.getProperty( "activeKeys" );
+    assertEquals( expected, join( renderedKeys, "," ) );
   }
 
   @Test
-  public void testWriteCancelKeys() throws JSONException {
+  public void testWriteCancelKeys() {
     Fixture.fakeNewRequest();
     String[] activeKeys = new String[] { "x", "ALT+x", };
     display.setData( RWT.CANCEL_KEYS, activeKeys );
@@ -233,12 +233,12 @@ public class ActiveKeysUtil_Test {
     String expected = "\"#88\",\"ALT+#88\"";
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( "w1", "cancelKeys" );
-    JSONArray renderedKeys = ( JSONArray )operation.getProperty( "cancelKeys" );
-    assertEquals( expected, renderedKeys.join( "," ) );
+    JsonArray renderedKeys = ( JsonArray )operation.getProperty( "cancelKeys" );
+    assertEquals( expected, join( renderedKeys, "," ) );
   }
 
   @Test
-  public void testWriteCancelKeysOnWidget() throws JSONException {
+  public void testWriteCancelKeysOnWidget() {
     Fixture.fakeNewRequest();
     Shell shell = new Shell( display );
     String[] activeKeys = new String[] { "x", "ALT+x", };
@@ -248,8 +248,8 @@ public class ActiveKeysUtil_Test {
     String expected = "\"#88\",\"ALT+#88\"";
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( shell, "cancelKeys" );
-    JSONArray renderedKeys = ( JSONArray )operation.getProperty( "cancelKeys" );
-    assertEquals( expected, renderedKeys.join( "," ) );
+    JsonArray renderedKeys = ( JsonArray )operation.getProperty( "cancelKeys" );
+    assertEquals( expected, join( renderedKeys, "," ) );
   }
 
   @Test
@@ -372,8 +372,8 @@ public class ActiveKeysUtil_Test {
 
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
-    JSONArray activeKeys = ( JSONArray )operation.getProperty( "activeKeys" );
-    assertEquals( 0, activeKeys.length() );
+    JsonArray activeKeys = ( JsonArray )operation.getProperty( "activeKeys" );
+    assertEquals( 0, activeKeys.size() );
   }
 
   @Test
@@ -388,8 +388,8 @@ public class ActiveKeysUtil_Test {
 
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
-    JSONArray activeKeys = ( JSONArray )operation.getProperty( "activeKeys" );
-    assertEquals( 0, activeKeys.length() );
+    JsonArray activeKeys = ( JsonArray )operation.getProperty( "activeKeys" );
+    assertEquals( 0, activeKeys.size() );
   }
 
 }

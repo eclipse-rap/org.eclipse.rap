@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
@@ -28,7 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -51,9 +53,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -531,7 +530,7 @@ public class TableColumnLCA_Test {
   }
 
   @Test
-  public void testRenderImage() throws IOException, JSONException {
+  public void testRenderImage() throws IOException {
     Image image = createImage( display, Fixture.IMAGE_100x50 );
 
     column.setImage( image );
@@ -540,8 +539,8 @@ public class TableColumnLCA_Test {
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     String expected = "[\"" + imageLocation + "\", 100, 50 ]";
-    JSONArray actual = ( JSONArray )message.findSetProperty( column, "image" );
-    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( column, "image" );
+    assertTrue( jsonEquals( expected, actual ) );
   }
 
   @Test
@@ -570,7 +569,7 @@ public class TableColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( column, "image" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( column, "image" ) );
   }
 
   @Test
@@ -813,18 +812,18 @@ public class TableColumnLCA_Test {
   }
 
   @Test
-  public void testRenderFont() throws JSONException, IOException {
+  public void testRenderFont() throws IOException {
     table.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
 
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray result = ( JSONArray )message.findSetProperty( column, "font" );
-    assertEquals( 4, result.length() );
-    assertEquals( "Arial", ( ( JSONArray )result.get( 0 ) ).getString( 0 ) );
-    assertEquals( 12, result.getInt( 1 ) );
-    assertFalse( result.getBoolean( 2 ) );
-    assertFalse( result.getBoolean( 3 ) );
+    JsonArray result = ( JsonArray )message.findSetProperty( column, "font" );
+    assertEquals( 4, result.size() );
+    assertEquals( "Arial", result.get( 0 ).asArray().get( 0 ).asString() );
+    assertEquals( 12, result.get( 1 ).asInt() );
+    assertFalse( result.get( 2 ).asBoolean() );
+    assertFalse( result.get( 3 ).asBoolean() );
   }
 
   @Test
@@ -851,11 +850,11 @@ public class TableColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( column, "font" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( column, "font" ) );
   }
 
   @Test
-  public void testRenderData() throws JSONException, IOException {
+  public void testRenderData() throws IOException {
     WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
     column.setData( "foo", "string" );
     column.setData( "bar", Integer.valueOf( 1 ) );
@@ -863,9 +862,9 @@ public class TableColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    JSONObject data = ( JSONObject )message.findSetProperty( column, "data" );
-    assertEquals( "string", data.getString( "foo" ) );
-    assertEquals( Integer.valueOf( 1 ), Integer.valueOf( data.getInt( "bar" ) ) );
+    JsonObject data = ( JsonObject )message.findSetProperty( column, "data" );
+    assertEquals( "string", data.get( "foo" ).asString() );
+    assertEquals( 1, data.get( "bar" ).asInt() );
   }
 
   @Test

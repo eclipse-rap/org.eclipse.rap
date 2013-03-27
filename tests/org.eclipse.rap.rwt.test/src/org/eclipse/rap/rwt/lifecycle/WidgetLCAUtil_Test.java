@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -20,7 +21,8 @@ import static org.mockito.Mockito.mock;
 import java.util.Date;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -41,9 +43,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -204,12 +203,12 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
-  public void testRenderBackground() throws JSONException {
+  public void testRenderBackground() {
     WidgetLCAUtil.renderBackground( widget, new Color( display, 0, 16, 255 ) );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( widget, "background" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,16,255,255]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( widget, "background" );
+    assertTrue( jsonEquals( "[0,16,255,255]", actual ) );
   }
 
   @Test
@@ -222,7 +221,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderBackground( widget, null, false );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( widget, "background" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( widget, "background" ) );
   }
 
   @Test
@@ -239,13 +238,13 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
-  public void testRenderIntialBackgroundTransparent() throws JSONException {
+  public void testRenderIntialBackgroundTransparent() {
     WidgetLCAUtil.renderBackground( widget, null, true );
 
     Message message = Fixture.getProtocolMessage();
 
-    JSONArray actual = ( JSONArray )message.findSetProperty( widget, "background" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,0,0]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( widget, "background" );
+    assertTrue( jsonEquals( "[0,0,0,0]", actual ) );
   }
 
   @Test
@@ -265,7 +264,7 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
-  public void testRenderBackgroundNoMoreTransparent() throws JSONException {
+  public void testRenderBackgroundNoMoreTransparent() {
     widget = new Button( shell, SWT.CHECK );
     shell.setBackgroundMode( SWT.INHERIT_DEFAULT );
     Fixture.markInitialized( display );
@@ -278,8 +277,8 @@ public class WidgetLCAUtil_Test {
 
     Message message = Fixture.getProtocolMessage();
 
-    JSONArray actual = ( JSONArray )message.findSetProperty( widget, "background" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,16,255,255]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( widget, "background" );
+    assertTrue( jsonEquals( "[0,16,255,255]", actual ) );
   }
 
   @Test
@@ -292,7 +291,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderBackground( widget, null );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( widget, "background" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( widget, "background" ) );
   }
 
   @Test
@@ -305,15 +304,15 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
-  public void testRenderForeground() throws JSONException {
+  public void testRenderForeground() {
     widget.setForeground( new Color( display, 0, 16, 255 ) );
     ControlLCAUtil.renderForeground( widget );
 
     Message message = Fixture.getProtocolMessage();
 
 
-    JSONArray actual = ( JSONArray )message.findSetProperty( widget, "foreground" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,16,255,255]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( widget, "foreground" );
+    assertTrue( jsonEquals( "[0,16,255,255]", actual ) );
   }
 
   @Test
@@ -405,7 +404,7 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
-  public void testRenderBackgroundGradient() throws JSONException {
+  public void testRenderBackgroundGradient() {
     Control control = new Composite( shell, SWT.NONE );
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
@@ -419,18 +418,18 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderBackgroundGradient( control );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray gradient = ( JSONArray )message.findSetProperty( control, "backgroundGradient" );
-    JSONArray colors = ( JSONArray )gradient.get( 0 );
-    JSONArray stops = ( JSONArray )gradient.get( 1 );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", colors.getJSONArray( 0 ) ) );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,255,255]", colors.getJSONArray( 1 ) ) );
-    assertEquals( new Integer( 0 ), stops.get( 0 ) );
-    assertEquals( new Integer( 100 ), stops.get( 1 ) );
-    assertEquals( Boolean.TRUE, gradient.get( 2 ) );
+    JsonArray gradient = ( JsonArray )message.findSetProperty( control, "backgroundGradient" );
+    JsonArray colors = gradient.get( 0 ).asArray();
+    JsonArray stops = gradient.get( 1 ).asArray();
+    assertTrue( jsonEquals( "[0,255,0,255]", colors.get( 0 ).asArray() ) );
+    assertTrue( jsonEquals( "[0,0,255,255]", colors.get( 1 ).asArray() ) );
+    assertEquals( 0, stops.get( 0 ).asInt() );
+    assertEquals( 100, stops.get( 1 ).asInt() );
+    assertTrue( gradient.get( 2 ).asBoolean() );
   }
 
   @Test
-  public void testRenderBackgroundGradientHorizontal() throws JSONException {
+  public void testRenderBackgroundGradientHorizontal() {
     Control control = new Composite( shell, SWT.NONE );
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
@@ -444,14 +443,14 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderBackgroundGradient( control );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray gradient = ( JSONArray )message.findSetProperty( control, "backgroundGradient" );
-    JSONArray colors = ( JSONArray )gradient.get( 0 );
-    JSONArray stops = ( JSONArray )gradient.get( 1 );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", colors.getJSONArray( 0 ) ) );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,255,255]", colors.getJSONArray( 1 ) ) );
-    assertEquals( new Integer( 0 ), stops.get( 0 ) );
-    assertEquals( new Integer( 100 ), stops.get( 1 ) );
-    assertEquals( Boolean.FALSE, gradient.get( 2 ) );
+    JsonArray gradient = ( JsonArray )message.findSetProperty( control, "backgroundGradient" );
+    JsonArray colors = gradient.get( 0 ).asArray();
+    JsonArray stops = gradient.get( 1 ).asArray();
+    assertTrue( jsonEquals( "[0,255,0,255]", colors.get( 0 ).asArray() ) );
+    assertTrue( jsonEquals( "[0,0,255,255]", colors.get( 1 ).asArray() ) );
+    assertEquals( 0, stops.get( 0 ).asInt() );
+    assertEquals( 100, stops.get( 1 ).asInt() );
+    assertFalse( gradient.get( 2 ).asBoolean() );
   }
 
   @Test
@@ -494,11 +493,11 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderBackgroundGradient( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( control, "backgroundGradient" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( control, "backgroundGradient" ) );
   }
 
   @Test
-  public void testRenderRoundedBorder() throws JSONException {
+  public void testRenderRoundedBorder() {
     Widget widget = new Composite( shell, SWT.NONE );
     Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
@@ -508,14 +507,14 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderRoundedBorder( widget );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray border = ( JSONArray )message.findSetProperty( widget, "roundedBorder" );
-    assertEquals( 6, border.length() );
-    assertEquals( 2, border.getInt( 0 ) );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", border.getJSONArray( 1 ) ) );
-    assertEquals( 5, border.getInt( 2 ) );
-    assertEquals( 6, border.getInt( 3 ) );
-    assertEquals( 7, border.getInt( 4 ) );
-    assertEquals( 8, border.getInt( 5 ) );
+    JsonArray border = ( JsonArray )message.findSetProperty( widget, "roundedBorder" );
+    assertEquals( 6, border.size() );
+    assertEquals( 2, border.get( 0 ).asInt() );
+    assertTrue( jsonEquals( "[0,255,0,255]", border.get( 1 ).asArray() ) );
+    assertEquals( 5, border.get( 2 ).asInt() );
+    assertEquals( 6, border.get( 3 ).asInt() );
+    assertEquals( 7, border.get( 4 ).asInt() );
+    assertEquals( 8, border.get( 5 ).asInt() );
   }
 
   @Test
@@ -550,7 +549,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderRoundedBorder( widget );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( widget, "roundedBorder" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( widget, "roundedBorder" ) );
   }
 
   @Test
@@ -588,7 +587,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderMenu( widget, null );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( JSONObject.NULL, message.findSetProperty( widget, "menu" ) );
+    assertEquals( JsonObject.NULL, message.findSetProperty( widget, "menu" ) );
   }
 
   @Test
@@ -600,7 +599,7 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
-  public void testRenderData() throws JSONException {
+  public void testRenderData() {
     WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
     widget.setData( "foo", "string" );
     widget.setData( "bar", Integer.valueOf( 1 ) );
@@ -608,9 +607,9 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderData( widget );
 
     Message message = Fixture.getProtocolMessage();
-    JSONObject data = ( JSONObject )message.findSetProperty( widget, "data" );
-    assertEquals( "string", data.getString( "foo" ) );
-    assertEquals( Integer.valueOf( 1 ), Integer.valueOf( data.getInt( "bar" ) ) );
+    JsonObject data = ( JsonObject )message.findSetProperty( widget, "data" );
+    assertEquals( "string", data.get( "foo" ).asString() );
+    assertEquals( 1, data.get( "bar" ).asInt() );
   }
 
   @Test

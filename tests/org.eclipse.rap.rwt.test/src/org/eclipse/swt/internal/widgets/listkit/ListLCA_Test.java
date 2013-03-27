@@ -12,6 +12,7 @@
 
 package org.eclipse.swt.internal.widgets.listkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,8 +26,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -50,8 +51,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -306,14 +305,14 @@ public class ListLCA_Test {
   }
 
   @Test
-  public void testRenderItems() throws IOException, JSONException {
+  public void testRenderItems() throws IOException {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
     String expected = "[ \"Item 1\", \"Item 2\", \"Item 3\" ]";
-    JSONArray actual = ( JSONArray )message.findSetProperty( list, "items" );
-    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( list, "items" );
+    assertTrue( jsonEquals( expected, actual ) );
   }
 
   @Test
@@ -339,19 +338,19 @@ public class ListLCA_Test {
   }
 
   @Test
-  public void testRenderSelectionIndices() throws IOException, JSONException {
+  public void testRenderSelectionIndices() throws IOException {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
 
     list.select( 1 );
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( list, "selectionIndices" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[1]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( list, "selectionIndices" );
+    assertTrue( jsonEquals( "[1]", actual ) );
   }
 
   @Test
-  public void testRenderSelectionIndicesWithMulti() throws IOException, JSONException {
+  public void testRenderSelectionIndicesWithMulti() throws IOException {
     List list = new List( shell, SWT.MULTI );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
 
@@ -359,8 +358,8 @@ public class ListLCA_Test {
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( list, "selectionIndices" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[1,2]", actual ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( list, "selectionIndices" );
+    assertTrue( jsonEquals( "[1,2]", actual ) );
   }
 
   @Test
@@ -510,13 +509,13 @@ public class ListLCA_Test {
   }
 
   @Test
-  public void testRenderItemDimensions() throws IOException, JSONException {
+  public void testRenderItemDimensions() throws IOException {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( list, "itemDimensions" );
-    assertEquals( list.getItemHeight(), actual.getInt( 1 ) );
+    JsonArray actual = ( JsonArray )message.findSetProperty( list, "itemDimensions" );
+    assertEquals( list.getItemHeight(), actual.get( 1 ).asInt() );
   }
 
   @Test

@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.SWT;
@@ -23,8 +24,6 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,7 +63,7 @@ public class CompositeLCA_Test {
   }
 
   @Test
-  public void testRenderClientArea() throws JSONException {
+  public void testRenderClientArea() {
     composite.setSize( 110, 120 );
 
     lca.renderClientArea( composite );
@@ -75,7 +74,7 @@ public class CompositeLCA_Test {
   }
 
   @Test
-  public void testRenderClientArea_SizeZero() throws JSONException {
+  public void testRenderClientArea_SizeZero() {
     composite.setSize( 0, 0 );
 
     lca.renderClientArea( composite );
@@ -97,13 +96,13 @@ public class CompositeLCA_Test {
     assertNull( message.findSetOperation( composite, "clientArea" ) );
   }
 
-  private Rectangle toRectangle( Object property ) throws JSONException {
-    JSONArray jsonArray = ( JSONArray )property;
+  private Rectangle toRectangle( Object property ) {
+    JsonArray jsonArray = ( JsonArray )property;
     Rectangle result = new Rectangle(
-      jsonArray.getInt( 0 ),
-      jsonArray.getInt( 1 ),
-      jsonArray.getInt( 2 ),
-      jsonArray.getInt( 3 )
+      jsonArray.get( 0 ).asInt(),
+      jsonArray.get( 1 ).asInt(),
+      jsonArray.get( 2 ).asInt(),
+      jsonArray.get( 3 ).asInt()
     );
     return result;
   }

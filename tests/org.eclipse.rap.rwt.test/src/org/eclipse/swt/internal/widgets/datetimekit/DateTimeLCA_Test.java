@@ -22,6 +22,7 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -41,7 +42,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONArray;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -478,8 +478,8 @@ public class DateTimeLCA_Test {
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( dateTime, "subWidgetsBounds" );
-    assertEquals( 9, actual.length() );
+    JsonArray actual = ( JsonArray )message.findSetProperty( dateTime, "subWidgetsBounds" );
+    assertEquals( 9, actual.size() );
   }
 
   @Test
@@ -621,8 +621,8 @@ public class DateTimeLCA_Test {
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( dateTime, "subWidgetsBounds" );
-    assertEquals( 6, actual.length() );
+    JsonArray actual = ( JsonArray )message.findSetProperty( dateTime, "subWidgetsBounds" );
+    assertEquals( 6, actual.size() );
   }
 
   @Test
