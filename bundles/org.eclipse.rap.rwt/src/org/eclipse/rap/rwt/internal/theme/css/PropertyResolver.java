@@ -187,12 +187,10 @@ public final class PropertyResolver {
     QxColor result = null;
     // The parser ensures that we have exactly three parameters for this type
     LexicalUnit redParam = unit.getParameters();
-    LexicalUnit greenParam
-      = redParam.getNextLexicalUnit().getNextLexicalUnit();
-    LexicalUnit blueParam
-      = greenParam.getNextLexicalUnit().getNextLexicalUnit();
+    LexicalUnit greenParam = redParam.getNextLexicalUnit().getNextLexicalUnit();
+    LexicalUnit blueParam = greenParam.getNextLexicalUnit().getNextLexicalUnit();
     short valueType = redParam.getLexicalUnitType();
-    if( greenParam.getLexicalUnitType() == valueType
+    if(    greenParam.getLexicalUnitType() == valueType
         || blueParam.getLexicalUnitType() == valueType )
     {
       if( valueType == LexicalUnit.SAC_INTEGER ) {
@@ -202,10 +200,8 @@ public final class PropertyResolver {
         result = QxColor.create( red, green, blue );
       } else if( valueType == LexicalUnit.SAC_PERCENTAGE ) {
         float redPercent = normalizePercentValue( redParam.getFloatValue() );
-        float greenPercent
-          = normalizePercentValue( greenParam.getFloatValue() );
-        float bluePercent
-          = normalizePercentValue( blueParam.getFloatValue() );
+        float greenPercent = normalizePercentValue( greenParam.getFloatValue() );
+        float bluePercent = normalizePercentValue( blueParam.getFloatValue() );
         int red = ( int )( 255 * redPercent / 100 );
         int green = ( int )( 255 * greenPercent / 100 );
         int blue = ( int )( 255 * bluePercent / 100 );
@@ -232,8 +228,7 @@ public final class PropertyResolver {
         if( type == LexicalUnit.SAC_INTEGER ) {
           values[ pos / 2 ] = normalizeRGBValue( nextUnit.getIntegerValue() );
         } else if( type == LexicalUnit.SAC_PERCENTAGE ) {
-          float percentValue
-            = normalizePercentValue( nextUnit.getFloatValue() );
+          float percentValue = normalizePercentValue( nextUnit.getFloatValue() );
           values[ pos / 2 ] = ( int )( 255 * percentValue / 100 );
         } else {
           ok = false;
@@ -658,8 +653,7 @@ public final class PropertyResolver {
         } else if( "color-stop".equals( function ) ) {
           LexicalUnit percentUnit = nextUnit.getParameters();
           percent = readGradientPercent( percentUnit );
-          LexicalUnit colorUnit
-            = percentUnit.getNextLexicalUnit().getNextLexicalUnit();
+          LexicalUnit colorUnit = percentUnit.getNextLexicalUnit().getNextLexicalUnit();
           color = readGradientColor( colorUnit );
         } else {
           String msg = "Invalid value for background-image gradient: " + function;
@@ -797,8 +791,7 @@ public final class PropertyResolver {
       result = QxCursor.valueOf( value );
     }
     if( result == null ) {
-      throw new IllegalArgumentException( "Failed to parse cursor "
-                                          + toString( unit ) );
+      throw new IllegalArgumentException( "Failed to parse cursor " + toString( unit ) );
     }
     return result;
   }
@@ -852,8 +845,7 @@ public final class PropertyResolver {
       if( type == LexicalUnit.SAC_IDENT ) {
         name = nextUnit.getStringValue();
       } else {
-        String msg = "Invalid value for animation name: "
-                      + toString( nextUnit );
+        String msg = "Invalid value for animation name: " + toString( nextUnit );
         throw new IllegalArgumentException( msg );
       }
       nextUnit = nextUnit.getNextLexicalUnit();
@@ -867,8 +859,7 @@ public final class PropertyResolver {
       } else if( type == LexicalUnit.SAC_MILLISECOND ) {
         duration = Math.round( nextUnit.getFloatValue() );
       } else {
-        String msg
-          = "Invalid value for animation duration: " + toString( nextUnit );
+        String msg = "Invalid value for animation duration: " + toString( nextUnit );
         throw new IllegalArgumentException( msg );
       }
       nextUnit = nextUnit.getNextLexicalUnit();
@@ -880,8 +871,7 @@ public final class PropertyResolver {
       if( type == LexicalUnit.SAC_IDENT ) {
         timingFunction = nextUnit.getStringValue();
       } else {
-        String msg = "Invalid value for animation timing function: "
-                     + toString( nextUnit );
+        String msg = "Invalid value for animation timing function: " + toString( nextUnit );
         throw new IllegalArgumentException( msg );
       }
       result.addAnimation( name, duration, timingFunction );
@@ -944,9 +934,7 @@ public final class PropertyResolver {
       }
       if( nextUnit != null ) {
         type = nextUnit.getLexicalUnitType();
-        if(    type == LexicalUnit.SAC_FUNCTION
-            && "rgba".equals( nextUnit.getFunctionName() )  )
-        {
+        if( type == LexicalUnit.SAC_FUNCTION && "rgba".equals( nextUnit.getFunctionName() ) ) {
           color = readColorRgba( nextUnit );
         } else {
           color = readColor( nextUnit );
@@ -1048,9 +1036,7 @@ public final class PropertyResolver {
 
   static boolean checkComma( LexicalUnit unit ) {
     boolean result = false;
-    if(    unit != null
-        && unit.getLexicalUnitType() == LexicalUnit.SAC_OPERATOR_COMMA )
-    {
+    if( unit != null && unit.getLexicalUnitType() == LexicalUnit.SAC_OPERATOR_COMMA ) {
       result = true;
     }
     return result;
@@ -1079,9 +1065,7 @@ public final class PropertyResolver {
                || type == LexicalUnit.SAC_SECOND
                || type == LexicalUnit.SAC_DIMENSION )
     {
-      buffer.append( "DIM "
-                     + value.getFloatValue()
-                     + value.getDimensionUnitText() );
+      buffer.append( "DIM " + value.getFloatValue() + value.getDimensionUnitText() );
     } else if( type == LexicalUnit.SAC_RGBCOLOR ) {
       LexicalUnit parameters = value.getParameters();
       buffer.append( "rgb(" + toString( parameters ) + ")" );
