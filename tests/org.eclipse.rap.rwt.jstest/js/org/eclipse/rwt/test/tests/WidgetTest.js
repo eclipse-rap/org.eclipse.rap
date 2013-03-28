@@ -726,7 +726,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       widget.setBackgroundPosition( "right bottom" );
       TestUtil.flush();
 
-      assertEquals( "right bottom", widget.getElement().style.backgroundPosition );
+      if( rwt.client.Client.isWebkit() || rwt.client.Client.isOpera() ) {
+        assertEquals( "100% 100%", widget.getElement().style.backgroundPosition );
+      } else {
+        assertEquals( "right bottom", widget.getElement().style.backgroundPosition );
+      }
       widget.destroy();
     },
 
@@ -741,7 +745,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       TestUtil.flush();
 
       assertEquals( "no-repeat", element.style.backgroundRepeat );
-      assertEquals( "right bottom", element.style.backgroundPosition );
+      if( rwt.client.Client.isWebkit() || rwt.client.Client.isOpera() ) {
+        assertEquals( "100% 100%", widget.getElement().style.backgroundPosition );
+      } else {
+        assertEquals( "right bottom", widget.getElement().style.backgroundPosition );
+      }
       widget.destroy();
     },
 
@@ -761,7 +769,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
         var element = widget.getElement();
         assertEquals( "no-repeat", element.style.backgroundRepeat );
-        assertEquals( "right bottom", element.style.backgroundPosition );
+        if( rwt.client.Client.isWebkit() || rwt.client.Client.isOpera() ) {
+          assertEquals( "100% 100%", widget.getElement().style.backgroundPosition );
+        } else {
+          assertEquals( "right bottom", widget.getElement().style.backgroundPosition );
+        }
         widget.destroy();
       }
     },
