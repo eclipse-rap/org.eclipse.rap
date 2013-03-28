@@ -11,6 +11,15 @@
 
 /* Link */
 
+Link {
+  color: #4a4a4a;
+  background-color: #ffffff;
+  background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
+  text-shadow: none;
+}
+
 Link-Hyperlink {
   color: #93c12b;
   text-decoration: underline;

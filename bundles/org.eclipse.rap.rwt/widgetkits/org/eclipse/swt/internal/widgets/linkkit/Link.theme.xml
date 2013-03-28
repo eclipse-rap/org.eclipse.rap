@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -24,6 +24,21 @@
 
     <property name="text-shadow"
         description="Shadow for text." />
+
+    <property name="color"
+        description="Text color for links." />
+
+    <property name="background-color"
+        description="Background color for links." />
+
+    <property name="background-image"
+        description="Background image or gradient for links." />
+
+    <property name="background-position"
+        description="Background image position for links." />
+
+    <property name="background-repeat"
+        description="Background image repetition for links." />
 
     <state name="disabled"
         description="Applies when Link is disabled." />

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,8 @@ var appearances = {
       result.textColor = tv.getCssColor( "Label", "color" );
       result.backgroundColor = tv.getCssColor( "Label", "background-color" );
       result.backgroundImage = tv.getCssImage( "Label", "background-image" );
+      result.backgroundRepeat = tv.getCssIdentifier( "Label", "background-repeat" );
+      result.backgroundPosition = tv.getCssIdentifier( "Label", "background-position" );
       result.backgroundGradient = tv.getCssGradient( "Label", "background-image" );
       result.border = tv.getCssBorder( "Label", "border" );
       result.cursor = tv.getCssCursor( "Label", "cursor" );
@@ -66,7 +68,7 @@ var appearances = {
       return result;
     }
   },
-  
+
   "separator" : {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );

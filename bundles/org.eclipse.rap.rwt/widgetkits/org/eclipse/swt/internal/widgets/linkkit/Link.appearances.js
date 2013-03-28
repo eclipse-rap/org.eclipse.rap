@@ -20,7 +20,11 @@ var appearances = {
         padding : 2,
         font : tv.getCssFont( "Link", "font" ),
         border : tv.getCssBorder( "Link", "border" ),
-        textColor : tv.getCssColor( "*", "color" ),
+        textColor : tv.getCssColor( "Link", "color" ),
+        backgroundColor : tv.getCssColor( "Link", "background-color" ),
+        backgroundImage : tv.getCssImage( "Link", "background-image" ),
+        backgroundRepeat : tv.getCssIdentifier( "Link", "background-repeat" ),
+        backgroundPosition : tv.getCssIdentifier( "Link", "background-position" ),
         textShadow : tv.getCssShadow( "Link", "text-shadow" )
       };
     }

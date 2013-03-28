@@ -427,6 +427,8 @@ Label {
   color: #4a4a4a;
   background-color: white;
   background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   border: none;
   text-decoration: none;
   cursor: default;
@@ -458,6 +460,11 @@ Label-SeparatorLine[SHADOW_OUT] {
 /* Link default theme */
 
 Link {
+  color: #4a4a4a;
+  background-color: #ffffff;
+  background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   text-shadow: none;
 }
 
@@ -1956,6 +1963,8 @@ CLabel {
   color: #4a4a4a;
   background-color: white;
   background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   border: none;
   padding: 3px;
   spacing: 5px;

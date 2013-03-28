@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ var appearances = {
         result.border = tv.getCssBorder( "CLabel", "border" );
       }
       result.backgroundImage = tv.getCssImage( "CLabel", "background-image" );
+      result.backgroundRepeat = tv.getCssIdentifier( "CLabel", "background-repeat" );
+      result.backgroundPosition = tv.getCssIdentifier( "CLabel", "background-position" );
       result.backgroundGradient = tv.getCssGradient( "CLabel", "background-image" );
       result.cursor = tv.getCssCursor( "CLabel", "cursor" );
       result.padding = tv.getCssBoxDimensions( "CLabel", "padding" );

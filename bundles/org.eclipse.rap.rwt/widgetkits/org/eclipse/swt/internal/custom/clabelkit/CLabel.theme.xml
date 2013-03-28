@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2009, 2011 EclipseSource and others.
+ Copyright (c) 2009, 2013 EclipseSource and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
  http://www.eclipse.org/legal/epl-v10.html
 
  Contributors:
-     EclipseSource - initial API and implementation
+    EclipseSource - initial API and implementation
  -->
 
 <theme>
@@ -36,12 +36,18 @@
         like "inset" or "outset" is used.
       </description>
     </property>
-    
+
     <property name="cursor"
         description="Control's cursor." />
 
     <property name="background-image"
-        description="Background image or gradient for CLabel." />
+        description="Background image or gradient for clabels." />
+
+    <property name="background-position"
+        description="Background image position for clabels." />
+
+    <property name="background-repeat"
+        description="Background image repetition for clabels." />
 
     <property name="padding"
         description="Padding for clabels." />
@@ -49,7 +55,7 @@
     <property name="spacing"
         description="Space between text and image." />
 
-    <property name="opacity" 
+    <property name="opacity"
         description="The opacity of the CLabel. A value between 0 and 1." />
 
     <property name="text-shadow"
