@@ -724,16 +724,16 @@ public final class PropertyResolver {
     QxIdentifier result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_IDENT ) {
-      StringBuffer valueBuffer = new StringBuffer();
-      valueBuffer = valueBuffer.append( unit.getStringValue() );
+      StringBuilder buffer = new StringBuilder();
+      buffer.append( unit.getStringValue() );
       LexicalUnit nextUnit = unit.getNextLexicalUnit();
       if( nextUnit != null && nextUnit.getStringValue() != null ) {
-        valueBuffer.append( " " );
-        valueBuffer.append( nextUnit.getStringValue() );
+        buffer.append( " " );
+        buffer.append( nextUnit.getStringValue() );
       } else {
-        valueBuffer.append( " center" );
+        buffer.append( " center" );
       }
-      String value = valueBuffer.toString();
+      String value = buffer.toString();
       if(    "left top".equals( value )
           || "left center".equals( value )
           || "left bottom".equals( value )
