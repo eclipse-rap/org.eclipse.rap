@@ -15,6 +15,7 @@ public final class RequestParams {
 
   public static final String RWT_INITIALIZE = "rwt_initialize";
   public static final String RWT_SHUTDOWN = "rwt_shutdown";
+  public static final String QUERY_STRING = "queryString";
 
   private RequestParams() {
     // prevent instantiation

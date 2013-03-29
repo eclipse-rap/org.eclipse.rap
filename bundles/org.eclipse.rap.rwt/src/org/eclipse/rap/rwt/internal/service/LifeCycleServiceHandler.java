@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.service;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -81,8 +80,6 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   private void handleGetRequest( ServletRequest request, HttpServletResponse response )
     throws IOException
   {
-    Map<String, String[]> parameters = request.getParameterMap();
-    RequestParameterBuffer.store( parameters );
     if( RWT.getClient() instanceof WebClient ) {
       startupPage.send( response );
     } else {
@@ -105,7 +102,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
         reinitializeUISession( request );
         reinitializeServiceStore();
       }
-      RequestParameterBuffer.merge();
+      UrlParameters.merge();
       runLifeCycle();
     }
     writeProtocolMessage( response );
@@ -167,15 +164,11 @@ public class LifeCycleServiceHandler implements ServiceHandler {
 
   private static void reinitializeUISession( HttpServletRequest request ) {
     UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
-    Map<String, String[]> bufferedParameters = RequestParameterBuffer.getBufferedParameters();
     ApplicationContextImpl applicationContext = uiSession.getApplicationContext();
     uiSession.shutdown();
     UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
     uiSession = builder.buildUISession();
     ContextProvider.getContext().setUISession( uiSession );
-    if( bufferedParameters != null ) {
-      RequestParameterBuffer.store( bufferedParameters );
-    }
   }
 
   private static void reinitializeServiceStore() {

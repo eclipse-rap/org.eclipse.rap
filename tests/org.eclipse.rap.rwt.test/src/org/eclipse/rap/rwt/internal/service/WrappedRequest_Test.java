@@ -109,14 +109,11 @@ public class WrappedRequest_Test {
   public void testStartupRequestWithParameter() throws Exception {
     ApplicationContextImpl applicationContext = getApplicationContext();
     applicationContext.getEntryPointManager().register( "/rap", DefaultEntryPoint.class, null );
-    TestRequest getRequest = Fixture.fakeNewGetRequest();
-    getRequest.setParameter( "param", "value" );
     ServiceHandler handler = getApplicationContext().getServiceManager().getHandler();
-    handler.service( ContextProvider.getRequest(), ContextProvider.getResponse() );
 
-    TestRequest uiRequest = Fixture.fakeNewRequest();
-    uiRequest.setParameter( "param", null );
+    Fixture.fakeNewRequest();
     Fixture.fakeHeadParameter( RequestParams.RWT_INITIALIZE, "true" );
+    Fixture.fakeHeadParameter( RequestParams.QUERY_STRING, "param=value" );
     handler.service( ContextProvider.getRequest(), ContextProvider.getResponse() );
 
     assertEquals( "value", ContextProvider.getRequest().getParameter( "param" ) );

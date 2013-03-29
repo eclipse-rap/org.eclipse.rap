@@ -44,6 +44,7 @@ rwt.widgets.Display.prototype = {
 
   init : function() {
     this._server.getMessageWriter().appendHead( "rwt_initialize", true );
+    this._appendQueryString();
     this._appendWindowSize();
     this._appendSystemDPI();
     this._appendColorDepth();
@@ -211,6 +212,13 @@ rwt.widgets.Display.prototype = {
     var clientObject = rwt.remote.ObjectRegistry.getObject( "rwt.client.ClientInfo" );
     var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( clientObject );
     remoteObject.set( "timezoneOffset", clientObject.getTimezoneOffset() );
+  },
+
+  _appendQueryString : function() {
+    var queryString = window.location.search;
+    if( queryString !== "" ) {
+      this._server.getMessageWriter().appendHead( "queryString", queryString.substr( 1 ) );
+    }
   }
 
 };
