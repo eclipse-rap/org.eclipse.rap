@@ -425,10 +425,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
 
     _onChangeMode : function( evt ) {
       var value = evt.getValue();
-      var widgetManager = rwt.remote.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( evt.getTarget() );
-      var req = rwt.remote.Server.getInstance();
-      req.addParameter( id + ".mode", value );
+      rwt.remote.Server.getInstance().getRemoteObject( evt.getTarget() ).set( "mode", value );
     },
 
     _onChangeSize : function( evt ) {

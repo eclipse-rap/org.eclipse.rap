@@ -43,7 +43,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
                           "Fri",
                           "Sat" ],
 
-    testCreateDateTimeDateByProtocol : function() {
+    testCreateDateTimeCalendarByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
       assertTrue( widget instanceof rwt.widgets.DateTimeCalendar );
@@ -126,9 +126,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
         ""
       ];
       var days = [ "", "So", "Mo", "Di", "Mi", "Do", "Fr", "Sa" ];
-      var calendar = new rwt.widgets.DateTimeCalendar( "medium",
-                                                                   months,
-                                                                   days );
+      var calendar = new rwt.widgets.DateTimeCalendar( "medium", months, days );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.DateTime" );
+      ObjectRegistry.add( "w3", calendar, handler );
       calendar.addToDocument();
       calendar.setSpace( 3, 194, 3, 138 );
       calendar.setZIndex( 300 );

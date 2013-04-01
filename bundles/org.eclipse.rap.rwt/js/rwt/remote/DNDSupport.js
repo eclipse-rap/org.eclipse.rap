@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2009, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,9 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
     registerDragSource : function( widget, operations ) {
       widget.addEventListener( "dragstart", this._dragStartHandler, this );
       widget.addEventListener( "dragend", this._dragEndHandler, this );
+      var remoteObject = rwt.remote.RemoteObjectFactory.getRemoteObject( widget );
+      remoteObject._.listen[ "dragStart" ] = true;
+      remoteObject._.listen[ "dragFinished" ] = true;
       var hash = widget.toHashCode();
       this._dragSources[ hash ] = {
         "dataTypes" : [],
@@ -120,22 +123,18 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
     },
 
     _sendDragSourceEvent : function( widget, type, qxDomEvent ) {
-      var req = rwt.remote.Server.getInstance();
-      var wm = rwt.remote.WidgetManager.getInstance();
-      var id = wm.findIdByWidget( widget );
       var x = 0;
       var y = 0;
       if( qxDomEvent instanceof rwt.event.MouseEvent ) {
         x = qxDomEvent.getPageX();
         y = qxDomEvent.getPageY();
       }
-      var eventName = "org.eclipse.swt.dnd." + type;
-      req.addEvent( eventName, id );
-      req.addParameter( eventName + ".x", x );
-      req.addParameter( eventName + ".y", y );
-      var time = rwt.remote.EventUtil.eventTimestamp();
-      req.addParameter( eventName + ".time", time );
-      req.send();
+      var parameters = {
+        "x" : x,
+        "y" : y,
+        "time" : rwt.remote.EventUtil.eventTimestamp()
+      };
+      rwt.remote.Server.getInstance().getRemoteObject( widget ).notify( type, parameters );
     },
 
     /////////////
@@ -146,6 +145,12 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
       widget.addEventListener( "dragmove", this._dragMoveHandler, this );
       widget.addEventListener( "dragout", this._dragOutHandler, this );
       widget.addEventListener( "dragdrop", this._dragDropHandler, this );
+      var remoteObject = rwt.remote.RemoteObjectFactory.getRemoteObject( widget );
+      remoteObject._.listen[ "dragOperationChanged" ] = true;
+      remoteObject._.listen[ "dragEnter" ] = true;
+      remoteObject._.listen[ "dragOver" ] = true;
+      remoteObject._.listen[ "dragLeave" ] = true;
+      remoteObject._.listen[ "dropAccept" ] = true;
       var hash = widget.toHashCode();
       this._dropTargets[ hash ] = {
         "actions" : this._operationsToActions( operations )
@@ -221,7 +226,6 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
 
     _sendDropTargetEvent : function( widget, type, qxDomEvent, action ) {
       var wm = rwt.remote.WidgetManager.getInstance();
-      var id = wm.findIdByWidget( widget );
       var item = this._getCurrentItemTarget();
       var itemId = item != null ? wm.findIdByWidget( item ) : null;
       var x = 0;
@@ -236,19 +240,18 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
       var source = wm.findIdByWidget( this._currentDragSource );
       var time = rwt.remote.EventUtil.eventTimestamp();
       var operation = action == "alias" ? "link" : action;
-      var eventName = "org.eclipse.swt.dnd." + type;
       var event = {};
-      event[ "id" ] = id;
-      event[ "eventName" ] = eventName;
+      event[ "widget" ] = widget;
+      event[ "eventName" ] = type;
       var param = {};
-      param[ eventName + ".x" ] = x;
-      param[ eventName + ".y" ] = y;
-      param[ eventName + ".item" ] = itemId;
-      param[ eventName + ".operation" ] = operation;
-      param[ eventName + ".feedback" ] = this._dropFeedbackFlags;
-      param[ eventName + ".dataType" ] = this._dataTypeOverwrite;
-      param[ eventName + ".source" ] = source;
-      param[ eventName + ".time" ] = time;
+      param[ "x" ] = x;
+      param[ "y" ] = y;
+      param[ "item" ] = itemId;
+      param[ "operation" ] = operation;
+      param[ "feedback" ] = this._dropFeedbackFlags;
+      param[ "dataType" ] = this._dataTypeOverwrite;
+      param[ "source" ] = source;
+      param[ "time" ] = time;
       event[ "param" ] = param;
       this._dropTargetEventQueue[ type ] = event;
       if( !this._requestScheduled ) {
@@ -268,25 +271,20 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
     },
 
     _setPropertyRetroactively : function( dropTarget, property, value ) {
-      var wm = rwt.remote.WidgetManager.getInstance();
       for( var type in this._dropTargetEventQueue ) {
         var event = this._dropTargetEventQueue[ type ];
-        if( event[ "id" ] == wm.findIdByWidget( dropTarget ) ) {
-          var eventName = event[ "eventName" ];
-          event[ "param" ][ eventName + "." + property ] = value;
+        if( event[ "widget" ] === dropTarget ) {
+          event[ "param" ][ property ] = value;
         }
       }
     },
 
     _attachDropTargetEvents : function() {
-      var req = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Server.getInstance();
       var events = this._dropTargetEventQueue;
       for( var type in events ) {
         var event = events[ type ];
-        req.addEvent( event.eventName, event.id );
-        for( var key in event.param ) {
-          req.addParameter( key, event.param[ key ] );
-        }
+        server.getRemoteObject( event.widget ).notify( event.eventName, event.param );
       }
       this._dropTargetEventQueue = {};
     },

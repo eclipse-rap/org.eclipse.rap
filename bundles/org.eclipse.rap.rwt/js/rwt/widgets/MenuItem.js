@@ -323,10 +323,8 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
           this.removeState( "selected" );
         }
         if( !rwt.remote.EventUtil.getSuspended() ) {
-          var widgetManager = rwt.remote.WidgetManager.getInstance();
-          var id = widgetManager.findIdByWidget( this );
-          var req = rwt.remote.Server.getInstance();
-          req.addParameter( id + ".selection", this._selected );
+          var server = rwt.remote.Server.getInstance();
+          server.getRemoteObject( this ).set( "selection", this._selected );
         }
       }
     },

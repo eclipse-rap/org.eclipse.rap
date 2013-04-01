@@ -861,6 +861,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     _createSlider : function( horizontal ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var result = new rwt.widgets.Slider( horizontal );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Slider" );
+      rwt.remote.ObjectRegistry.add( "w3", result, handler );
       result.addToDocument();
       result.setLeft( 10 );
       result.setTop( 10 );

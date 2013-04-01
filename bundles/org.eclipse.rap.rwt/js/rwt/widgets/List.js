@@ -98,11 +98,8 @@ rwt.qx.Class.define( "rwt.widgets.List", {
 
     _onChangeLeadItem : function( evt ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var wm = rwt.remote.WidgetManager.getInstance();
-        var id = wm.findIdByWidget( this );
-        var req = rwt.remote.Server.getInstance();
         var focusIndex = this._clientArea.indexOf( this.getManager().getLeadItem() );
-        req.addParameter( id + ".focusIndex", focusIndex );
+        rwt.remote.Server.getInstance().getRemoteObject( this ).set( "focusIndex", focusIndex );
       }
     },
 

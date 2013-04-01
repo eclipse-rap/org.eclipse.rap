@@ -680,11 +680,9 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     },
 
     _onSend : function( evt ) {
-      var widgetManager = rwt.remote.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
-      var req = rwt.remote.Server.getInstance();
-      req.addParameter( id + ".text", this._field.getComputedValue() );
-      req.removeEventListener( "send", this._onSend, this );
+      var server = rwt.remote.Server.getInstance();
+      server.getRemoteObject( this ).set( "text", this._field.getComputedValue() );
+      server.removeEventListener( "send", this._onSend, this );
       this._isModified = false;
       this.setText( this._field.getComputedValue() );
     },
@@ -697,12 +695,9 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     _sendWidgetSelected : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var widgetManager = rwt.remote.WidgetManager.getInstance();
-        var req = rwt.remote.Server.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        var list = this._list;
         var listItem = this._list.getSelectedItem();
-        req.addParameter( id + ".selectionIndex", list.getItemIndex( listItem ) );
+        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+        remoteObject.set( "selectionIndex", this._list.getItemIndex( listItem ) );
         if( this._hasSelectionListener ) {
           rwt.remote.EventUtil.notifySelected( this );
         }
@@ -720,10 +715,8 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     _updateListVisibleRequestParam : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var widgetManager = rwt.remote.WidgetManager.getInstance();
-        var req = rwt.remote.Server.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        req.addParameter( id + ".listVisible", this._list.getDisplay() );
+        var server = rwt.remote.Server.getInstance();
+        server.getRemoteObject( this ).set( "listVisible", this._list.getDisplay() );
       }
     },
 
@@ -747,13 +740,11 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         length = 0;
       }
       if( this._selectionStart != start || this._selectionLength != length ) {
-        var widgetManager = rwt.remote.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        var req = rwt.remote.Server.getInstance();
+        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
         this._selectionStart = start;
-        req.addParameter( id + ".selectionStart", start );
+        remoteObject.set( "selectionStart", start );
         this._selectionLength = length;
-        req.addParameter( id + ".selectionLength", length );
+        remoteObject.set( "selectionLength", length );
       }
     },
 

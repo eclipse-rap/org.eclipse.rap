@@ -17,13 +17,6 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
 
   statics : {
 
-    setPropertyParam : function( widget, propertyName, propertyValue ) {
-      var widgetManager = rwt.remote.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( widget );
-      var req = rwt.remote.Server.getInstance();
-      req.addParameter( id + "." + propertyName, propertyValue );
-    },
-
     /**
      * workaround for IE bug
      * div's have the height of the font even if they are empty

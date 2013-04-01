@@ -1650,11 +1650,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
 var createMenuWithItems = function( itemType, itemCount ) {
   var menu = new rwt.widgets.Menu();
+  var menuHandler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Menu" );
+  var menuItemHandler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.MenuItem" );
+  ObjectRegistry.add( "w3", menu, menuHandler );
   for( var i = 0; i < itemCount; i++ ) {
     var menuItem = new rwt.widgets.MenuItem( itemType );
+    ObjectRegistry.add( "w4" + i, menuItem, menuItemHandler );
     menu.addMenuItemAt( menuItem, i );
   }
   var menuItem = new rwt.widgets.MenuItem( itemType );
+  ObjectRegistry.add( "w5" + i, menuItem, menuItemHandler );
   menu.addMenuItemAt( menuItem, 0 );
   menu.addToDocument();
   menu.show();
@@ -1664,7 +1669,7 @@ var createMenuWithItems = function( itemType, itemCount ) {
 
 var createPopUpMenuByProtocol = function( id ) {
   TestUtil.createShellByProtocol( "w2" );
-  rwt.remote.MessageProcessor.processOperation( {
+  MessageProcessor.processOperation( {
     "target" : id,
     "action" : "create",
     "type" : "rwt.widgets.Menu",
@@ -1673,11 +1678,11 @@ var createPopUpMenuByProtocol = function( id ) {
       "parent" : "w2"
     }
   } );
-  return rwt.remote.ObjectRegistry.getObject( id );
+  return ObjectRegistry.getObject( id );
 };
 
 var createMenuItemByProtocol = function( id, parentId, style ) {
-  rwt.remote.MessageProcessor.processOperation( {
+  MessageProcessor.processOperation( {
     "target" : id,
     "action" : "create",
     "type" : "rwt.widgets.MenuItem",
@@ -1687,12 +1692,16 @@ var createMenuItemByProtocol = function( id, parentId, style ) {
       "index" : 0
     }
   } );
-  return rwt.remote.ObjectRegistry.getObject( id );
+  return ObjectRegistry.getObject( id );
 };
 
 var createSimpleMenu = function( type ) {
   menu = new Menu();
+  var menuHandler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Menu" );
+  ObjectRegistry.add( "w3", menu, menuHandler );
   menuItem = new MenuItem( type );
+  var menuItemHandler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.MenuItem" );
+  ObjectRegistry.add( "w4", menuItem, menuItemHandler );
   menu.addMenuItemAt( menuItem, 0 );
   menu.show();
 };

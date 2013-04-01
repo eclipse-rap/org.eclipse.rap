@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -313,10 +313,7 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
 
     _sendChanges : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var widgetManager = rwt.remote.WidgetManager.getInstance();
-        var req = rwt.remote.Server.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        req.addParameter( id + ".selection", this._selection );
+        rwt.remote.Server.getInstance().getRemoteObject( this ).set( "selection", this._selection );
         if( this._hasSelectionListener ) {
           rwt.remote.EventUtil.notifySelected( this );
         }

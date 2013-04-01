@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -475,12 +475,11 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
             detail = "restore";
           }
         }
-        var id = rwt.remote.WidgetManager.getInstance().findIdByWidget( this );
-        var server = rwt.remote.Server.getInstance();
-        server.addParameter( id + ".minimized", this._minMaxState == "min" );
-        server.addParameter( id + ".maximized", this._minMaxState == "max" );
+        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+        remoteObject.set( "minimized", this._minMaxState == "min" );
+        remoteObject.set( "maximized", this._minMaxState == "max" );
         if( this._hasFolderListener ) {
-          server.getRemoteObject( this ).notify( "Folder", { "detail" : detail } );
+          remoteObject.notify( "Folder", { "detail" : detail } );
         }
       }
     },
@@ -515,11 +514,9 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
         if( !item.isSelected() ) {
           this.deselectAll();
           item.setSelected( true );
-          var widgetManager = rwt.remote.WidgetManager.getInstance();
-          var req = rwt.remote.Server.getInstance();
-          var id = widgetManager.findIdByWidget( this );
-          var itemId = widgetManager.findIdByWidget( item );
-          req.addParameter( id + ".selection", itemId );
+          var itemId = rwt.remote.WidgetManager.getInstance().findIdByWidget( item );
+          var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+          remoteObject.set( "selection", itemId );
           rwt.remote.EventUtil.notifySelected( this );
         }
       }
@@ -529,13 +526,11 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         if( this._hasDefaultSelectionListener ) {
           var item = evt.getTarget();
-          var widgetManager = rwt.remote.WidgetManager.getInstance();
-          var req = rwt.remote.Server.getInstance();
-          var id = widgetManager.findIdByWidget( this );
-          var itemId = widgetManager.findIdByWidget( item );
           // TODO [rst] remove this parameter as soon as server-side code is revised
           //      -> CTabFolderLCA.readData()
-          req.addParameter( id + ".selection", itemId );
+          var itemId = rwt.remote.WidgetManager.getInstance().findIdByWidget( item );
+          var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+          remoteObject.set( "selection", itemId );
           rwt.remote.EventUtil.widgetDefaultSelected( evt, this );
         }
       }

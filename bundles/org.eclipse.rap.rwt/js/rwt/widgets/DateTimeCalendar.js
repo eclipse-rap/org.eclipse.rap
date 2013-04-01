@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,9 +27,9 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
 
     // The Calendar
     this._calendar = new rwt.widgets.base.Calendar();
-    this._calendar.addEventListener( "changeDate", this._onChangeDate, this );
     this._calendar.setDate( new Date( 74, 5, 6 ) );
     this._calendar.setTabIndex( null );
+    this._calendar.addEventListener( "changeDate", this._onChangeDate, this );
     this.add( this._calendar );
 
     this.addEventListener( "contextmenu", this._onContextMenu, this );
@@ -110,12 +110,10 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
 
     _sendChanges : function( date, month, year ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var widgetManager = rwt.remote.WidgetManager.getInstance();
-        var req = rwt.remote.Server.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        req.addParameter( id + ".day", date );
-        req.addParameter( id + ".month", month );
-        req.addParameter( id + ".year", year );
+        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+        remoteObject.set( "day", date );
+        remoteObject.set( "month", month );
+        remoteObject.set( "year", year );
         if( this._hasSelectionListener ) {
           rwt.remote.EventUtil.notifySelected( this );
         }

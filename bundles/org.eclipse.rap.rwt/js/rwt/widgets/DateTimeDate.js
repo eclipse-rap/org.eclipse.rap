@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -659,12 +659,10 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
 
     _sendChanges : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var widgetManager = rwt.remote.WidgetManager.getInstance();
-        var req = rwt.remote.Server.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        req.addParameter( id + ".day", this._removeLeadingZero( this._dayTextField.getText() ) );
-        req.addParameter( id + ".month", this._monthInt - 1 );
-        req.addParameter( id + ".year", this._lastValidYear );
+        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+        remoteObject.set( "day", this._removeLeadingZero( this._dayTextField.getText() ) );
+        remoteObject.set( "month", this._monthInt - 1 );
+        remoteObject.set( "year", this._lastValidYear );
         if( this._hasSelectionListener ) {
           this._requestTimer.restart();
         }

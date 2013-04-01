@@ -151,8 +151,9 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     _handleSelectionChange : function( start, length ) {
       this.base( arguments, start, length );
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        rwt.widgets.util.WidgetUtil.setPropertyParam( this, "selectionStart", start );
-        rwt.widgets.util.WidgetUtil.setPropertyParam( this, "selectionLength", length );
+        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+        remoteObject.set( "selectionStart", start );
+        remoteObject.set( "selectionLength", length );
       }
     },
 

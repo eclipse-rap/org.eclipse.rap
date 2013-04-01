@@ -974,10 +974,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _sendItemCheckedChange : function( item ) { // TODO [tb] : item events should be send by item
       if( !this._inServerResponse() ) {
-        var req = rwt.remote.Server.getInstance();
-        var wm = rwt.remote.WidgetManager.getInstance();
-        var itemId = wm.findIdByWidget( item );
-        req.addParameter( itemId + ".checked", item.isChecked() );
+        rwt.remote.Server.getInstance().getRemoteObject( item ).set( "checked", item.isChecked() );
         this._sendSelectionEvent( item, false, "check" );
       }
     },
@@ -997,9 +994,8 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _sendItemFocusChange : function() {
       if( !this._inServerResponse() ) {
-        var req = rwt.remote.Server.getInstance();
-        var id = rwt.remote.WidgetManager.getInstance().findIdByWidget( this );
-        req.addParameter( id + ".focusItem", this._getItemId( this._focusItem ) );
+        var focusItemId = this._getItemId( this._focusItem );
+        rwt.remote.Server.getInstance().getRemoteObject( this ).set( "focusItem", focusItemId );
       }
     },
 

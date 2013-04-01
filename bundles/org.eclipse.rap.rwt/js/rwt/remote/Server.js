@@ -83,35 +83,6 @@ rwt.qx.Class.define( "rwt.remote.Server", {
       return this._uiSessionId;
     },
 
-    /**
-     * Adds a request parameter to the next request with the given name and value
-     */
-    addParameter : function( name, value ) {
-      var nameArr = typeof name === "string" ? name.split( "." ) : null;
-      if( nameArr ) {
-        if( this._event && name.indexOf( this._event[ 1 ] ) === 0 ) {
-          this._event[ 2 ][ nameArr.pop() ] = value;
-        } else {
-          this._flushEvent();
-          var id = nameArr.shift();
-          var property = nameArr.join( "." );// there are cases of event-types with "."
-          this.getMessageWriter().appendSet( id, property, value );
-        }
-      } else {
-        // Currently results of TSD are not compatible with protocol
-        //console.trace();
-      }
-    },
-
-    /**
-     * Adds the given eventType to this request. The sourceId denotes the id of
-     * the widget that caused the event.
-     */
-    addEvent : function( eventType, sourceId ) {
-      this._flushEvent();
-      this._event = [ sourceId, eventType, {} ];
-    },
-
     _flushEvent : function() {
       if( this._event ) {
         var writer = this.getMessageWriter();

@@ -511,6 +511,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
         radios[ i ] = new rwt.widgets.Button( "radio" );
         radios[ i ].addState( "rwt_RADIO" );
         radios[ i ].addToDocument();
+        var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+        rwt.remote.ObjectRegistry.add( "w1" + i, radios[ i ], handler );
       }
       TestUtil.flush();
       radios[ 0 ].setSelection( true );
@@ -536,6 +538,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
         radios[ i ] = new rwt.widgets.Button( "radio" );
         radios[ i ].addState( "rwt_RADIO" );
         radios[ i ].addToDocument();
+        var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+        rwt.remote.ObjectRegistry.add( "w1" + i, radios[ i ], handler );
       }
       TestUtil.flush();
       radios[ 2 ].setSelection( true );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -362,15 +362,10 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
 
     _sendChanges : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var widgetManager = rwt.remote.WidgetManager.getInstance();
-        var req = rwt.remote.Server.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        req.addParameter( id + ".hours",
-                          this._removeLeadingZero( this._hoursTextField.getText() ) );
-        req.addParameter( id + ".minutes",
-                          this._removeLeadingZero( this._minutesTextField.getText() ) );
-        req.addParameter( id + ".seconds",
-                          this._removeLeadingZero( this._secondsTextField.getText() ) );
+        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+        remoteObject.set( "hours", this._removeLeadingZero( this._hoursTextField.getText() ) );
+        remoteObject.set( "minutes", this._removeLeadingZero( this._minutesTextField.getText() ) );
+        remoteObject.set( "seconds", this._removeLeadingZero( this._secondsTextField.getText() ) );
         if( this._hasSelectionListener ) {
           this._requestTimer.restart();
         }

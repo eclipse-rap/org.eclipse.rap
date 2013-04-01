@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2013 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -161,23 +161,14 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
     _onMouseDown : function( evt ) {
       this._hide();
       if( this._hasSelectionListener ) {
-        var id = this._getWidgetId();
-        var req = rwt.remote.Server.getInstance();
-        req.addEvent( "org.eclipse.swt.events.Selection", id );
-        req.send();
+        rwt.remote.EventUtil.notifySelected( this );
       }
     },
 
     _hide : function() {
       this.setVisible( false );
       rwt.widgets.base.Widget.flushGlobalQueues();
-      var req = rwt.remote.Server.getInstance();
-      req.addParameter( this._getWidgetId() + ".visible", false );
-    },
-
-    _getWidgetId : function() {
-      var widgetManager = rwt.remote.WidgetManager.getInstance();
-      return widgetManager.findIdByWidget( this );
+      rwt.remote.Server.getInstance().getRemoteObject( this ).set( "visible", false );
     },
 
     _getMessageFont : function() {

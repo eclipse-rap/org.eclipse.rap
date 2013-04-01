@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -110,11 +110,9 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
       // TODO [tb] : implement setHasValueChangedListener?
       var fileName = this._formatFileName( this._getFileName() );
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var req = rwt.remote.Server.getInstance();
-        var widgetManager = rwt.remote.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        req.addParameter( id + ".fileName", fileName );
-        req.send();
+        var server = rwt.remote.Server.getInstance();
+        server.getRemoteObject( this ).set( "fileName", fileName );
+        server.send();
       }
     },
 
