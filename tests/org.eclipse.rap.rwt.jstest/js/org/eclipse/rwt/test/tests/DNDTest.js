@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2013 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
@@ -376,12 +377,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.clearRequestLog();
       TestUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 19, 19 );
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "dragStart" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "DragStart" ) );
       TestUtil.clearRequestLog();
       TestUtil.fakeMouseEventDOM( node, "mouseup", leftButton, 19, 19 );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "dragFinished" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "DragEnd" ) );
       assertFalse( dndSupport._blockDrag );
       dndSupport.deregisterDragSource( source );
       source.setParent( null );
@@ -425,7 +426,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       dndSupport.cancel();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "dragStart" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "DragStart" ) );
       assertNull( dndHandler.__dragCache );
       assertEquals( 1, TestUtil.getRequestsSend() ); // no dragFinished
       assertFalse( dndSupport._blockDrag );
@@ -452,8 +453,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      assertEquals( 25, message.findNotifyProperty( "w11", "dragStart", "x" ) );
-      assertEquals( 15, message.findNotifyProperty( "w11", "dragStart", "y" ) );
+      assertEquals( 25, message.findNotifyProperty( "w11", "DragStart", "x" ) );
+      assertEquals( 15, message.findNotifyProperty( "w11", "DragStart", "y" ) );
       TestUtil.clearRequestLog();
       TestUtil.clearTimerOnceLog();
       // Over
@@ -463,12 +464,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.forceTimerOnce();
       assertEquals( 1, TestUtil.getRequestsSend() );
       message = TestUtil.getMessageObject();
-      assertEquals( "w11", message.findNotifyProperty( "w2", "dragEnter", "source" ) );
-      assertEquals( 32, message.findNotifyProperty( "w2", "dragEnter", "x" ) );
-      assertEquals( 15, message.findNotifyProperty( "w2", "dragEnter", "y" ) );
-      assertEquals( "w11", message.findNotifyProperty( "w2", "dragOver", "source" ) );
-      assertEquals( 32, message.findNotifyProperty( "w2", "dragOver", "x" ) );
-      assertEquals( 15, message.findNotifyProperty( "w2", "dragOver", "y" ) );
+      assertEquals( "w11", message.findNotifyProperty( "w2", "DragEnter", "source" ) );
+      assertEquals( 32, message.findNotifyProperty( "w2", "DragEnter", "x" ) );
+      assertEquals( 15, message.findNotifyProperty( "w2", "DragEnter", "y" ) );
+      assertEquals( "w11", message.findNotifyProperty( "w2", "DragOver", "source" ) );
+      assertEquals( 32, message.findNotifyProperty( "w2", "DragOver", "x" ) );
+      assertEquals( 15, message.findNotifyProperty( "w2", "DragOver", "y" ) );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
       // Move
@@ -477,9 +478,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.forceTimerOnce();
       assertEquals( 1, TestUtil.getRequestsSend() );
       message = TestUtil.getMessageObject();
-      assertEquals( "w11", message.findNotifyProperty( "w2", "dragOver", "source" ) );
-      assertEquals( 33, message.findNotifyProperty( "w2", "dragOver", "x" ) );
-      assertEquals( 15, message.findNotifyProperty( "w2", "dragOver", "y" ) );
+      assertEquals( "w11", message.findNotifyProperty( "w2", "DragOver", "source" ) );
+      assertEquals( 33, message.findNotifyProperty( "w2", "DragOver", "x" ) );
+      assertEquals( 15, message.findNotifyProperty( "w2", "DragOver", "y" ) );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
       // Out
@@ -489,9 +490,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.forceTimerOnce();
       assertEquals( 1, TestUtil.getRequestsSend() );
       message = TestUtil.getMessageObject();
-      assertEquals( "w11", message.findNotifyProperty( "w2", "dragLeave", "source" ) );
-      assertEquals( 42, message.findNotifyProperty( "w2", "dragLeave", "x" ) );
-      assertEquals( 15, message.findNotifyProperty( "w2", "dragLeave", "y" ) );
+      assertEquals( "w11", message.findNotifyProperty( "w2", "DragLeave", "source" ) );
+      assertEquals( 42, message.findNotifyProperty( "w2", "DragLeave", "x" ) );
+      assertEquals( 15, message.findNotifyProperty( "w2", "DragLeave", "y" ) );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
       dndSupport.cancel();
@@ -524,9 +525,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.forceTimerOnce();
 
       assertEquals( 2, TestUtil.getRequestsSend() );
-      assertNotNull( TestUtil.getMessageObject( 0 ).findNotifyOperation( "w11", "dragStart" ) );
-      assertNotNull( TestUtil.getMessageObject( 1 ).findNotifyOperation( "w2", "dragEnter" ) );
-      assertNotNull( TestUtil.getMessageObject( 1 ).findNotifyOperation( "w2", "dragOver" ) );
+      assertNotNull( TestUtil.getMessageObject( 0 ).findNotifyOperation( "w11", "DragStart" ) );
+      assertNotNull( TestUtil.getMessageObject( 1 ).findNotifyOperation( "w2", "DragEnter" ) );
+      assertNotNull( TestUtil.getMessageObject( 1 ).findNotifyOperation( "w2", "DragOver" ) );
       dndSupport.cancel();
       dndSupport.deregisterDragSource( source );
       dndSupport.deregisterDropTarget( target );
@@ -558,8 +559,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.forceTimerOnce();
       assertEquals( 2, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject( 1 );
-      assertEquals( null, message.findNotifyProperty( "w2", "dragEnter", "dataType" ) );
-      assertEquals( "move", message.findNotifyProperty( "w2", "dragEnter", "operation" ) );
+      assertEquals( null, message.findNotifyProperty( "w2", "DragEnter", "dataType" ) );
+      assertEquals( "move", message.findNotifyProperty( "w2", "DragEnter", "operation" ) );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
       // Move
@@ -572,8 +573,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.forceTimerOnce();
       assertEquals( 1, TestUtil.getRequestsSend() );
       message = TestUtil.getMessageObject( 0 );
-      assertEquals( "copy", message.findNotifyProperty( "w2", "dragOver", "operation" ) );
-      assertEquals( 76135, message.findNotifyProperty( "w2", "dragOver", "dataType" ) );
+      assertEquals( "copy", message.findNotifyProperty( "w2", "DragOver", "operation" ) );
+      assertEquals( 76135, message.findNotifyProperty( "w2", "DragOver", "dataType" ) );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
       dndSupport.cancel();
@@ -680,8 +681,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertTrue( TestUtil.getTimerOnceLog().length > 0 );
       TestUtil.forceTimerOnce();
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w2", "dragLeave" ) );
-      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w2", "dragOver" ) );
+      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w2", "DragLeave" ) );
+      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w2", "DragOver" ) );
       assertNull( TestUtil.getMessageObject().findNotifyOperation( "w2", "dragMove" ) );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
@@ -736,11 +737,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      assertEquals( "w11", message.findNotifyProperty( "w2", "dragLeave", "source" ) );
-      assertEquals( 42, message.findNotifyProperty( "w2", "dragLeave", "x" ) );
-      assertEquals( 15, message.findNotifyProperty( "w2", "dragLeave", "y" ) );
-      assertNull( message.findNotifyOperation( "w2", "dragOver" ) );
-      assertNull( message.findNotifyOperation( "w2", "dragEnter" ) );
+      assertEquals( "w11", message.findNotifyProperty( "w2", "DragLeave", "source" ) );
+      assertEquals( 42, message.findNotifyProperty( "w2", "DragLeave", "x" ) );
+      assertEquals( 15, message.findNotifyProperty( "w2", "DragLeave", "y" ) );
+      assertNull( message.findNotifyOperation( "w2", "DragOver" ) );
+      assertNull( message.findNotifyOperation( "w2", "DragEnter" ) );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
       dndSupport.cancel();
@@ -771,7 +772,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      assertNotNull( message.findNotifyProperty( "w11", "dragStart" ) );
+      assertNotNull( message.findNotifyProperty( "w11", "DragStart" ) );
       TestUtil.clearRequestLog();
       TestUtil.clearTimerOnceLog();
       // Over
@@ -781,17 +782,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.forceTimerOnce();
       assertEquals( 1, TestUtil.getRequestsSend() );
       message = TestUtil.getMessageObject();
-      assertNotNull( message.findNotifyProperty( "w2", "dragEnter" ) );
-      assertNotNull( message.findNotifyProperty( "w2", "dragOver" ) );
+      assertNotNull( message.findNotifyProperty( "w2", "DragEnter" ) );
+      assertNotNull( message.findNotifyProperty( "w2", "DragOver" ) );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
       // Drop
       TestUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton, 32, 16 );
       assertEquals( 1, TestUtil.getRequestsSend() );
       message = TestUtil.getMessageObject();
-      assertEquals( "w11", message.findNotifyProperty( "w2", "dropAccept", "source" ) );
-      assertEquals( 32, message.findNotifyProperty( "w2", "dropAccept", "x" ) );
-      assertEquals( 16, message.findNotifyProperty( "w2", "dropAccept", "y" ) );
+      assertEquals( "w11", message.findNotifyProperty( "w2", "DropAccept", "source" ) );
+      assertEquals( 32, message.findNotifyProperty( "w2", "DropAccept", "x" ) );
+      assertEquals( 16, message.findNotifyProperty( "w2", "DropAccept", "y" ) );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
       dndSupport.deregisterDragSource( source );
@@ -875,10 +876,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.forceTimerOnce();
       assertEquals( 2, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      assertEquals( "w11", message.findNotifyProperty( "w2", "dropAccept", "source" ) );
-      assertEquals( 32, message.findNotifyProperty( "w2", "dropAccept", "x" ) );
-      assertEquals( 16, message.findNotifyProperty( "w2", "dropAccept", "y" ) );
-      assertNotNull( message.findNotifyProperty( "w11", "dragFinished" ) );
+      assertEquals( "w11", message.findNotifyProperty( "w2", "DropAccept", "source" ) );
+      assertEquals( 32, message.findNotifyProperty( "w2", "DropAccept", "x" ) );
+      assertEquals( 16, message.findNotifyProperty( "w2", "DropAccept", "y" ) );
+      assertNotNull( message.findNotifyProperty( "w11", "DragEnd" ) );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
       dndSupport.cancel();
@@ -1197,7 +1198,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      assertEquals( "w3", message.findNotifyProperty( "w2", "dropAccept", "item" ) );
+      assertEquals( "w3", message.findNotifyProperty( "w2", "DropAccept", "item" ) );
       source.setParent( null );
       source.destroy();
       tree.destroy();
@@ -1232,7 +1233,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.forceTimerOnce();
       // TODO [tb] : drop and dragEnd may be sent in two different requests?
       assertTrue( TestUtil.getRequestsSend() >= 1 );
-      assertNull( TestUtil.getMessageObject().findNotifyProperty( "w2", "dropAccept", "item" ) );
+      assertNull( TestUtil.getMessageObject().findNotifyProperty( "w2", "DropAccept", "item" ) );
       source.setParent( null );
       source.destroy();
       tree.destroy();
@@ -1262,9 +1263,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
       assertTrue( dndSupport._currentTargetWidget instanceof rwt.widgets.base.GridRow );
       TestUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
-      assertTrue( dndSupport._isDropTargetEventScheduled( "dragEnter" ) );
-      dndSupport._cancelDropTargetEvent( "dragEnter" );
-      dndSupport._cancelDropTargetEvent( "dragOver" );
+      assertTrue( dndSupport._isDropTargetEventScheduled( "DragEnter" ) );
+      dndSupport._cancelDropTargetEvent( "DragEnter" );
+      dndSupport._cancelDropTargetEvent( "DragOver" );
       // over clientArea
       // NOTE: IE may fire mousemove before mouseover, See Bug 345692
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton );
@@ -1272,7 +1273,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( doc, "mouseover", leftButton );
       TestUtil.forceTimerOnce();
       assertEquals( 2, TestUtil.getRequestsSend() );
-      assertNull( TestUtil.getMessageObject( 1 ).findNotifyProperty( "w2", "dragLeave", "item" ) );
+      assertNull( TestUtil.getMessageObject( 1 ).findNotifyProperty( "w2", "DragLeave", "item" ) );
       source.setParent( null );
       source.destroy();
       tree.destroy();
@@ -1313,7 +1314,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.forceTimerOnce();
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      assertEquals( "w2", message.findNotifyProperty( "w2", "dragOver", "item" ) );
+      assertEquals( "w2", message.findNotifyProperty( "w2", "DragOver", "item" ) );
       // drop
       TestUtil.fakeMouseEventDOM( itemNode1, "mouseup", leftButton );
       source.setParent( null );
@@ -1346,8 +1347,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertTrue( TestUtil.getTimerOnceLog().length > 0 );
       TestUtil.forceTimerOnce();
       assertEquals( 2, TestUtil.getRequestsSend() );
-      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w2", "dragStart" ) );
-      assertNull( TestUtil.getMessageObject( 1 ).findNotifyProperty( "w2", "dragEnter", "item" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w2", "DragStart" ) );
+      assertNull( TestUtil.getMessageObject( 1 ).findNotifyProperty( "w2", "DragEnter", "item" ) );
       // drop
       TestUtil.fakeMouseEventDOM( itemNode1, "mouseup", leftButton );
       source.setParent( null );
@@ -1490,7 +1491,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.clearRequestLog();
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
       var message = TestUtil.getMessageObject();
-      assertNotNull( message.findNotifyOperation( "w11", "dragStart" ) );
+      assertNotNull( message.findNotifyOperation( "w11", "DragStart" ) );
       TestUtil.clearRequestLog();
       TestUtil.clearTimerOnceLog();
       // Over
@@ -1499,8 +1500,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertTrue( TestUtil.getTimerOnceLog().length > 0 );
       TestUtil.forceTimerOnce();
       message = TestUtil.getMessageObject();
-      assertNotNull( message.findNotifyOperation( "w2", "dragEnter" ) );
-      assertNull( message.findNotifyOperation( "w2", "dragOperationChanged" ) );
+      assertNotNull( message.findNotifyOperation( "w2", "DragEnter" ) );
+      assertNull( message.findNotifyOperation( "w2", "DragOperationChanged" ) );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
       // Move
@@ -1508,8 +1509,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertTrue( TestUtil.getTimerOnceLog().length > 0 );
       TestUtil.forceTimerOnce();
       message = TestUtil.getMessageObject();
-      assertNotNull( message.findNotifyOperation( "w2", "dragOver" ) );
-      assertNull( message.findNotifyOperation( "w2", "dragOperationChanged" ) );
+      assertNotNull( message.findNotifyOperation( "w2", "DragOver" ) );
+      assertNull( message.findNotifyOperation( "w2", "DragOperationChanged" ) );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
       // NOTE : Currently the only way to test the operationChanged event,
@@ -1518,8 +1519,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.forceTimerOnce();
       assertEquals( 1, TestUtil.getRequestsSend() );
       message = TestUtil.getMessageObject();
-      assertNotNull( message.findNotifyOperation( "w2", "dragOperationChanged" ) );
-      assertEquals( "none", message.findNotifyProperty( "w2", "dragOperationChanged", "operation" ) );
+      assertNotNull( message.findNotifyOperation( "w2", "DragOperationChanged" ) );
+      assertEquals( "none", message.findNotifyProperty( "w2", "DragOperationChanged", "operation" ) );
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
       dndSupport.cancel();
@@ -1549,7 +1550,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.clearRequestLog();
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
       var message = TestUtil.getMessageObject();
-      assertNotNull( message.findNotifyOperation( "w11", "dragStart" ) );
+      assertNotNull( message.findNotifyOperation( "w11", "DragStart" ) );
 
       TestUtil.protocolCall( "w123", "cancel", {} );
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();
@@ -1594,6 +1595,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var actions = [ "copy", "move", "alias" ];
       dndSupport.registerDragSource( result, actions );
       dndSupport.setDragSourceTransferTypes( result, [ "default" ] );
+      this.setHasListeners( result, true );
       org.eclipse.rwt.test.fixture.TestUtil.flush();
       return result;
     },
@@ -1609,6 +1611,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var actions = [ "copy", "move", "alias" ];
       dndSupport.registerDropTarget( result, actions );
       dndSupport.setDropTargetTransferTypes( result, [ "default" ] );
+      this.setHasListeners( result, true );
       org.eclipse.rwt.test.fixture.TestUtil.flush();
       return result;
     },
@@ -1655,7 +1658,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var actions = [ "copy", "move", "alias" ];
       dndSupport.registerDropTarget( tree, actions );
       dndSupport.setDropTargetTransferTypes( tree, [ "default" ] );
+      this.setHasListeners( tree, true );
       return tree;
+    },
+
+    setHasListeners : function( widget, value ) {
+      rwt.remote.DNDSupport.getInstance().setHasListener( widget, "DragStart", value );
+      rwt.remote.DNDSupport.getInstance().setHasListener( widget, "DragEnd", value );
+      rwt.remote.DNDSupport.getInstance().setHasListener( widget, "DragEnter", value );
+      rwt.remote.DNDSupport.getInstance().setHasListener( widget, "DragOver", value );
+      rwt.remote.DNDSupport.getInstance().setHasListener( widget, "DragLeave", value );
+      rwt.remote.DNDSupport.getInstance().setHasListener( widget, "DragOperationChanged", value );
+      rwt.remote.DNDSupport.getInstance().setHasListener( widget, "DropAccept", value );
     },
 
     createTreeItem : function( itemNr, tree, parent ) {

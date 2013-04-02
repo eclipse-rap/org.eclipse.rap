@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,13 +40,13 @@ import org.eclipse.swt.widgets.Widget;
 // TODO [rh] move these methods to DragSourceLCA
 public final class DNDSupport {
 
-  private static final String EVENT_DRAG_START = "dragStart";
-  private static final String EVENT_DRAG_ENTER = "dragEnter";
-  private static final String EVENT_DRAG_OPERATION_CHANGED = "dragOperationChanged";
-  private static final String EVENT_DRAG_OVER = "dragOver";
-  private static final String EVENT_DRAG_LEAVE = "dragLeave";
-  private static final String EVENT_DROP_ACCEPT = "dropAccept";
-  private static final String EVENT_DRAG_FINISHED = "dragFinished";
+  private static final String EVENT_DRAG_START = "DragStart";
+  private static final String EVENT_DRAG_ENTER = "DragEnter";
+  private static final String EVENT_DRAG_OPERATION_CHANGED = "DragOperationChanged";
+  private static final String EVENT_DRAG_OVER = "DragOver";
+  private static final String EVENT_DRAG_LEAVE = "DragLeave";
+  private static final String EVENT_DROP_ACCEPT = "DropAccept";
+  private static final String EVENT_DRAG_END = "DragEnd";
 
   private static final String EVENT_PARAM_OPERATION = "operation";
   private static final String EVENT_PARAM_ITEM = "item";
@@ -293,8 +293,8 @@ public final class DNDSupport {
     return result;
   }
 
-  private static DNDEvent createDragSetDataEvent( DragSource dragSource, 
-                                                  TransferData dataType, 
+  private static DNDEvent createDragSetDataEvent( DragSource dragSource,
+                                                  TransferData dataType,
                                                   Point point )
   {
     DNDEvent result = new DNDEvent();
@@ -338,7 +338,7 @@ public final class DNDSupport {
 
   private static void fireDragFinished( int operation ) {
     ClientMessage message = ProtocolUtil.getClientMessage();
-    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_FINISHED );
+    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_END );
     if( notify != null ) {
       Control dragSourceControl = ( Control )findWidgetById( notify.getTarget() );
       // fire DRAG_END

@@ -40,9 +40,6 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
     registerDragSource : function( widget, operations ) {
       widget.addEventListener( "dragstart", this._dragStartHandler, this );
       widget.addEventListener( "dragend", this._dragEndHandler, this );
-      var remoteObject = rwt.remote.RemoteObjectFactory.getRemoteObject( widget );
-      remoteObject._.listen[ "dragStart" ] = true;
-      remoteObject._.listen[ "dragFinished" ] = true;
       var hash = widget.toHashCode();
       this._dragSources[ hash ] = {
         "dataTypes" : [],
@@ -70,6 +67,11 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
     isDropTarget : function( widget ) {
       var hash = widget.toHashCode();
       return typeof this._dropTargets[ hash ] != "undefined";
+    },
+
+    setHasListener : function( widget, type, value ) {
+      var remoteObject = rwt.remote.RemoteObjectFactory.getRemoteObject( widget );
+      remoteObject._.listen[ type ] = value;
     },
 
     _dragStartHandler : function( event ) {
@@ -104,7 +106,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
           event.startDrag();
           event.stopPropagation();
         }
-        this._sendDragSourceEvent( target, "dragStart", event.getMouseEvent() );
+        this._sendDragSourceEvent( target, "DragStart", event.getMouseEvent() );
       }
     },
 
@@ -117,7 +119,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
         var req = rwt.remote.Server.getInstance();
         req.addEventListener( "send", this._onSend, this );
       }
-      this._sendDragSourceEvent( target, "dragFinished", mouseEvent );
+      this._sendDragSourceEvent( target, "DragEnd", mouseEvent );
       this._cleanUp();
       event.stopPropagation();
     },
@@ -145,12 +147,6 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
       widget.addEventListener( "dragmove", this._dragMoveHandler, this );
       widget.addEventListener( "dragout", this._dragOutHandler, this );
       widget.addEventListener( "dragdrop", this._dragDropHandler, this );
-      var remoteObject = rwt.remote.RemoteObjectFactory.getRemoteObject( widget );
-      remoteObject._.listen[ "dragOperationChanged" ] = true;
-      remoteObject._.listen[ "dragEnter" ] = true;
-      remoteObject._.listen[ "dragOver" ] = true;
-      remoteObject._.listen[ "dragLeave" ] = true;
-      remoteObject._.listen[ "dropAccept" ] = true;
       var hash = widget.toHashCode();
       this._dropTargets[ hash ] = {
         "actions" : this._operationsToActions( operations )
@@ -180,7 +176,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
       this._currentDropTarget = target;
       var action = this._computeCurrentAction( mouseEvent, target );
       this._setAction( action, null );
-      this._sendDropTargetEvent( target, "dragEnter", mouseEvent, action );
+      this._sendDropTargetEvent( target, "DragEnter", mouseEvent, action );
       event.stopPropagation();
     },
 
@@ -191,7 +187,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
       this._currentMousePosition.y = mouseEvent.getPageY();
       var action = this._computeCurrentAction( mouseEvent, target );
       this._setAction( action, mouseEvent );
-      this._sendDropTargetEvent( target, "dragOver", mouseEvent, action );
+      this._sendDropTargetEvent( target, "DragOver", mouseEvent, action );
       event.stopPropagation();
     },
 
@@ -207,11 +203,11 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
       this._currentDropTarget = null;
       this._actionOverwrite = null;
       this._dataTypeOverwrite = null;
-      if( this._isDropTargetEventScheduled( "dragEnter" ) ) {
-        this._cancelDropTargetEvent( "dragEnter" );
-        this._cancelDropTargetEvent( "dragOver" );
+      if( this._isDropTargetEventScheduled( "DragEnter" ) ) {
+        this._cancelDropTargetEvent( "DragEnter" );
+        this._cancelDropTargetEvent( "DragOver" );
       } else {
-        this._sendDropTargetEvent( target, "dragLeave", mouseEvent, "none" );
+        this._sendDropTargetEvent( target, "DragLeave", mouseEvent, "none" );
       }
       event.stopPropagation();
     },
@@ -220,7 +216,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
       var target = event.getCurrentTarget();
       var mouseEvent = event.getMouseEvent();
       var action = this._computeCurrentAction( mouseEvent, target );
-      this._sendDropTargetEvent( target, "dropAccept", mouseEvent, action );
+      this._sendDropTargetEvent( target, "DropAccept", mouseEvent, action );
       event.stopPropagation();
     },
 
@@ -313,7 +309,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
         dndHandler.setAction( newAction );
         if( sourceEvent != null ) {
           this._sendDropTargetEvent( this._currentDropTarget,
-                                     "dragOperationChanged",
+                                     "DragOperationChanged",
                                      sourceEvent,
                                      newAction );
         }
@@ -500,9 +496,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
       if( event.getType() == "keyup" && event.getKeyIdentifier() == "Alt" ) {
         // NOTE: This combination causes problems with future dom events,
         // so instead we cancel the operation.
-        this._sendDragSourceEvent( this._currentDragSource,
-                                   "dragFinished",
-                                   event );
+        this._sendDragSourceEvent( this._currentDragSource, "DragEnd", event );
         this.cancel();
       } else if( this._currentDropTarget != null ) {
         var dndHandler = rwt.event.DragAndDropHandler.getInstance();

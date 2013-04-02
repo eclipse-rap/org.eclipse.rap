@@ -14,6 +14,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.join;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 
@@ -28,6 +29,7 @@ import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.HTMLTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -226,6 +228,54 @@ public class DragSourceLCA_Test {
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findDestroyOperation( control ) );
     assertNull( message.findDestroyOperation( dragSource ) );
+  }
+
+  @Test
+  public void testRenderAddDragListener() throws Exception {
+    DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( source );
+    Fixture.preserveWidgets();
+
+    source.addDragListener( mock( DragSourceListener.class ) );
+    lca.renderChanges( source );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( source, "DragStart" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( source, "DragEnd" ) );
+  }
+
+  @Test
+  public void testRenderRemoveDragListener() throws Exception {
+    DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
+    DragSourceListener listener = mock( DragSourceListener.class );
+    source.addDragListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( source );
+    Fixture.preserveWidgets();
+
+    source.removeDragListener( listener );
+    lca.renderChanges( source );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( source, "DragStart" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( source, "DragEnd" ) );
+  }
+
+  @Test
+  public void testRenderDragListenerUnchanged() throws Exception {
+    DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( source );
+    Fixture.preserveWidgets();
+
+    source.addDragListener( mock( DragSourceListener.class ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( source );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( source, "DragStart" ) );
+    assertNull( message.findListenOperation( source, "DragEnd" ) );
   }
 
 }

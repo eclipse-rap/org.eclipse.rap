@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.dragsourcekit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +23,6 @@ import java.util.Map;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.dnd.DND;
@@ -31,20 +34,27 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class DragSourceLCA extends AbstractWidgetLCA {
 
+  private static final String TYPE = "rwt.widgets.DragSource";
+  private static final String PROP_TRANSFER = "transfer";
+  private static final String PROP_DRAG_START_LISTENER = "DragStart";
+  private static final String PROP_DRAG_END_LISTENER = "DragEnd";
+
   private static final Transfer[] DEFAULT_TRANSFER = new Transfer[ 0 ];
 
-  private static final String PROP_TRANSFER = "transfer";
-  private static final String TYPE = "rwt.widgets.DragSource";
-
+  @Override
   public void preserveValues( Widget widget ) {
     DragSource dragSource = ( DragSource )widget;
-    WidgetAdapter adapter = WidgetUtil.getAdapter( dragSource );
-    adapter.preserve( PROP_TRANSFER, dragSource.getTransfer() );
+    preserveProperty( dragSource, PROP_TRANSFER, dragSource.getTransfer() );
+    preserveListener( dragSource,
+                      PROP_DRAG_START_LISTENER,
+                      dragSource.isListening( DND.DragStart ) );
+    preserveListener( dragSource, PROP_DRAG_END_LISTENER, dragSource.isListening( DND.DragEnd ) );
   }
 
   public void readData( Widget widget ) {
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     DragSource dragSource = ( DragSource )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( dragSource );
@@ -53,6 +63,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     clientObject.set( "style", DNDLCAUtil.convertOperations( dragSource.getStyle() ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     DragSource dragSource = ( DragSource )widget;
     renderTransfer( dragSource );
@@ -61,6 +72,14 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     renderFeedback( dragSource );
     renderDataType( dragSource );
     renderCancel( dragSource );
+    renderListener( dragSource,
+                    PROP_DRAG_START_LISTENER,
+                    dragSource.isListening( DND.DragStart ),
+                    false );
+    renderListener( dragSource,
+                    PROP_DRAG_END_LISTENER,
+                    dragSource.isListening( DND.DragEnd ),
+                    false );
   }
 
   private static void renderTransfer( DragSource dragSource ) {

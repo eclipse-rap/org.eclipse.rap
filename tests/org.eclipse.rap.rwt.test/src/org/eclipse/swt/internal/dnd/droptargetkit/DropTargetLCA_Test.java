@@ -14,6 +14,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.join;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 
@@ -27,6 +28,7 @@ import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.HTMLTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
@@ -127,6 +129,63 @@ public class DropTargetLCA_Test {
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findDestroyOperation( control ) );
     assertNull( message.findDestroyOperation( target ) );
+  }
+
+  @Test
+  public void testRenderAddDropListener() throws Exception {
+    DropTarget target = new DropTarget( control, DND.DROP_COPY );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( target );
+    Fixture.preserveWidgets();
+
+    target.addDropListener( mock( DropTargetListener.class ) );
+    lca.renderChanges( target );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( target, "DragEnter" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( target, "DragOver" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( target, "DragLeave" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( target, "DragOperationChanged" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( target, "DropAccept" ) );
+  }
+
+  @Test
+  public void testRenderRemoveDropListener() throws Exception {
+    DropTarget target = new DropTarget( control, DND.DROP_COPY );
+    DropTargetListener listener = mock( DropTargetListener.class );
+    target.addDropListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( target );
+    Fixture.preserveWidgets();
+
+    target.removeDropListener( listener );
+    lca.renderChanges( target );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( target, "DragEnter" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( target, "DragOver" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( target, "DragLeave" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( target, "DragOperationChanged" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( target, "DropAccept" ) );
+  }
+
+  @Test
+  public void testRenderDropListenerUnchanged() throws Exception {
+    DropTarget target = new DropTarget( control, DND.DROP_COPY );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( target );
+    Fixture.preserveWidgets();
+
+    target.addDropListener( mock( DropTargetListener.class ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( target );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( target, "DragEnter" ) );
+    assertNull( message.findListenOperation( target, "DragOver" ) );
+    assertNull( message.findListenOperation( target, "DragLeave" ) );
+    assertNull( message.findListenOperation( target, "DragOperationChanged" ) );
+    assertNull( message.findListenOperation( target, "DropAccept" ) );
   }
 
 }

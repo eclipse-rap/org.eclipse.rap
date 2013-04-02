@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,18 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.droptargetkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
+
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.internal.dnd.dragsourcekit.DNDLCAUtil;
@@ -26,22 +30,41 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class DropTargetLCA extends AbstractWidgetLCA {
 
+  private static final String TYPE = "rwt.widgets.DropTarget";
+  private static final String PROP_TRANSFER = "transfer";
+  private static final String PROP_DRAG_ENTER_LISTENER = "DragEnter";
+  private static final String PROP_DRAG_OVER_LISTENER = "DragOver";
+  private static final String PROP_DRAG_LEAVE_LISTENER = "DragLeave";
+  private static final String PROP_DRAG_OPERATION_CHANGED_LISTENER = "DragOperationChanged";
+  private static final String PROP_DROP_ACCEPT_LISTENER = "DropAccept";
+
   private static final Transfer[] DEFAULT_TRANSFER = new Transfer[ 0 ];
 
-  private static final String PROP_CONTROL = "control";
-  private static final String PROP_TRANSFER = "transfer";
-  private static final String TYPE = "rwt.widgets.DropTarget";
-
+  @Override
   public void preserveValues( Widget widget ) {
     DropTarget dropTarget = ( DropTarget )widget;
-    WidgetAdapter adapter = WidgetUtil.getAdapter( dropTarget );
-    adapter.preserve( PROP_CONTROL, dropTarget.getControl() );
-    adapter.preserve( PROP_TRANSFER, dropTarget.getTransfer() );
+    preserveProperty( dropTarget, PROP_TRANSFER, dropTarget.getTransfer() );
+    preserveListener( dropTarget,
+                      PROP_DRAG_ENTER_LISTENER,
+                      dropTarget.isListening( DND.DragEnter ) );
+    preserveListener( dropTarget,
+                      PROP_DRAG_OVER_LISTENER,
+                      dropTarget.isListening( DND.DragOver ) );
+    preserveListener( dropTarget,
+                      PROP_DRAG_LEAVE_LISTENER,
+                      dropTarget.isListening( DND.DragLeave ) );
+    preserveListener( dropTarget,
+                      PROP_DRAG_OPERATION_CHANGED_LISTENER,
+                      dropTarget.isListening( DND.DragOperationChanged ) );
+    preserveListener( dropTarget,
+                      PROP_DROP_ACCEPT_LISTENER,
+                      dropTarget.isListening( DND.DropAccept ) );
   }
 
   public void readData( Widget widget ) {
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     DropTarget dropTarget = ( DropTarget )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( dropTarget );
@@ -50,9 +73,30 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
     clientObject.set( "style", DNDLCAUtil.convertOperations( dropTarget.getStyle() ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     DropTarget dropTarget = ( DropTarget )widget;
     renderTransfer( dropTarget );
+    renderListener( dropTarget,
+                    PROP_DRAG_ENTER_LISTENER,
+                    dropTarget.isListening( DND.DragEnter ),
+                    false );
+    renderListener( dropTarget,
+                    PROP_DRAG_OVER_LISTENER,
+                    dropTarget.isListening( DND.DragOver ),
+                    false );
+    renderListener( dropTarget,
+                    PROP_DRAG_LEAVE_LISTENER,
+                    dropTarget.isListening( DND.DragLeave ),
+                    false );
+    renderListener( dropTarget,
+                    PROP_DRAG_OPERATION_CHANGED_LISTENER,
+                    dropTarget.isListening( DND.DragOperationChanged ),
+                    false );
+    renderListener( dropTarget,
+                    PROP_DROP_ACCEPT_LISTENER,
+                    dropTarget.isListening( DND.DropAccept ),
+                    false );
   }
 
   private static void renderTransfer( DropTarget dropTarget ) {
