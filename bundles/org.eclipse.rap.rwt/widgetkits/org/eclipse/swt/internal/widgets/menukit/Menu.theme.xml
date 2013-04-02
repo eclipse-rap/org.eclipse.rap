@@ -37,10 +37,10 @@
         like "inset" or "outset" is used.
       </description>
     </property>
-    
-    <property name="opacity" 
+
+    <property name="opacity"
         description="The opacity of the menu. A value between 0 and 1." />
-    
+
     <property name="padding"
         description="Space between border and text / image" />
 
@@ -49,8 +49,8 @@
         Supports animations-types "slideIn" and "slideOut". Others are ignored.
       </description>
     </property>
-    
-    <property name="box-shadow" 
+
+    <property name="box-shadow"
         description="The shadow behind the menu." />
 
     <state name="disabled"
@@ -64,11 +64,11 @@
 
       <property name="background-color"
           description="Background color" />
-          
+
       <property name="background-image"
           description="Background image" />
 
-      <property name="opacity" 
+      <property name="opacity"
           description="The opacity of the item. A value between 0 and 1." />
 
       <property name="text-shadow"
