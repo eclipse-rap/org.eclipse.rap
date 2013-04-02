@@ -430,6 +430,31 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.destroy();
     },
 
+    testSelectItem_ScrollDown : function() {
+      var list = this._createDefaultList();
+      this._addItems( list, 100 );
+      TestUtil.flush();
+
+      list.selectItem( 40 );
+
+      var selection = this._getSelection( list );
+      assertEquals( [ 0, 394 ], this._getScrollPosition( list ) );
+      list.destroy();
+    },
+
+    testSelectItem_ScrollUp : function() {
+      var list = this._createDefaultList();
+      this._addItems( list, 100 );
+      TestUtil.flush();
+
+      list.selectItem( 99 );
+      list.selectItem( 40 );
+
+      var selection = this._getSelection( list );
+      assertEquals( [ 0, 800 ], this._getScrollPosition( list ) );
+      list.destroy();
+    },
+
     testSelectItemByCharacter : function() {
       var list = this._createDefaultList();
       list.setItems( [ "Akira", "Boogiepop", "C something", "Daria" ] );
