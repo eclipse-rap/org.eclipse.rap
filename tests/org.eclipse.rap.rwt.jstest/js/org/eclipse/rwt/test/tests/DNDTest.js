@@ -1595,7 +1595,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var actions = [ "copy", "move", "alias" ];
       dndSupport.registerDragSource( result, actions );
       dndSupport.setDragSourceTransferTypes( result, [ "default" ] );
-      this.setHasListeners( result, true );
+      this.setHasDragDropListeners( result, true );
       org.eclipse.rwt.test.fixture.TestUtil.flush();
       return result;
     },
@@ -1611,7 +1611,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var actions = [ "copy", "move", "alias" ];
       dndSupport.registerDropTarget( result, actions );
       dndSupport.setDropTargetTransferTypes( result, [ "default" ] );
-      this.setHasListeners( result, true );
+      this.setHasDragDropListeners( result, true );
       org.eclipse.rwt.test.fixture.TestUtil.flush();
       return result;
     },
@@ -1658,11 +1658,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var actions = [ "copy", "move", "alias" ];
       dndSupport.registerDropTarget( tree, actions );
       dndSupport.setDropTargetTransferTypes( tree, [ "default" ] );
-      this.setHasListeners( tree, true );
+      this.setHasDragDropListeners( tree, true );
       return tree;
     },
 
-    setHasListeners : function( widget, value ) {
+    setHasDragDropListeners : function( widget, value ) {
       rwt.remote.DNDSupport.getInstance().setHasListener( widget, "DragStart", value );
       rwt.remote.DNDSupport.getInstance().setHasListener( widget, "DragEnd", value );
       rwt.remote.DNDSupport.getInstance().setHasListener( widget, "DragEnter", value );
