@@ -199,8 +199,7 @@ public class MnemonicsTab extends ExampleTab {
     MenuItem pushTwo
       = createMenuItem( bar.getItem( 0 ).getMenu(), SWT.PUSH, "Push &Two\tCtrl+Shift+2" );
     pushTwo.setAccelerator( SWT.CTRL | SWT.SHIFT | '2' );
-    MenuItem check
-      = createMenuItem( bar.getItem( 0 ).getMenu(), SWT.CHECK, "&Check\tCtrl+C" );
+    MenuItem check = createMenuItem( bar.getItem( 0 ).getMenu(), SWT.CHECK, "&Check\tCtrl+C" );
     check.setAccelerator( SWT.CTRL | 'C' );
     createMenuItem( bar.getItem( 0 ).getMenu(), SWT.SEPARATOR, "Separator &W" );
     createMenuItem( bar.getItem( 0 ).getMenu(), SWT.RADIO, "Radio &X" );

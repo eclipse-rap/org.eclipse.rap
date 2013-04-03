@@ -177,6 +177,26 @@ public class AcceleratorBinding_Test {
   }
 
   @Test
+  public void testKeyDownEvent_triggersHandleAcceleratorActivation_withSmallLetterInEvent() {
+    acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
+    when( Boolean.valueOf( menuItem.isEnabled() ) ).thenReturn( Boolean.TRUE );
+
+    display.sendEvent( SWT.KeyDown, mockKeyDownEvent( SWT.ALT, 'a' ) );
+
+    verify( menuItem ).handleAcceleratorActivation();
+  }
+
+  @Test
+  public void testKeyDownEvent_triggersHandleAcceleratorActivation_withSmallLetterInAccelerator() {
+    acceleratorSupport.setAccelerator( SWT.ALT | 'a' );
+    when( Boolean.valueOf( menuItem.isEnabled() ) ).thenReturn( Boolean.TRUE );
+
+    display.sendEvent( SWT.KeyDown, mockKeyDownEvent( SWT.ALT, 'A' ) );
+
+    verify( menuItem ).handleAcceleratorActivation();
+  }
+
+  @Test
   public void testKeyDownEvent_doesNotTriggerHandleAcceleratorActivation_onDisabledItem() {
     acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
 

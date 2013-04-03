@@ -58,7 +58,8 @@ class AcceleratorBinding implements Listener {
     if( event.type == SWT.KeyDown ) {
       if( ( accelerator & SWT.MODIFIER_MASK ) == event.stateMask ) {
         char key = Character.toUpperCase( ( char )( accelerator & SWT.KEY_MASK ) );
-        if( key == event.character ) {
+        char character = Character.toUpperCase( event.character );
+        if( key == character ) {
           result = true;
         }
       }
