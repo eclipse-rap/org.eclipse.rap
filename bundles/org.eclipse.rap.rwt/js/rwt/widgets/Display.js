@@ -141,7 +141,7 @@ rwt.widgets.Display.prototype = {
     // TODO [tb] : This will attach the cursorLocation as the last operation, but should be first
     var pageX = rwt.event.MouseEvent.getPageX();
     var pageY = rwt.event.MouseEvent.getPageY();
-    var location = [ pageX, pageY ];
+    var location = [ Math.round( pageX ), Math.round( pageY ) ];
     rwt.remote.Server.getInstance().getRemoteObject( this ).set( "cursorLocation", location );
   },
 
