@@ -594,6 +594,17 @@ public class MenuItemLCA_Test {
   }
 
   @Test
+  public void testRenderMnemonicIndexOnSeparator() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.SEPARATOR );
+
+    item.setText( "te&st" );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "mnemonicIndex" ) );
+  }
+
+  @Test
   public void testRenderMnemonicIndex_OnTextChange() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
     Fixture.markInitialized( display );

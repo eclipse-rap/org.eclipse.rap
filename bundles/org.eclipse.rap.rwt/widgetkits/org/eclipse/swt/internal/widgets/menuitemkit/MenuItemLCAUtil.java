@@ -96,12 +96,14 @@ final class MenuItemLCAUtil {
   }
 
   private static void renderMnemonicIndex( MenuItem item ) {
-    String text = item.getText();
-    if( WidgetLCAUtil.hasChanged( item, PROP_TEXT, text, "" ) ) {
-      int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
-      if( mnemonicIndex != -1 ) {
-        IClientObject clientObject = ClientObjectFactory.getClientObject( item );
-        clientObject.set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+    if( ( item.getStyle() & SWT.SEPARATOR ) == 0 ) {
+      String text = item.getText();
+      if( WidgetLCAUtil.hasChanged( item, PROP_TEXT, text, "" ) ) {
+        int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
+        if( mnemonicIndex != -1 ) {
+          IClientObject clientObject = ClientObjectFactory.getClientObject( item );
+          clientObject.set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+        }
       }
     }
   }
