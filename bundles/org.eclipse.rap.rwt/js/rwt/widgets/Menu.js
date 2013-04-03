@@ -489,7 +489,9 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
          };
          var items = this._layout.getChildren();
          for( var i = 0; i < items.length; i++ ) {
-           items[ i ].handleMnemonic( event );
+           if( items[ i ].handleMnemonic ) {
+             items[ i ].handleMnemonic( event );
+           }
          }
        }
      }
