@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -639,7 +639,8 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
           doit = this.dispatchEvent( new rwt.event.DataEvent( "input", this._typed ), true );
         }
         if( doit ) {
-          this.setValue( newValue ); // if doit is false, the listener has to do this
+          // at least webkit does sometiems fire "input" before the selection is updated
+          rwt.client.Timer.once( this._updateValueProperty, this, 0 );
         } else if( rwt.client.Client.isWebkit() || rwt.client.Client.isMshtml() ){
           // some browser set new selection after input event, ignoring all changes before that
           rwt.client.Timer.once( this._renderSelection, this, 0 );
@@ -648,6 +649,10 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       } catch( ex ) {
         rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
+    },
+
+    _updateValueProperty : function() {
+      this.setValue( this.getComputedValue().toString() );
     },
 
     _ontabfocus : function() {
