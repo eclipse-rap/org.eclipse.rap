@@ -119,6 +119,17 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
       this._update( msg );
     },
 
+    setIndex : function( value ) {
+      var siblings = this._parent._children;
+      if( siblings.indexOf( this ) !== value ) {
+        var target = siblings[ value ];
+        siblings[ value ] = this;
+        if( target && !target.isCached() ) {
+          target.dispose();
+        }
+      }
+    },
+
     clear : function() {
       // TODO [tb] : children?
       this._cached = false;
@@ -676,8 +687,10 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
         delete this._customHeightItems[ item.toHashCode() ];
       }
       var index = this._children.indexOf( item );
-      this._children.splice( index, 1 );
-      this._children.push( undefined );
+      if( index !== -1 ) {
+        this._children.splice( index, 1 );
+        this._children.push( undefined );
+      }
       this._update( "remove", item );
     },
 

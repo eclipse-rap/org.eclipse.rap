@@ -809,6 +809,65 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       assertEquals( [ child1, child3, undefined ], root._children );
     },
 
+    testRemoveItemUncachedAndUpdateIndex : function() {
+      var root = new rwt.widgets.GridItem();
+      root.setItemCount( 3 );
+      var child3 = new rwt.widgets.GridItem( root, 2 );
+
+      root.setItemCount( 2 );
+      child3.setIndex( 1 );
+
+      assertEquals( [ undefined, child3 ], root._children );
+    },
+
+    testRemoveMultipleItemsUncachedAndUpdateIndex : function() {
+      var root = new rwt.widgets.GridItem();
+      root.setItemCount( 5 );
+      var child3 = new rwt.widgets.GridItem( root, 2 );
+      var child4 = new rwt.widgets.GridItem( root, 3 );
+      var child5 = new rwt.widgets.GridItem( root, 4 );
+
+      root.setItemCount( 3 );
+      child3.setIndex( 0 );
+      child4.setIndex( 1 );
+      child5.setIndex( 2 );
+
+      assertEquals( [ child3, child4, child5 ], root._children );
+    },
+
+    testRemoveItemUncachedDisposesPlaceholder : function() {
+      var root = new rwt.widgets.GridItem();
+      root.setItemCount( 3 );
+      var child2 = new rwt.widgets.GridItem( root, 1, true );
+      var child3 = new rwt.widgets.GridItem( root, 2 );
+
+      root.setItemCount( 2 );
+      child3.setIndex( 1 );
+      TestUtil.flush();
+
+      assertTrue( child2.isDisposed() );
+      assertEquals( [ undefined, child3 ], root._children );
+    },
+
+    testRemoveMultipleItemsUncachedDisposesPlaceHolder : function() {
+      var root = new rwt.widgets.GridItem();
+      root.setItemCount( 5 );
+      var child1 = new rwt.widgets.GridItem( root, 0, true );
+      var child2 = new rwt.widgets.GridItem( root, 1, true );
+      var child3 = new rwt.widgets.GridItem( root, 2 );
+      var child4 = new rwt.widgets.GridItem( root, 3 );
+      var child5 = new rwt.widgets.GridItem( root, 4 );
+
+      root.setItemCount( 3 );
+      child3.setIndex( 0 );
+      child4.setIndex( 1 );
+      child5.setIndex( 2 );
+
+      assertEquals( [ child3, child4, child5 ], root._children );
+      assertTrue( child1.isDisposed() );
+      assertTrue( child2.isDisposed() );
+    },
+
     testRemoveItemEvent : function() {
       var log = [];
       var root = new rwt.widgets.GridItem();

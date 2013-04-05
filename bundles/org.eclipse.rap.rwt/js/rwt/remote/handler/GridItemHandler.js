@@ -48,7 +48,8 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.GridItem", {
     "cellGrayed",
     "cellCheckable",
     "customVariant",
-    "height"
+    "height",
+    "index"
   ],
 
   propertyHandler : {
