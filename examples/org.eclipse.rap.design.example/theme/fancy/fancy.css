@@ -3182,3 +3182,8 @@ FileUpload-FocusIndicator {
   padding: 0px;
   opacity: 1;
 }
+
+SystemMessage-DisplayOverlay {
+  background-color: rgba( 128, 128, 128, 0.3 );
+  background-image: none;
+}
