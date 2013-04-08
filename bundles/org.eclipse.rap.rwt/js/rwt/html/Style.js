@@ -473,10 +473,10 @@ rwt.qx.Class.define( "rwt.html.Style", {
     } ),
 
     setBackgroundGradient : rwt.util.Variant.select( "qx.client", {
+      // TODO [tb] : Webkit and Gecko now support the default syntax, but will continue to support
+      //             their old syntax if prefexied. RAP should use new syntax if possible to be
+      //             future proof.
       "webkit" : function( target, gradientObject ) {
-        // NOTE: Webkit will also support the new syntax, but support for the old syntax
-        //       will not be removed "in the foreseeable future". See:
-        //       http://www.webkit.org/blog/1424/css3-gradients/
         if( gradientObject ) {
           var args = [ "linear", "left top" ];
           if( gradientObject.horizontal === true ) {
@@ -495,7 +495,7 @@ rwt.qx.Class.define( "rwt.html.Style", {
           this.removeStyleProperty( target, "background" );
         }
       },
-      "default" : function( target, gradientObject ) {
+      "gecko" : function( target, gradientObject ) {
         if( gradientObject ) {
           var args = [ gradientObject.horizontal === true ? "0deg" : "-90deg" ];
           for( var i = 0; i < gradientObject.length; i++ ) {
@@ -504,6 +504,20 @@ rwt.qx.Class.define( "rwt.html.Style", {
             args.push( color + " " + position );
           }
           var string = this.BROWSER_PREFIX + "linear-gradient( " + args.join() + ")";
+          this.setStyleProperty( target, "background", string );
+        } else {
+          this.removeStyleProperty( target, "background" );
+        }
+      },
+      "default" : function( target, gradientObject ) {
+        if( gradientObject ) {
+          var args = [ gradientObject.horizontal === true ? "90deg" : "180deg" ];
+          for( var i = 0; i < gradientObject.length; i++ ) {
+            var position = ( gradientObject[ i ][ 0 ] * 100 ) + "%";
+            var color = gradientObject[ i ][ 1 ];
+            args.push( color + " " + position );
+          }
+          var string = "linear-gradient( " + args.join() + ")";
           this.setStyleProperty( target, "background", string );
         } else {
           this.removeStyleProperty( target, "background" );

@@ -1817,7 +1817,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
         var gradient = TestUtil.getCssGradient( row._overlayElement );
         var expected1 = "gradient(-90deg, red 0%, yellow 100%)";
         var expected2 = "gradient(linear, 0% 0%, 0% 100%, from(red), to(yellow))";
-        assertTrue( gradient === expected1 || gradient === expected2 );
+        var expected3 = "gradient(180deg, red 0%, yellow 100%)";
+        assertTrue( gradient === expected1 || gradient === expected2 || gradient === expected3 );
       }
     },
 

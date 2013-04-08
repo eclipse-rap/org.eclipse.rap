@@ -179,9 +179,9 @@ rwt.qx.Class.define( "rwt.client.Client", {
     supportsCss3 : function() {
       var engine = rwt.client.Client.getEngine();
       var version = rwt.client.Client.getVersion();
-      var result =    engine === "webkit" && version >= 522 //
-                   || engine === "gecko" && version >= 2; // firefox 4+
-                   // TODO [tb] : ie10+
+      var result =    engine === "webkit" && version >= 522
+                   || engine === "gecko" && version >= 2 // firefox 4+
+                   || engine === "newmshtml" && version >= 10; // IE10 +
       return result;
     },
 
