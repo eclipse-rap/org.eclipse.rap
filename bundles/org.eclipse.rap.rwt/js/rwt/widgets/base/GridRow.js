@@ -643,14 +643,13 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _getFontProps : function( font ) {
       var result = {};
-      var fontObject;
       if( font instanceof rwt.html.Font ) {
-        fontObject = font;
+        font.renderStyle( result );
       } else {
-        fontObject = rwt.html.Font.fromString( font );
+        var fontObject = rwt.html.Font.fromString( font );
+        fontObject.renderStyle( result );
+        fontObject.dispose();
       }
-      fontObject.renderStyle( result );
-      fontObject.dispose();
       return result;
     },
 
