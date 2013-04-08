@@ -359,6 +359,22 @@ public class TreeItemLCA_Test {
   }
 
   @Test
+  public void testRenderIndex_VirtualAfterClear() throws IOException {
+    tree = new Tree( shell, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Fixture.preserveWidgets();
+
+    new TreeItem( tree, SWT.NONE, 0 );
+    tree.clear( 1, false );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( item, "index" ) );
+  }
+
+  @Test
   public void testRenderIndexWithParentItem() throws IOException {
     TreeItem rootItem = new TreeItem( tree, SWT.NONE );
     new TreeItem( rootItem, SWT.NONE );

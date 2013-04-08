@@ -266,11 +266,12 @@ public class TableItemLCA_Test {
     TableItemLCA lca = new TableItemLCA();
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( item );
-    // Ensure that nothing else than the 'checked' property gets preserved
+    // Ensure that nothing else than the 'index' and 'cached' property gets preserved
     lca.preserveValues( item );
     WidgetAdapter itemAdapter = WidgetUtil.getAdapter( item );
 
     assertEquals( Boolean.FALSE, itemAdapter.getPreserved( TableItemLCA.PROP_CACHED ) );
+    assertEquals( Integer.valueOf( 0 ), itemAdapter.getPreserved( TableItemLCA.PROP_INDEX ) );
     assertNull( itemAdapter.getPreserved( TableItemLCA.PROP_TEXTS ) );
     assertNull( itemAdapter.getPreserved( TableItemLCA.PROP_IMAGES ) );
     assertNull( itemAdapter.getPreserved( TableItemLCA.PROP_CHECKED ) );
@@ -333,6 +334,22 @@ public class TableItemLCA_Test {
     TableItem item = new TableItem( table, SWT.NONE );
 
     new TableItem( table, SWT.NONE, 0 );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( item, "index" ) );
+  }
+
+  @Test
+  public void testRenderIndex_VirtualAfterClear() throws IOException {
+    table = new Table( shell, SWT.VIRTUAL );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Fixture.preserveWidgets();
+
+    new TableItem( table, SWT.NONE, 0 );
+    table.clear( 1 );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();

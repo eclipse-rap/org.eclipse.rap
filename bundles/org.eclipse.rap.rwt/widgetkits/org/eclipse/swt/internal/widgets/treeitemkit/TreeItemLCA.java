@@ -57,8 +57,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   @Override
   public void preserveValues( Widget widget ) {
     TreeItem item = ( TreeItem )widget;
+    preserveProperty( item, PROP_INDEX, getIndex( item ) );
     if( isCached( item ) ) {
-      preserveProperty( item, PROP_INDEX, getIndex( item ) );
       preserveProperty( item, PROP_ITEM_COUNT, item.getItemCount() );
       preserveProperty( item, PROP_TEXTS, getTexts( item ) );
       preserveProperty( item, PROP_IMAGES, getImages( item ) );
@@ -105,8 +105,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   @Override
   public void renderChanges( Widget widget ) throws IOException {
     TreeItem item = ( TreeItem )widget;
+    renderProperty( item, PROP_INDEX, getIndex( item ), -1 );
     if( isCached( item ) ) {
-      renderProperty( item, PROP_INDEX, getIndex( item ), -1 );
       renderProperty( item, PROP_ITEM_COUNT, item.getItemCount(), DEFAULT_ITEM_COUNT );
       renderProperty( item, PROP_TEXTS, getTexts( item ), getDefaultTexts( item ) );
       renderProperty( item, PROP_IMAGES, getImages( item ), new Image[ getColumnCount( item ) ] );

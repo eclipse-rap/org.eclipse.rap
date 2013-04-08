@@ -59,8 +59,9 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   @Override
   public void preserveValues( Widget widget ) {
     TableItem item = ( TableItem )widget;
+    preserveProperty( item, PROP_INDEX, getIndex( item ) );
+    preserveProperty( item, PROP_CACHED, isCached( item ) );
     if( isCached( item ) ) {
-      preserveProperty( item, PROP_INDEX, getIndex( item ) );
       preserveProperty( item, PROP_TEXTS, getTexts( item ) );
       preserveProperty( item, PROP_IMAGES, getImages( item ) );
       WidgetLCAUtil.preserveBackground( item, getUserBackground( item ) );
@@ -74,7 +75,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       preserveProperty( item, PROP_CHECKED, item.getChecked() );
       preserveProperty( item, PROP_GRAYED, item.getGrayed() );
     }
-    preserveProperty( item, PROP_CACHED, isCached( item ) );
   }
 
   public void readData( Widget widget ) {
@@ -94,6 +94,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   @Override
   public void renderChanges( Widget widget ) throws IOException {
     final TableItem item = ( TableItem )widget;
+    renderProperty( item, PROP_INDEX, getIndex( item ), -1 );
     if( wasCleared( item ) ) {
       renderClear( item );
     } else {
@@ -126,7 +127,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   // RenderChanges helper
 
   private static void renderProperties( TableItem item ) {
-    renderProperty( item, PROP_INDEX, getIndex( item ), -1 );
     renderProperty( item, PROP_TEXTS, getTexts( item ), getDefaultTexts( item ) );
     renderProperty( item, PROP_IMAGES, getImages( item ), new Image[ getColumnCount( item ) ] );
     WidgetLCAUtil.renderBackground( item, getUserBackground( item ) );
