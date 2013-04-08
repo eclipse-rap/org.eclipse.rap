@@ -50,6 +50,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolWriterTest", {
       assertEquals( [], message.operations );
     },
 
+    testGetHead : function() {
+      writer.appendHead( "requestCounter", 1 );
+
+      assertEquals( 1, writer.getHead( "requestCounter" ) );
+    },
+
+    testGetHead_ReturnsNullIfNotSet : function() {
+      assertNull( writer.getHead( "requestCounter" ) );
+    },
+
     testMessageWithRequestCounter : function() {
       writer.appendHead( "requestCounter", 1 );
 

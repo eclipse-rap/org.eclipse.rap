@@ -128,12 +128,12 @@ rwt.qx.Class.define( "rwt.remote.Server", {
         if( this._uiSessionId != null ) {
           this.getMessageWriter().appendHead( "uiSessionId", this._uiSessionId );
         }
+        this._startWaitHintTimer();
         var request = this._createRequest();
         request.setAsynchronous( async );
         request.setData( this.getMessageWriter().createMessage() );
         this._writer.dispose();
         this._writer = null;
-        this._waitHintTimer.start();
         request.send();
         this._removeSendListeners();
       }
@@ -157,6 +157,12 @@ rwt.qx.Class.define( "rwt.remote.Server", {
 
     getWaitHintTimer : function() {
       return this._waitHintTimer;
+    },
+
+    _startWaitHintTimer : function() {
+      if( !this.getMessageWriter().getHead( "rwt_initialize" ) ) {
+        this._waitHintTimer.start();
+      }
     },
 
     _removeSendListeners : function() {
