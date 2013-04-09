@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 
 
@@ -34,4 +35,8 @@ public interface IDisplayAdapter {
 
   boolean isBeepCalled();
   void resetBeep();
+
+  void notifyListeners( int eventType, Event event );
+  boolean isListening( int eventType );
+
 }

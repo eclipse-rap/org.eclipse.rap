@@ -653,6 +653,18 @@ public class Display extends Device implements Adaptable {
     }
   }
 
+  private void notifyListeners( final int eventType, final Event event ) {
+    ProcessActionRunner.add( new Runnable() {
+      public void run() {
+        sendEvent( eventType, event );
+      }
+    } );
+  }
+
+  private boolean isListening( int eventType ) {
+    return eventTable == null ? false : eventTable.hooks( eventType );
+  }
+
   //////////
   // Dispose
 
@@ -2431,6 +2443,15 @@ public class Display extends Device implements Adaptable {
     public void resetBeep() {
       beep = false;
     }
+
+    public void notifyListeners( int eventType, Event event ) {
+      Display.this.notifyListeners( eventType, event );
+    }
+
+    public boolean isListening( int eventType ) {
+      return Display.this.isListening( eventType );
+    }
+
   }
 
 }

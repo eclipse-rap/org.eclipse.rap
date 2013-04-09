@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,6 +69,40 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       shell.destroy();
     },
 
+    testSetHasResizeListenerByProtocol : function() {
+      TestUtil.protocolListen( "w1", { "Resize" : true } );
+
+      assertTrue( display._hasResizeListener );
+    },
+
+    testSendResizeEventByProtocol_WithoutListener : function() {
+      rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
+      rwt.remote.Server.getInstance().send();
+
+      var message = TestUtil.getMessageObject();
+      assertNull( message.findNotifyOperation( "w1", "Resize" ) );
+    },
+
+    testSendResizeEventByProtocol_WithListener : function() {
+      TestUtil.protocolListen( "w1", { "Resize" : true } );
+
+      rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
+
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w1", "Resize" ) );
+    },
+
+    testSendWindowSize : function() {
+      var width = rwt.html.Window.getInnerWidth( window );
+      var height = rwt.html.Window.getInnerHeight( window );
+
+      rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
+      rwt.remote.Server.getInstance().send();
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( [ 0, 0, width, height ], message.findSetProperty( "w1", "bounds" ) );
+    },
+
     testSetEnableUiTests : function() {
       display.setEnableUiTests( true );
 
@@ -82,15 +116,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
 
       var message = TestUtil.getMessageObject();
       assertEquals( [ 10, 20 ], message.findSetProperty( "w1", "cursorLocation" ) );
-    },
-
-    testSendWindowSize : function() {
-      var width = rwt.html.Window.getInnerWidth( window );
-      var height = rwt.html.Window.getInnerHeight( window );
-      rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
-
-      var message = TestUtil.getMessageObject();
-      assertEquals( [ 0, 0, width, height ], message.findSetProperty( "w1", "bounds" ) );
     },
 
     testSendDPI : function() {
@@ -125,6 +150,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       display = rwt.widgets.Display.getCurrent();
       var adapter = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Display" );
       rwt.remote.ObjectRegistry.add( "w1", display, adapter );
+      display.setHasResizeListener( false );
     }
 
   }

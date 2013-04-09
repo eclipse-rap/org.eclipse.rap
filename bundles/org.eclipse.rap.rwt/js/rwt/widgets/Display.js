@@ -15,6 +15,7 @@ rwt.widgets.Display = function( properties ) {
   this._document = rwt.widgets.base.ClientDocument.getInstance();
   this._server = rwt.remote.Server.getInstance();
   this._exitConfirmation = null;
+  this._hasResizeListener = false;
   this._initialized = false;
   if( rwt.widgets.Display._current !== undefined ) {
     throw new Error( "Display can not be created twice" );
@@ -111,6 +112,10 @@ rwt.widgets.Display.prototype = {
     return result;
   },
 
+  setHasResizeListener : function( value ) {
+    this._hasResizeListener = value;
+  },
+
   ////////////////////////
   // Global Event handling
 
@@ -125,9 +130,8 @@ rwt.widgets.Display.prototype = {
 
   _onResize : function( evt ) {
     this._appendWindowSize();
-    // Fix for bug 315230
-    if( this._server.getRequestCounter() != null ) {
-      this._server.send();
+    if( this._hasResizeListener ) {
+      rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Resize" );
     }
   },
 

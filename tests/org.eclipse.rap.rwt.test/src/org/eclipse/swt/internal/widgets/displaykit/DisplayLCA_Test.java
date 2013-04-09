@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -71,11 +72,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 
 
@@ -173,6 +177,76 @@ public class DisplayLCA_Test {
     displayLCA.readData( display );
 
     assertEquals( new Rectangle( 0, 0, 30, 70 ), display.getBounds() );
+  }
+
+  @Test
+  public void testFireResizeEvent() {
+    Listener listener = mock( Listener.class );
+    display.addListener( SWT.Resize, listener  );
+
+    Fixture.fakeSetParameter( getId( display ), "bounds", new int[] { 1, 2, 3, 4 } );
+    Fixture.fakeNotifyOperation( getId( display ), "Resize", null );
+    Fixture.readDataAndProcessAction( display );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( listener ).handleEvent( captor.capture() );
+    Event event = captor.getValue();
+    assertSame( display, event.display );
+    assertEquals( 3, event.width );
+    assertEquals( 4, event.height );
+  }
+
+  @Test
+  public void testRenderInitialResizeListener() throws IOException {
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( getId( display ), "Resize" ) );
+  }
+
+  @Test
+  public void testRenderResizeListener() throws IOException {
+    Listener listener = mock( Listener.class );
+    display.addListener( SWT.Resize, listener  );
+
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( getId( display ), "Resize" ) );
+  }
+
+  @Test
+  public void testRenderResizeListener_MaximizedShell() throws IOException {
+    Shell shell = new Shell( display );
+    shell.setMaximized( true );
+
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( getId( display ), "Resize" ) );
+  }
+
+  @Test
+  public void testRenderResizeListener_FullScreenShell() throws IOException {
+    Shell shell = new Shell( display );
+    shell.setFullScreen( true );
+
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( getId( display ), "Resize" ) );
+  }
+
+  @Test
+  public void testRenderResizeListenerUnchanged() throws IOException {
+    Listener listener = mock( Listener.class );
+    display.addListener( SWT.Resize, listener  );
+
+    displayLCA.preserveValues( display );
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( getId( display ), "Resize" ) );
   }
 
   @Test

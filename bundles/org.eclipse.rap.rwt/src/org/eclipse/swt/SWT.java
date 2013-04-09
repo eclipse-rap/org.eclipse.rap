@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -124,19 +124,19 @@ public class SWT {
 
   /**
    * The paint event type (value is 9).
-   * 
+   *
    * @see org.eclipse.swt.widgets.Widget#addListener
    * @see org.eclipse.swt.widgets.Display#addFilter
    * @see org.eclipse.swt.widgets.Event
-   * 
+   *
    * @see org.eclipse.swt.widgets.Canvas#addPaintListener
    * @see org.eclipse.swt.events.PaintListener#paintControl
    * @see org.eclipse.swt.events.PaintEvent
-   * 
+   *
    * @since 2.0
    */
-  public static final int Paint = 9;  
-  
+  public static final int Paint = 9;
+
   /**
    * The move event type (value is 10).
    *
@@ -155,6 +155,7 @@ public class SWT {
    * The resize event type (value is 11).
    *
    * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addListener
    * @see org.eclipse.swt.widgets.Event
    * @see org.eclipse.swt.widgets.Control#addControlListener
    * @see org.eclipse.swt.widgets.TableColumn#addControlListener

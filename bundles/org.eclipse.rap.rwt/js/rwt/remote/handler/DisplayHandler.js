@@ -43,6 +43,6 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Display", {
     }
   },
 
-  listeners : [ "KeyDown" ]
+  listeners : [ "KeyDown", "Resize" ]
 
 } );
