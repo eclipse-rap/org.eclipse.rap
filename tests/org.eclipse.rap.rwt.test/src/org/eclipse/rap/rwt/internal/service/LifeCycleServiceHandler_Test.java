@@ -218,7 +218,7 @@ public class LifeCycleServiceHandler_Test {
 
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
-    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    UISession uiSession = ContextProvider.getUISession();
     assertSame( applicationContext, uiSession.getApplicationContext() );
   }
 

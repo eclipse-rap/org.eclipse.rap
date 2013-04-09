@@ -16,7 +16,6 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
-import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -196,7 +195,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
 
   private ApplicationContextImpl getApplicationContext() {
     IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
-    return ( ( UISessionImpl )displayAdapter.getUISession() ).getApplicationContext();
+    return ( ApplicationContextImpl )displayAdapter.getUISession().getApplicationContext();
   }
 
   /**

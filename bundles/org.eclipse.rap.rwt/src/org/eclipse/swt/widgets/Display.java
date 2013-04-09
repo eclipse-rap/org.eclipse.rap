@@ -38,7 +38,6 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
-import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.internal.theme.QxColor;
 import org.eclipse.rap.rwt.internal.theme.QxImage;
 import org.eclipse.rap.rwt.internal.theme.QxType;
@@ -796,7 +795,7 @@ public class Display extends Device implements Adaptable {
   }
 
   private ApplicationContextImpl getApplicationContext() {
-    return ( ( UISessionImpl )uiSession ).getApplicationContext();
+    return ( ApplicationContextImpl )uiSession.getApplicationContext();
   }
 
 

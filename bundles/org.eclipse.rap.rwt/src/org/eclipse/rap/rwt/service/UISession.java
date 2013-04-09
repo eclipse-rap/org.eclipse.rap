@@ -124,6 +124,14 @@ public interface UISession extends ISessionStore {
   boolean removeSessionStoreListener( UISessionListener listener );
 
   /**
+   * Returns the ApplicationContext this UISession belongs to.
+   *
+   * @return the application context for this UI session
+   * @since 2.1
+   */
+  ApplicationContext getApplicationContext();
+
+  /**
    * Returns the underlying HttpSession instance.
    *
    * @return the HttpSession instance

@@ -21,9 +21,9 @@ import java.io.Serializable;
 
 import org.eclipse.rap.rwt.internal.engine.PostDeserialization;
 import org.eclipse.rap.rwt.internal.resources.ResourceUtil;
-import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.internal.util.StreamUtil;
 import org.eclipse.rap.rwt.service.ResourceManager;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 
@@ -85,10 +85,10 @@ class ImageSerializer {
     }
   }
 
-  private UISessionImpl getUISession() {
+  private UISession getUISession() {
     Display display = ( Display )image.getDevice();
     IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
-    return (UISessionImpl)adapter.getUISession();
+    return adapter.getUISession();
   }
 
   private ResourceManager getResourceManager() {

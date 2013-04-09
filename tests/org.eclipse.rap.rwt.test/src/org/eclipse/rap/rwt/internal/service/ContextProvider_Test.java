@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
@@ -125,7 +126,7 @@ public class ContextProvider_Test {
   public void testApplicationContextIsAttachedToUISession() {
     Fixture.createServiceContext();
 
-    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    UISession uiSession = ContextProvider.getUISession();
 
     assertNotNull( uiSession.getApplicationContext() );
   }
