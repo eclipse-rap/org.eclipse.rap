@@ -11,10 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import static junit.framework.Assert.assertNotSame;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -220,20 +220,6 @@ public class LifeCycleServiceHandler_Test {
 
     UISession uiSession = ContextProvider.getUISession();
     assertSame( applicationContext, uiSession.getApplicationContext() );
-  }
-
-  @Test
-  public void testRequestParametersAreBufferedAfterSessionRestart() throws IOException {
-    initializeUISession();
-    TestRequest request = Fixture.fakeNewGetRequest();
-    request.setParameter( "foo", "bar" );
-    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
-
-    LifeCycleServiceHandler.markSessionStarted();
-    simulateInitialUiRequest();
-    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
-
-    assertEquals( "bar", ContextProvider.getRequest().getParameter( "foo" ) );
   }
 
   /*
