@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.theme.ThemeTestUtil.RESOURCE_LOADER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -21,6 +22,7 @@ import static org.junit.Assert.fail;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Button;
@@ -140,8 +142,9 @@ public class Theme_Test {
       ThemeableWidget[] widgets = new ThemeableWidget[] { createSimpleButtonWidget() };
       defaultTheme.initialize( widgets );
 
-      ResourceManager resourceManager = RWT.getApplicationContext().getResourceManager();
-      defaultTheme.registerResources( resourceManager );
+      ApplicationContext applicationContext = getApplicationContext();
+      ResourceManager resourceManager = applicationContext.getResourceManager();
+      defaultTheme.registerResources( applicationContext );
 
       assertTrue( resourceManager.isRegistered( "themes/images/9e78c44e.gif" ) );
       assertTrue( resourceManager.isRegistered( "themes/cursors/ccb7e1a.gif" ) );

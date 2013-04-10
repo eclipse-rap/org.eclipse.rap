@@ -10,11 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.getInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.BoxDimensionsPropertyAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.DimensionPropertyAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.DirectPropertyAdapter;
@@ -28,9 +31,14 @@ import org.junit.Test;
 
 public class ThemePropertyAdapterRegistry_Test {
 
+  private ApplicationContextImpl applicationContext;
+  private ThemePropertyAdapterRegistry registry;
+
   @Before
   public void setUp() {
     Fixture.setUp();
+    applicationContext = getApplicationContext();
+    registry = ThemePropertyAdapterRegistry.getInstance( applicationContext );
   }
 
   @After
@@ -40,7 +48,6 @@ public class ThemePropertyAdapterRegistry_Test {
 
   @Test
   public void testGetPropertyAdapter() {
-    ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
     ThemePropertyAdapter booleanAdapter = registry.getPropertyAdapter( QxBoolean.class );
     ThemePropertyAdapter dimensionAdapter = registry.getPropertyAdapter( QxDimension.class );
     ThemePropertyAdapter boxDimAdapter = registry.getPropertyAdapter( QxBoxDimensions.class );
@@ -84,21 +91,19 @@ public class ThemePropertyAdapterRegistry_Test {
 
   @Test
   public void testSameInstance() {
-    ThemePropertyAdapterRegistry registryA = ThemePropertyAdapterRegistry.getInstance();
-    ThemePropertyAdapterRegistry registryB = ThemePropertyAdapterRegistry.getInstance();
+    ThemePropertyAdapterRegistry registryB = getInstance( applicationContext );
 
-    assertSame( registryA, registryB );
+    assertSame( registry, registryB );
   }
 
   @Test
   public void testInstanceHasApplicationScope() {
-    ThemePropertyAdapterRegistry registryA = ThemePropertyAdapterRegistry.getInstance();
     Fixture.tearDown();
     Fixture.setUp();
 
-    ThemePropertyAdapterRegistry registryB = ThemePropertyAdapterRegistry.getInstance();
+    ThemePropertyAdapterRegistry registryB = getInstance( applicationContext );
 
-    assertNotSame( registryA, registryB );
+    assertNotSame( registry, registryB );
   }
 
 }

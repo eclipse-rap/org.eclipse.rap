@@ -19,18 +19,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.TestRequest;
-import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.TestSession;
-import org.eclipse.swt.widgets.Display;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,19 +55,11 @@ public class ServiceContext_Test {
   }
 
   @Test
-  public void testGetApplicationContext() {
-    ServiceContext context = createContext( applicationContext );
-
-    ApplicationContextImpl foundInContext = context.getApplicationContext();
-    ApplicationContextImpl foundInSession = uiSession.getApplicationContext();
-    assertSame( applicationContext, foundInContext );
-    assertSame( applicationContext, foundInSession );
-  }
-
-  @Test
-  public void testGetApplicationContextWithNullUISession() {
-    uiSession = null;
-    ServiceContext context = createContext( applicationContext );
+  public void testGetApplicationContext_fromRealContext() {
+    applicationContext.activate();
+    ServiceContext context = new ServiceContext( mock( HttpServletRequest.class ),
+                                                 mock( HttpServletResponse.class ),
+                                                 applicationContext );
 
     ApplicationContextImpl found = context.getApplicationContext();
 
@@ -80,10 +67,12 @@ public class ServiceContext_Test {
   }
 
   @Test
-  public void testGetApplicationContextFromUISession() {
-    ServiceContext context = createContext();
+  public void testGetApplicationContext_fromFakeContext() {
     applicationContext.activate();
     uiSession.setApplicationContext( applicationContext );
+    ServiceContext context = new ServiceContext( mock( HttpServletRequest.class ),
+                                                 mock( HttpServletResponse.class ),
+                                                 uiSession );
 
     ApplicationContextImpl found = context.getApplicationContext();
 
@@ -91,9 +80,10 @@ public class ServiceContext_Test {
   }
 
   @Test
-  public void testGetApplicationContextFromUISessionWithDeactivatedApplicationContext() {
-    ServiceContext context = createContext();
-    uiSession.setApplicationContext( applicationContext );
+  public void testGetApplicationContext_withDeactivatedApplicationContext() {
+    ServiceContext context = new ServiceContext( mock( HttpServletRequest.class ),
+                                                 mock( HttpServletResponse.class ),
+                                                 applicationContext );
 
     ApplicationContextImpl found = context.getApplicationContext();
 
@@ -101,8 +91,10 @@ public class ServiceContext_Test {
   }
 
   @Test
-  public void testGetApplicationContextOnDisposedServiceContext() {
-    ServiceContext context = createContext( null );
+  public void testGetApplicationContext_onDisposedServiceContext() {
+    ServiceContext context = new ServiceContext( mock( HttpServletRequest.class ),
+                                                 mock( HttpServletResponse.class ),
+                                                 applicationContext );
     context.dispose();
 
     try {
@@ -110,53 +102,6 @@ public class ServiceContext_Test {
       fail();
     } catch( IllegalStateException expected ) {
     }
-  }
-
-  @Test
-  public void testGetApplicationContextFromBackgroundThread() throws Throwable {
-    SingletonManager.install( uiSession );
-    ServiceContext serviceContext = createContext( applicationContext );
-    ContextProvider.setContext( serviceContext );
-    final ApplicationContextImpl[] backgroundApplicationContext = { null };
-    final Display display = new Display();
-    Runnable runnable = new Runnable() {
-      public void run() {
-        RWT.getUISession( display ).exec( new Runnable() {
-          public void run() {
-            backgroundApplicationContext[ 0 ] = ApplicationContextUtil.getInstance();
-          }
-        } );
-      }
-    };
-
-    Fixture.runInThread( runnable );
-
-    assertSame( ApplicationContextUtil.getInstance(), backgroundApplicationContext[ 0 ] );
-  }
-
-  private ServiceContext createContext( ApplicationContextImpl applicationContext ) {
-    ServiceContext result = createContext();
-    ServletContext servletContext = result.getRequest().getSession().getServletContext();
-    ApplicationContextUtil.set( servletContext, applicationContext );
-    return result;
-  }
-
-  private ServiceContext createContext() {
-    TestRequest request = new TestRequest();
-    request.setBody( Fixture.createEmptyMessage() );
-    TestResponse response = new TestResponse();
-    HttpSession session = new TestSession();
-    if( uiSession != null ) {
-      session = uiSession.getHttpSession();
-    }
-    request.setSession( session );
-    return createContext( request, response );
-  }
-
-  private ServiceContext createContext( TestRequest request, TestResponse response ) {
-    ServiceContext result = new ServiceContext( request, response, uiSession );
-    result.setServiceStore( new ServiceStore() );
-    return result;
   }
 
 }

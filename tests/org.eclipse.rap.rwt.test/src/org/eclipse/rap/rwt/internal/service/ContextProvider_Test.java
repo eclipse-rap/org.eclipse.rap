@@ -14,12 +14,14 @@ package org.eclipse.rap.rwt.internal.service;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.TestRequest;
-import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,9 +46,9 @@ public class ContextProvider_Test {
   @Test
   public void testThreadLocalFunctionalityWithCurrentThread() {
     assertFalse( ContextProvider.hasContext() );
-    TestResponse response = new TestResponse();
-    TestRequest request = new TestRequest();
-    ServiceContext serviceContext = new ServiceContext( request, response );
+    ServiceContext serviceContext = new ServiceContext( mock( HttpServletRequest.class ),
+                                                        mock( HttpServletResponse.class ),
+                                                        mock( ApplicationContextImpl.class ) );
     ContextProvider.setContext( serviceContext );
     assertTrue( ContextProvider.hasContext() );
     ContextProvider.disposeContext();
@@ -55,9 +57,9 @@ public class ContextProvider_Test {
 
   @Test
   public void testThreadLocalFunctionalityWithAnyThread() throws Exception {
-    TestResponse response = new TestResponse();
-    TestRequest request = new TestRequest();
-    ServiceContext serviceContext = new ServiceContext( request, response );
+    ServiceContext serviceContext = new ServiceContext( mock( HttpServletRequest.class ),
+                                                        mock( HttpServletResponse.class ),
+                                                        mock( ApplicationContextImpl.class ) );
 
     final boolean[] hasContext = new boolean[ 1 ];
     Thread thread1 = new Thread() {
@@ -103,23 +105,6 @@ public class ContextProvider_Test {
 
     assertTrue( useMapped[ 0 ] );
     assertFalse( hasContext[ 0 ] );
-  }
-
-  @Test
-  public void testContextCreation() {
-    TestResponse response = new TestResponse();
-    try {
-      new ServiceContext( null, response );
-      fail( "Request parameter must not be null." );
-    } catch( NullPointerException npe ) {
-    }
-
-    try {
-      TestRequest request = new TestRequest();
-      new ServiceContext( request, null );
-      fail( "Response parameter must not be null." );
-    } catch( NullPointerException npe ) {
-    }
   }
 
   @Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2013 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,8 @@ package org.eclipse.rap.rwt.osgi.internal;
 import java.io.File;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rap.rwt.osgi.ApplicationLauncher;
+import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rap.rwt.osgi.internal.ServiceContainer.ServiceHolder;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -152,7 +152,7 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
   }
 
   private void launch( ServiceHolder<ApplicationConfiguration> configurationHolder,
-                      ServiceHolder<HttpService> httpServiceHolder )
+                       ServiceHolder<HttpService> httpServiceHolder )
   {
     ApplicationConfiguration configuration = configurationHolder.getService();
     HttpService httpService = httpServiceHolder.getService();

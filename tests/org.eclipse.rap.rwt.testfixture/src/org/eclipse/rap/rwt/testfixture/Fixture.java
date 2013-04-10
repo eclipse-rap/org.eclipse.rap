@@ -46,6 +46,7 @@ import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.engine.RWTServletContextListener;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextHelper;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
@@ -120,7 +121,7 @@ public final class Fixture {
   public static ServletContext createServletContext() {
     servletContext = new TestServletContext();
     Fixture.useTestResourceManager();
-    return getServletContext();
+    return servletContext;
   }
 
   public static ServletContext getServletContext() {
@@ -351,7 +352,8 @@ public final class Fixture {
   private static void createNewServiceContext( HttpServletRequest request,
                                                HttpServletResponse response )
   {
-    ServiceContext serviceContext = new ServiceContext( request, response );
+    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
+    ServiceContext serviceContext = new ServiceContext( request, response, applicationContext );
     serviceContext.setServiceStore( new ServiceStore() );
     ContextProvider.disposeContext();
     ContextProvider.setContext( serviceContext );
@@ -516,7 +518,8 @@ public final class Fixture {
   public static void replaceServiceStore( ServiceStore serviceStore ) {
     HttpServletRequest request = ContextProvider.getRequest();
     HttpServletResponse response = ContextProvider.getResponse();
-    ServiceContext context = new ServiceContext( request, response );
+    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
+    ServiceContext context = new ServiceContext( request, response, applicationContext );
     if( serviceStore != null ) {
       context.setServiceStore( serviceStore );
     }

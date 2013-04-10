@@ -203,7 +203,7 @@ public class ContextProvider {
    * Returns the application context that is associated with the currently processed request.
    */
   public static ApplicationContextImpl getApplicationContext() {
-    return ApplicationContextUtil.getInstance();
+    return getContext().getApplicationContext();
   }
 
   /**

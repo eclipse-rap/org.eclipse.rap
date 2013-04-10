@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -310,9 +308,8 @@ public final class ThemePropertyAdapterRegistry {
   private static final String ATTR_NAME
     = ThemePropertyAdapterRegistry.class.getName() + "#instance";
 
-  public static ThemePropertyAdapterRegistry getInstance() {
+  public static ThemePropertyAdapterRegistry getInstance( ApplicationContext applicationContext ) {
     ThemePropertyAdapterRegistry result;
-    ApplicationContext applicationContext = getApplicationContext();
     synchronized( LOCK ) {
       result = ( ThemePropertyAdapterRegistry )applicationContext.getAttribute( ATTR_NAME );
       if( result == null ) {

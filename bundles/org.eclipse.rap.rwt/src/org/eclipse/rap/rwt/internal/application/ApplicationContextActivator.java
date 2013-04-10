@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,35 +31,19 @@ public class ApplicationContextActivator {
   }
 
   void activate() {
-    ApplicationContextUtil.runWith( applicationContext, new Runnable() {
-      public void run() {
-        activateInstances();
-      }
-    } );
-  }
-
-  private void activateInstances() {
     applicationContext.getStartupPage().activate();
     applicationContext.getLifeCycleFactory().activate();
     // Note: order is crucial here
     applicationContext.getThemeManager().activate();
     if( !skipResoureRegistration ) {
-      new ClientResources( applicationContext.getResourceManager(),
-                           applicationContext.getThemeManager() ).registerResources();
+      ClientResources clientResources = new ClientResources( applicationContext );
+      clientResources.registerResources();
     }
     applicationContext.getResourceRegistry().registerResources();
     applicationContext.getClientSelector().activate();
   }
 
   void deactivate() {
-    ApplicationContextUtil.runWith( applicationContext, new Runnable() {
-      public void run() {
-        deactivateInstances();
-      }
-    } );
-  }
-
-  private void deactivateInstances() {
     applicationContext.getStartupPage().deactivate();
     applicationContext.getLifeCycleFactory().deactivate();
     applicationContext.getServiceManager().clear();

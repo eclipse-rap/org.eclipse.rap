@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.UISession;
@@ -37,19 +35,23 @@ public final class ServiceContext {
   private ApplicationContextImpl applicationContext;
   private ProtocolMessageWriter protocolWriter;
 
-  public ServiceContext( HttpServletRequest request, HttpServletResponse response ) {
-    ParamCheck.notNull( request, "request" );
-    ParamCheck.notNull( response, "response" );
+  public ServiceContext( HttpServletRequest request,
+                         HttpServletResponse response,
+                         ApplicationContextImpl applicationContext )
+  {
     this.request = request;
     this.response = response;
+    this.applicationContext = applicationContext;
   }
 
   public ServiceContext( HttpServletRequest request,
                          HttpServletResponse response,
                          UISession uiSession )
   {
-    this( request, response );
+    this.request = request;
+    this.response = response;
     this.uiSession = uiSession;
+    this.applicationContext = ( ApplicationContextImpl )uiSession.getApplicationContext();
   }
 
   public HttpServletRequest getRequest() {
@@ -82,6 +84,7 @@ public final class ServiceContext {
   }
 
   public ProtocolMessageWriter getProtocolWriter() {
+    checkState();
     if( protocolWriter == null ) {
       protocolWriter = new ProtocolMessageWriter();
     }
@@ -93,6 +96,7 @@ public final class ServiceContext {
   }
 
   public UISession getUISession() {
+    checkState();
     if( uiSession != null && !uiSession.isBound() ) {
       uiSession = null;
     }
@@ -105,15 +109,10 @@ public final class ServiceContext {
 
   public ApplicationContextImpl getApplicationContext() {
     checkState();
-    // TODO: Revise performance improvement with buffering mechanism in place
-    if( applicationContext == null ) {
-      getApplicationContextFromSession();
-      if( applicationContext == null ) {
-        getApplicationContextFromServletContext();
-        bufferApplicationContextInSession();
-      }
+    if( applicationContext != null && applicationContext.isActive() ) {
+      return applicationContext;
     }
-    return applicationContext;
+    return null;
   }
 
   public void dispose() {
@@ -128,29 +127,6 @@ public final class ServiceContext {
 
   public boolean isDisposed() {
     return disposed;
-  }
-
-  private void bufferApplicationContextInSession() {
-    if( uiSession != null ) {
-      ( ( UISessionImpl )uiSession ).setApplicationContext( applicationContext );
-    }
-  }
-
-  private void getApplicationContextFromSession() {
-    if( uiSession != null ) {
-      ApplicationContextImpl fromSession = ( ( UISessionImpl )uiSession ).getApplicationContext();
-      if( fromSession != null && fromSession.isActive() ) {
-        applicationContext = fromSession;
-      }
-    }
-  }
-
-  private void getApplicationContextFromServletContext() {
-    // Note [fappel]: Yourkit analysis showed that the following line is
-    //                expensive. Because of this the ApplicationContextImpl is
-    //                buffered in a field.
-    ServletContext servletContext = request.getSession().getServletContext();
-    applicationContext = ApplicationContextUtil.get( servletContext );
   }
 
   private void checkState() {

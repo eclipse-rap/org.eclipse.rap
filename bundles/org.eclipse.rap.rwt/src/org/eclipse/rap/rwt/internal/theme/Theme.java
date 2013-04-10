@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.css.CssElementHolder;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.ResourceManager;
 
 
@@ -106,49 +107,49 @@ public class Theme {
     return registeredLocation;
   }
 
-  public void registerResources( ResourceManager resourceManager ) {
+  public void registerResources( ApplicationContext applicationContext ) {
     try {
-      registerThemeResources( resourceManager );
-      registerThemeStoreFile( resourceManager );
+      registerThemeResources( applicationContext );
+      registerThemeStoreFile( applicationContext );
     } catch( IOException ioe ) {
       throw new ThemeManagerException( "Failed to register theme resources for theme " + id, ioe );
     }
   }
 
-  private void registerThemeResources( ResourceManager resourceManager ) throws IOException {
+  private void registerThemeResources( ApplicationContext applicationContext ) throws IOException {
     QxType[] values = valuesMap.getAllValues();
     for( QxType value : values ) {
       if( value instanceof ThemeResource ) {
-        registerResource( resourceManager, ( ThemeResource )value );
+        registerResource( applicationContext, ( ThemeResource )value );
       }
     }
   }
 
-  private void registerThemeStoreFile( ResourceManager resourceManager ) {
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( this, elements );
+  private void registerThemeStoreFile( ApplicationContext applicationContext ) {
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, this, elements );
     String name = "rap-" + jsId + ".json";
     String code = storeWriter.createJson();
-    registeredLocation = registerResource( resourceManager, name, code );
+    registeredLocation = registerResource( applicationContext, name, code );
   }
 
-  private static void registerResource( ResourceManager resourceManager, ThemeResource value )
+  private static void registerResource( ApplicationContext applicationContext, ThemeResource value )
     throws IOException
   {
-    String registerPath = value.getResourcePath();
+    String registerPath = value.getResourcePath( applicationContext );
     if( registerPath != null ) {
       InputStream inputStream = value.getResourceAsStream();
       if( inputStream == null ) {
         throw new IllegalArgumentException( "Resource not found for theme property: " + value );
       }
       try {
-        resourceManager.register( registerPath, inputStream );
+        applicationContext.getResourceManager().register( registerPath, inputStream );
       } finally {
         inputStream.close();
       }
     }
   }
 
-  private static String registerResource( ResourceManager resourceManager,
+  private static String registerResource( ApplicationContext applicationContext,
                                           String name,
                                           String content )
   {
@@ -159,6 +160,7 @@ public class Theme {
       throw new RuntimeException( shouldNotHappen );
     }
     InputStream inputStream = new ByteArrayInputStream( buffer );
+    ResourceManager resourceManager = applicationContext.getResourceManager();
     resourceManager.register( name, inputStream );
     return resourceManager.getLocation( name );
   }

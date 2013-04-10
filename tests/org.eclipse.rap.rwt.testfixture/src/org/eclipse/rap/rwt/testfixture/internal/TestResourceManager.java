@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture.internal;
 
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
-
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,31 +27,29 @@ public class TestResourceManager extends ResourceManagerImpl {
     registeredResources = new HashSet<String>();
   }
 
+  @Override
   public String getLocation( String name ) {
     return ResourceDirectory.DIRNAME + "/" + name;
   }
 
+  @Override
   public boolean isRegistered( String name ) {
     return registeredResources.contains( name );
   }
 
+  @Override
   public void register( String name, InputStream is ) {
-    createResourcesDirectory();
     registeredResources.add( name );
   }
 
+  @Override
   public boolean unregister( String name ) {
     return registeredResources.remove( name );
   }
 
+  @Override
   public InputStream getRegisteredContent( String name ) {
     return null;
-  }
-
-  private void createResourcesDirectory() {
-    if( registeredResources.isEmpty() ) {
-      getApplicationContext().getResourceDirectory().createDirectory();
-    }
   }
 
 }

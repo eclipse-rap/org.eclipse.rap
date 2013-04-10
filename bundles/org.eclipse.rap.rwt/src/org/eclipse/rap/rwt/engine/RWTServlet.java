@@ -12,16 +12,17 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.engine;
 
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
-
 import java.io.IOException;
 import java.util.Enumeration;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
@@ -68,9 +69,17 @@ import org.eclipse.rap.rwt.service.ServiceHandler;
  */
 public class RWTServlet extends HttpServlet {
 
+  private ApplicationContextImpl applicationContext;
+
   @Override
   public String getServletInfo() {
     return "RWT Servlet";
+  }
+
+  @Override
+  public void init() throws ServletException {
+    ServletContext servletContext = getServletContext();
+    applicationContext = ApplicationContextUtil.get( servletContext );
   }
 
   @Override
@@ -87,7 +96,7 @@ public class RWTServlet extends HttpServlet {
     handleRequest( request, response );
   }
 
-  private static void handleRequest( HttpServletRequest request, HttpServletResponse response )
+  private void handleRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException, ServletException
   {
     if( request.getPathInfo() == null ) {
@@ -97,7 +106,7 @@ public class RWTServlet extends HttpServlet {
     }
   }
 
-  private static void handleValidRequest( HttpServletRequest request, HttpServletResponse response )
+  private void handleValidRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException, ServletException
   {
     ServiceContext context = createServiceContext( request, response );
@@ -110,10 +119,10 @@ public class RWTServlet extends HttpServlet {
     }
   }
 
-  private static ServiceContext createServiceContext( HttpServletRequest request,
-                                                      HttpServletResponse response )
+  private ServiceContext createServiceContext( HttpServletRequest request,
+                                               HttpServletResponse response )
   {
-    ServiceContext context = new ServiceContext( request, response );
+    ServiceContext context = new ServiceContext( request, response, applicationContext );
     context.setServiceStore( new ServiceStore() );
     return context;
   }
@@ -125,8 +134,8 @@ public class RWTServlet extends HttpServlet {
     }
   }
 
-  private static ServiceHandler getServiceHandler() {
-    return getApplicationContext().getServiceManager().getHandler();
+  private ServiceHandler getServiceHandler() {
+    return applicationContext.getServiceManager().getHandler();
   }
 
   static void handleInvalidRequest( HttpServletRequest request, HttpServletResponse response )

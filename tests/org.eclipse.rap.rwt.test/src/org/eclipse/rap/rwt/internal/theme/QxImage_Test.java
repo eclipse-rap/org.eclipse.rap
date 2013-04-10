@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.theme.ThemeTestUtil.RESOURCE_LOADER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -23,6 +24,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -33,9 +35,12 @@ import org.junit.Test;
 
 public class QxImage_Test {
 
+  private ApplicationContext applicationContext;
+
   @Before
   public void setUp() {
     Fixture.setUp();
+    applicationContext = getApplicationContext();
   }
 
   @After
@@ -190,9 +195,9 @@ public class QxImage_Test {
   @Test
   public void testGetResourceName() {
     QxImage image = QxImage.NONE;
-    assertNull( image.getResourcePath() );
+    assertNull( image.getResourcePath( applicationContext ) );
     image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
-    assertEquals( "themes/images/ba873d77.png", image.getResourcePath() );
+    assertEquals( "themes/images/ba873d77.png", image.getResourcePath( applicationContext ) );
   }
 
   @Test
@@ -232,7 +237,7 @@ public class QxImage_Test {
   public void testGetResourcePath() {
     QxImage image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
 
-    assertTrue( image.getResourcePath().startsWith( "themes/images/" ) );
+    assertTrue( image.getResourcePath( applicationContext ).startsWith( "themes/images/" ) );
   }
 
   @Test
@@ -240,17 +245,19 @@ public class QxImage_Test {
     QxImage image1 = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     QxImage image2 = QxImage.valueOf( Fixture.IMAGE_100x50, RESOURCE_LOADER );
 
-    assertFalse( image1.getResourcePath().equals( image2.getResourcePath() ) );
+    String path1 = image1.getResourcePath( applicationContext );
+    String path2 = image2.getResourcePath( applicationContext );
+    assertFalse( path1.equals( path2 ) );
   }
 
   @Test
   public void testGetResourcePathWithNone() {
-    assertNull( QxImage.NONE.getResourcePath() );
+    assertNull( QxImage.NONE.getResourcePath( applicationContext ) );
   }
 
   @Test
   public void testGetResourcePathWithGradient() {
-    assertNull( createGradient().getResourcePath() );
+    assertNull( createGradient().getResourcePath( applicationContext ) );
   }
 
   @Test

@@ -24,14 +24,12 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.client.WebClient;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.theme.Theme;
-import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
-import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -48,14 +46,14 @@ public class StartupJson_Test {
   private static final String CUSTOM_THEME_ID = "custom.theme.id";
 
   private ClientResources clientResources;
+  private ApplicationContextImpl applicationContext;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     Fixture.useDefaultResourceManager();
-    ResourceManager resourceManager = RWT.getApplicationContext().getResourceManager();
-    ThemeManager themeManager = getApplicationContext().getThemeManager();
-    clientResources = new ClientResources( resourceManager, themeManager );
+    applicationContext = getApplicationContext();
+    clientResources = new ClientResources( applicationContext );
   }
 
   @After

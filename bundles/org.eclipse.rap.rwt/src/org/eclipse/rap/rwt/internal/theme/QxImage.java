@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.zip.CRC32;
 
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -116,10 +117,11 @@ public class QxImage implements QxType, ThemeResource {
     return gradientColors != null && gradientPercents != null;
   }
 
-  public String getResourcePath() {
+  public String getResourcePath( ApplicationContext applicationContext ) {
     String result = null;
     if( !none && path != null ) {
-      ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
+      ThemePropertyAdapterRegistry registry
+        = ThemePropertyAdapterRegistry.getInstance( applicationContext );
       ThemePropertyAdapter adapter = registry.getPropertyAdapter( QxImage.class );
       String cssKey = adapter.getKey( this );
       result = IMAGE_DEST_PATH + "/" + cssKey;

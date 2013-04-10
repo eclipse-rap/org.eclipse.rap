@@ -22,14 +22,20 @@ import org.eclipse.rap.rwt.internal.json.JsonUtil;
 import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 
 
 public final class ThemeStoreWriter {
 
   private final IThemeCssElement[] allThemeableWidgetElements;
   private final Theme theme;
+  private final ApplicationContext applicationContext;
 
-  public ThemeStoreWriter( Theme theme, IThemeCssElement[] elements ) {
+  public ThemeStoreWriter( ApplicationContext applicationContext,
+                           Theme theme,
+                           IThemeCssElement[] elements )
+  {
+    this.applicationContext = applicationContext;
     this.theme = theme;
     allThemeableWidgetElements = elements;
   }
@@ -60,7 +66,8 @@ public final class ThemeStoreWriter {
   {
     JsonObject result = new JsonObject();
     String[] properties = element.getProperties();
-    ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
+    ThemePropertyAdapterRegistry registry
+      = ThemePropertyAdapterRegistry.getInstance( applicationContext );
     for( int i = 0; i < properties.length; i++ ) {
       String propertyName = properties[ i ];
       JsonArray valuesArray = new JsonArray();
@@ -81,7 +88,7 @@ public final class ThemeStoreWriter {
     return result;
   }
 
-  private static Map createValuesMap( QxType[] values ) {
+  private Map createValuesMap( QxType[] values ) {
     Map<String,JsonObject> result = new LinkedHashMap<String,JsonObject>();
     for( int i = 0; i < values.length; i++ ) {
       appendValueToMap( values[ i ], result );
@@ -89,8 +96,9 @@ public final class ThemeStoreWriter {
     return result;
   }
 
-  private static void appendValueToMap( QxType propertyValue, Map<String,JsonObject> valuesMap ) {
-    ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
+  private void appendValueToMap( QxType propertyValue, Map<String,JsonObject> valuesMap ) {
+    ThemePropertyAdapterRegistry registry
+      = ThemePropertyAdapterRegistry.getInstance( applicationContext );
     ThemePropertyAdapter adapter = registry.getPropertyAdapter( propertyValue.getClass() );
     if( adapter != null ) {
       String slot = adapter.getSlot( propertyValue );

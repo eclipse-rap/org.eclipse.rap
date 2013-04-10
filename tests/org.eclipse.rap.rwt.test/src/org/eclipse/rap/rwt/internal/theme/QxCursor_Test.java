@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.theme.ThemeTestUtil.RESOURCE_LOADER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -20,6 +21,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
 import org.junit.Before;
@@ -28,9 +30,12 @@ import org.junit.Test;
 
 public class QxCursor_Test {
 
+  private ApplicationContext applicationContext;
+
   @Before
   public void setUp() {
     Fixture.setUp();
+    applicationContext = getApplicationContext();
   }
 
   @After
@@ -117,7 +122,7 @@ public class QxCursor_Test {
   public void testGetResourcePath() {
     QxCursor image = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
 
-    assertTrue( image.getResourcePath().startsWith( "themes/cursors/" ) );
+    assertTrue( image.getResourcePath( applicationContext ).startsWith( "themes/cursors/" ) );
   }
 
   @Test
@@ -125,12 +130,14 @@ public class QxCursor_Test {
     QxCursor image1 = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     QxCursor image2 = QxCursor.valueOf( Fixture.IMAGE_100x50, RESOURCE_LOADER );
 
-    assertFalse( image1.getResourcePath().equals( image2.getResourcePath() ) );
+    String path1 = image1.getResourcePath( applicationContext );
+    String path2 = image2.getResourcePath( applicationContext );
+    assertFalse( path1.equals( path2 ) );
   }
 
   @Test
   public void testGetResourcePathWithPredefined() {
-    assertNull( QxCursor.valueOf( "crosshair" ).getResourcePath() );
+    assertNull( QxCursor.valueOf( "crosshair" ).getResourcePath( applicationContext ) );
   }
 
   @Test

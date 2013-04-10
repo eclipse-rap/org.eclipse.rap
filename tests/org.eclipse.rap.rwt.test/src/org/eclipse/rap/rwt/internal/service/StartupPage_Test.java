@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.internal.theme.QxImage;
@@ -43,11 +43,13 @@ public class StartupPage_Test {
 
   private StartupPage startupPage;
   private TestResponse response;
+  private ApplicationContextImpl applicationContext;
 
   @Before
   public void setUp() {
     Fixture.setUp();
-    startupPage = spy( new StartupPage( ApplicationContextUtil.getInstance() ) );
+    applicationContext = getApplicationContext();
+    startupPage = spy( new StartupPage( applicationContext ) );
     response = new TestResponse();
   }
 
@@ -258,7 +260,7 @@ public class StartupPage_Test {
   @Test
   public void testGetBackgroundImageLocationWithExistingBackgroundImage() {
     QxImage qxImage = mock( QxImage.class );
-    doReturn( "image-location" ).when( qxImage ).getResourcePath();
+    doReturn( "image-location" ).when( qxImage ).getResourcePath( applicationContext );
     doReturn( qxImage ).when( startupPage ).getBrackgroundImage();
 
     String backgroundImage = startupPage.getBackgroundImageLocation();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 
 
@@ -98,10 +99,11 @@ public class QxCursor implements QxType, ThemeResource {
     return !isPredefinedCursor( value );
   }
 
-  public String getResourcePath() {
+  public String getResourcePath( ApplicationContext applicationContext ) {
     String result = null;
     if( isCustomCursor() ) {
-      ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
+      ThemePropertyAdapterRegistry registry
+        = ThemePropertyAdapterRegistry.getInstance( applicationContext );
       ThemePropertyAdapter adapter = registry.getPropertyAdapter( QxCursor.class );
       String cssKey = adapter.getKey( this );
       result = CURSOR_DEST_PATH + "/" + cssKey;

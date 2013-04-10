@@ -11,10 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture.internal.engine;
 
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
-
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -30,21 +27,65 @@ import org.eclipse.rap.rwt.service.ResourceLoader;
 
 
 public class ThemeManagerHelper {
+
   private static ThemeManager themeManager;
   static {
     replaceStandardResourceLoader();
+  }
+
+  public static void adaptApplicationContext( Object toAdapt ) {
+    if( toAdapt instanceof ApplicationContextImpl ) {
+      ensureThemeManager();
+      ( ( ApplicationContextImpl )toAdapt ).setThemeManager( themeManager );
+    }
+  }
+
+  public static void resetThemeManager() {
+    if( isThemeManagerAvailable() ) {
+      doThemeManagerReset();
+    }
+  }
+
+  public static void resetThemeManagerIfNeeded() {
+    if( isThemeManagerResetNeeded() ) {
+      doThemeManagerReset();
+    }
+  }
+
+  public static void replaceStandardResourceLoader() {
+    ThemeManager.STANDARD_RESOURCE_LOADER = new TestResourceLoader();
+  }
+
+  private static void ensureThemeManager() {
+    if( themeManager == null ) {
+      themeManager = new TestThemeManager();
+    }
+  }
+
+  private static void doThemeManagerReset() {
+    ( ( TestThemeManager )themeManager ).resetInstanceInTestCases();
+  }
+
+  private static boolean isThemeManagerResetNeeded() {
+    boolean result = isThemeManagerAvailable();
+    if( result ) {
+      List<String> registeredThemeIds = Arrays.asList( themeManager.getRegisteredThemeIds() );
+      if( registeredThemeIds.size() == 2 ) {
+        result =    !registeredThemeIds.contains( ThemeManager.FALLBACK_THEME_ID )
+                 || !registeredThemeIds.contains( RWT.DEFAULT_THEME_ID );
+      }
+    }
+    return result;
+  }
+
+  private static boolean isThemeManagerAvailable() {
+    return themeManager != null;
   }
 
   public static class TestThemeManager extends ThemeManager {
     boolean initialized;
     boolean activated;
     boolean deactivated;
-
-    @Override
-    public void deactivate() {
-      // ignore reset for test cases to improve performance
-      deactivated = true;
-    }
 
     @Override
     public void initialize() {
@@ -60,11 +101,14 @@ public class ThemeManagerHelper {
       if( !activated ) {
         super.activate();
         activated = true;
-      } else {
-        InputStream inputStream = new ByteArrayInputStream( "dummy".getBytes() );
-        getApplicationContext().getResourceManager().register( "dummy", inputStream );
       }
       deactivated = false;
+    }
+
+    @Override
+    public void deactivate() {
+      // ignore reset for test cases to improve performance
+      deactivated = true;
     }
 
     @Override
@@ -124,67 +168,6 @@ public class ThemeManagerHelper {
     }
     @Override
     public void close() throws IOException {}
-  }
-
-  public static void adaptApplicationContext( Object toAdapt ) {
-    if( toAdapt instanceof ApplicationContextImpl ) {
-      ApplicationContextImpl context = ( ApplicationContextImpl )toAdapt;
-      context.setThemeManager( getInstance() );
-    }
-  }
-
-  public static void resetThemeManager() {
-    if( isThemeManagerAvailable() ) {
-      doThemeManagerReset();
-    }
-  }
-
-  public static void resetThemeManagerIfNeeded() {
-    if( isThemeManagerResetNeeded() ) {
-      doThemeManagerReset();
-    }
-  }
-
-  public static void replaceStandardResourceLoader() {
-    ThemeManager.STANDARD_RESOURCE_LOADER = new TestResourceLoader();
-  }
-
-  private static ThemeManager getInstance() {
-    if( themeManager == null ) {
-      themeManager = new TestThemeManager();
-    }
-    return themeManager;
-  }
-
-  private static void doThemeManagerReset() {
-    TestThemeManager themeManager = ( TestThemeManager )getThemeManager();
-    themeManager.resetInstanceInTestCases();
-  }
-
-  private static boolean isThemeManagerResetNeeded() {
-    boolean result = isThemeManagerAvailable();
-    if( result ) {
-      List<String> registeredThemeIds = Arrays.asList( getThemeManager().getRegisteredThemeIds() );
-      if( registeredThemeIds.size() == 2 ) {
-        result =    !registeredThemeIds.contains( ThemeManager.FALLBACK_THEME_ID )
-                 || !registeredThemeIds.contains( RWT.DEFAULT_THEME_ID );
-      }
-    }
-    return result;
-  }
-
-  private static boolean isThemeManagerAvailable() {
-    return getThemeManager() != null;
-  }
-
-  private static ThemeManager getThemeManager() {
-    ThemeManager result = null;
-    try {
-      result = getApplicationContext().getThemeManager();
-    } catch( IllegalStateException noApplicationContextAvailable ) {
-    } catch( IllegalArgumentException noThemeManagerRegisterd ) {
-    }
-    return result;
   }
 
 }

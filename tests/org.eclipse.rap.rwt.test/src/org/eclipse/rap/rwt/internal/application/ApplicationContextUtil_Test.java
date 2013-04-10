@@ -25,7 +25,6 @@ import javax.servlet.ServletContext;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
-import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,87 +68,6 @@ public class ApplicationContextUtil_Test {
   }
 
   @Test
-  public void testRunWith() {
-    final ApplicationContextImpl[] found = new ApplicationContextImpl[ 1 ];
-    Runnable runnable = new Runnable() {
-      public void run() {
-        found[ 0 ] = ApplicationContextUtil.getInstance();
-      }
-    };
-
-    boolean before = ApplicationContextUtil.hasContext();
-    ApplicationContextUtil.runWith( applicationContext, runnable );
-    boolean after = ApplicationContextUtil.hasContext();
-
-    assertFalse( before );
-    assertSame( applicationContext, found[ 0 ] );
-    assertFalse( after );
-  }
-
-  @Test
-  public void testRunWithWithException() {
-    final RuntimeException expected = new RuntimeException();
-    Runnable runnable = new Runnable() {
-      public void run() {
-        throw expected;
-      }
-    };
-
-    boolean before = ApplicationContextUtil.hasContext();
-    RuntimeException actual = runWithExceptionExpected( runnable );
-    boolean after = ApplicationContextUtil.hasContext();
-
-    assertFalse( before );
-    assertSame( expected, actual );
-    assertFalse( after );
-  }
-
-  @Test
-  public void testParamApplicationContextNotNull() {
-    try {
-      ApplicationContextUtil.runWith( null, new NoOpRunnable() );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  @Test
-  public void testParamRunnableNotNull() {
-    try {
-      ApplicationContextUtil.runWith( applicationContext, null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  @Test
-  public void testRunWithWithNestedCall() {
-    Runnable runnable = new Runnable() {
-      public void run() {
-        ApplicationContextUtil.runWith( applicationContext, this );
-      }
-    };
-
-    try {
-      ApplicationContextUtil.runWith( applicationContext, runnable );
-      fail( "Nested calls in same thread of runWithInstance are not allowed" );
-    } catch( IllegalStateException expected ) {
-    }
-  }
-
-  @Test
-  public void testGetInstance() {
-    ServletContext servletContext = Fixture.createServletContext();
-    Fixture.createServiceContext();
-    ApplicationContextUtil.set( servletContext, applicationContext );
-
-    ApplicationContextImpl found = ApplicationContextUtil.getInstance();
-
-    assertSame( applicationContext, found );
-    Fixture.disposeOfServiceContext();
-  }
-
-  @Test
   public void testGetInstanceWithoutContextProviderRegistration() {
     try {
       ApplicationContextUtil.getInstance();
@@ -184,14 +102,4 @@ public class ApplicationContextUtil_Test {
     assertNull( appContext );
   }
 
-  private RuntimeException runWithExceptionExpected( Runnable runnable ) {
-    RuntimeException result = null;
-    try {
-      ApplicationContextUtil.runWith( applicationContext, runnable );
-      fail();
-    } catch( RuntimeException runtimeException ) {
-      result = runtimeException;
-    }
-    return result;
-  }
 }

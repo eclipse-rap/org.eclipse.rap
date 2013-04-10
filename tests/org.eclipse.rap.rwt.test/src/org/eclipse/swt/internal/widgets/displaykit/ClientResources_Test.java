@@ -19,6 +19,7 @@ import java.io.InputStream;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.RWTProperties;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.resources.TestUtil;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
@@ -34,14 +35,16 @@ public class ClientResources_Test {
   private ClientResources clientResources;
   private ResourceManager resourceManager;
   private ThemeManager themeManager;
+  private ApplicationContextImpl applicationContext;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     Fixture.useDefaultResourceManager();
-    resourceManager = RWT.getApplicationContext().getResourceManager();
-    themeManager = getApplicationContext().getThemeManager();
-    clientResources = new ClientResources( resourceManager, themeManager );
+    applicationContext = getApplicationContext();
+    resourceManager = applicationContext.getResourceManager();
+    themeManager = applicationContext.getThemeManager();
+    clientResources = new ClientResources( applicationContext );
   }
 
   @After

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
 import org.junit.Before;
@@ -34,10 +35,12 @@ public class ThemeStoreWriter_Test {
 
   // static field used for performance improvements of test initialization
   private static Map<String,Theme> themes;
+  private ApplicationContext applicationContext;
 
   @Before
   public void setUp() throws Exception {
     Fixture.setUp();
+    applicationContext = getApplicationContext();
     initializeThemesOnFirstSetUp();
   }
 
@@ -53,7 +56,7 @@ public class ThemeStoreWriter_Test {
     element.addProperty( "background-image" );
     Theme theme = getTheme( THEME_SET_CURRENT_THEME_ID );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     // register colors
     assertTrue( output.contains( "[0,0,0,1.0]" ) );
@@ -78,7 +81,7 @@ public class ThemeStoreWriter_Test {
     element.addProperty( "animation" );
     Theme theme = getTheme( THEME_ANIMATIONS );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     String expected =   "\"animations\":{"
                       + "\"46ab28c4\":{"
@@ -99,7 +102,7 @@ public class ThemeStoreWriter_Test {
     element.addProperty( "background-image" );
     Theme theme = getTheme( THEME_WRITE_VERTICAL_GRADIENT );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     String expected =   "\"gradients\":{"
                       + "\"2eb911d6\":{"
@@ -121,7 +124,7 @@ public class ThemeStoreWriter_Test {
     element.addProperty( "background-image" );
     Theme theme = getTheme( THEME_WRITE_HORIZONTAL_GRADIENT );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     String expected =   "\"gradients\":{"
                       + "\"2762759\":{"
@@ -143,7 +146,7 @@ public class ThemeStoreWriter_Test {
     element.addProperty( "box-shadow" );
     Theme theme = getTheme( THEME_WRITE_SHADOW );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     String expected =   "\"shadows\":{"
                       + "\"2aedfabd\":[false,10,10,3,0,\"#000000\",0.5]"
@@ -162,7 +165,7 @@ public class ThemeStoreWriter_Test {
     element.addProperty( "background-color" );
     Theme theme = getTheme( THEME_WRITE_COLORS );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     String expected =   "\"colors\":{"
                       + "\"ffffffff\":\"undefined\","
@@ -184,7 +187,7 @@ public class ThemeStoreWriter_Test {
     element.addProperty( "background-image" );
     Theme theme = getTheme( THEME_WRITE_IMAGES );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     String expectedImages =   "\"images\":{"
                             + "\"c84ae54c.png\":[100,50]"
@@ -212,7 +215,7 @@ public class ThemeStoreWriter_Test {
     element.addProperty( "background-position" );
     Theme theme = getTheme( THEME_WRITE_IMAGES );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     String expected =
         "\"Button\":{"

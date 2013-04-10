@@ -20,10 +20,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.LinkedList;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -307,6 +312,7 @@ public class RWTLifeCycle2_Test {
         }
         try {
           RWTServlet servlet = new RWTServlet();
+          initServlet( servlet );
           servlet.service( request, response );
         } catch( Exception e ) {
           exception[ 0 ] = e;
@@ -357,6 +363,13 @@ public class RWTLifeCycle2_Test {
         }
       }
     } );
+  }
+
+  private static void initServlet( HttpServlet servlet ) throws ServletException {
+    ServletContext servletContext = Fixture.getServletContext();
+    ServletConfig servletConfig = mock( ServletConfig.class );
+    when( servletConfig.getServletContext() ).thenReturn( servletContext );
+    servlet.init( servletConfig );
   }
 
   public static final class ExceptionInReadAndDispatchEntryPoint implements EntryPoint {
