@@ -12,6 +12,8 @@
 package org.eclipse.rap.rwt.osgi.internal;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.osgi.ApplicationLauncher;
@@ -29,14 +31,14 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
   private final Object lock;
   private final ServiceContainer<ApplicationConfiguration> configurations;
   private final ServiceContainer<HttpService> httpServices;
-  private final ApplicationReferencesContainer applicationReferences;
+  private final HashSet<ApplicationReferenceImpl> applicationReferences;
   private BundleContext bundleContext;
 
   public ApplicationLauncherImpl( BundleContext bundleContext ) {
     lock = new Object();
     configurations = new ServiceContainer<ApplicationConfiguration>( bundleContext );
     httpServices = new ServiceContainer<HttpService>( bundleContext );
-    applicationReferences = new ApplicationReferencesContainer();
+    applicationReferences = new HashSet<ApplicationReferenceImpl>();
     this.bundleContext = bundleContext;
   }
 
@@ -171,8 +173,9 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
   }
 
   private void stopApplicationReferences( Object service ) {
-    ApplicationReferenceImpl[] iterator = applicationReferences.getAll();
-    for( ApplicationReferenceImpl applicationReference : iterator ) {
+    ArrayList<ApplicationReferenceImpl> allReferences
+      = new ArrayList<ApplicationReferenceImpl>( applicationReferences );
+    for( ApplicationReferenceImpl applicationReference : allReferences ) {
       if( applicationReference.belongsTo( service ) ) {
         stopApplicationReference( applicationReference );
       }
@@ -180,8 +183,9 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
   }
 
   private void stopAllApplicationReferences() {
-    ApplicationReferenceImpl[] all = applicationReferences.getAll();
-    for( ApplicationReferenceImpl applicationReference : all ) {
+    ArrayList<ApplicationReferenceImpl> allReferences
+      = new ArrayList<ApplicationReferenceImpl>( applicationReferences );
+    for( ApplicationReferenceImpl applicationReference : allReferences ) {
       stopApplicationReference( applicationReference );
     }
   }
