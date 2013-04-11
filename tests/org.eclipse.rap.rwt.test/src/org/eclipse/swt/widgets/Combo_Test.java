@@ -345,6 +345,32 @@ public class Combo_Test {
   }
 
   @Test
+  public void testSelection_RemoveSingleItemAdjustSelection() {
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( "test0" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    combo.select( 2 );
+
+    combo.remove( 0 );
+
+    assertEquals( 1, combo.getSelectionIndex() );
+  }
+
+  @Test
+  public void testSelection_RemoveMultipleItemsAdjustSelection() {
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( "test0" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    combo.select( 2 );
+
+    combo.remove( 0, 1 );
+
+    assertEquals( 0, combo.getSelectionIndex() );
+  }
+
+  @Test
   public void testSelectWithInvalidIndex() {
     Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );

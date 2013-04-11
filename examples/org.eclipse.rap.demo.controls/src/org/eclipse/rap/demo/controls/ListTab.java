@@ -65,7 +65,7 @@ public class ListTab extends ExampleTab {
   }
 
   @Override
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "SINGLE", SWT.SINGLE );
     createStyleButton( "MULTI", SWT.MULTI );
@@ -86,6 +86,7 @@ public class ListTab extends ExampleTab {
     createSetTopIndexControls( group );
     createGetTopIndexControls( group );
     createShowSelectionControls( group );
+    createRemoveFirstItemButton( group );
     createSelectAllButton( group );
     createDeselectAllButton( group );
     createSelectButton( group );
@@ -188,7 +189,7 @@ public class ListTab extends ExampleTab {
     } );
   }
 
-  private void createAddItemsControls( final Composite parent ) {
+  private void createAddItemsControls( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label lblAddItem = new Label( composite, SWT.NONE );
@@ -220,7 +221,7 @@ public class ListTab extends ExampleTab {
     } );
   }
 
-  private void createSetTopIndexControls( final Composite parent ) {
+  private void createSetTopIndexControls( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 2, false ) );
     final Text txtTopIndex = new Text( composite, SWT.BORDER );
@@ -241,7 +242,7 @@ public class ListTab extends ExampleTab {
     } );
   }
 
-  private void createGetTopIndexControls( final Composite parent ) {
+  private void createGetTopIndexControls( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 2, false ) );
     final Text txtTopIndex = new Text( composite, SWT.BORDER );
@@ -258,7 +259,7 @@ public class ListTab extends ExampleTab {
     } );
   }
 
-  private void createShowSelectionControls( final Composite parent ) {
+  private void createShowSelectionControls( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 2, false ) );
     Button button = new Button( composite, SWT.PUSH );
@@ -271,7 +272,20 @@ public class ListTab extends ExampleTab {
     } );
   }
 
-  private void createSelectAllButton( final Composite parent ) {
+  private void createRemoveFirstItemButton( Composite parent ) {
+    Button button = new Button( parent , SWT.PUSH );
+    button.setText( "Remove First Item" );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        if( list2.getItemCount() > 0 ) {
+          list2.remove( 0 );
+        }
+      }
+    } );
+  }
+
+  private void createSelectAllButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Select All" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -282,7 +296,7 @@ public class ListTab extends ExampleTab {
     } );
   }
 
-  private void createDeselectAllButton( final Composite parent ) {
+  private void createDeselectAllButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Deselect All" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -293,7 +307,7 @@ public class ListTab extends ExampleTab {
     } );
   }
 
-  private void createSelectButton( final Composite parent ) {
+  private void createSelectButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Select 100th item" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -306,7 +320,7 @@ public class ListTab extends ExampleTab {
     } );
   }
 
-  private void createDeselectButton( final Composite parent ) {
+  private void createDeselectButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Deselect second item" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -319,7 +333,7 @@ public class ListTab extends ExampleTab {
     } );
   }
 
-  private void createSetSelectionButton( final Composite parent ) {
+  private void createSetSelectionButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Set selection to first item" );
     button.addSelectionListener( new SelectionAdapter() {

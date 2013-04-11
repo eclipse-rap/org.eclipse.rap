@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -192,7 +192,7 @@ public final class ListModel implements SerializableCompatibility {
   public void remove( int index ) {
     checkIndex( index );
     items.remove( index );
-    removeFromSelection( index );
+    adjustSelectionIdices( index );
   }
 
   public void remove( int start, int end ) {
@@ -284,26 +284,20 @@ public final class ListModel implements SerializableCompatibility {
   //////////////////
   // Helping methods
 
-  /* If the given index is contained in the selection, it will be removed. */
-  private void removeFromSelection( int index ) {
-    boolean found = false;
-    for( int i = 0; !found && i < selection.length; i++ ) {
-      if( index == selection[ i ] ) {
-        int length = selection.length;
-        int[] newSelection = new int[ selection.length - 1 ];
-        System.arraycopy( selection, 0, newSelection, 0, i );
-        if( i < length - 1 ) {
-          System.arraycopy( selection, i + 1, newSelection, i, length - i - 1 );
-        }
-        for( int j = 0; j < newSelection.length; j++ ) {
-          if( newSelection[ j ] > index ) {
-            newSelection[ j ] = newSelection[ j ] - 1;
-          }
-        }
-        selection = newSelection;
-        found = true;
+  private void adjustSelectionIdices( int indexToRemove ) {
+    int counter = 0;
+    int[] newSelection = new int[ selection.length ];
+    for( int index : selection ) {
+      if( indexToRemove < index ) {
+        newSelection[ counter ] = index - 1;
+        counter++;
+      } else if( indexToRemove > index ) {
+        newSelection[ counter ] = index;
+        counter++;
       }
     }
+    selection = new int[ counter ];
+    System.arraycopy( newSelection, 0, selection, 0, selection.length );
   }
 
   private void checkIndex( int index ) {
