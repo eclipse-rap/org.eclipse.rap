@@ -24,10 +24,19 @@ import java.util.Map;
  * available to enable the development of custom components with the new API.
  * </p>
  *
+ * @noimplement This interface is not intended to be implemented by clients.
  * @see Connection
  * @since 2.0
  */
 public interface RemoteObject {
+
+  /**
+   * Returns the id that is used to synchronize this object with the client. This id is created by
+   * the framework and does not change over the lifetime of the object.
+   *
+   * @since 2.1
+   */
+  String getId();
 
   /**
    * Sets the specified property of the remote object to the given value.

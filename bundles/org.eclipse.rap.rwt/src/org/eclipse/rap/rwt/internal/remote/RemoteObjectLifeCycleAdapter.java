@@ -25,6 +25,7 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 
 
 public class RemoteObjectLifeCycleAdapter {
@@ -64,7 +65,7 @@ public class RemoteObjectLifeCycleAdapter {
     return handler;
   }
 
-  private static List<ClientMessage.Operation> getOperations( RemoteObjectImpl remoteObject ) {
+  private static List<ClientMessage.Operation> getOperations( RemoteObject remoteObject ) {
     ClientMessage message = ProtocolUtil.getClientMessage();
     Operation[] operations = message.getAllOperationsFor( remoteObject.getId() );
     return Arrays.asList( operations );

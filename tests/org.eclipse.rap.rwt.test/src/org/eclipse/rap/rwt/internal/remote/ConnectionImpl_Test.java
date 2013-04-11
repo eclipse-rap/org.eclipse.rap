@@ -77,14 +77,14 @@ public class ConnectionImpl_Test {
     RemoteObject remoteObject1 = new ConnectionImpl().createRemoteObject( "type" );
     RemoteObject remoteObject2 = new ConnectionImpl().createRemoteObject( "type" );
 
-    assertFalse( getId( remoteObject2 ).equals( getId( remoteObject1 ) ) );
+    assertFalse( remoteObject2.getId().equals( remoteObject1.getId() ) );
   }
 
   @Test
   public void testCreatedRemoteObjectsAreRegistered() {
     RemoteObject remoteObject = new ConnectionImpl().createRemoteObject( "type" );
 
-    assertSame( remoteObject, RemoteObjectRegistry.getInstance().get( getId( remoteObject ) ) );
+    assertSame( remoteObject, RemoteObjectRegistry.getInstance().get( remoteObject.getId() ) );
   }
 
   @Test
@@ -116,18 +116,14 @@ public class ConnectionImpl_Test {
   public void testCreatedServiceObjectHasGivenId() {
     RemoteObject remoteObject = new ConnectionImpl().createServiceObject( "id" );
 
-    assertEquals( "id", getId( remoteObject ) );
+    assertEquals( "id", remoteObject.getId() );
   }
 
   @Test
   public void testCreatedServiceObjectsAreRegistered() {
     RemoteObject remoteObject = new ConnectionImpl().createServiceObject( "id" );
 
-    assertSame( remoteObject, RemoteObjectRegistry.getInstance().get( getId( remoteObject ) ) );
-  }
-
-  private static String getId( RemoteObject remoteObject ) {
-    return ( ( RemoteObjectImpl )remoteObject ).getId();
+    assertSame( remoteObject, RemoteObjectRegistry.getInstance().get( remoteObject.getId() ) );
   }
 
   private static void assertRendersCreateWithType( RemoteObject remoteObject, String type ) {
