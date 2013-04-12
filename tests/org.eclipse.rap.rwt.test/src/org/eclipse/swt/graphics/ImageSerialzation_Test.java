@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -49,7 +50,7 @@ public class ImageSerialzation_Test {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
     Fixture.useDefaultResourceManager();
-    applicationContext = ApplicationContextUtil.getInstance();
+    applicationContext = getApplicationContext();
     UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
     uiSession.setApplicationContext( applicationContext );
     display = new Display();

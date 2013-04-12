@@ -12,8 +12,9 @@ package org.eclipse.rap.ui.tests;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry.ResourceRegistration;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+
 
 public class RWTConfigurationWrapper extends TestCase {
 
@@ -25,7 +26,7 @@ public class RWTConfigurationWrapper extends TestCase {
 
   public void testRegisterResourcesWithDependencies() {
     ResourceRegistration[] resources
-      = ApplicationContextUtil.getInstance().getResourceRegistry().getResourceRegistrations();
+      = ContextProvider.getApplicationContext().getResourceRegistry().getResourceRegistrations();
     int resource1Index = -1;
     int resource2Index = -1;
     int resource3Index = -1;

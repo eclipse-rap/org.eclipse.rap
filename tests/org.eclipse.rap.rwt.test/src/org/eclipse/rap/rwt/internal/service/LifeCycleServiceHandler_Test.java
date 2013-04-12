@@ -214,7 +214,7 @@ public class LifeCycleServiceHandler_Test {
   public void testApplicationContextAfterSessionRestart() throws IOException {
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
-    ApplicationContextImpl applicationContext = ApplicationContextUtil.getInstance();
+    ApplicationContextImpl applicationContext = getApplicationContext();
 
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 

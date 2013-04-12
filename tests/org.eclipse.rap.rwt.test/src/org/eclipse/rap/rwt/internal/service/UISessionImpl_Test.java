@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -38,7 +39,6 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rap.rwt.remote.Connection;
@@ -545,7 +545,7 @@ public class UISessionImpl_Test {
 
   @Test
   public void testSetLocale_canBeResetWithNull() {
-    uiSession.setApplicationContext( ApplicationContextUtil.getInstance() );
+    uiSession.setApplicationContext( getApplicationContext() );
     Fixture.fakeClient( mockClientWithLocale( null ) );
     uiSession.setLocale( Locale.ITALIAN );
 
@@ -565,7 +565,7 @@ public class UISessionImpl_Test {
 
   @Test
   public void testGetLocale_fallsBackToClientLocale() {
-    uiSession.setApplicationContext( ApplicationContextUtil.getInstance() );
+    uiSession.setApplicationContext( getApplicationContext() );
     Fixture.fakeClient( mockClientWithLocale( Locale.ITALIAN ) );
 
     Locale locale = uiSession.getLocale();
@@ -575,7 +575,7 @@ public class UISessionImpl_Test {
 
   @Test
   public void testGetLocale_fallsBackToSystemLocale_withoutClientInfo() {
-    uiSession.setApplicationContext( ApplicationContextUtil.getInstance() );
+    uiSession.setApplicationContext( getApplicationContext() );
     Fixture.fakeClient( mock( Client.class ) );
 
     Locale locale = uiSession.getLocale();
@@ -585,7 +585,7 @@ public class UISessionImpl_Test {
 
   @Test
   public void testGetLocale_fallsBackToSystemLocale_withoutClientLocale() {
-    uiSession.setApplicationContext( ApplicationContextUtil.getInstance() );
+    uiSession.setApplicationContext( getApplicationContext() );
     Fixture.fakeClient( mockClientWithLocale( null ) );
 
     Locale locale = uiSession.getLocale();
@@ -595,7 +595,7 @@ public class UISessionImpl_Test {
 
   @Test
   public void testGetLocale_worksInBackgroundThread() throws Throwable {
-    uiSession.setApplicationContext( ApplicationContextUtil.getInstance() );
+    uiSession.setApplicationContext( getApplicationContext() );
     Fixture.fakeClient( mock( Client.class ) );
     final AtomicReference<Locale> localeCaptor = new AtomicReference<Locale>();
 
@@ -666,6 +666,24 @@ public class UISessionImpl_Test {
 
     assertNotSame( context, runnable.getContext() );
     assertSame( uiSession, runnable.getUISession() );
+  }
+
+  @Test
+  public void testSetApplicationContext() {
+    ApplicationContextImpl applicationContext = mock( ApplicationContextImpl.class );
+
+    uiSession.setApplicationContext( applicationContext );
+
+    assertSame( applicationContext, uiSession.getApplicationContext() );
+  }
+
+  @Test
+  public void testApplicationContextInUISessionIsNotSerialized() throws Exception {
+    uiSession.setApplicationContext( mock( ApplicationContextImpl.class ) );
+
+    UISessionImpl deserializedUiSession = Fixture.serializeAndDeserialize( uiSession );
+
+    assertNull( deserializedUiSession.getApplicationContext() );
   }
 
   private static Client mockClientWithLocale( Locale locale ) {

@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -20,7 +21,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.rwt.application.ExceptionHandler;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -53,7 +53,7 @@ public class DisplayExceptionHandler_Test {
 
   @Test
   public void testRuntimeExceptionInListenerWithExceptionHandler() {
-    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
+    getApplicationContext().setExceptionHandler( exceptionHandler );
     RuntimeException exception = new RuntimeException();
     addMaliciousListener( SWT.Resize, exception );
     generateEvent( shell, SWT.Resize );
@@ -79,7 +79,7 @@ public class DisplayExceptionHandler_Test {
 
   @Test
   public void testErrorInListenerWithExceptionHandler() {
-    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
+    getApplicationContext().setExceptionHandler( exceptionHandler );
     Error error = new Error();
     addMaliciousListener( SWT.Resize, error );
     generateEvent( shell, SWT.Resize );
@@ -110,7 +110,7 @@ public class DisplayExceptionHandler_Test {
 
   @Test
   public void testExceptionInExceptionHandler() {
-    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
+    getApplicationContext().setExceptionHandler( exceptionHandler );
     RuntimeException exceptionInHandler = new RuntimeException();
     doThrow( exceptionInHandler ).when( exceptionHandler ).handleException( any( Throwable.class ) );
     addMaliciousListener( SWT.Resize, exceptionInHandler );
@@ -126,7 +126,7 @@ public class DisplayExceptionHandler_Test {
 
   @Test
   public void testReSkinningIsRunWithinExceptionHandler() {
-    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
+    getApplicationContext().setExceptionHandler( exceptionHandler );
     RuntimeException exception = new RuntimeException();
     Listener listener = mock( Listener.class );
     doThrow( exception ).when( listener ).handleEvent( any( Event.class ) );
@@ -141,7 +141,7 @@ public class DisplayExceptionHandler_Test {
   @Test
   public void testDeferredLayoutIsRunWithinExceptionHandler() {
     shell = spy( shell );
-    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
+    getApplicationContext().setExceptionHandler( exceptionHandler );
     RuntimeException exception = new RuntimeException();
     doThrow( exception ).when( shell ).setLayoutDeferred( anyBoolean() );
     display.addLayoutDeferred( shell );
@@ -153,7 +153,7 @@ public class DisplayExceptionHandler_Test {
 
   @Test
   public void testProcessActionRunnableIsRunWithinExceptionHandler() {
-    ApplicationContextUtil.getInstance().setExceptionHandler( exceptionHandler );
+    getApplicationContext().setExceptionHandler( exceptionHandler );
     RuntimeException exception = new RuntimeException();
     Runnable runnable = mock( Runnable.class );
     doThrow( exception ).when( runnable ).run();

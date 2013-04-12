@@ -13,9 +13,6 @@ package org.eclipse.rap.rwt.internal.application;
 
 import javax.servlet.ServletContext;
 
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.ServiceContext;
-
 
 public class ApplicationContextUtil {
 
@@ -33,20 +30,6 @@ public class ApplicationContextUtil {
 
   public static void remove( ServletContext servletContext ) {
     servletContext.removeAttribute( ATTR_APPLICATION_CONTEXT );
-  }
-
-  public static ApplicationContextImpl getInstance() {
-    // TODO only used by tests, remove
-    ServiceContext context = ContextProvider.getContext();
-    ApplicationContextImpl result = context.getApplicationContext();
-    checkApplicationContextExists( result );
-    return result;
-  }
-
-  private static void checkApplicationContextExists( ApplicationContextImpl applicationContext ) {
-    if( applicationContext == null ) {
-      throw new IllegalStateException( "No ApplicationContext registered." );
-    }
   }
 
 }

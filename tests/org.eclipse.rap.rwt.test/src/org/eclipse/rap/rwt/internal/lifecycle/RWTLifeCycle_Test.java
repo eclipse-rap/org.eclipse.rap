@@ -32,7 +32,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
@@ -880,7 +879,7 @@ public class RWTLifeCycle_Test {
   @Test
   public void testGetUIThreadWhileLifeCycleInExecute() throws IOException {
     entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, TestEntryPoint.class, null );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle( ApplicationContextUtil.getInstance() );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle( getApplicationContext() );
     final Thread[] currentThread = { null };
     final Thread[] uiThread = { null };
     lifeCycle.addPhaseListener( new PhaseListener() {
@@ -904,7 +903,7 @@ public class RWTLifeCycle_Test {
   @Test
   public void testGetUIThreadAfterLifeCycleExecuted() throws IOException {
     entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, TestEntryPoint.class, null );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle( ApplicationContextUtil.getInstance() );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle( getApplicationContext() );
     lifeCycle.execute();
 
     Thread uiThread = LifeCycleUtil.getUIThread( ContextProvider.getUISession() ).getThread();

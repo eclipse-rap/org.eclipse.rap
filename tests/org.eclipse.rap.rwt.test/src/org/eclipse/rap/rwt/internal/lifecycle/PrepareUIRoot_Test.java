@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
@@ -34,7 +33,7 @@ public class PrepareUIRoot_Test {
   @Before
   public void setUp() {
     Fixture.setUp();
-    phase = new PrepareUIRoot( ApplicationContextUtil.getInstance() );
+    phase = new PrepareUIRoot( getApplicationContext() );
     TestEntryPoint.wasInvoked = false;
   }
 

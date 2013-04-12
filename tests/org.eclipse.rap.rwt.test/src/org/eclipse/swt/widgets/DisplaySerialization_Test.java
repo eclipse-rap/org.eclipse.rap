@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -56,7 +57,7 @@ public class DisplaySerialization_Test {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
     Fixture.useDefaultResourceManager();
-    applicationContext = ApplicationContextUtil.getInstance();
+    applicationContext = getApplicationContext();
     applicationContext.getLifeCycleFactory().configure( SimpleLifeCycle.class );
     UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
     uiSession.setApplicationContext( applicationContext );
