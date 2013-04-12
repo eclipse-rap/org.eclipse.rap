@@ -13,6 +13,7 @@
 
 var HandlerRegistry = rwt.remote.HandlerRegistry;
 var MessageProcessor = rwt.remote.MessageProcessor;
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
 
@@ -706,8 +707,88 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       registry.remove( "dummyType" );
     },
 
-  // TODO : how to test adapters?
-  // construct + (all setter once => no crash) + specific cases?
+    ////////////////////////
+    // Experimental Features
+
+    testGenericSetter : function() {
+      var logger = TestUtil.getLogger();
+      HandlerRegistry.add( "dummyType", {
+        factory : function() {
+          return {
+            set : function( map, options ) {
+              logger.log( map );
+              logger.log( options );
+            }
+          };
+        },
+        // causes set( map ) to be called, not setXXX, filter is not applied, but should if present:
+        isGeneric : true
+      } );
+      MessageProcessor.processOperationArray( [ "create", "dummyId", "dummyType", {} ] );
+      var map = {
+        "foo" : "bar",
+        "prop" : "val"
+       };
+
+      MessageProcessor.processOperationArray( [ "set", "dummyId", map ] );
+
+      assertEquals( map, logger.getLog()[ 0 ] );
+      assertEquals( { "nosync" : true }, logger.getLog()[ 1 ] );
+      HandlerRegistry.remove( "dummyType" );
+    },
+
+    testGenericListen : function() {
+      HandlerRegistry.add( "dummyType", {
+        factory : function() {
+          return {
+            set : function( map ) {}
+          };
+        },
+        // causes listen ops to work without "events" list (should only work if no list is present)
+        isGeneric : true
+      } );
+      MessageProcessor.processOperationArray( [ "create", "dummyId", "dummyType", {} ] );
+      var map = {
+        "foo" : true,
+        "bar" : true
+       };
+
+      MessageProcessor.processOperationArray( [ "listen", "dummyId", map ] );
+
+      var remoteObject = rwt.remote.RemoteObjectFactory._getRemoteObject( "dummyId" );
+      assertTrue( map, remoteObject.isListening( "foo" ) );
+      assertTrue( map, remoteObject.isListening( "bar" ) );
+      HandlerRegistry.remove( "dummyType" );
+    },
+
+    testGenericCall : function() {
+      var logger = TestUtil.getLogger();
+      HandlerRegistry.add( "dummyType", {
+        factory : function() {
+          return {
+            set : function( map ) {},
+            myMethod : function( props ) {
+              logger.log( props );
+            }
+          };
+        },
+        // causes methods list to be ignored
+        isGeneric : true
+      } );
+      MessageProcessor.processOperationArray( [ "create", "dummyId", "dummyType", {} ] );
+      var map = {
+        "foo" : "bar",
+        "rainbow" : "dash"
+       };
+
+      MessageProcessor.processOperationArray( [ "call", "dummyId", "myMethod", map ] );
+
+      var remoteObject = rwt.remote.RemoteObjectFactory._getRemoteObject( "dummyId" );
+      var log = logger.getLog();
+      assertEquals( map, log[ 0 ] );
+      HandlerRegistry.remove( "dummyType" );
+    },
+
 
     /////////
     // Helper
@@ -808,7 +889,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
     },
 
     _getDummyWidget : function( targetId ) {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var result = new rwt.widgets.base.Terminator();
       result.addToDocument();
       result.setLeft( 10 );

@@ -124,7 +124,9 @@ rwt.remote.MessageProcessor = {
   },
 
   _processSetImpl : function( targetObject, handler, properties ) {
-    if( properties && handler.properties  instanceof Array ) {
+    if( handler.isGeneric && !rwt.util.Objects.isEmpty( properties ) ) {
+      targetObject.set( properties, { "nosync" : true } );
+    } else if( properties && handler.properties instanceof Array ) {
       for( var i = 0; i < handler.properties.length; i++ ) {
         var property = handler.properties [ i ];
         var value = properties[ property ];
@@ -144,7 +146,9 @@ rwt.remote.MessageProcessor = {
     var objectEntry = rwt.remote.ObjectRegistry.getEntry( targetId );
     var handler = objectEntry.handler;
     var targetObject = objectEntry.object;
-    if( handler.methods instanceof Array && handler.methods.indexOf( method ) !== -1 ) {
+    if( handler.isGeneric ) {
+      targetObject[ method ]( properties );
+    } else if( handler.methods instanceof Array && handler.methods.indexOf( method ) !== -1 ) {
       if( handler.methodHandler && handler.methodHandler[ method ] ) {
         handler.methodHandler[ method ]( targetObject, properties );
       } else {
@@ -157,10 +161,11 @@ rwt.remote.MessageProcessor = {
     var objectEntry = rwt.remote.ObjectRegistry.getEntry( targetId );
     var handler = objectEntry.handler;
     var targetObject = objectEntry.object;
-    if( handler.events instanceof Array ) {
+    if( handler.events instanceof Array || handler.isGeneric ) {
       var remoteObject = rwt.remote.RemoteObjectFactory.getRemoteObject( targetObject );
-      for( var i = 0; i < handler.events.length; i++ ) {
-        var type = handler.events[ i ];
+      var events = handler.isGeneric ? rwt.util.Objects.getKeys( properties ) : handler.events;
+      for( var i = 0; i < events.length; i++ ) {
+        var type = events[ i ];
         if( properties[ type ] === true ) {
           remoteObject._.listen[ type ] = true;
         } if( properties[ type ] === false ) {

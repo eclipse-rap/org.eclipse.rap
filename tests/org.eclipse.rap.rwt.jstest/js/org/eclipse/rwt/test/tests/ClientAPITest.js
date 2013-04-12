@@ -358,7 +358,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
 
     tearDown : function() {
       if( shell != null ) {
-        MessageProcessor.processOperationArray( [ "destroy", "w2"] );
+        MessageProcessor.processOperationArray( [ "destroy", "w2" ] );
         shell = null;
       }
     }
