@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Locale;
@@ -26,7 +25,7 @@ import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 
 
-public class ClientInfoImpl implements ClientInfo, Serializable {
+public class ClientInfoImpl implements ClientInfo {
 
   private Integer timezoneOffset;
   private Locale[] locales;

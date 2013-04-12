@@ -153,5 +153,4 @@ public class WebClient implements Client {
     getServiceImpl( ClientInfoImpl.class );
   }
 
-
 }
