@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.application;
 
+import static org.eclipse.rap.rwt.internal.service.StartupPageTestUtil.getStartupPageTemplate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -36,6 +37,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushServiceHandler;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
+import org.eclipse.rap.rwt.internal.service.StartupPageTestUtil;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -78,13 +80,16 @@ public class ApplicationContextImpl_Test {
     assertSame( applicationContext.getThemeManager(), applicationContext.getThemeManager() );
 
     assertNotNull( applicationContext.getPhaseListenerRegistry() );
-    assertSame( applicationContext.getPhaseListenerRegistry(), applicationContext.getPhaseListenerRegistry() );
+    assertSame( applicationContext.getPhaseListenerRegistry(),
+                applicationContext.getPhaseListenerRegistry() );
 
     assertNotNull( applicationContext.getLifeCycleFactory() );
-    assertSame( applicationContext.getLifeCycleFactory(), applicationContext.getLifeCycleFactory() );
+    assertSame( applicationContext.getLifeCycleFactory(),
+                applicationContext.getLifeCycleFactory() );
 
     assertNotNull( applicationContext.getEntryPointManager() );
-    assertSame( applicationContext.getEntryPointManager(), applicationContext.getEntryPointManager() );
+    assertSame( applicationContext.getEntryPointManager(),
+                applicationContext.getEntryPointManager() );
 
     assertNotNull( applicationContext.getResourceFactory() );
     assertSame( applicationContext.getResourceFactory(), applicationContext.getResourceFactory() );
@@ -93,25 +98,30 @@ public class ApplicationContextImpl_Test {
     assertSame( applicationContext.getImageFactory(), applicationContext.getImageFactory() );
 
     assertNotNull( applicationContext.getInternalImageFactory() );
-    assertSame( applicationContext.getInternalImageFactory(), applicationContext.getInternalImageFactory() );
+    assertSame( applicationContext.getInternalImageFactory(),
+                applicationContext.getInternalImageFactory() );
 
     assertNotNull( applicationContext.getImageDataFactory() );
-    assertSame( applicationContext.getImageDataFactory(), applicationContext.getImageDataFactory() );
+    assertSame( applicationContext.getImageDataFactory(),
+                applicationContext.getImageDataFactory() );
 
     assertNotNull( applicationContext.getFontDataFactory() );
     assertSame( applicationContext.getFontDataFactory(), applicationContext.getFontDataFactory() );
 
     assertNotNull( applicationContext.getSettingStoreManager() );
-    assertSame( applicationContext.getSettingStoreManager(), applicationContext.getSettingStoreManager() );
+    assertSame( applicationContext.getSettingStoreManager(),
+                applicationContext.getSettingStoreManager() );
 
     assertNotNull( applicationContext.getServiceManager() );
     assertSame( applicationContext.getServiceManager(), applicationContext.getServiceManager() );
 
     assertNotNull( applicationContext.getResourceRegistry() );
-    assertSame( applicationContext.getResourceRegistry(), applicationContext.getResourceRegistry() );
+    assertSame( applicationContext.getResourceRegistry(),
+                applicationContext.getResourceRegistry() );
 
     assertNotNull( applicationContext.getResourceDirectory() );
-    assertSame( applicationContext.getResourceDirectory(), applicationContext.getResourceDirectory() );
+    assertSame( applicationContext.getResourceDirectory(),
+                applicationContext.getResourceDirectory() );
 
     assertNotNull( applicationContext.getResourceManager() );
     assertSame( applicationContext.getResourceManager(), applicationContext.getResourceManager() );
@@ -153,6 +163,9 @@ public class ApplicationContextImpl_Test {
     checkThemableWidgetHasBeenAdded();
     checkThemeContributionHasBeenAdded();
     checkAttributeHasBeenSet();
+    checkLifeCycleHasBeenCreated();
+    checkStartupPageTemplateHasBeenCreated();
+    checkClientSelectorHasBeenActivated();
   }
 
   @Test
@@ -201,6 +214,8 @@ public class ApplicationContextImpl_Test {
     checkSettingStoreFactoryHasBeenRemoved();
     checkThemeManagerHasBeenReset();
     checkApplicationStoreHasBeenReset();
+    checkLifeCycleHasBeenReset();
+    checkStartupPageTemplateHasBeenReset();
   }
 
   private void activateApplicationContext( ApplicationConfiguration configuration,
@@ -248,6 +263,23 @@ public class ApplicationContextImpl_Test {
         configuration.setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
       }
     };
+  }
+
+  private void checkLifeCycleHasBeenCreated() {
+    assertNotNull( applicationContext.getLifeCycleFactory().getLifeCycle() );
+  }
+
+  private void checkStartupPageTemplateHasBeenCreated() {
+    assertNotNull( getStartupPageTemplate( applicationContext.getStartupPage() ) );
+  }
+
+  private void checkClientSelectorHasBeenActivated() {
+    try {
+      applicationContext.getClientSelector().activate();
+      fail();
+    } catch( IllegalStateException expected ) {
+      assertEquals( "ClientSelector already activated", expected.getMessage() );
+    }
   }
 
   private void checkAttributeHasBeenSet() {
@@ -343,6 +375,14 @@ public class ApplicationContextImpl_Test {
   private void checkApplicationStoreHasBeenReset() {
     Object attribute = applicationContext.getAttribute( ATTRIBUTE_NAME );
     assertNull( attribute );
+  }
+
+  private void checkLifeCycleHasBeenReset() {
+    assertNull( applicationContext.getLifeCycleFactory().getLifeCycle() );
+  }
+
+  private void checkStartupPageTemplateHasBeenReset() {
+    assertNull( StartupPageTestUtil.getStartupPageTemplate( applicationContext.getStartupPage() ) );
   }
 
   private static void activateApplicationContext( ApplicationContextImpl applicationContext ) {

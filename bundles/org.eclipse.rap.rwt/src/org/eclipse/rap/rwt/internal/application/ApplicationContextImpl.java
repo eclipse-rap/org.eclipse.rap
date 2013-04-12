@@ -42,19 +42,32 @@ import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.InternalImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.DisplaysHolder;
+import org.eclipse.swt.internal.widgets.displaykit.ClientResources;
 
 
 public class ApplicationContextImpl implements ApplicationContext {
+
   // TODO [fappel]: this allows to set a fake double of the resource manager for testing purpose.
   //                Think about a less intrusive solution.
   // [rst] made public to allow access from testfixture in OSGi (bug 391510)
   public static ResourceManager testResourceManager;
+
+  // TODO [fappel]: this flag is used to skip resource registration. Think about
+  //                a less intrusive solution.
+  // [rst] made public to allow access from testfixture in OSGi (bug 391510)
+  public static boolean skipResoureRegistration;
+
+  // TODO [fappel]: this flag is used to skip resource deletion. Think about
+  //                a less intrusive solution.
+  // [rst] made public to allow access from testfixture in OSGi (bug 391510)
+  public static boolean skipResoureDeletion;
 
   // TODO [fappel]: themeManager isn't final for performance reasons of the testsuite.
   //                TestServletContext#setAttribute(String,Object) will replace the runtime
   //                implementation with an optimized version for testing purpose. Think about
   //                a less intrusive solution.
   private ThemeManager themeManager;
+
   private final ApplicationConfiguration applicationConfiguration;
   private final ResourceDirectory resourceDirectory;
   private final ResourceManagerImpl resourceManager;
@@ -76,7 +89,6 @@ public class ApplicationContextImpl implements ApplicationContext {
   private final TextSizeStorage textSizeStorage;
   private final ProbeStore probeStore;
   private final ServletContext servletContext;
-  private final ApplicationContextActivator contextActivator;
   private final ClientSelector clientSelector;
   private ExceptionHandler exceptionHandler;
   private boolean active;
@@ -106,7 +118,6 @@ public class ApplicationContextImpl implements ApplicationContext {
     displaysHolder = new DisplaysHolder();
     textSizeStorage = new TextSizeStorage();
     probeStore = new ProbeStore( textSizeStorage );
-    contextActivator = new ApplicationContextActivator( this );
     clientSelector = new ClientSelector();
   }
 
@@ -265,11 +276,26 @@ public class ApplicationContextImpl implements ApplicationContext {
     addInternalPhaseListeners();
     addInternalServiceHandlers();
     setInternalSettingStoreFactory();
-    contextActivator.activate();
+    startupPage.activate();
+    lifeCycleFactory.activate();
+    // Note: order is crucial here
+    themeManager.activate();
+    if( !skipResoureRegistration ) {
+      ClientResources clientResources = new ClientResources( this );
+      clientResources.registerResources();
+    }
+    resourceRegistry.registerResources();
+    clientSelector.activate();
   }
 
   private void doDeactivate() {
-    contextActivator.deactivate();
+    startupPage.deactivate();
+    lifeCycleFactory.deactivate();
+    serviceManager.clear();
+    themeManager.deactivate();
+    if( !skipResoureDeletion ) {
+      getResourceDirectory().deleteDirectory();
+    }
     entryPointManager.deregisterAll();
     phaseListenerRegistry.removeAll();
     resourceRegistry.clear();
