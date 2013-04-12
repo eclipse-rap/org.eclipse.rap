@@ -23,6 +23,7 @@ import java.io.IOException;
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
+import org.eclipse.rap.rwt.testfixture.FileUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.junit.Before;
@@ -83,7 +84,7 @@ public class ApplicationContextUtil_Test {
     File content = new File( contextDirectory, "context.xml" );
     boolean fileCreated = content.createNewFile();
 
-    ApplicationContextUtil.delete( contextDirectory );
+    FileUtil.delete( contextDirectory );
 
     assertTrue( directoryCreated );
     assertTrue( fileCreated );

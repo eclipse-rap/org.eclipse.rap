@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServlet;
 
 import org.eclipse.rap.rwt.application.*;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
+import org.eclipse.rap.rwt.testfixture.FileUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.*;
 import org.mockito.invocation.InvocationOnMock;
@@ -71,7 +72,7 @@ public class ApplicationLauncherImpl_Test {
 
   @After
   public void tearDown() {
-    Fixture.delete( Fixture.WEB_CONTEXT_DIR );
+    FileUtil.delete( Fixture.WEB_CONTEXT_DIR );
     Fixture.resetSkipResourceDeletion();
   }
 

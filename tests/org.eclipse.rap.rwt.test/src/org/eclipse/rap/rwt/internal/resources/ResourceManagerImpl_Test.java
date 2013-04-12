@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.eclipse.rap.rwt.service.ResourceLoader;
+import org.eclipse.rap.rwt.testfixture.FileUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
 import org.junit.Before;
@@ -53,7 +54,7 @@ public class ResourceManagerImpl_Test {
   @After
   public void tearDown() {
     File path = new File( getWebContextDirectory(), ResourceDirectory.DIRNAME );
-    Fixture.delete( path );
+    FileUtil.delete( path );
     Fixture.tearDown();
   }
 
@@ -75,7 +76,7 @@ public class ResourceManagerImpl_Test {
     InputStream inputStream = new ByteArrayInputStream( new byte[ 0 ] );
     resourceManager.register( resource, inputStream );
     File file = getResourceCopyFile( resource );
-    Fixture.delete( file );
+    FileUtil.delete( file );
 
     resourceManager.register( resource, inputStream );
 

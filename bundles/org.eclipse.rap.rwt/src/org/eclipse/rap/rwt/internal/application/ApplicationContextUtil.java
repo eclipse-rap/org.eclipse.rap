@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.application;
 
-import java.io.File;
-
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -45,36 +43,9 @@ public class ApplicationContextUtil {
     return result;
   }
 
-  public static void delete( File toDelete ) {
-    if( toDelete.exists() ) {
-      doDelete( toDelete );
-    }
-  }
-
   private static void checkApplicationContextExists( ApplicationContextImpl applicationContext ) {
     if( applicationContext == null ) {
       throw new IllegalStateException( "No ApplicationContext registered." );
-    }
-  }
-
-  private static void doDelete( File toDelete ) {
-    if( toDelete.isDirectory() ) {
-      deleteChildren( toDelete );
-    }
-    deleteFile( toDelete );
-  }
-
-  private static void deleteChildren( File toDelete ) {
-    File[] children = toDelete.listFiles();
-    for( int i = 0; i < children.length; i++ ) {
-      delete( children[ i ] );
-    }
-  }
-
-  private static void deleteFile( File toDelete ) {
-    boolean deleted = toDelete.delete();
-    if( !deleted ) {
-      throw new IllegalStateException( "Could not delete: " + toDelete.getPath() );
     }
   }
 

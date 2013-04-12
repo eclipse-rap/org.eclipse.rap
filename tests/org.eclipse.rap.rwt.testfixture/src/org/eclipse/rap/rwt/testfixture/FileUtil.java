@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,12 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.resources;
+package org.eclipse.rap.rwt.testfixture;
 
 import java.io.File;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 
-
-public class FileTestUtil {
+public class FileUtil {
 
   public static File createTempDir() {
     File globalTmpDir = new File( System.getProperty( "java.io.tmpdir" ) );
@@ -28,8 +26,27 @@ public class FileTestUtil {
     return tmpDir;
   }
 
-  public static void delete( File toDelete ) {
-    ApplicationContextUtil.delete( toDelete );
+  public static void delete( File file ) {
+    if( file.isDirectory() ) {
+      deleteChildren( file );
+    }
+    deleteFile( file );
+  }
+
+  private static void deleteChildren( File file ) {
+    for( File child : file.listFiles() ) {
+      delete( child );
+    }
+  }
+
+  private static void deleteFile( File file ) {
+    if( !file.delete() && file.exists() ) {
+      throw new IllegalStateException( "Could not delete: " + file.getPath() );
+    }
+  }
+
+  private FileUtil() {
+    // prevent instantiation
   }
 
 }

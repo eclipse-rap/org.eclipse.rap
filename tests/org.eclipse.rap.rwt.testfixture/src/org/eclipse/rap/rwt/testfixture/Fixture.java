@@ -219,7 +219,7 @@ public final class Fixture {
 
   public static void deleteWebContextDirectory() {
     if( WEB_CONTEXT_DIR.exists() ) {
-      delete( WEB_CONTEXT_DIR );
+      FileUtil.delete( WEB_CONTEXT_DIR );
     }
   }
 
@@ -609,10 +609,6 @@ public final class Fixture {
       Thread thread = threads[ i ];
       thread.join();
     }
-  }
-
-  public static void delete( File toDelete ) {
-    ApplicationContextUtil.delete( toDelete );
   }
 
   public static byte[] serialize( Object object ) throws IOException {

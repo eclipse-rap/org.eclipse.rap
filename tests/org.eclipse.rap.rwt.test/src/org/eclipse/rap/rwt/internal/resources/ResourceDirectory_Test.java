@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 
+import org.eclipse.rap.rwt.testfixture.FileUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,37 +28,37 @@ import org.junit.Test;
 public class ResourceDirectory_Test {
 
   private File tempDir;
-  private ResourceDirectory writer;
+  private ResourceDirectory resourceDirectory;
 
   @Before
   public void setUp() {
-    tempDir = FileTestUtil.createTempDir();
-    writer = new ResourceDirectory();
+    tempDir = FileUtil.createTempDir();
+    resourceDirectory = new ResourceDirectory();
   }
 
   @After
   public void tearDown() {
-    FileTestUtil.delete( tempDir );
+    FileUtil.delete( tempDir );
   }
 
   @Test
   public void testConfigurationSetsResourceDirectory() {
-    writer.configure( tempDir.getAbsolutePath() );
+    resourceDirectory.configure( tempDir.getAbsolutePath() );
 
-    assertEquals( tempDir, writer.getDirectory().getParentFile() );
+    assertEquals( tempDir, resourceDirectory.getDirectory().getParentFile() );
   }
 
   @Test
   public void testConfigurationDoesNotCreateResourceDirectory() {
-    writer.configure( tempDir.getAbsolutePath() );
+    resourceDirectory.configure( tempDir.getAbsolutePath() );
 
-    assertFalse( writer.getDirectory().exists() );
+    assertFalse( resourceDirectory.getDirectory().exists() );
   }
 
   @Test
   public void testConfigurationFailsWithNullParameter() {
     try {
-      writer.configure( null );
+      resourceDirectory.configure( null );
     } catch( NullPointerException expected ) {
     }
   }
@@ -65,7 +66,7 @@ public class ResourceDirectory_Test {
   @Test
   public void testGetDirectoryFailsIfNotConfigured() {
     try {
-      writer.getDirectory();
+      resourceDirectory.getDirectory();
       fail();
     } catch( IllegalStateException expected ) {
     }
@@ -73,22 +74,29 @@ public class ResourceDirectory_Test {
 
   @Test
   public void testDirectoryCreated() {
-    writer.configure( tempDir.getAbsolutePath() );
+    resourceDirectory.configure( tempDir.getAbsolutePath() );
 
-    writer.createDirectory();
+    resourceDirectory.createDirectory();
 
-    assertTrue( writer.getDirectory().isDirectory() );
+    assertTrue( resourceDirectory.getDirectory().isDirectory() );
   }
 
   @Test
   public void testDirectoryDeleted() {
-    writer.configure( tempDir.getAbsolutePath() );
-    writer.createDirectory();
-    new File( writer.getDirectory(), "subdirectory" ).mkdir();
+    resourceDirectory.configure( tempDir.getAbsolutePath() );
+    resourceDirectory.createDirectory();
+    new File( resourceDirectory.getDirectory(), "subdirectory" ).mkdir();
 
-    writer.deleteDirectory();
+    resourceDirectory.deleteDirectory();
 
-    assertFalse( writer.getDirectory().exists() );
+    assertFalse( resourceDirectory.getDirectory().exists() );
+  }
+
+  @Test
+  public void testDirectoryDeleted_doesNotFailIfMissing() {
+    resourceDirectory.configure( tempDir.getAbsolutePath() );
+
+    resourceDirectory.deleteDirectory();
   }
 
 }
