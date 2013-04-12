@@ -120,11 +120,11 @@ public class BrowserUtil_Test {
     BrowserUtil.evaluate( browser, "return 5;", browserCallback );
     Fixture.fakeNewRequest();
     Fixture.fakeSetParameter( getId( browser ), "executeResult", Boolean.TRUE );
-    Fixture.fakeSetParameter( getId( browser ), "evaluateResult", new Double[]{ Double.valueOf( 5 ) } );
+    Fixture.fakeSetParameter( getId( browser ), "evaluateResult", new Object[]{ Double.valueOf( 5 ) } );
 
     Fixture.readDataAndProcessAction( browser );
 
-    assertEquals( Double.valueOf( 5 ), log[ 0 ] );
+    assertEquals( Integer.valueOf( 5 ), log[ 0 ] );
   }
 
   @Test

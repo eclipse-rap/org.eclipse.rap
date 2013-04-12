@@ -59,8 +59,8 @@ public class ThemeStoreWriter_Test {
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     // register colors
-    assertTrue( output.contains( "[0,0,0,1.0]" ) );
-    assertTrue( output.contains( "[255,0,0,1.0]" ) );
+    assertTrue( output.contains( "[0,0,0,1]" ) );
+    assertTrue( output.contains( "[255,0,0,1]" ) );
     // register images, with sizes
     String expected;
     expected = "\"ba873d77.png\":[50,100]";
@@ -106,7 +106,7 @@ public class ThemeStoreWriter_Test {
     String output = storeWriter.createJson();
     String expected =   "\"gradients\":{"
                       + "\"2eb911d6\":{"
-                      + "\"percents\":[0.0,48.0,52.0,100.0],"
+                      + "\"percents\":[0,48,52,100],"
                       + "\"colors\":[\"#ffffff\",\"#f0f0f0\",\"#e0e0e0\",\"#ffffff\"],"
                       + "\"vertical\":true"
                       + "}"
@@ -128,7 +128,7 @@ public class ThemeStoreWriter_Test {
     String output = storeWriter.createJson();
     String expected =   "\"gradients\":{"
                       + "\"2762759\":{"
-                      + "\"percents\":[0.0,48.0,52.0,100.0],"
+                      + "\"percents\":[0,48,52,100],"
                       + "\"colors\":[\"#ffffff\",\"#f0f0f0\",\"#e0e0e0\",\"#ffffff\"],"
                       + "\"vertical\":false"
                       + "}"
@@ -169,8 +169,8 @@ public class ThemeStoreWriter_Test {
     String output = storeWriter.createJson();
     String expected =   "\"colors\":{"
                       + "\"ffffffff\":\"undefined\","
-                      + "\"400339c0\":[255,0,0,1.0],"
-                      + "\"3ffe9078\":[206,206,206,1.0]"
+                      + "\"400339c0\":[255,0,0,1],"
+                      + "\"3ffe9078\":[206,206,206,1]"
                       + "}";
     assertTrue( output.contains( expected ) );
     expected =
@@ -195,7 +195,7 @@ public class ThemeStoreWriter_Test {
     assertTrue( output.contains( expectedImages ) );
     String expectedGradients =   "\"gradients\":{"
                                + "\"154e1724\":{"
-                               + "\"percents\":[0.0,100.0],"
+                               + "\"percents\":[0,100],"
                                + "\"colors\":[\"#000000\",\"#ffffff\"],"
                                + "\"vertical\":true"
                                + "}";

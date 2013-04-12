@@ -166,8 +166,8 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"moveTo\",10.0,11.0", getOperation( 2, ops ) );
-    assertEquals( "\"lineTo\",20.0,21.0", getOperation( 3, ops ) );
+    assertEquals( "\"moveTo\",10,11", getOperation( 2, ops ) );
+    assertEquals( "\"lineTo\",20,21", getOperation( 3, ops ) );
     assertEquals( "\"stroke\"", getOperation( 4, ops ) );
   }
 
@@ -191,9 +191,9 @@ public class GCOperationWriter_Test {
     assertEquals( "\"strokeStyle\",[255,0,7,255]", getOperation( 0, ops ) );
     assertEquals( "\"save\"", getOperation( 1, ops ) );
     assertEquals( "\"fillStyle\",[255,0,7,255]", getOperation( 2, ops ) );
-    assertEquals( "\"lineWidth\",1.0", getOperation( 3, ops ) );
+    assertEquals( "\"lineWidth\",1", getOperation( 3, ops ) );
     assertEquals( "\"beginPath\"", getOperation( 4, ops ) );
-    assertEquals( "\"rect\",27.0,44.0,1.0,1.0", getOperation( 5, ops ) );
+    assertEquals( "\"rect\",27,44,1,1", getOperation( 5, ops ) );
     assertEquals( "\"fill\"", getOperation( 6, ops ) );
     assertEquals( "\"restore\"", getOperation( 7, ops ) );
   }
@@ -205,7 +205,7 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"rect\",10.0,20.0,55.0,56.0", getOperation( 2, ops ) );
+    assertEquals( "\"rect\",10,20,55,56", getOperation( 2, ops ) );
     assertEquals( "\"stroke\"", getOperation( 3, ops ) );
   }
 
@@ -216,7 +216,7 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"rect\",10.0,20.0,55.0,56.0", getOperation( 2, ops ) );
+    assertEquals( "\"rect\",10,20,55,56", getOperation( 2, ops ) );
     assertEquals( "\"fill\"", getOperation( 3, ops ) );
   }
 
@@ -227,7 +227,7 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"rect\",10.5,20.5,55.0,56.0", getOperation( 2, ops ) );
+    assertEquals( "\"rect\",10.5,20.5,55,56", getOperation( 2, ops ) );
     assertEquals( "\"stroke\"", getOperation( 3, ops ) );
   }
 
@@ -238,10 +238,10 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"moveTo\",10.0,20.0", getOperation( 2, ops ) );
-    assertEquals( "\"lineTo\",30.0,40.0", getOperation( 3, ops ) );
-    assertEquals( "\"lineTo\",50.0,60.0", getOperation( 4, ops ) );
-    assertEquals( "\"lineTo\",90.0,100.0", getOperation( 5, ops ) );
+    assertEquals( "\"moveTo\",10,20", getOperation( 2, ops ) );
+    assertEquals( "\"lineTo\",30,40", getOperation( 3, ops ) );
+    assertEquals( "\"lineTo\",50,60", getOperation( 4, ops ) );
+    assertEquals( "\"lineTo\",90,100", getOperation( 5, ops ) );
     assertEquals( "\"stroke\"", getOperation( 6, ops ) );
   }
 
@@ -252,11 +252,11 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"moveTo\",10.0,20.0", getOperation( 2, ops ) );
-    assertEquals( "\"lineTo\",30.0,40.0", getOperation( 3, ops ) );
-    assertEquals( "\"lineTo\",50.0,60.0", getOperation( 4, ops ) );
-    assertEquals( "\"lineTo\",90.0,100.0", getOperation( 5, ops ) );
-    assertEquals( "\"lineTo\",10.0,20.0", getOperation( 6, ops ) );
+    assertEquals( "\"moveTo\",10,20", getOperation( 2, ops ) );
+    assertEquals( "\"lineTo\",30,40", getOperation( 3, ops ) );
+    assertEquals( "\"lineTo\",50,60", getOperation( 4, ops ) );
+    assertEquals( "\"lineTo\",90,100", getOperation( 5, ops ) );
+    assertEquals( "\"lineTo\",10,20", getOperation( 6, ops ) );
     assertEquals( "\"stroke\"", getOperation( 7, ops ) );
   }
 
@@ -267,11 +267,11 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"moveTo\",10.0,20.0", getOperation( 2, ops ) );
-    assertEquals( "\"lineTo\",30.0,40.0", getOperation( 3, ops ) );
-    assertEquals( "\"lineTo\",50.0,60.0", getOperation( 4, ops ) );
-    assertEquals( "\"lineTo\",90.0,100.0", getOperation( 5, ops ) );
-    assertEquals( "\"lineTo\",10.0,20.0", getOperation( 6, ops ) );
+    assertEquals( "\"moveTo\",10,20", getOperation( 2, ops ) );
+    assertEquals( "\"lineTo\",30,40", getOperation( 3, ops ) );
+    assertEquals( "\"lineTo\",50,60", getOperation( 4, ops ) );
+    assertEquals( "\"lineTo\",90,100", getOperation( 5, ops ) );
+    assertEquals( "\"lineTo\",10,20", getOperation( 6, ops ) );
     assertEquals( "\"fill\"", getOperation( 7, ops ) );
   }
 
@@ -295,15 +295,15 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"moveTo\",10.0,22.5", getOperation( 2, ops ) );
-    assertEquals( "\"lineTo\",10.0,217.5", getOperation( 3, ops ) );
-    assertEquals( "\"quadraticCurveTo\",10.0,220.0,11.5,220.0", getOperation( 4, ops ) );
-    assertEquals( "\"lineTo\",108.5,220.0", getOperation( 5, ops ) );
-    assertEquals( "\"quadraticCurveTo\",110.0,220.0,110.0,217.5", getOperation( 6, ops ) );
-    assertEquals( "\"lineTo\",110.0,22.5", getOperation( 7, ops ) );
-    assertEquals( "\"quadraticCurveTo\",110.0,20.0,108.5,20.0", getOperation( 8, ops ) );
-    assertEquals( "\"lineTo\",11.5,20.0", getOperation( 9, ops ) );
-    assertEquals( "\"quadraticCurveTo\",10.0,20.0,10.0,22.5", getOperation( 10, ops ) );
+    assertEquals( "\"moveTo\",10,22.5", getOperation( 2, ops ) );
+    assertEquals( "\"lineTo\",10,217.5", getOperation( 3, ops ) );
+    assertEquals( "\"quadraticCurveTo\",10,220,11.5,220", getOperation( 4, ops ) );
+    assertEquals( "\"lineTo\",108.5,220", getOperation( 5, ops ) );
+    assertEquals( "\"quadraticCurveTo\",110,220,110,217.5", getOperation( 6, ops ) );
+    assertEquals( "\"lineTo\",110,22.5", getOperation( 7, ops ) );
+    assertEquals( "\"quadraticCurveTo\",110,20,108.5,20", getOperation( 8, ops ) );
+    assertEquals( "\"lineTo\",11.5,20", getOperation( 9, ops ) );
+    assertEquals( "\"quadraticCurveTo\",10,20,10,22.5", getOperation( 10, ops ) );
     assertEquals( "\"stroke\"", getOperation( 11, ops ) );
   }
 
@@ -314,15 +314,15 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"moveTo\",10.5,23.0", getOperation( 2, ops ) );
-    assertEquals( "\"lineTo\",10.5,218.0", getOperation( 3, ops ) );
-    assertEquals( "\"quadraticCurveTo\",10.5,220.5,12.0,220.5", getOperation( 4, ops ) );
-    assertEquals( "\"lineTo\",109.0,220.5", getOperation( 5, ops ) );
-    assertEquals( "\"quadraticCurveTo\",110.5,220.5,110.5,218.0", getOperation( 6, ops ) );
-    assertEquals( "\"lineTo\",110.5,23.0", getOperation( 7, ops ) );
-    assertEquals( "\"quadraticCurveTo\",110.5,20.5,109.0,20.5", getOperation( 8, ops ) );
-    assertEquals( "\"lineTo\",12.0,20.5", getOperation( 9, ops ) );
-    assertEquals( "\"quadraticCurveTo\",10.5,20.5,10.5,23.0", getOperation( 10, ops ) );
+    assertEquals( "\"moveTo\",10.5,23", getOperation( 2, ops ) );
+    assertEquals( "\"lineTo\",10.5,218", getOperation( 3, ops ) );
+    assertEquals( "\"quadraticCurveTo\",10.5,220.5,12,220.5", getOperation( 4, ops ) );
+    assertEquals( "\"lineTo\",109,220.5", getOperation( 5, ops ) );
+    assertEquals( "\"quadraticCurveTo\",110.5,220.5,110.5,218", getOperation( 6, ops ) );
+    assertEquals( "\"lineTo\",110.5,23", getOperation( 7, ops ) );
+    assertEquals( "\"quadraticCurveTo\",110.5,20.5,109,20.5", getOperation( 8, ops ) );
+    assertEquals( "\"lineTo\",12,20.5", getOperation( 9, ops ) );
+    assertEquals( "\"quadraticCurveTo\",10.5,20.5,10.5,23", getOperation( 10, ops ) );
     assertEquals( "\"stroke\"", getOperation( 11, ops ) );
   }
 
@@ -333,15 +333,15 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"moveTo\",10.0,22.5", getOperation( 2, ops ) );
-    assertEquals( "\"lineTo\",10.0,217.5", getOperation( 3, ops ) );
-    assertEquals( "\"quadraticCurveTo\",10.0,220.0,11.5,220.0", getOperation( 4, ops ) );
-    assertEquals( "\"lineTo\",108.5,220.0", getOperation( 5, ops ) );
-    assertEquals( "\"quadraticCurveTo\",110.0,220.0,110.0,217.5", getOperation( 6, ops ) );
-    assertEquals( "\"lineTo\",110.0,22.5", getOperation( 7, ops ) );
-    assertEquals( "\"quadraticCurveTo\",110.0,20.0,108.5,20.0", getOperation( 8, ops ) );
-    assertEquals( "\"lineTo\",11.5,20.0", getOperation( 9, ops ) );
-    assertEquals( "\"quadraticCurveTo\",10.0,20.0,10.0,22.5", getOperation( 10, ops ) );
+    assertEquals( "\"moveTo\",10,22.5", getOperation( 2, ops ) );
+    assertEquals( "\"lineTo\",10,217.5", getOperation( 3, ops ) );
+    assertEquals( "\"quadraticCurveTo\",10,220,11.5,220", getOperation( 4, ops ) );
+    assertEquals( "\"lineTo\",108.5,220", getOperation( 5, ops ) );
+    assertEquals( "\"quadraticCurveTo\",110,220,110,217.5", getOperation( 6, ops ) );
+    assertEquals( "\"lineTo\",110,22.5", getOperation( 7, ops ) );
+    assertEquals( "\"quadraticCurveTo\",110,20,108.5,20", getOperation( 8, ops ) );
+    assertEquals( "\"lineTo\",11.5,20", getOperation( 9, ops ) );
+    assertEquals( "\"quadraticCurveTo\",10,20,10,22.5", getOperation( 10, ops ) );
     assertEquals( "\"fill\"", getOperation( 11, ops ) );
   }
 
@@ -354,12 +354,12 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"save\"", getOperation( 3, ops ) );
-    assertEquals( "\"createLinearGradient\",10.0,20.0,10.0,220.0", getOperation( 4, ops ) );
+    assertEquals( "\"createLinearGradient\",10,20,10,220", getOperation( 4, ops ) );
     assertEquals( "\"addColorStop\",0,[0,10,20,255]", getOperation( 5, ops ) );
     assertEquals( "\"addColorStop\",1,[30,40,50,255]", getOperation( 6, ops ) );
     assertEquals( "\"fillStyle\",\"linearGradient\"", getOperation( 7, ops ) );
     assertEquals( "\"beginPath\"", getOperation( 8, ops ) );
-    assertEquals( "\"rect\",10.0,20.0,100.0,200.0", getOperation( 9, ops ) );
+    assertEquals( "\"rect\",10,20,100,200", getOperation( 9, ops ) );
     assertEquals( "\"fill\"", getOperation( 10, ops ) );
     assertEquals( "\"restore\"", getOperation( 11, ops ) );
   }
@@ -373,12 +373,12 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"save\"", getOperation( 3, ops ) );
-    assertEquals( "\"createLinearGradient\",10.0,20.0,110.0,20.0", getOperation( 4, ops ) );
+    assertEquals( "\"createLinearGradient\",10,20,110,20", getOperation( 4, ops ) );
     assertEquals( "\"addColorStop\",0,[0,10,20,255]", getOperation( 5, ops ) );
     assertEquals( "\"addColorStop\",1,[30,40,50,255]", getOperation( 6, ops ) );
     assertEquals( "\"fillStyle\",\"linearGradient\"", getOperation( 7, ops ) );
     assertEquals( "\"beginPath\"", getOperation( 8, ops ) );
-    assertEquals( "\"rect\",10.0,20.0,100.0,200.0", getOperation( 9, ops ) );
+    assertEquals( "\"rect\",10,20,100,200", getOperation( 9, ops ) );
     assertEquals( "\"fill\"", getOperation( 10, ops ) );
     assertEquals( "\"restore\"", getOperation( 11, ops ) );
   }
@@ -392,12 +392,12 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"save\"", getOperation( 3, ops ) );
-    assertEquals( "\"createLinearGradient\",90.0,180.0,90.0,200.0", getOperation( 4, ops ) );
+    assertEquals( "\"createLinearGradient\",90,180,90,200", getOperation( 4, ops ) );
     assertEquals( "\"addColorStop\",0,[30,40,50,255]", getOperation( 5, ops ) );
     assertEquals( "\"addColorStop\",1,[0,10,20,255]", getOperation( 6, ops ) );
     assertEquals( "\"fillStyle\",\"linearGradient\"", getOperation( 7, ops ) );
     assertEquals( "\"beginPath\"", getOperation( 8, ops ) );
-    assertEquals( "\"rect\",90.0,180.0,-10.0,-20.0", getOperation( 9, ops ) );
+    assertEquals( "\"rect\",90,180,-10,-20", getOperation( 9, ops ) );
     assertEquals( "\"fill\"", getOperation( 10, ops ) );
     assertEquals( "\"restore\"", getOperation( 11, ops ) );
   }
@@ -411,12 +411,12 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"save\"", getOperation( 3, ops ) );
-    assertEquals( "\"createLinearGradient\",90.0,180.0,100.0,180.0", getOperation( 4, ops ) );
+    assertEquals( "\"createLinearGradient\",90,180,100,180", getOperation( 4, ops ) );
     assertEquals( "\"addColorStop\",0,[30,40,50,255]", getOperation( 5, ops ) );
     assertEquals( "\"addColorStop\",1,[0,10,20,255]", getOperation( 6, ops ) );
     assertEquals( "\"fillStyle\",\"linearGradient\"", getOperation( 7, ops ) );
     assertEquals( "\"beginPath\"", getOperation( 8, ops ) );
-    assertEquals( "\"rect\",90.0,180.0,-10.0,-20.0", getOperation( 9, ops ) );
+    assertEquals( "\"rect\",90,180,-10,-20", getOperation( 9, ops ) );
     assertEquals( "\"fill\"", getOperation( 10, ops ) );
     assertEquals( "\"restore\"", getOperation( 11, ops ) );
   }
@@ -428,7 +428,7 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"ellipse\",60.0,120.0,50.0,100.0,0.0,-0.8727,-2.618,true",
+    assertEquals( "\"ellipse\",60,120,50,100,0,-0.8727,-2.618,true",
                   getOperation( 2, ops ) );
     assertEquals( "\"stroke\"", getOperation( 3, ops ) );
   }
@@ -440,7 +440,7 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"ellipse\",60.5,120.5,50.0,100.0,0.0,-0.8727,-2.618,true",
+    assertEquals( "\"ellipse\",60.5,120.5,50,100,0,-0.8727,-2.618,true",
                   getOperation( 2, ops ) );
     assertEquals( "\"stroke\"", getOperation( 3, ops ) );
   }
@@ -452,9 +452,9 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"ellipse\",60.0,120.0,50.0,100.0,0.0,-0.8727,-2.618,true",
+    assertEquals( "\"ellipse\",60,120,50,100,0,-0.8727,-2.618,true",
                   getOperation( 2, ops ) );
-    assertEquals( "\"lineTo\",60.0,120.0", getOperation( 3, ops ) );
+    assertEquals( "\"lineTo\",60,120", getOperation( 3, ops ) );
     assertEquals( "\"fill\"", getOperation( 4, ops ) );
   }
 
@@ -465,9 +465,9 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"ellipse\",60.0,120.0,50.0,100.0,0.0,-0.8727,0.8726001,false",
+    assertEquals( "\"ellipse\",60,120,50,100,0,-0.8727,0.8726001,false",
                   getOperation( 2, ops ) );
-    assertEquals( "\"lineTo\",60.0,120.0", getOperation( 3, ops ) );
+    assertEquals( "\"lineTo\",60,120", getOperation( 3, ops ) );
     assertEquals( "\"fill\"", getOperation( 4, ops ) );
   }
 
@@ -479,7 +479,7 @@ public class GCOperationWriter_Test {
     gc.drawImage( image, 10, 50 );
 
     JsonArray ops = getGCOperations( canvas );
-    String expected = "\"drawImage\",\"" + imageLocation + "\",10.0,50.0";
+    String expected = "\"drawImage\",\"" + imageLocation + "\",10,50";
     assertEquals( expected, getOperation( 0, ops ) );
   }
 
@@ -493,7 +493,7 @@ public class GCOperationWriter_Test {
     JsonArray ops = getGCOperations( canvas );
     String expected = "\"drawImage\",\""
                     + imageLocation
-                    + "\",10.0,20.0,30.0,40.0,100.0,110.0,400.0,500.0";
+                    + "\",10,20,30,40,100,110,400,500";
     assertEquals( expected, getOperation( 0, ops ) );
   }
 
@@ -502,7 +502,7 @@ public class GCOperationWriter_Test {
     gc.drawText( "foo", 30, 34, true );
 
     JsonArray ops = getGCOperations( canvas );
-    assertEquals( "\"strokeText\",\"foo\",false,true,true,30.0,34.0", getOperation( 0, ops ) );
+    assertEquals( "\"strokeText\",\"foo\",false,true,true,30,34", getOperation( 0, ops ) );
   }
 
   @Test
@@ -510,7 +510,7 @@ public class GCOperationWriter_Test {
     gc.drawText( "foo", 30, 34, SWT.DRAW_MNEMONIC );
 
     JsonArray ops = getGCOperations( canvas );
-    assertEquals( "\"fillText\",\"foo\",true,false,false,30.0,34.0", getOperation( 0, ops ) );
+    assertEquals( "\"fillText\",\"foo\",true,false,false,30,34", getOperation( 0, ops ) );
   }
 
   @Test
@@ -518,7 +518,7 @@ public class GCOperationWriter_Test {
     gc.drawText( "foo", 30, 34, SWT.DRAW_DELIMITER );
 
     JsonArray ops = getGCOperations( canvas );
-    assertEquals( "\"fillText\",\"foo\",false,true,false,30.0,34.0", getOperation( 0, ops ) );
+    assertEquals( "\"fillText\",\"foo\",false,true,false,30,34", getOperation( 0, ops ) );
   }
 
   @Test
@@ -526,7 +526,7 @@ public class GCOperationWriter_Test {
     gc.drawText( "foo", 30, 34, SWT.DRAW_TAB );
 
     JsonArray ops = getGCOperations( canvas );
-    assertEquals( "\"fillText\",\"foo\",false,false,true,30.0,34.0", getOperation( 0, ops ) );
+    assertEquals( "\"fillText\",\"foo\",false,false,true,30,34", getOperation( 0, ops ) );
   }
 
   @Test
@@ -534,7 +534,7 @@ public class GCOperationWriter_Test {
     gc.drawText( "foo", 30, 34 );
 
     JsonArray ops = getGCOperations( canvas );
-    assertEquals( "\"fillText\",\"foo\",false,true,true,30.0,34.0", getOperation( 0, ops ) );
+    assertEquals( "\"fillText\",\"foo\",false,true,true,30,34", getOperation( 0, ops ) );
   }
 
   // bug 351216: [GC] Throws unexpected "Graphic is diposed" exception
