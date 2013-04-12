@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2013 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
@@ -79,7 +78,7 @@ public class ApplicationRunner {
    * @throws IllegalStateException if this application was already started.
    */
   public void start() {
-    ApplicationContextUtil.set( applicationContext.getServletContext(), applicationContext );
+    applicationContext.attachToServletContext( );
     activateApplicationContext();
   }
 
@@ -93,7 +92,7 @@ public class ApplicationRunner {
         applicationContext.deactivate();
       }
     } finally {
-      ApplicationContextUtil.remove( applicationContext.getServletContext() );
+      applicationContext.removeFromServletContext();
     }
   }
 
@@ -114,7 +113,7 @@ public class ApplicationRunner {
     try {
       applicationContext.activate();
     } catch( RuntimeException rte ) {
-      ApplicationContextUtil.remove( applicationContext.getServletContext() );
+      applicationContext.removeFromServletContext();
       throw rte;
     }
   }

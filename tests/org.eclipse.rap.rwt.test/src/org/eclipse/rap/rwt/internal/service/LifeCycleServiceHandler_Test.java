@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,7 +37,6 @@ import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
@@ -399,9 +397,7 @@ public class LifeCycleServiceHandler_Test {
 
   private void initializeUISession() {
     UISession uiSession = ContextProvider.getUISession();
-    ServletContext servletContext = Fixture.getServletContext();
-    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
-    ( ( UISessionImpl )uiSession ).setApplicationContext( applicationContext );
+    ( ( UISessionImpl )uiSession ).setApplicationContext( getApplicationContext() );
   }
 
   private static void service( LifeCycleServiceHandler serviceHandler ) throws IOException {

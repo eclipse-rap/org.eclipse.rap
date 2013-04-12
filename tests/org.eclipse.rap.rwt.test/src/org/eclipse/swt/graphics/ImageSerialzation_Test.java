@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
@@ -95,7 +94,6 @@ public class ImageSerialzation_Test {
   private void createServiceContext( Device device ) {
     Fixture.createServiceContext();
     TestSession session = ( TestSession )ContextProvider.getRequest().getSession();
-    ApplicationContextUtil.set( session.getServletContext(), applicationContext );
     UISessionImpl uiSession = ( UISessionImpl )getUISession( device );
     uiSession.attachToHttpSession( session );
     uiSession.attachHttpSession( session );

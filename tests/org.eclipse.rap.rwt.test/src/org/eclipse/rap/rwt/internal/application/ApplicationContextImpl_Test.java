@@ -218,6 +218,27 @@ public class ApplicationContextImpl_Test {
     checkStartupPageTemplateHasBeenReset();
   }
 
+  @Test
+  public void testSetToServletContext() {
+    ServletContext servletContext = Fixture.createServletContext();
+    applicationContext = new ApplicationContextImpl( null, servletContext );
+
+    applicationContext.attachToServletContext( );
+
+    assertSame( applicationContext, ApplicationContextImpl.getFrom( servletContext ) );
+  }
+
+  @Test
+  public void testRemoveFromServletContext() {
+    ServletContext servletContext = Fixture.createServletContext();
+    applicationContext = new ApplicationContextImpl( null, servletContext );
+    applicationContext.attachToServletContext( );
+
+    applicationContext.removeFromServletContext();
+
+    assertNull( ApplicationContextImpl.getFrom( servletContext ) );
+  }
+
   private void activateApplicationContext( ApplicationConfiguration configuration,
                                            File contextDirectory )
   {
@@ -386,7 +407,7 @@ public class ApplicationContextImpl_Test {
   }
 
   private static void activateApplicationContext( ApplicationContextImpl applicationContext ) {
-    ApplicationContextUtil.set( Fixture.getServletContext(), applicationContext );
+    applicationContext.attachToServletContext();
     createDisplay();
     applicationContext.activate();
   }

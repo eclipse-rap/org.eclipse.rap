@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
@@ -79,7 +78,7 @@ public class RWTServlet extends HttpServlet {
   @Override
   public void init() throws ServletException {
     ServletContext servletContext = getServletContext();
-    applicationContext = ApplicationContextUtil.get( servletContext );
+    applicationContext = ApplicationContextImpl.getFrom( servletContext );
   }
 
   @Override

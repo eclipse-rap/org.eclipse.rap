@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
@@ -146,10 +145,11 @@ public class RWTServlet_Test {
   private static ApplicationContextImpl createApplicationContext() {
     ServletContext servletContext = new TestServletContext();
     ApplicationConfiguration configuration = mock( ApplicationConfiguration.class );
-    ApplicationContextImpl result = new ApplicationContextImpl( configuration, servletContext );
-    result.activate();
-    ApplicationContextUtil.set( result.getServletContext(), result );
-    return result;
+    ApplicationContextImpl applicationContext
+      = new ApplicationContextImpl( configuration, servletContext );
+    applicationContext.activate();
+    applicationContext.attachToServletContext();
+    return applicationContext;
   }
 
   private static void applyTestSession( TestRequest request,

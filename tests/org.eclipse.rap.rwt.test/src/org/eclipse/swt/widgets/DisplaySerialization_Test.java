@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -268,7 +267,6 @@ public class DisplaySerialization_Test {
   private void createServiceContext( Display display ) {
     Fixture.createServiceContext();
     TestSession session = ( TestSession )ContextProvider.getRequest().getSession();
-    ApplicationContextUtil.set( session.getServletContext(), applicationContext );
     UISessionImpl uiSession = ( UISessionImpl )getUISession( display );
     uiSession.attachToHttpSession( session );
     uiSession.attachHttpSession( session );

@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -18,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
@@ -33,7 +33,7 @@ public class LifeCycleFactory_Test {
   @Before
   public void setUp() {
     Fixture.setUp();
-    applicationContext = ApplicationContextUtil.get( Fixture.getServletContext() );
+    applicationContext = getApplicationContext();
     lifeCycleFactory = new LifeCycleFactory( applicationContext );
   }
 

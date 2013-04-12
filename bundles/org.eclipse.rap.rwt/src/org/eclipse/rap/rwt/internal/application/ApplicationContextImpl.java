@@ -47,6 +47,9 @@ import org.eclipse.swt.internal.widgets.displaykit.ClientResources;
 
 public class ApplicationContextImpl implements ApplicationContext {
 
+  private final static String ATTR_APPLICATION_CONTEXT
+    = ApplicationContextImpl.class.getName() + "#instance";
+
   // TODO [fappel]: this allows to set a fake double of the resource manager for testing purpose.
   //                Think about a less intrusive solution.
   // [rst] made public to allow access from testfixture in OSGi (bug 391510)
@@ -119,6 +122,18 @@ public class ApplicationContextImpl implements ApplicationContext {
     textSizeStorage = new TextSizeStorage();
     probeStore = new ProbeStore( textSizeStorage );
     clientSelector = new ClientSelector();
+  }
+
+  public static ApplicationContextImpl getFrom( ServletContext servletContext ) {
+    return ( ApplicationContextImpl )servletContext.getAttribute( ATTR_APPLICATION_CONTEXT );
+  }
+
+  public void attachToServletContext() {
+    servletContext.setAttribute( ATTR_APPLICATION_CONTEXT, this );
+  }
+
+  public void removeFromServletContext() {
+    servletContext.removeAttribute( ATTR_APPLICATION_CONTEXT );
   }
 
   public void setAttribute( String name, Object value ) {

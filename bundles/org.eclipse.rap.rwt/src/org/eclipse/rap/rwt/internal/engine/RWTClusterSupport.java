@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
@@ -63,7 +62,7 @@ public class RWTClusterSupport implements Filter {
 
   private static void attachApplicationContext( UISession uiSession ) {
     ServletContext servletContext = uiSession.getHttpSession().getServletContext();
-    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
+    ApplicationContextImpl applicationContext = ApplicationContextImpl.getFrom( servletContext );
     ( ( UISessionImpl )uiSession ).setApplicationContext( applicationContext );
   }
 

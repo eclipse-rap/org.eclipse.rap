@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,6 @@ import javax.servlet.ServletContextEvent;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
@@ -124,18 +123,18 @@ public class RWTServletContextListener_Test {
   }
 
   private void assertResourceManagerIsRegistered() {
-    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
+    ApplicationContextImpl applicationContext = ApplicationContextImpl.getFrom( servletContext );
     assertNotNull( applicationContext.getResourceManager() );
   }
 
   private void assertEntryPointIsRegistered() {
-    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
+    ApplicationContextImpl applicationContext = ApplicationContextImpl.getFrom( servletContext );
     EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
     assertEquals( 1, entryPointManager.getServletPaths().size() );
   }
 
   private void assertPhaseListenersAreRegistered() {
-    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
+    ApplicationContextImpl applicationContext = ApplicationContextImpl.getFrom( servletContext );
     assertEquals( 2, applicationContext.getPhaseListenerRegistry().getAll().length );
   }
 

@@ -47,7 +47,6 @@ import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.engine.RWTServletContextListener;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextHelper;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
@@ -114,6 +113,7 @@ public final class Fixture {
 
   private static ServletContext servletContext;
   private static RWTServletContextListener rwtServletContextListener;
+  private static ApplicationContextImpl applicationContext;
 
   ////////////////////////////////////////////
   // Methods to control global servlet context
@@ -167,6 +167,7 @@ public final class Fixture {
     ensureServletContext();
     createWebContextDirectory();
     triggerServletContextInitialized();
+    applicationContext = ApplicationContextImpl.getFrom( servletContext );
   }
 
   public static void disposeOfApplicationContext() {
@@ -179,6 +180,7 @@ public final class Fixture {
     if( !isPerformanceOptimizationsEnabled() ) {
       deleteWebContextDirectory();
     }
+    applicationContext = null;
   }
 
 
@@ -222,7 +224,6 @@ public final class Fixture {
       FileUtil.delete( WEB_CONTEXT_DIR );
     }
   }
-
 
   //////////////////////////////
   // general setup and tear down
@@ -352,7 +353,6 @@ public final class Fixture {
   private static void createNewServiceContext( HttpServletRequest request,
                                                HttpServletResponse response )
   {
-    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
     ServiceContext serviceContext = new ServiceContext( request, response, applicationContext );
     serviceContext.setServiceStore( new ServiceStore() );
     ContextProvider.disposeContext();
@@ -518,7 +518,6 @@ public final class Fixture {
   public static void replaceServiceStore( ServiceStore serviceStore ) {
     HttpServletRequest request = ContextProvider.getRequest();
     HttpServletResponse response = ContextProvider.getResponse();
-    ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
     ServiceContext context = new ServiceContext( request, response, applicationContext );
     if( serviceStore != null ) {
       context.setServiceStore( serviceStore );

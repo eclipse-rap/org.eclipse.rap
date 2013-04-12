@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.UISession;
@@ -190,7 +189,7 @@ public class ContextProvider {
       uiSession = UISessionImpl.getInstanceFromSession( httpSession );
       if( uiSession == null ) {
         ServletContext servletContext = httpSession.getServletContext();
-        ApplicationContextImpl applicationContext = ApplicationContextUtil.get( servletContext );
+        ApplicationContextImpl applicationContext = ApplicationContextImpl.getFrom( servletContext );
         UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
         uiSession = builder.buildUISession();
       }
