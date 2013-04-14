@@ -371,7 +371,7 @@ public final class Fixture {
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     String json = request.getBody();
     try {
-      JsonObject message = createModifiableMessage( json );
+      JsonObject message = JsonObject.readFrom( json );
       JsonObject header = message.get( ClientMessage.PROP_HEAD ).asObject();
       header.add( key, createJsonValue( value ) );
       request.setBody( message.toString() );
@@ -391,7 +391,7 @@ public final class Fixture {
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     String json = request.getBody();
     try {
-      JsonObject message = createModifiableMessage( json );
+      JsonObject message = JsonObject.readFrom( json );
       JsonArray operations = message.get( ClientMessage.PROP_OPERATIONS ).asArray();
       JsonArray newOperation = new JsonArray();
       newOperation.add( ClientMessage.OPERATION_SET );
@@ -412,7 +412,7 @@ public final class Fixture {
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     String json = request.getBody();
     try {
-      JsonObject message = createModifiableMessage( json );
+      JsonObject message = JsonObject.readFrom( json );
       JsonArray operations = message.get( ClientMessage.PROP_OPERATIONS ).asArray();
       JsonArray newOperation = new JsonArray();
       newOperation.add( ClientMessage.OPERATION_NOTIFY );
@@ -434,7 +434,7 @@ public final class Fixture {
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     String json = request.getBody();
     try {
-      JsonObject message = createModifiableMessage( json );
+      JsonObject message = JsonObject.readFrom( json );
       JsonArray operations = message.get( ClientMessage.PROP_OPERATIONS ).asArray();
       JsonArray newOperation = new JsonArray();
       newOperation.add( ClientMessage.OPERATION_CALL );
@@ -473,16 +473,6 @@ public final class Fixture {
     if( ProtocolUtil.isClientMessageProcessed() ) {
       throw new IllegalStateException( "Client message is already processed" );
     }
-  }
-
-  private static JsonObject createModifiableMessage( String json ) {
-    JsonObject message = JsonObject.readFrom( json );
-    JsonObject header = message.get( ClientMessage.PROP_HEAD ).asObject();
-    JsonArray operations = message.get( ClientMessage.PROP_OPERATIONS ).asArray();
-    JsonObject result = new JsonObject();
-    result.add( ClientMessage.PROP_HEAD, new JsonObject( header ) );
-    result.add( ClientMessage.PROP_OPERATIONS, new JsonArray( operations ) );
-    return result;
   }
 
   private static Map ensureProperties( Map<String,Object> properties ) {
