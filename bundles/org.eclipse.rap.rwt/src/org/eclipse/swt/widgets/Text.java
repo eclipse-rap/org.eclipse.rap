@@ -19,6 +19,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontUtil;
@@ -831,21 +832,22 @@ public class Text extends Scrollable {
     checkWidget();
     int height = 0, width = 0;
     if( wHint == SWT.DEFAULT || hHint == SWT.DEFAULT ) {
-      boolean wrap = ( style & ( SWT.MULTI | SWT.WRAP ) ) != 0 ;
+      Font font = getFont();
+      boolean wrap = ( style & SWT.WRAP ) != 0 ;
       int wrapWidth = 0;
       if( wrap && wHint != SWT.DEFAULT ) {
         wrapWidth = wHint;
       }
       Point extent;
+      Point messageExtent = TextSizeUtil.stringExtent( font, message );
       // Single-line text field should have same size as Combo, Spinner, etc.
       if( ( getStyle() & SWT.SINGLE ) != 0 ) {
-        extent = TextSizeUtil.stringExtent( getFont(), text );
-        Point messageExtent = TextSizeUtil.stringExtent( getFont(), message );
-        extent.x = Math.max( extent.x, messageExtent.x );
-        extent.y = Math.max( extent.y, messageExtent.y );
+        extent = TextSizeUtil.stringExtent( font, text );
       } else {
-        extent = TextSizeUtil.textExtent( getFont(), text, wrapWidth );
+        extent = TextSizeUtil.textExtent( font, text, wrapWidth );
       }
+      extent.x = Math.max( extent.x, messageExtent.x );
+      extent.y = Math.max( extent.y, messageExtent.y );
       if( extent.x != 0 ) {
         width = extent.x;
       }

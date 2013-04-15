@@ -380,10 +380,25 @@ public class Text_Test {
   }
 
   @Test
+  public void testComputeSize_WithMessage_Multi() {
+    text = new Text( shell, SWT.MULTI );
+    text.setMessage( "This is a message that is longer than the text!" );
+    assertEquals( new Point( 337, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+  }
+
+  @Test
   public void testComputeSize_WithTextAndMessage() {
     text.setText( "This is a long long text!" );
     text.setMessage( "This is a message that is longer than the text!" );
     assertEquals( new Point( 337, 28 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+  }
+
+  @Test
+  public void testComputeSize_WithTextAndMessage_Multi() {
+    text = new Text( shell, SWT.MULTI );
+    text.setText( "This is a long long text!" );
+    text.setMessage( "This is a message that is longer than the text!" );
+    assertEquals( new Point( 337, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   @Test
