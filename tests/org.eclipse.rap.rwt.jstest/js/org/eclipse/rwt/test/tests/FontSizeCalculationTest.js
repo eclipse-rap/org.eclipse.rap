@@ -75,9 +75,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
       var item2 = [ "id2", "foo  bar", "Arial", 12, false, false, -1 ];
       var item3 = [ "id3", " foo bar", "Arial", 12, false, false, -1 ];
 
-      var size1 = FontSizeCalculation._measureItem( item1, true);
-      var size2 = FontSizeCalculation._measureItem( item2, true);
-      var size3 = FontSizeCalculation._measureItem( item3, true);
+      var size1 = FontSizeCalculation._measureItem( item1, true );
+      var size2 = FontSizeCalculation._measureItem( item2, true );
+      var size3 = FontSizeCalculation._measureItem( item3, true );
 
       assertTrue( size1[ 0 ] < size2[ 0 ] );
       assertTrue( size2[ 0 ] === size3[ 0 ] );
@@ -89,9 +89,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
       var item2 = [ "id2", "foo bar", "Arial", 12, false, false, 20 ];
       var item3 = [ "id3", "foo      bar", "Arial", 12, false, false, 20 ];
 
-      var size1 = FontSizeCalculation._measureItem( item1, true);
-      var size2 = FontSizeCalculation._measureItem( item2, true);
-      var size3 = FontSizeCalculation._measureItem( item3, true);
+      var size1 = FontSizeCalculation._measureItem( item1, true );
+      var size2 = FontSizeCalculation._measureItem( item2, true );
+      var size3 = FontSizeCalculation._measureItem( item3, true );
 
       assertTrue( size1[ 0 ] > size2[ 0 ] );
       assertTrue( size1[ 1 ] < size2[ 1 ] );
@@ -100,6 +100,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
         assertTrue( size2[ 0 ] === size3[ 0 ] );
       }
       assertTrue( size2[ 1 ] === size3[ 1 ] );
+    },
+
+    testMeasureVeryLongTextWithoutWrap : function() {
+      var FontSizeCalculation = rwt.widgets.util.FontSizeCalculation;
+      var veryLongText = "";
+      for( var i = 0; i < 10; i++ ) {
+        veryLongText += "foo bar foo bar foo bar foo bar foo bar foo bar foo bar foo bar foo bar ";
+      }
+      var item = [ "id1", veryLongText, "Arial", 12, false, false, -1, false ];
+
+      var size = FontSizeCalculation._measureItem( item, true);
+
+      assertTrue( size[ 1 ] < 25 );
+    },
+
+    testMeasureVeryLongTextWithWrap : function() {
+      var FontSizeCalculation = rwt.widgets.util.FontSizeCalculation;
+      var veryLongText = "";
+      for( var i = 0; i < 10; i++ ) {
+        veryLongText += "foo bar foo bar foo bar foo bar foo bar foo bar foo bar foo bar foo bar ";
+      }
+      var item = [ "id1", veryLongText, "Arial", 12, false, false, 500, false ];
+
+      var size = FontSizeCalculation._measureItem( item, true);
+
+      assertTrue( size[ 1 ] > 100 );
     }
 
   }

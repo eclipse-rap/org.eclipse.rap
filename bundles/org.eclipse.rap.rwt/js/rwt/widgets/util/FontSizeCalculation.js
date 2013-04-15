@@ -57,10 +57,12 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
       element.innerHTML = text;
       if( wrapWidth ) {
         style.width = wrapWidth + "px";
+        style.whiteSpace = "normal";
+      } else {
+        style.width = "auto";
+        style.whiteSpace = "nowrap";
       }
-      var result = this._measureElement( element );
-      style.width = "auto";
-      return result;
+      return this._measureElement( element );
     },
 
     _measureElement : rwt.util.Variant.select( "qx.client", {
@@ -105,9 +107,6 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
         style.visibility = "hidden";
         style.position = "absolute";
         style.zIndex = "-1";
-        // [if] Move the measure node to the left to prevent text split on
-        // small browser window - see bug 298798
-        style.left = -1000;
         document.body.appendChild( node );
         this._measureNode = node;
       }
