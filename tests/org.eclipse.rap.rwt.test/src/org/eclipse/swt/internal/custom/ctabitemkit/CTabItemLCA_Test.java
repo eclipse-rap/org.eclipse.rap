@@ -10,9 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabitemkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -231,11 +229,8 @@ public class CTabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( item, "font" );
-    assertTrue( jsonEquals( "[\"Arial\"]", actual.get( 0 ).asArray() ) );
-    assertEquals( 20, actual.get( 1 ).asInt() );
-    assertTrue( actual.get( 2 ).asBoolean() );
-    assertFalse( actual.get( 3 ).asBoolean() );
+    JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 20, true, false ]" );
+    assertEquals( expected, message.findSetProperty( item, "font" ) );
   }
 
   @Test
@@ -309,9 +304,8 @@ public class CTabItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
-    String expected = "[\"" + imageLocation + "\", 100, 50 ]";
-    JsonArray actual = ( JsonArray )message.findSetProperty( item, "image" );
-    assertTrue( jsonEquals( expected, actual ) );
+    JsonArray expected = new JsonArray().add( imageLocation ).add( 100 ).add( 50 );
+    assertEquals( expected, message.findSetProperty( item, "image" ) );
   }
 
   @Test

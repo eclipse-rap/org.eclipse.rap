@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablekit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
@@ -878,8 +877,8 @@ public class TableLCA_Test {
     CreateOperation operation = message.findCreateOperation( table );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "CHECK" ) );
-    JsonArray actual = ( JsonArray )operation.getProperty( "checkBoxMetrics" );
-    assertTrue( jsonEquals( "[4,21]", actual ) );
+    JsonArray expected = JsonArray.readFrom( "[4, 21]" );
+    assertEquals( expected, operation.getProperty( "checkBoxMetrics" ) );
   }
 
   @Test
@@ -962,8 +961,8 @@ public class TableLCA_Test {
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( table, "itemMetrics" );
-    assertTrue( jsonEquals( "[0,0,26,3,0,3,20]", actual.get( 0 ).asArray() ) );
+    JsonArray expected = JsonArray.readFrom( "[[0, 0, 26, 3, 0, 3, 20]]" );
+    assertEquals( expected, message.findSetProperty( table, "itemMetrics" ) );
   }
 
   @Test
@@ -1256,14 +1255,10 @@ public class TableLCA_Test {
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( table, "selection" );
-    StringBuilder expected = new StringBuilder();
-    expected.append( "[\"" );
-    expected.append( WidgetUtil.getId( table.getItem( 2 ) ) );
-    expected.append( "\",\"" );
-    expected.append( WidgetUtil.getId( table.getItem( 0 ) ) );
-    expected.append( "\"]" );
-    assertTrue( jsonEquals( expected.toString(), actual ) );
+    JsonArray expected = new JsonArray();
+    expected.add( getId( table.getItem( 2 ) ) );
+    expected.add( getId( table.getItem( 0 ) ) );
+    assertEquals( expected, message.findSetProperty( table, "selection" ) );
   }
 
   @Test

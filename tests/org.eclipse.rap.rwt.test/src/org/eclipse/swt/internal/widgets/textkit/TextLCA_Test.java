@@ -12,7 +12,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.textkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -560,8 +559,8 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( text, "selection" );
-    assertTrue( jsonEquals( "[ 1, 3 ]", actual ) );
+    JsonArray expected = JsonArray.readFrom( "[ 1, 3 ]" );
+    assertEquals( expected, message.findSetProperty( text, "selection" ) );
   }
 
   @Test
@@ -578,8 +577,8 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( text, "selection" );
-    assertTrue( jsonEquals( "[ 0, 7 ]", actual ) );
+    JsonArray expected = JsonArray.readFrom( "[ 0, 7 ]" );
+    assertEquals( expected, message.findSetProperty( text, "selection" ) );
   }
 
   @Test

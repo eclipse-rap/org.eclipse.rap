@@ -11,11 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treecolumnkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -518,9 +516,8 @@ public class TreeColumnLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
-    String expected = "[\"" + imageLocation + "\", 100, 50 ]";
-    JsonArray actual = ( JsonArray )message.findSetProperty( column, "image" );
-    assertTrue( jsonEquals( expected, actual ) );
+    JsonArray expected = new JsonArray().add( imageLocation ).add( 100 ).add( 50 );
+    assertEquals( expected, message.findSetProperty( column, "image" ) );
   }
 
   @Test
@@ -798,12 +795,8 @@ public class TreeColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray result = ( JsonArray )message.findSetProperty( column, "font" );
-    assertEquals( 4, result.size() );
-    assertEquals( "Arial", result.get( 0 ).asArray().get( 0 ).asString() );
-    assertEquals( 12, result.get( 1 ).asInt() );
-    assertFalse( result.get( 2 ).asBoolean() );
-    assertFalse( result.get( 3 ).asBoolean() );
+    JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, false, false ]" );
+    assertEquals( expected, message.findSetProperty( column, "font" ) );
   }
 
   @Test

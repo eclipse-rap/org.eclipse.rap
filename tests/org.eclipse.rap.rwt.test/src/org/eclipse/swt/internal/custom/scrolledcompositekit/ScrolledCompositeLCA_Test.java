@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.scrolledcompositekit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -270,8 +269,8 @@ public class ScrolledCompositeLCA_Test {
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( sc, "origin" );
-    assertTrue( jsonEquals( "[ 1, 2 ]", actual ) );
+    JsonArray expected = JsonArray.readFrom( "[ 1, 2 ]" );
+    assertEquals( expected, message.findSetProperty( sc, "origin" ) );
   }
 
   @Test
@@ -284,8 +283,8 @@ public class ScrolledCompositeLCA_Test {
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( sc, "origin" );
-    assertTrue( jsonEquals( "[ 1, 2 ]", actual ) );
+    JsonArray expected = JsonArray.readFrom( "[ 1, 2 ]" );
+    assertEquals( expected, message.findSetProperty( sc, "origin" ) );
   }
 
   @Test

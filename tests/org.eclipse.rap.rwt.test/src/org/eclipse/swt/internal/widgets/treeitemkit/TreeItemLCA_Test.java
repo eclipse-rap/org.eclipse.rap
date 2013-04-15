@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
@@ -25,6 +24,7 @@ import java.util.Arrays;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -460,8 +460,8 @@ public class TreeItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( item, "texts" );
-    assertTrue( jsonEquals( "[\"item 0.0\",\"item 0.1\"]", actual ) );
+    JsonArray expected = new JsonArray().add( "item 0.0").add( "item 0.1" );
+    assertEquals( expected, message.findSetProperty( item, "texts" ) );
   }
 
   @Test
@@ -504,10 +504,10 @@ public class TreeItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( item, "images" );
-    String expected = "[\"rwt-resources/generated/90fb0bfe.gif\",58,12]";
-    assertEquals( JsonObject.NULL, actual.get( 0 ) );
-    assertTrue( jsonEquals( expected, actual.get( 1 ).asArray() ) );
+    JsonArray expected = new JsonArray()
+      .add( JsonValue.NULL )
+      .add( new JsonArray().add( "rwt-resources/generated/90fb0bfe.gif" ).add( 58 ).add( 12 ) );
+    assertEquals( expected, message.findSetProperty( item, "images" ) );
   }
 
   @Test
@@ -546,8 +546,8 @@ public class TreeItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( item, "background" );
-    assertTrue( jsonEquals( "[0,255,0,255]", actual ) );
+    JsonArray expected = JsonArray.readFrom( "[0, 255, 0, 255]" );
+    assertEquals( expected, message.findSetProperty( item, "background" ) );
   }
 
   @Test
@@ -583,8 +583,8 @@ public class TreeItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( item, "foreground" );
-    assertTrue( jsonEquals( "[0,255,0,255]", actual ) );
+    JsonArray expected = JsonArray.readFrom( "[0, 255, 0, 255]" );
+    assertEquals( expected, message.findSetProperty( item, "foreground" ) );
   }
 
   @Test
@@ -620,11 +620,8 @@ public class TreeItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( item, "font" );
-    assertTrue( jsonEquals( "[\"Arial\"]", actual.get( 0 ).asArray() ) );
-    assertEquals( 20, actual.get( 1 ).asInt() );
-    assertTrue( actual.get( 2 ).asBoolean() );
-    assertFalse( actual.get( 3 ).asBoolean() );
+    Object expected = JsonArray.readFrom( "[[\"Arial\"], 20, true, false]" );
+    assertEquals( expected, message.findSetProperty( item, "font" ) );
   }
 
   @Test
@@ -664,9 +661,8 @@ public class TreeItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( item, "cellBackgrounds" );
-    assertEquals( JsonObject.NULL, actual.get( 0 ) );
-    assertTrue( jsonEquals( "[0,255,0,255]", actual.get( 1 ).asArray() ) );
+    JsonArray expected = JsonArray.readFrom( "[null, [0, 255, 0, 255]]" );
+    assertEquals( expected, message.findSetProperty( item, "cellBackgrounds" ) );
   }
 
   @Test
@@ -708,9 +704,8 @@ public class TreeItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( item, "cellForegrounds" );
-    assertEquals( JsonObject.NULL, actual.get( 0 ) );
-    assertTrue( jsonEquals( "[0,255,0,255]", actual.get( 1 ).asArray() ) );
+    JsonArray expected = JsonArray.readFrom( "[null, [0, 255, 0, 255]]" );
+    assertEquals( expected, message.findSetProperty( item, "cellForegrounds" ) );
   }
 
   @Test
@@ -752,13 +747,8 @@ public class TreeItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( item, "cellFonts" );
-    assertEquals( JsonObject.NULL, actual.get( 0 ) );
-    JsonArray cellFont = actual.get( 1 ).asArray();
-    assertTrue( jsonEquals( "[\"Arial\"]", cellFont.get( 0 ).asArray() ) );
-    assertEquals( 20, cellFont.get( 1 ).asInt() );
-    assertTrue( cellFont.get( 2 ).asBoolean() );
-    assertFalse( cellFont.get( 3 ).asBoolean() );
+    JsonArray expected = JsonArray.readFrom( "[null, [[\"Arial\"], 20, true, false]]" );
+    assertEquals( expected, message.findSetProperty( item, "cellFonts" ) );
   }
 
   @Test

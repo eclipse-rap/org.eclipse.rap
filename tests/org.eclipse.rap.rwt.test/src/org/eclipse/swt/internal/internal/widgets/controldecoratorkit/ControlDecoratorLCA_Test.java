@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.internal.widgets.controldecoratorkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
@@ -250,9 +249,8 @@ public class ControlDecoratorLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
-    String expected = "[\"" + imageLocation + "\", 100, 50 ]";
-    JsonArray actual = ( JsonArray )message.findSetProperty( decorator, "image" );
-    assertTrue( jsonEquals( expected, actual ) );
+    JsonArray expected = JsonArray.readFrom( "[\"" + imageLocation + "\", 100, 50 ]" );
+    assertEquals( expected, message.findSetProperty( decorator, "image" ) );
   }
 
   @Test

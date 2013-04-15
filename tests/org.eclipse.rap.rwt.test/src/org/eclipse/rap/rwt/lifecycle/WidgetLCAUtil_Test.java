@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -207,8 +206,8 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderBackground( widget, new Color( display, 0, 16, 255 ) );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( widget, "background" );
-    assertTrue( jsonEquals( "[0,16,255,255]", actual ) );
+    JsonArray expected = JsonArray.readFrom( "[0, 16, 255, 255]" );
+    assertEquals( expected, message.findSetProperty( widget, "background" ) );
   }
 
   @Test
@@ -243,8 +242,8 @@ public class WidgetLCAUtil_Test {
 
     Message message = Fixture.getProtocolMessage();
 
-    JsonArray actual = ( JsonArray )message.findSetProperty( widget, "background" );
-    assertTrue( jsonEquals( "[0,0,0,0]", actual ) );
+    JsonArray expected = JsonArray.readFrom( "[0, 0, 0, 0]" );
+    assertEquals( expected, message.findSetProperty( widget, "background" ) );
   }
 
   @Test
@@ -277,8 +276,8 @@ public class WidgetLCAUtil_Test {
 
     Message message = Fixture.getProtocolMessage();
 
-    JsonArray actual = ( JsonArray )message.findSetProperty( widget, "background" );
-    assertTrue( jsonEquals( "[0,16,255,255]", actual ) );
+    JsonArray expected = JsonArray.readFrom( "[0, 16, 255, 255]" );
+    assertEquals( expected, message.findSetProperty( widget, "background" ) );
   }
 
   @Test
@@ -310,9 +309,8 @@ public class WidgetLCAUtil_Test {
 
     Message message = Fixture.getProtocolMessage();
 
-
-    JsonArray actual = ( JsonArray )message.findSetProperty( widget, "foreground" );
-    assertTrue( jsonEquals( "[0,16,255,255]", actual ) );
+    JsonArray expected = JsonArray.readFrom( "[0, 16, 255, 255]" );
+    assertEquals( expected, message.findSetProperty( widget, "foreground" ) );
   }
 
   @Test
@@ -418,14 +416,9 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderBackgroundGradient( control );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray gradient = ( JsonArray )message.findSetProperty( control, "backgroundGradient" );
-    JsonArray colors = gradient.get( 0 ).asArray();
-    JsonArray stops = gradient.get( 1 ).asArray();
-    assertTrue( jsonEquals( "[0,255,0,255]", colors.get( 0 ).asArray() ) );
-    assertTrue( jsonEquals( "[0,0,255,255]", colors.get( 1 ).asArray() ) );
-    assertEquals( 0, stops.get( 0 ).asInt() );
-    assertEquals( 100, stops.get( 1 ).asInt() );
-    assertTrue( gradient.get( 2 ).asBoolean() );
+    JsonArray expected
+      = JsonArray.readFrom( "[[[0, 255, 0, 255], [0, 0, 255, 255]], [0, 100], true]" );
+    assertEquals( expected, message.findSetProperty( control, "backgroundGradient" ) );
   }
 
   @Test
@@ -443,14 +436,9 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderBackgroundGradient( control );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray gradient = ( JsonArray )message.findSetProperty( control, "backgroundGradient" );
-    JsonArray colors = gradient.get( 0 ).asArray();
-    JsonArray stops = gradient.get( 1 ).asArray();
-    assertTrue( jsonEquals( "[0,255,0,255]", colors.get( 0 ).asArray() ) );
-    assertTrue( jsonEquals( "[0,0,255,255]", colors.get( 1 ).asArray() ) );
-    assertEquals( 0, stops.get( 0 ).asInt() );
-    assertEquals( 100, stops.get( 1 ).asInt() );
-    assertFalse( gradient.get( 2 ).asBoolean() );
+    JsonArray expected
+      = JsonArray.readFrom( "[[[0, 255, 0, 255], [0, 0, 255, 255]], [0, 100], false]" );
+    assertEquals( expected, message.findSetProperty( control, "backgroundGradient" ) );
   }
 
   @Test
@@ -507,14 +495,8 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderRoundedBorder( widget );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray border = ( JsonArray )message.findSetProperty( widget, "roundedBorder" );
-    assertEquals( 6, border.size() );
-    assertEquals( 2, border.get( 0 ).asInt() );
-    assertTrue( jsonEquals( "[0,255,0,255]", border.get( 1 ).asArray() ) );
-    assertEquals( 5, border.get( 2 ).asInt() );
-    assertEquals( 6, border.get( 3 ).asInt() );
-    assertEquals( 7, border.get( 4 ).asInt() );
-    assertEquals( 8, border.get( 5 ).asInt() );
+    JsonArray expected = JsonArray.readFrom( "[2,[0,255,0,255],5,6,7,8]" );
+    assertEquals( expected, message.findSetProperty( widget, "roundedBorder" ) );
   }
 
   @Test

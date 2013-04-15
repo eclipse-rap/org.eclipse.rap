@@ -9,10 +9,8 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.listkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -310,9 +308,8 @@ public class ListLCA_Test {
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    String expected = "[ \"Item 1\", \"Item 2\", \"Item 3\" ]";
-    JsonArray actual = ( JsonArray )message.findSetProperty( list, "items" );
-    assertTrue( jsonEquals( expected, actual ) );
+    JsonArray expected = new JsonArray().add( "Item 1" ).add( "Item 2" ).add( "Item 3" );
+    assertEquals( expected, message.findSetProperty( list, "items" ) );
   }
 
   @Test
@@ -345,8 +342,8 @@ public class ListLCA_Test {
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( list, "selectionIndices" );
-    assertTrue( jsonEquals( "[1]", actual ) );
+    JsonArray expected = new JsonArray().add( 1 );
+    assertEquals( expected, message.findSetProperty( list, "selectionIndices" ) );
   }
 
   @Test
@@ -358,8 +355,8 @@ public class ListLCA_Test {
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( list, "selectionIndices" );
-    assertTrue( jsonEquals( "[1,2]", actual ) );
+    JsonArray exected = new JsonArray().add( 1 ).add( 2 );
+    assertEquals( exected, message.findSetProperty( list, "selectionIndices" ) );
   }
 
   @Test

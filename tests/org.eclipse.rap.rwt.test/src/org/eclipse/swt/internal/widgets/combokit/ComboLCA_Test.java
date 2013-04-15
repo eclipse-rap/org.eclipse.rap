@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.combokit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -443,9 +442,9 @@ public class ComboLCA_Test {
     lca.renderChanges( combo );
 
     Message message = Fixture.getProtocolMessage();
-    String expected = "[ \"a\", \"b\", \"c\" ]";
+    JsonArray expected = JsonArray.readFrom( "[ \"a\", \"b\", \"c\" ]" );
     JsonArray actual = ( JsonArray )message.findSetProperty( combo, "items" );
-    assertTrue( jsonEquals( expected, actual ) );
+    assertEquals( expected, actual );
   }
 
   @Test
@@ -606,7 +605,7 @@ public class ComboLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     JsonArray actual = ( JsonArray )message.findSetProperty( combo, "selection" );
-    assertTrue( jsonEquals( "[ 1, 3 ]", actual ) );
+    assertEquals( JsonArray.readFrom( "[ 1, 3 ]" ), actual );
   }
 
   @Test

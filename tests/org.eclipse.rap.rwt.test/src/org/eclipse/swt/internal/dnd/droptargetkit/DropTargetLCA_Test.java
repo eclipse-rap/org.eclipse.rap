@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.droptargetkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.join;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -73,8 +72,8 @@ public class DropTargetLCA_Test {
     CreateOperation operation = message.findCreateOperation( target );
     assertEquals( "rwt.widgets.DropTarget", operation.getType() );
     assertEquals( WidgetUtil.getId( control ), operation.getProperty( "control" ) );
-    String result = join( ( JsonArray )operation.getProperty( "style" ), "," );
-    assertEquals( "\"DROP_COPY\",\"DROP_MOVE\"", result );
+    JsonArray expected = new JsonArray().add( "DROP_COPY" ).add( "DROP_MOVE" );
+    assertEquals( expected, operation.getProperty( "style" ) );
   }
 
   @Test
@@ -91,13 +90,10 @@ public class DropTargetLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     SetOperation setOperation = message.findSetOperation( target, "transfer" );
-    String result = join( ( JsonArray )setOperation.getProperty( "transfer" ), "," );
-    String expected = "\"";
-    expected += TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    expected += "\",\"";
-    expected += HTMLTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    expected += "\"";
-    assertEquals( expected, result );
+    JsonArray expected = new JsonArray();
+    expected.add( Integer.toString( TextTransfer.getInstance().getSupportedTypes()[ 0 ].type ) );
+    expected.add( Integer.toString( HTMLTransfer.getInstance().getSupportedTypes()[ 0 ].type ) );
+    assertEquals( expected, setOperation.getProperty( "transfer" ) );
   }
 
   @Test

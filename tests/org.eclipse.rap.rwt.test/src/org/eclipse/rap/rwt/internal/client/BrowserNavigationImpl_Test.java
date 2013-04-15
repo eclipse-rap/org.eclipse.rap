@@ -10,10 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -221,9 +219,9 @@ public class BrowserNavigationImpl_Test {
 
     Message message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( TYPE, "addToHistory" );
-    JsonArray entries = ( JsonArray )operation.getProperty( "entries" );
-    JsonArray actual1 = entries.get( 0 ).asArray();
-    assertTrue( jsonEquals( "[\"testId\",\"testText\"]", actual1 ) );
+    JsonArray expected = new JsonArray();
+    expected.add( new JsonArray().add( "testId" ).add( "testText" ) );
+    assertEquals( expected, operation.getProperty( "entries" ) );
   }
 
   @Test
@@ -247,11 +245,10 @@ public class BrowserNavigationImpl_Test {
 
     Message message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( TYPE, "addToHistory" );
-    JsonArray entries = ( JsonArray )operation.getProperty( "entries" );
-    JsonArray actual1 = entries.get( 0 ).asArray();
-    assertTrue( jsonEquals( "[\"testId1\",\"testText1\"]", actual1 ) );
-    JsonArray actual2 = entries.get( 1 ).asArray();
-    assertTrue( jsonEquals( "[\"testId2\",\"testText2\"]", actual2 ) );
+    JsonArray expected = new JsonArray();
+    expected.add( new JsonArray().add( "testId1" ).add( "testText1" ) );
+    expected.add( new JsonArray().add( "testId2" ).add( "testText2" ) );
+    assertEquals( expected, operation.getProperty( "entries" ) );
   }
 
 }

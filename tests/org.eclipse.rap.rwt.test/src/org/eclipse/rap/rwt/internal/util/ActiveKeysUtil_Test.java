@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.util;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.join;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -188,24 +187,23 @@ public class ActiveKeysUtil_Test {
     display.setData( RWT.ACTIVE_KEYS, keyBindings );
     ActiveKeysUtil.renderActiveKeys( display );
 
-    String expected
-      =   "\"#88\","
-        + "\"ALT+#88\","
-        + "\"#69\","
-        + "\"CTRL+#45\","
-        + "\"CTRL+#69\","
-        + "\"ALT+CTRL+SHIFT+#49\","
-        + "\"ALT+CTRL+#69\","
-        + "\"#112\","
-        + "\"/\","
-        + "\"SHIFT+~\","
-        + "\"ALT+CTRL+#\","
-        + "\".\","
-        + "\",\"";
+    JsonArray expected = new JsonArray()
+      .add( "#88" )
+      .add( "ALT+#88" )
+      .add( "#69" )
+      .add( "CTRL+#45" )
+      .add( "CTRL+#69" )
+      .add( "ALT+CTRL+SHIFT+#49" )
+      .add( "ALT+CTRL+#69" )
+      .add( "#112" )
+      .add( "/" )
+      .add( "SHIFT+~" )
+      .add( "ALT+CTRL+#" )
+      .add( "." )
+      .add( "," );
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
-    JsonArray activeKeys = ( JsonArray )operation.getProperty( "activeKeys" );
-    assertEquals( expected, join( activeKeys, "," ) );
+    assertEquals( expected, operation.getProperty( "activeKeys" ) );
   }
 
   @Test
@@ -216,11 +214,10 @@ public class ActiveKeysUtil_Test {
     shell.setData( RWT.ACTIVE_KEYS, activeKeys );
     ActiveKeysUtil.renderActiveKeys( shell );
 
-    String expected = "\"#88\",\"ALT+#88\"";
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( shell, "activeKeys" );
-    JsonArray renderedKeys = ( JsonArray )operation.getProperty( "activeKeys" );
-    assertEquals( expected, join( renderedKeys, "," ) );
+    JsonArray expected = new JsonArray().add( "#88" ).add( "ALT+#88" );
+    assertEquals( expected, operation.getProperty( "activeKeys" ) );
   }
 
   @Test
@@ -230,11 +227,10 @@ public class ActiveKeysUtil_Test {
     display.setData( RWT.CANCEL_KEYS, activeKeys );
     ActiveKeysUtil.renderCancelKeys( display );
 
-    String expected = "\"#88\",\"ALT+#88\"";
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( "w1", "cancelKeys" );
-    JsonArray renderedKeys = ( JsonArray )operation.getProperty( "cancelKeys" );
-    assertEquals( expected, join( renderedKeys, "," ) );
+    JsonArray expected = new JsonArray().add( "#88" ).add( "ALT+#88" );
+    assertEquals( expected, operation.getProperty( "cancelKeys" ) );
   }
 
   @Test
@@ -245,11 +241,10 @@ public class ActiveKeysUtil_Test {
     shell.setData( RWT.CANCEL_KEYS, activeKeys );
     ActiveKeysUtil.renderCancelKeys( shell );
 
-    String expected = "\"#88\",\"ALT+#88\"";
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( shell, "cancelKeys" );
-    JsonArray renderedKeys = ( JsonArray )operation.getProperty( "cancelKeys" );
-    assertEquals( expected, join( renderedKeys, "," ) );
+    JsonArray expected = new JsonArray().add( "#88" ).add( "ALT+#88" );
+    assertEquals( expected, operation.getProperty( "cancelKeys" ) );
   }
 
   @Test

@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.clabelkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -177,9 +176,8 @@ public class CLabelLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
-    String expected = "[\"" + imageLocation + "\", 100, 50 ]";
-    JsonArray actual = ( JsonArray )message.findSetProperty( clabel, "image" );
-    assertTrue( jsonEquals( expected, actual ) );
+    JsonArray expected = new JsonArray().add( imageLocation ).add( 100 ).add( 50 );
+    assertEquals( expected, message.findSetProperty( clabel, "image" ) );
   }
 
   @Test
@@ -387,14 +385,9 @@ public class CLabelLCA_Test {
     lca.renderChanges( clabel );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray gradient = ( JsonArray )message.findSetProperty( clabel, "backgroundGradient" );
-    JsonArray colors = gradient.get( 0 ).asArray();
-    JsonArray stops = gradient.get( 1 ).asArray();
-    assertTrue( jsonEquals( "[255,0,0,255]", colors.get( 0 ).asArray() ) );
-    assertTrue( jsonEquals( "[0,255,0,255]", colors.get( 1 ).asArray() ) );
-    assertEquals( 0, stops.get( 0 ).asInt() );
-    assertEquals( 50, stops.get( 1 ).asInt() );
-    assertFalse( gradient.get( 2 ).asBoolean() );
+    JsonArray expected
+      = JsonArray.readFrom( "[[[255, 0, 0, 255], [0, 255, 0, 255]], [0, 50], false]" );
+    assertEquals( expected, message.findSetProperty( clabel, "backgroundGradient" ) );
   }
 
   @Test

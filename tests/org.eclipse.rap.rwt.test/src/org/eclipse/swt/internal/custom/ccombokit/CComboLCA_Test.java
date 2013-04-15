@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ccombokit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -457,9 +456,8 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    String expected = "[ \"a\", \"b\", \"c\" ]";
-    JsonArray actual = ( JsonArray )message.findSetProperty( ccombo, "items" );
-    assertTrue( jsonEquals( expected, actual ) );
+    JsonArray expected = new JsonArray().add( "a" ).add( "b" ).add( "c" );
+    assertEquals( expected, message.findSetProperty( ccombo, "items" ) );
   }
 
   @Test
@@ -642,7 +640,7 @@ public class CComboLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     JsonArray actual = ( JsonArray )message.findSetProperty( ccombo, "selection" );
-    assertTrue( jsonEquals( "[ 1, 3 ]", actual ) );
+    assertTrue( JsonArray.readFrom( "[ 1, 3 ]" ).equals( actual ) );
   }
 
   @Test

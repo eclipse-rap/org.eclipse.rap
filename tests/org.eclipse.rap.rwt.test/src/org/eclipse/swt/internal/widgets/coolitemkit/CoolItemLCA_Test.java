@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolitemkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.join;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -121,8 +120,8 @@ public class CoolItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    String bounds = join( ( JsonArray )operation.getProperty( "bounds" ), "," );
-    assertEquals( "0,0,0,20", bounds );
+    JsonArray expected = JsonArray.readFrom( "[0, 0, 0, 20]" );
+    assertEquals( expected, operation.getProperty( "bounds" ) );
   }
 
   @Test

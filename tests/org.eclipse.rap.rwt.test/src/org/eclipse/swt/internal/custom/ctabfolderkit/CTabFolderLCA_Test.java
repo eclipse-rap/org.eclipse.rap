@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
@@ -538,8 +537,8 @@ public class CTabFolderLCA_Test {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( folder, "minimizeBounds" );
-    assertTrue( jsonEquals( "[129,4,18,18]", actual )  );
+    JsonArray expected = JsonArray.readFrom( "[129, 4, 18, 18]" );
+    assertEquals( expected, message.findSetProperty( folder, "minimizeBounds" ) );
     assertEquals( Boolean.TRUE, message.findSetProperty( folder, "minimizeVisible" ) );
   }
 
@@ -578,8 +577,8 @@ public class CTabFolderLCA_Test {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( folder, "maximizeBounds" );
-    assertTrue( jsonEquals( "[129,4,18,18]", actual )  );
+    JsonArray expected = JsonArray.readFrom( "[129, 4, 18, 18]" );
+    assertEquals( expected, message.findSetProperty( folder, "maximizeBounds" ) );
     assertEquals( Boolean.TRUE, message.findSetProperty( folder, "maximizeVisible" ) );
   }
 
@@ -620,8 +619,8 @@ public class CTabFolderLCA_Test {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( folder, "chevronBounds" );
-    assertTrue( jsonEquals( "[120,6,27,18]", actual )  );
+    JsonArray expected = JsonArray.readFrom( "[120, 6, 27, 18]" );
+    assertEquals( expected, message.findSetProperty( folder, "chevronBounds" ) );
     assertEquals( Boolean.TRUE, message.findSetProperty( folder, "chevronVisible" ) );
   }
 
@@ -722,8 +721,8 @@ public class CTabFolderLCA_Test {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( folder, "selectionBackground" );
-    assertTrue( jsonEquals( "[0,0,255,255]", actual ) );
+    JsonArray expected = JsonArray.readFrom( "[0, 0, 255, 255]" );
+    assertEquals( expected, message.findSetProperty( folder, "selectionBackground" ) );
   }
 
   @Test
@@ -754,8 +753,8 @@ public class CTabFolderLCA_Test {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( folder, "selectionForeground" );
-    assertTrue( jsonEquals( "[0,0,255,255]", actual ) );
+    JsonArray expected = JsonArray.readFrom( "[0, 0, 255, 255]" );
+    assertEquals( expected, message.findSetProperty( folder, "selectionForeground" ) );
   }
 
   @Test
@@ -789,9 +788,8 @@ public class CTabFolderLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
-    String expected = "[\"" + imageLocation + "\", 100, 50 ]";
-    JsonArray actual = ( JsonArray )message.findSetProperty( folder, "selectionBackgroundImage" );
-    assertTrue( jsonEquals( expected, actual ) );
+    JsonArray expected = new JsonArray().add( imageLocation ).add( 100 ).add( 50 );
+    assertEquals( expected, message.findSetProperty( folder, "selectionBackgroundImage" ) );
   }
 
   @Test
@@ -828,15 +826,9 @@ public class CTabFolderLCA_Test {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray gradient
-      = ( JsonArray )message.findSetProperty( folder, "selectionBackgroundGradient" );
-    JsonArray colors = gradient.get( 0 ).asArray();
-    JsonArray stops = gradient.get( 1 ).asArray();
-    assertTrue( jsonEquals( "[255,0,0,255]", colors.get( 0 ).asArray() ) );
-    assertTrue( jsonEquals( "[0,255,0,255]", colors.get( 1 ).asArray() ) );
-    assertEquals( 0, stops.get( 0 ).asInt() );
-    assertEquals( 50, stops.get( 1 ).asInt() );
-    assertFalse( gradient.get( 2 ).asBoolean() );
+    JsonArray expected
+      = JsonArray.readFrom( "[[[255, 0, 0, 255], [0, 255, 0, 255]], [0, 50], false]" );
+    assertEquals( expected, message.findSetProperty( folder, "selectionBackgroundGradient" ) );
   }
 
   @Test

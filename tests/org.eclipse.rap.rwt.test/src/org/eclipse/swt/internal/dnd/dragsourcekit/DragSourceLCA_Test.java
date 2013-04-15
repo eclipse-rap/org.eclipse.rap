@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.dragsourcekit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.join;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -77,9 +77,9 @@ public class DragSourceLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( source );
     assertEquals( "rwt.widgets.DragSource", operation.getType() );
-    assertEquals( WidgetUtil.getId( control ), operation.getProperty( "control" ) );
-    String result = join( ( JsonArray )operation.getProperty( "style" ), "," );
-    assertEquals( "\"DROP_COPY\",\"DROP_MOVE\"", result );
+    assertEquals( getId( control ), operation.getProperty( "control" ) );
+    JsonArray expected = new JsonArray().add( "DROP_COPY" ).add( "DROP_MOVE" );
+    assertEquals( expected, operation.getProperty( "style" ) );
   }
 
   @Test
@@ -96,13 +96,10 @@ public class DragSourceLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     SetOperation setOperation = message.findSetOperation( source, "transfer" );
-    String result = join( ( JsonArray )setOperation.getProperty( "transfer" ), "," );
-    String expected = "\"";
-    expected += TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    expected += "\",\"";
-    expected += HTMLTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    expected += "\"";
-    assertEquals( expected, result );
+    JsonArray expected = new JsonArray()
+      .add( Integer.toString( TextTransfer.getInstance().getSupportedTypes()[ 0 ].type ) )
+      .add( Integer.toString( HTMLTransfer.getInstance().getSupportedTypes()[ 0 ].type ) );
+    assertEquals( expected, setOperation.getProperty( "transfer" ) );
   }
 
   @Test
@@ -159,8 +156,8 @@ public class DragSourceLCA_Test {
     CallOperation call = message.findCallOperation( source, "changeFeedback" );
     assertEquals( WidgetUtil.getId( targetControl ), call.getProperty( "control" ) );
     assertEquals( new Integer( feedback ), call.getProperty( "flags" ) );
-    JsonArray feedbackArr = ( JsonArray )call.getProperty( "feedback" );
-    assertEquals( "\"FEEDBACK_SCROLL\",\"FEEDBACK_SELECT\"", join( feedbackArr, "," ) );
+    JsonArray expected = new JsonArray().add( "FEEDBACK_SCROLL" ).add( "FEEDBACK_SELECT" );
+    assertEquals( expected, call.getProperty( "feedback" ) );
   }
 
   @Test

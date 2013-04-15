@@ -12,7 +12,6 @@
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -653,9 +652,9 @@ public class MenuItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( item, "image" );
-    String expected = "[\"rwt-resources/generated/90fb0bfe.gif\",58,12]";
-    assertTrue( jsonEquals( expected, actual ) );
+    JsonArray expected
+      = new JsonArray().add( "rwt-resources/generated/90fb0bfe.gif" ).add( 58 ).add( 12 );
+    assertEquals( expected, message.findSetProperty( item, "image" ) );
   }
 
   @Test

@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
@@ -708,8 +707,7 @@ public class TreeLCA_Test {
     assertEquals( "rwt.widgets.Grid", operation.getType() );
     assertEquals( "tree", operation.getProperty( "appearance" ) );
     assertEquals( Integer.valueOf( 16 ), operation.getProperty( "indentionWidth" ) );
-    JsonArray actual = ( JsonArray )operation.getProperty( "selectionPadding" );
-    assertTrue( jsonEquals( "[3,5]", actual ) );
+    assertEquals( JsonArray.readFrom( "[3, 5]" ), operation.getProperty( "selectionPadding" ) );
     assertFalse( operation.getPropertyNames().contains( "checkBoxMetrics" ) );
     assertEquals( Boolean.FALSE, operation.getProperty( "markupEnabled" ) );
   }
@@ -798,8 +796,8 @@ public class TreeLCA_Test {
     CreateOperation operation = message.findCreateOperation( tree );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "CHECK" ) );
-    JsonArray actual = ( JsonArray )operation.getProperty( "checkBoxMetrics" );
-    assertTrue( jsonEquals( "[0,21]", actual ) );
+    JsonArray exptected = JsonArray.readFrom( "[0, 21]" );
+    assertEquals( exptected, operation.getProperty( "checkBoxMetrics" ) );
   }
 
   @Test
@@ -882,8 +880,8 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( tree, "itemMetrics" );
-    assertTrue( jsonEquals( "[0,0,50,0,0,3,36]", actual.get( 0 ).asArray() ) );
+    JsonArray expected = JsonArray.readFrom( "[[0, 0, 50, 0, 0, 3, 36]]" );
+    assertEquals( expected, message.findSetProperty( tree, "itemMetrics" ) );
   }
 
   @Test
@@ -1186,14 +1184,10 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( tree, "selection" );
-    StringBuilder expected = new StringBuilder();
-    expected.append( "[\"" );
-    expected.append( WidgetUtil.getId( item1 ) );
-    expected.append( "\",\"" );
-    expected.append( WidgetUtil.getId( item3 ) );
-    expected.append( "\"]" );
-    assertTrue( jsonEquals( expected.toString(), actual ) );
+    JsonArray expected = new JsonArray();
+    expected.add( getId( item1 ) );
+    expected.add( getId( item3 ) );
+    assertEquals( expected, message.findSetProperty( tree, "selection" ) );
   }
 
   @Test

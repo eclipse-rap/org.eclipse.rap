@@ -12,11 +12,9 @@
 package org.eclipse.rap.rwt.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -457,8 +455,8 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderBounds( control );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray bounds = ( JsonArray )message.findSetProperty( control, "bounds" );
-    assertTrue( jsonEquals( "[ 0, 0, 0, 0 ]", bounds ) );
+    JsonArray expected = JsonArray.readFrom( "[ 0, 0, 0, 0 ]" );
+    assertEquals( expected, message.findSetProperty( control, "bounds" ) );
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
@@ -468,8 +466,8 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderBounds( control );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray bounds = ( JsonArray )message.findSetProperty( control, "bounds" );
-    assertTrue( jsonEquals( "[ 10, 20, 100, 200 ]", bounds ) );
+    JsonArray expected = JsonArray.readFrom( "[ 10, 20, 100, 200 ]" );
+    assertEquals( expected, message.findSetProperty( control, "bounds" ) );
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
@@ -491,8 +489,8 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderChildren( shell );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( shell, "children" );
-    assertTrue( jsonEquals( "[\"" +  WidgetUtil.getId( control ) + "\"]", actual ) );
+    JsonArray expected = new JsonArray().add( getId( control ) );
+    assertEquals( expected, message.findSetProperty( shell, "children" ) );
   }
 
   @Test
@@ -502,10 +500,8 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderChildren( shell );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( shell, "children" );
-    String expected = "[\"" + WidgetUtil.getId( button )
-                    + "\",\"" + WidgetUtil.getId( control ) + "\"]";
-    assertTrue( jsonEquals( expected, actual ) );
+    JsonArray expected = new JsonArray().add( getId( button ) ).add( getId( control ) );
+    assertEquals( expected, message.findSetProperty( shell, "children" ) );
   }
 
   @Test
@@ -685,9 +681,8 @@ public class ControlLCAUtil_Test {
 
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
-    JsonArray args = ( JsonArray )message.findSetProperty( control, "backgroundImage" );
-    String expected = "[ \"" + imageLocation + "\", 58, 12 ]";
-    assertTrue( jsonEquals( expected, args ) );
+    JsonArray expected = new JsonArray().add( imageLocation ).add( 58 ).add( 12 );
+    assertEquals( expected, message.findSetProperty( control, "backgroundImage" ) );
   }
 
   @Test
@@ -717,12 +712,8 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderFont( control );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray result = ( JsonArray )message.findSetProperty( control, "font" );
-    assertEquals( 4, result.size() );
-    assertEquals( "Arial", result.get( 0 ).asArray().get( 0 ).asString() );
-    assertEquals( 12, result.get( 1 ).asInt() );
-    assertFalse( result.get( 2 ).asBoolean() );
-    assertFalse( result.get( 3 ).asBoolean() );
+    JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, false, false]" );
+    assertEquals( expected, message.findSetProperty( control, "font" ) );
   }
 
   @Test
@@ -731,9 +722,8 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderFont( control );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray result = ( JsonArray )message.findSetProperty( control, "font" );
-    assertTrue( result.get( 2 ).asBoolean() );
-    assertFalse( result.get( 3 ).asBoolean() );
+    JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, true, false]" );
+    assertEquals( expected, message.findSetProperty( control, "font" ) );
   }
 
   @Test
@@ -742,9 +732,8 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderFont( control );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray result = ( JsonArray )message.findSetProperty( control, "font" );
-    assertFalse( result.get( 2 ).asBoolean() );
-    assertTrue( result.get( 3 ).asBoolean() );
+    JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, false, true]" );
+    assertEquals( expected, message.findSetProperty( control, "font" ) );
   }
 
   @Test
@@ -753,9 +742,8 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderFont( control );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray result = ( JsonArray )message.findSetProperty( control, "font" );
-    assertTrue( result.get( 2 ).asBoolean() );
-    assertTrue( result.get( 3 ).asBoolean() );
+    JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, true, true]" );
+    assertEquals( expected, message.findSetProperty( control, "font" ) );
   }
 
   @Test

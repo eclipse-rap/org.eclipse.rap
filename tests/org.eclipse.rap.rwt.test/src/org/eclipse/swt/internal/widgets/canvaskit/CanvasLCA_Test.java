@@ -10,9 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.join;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -111,15 +109,12 @@ public class CanvasLCA_Test {
     CallOperation init = getGCOperation( canvas, "init" );
     assertEquals( new Integer( 50 ), init.getProperty( "width" ) );
     assertEquals( new Integer( 50 ), init.getProperty( "height" ) );
-    JsonArray fontArray = ( JsonArray )init.getProperty( "font" );
-    assertEquals( "Arial", fontArray.get( 0 ).asArray().get( 0 ).asString() );
-    assertEquals( 11, fontArray.get( 1 ).asInt() );
-    assertFalse( fontArray.get( 2 ).asBoolean() );
-    assertFalse( fontArray.get( 3 ).asBoolean() );
-    String fillStyle = join( ( JsonArray )init.getProperty( "fillStyle" ), "," );
-    String strokeStyle = join( ( JsonArray )init.getProperty( "strokeStyle" ), "," );
-    assertEquals( "255,255,255,255", fillStyle );
-    assertEquals( "74,74,74,255", strokeStyle );
+    JsonArray expectedFont = JsonArray.readFrom( "[[\"Arial\"], 11, false, false]" );
+    assertEquals( expectedFont, init.getProperty( "font" ) );
+    JsonArray expectedFillStyle = JsonArray.readFrom( "[255, 255, 255, 255]" );
+    assertEquals( expectedFillStyle, init.getProperty( "fillStyle" ) );
+    JsonArray expectedStrokeStyle = JsonArray.readFrom( "[74, 74, 74, 255]" );
+    assertEquals( expectedStrokeStyle, init.getProperty( "strokeStyle" ) );
     CallOperation draw = getGCOperation( canvas, "draw" );
     JsonArray operations = ( JsonArray )draw.getProperty( "operations" );
     assertEquals( 4, operations.size() );

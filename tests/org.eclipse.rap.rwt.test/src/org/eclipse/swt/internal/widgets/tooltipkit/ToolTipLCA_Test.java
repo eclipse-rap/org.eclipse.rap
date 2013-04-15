@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tooltipkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil.jsonEquals;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -242,14 +241,8 @@ public class ToolTipLCA_Test {
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray border = ( JsonArray )message.findSetProperty( toolTip, "roundedBorder" );
-    assertEquals( 6, border.size() );
-    assertEquals( 2, border.get( 0 ).asInt() );
-    assertTrue( jsonEquals( "[0,255,0,255]", border.get( 1 ).asArray() ) );
-    assertEquals( 5, border.get( 2 ).asInt() );
-    assertEquals( 6, border.get( 3 ).asInt() );
-    assertEquals( 7, border.get( 4 ).asInt() );
-    assertEquals( 8, border.get( 5 ).asInt() );
+    JsonArray expected = JsonArray.readFrom( "[2, [0, 255, 0, 255], 5, 6, 7, 8]" );
+    assertEquals( expected, message.findSetProperty( toolTip, "roundedBorder" ) );
   }
 
   @Test
@@ -288,14 +281,9 @@ public class ToolTipLCA_Test {
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray gradient = ( JsonArray )message.findSetProperty( toolTip, "backgroundGradient" );
-    JsonArray colors = gradient.get( 0 ).asArray();
-    JsonArray stops = gradient.get( 1 ).asArray();
-    assertTrue( jsonEquals( "[0,255,0,255]", colors.get( 0 ).asArray() ) );
-    assertTrue( jsonEquals( "[0,0,255,255]", colors.get( 1 ).asArray() ) );
-    assertEquals( 0, stops.get( 0 ).asInt() );
-    assertEquals( 100, stops.get( 1 ).asInt() );
-    assertTrue( gradient.get( 2 ).asBoolean() );
+    JsonArray expected
+      = JsonArray.readFrom( "[[[0, 255, 0, 255], [0, 0, 255, 255]], [0, 100], true]" );
+    assertEquals( expected, message.findSetProperty( toolTip, "backgroundGradient" ) );
   }
 
   @Test
@@ -417,8 +405,8 @@ public class ToolTipLCA_Test {
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray actual = ( JsonArray )message.findSetProperty( toolTip, "location" );
-    assertTrue( jsonEquals( "[10,20]", actual ) );
+    JsonArray expected = JsonArray.readFrom( "[10, 20]" );
+    assertEquals( expected, message.findSetProperty( toolTip, "location" ) );
   }
 
   @Test
