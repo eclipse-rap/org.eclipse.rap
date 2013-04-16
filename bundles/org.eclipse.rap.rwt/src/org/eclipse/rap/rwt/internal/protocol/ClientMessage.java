@@ -35,10 +35,10 @@ public class ClientMessage {
   private final HashMap<String,List<Operation>> operationsMap;
   private final List<Operation> operationsList;
 
-  public ClientMessage( String json ) {
+  public ClientMessage( JsonObject json ) {
     ParamCheck.notNull( json, "json" );
     try {
-      message = JsonObject.readFrom( json );
+      message = json;
     } catch( Exception e ) {
       throw new IllegalArgumentException( "Could not parse json message: " + json );
     }

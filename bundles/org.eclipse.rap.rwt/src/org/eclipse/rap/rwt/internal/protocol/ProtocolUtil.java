@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,20 +10,18 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
-import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.swt.SWT;
@@ -59,22 +57,12 @@ public final class ProtocolUtil {
     ClientMessage clientMessage = ( ClientMessage )serviceStore.getAttribute( CLIENT_MESSAGE );
     if( clientMessage == null ) {
       HttpServletRequest request = ContextProvider.getRequest();
-      StringBuilder json = new StringBuilder();
       try {
-        InputStreamReader inputStreamReader
-          = new InputStreamReader( request.getInputStream(), HTTP.CHARSET_UTF_8 );
-        BufferedReader reader = new BufferedReader( inputStreamReader );
-        String line = reader.readLine();
-        while( line != null ) {
-          json.append( line );
-          json.append( '\n' );
-          line = reader.readLine();
-        }
-        reader.close();
+        JsonObject json = JsonObject.readFrom( request.getReader() );
+        clientMessage = new ClientMessage( json );
       } catch( IOException e ) {
         throw new IllegalStateException( "Unable to read the json message" );
       }
-      clientMessage = new ClientMessage( json.toString() );
       serviceStore.setAttribute( CLIENT_MESSAGE, clientMessage );
     }
     return clientMessage;

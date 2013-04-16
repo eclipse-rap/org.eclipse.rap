@@ -10,16 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
@@ -30,7 +27,7 @@ import org.junit.Test;
 public class ClientMessage_Test {
 
   @Test
-  public void testConstructWithNull() {
+  public void testConstructor_withNull() {
     try {
       new ClientMessage( null );
       fail();
@@ -39,39 +36,19 @@ public class ClientMessage_Test {
   }
 
   @Test
-  public void testConstructWithEmptyString() {
+  public void testConstructor_withEmptyObject() {
     try {
-      new ClientMessage( "" );
+      new ClientMessage( new JsonObject() );
       fail();
     } catch( IllegalArgumentException expected ) {
-      assertTrue( expected.getMessage().contains( "Could not parse json" ) );
+      assertTrue( expected.getMessage().startsWith( "Missing header object" ) );
     }
   }
 
   @Test
-  public void testConstructWithInvalidJson() {
+  public void testConstructor_withoutOperations() {
     try {
-      new ClientMessage( "{" );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-      assertTrue( expected.getMessage().contains( "Could not parse json" ) );
-    }
-  }
-
-  @Test
-  public void testConstructWithoutHeader() {
-    try {
-      new ClientMessage( "{ \"foo\": 23 }" );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-      assertTrue( expected.getMessage().contains( "Missing header object" ) );
-    }
-  }
-
-  @Test
-  public void testConstructWithoutOperations() {
-    try {
-      new ClientMessage( "{ \"head\" : {}, \"foo\": 23 }" );
+      new ClientMessage( new JsonObject().add( "head", new JsonObject() ) );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Missing operations array" ) );
@@ -79,44 +56,46 @@ public class ClientMessage_Test {
   }
 
   @Test
-  public void testGetHeaderParameter() {
+  public void testConstructor_withInvalidOperations() {
+    String json = "{ \"head\" : {}, \"operations\" : 23 }";
+
+    try {
+      new ClientMessage( JsonObject.readFrom( json ) );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+      assertTrue( expected.getMessage().contains( "Missing operations array" ) );
+    }
+  }
+
+  @Test
+  public void testConstructor_withOperationOfUnknownType() {
+    String json = "{ \"head\" : {}, \"operations\" : ["
+                + "[ \"abc\", \"w3\", { \"action\" : \"foo\" } ]"
+                + "] }";
+    try {
+      new ClientMessage( JsonObject.readFrom( json ) );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+      assertTrue( expected.getMessage().contains( "Unknown operation action: abc" ) );
+    }
+  }
+
+  @Test
+  public void testGetHeadProperty() {
     String json = "{ \"head\" : { \"abc\" : \"foo\" }, \"operations\" : [] }";
-    ClientMessage message = new ClientMessage( json );
+
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     assertEquals( "foo", message.getHeadProperty( "abc" ) );
   }
 
   @Test
-  public void testGetHeaderParameter_NoParameter() {
+  public void testGetHeadProperty_missingHeader() {
     String json = "{ \"head\" : {}, \"operations\" : [] }";
-    ClientMessage message = new ClientMessage( json );
+
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     assertNull( message.getHeadProperty( "abc" ) );
-  }
-
-  @Test
-  public void testConstructWithInvalidOperations() {
-    String json = "{ \"head\" : {}, \"operations\" : 23 }";
-
-    try {
-      new ClientMessage( json );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-      assertTrue( expected.getMessage().contains( "Missing operations array" ) );
-    }
-  }
-
-  @Test
-  public void testConstructWithOperationUnknownType() {
-    String json = "{ \"head\" : {}, \"operations\" : ["
-                + "[ \"abc\", \"w3\", { \"action\" : \"foo\" } ]"
-                + "] }";
-    try {
-      new ClientMessage( json );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-      assertTrue( expected.getMessage().contains( "Unknown operation action: abc" ) );
-    }
   }
 
   @Test
@@ -126,7 +105,7 @@ public class ClientMessage_Test {
                 + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
                 + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     Operation[] operations = message.getAllOperationsFor( "w3" );
 
@@ -142,7 +121,7 @@ public class ClientMessage_Test {
                 + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
                 + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     Operation[] operations = message.getAllOperationsFor( "w5" );
 
@@ -156,7 +135,7 @@ public class ClientMessage_Test {
                 + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
                 + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     Operation[] operations = message.getAllOperations();
 
@@ -170,7 +149,7 @@ public class ClientMessage_Test {
                 + "[ \"set\", \"w3\", { \"p2\" : \"foo\" } ],"
                 + "[ \"set\", \"w3\", { \"p1\" : \"bar\" } ]"
                 + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "p1" );
 
@@ -185,7 +164,7 @@ public class ClientMessage_Test {
                 + "[ \"notify\", \"w3\", \"widgetSelected\", {} ],"
                 + "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]"
                 + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     NotifyOperation operation = message.getLastNotifyOperationFor( "w3", "widgetSelected" );
 
@@ -201,7 +180,7 @@ public class ClientMessage_Test {
                 + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
                 + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     NotifyOperation operation = message.getLastNotifyOperationFor( null, "widgetSelected" );
     assertNotNull( operation );
@@ -216,7 +195,7 @@ public class ClientMessage_Test {
                 + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetDefaultSelected\", {} ]"
                 + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     NotifyOperation operation = message.getLastNotifyOperationFor( null, null );
     assertNotNull( operation );
@@ -231,7 +210,7 @@ public class ClientMessage_Test {
                 + "[ \"call\", \"w2\", \"store\", {} ],"
                 + "[ \"call\", \"w3\", \"foo\", {} ]"
                 + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     CallOperation[] operations = message.getAllCallOperationsFor( null, null );
 
@@ -247,7 +226,7 @@ public class ClientMessage_Test {
                 + "[ \"call\", \"w3\", \"store\", {} ],"
                 + "[ \"call\", \"w4\", \"foo\", {} ]"
                 + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     CallOperation[] operations = message.getAllCallOperationsFor( "w3", null );
 
@@ -263,7 +242,7 @@ public class ClientMessage_Test {
                 + "[ \"call\", \"w4\", \"foo\", { \"p1\" : \"abc\" } ],"
                 + "[ \"call\", \"w4\", \"foo\", { \"p2\" : \"def\" } ]"
                 + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     CallOperation[] operations = message.getAllCallOperationsFor( "w4", "foo" );
 
@@ -279,7 +258,7 @@ public class ClientMessage_Test {
                 + "] }";
 
     try {
-      new ClientMessage( json );
+      new ClientMessage( JsonObject.readFrom( json ) );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -292,7 +271,7 @@ public class ClientMessage_Test {
                 + "] }";
 
     try {
-      new ClientMessage( json );
+      new ClientMessage( JsonObject.readFrom( json ) );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -305,7 +284,7 @@ public class ClientMessage_Test {
                 + "] }";
 
     try {
-      new ClientMessage( json );
+      new ClientMessage( JsonObject.readFrom( json ) );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -314,11 +293,11 @@ public class ClientMessage_Test {
   @Test
   public void testNotifyOperation_WithoutProperties() {
     String json = "{ \"head\" : {}, \"operations\" : ["
-                + "[ \"notify\", \"w3\", \"widgetSelected\""
+                + "[ \"notify\", \"w3\", \"widgetSelected\" ]"
                 + "] }";
 
     try {
-      new ClientMessage( json );
+      new ClientMessage( JsonObject.readFrom( json ) );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -329,7 +308,7 @@ public class ClientMessage_Test {
     String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"call\", \"w3\", \"store\", { \"id\" : 123 } ]"
                 + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     CallOperation operation = message.getAllCallOperationsFor( "w3", null )[ 0 ];
 
@@ -345,7 +324,7 @@ public class ClientMessage_Test {
                 + "] }";
 
     try {
-      new ClientMessage( json );
+      new ClientMessage( JsonObject.readFrom( json ) );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -354,11 +333,11 @@ public class ClientMessage_Test {
   @Test
   public void testCallOperation_WithoutProperties() {
     String json = "{ \"head\" : {}, \"operations\" : ["
-                + "[ \"call\", \"w3\", \"store\""
+                + "[ \"call\", \"w3\", \"store\" ]"
                 + "] }";
 
     try {
-      new ClientMessage( json );
+      new ClientMessage( JsonObject.readFrom( json ) );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -369,7 +348,7 @@ public class ClientMessage_Test {
     String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"set\", \"w3\", { \"result\" : [1,2] } ]"
                 + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
 
@@ -382,7 +361,7 @@ public class ClientMessage_Test {
     String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"set\", \"w3\", { \"result\" : [1,\"foo\",3,4] } ]"
                 + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
 
@@ -399,7 +378,7 @@ public class ClientMessage_Test {
     String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"set\", \"w3\", { \"result\" : { \"p1\" : \"foo\", \"p2\" : \"bar\" } } ]"
                 + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
 
@@ -415,7 +394,7 @@ public class ClientMessage_Test {
     String json = "{ \"head\" : {}, \"operations\" : ["
                 + "[ \"set\", \"w3\", { \"result\" : { \"p1\" : [1,2], \"p2\" : \"bar\" } } ]"
                 + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
 
@@ -449,7 +428,7 @@ public class ClientMessage_Test {
 
   private static Operation createOperation( String operationJson ) {
     String json = "{ \"head\" : {}, \"operations\" : [" + operationJson + "] }";
-    ClientMessage message = new ClientMessage( json );
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
     return message.getAllOperations()[ 0 ];
   }
 
