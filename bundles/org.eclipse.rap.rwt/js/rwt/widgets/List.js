@@ -124,10 +124,8 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     },
 
     _onUserScroll : function( horizontal ) {
-      var topIndex = this._isCreated ? this._getTopIndex() : 0;
-      var server = rwt.remote.Server.getInstance();
-      var remoteObject = server.getRemoteObject( this );
-      remoteObject.set( "topIndex", topIndex );
+      this._topIndex = this._isCreated ? this._getTopIndex() : 0;
+      rwt.remote.Server.getInstance().getRemoteObject( this ).set( "topIndex", this._topIndex );
     },
 
     _onDblClick : function( evt ) {

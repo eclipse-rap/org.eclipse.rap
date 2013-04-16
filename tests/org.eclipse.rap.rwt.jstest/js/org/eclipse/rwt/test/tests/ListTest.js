@@ -526,6 +526,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.destroy();
     },
 
+    testTopIndex : function() {
+      var list = this._createDefaultList();
+      this._addItems( list, 300 );
+      TestUtil.flush();
+      list.getVerticalBar().setHasSelectionListener( true );
+
+      list.getVerticalBar().setValue( 40 );
+
+      assertEquals( 2, list._topIndex );
+      list.destroy();
+    },
+
     testSendVerticalScrollPosition : function() {
       var list = this._createDefaultList();
       this._addItems( list, 300 );
@@ -789,10 +801,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
     testInitialPosition : function() {
       var list = this._createDefaultList( true );
-      list.setHBarSelection( 10 );
-      list.setTopIndex( 1 );
       this._addItems( list, 70 );
       list.setItemDimensions( 500, 20 );
+      list.setHBarSelection( 10 );
+      list.setTopIndex( 1 );
       TestUtil.flush();
       var position = this._getScrollPosition( list );
       assertEquals( [ 10, 20 ], position );
