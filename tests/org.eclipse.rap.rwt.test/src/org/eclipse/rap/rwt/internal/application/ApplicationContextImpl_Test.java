@@ -20,6 +20,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,12 +41,12 @@ import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.StartupPageTestUtil;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.theme.Theme;
+import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.SettingStoreFactory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper.TestThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.junit.Before;
@@ -151,7 +152,10 @@ public class ApplicationContextImpl_Test {
 
   @Test
   public void testActivate_initializesSubSystems() {
-    activateApplicationContext( createConfiguration(), null );
+    ServletContext servletContext = createServletContext( Fixture.WEB_CONTEXT_DIR );
+    applicationContext = new ApplicationContextImpl( createConfiguration(), servletContext );
+
+    applicationContext.activate();
 
     checkContextDirectoryHasBeenSet();
     checkPhaseListenersHaveBeenAdded();
@@ -171,19 +175,25 @@ public class ApplicationContextImpl_Test {
   @Test
   public void testActivate_withDifferentResourceLocation() {
     File tempDirectory = createTempDirectory();
+    ServletContext servletContext = createServletContext( tempDirectory );
+    applicationContext = new ApplicationContextImpl( createConfiguration(), servletContext );
 
-    activateApplicationContext( createConfiguration(), tempDirectory );
+    applicationContext.activate();
 
     checkContextDirectoryHasBeenSet( tempDirectory );
   }
 
   @Test
   public void testActivate_withDefaultSettingStoreFactory() {
-    activateApplicationContext( new ApplicationConfiguration() {
+    ApplicationConfiguration configuration = new ApplicationConfiguration() {
       public void configure( Application application ) {
         application.addStyleSheet( THEME_ID, STYLE_SHEET );
       }
-    }, null );
+    };
+    ServletContext servletContext = createServletContext( Fixture.WEB_CONTEXT_DIR );
+    applicationContext = new ApplicationContextImpl( configuration, servletContext );
+
+    applicationContext.activate();
 
     assertTrue( applicationContext.getSettingStoreManager().hasFactory() );
   }
@@ -202,7 +212,9 @@ public class ApplicationContextImpl_Test {
 
   @Test
   public void testDeactivate_resetsSubSystems() {
-    activateApplicationContext( createConfiguration(), null );
+    ServletContext servletContext = createServletContext( Fixture.WEB_CONTEXT_DIR );
+    applicationContext = new ApplicationContextImpl( createConfiguration(), servletContext );
+    applicationContext.activate();
 
     applicationContext.deactivate();
 
@@ -239,25 +251,13 @@ public class ApplicationContextImpl_Test {
     assertNull( ApplicationContextImpl.getFrom( servletContext ) );
   }
 
-  private void activateApplicationContext( ApplicationConfiguration configuration,
-                                           File contextDirectory )
-  {
-    ServletContext servletContext = createServiceContext( contextDirectory );
-    applicationContext = new ApplicationContextImpl( configuration, servletContext );
-    activateApplicationContext( applicationContext );
-  }
-
-  private ServletContext createServiceContext( File contextDirectory ) {
-    ServletContext servletContext = Fixture.createServletContext();
-    setContextDirectory( servletContext, contextDirectory );
-    return servletContext;
-  }
-
-  private void setContextDirectory( ServletContext servletContext, File contextDirectory ) {
+  private ServletContext createServletContext( File contextDirectory ) {
+    ServletContext servletContext = mock( ServletContext.class );
     if( contextDirectory != null ) {
-      servletContext.setAttribute( ApplicationConfiguration.RESOURCE_ROOT_LOCATION,
-                                   contextDirectory.toString() );
+      when( servletContext.getAttribute( ApplicationConfiguration.RESOURCE_ROOT_LOCATION ) )
+        .thenReturn( contextDirectory.toString() );
     }
+    return servletContext;
   }
 
   private File createTempDirectory() {
@@ -389,8 +389,9 @@ public class ApplicationContextImpl_Test {
   }
 
   private void checkThemeManagerHasBeenReset() {
-    TestThemeManager themeManager = ( TestThemeManager )applicationContext.getThemeManager();
-    assertEquals( 0, themeManager.getRegisteredThemeIds().length );
+    ThemeManager themeManager = applicationContext.getThemeManager();
+    assertEquals( 1, themeManager.getRegisteredThemeIds().length );
+    assertEquals( ThemeManager.FALLBACK_THEME_ID, themeManager.getRegisteredThemeIds()[ 0 ] );
   }
 
   private void checkApplicationStoreHasBeenReset() {
@@ -404,18 +405,6 @@ public class ApplicationContextImpl_Test {
 
   private void checkStartupPageTemplateHasBeenReset() {
     assertNull( StartupPageTestUtil.getStartupPageTemplate( applicationContext.getStartupPage() ) );
-  }
-
-  private static void activateApplicationContext( ApplicationContextImpl applicationContext ) {
-    applicationContext.attachToServletContext();
-    createDisplay();
-    applicationContext.activate();
-  }
-
-  private static void createDisplay() {
-    Fixture.createServiceContext();
-    Fixture.disposeOfServiceContext();
-    Fixture.disposeOfServletContext();
   }
 
   private static boolean containsType( List<?> list, Class<?> type ) {

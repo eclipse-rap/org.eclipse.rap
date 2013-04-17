@@ -520,7 +520,7 @@ public class RWTLifeCycle_Test {
     // simulates subsequent request
     log.setLength( 0 );
     uiContext[ 0 ] = null;
-    ServiceContext secondContext = newContext();
+    ServiceContext secondContext = newContext( originContext.getUISession() );
     ContextProvider.releaseContextHolder();
     ContextProvider.setContext( secondContext );
     lifeCycle.executeUIThread();
@@ -554,7 +554,7 @@ public class RWTLifeCycle_Test {
     ServiceContext firstContext = ContextProvider.getContext();
     thread.setServiceContext( firstContext );
     thread.run();
-    ServiceContext secondContext = newContext();
+    ServiceContext secondContext = newContext( firstContext.getUISession() );
     thread.setServiceContext( secondContext );
     thread.updateServiceContext();
     // As we don't start the UIThread, we can use the test-thread for assertion
@@ -646,7 +646,7 @@ public class RWTLifeCycle_Test {
     assertEquals( expected, log.toString() );
 
     log.setLength( 0 );
-    ServiceContext expectedContext = newContext();
+    ServiceContext expectedContext = newContext( ContextProvider.getUISession() );
     ContextProvider.releaseContextHolder();
     ContextProvider.setContext( expectedContext );
     lifeCycle.setPhaseOrder( new IPhase[] {
@@ -924,12 +924,13 @@ public class RWTLifeCycle_Test {
     Fixture.runInThread( runnable );
   }
 
-  private static ServiceContext newContext() {
+  private static ServiceContext newContext( UISession uiSession ) {
     HttpServletRequest request = ContextProvider.getRequest();
     HttpServletResponse response = ContextProvider.getResponse();
     ApplicationContextImpl applicationContext = mock( ApplicationContextImpl.class );
     ServiceContext result = new ServiceContext( request, response, applicationContext );
     result.setServiceStore( new ServiceStore() );
+    result.setUISession( uiSession );
     return result;
   }
 

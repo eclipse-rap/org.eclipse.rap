@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.RWT;
@@ -37,7 +38,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.service.UISession;
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.junit.After;
@@ -54,29 +54,32 @@ public class UISessionBuilder_Test {
   private TestRequest request;
   private ApplicationConfiguration configuration;
   private ApplicationContextImpl applicationContext;
+  private ServiceContext serviceContext;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
     httpSession = new TestSession();
     request = new TestRequest();
     request.setSession( httpSession );
+    HttpServletResponse response = mock( HttpServletResponse.class );
     servletContext = httpSession.getServletContext();
     configuration = mock( ApplicationConfiguration.class );
     applicationContext = new ApplicationContextImpl( configuration, servletContext );
     applicationContext.getClientSelector().activate();
+    serviceContext = new ServiceContext( request, response, applicationContext );
+    ContextProvider.setContext( serviceContext );
   }
 
   @After
   public void tearDown() {
-    Fixture.tearDown();
+    ContextProvider.disposeContext();
   }
 
   @Test
   public void testUISessionReferencesApplicationContext() {
     registerEntryPoint( null );
 
-    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, serviceContext );
     UISessionImpl uiSession = builder.buildUISession();
 
     assertEquals( applicationContext, uiSession.getApplicationContext() );
@@ -88,7 +91,7 @@ public class UISessionBuilder_Test {
     httpSession = mock( HttpSession.class );
     request.setSession( httpSession );
 
-    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, serviceContext );
     UISession uiSession = builder.buildUISession();
 
     assertSame( httpSession, uiSession.getHttpSession() );
@@ -99,7 +102,7 @@ public class UISessionBuilder_Test {
   public void testSingletonManagerIsInstalled() {
     registerEntryPoint( null );
 
-    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, serviceContext );
     UISession uiSession = builder.buildUISession();
 
     assertSingletonManagerIsInstalled( uiSession );
@@ -109,7 +112,7 @@ public class UISessionBuilder_Test {
   public void testDefaultThemeIsSelected() {
     registerEntryPoint( null );
 
-    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, serviceContext );
     UISession uiSession = builder.buildUISession();
 
     assertEquals( RWT.DEFAULT_THEME_ID, uiSession.getAttribute( ThemeUtil.CURR_THEME_ATTR ) );
@@ -124,7 +127,7 @@ public class UISessionBuilder_Test {
     properties.put( WebClient.THEME_ID, CUSTOM_THEME_ID );
     registerEntryPoint( properties );
 
-    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, serviceContext );
     UISession uiSession = builder.buildUISession();
 
     assertEquals( CUSTOM_THEME_ID, uiSession.getAttribute( ThemeUtil.CURR_THEME_ATTR ) );
@@ -136,7 +139,7 @@ public class UISessionBuilder_Test {
     properties.put( WebClient.THEME_ID, "does.not.exist" );
     registerEntryPoint( properties );
 
-    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, serviceContext );
     try {
       builder.buildUISession();
       fail();
@@ -148,7 +151,7 @@ public class UISessionBuilder_Test {
   public void testClientIsSelected() {
     registerEntryPoint( null );
 
-    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, serviceContext );
     UISession uiSession = builder.buildUISession();
 
     ClientSelector clientSelector = applicationContext.getClientSelector();

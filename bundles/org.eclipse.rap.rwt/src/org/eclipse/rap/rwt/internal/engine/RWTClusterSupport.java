@@ -54,7 +54,7 @@ public class RWTClusterSupport implements Filter {
   private static void beforeService( HttpSession httpSession ) {
     UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
     if( uiSession != null ) {
-      uiSession.attachHttpSession( httpSession );
+      uiSession.setHttpSession( httpSession );
       attachApplicationContext( uiSession );
       PostDeserialization.runProcessors( uiSession );
     }
@@ -86,7 +86,7 @@ public class RWTClusterSupport implements Filter {
     // http://java.sun.com/developer/technicalArticles/J2EE/clustering/
     UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
     if( uiSession != null ) {
-      uiSession.attachToHttpSession( httpSession );
+      uiSession.attachToHttpSession();
     }
     RequestCounter.reattachToHttpSession( httpSession );
   }

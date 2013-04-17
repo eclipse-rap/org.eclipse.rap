@@ -77,8 +77,8 @@ public class UISessionImplSerialization_Test {
     uiSession.addUISessionListener( listener );
     UISessionImpl deserializedUiSession = Fixture.serializeAndDeserialize( uiSession );
     HttpSession newHttpSession = new TestSession();
-    deserializedUiSession.attachHttpSession( newHttpSession );
-    deserializedUiSession.attachToHttpSession( newHttpSession );
+    deserializedUiSession.setHttpSession( newHttpSession );
+    deserializedUiSession.attachToHttpSession();
     newHttpSession.invalidate();
 
     assertTrue( LoggingUISessionListener.wasCalled );

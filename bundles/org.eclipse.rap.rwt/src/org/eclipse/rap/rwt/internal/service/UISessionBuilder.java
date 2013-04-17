@@ -13,9 +13,6 @@ package org.eclipse.rap.rwt.internal.service;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.SingletonManager;
@@ -28,20 +25,21 @@ import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 public class UISessionBuilder {
 
   private final ApplicationContextImpl applicationContext;
-  private final HttpServletRequest request;
-  private final HttpSession httpSession;
+  private final ServiceContext serviceContext;
   private final UISessionImpl uiSession;
 
-  public UISessionBuilder( ApplicationContextImpl applicationContext, HttpServletRequest request ) {
+  public UISessionBuilder( ApplicationContextImpl applicationContext,
+                           ServiceContext serviceContext )
+  {
     this.applicationContext = applicationContext;
-    this.request = request;
-    httpSession = request.getSession( true );
-    uiSession = new UISessionImpl( httpSession );
+    this.serviceContext = serviceContext;
+    uiSession = new UISessionImpl( serviceContext.getRequest().getSession( true ) );
   }
 
   public UISessionImpl buildUISession() {
-    uiSession.attachToHttpSession( httpSession );
+    uiSession.attachToHttpSession();
     uiSession.setApplicationContext( applicationContext );
+    serviceContext.setUISession( uiSession );
     SingletonManager.install( uiSession );
     setCurrentTheme();
     selectClient();
@@ -60,7 +58,7 @@ public class UISessionBuilder {
   }
 
   private void selectClient() {
-    applicationContext.getClientSelector().selectClient( request, uiSession );
+    applicationContext.getClientSelector().selectClient( serviceContext.getRequest(), uiSession );
   }
 
   private void verifyThemeId( String themeId ) {
@@ -74,7 +72,7 @@ public class UISessionBuilder {
     EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
     // TODO [rh] silently ignore non-existing registration fow now, otherwise most tests would fail
     //      since they don't register an entry point
-    String servletPath = request.getServletPath();
+    String servletPath = serviceContext.getRequest().getServletPath();
     EntryPointRegistration registration = entryPointManager.getRegistrationByPath( servletPath );
     if( registration != null ) {
       result = registration.getProperties();

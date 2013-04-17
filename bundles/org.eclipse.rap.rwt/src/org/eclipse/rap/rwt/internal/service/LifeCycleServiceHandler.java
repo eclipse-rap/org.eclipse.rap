@@ -163,12 +163,13 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   }
 
   private static void reinitializeUISession( HttpServletRequest request ) {
+    ServiceContext serviceContext = ContextProvider.getContext();
     UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
     ApplicationContextImpl applicationContext = uiSession.getApplicationContext();
     uiSession.shutdown();
-    UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
+    UISessionBuilder builder = new UISessionBuilder( applicationContext, serviceContext );
     uiSession = builder.buildUISession();
-    ContextProvider.getContext().setUISession( uiSession );
+    serviceContext.setUISession( uiSession );
   }
 
   private static void reinitializeServiceStore() {

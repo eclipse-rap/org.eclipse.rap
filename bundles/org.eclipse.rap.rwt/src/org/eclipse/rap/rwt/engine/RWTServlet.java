@@ -20,11 +20,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
+import org.eclipse.rap.rwt.internal.service.UISessionBuilder;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 
 
@@ -108,10 +111,10 @@ public class RWTServlet extends HttpServlet {
   private void handleValidRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException, ServletException
   {
-    ServiceContext context = createServiceContext( request, response );
-    ContextProvider.setContext( context );
+    ServiceContext serviceContext = createServiceContext( request, response );
+    ContextProvider.setContext( serviceContext );
     try {
-      createUISession();
+      ensureUISession( applicationContext, serviceContext );
       getServiceHandler().service( request, response );
     } finally {
       ContextProvider.disposeContext();
@@ -126,10 +129,17 @@ public class RWTServlet extends HttpServlet {
     return context;
   }
 
-  private static void createUISession() {
+  private static void ensureUISession( ApplicationContextImpl applicationContext,
+                                       ServiceContext serviceContext )
+  {
     // Ensure that there is exactly one UISession per session created
     synchronized( RWTServlet.class ) {
-      ContextProvider.getUISession();
+      HttpSession httpSession = serviceContext.getRequest().getSession( true );
+      UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
+      if( uiSession == null ) {
+        uiSession = new UISessionBuilder( applicationContext, serviceContext ).buildUISession();
+      }
+      serviceContext.setUISession( uiSession );
     }
   }
 

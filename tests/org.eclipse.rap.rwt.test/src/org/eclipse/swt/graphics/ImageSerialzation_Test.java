@@ -95,8 +95,8 @@ public class ImageSerialzation_Test {
     Fixture.createServiceContext();
     TestSession session = ( TestSession )ContextProvider.getRequest().getSession();
     UISessionImpl uiSession = ( UISessionImpl )getUISession( device );
-    uiSession.attachToHttpSession( session );
-    uiSession.attachHttpSession( session );
+    uiSession.setHttpSession( session );
+    uiSession.attachToHttpSession();
   }
 
   private static UISession getUISession( Device device ) {

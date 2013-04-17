@@ -75,7 +75,7 @@ public final class UISessionImpl
     return ( UISessionImpl )httpSession.getAttribute( ATTR_UI_SESSION );
   }
 
-  public void attachToHttpSession( HttpSession httpSession ) {
+  public void attachToHttpSession() {
     httpSession.setAttribute( ATTR_UI_SESSION, this );
   }
 
@@ -157,7 +157,7 @@ public final class UISessionImpl
     }
   }
 
-  public void attachHttpSession( HttpSession httpSession ) {
+  public void setHttpSession( HttpSession httpSession ) {
     ParamCheck.notNull( httpSession, "httpSession" );
     synchronized( lock ) {
       this.httpSession = httpSession;

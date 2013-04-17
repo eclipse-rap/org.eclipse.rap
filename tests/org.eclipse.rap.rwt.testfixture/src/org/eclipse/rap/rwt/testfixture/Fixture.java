@@ -64,6 +64,8 @@ import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
+import org.eclipse.rap.rwt.internal.service.UISessionBuilder;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.internal.service.UISessionTestAdapter;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
@@ -353,10 +355,11 @@ public final class Fixture {
   private static void createNewServiceContext( HttpServletRequest request,
                                                HttpServletResponse response )
   {
+    ContextProvider.disposeContext();
     ServiceContext serviceContext = new ServiceContext( request, response, applicationContext );
     serviceContext.setServiceStore( new ServiceStore() );
-    ContextProvider.disposeContext();
     ContextProvider.setContext( serviceContext );
+    ensureUISession( applicationContext, serviceContext );
   }
 
   public static String createEmptyMessage() {
@@ -508,12 +511,24 @@ public final class Fixture {
   public static void replaceServiceStore( ServiceStore serviceStore ) {
     HttpServletRequest request = ContextProvider.getRequest();
     HttpServletResponse response = ContextProvider.getResponse();
-    ServiceContext context = new ServiceContext( request, response, applicationContext );
-    if( serviceStore != null ) {
-      context.setServiceStore( serviceStore );
-    }
     ContextProvider.disposeContext();
-    ContextProvider.setContext( context );
+    ServiceContext serviceContext = new ServiceContext( request, response, applicationContext );
+    if( serviceStore != null ) {
+      serviceContext.setServiceStore( serviceStore );
+    }
+    ContextProvider.setContext( serviceContext );
+    ensureUISession( applicationContext, serviceContext );
+  }
+
+  private static void ensureUISession( ApplicationContextImpl applicationContext,
+                                       ServiceContext serviceContext )
+  {
+    HttpSession httpSession = serviceContext.getRequest().getSession( true );
+    UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
+    if( uiSession == null ) {
+      uiSession = new UISessionBuilder( applicationContext, serviceContext ).buildUISession();
+    }
+    serviceContext.setUISession( uiSession );
   }
 
   ////////////////

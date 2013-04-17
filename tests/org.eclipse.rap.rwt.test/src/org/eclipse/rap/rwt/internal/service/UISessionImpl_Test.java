@@ -68,7 +68,7 @@ public class UISessionImpl_Test {
     Fixture.setUp();
     httpSession = new TestSession();
     uiSession = new UISessionImpl( httpSession );
-    uiSession.attachToHttpSession( httpSession );
+    uiSession.attachToHttpSession();
     ContextProvider.getContext().setUISession( uiSession );
     servletLogEntries = new LinkedList<Throwable>();
     TestServletContext servletContext = ( TestServletContext )httpSession.getServletContext();
@@ -136,28 +136,28 @@ public class UISessionImpl_Test {
   }
 
   @Test
-  public void testAttachHttpSession() {
+  public void testSetHttpSession() {
     HttpSession anotherSession = new TestSession();
-    uiSession.attachHttpSession( anotherSession );
+    uiSession.setHttpSession( anotherSession );
 
     assertSame( anotherSession, uiSession.getHttpSession() );
   }
 
   @Test
-  public void testAttachHttpSession_failsWithNullArgument() {
+  public void testSetHttpSession_failsWithNullArgument() {
     try {
-      uiSession.attachHttpSession( null );
+      uiSession.setHttpSession( null );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
 
   @Test
-  public void testAttachHttpSession_doesNotChangeId() {
+  public void testSetHttpSession_doesNotChangeId() {
     String initialId = uiSession.getId();
     TestSession anotherSession = new TestSession();
     anotherSession.setId( "some.other.id" );
-    uiSession.attachHttpSession( anotherSession );
+    uiSession.setHttpSession( anotherSession );
 
     String id = uiSession.getId();
 
@@ -165,7 +165,7 @@ public class UISessionImpl_Test {
   }
 
   @Test
-  public void testAttachHttpSession_doesNotTriggerListener() {
+  public void testSetHttpSession_doesNotTriggerListener() {
     final boolean[] wasCalled = { false };
     uiSession.addUISessionListener( new UISessionListener() {
       public void beforeDestroy( UISessionEvent event ) {
@@ -173,7 +173,8 @@ public class UISessionImpl_Test {
       }
     } );
 
-    uiSession.attachHttpSession( new TestSession() );
+    uiSession.setHttpSession( new TestSession() );
+
     assertFalse( wasCalled[ 0 ] );
   }
 

@@ -14,10 +14,8 @@ package org.eclipse.rap.rwt.internal.service;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -182,20 +180,7 @@ public class ContextProvider {
    * Returns the UI session that is associated with the currently processed request.
    */
   public static UISession getUISession() {
-    UISessionImpl uiSession = ( UISessionImpl )getContext().getUISession();
-    if( uiSession == null ) {
-      HttpServletRequest request = getRequest();
-      HttpSession httpSession = request.getSession( true );
-      uiSession = UISessionImpl.getInstanceFromSession( httpSession );
-      if( uiSession == null ) {
-        ServletContext servletContext = httpSession.getServletContext();
-        ApplicationContextImpl applicationContext = ApplicationContextImpl.getFrom( servletContext );
-        UISessionBuilder builder = new UISessionBuilder( applicationContext, request );
-        uiSession = builder.buildUISession();
-      }
-      getContext().setUISession( uiSession );
-    }
-    return uiSession;
+    return getContext().getUISession();
   }
 
   /**

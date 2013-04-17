@@ -268,8 +268,8 @@ public class DisplaySerialization_Test {
     Fixture.createServiceContext();
     TestSession session = ( TestSession )ContextProvider.getRequest().getSession();
     UISessionImpl uiSession = ( UISessionImpl )getUISession( display );
-    uiSession.attachToHttpSession( session );
-    uiSession.attachHttpSession( session );
+    uiSession.setHttpSession( session );
+    uiSession.attachToHttpSession();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
