@@ -12,7 +12,9 @@ package org.eclipse.rap.rwt.internal.engine;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.TestSession;
@@ -59,7 +61,7 @@ public class PostDeserialization_Test {
   }
 
   private static UISessionImpl createUISession() {
-    return new UISessionImpl( new TestSession() );
+    return new UISessionImpl( mock( ApplicationContextImpl.class ), new TestSession() );
   }
 
 }

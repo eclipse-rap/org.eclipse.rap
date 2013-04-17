@@ -53,21 +53,21 @@ public final class UISessionImpl
   private final Set<UISessionListener> listeners;
   private final String id;
   private Connection connection;
-  private transient HttpSession httpSession;
   private boolean bound;
   private boolean inDestroy;
+  private transient HttpSession httpSession;
   private transient ISessionShutdownAdapter shutdownAdapter;
   private transient ApplicationContextImpl applicationContext;
 
-  public UISessionImpl( HttpSession httpSession ) {
-    ParamCheck.notNull( httpSession, "httpSession" );
+  public UISessionImpl( ApplicationContextImpl applicationContext, HttpSession httpSession ) {
+    this.applicationContext = applicationContext;
+    this.httpSession = httpSession;
     requestLock = new SerializableLock();
     lock = new SerializableLock();
     attributes = new HashMap<String, Object>();
     listeners = new HashSet<UISessionListener>();
-    id = httpSession.getId() + ":1";
+    id = Integer.toHexString( hashCode() );
     bound = true;
-    this.httpSession = httpSession;
     connection = new ConnectionImpl();
   }
 

@@ -13,6 +13,8 @@ package org.eclipse.rap.rwt.internal.service;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.SingletonManager;
@@ -24,21 +26,17 @@ import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 
 public class UISessionBuilder {
 
-  private final ApplicationContextImpl applicationContext;
   private final ServiceContext serviceContext;
   private final UISessionImpl uiSession;
 
-  public UISessionBuilder( ApplicationContextImpl applicationContext,
-                           ServiceContext serviceContext )
-  {
-    this.applicationContext = applicationContext;
+  public UISessionBuilder( ServiceContext serviceContext ) {
     this.serviceContext = serviceContext;
-    uiSession = new UISessionImpl( serviceContext.getRequest().getSession( true ) );
+    HttpSession httpSession = serviceContext.getRequest().getSession( true );
+    uiSession = new UISessionImpl( serviceContext.getApplicationContext(), httpSession );
   }
 
   public UISessionImpl buildUISession() {
     uiSession.attachToHttpSession();
-    uiSession.setApplicationContext( applicationContext );
     serviceContext.setUISession( uiSession );
     SingletonManager.install( uiSession );
     setCurrentTheme();
@@ -58,24 +56,29 @@ public class UISessionBuilder {
   }
 
   private void selectClient() {
+    ApplicationContextImpl applicationContext = uiSession.getApplicationContext();
     applicationContext.getClientSelector().selectClient( serviceContext.getRequest(), uiSession );
   }
 
   private void verifyThemeId( String themeId ) {
+    ApplicationContextImpl applicationContext = uiSession.getApplicationContext();
     if( !applicationContext.getThemeManager().hasTheme( themeId ) ) {
       throw new IllegalArgumentException( "Illegal theme id: " + themeId );
     }
   }
 
   private Map<String, String> getEntryPointProperties() {
-    Map<String, String> result = Collections.emptyMap();
+    ApplicationContextImpl applicationContext = uiSession.getApplicationContext();
     EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
-    // TODO [rh] silently ignore non-existing registration fow now, otherwise most tests would fail
+    // TODO [rh] silently ignore non-existing registration for now, otherwise most tests would fail
     //      since they don't register an entry point
     String servletPath = serviceContext.getRequest().getServletPath();
     EntryPointRegistration registration = entryPointManager.getRegistrationByPath( servletPath );
+    Map<String, String> result;
     if( registration != null ) {
       result = registration.getProperties();
+    } else {
+      result = Collections.emptyMap();
     }
     return result;
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,13 +20,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
+import org.eclipse.rap.rwt.internal.SingletonManager;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
-import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,14 +43,20 @@ public class ClientSelector_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    uiSession = new UISessionImpl( new TestSession() );
+    HttpServletRequest request = mock( HttpServletRequest.class );
+    HttpServletResponse response = mock( HttpServletResponse.class );
+    ApplicationContextImpl applicationContext = mock( ApplicationContextImpl.class );
+    ServiceContext serviceContext = new ServiceContext( request, response, applicationContext );
+    ContextProvider.setContext( serviceContext );
+    uiSession = new UISessionImpl( applicationContext, mock( HttpSession.class ) );
+    SingletonManager.install( uiSession );
+    serviceContext.setUISession( uiSession );
     clientSelector = new ClientSelector();
   }
 
   @After
   public void tearDown() {
-    Fixture.tearDown();
+    ContextProvider.disposeContext();
   }
 
   @Test

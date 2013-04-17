@@ -14,12 +14,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.io.NotSerializableException;
 
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -37,7 +39,7 @@ public class UISessionImplSerialization_Test {
   public void setUp() {
     LoggingUISessionListener.wasCalled = false;
     httpSession = new TestSession();
-    uiSession = new UISessionImpl( httpSession );
+    uiSession = new UISessionImpl( mock( ApplicationContextImpl.class ), httpSession );
   }
 
   @Test

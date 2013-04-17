@@ -65,7 +65,8 @@ public class UISessionBuilder_Test {
     servletContext = httpSession.getServletContext();
     configuration = mock( ApplicationConfiguration.class );
     applicationContext = new ApplicationContextImpl( configuration, servletContext );
-    applicationContext.getClientSelector().activate();
+    applicationContext.getThemeManager().registerTheme( createCustomTheme( CUSTOM_THEME_ID ) );
+    applicationContext.activate();
     serviceContext = new ServiceContext( request, response, applicationContext );
     ContextProvider.setContext( serviceContext );
   }
@@ -79,7 +80,7 @@ public class UISessionBuilder_Test {
   public void testUISessionReferencesApplicationContext() {
     registerEntryPoint( null );
 
-    UISessionBuilder builder = new UISessionBuilder( applicationContext, serviceContext );
+    UISessionBuilder builder = new UISessionBuilder( serviceContext );
     UISessionImpl uiSession = builder.buildUISession();
 
     assertEquals( applicationContext, uiSession.getApplicationContext() );
@@ -91,7 +92,7 @@ public class UISessionBuilder_Test {
     httpSession = mock( HttpSession.class );
     request.setSession( httpSession );
 
-    UISessionBuilder builder = new UISessionBuilder( applicationContext, serviceContext );
+    UISessionBuilder builder = new UISessionBuilder( serviceContext );
     UISession uiSession = builder.buildUISession();
 
     assertSame( httpSession, uiSession.getHttpSession() );
@@ -102,7 +103,7 @@ public class UISessionBuilder_Test {
   public void testSingletonManagerIsInstalled() {
     registerEntryPoint( null );
 
-    UISessionBuilder builder = new UISessionBuilder( applicationContext, serviceContext );
+    UISessionBuilder builder = new UISessionBuilder( serviceContext );
     UISession uiSession = builder.buildUISession();
 
     assertSingletonManagerIsInstalled( uiSession );
@@ -112,7 +113,7 @@ public class UISessionBuilder_Test {
   public void testDefaultThemeIsSelected() {
     registerEntryPoint( null );
 
-    UISessionBuilder builder = new UISessionBuilder( applicationContext, serviceContext );
+    UISessionBuilder builder = new UISessionBuilder( serviceContext );
     UISession uiSession = builder.buildUISession();
 
     assertEquals( RWT.DEFAULT_THEME_ID, uiSession.getAttribute( ThemeUtil.CURR_THEME_ATTR ) );
@@ -120,14 +121,11 @@ public class UISessionBuilder_Test {
 
   @Test
   public void testCustomThemeIsSelected() {
-    Theme theme = mock( Theme.class );
-    when( theme.getId() ).thenReturn( CUSTOM_THEME_ID );
-    applicationContext.getThemeManager().registerTheme( theme );
     HashMap<String, String> properties = new HashMap<String,String>();
     properties.put( WebClient.THEME_ID, CUSTOM_THEME_ID );
     registerEntryPoint( properties );
 
-    UISessionBuilder builder = new UISessionBuilder( applicationContext, serviceContext );
+    UISessionBuilder builder = new UISessionBuilder( serviceContext );
     UISession uiSession = builder.buildUISession();
 
     assertEquals( CUSTOM_THEME_ID, uiSession.getAttribute( ThemeUtil.CURR_THEME_ATTR ) );
@@ -139,7 +137,7 @@ public class UISessionBuilder_Test {
     properties.put( WebClient.THEME_ID, "does.not.exist" );
     registerEntryPoint( properties );
 
-    UISessionBuilder builder = new UISessionBuilder( applicationContext, serviceContext );
+    UISessionBuilder builder = new UISessionBuilder( serviceContext );
     try {
       builder.buildUISession();
       fail();
@@ -151,7 +149,7 @@ public class UISessionBuilder_Test {
   public void testClientIsSelected() {
     registerEntryPoint( null );
 
-    UISessionBuilder builder = new UISessionBuilder( applicationContext, serviceContext );
+    UISessionBuilder builder = new UISessionBuilder( serviceContext );
     UISession uiSession = builder.buildUISession();
 
     ClientSelector clientSelector = applicationContext.getClientSelector();
@@ -176,6 +174,12 @@ public class UISessionBuilder_Test {
     if( !found ) {
       fail( "No SingletonManager found in session store" );
     }
+  }
+
+  private static Theme createCustomTheme( String id ) {
+    Theme theme = mock( Theme.class );
+    when( theme.getId() ).thenReturn( id );
+    return theme;
   }
 
 }

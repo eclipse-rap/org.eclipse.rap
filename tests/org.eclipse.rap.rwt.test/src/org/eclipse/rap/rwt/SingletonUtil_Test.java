@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.SingletonManager;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
@@ -118,7 +119,8 @@ public class SingletonUtil_Test {
   private static void createUISession() {
     ServiceContext serviceContext = ContextProvider.getContext();
     HttpSession session = serviceContext.getRequest().getSession();
-    serviceContext.setUISession( new UISessionImpl( session ) );
+    ApplicationContextImpl applicationContext = serviceContext.getApplicationContext();
+    serviceContext.setUISession( new UISessionImpl( applicationContext, session ) );
   }
 
   private static class TestSingleton {

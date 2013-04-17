@@ -359,7 +359,7 @@ public final class Fixture {
     ServiceContext serviceContext = new ServiceContext( request, response, applicationContext );
     serviceContext.setServiceStore( new ServiceStore() );
     ContextProvider.setContext( serviceContext );
-    ensureUISession( applicationContext, serviceContext );
+    ensureUISession( serviceContext );
   }
 
   public static String createEmptyMessage() {
@@ -517,16 +517,14 @@ public final class Fixture {
       serviceContext.setServiceStore( serviceStore );
     }
     ContextProvider.setContext( serviceContext );
-    ensureUISession( applicationContext, serviceContext );
+    ensureUISession( serviceContext );
   }
 
-  private static void ensureUISession( ApplicationContextImpl applicationContext,
-                                       ServiceContext serviceContext )
-  {
+  private static void ensureUISession( ServiceContext serviceContext ) {
     HttpSession httpSession = serviceContext.getRequest().getSession( true );
     UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
     if( uiSession == null ) {
-      uiSession = new UISessionBuilder( applicationContext, serviceContext ).buildUISession();
+      uiSession = new UISessionBuilder( serviceContext ).buildUISession();
     }
     serviceContext.setUISession( uiSession );
   }

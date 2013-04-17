@@ -110,7 +110,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testUISessionClearedOnSessionRestart() throws IOException {
-    initializeUISession();
     UISession uiSession = ContextProvider.getUISession();
     uiSession.setAttribute( SESSION_STORE_ATTRIBUTE, new Object() );
 
@@ -123,7 +122,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testShutdownUISession() throws IOException {
-    initializeUISession();
     UISession uiSession = ContextProvider.getUISession();
 
     LifeCycleServiceHandler.markSessionStarted();
@@ -135,7 +133,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testShutdownUISession_RemoveUISessionFromHttpSession() throws IOException {
-    initializeUISession();
     UISession uiSession = ContextProvider.getUISession();
     HttpSession httpSession = uiSession.getHttpSession();
 
@@ -148,7 +145,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testStartUISession_AfterPreviousShutdown() throws IOException {
-    initializeUISession();
     UISession oldUiSession = ContextProvider.getUISession();
 
     LifeCycleServiceHandler.markSessionStarted();
@@ -164,7 +160,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testUISessionListerenerCalledOnce_AfterPreviousShutdown() throws IOException {
-    initializeUISession();
     UISession uiSession = ContextProvider.getUISession();
     UISessionListener listener = mock( UISessionListener.class );
     uiSession.addUISessionListener(listener );
@@ -181,7 +176,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testHttpSessionNotClearedOnSessionRestart() throws IOException {
-    initializeUISession();
     HttpSession httpSession = ContextProvider.getUISession().getHttpSession();
     Object attribute = new Object();
     httpSession.setAttribute( HTTP_SESSION_ATTRIBUTE, attribute );
@@ -195,7 +189,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testRequestCounterAfterSessionRestart() throws IOException {
-    initializeUISession();
     RequestCounter.getInstance().nextRequestId();
     RequestCounter.getInstance().nextRequestId();
     int versionBeforeRestart = RequestCounter.getInstance().currentRequestId();
@@ -228,7 +221,6 @@ public class LifeCycleServiceHandler_Test {
    */
   @Test
   public void testClearServiceStoreAfterSessionRestart() throws IOException {
-    initializeUISession();
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
@@ -242,7 +234,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testClearServiceStoreAfterSessionRestart_RestoreMessage() throws IOException {
-    initializeUISession();
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
@@ -393,11 +384,6 @@ public class LifeCycleServiceHandler_Test {
 
   private static StartupPage mockStartupPage() {
     return mock( StartupPage.class );
-  }
-
-  private void initializeUISession() {
-    UISession uiSession = ContextProvider.getUISession();
-    ( ( UISessionImpl )uiSession ).setApplicationContext( getApplicationContext() );
   }
 
   private static void service( LifeCycleServiceHandler serviceHandler ) throws IOException {

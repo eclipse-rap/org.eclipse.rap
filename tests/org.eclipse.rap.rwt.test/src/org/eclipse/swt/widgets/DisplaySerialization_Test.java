@@ -58,8 +58,6 @@ public class DisplaySerialization_Test {
     Fixture.useDefaultResourceManager();
     applicationContext = getApplicationContext();
     applicationContext.getLifeCycleFactory().configure( SimpleLifeCycle.class );
-    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
-    uiSession.setApplicationContext( applicationContext );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
   }

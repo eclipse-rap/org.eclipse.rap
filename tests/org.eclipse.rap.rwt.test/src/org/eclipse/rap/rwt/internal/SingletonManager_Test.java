@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.io.NotSerializableException;
@@ -26,6 +27,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -194,7 +196,7 @@ public class SingletonManager_Test {
     TestRequest request = new TestRequest();
     HttpSession session = new TestSession();
     request.setSession( session );
-    return new UISessionImpl( session );
+    return new UISessionImpl( mock( ApplicationContextImpl.class ), session );
   }
 
   private SingletonManager createSingletonManager() {

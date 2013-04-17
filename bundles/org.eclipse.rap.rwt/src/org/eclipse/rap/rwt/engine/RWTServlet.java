@@ -114,7 +114,7 @@ public class RWTServlet extends HttpServlet {
     ServiceContext serviceContext = createServiceContext( request, response );
     ContextProvider.setContext( serviceContext );
     try {
-      ensureUISession( applicationContext, serviceContext );
+      ensureUISession( serviceContext );
       getServiceHandler().service( request, response );
     } finally {
       ContextProvider.disposeContext();
@@ -129,15 +129,13 @@ public class RWTServlet extends HttpServlet {
     return context;
   }
 
-  private static void ensureUISession( ApplicationContextImpl applicationContext,
-                                       ServiceContext serviceContext )
-  {
+  private static void ensureUISession( ServiceContext serviceContext ) {
     // Ensure that there is exactly one UISession per session created
     synchronized( RWTServlet.class ) {
       HttpSession httpSession = serviceContext.getRequest().getSession( true );
       UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
       if( uiSession == null ) {
-        uiSession = new UISessionBuilder( applicationContext, serviceContext ).buildUISession();
+        uiSession = new UISessionBuilder( serviceContext ).buildUISession();
       }
       serviceContext.setUISession( uiSession );
     }

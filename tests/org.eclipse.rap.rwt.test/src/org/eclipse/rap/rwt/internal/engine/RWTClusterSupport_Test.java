@@ -68,39 +68,39 @@ public class RWTClusterSupport_Test {
 
   @Test
   public void testDoFilter_attachesHttpSessionToUISession() throws Exception {
-    UISessionImpl uiSession = new UISessionImpl( mock( HttpSession.class ) );
-    HttpSession newHttpSession = mockHttpSession();
-    request.setSession( newHttpSession );
-    setUISession( newHttpSession, uiSession );
+    UISessionImpl deserializedUISession = new UISessionImpl( null, null );
+    HttpSession httpSession = mockHttpSession();
+    setUISession( httpSession, deserializedUISession );
+    request.setSession( httpSession );
 
     rwtClusterSupport.doFilter( request, response, chain );
 
-    assertSame( newHttpSession, uiSession.getHttpSession() );
+    assertSame( httpSession, deserializedUISession.getHttpSession() );
   }
 
   @Test
   public void testDoFilter_attachesApplicationContextToUISession() throws Exception {
-    ApplicationContext applicationContext = mock( ApplicationContextImpl.class );
+    ApplicationContextImpl applicationContext = mock( ApplicationContextImpl.class );
     HttpSession httpSession = mockHttpSession( mockServletContext( applicationContext ) );
     request.setSession( httpSession );
-    UISessionImpl uiSession = new UISessionImpl( httpSession );
-    setUISession( httpSession, uiSession );
+    UISessionImpl deserializedUISession = new UISessionImpl( null, httpSession );
+    setUISession( httpSession, deserializedUISession );
 
     rwtClusterSupport.doFilter( request, response, chain );
 
-    assertSame( applicationContext, uiSession.getApplicationContext() );
+    assertSame( applicationContext, deserializedUISession.getApplicationContext() );
   }
 
   @Test
   public void testDoFilter_marksUISessionAsChanged() throws Exception {
     HttpSession httpSession = mockHttpSession();
     request.setSession( httpSession );
-    UISessionImpl uiSession = new UISessionImpl( httpSession );
-    setUISession( httpSession, uiSession );
+    UISessionImpl deserializedUISession = new UISessionImpl( null, httpSession );
+    setUISession( httpSession, deserializedUISession );
 
     rwtClusterSupport.doFilter( request, response, chain );
 
-    verify( httpSession ).setAttribute( anyString(), same( uiSession ) );
+    verify( httpSession ).setAttribute( anyString(), same( deserializedUISession ) );
   }
 
   @Test

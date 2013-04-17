@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
@@ -106,8 +107,9 @@ public class LifeCycleUtil_Test {
   public void testGetUIThreadWithMultipleSessions() {
     IUIThreadHolder uiThread1 = mock( IUIThreadHolder.class );
     IUIThreadHolder uiThread2 = mock( IUIThreadHolder.class );
-    UISession uiSession1 = new UISessionImpl( new TestSession() );
-    UISession uiSession2 = new UISessionImpl( new TestSession() );
+    ApplicationContextImpl applicationContext = mock( ApplicationContextImpl.class );
+    UISession uiSession1 = new UISessionImpl( applicationContext, new TestSession() );
+    UISession uiSession2 = new UISessionImpl( applicationContext, new TestSession() );
 
     LifeCycleUtil.setUIThread( uiSession1, uiThread1 );
     LifeCycleUtil.setUIThread( uiSession2, uiThread2 );

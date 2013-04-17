@@ -43,7 +43,7 @@ public class ServiceContext_Test {
     when( servletContext.getRealPath( anyString() ) ).thenReturn( "" );
     applicationContext = new ApplicationContextImpl( applicationConfiguration, servletContext );
     Fixture.setSkipResourceRegistration( true );
-    uiSession = new UISessionImpl( new TestSession() );
+    uiSession = new UISessionImpl( applicationContext, new TestSession() );
   }
 
   @After
@@ -69,7 +69,6 @@ public class ServiceContext_Test {
   @Test
   public void testGetApplicationContext_fromFakeContext() {
     applicationContext.activate();
-    uiSession.setApplicationContext( applicationContext );
     ServiceContext context = new ServiceContext( mock( HttpServletRequest.class ),
                                                  mock( HttpServletResponse.class ),
                                                  uiSession );

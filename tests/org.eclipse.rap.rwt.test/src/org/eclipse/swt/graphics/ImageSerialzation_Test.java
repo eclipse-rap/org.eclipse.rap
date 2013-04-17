@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -24,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
@@ -42,16 +40,12 @@ import org.junit.Test;
 public class ImageSerialzation_Test {
 
   private Display display;
-  private ApplicationContextImpl applicationContext;
 
   @Before
   public void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
     Fixture.useDefaultResourceManager();
-    applicationContext = getApplicationContext();
-    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
-    uiSession.setApplicationContext( applicationContext );
     display = new Display();
   }
 

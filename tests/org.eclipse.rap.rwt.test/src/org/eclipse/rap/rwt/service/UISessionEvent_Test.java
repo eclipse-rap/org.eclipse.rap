@@ -12,7 +12,9 @@ package org.eclipse.rap.rwt.service;
 
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.junit.Before;
@@ -25,7 +27,7 @@ public class UISessionEvent_Test {
 
   @Before
   public void setUp() {
-    uiSession = new UISessionImpl( new TestSession() );
+    uiSession = new UISessionImpl( mock( ApplicationContextImpl.class ), new TestSession() );
   }
 
   @Test
