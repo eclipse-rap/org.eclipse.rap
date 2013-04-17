@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,7 +96,7 @@ public class RWTClient {
     JsonMessage message = new JsonMessage();
     message.addOperation( "[\"notify\",\""
                           + widgetId
-                          + "\",\"dragStart\",{\"x\":100,\"y\":100,\"time\":"
+                          + "\",\"DragStart\",{\"x\":100,\"y\":100,\"time\":"
                           + createTimeParam()
                           + "}]" );
     return sendPostRequest( message );
@@ -108,12 +108,12 @@ public class RWTClient {
     JsonMessage message = new JsonMessage();
     message.addOperation( "[\"notify\",\""
                           + sourceWidgetId
-                          + "\",\"dragFinished\",{\"x\":100,\"y\":100,\"time\":"
+                          + "\",\"DragEnd\",{\"x\":100,\"y\":100,\"time\":"
                           + createTimeParam()
                           + "}]" );
     message.addOperation( "[\"notify\",\""
                           + targetWidgetId
-                          + "\",\"dropAccept\",{\"x\":100,\"y\":100,\"item\":null,"
+                          + "\",\"DropAccept\",{\"x\":100,\"y\":100,\"item\":null,"
                           + "\"operation\":\"move\",\"feedback\":0,\"dataType\":"
                           + TEXT_TRANSFER_DATA_TYPE
                           + ",\"source\":\""
