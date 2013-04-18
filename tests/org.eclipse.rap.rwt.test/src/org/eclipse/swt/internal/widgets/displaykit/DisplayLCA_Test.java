@@ -436,6 +436,16 @@ public class DisplayLCA_Test {
   }
 
   @Test
+  public void testRenderUISessionId_WhenAlreadyInitialized() throws IOException {
+    Fixture.markInitialized( display );
+
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( displayId, "uiSessionId" ) );
+  }
+
+  @Test
   public void testRenderEnableUiTests() throws IOException {
     setEnableUiTests( true );
 

@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsString;
 
@@ -19,7 +20,6 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
@@ -95,7 +95,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   }
 
   public void preserveValues( Display display ) {
-    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    WidgetAdapter adapter = getAdapter( display );
     adapter.preserve( PROP_FOCUS_CONTROL, display.getFocusControl() );
     adapter.preserve( PROP_EXIT_CONFIRMATION, getExitConfirmation() );
     adapter.preserve( PROP_RESIZE_LISTENER, Boolean.valueOf( hasResizeListener( display ) ) );
@@ -120,7 +120,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   public void render( Display display ) throws IOException {
     disposeWidgets();
     renderRequestCounter();
-    renderUISessionId();
+    renderUISessionId( display );
     renderExitConfirmation( display );
     renderEnableUiTests( display );
     renderShells( display );
@@ -136,7 +136,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   }
 
   public void clearPreserved( Display display ) {
-    WidgetAdapterImpl widgetAdapter = ( WidgetAdapterImpl )DisplayUtil.getAdapter( display );
+    WidgetAdapterImpl widgetAdapter = ( WidgetAdapterImpl )getAdapter( display );
     widgetAdapter.clearPreserved();
     Composite[] shells = getShells( display );
     for( int i = 0; i < shells.length; i++ ) {
@@ -166,15 +166,17 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     protocolWriter.appendHead( PROP_REQUEST_COUNTER, requestId );
   }
 
-  private static void renderUISessionId() {
-    ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-    String uiSessionId = ContextProvider.getUISession().getId();
-    protocolWriter.appendHead( PROP_UI_SESSION_ID, uiSessionId );
+  private static void renderUISessionId( Display display ) {
+    if( !getAdapter( display ).isInitialized() ) {
+      ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
+      String uiSessionId = ContextProvider.getUISession().getId();
+      protocolWriter.appendHead( PROP_UI_SESSION_ID, uiSessionId );
+    }
   }
 
   private static void renderExitConfirmation( Display display ) {
     String exitConfirmation = getExitConfirmation();
-    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    WidgetAdapter adapter = getAdapter( display );
     Object oldExitConfirmation = adapter.getPreserved( PROP_EXIT_CONFIRMATION );
     boolean hasChanged = exitConfirmation == null
                        ? oldExitConfirmation != null
@@ -222,7 +224,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   private static void renderFocus( Display display ) {
     if( !display.isDisposed() ) {
       IDisplayAdapter displayAdapter = getDisplayAdapter( display );
-      WidgetAdapter widgetAdapter = DisplayUtil.getAdapter( display );
+      WidgetAdapter widgetAdapter = getAdapter( display );
       Object oldValue = widgetAdapter.getPreserved( PROP_FOCUS_CONTROL );
       if(    !widgetAdapter.isInitialized()
           || oldValue != display.getFocusControl()
@@ -248,7 +250,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   }
 
   private static void renderResizeListener( Display display ) {
-    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    WidgetAdapter adapter = getAdapter( display );
     Boolean oldValue = ( Boolean )adapter.getPreserved( PROP_RESIZE_LISTENER );
     if( oldValue == null ) {
       oldValue = Boolean.FALSE;
@@ -266,8 +268,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
 
   private static void renderEnableUiTests( Display display ) {
     if( UITestUtil.isEnabled() ) {
-      WidgetAdapterImpl adapter = ( WidgetAdapterImpl )DisplayUtil.getAdapter( display );
-      if( !adapter.isInitialized() ) {
+      if( !getAdapter( display ).isInitialized() ) {
         IClientObject clientObject = ClientObjectFactory.getClientObject( display );
         clientObject.set( "enableUiTests", true );
       }
@@ -275,7 +276,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   }
 
   private static void markInitialized( Display display ) {
-    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )DisplayUtil.getAdapter( display );
+    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( display );
     adapter.setInitialized( true );
   }
 
