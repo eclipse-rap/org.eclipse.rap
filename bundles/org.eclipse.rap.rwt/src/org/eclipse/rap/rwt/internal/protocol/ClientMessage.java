@@ -37,11 +37,7 @@ public class ClientMessage {
 
   public ClientMessage( JsonObject json ) {
     ParamCheck.notNull( json, "json" );
-    try {
-      message = json;
-    } catch( Exception e ) {
-      throw new IllegalArgumentException( "Could not parse json message: " + json );
-    }
+    message = json;
     try {
       head = message.get( PROP_HEAD ).asObject();
     } catch( Exception exception ) {
