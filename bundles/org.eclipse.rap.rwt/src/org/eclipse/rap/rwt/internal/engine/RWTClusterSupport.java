@@ -52,7 +52,7 @@ public class RWTClusterSupport implements Filter {
   }
 
   private static void beforeService( HttpSession httpSession ) {
-    UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
+    UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession, null );
     if( uiSession != null ) {
       uiSession.setHttpSession( httpSession );
       attachApplicationContext( uiSession );
@@ -84,7 +84,7 @@ public class RWTClusterSupport implements Filter {
     // See http://wiki.eclipse.org/RAP/RWT_Cluster#Serializable_Session_Data
     // See also: J2EE clustering, Part 2, section Session-storage guidelines
     // http://java.sun.com/developer/technicalArticles/J2EE/clustering/
-    UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
+    UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession, null );
     if( uiSession != null ) {
       uiSession.attachToHttpSession();
     }

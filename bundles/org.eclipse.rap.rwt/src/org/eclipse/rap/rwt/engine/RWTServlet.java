@@ -133,7 +133,7 @@ public class RWTServlet extends HttpServlet {
     // Ensure that there is exactly one UISession per session created
     synchronized( RWTServlet.class ) {
       HttpSession httpSession = serviceContext.getRequest().getSession( true );
-      UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
+      UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession, null );
       if( uiSession == null ) {
         uiSession = new UISessionBuilder( serviceContext ).buildUISession();
       }

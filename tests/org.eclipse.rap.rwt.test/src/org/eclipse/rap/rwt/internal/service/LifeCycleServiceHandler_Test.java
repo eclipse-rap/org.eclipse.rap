@@ -143,7 +143,7 @@ public class LifeCycleServiceHandler_Test {
     simulateShutdownUiRequest();
     service( handler );
 
-    assertNull( UISessionImpl.getInstanceFromSession( httpSession ) );
+    assertNull( UISessionImpl.getInstanceFromSession( httpSession, null ) );
   }
 
   @Test

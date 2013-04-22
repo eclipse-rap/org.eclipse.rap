@@ -44,7 +44,7 @@ public final class UISessionImpl
   implements UISession, HttpSessionBindingListener, SerializableCompatibility
 {
 
-  private static final String ATTR_UI_SESSION = UISessionImpl.class.getName();
+  private static final String ATTR_UI_SESSION = UISessionImpl.class.getName() + "#uisession:";
   private static final String ATTR_LOCALE = UISessionImpl.class.getName() + "#locale";
 
   private final SerializableLock requestLock;
@@ -52,6 +52,7 @@ public final class UISessionImpl
   private final Map<String, Object> attributes;
   private final Set<UISessionListener> listeners;
   private final String id;
+  private final String connectionId;
   private Connection connection;
   private boolean bound;
   private boolean inDestroy;
@@ -60,8 +61,16 @@ public final class UISessionImpl
   private transient ApplicationContextImpl applicationContext;
 
   public UISessionImpl( ApplicationContextImpl applicationContext, HttpSession httpSession ) {
+    this( applicationContext, httpSession, null );
+  }
+
+  public UISessionImpl( ApplicationContextImpl applicationContext,
+                        HttpSession httpSession,
+                        String connectionId )
+  {
     this.applicationContext = applicationContext;
     this.httpSession = httpSession;
+    this.connectionId = connectionId;
     requestLock = new SerializableLock();
     lock = new SerializableLock();
     attributes = new HashMap<String, Object>();
@@ -71,12 +80,13 @@ public final class UISessionImpl
     connection = new ConnectionImpl();
   }
 
-  public static UISessionImpl getInstanceFromSession( HttpSession httpSession ) {
-    return ( UISessionImpl )httpSession.getAttribute( ATTR_UI_SESSION );
+  public static UISessionImpl getInstanceFromSession( HttpSession httpSession, String connectionId )
+  {
+    return ( UISessionImpl )httpSession.getAttribute( getUISessionAttributeName( connectionId ) );
   }
 
   public void attachToHttpSession() {
-    httpSession.setAttribute( ATTR_UI_SESSION, this );
+    httpSession.setAttribute( getUISessionAttributeName( connectionId ), this );
   }
 
   public void setApplicationContext( ApplicationContextImpl applicationContext ) {
@@ -106,7 +116,7 @@ public final class UISessionImpl
   public void shutdown() {
     // Removing the object from the httpSession will trigger the valueUnbound method,
     // which actually kills the session
-    getHttpSession().removeAttribute( ATTR_UI_SESSION );
+    getHttpSession().removeAttribute( getUISessionAttributeName( connectionId ) );
   }
 
   public Object getAttribute( String name ) {
@@ -270,6 +280,10 @@ public final class UISessionImpl
 
   Object getRequestLock() {
     return requestLock;
+  }
+
+  private static String getUISessionAttributeName( String connectionId ) {
+    return ATTR_UI_SESSION + ( connectionId == null ? "" : connectionId );
   }
 
   private void removeAttributeInternal( String name ) {

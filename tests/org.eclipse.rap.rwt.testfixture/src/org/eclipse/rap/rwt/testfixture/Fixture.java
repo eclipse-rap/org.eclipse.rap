@@ -522,7 +522,7 @@ public final class Fixture {
 
   private static void ensureUISession( ServiceContext serviceContext ) {
     HttpSession httpSession = serviceContext.getRequest().getSession( true );
-    UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
+    UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession, null );
     if( uiSession == null ) {
       uiSession = new UISessionBuilder( serviceContext ).buildUISession();
     }

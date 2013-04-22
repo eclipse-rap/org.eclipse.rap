@@ -35,7 +35,7 @@ import org.junit.Test;
 
 public class RWTClusterSupport_Test {
 
-  private static final String ATTR_UI_SESSION = UISessionImpl.class.getName();
+  private static final String ATTR_UI_SESSION = UISessionImpl.class.getName() + "#uisession:";
   private static final String ATTR_REQUEST_COUNTER = RequestCounter.class.getName() + "#instance";
   private final static String ATTR_APPLICATION_CONTEXT = ApplicationContextImpl.class.getName()
                                                          + "#instance";
