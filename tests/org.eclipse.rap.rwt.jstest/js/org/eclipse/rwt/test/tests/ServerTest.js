@@ -28,12 +28,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       assertEquals( "number", typeof TestUtil.getMessageObject().getHead()[ "requestCounter" ] );
     },
 
-    testSendUISessionId : function() {
-      server.setUISessionId( "foo" );
+    testSendUISession : function() {
+      server.setUISession( "foo" );
 
       server.send();
 
-      assertEquals( "foo", TestUtil.getMessageObject().getHead()[ "uiSessionId" ] );
+      assertEquals( "foo", TestUtil.getMessageObject().getHead()[ "uiSession" ] );
     },
 
     testGetServerObject : function() {

@@ -57,7 +57,6 @@ import org.eclipse.swt.widgets.Widget;
 public class DisplayLCA implements DisplayLifeCycleAdapter {
 
   private static final String PROP_REQUEST_COUNTER = "requestCounter";
-  private static final String PROP_UI_SESSION_ID = "uiSessionId";
   static final String PROP_FOCUS_CONTROL = "focusControl";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
   private static final String METHOD_BEEP = "beep";
@@ -120,7 +119,6 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   public void render( Display display ) throws IOException {
     disposeWidgets();
     renderRequestCounter();
-    renderUISessionId( display );
     renderExitConfirmation( display );
     renderEnableUiTests( display );
     renderShells( display );
@@ -164,14 +162,6 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
     int requestId = RequestCounter.getInstance().nextRequestId();
     protocolWriter.appendHead( PROP_REQUEST_COUNTER, requestId );
-  }
-
-  private static void renderUISessionId( Display display ) {
-    if( !getAdapter( display ).isInitialized() ) {
-      ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-      String uiSessionId = ContextProvider.getUISession().getId();
-      protocolWriter.appendHead( PROP_UI_SESSION_ID, uiSessionId );
-    }
   }
 
   private static void renderExitConfirmation( Display display ) {

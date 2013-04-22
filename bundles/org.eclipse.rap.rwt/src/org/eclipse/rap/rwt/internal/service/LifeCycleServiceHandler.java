@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.UI_SESSION;
+
 import java.io.IOException;
 import java.text.MessageFormat;
 
@@ -104,6 +106,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
       UrlParameters.merge();
       runLifeCycle();
     }
+    writeUISessionId();
     writeProtocolMessage( response );
   }
 
@@ -210,6 +213,15 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   private static void setJsonResponseHeaders( ServletResponse response ) {
     response.setContentType( HTTP.CONTENT_TYPE_JSON );
     response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
+  }
+
+  void writeUISessionId() {
+    if( hasInitializeParameter() ) {
+      UISession uiSession = ContextProvider.getUISession();
+      if( uiSession != null ) {
+        ContextProvider.getProtocolWriter().appendHead( UI_SESSION, uiSession.getId() );
+      }
+    }
   }
 
   private static void writeProtocolMessage( ServletResponse response ) throws IOException {

@@ -51,6 +51,10 @@ public final class Message {
     return message.toString();
   }
 
+  public JsonObject getHead() {
+    return message.get( "head" ).asObject();
+  }
+
   public int getRequestCounter() {
     return ( ( Integer )findHeadProperty( "requestCounter" ) ).intValue();
   }

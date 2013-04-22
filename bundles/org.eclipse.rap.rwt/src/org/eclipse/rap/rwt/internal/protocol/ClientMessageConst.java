@@ -16,8 +16,8 @@ package org.eclipse.rap.rwt.internal.protocol;
  */
 public final class ClientMessageConst {
 
-  //////////////////////////
-  // Request parameter names
+  // Head parameters
+  public static final String UI_SESSION = "uiSession";
 
   // SWT keys used to identify which kind of SWT-Event is requested
   public static final String EVENT_SELECTION = "Selection";

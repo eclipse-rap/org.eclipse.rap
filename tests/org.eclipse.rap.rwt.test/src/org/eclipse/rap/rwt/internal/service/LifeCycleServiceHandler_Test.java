@@ -69,6 +69,7 @@ public class LifeCycleServiceHandler_Test {
   private static final String EXIT = "exit|";
 
   private final StringBuilder log = new StringBuilder();
+  private LifeCycleServiceHandler handler;
 
   @Before
   public void setUp() {
@@ -76,6 +77,7 @@ public class LifeCycleServiceHandler_Test {
     EntryPointManager entryPointManager = getApplicationContext().getEntryPointManager();
     entryPointManager.register( "/rap", TestEntryPoint.class, null );
     entryPointManager.register( "/test", TestEntryPoint.class, null );
+    handler = new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() );
   }
 
   @After
@@ -115,7 +117,7 @@ public class LifeCycleServiceHandler_Test {
 
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
-    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+    service( handler );
 
     assertNull( uiSession.getAttribute( SESSION_STORE_ATTRIBUTE ) );
   }
@@ -126,7 +128,7 @@ public class LifeCycleServiceHandler_Test {
 
     LifeCycleServiceHandler.markSessionStarted();
     simulateShutdownUiRequest();
-    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+    service( handler );
 
     assertFalse( uiSession.isBound() );
   }
@@ -138,7 +140,7 @@ public class LifeCycleServiceHandler_Test {
 
     LifeCycleServiceHandler.markSessionStarted();
     simulateShutdownUiRequest();
-    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+    service( handler );
 
     assertNull( UISessionImpl.getInstanceFromSession( httpSession ) );
   }
@@ -149,10 +151,10 @@ public class LifeCycleServiceHandler_Test {
 
     LifeCycleServiceHandler.markSessionStarted();
     simulateShutdownUiRequest();
-    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+    service( handler );
 
     simulateInitialUiRequest();
-    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+    service( handler );
 
     UISession newUiSession = ContextProvider.getUISession();
     assertNotSame( oldUiSession, newUiSession );
@@ -166,10 +168,10 @@ public class LifeCycleServiceHandler_Test {
 
     LifeCycleServiceHandler.markSessionStarted();
     simulateShutdownUiRequest();
-    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+    service( handler );
 
     simulateInitialUiRequest();
-    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+    service( handler );
 
     verify( listener, times( 1 ) ).beforeDestroy( any( UISessionEvent.class ) );
   }
@@ -182,7 +184,7 @@ public class LifeCycleServiceHandler_Test {
 
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
-    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+    service( handler );
 
     assertSame( attribute, httpSession.getAttribute( HTTP_SESSION_ATTRIBUTE ) );
   }
@@ -249,7 +251,7 @@ public class LifeCycleServiceHandler_Test {
   public void testFinishesProtocolWriter() throws IOException {
     simulateUiRequest();
 
-    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+    service( handler );
 
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertTrue( response.getContent().contains( "\"head\":" ) );
@@ -259,7 +261,7 @@ public class LifeCycleServiceHandler_Test {
   public void testContentType() throws IOException {
     simulateUiRequest();
 
-    service( new LifeCycleServiceHandler( mockLifeCycleFactory(), mockStartupPage() ) );
+    service( handler );
 
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
@@ -342,6 +344,40 @@ public class LifeCycleServiceHandler_Test {
     assertEquals( "session timeout", message.getError() );
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertEquals( HttpServletResponse.SC_FORBIDDEN, response.getStatus() );
+  }
+
+  @Test
+  public void testWriteUISessionId() {
+    simulateInitialUiRequest();
+
+    handler.writeUISessionId();
+
+    Message message = Fixture.getProtocolMessage();
+    String expected = ContextProvider.getUISession().getId();
+    assertEquals( expected, message.getHead().get( "uiSession" ).asString() );
+  }
+
+  @Test
+  public void testWriteUISessionId_whenUISessionIsNotBound() {
+    simulateInitialUiRequest();
+    UISession uiSession = mock( UISession.class );
+    when( Boolean.valueOf( uiSession.isBound() ) ).thenReturn( Boolean.FALSE );
+    ContextProvider.getContext().setUISession( uiSession );
+
+    handler.writeUISessionId();
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.getHead().get( "uiSession" ) );
+  }
+
+  @Test
+  public void testWriteUISessionId_ifNotInitialUiRequest() {
+    simulateUiRequest();
+
+    handler.writeUISessionId();
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.getHead().get( "uiSession" ) );
   }
 
   private void simulateInitialUiRequest() {
