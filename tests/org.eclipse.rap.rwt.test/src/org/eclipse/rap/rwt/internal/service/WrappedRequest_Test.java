@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
@@ -112,8 +113,8 @@ public class WrappedRequest_Test {
     ServiceHandler handler = getApplicationContext().getServiceManager().getHandler();
 
     Fixture.fakeNewRequest();
-    Fixture.fakeHeadParameter( RequestParams.RWT_INITIALIZE, "true" );
-    Fixture.fakeHeadParameter( RequestParams.QUERY_STRING, "param=value" );
+    Fixture.fakeHeadParameter( ClientMessageConst.RWT_INITIALIZE, "true" );
+    Fixture.fakeHeadParameter( ClientMessageConst.QUERY_STRING, "param=value" );
     handler.service( ContextProvider.getRequest(), ContextProvider.getResponse() );
 
     assertEquals( "value", ContextProvider.getRequest().getParameter( "param" ) );

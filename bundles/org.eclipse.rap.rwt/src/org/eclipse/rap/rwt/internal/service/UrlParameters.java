@@ -19,6 +19,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 
 
@@ -37,7 +38,7 @@ final class UrlParameters {
   }
 
   private static Map<String, String[]> getAll() {
-    String queryString = readHeadPropertyValue( RequestParams.QUERY_STRING );
+    String queryString = readHeadPropertyValue( ClientMessageConst.QUERY_STRING );
     return queryString == null ? null : createParametersMap( queryString );
   }
 
@@ -71,7 +72,7 @@ final class UrlParameters {
   }
 
   private static boolean hasInitializeParameter() {
-    return "true".equals( readHeadPropertyValue( RequestParams.RWT_INITIALIZE ) );
+    return "true".equals( readHeadPropertyValue( ClientMessageConst.RWT_INITIALIZE ) );
   }
 
   private UrlParameters() {

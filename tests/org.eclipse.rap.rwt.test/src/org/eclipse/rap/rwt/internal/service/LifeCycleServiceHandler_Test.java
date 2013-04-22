@@ -42,6 +42,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.ServiceHandler;
@@ -382,14 +383,14 @@ public class LifeCycleServiceHandler_Test {
 
   private void simulateInitialUiRequest() {
     Fixture.fakeNewRequest();
-    Fixture.fakeHeadParameter( RequestParams.RWT_INITIALIZE, "true" );
+    Fixture.fakeHeadParameter( ClientMessageConst.RWT_INITIALIZE, "true" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
   }
 
   private void simulateShutdownUiRequest() {
     Fixture.fakeNewRequest();
-    Fixture.fakeHeadParameter( RequestParams.RWT_SHUTDOWN, "true" );
+    Fixture.fakeHeadParameter( ClientMessageConst.RWT_SHUTDOWN, "true" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
   }

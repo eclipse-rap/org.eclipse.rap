@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNull;
 
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
 import org.junit.Before;
@@ -36,8 +37,8 @@ public class UrlParameters_Test {
 
   @Test
   public void testMerge_InitialPostRequest() {
-    Fixture.fakeHeadParameter( RequestParams.RWT_INITIALIZE, "true" );
-    Fixture.fakeHeadParameter( RequestParams.QUERY_STRING, "key1=value1&key2=value2" );
+    Fixture.fakeHeadParameter( ClientMessageConst.RWT_INITIALIZE, "true" );
+    Fixture.fakeHeadParameter( ClientMessageConst.QUERY_STRING, "key1=value1&key2=value2" );
 
     UrlParameters.merge();
 
@@ -47,7 +48,7 @@ public class UrlParameters_Test {
 
   @Test
   public void testMerge_NotInitialPostRequest() {
-    Fixture.fakeHeadParameter( RequestParams.QUERY_STRING, "key1=value1&key2=value2" );
+    Fixture.fakeHeadParameter( ClientMessageConst.QUERY_STRING, "key1=value1&key2=value2" );
 
     UrlParameters.merge();
 

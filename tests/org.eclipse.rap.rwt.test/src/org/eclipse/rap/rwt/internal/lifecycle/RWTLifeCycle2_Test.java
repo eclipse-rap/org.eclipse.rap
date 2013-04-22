@@ -38,7 +38,6 @@ import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -347,7 +346,7 @@ public class RWTLifeCycle2_Test {
     result.setSession( session );
     Fixture.fakeHeadParameter( "requestCounter", String.valueOf( count ) );
     if( count == 0 ) {
-      Fixture.fakeHeadParameter( RequestParams.RWT_INITIALIZE, "true" );
+      Fixture.fakeHeadParameter( ClientMessageConst.RWT_INITIALIZE, "true" );
     }
     return result;
   }

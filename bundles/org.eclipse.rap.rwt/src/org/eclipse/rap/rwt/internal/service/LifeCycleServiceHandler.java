@@ -29,6 +29,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
@@ -203,11 +204,11 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   }
 
   private static boolean isSessionShutdown() {
-    return "true".equals( ProtocolUtil.readHeadPropertyValue( RequestParams.RWT_SHUTDOWN ) );
+    return "true".equals( ProtocolUtil.readHeadPropertyValue( ClientMessageConst.RWT_SHUTDOWN ) );
   }
 
   private static boolean hasInitializeParameter() {
-    return "true".equals( ProtocolUtil.readHeadPropertyValue( RequestParams.RWT_INITIALIZE ) );
+    return "true".equals( ProtocolUtil.readHeadPropertyValue( ClientMessageConst.RWT_INITIALIZE ) );
   }
 
   private static void setJsonResponseHeaders( ServletResponse response ) {
