@@ -45,8 +45,8 @@ public class BrowserNavigationImpl_Test {
   @Before
   public void setUp() {
     Fixture.setUp();
-    new Display();
     navigation = new BrowserNavigationImpl();
+    new Display();
     Fixture.fakeNewRequest();
   }
 
