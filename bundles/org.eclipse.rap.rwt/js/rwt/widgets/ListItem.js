@@ -30,11 +30,6 @@ rwt.qx.Class.define("rwt.widgets.ListItem", {
       init : "list-item"
     },
 
-    minWidth : {
-      refine : true,
-      init : "auto"
-    },
-
     width : {
       refine : true,
       init : null

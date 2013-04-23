@@ -33,8 +33,7 @@ var appearances = {
         height : "auto",
         horizontalChildrenAlign : "left",
         verticalChildrenAlign : "middle",
-        spacing : 4,
-        minWidth : "auto"
+        spacing : 4
       };
       result.textColor = tv.getCssColor( "List-Item", "color" );
       result.backgroundColor = tv.getCssColor( "List-Item", "background-color" );

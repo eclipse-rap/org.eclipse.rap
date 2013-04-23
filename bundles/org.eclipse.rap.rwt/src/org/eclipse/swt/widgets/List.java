@@ -1192,7 +1192,11 @@ public class List extends Scrollable {
     int height = 0;
     if( getItemCount() > 0 ) {
       int availableWidth = getClientArea().width;
-      width = Math.max( getMaxItemWidth(), availableWidth );
+      if( ( style & SWT.H_SCROLL ) != 0 ) {
+        width = Math.max( getMaxItemWidth(), availableWidth );
+      } else {
+        width = availableWidth;
+      }
       height = getItemHeight();
     }
     return new Point( width, height );

@@ -218,11 +218,13 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
           // TODO [rh] optimize this: context menu should be handled by the List
           //      itself for all its ListItems
           var item = new rwt.widgets.ListItem();
+          if( this._markupEnabled ) {
+            item.setFlexibleCell( 0 );
+          }
           item.addEventListener( "mouseover", this._onListItemMouseOver, this );
           item.addEventListener( "mouseout", this._onListItemMouseOut, this );
           // prevent items from being drawn outside the list
-          item.setWidth( this._itemWidth );
-          item.setHeight( this._itemHeight );
+          this._renderItemDimension( item );
           item.setContextMenu( this.getContextMenu() );
           item.setTabIndex( null );
           item.setLabel( items[ i ] );
@@ -337,8 +339,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
       this._itemHeight = height;
       var items = this.getItems();
       for( var i = 0; i < items.length; i++ ) {
-        items[ i ].setWidth( this._itemWidth );
-        items[ i ].setHeight( this._itemHeight );
+        this._renderItemDimension( items[ i ] );
       }
       this._vertScrollBar.setIncrement( height );
       this._updateScrollDimension();
@@ -361,6 +362,11 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
         this.addState( value );
       } );
       this.base( arguments, value );
+    },
+
+    _renderItemDimension : function( item ) {
+      item.setWidth( this._itemWidth );
+      item.setHeight( this._itemHeight );
     },
 
     _onListItemMouseOver : function( evt ) {

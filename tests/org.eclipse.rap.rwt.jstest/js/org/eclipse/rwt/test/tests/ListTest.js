@@ -114,6 +114,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var widget = ObjectRegistry.getObject( "w3" );
       var items = widget.getItems();
       assertEquals( "&nbsp; foo &amp; bar&nbsp;", items[ 0 ].getLabel() );
+      assertEquals( -1, items[ 0 ].getFlexibleCell() );
       shell.destroy();
       widget.destroy();
     },
@@ -134,6 +135,28 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var widget = ObjectRegistry.getObject( "w3" );
       var items = widget.getItems();
       assertEquals( "<b>bold</b>  </br>  <i>italic</i>", items[ 0 ].getLabel() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testItemsWithMarkupHaveFlexiCell : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      MessageProcessor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.List",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "markupEnabled" : true,
+          "items" : [ "<b>bold</b>  </br>  <i>italic</i>" ]
+        }
+      } );
+      var widget = ObjectRegistry.getObject( "w3" );
+
+      var items = widget.getItems();
+
+      assertEquals( 0, items[ 0 ].getFlexibleCell() );
       shell.destroy();
       widget.destroy();
     },

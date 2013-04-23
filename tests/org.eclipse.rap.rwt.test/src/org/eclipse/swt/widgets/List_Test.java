@@ -1354,6 +1354,16 @@ public class List_Test {
   }
 
   @Test
+  public void testLimitedItemDimensions() {
+    List list = new List( shell, SWT.V_SCROLL );
+
+    list.setSize( 100, 100 );
+    list.add( "Very long list item" );
+
+    assertEquals( new Point( list.getClientArea().width, 26 ), list.getItemDimensions() );
+  }
+
+  @Test
   public void testIsSerialized() throws Exception {
     String listItem = "listItem";
     List list = new List( shell, SWT.NONE  );
