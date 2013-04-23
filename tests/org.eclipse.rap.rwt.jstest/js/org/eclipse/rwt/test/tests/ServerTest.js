@@ -140,6 +140,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       TestUtil.protocolSet( "rwt.client.ConnectionMessages", { "waitHintTimeout" : 1999 } );
 
       assertEquals( 1999, server.getWaitHintTimer().getInterval() );
+    },
+
+    testRequestUrl : function() {
+      server.setUrl( "foo" );
+      var request = server._createRequest();
+
+      var expected = "foo?cid=" + server.getConnectionId();
+      assertEquals( expected, request._url );
+    },
+
+    testRequestUrlWithParameters : function() {
+      server.setUrl( "foo?bar=23" );
+      var request = server._createRequest();
+
+      var expected = "foo?bar=23&cid=" + server.getConnectionId();
+      assertEquals( expected, request._url );
     }
 
   }

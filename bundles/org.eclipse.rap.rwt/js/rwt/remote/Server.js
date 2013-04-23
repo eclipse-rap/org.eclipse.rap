@@ -31,6 +31,7 @@ rwt.qx.Class.define( "rwt.remote.Server", {
     this._writer = null;
     this._event = null;
     this._requestCounter = null;
+    this._connectionId = this._generateConnectionId();
     this._sendTimer = new Timer( 60 );
     this._sendTimer.addEventListener( "interval", function() {
       this.sendImmediate( true );
@@ -81,6 +82,14 @@ rwt.qx.Class.define( "rwt.remote.Server", {
 
     getUISession : function() {
       return this._uiSession;
+    },
+
+    getConnectionId : function() {
+      return this._connectionId;
+    },
+
+    _generateConnectionId : function() {
+      return Math.floor( Math.random() * 0xffffffff ).toString( 16 );
     },
 
     _flushEvent : function() {
@@ -177,7 +186,9 @@ rwt.qx.Class.define( "rwt.remote.Server", {
     // Internals
 
     _createRequest : function() {
-      var result = new rwt.remote.Request( this._url, "POST", "application/json" );
+      var parameters = "cid=" + this._connectionId;
+      var url = this._url + ( this._url.indexOf( "?" ) >= 0 ? "&" : "?" ) + parameters;
+      var result = new rwt.remote.Request( url, "POST", "application/json" );
       result.setSuccessHandler( this._handleSuccess, this );
       result.setErrorHandler( this._handleError, this );
       return result;
