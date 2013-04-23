@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -17,7 +17,6 @@ rwt.qx.Class.define("rwt.widgets.ListItem", {
 
   construct : function() {
     this.base( arguments, [ "label" ] );
-    this.initMinWidth();
     this.setHorizontalChildrenAlign( "left" );
     // Fix for Bug 396835 - [List][Combo] Lists can scroll over maximum in IE7/8
     this.setContainerOverflow( false );
@@ -63,6 +62,11 @@ rwt.qx.Class.define("rwt.widgets.ListItem", {
       var input = ( typeof value === "string" ) ? value.toLowerCase() : "";
       content = ( typeof content === "string" ) ? content.toLowerCase() : "";
       return input !== "" && content.indexOf( input ) === 0;
+    },
+
+    // overwritten:
+    getCellHeight : function( cell ) {
+      return this.getHeight() - this.getPaddingTop();
     }
 
   }

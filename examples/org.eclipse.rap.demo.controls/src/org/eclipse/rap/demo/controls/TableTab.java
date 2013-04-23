@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -64,6 +65,8 @@ public class TableTab extends ExampleTab {
   private Image largeImage;
   private ServerPushSession pushSession;
 
+  private boolean markup;
+
   public TableTab() {
     super( "Table" );
     pushSession = new ServerPushSession();
@@ -84,6 +87,7 @@ public class TableTab extends ExampleTab {
     createLinesVisibleButton();
     createColumnsMoveableButton();
     createColumnImagesButton();
+    createMarkupButton();
     createFgColorButton();
     createBgColorButton();
     createBgImageButton();
@@ -105,6 +109,7 @@ public class TableTab extends ExampleTab {
     createPackColumnsButton();
     createChangeItemControl();
     createChangeItemCountControl();
+    createChangeItemHeightControl();
     createImagesControl();
     createAlignmentControl();
     createBackgroundControl();
@@ -127,6 +132,7 @@ public class TableTab extends ExampleTab {
     parent.setLayout( layout );
     int style = getStyle();
     table = new Table( parent, style );
+    table.setData( RWT.MARKUP_ENABLED, new Boolean( markup ) );
     table.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
@@ -250,6 +256,21 @@ public class TableTab extends ExampleTab {
       }
     } );
   }
+
+  protected Button createMarkupButton( ) {
+    final Button button = new Button( styleComp, SWT.CHECK );
+    button.setText( "Markup" );
+    button.setSelection( markup );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        markup = button.getSelection();
+        createNew();
+      }
+    } );
+    return button;
+  }
+
 
   private void createColumnImagesButton() {
     final Button button = new Button( styleComp, SWT.CHECK );
@@ -593,6 +614,29 @@ public class TableTab extends ExampleTab {
       @Override
       public void widgetSelected( SelectionEvent event ) {
         updateVirtualItemsDelayed = cbDelayedUpdate.getSelection();
+      }
+    } );
+  }
+
+  private void createChangeItemHeightControl() {
+    Composite composite = new Composite( styleComp, SWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    Label lblItemCount = new Label( composite, SWT.NONE );
+    lblItemCount.setText( "ItemHeight" );
+    final Text txtItemHeight = new Text( composite, SWT.BORDER );
+    Button btnChange = new Button( composite, SWT.PUSH );
+    btnChange.setText( "Change" );
+    btnChange.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        Integer itemHeight = null;
+        try {
+          itemHeight = new Integer( Integer.parseInt( txtItemHeight.getText() ) );
+        } catch( NumberFormatException e ) {
+          // ignore invalid item count
+        }
+        getTable().setData( RWT.CUSTOM_ITEM_HEIGHT, itemHeight );
+        getTable().redraw();
       }
     } );
   }

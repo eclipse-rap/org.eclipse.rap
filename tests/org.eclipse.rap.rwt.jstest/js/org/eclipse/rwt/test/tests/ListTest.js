@@ -161,6 +161,31 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       widget.destroy();
     },
 
+    testItemCellHeightIgnoresBottomPadding : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      MessageProcessor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.List",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "items" : [ "foo" ],
+          "itemDimensions" : [ 100, 30 ]
+        }
+      } );
+      TestUtil.flush();
+      var widget = ObjectRegistry.getObject( "w3" );
+
+      var item = widget.getItems()[ 0 ];
+
+      var paddingTop = 6;
+      assertEquals( 30 - paddingTop, item.getCellHeight( 0 ) );
+      assertEquals( 6, parseInt( item.getCellNode( 0 ).style.top, 10 ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testSetSingleSelectionIndicesByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       MessageProcessor.processOperation( {
