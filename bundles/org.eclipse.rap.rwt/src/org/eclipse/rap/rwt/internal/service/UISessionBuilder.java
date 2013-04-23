@@ -35,7 +35,7 @@ public class UISessionBuilder {
     ApplicationContextImpl applicationContext = serviceContext.getApplicationContext();
     HttpServletRequest request = serviceContext.getRequest();
     HttpSession httpSession = request.getSession( true );
-    String connectionId = request.getParameter( UrlParameters.PARAM_CID );
+    String connectionId = request.getParameter( UrlParameters.PARAM_CONNECTION_ID );
     uiSession = new UISessionImpl( applicationContext, httpSession, connectionId );
   }
 

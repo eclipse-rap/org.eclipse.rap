@@ -88,7 +88,7 @@ public class RWTClusterSupport implements Filter {
     if( uiSession != null ) {
       uiSession.attachToHttpSession();
     }
-    RequestCounter.reattachToHttpSession( httpSession );
+    RequestCounter.reattachToHttpSession( httpSession, null );
   }
 
   private static HttpSession getHttpSession( ServletRequest request ) {

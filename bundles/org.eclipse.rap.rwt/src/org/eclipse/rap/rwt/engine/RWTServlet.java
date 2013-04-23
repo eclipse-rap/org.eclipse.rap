@@ -135,7 +135,7 @@ public class RWTServlet extends HttpServlet {
     synchronized( RWTServlet.class ) {
       HttpServletRequest request = serviceContext.getRequest();
       HttpSession httpSession = request.getSession( true );
-      String connectionId = request.getParameter( UrlParameters.PARAM_CID );
+      String connectionId = request.getParameter( UrlParameters.PARAM_CONNECTION_ID );
       UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession, connectionId );
       if( uiSession == null ) {
         uiSession = new UISessionBuilder( serviceContext ).buildUISession();
