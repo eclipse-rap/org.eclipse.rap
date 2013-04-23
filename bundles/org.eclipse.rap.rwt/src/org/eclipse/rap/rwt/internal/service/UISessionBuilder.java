@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.service;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.RWT;
@@ -26,16 +27,15 @@ import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 
 public class UISessionBuilder {
 
-  private static final String PARAM_CID = "cid";
-
   private final ServiceContext serviceContext;
   private final UISessionImpl uiSession;
 
   public UISessionBuilder( ServiceContext serviceContext ) {
     this.serviceContext = serviceContext;
     ApplicationContextImpl applicationContext = serviceContext.getApplicationContext();
-    HttpSession httpSession = serviceContext.getRequest().getSession( true );
-    String connectionId = serviceContext.getRequest().getParameter( PARAM_CID );
+    HttpServletRequest request = serviceContext.getRequest();
+    HttpSession httpSession = request.getSession( true );
+    String connectionId = request.getParameter( UrlParameters.PARAM_CID );
     uiSession = new UISessionImpl( applicationContext, httpSession, connectionId );
   }
 
