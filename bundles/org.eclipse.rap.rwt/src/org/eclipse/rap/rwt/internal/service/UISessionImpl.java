@@ -271,6 +271,10 @@ public final class UISessionImpl
     }
   }
 
+  public String getConnectionId() {
+    return connectionId;
+  }
+
   /*
    * test hook
    */

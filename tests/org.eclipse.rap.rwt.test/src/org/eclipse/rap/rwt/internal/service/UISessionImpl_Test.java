@@ -721,6 +721,18 @@ public class UISessionImpl_Test {
     assertNull( deserializedUiSession.getApplicationContext() );
   }
 
+  @Test
+  public void testGetConnectionId_withoutConnectionId() {
+    assertNull( uiSession.getConnectionId() );
+  }
+
+  @Test
+  public void testGetConnectionId_withConnectionId() {
+    uiSession = new UISessionImpl( applicationContext, httpSession, "foo" );
+
+    assertEquals( "foo", uiSession.getConnectionId() );
+  }
+
   private static Client mockClientWithLocale( Locale locale ) {
     Client client = mock( Client.class );
     ClientInfo clientInfo = mock( ClientInfo.class );

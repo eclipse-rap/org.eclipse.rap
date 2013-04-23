@@ -12,6 +12,7 @@ package org.eclipse.rap.rwt.internal.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
@@ -143,6 +144,27 @@ public class UISessionBuilder_Test {
       fail();
     } catch( IllegalArgumentException expected ) {
     }
+  }
+
+  @Test
+  public void testUISessionContainsConnectionId() {
+    registerEntryPoint( null );
+    request.setParameter( "cid", "foo" );
+
+    UISessionBuilder builder = new UISessionBuilder( serviceContext );
+    UISessionImpl uiSession = builder.buildUISession();
+
+    assertEquals( "foo", uiSession.getConnectionId() );
+  }
+
+  @Test
+  public void testUISessionContainsNullConnectionId() {
+    registerEntryPoint( null );
+
+    UISessionBuilder builder = new UISessionBuilder( serviceContext );
+    UISessionImpl uiSession = builder.buildUISession();
+
+    assertNull( uiSession.getConnectionId() );
   }
 
   @Test

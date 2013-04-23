@@ -26,13 +26,17 @@ import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 
 public class UISessionBuilder {
 
+  private static final String PARAM_CID = "cid";
+
   private final ServiceContext serviceContext;
   private final UISessionImpl uiSession;
 
   public UISessionBuilder( ServiceContext serviceContext ) {
     this.serviceContext = serviceContext;
+    ApplicationContextImpl applicationContext = serviceContext.getApplicationContext();
     HttpSession httpSession = serviceContext.getRequest().getSession( true );
-    uiSession = new UISessionImpl( serviceContext.getApplicationContext(), httpSession );
+    String connectionId = serviceContext.getRequest().getParameter( PARAM_CID );
+    uiSession = new UISessionImpl( applicationContext, httpSession, connectionId );
   }
 
   public UISessionImpl buildUISession() {
