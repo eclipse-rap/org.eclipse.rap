@@ -1271,9 +1271,13 @@ public class List extends Scrollable {
   }
 
   boolean needsHScrollBar() {
-    int availableWidth = getClientArea().width;
-    int width = getMaxItemWidth();
-    return width > availableWidth;
+    boolean result = false;
+    if( ( style & SWT.H_SCROLL ) != 0 ) {
+      int availableWidth = getClientArea().width;
+      int width = getMaxItemWidth();
+      result = width > availableWidth;
+    }
+    return result;
   }
 
   void updateScrollBars() {
