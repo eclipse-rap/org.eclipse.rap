@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
@@ -59,6 +60,7 @@ public class ListTab extends ExampleTab {
   private List list;
   private List list2;
   private ListViewer listViewer;
+  private boolean markup;
 
   public ListTab() {
     super( "List" );
@@ -73,6 +75,7 @@ public class ListTab extends ExampleTab {
     createStyleButton( "V_SCROLL", SWT.V_SCROLL );
     createVisibilityButton();
     createEnablementButton();
+    createMarkupButton();
     createFgColorButton();
     createBgColorButton();
     createBgImageButton();
@@ -120,9 +123,14 @@ public class ListTab extends ExampleTab {
 
     // List 2
     list2 = new List( parent, style );
+    list2.setData( RWT.MARKUP_ENABLED, new Boolean( markup ) );
     list2.add( "Item 0" );
     list2.add( "Item 1" );
     list2.add( "Item 2" );
+    if( markup ) {
+      list2.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 60 ) );
+      list2.add( "<b>Some Markup Text</b><br/><i>This is italic</i>" );
+    }
     list2.setLayoutData( new GridData( GridData.FILL_BOTH ) );
     registerControl( list2 );
     createPopupMenu( parent.getShell(), list2 );
@@ -187,6 +195,19 @@ public class ListTab extends ExampleTab {
         listViewer.setSelection( new StructuredSelection( ELEMENTS.get( 0 ) ) );
       }
     } );
+  }
+  protected Button createMarkupButton( ) {
+    final Button button = new Button( styleComp, SWT.CHECK );
+    button.setText( "Markup" );
+    button.setSelection( markup );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        markup = button.getSelection();
+        createNew();
+      }
+    } );
+    return button;
   }
 
   private void createAddItemsControls( Composite parent ) {

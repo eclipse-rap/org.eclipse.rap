@@ -652,7 +652,7 @@ abstract class ExampleTab implements Serializable {
     }
   }
 
-  private void updateEnabled( ) {
+  private void updateEnabled() {
     Iterator<Control> iter = controls.iterator();
     while( iter.hasNext() ) {
       Control control = iter.next();

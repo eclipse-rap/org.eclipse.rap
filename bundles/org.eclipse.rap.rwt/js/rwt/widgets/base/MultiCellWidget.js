@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -604,7 +604,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
           if( this._cellHasContent( i ) ) {
             style = this.getCellNode( i ).style;
             style.left = left + "px";
-            style.width = width  + "px";
+            style.width = Math.max( 0, width ) + "px";
           }
           left += ( width + space );
         }
@@ -641,7 +641,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       }
       var style = this.getCellNode( cell ).style;
       style.top = top + "px";
-      style.height = height + "px";
+      style.height = Math.max( 0, height ) + "px";
     },
 
     /*
