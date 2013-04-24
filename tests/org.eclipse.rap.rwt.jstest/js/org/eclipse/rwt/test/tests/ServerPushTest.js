@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,14 +21,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerPushTest", {
 
   members : {
 
-    testCreateServerPushByProtocol : function() {
-      var uiCallBack = this._createUICallBack();
-      assertTrue( uiCallBack instanceof rwt.client.ServerPush );
-      assertIdentical( uiCallBack, rwt.client.ServerPush.getInstance() );
+    testServerPushInstance : function() {
+      var serverPush = this._createServerPush();
+      assertTrue( serverPush instanceof rwt.client.ServerPush );
+      assertIdentical( serverPush, rwt.client.ServerPush.getInstance() );
     },
 
     testSetActiveByProtocol : function() {
-      var uiCallBack = this._createUICallBack();
+      var serverPush = this._createServerPush();
       Processor.processOperation( {
         "target" : "rwt.client.ServerPush",
         "action" : "set",
@@ -36,21 +36,33 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerPushTest", {
           "active" : true
         }
       } );
-      assertTrue( uiCallBack._active );
+      assertTrue( serverPush._active );
     },
 
     testSendUIRequestByProtocol : function() {
       TestUtil.initRequestLog();
-      var uiCallBack = this._createUICallBack();
-      uiCallBack.setActive( true );
+      var serverPush = this._createServerPush();
+      serverPush.setActive( true );
 
-      uiCallBack.sendUICallBackRequest();
-      TestUtil.forceInterval( uiCallBack._requestTimer );
+      serverPush.sendUICallBackRequest();
+      TestUtil.forceInterval( serverPush._requestTimer );
 
       assertEquals( 2, TestUtil.getRequestsSend() );
     },
 
-    _createUICallBack : function() {
+    testCreateRequest : function() {
+      var server = rwt.remote.Server.getInstance();
+      var serverPush = this._createServerPush();
+
+      var request = serverPush._createRequest();
+
+      var expected = "servicehandler=org.eclipse.rap.serverpush&cid=" + server.getConnectionId();
+      assertEquals( expected, request.getData() );
+      assertEquals( "GET", request._method );
+      assertEquals( "application/javascript", request._responseType );
+    },
+
+    _createServerPush : function() {
       return ObjectManager.getObject( "rwt.client.ServerPush" );
     }
 

@@ -51,12 +51,16 @@ rwt.client.ServerPush.prototype = {
   // workaround for bug 353819 - send UICallBackRequest with a timer
   _doSendUICallBackRequest : function() {
     this._requestTimer.stop();
-    var url = rwt.remote.Server.getInstance().getUrl();
-    var request = new rwt.remote.Request( url, "GET", "application/javascript" );
+    this._createRequest().send();
+  },
+
+  _createRequest : function() {
+    var server = rwt.remote.Server.getInstance();
+    var request = new rwt.remote.Request( server.getUrl(), "GET", "application/javascript" );
     request.setSuccessHandler( this._handleSuccess, this );
     request.setErrorHandler( this._handleError, this );
-    request.setData( "servicehandler=org.eclipse.rap.serverpush" );
-    request.send();
+    request.setData( "servicehandler=org.eclipse.rap.serverpush&cid=" + server.getConnectionId() );
+    return request;
   },
 
   _handleSuccess : function( event ) {

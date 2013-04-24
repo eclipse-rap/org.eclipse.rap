@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.engine;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.endsWith;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -35,9 +36,9 @@ import org.junit.Test;
 
 public class RWTClusterSupport_Test {
 
-  private static final String ATTR_UI_SESSION = UISessionImpl.class.getName();
-  private static final String ATTR_REQUEST_COUNTER = RequestCounter.class.getName() + "#instance";
-  private final static String ATTR_APPLICATION_CONTEXT = ApplicationContextImpl.class.getName()
+  private static final String ATTR_UI_SESSION = UISessionImpl.class.getName() + "#uisession:";
+  private static final String ATTR_REQUEST_COUNTER = RequestCounter.class.getName() + "#instance:";
+  private static final String ATTR_APPLICATION_CONTEXT = ApplicationContextImpl.class.getName()
                                                          + "#instance";
   private RWTClusterSupport rwtClusterSupport;
   private FilterChain chain;
@@ -92,6 +93,20 @@ public class RWTClusterSupport_Test {
   }
 
   @Test
+  public void testDoFilter_attachesApplicationContextToUISessionWithConnectionId() throws Exception {
+    ApplicationContextImpl applicationContext = mock( ApplicationContextImpl.class );
+    HttpSession httpSession = mockHttpSession( mockServletContext( applicationContext ) );
+    request.setSession( httpSession );
+    request.setParameter( "cid", "foo" );
+    UISessionImpl deserializedUISession = new UISessionImpl( null, httpSession, "foo" );
+    setUISession( httpSession, deserializedUISession );
+
+    rwtClusterSupport.doFilter( request, response, chain );
+
+    assertSame( applicationContext, deserializedUISession.getApplicationContext() );
+  }
+
+  @Test
   public void testDoFilter_marksUISessionAsChanged() throws Exception {
     HttpSession httpSession = mockHttpSession();
     request.setSession( httpSession );
@@ -104,6 +119,19 @@ public class RWTClusterSupport_Test {
   }
 
   @Test
+  public void testDoFilter_marksUISessionAsChangedWithConnectionId() throws Exception {
+    HttpSession httpSession = mockHttpSession();
+    request.setSession( httpSession );
+    request.setParameter( "cid", "foo" );
+    UISessionImpl deserializedUISession = new UISessionImpl( null, httpSession, "foo" );
+    setUISession( httpSession, deserializedUISession );
+
+    rwtClusterSupport.doFilter( request, response, chain );
+
+    verify( httpSession ).setAttribute( endsWith( "foo" ), same( deserializedUISession ) );
+  }
+
+  @Test
   public void testDoFilter_marksRequestCounterAsChanged() throws Exception {
     HttpSession httpSession = mock( HttpSession.class );
     request.setSession( httpSession );
@@ -111,6 +139,17 @@ public class RWTClusterSupport_Test {
     rwtClusterSupport.doFilter( request, response, chain );
 
     verify( httpSession ).setAttribute( eq( ATTR_REQUEST_COUNTER ), any( RequestCounter.class ) );
+  }
+
+  @Test
+  public void testDoFilter_marksRequestCounterAsChangedWithConnectionId() throws Exception {
+    HttpSession httpSession = mock( HttpSession.class );
+    request.setSession( httpSession );
+    request.setParameter( "cid", "foo" );
+
+    rwtClusterSupport.doFilter( request, response, chain );
+
+    verify( httpSession ).setAttribute( endsWith( "foo" ), any( RequestCounter.class ) );
   }
 
   private static HttpSession mockHttpSession() {
@@ -130,7 +169,12 @@ public class RWTClusterSupport_Test {
   }
 
   private static void setUISession( HttpSession httpSession, UISessionImpl uiSession ) {
-    when( httpSession.getAttribute( eq( ATTR_UI_SESSION ) ) ).thenReturn( uiSession );
+    String attributeName = ATTR_UI_SESSION;
+    String connectionId = uiSession.getConnectionId();
+    if( connectionId != null ) {
+      attributeName += connectionId;
+    }
+    when( httpSession.getAttribute( eq( attributeName ) ) ).thenReturn( uiSession );
   }
 
 }

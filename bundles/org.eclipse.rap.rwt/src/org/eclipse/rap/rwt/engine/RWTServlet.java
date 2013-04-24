@@ -28,6 +28,7 @@ import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.service.UISessionBuilder;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
+import org.eclipse.rap.rwt.internal.service.UrlParameters;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 
 
@@ -129,11 +130,13 @@ public class RWTServlet extends HttpServlet {
     return context;
   }
 
-  private static void ensureUISession( ServiceContext serviceContext ) {
-    // Ensure that there is exactly one UISession per session created
+  static void ensureUISession( ServiceContext serviceContext ) {
+    // Ensure that there is exactly one UISession per connection created
     synchronized( RWTServlet.class ) {
-      HttpSession httpSession = serviceContext.getRequest().getSession( true );
-      UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession );
+      HttpServletRequest request = serviceContext.getRequest();
+      HttpSession httpSession = request.getSession( true );
+      String connectionId = request.getParameter( UrlParameters.PARAM_CONNECTION_ID );
+      UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession, connectionId );
       if( uiSession == null ) {
         uiSession = new UISessionBuilder( serviceContext ).buildUISession();
       }

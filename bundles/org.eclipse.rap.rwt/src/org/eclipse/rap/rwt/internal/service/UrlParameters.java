@@ -23,7 +23,9 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 
 
-final class UrlParameters {
+public final class UrlParameters {
+
+  public static final String PARAM_CONNECTION_ID = "cid";
 
   static void merge() {
     if( hasInitializeParameter() ) {

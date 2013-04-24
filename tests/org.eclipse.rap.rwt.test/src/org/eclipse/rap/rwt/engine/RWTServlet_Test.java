@@ -29,18 +29,22 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rap.rwt.testfixture.TestSession;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,6 +60,11 @@ public class RWTServlet_Test {
     servlet = new RWTServlet();
     request = new TestRequest();
     response = new TestResponse();
+  }
+
+  @After
+  public void tearDown() {
+    ContextProvider.disposeContext();
   }
 
   @Test
@@ -130,6 +139,49 @@ public class RWTServlet_Test {
     servlet.doPost( request, new TestResponse() );
 
     assertSame( applicationContext, captor.get() );
+  }
+
+  @Test
+  public void testEnsureUISession() {
+    request.setSession( new TestSession() );
+    ServiceContext serviceContext
+      = new ServiceContext( request, response, createApplicationContext() );
+    ContextProvider.setContext( serviceContext );
+
+    RWTServlet.ensureUISession( serviceContext );
+
+    assertNotNull( serviceContext.getUISession() );
+  }
+
+  @Test
+  public void testEnsureUISession_returnsExistingUISession() {
+    ApplicationContextImpl applicationContext = createApplicationContext();
+    HttpSession httpSession = new TestSession();
+    request.setSession( httpSession );
+    UISessionImpl uiSession = new UISessionImpl( applicationContext, httpSession );
+    uiSession.attachToHttpSession();
+    ServiceContext serviceContext = new ServiceContext( request, response, applicationContext );
+    ContextProvider.setContext( serviceContext );
+
+    RWTServlet.ensureUISession( serviceContext );
+
+    assertSame( uiSession, serviceContext.getUISession() );
+  }
+
+  @Test
+  public void testEnsureUISession_returnsExistingUISession_withConnectionId() {
+    ApplicationContextImpl applicationContext = createApplicationContext();
+    HttpSession httpSession = new TestSession();
+    request.setSession( httpSession );
+    request.setParameter( "cid", "foo" );
+    UISessionImpl uiSession = new UISessionImpl( applicationContext, httpSession, "foo" );
+    uiSession.attachToHttpSession();
+    ServiceContext serviceContext = new ServiceContext( request, response, applicationContext );
+    ContextProvider.setContext( serviceContext );
+
+    RWTServlet.ensureUISession( serviceContext );
+
+    assertSame( uiSession, serviceContext.getUISession() );
   }
 
   private static void initServlet( HttpServlet servlet, ApplicationContextImpl applicationContext )

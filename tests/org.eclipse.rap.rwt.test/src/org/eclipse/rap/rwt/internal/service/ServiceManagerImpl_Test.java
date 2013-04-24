@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing implementation
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
-package org.eclipse.rap.rwt.service;
+package org.eclipse.rap.rwt.internal.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -21,8 +21,11 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Locale;
 
+import javax.servlet.http.HttpSession;
+
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
+import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.junit.After;
@@ -186,6 +189,17 @@ public class ServiceManagerImpl_Test {
     String url = RWT.getServiceManager().getServiceHandlerUrl( "foo" );
 
     assertEquals( "/fooapp/rap?servicehandler=foo", url );
+  }
+
+  @Test
+  public void testGetServiceHandlerUrl_withConnectionId() {
+    UISessionImpl uiSession
+      = new UISessionImpl( mock( ApplicationContextImpl.class ), mock( HttpSession.class ), "bar" );
+    ContextProvider.getContext().setUISession( uiSession );
+
+    String url = RWT.getServiceManager().getServiceHandlerUrl( "foo" );
+
+    assertEquals( "/fooapp/rap?servicehandler=foo&cid=bar", url );
   }
 
   @Test

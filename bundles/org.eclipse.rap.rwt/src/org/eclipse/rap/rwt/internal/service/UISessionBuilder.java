@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.service;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.RWT;
@@ -31,8 +32,11 @@ public class UISessionBuilder {
 
   public UISessionBuilder( ServiceContext serviceContext ) {
     this.serviceContext = serviceContext;
-    HttpSession httpSession = serviceContext.getRequest().getSession( true );
-    uiSession = new UISessionImpl( serviceContext.getApplicationContext(), httpSession );
+    ApplicationContextImpl applicationContext = serviceContext.getApplicationContext();
+    HttpServletRequest request = serviceContext.getRequest();
+    HttpSession httpSession = request.getSession( true );
+    String connectionId = request.getParameter( UrlParameters.PARAM_CONNECTION_ID );
+    uiSession = new UISessionImpl( applicationContext, httpSession, connectionId );
   }
 
   public UISessionImpl buildUISession() {

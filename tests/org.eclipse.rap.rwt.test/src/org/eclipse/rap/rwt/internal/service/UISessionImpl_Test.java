@@ -91,16 +91,36 @@ public class UISessionImpl_Test {
   }
 
   @Test
-  public void testGetInstanceFromSession() {
-    UISessionImpl result = UISessionImpl.getInstanceFromSession( httpSession );
+  public void testAttachToSession_doesNotOverrideOtherUISession() {
+    UISessionImpl uiSession2 = new UISessionImpl( applicationContext, httpSession, "foo" );
+    uiSession2.attachToHttpSession();
+
+    UISessionImpl result = UISessionImpl.getInstanceFromSession( httpSession, null );
 
     assertSame( result, uiSession );
   }
 
   @Test
+  public void testGetInstanceFromSession() {
+    UISessionImpl result = UISessionImpl.getInstanceFromSession( httpSession, null );
+
+    assertSame( result, uiSession );
+  }
+
+  @Test
+  public void testGetInstanceFromSession_withConnectionId() {
+    UISessionImpl uiSession2 = new UISessionImpl( applicationContext, httpSession, "foo" );
+    uiSession2.attachToHttpSession();
+
+    UISessionImpl result = UISessionImpl.getInstanceFromSession( httpSession, "foo" );
+
+    assertSame( result, uiSession2 );
+  }
+
+  @Test
   public void testGetInstanceFromSession_returnsNullAfterInvalidate() {
     httpSession.invalidate();
-    UISessionImpl result = UISessionImpl.getInstanceFromSession( httpSession );
+    UISessionImpl result = UISessionImpl.getInstanceFromSession( httpSession, null );
 
     assertNull( result );
   }
@@ -109,8 +129,30 @@ public class UISessionImpl_Test {
   public void testShutdown() {
     uiSession.shutdown();
 
-    assertNull( UISessionImpl.getInstanceFromSession( httpSession ) );
+    assertNull( UISessionImpl.getInstanceFromSession( httpSession, null ) );
     assertFalse( uiSession.isBound() );
+  }
+
+  @Test
+  public void testShutdown_withConnectionId() {
+    UISessionImpl uiSession2 = new UISessionImpl( applicationContext, httpSession, "foo" );
+    uiSession2.attachToHttpSession();
+
+    uiSession2.shutdown();
+
+    assertNull( UISessionImpl.getInstanceFromSession( httpSession, "foo" ) );
+    assertFalse( uiSession2.isBound() );
+  }
+
+  @Test
+  public void testShutdown_doesnNotShutdownAnotherUISession() {
+    UISessionImpl uiSession2 = new UISessionImpl( applicationContext, httpSession, "foo" );
+    uiSession2.attachToHttpSession();
+
+    uiSession2.shutdown();
+
+    assertNotNull( UISessionImpl.getInstanceFromSession( httpSession, null ) );
+    assertTrue( uiSession.isBound() );
   }
 
   @Test
@@ -677,6 +719,18 @@ public class UISessionImpl_Test {
     UISessionImpl deserializedUiSession = Fixture.serializeAndDeserialize( uiSession );
 
     assertNull( deserializedUiSession.getApplicationContext() );
+  }
+
+  @Test
+  public void testGetConnectionId_withoutConnectionId() {
+    assertNull( uiSession.getConnectionId() );
+  }
+
+  @Test
+  public void testGetConnectionId_withConnectionId() {
+    uiSession = new UISessionImpl( applicationContext, httpSession, "foo" );
+
+    assertEquals( "foo", uiSession.getConnectionId() );
   }
 
   private static Client mockClientWithLocale( Locale locale ) {
