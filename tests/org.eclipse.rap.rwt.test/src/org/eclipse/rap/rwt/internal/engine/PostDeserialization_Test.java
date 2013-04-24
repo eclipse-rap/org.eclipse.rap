@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.engine;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
@@ -25,39 +25,39 @@ import org.junit.Test;
 public class PostDeserialization_Test {
 
   private UISession uiSession;
-  private boolean wasExecuted;
 
   @Before
   public void setUp() {
     uiSession = createUISession();
-    wasExecuted = false;
   }
 
   @Test
-  public void testRunProcessor() {
-    PostDeserialization.addProcessor( uiSession, new Runnable() {
-      public void run() {
-        wasExecuted = true;
-      }
-    } );
+  public void testRunProcessors_doesNotFailWithoutProcessorsAdded() {
+    PostDeserialization.runProcessors( uiSession );
+  }
+
+  @Test
+  public void testRunProcessors_runsAllAddedProcessors() {
+    Runnable processor1 = mock( Runnable.class );
+    Runnable processor2 = mock( Runnable.class );
+    PostDeserialization.addProcessor( uiSession, processor1 );
+    PostDeserialization.addProcessor( uiSession, processor2 );
 
     PostDeserialization.runProcessors( uiSession );
 
-    assertTrue( wasExecuted );
+    verify( processor1 ).run();
+    verify( processor2 ).run();
   }
 
   @Test
-  public void testRunProcessorFromDifferentUISession() {
-    PostDeserialization.addProcessor( uiSession, new Runnable() {
-      public void run() {
-        wasExecuted = true;
-      }
-    } );
+  public void testRunProcessors_withDifferentUISession() {
+    Runnable processor = mock( Runnable.class );
+    PostDeserialization.addProcessor( uiSession, processor );
 
     UISessionImpl differentUiSession = createUISession();
     PostDeserialization.runProcessors( differentUiSession );
 
-    assertFalse( wasExecuted );
+    verifyZeroInteractions( processor );
   }
 
   private static UISessionImpl createUISession() {
