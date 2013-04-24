@@ -347,40 +347,6 @@ public class LifeCycleServiceHandler_Test {
     assertEquals( HttpServletResponse.SC_FORBIDDEN, response.getStatus() );
   }
 
-  @Test
-  public void testWriteUISessionId() {
-    simulateInitialUiRequest();
-
-    handler.writeUISessionId();
-
-    Message message = Fixture.getProtocolMessage();
-    String expected = ContextProvider.getUISession().getId();
-    assertEquals( expected, message.getHead().get( "uiSession" ).asString() );
-  }
-
-  @Test
-  public void testWriteUISessionId_whenUISessionIsNotBound() {
-    simulateInitialUiRequest();
-    UISession uiSession = mock( UISession.class );
-    when( Boolean.valueOf( uiSession.isBound() ) ).thenReturn( Boolean.FALSE );
-    ContextProvider.getContext().setUISession( uiSession );
-
-    handler.writeUISessionId();
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.getHead().get( "uiSession" ) );
-  }
-
-  @Test
-  public void testWriteUISessionId_ifNotInitialUiRequest() {
-    simulateUiRequest();
-
-    handler.writeUISessionId();
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.getHead().get( "uiSession" ) );
-  }
-
   private void simulateInitialUiRequest() {
     Fixture.fakeNewRequest();
     Fixture.fakeHeadParameter( ClientMessageConst.RWT_INITIALIZE, "true" );

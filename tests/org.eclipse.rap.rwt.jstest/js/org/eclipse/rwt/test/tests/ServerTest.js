@@ -28,14 +28,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       assertEquals( "number", typeof TestUtil.getMessageObject().getHead()[ "requestCounter" ] );
     },
 
-    testSendUISession : function() {
-      server.setUISession( "foo" );
-
-      server.send();
-
-      assertEquals( "foo", TestUtil.getMessageObject().getHead()[ "uiSession" ] );
-    },
-
     testGetServerObject : function() {
       rwt.remote.ObjectRegistry.add( "w1", rwt.widgets.Display.getCurrent() );
       var remoteObject = server.getRemoteObject( rwt.widgets.Display.getCurrent() );

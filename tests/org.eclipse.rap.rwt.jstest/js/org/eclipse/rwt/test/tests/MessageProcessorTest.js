@@ -643,19 +643,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       assertEquals( 3, req.getRequestCounter() );
     },
 
-    testProcessHeadSetUISession : function() {
-      var processor = rwt.remote.MessageProcessor;
-      var message = {
-        "head": {
-          "uiSession": 3
-        },
-        "operations" : []
-      };
-      processor.processMessage( message );
-      var req = rwt.remote.Server.getInstance();
-      assertEquals( 3, req.getUISession() );
-    },
-
     testGetService : function() {
       var registry = rwt.remote.HandlerRegistry;
       var processor = rwt.remote.MessageProcessor;
