@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * All rights reserved. This program and the accompanying materials
@@ -27,6 +27,7 @@ rwt.qx.Class.define( "rwt.event.EventHandler", {
     _lastMouseDown : false,
     _lastMouseEventDate : 0,
     _mouseIsDown : false,
+    _blockKeyEvents : false,
 
     ///////////////////
     // Public functions
@@ -129,6 +130,14 @@ rwt.qx.Class.define( "rwt.event.EventHandler", {
       this._allowContextMenu = func;
     },
 
+    setBlockKeyEvents : function( value ) {
+      this._blockKeyEvents = value;
+    },
+
+    getBlockKeyEvents : function( value ) {
+      return this._blockKeyEvents;
+    },
+
     setMenuManager : function( manager ) {
       this._menuManager = manager;
     },
@@ -143,7 +152,7 @@ rwt.qx.Class.define( "rwt.event.EventHandler", {
 
     setKeyEventFilter : function( filter, context ) {
       // TODO [tb] : Unify behavior and API for EventFilter, only use event
-      // wrapper objects instead of dom-events, create API for order of filter
+      // create API for order of filter
       this._filter[ "keyevent" ] = [ filter, context ];
     },
 
@@ -160,6 +169,12 @@ rwt.qx.Class.define( "rwt.event.EventHandler", {
         var event = EventHandlerUtil.getDomEvent( arguments );
         var keyCode = EventHandlerUtil.getKeyCode( event );
         var charCode = EventHandlerUtil.getCharCode( event );
+        if( this._blockKeyEvents ) {
+          if( EventHandlerUtil.shouldBlock( event.type, keyCode, charCode, event ) ) {
+            EventHandlerUtil.stopDomEvent( event );
+          }
+          return;
+        }
         if( typeof this._filter[ "domKeyevent" ] !== "undefined" ) {
           var context = this._filter[ "domKeyevent" ][ 1 ];
           var func = this._filter[ "domKeyevent" ][ 0 ];

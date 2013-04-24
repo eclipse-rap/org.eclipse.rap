@@ -677,6 +677,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     keyHandler._lastKeyCode = null;
     keyHandler._lastUpDownType = {};
     rwt.event.EventHandler.setCaptureWidget( null );
+    rwt.event.EventHandler.setBlockKeyEvents( false );
   },
 
   ////////////////

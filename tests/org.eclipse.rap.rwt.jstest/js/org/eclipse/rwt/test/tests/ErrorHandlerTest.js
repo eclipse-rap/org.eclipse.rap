@@ -19,7 +19,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ErrorHandlerTest", {
 
   members : {
 
-    testShowWaitHintOverlay : function() {
+    testLayoutWaitHintOverlay : function() {
       ErrorHandler.showWaitHint();
 
       var element = rwt.runtime.ErrorHandler._overlay;
@@ -30,6 +30,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ErrorHandlerTest", {
       assertEquals( "absolute", element.style.position );
       assertEquals( 100000000, element.style.zIndex);
       ErrorHandler.hideErrorBox();
+    },
+
+    testWaitHintOverlayBlocksKeyEvents : function() {
+      ErrorHandler.showWaitHint();
+      assertTrue( rwt.event.EventHandler.getBlockKeyEvents() );
+      ErrorHandler.hideErrorBox();
+      assertFalse( rwt.event.EventHandler.getBlockKeyEvents() );
     }
 
 //    TODO [tb] : Mock the entire themestore, render test icon
