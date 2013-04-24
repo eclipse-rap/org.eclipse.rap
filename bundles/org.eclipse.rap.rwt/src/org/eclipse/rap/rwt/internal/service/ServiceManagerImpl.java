@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,6 +62,13 @@ public class ServiceManagerImpl implements ServiceManager {
     url.append( REQUEST_PARAM );
     url.append( '=' );
     url.append( encodeParameter( id ) );
+    String connectionId = getConnectionId();
+    if( connectionId != null ) {
+      url.append( '&' );
+      url.append( UrlParameters.PARAM_CONNECTION_ID );
+      url.append( '=' );
+      url.append( connectionId );
+    }
     return ContextProvider.getResponse().encodeURL( url.toString() );
   }
 
@@ -90,6 +97,10 @@ public class ServiceManagerImpl implements ServiceManager {
 
   private static String getCustomHandlerId() {
     return ContextProvider.getRequest().getParameter( REQUEST_PARAM );
+  }
+
+  private static String getConnectionId() {
+    return ( ( UISessionImpl )ContextProvider.getUISession() ).getConnectionId();
   }
 
   private static String encodeParameter( String id ) {
