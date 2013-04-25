@@ -63,7 +63,7 @@ final class ToolItemLCAUtil {
     preserveProperty( toolItem, PROP_HOT_IMAGE, toolItem.getHotImage() );
     preserveProperty( toolItem, PROP_CONTROL, toolItem.getControl() );
     preserveProperty( toolItem, PROP_SELECTION, toolItem.getSelection() );
-    preserveListener( toolItem, PROP_SELECTION_LISTENER,toolItem.isListening( SWT.Selection ) );
+    preserveListener( toolItem, PROP_SELECTION_LISTENER, toolItem.isListening( SWT.Selection ) );
   }
 
   static void renderInitialization( ToolItem toolItem ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,8 +32,8 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
     String value = WidgetLCAUtil.readPropertyValue( toolItem, PARAM_SELECTION );
     if( value != null ) {
       toolItem.setSelection( Boolean.valueOf( value ).booleanValue() );
-      EventLCAUtil.processRadioSelection( toolItem, toolItem.getSelection() );
     }
+    EventLCAUtil.processRadioSelection( toolItem, toolItem.getSelection() );
   }
 
   @Override

@@ -13,11 +13,11 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -42,6 +42,7 @@ import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.WidgetDataUtil;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
@@ -49,6 +50,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 
 public class ToolItemLCA_Test {
@@ -76,33 +78,71 @@ public class ToolItemLCA_Test {
   }
 
   @Test
-  public void testCheckItemSelected() {
-    final boolean[] wasEventFired = { false };
-    final ToolItem item = new ToolItem( toolbar, SWT.CHECK );
-    item.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        wasEventFired[ 0 ] = true;
-        assertEquals( null, event.item );
-        assertSame( item, event.getSource() );
-        assertTrue( event.doit );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertTrue( item.getSelection() );
-        assertTrue( ( event.stateMask & SWT.ALT ) != 0 );
-      }
-    } );
-    shell.open();
+  public void testReadSelection_Check() {
+    ToolItem item = new ToolItem( toolbar, SWT.CHECK );
 
     Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
+    lca.readData( item );
+
+    assertTrue( item.getSelection() );
+  }
+
+  @Test
+  public void testFireSelectionEvent_Check() {
+    ToolItem item = new ToolItem( toolbar, SWT.CHECK );
+    Listener listener = mock( Listener.class );
+    item.addListener( SWT.Selection, listener );
+
     Map<String,Object> params = new HashMap<String,Object>();
     params.put( "altKey", "true" );
     Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, params );
     Fixture.readDataAndProcessAction( display );
 
-    assertTrue( wasEventFired[ 0 ] );
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( listener ).handleEvent( captor.capture() );
+    Event event = captor.getValue();
+    assertEquals( null, event.item );
+    assertSame( item, event.widget );
+    assertTrue( event.doit );
+    assertEquals( 0, event.x );
+    assertEquals( 0, event.y );
+    assertEquals( 0, event.width );
+    assertEquals( 0, event.height );
+    assertTrue( ( event.stateMask & SWT.ALT ) != 0 );
+  }
+
+  @Test
+  public void testReadSelection_Radio() {
+    ToolItem item = new ToolItem( toolbar, SWT.RADIO );
+
+    Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
+    lca.readData( item );
+
+    assertTrue( item.getSelection() );
+  }
+
+  @Test
+  public void testFireSelectionEvent_Radio() {
+    ToolItem item = new ToolItem( toolbar, SWT.RADIO );
+    Listener listener = mock( Listener.class );
+    item.addListener( SWT.Selection, listener );
+
+    Map<String,Object> params = new HashMap<String,Object>();
+    params.put( "altKey", "true" );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, params );
+    Fixture.readDataAndProcessAction( display );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( listener ).handleEvent( captor.capture() );
+    Event event = captor.getValue();
+    assertEquals( null, event.item );
+    assertSame( item, event.widget );
+    assertTrue( event.doit );
+    assertEquals( 0, event.x );
+    assertEquals( 0, event.y );
+    assertEquals( 0, event.width );
+    assertEquals( 0, event.height );
+    assertTrue( ( event.stateMask & SWT.ALT ) != 0 );
   }
 
   @Test
@@ -135,38 +175,6 @@ public class ToolItemLCA_Test {
     Fixture.readDataAndProcessAction( display );
 
     assertTrue( wasEventFired[ 0 ] );
-  }
-
-  @Test
-  public void testRadioItemSelected() {
-    ToolItem item0 = new ToolItem( toolbar, SWT.RADIO );
-    item0.setSelection( true );
-    ToolItem item1 = new ToolItem( toolbar, SWT.RADIO );
-
-    Fixture.fakeSetParameter( getId( item1 ), "selection", Boolean.TRUE );
-    Fixture.fakeSetParameter( getId( item0 ), "selection", Boolean.FALSE );
-    Fixture.readDataAndProcessAction( display );
-
-    assertFalse( item0.getSelection() );
-    assertTrue( item1.getSelection() );
-  }
-
-  @Test
-  public void testReadData() {
-    ToolItem item = new ToolItem( toolbar, SWT.CHECK );
-
-    Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, null );
-    WidgetUtil.getLCA( item ).readData( item );
-
-    assertEquals( Boolean.TRUE, Boolean.valueOf( item.getSelection() ) );
-
-    Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( item ), "selection", Boolean.FALSE );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, null );
-    WidgetUtil.getLCA( item ).readData( item );
-
-    assertEquals( Boolean.FALSE, Boolean.valueOf( item.getSelection() ) );
   }
 
   @Test

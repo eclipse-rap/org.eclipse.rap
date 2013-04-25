@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,29 +13,34 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.widgets.ToolItem;
 
 
 final class CheckToolItemLCA extends ToolItemDelegateLCA {
 
+  private static final String PARAM_SELECTION = "selection";
+
+  @Override
   void preserveValues( ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
   }
 
+  @Override
   void readData( ToolItem toolItem ) {
-    if( WidgetLCAUtil.wasEventSent( toolItem, ClientMessageConst.EVENT_SELECTION ) ) {
-      String value = WidgetLCAUtil.readPropertyValue( toolItem, "selection" );
+    String value = WidgetLCAUtil.readPropertyValue( toolItem, PARAM_SELECTION );
+    if( value != null ) {
       toolItem.setSelection( Boolean.valueOf( value ).booleanValue() );
-      ToolItemLCAUtil.processSelection( toolItem );
     }
+    ToolItemLCAUtil.processSelection( toolItem );
   }
 
+  @Override
   void renderInitialization( ToolItem toolItem ) throws IOException {
     ToolItemLCAUtil.renderInitialization( toolItem );
   }
 
+  @Override
   void renderChanges( ToolItem toolItem ) throws IOException {
     ToolItemLCAUtil.renderChanges( toolItem );
   }
