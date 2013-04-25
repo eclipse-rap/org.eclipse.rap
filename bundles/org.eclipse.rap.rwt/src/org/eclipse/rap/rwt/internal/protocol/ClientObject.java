@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2011, 2012 EclipseSource and others.
+* Copyright (c) 2011, 2013 EclipseSource and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -10,8 +10,8 @@
 *******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import java.util.Map;
-
+import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 
 public final class ClientObject implements IClientObject {
@@ -47,19 +47,19 @@ public final class ClientObject implements IClientObject {
   }
 
   public void setProperty( String name, int[] value ) {
-    getWriter().appendSet( targetId, name, value );
+    getWriter().appendSet( targetId, name, JsonUtil.createJsonArray( value ) );
   }
 
   public void set( String name, Object value ) {
-    getWriter().appendSet( targetId, name, value );
+    getWriter().appendSet( targetId, name, JsonUtil.createJsonValue( value ) );
   }
 
   public void listen( String eventName, boolean listen ) {
     getWriter().appendListen( targetId, eventName, listen );
   }
 
-  public void call( String method, Map<String, Object> properties ) {
-    getWriter().appendCall( targetId, method, properties );
+  public void call( String method, JsonObject parameters ) {
+    getWriter().appendCall( targetId, method, parameters );
   }
 
   private static ProtocolMessageWriter getWriter() {

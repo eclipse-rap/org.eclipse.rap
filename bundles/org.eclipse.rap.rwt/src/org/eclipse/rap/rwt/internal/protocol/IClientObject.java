@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import java.util.Map;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 
 
 /**
@@ -81,9 +81,9 @@ public interface IClientObject {
    * Advises the client to call a specific method on the remote object.
    *
    * @param method the name of the method to call
-   * @param properties the named properties to pass as arguments to the method call
+   * @param parameters the named parameters for the method call
    */
-  void call( String method, Map<String, Object> properties );
+  void call( String method, JsonObject parameters );
 
   /**
    * Advises the client to destroy the remote object.

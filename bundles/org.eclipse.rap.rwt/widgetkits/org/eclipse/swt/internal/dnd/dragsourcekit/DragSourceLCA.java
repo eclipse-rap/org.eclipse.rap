@@ -13,13 +13,12 @@ package org.eclipse.swt.internal.dnd.dragsourcekit;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
@@ -97,10 +96,10 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
       String[] operations = DNDLCAUtil.convertOperations( dndAdapter.getDetailChangedValue() );
       String detail = operations.length > 0 ? operations[ 0 ] : "DROP_NONE";
       IClientObject clientObject = ClientObjectFactory.getClientObject( dragSource );
-      Map<String, Object> properties = new HashMap<String, Object>();
-      properties.put( "detail", detail );
-      properties.put( "control", WidgetUtil.getId( dndAdapter.getDetailChangedControl() ) );
-      clientObject.call( "changeDetail", properties );
+      JsonObject parameters = new JsonObject()
+        .add( "detail", detail )
+        .add( "control", getId( dndAdapter.getDetailChangedControl() ) );
+      clientObject.call( "changeDetail", parameters );
     }
   }
 
@@ -109,12 +108,13 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     // TODO [tb] : would be rendered by all DragSources:
     if( dndAdapter.hasFeedbackChanged() ) {
       int value = dndAdapter.getFeedbackChangedValue();
+      String feedbackChangedControlId = getId( dndAdapter.getFeedbackChangedControl() );
       IClientObject clientObject = ClientObjectFactory.getClientObject( dragSource );
-      Map<String, Object> properties = new HashMap<String, Object>();
-      properties.put( "control", WidgetUtil.getId( dndAdapter.getFeedbackChangedControl() ) );
-      properties.put( "flags", new Integer( value ) );
-      properties.put( "feedback", convertFeedback( value ) );
-      clientObject.call( "changeFeedback", properties );
+      JsonObject parameters = new JsonObject()
+        .add( "control", feedbackChangedControlId )
+        .add( "flags", value )
+        .add( "feedback", convertFeedback( value ) );
+      clientObject.call( "changeFeedback", parameters );
     }
   }
 
@@ -122,11 +122,12 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     IDNDAdapter dndAdapter = dragSource.getAdapter( IDNDAdapter.class  );
     // TODO [tb] : would be rendered by all DragSources:
     if( dndAdapter.hasDataTypeChanged() ) {
+      String dataTypeChangedControlId = getId( dndAdapter.getDataTypeChangedControl() );
       IClientObject clientObject = ClientObjectFactory.getClientObject( dragSource );
-      Map<String, Object> properties = new HashMap<String, Object>();
-      properties.put( "control", WidgetUtil.getId( dndAdapter.getDataTypeChangedControl() ) );
-      properties.put( "dataType", new Integer( dndAdapter.getDataTypeChangedValue().type ) );
-      clientObject.call( "changeDataType", properties );
+      JsonObject parameters = new JsonObject()
+        .add( "control", dataTypeChangedControlId )
+        .add( "dataType", dndAdapter.getDataTypeChangedValue().type );
+      clientObject.call( "changeDataType", parameters );
     }
   }
 
@@ -139,8 +140,8 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static String[] convertFeedback( int feedback ) {
-    List<String> feedbackNames = new ArrayList<String>();
+  private static JsonArray convertFeedback( int feedback ) {
+    JsonArray feedbackNames = new JsonArray();
     if( ( feedback & DND.FEEDBACK_EXPAND ) != 0 ) {
       feedbackNames.add( "FEEDBACK_EXPAND" );
     }
@@ -156,6 +157,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     if( ( feedback & DND.FEEDBACK_SELECT ) != 0 ) {
       feedbackNames.add( "FEEDBACK_SELECT" );
     }
-    return feedbackNames.toArray( new String[ feedbackNames.size() ] );
+    return feedbackNames;
   }
+
 }

@@ -16,11 +16,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -43,6 +41,7 @@ public class ProtocolMessageWriter_Test {
 
   private ProtocolMessageWriter writer;
   private Shell shell;
+  private String shellId;
 
   @Before
   public void setUp() {
@@ -50,6 +49,7 @@ public class ProtocolMessageWriter_Test {
     Display display = new Display();
     shell = new Shell( display );
     writer = new ProtocolMessageWriter();
+    shellId = WidgetUtil.getId( shell );
   }
 
   @After
@@ -107,37 +107,33 @@ public class ProtocolMessageWriter_Test {
   }
 
   @Test
-  public void testMessageWithCall() {
-    String shellId = WidgetUtil.getId( shell );
-    String methodName = "methodName";
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( "key1", "a" );
-    properties.put( "key2", "b" );
+  public void testAppendCall() {
+    JsonObject parameters = new JsonObject()
+      .add( "key1", "a" )
+      .add( "key2", "b" );
 
-    writer.appendCall( shellId, methodName, properties );
+    writer.appendCall( shellId, "methodName", parameters );
 
     CallOperation operation = (CallOperation)getMessage().getOperation( 0 );
     assertEquals( shellId, operation.getTarget() );
-    assertEquals( methodName, operation.getMethodName() );
+    assertEquals( "methodName", operation.getMethodName() );
     assertEquals( "a", operation.getProperty( "key1" ) );
     assertEquals( "b", operation.getProperty( "key2" ) );
   }
 
   @Test
-  public void testMessageWithTwoCallss() {
-    String shellId = WidgetUtil.getId( shell );
-    String methodName = "methodName";
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( "key1", new Integer( 5 ) );
-    properties.put( "key2", "b" );
-    properties.put( "key3", Boolean.FALSE );
+  public void testAppendCall_messageWithTwoCalls() {
+    JsonObject parameters = new JsonObject()
+      .add( "key1", 5 )
+      .add( "key2", "b" )
+      .add( "key3", false );
 
-    writer.appendCall( shellId, methodName, null );
-    writer.appendCall( shellId, methodName, properties );
+    writer.appendCall( shellId, "methodName", null );
+    writer.appendCall( shellId, "methodName", parameters );
 
     CallOperation operation = ( CallOperation )getMessage().getOperation( 1 );
     assertEquals( shellId, operation.getTarget() );
-    assertEquals( methodName, operation.getMethodName() );
+    assertEquals( "methodName", operation.getMethodName() );
     assertEquals( new Integer( 5 ), operation.getProperty( "key1" ) );
     assertEquals( "b", operation.getProperty( "key2" ) );
     assertEquals( Boolean.FALSE, operation.getProperty( "key3" ) );
@@ -146,12 +142,11 @@ public class ProtocolMessageWriter_Test {
   @Test
   public void testMessageWithCreate() {
     String displayId = DisplayUtil.getId( shell.getDisplay() );
-    String shellId = WidgetUtil.getId( shell );
     String[] styles = new String[] { "TRIM", "FOO" };
 
     writer.appendCreate( shellId, "org.Text" );
     writer.appendSet( shellId, "parent", displayId );
-    writer.appendSet( shellId, "style", styles );
+    writer.appendSet( shellId, "style", JsonUtil.createJsonArray( styles ) );
     writer.appendSet( shellId, "key1", "a" );
     writer.appendSet( shellId, "key2", "b" );
 
@@ -167,7 +162,6 @@ public class ProtocolMessageWriter_Test {
   @Test
   public void testMessageWithMultipleOperations() {
     Button button = new Button( shell, SWT.PUSH );
-    String shellId = WidgetUtil.getId( shell );
     String buttonId = WidgetUtil.getId( button );
 
     writer.appendCreate( shellId, "org.Text" );
@@ -176,18 +170,6 @@ public class ProtocolMessageWriter_Test {
     Message message = getMessage();
     assertTrue( message.getOperation( 0 ) instanceof CreateOperation );
     assertTrue( message.getOperation( 1 ) instanceof CreateOperation );
-  }
-
-  @Test
-  public void testMessageWithIllegalParameterType() {
-    Button wrongParameter = new Button( shell, SWT.PUSH );
-    String shellId = WidgetUtil.getId( shell );
-
-    try {
-      writer.appendSet( shellId, "text", wrongParameter );
-      fail();
-    } catch ( IllegalArgumentException expected ) {
-    }
   }
 
   @Test
@@ -204,7 +186,6 @@ public class ProtocolMessageWriter_Test {
   @Test
   public void testMessageWithDestroyTwice() {
     Button button = new Button( shell, SWT.PUSH );
-    String shellId = WidgetUtil.getId( shell );
     String buttonId = WidgetUtil.getId( button );
 
     writer.appendDestroy( buttonId );
@@ -229,19 +210,6 @@ public class ProtocolMessageWriter_Test {
     assertFalse( operation.listensTo( "selection" ) );
     assertTrue( operation.listensTo( "focus" ) );
     assertTrue( operation.listensTo( "fake" ) );
-  }
-
-  @Test
-  public void testMessageWithExecuteScript() {
-    String script = "var c = 4; c++;";
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( "content", script );
-
-    writer.appendCall( "jsex", "execute", properties );
-
-    CallOperation operation = ( CallOperation )getMessage().getOperation( 0 );
-    assertEquals( "jsex", operation.getTarget() );
-    assertEquals( script, operation.getProperty( "content" ) );
   }
 
   @Test
@@ -314,7 +282,6 @@ public class ProtocolMessageWriter_Test {
     addShellListeners( shell );
     addButtonCreate( button );
     addButtonCall( button );
-    String shellId = WidgetUtil.getId( shell );
     String buttonId = WidgetUtil.getId( button );
 
     Message message = getMessage();
@@ -338,36 +305,31 @@ public class ProtocolMessageWriter_Test {
   }
 
   private void addShellCreate( Shell shell ) {
-    String shellId = WidgetUtil.getId( shell );
     writer.appendCreate( shellId, "org.eclipse.swt.widgets.Shell" );
-    writer.appendSet( shellId, "styles", new String[]{ "SHELL_TRIM" } );
+    writer.appendSet( shellId, "styles", new JsonArray().add( "SHELL_TRIM" ) );
     writer.appendSet( shellId, "foo", 23 );
   }
 
   private void addShellListeners( Shell shell ) {
-    writer.appendListen( WidgetUtil.getId( shell ), "event1", true );
-    writer.appendListen( WidgetUtil.getId( shell ), "event2", false );
+    writer.appendListen( shellId, "event1", true );
+    writer.appendListen( shellId, "event2", false );
   }
 
   private void addButtonCreate( Button button ) {
     String buttonId = WidgetUtil.getId( button );
-    String shellId = WidgetUtil.getId( shell );
     writer.appendCreate( buttonId, "org.eclipse.swt.widgets.Button" );
     writer.appendSet( buttonId, "parent", shellId );
-    writer.appendSet( buttonId, "styles", new String[] { "PUSH", "BORDER" } );
+    writer.appendSet( buttonId, "styles", new JsonArray().add( "PUSH" ).add( "BORDER" ) );
     writer.appendSet( buttonId, "text", "foo" );
   }
 
   private void addButtonCall( Button button ) {
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( "key1", "a1" );
-    writer.appendCall( WidgetUtil.getId( button ), "select", properties );
+    JsonObject parameters = new JsonObject().add( "key1", "a1" );
+    writer.appendCall( WidgetUtil.getId( button ), "select", parameters );
   }
 
   @Test
   public void testAppendsToExistingSetOperation() {
-    String shellId = WidgetUtil.getId( shell );
-
     writer.appendSet( shellId, "key1", "value1" );
     writer.appendSet( shellId, "key2", "value2" );
 
@@ -379,8 +341,6 @@ public class ProtocolMessageWriter_Test {
 
   @Test
   public void testAppendsToExistingCreateOperation() {
-    String shellId = WidgetUtil.getId( shell );
-
     writer.appendCreate( shellId, "foo.Class" );
     writer.appendSet( shellId, "key1", "value1" );
     writer.appendSet( shellId, "key2", "value2" );
@@ -394,7 +354,6 @@ public class ProtocolMessageWriter_Test {
   @Test
   public void testDoesNotAppendToOtherWidgetsOperation() {
     Button button = new Button( shell, SWT.PUSH );
-    String shellId = WidgetUtil.getId( shell );
     String buttonId = WidgetUtil.getId( button );
 
     writer.appendSet( shellId, "key1", "value1" );
@@ -409,7 +368,6 @@ public class ProtocolMessageWriter_Test {
   @Test
   public void testStartsNewOperation() {
     Button button = new Button( shell, SWT.PUSH );
-    String shellId = WidgetUtil.getId( shell );
     String buttonId = WidgetUtil.getId( button );
 
     writer.appendCreate( shellId, "foo.Class" );
@@ -427,10 +385,7 @@ public class ProtocolMessageWriter_Test {
 
   @Test
   public void testAppendArrayParameter() {
-    String shellId = WidgetUtil.getId( shell );
-    Integer[] arrayParameter = new Integer[] { new Integer( 1 ), new Integer( 2 ) };
-
-    writer.appendSet( shellId, "key", arrayParameter );
+    writer.appendSet( shellId, "key", new JsonArray().add( 1 ).add( 2 ) );
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
     JsonArray property = ( JsonArray )operation.getProperty( "key" );
@@ -440,10 +395,7 @@ public class ProtocolMessageWriter_Test {
 
   @Test
   public void testAppendEmptyArrayParameter() {
-    String shellId = WidgetUtil.getId( shell );
-    Object[] emptyArray = new Object[ 0 ];
-
-    writer.appendSet( shellId, "key", emptyArray );
+    writer.appendSet( shellId, "key", new JsonArray() );
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
     JsonArray property = ( JsonArray )operation.getProperty( "key" );
@@ -452,10 +404,7 @@ public class ProtocolMessageWriter_Test {
 
   @Test
   public void testAppendMixedArrayParameter() {
-    String shellId = WidgetUtil.getId( shell );
-    Object[] mixedArray = new Object[] { new Integer( 23 ), "Hello" };
-
-    writer.appendSet( shellId, "key", mixedArray );
+    writer.appendSet( shellId, "key", new JsonArray().add( 23 ).add( "Hello" ) );
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
     JsonArray property = ( JsonArray )operation.getProperty( "key" );

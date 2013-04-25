@@ -20,10 +20,9 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
@@ -183,9 +182,8 @@ public final class BrowserLCA extends AbstractWidgetLCA {
           if( browser.getDisplay() == LifeCycleUtil.getSessionDisplay() ) {
             try {
               IClientObject clientObject = ClientObjectFactory.getClientObject( browser );
-              Map<String, Object> properties = new HashMap<String, Object>();
-              properties.put( PARAM_SCRIPT, executeScript );
-              clientObject.call( METHOD_EVALUATE, properties );
+              JsonObject parameters = new JsonObject().add( PARAM_SCRIPT, executeScript );
+              clientObject.call( METHOD_EVALUATE, parameters );
             } finally {
               lifeCycle.removePhaseListener( this );
             }
@@ -231,9 +229,9 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     String[] functions = ( String[] )serviceStore.getAttribute( FUNCTIONS_TO_CREATE + id );
     if( functions != null ) {
       IClientObject clientObject = ClientObjectFactory.getClientObject( browser );
-      Map<String, Object> properties = new HashMap<String, Object>();
-      properties.put( PARAM_FUNCTIONS, functions );
-      clientObject.call( METHOD_CREATE_FUNCTIONS, properties );
+      JsonObject parameters = new JsonObject()
+        .add( PARAM_FUNCTIONS, JsonUtil.createJsonArray( functions ) );
+      clientObject.call( METHOD_CREATE_FUNCTIONS, parameters );
     }
   }
 
@@ -243,9 +241,9 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     String[] functions = ( String[] )serviceStore.getAttribute( FUNCTIONS_TO_DESTROY + id );
     if( functions != null ) {
       IClientObject clientObject = ClientObjectFactory.getClientObject( browser );
-      Map<String, Object> properties = new HashMap<String, Object>();
-      properties.put( PARAM_FUNCTIONS, functions );
-      clientObject.call( METHOD_DESTROY_FUNCTIONS, properties );
+      JsonObject parameters = new JsonObject()
+        .add( PARAM_FUNCTIONS, JsonUtil.createJsonArray( functions ) );
+      clientObject.call( METHOD_DESTROY_FUNCTIONS, parameters );
     }
   }
 

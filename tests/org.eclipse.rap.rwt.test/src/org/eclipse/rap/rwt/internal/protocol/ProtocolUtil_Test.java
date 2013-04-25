@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,10 +23,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
@@ -54,7 +56,7 @@ public class ProtocolUtil_Test {
   }
 
   @Test
-  public void testColorToArray() {
+  public void testGetColorAsArray() {
     Color red = display.getSystemColor( SWT.COLOR_RED );
 
     int[] array = ProtocolUtil.getColorAsArray( red, false );
@@ -63,7 +65,7 @@ public class ProtocolUtil_Test {
   }
 
   @Test
-  public void testColorToArray_RGB() {
+  public void testGetColorAsArray_RGB() {
     RGB red = new RGB( 255, 0, 0 );
 
     int[] array = ProtocolUtil.getColorAsArray( red, false );
@@ -72,7 +74,7 @@ public class ProtocolUtil_Test {
   }
 
   @Test
-  public void testColorToArray_Transparent() {
+  public void testGetColorAsArray_transparent() {
     Color red = display.getSystemColor( SWT.COLOR_RED );
 
     int[] array = ProtocolUtil.getColorAsArray( red, true );
@@ -81,12 +83,46 @@ public class ProtocolUtil_Test {
   }
 
   @Test
-  public void testColorToArray_Null() {
+  public void testGetColorAsArray_null() {
     assertNull( ProtocolUtil.getColorAsArray( ( Color )null, false ) );
   }
 
   @Test
-  public void testFontAsArray() {
+  public void testGetJsonForColor() {
+    Color red = display.getSystemColor( SWT.COLOR_RED );
+
+    JsonValue result = ProtocolUtil.getJsonForColor( red, false );
+
+    assertEquals( JsonValue.readFrom( "[ 255, 0, 0, 255]" ), result );
+  }
+
+  @Test
+  public void testGetJsonForColor_transparent() {
+    Color red = display.getSystemColor( SWT.COLOR_RED );
+
+    JsonValue result = ProtocolUtil.getJsonForColor( red, true );
+
+    assertEquals( JsonValue.readFrom( "[ 255, 0, 0, 0]" ), result );
+  }
+
+  @Test
+  public void testGetJsonForColor_null() {
+    JsonValue result = ProtocolUtil.getJsonForColor( ( Color )null, false );
+
+    assertEquals( JsonValue.NULL, result );
+  }
+
+  @Test
+  public void testGetJsonForColor_RGB() {
+    RGB red = new RGB( 255, 0, 0 );
+
+    JsonValue result = ProtocolUtil.getJsonForColor( red, false );
+
+    assertEquals( JsonValue.readFrom( "[ 255, 0, 0, 255]" ), result );
+  }
+
+  @Test
+  public void testGetFontAsArray() {
     Font font = new Font( display, "Arial", 22, SWT.NONE );
 
     Object[] array = ProtocolUtil.getFontAsArray( font );
@@ -95,7 +131,7 @@ public class ProtocolUtil_Test {
   }
 
   @Test
-  public void testFontAsArray_FontData() {
+  public void testGetFontAsArray_FontData() {
     Font font = new Font( display, "Arial", 22, SWT.NONE );
 
     Object[] array = ProtocolUtil.getFontAsArray( FontUtil.getData( font ) );
@@ -104,7 +140,7 @@ public class ProtocolUtil_Test {
   }
 
   @Test
-  public void testFontAsArray_Bold() {
+  public void testGetFontAsArray_bold() {
     Font font = new Font( display, "Arial", 22, SWT.BOLD );
 
     Object[] array = ProtocolUtil.getFontAsArray( font );
@@ -113,7 +149,7 @@ public class ProtocolUtil_Test {
   }
 
   @Test
-  public void testFontAsArray_Italic() {
+  public void testGetFontAsArray_italic() {
     Font font = new Font( display, "Arial", 22, SWT.ITALIC );
 
     Object[] array = ProtocolUtil.getFontAsArray( font );
@@ -122,8 +158,58 @@ public class ProtocolUtil_Test {
   }
 
   @Test
-  public void testFontAsArray_Null() {
+  public void testGetFontAsArray_null() {
     assertNull( ProtocolUtil.getFontAsArray( ( Font )null ) );
+  }
+
+  @Test
+  public void testGetJsonForFont() {
+    Font font = new Font( display, "Arial", 22, SWT.NONE );
+
+    JsonValue result = ProtocolUtil.getJsonForFont( font );
+
+    assertEquals( JsonValue.readFrom( "[[\"Arial\"], 22, false, false ]" ), result );
+  }
+
+  @Test
+  public void testGetJsonForFont_bold() {
+    Font font = new Font( display, "Arial", 22, SWT.BOLD );
+
+    JsonValue result = ProtocolUtil.getJsonForFont( font );
+
+    assertEquals( JsonValue.readFrom( "[[\"Arial\"], 22, true, false ]" ), result );
+  }
+
+  @Test
+  public void testGetJsonForFont_italic() {
+    Font font = new Font( display, "Arial", 22, SWT.ITALIC );
+
+    JsonValue result = ProtocolUtil.getJsonForFont( font );
+
+    assertEquals( JsonValue.readFrom( "[[\"Arial\"], 22, false, true ]" ), result );
+  }
+
+  @Test
+  public void testGetJsonForFont_null() {
+    JsonValue result = ProtocolUtil.getJsonForFont( (Font) null );
+
+    assertEquals( JsonValue.NULL, result );
+  }
+
+  @Test
+  public void testGetJsonForFont_fontData() {
+    Font font = new Font( display, "Arial", 22, SWT.NONE );
+
+    JsonValue result = ProtocolUtil.getJsonForFont( font.getFontData()[0] );
+
+    assertEquals( JsonValue.readFrom( "[[\"Arial\"], 22, false, false ]" ), result );
+  }
+
+  @Test
+  public void testGetJsonForFont_fontData_null() {
+    JsonValue result = ProtocolUtil.getJsonForFont( (FontData) null );
+
+    assertEquals( JsonValue.NULL, result );
   }
 
   @Test

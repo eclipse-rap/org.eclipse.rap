@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2013 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.swt.SWT;
@@ -25,31 +27,31 @@ public class MeasurementUtil {
     MeasurementOperator.getInstance().appendStartupTextSizeProbe( writer );
   }
 
-  static Object createItemParamObject( MeasurementItem item ) {
-    Object[] result = new Object[ 8 ];
+  static JsonArray createItemParamObject( MeasurementItem item ) {
     FontData fontData = item.getFontData();
-    result[ 0 ] = getId( item );
-    result[ 1 ] = item.getTextToMeasure();
-    result[ 2 ] = ProtocolUtil.parseFontName( fontData.getName() );
-    result[ 3 ] = Integer.valueOf( fontData.getHeight() );
-    result[ 4 ] = Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 );
-    result[ 5 ] = Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 );
-    result[ 6 ] = Integer.valueOf( item.getWrapWidth() );
-    result[ 7 ] = Boolean.valueOf( isMarkup( item.getMode() ) );
+    JsonArray result = new JsonArray()
+      .add( getId( item ) )
+      .add( item.getTextToMeasure() )
+      .add( JsonUtil.createJsonArray( ProtocolUtil.parseFontName( fontData.getName() ) ) )
+      .add( fontData.getHeight() )
+      .add( ( fontData.getStyle() & SWT.BOLD ) != 0 )
+      .add( ( fontData.getStyle() & SWT.ITALIC ) != 0 )
+      .add( item.getWrapWidth() )
+      .add( isMarkup( item.getMode() ) );
     return result;
   }
 
-  static Object createProbeParamObject( Probe probe ) {
-    Object[] result = new Object[ 8 ];
+  static JsonArray createProbeParamObject( Probe probe ) {
     FontData fontData = probe.getFontData();
-    result[ 0 ] = getId( probe );
-    result[ 1 ] = probe.getText();
-    result[ 2 ] = ProtocolUtil.parseFontName( fontData.getName() );
-    result[ 3 ] = Integer.valueOf( fontData.getHeight() );
-    result[ 4 ] = Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 );
-    result[ 5 ] = Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 );
-    result[ 6 ] = Integer.valueOf( -1 );
-    result[ 7 ] = Boolean.TRUE;
+    JsonArray result = new JsonArray()
+      .add( getId( probe ) )
+      .add( probe.getText() )
+      .add( JsonUtil.createJsonArray( ProtocolUtil.parseFontName( fontData.getName() ) ) )
+      .add( fontData.getHeight() )
+      .add( ( fontData.getStyle() & SWT.BOLD ) != 0 )
+      .add( ( fontData.getStyle() & SWT.ITALIC ) != 0 )
+      .add( -1 )
+      .add( true );
     return result;
   }
 
@@ -78,4 +80,5 @@ public class MeasurementUtil {
   private MeasurementUtil() {
     // prevent instance creation
   }
+
 }

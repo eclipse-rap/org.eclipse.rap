@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,7 @@
 package org.eclipse.rap.rwt.internal.textsize;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
@@ -39,53 +38,36 @@ public class MeasurementUtil_Test {
   public void testCreateProbeParamObject() {
     Probe probe = createProbe();
 
-    Object probeObject = MeasurementUtil.createProbeParamObject( probe );
+    JsonArray probeObject = MeasurementUtil.createProbeParamObject( probe );
 
-    checkProbeObject( probeObject, probe );
+    JsonArray expected = new JsonArray()
+      .add( MeasurementUtil.getId( probe ) )
+      .add( TEXT_TO_MEASURE )
+      .add( new JsonArray().add( "fontName" ) )
+      .add( 1 )
+      .add( false )
+      .add( false )
+      .add( -1 )
+      .add( true );
+    assertEquals( expected, probeObject );
   }
 
   @Test
   public void testCreateItemParamObject() {
     MeasurementItem item = createMeasurementItem();
 
-    Object itemObject = MeasurementUtil.createItemParamObject( item );
+    JsonArray itemObject = MeasurementUtil.createItemParamObject( item );
 
-    checkItemObject( itemObject, item );
-  }
-
-  private void checkItemObject( Object itemObject, MeasurementItem item ) {
-    assertTrue( itemObject instanceof Object[] );
-    Object[] itemObjectArray = ( Object[] )itemObject;
-    assertEquals( 8, itemObjectArray.length );
-    assertEquals( MeasurementUtil.getId( item ), itemObjectArray[ 0 ] );
-    String escaped = " text \"to\" measure ";
-    assertEquals( escaped, itemObjectArray[ 1 ] );
-    assertTrue( itemObjectArray[ 2 ] instanceof String[] );
-    String[] fontNameArray = ( String[] )itemObjectArray[ 2 ];
-    assertEquals( 1, fontNameArray.length );
-    assertEquals( "fontName", fontNameArray[ 0 ] );
-    assertEquals( Integer.valueOf( 1 ), itemObjectArray[ 3 ] );
-    assertEquals( Boolean.FALSE, itemObjectArray[ 4 ] );
-    assertEquals( Boolean.FALSE, itemObjectArray[ 5 ] );
-    assertEquals( Integer.valueOf( 17 ), itemObjectArray[ 6 ] );
-    assertEquals( Boolean.FALSE, itemObjectArray[ 7 ] );
-  }
-
-  private void checkProbeObject( Object probeObject, Probe probe ) {
-    assertTrue( probeObject instanceof Object[] );
-    Object[] probeObjectArray = ( Object[] )probeObject;
-    assertEquals( 8, probeObjectArray.length );
-    assertEquals( MeasurementUtil.getId( probe ), probeObjectArray[ 0 ] );
-    assertEquals( TEXT_TO_MEASURE, probeObjectArray[ 1 ] );
-    assertTrue( probeObjectArray[ 2 ] instanceof String[] );
-    String[] fontNameArray = ( String[] )probeObjectArray[ 2 ];
-    assertEquals( 1, fontNameArray.length );
-    assertEquals( "fontName", fontNameArray[ 0 ] );
-    assertEquals( Integer.valueOf( 1 ), probeObjectArray[ 3 ] );
-    assertEquals( Boolean.FALSE, probeObjectArray[ 4 ] );
-    assertEquals( Boolean.FALSE, probeObjectArray[ 5 ] );
-    assertEquals( Integer.valueOf( -1 ), probeObjectArray[ 6 ] );
-    assertEquals( Boolean.TRUE, probeObjectArray[ 7 ] );
+    JsonArray expected = new JsonArray()
+      .add( MeasurementUtil.getId( item ) )
+      .add( " text \"to\" measure " )
+      .add( new JsonArray().add( "fontName" ) )
+      .add( 1 )
+      .add( false )
+      .add( false )
+      .add( 17 )
+      .add( false );
+    assertEquals( expected, itemObject );
   }
 
   private Probe createProbe() {

@@ -16,9 +16,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
@@ -78,11 +76,9 @@ final class MenuLCAUtil {
    */
   static void renderUnhideItems( Menu menu ) {
     if( WidgetLCAUtil.wasEventSent( menu, ClientMessageConst.EVENT_SHOW ) ) {
-      Boolean reveal = Boolean.valueOf( menu.getItemCount() > 0 );
+      boolean reveal = menu.getItemCount() > 0;
       IClientObject clientObject = ClientObjectFactory.getClientObject( menu );
-      Map<String, Object> args = new HashMap<String, Object>();
-      args.put( "reveal", reveal );
-      clientObject.call( METHOD_UNHIDE_ITEMS, args );
+      clientObject.call( METHOD_UNHIDE_ITEMS, new JsonObject().add( "reveal", reveal ) );
     }
   }
 

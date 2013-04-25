@@ -15,16 +15,11 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.ACTION_CRE
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.ACTION_DESTROY;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.ACTION_LISTEN;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.ACTION_SET;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.CALL_METHOD_NAME;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.CREATE_TYPE;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.HEAD;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.OPERATIONS;
 
-import java.util.Map;
-
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
-import org.eclipse.rap.rwt.internal.json.JsonUtil;
 import org.eclipse.rap.rwt.internal.json.JsonValue;
 
 
@@ -58,8 +53,7 @@ public class ProtocolMessageWriter {
   }
 
   public void appendCreate( String target, String type ) {
-    prepareOperation( target, ACTION_CREATE );
-    pendingOperation.appendDetail( CREATE_TYPE, JsonValue.valueOf( type ) );
+    prepareOperation( target, ACTION_CREATE, type );
   }
 
   public void appendSet( String target, String property, int value ) {
@@ -78,24 +72,18 @@ public class ProtocolMessageWriter {
     appendSet( target, property, JsonValue.valueOf( value ) );
   }
 
-  public void appendSet( String target, String property, Object value ) {
-    appendSet( target, property, JsonUtil.createJsonValue( value ) );
-  }
-
-  private void appendSet( String target, String property, JsonValue value ) {
+  public void appendSet( String target, String property, JsonValue value ) {
     prepareOperation( target, ACTION_SET );
-    pendingOperation.appendProperty( property, value );
+    pendingOperation.putProperty( property, value );
   }
 
   public void appendListen( String target, String eventType, boolean listen ) {
     prepareOperation( target, ACTION_LISTEN );
-    pendingOperation.appendProperty( eventType, JsonValue.valueOf( listen ) );
+    pendingOperation.putProperty( eventType, JsonValue.valueOf( listen ) );
   }
 
-  public void appendCall( String target, String methodName, Map<String, Object> properties ) {
-    prepareOperation( target, ACTION_CALL );
-    pendingOperation.appendDetail( CALL_METHOD_NAME, JsonValue.valueOf( methodName ) );
-    pendingOperation.appendProperties( properties );
+  public void appendCall( String target, String methodName, JsonObject parameters ) {
+    prepareOperation( target, ACTION_CALL, methodName, parameters );
   }
 
   public void appendDestroy( String target ) {
@@ -103,10 +91,19 @@ public class ProtocolMessageWriter {
   }
 
   private void prepareOperation( String target, String type ) {
+    prepareOperation( target, type, null, null );
+  }
+
+  private void prepareOperation( String target, String type, String detail ) {
+    prepareOperation( target, type, detail, null );
+  }
+
+  private void prepareOperation( String target, String type, String detail, JsonObject properties )
+  {
     ensureMessagePending();
     if( !canAppendToCurrentOperation( target, type ) ) {
       appendPendingOperation();
-      pendingOperation = new Operation( target, type );
+      pendingOperation = new Operation( target, type, detail, properties );
     }
   }
 

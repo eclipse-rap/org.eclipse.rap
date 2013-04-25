@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
@@ -87,9 +85,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
     String url = fileUpload.getAdapter( IFileUploadAdapter.class ).getAndResetUrl();
     if( url != null ) {
       IClientObject clientObject = ClientObjectFactory.getClientObject( fileUpload );
-      Map<String, Object> args = new HashMap<String, Object>();
-      args.put( "url", url );
-      clientObject.call( "submit", args );
+      clientObject.call( "submit", new JsonObject().add( "url", url ) );
     }
   }
 

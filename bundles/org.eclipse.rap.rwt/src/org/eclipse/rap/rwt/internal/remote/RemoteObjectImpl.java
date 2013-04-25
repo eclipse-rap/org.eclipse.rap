@@ -14,7 +14,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
@@ -92,7 +95,7 @@ public class RemoteObjectImpl implements RemoteObject, Serializable {
     checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
-        writer.appendSet( id, name, value );
+        writer.appendSet( id, name, JsonUtil.createJsonValue( value ) );
       }
     } );
   }
@@ -107,14 +110,26 @@ public class RemoteObjectImpl implements RemoteObject, Serializable {
     } );
   }
 
-  public void call( final String method, final Map<String, Object> properties ) {
+  public void call( final String method, final Map<String, Object> parameters ) {
     ParamCheck.notNullOrEmpty( method, "method" );
     checkState();
     renderQueue.add( new RenderRunnable() {
       public void render( ProtocolMessageWriter writer ) {
-        writer.appendCall( id, method, properties );
+        writer.appendCall( id, method, convertToJson( parameters ) );
       }
     } );
+  }
+
+  // TODO [rst] Temporary, removed when RemoteObject#call signature changed
+  private JsonObject convertToJson( final Map<String, Object> properties ) {
+    if( properties == null ) {
+      return null;
+    }
+    JsonObject result = new JsonObject();
+    for( Entry<String, Object> element : properties.entrySet() ) {
+      result.add( element.getKey(), JsonUtil.createJsonValue( element.getValue() ) );
+    }
+    return result;
   }
 
   public void destroy() {

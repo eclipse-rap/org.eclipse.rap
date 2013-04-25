@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,14 +11,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.widgets;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
@@ -142,22 +139,21 @@ public final class ExternalBrowser {
 
   private static void renderOpen( String id, String url, int style ) {
     ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-    Map<String, Object> args = new LinkedHashMap<String, Object>();
-    args.put( PROPERTY_ID, id );
-    args.put( PROPERTY_URL, url );
-    args.put( PROPERTY_STYLE, getFeatures( style ) );
-    protocolWriter.appendCall( EXTERNAL_BROWSER_ID, METHOD_OPEN, args );
+    JsonObject parameters = new JsonObject()
+      .add( PROPERTY_ID, JsonValue.valueOf( id ) )
+      .add( PROPERTY_URL, JsonValue.valueOf( url ) )
+      .add( PROPERTY_STYLE, getFeatures( style ) );
+    protocolWriter.appendCall( EXTERNAL_BROWSER_ID, METHOD_OPEN, parameters );
   }
 
   private static void renderClose( String id ) {
     ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-    Map<String, Object> args = new HashMap<String, Object>();
-    args.put( PROPERTY_ID, id );
-    protocolWriter.appendCall( EXTERNAL_BROWSER_ID, METHOD_CLOSE, args );
+    JsonObject parameters = new JsonObject().add( PROPERTY_ID, JsonValue.valueOf( id ) );
+    protocolWriter.appendCall( EXTERNAL_BROWSER_ID, METHOD_CLOSE, parameters );
   }
 
-  private static String[] getFeatures( int style ) {
-    List<String> features = new ArrayList<String>();
+  private static JsonArray getFeatures( int style ) {
+    JsonArray features = new JsonArray();
     if( ( style & STATUS ) != 0 ) {
       features.add( "STATUS" );
     }
@@ -167,7 +163,7 @@ public final class ExternalBrowser {
     if( ( style & NAVIGATION_BAR ) != 0 ) {
       features.add( "NAVIGATION_BAR" );
     }
-    return features.toArray( new String[ 0 ] );
+    return features;
   }
 
   private static void checkWidget() {

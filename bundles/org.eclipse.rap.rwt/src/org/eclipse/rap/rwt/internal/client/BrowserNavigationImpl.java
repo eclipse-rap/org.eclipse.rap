@@ -16,14 +16,13 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicatio
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
@@ -165,20 +164,18 @@ public final class BrowserNavigationImpl
 
   private void renderAdd() {
     if( !entriesToAdd.isEmpty() ) {
-      Map<String, Object> properties = new HashMap<String, Object>();
-      properties.put( PROP_ENTRIES, entriesAsArray() );
+      JsonObject parameters = new JsonObject().add( PROP_ENTRIES, entriesAsArray() );
       ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-      protocolWriter.appendCall( TYPE, METHOD_ADD_TO_HISTORY, properties );
+      protocolWriter.appendCall( TYPE, METHOD_ADD_TO_HISTORY, parameters );
       entriesToAdd.clear();
     }
   }
 
-  private Object[] entriesAsArray() {
+  private JsonArray entriesAsArray() {
     HistoryEntry[] entries = getEntries();
-    Object[][] result = new Object[ entries.length ][ 2 ];
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ][ 0 ] = entries[ i ].state;
-      result[ i ][ 1 ] = entries[ i ].title;
+    JsonArray result = new JsonArray();
+    for( int i = 0; i < entries.length; i++ ) {
+      result.add( new JsonArray().add( entries[ i ].state ).add( entries[ i ].title ) );
     }
     return result;
   }

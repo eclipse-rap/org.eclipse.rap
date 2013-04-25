@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2011, 2012 EclipseSource and others.
+* Copyright (c) 2011, 2013 EclipseSource and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -15,10 +15,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -156,13 +154,10 @@ public class ClientObject_Test {
   }
 
   @Test
-  public void testCallTwice() {
+  public void testCall_twice() {
     clientObject.call( "method", null );
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( "key1", "a" );
-    properties.put( "key2", new Integer( 3 ) );
 
-    clientObject.call( "method2", properties );
+    clientObject.call( "method2", new JsonObject().add( "key1", "a" ).add( "key2", 3 ) );
 
     CallOperation operation = ( CallOperation )getMessage().getOperation( 1 );
     assertEquals( shellId, operation.getTarget() );
@@ -175,4 +170,5 @@ public class ClientObject_Test {
     ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
     return new Message( writer.createMessage() );
   }
+
 }

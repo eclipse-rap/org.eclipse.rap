@@ -17,9 +17,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -192,10 +190,10 @@ public class Message_Test {
 
   @Test
   public void testCallOperation() {
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( "key1", "a" );
-    properties.put( "key2", new Integer( 2 ) );
-    writer.appendCall( "w2", "method", properties );
+    JsonObject parameters = new JsonObject()
+      .add( "key1", "a" )
+      .add( "key2", 2 );
+    writer.appendCall( "w2", "method", parameters );
 
     CallOperation operation = ( CallOperation )getMessage().getOperation( 0 );
     assertEquals( "w2", operation.getTarget() );

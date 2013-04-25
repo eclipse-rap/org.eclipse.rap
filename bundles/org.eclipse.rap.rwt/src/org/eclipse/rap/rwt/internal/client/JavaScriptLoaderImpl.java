@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 
@@ -27,7 +25,7 @@ public class JavaScriptLoaderImpl implements JavaScriptLoader {
   private final Set<String> loadedUrls = new HashSet<String>();
 
   public void require( String url ) {
-    List<String> urlsToLoad = new ArrayList<String>();
+    JsonArray urlsToLoad = new JsonArray();
     if( !loadedUrls.contains( url ) ) {
       urlsToLoad.add( url );
       loadedUrls.add( url );
@@ -35,12 +33,11 @@ public class JavaScriptLoaderImpl implements JavaScriptLoader {
     load( urlsToLoad );
   }
 
-  private void load( List<String> urls ) {
-    if( !urls.isEmpty() ) {
+  private void load( JsonArray urlsToLoad ) {
+    if( !urlsToLoad.isEmpty() ) {
       ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
-      Map<String, Object> properties = new HashMap<String, Object>();
-      properties.put( "files", urls.toArray() );
-      writer.appendCall( "rwt.client.JavaScriptLoader", "load", properties );
+      JsonObject parameters = new JsonObject().add( "files", urlsToLoad );
+      writer.appendCall( "rwt.client.JavaScriptLoader", "load", parameters );
     }
   }
 

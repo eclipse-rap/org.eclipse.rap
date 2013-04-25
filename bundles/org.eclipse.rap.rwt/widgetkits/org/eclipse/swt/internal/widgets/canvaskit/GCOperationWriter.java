@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.rap.rwt.Adaptable;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
@@ -44,7 +43,7 @@ final class GCOperationWriter {
 
   private final Control control;
   private boolean initialized;
-  private ArrayList<Object[]> operations;
+  private JsonArray operations;
   private int lineWidth;
   private RGB foreground;
   private RGB background;
@@ -60,14 +59,14 @@ final class GCOperationWriter {
       lineWidth = 1;
       foreground = control.getForeground().getRGB();
       background = control.getBackground().getRGB();
-      Map<String, Object> arg = new HashMap<String, Object>();
-      arg.put( "width", new Integer( size.x ) );
-      arg.put( "height", new Integer( size.y ) );
-      arg.put( "font", ProtocolUtil.getFontAsArray( control.getFont() ) );
-      arg.put( "fillStyle", ProtocolUtil.getColorAsArray( background, false ) );
-      arg.put( "strokeStyle", ProtocolUtil.getColorAsArray( foreground, false ) );
-      clientObject.call( "init", arg );
-      operations = new ArrayList<Object[]>();
+      JsonObject parameters = new JsonObject()
+        .add( "width", size.x )
+        .add( "height", size.y )
+        .add( "font", ProtocolUtil.getJsonForFont( control.getFont() ) )
+        .add( "fillStyle", ProtocolUtil.getJsonForColor( background, false ) )
+        .add( "strokeStyle", ProtocolUtil.getJsonForColor( foreground, false ) );
+      clientObject.call( "init", parameters );
+      operations = new JsonArray();
       initialized = true;
     }
   }
@@ -102,12 +101,10 @@ final class GCOperationWriter {
 
   void render() {
     if( operations != null ) {
-      Object[] array = operations.toArray();
-      if( array.length > 0 ) {
+      if( !operations.isEmpty() ) {
         IClientObject clientObject = ClientObjectFactory.getClientObject( getGC( control ) );
-        Map<String, Object> arg = new HashMap<String, Object>();
-        arg.put( "operations", array );
-        clientObject.call( "draw", arg );
+        JsonObject parameters = new JsonObject().add( "operations", operations );
+        clientObject.call( "draw", parameters );
       }
       operations = null;
     }
@@ -125,7 +122,9 @@ final class GCOperationWriter {
     float x = operation.x;
     float y = operation.y;
     addClientOperation( "save" );
-    addToOperations( "fillStyle", ProtocolUtil.getColorAsArray( foreground, false ) );
+    operations.add( new JsonArray()
+      .add( "fillStyle" )
+      .add( ProtocolUtil.getJsonForColor( foreground, false ) ) );
     addClientOperation( "lineWidth", 1 );
     addClientOperation( "beginPath" );
     addClientOperation( "rect", x, y, 1, 1 );
@@ -169,12 +168,14 @@ final class GCOperationWriter {
     float y2 = vertical ? y1 + Math.abs( height ) : y1;
     addClientOperation( "save" );
     addClientOperation( "createLinearGradient", x1, y1, x2, y2 );
-    addToOperations( "addColorStop",
-                     Integer.valueOf( 0 ),
-                     ProtocolUtil.getColorAsArray( startColor, false ) );
-    addToOperations( "addColorStop",
-                     Integer.valueOf( 1 ),
-                     ProtocolUtil.getColorAsArray( endColor, false ) );
+    operations.add( new JsonArray()
+      .add( "addColorStop" )
+      .add( 0 )
+      .add( ProtocolUtil.getJsonForColor( startColor, false ) ) );
+    operations.add( new JsonArray()
+      .add( "addColorStop" )
+      .add( 1 )
+      .add( ProtocolUtil.getJsonForColor( endColor, false ) ) );
     addClientOperation( "fillStyle", "linearGradient" );
     addClientOperation( "beginPath" );
     addClientOperation( "rect", x1, y1, width, height );
@@ -214,16 +215,16 @@ final class GCOperationWriter {
     float startAngle = round( operation.startAngle * factor * -1, 4 );
     float arcAngle = round( operation.arcAngle * factor * -1, 4 );
     addClientOperation( "beginPath" );
-    addToOperations(
-      "ellipse",
-      new Float( cx ),
-      new Float( cy ),
-      new Float( rx ),
-      new Float( ry ),
-      new Float( 0 ),
-      new Float( startAngle ),
-      new Float( startAngle + arcAngle ),
-      arcAngle < 0 ? Boolean.TRUE : Boolean.FALSE
+    operations.add( new JsonArray()
+      .add( "ellipse" )
+      .add( cx )
+      .add( cy )
+      .add( rx )
+      .add( ry )
+      .add( 0 )
+      .add( startAngle )
+      .add( startAngle + arcAngle )
+      .add( arcAngle < 0 )
     );
     if( operation.fill ) {
       addClientOperation( "lineTo", cx, cy  );
@@ -274,41 +275,41 @@ final class GCOperationWriter {
     boolean drawMnemonic = ( operation.flags & SWT.DRAW_MNEMONIC ) != 0;
     boolean drawDelemiter = ( operation.flags & SWT.DRAW_DELIMITER ) != 0;
     boolean drawTab = ( operation.flags & SWT.DRAW_TAB ) != 0;
-    Object[] objects = new Object[] {
-      fill ? "fillText" : "strokeText",
-      operation.text,
-      Boolean.valueOf( drawMnemonic ),
-      Boolean.valueOf( drawDelemiter ),
-      Boolean.valueOf( drawTab )
-    };
-    addClientOperation( objects, new float[] { operation.x, operation.y } );
+    operations.add( new JsonArray()
+      .add( fill ? "fillText" : "strokeText" )
+      .add( operation.text )
+      .add( drawMnemonic )
+      .add( drawDelemiter )
+      .add( drawTab )
+      .add( operation.x )
+      .add( operation.y ) );
   }
 
   private void setProperty( SetProperty operation ) {
     String name;
-    Object value;
+    JsonValue value;
     switch( operation.id ) {
       case SetProperty.FOREGROUND:
         name = "strokeStyle";
         foreground = ( RGB )operation.value;
-        value = ProtocolUtil.getColorAsArray( foreground, false );
+        value = ProtocolUtil.getJsonForColor( foreground, false );
       break;
       case SetProperty.BACKGROUND:
         name = "fillStyle";
         background = ( RGB )operation.value;
-        value = ProtocolUtil.getColorAsArray( background, false );
+        value = ProtocolUtil.getJsonForColor( background, false );
       break;
       case SetProperty.ALPHA:
         float alpha = ( ( Integer )operation.value ).floatValue();
         float globalAlpha = round( alpha / 255, 2 );
         name = "globalAlpha";
-        value = new Float( globalAlpha );
+        value = JsonValue.valueOf( globalAlpha );
       break;
       case SetProperty.LINE_WIDTH:
         name = "lineWidth";
         int width = ( ( Integer )operation.value ).intValue();
         width = width < 1 ? 1 : width;
-        value = new Integer( width );
+        value = JsonValue.valueOf( width );
         lineWidth = width;
       break;
       case SetProperty.LINE_CAP:
@@ -316,13 +317,13 @@ final class GCOperationWriter {
         switch( ( ( Integer )operation.value ).intValue() ) {
           default:
           case SWT.CAP_FLAT:
-            value = "butt";
+            value = JsonValue.valueOf( "butt" );
           break;
           case SWT.CAP_ROUND:
-            value = "round";
+            value = JsonValue.valueOf( "round" );
           break;
           case SWT.CAP_SQUARE:
-            value = "square";
+            value = JsonValue.valueOf( "square" );
           break;
         }
       break;
@@ -331,46 +332,39 @@ final class GCOperationWriter {
         switch( ( ( Integer )operation.value ).intValue() ) {
           default:
           case SWT.JOIN_BEVEL:
-            value = "bevel";
+            value = JsonValue.valueOf( "bevel" );
             break;
           case SWT.JOIN_MITER:
-            value = "miter";
+            value = JsonValue.valueOf( "miter" );
             break;
           case SWT.JOIN_ROUND:
-            value = "round";
+            value = JsonValue.valueOf( "round" );
             break;
         }
       break;
       case SetProperty.FONT:
         name = "font";
-        value = ProtocolUtil.getFontAsArray( ( FontData )operation.value );
+        value = ProtocolUtil.getJsonForFont( ( FontData )operation.value );
       break;
       default:
         String msg = "Unsupported operation id: " + operation.id;
         throw new RuntimeException( msg );
     }
-    addToOperations( name, value );
-  }
-
-  private void addToOperations( Object... args ) {
-    operations.add( args );
+    operations.add( new JsonArray().add( name ).add( value ) );
   }
 
   private void addClientOperation( String name, float... args ) {
-    addClientOperation( new Object[]{ name }, args );
+    JsonArray operation = new JsonArray().add( name );
+    for( int i = 0; i < args.length; i++ ) {
+      operation.add( args[ i ] );
+    }
+    operations.add( operation );
   }
 
   private void addClientOperation( String name, String argText, float... args ) {
-    addClientOperation( new Object[]{ name, argText }, args );
-  }
-
-  private void addClientOperation( Object[] objects, float[] numbers ) {
-    Object[] operation = new Object[ objects.length + numbers.length ];
-    for( int i = 0; i < objects.length; i++ ) {
-      operation[ i ] = objects[ i ];
-    }
-    for( int i = objects.length; i < operation.length; i++ ) {
-      operation[ i ] = new Float( numbers[ i - objects.length ] );
+    JsonArray operation = new JsonArray().add( name ).add( argText );
+    for( int i = 0; i < args.length; i++ ) {
+      operation.add( args[ i ] );
     }
     operations.add( operation );
   }

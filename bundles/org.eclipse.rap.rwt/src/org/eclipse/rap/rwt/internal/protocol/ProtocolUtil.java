@@ -16,7 +16,10 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonUtil;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
@@ -209,6 +212,22 @@ public final class ProtocolUtil {
     return result;
   }
 
+  public static JsonValue getJsonForFont( Font font ) {
+    FontData fontData = font == null ? null : FontUtil.getData( font );
+    return getJsonForFont( fontData );
+  }
+
+  public static JsonValue getJsonForFont( FontData fontData ) {
+    if( fontData != null ) {
+      return new JsonArray()
+        .add( JsonUtil.createJsonArray( parseFontName( fontData.getName() ) ) )
+        .add( fontData.getHeight() )
+        .add( ( fontData.getStyle() & SWT.BOLD ) != 0 )
+        .add( ( fontData.getStyle() & SWT.ITALIC ) != 0 );
+    }
+    return JsonValue.NULL;
+  }
+
   public static String[] parseFontName( final String name ) {
     return parsedFonts.get( name, new IInstanceCreator<String[]>() {
       public String[] createInstance() {
@@ -258,6 +277,21 @@ public final class ProtocolUtil {
       result = new int[] { 0, 0, 0, 0 };
     }
     return result;
+  }
+
+  public static JsonValue getJsonForColor( Color color, boolean transparent ) {
+    RGB rgb = color == null ? null : color.getRGB();
+    return getJsonForColor( rgb, transparent );
+  }
+
+  public static JsonValue getJsonForColor( RGB rgb, boolean transparent ) {
+    if( rgb != null ) {
+      int transparency = transparent ? 0 : 255;
+      return new JsonArray().add( rgb.red ).add( rgb.green ).add( rgb.blue ).add( transparency );
+    } else if( transparent ) {
+      return new JsonArray().add( 0 ).add( 0 ).add( 0 ).add( 0 );
+    }
+    return JsonValue.NULL;
   }
 
   public static Rectangle toRectangle( Object value ) {
