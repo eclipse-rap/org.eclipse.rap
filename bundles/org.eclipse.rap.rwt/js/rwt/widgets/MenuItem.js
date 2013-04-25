@@ -303,19 +303,22 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
       return this._noRadioGroup;
     },
 
-    // TODO [tb] "execute", "setSelection", "_sendChanges" and possibly more
+    // TODO [tb] "execute", "setSelection", "_notifySelected" and possibly more
     // could be shared between Button, MenuItem and (future) ToolItem.
     // Then, also the corrosponding LCA-methods could be shared
     execute : function() {
       this.base( arguments );
       if( this._isSelectable ) {
         this.setSelection( !( this._selected && this._isDeselectable ) );
+      } else {
+        this._notifySelected();
       }
-      this._sendChanges();
     },
 
     setSelection : function( value ) {
-      if( this._selected != value || this._selected ) {
+      var wasSelected = this._selected;
+      var selectionChanged = this._selected != value;
+      if( selectionChanged ) {
         this._selected = value;
         if( this._selected ) {
           this.addState( "selected" );
@@ -327,10 +330,12 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
           server.getRemoteObject( this ).set( "selection", this._selected );
         }
       }
+      if( selectionChanged || wasSelected ) {
+        this._notifySelected();
+      }
     },
 
-    // Not using EventUtil since no event should be sent (for cascade at least)
-    _sendChanges : function() {
+    _notifySelected : function() {
       if(    !rwt.remote.EventUtil.getSuspended()
           && this._hasSelectionListener
           && this._shouldSendEvent() )

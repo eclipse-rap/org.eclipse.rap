@@ -1103,36 +1103,61 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       menuItem.setSelection( false );
       menuItem.setHasSelectionListener( true );
       TestUtil.clearRequestLog();
+
       TestUtil.click( menuItem );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertTrue( menuItem.hasState( "selected" ) );
       assertTrue( TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Selection" ) );
+      disposeMenu();
+    },
+
+    testExecuteRadioButton_DeselectSiblings : function() {
+      createSimpleMenu( "radio" );
+      rwt.remote.ObjectRegistry.add( "w3", menuItem, menuItemHandler );
+      TestUtil.flush();
       TestUtil.clearRequestLog();
       TestUtil.click( menuItem );
-      assertEquals( 1, TestUtil.getRequestsSend() );
-      assertTrue( menuItem.hasState( "selected" ) );
-      assertTrue( TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
+      assertEquals( 0, TestUtil.getRequestsSend() );
+      menuItem.setSelection( false );
+      menuItem.setHasSelectionListener( true );
       var item2 = new MenuItem( "radio" );
       menu.addMenuItemAt( item2, 0 );
       rwt.remote.ObjectRegistry.add( "w2", item2, menuItemHandler );
+      item2.setSelection( true );
       item2.setHasSelectionListener( true );
       TestUtil.clearRequestLog();
+
+      TestUtil.click( menuItem );
+
+      assertEquals( 2, TestUtil.getRequestsSend() );
+      assertFalse( item2.hasState( "selected" ) );
+      assertFalse( TestUtil.getMessageObject( 0 ).findSetProperty( "w2", "selection" ) );
+      assertNotNull( TestUtil.getMessageObject( 0 ).findNotifyOperation( "w2", "Selection" ) );
+      assertTrue( menuItem.hasState( "selected" ) );
+      assertTrue( TestUtil.getMessageObject( 1 ).findSetProperty( "w3", "selection" ) );
+      assertNotNull( TestUtil.getMessageObject( 1 ).findNotifyOperation( "w3", "Selection" ) );
+      disposeMenu();
+    },
+
+    testExecuteSelectedRadioButton : function() {
+      createSimpleMenu( "radio" );
+      rwt.remote.ObjectRegistry.add( "w3", menuItem, menuItemHandler );
       TestUtil.flush();
-      TestUtil.click( item2 );
-      assertFalse( menuItem.hasState( "selected" ) );
-      assertTrue( item2.hasState( "selected" ) );
-      assertEquals( 1, TestUtil.getRequestsSend() );
-      assertFalse( TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
-      assertTrue( TestUtil.getMessageObject().findSetProperty( "w2", "selection" ) );
       TestUtil.clearRequestLog();
-      // bug 328437
-      TestUtil.click( item2 );
-      assertFalse( menuItem.hasState( "selected" ) );
-      assertTrue( item2.hasState( "selected" ) );
+      TestUtil.click( menuItem );
+      assertEquals( 0, TestUtil.getRequestsSend() );
+      menuItem.setSelection( true );
+      menuItem.setHasSelectionListener( true );
+      TestUtil.clearRequestLog();
+
+      TestUtil.click( menuItem );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
+      assertTrue( menuItem.hasState( "selected" ) );
       assertNull( TestUtil.getMessageObject().findSetOperation( "w3", "selection" ) );
-      assertTrue( TestUtil.getMessageObject().findSetProperty( "w2", "selection" ) );
-      TestUtil.clearRequestLog();
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Selection" ) );
       disposeMenu();
     },
 

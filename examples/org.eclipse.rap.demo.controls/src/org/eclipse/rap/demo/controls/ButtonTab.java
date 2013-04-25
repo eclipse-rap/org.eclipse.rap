@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,8 +26,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Text;
@@ -35,6 +37,7 @@ import org.eclipse.swt.widgets.Text;
 
 public class ButtonTab extends ExampleTab {
 
+  private static final String PROP_SELECTION_LISTENER = "selectionListener";
   private static final String BUTTON_IMAGE_PATH = "resources/button-image.gif";
 
   private Image buttonImage;
@@ -74,6 +77,7 @@ public class ButtonTab extends ExampleTab {
     createBgImageButton();
     createFontChooser();
     createCursorCombo();
+    createPropertyCheckbox( "Add Selection Listener", PROP_SELECTION_LISTENER );
     Button button = createPropertyButton( "Toggle Button", SWT.PUSH );
     button.setToolTipText( "Remote control the toggle button" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -106,6 +110,21 @@ public class ButtonTab extends ExampleTab {
     radioButton3 = new Button( parent, style | SWT.RADIO );
     radioButton3.setText( "Radio 3" );
     Button arrowButton = new Button( parent, style | SWT.ARROW );
+    if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
+      Listener listener = new Listener() {
+        public void handleEvent( Event event ) {
+          log( event.toString() );
+        }
+      };
+      pushButton.addListener( SWT.Selection, listener );
+      toggleButton.addListener( SWT.Selection, listener );
+      checkButton1.addListener( SWT.Selection, listener );
+      checkButton2.addListener( SWT.Selection, listener );
+      radioButton1.addListener( SWT.Selection, listener );
+      radioButton2.addListener( SWT.Selection, listener );
+      radioButton3.addListener( SWT.Selection, listener );
+      arrowButton.addListener( SWT.Selection, listener );
+    }
     registerControl( pushButton );
     registerControl( toggleButton );
     registerControl( checkButton1 );

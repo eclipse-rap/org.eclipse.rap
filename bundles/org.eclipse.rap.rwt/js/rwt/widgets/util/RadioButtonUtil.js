@@ -32,14 +32,12 @@ rwt.qx.Class.define( "rwt.widgets.util.RadioButtonUtil", {
         case "Left":
         case "Up":
           this._setNextOrPrevious( widget, "previous" );
-          widget._sendChanges();
           event.preventDefault();
           event.stopPropagation();
           break;
         case "Right":
         case "Down":
           this._setNextOrPrevious( widget, "next" );
-          widget._sendChanges();
           event.preventDefault();
           event.stopPropagation();
           break;
@@ -135,7 +133,7 @@ rwt.qx.Class.define( "rwt.widgets.util.RadioButtonUtil", {
     _unselectSiblings : function( widget ) {
       var group = this._getRadioGroup( widget );
       for( var i = 0; i < group.length; i++ ) {
-        if( group[ i ] != widget ) {
+        if( group[ i ] !== widget ) {
           group[ i ].setSelection( false );
         }
       }

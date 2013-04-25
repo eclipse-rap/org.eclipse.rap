@@ -34,17 +34,14 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
       case "push":
         this._isSelectable = false;
         this._isDeselectable = false;
-        this._sendEvent = true;
       break;
       case "toggle":
       case "check":
         this._isSelectable = true;
         this._isDeselectable = true;
-        this._sendEvent = true;
       break;
       case "radio":
         this._isSelectable = true;
-        this._sendEvent = true;
         this.setNoRadioGroup( false );
         rwt.widgets.util.RadioButtonUtil.registerExecute( this );
         rwt.widgets.util.RadioButtonUtil.registerKeypress( this );
@@ -157,12 +154,15 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
       this.base( arguments );
       if( this._isSelectable ) {
         this.setSelection( !( this._selected && this._isDeselectable ) );
+      } else {
+        this._notifySelected();
       }
-      this._sendChanges();
     },
 
     setSelection : function( value ) {
-      if( this._selected != value || this._selected ) {
+      var wasSelected = this._selected;
+      var selectionChanged = this._selected != value;
+      if( selectionChanged ) {
         this._selected = value;
         if( this._selected ) {
           this.addState( "selected" );
@@ -174,14 +174,13 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
           server.getRemoteObject( this ).set( "selection", this._selected );
         }
       }
+      if( selectionChanged || wasSelected ) {
+        this._notifySelected();
+      }
     },
 
-    // Not using EventUtil for listener since no event should be sent for radio
-    _sendChanges : function() {
-      if(    !rwt.remote.EventUtil.getSuspended()
-          && this._hasSelectionListener
-          && this._sendEvent )
-      {
+    _notifySelected : function() {
+      if( !rwt.remote.EventUtil.getSuspended() && this._hasSelectionListener ) {
         rwt.remote.EventUtil.notifySelected( this );
       }
     },

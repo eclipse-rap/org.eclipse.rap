@@ -438,14 +438,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertFalse( TestUtil.getMessageObject().findSetProperty( "w11", "selection" ) );
     },
 
-    testExecuteRadioButton : function() {
+    testExecuteRadioButton_ByMouse : function() {
       var button = new rwt.widgets.Button( "radio" );
       button.addState( "rwt_RADIO" );
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
       rwt.remote.ObjectRegistry.add( "w11", button, handler );
       button.addToDocument();
       TestUtil.flush();
-      TestUtil.click( button );
+      button.setSelection( true );
       var button2 = new rwt.widgets.Button( "radio" );
       button.setHasSelectionListener( true );
       button2.addState( "rwt_RADIO" );
@@ -454,19 +454,70 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       button2.addToDocument();
       TestUtil.flush();
       button2.setHasSelectionListener( true );
+      TestUtil.clearRequestLog();
+
       TestUtil.click( button2 );
+
       assertFalse( button.hasState( "selected" ) );
       assertTrue( button2.hasState( "selected" ) );
-      assertEquals( 1, TestUtil.getRequestsSend() );
-      assertFalse( TestUtil.getMessageObject().findSetProperty( "w11", "selection" ) );
-      assertTrue( TestUtil.getMessageObject().findSetProperty( "w2", "selection" ) );
+      assertEquals( 2, TestUtil.getRequestsSend() );
+      assertFalse( TestUtil.getMessageObject( 0 ).findSetProperty( "w11", "selection" ) );
+      assertNotNull( TestUtil.getMessageObject( 0 ).findNotifyOperation( "w11", "Selection" ) );
+      assertTrue( TestUtil.getMessageObject( 1 ).findSetProperty( "w2", "selection" ) );
+      assertNotNull( TestUtil.getMessageObject( 1 ).findNotifyOperation( "w2", "Selection" ) );
+      button.destroy();
+      button2.destroy();
+    },
+
+    testExecuteRadioButton_ByKeyboard : function() {
+      var button = new rwt.widgets.Button( "radio" );
+      button.addState( "rwt_RADIO" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+      rwt.remote.ObjectRegistry.add( "w11", button, handler );
+      button.addToDocument();
+      TestUtil.flush();
+      button.setSelection( true );
+      var button2 = new rwt.widgets.Button( "radio" );
+      button.setHasSelectionListener( true );
+      button2.addState( "rwt_RADIO" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+      rwt.remote.ObjectRegistry.add( "w2", button2, handler );
+      button2.addToDocument();
+      TestUtil.flush();
+      button2.setHasSelectionListener( true );
       TestUtil.clearRequestLog();
-      TestUtil.press( button2, "Up" );
+
+      TestUtil.press( button, "Down" );
+
+      assertFalse( button.hasState( "selected" ) );
+      assertTrue( button2.hasState( "selected" ) );
+      assertEquals( 2, TestUtil.getRequestsSend() );
+      assertFalse( TestUtil.getMessageObject( 0 ).findSetProperty( "w11", "selection" ) );
+      assertNotNull( TestUtil.getMessageObject( 0 ).findNotifyOperation( "w11", "Selection" ) );
+      assertTrue( TestUtil.getMessageObject( 1 ).findSetProperty( "w2", "selection" ) );
+      assertNotNull( TestUtil.getMessageObject( 1 ).findNotifyOperation( "w2", "Selection" ) );
+      button.destroy();
+      button2.destroy();
+    },
+
+    testExecuteSelectedRadioButton : function() {
+      var button = new rwt.widgets.Button( "radio" );
+      button.addState( "rwt_RADIO" );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+      rwt.remote.ObjectRegistry.add( "w11", button, handler );
+      button.addToDocument();
+      TestUtil.flush();
+      button.setSelection( true );
+      button.setHasSelectionListener( true );
+      TestUtil.clearRequestLog();
+
+      TestUtil.click( button );
+
       assertTrue( button.hasState( "selected" ) );
-      assertFalse( button2.hasState( "selected" ) );
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertTrue( TestUtil.getMessageObject().findSetProperty( "w11", "selection" ) );
-      assertFalse( TestUtil.getMessageObject().findSetProperty( "w2", "selection" ) );
+      assertNull( TestUtil.getMessageObject().findSetOperation( "w11", "selection" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "Selection" ) );
+      button.destroy();
     },
 
     testExecuteRadioButton_NoRadioGroup : function() {
