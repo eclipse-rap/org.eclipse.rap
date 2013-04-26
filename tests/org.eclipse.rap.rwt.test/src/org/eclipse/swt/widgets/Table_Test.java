@@ -1907,11 +1907,12 @@ public class Table_Test extends TestCase {
     assertEquals( expected, actual );
   }
 
-  public void testGetVisibleItemCount() {
-    Table table = new Table( shell, SWT.NO_SCROLL );
+  public void testGetVisibleItemCount_WithBorder() {
+    Table table = new Table( shell, SWT.NO_SCROLL | SWT.BORDER );
     createTableItems( table, 10 );
     int itemHeight = table.getItemHeight();
-    table.setSize( 100, 5 * itemHeight );
+    int borderWidth = table.getBorderWidth();
+    table.setSize( 100, 5 * itemHeight + 2 * borderWidth );
     assertEquals( 5, table.getVisibleItemCount( true ) );
     assertEquals( 5, table.getVisibleItemCount( false ) );
   }
@@ -1921,8 +1922,8 @@ public class Table_Test extends TestCase {
     createTableItems( table, 10 );
     int itemHeight = table.getItemHeight();
     table.setSize( 100, ( 5 * itemHeight ) + ( itemHeight / 2 ) );
-    assertEquals( 5, table.getVisibleItemCount( false ) );
     assertEquals( 6, table.getVisibleItemCount( true ) );
+    assertEquals( 5, table.getVisibleItemCount( false ) );
   }
 
   public void testGetItemHeight() throws IOException {

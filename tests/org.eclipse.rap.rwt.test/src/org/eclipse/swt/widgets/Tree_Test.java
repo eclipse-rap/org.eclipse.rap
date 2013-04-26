@@ -1854,6 +1854,34 @@ public class Tree_Test extends TestCase {
     assertEquals( 100, adapter.getScrollLeft() );
   }
 
+  public void testGetVisibleRowCount() {
+    Tree tree = new Tree( composite, SWT.NO_SCROLL );
+    createTreeItems( tree, 10 );
+    int itemHeight = tree.getItemHeight();
+    tree.setSize( 100, 5 * itemHeight );
+    assertEquals( 5, tree.getVisibleRowCount( true ) );
+    assertEquals( 5, tree.getVisibleRowCount( false ) );
+  }
+
+  public void testGetVisibleRowCount_WithBorder() {
+    Tree tree = new Tree( composite, SWT.NO_SCROLL | SWT.BORDER );
+    createTreeItems( tree, 10 );
+    int itemHeight = tree.getItemHeight();
+    int borderWidth = tree.getBorderWidth();
+    tree.setSize( 100, 5 * itemHeight + 2 * borderWidth );
+    assertEquals( 5, tree.getVisibleRowCount( true ) );
+    assertEquals( 5, tree.getVisibleRowCount( false ) );
+  }
+
+  public void testGetVisibleItemCountWithPartiallyVisibleItem() {
+    Tree tree = new Tree( composite, SWT.NO_SCROLL );
+    createTreeItems( tree, 10 );
+    int itemHeight = tree.getItemHeight();
+    tree.setSize( 100, ( 5 * itemHeight ) + ( itemHeight / 2 ) );
+    assertEquals( 6, tree.getVisibleRowCount( true ) );
+    assertEquals( 5, tree.getVisibleRowCount( false ) );
+  }
+
   /////////
   // Helper
 
