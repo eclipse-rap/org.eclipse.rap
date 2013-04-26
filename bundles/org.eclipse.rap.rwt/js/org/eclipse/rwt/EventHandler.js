@@ -27,6 +27,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     _lastMouseDown : false,
     _lastMouseEventDate : 0,
     _mouseIsDown : false,
+    _blockKeyEvents : false,
 
     ///////////////////
     // Public functions
@@ -44,11 +45,11 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     },
 
     cleanUp : function() {
-      delete this.__onmouseevent; 
-      delete this.__ondragevent; 
+      delete this.__onmouseevent;
+      delete this.__ondragevent;
       delete this.__onselectevent;
-      delete this.__onwindowblur; 
-      delete this.__onwindowfocus; 
+      delete this.__onwindowblur;
+      delete this.__onwindowfocus;
       delete this.__onwindowresize;
       delete this.__onKeyEvent;
       delete this._lastMouseEventType;
@@ -96,7 +97,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         }
       }
     },
-    
+
     getCaptureWidget : function() {
       return this._captureWidget;
     },
@@ -112,29 +113,37 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         }
       }
     },
-    
+
+    setBlockKeyEvents : function( value ) {
+      this._blockKeyEvents = value;
+    },
+
+    getBlockKeyEvents : function( value ) {
+      return this._blockKeyEvents;
+    },
+
     getFocusRoot : function() {
       return this._focusRoot;
     },
 
     /**
-     * Sets a callback-function to decide if the native context- 
-     * menu is displayed. It will be called on DOM-events of the type 
+     * Sets a callback-function to decide if the native context-
+     * menu is displayed. It will be called on DOM-events of the type
      * "contextmenu". The target-Widget of the event will be given as
-     * the first argument, the dom-target as the second. 
+     * the first argument, the dom-target as the second.
      * It must return a boolean. Null is not allowed.
      *
-     */    
+     */
     setAllowContextMenu : function( func ) {
       this._allowContextMenu = func;
     },
-    
+
     setMenuManager : function( manager ) {
       this._menuManager = manager;
     },
-    
+
     getMenuManager : function( manager ) {
-      return this._menuManager; 
+      return this._menuManager;
     },
 
     setMouseEventFilter : function( filter, context ) {
@@ -142,8 +151,8 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     },
 
     setKeyEventFilter : function( filter, context ) {
-      // TODO [tb] : Unify behavior and API for EventFilter, only use event 
-      // wrapper objects instead of dom-events, create API for order of filter  
+      // TODO [tb] : Unify behavior and API for EventFilter, only use event
+      // wrapper objects instead of dom-events, create API for order of filter
       this._filter[ "keyevent" ] = [ filter, context ];
     },
 
@@ -153,13 +162,19 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
 
     //////////////
     // KEY EVENTS:
-    
+
     _onKeyEvent : function() {
       try {
         var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
         var event = EventHandlerUtil.getDomEvent( arguments );
         var keyCode = EventHandlerUtil.getKeyCode( event );
         var charCode = EventHandlerUtil.getCharCode( event );
+        if( this._blockKeyEvents ) {
+          if( EventHandlerUtil.shouldBlock( event.type, keyCode, charCode, event ) ) {
+            EventHandlerUtil.stopDomEvent( event );
+          }
+          return;
+        }
         if( typeof this._filter[ "domKeyevent" ] !== "undefined" ) {
           var context = this._filter[ "domKeyevent" ][ 1 ];
           var func = this._filter[ "domKeyevent" ][ 0 ];
@@ -178,7 +193,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       }
     },
 
-    
+
     _onkeyevent_post : function( vDomEvent, vType, vKeyCode, vCharCode ) {
       var process = true;
       if( typeof this._filter[ "keyevent" ] !== "undefined" ) {
@@ -190,7 +205,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         this._processKeyEvent( vDomEvent, vType, vKeyCode, vCharCode );
       }
     },
-    
+
     _processKeyEvent : function( vDomEvent, vType, vKeyCode, vCharCode ) {
       var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
       var keyIdentifier;
@@ -201,13 +216,13 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       }
       var vDomTarget = EventHandlerUtil.getDomTarget( vDomEvent );
       var vTarget = this._getKeyEventTarget();
-      var vKeyEventObject = new qx.event.type.KeyEvent( vType, 
-                                                        vDomEvent, 
-                                                        vDomTarget, 
-                                                        vTarget, 
-                                                        null, 
-                                                        vKeyCode, 
-                                                        vCharCode, 
+      var vKeyEventObject = new qx.event.type.KeyEvent( vType,
+                                                        vDomEvent,
+                                                        vDomTarget,
+                                                        vTarget,
+                                                        null,
+                                                        vKeyCode,
+                                                        vCharCode,
                                                         keyIdentifier );
       if( vTarget != null && vTarget.getEnabled() ) {
         switch( keyIdentifier ) {
@@ -237,19 +252,19 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       }
       vKeyEventObject.dispose();
     },
-    
+
     ///////////////
     // MOUSE EVENTS
- 
+
     _onmouseevent : function( event ) {
-      try{ 
+      try{
         var process = true;
         if( typeof this._filter[ "mouseevent" ] !== "undefined" ) {
           var context = this._filter[ "mouseevent" ][ 1 ];
           process = this._filter[ "mouseevent" ][ 0 ].call( context, event );
         }
         if( process ) {
-          this._processMouseEvent( event ); 
+          this._processMouseEvent( event );
         }
       } catch( ex ) {
         org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
@@ -274,18 +289,18 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           } else if( vType == "mouseup" ) {
             this._mouseIsDown = false;
           }
-          if(    vType == "mouseup" 
-              && !this._lastMouseDown 
+          if(    vType == "mouseup"
+              && !this._lastMouseDown
               && ( ( new Date() ).valueOf() - this._lastMouseEventDate ) < 250
           ) {
-            // Fix MSHTML Mouseup, should be after a normal click 
+            // Fix MSHTML Mouseup, should be after a normal click
             // or contextmenu event, like Mozilla does this
             this._onmouseevent_post( vDomEvent, "mousedown", vDomTarget );
-          } else if (    vType == "dblclick" 
-                      && this._lastMouseEventType == "mouseup" 
+          } else if (    vType == "dblclick"
+                      && this._lastMouseEventType == "mouseup"
                       && ( ( new Date() ).valueOf() - this._lastMouseEventDate ) < 250
           ) {
-            // Fix MSHTML Doubleclick, should be after a normal click event, 
+            // Fix MSHTML Doubleclick, should be after a normal click event,
              // like Mozilla does this
             this._onmouseevent_post(vDomEvent, "click", vDomTarget);
           }
@@ -339,7 +354,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           eventConsumed = true;
         } else {
           EventHandlerUtil.stopDomEvent( vDomEvent );
-        } 
+        }
       }
       if(    vDispatchTarget.getEnabled()
           && !( vDispatchTarget instanceof qx.ui.core.ClientDocument )
@@ -365,9 +380,9 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         var elementEventType = vType == "mouseover" ? "elementOver" : "elementOut";
         this._fireElementHoverEvents( elementEventType,
                                       vDomEvent,
-                                      vDomTarget, 
+                                      vDomTarget,
                                       vTarget,
-                                      vOriginalTarget, 
+                                      vOriginalTarget,
                                       vRelatedTarget,
                                       vDispatchTarget );
         // Ignore events where the related target and
@@ -376,21 +391,21 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           return;
         }
       }
-      var vEventObject = new qx.event.type.MouseEvent( vType, 
-                                                       vDomEvent, 
-                                                       vDomTarget, 
-                                                       vTarget, 
-                                                       vOriginalTarget, 
+      var vEventObject = new qx.event.type.MouseEvent( vType,
+                                                       vDomEvent,
+                                                       vDomTarget,
+                                                       vTarget,
+                                                       vOriginalTarget,
                                                        vRelatedTarget );
       // Store last Event in MouseEvent Constructor. Needed for Tooltips, ...
       qx.event.type.MouseEvent.storeEventState( vEventObject );
       if( vDispatchTarget.getEnabled() && !eventConsumed ) {
         vDispatchTarget.dispatchEvent( vEventObject );
-        this._onmouseevent_special_post( vType, 
-                                         vTarget, 
-                                         vOriginalTarget, 
-                                         vDispatchTarget, 
-                                         vEventObject, 
+        this._onmouseevent_special_post( vType,
+                                         vTarget,
+                                         vOriginalTarget,
+                                         vDispatchTarget,
+                                         vEventObject,
                                          vDomEvent );
       } else if( vType == "mouseover" ) {
         var toolTipManager = qx.ui.popup.ToolTipManager.getInstance();
@@ -405,31 +420,31 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         this._lastMouseDownDispatchTarget = null;
       }
     },
-    
+
     _fireElementHoverEvents : function( type,
                                         domEvent,
-                                        domTarget, 
+                                        domTarget,
                                         target,
-                                        originalTarget, 
+                                        originalTarget,
                                         relatedTarget,
                                         dispatchTarget )
     {
       if( dispatchTarget.getEnabled() ) {
-        var eventObject = new qx.event.type.MouseEvent( type, 
-                                                        domEvent, 
-                                                        domTarget, 
-                                                        target, 
-                                                        originalTarget, 
+        var eventObject = new qx.event.type.MouseEvent( type,
+                                                        domEvent,
+                                                        domTarget,
+                                                        target,
+                                                        originalTarget,
                                                         relatedTarget );
         dispatchTarget.dispatchEvent( eventObject );
       }
     },
 
-    _onmouseevent_special_post : function( vType, 
-                                           vTarget, 
-                                           vOriginalTarget, 
-                                           vDispatchTarget, 
-                                           vEventObject, 
+    _onmouseevent_special_post : function( vType,
+                                           vTarget,
+                                           vOriginalTarget,
+                                           vDispatchTarget,
+                                           vEventObject,
                                            vDomEvent )
     {
       switch( vType ) {
@@ -546,48 +561,48 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     // Helper-maps:
 
     _mouseEventTypes : [
-      "mouseover", 
-      "mousemove", 
-      "mouseout", 
-      "mousedown", 
-      "mouseup", 
+      "mouseover",
+      "mousemove",
+      "mouseout",
+      "mousedown",
+      "mouseup",
       "click",
-      "dblclick", 
+      "dblclick",
       "contextmenu",
       org.eclipse.rwt.Client.isGecko() ? "DOMMouseScroll" : "mousewheel"
     ],
 
-    _keyEventTypes : [ 
-      "keydown", 
-      "keypress", 
-      "keyup" 
+    _keyEventTypes : [
+      "keydown",
+      "keypress",
+      "keyup"
     ],
 
     _dragEventTypes : qx.core.Variant.select("qx.client", {
-      "gecko" : [ 
-        "dragdrop", 
-        "dragover", 
-        "dragenter", 
-        "dragexit", 
-        "draggesture" 
+      "gecko" : [
+        "dragdrop",
+        "dragover",
+        "dragenter",
+        "dragexit",
+        "draggesture"
        ],
-      "mshtml" : [ 
-        "dragend", 
-        "dragover", 
-        "dragstart", 
-        "drag", 
-        "dragenter", 
-        "dragleave" 
+      "mshtml" : [
+        "dragend",
+        "dragover",
+        "dragstart",
+        "drag",
+        "dragenter",
+        "dragleave"
       ],
-      "default" : [ 
-        "dragstart", 
-        "dragdrop", 
-        "dragover", 
-        "drag", 
-        "dragleave", 
-        "dragenter", 
-        "dragexit", 
-        "draggesture" 
+      "default" : [
+        "dragstart",
+        "dragdrop",
+        "dragover",
+        "drag",
+        "dragleave",
+        "dragenter",
+        "dragexit",
+        "draggesture"
       ]
     } ),
 
@@ -601,9 +616,9 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
 
     attachEventTypes : function( vEventTypes, vFunctionPointer ) {
       try {
-        // Gecko is a bit buggy to handle key events on document if 
-        // not previously focused. Internet Explorer has problems to use 
-        // 'window', so there we use the 'body' element 
+        // Gecko is a bit buggy to handle key events on document if
+        // not previously focused. Internet Explorer has problems to use
+        // 'window', so there we use the 'body' element
         var el = org.eclipse.rwt.Client.isGecko() ? window : document.body;
         for( var i=0, l=vEventTypes.length; i<l; i++ ) {
           qx.html.EventRegistration.addEventListener( el, vEventTypes[i], vFunctionPointer );
@@ -625,11 +640,11 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       }
     },
 
-    /** 
+    /**
      * Fixes browser quirks with 'click' detection
      *
-     * Firefox: The DOM-targets are different. The click event only fires, 
-     * if the target of the mousedown is the same than with the mouseup. 
+     * Firefox: The DOM-targets are different. The click event only fires,
+     * if the target of the mousedown is the same than with the mouseup.
      * If the content moved away, the click isn't fired.
      */
     _onmouseevent_click_fix : qx.core.Variant.select("qx.client", {
@@ -641,7 +656,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
             this._lastMouseDownDispatchTarget = vDispatchTarget;
           break;
           case "mouseup":
-            if(    this._lastMouseDownDispatchTarget === vDispatchTarget 
+            if(    this._lastMouseDownDispatchTarget === vDispatchTarget
                 && vDomTarget !== this._lastMouseDownDomTarget) {
               vReturn = true;
             } else {

@@ -111,6 +111,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
         this._overlay.parentNode.removeChild( this._overlay );
         this._overlay = null;
       }
+      org.eclipse.rwt.EventHandler.setBlockKeyEvents( false );
     },
 
     _gatherErrorInfo : function( error, script, currentRequest ) {
@@ -143,6 +144,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
     },
 
     _createOverlay : function() {
+      org.eclipse.rwt.EventHandler.setBlockKeyEvents( true );
       var element = document.createElement( "div" );
       var themeStore = org.eclipse.swt.theme.ThemeStore.getInstance();
       var color = themeStore.getColor( "SystemMessage-DisplayOverlay", {}, "background-color" );

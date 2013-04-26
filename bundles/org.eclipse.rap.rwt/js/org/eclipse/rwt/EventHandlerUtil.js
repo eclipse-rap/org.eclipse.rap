@@ -24,7 +24,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       delete this._lastUpDownType;
       delete this._lastKeyCode;
     },
-    
+
     applyBrowserFixes  : qx.core.Variant.select( "qx.client", {
       "gecko" : function() {
         // Fix for bug 295475:
@@ -38,7 +38,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
           try{
             tagName = event.originalTarget.tagName;
           } catch( e ) {
-            // Firefox bug: On the very first mousedown, access to the events target 
+            // Firefox bug: On the very first mousedown, access to the events target
             // is forbidden and causes an error.
           }
           // NOTE: See also Bug 321372
@@ -46,8 +46,8 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
             event.preventDefault();
           }
         };
-        qx.html.EventRegistration.addEventListener( docElement, 
-                                                    "mousedown", 
+        qx.html.EventRegistration.addEventListener( docElement,
+                                                    "mousedown",
                                                     this._ffMouseFixListener );
       },
       "default" : function() { }
@@ -101,35 +101,35 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       return domEvent._prevented ? true : false;
     },
 
-    
+
     blockUserDomEvents : function( element, value ) {
       var eventUtil = qx.html.EventRegistration;
       if( value ) {
         for( var i = 0; i < this._userEventTypes.length; i++ ) {
-          eventUtil.addEventListener( element, this._userEventTypes[ i ], this._domEventBlocker );     
+          eventUtil.addEventListener( element, this._userEventTypes[ i ], this._domEventBlocker );
         }
       } else {
         for( var i = 0; i < this._userEventTypes.length; i++ ) {
-          eventUtil.removeEventListener( element, this._userEventTypes[ i ], this._domEventBlocker );     
+          eventUtil.removeEventListener( element, this._userEventTypes[ i ], this._domEventBlocker );
         }
       }
     },
 
     _userEventTypes : [
-      "mouseover", 
-      "mousemove", 
-      "mouseout", 
-      "mousedown", 
-      "mouseup", 
+      "mouseover",
+      "mousemove",
+      "mouseout",
+      "mousedown",
+      "mouseup",
       "click",
-      "dblclick", 
+      "dblclick",
       "contextmenu",
       ( org.eclipse.rwt.Client.isGecko() ? "DOMMouseScroll" : "mousewheel" ),
-      "keydown", 
-      "keypress", 
-      "keyup" 
+      "keydown",
+      "keypress",
+      "keyup"
     ],
-    
+
     _domEventBlocker : function( event ) {
       org.eclipse.rwt.EventHandlerUtil.stopDomEvent( event );
       event.cancelBubble = true; // MSIE
@@ -137,7 +137,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
         event.stopPropagation();
       }
     },
-    
+
     // BUG: http://xscroll.mozdev.org/
     // If your Mozilla was built with an option `--enable-default-toolkit=gtk2',
     // it can not return the correct event target for DOMMouseScroll.
@@ -362,7 +362,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
     isSpecialKeyCode : function( keyCode ) {
       return this._specialCharCodeMap[ keyCode ] ? true : false;
     },
-    
+
     isModifier : function( keyCode ) {
       return keyCode >= 16 && keyCode <= 20 && keyCode !== 19;
     },
@@ -377,8 +377,58 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       return result;
     },
 
+    /**
+     * Determines if this key event should be blocked if key events are disabled
+     */
+    shouldBlock : function( type, keyCode, charCode, event ) {
+      var result = true;
+      var keyIdentifier;
+      if( !isNaN( keyCode ) && keyCode !== 0 ) {
+        keyIdentifier = this.keyCodeToIdentifier( keyCode );
+      } else {
+        keyIdentifier = this.charCodeToIdentifier( charCode );
+      }
+      if( this._nonBlockableKeysMap[ keyIdentifier ] || event.altKey ) {
+        result = false;
+      } else if( event.ctrlKey ) {
+        // block only those combos that are used for text editing:
+        result = this._blockableCtrlKeysMap[ keyIdentifier ] === true;
+      }
+      return result;
+    },
+
     ///////////////
     // Helper-maps:
+
+    _nonBlockableKeysMap : {
+      "Control" : true,
+      "Alt" : true,
+      "Shift" : true,
+      "Meta" : true,
+      "Win" : true,
+      "F1" : true,
+      "F2" : true,
+      "F3" : true,
+      "F4" : true,
+      "F5" : true,
+      "F6" : true,
+      "F7" : true,
+      "F8" : true,
+      "F9" : true,
+      "F10" : true,
+      "F11" : true,
+      "F12" : true
+    },
+
+    _blockableCtrlKeysMap : {
+      "F" : true,
+      "A" : true,
+      "C" : true,
+      "V" : true,
+      "X" : true,
+      "Z" : true,
+      "Y" : true
+    },
 
     _specialCharCodeMap : {
       13  : "Enter",
