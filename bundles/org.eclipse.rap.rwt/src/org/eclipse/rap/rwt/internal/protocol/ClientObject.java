@@ -12,7 +12,9 @@ package org.eclipse.rap.rwt.internal.protocol;
 
 import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.json.JsonUtil;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+
 
 public final class ClientObject implements IClientObject {
 
@@ -46,8 +48,8 @@ public final class ClientObject implements IClientObject {
     getWriter().appendSet( targetId, name, value );
   }
 
-  public void setProperty( String name, int[] value ) {
-    getWriter().appendSet( targetId, name, JsonUtil.createJsonArray( value ) );
+  public void set( String name, JsonValue value ) {
+    getWriter().appendSet( targetId, name, value );
   }
 
   public void set( String name, Object value ) {

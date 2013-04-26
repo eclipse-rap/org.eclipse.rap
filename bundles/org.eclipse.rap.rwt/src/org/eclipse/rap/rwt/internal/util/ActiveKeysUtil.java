@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
@@ -264,12 +265,11 @@ public final class ActiveKeysUtil {
     return result;
   }
 
-  private static String[] translateKeySequences( String[] activeKeys ) {
-    String[] result = new String[ 0 ];
+  private static JsonArray translateKeySequences( String[] activeKeys ) {
+    JsonArray result = new JsonArray();
     if( activeKeys != null ) {
-      result = new String[ activeKeys.length ];
       for( int i = 0; i < activeKeys.length; i++ ) {
-        result[ i ] = translateKeySequence( activeKeys[ i ] );
+        result.add( translateKeySequence( activeKeys[ i ] ) );
       }
     }
     return result;

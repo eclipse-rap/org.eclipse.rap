@@ -14,14 +14,13 @@ package org.eclipse.rap.rwt.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_TEXT;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 
 import java.lang.reflect.Field;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.swt.SWT;
@@ -366,11 +365,11 @@ public class ControlLCAUtil {
       // tabIndex must be a positive value
       computeTabIndices( ( Shell )control, 1 );
     }
-    Integer newValue = new Integer( getTabIndex( control ) );
+    int tabIndex = getTabIndex( control );
+    Integer newValue = new Integer( tabIndex );
     // there is no reliable default value for all controls
     if( WidgetLCAUtil.hasChanged( control, PROP_TAB_INDEX, newValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( control );
-      clientObject.set( "tabIndex", newValue );
+      getClientObject( control ).set( "tabIndex", tabIndex );
     }
   }
 
@@ -405,12 +404,12 @@ public class ControlLCAUtil {
    * @param control the control whose visibility to write
    */
   public static void renderVisible( Control control ) {
-    Boolean newValue = Boolean.valueOf( getVisible( control ) );
+    boolean visible = getVisible( control );
+    Boolean newValue = Boolean.valueOf( visible );
     Boolean defValue = control instanceof Shell ? Boolean.FALSE : Boolean.TRUE;
     // TODO [tb] : Can we have a shorthand for this, like in JSWriter?
     if( WidgetLCAUtil.hasChanged( control, Props.VISIBLE, newValue, defValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( control );
-      clientObject.set( "visibility", newValue );
+      getClientObject( control ).set( "visibility", visible );
     }
   }
 
@@ -486,8 +485,7 @@ public class ControlLCAUtil {
   static void renderCursor( Control control ) {
     Cursor newValue = control.getCursor();
     if( WidgetLCAUtil.hasChanged( control, PROP_CURSOR, newValue, null ) ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( control );
-      clientObject.set( PROP_CURSOR, getQxCursor( newValue ) );
+      getClientObject( control ).set( PROP_CURSOR, getQxCursor( newValue ) );
     }
   }
 

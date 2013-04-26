@@ -194,24 +194,6 @@ public final class ProtocolUtil {
     return operations.length > 0;
   }
 
-  public static Object[] getFontAsArray( Font font ) {
-    FontData fontData = font == null ? null : FontUtil.getData( font );
-    return getFontAsArray( fontData );
-  }
-
-  public static Object[] getFontAsArray( FontData fontData ) {
-    Object[] result = null;
-    if( fontData != null ) {
-      result = new Object[] {
-        parseFontName( fontData.getName() ),
-        Integer.valueOf( fontData.getHeight() ),
-        Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 ),
-        Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 )
-      };
-    }
-    return result;
-  }
-
   public static JsonValue getJsonForFont( Font font ) {
     FontData fontData = font == null ? null : FontUtil.getData( font );
     return getJsonForFont( fontData );
@@ -246,35 +228,15 @@ public final class ProtocolUtil {
     return result;
   }
 
-  public static Object[] getImageAsArray( Image image ) {
-    Object[] result = null;
+  public static JsonValue getJsonForImage( Image image ) {
+    JsonValue result = JsonValue.NULL;
     if( image != null ) {
       String imagePath = ImageFactory.getImagePath( image );
       Rectangle bounds = image.getBounds();
-      result = new Object[] {
-        imagePath,
-        Integer.valueOf( bounds.width ),
-        Integer.valueOf( bounds.height )
-      };
-    }
-    return result;
-  }
-
-  public static int[] getColorAsArray( Color color, boolean transparent ) {
-    RGB rgb = color == null ? null : color.getRGB();
-    return getColorAsArray( rgb, transparent );
-  }
-
-  public static int[] getColorAsArray( RGB rgb, boolean transparent ) {
-    int[] result = null;
-    if( rgb != null ) {
-      result = new int[ 4 ];
-      result[ 0 ] = rgb.red;
-      result[ 1 ] = rgb.green;
-      result[ 2 ] = rgb.blue;
-      result[ 3 ] = transparent ? 0 : 255;
-    } else if( transparent ) {
-      result = new int[] { 0, 0, 0, 0 };
+      result = new JsonArray()
+        .add( imagePath )
+        .add( bounds.width )
+        .add( bounds.height );
     }
     return result;
   }
@@ -292,6 +254,17 @@ public final class ProtocolUtil {
       return new JsonArray().add( 0 ).add( 0 ).add( 0 ).add( 0 );
     }
     return JsonValue.NULL;
+  }
+
+  public static JsonValue getJsonForPoint( Point point ) {
+    return point == null ? JsonValue.NULL : new JsonArray().add( point.x ).add( point.y );
+  }
+
+  public static JsonValue getJsonForRectangle( Rectangle rect ) {
+    if( rect == null ) {
+      return JsonValue.NULL;
+    }
+    return new JsonArray().add( rect.x ).add( rect.y ).add( rect.width ).add( rect.height );
   }
 
   public static Rectangle toRectangle( Object value ) {

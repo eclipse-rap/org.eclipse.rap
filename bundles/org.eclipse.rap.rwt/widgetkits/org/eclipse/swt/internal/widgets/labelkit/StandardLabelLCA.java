@@ -11,8 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.labelkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
@@ -22,7 +26,6 @@ import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 
@@ -59,10 +62,10 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   @Override
   void renderInitialization( Label label ) throws IOException {
-    IClientObject clientObject = ClientObjectFactory.getClientObject( label );
+    IClientObject clientObject = getClientObject( label );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( label.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( label, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( label.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( label, ALLOWED_STYLES ) ) );
     renderProperty( label, PROP_MARKUP_ENABLED, isMarkupEnabled( label ), false );
   }
 

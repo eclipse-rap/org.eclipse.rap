@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -33,7 +34,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;
 import org.junit.Before;
@@ -53,38 +53,6 @@ public class ProtocolUtil_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
-  }
-
-  @Test
-  public void testGetColorAsArray() {
-    Color red = display.getSystemColor( SWT.COLOR_RED );
-
-    int[] array = ProtocolUtil.getColorAsArray( red, false );
-
-    checkColorArray( 255, 0, 0, 255, array );
-  }
-
-  @Test
-  public void testGetColorAsArray_RGB() {
-    RGB red = new RGB( 255, 0, 0 );
-
-    int[] array = ProtocolUtil.getColorAsArray( red, false );
-
-    checkColorArray( 255, 0, 0, 255, array );
-  }
-
-  @Test
-  public void testGetColorAsArray_transparent() {
-    Color red = display.getSystemColor( SWT.COLOR_RED );
-
-    int[] array = ProtocolUtil.getColorAsArray( red, true );
-
-    checkColorArray( 255, 0, 0, 0, array );
-  }
-
-  @Test
-  public void testGetColorAsArray_null() {
-    assertNull( ProtocolUtil.getColorAsArray( ( Color )null, false ) );
   }
 
   @Test
@@ -119,47 +87,6 @@ public class ProtocolUtil_Test {
     JsonValue result = ProtocolUtil.getJsonForColor( red, false );
 
     assertEquals( JsonValue.readFrom( "[ 255, 0, 0, 255]" ), result );
-  }
-
-  @Test
-  public void testGetFontAsArray() {
-    Font font = new Font( display, "Arial", 22, SWT.NONE );
-
-    Object[] array = ProtocolUtil.getFontAsArray( font );
-
-    checkFontArray( new String[] { "Arial" }, 22, false, false, array );
-  }
-
-  @Test
-  public void testGetFontAsArray_FontData() {
-    Font font = new Font( display, "Arial", 22, SWT.NONE );
-
-    Object[] array = ProtocolUtil.getFontAsArray( FontUtil.getData( font ) );
-
-    checkFontArray( new String[] { "Arial" }, 22, false, false, array );
-  }
-
-  @Test
-  public void testGetFontAsArray_bold() {
-    Font font = new Font( display, "Arial", 22, SWT.BOLD );
-
-    Object[] array = ProtocolUtil.getFontAsArray( font );
-
-    checkFontArray( new String[] { "Arial" }, 22, true, false, array );
-  }
-
-  @Test
-  public void testGetFontAsArray_italic() {
-    Font font = new Font( display, "Arial", 22, SWT.ITALIC );
-
-    Object[] array = ProtocolUtil.getFontAsArray( font );
-
-    checkFontArray( new String[] { "Arial" }, 22, false, true, array );
-  }
-
-  @Test
-  public void testGetFontAsArray_null() {
-    assertNull( ProtocolUtil.getFontAsArray( ( Font )null ) );
   }
 
   @Test
@@ -213,38 +140,48 @@ public class ProtocolUtil_Test {
   }
 
   @Test
-  public void testImageAsArray() {
-    Image image = createImage( Fixture.IMAGE_100x50 );
+  public void testGetJsonForPoint() {
+    JsonValue result = ProtocolUtil.getJsonForPoint( new Point( 23, 42 ) );
 
-    Object[] array = ProtocolUtil.getImageAsArray( image );
-
-    assertNotNull( array[ 0 ] );
-    assertEquals( Integer.valueOf( 100 ), array[ 1 ] );
-    assertEquals( Integer.valueOf( 50 ), array[ 2 ] );
+    assertEquals( JsonValue.readFrom( "[ 23, 42 ]" ), result );
   }
 
   @Test
-  public void testImageAsArray_Null() {
-    assertNull( ProtocolUtil.getImageAsArray( null ) );
+  public void testGetJsonForPoint_null() {
+    JsonValue result = ProtocolUtil.getJsonForPoint( (Point) null );
+
+    assertEquals( JsonValue.NULL, result );
   }
 
-  private void checkColorArray( int red, int green, int blue, int alpha, int[] array ) {
-    assertEquals( red, array[ 0 ] );
-    assertEquals( green, array[ 1 ] );
-    assertEquals( blue, array[ 2 ] );
-    assertEquals( alpha, array[ 3 ] );
+  @Test
+  public void testGetJsonForRectangle() {
+    JsonValue result = ProtocolUtil.getJsonForRectangle( new Rectangle( 1, 2, 3, 4 ) );
+
+    assertEquals( JsonValue.readFrom( "[ 1, 2, 3, 4 ]" ), result );
   }
 
-  private void checkFontArray( String[] names,
-                               int size,
-                               boolean bold,
-                               boolean italic,
-                               Object[] array )
-  {
-    Arrays.equals( names, ( String[] )array[ 0 ] );
-    assertEquals( Integer.valueOf( size ), array[ 1 ] );
-    assertEquals( Boolean.valueOf( bold ), array[ 2 ] );
-    assertEquals( Boolean.valueOf( italic ), array[ 3 ] );
+  @Test
+  public void testGetJsonForRectangle_null() {
+    JsonValue result = ProtocolUtil.getJsonForRectangle( (Rectangle) null );
+
+    assertEquals( JsonValue.NULL, result );
+  }
+
+  @Test
+  public void testGetJsonForImage() {
+    Image image = createImage( Fixture.IMAGE_100x50 );
+
+    JsonArray result = ProtocolUtil.getJsonForImage( image ).asArray();
+
+    assertEquals( 3, result.size() );
+    assertTrue( result.get( 0 ).isString() );
+    assertEquals( 100, result.get( 1 ).asInt() );
+    assertEquals( 50, result.get( 2 ).asInt() );
+  }
+
+  @Test
+  public void testJsonForImage_null() {
+    assertEquals( JsonValue.NULL, ProtocolUtil.getJsonForImage( null ) );
   }
 
   @Test

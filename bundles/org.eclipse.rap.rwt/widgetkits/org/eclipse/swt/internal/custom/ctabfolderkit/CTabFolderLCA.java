@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_ITEM;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
@@ -22,6 +24,9 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonUtil;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
@@ -158,14 +163,13 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getClientObject( folder );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( folder.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( folder, ALLOWED_STYLES ) );
-    String[] toolTipTexts = new String[] {
-      SWT.getMessage( "SWT_Minimize" ),
-      SWT.getMessage( "SWT_Maximize" ),
-      SWT.getMessage( "SWT_Restore" ),
-      SWT.getMessage( "SWT_ShowList" ),
-      SWT.getMessage( "SWT_Close" ),
-    };
+    clientObject.set( "style", createJsonArray( getStyles( folder, ALLOWED_STYLES ) ) );
+    JsonArray toolTipTexts = new JsonArray()
+      .add( SWT.getMessage( "SWT_Minimize" ) )
+      .add( SWT.getMessage( "SWT_Maximize" ) )
+      .add( SWT.getMessage( "SWT_Restore" ) )
+      .add( SWT.getMessage( "SWT_ShowList" ) )
+      .add( SWT.getMessage( "SWT_Close" ) );
     clientObject.set( PROP_TOOLTIP_TEXTS, toolTipTexts );
   }
 
@@ -239,17 +243,17 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                                                    bgGradientVertical,
                                                    Boolean.FALSE );
     if( hasChanged ) {
-      Object gradient = null;
+      JsonValue gradient = JsonValue.NULL;
       if( bgGradientColors!= null ) {
-        Object[] colors = new Object[ bgGradientColors.length ];
-        Integer[] percents = new Integer[ bgGradientPercents.length ];
-        for( int i = 0; i < colors.length; i++ ) {
-          colors[ i ] = ProtocolUtil.getColorAsArray( bgGradientColors[ i ], false );
+        JsonArray colors = new JsonArray();
+        for( int i = 0; i < bgGradientColors.length; i++ ) {
+          colors.add( ProtocolUtil.getJsonForColor( bgGradientColors[ i ], false ) );
         }
-        for( int i = 0; i < bgGradientPercents.length; i++ ) {
-          percents[ i ] =  Integer.valueOf( bgGradientPercents[ i ] );
-        }
-        gradient = new Object[] { colors, percents, bgGradientVertical };
+        JsonValue percents = JsonUtil.createJsonArray( bgGradientPercents );
+        gradient = new JsonArray()
+          .add( colors )
+          .add( percents )
+          .add( bgGradientVertical.booleanValue() );
       }
       IClientObject clientObject = ClientObjectFactory.getClientObject( folder );
       clientObject.set( PROP_SELECTION_BG_GRADIENT, gradient );

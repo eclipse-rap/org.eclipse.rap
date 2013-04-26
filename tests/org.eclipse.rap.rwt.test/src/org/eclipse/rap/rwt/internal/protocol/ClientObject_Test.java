@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -75,7 +76,7 @@ public class ClientObject_Test {
   }
 
   @Test
-  public void testSetProperty() {
+  public void testSet() {
     clientObject.set( "key", ( Object )"value" );
     clientObject.set( "key2", 2 );
     clientObject.set( "key3", 3.5 );
@@ -92,15 +93,12 @@ public class ClientObject_Test {
   }
 
   @Test
-  public void testSetPropertyForIntArray() {
+  public void testSet_withIntArray() {
     clientObject.set( "key", new int[]{ 1, 2, 3 } );
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
     JsonArray result = ( JsonArray )operation.getProperty( "key" );
-    assertEquals( 3, result.size() );
-    assertEquals( 1, result.get( 0 ).asInt() );
-    assertEquals( 2, result.get( 1 ).asInt() );
-    assertEquals( 3, result.get( 2 ).asInt() );
+    assertEquals( JsonValue.readFrom( "[1, 2, 3]" ), result );
   }
 
   @Test
