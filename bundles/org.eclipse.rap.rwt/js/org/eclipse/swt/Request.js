@@ -40,10 +40,14 @@ qx.Class.define( "org.eclipse.swt.Request", {
     // References the currently running request or null if no request is active
     this._currentRequest = null;
     this._waitHintTime = 700;
+    this._waitHintTimer = new qx.client.Timer( this._waitHintTime );
+    this._waitHintTimer.addEventListener( "interval", this._showWaitHint, this );
   },
 
   destruct : function() {
     this._currentRequest = null;
+    this._waitHintTimer.dispose();
+    this._waitHintTimer = null;
   },
 
   events : {
@@ -154,7 +158,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         this._runningRequestCount++;
         // notify user when request takes longer than 500 ms
         if( this._runningRequestCount === 1 ) {
-          qx.client.Timer.once( this._showWaitHint, this, this._waitHintTime );
+          this._waitHintTimer.startWith( this._waitHintTime );
         }
         // clear the parameter list
         this._parameters = {};
@@ -357,6 +361,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
     // Wait hint - UI feedback while request is running
 
     _showWaitHint : function() {
+      this._waitHintTimer.stop();
       if( this._runningRequestCount > 0 ) {
         var doc = qx.ui.core.ClientDocument.getInstance();
         doc.setGlobalCursor( qx.constant.Style.CURSOR_PROGRESS );
@@ -365,6 +370,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
     },
 
     _hideWaitHint : function() {
+      this._waitHintTimer.stop();
       if( this._runningRequestCount === 0 ) {
         var doc = qx.ui.core.ClientDocument.getInstance();
         doc.setGlobalCursor( null );
