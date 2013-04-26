@@ -11,10 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.scalekit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
@@ -24,7 +27,6 @@ import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Widget;
@@ -83,8 +85,8 @@ public final class ScaleLCA extends AbstractWidgetLCA {
     Scale scale = ( Scale )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( scale );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( scale.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( scale, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( scale.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( scale, ALLOWED_STYLES ) ) );
   }
 
 

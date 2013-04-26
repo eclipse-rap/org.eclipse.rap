@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,18 +11,23 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.textkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -89,10 +94,10 @@ final class TextLCAUtil {
   }
 
   static void renderInitialization( Text text ) {
-    IClientObject clientObject = ClientObjectFactory.getClientObject( text );
+    IClientObject clientObject = getClientObject( text );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( text.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( text, getAllowedStyles( text ) ) );
+    clientObject.set( "parent", getId( text.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( text, getAllowedStyles( text ) ) ) );
   }
 
   static void renderChanges( Text text ) {
@@ -113,7 +118,7 @@ final class TextLCAUtil {
 
   static void readTextAndSelection( final Text text ) {
     final Point selection = readSelection( text );
-    final String txt = WidgetLCAUtil.readPropertyValue( text, "text" );
+    final String txt = readPropertyValue( text, "text" );
     if( txt != null ) {
       if( text.isListening( SWT.Verify ) ) {
         // setText needs to be executed in a ProcessAction runnable as it may
@@ -122,8 +127,7 @@ final class TextLCAUtil {
         ProcessActionRunner.add( new Runnable() {
 
           public void run() {
-            ITextAdapter textAdapter = text.getAdapter( ITextAdapter.class );
-            textAdapter.setText( txt, selection );
+            text.getAdapter( ITextAdapter.class ).setText( txt, selection );
             // since text is set in process action, preserved values have to be
             // replaced
             WidgetAdapter adapter = WidgetUtil.getAdapter( text );
@@ -148,8 +152,8 @@ final class TextLCAUtil {
 
   private static Point readSelection( Text text ) {
     Point result = null;
-    String selStart = WidgetLCAUtil.readPropertyValue( text, "selectionStart" );
-    String selLength = WidgetLCAUtil.readPropertyValue( text, "selectionLength" );
+    String selStart = readPropertyValue( text, "selectionStart" );
+    String selLength = readPropertyValue( text, "selectionLength" );
     if( selStart != null || selLength != null ) {
       result = new Point( 0, 0 );
       if( selStart != null ) {
@@ -169,8 +173,8 @@ final class TextLCAUtil {
       changed = hasChanged( text, PROP_TEXT, text.getText() ) && !newValue.equals( ZERO_SELECTION );
     }
     if( changed ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( text );
-      clientObject.set( PROP_SELECTION, new int[] { newValue.x, newValue.y } );
+      IClientObject clientObject = getClientObject( text );
+      clientObject.set( PROP_SELECTION, new JsonArray().add( newValue.x ).add( newValue.y ) );
     }
   }
 

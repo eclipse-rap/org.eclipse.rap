@@ -11,21 +11,26 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.combokit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -85,11 +90,11 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   public void readData( Widget widget ) {
     Combo combo = ( Combo )widget;
-    String value = WidgetLCAUtil.readPropertyValue( widget, "selectionIndex" );
+    String value = readPropertyValue( widget, "selectionIndex" );
     if( value != null ) {
       combo.select( NumberFormatUtil.parseInt( value ) );
     }
-    String listVisible = WidgetLCAUtil.readPropertyValue( combo, "listVisible" );
+    String listVisible = readPropertyValue( combo, "listVisible" );
     if( listVisible != null ) {
       combo.setListVisible( Boolean.valueOf( listVisible ).booleanValue() );
     }
@@ -105,10 +110,10 @@ public class ComboLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Combo combo = ( Combo )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( combo );
+    IClientObject clientObject = getClientObject( combo );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( combo.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( combo, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( combo.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( combo, ALLOWED_STYLES ) ) );
   }
 
   @Override
@@ -135,7 +140,7 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   private static void readTextAndSelection( final Combo combo ) {
     final Point selection = readSelection( combo );
-    final String value = WidgetLCAUtil.readPropertyValue( combo, "text" );
+    final String value = readPropertyValue( combo, "text" );
     if( value != null ) {
       if( combo.isListening( SWT.Verify ) ) {
         // setText needs to be executed in a ProcessAcction runnable as it may
@@ -167,8 +172,8 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   private static Point readSelection( Combo combo ) {
     Point result = null;
-    String selStart = WidgetLCAUtil.readPropertyValue( combo, "selectionStart" );
-    String selLength = WidgetLCAUtil.readPropertyValue( combo, "selectionLength" );
+    String selStart = readPropertyValue( combo, "selectionStart" );
+    String selLength = readPropertyValue( combo, "selectionLength" );
     if( selStart != null || selLength != null ) {
       result = new Point( 0, 0 );
       if( selStart != null ) {
@@ -185,10 +190,9 @@ public class ComboLCA extends AbstractWidgetLCA {
   // Helping methods to render the changed properties
 
   private static void renderItemHeight( Combo combo ) {
-    Integer newValue = new Integer( getItemHeight( combo ) );
-    if( WidgetLCAUtil.hasChanged( combo, PROP_ITEM_HEIGHT, newValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( combo );
-      clientObject.set( PROP_ITEM_HEIGHT, newValue );
+    Integer newValue = Integer.valueOf( getItemHeight( combo ) );
+    if( hasChanged( combo, PROP_ITEM_HEIGHT, newValue ) ) {
+      getClientObject( combo ).set( PROP_ITEM_HEIGHT, newValue.intValue() );
     }
   }
 
@@ -206,19 +210,18 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderSelectionIndex( Combo combo ) {
-    Integer newValue = new Integer( combo.getSelectionIndex() );
+    Integer newValue = Integer.valueOf( combo.getSelectionIndex() );
     boolean selectionChanged
-      = WidgetLCAUtil.hasChanged( combo, PROP_SELECTION_INDEX, newValue, DEFAULT_SELECTION_INDEX );
+      = hasChanged( combo, PROP_SELECTION_INDEX, newValue, DEFAULT_SELECTION_INDEX );
     // The 'textChanged' statement covers the following use case:
     // combo.add( "a" );  combo.select( 0 );
     // -- in a subsequent request --
     // combo.removeAll();  combo.add( "b" );  combo.select( 0 );
     // When only examining selectionIndex, a change cannot be determined
     boolean textChanged
-      = !isEditable( combo ) && WidgetLCAUtil.hasChanged( combo, PROP_TEXT, combo.getText(), "" );
+      = !isEditable( combo ) && hasChanged( combo, PROP_TEXT, combo.getText(), "" );
     if( selectionChanged || textChanged ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( combo );
-      clientObject.set( PROP_SELECTION_INDEX, newValue );
+      getClientObject( combo ).set( PROP_SELECTION_INDEX, newValue.intValue() );
     }
   }
 

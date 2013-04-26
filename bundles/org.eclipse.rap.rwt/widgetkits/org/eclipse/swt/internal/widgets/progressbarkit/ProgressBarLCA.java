@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.progressbarkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
@@ -21,7 +24,6 @@ import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Widget;
@@ -45,6 +47,7 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
   private static final Integer DEFAULT_SELECTION = new Integer( 0 );
   private static final String DEFAULT_STATE = "normal";
 
+  @Override
   public void preserveValues( Widget widget ) {
     ProgressBar progressBar = ( ProgressBar )widget;
     ControlLCAUtil.preserveValues( progressBar );
@@ -63,14 +66,16 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( progressBar );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ProgressBar progressBar = ( ProgressBar )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( progressBar );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( progressBar.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( progressBar, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( progressBar.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( progressBar, ALLOWED_STYLES ) ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     ProgressBar pBar = ( ProgressBar )widget;
     ControlLCAUtil.renderChanges( pBar );
@@ -94,4 +99,5 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     }
     return result;
   }
+
 }

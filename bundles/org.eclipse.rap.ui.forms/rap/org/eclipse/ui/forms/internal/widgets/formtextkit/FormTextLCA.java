@@ -10,14 +10,16 @@
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rap.rwt.internal.json.*;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -70,9 +72,9 @@ public class FormTextLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     FormText formText = ( FormText )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( formText );
+    IClientObject clientObject = getClientObject( formText );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( formText.getParent() ) ); //$NON-NLS-1$
+    clientObject.set( "parent", getId( formText.getParent() ) ); //$NON-NLS-1$
   }
 
   public void readData( Widget widget ) {
@@ -100,13 +102,11 @@ public class FormTextLCA extends AbstractWidgetLCA {
       int underlineMode = newValue.getHyperlinkUnderlineMode();
       Color foreground = newValue.getForeground();
       Color activeForeground = newValue.getActiveForeground();
-      Object[] args = new Object[] {
-        new Integer( underlineMode ),
-        getColorAsArray( foreground ),
-        getColorAsArray( activeForeground )
-      };
-      IClientObject clientObject = ClientObjectFactory.getClientObject( formText );
-      clientObject.set( PROP_HYPERLINK_SETTINGS, args );
+      JsonArray args = new JsonArray()
+        .add( underlineMode )
+        .add( getColorAsArray( foreground ) )
+        .add( getColorAsArray( activeForeground ) );
+      getClientObject( formText ).set( PROP_HYPERLINK_SETTINGS, args );
     }
   }
 
@@ -116,7 +116,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
         || hasBoundsChanged( formText ) )
     {
       Paragraph[] paragraphs = getParagraphs( formText );
-      ArrayList<Object> buffer = new ArrayList<Object>();
+      JsonArray buffer = new JsonArray();
       for( int i = 0; i < paragraphs.length; i++ ) {
         Paragraph paragraph = paragraphs[ i ];
         if( paragraph instanceof BulletParagraph ) {
@@ -126,14 +126,13 @@ public class FormTextLCA extends AbstractWidgetLCA {
         ParagraphSegment[] segments = paragraph.getSegments();
         appendSegments( formText, segments, buffer );
       }
-      IClientObject clientObject = ClientObjectFactory.getClientObject( formText );
-      clientObject.set( PROP_TEXT, buffer.toArray( new Object[ 0 ] ) );
+      getClientObject( formText ).set( PROP_TEXT, buffer );
     }
   }
 
   private static void appendBullet( FormText formText,
                                     BulletParagraph bullet,
-                                    ArrayList<Object> buffer )
+                                    JsonArray buffer )
   {
     int style = bullet.getBulletStyle();
     Image image = getBulletImage( formText, bullet );
@@ -143,20 +142,19 @@ public class FormTextLCA extends AbstractWidgetLCA {
     // [if] If <li> "style" attribute is set to "text" and there is no text set
     // ( no "value" attribute ) the bullet bounds are null
     if( bounds != null ) {
-      Object[] args = new Object[] {
-        "bullet", //$NON-NLS-1$
-        new Integer( style ),
-        imageName,
-        text,
-        getBoundsAsArray( bounds )
-      };
+      JsonArray args = new JsonArray()
+        .add( "bullet" ) //$NON-NLS-1$
+        .add( style )
+        .add( imageName )
+        .add( text )
+        .add( getBoundsAsArray( bounds ) );
       buffer.add( args );
     }
   }
 
   private static void appendSegments( FormText formText,
                                       ParagraphSegment[] segments,
-                                      ArrayList<Object> buffer )
+                                      JsonArray buffer )
   {
     for( int i = 0; i < segments.length; i++ ) {
       ParagraphSegment segment = segments[ i ];
@@ -176,7 +174,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
 
   private static void appendTextHyperlinkSegment( FormText formText,
                                                   TextHyperlinkSegment segment,
-                                                  ArrayList<Object> buffer )
+                                                  JsonArray buffer )
   {
     String[] textFragments = getTextFragments( segment );
     String tooltipText = segment.getTooltipText();
@@ -187,20 +185,19 @@ public class FormTextLCA extends AbstractWidgetLCA {
       font = ( Font )getResourceTable( formText ).get( fontId );
     }
     for( int i = 0; i < textFragments.length; i++ ) {
-      Object[] args = new Object[] {
-        "textHyperlink", //$NON-NLS-1$
-        textFragments[ i ],
-        tooltipText,
-        getBoundsAsArray( textFragmentsBounds[ i ] ),
-        getFontAsArray( font ),
-      };
+      JsonArray args = new JsonArray()
+        .add( "textHyperlink" ) //$NON-NLS-1$
+        .add( textFragments[ i ] )
+        .add( tooltipText )
+        .add( getBoundsAsArray( textFragmentsBounds[ i ] ) )
+        .add( getFontAsArray( font ) );
       buffer.add( args );
     }
   }
 
   private static void appendTextSegment( FormText formText,
                                          TextSegment segment,
-                                         ArrayList<Object> buffer )
+                                         JsonArray buffer )
   {
     String[] textFragments = getTextFragments( segment );
     Rectangle[] textFragmentsBounds = getTextFragmentsBounds( segment );
@@ -215,52 +212,49 @@ public class FormTextLCA extends AbstractWidgetLCA {
       color = ( Color )getResourceTable( formText ).get( colorId );
     }
     for( int i = 0; i < textFragments.length; i++ ) {
-      Object[] args = new Object[] {
-        "text", //$NON-NLS-1$
-        textFragments[ i ],
-        getBoundsAsArray( textFragmentsBounds[ i ] ),
-        getFontAsArray( font ),
-        getColorAsArray( color )
-      };
+      JsonArray args = new JsonArray()
+        .add( "text" ) //$NON-NLS-1$
+        .add( textFragments[ i ] )
+        .add( getBoundsAsArray( textFragmentsBounds[ i ] ) )
+        .add( getFontAsArray( font ) )
+        .add( getColorAsArray( color ) );
       buffer.add( args );
     }
   }
 
   private static void appendImageHyperlinkSegment( FormText formText,
                                                    ImageHyperlinkSegment segment,
-                                                   ArrayList<Object> buffer )
+                                                   JsonArray buffer )
   {
     String tooltipText = segment.getTooltipText();
     Rectangle bounds = segment.getBounds();
     Image image = segment.getImage( getResourceTable( formText ) );
     String imageName = ImageFactory.getImagePath( image );
-    Object[] args = new Object[] {
-      "imageHyperlink", //$NON-NLS-1$
-      imageName,
-      tooltipText,
-      getBoundsAsArray( bounds )
-    };
+    JsonArray args = new JsonArray()
+      .add( "imageHyperlink" ) //$NON-NLS-1$
+      .add( imageName )
+      .add( tooltipText )
+      .add( getBoundsAsArray( bounds ) );
     buffer.add( args );
   }
 
   private static void appendImageSegment( FormText formText,
                                           ImageSegment segment,
-                                          ArrayList<Object> buffer )
+                                          JsonArray buffer )
   {
     Rectangle bounds = segment.getBounds();
     Image image = segment.getImage( getResourceTable( formText ) );
     String imageName = ImageFactory.getImagePath( image );
-    Object[] args = new Object[] {
-      "image", //$NON-NLS-1$
-      imageName,
-      getBoundsAsArray( bounds )
-    };
+    JsonArray args = new JsonArray()
+      .add( "image" ) //$NON-NLS-1$
+      .add( imageName )
+      .add( getBoundsAsArray( bounds ) );
     buffer.add( args );
   }
 
   private static void appendAggregateHyperlinkSegment( FormText formText,
                                                        AggregateHyperlinkSegment segment,
-                                                       ArrayList<Object> buffer )
+                                                       JsonArray buffer )
   {
     Object[] segments = getHyperlinkSegments( segment );
     for( int i = 0; i < segments.length; i++ ) {
@@ -344,79 +338,72 @@ public class FormTextLCA extends AbstractWidgetLCA {
   }
 
   private static Rectangle getBulletBounds( BulletParagraph bullet ) {
-    IBulletParagraphAdapter bulletParagraphAdapter = getAdapter( bullet );
-    return bulletParagraphAdapter.getBulletBounds();
+    return getAdapter( bullet ).getBulletBounds();
   }
 
   private static Hashtable getResourceTable( FormText formText ) {
-    IFormTextAdapter adapter = getAdapter( formText );
-    return adapter.getResourceTable();
+    return getAdapter( formText ).getResourceTable();
   }
 
   private static String[] getTextFragments( TextSegment segment ) {
-    ITextSegmentAdapter textSegmentAdapter = getAdapter( segment );
-    return textSegmentAdapter.getTextFragments();
+    return getAdapter( segment ).getTextFragments();
   }
 
   private static Rectangle[] getTextFragmentsBounds( TextSegment segment ) {
-    ITextSegmentAdapter textSegmentAdapter = getAdapter( segment );
-    return textSegmentAdapter.getTextFragmentsBounds();
+    return getAdapter( segment ).getTextFragmentsBounds();
   }
 
   private static String getFontId( TextSegment segment ) {
-    ITextSegmentAdapter textSegmentAdapter = getAdapter( segment );
-    return textSegmentAdapter.getFontId();
+    return getAdapter( segment ).getFontId();
   }
 
   private static Object[] getHyperlinkSegments( AggregateHyperlinkSegment segment ) {
-    IAggregateHyperlinkSegmentAdapter hyperlinkSegmentAdapter = getAdapter( segment );
-    return hyperlinkSegmentAdapter.getHyperlinkSegments();
+    return getAdapter( segment ).getHyperlinkSegments();
   }
 
-  private static int[] getBoundsAsArray( Rectangle bounds ) {
-    return new int[] { bounds.x, bounds.y, bounds.width, bounds.height };
+  private static JsonArray getBoundsAsArray( Rectangle bounds ) {
+    return new JsonArray().add( bounds.x ).add( bounds.y ).add( bounds.width ).add( bounds.height );
   }
 
-  private static Object[] getFontAsArray( Font font ) {
-    Object[] result = null;
+  private static JsonValue getFontAsArray( Font font ) {
+    JsonValue result = JsonObject.NULL;
     if( font != null ) {
-      result = new Object[] {
-        getFontName( font ),
-        getFontSize( font ),
-        getFontStyle( font, SWT.BOLD ),
-        getFontStyle( font, SWT.ITALIC )
-      };
+      result = new JsonArray()
+        .add( getFontName( font ) )
+        .add( getFontSize( font ) )
+        .add( getFontStyle( font, SWT.BOLD ) )
+        .add( getFontStyle( font, SWT.ITALIC ) );
     }
     return result;
   }
 
-  private static String[] getFontName( Font font ) {
+  private static JsonArray getFontName( Font font ) {
+    JsonArray resutl = new JsonArray();
     FontData fontData = font.getFontData()[ 0 ];
     String fontName = fontData.getName();
-    String[] result = fontName.split( "," ); //$NON-NLS-1$
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = result[ i ].trim();
-      Matcher matcher = FONT_NAME_FILTER_PATTERN.matcher( result[ i ] );
-      result[ i ] = matcher.replaceAll( "" ); //$NON-NLS-1$
+    String[] names = fontName.split( "," ); //$NON-NLS-1$
+    for( int i = 0; i < names.length; i++ ) {
+      names[ i ] = names[ i ].trim();
+      Matcher matcher = FONT_NAME_FILTER_PATTERN.matcher( names[ i ] );
+      names[ i ] = matcher.replaceAll( "" ); //$NON-NLS-1$
+      resutl.add( names[ i ] );
     }
-    return result;
+    return resutl;
   }
 
-  private static Integer getFontSize( Font font ) {
-    FontData fontData = font.getFontData()[ 0 ];
-    return new Integer( fontData.getHeight() );
+  private static int getFontSize( Font font ) {
+    return font.getFontData()[ 0 ].getHeight();
   }
 
-  private static Boolean getFontStyle( Font font, int style ) {
-    FontData fontData = font.getFontData()[ 0 ];
-    return Boolean.valueOf( ( fontData.getStyle() & style ) != 0 );
+  private static boolean getFontStyle( Font font, int style ) {
+    return ( font.getFontData()[ 0 ].getStyle() & style ) != 0;
   }
 
-  private static int[] getColorAsArray( Color color ) {
-    int[] result = null;
+  private static JsonValue getColorAsArray( Color color ) {
+    JsonValue result = JsonObject.NULL;
     if( color != null ) {
       RGB rgb = color.getRGB();
-      result = new int[] { rgb.red, rgb.green, rgb.blue, 255 };
+      result = new JsonArray().add( rgb.red ).add( rgb.green ).add( rgb.blue ).add( 255 );
     }
     return result;
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 import java.text.DecimalFormatSymbols;
@@ -26,7 +30,6 @@ import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Widget;
@@ -60,6 +63,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   private static final int DEFAULT_PAGE_INCREMENT = 10;
   private static final String DEFAULT_DECIMAL_SEPARATOR = ".";
 
+  @Override
   public void preserveValues( Widget widget ) {
     Spinner spinner = ( Spinner )widget;
     ControlLCAUtil.preserveValues( spinner );
@@ -84,7 +88,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
    */
   public void readData( Widget widget ) {
     Spinner spinner = ( Spinner )widget;
-    String value = WidgetLCAUtil.readPropertyValue( widget, "selection" );
+    String value = readPropertyValue( widget, "selection" );
     if( value != null ) {
       spinner.setSelection( NumberFormatUtil.parseInt( value ) );
     }
@@ -96,14 +100,16 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( spinner );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Spinner spinner = ( Spinner )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( spinner );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( spinner.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( spinner, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( spinner.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( spinner, ALLOWED_STYLES ) ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     Spinner spinner = ( Spinner )widget;
     ControlLCAUtil.renderChanges( spinner );

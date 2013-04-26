@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,16 +11,20 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -54,10 +58,10 @@ final class DateTimeLCAUtil {
   }
 
   static void renderInitialization( DateTime dateTime ) {
-    IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
+    IClientObject clientObject = getClientObject( dateTime );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( dateTime.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( dateTime, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( dateTime.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( dateTime, ALLOWED_STYLES ) ) );
   }
 
   static void renderChanges( DateTime dateTime ) {
@@ -71,38 +75,36 @@ final class DateTimeLCAUtil {
 
   static void renderCellSize( DateTime dateTime ) {
     Point cellSize = getDateTimeAdapter( dateTime ).getCellSize();
-    IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
-    clientObject.set( PROP_CELL_SIZE, new int[] { cellSize.x, cellSize.y } );
+    IClientObject clientObject = getClientObject( dateTime );
+    clientObject.set( PROP_CELL_SIZE, new JsonArray().add( cellSize.x ).add( cellSize.y ) );
   }
 
   static void renderMonthNames( DateTime dateTime ) {
     String[] monthNames = getDateTimeAdapter( dateTime ).getMonthNames();
-    IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
-    clientObject.set( PROP_MONTH_NAMES, monthNames );
+    IClientObject clientObject = getClientObject( dateTime );
+    clientObject.set( PROP_MONTH_NAMES, createJsonArray( monthNames ) );
   }
 
   static void renderWeekdayNames( DateTime dateTime ) {
     String[] weekdayNames = getDateTimeAdapter( dateTime ).getWeekdayNames();
-    IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
-    clientObject.set( PROP_WEEKDAY_NAMES, weekdayNames );
+    IClientObject clientObject = getClientObject( dateTime );
+    clientObject.set( PROP_WEEKDAY_NAMES, createJsonArray( weekdayNames ) );
   }
 
   static void renderWeekdayShortNames( DateTime dateTime ) {
     String[] weekdayShortNames = getDateTimeAdapter( dateTime ).getWeekdayShortNames();
-    IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
-    clientObject.set( PROP_WEEKDAY_SHORT_NAMES, weekdayShortNames );
+    IClientObject clientObject = getClientObject( dateTime );
+    clientObject.set( PROP_WEEKDAY_SHORT_NAMES, createJsonArray( weekdayShortNames ) );
   }
 
   static void renderDateSeparator( DateTime dateTime ) {
     String dateSeparator = getDateTimeAdapter( dateTime ).getDateSeparator();
-    IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
-    clientObject.set( PROP_DATE_SEPARATOR, dateSeparator );
+    getClientObject( dateTime ).set( PROP_DATE_SEPARATOR, dateSeparator );
   }
 
   static void renderDatePattern( DateTime dateTime ) {
     String datePattern = getDateTimeAdapter( dateTime ).getDatePattern();
-    IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
-    clientObject.set( PROP_DATE_PATTERN, datePattern );
+    getClientObject( dateTime ).set( PROP_DATE_PATTERN, datePattern );
   }
 
   static void preserveSubWidgetsBounds( DateTime dateTime, SubWidgetBounds[] subWidgetBounds ) {
@@ -110,19 +112,16 @@ final class DateTimeLCAUtil {
   }
 
   static void renderSubWidgetsBounds( DateTime dateTime, SubWidgetBounds[] subWidgetBounds ) {
-    if( WidgetLCAUtil.hasChanged( dateTime, PROP_SUB_WIDGETS_BOUNDS, subWidgetBounds ) ) {
-      int[][] bounds = new int[ subWidgetBounds.length ][ 5 ];
-      for( int i = 0; i < bounds.length; i++ ) {
-        bounds[ i ] = new int[] {
-          subWidgetBounds[ i ].id,
-          subWidgetBounds[ i ].x,
-          subWidgetBounds[ i ].y,
-          subWidgetBounds[ i ].width,
-          subWidgetBounds[ i ].height,
-        };
+    if( hasChanged( dateTime, PROP_SUB_WIDGETS_BOUNDS, subWidgetBounds ) ) {
+      JsonArray bounds = new JsonArray();
+      for( int i = 0; i < subWidgetBounds.length; i++ ) {
+        bounds.add( new JsonArray().add( subWidgetBounds[ i ].id )
+                                   .add( subWidgetBounds[ i ].x )
+                                   .add( subWidgetBounds[ i ].y )
+                                   .add( subWidgetBounds[ i ].width )
+                                   .add( subWidgetBounds[ i ].height ) );
       }
-      IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
-      clientObject.set( PROP_SUB_WIDGETS_BOUNDS, bounds );
+      getClientObject( dateTime ).set( PROP_SUB_WIDGETS_BOUNDS, bounds );
     }
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.sliderkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
@@ -24,7 +27,6 @@ import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.Widget;
@@ -86,8 +88,8 @@ public class SliderLCA extends AbstractWidgetLCA {
     Slider slider = ( Slider )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( slider );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( slider.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( slider, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( slider.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( slider, ALLOWED_STYLES ) ) );
   }
 
 

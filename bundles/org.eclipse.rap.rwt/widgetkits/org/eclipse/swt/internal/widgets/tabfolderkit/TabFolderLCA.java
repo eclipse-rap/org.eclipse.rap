@@ -11,9 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
@@ -24,8 +29,6 @@ import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Widget;
@@ -62,8 +65,8 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     TabFolder folder = ( TabFolder )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( folder );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( folder.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( folder, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( folder.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( folder, ALLOWED_STYLES ) ) );
   }
 
   @Override
@@ -81,17 +84,17 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     String selection = null;
     int selectionIndex = folder.getSelectionIndex();
     if( selectionIndex != -1 ) {
-      selection = WidgetUtil.getId( folder.getItem( selectionIndex ) );
+      selection = getId( folder.getItem( selectionIndex ) );
     }
     return selection;
   }
 
   private static void processSelectionEvent( final TabFolder folder ) {
-    if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_SELECTION ) ) {
+    if( wasEventSent( folder, ClientMessageConst.EVENT_SELECTION ) ) {
       String itemId = readEventPropertyValue( folder,
                                               ClientMessageConst.EVENT_SELECTION,
                                               ClientMessageConst.EVENT_PARAM_ITEM );
-      final TabItem item = ( TabItem )WidgetUtil.find( folder, itemId );
+      final TabItem item = ( TabItem )find( folder, itemId );
       if( item != null ) {
         ProcessActionRunner.add( new Runnable() {
           public void run() {
@@ -105,9 +108,4 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     }
   }
 
-  // TODO: Remove when all widgets are migrated to the protocol
-  @Override
-  public Rectangle adjustCoordinates( Widget widget, Rectangle newBounds ) {
-    return new Rectangle( 0, 0, newBounds.width, newBounds.height );
-  }
 }

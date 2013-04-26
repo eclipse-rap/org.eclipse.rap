@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.listkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsIntArray;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -22,12 +26,10 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IListAdapter;
@@ -92,8 +94,8 @@ public class ListLCA extends AbstractWidgetLCA {
     List list = ( List )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( list );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( list.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( list, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( list.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( list, ALLOWED_STYLES ) ) );
     clientObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( list ) );
     ScrollBarLCAUtil.renderInitialization( list );
   }
@@ -126,21 +128,21 @@ public class ListLCA extends AbstractWidgetLCA {
   // Helping methods to read client-side state
 
   private static void readSelection( List list ) {
-    int[] value = ProtocolUtil.readPropertyValueAsIntArray( getId( list ), "selection" );
+    int[] value = readPropertyValueAsIntArray( getId( list ), "selection" );
     if( value != null ) {
       list.setSelection( value );
     }
   }
 
   private static void readTopIndex( List list ) {
-    String value = WidgetLCAUtil.readPropertyValue( list, PROP_TOP_INDEX );
+    String value = readPropertyValue( list, PROP_TOP_INDEX );
     if( value != null ) {
       list.setTopIndex( NumberFormatUtil.parseInt( value ) );
     }
   }
 
   private static void readFocusIndex( List list ) {
-    String paramValue = WidgetLCAUtil.readPropertyValue( list, PROP_FOCUS_INDEX );
+    String paramValue = readPropertyValue( list, PROP_FOCUS_INDEX );
     if( paramValue != null ) {
       int focusIndex = NumberFormatUtil.parseInt( paramValue );
       getAdapter( list ).setFocusIndex( focusIndex );

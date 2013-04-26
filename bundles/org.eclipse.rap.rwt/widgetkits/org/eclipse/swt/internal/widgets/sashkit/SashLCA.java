@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.sashkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
@@ -22,7 +26,6 @@ import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventLCAUtil;
@@ -59,8 +62,8 @@ public final class SashLCA extends AbstractWidgetLCA {
     Sash sash = ( Sash )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( sash );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( sash.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( sash, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( sash.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( sash, ALLOWED_STYLES ) ) );
   }
 
   @Override
@@ -72,7 +75,7 @@ public final class SashLCA extends AbstractWidgetLCA {
 
   private static void processSelection( Sash sash ) {
     String eventName = EVENT_SELECTION;
-    if( WidgetLCAUtil.wasEventSent( sash, eventName ) ) {
+    if( wasEventSent( sash, eventName ) ) {
       String x = readEventPropertyValue( sash, EVENT_SELECTION, "x" );
       String y = readEventPropertyValue( sash, EVENT_SELECTION, "y" );
       String width = readEventPropertyValue( sash, EVENT_SELECTION, "width" );
@@ -93,4 +96,5 @@ public final class SashLCA extends AbstractWidgetLCA {
       sash.notifyListeners( SWT.Selection, event );
     }
   }
+
 }

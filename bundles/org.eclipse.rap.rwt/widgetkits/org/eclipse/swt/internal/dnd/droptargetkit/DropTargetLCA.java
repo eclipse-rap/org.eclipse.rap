@@ -10,21 +10,24 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.droptargetkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.dnd.dragsourcekit.DNDLCAUtil.convertOperations;
+import static org.eclipse.swt.internal.dnd.dragsourcekit.DNDLCAUtil.convertTransferTypes;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.internal.dnd.dragsourcekit.DNDLCAUtil;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -67,10 +70,10 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     DropTarget dropTarget = ( DropTarget )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( dropTarget );
+    IClientObject clientObject = getClientObject( dropTarget );
     clientObject.create( TYPE );
-    clientObject.set( "control", WidgetUtil.getId( dropTarget.getControl() ) );
-    clientObject.set( "style", DNDLCAUtil.convertOperations( dropTarget.getStyle() ) );
+    clientObject.set( "control", getId( dropTarget.getControl() ) );
+    clientObject.set( "style", createJsonArray( convertOperations( dropTarget.getStyle() ) ) );
   }
 
   @Override
@@ -101,9 +104,9 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
 
   private static void renderTransfer( DropTarget dropTarget ) {
     Transfer[] newValue = dropTarget.getTransfer();
-    if( WidgetLCAUtil.hasChanged( dropTarget, PROP_TRANSFER, newValue, DEFAULT_TRANSFER ) ) {
-      String[] renderValue = DNDLCAUtil.convertTransferTypes( newValue );
-      ClientObjectFactory.getClientObject( dropTarget ).set( "transfer", renderValue );
+    if( hasChanged( dropTarget, PROP_TRANSFER, newValue, DEFAULT_TRANSFER ) ) {
+      JsonValue renderValue = createJsonArray( convertTransferTypes( newValue ) );
+      getClientObject( dropTarget ).set( "transfer", renderValue );
     }
   }
 

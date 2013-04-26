@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,26 +11,33 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsStringArray;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasCallSend;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
@@ -141,23 +148,27 @@ public final class TreeLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( tree );
+    IClientObject clientObject = getClientObject( tree );
     clientObject.create( TYPE );
     clientObject.set( "parent", getId( tree.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( tree, ALLOWED_STYLES ) );
+    clientObject.set( "style", createJsonArray( getStyles( tree, ALLOWED_STYLES ) ) );
     clientObject.set( "appearance", "tree" );
     ITreeAdapter adapter = getTreeAdapter( tree );
     if( ( tree.getStyle() & SWT.CHECK ) != 0 ) {
-      int[] checkMetrics = new int[] { adapter.getCheckLeft(), adapter.getCheckWidth() };
-      clientObject.set( "checkBoxMetrics", checkMetrics );
+      JsonArray metrics = new JsonArray()
+        .add( adapter.getCheckLeft() )
+        .add( adapter.getCheckWidth() );
+      clientObject.set( "checkBoxMetrics", metrics );
     }
     if( getFixedColumns( tree ) >= 0 ) {
       clientObject.set( "splitContainer", true );
     }
     if( ( tree.getStyle() & SWT.FULL_SELECTION ) == 0 ) {
       Rectangle textMargin = getTreeAdapter( tree ).getTextMargin();
-      int[] selectionPadding = new int[] { textMargin.x, textMargin.width - textMargin.x };
-      clientObject.set( "selectionPadding", selectionPadding );
+      JsonArray padding = new JsonArray()
+        .add( textMargin.x )
+        .add( textMargin.width - textMargin.x );
+      clientObject.set( "selectionPadding", padding );
     }
     clientObject.set( "indentionWidth", adapter.getIndentionWidth() );
     clientObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( tree ) );
@@ -207,7 +218,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   private static void processWidgetSelectedEvent( Tree tree ) {
     String eventName = ClientMessageConst.EVENT_SELECTION;
-    if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
+    if( wasEventSent( tree, eventName ) ) {
       String value = readEventPropertyValue( tree, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
       Item treeItem = getItem( tree, value );
       ControlLCAUtil.processSelection( tree, treeItem, false );
@@ -216,7 +227,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   private static void processWidgetDefaultSelectedEvent( Tree tree ) {
     String eventName = ClientMessageConst.EVENT_DEFAULT_SELECTION;
-    if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
+    if( wasEventSent( tree, eventName ) ) {
       String value = readEventPropertyValue( tree, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
       Item treeItem = getItem( tree, value );
       ControlLCAUtil.processDefaultSelection( tree, treeItem );
@@ -227,7 +238,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   // Process expand/collapse events
 
   private static void processTreeEvent( Tree tree, int eventType, String eventName ) {
-    if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
+    if( wasEventSent( tree, eventName ) ) {
       String value = readEventPropertyValue( tree, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
       Event event = new Event();
       event.item = getItem( tree, value );
@@ -239,7 +250,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   // Helping methods to read client-side state
 
   private static void readSelection( Tree tree ) {
-    String[] values = ProtocolUtil.readPropertyValueAsStringArray( getId( tree ), "selection" );
+    String[] values = readPropertyValueAsStringArray( getId( tree ), "selection" );
     if( values != null ) {
       TreeItem[] selectedItems = new TreeItem[ values.length ];
       boolean validItemFound = false;
@@ -257,7 +268,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   }
 
   private static void readScrollLeft( Tree tree ) {
-    String left = WidgetLCAUtil.readPropertyValue( tree, "scrollLeft" );
+    String left = readPropertyValue( tree, "scrollLeft" );
     if( left != null ) {
       int leftOffset = parsePosition( left );
       final ITreeAdapter treeAdapter = getTreeAdapter( tree );
@@ -267,7 +278,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   }
 
   private static void readTopItemIndex( Tree tree ) {
-    String topItemIndex = WidgetLCAUtil.readPropertyValue( tree, "topItemIndex" );
+    String topItemIndex = readPropertyValue( tree, "topItemIndex" );
     if( topItemIndex != null ) {
       final ITreeAdapter treeAdapter = getTreeAdapter( tree );
       int newIndex = parsePosition( topItemIndex );
@@ -295,7 +306,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     adapter.setCellToolTipText( null );
     ICellToolTipProvider provider = adapter.getCellToolTipProvider();
     String methodName = "renderToolTipText";
-    if( provider != null && ProtocolUtil.wasCallSend( getId( tree ), methodName ) ) {
+    if( provider != null && wasCallSend( getId( tree ), methodName ) ) {
       String itemId = readCallPropertyValueAsString( getId( tree ), methodName, "item" );
       String column = readCallPropertyValueAsString( getId( tree ), methodName, "column" );
       int columnIndex = NumberFormatUtil.parseInt( column );
@@ -307,8 +318,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   }
 
   private static String getCellToolTipText( Tree tree ) {
-    ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
-    return adapter.getCellToolTipText();
+    return CellToolTipUtil.getAdapter( tree ).getCellToolTipText();
   }
 
   //////////////////
@@ -389,7 +399,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     TreeItem item = null;
     String[] idParts = itemId.split( "#" );
     if( idParts.length == 2 ) {
-      Widget parent = WidgetUtil.find( tree, idParts[ 0 ] );
+      Widget parent = find( tree, idParts[ 0 ] );
       if( parent != null ) {
         int itemIndex = Integer.parseInt( idParts[ 1 ] );
         if( getId( tree ).equals( idParts[ 0 ] ) ) {
@@ -399,7 +409,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
         }
       }
     } else {
-      item = ( TreeItem )WidgetUtil.find( tree, itemId );
+      item = ( TreeItem )find( tree, itemId );
     }
     return item;
   }
@@ -413,21 +423,18 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   private static void renderItemMetrics( Tree tree ) {
     ItemMetrics[] itemMetrics = getItemMetrics( tree );
-    if( WidgetLCAUtil.hasChanged( tree, PROP_ITEM_METRICS, itemMetrics ) ) {
-      int[][] metrics = new int[ itemMetrics.length ][ 7 ];
+    if( hasChanged( tree, PROP_ITEM_METRICS, itemMetrics ) ) {
+      JsonArray metrics = new JsonArray();
       for( int i = 0; i < itemMetrics.length; i++ ) {
-        metrics[ i ] = new int[] {
-          i,
-          itemMetrics[ i ].left,
-          itemMetrics[ i ].width,
-          itemMetrics[ i ].imageLeft,
-          itemMetrics[ i ].imageWidth,
-          itemMetrics[ i ].textLeft,
-          itemMetrics[ i ].textWidth
-        };
+        metrics.add( new JsonArray().add( i )
+                                    .add( itemMetrics[ i ].left )
+                                    .add( itemMetrics[ i ].width )
+                                    .add( itemMetrics[ i ].imageLeft )
+                                    .add( itemMetrics[ i ].imageWidth )
+                                    .add( itemMetrics[ i ].textLeft )
+                                    .add( itemMetrics[ i ].textWidth ) );
       }
-      IClientObject clientObject = ClientObjectFactory.getClientObject( tree );
-      clientObject.set( PROP_ITEM_METRICS, metrics );
+      getClientObject( tree ).set( PROP_ITEM_METRICS, metrics );
     }
   }
 

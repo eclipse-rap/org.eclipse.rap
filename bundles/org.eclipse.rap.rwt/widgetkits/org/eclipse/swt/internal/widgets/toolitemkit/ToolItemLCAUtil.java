@@ -11,17 +11,22 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.events.EventLCAUtil;
@@ -76,8 +81,8 @@ final class ToolItemLCAUtil {
     //           and radio-groups.
     IClientObject clientObject = ClientObjectFactory.getClientObject( toolItem );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( toolItem.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( toolItem, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( toolItem.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( toolItem, ALLOWED_STYLES ) ) );
     clientObject.set( "index", toolBar.indexOf( toolItem ) );
   }
 
@@ -105,7 +110,7 @@ final class ToolItemLCAUtil {
 
   static void processSelection( ToolItem toolItem ) {
     String eventName = ClientMessageConst.EVENT_SELECTION;
-    if( WidgetLCAUtil.wasEventSent( toolItem, eventName ) ) {
+    if( wasEventSent( toolItem, eventName ) ) {
       Event event = new Event();
       event.stateMask = EventLCAUtil.readStateMask( toolItem, eventName );
       toolItem.notifyListeners( SWT.Selection, event );
@@ -116,27 +121,23 @@ final class ToolItemLCAUtil {
   // Helping methods
 
   private static boolean isVisible( ToolItem toolItem ) {
-    Object adapter = toolItem.getAdapter( IToolItemAdapter.class );
-    IToolItemAdapter toolItemAdapter = ( IToolItemAdapter )adapter;
-    return toolItemAdapter.getVisible();
+    return toolItem.getAdapter( IToolItemAdapter.class ).getVisible();
   }
 
   private static void renderText( ToolItem toolItem ) {
     String newValue = toolItem.getText();
-    if( WidgetLCAUtil.hasChanged( toolItem, PROP_TEXT, newValue, "" ) ) {
+    if( hasChanged( toolItem, PROP_TEXT, newValue, "" ) ) {
       String text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
-      IClientObject clientObject = ClientObjectFactory.getClientObject( toolItem );
-      clientObject.set( PROP_TEXT, text );
+      getClientObject( toolItem ).set( PROP_TEXT, text );
     }
   }
 
   private static void renderMnemonicIndex( ToolItem toolItem ) {
     String text = toolItem.getText();
-    if( WidgetLCAUtil.hasChanged( toolItem, PROP_TEXT, text, "" ) ) {
+    if( hasChanged( toolItem, PROP_TEXT, text, "" ) ) {
       int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
       if( mnemonicIndex != -1 ) {
-        IClientObject clientObject = ClientObjectFactory.getClientObject( toolItem );
-        clientObject.set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+        getClientObject( toolItem ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
       }
     }
   }

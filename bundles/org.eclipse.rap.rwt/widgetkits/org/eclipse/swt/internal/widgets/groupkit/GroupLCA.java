@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.groupkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
@@ -21,7 +26,6 @@ import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Widget;
 
@@ -62,8 +66,8 @@ public class GroupLCA extends AbstractWidgetLCA {
     Group group = ( Group )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( group );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( group.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( group, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( group.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( group, ALLOWED_STYLES ) ) );
   }
 
   @Override
@@ -80,20 +84,18 @@ public class GroupLCA extends AbstractWidgetLCA {
 
   private static void renderText( Group group ) {
     String newValue = group.getText();
-    if( WidgetLCAUtil.hasChanged( group, PROP_TEXT, newValue, "" ) ) {
+    if( hasChanged( group, PROP_TEXT, newValue, "" ) ) {
       String text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
-      IClientObject clientObject = ClientObjectFactory.getClientObject( group );
-      clientObject.set( PROP_TEXT, text );
+      getClientObject( group ).set( PROP_TEXT, text );
     }
   }
 
   private static void renderMnemonicIndex( Group group ) {
     String text = group.getText();
-    if( WidgetLCAUtil.hasChanged( group, PROP_TEXT, text, "" ) ) {
+    if( hasChanged( group, PROP_TEXT, text, "" ) ) {
       int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
       if( mnemonicIndex != -1 ) {
-        IClientObject clientObject = ClientObjectFactory.getClientObject( group );
-        clientObject.set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+        getClientObject( group ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
       }
     }
   }

@@ -11,8 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.clabelkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
@@ -24,7 +29,6 @@ import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.Rectangle;
@@ -78,8 +82,8 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     CLabel clabel = ( CLabel )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( clabel );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( clabel.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( clabel, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( clabel.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( clabel, ALLOWED_STYLES ) ) );
     // NOTE : This is consistent with Tree and Table, but might change - See Bug 373764
     clientObject.set( "appearance", "clabel" );
     renderProperty( clabel, PROP_MARKUP_ENABLED, isMarkupEnabled( clabel ), false );
@@ -135,31 +139,28 @@ public final class CLabelLCA extends AbstractWidgetLCA {
 
   private static void renderText( CLabel clabel ) {
     String newValue = clabel.getText();
-    if( WidgetLCAUtil.hasChanged( clabel, PROP_TEXT, newValue, null ) ) {
+    if( hasChanged( clabel, PROP_TEXT, newValue, null ) ) {
       String text = newValue;
       if( !isMarkupEnabled( clabel ) ) {
         text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
       }
-      IClientObject clientObject = ClientObjectFactory.getClientObject( clabel );
-      clientObject.set( PROP_TEXT, text );
+      getClientObject( clabel ).set( PROP_TEXT, text );
     }
   }
 
   private static void renderMnemonicIndex( CLabel clabel ) {
     if( !isMarkupEnabled( clabel ) ) {
       String text = clabel.getText();
-      if( WidgetLCAUtil.hasChanged( clabel, PROP_TEXT, text, null ) ) {
+      if( hasChanged( clabel, PROP_TEXT, text, null ) ) {
         int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
         if( mnemonicIndex != -1 ) {
-          IClientObject clientObject = ClientObjectFactory.getClientObject( clabel );
-          clientObject.set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+          getClientObject( clabel ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
         }
       }
     }
   }
 
   private static CLabelThemeAdapter getThemeAdapter( CLabel clabel ) {
-    Object adapter = clabel.getAdapter( IThemeAdapter.class );
-    return ( CLabelThemeAdapter )adapter;
+    return ( CLabelThemeAdapter )clabel.getAdapter( IThemeAdapter.class );
   }
 }

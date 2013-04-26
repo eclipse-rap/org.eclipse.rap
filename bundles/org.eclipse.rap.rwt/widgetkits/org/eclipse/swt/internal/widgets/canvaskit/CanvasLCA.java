@@ -10,6 +10,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.Adaptable;
@@ -56,8 +61,8 @@ public final class CanvasLCA extends AbstractWidgetLCA {
     Canvas canvas = ( Canvas )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( canvas );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( canvas.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( canvas, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( canvas.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( canvas, ALLOWED_STYLES ) ) );
     IClientObject clientObjectGC = ClientObjectFactory.getClientObject( getGC( canvas ) );
     clientObjectGC.create( TYPE_GC );
     clientObjectGC.set( "parent", WidgetUtil.getId( canvas ) );
@@ -94,7 +99,7 @@ public final class CanvasLCA extends AbstractWidgetLCA {
   }
 
   public void renderClientArea( Canvas canvas ) {
-    WidgetLCAUtil.renderProperty( canvas, PROP_CLIENT_AREA, canvas.getClientArea(), null );
+    renderProperty( canvas, PROP_CLIENT_AREA, canvas.getClientArea(), null );
   }
 
 }

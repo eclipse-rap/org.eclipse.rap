@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolbarkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
@@ -36,6 +39,7 @@ public class CoolBarLCA extends AbstractWidgetLCA {
 
   public static final String PROP_LOCKED = "locked";
 
+  @Override
   public void preserveValues( Widget widget ) {
     CoolBar coolBar = ( CoolBar )widget;
     ControlLCAUtil.preserveValues( coolBar );
@@ -52,14 +56,16 @@ public class CoolBarLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( coolBar );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     CoolBar coolbar = ( CoolBar )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( coolbar );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( coolbar.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( coolbar, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( coolbar.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( coolbar, ALLOWED_STYLES ) ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     CoolBar coolBar = ( CoolBar )widget;
     ControlLCAUtil.renderChanges( coolBar );

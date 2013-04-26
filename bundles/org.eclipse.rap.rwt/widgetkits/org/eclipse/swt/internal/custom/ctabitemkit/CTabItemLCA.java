@@ -11,8 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabitemkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
@@ -21,7 +26,6 @@ import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.Font;
@@ -65,9 +69,9 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     CTabFolder parent = item.getParent();
     IClientObject clientObject = ClientObjectFactory.getClientObject( item );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( parent ) );
+    clientObject.set( "parent", getId( parent ) );
     clientObject.set( "index", parent.indexOf( item ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( item, ALLOWED_STYLES ) );
+    clientObject.set( "style", createJsonArray( getStyles( item, ALLOWED_STYLES ) ) );
   }
 
   @Override
@@ -90,20 +94,18 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
 
   private static void renderText( CTabItem item ) {
     String newValue = getText( item );
-    if( WidgetLCAUtil.hasChanged( item, PROP_TEXT, newValue, "" ) ) {
+    if( hasChanged( item, PROP_TEXT, newValue, "" ) ) {
       String text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
-      IClientObject clientObject = ClientObjectFactory.getClientObject( item );
-      clientObject.set( PROP_TEXT, text );
+      getClientObject( item ).set( PROP_TEXT, text );
     }
   }
 
   private static void renderMnemonicIndex( CTabItem item ) {
     String text = getText( item );
-    if( WidgetLCAUtil.hasChanged( item, PROP_TEXT, text, "" ) ) {
+    if( hasChanged( item, PROP_TEXT, text, "" ) ) {
       int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
       if( mnemonicIndex != -1 ) {
-        IClientObject clientObject = ClientObjectFactory.getClientObject( item );
-        clientObject.set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+        getClientObject( item ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
       }
     }
   }

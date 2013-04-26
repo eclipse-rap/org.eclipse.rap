@@ -11,6 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.compositekit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
@@ -18,7 +23,6 @@ import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
@@ -30,6 +34,7 @@ public class CompositeLCA extends AbstractWidgetLCA {
   private static final String[] ALLOWED_STYLES = new String[] { "NO_RADIO_GROUP", "BORDER" };
   private static final String PROP_CLIENT_AREA = "clientArea";
 
+  @Override
   public void preserveValues( Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
     WidgetLCAUtil.preserveCustomVariant( widget );
@@ -45,14 +50,16 @@ public class CompositeLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processMenuDetect( ( Control )widget );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Composite composite = ( Composite )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( composite );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( composite.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( composite, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( composite.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( composite, ALLOWED_STYLES ) ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     ControlLCAUtil.renderChanges( ( Control )widget );
     WidgetLCAUtil.renderBackgroundGradient( widget );
@@ -62,7 +69,7 @@ public class CompositeLCA extends AbstractWidgetLCA {
   }
 
   public void renderClientArea( Composite composite ) {
-    WidgetLCAUtil.renderProperty( composite, PROP_CLIENT_AREA, composite.getClientArea(), null );
+    renderProperty( composite, PROP_CLIENT_AREA, composite.getClientArea(), null );
   }
 
 }

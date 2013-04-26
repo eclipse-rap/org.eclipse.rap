@@ -11,17 +11,21 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
@@ -58,8 +62,8 @@ final class MenuItemLCAUtil {
     IClientObject clientObject = ClientObjectFactory.getClientObject( item );
     clientObject.create( TYPE );
     Menu parent = item.getParent();
-    clientObject.set( "parent", WidgetUtil.getId( parent ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( item, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( parent ) );
+    clientObject.set( "style", createJsonArray( getStyles( item, ALLOWED_STYLES ) ) );
     clientObject.set( "index", parent.indexOf( item ) );
   }
 
@@ -78,7 +82,7 @@ final class MenuItemLCAUtil {
 
   static void processArmEvent( MenuItem item ) {
     Menu menu = item.getParent();
-    if( WidgetLCAUtil.wasEventSent( menu, ClientMessageConst.EVENT_SHOW ) ) {
+    if( wasEventSent( menu, ClientMessageConst.EVENT_SHOW ) ) {
       item.notifyListeners( SWT.Arm, new Event() );
     }
   }
@@ -90,8 +94,7 @@ final class MenuItemLCAUtil {
     String newValue = item.getText();
     if( WidgetLCAUtil.hasChanged( item, PROP_TEXT, newValue, "" ) ) {
       String text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
-      IClientObject clientObject = ClientObjectFactory.getClientObject( item );
-      clientObject.set( PROP_TEXT, text );
+      getClientObject( item ).set( PROP_TEXT, text );
     }
   }
 
@@ -101,8 +104,7 @@ final class MenuItemLCAUtil {
       if( WidgetLCAUtil.hasChanged( item, PROP_TEXT, text, "" ) ) {
         int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
         if( mnemonicIndex != -1 ) {
-          IClientObject clientObject = ClientObjectFactory.getClientObject( item );
-          clientObject.set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+          getClientObject( item ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
         }
       }
     }

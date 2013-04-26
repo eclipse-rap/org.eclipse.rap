@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,23 +12,27 @@
 
 package org.eclipse.swt.internal.widgets.linkkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.events.EventLCAUtil;
@@ -66,10 +70,10 @@ public class LinkLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Link link = ( Link )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( link );
+    IClientObject clientObject = getClientObject( link );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( link.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( link, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( link.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( link, ALLOWED_STYLES ) ) );
   }
 
   @Override
@@ -86,20 +90,19 @@ public class LinkLCA extends AbstractWidgetLCA {
 
   private static void renderText( Link link ) {
     String newValue = link.getText();
-    if( WidgetLCAUtil.hasChanged( link, PROP_TEXT, newValue, "" ) ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( link );
-      clientObject.set( PROP_TEXT, getTextObject( link ) );
+    if( hasChanged( link, PROP_TEXT, newValue, "" ) ) {
+      getClientObject( link ).set( PROP_TEXT, getTextObject( link ) );
     }
   }
 
   //////////////////
   // Helping methods
 
-  private static Object getTextObject( Link link ) {
+  private static JsonArray getTextObject( Link link ) {
     ILinkAdapter adapter = link.getAdapter( ILinkAdapter.class );
     String displayText = adapter.getDisplayText();
     Point[] offsets = adapter.getOffsets();
-    List<Object[]> result = new ArrayList<Object[]>();
+    JsonArray result = new JsonArray();
     int length = displayText.length();
     int pos = 0;
     for( int i = 0; i < offsets.length; i++ ) {
@@ -107,24 +110,26 @@ public class LinkLCA extends AbstractWidgetLCA {
       int end = offsets[ i ].y + 1;
       // before link
       if( pos < start ) {
-        result.add( new Object[] { displayText.substring( pos, start ), null } );
+        result.add( new JsonArray().add( displayText.substring( pos, start ) )
+                                   .add( JsonObject.NULL ) );
       }
       // link itself
       if( start < end ) {
-        result.add( new Object[] { displayText.substring( start, end ), new Integer( i ) } );
+        result.add( new JsonArray().add( displayText.substring( start, end ) ).add( i ) );
       }
       pos = end;
     }
     // after last link
     if( pos < length ) {
-      result.add( new Object[] { displayText.substring( pos, length ), null } );
+      result.add( new JsonArray().add( displayText.substring( pos, length ) )
+                                 .add( JsonObject.NULL ) );
     }
-    return result.toArray();
+    return result;
   }
 
   private static void processSelectionEvent( Link link ) {
     String eventName = ClientMessageConst.EVENT_SELECTION;
-    if( WidgetLCAUtil.wasEventSent( link, eventName ) ) {
+    if( wasEventSent( link, eventName ) ) {
       String value = readEventPropertyValue( link, eventName, ClientMessageConst.EVENT_PARAM_INDEX );
       int index = NumberFormatUtil.parseInt( value );
       ILinkAdapter adapter = link.getAdapter( ILinkAdapter.class );

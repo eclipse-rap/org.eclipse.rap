@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,19 +11,26 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.shellkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsRectangle;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -99,7 +106,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     // Important: Order matters, readMode() before readBounds()
     readMode( shell );
     readBounds( shell );
-    if( WidgetLCAUtil.wasEventSent( shell, ClientMessageConst.EVENT_CLOSE ) ) {
+    if( wasEventSent( shell, ClientMessageConst.EVENT_CLOSE ) ) {
       shell.close();
     }
     processActiveShell( shell );
@@ -113,12 +120,12 @@ public final class ShellLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
+    IClientObject clientObject = getClientObject( shell );
     clientObject.create( TYPE );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( shell, ALLOWED_STYLES ) );
+    clientObject.set( "style", createJsonArray( getStyles( shell, ALLOWED_STYLES ) ) );
     Composite parent = shell.getParent();
     if( parent instanceof Shell ) {
-      clientObject.set( "parentShell", WidgetUtil.getId( parent ) );
+      clientObject.set( "parentShell", getId( parent ) );
     }
     // TODO [tb] : These should be rendered only when there is an actual listener attached:
     clientObject.listen( PROP_MOVE_LISTENER, true );
@@ -146,8 +153,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   @Override
   public void renderDispose( Widget widget ) throws IOException {
-    IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
-    clientObject.destroy();
+    getClientObject( widget ).destroy();
   }
 
   //////////////////
@@ -163,21 +169,20 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   private static void renderMinimumSize( Shell shell ) {
     Point newValue = shell.getMinimumSize();
-    if( WidgetLCAUtil.hasChanged( shell, PROP_MINIMUM_SIZE, newValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
-      clientObject.set( "minimumSize", new int[]{ newValue.x, newValue.y } );
+    if( hasChanged( shell, PROP_MINIMUM_SIZE, newValue ) ) {
+      IClientObject clientObject = getClientObject( shell );
+      clientObject.set( "minimumSize", new JsonArray().add( newValue.x ).add( newValue.y ) );
     }
   }
 
   private static void renderDefaultButton( Shell shell ) {
     Button defaultButton = shell.getDefaultButton();
-    if( WidgetLCAUtil.hasChanged( shell, PROP_DEFAULT_BUTTON, defaultButton, null ) ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
+    if( hasChanged( shell, PROP_DEFAULT_BUTTON, defaultButton, null ) ) {
       String defaultButtonId = null;
       if( defaultButton != null ) {
         defaultButtonId = WidgetUtil.getId( defaultButton );
       }
-      clientObject.set( "defaultButton", defaultButtonId );
+      getClientObject( shell ).set( "defaultButton", defaultButtonId );
     }
   }
 
@@ -186,23 +191,22 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   private static void renderActiveShell( Shell shell ) {
     Shell activeShell = shell.getDisplay().getActiveShell();
-    boolean hasChanged = WidgetLCAUtil.hasChanged( shell, PROP_ACTIVE_SHELL, activeShell, null );
+    boolean hasChanged = hasChanged( shell, PROP_ACTIVE_SHELL, activeShell, null );
     if( shell == activeShell && hasChanged ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
-      clientObject.set( "active", true );
+      getClientObject( shell ).set( "active", true );
     }
   }
 
   private static void processActiveShell( Shell shell ) {
-    if( WidgetLCAUtil.wasEventSent( shell, ClientMessageConst.EVENT_ACTIVATE ) ) {
+    if( wasEventSent( shell, ClientMessageConst.EVENT_ACTIVATE ) ) {
       IDisplayAdapter displayAdapter = shell.getDisplay().getAdapter( IDisplayAdapter.class );
       displayAdapter.setActiveShell( shell );
     }
   }
 
   private static void readActiveControl( Shell shell ) {
-    String activeControlId = WidgetLCAUtil.readPropertyValue( shell, PROP_ACTIVE_CONTROL );
-    Widget widget = WidgetUtil.find( shell, activeControlId );
+    String activeControlId = readPropertyValue( shell, PROP_ACTIVE_CONTROL );
+    Widget widget = find( shell, activeControlId );
     if( widget != null ) {
       setActiveControl( shell, widget );
     }
@@ -210,13 +214,12 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   private static void renderActiveControl( Shell shell ) {
     final Control activeControl = getActiveControl( shell );
-    if( WidgetLCAUtil.hasChanged( shell, PROP_ACTIVE_CONTROL, activeControl, null ) ) {
+    if( hasChanged( shell, PROP_ACTIVE_CONTROL, activeControl, null ) ) {
       String activeControlId = null;
       if( activeControl != null ) {
-        activeControlId = WidgetUtil.getId( activeControl );
+        activeControlId = getId( activeControl );
       }
-      IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
-      clientObject.set( "activeControl", activeControlId );
+      getClientObject( shell ).set( "activeControl", activeControlId );
     }
   }
 
@@ -234,7 +237,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   }
 
   private static void readBounds( Shell shell ) {
-    Rectangle bounds = ProtocolUtil.readPropertyValueAsRectangle( getId( shell ), "bounds" );
+    Rectangle bounds = readPropertyValueAsRectangle( getId( shell ), "bounds" );
     if( bounds != null ) {
       IShellAdapter shellAdapter = shell.getAdapter( IShellAdapter.class );
       shellAdapter.setBounds( bounds );
@@ -242,7 +245,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   }
 
   private static void readMode( Shell shell ) {
-    final String value = WidgetLCAUtil.readPropertyValue( shell, "mode" );
+    final String value = readPropertyValue( shell, "mode" );
     if( value != null ) {
       if( "maximized".equals( value ) ) {
         shell.setMaximized( true );
@@ -256,12 +259,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   }
 
   private static void renderMode( Shell shell ) {
-    Object defValue = null;
-    Object newValue = getMode( shell );
-    if( WidgetLCAUtil.hasChanged( shell, PROP_MODE, newValue, defValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
-      clientObject.set( "mode", newValue );
-    }
+    renderProperty( shell, PROP_MODE, getMode( shell), null );
   }
 
   private static void setActiveControl( Shell shell, Widget widget ) {
@@ -290,9 +288,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     Menu menuBar = shell.getMenuBar();
     if( menuBar != null ) {
       IShellAdapter shellAdapter = shell.getAdapter( IShellAdapter.class );
-      Rectangle menuBounds = shellAdapter.getMenuBounds();
-      WidgetAdapter widgetAdapter = WidgetUtil.getAdapter( menuBar );
-      widgetAdapter.preserve( Props.BOUNDS, menuBounds );
+      getAdapter( menuBar ).preserve( Props.BOUNDS, shellAdapter.getMenuBounds() );
     }
   }
 

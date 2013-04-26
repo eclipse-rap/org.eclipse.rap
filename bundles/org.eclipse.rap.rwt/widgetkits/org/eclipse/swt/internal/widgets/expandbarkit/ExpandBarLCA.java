@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,16 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.expandbarkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
@@ -25,7 +30,6 @@ import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
@@ -73,8 +77,8 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
     ExpandBar expandBar = ( ExpandBar )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( expandBar );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( expandBar.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( expandBar, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( expandBar.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( expandBar, ALLOWED_STYLES ) ) );
     ScrollBarLCAUtil.renderInitialization( expandBar );
   }
 
@@ -133,7 +137,7 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
   // Process expand/collapse events
 
   private static void processExpandEvent( ExpandBar bar, int eventType, String eventName ) {
-    if( WidgetLCAUtil.wasEventSent( bar, eventName ) ) {
+    if( wasEventSent( bar, eventName ) ) {
       String value = readEventPropertyValue( bar, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
       Event event = new Event();
       event.item = getItem( bar, value );
@@ -142,6 +146,6 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
   }
 
   private static ExpandItem getItem( ExpandBar bar, String itemId ) {
-    return ( ExpandItem )WidgetUtil.find( bar, itemId );
+    return ( ExpandItem )find( bar, itemId );
   }
 }

@@ -11,10 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menukit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
 
 import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -50,7 +54,7 @@ final class MenuLCAUtil {
   static void renderInitialization( Menu menu ) {
     IClientObject clientObject = ClientObjectFactory.getClientObject( menu );
     clientObject.create( TYPE );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( menu, ALLOWED_STYLES ) );
+    clientObject.set( "style", createJsonArray( getStyles( menu, ALLOWED_STYLES ) ) );
   }
 
   static void renderChanges( Menu menu ) {
@@ -75,10 +79,9 @@ final class MenuLCAUtil {
    * preliminary menu is displayed).
    */
   static void renderUnhideItems( Menu menu ) {
-    if( WidgetLCAUtil.wasEventSent( menu, ClientMessageConst.EVENT_SHOW ) ) {
+    if( wasEventSent( menu, ClientMessageConst.EVENT_SHOW ) ) {
       boolean reveal = menu.getItemCount() > 0;
-      IClientObject clientObject = ClientObjectFactory.getClientObject( menu );
-      clientObject.call( METHOD_UNHIDE_ITEMS, new JsonObject().add( "reveal", reveal ) );
+      getClientObject( menu ).call( METHOD_UNHIDE_ITEMS, new JsonObject().add( "reveal", reveal ) );
     }
   }
 

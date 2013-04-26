@@ -11,21 +11,23 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolitemkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasCallSend;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ICoolBarAdapter;
 import org.eclipse.swt.internal.widgets.Props;
@@ -48,9 +50,8 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   @Override
   public void preserveValues( Widget widget ) {
     CoolItem item = ( CoolItem )widget;
-    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
-    adapter.preserve( PROP_CONTROL, item.getControl() );
-    adapter.preserve( Props.BOUNDS, item.getBounds() );
+    preserveProperty( item, PROP_CONTROL, item.getControl() );
+    preserveProperty( item, Props.BOUNDS, item.getBounds() );
     WidgetLCAUtil.preserveCustomVariant( item );
     WidgetLCAUtil.preserveData( item );
   }
@@ -58,7 +59,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   public void readData( Widget widget ) {
     final CoolItem item = ( CoolItem )widget;
     String methodName = "move";
-    if( ProtocolUtil.wasCallSend( getId( item ), methodName ) ) {
+    if( wasCallSend( getId( item ), methodName ) ) {
       String left = readCallPropertyValueAsString( getId( item ), methodName, "left" );
       final int newLeft = NumberFormatUtil.parseInt( left );
       ProcessActionRunner.add( new Runnable() {
@@ -74,8 +75,8 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     CoolItem item = ( CoolItem )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( item );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( item.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( item, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( item.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( item, ALLOWED_STYLES ) ) );
   }
 
   @Override
@@ -125,8 +126,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
       //      changed' and that mark could be evaluated by writeBounds.
       //      A more flexible writeBounds implementation on WidgetLCAUtil is
       //      necessary therefore.
-      WidgetAdapter adapter = WidgetUtil.getAdapter( coolItem );
-      adapter.preserve( Props.BOUNDS, null );
+      getAdapter( coolItem ).preserve( Props.BOUNDS, null );
     }
   }
 
@@ -150,13 +150,12 @@ public class CoolItemLCA extends AbstractWidgetLCA {
           index++;
         }
       }
-      Object adapter = coolBar.getAdapter( ICoolBarAdapter.class );
-      ICoolBarAdapter cba = (ICoolBarAdapter) adapter;
-      cba.setItemOrder( targetOrder );
+      coolBar.getAdapter( ICoolBarAdapter.class ).setItemOrder( targetOrder );
       result = true;
     } else {
       result = false;
     }
     return result;
   }
+
 }

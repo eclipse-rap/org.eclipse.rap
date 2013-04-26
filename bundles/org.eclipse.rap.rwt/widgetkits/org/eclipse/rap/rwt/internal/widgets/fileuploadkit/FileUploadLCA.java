@@ -10,10 +10,16 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.widgets.fileuploadkit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
+
 import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
@@ -21,7 +27,6 @@ import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.widgets.FileUpload;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
@@ -50,8 +55,8 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
     FileUpload fileUpload = ( FileUpload ) widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( fileUpload );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( fileUpload.getParent() ) );
-    clientObject.set( "style", WidgetLCAUtil.getStyles( fileUpload, ALLOWED_STYLES ) );
+    clientObject.set( "parent", getId( fileUpload.getParent() ) );
+    clientObject.set( "style", createJsonArray( getStyles( fileUpload, ALLOWED_STYLES ) ) );
   }
 
   public void readData( Widget widget ) {
@@ -74,7 +79,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
 
   private void readFileName( FileUpload fileUpload ) {
     IFileUploadAdapter adapter = fileUpload.getAdapter( IFileUploadAdapter.class );
-    String fileName = WidgetLCAUtil.readPropertyValue( fileUpload, "fileName" );
+    String fileName = readPropertyValue( fileUpload, "fileName" );
     if( fileName != null ) {
       adapter.setFileName( fileName.equals( "" ) ? null : fileName );
       fileUpload.notifyListeners( SWT.Selection, new Event() );
@@ -84,8 +89,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
   private static void renderSubmit( FileUpload fileUpload ) {
     String url = fileUpload.getAdapter( IFileUploadAdapter.class ).getAndResetUrl();
     if( url != null ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( fileUpload );
-      clientObject.call( "submit", new JsonObject().add( "url", url ) );
+      getClientObject( fileUpload ).call( "submit", new JsonObject().add( "url", url ) );
     }
   }
 
