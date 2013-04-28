@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.util.*;
 
 import org.eclipse.core.runtime.ListenerList;
-
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -220,12 +219,6 @@ public class FormText extends Canvas {
 
 	private class FormTextLayout extends Layout implements ILayoutExtension {
 
-	    private Map averageFontWidths;
-
-	    public FormTextLayout() {
-	      averageFontWidths = new HashMap();
-		}
-
 		public int computeMaximumWidth(Composite parent, boolean changed) {
 			return computeSize(parent, SWT.DEFAULT, SWT.DEFAULT, changed).x;
 		}
@@ -309,9 +302,9 @@ public class FormText extends Canvas {
 		}
 
 		@Override
-    protected void layout(Composite composite, boolean flushCache) {
+        protected void layout(Composite composite, boolean flushCache) {
 		    // RAP [if] Workaround for the text size determination
-		    if( hasAverageFontWidthsChanged() ) {
+		    if( TextSizeUtil.isTemporaryResize() ) {
 		      model.clearCache( null );
 		    }
 
@@ -357,26 +350,6 @@ public class FormText extends Canvas {
 				System.out.println("FormText.layout: " + (stop - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
-
-	    // RAP [if] Workaround for the text size determination
-        private boolean hasAverageFontWidthsChanged() {
-          boolean result = false;
-          Enumeration keys = resourceTable.keys();
-          while( keys.hasMoreElements() && !result ) {
-            String key = ( String )keys.nextElement();
-            if( key.startsWith( "f." ) ) { //$NON-NLS-1$
-              Font font = ( Font )resourceTable.get( key );
-              Float newValue = new Float( TextSizeUtil.getAvgCharWidth( font ) );
-              Float preservedValue = ( Float )averageFontWidths.get( key );
-              if( !newValue.equals( preservedValue ) ) {
-                averageFontWidths.put( key, newValue );
-                result = true;
-              }
-            }
-          }
-          return result;
-        }
-        // ENDRAP
 	}
 
 	/**
