@@ -17,6 +17,7 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWr
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -123,7 +124,7 @@ class MeasurementOperator implements SerializableCompatibility {
 
   private void readMeasuredFontProbeSizes() {
     Iterator probeList = probes.iterator();
-    CallOperation[] operations = getCallOperationsFor( METHOD_STORE_MEASUREMENTS );
+    List<CallOperation> operations = getCallOperationsFor( METHOD_STORE_MEASUREMENTS );
     while( probeList.hasNext() ) {
       Probe probe = ( Probe )probeList.next();
       Point size = readMeasuredSize( operations, MeasurementUtil.getId( probe ) );
@@ -146,7 +147,7 @@ class MeasurementOperator implements SerializableCompatibility {
   private boolean readMeasuredTextSizes() {
     int originalItemsSize = items.size();
     Iterator itemList = items.iterator();
-    CallOperation[] operations = getCallOperationsFor( METHOD_STORE_MEASUREMENTS );
+    List<CallOperation> operations = getCallOperationsFor( METHOD_STORE_MEASUREMENTS );
     while( itemList.hasNext() ) {
       MeasurementItem item = ( MeasurementItem )itemList.next();
       Point size = readMeasuredSize( operations, MeasurementUtil.getId( item ) );
@@ -158,14 +159,14 @@ class MeasurementOperator implements SerializableCompatibility {
     return itemsHasBeenMeasured( originalItemsSize );
   }
 
-  private static CallOperation[] getCallOperationsFor( String methodName ) {
+  private static List<CallOperation> getCallOperationsFor( String methodName ) {
     return ProtocolUtil.getClientMessage().getAllCallOperationsFor( TYPE, methodName );
   }
 
-  private static Point readMeasuredSize( CallOperation[] operations, String id ) {
+  private static Point readMeasuredSize( List<CallOperation> operations, String id ) {
     Point result = null;
-    for( int i = 0; i < operations.length; i++ ) {
-      Map resultsMap = ( Map )operations[ i ].getProperty( PROPERTY_RESULTS );
+    for( CallOperation operation : operations ) {
+      Map resultsMap = ( Map )operation.getProperty( PROPERTY_RESULTS );
       if( resultsMap != null ) {
         Object value = resultsMap.get( id );
         if( value != null ) {

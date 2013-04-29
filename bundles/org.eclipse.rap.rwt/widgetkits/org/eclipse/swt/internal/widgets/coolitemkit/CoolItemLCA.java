@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.widgets.coolitemkit;
 
 import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasCallSend;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasCallReceived;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
@@ -59,7 +59,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   public void readData( Widget widget ) {
     final CoolItem item = ( CoolItem )widget;
     String methodName = "move";
-    if( wasCallSend( getId( item ), methodName ) ) {
+    if( wasCallReceived( getId( item ), methodName ) ) {
       String left = readCallPropertyValueAsString( getId( item ), methodName, "left" );
       final int newLeft = NumberFormatUtil.parseInt( left );
       ProcessActionRunner.add( new Runnable() {

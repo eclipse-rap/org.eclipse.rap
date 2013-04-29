@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.endsWith;
 import static org.mockito.Mockito.mock;
@@ -97,7 +98,7 @@ public class RequestCounter_Test {
   @Test
   public void testIsValid_trueWithValidParameter() {
     int nextRequestId = RequestCounter.getInstance().nextRequestId();
-    Fixture.fakeHeadParameter( "requestCounter", Integer.toString( nextRequestId ) );
+    Fixture.fakeHeadParameter( "requestCounter", nextRequestId );
 
     boolean valid = RequestCounter.getInstance().isValid();
 
@@ -107,7 +108,7 @@ public class RequestCounter_Test {
   @Test
   public void testIsValid_falseWithInvalidParameter() {
     RequestCounter.getInstance().nextRequestId();
-    Fixture.fakeHeadParameter( "requestCounter", "23" );
+    Fixture.fakeHeadParameter( "requestCounter", 23 );
 
     boolean valid = RequestCounter.getInstance().isValid();
 
@@ -115,13 +116,16 @@ public class RequestCounter_Test {
   }
 
   @Test
-  public void testIsValid_falseWithIllegalParameterFormat() {
+  public void testIsValid_failsWithIllegalParameterFormat() {
     RequestCounter.getInstance().nextRequestId();
     Fixture.fakeHeadParameter( "requestCounter", "not-a-number" );
 
-    boolean valid = RequestCounter.getInstance().isValid();
-
-    assertFalse( valid );
+    try {
+      RequestCounter.getInstance().isValid();
+      fail();
+    } catch( Exception exception ) {
+      assertTrue( exception.getMessage().contains( "Not a number" ) );
+    }
   }
 
   @Test

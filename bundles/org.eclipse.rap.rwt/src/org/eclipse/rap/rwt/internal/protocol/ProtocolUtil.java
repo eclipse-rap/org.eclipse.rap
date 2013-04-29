@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.internal.protocol;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,12 +80,6 @@ public final class ProtocolUtil {
   public static boolean isClientMessageProcessed() {
     ServiceStore serviceStore = ContextProvider.getServiceStore();
     return serviceStore.getAttribute( CLIENT_MESSAGE ) != null;
-  }
-
-  public static String readHeadPropertyValue( String property ) {
-    ClientMessage message = getClientMessage();
-    Object result = message.getHeadProperty( property );
-    return result == null ? null : result.toString();
   }
 
   public static Object readPropertyValue( String target, String property ) {
@@ -177,9 +172,9 @@ public final class ProtocolUtil {
   {
     String result = null;
     ClientMessage message = getClientMessage();
-    CallOperation[] operations = message.getAllCallOperationsFor( target, methodName );
-    if( operations.length > 0 ) {
-      CallOperation operation = operations[ operations.length - 1 ];
+    List<CallOperation> operations = message.getAllCallOperationsFor( target, methodName );
+    if( !operations.isEmpty() ) {
+      CallOperation operation = operations.get( operations.size() - 1 );
       Object value = operation.getProperty( property );
       if( value != null ) {
         result = value.toString();
@@ -188,10 +183,10 @@ public final class ProtocolUtil {
     return result;
   }
 
-  public static boolean wasCallSend( String target, String methodName ) {
+  public static boolean wasCallReceived( String target, String methodName ) {
     ClientMessage message = getClientMessage();
-    CallOperation[] operations = message.getAllCallOperationsFor( target, methodName );
-    return operations.length > 0;
+    List<CallOperation> operations = message.getAllCallOperationsFor( target, methodName );
+    return !operations.isEmpty();
   }
 
   public static JsonValue getJsonForFont( Font font ) {

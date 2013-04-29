@@ -11,12 +11,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getClientMessage;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.UrlParameters;
 import org.eclipse.swt.internal.SerializableCompatibility;
@@ -53,11 +55,11 @@ public final class RequestCounter implements SerializableCompatibility {
   }
 
   public boolean isValid() {
-    String sentRequestId = ProtocolUtil.readHeadPropertyValue( PROP_REQUEST_COUNTER );
+    JsonValue sentRequestId = getClientMessage().getHeader( PROP_REQUEST_COUNTER );
     if( sentRequestId == null ) {
       return requestId.get() == 0;
     }
-    return requestId.toString().equals( sentRequestId );
+    return requestId.get() == sentRequestId.asInt();
   }
 
   public int nextRequestId() {

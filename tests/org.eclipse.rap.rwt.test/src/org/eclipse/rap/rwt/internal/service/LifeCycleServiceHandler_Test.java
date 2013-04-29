@@ -349,14 +349,14 @@ public class LifeCycleServiceHandler_Test {
 
   private void simulateInitialUiRequest() {
     Fixture.fakeNewRequest();
-    Fixture.fakeHeadParameter( ClientMessageConst.RWT_INITIALIZE, "true" );
+    Fixture.fakeHeadParameter( ClientMessageConst.RWT_INITIALIZE, true );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
   }
 
   private void simulateShutdownUiRequest() {
     Fixture.fakeNewRequest();
-    Fixture.fakeHeadParameter( ClientMessageConst.RWT_SHUTDOWN, "true" );
+    Fixture.fakeHeadParameter( ClientMessageConst.RWT_SHUTDOWN, true );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
   }
@@ -369,7 +369,7 @@ public class LifeCycleServiceHandler_Test {
 
   private void simulateUiRequestWithIllegalCounter() {
     Fixture.fakeNewRequest();
-    Fixture.fakeHeadParameter( "requestCounter", "23" );
+    Fixture.fakeHeadParameter( "requestCounter", 23 );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
   }

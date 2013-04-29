@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,19 +58,50 @@ public class ClientMessage {
     }
   }
 
-  public Operation[] getAllOperations() {
-    return operationsList.toArray( new Operation[ 0 ] );
+  public JsonValue getHeader( String key ) {
+    return head.get( key );
   }
 
-  public Operation[] getAllOperationsFor( String target ) {
-    return getOperations( Operation.class, target, null );
+  public List<Operation> getAllOperations() {
+    return Collections.unmodifiableList( operationsList );
+  }
+
+  public List<Operation> getAllOperationsFor( String target ) {
+    List<Operation> operations = operationsMap.get( target );
+    if( operations == null ) {
+      return Collections.emptyList();
+    }
+    return Collections.unmodifiableList( operations );
+  }
+
+  public List<CallOperation> getAllCallOperationsFor( String target, String methodName ) {
+    List<CallOperation> result = new ArrayList<CallOperation>();
+    List<Operation> operations = target == null ? operationsList : operationsMap.get( target );
+    if( operations != null ) {
+      for( Operation operation : operations ) {
+        if( operation instanceof CallOperation ) {
+          CallOperation currentOperation = ( CallOperation )operation;
+          if( methodName == null || currentOperation.getMethodName().equals( methodName ) ) {
+            result.add( currentOperation );
+          }
+        }
+      }
+    }
+    return result;
   }
 
   public SetOperation getLastSetOperationFor( String target, String property ) {
     SetOperation result = null;
-    SetOperation[] operations = getOperations( SetOperation.class, target, property );
-    if( operations.length > 0 ) {
-      result = operations[ operations.length - 1 ];
+    List<Operation> operations = target == null ? operationsList : operationsMap.get( target );
+    if( operations != null ) {
+      for( Operation operation : operations ) {
+        if( operation instanceof SetOperation ) {
+          SetOperation currentOperation = ( SetOperation )operation;
+          if( property == null || operation.getPropertyNames().contains( property ) ) {
+            result = currentOperation;
+          }
+        }
+      }
     }
     return result;
   }
@@ -87,31 +118,6 @@ public class ClientMessage {
           }
         }
       }
-    }
-    return result;
-  }
-
-  public CallOperation[] getAllCallOperationsFor( String target, String methodName ) {
-    List<CallOperation> result = new ArrayList<CallOperation>();
-    List<Operation> operations = target == null ? operationsList : operationsMap.get( target );
-    if( operations != null ) {
-      for( Operation operation : operations ) {
-        if( operation instanceof CallOperation ) {
-          CallOperation currentOperation = ( CallOperation )operation;
-          if( methodName == null || currentOperation.getMethodName().equals( methodName ) ) {
-            result.add( currentOperation );
-          }
-        }
-      }
-    }
-    return result.toArray( new CallOperation[ 0 ] );
-  }
-
-  public Object getHeadProperty( String key ) {
-    Object result = null;
-    JsonValue value = head.get( key );
-    if( value != null ) {
-      result = JsonUtil.jsonToJava( value );
     }
     return result;
   }
@@ -162,21 +168,6 @@ public class ClientMessage {
       throw new IllegalArgumentException( "Could not find action for operation " + operation );
     }
     return result;
-  }
-
-  @SuppressWarnings( "unchecked" )
-  private <T> T[] getOperations( Class<T> opClass, String target, String property ) {
-    List<T> result = new ArrayList<T>();
-    List<Operation> operations = operationsMap.get( target );
-    if( operations != null ) {
-      for( Operation operation : operations ) {
-        if(    opClass.isInstance( operation )
-            && ( property == null || operation.getPropertyNames().contains( property ) ) ) {
-          result.add( ( T )operation );
-        }
-      }
-    }
-    return result.toArray( ( T[] )Array.newInstance( opClass, 0 ) );
   }
 
   public abstract class Operation {

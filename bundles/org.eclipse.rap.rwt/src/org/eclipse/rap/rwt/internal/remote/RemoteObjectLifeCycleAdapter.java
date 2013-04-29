@@ -10,7 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
-import java.util.Arrays;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getClientMessage;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,6 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -66,9 +66,7 @@ public class RemoteObjectLifeCycleAdapter {
   }
 
   private static List<ClientMessage.Operation> getOperations( RemoteObject remoteObject ) {
-    ClientMessage message = ProtocolUtil.getClientMessage();
-    Operation[] operations = message.getAllOperationsFor( remoteObject.getId() );
-    return Arrays.asList( operations );
+    return getClientMessage().getAllOperationsFor( remoteObject.getId() );
   }
 
   public static void dispatchOperation( OperationHandler handler, Operation operation ) {

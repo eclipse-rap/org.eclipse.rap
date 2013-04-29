@@ -15,7 +15,7 @@ import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsStringArray;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasCallSend;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasCallReceived;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
@@ -306,7 +306,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     adapter.setCellToolTipText( null );
     ICellToolTipProvider provider = adapter.getCellToolTipProvider();
     String methodName = "renderToolTipText";
-    if( provider != null && wasCallSend( getId( tree ), methodName ) ) {
+    if( provider != null && wasCallReceived( getId( tree ), methodName ) ) {
       String itemId = readCallPropertyValueAsString( getId( tree ), methodName, "item" );
       String column = readCallPropertyValueAsString( getId( tree ), methodName, "column" );
       int columnIndex = NumberFormatUtil.parseInt( column );

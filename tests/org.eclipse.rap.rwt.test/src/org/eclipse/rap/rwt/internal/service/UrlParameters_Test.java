@@ -37,7 +37,7 @@ public class UrlParameters_Test {
 
   @Test
   public void testMerge_InitialPostRequest() {
-    Fixture.fakeHeadParameter( ClientMessageConst.RWT_INITIALIZE, "true" );
+    Fixture.fakeHeadParameter( ClientMessageConst.RWT_INITIALIZE, true );
     Fixture.fakeHeadParameter( ClientMessageConst.QUERY_STRING, "key1=value1&key2=value2" );
 
     UrlParameters.merge();

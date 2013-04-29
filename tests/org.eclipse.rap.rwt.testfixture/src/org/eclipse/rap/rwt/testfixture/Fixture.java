@@ -50,6 +50,7 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
@@ -369,14 +370,26 @@ public final class Fixture {
     return result.toString();
   }
 
-  public static void fakeHeadParameter( String key, Object value ) {
+  public static void fakeHeadParameter( String key, long value ) {
+    fakeHeadParameter( key, JsonValue.valueOf( value ) );
+  }
+
+  public static void fakeHeadParameter( String key, boolean value ) {
+    fakeHeadParameter( key, JsonValue.valueOf( value ) );
+  }
+
+  public static void fakeHeadParameter( String key, String value ) {
+    fakeHeadParameter( key, JsonValue.valueOf( value ) );
+  }
+
+  public static void fakeHeadParameter( String key, JsonValue value ) {
     checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     String json = request.getBody();
     try {
       JsonObject message = JsonObject.readFrom( json );
       JsonObject header = message.get( ClientMessage.PROP_HEAD ).asObject();
-      header.add( key, createJsonValue( value ) );
+      header.add( key, value );
       request.setBody( message.toString() );
     } catch( Exception exception ) {
       throw new RuntimeException( "Failed to add header parameter", exception );

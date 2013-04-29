@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
@@ -81,51 +82,21 @@ public class ClientMessage_Test {
   }
 
   @Test
-  public void testGetHeadProperty() {
-    String json = "{ \"head\" : { \"abc\" : \"foo\" }, \"operations\" : [] }";
+  public void testGetHeader() {
+    String json = "{ \"head\": { \"abc\" : \"foo\" }, \"operations\": [] }";
 
     ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
-    assertEquals( "foo", message.getHeadProperty( "abc" ) );
+    assertEquals( JsonValue.valueOf( "foo" ), message.getHeader( "abc" ) );
   }
 
   @Test
-  public void testGetHeadProperty_missingHeader() {
-    String json = "{ \"head\" : {}, \"operations\" : [] }";
+  public void testGetHeader_withEmptyMessage() {
+    String json = "{ \"head\": {}, \"operations\": [] }";
 
     ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
-    assertNull( message.getHeadProperty( "abc" ) );
-  }
-
-  @Test
-  public void testGetAllOperationsFor() {
-    String json = "{ \"head\" : {}, \"operations\" : ["
-                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
-                + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
-                + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
-                + "] }";
-    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
-
-    Operation[] operations = message.getAllOperationsFor( "w3" );
-
-    assertEquals( 2, operations.length );
-    assertTrue( operations[ 0 ] instanceof SetOperation );
-    assertTrue( operations[ 1 ] instanceof NotifyOperation );
-  }
-
-  @Test
-  public void testGetAllOperationsFor_NoOperations() {
-    String json = "{ \"head\" : {}, \"operations\" : ["
-                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
-                + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
-                + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
-                + "] }";
-    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
-
-    Operation[] operations = message.getAllOperationsFor( "w5" );
-
-    assertEquals( 0, operations.length );
+    assertEquals( null, message.getHeader( "abc" ) );
   }
 
   @Test
@@ -137,9 +108,59 @@ public class ClientMessage_Test {
                 + "] }";
     ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
-    Operation[] operations = message.getAllOperations();
+    List<Operation> operations = message.getAllOperations();
 
-    assertEquals( 3, operations.length );
+    assertEquals( 3, operations.size() );
+  }
+
+  @Test
+  public void testGetAllOperations_withEmptyMessage() {
+    String json = "{ \"head\" : {}, \"operations\" : [] }";
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
+
+    List<Operation> operations = message.getAllOperations();
+
+    assertTrue( operations.isEmpty() );
+  }
+
+  @Test
+  public void testGetAllOperationsFor() {
+    String json = "{ \"head\" : {}, \"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+                + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
+                + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
+
+    List<Operation> operations = message.getAllOperationsFor( "w3" );
+
+    assertEquals( 2, operations.size() );
+    assertTrue( operations.get( 0 ) instanceof SetOperation );
+    assertTrue( operations.get( 1 ) instanceof NotifyOperation );
+  }
+
+  @Test
+  public void testGetAllOperationsFor_withEmtpyMessage() {
+    String json = "{ \"head\" : {}, \"operations\" : [] }";
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
+
+    List<Operation> operations = message.getAllOperationsFor( "w5" );
+
+    assertTrue( operations.isEmpty() );
+  }
+
+  @Test
+  public void testGetAllOperationsFor_withoutMatchingOperations() {
+    String json = "{ \"head\" : {}, \"operations\" : ["
+        + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+        + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
+        + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
+        + "] }";
+    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
+
+    List<Operation> operations = message.getAllOperationsFor( "w5" );
+
+    assertTrue( operations.isEmpty() );
   }
 
   @Test
@@ -212,11 +233,11 @@ public class ClientMessage_Test {
                 + "] }";
     ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
-    CallOperation[] operations = message.getAllCallOperationsFor( null, null );
+    List<CallOperation> operations = message.getAllCallOperationsFor( null, null );
 
-    assertEquals( 2, operations.length );
-    assertEquals( "store", operations[ 0 ].getMethodName() );
-    assertEquals( "foo", operations[ 1 ].getMethodName() );
+    assertEquals( 2, operations.size() );
+    assertEquals( "store", operations.get( 0 ).getMethodName() );
+    assertEquals( "foo", operations.get( 1 ).getMethodName() );
   }
 
   @Test
@@ -228,10 +249,10 @@ public class ClientMessage_Test {
                 + "] }";
     ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
-    CallOperation[] operations = message.getAllCallOperationsFor( "w3", null );
+    List<CallOperation> operations = message.getAllCallOperationsFor( "w3", null );
 
-    assertEquals( 1, operations.length );
-    assertEquals( "store", operations[ 0 ].getMethodName() );
+    assertEquals( 1, operations.size() );
+    assertEquals( "store", operations.get( 0 ).getMethodName() );
   }
 
   @Test
@@ -244,11 +265,11 @@ public class ClientMessage_Test {
                 + "] }";
     ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
-    CallOperation[] operations = message.getAllCallOperationsFor( "w4", "foo" );
+    List<CallOperation> operations = message.getAllCallOperationsFor( "w4", "foo" );
 
-    assertEquals( 2, operations.length );
-    assertEquals( "abc", operations[ 0 ].getProperty( "p1" ) );
-    assertEquals( "def", operations[ 1 ].getProperty( "p2" ) );
+    assertEquals( 2, operations.size() );
+    assertEquals( "abc", operations.get( 0 ).getProperty( "p1" ) );
+    assertEquals( "def", operations.get( 1 ).getProperty( "p2" ) );
   }
 
   @Test
@@ -310,7 +331,7 @@ public class ClientMessage_Test {
                 + "] }";
     ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
 
-    CallOperation operation = message.getAllCallOperationsFor( "w3", null )[ 0 ];
+    CallOperation operation = message.getAllCallOperationsFor( "w3", null ).get( 0 );
 
     assertEquals( "w3", operation.getTarget() );
     assertEquals( "store", operation.getMethodName() );
@@ -429,7 +450,7 @@ public class ClientMessage_Test {
   private static Operation createOperation( String operationJson ) {
     String json = "{ \"head\" : {}, \"operations\" : [" + operationJson + "] }";
     ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
-    return message.getAllOperations()[ 0 ];
+    return message.getAllOperations().get( 0 );
   }
 
 }

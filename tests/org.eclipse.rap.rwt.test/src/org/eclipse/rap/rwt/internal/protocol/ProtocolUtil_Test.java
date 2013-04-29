@@ -207,7 +207,7 @@ public class ProtocolUtil_Test {
     ClientMessage message = ProtocolUtil.getClientMessage();
 
     assertNotNull( message );
-    assertTrue( message.getAllOperationsFor( "w3" ).length > 0 );
+    assertFalse( message.getAllOperationsFor( "w3" ).isEmpty() );
   }
 
   @Test
@@ -218,20 +218,6 @@ public class ProtocolUtil_Test {
     ClientMessage message2 = ProtocolUtil.getClientMessage();
 
     assertSame( message1, message2 );
-  }
-
-  @Test
-  public void testReadHeaderPropertyValue() {
-    fakeNewJsonMessage();
-
-    assertEquals( "21", ProtocolUtil.readHeadPropertyValue( "requestCounter" ) );
-  }
-
-  @Test
-  public void testReadHeaderPropertyValue_MissingProperty() {
-    fakeNewJsonMessage();
-
-    assertNull( ProtocolUtil.readHeadPropertyValue( "abc" ) );
   }
 
   @Test
@@ -403,12 +389,12 @@ public class ProtocolUtil_Test {
   }
 
   @Test
-  public void testWasCallSent() {
-    fakeNewJsonMessage();
-
-    assertTrue( ProtocolUtil.wasCallSend( "w3", "resize" ) );
-    assertFalse( ProtocolUtil.wasCallSend( "w4", "resize" ) );
-  }
+    public void testWasCallReceived() {
+      fakeNewJsonMessage();
+  
+      assertTrue( ProtocolUtil.wasCallReceived( "w3", "resize" ) );
+      assertFalse( ProtocolUtil.wasCallReceived( "w4", "resize" ) );
+    }
 
   @Test
   public void testReadCallProperty() {
@@ -436,7 +422,7 @@ public class ProtocolUtil_Test {
 
   private void fakeNewJsonMessage() {
     Fixture.fakeNewRequest();
-    Fixture.fakeHeadParameter( "requestCounter", Integer.valueOf( 21 ) );
+    Fixture.fakeHeadParameter( "requestCounter", 21 );
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( "p1", "foo" );
     parameters.put( "p2", Integer.valueOf( 123 ) );

@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getClientMessage;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValueAsString;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
@@ -18,11 +19,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
@@ -121,7 +124,8 @@ public final class BrowserNavigationImpl
   // Helping methods
 
   private static boolean isStartup() {
-    return "true".equals( ProtocolUtil.readHeadPropertyValue( ClientMessageConst.RWT_INITIALIZE ) );
+    JsonValue initializeHeader = getClientMessage().getHeader( ClientMessageConst.RWT_INITIALIZE );
+    return JsonValue.TRUE.equals( initializeHeader );
   }
 
   private void processNavigationEvent() {

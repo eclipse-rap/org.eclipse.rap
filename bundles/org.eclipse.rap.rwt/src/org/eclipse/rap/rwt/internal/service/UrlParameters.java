@@ -10,8 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readHeadPropertyValue;
-
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getClientMessage;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -19,6 +18,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 
@@ -40,8 +40,8 @@ public final class UrlParameters {
   }
 
   private static Map<String, String[]> getAll() {
-    String queryString = readHeadPropertyValue( ClientMessageConst.QUERY_STRING );
-    return queryString == null ? null : createParametersMap( queryString );
+    JsonValue queryStringHeader = getClientMessage().getHeader( ClientMessageConst.QUERY_STRING );
+    return queryStringHeader == null ? null : createParametersMap( queryStringHeader.asString() );
   }
 
   static Map<String, String[]> createParametersMap( String queryString ) {
@@ -74,7 +74,8 @@ public final class UrlParameters {
   }
 
   private static boolean hasInitializeParameter() {
-    return "true".equals( readHeadPropertyValue( ClientMessageConst.RWT_INITIALIZE ) );
+    JsonValue initializeHeader = getClientMessage().getHeader( ClientMessageConst.RWT_INITIALIZE );
+    return JsonValue.TRUE.equals( initializeHeader );
   }
 
   private UrlParameters() {

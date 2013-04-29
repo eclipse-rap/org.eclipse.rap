@@ -344,9 +344,9 @@ public class RWTLifeCycle2_Test {
     TestRequest result = ( TestRequest )ContextProvider.getRequest();
     result.setServletPath( "/test" );
     result.setSession( session );
-    Fixture.fakeHeadParameter( "requestCounter", String.valueOf( count ) );
+    Fixture.fakeHeadParameter( "requestCounter", count );
     if( count == 0 ) {
-      Fixture.fakeHeadParameter( ClientMessageConst.RWT_INITIALIZE, "true" );
+      Fixture.fakeHeadParameter( ClientMessageConst.RWT_INITIALIZE, true );
     }
     return result;
   }

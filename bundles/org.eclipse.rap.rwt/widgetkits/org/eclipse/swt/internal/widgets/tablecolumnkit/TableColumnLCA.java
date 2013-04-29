@@ -77,7 +77,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   public void readData( Widget widget ) {
     final TableColumn column = ( TableColumn )widget;
     String methodName = "resize";
-    if( ProtocolUtil.wasCallSend( getId( column ), methodName ) ) {
+    if( ProtocolUtil.wasCallReceived( getId( column ), methodName ) ) {
       // TODO [rh] HACK: force width to have changed when client-side changes
       //      it. Since this is done while a column resize we must re-layout
       //      all columns including the resized one.
@@ -90,7 +90,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
       } );
     }
     methodName = "move";
-    if( ProtocolUtil.wasCallSend( getId( column ), methodName ) ) {
+    if( ProtocolUtil.wasCallReceived( getId( column ), methodName ) ) {
       String left = readCallPropertyValueAsString( getId( column ), methodName, "left" );
       final int newLeft = NumberFormatUtil.parseInt( left );
       ProcessActionRunner.add( new Runnable() {

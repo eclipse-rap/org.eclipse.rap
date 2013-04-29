@@ -16,7 +16,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PAR
 import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsStringArray;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasCallSend;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasCallReceived;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
@@ -286,7 +286,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     adapter.setCellToolTipText( null );
     ICellToolTipProvider provider = adapter.getCellToolTipProvider();
     String methodName = "renderToolTipText";
-    if( provider != null && wasCallSend( getId( table ), methodName ) ) {
+    if( provider != null && wasCallReceived( getId( table ), methodName ) ) {
       String itemId = readCallPropertyValueAsString( getId( table ), methodName, "item" );
       String column = readCallPropertyValueAsString( getId( table ), methodName, "column" );
       int columnIndex = NumberFormatUtil.parseInt( column );
