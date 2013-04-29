@@ -10,14 +10,12 @@
 *******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
-import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -77,37 +75,21 @@ public class ClientObject_Test {
 
   @Test
   public void testSet() {
-    clientObject.set( "key", ( Object )"value" );
-    clientObject.set( "key2", 2 );
-    clientObject.set( "key3", 3.5 );
-    clientObject.set( "key4", true );
-    clientObject.set( "key5", "aString" );
+    clientObject.set( "int", 2 );
+    clientObject.set( "double", 3.5 );
+    clientObject.set( "boolean", true );
+    clientObject.set( "string", "foo" );
+    clientObject.set( "array", new JsonArray().add( 23 ).add( 42 ) );
+    clientObject.set( "object", new JsonObject().add( "foo", 23 ) );
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
     assertEquals( shellId, operation.getTarget() );
-    assertEquals( "value", operation.getProperty( "key" ) );
-    assertEquals( new Integer( 2 ), operation.getProperty( "key2" ) );
-    assertEquals( new Double( 3.5 ), operation.getProperty( "key3" ) );
-    assertEquals( Boolean.TRUE, operation.getProperty( "key4" ) );
-    assertEquals( "aString", operation.getProperty( "key5" ) );
-  }
-
-  @Test
-  public void testSet_withIntArray() {
-    clientObject.set( "key", new int[]{ 1, 2, 3 } );
-
-    SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
-    JsonArray result = ( JsonArray )operation.getProperty( "key" );
-    assertEquals( JsonValue.readFrom( "[1, 2, 3]" ), result );
-  }
-
-  @Test
-  public void testCreatePropertyGetStyle() {
-    clientObject.create( "rwt.widgets.Shell"  );
-    clientObject.set( "style", new String[] { "PUSH", "BORDER" } );
-
-    CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
-    assertArrayEquals( new String[] { "PUSH", "BORDER" }, operation.getStyles() );
+    assertEquals( Integer.valueOf( 2 ), operation.getProperty( "int" ) );
+    assertEquals( Double.valueOf( 3.5 ), operation.getProperty( "double" ) );
+    assertEquals( Boolean.TRUE, operation.getProperty( "boolean" ) );
+    assertEquals( "foo", operation.getProperty( "string" ) );
+    assertEquals( new JsonArray().add( 23 ).add( 42 ), operation.getProperty( "array" ) );
+    assertEquals( new JsonObject().add( "foo", 23 ), operation.getProperty( "object" ) );
   }
 
   @Test

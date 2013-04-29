@@ -29,12 +29,6 @@ public interface IClientObject {
 
   void set( String name, JsonValue value );
 
-  /**
-   * @deprecated use {@link #set(String, JsonValue)} instead
-   */
-  @Deprecated
-  void set( String name, Object value );
-
   void listen( String eventType, boolean listen );
 
   void call( String method, JsonObject parameters );
