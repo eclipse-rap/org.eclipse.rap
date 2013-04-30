@@ -194,6 +194,7 @@ public final class CanvasTab extends ExampleTab {
     path.cubicTo( 290, 360, 300, 600, 400, 550 );
     path.lineTo( 500, 490 );
     gc.drawPath( path );
+    path.dispose();
 
     gc.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
     gc.setForeground( display.getSystemColor( SWT.COLOR_RED ) );
@@ -203,6 +204,7 @@ public final class CanvasTab extends ExampleTab {
     path.cubicTo( 60, 470, 60, 470, 70, 550 );
     path.close();
     gc.fillPath( path );
+    path.dispose();
   }
 
 }
