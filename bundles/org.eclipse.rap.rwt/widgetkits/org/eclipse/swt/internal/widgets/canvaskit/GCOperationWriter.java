@@ -26,6 +26,7 @@ import org.eclipse.swt.internal.graphics.GCOperation;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawArc;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawImage;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawLine;
+import org.eclipse.swt.internal.graphics.GCOperation.DrawPath;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawPoint;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawPolyline;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawRectangle;
@@ -91,6 +92,8 @@ final class GCOperationWriter {
       drawImage( ( DrawImage )operation );
     } else if( operation instanceof DrawText ) {
       drawText( ( DrawText )operation );
+    } else if( operation instanceof DrawPath ) {
+      drawPath( ( DrawPath )operation );
     } else if( operation instanceof SetProperty ) {
       setProperty( ( SetProperty )operation );
     } else {
@@ -283,6 +286,45 @@ final class GCOperationWriter {
       .add( drawTab )
       .add( operation.x )
       .add( operation.y ) );
+  }
+
+  private void drawPath( DrawPath operation ) {
+    byte[] types = operation.types;
+    float[] points = operation.points;
+    addClientOperation( "beginPath" );
+    for( int i = 0, j = 0; i < types.length; i++ ) {
+      switch( types[ i ] ) {
+        case SWT.PATH_MOVE_TO:
+          addClientOperation( "moveTo", points[ j++ ], points[ j++ ] );
+        break;
+        case SWT.PATH_LINE_TO:
+          addClientOperation( "lineTo", points[ j++ ], points[ j++ ] );
+        break;
+        case SWT.PATH_CUBIC_TO:
+          addClientOperation( "bezierCurveTo",
+                              points[ j++ ],
+                              points[ j++ ],
+                              points[ j++ ],
+                              points[ j++ ],
+                              points[ j++ ],
+                              points[ j++ ] );
+        break;
+        case SWT.PATH_QUAD_TO:
+          addClientOperation( "quadraticCurveTo",
+                              points[ j++ ],
+                              points[ j++ ],
+                              points[ j++ ],
+                              points[ j++ ] );
+        break;
+        case SWT.PATH_CLOSE:
+          addClientOperation( "closePath" );
+        break;
+        default:
+          String msg = "Unsupported point type: " + types[ i ];
+          throw new RuntimeException( msg );
+      }
+    }
+    addClientOperation( operation.fill ? "fill" : "stroke" );
   }
 
   private void setProperty( SetProperty operation ) {

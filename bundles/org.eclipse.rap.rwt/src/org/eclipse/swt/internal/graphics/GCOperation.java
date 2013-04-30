@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -188,4 +188,19 @@ public abstract class GCOperation {
       this.flags = flags;
     }
   }
+
+  public static final class DrawPath extends GCOperation {
+
+    public final byte[] types;
+    public final float[] points;
+    public final boolean fill;
+
+    public DrawPath( byte[] types, float[] points, boolean fill ) {
+      this.types = types;
+      this.points = points;
+      this.fill = fill;
+    }
+
+  }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2013 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -27,6 +28,7 @@ import org.eclipse.swt.internal.graphics.GCOperation;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawArc;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawImage;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawLine;
+import org.eclipse.swt.internal.graphics.GCOperation.DrawPath;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawPoint;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawPolyline;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawRectangle;
@@ -636,6 +638,46 @@ public class ControlGC_Test {
     GC gc = new GC( canvas );
     Rectangle clipping = gc.getClipping();
     assertEquals( new Rectangle( 0, 0, 100, 100 ), clipping );
+  }
+
+  @Test
+  public void testDrawPath() {
+    Path path = new Path( display );
+    path.lineTo( 10, 10 );
+    path.moveTo( 20, 20 );
+    path.quadTo( 30, 30, 25, 45 );
+    path.close();
+
+    gc.drawPath( path );
+
+    GCOperation[] gcOperations = getGCOperations( gc );
+    DrawPath operation = ( DrawPath )gcOperations[ 0 ];
+    byte[] expectedTypes = new byte[] {
+      SWT.PATH_MOVE_TO, SWT.PATH_LINE_TO, SWT.PATH_MOVE_TO, SWT.PATH_QUAD_TO, SWT.PATH_CLOSE
+    };
+    assertArrayEquals( expectedTypes, operation.types );
+    assertArrayEquals( new float[] { 0, 0, 10, 10, 20, 20, 30, 30, 25, 45 }, operation.points, 0 );
+    assertFalse( operation.fill );
+  }
+
+  @Test
+  public void testFillPath() {
+    Path path = new Path( display );
+    path.lineTo( 10, 10 );
+    path.moveTo( 20, 20 );
+    path.quadTo( 30, 30, 25, 45 );
+    path.close();
+
+    gc.fillPath( path );
+
+    GCOperation[] gcOperations = getGCOperations( gc );
+    DrawPath operation = ( DrawPath )gcOperations[ 0 ];
+    byte[] expectedTypes = new byte[] {
+      SWT.PATH_MOVE_TO, SWT.PATH_LINE_TO, SWT.PATH_MOVE_TO, SWT.PATH_QUAD_TO, SWT.PATH_CLOSE
+    };
+    assertArrayEquals( expectedTypes, operation.types );
+    assertArrayEquals( new float[] { 0, 0, 10, 10, 20, 20, 30, 30, 25, 45 }, operation.points, 0 );
+    assertTrue( operation.fill );
   }
 
   private static GCOperation[] getGCOperations( GC gc ) {

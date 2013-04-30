@@ -1,14 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2011 Rüdiger Herrmann and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011, 2013 Rüdiger Herrmann and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Rüdiger Herrmann - initial API and implementation
+ *    Rüdiger Herrmann - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.graphics;
-
 
 
 abstract class GCDelegate {
@@ -21,23 +22,23 @@ abstract class GCDelegate {
 
   abstract void setFont( Font font );
   abstract Font getFont();
-  
+
   abstract Font getDefaultFont();
   abstract void setAlpha( int alpha );
   abstract int getAlpha();
-  
+
   abstract void setLineWidth( int lineWidth );
   abstract int getLineWidth();
   abstract void setLineCap( int lineCap );
   abstract int getLineCap();
   abstract void setLineJoin( int lineJoin );
   abstract int getLineJoin();
-  
+
   abstract Rectangle getClipping();
 
   abstract Point stringExtent( String string );
   abstract Point textExtent( String string , int wrapWidth );
-  
+
   abstract void drawPoint( int x, int y );
   abstract void drawLine( int x1, int y1, int x2, int y2 );
   abstract void drawPolyline( int[] pointArray, boolean close, boolean fill );
@@ -52,10 +53,13 @@ abstract class GCDelegate {
                          int arcAngle,
                          boolean fill );
 
-  abstract void drawImage( Image image, 
-                           Rectangle src, 
-                           Rectangle dest, 
+  abstract void drawImage( Image image,
+                           Rectangle src,
+                           Rectangle dest,
                            boolean simple );
 
   abstract void drawText( String string, int x, int y, int flags );
+
+  abstract void drawPath( Path path, boolean fill );
+
 }

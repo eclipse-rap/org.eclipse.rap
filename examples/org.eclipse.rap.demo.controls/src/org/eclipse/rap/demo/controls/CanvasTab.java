@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -32,7 +33,7 @@ public final class CanvasTab extends ExampleTab {
   }
 
   @Override
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     cteateRoundedBorderGroup();
     createVisibilityButton();
@@ -43,7 +44,7 @@ public final class CanvasTab extends ExampleTab {
   }
 
   @Override
-  protected void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( Composite parent ) {
     parent.setLayout( new FillLayout() );
     final Canvas canvas = new Canvas( parent, getStyle() );
     canvas.setLayout( new RowLayout( SWT.HORIZONTAL ) );
@@ -56,6 +57,7 @@ public final class CanvasTab extends ExampleTab {
         paintImages( event.display, event.gc );
         paintTexts( event.display, event.gc );
         paintPolylines( event.display, event.gc );
+        paintPath( event.display, event.gc );
       }
     } );
     canvas.redraw();
@@ -66,7 +68,7 @@ public final class CanvasTab extends ExampleTab {
     pushButton.setText( "Push Button" );
   }
 
-  private void paintLines( final Display display, final GC gc ) {
+  private void paintLines( Display display, GC gc ) {
     gc.drawLine( 30, 130, 400, 130 );
     gc.setLineWidth( 10 );
     gc.setForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
@@ -106,7 +108,7 @@ public final class CanvasTab extends ExampleTab {
     gc.setAlpha( 255 );
   }
 
-  private void paintRectangles( final Display display, final GC gc ) {
+  private void paintRectangles( Display display, GC gc ) {
     gc.setForeground( display.getSystemColor( SWT.COLOR_BLACK ) );
     gc.drawRectangle( 30, 160, 50, 50 );
     gc.setForeground( display.getSystemColor( SWT.COLOR_BLUE ) );
@@ -118,7 +120,7 @@ public final class CanvasTab extends ExampleTab {
     gc.fillGradientRectangle( 330, 160, 50, 50, false );
   }
 
-  private void paintArcs( final Display display, final GC gc ) {
+  private void paintArcs( Display display, GC gc ) {
     gc.setForeground( display.getSystemColor( SWT.COLOR_BLUE ) );
     gc.drawOval( 30, 220, 50, 25 );
     gc.setBackground( display.getSystemColor( SWT.COLOR_WHITE ) );
@@ -130,7 +132,7 @@ public final class CanvasTab extends ExampleTab {
     gc.fillOval( 210, 220, 50, 50 );
   }
 
-  private void paintImages( final Display display, final GC gc ) {
+  private void paintImages( Display display, GC gc ) {
     Image image = display.getSystemImage( SWT.ICON_INFORMATION );
     int width = image.getImageData().width;
     int height = image.getImageData().height;
@@ -149,7 +151,7 @@ public final class CanvasTab extends ExampleTab {
                   height + 4 );
   }
 
-  private void paintTexts( final Display display, final GC gc ) {
+  private void paintTexts( Display display, GC gc ) {
     gc.setForeground( display.getSystemColor( SWT.COLOR_WHITE ) );
     gc.drawString( "Hello RAP World!", 200, 280, false );
     Font font = new Font( display, "Arial, Verdana, Tahoma", 16, SWT.BOLD | SWT.ITALIC );
@@ -158,7 +160,7 @@ public final class CanvasTab extends ExampleTab {
     gc.drawText( "\tHello RAP World!\nAgain!", 200, 350, true );
   }
 
-  private void paintPolylines( final Display display, final GC gc ) {
+  private void paintPolylines( Display display, GC gc ) {
     int[] pointArray = new int[] {
       55, 340,
       80, 365,
@@ -181,4 +183,26 @@ public final class CanvasTab extends ExampleTab {
     };
     gc.drawPolyline( pointArray );
   }
+
+  private void paintPath( Display display, GC gc ) {
+    gc.setForeground( display.getSystemColor( SWT.COLOR_BLUE ) );
+    gc.setLineWidth( 5 );
+    Path path = new Path( display );
+    path.moveTo( 100, 420 );
+    path.lineTo( 200, 560 );
+    path.quadTo( 230, 600, 250, 520 );
+    path.cubicTo( 290, 360, 300, 600, 400, 550 );
+    path.lineTo( 500, 490 );
+    gc.drawPath( path );
+
+    gc.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
+    gc.setForeground( display.getSystemColor( SWT.COLOR_RED ) );
+    path = new Path( display );
+    path.moveTo( 30, 430 );
+    path.lineTo( 150, 550 );
+    path.cubicTo( 60, 470, 60, 470, 70, 550 );
+    path.close();
+    gc.fillPath( path );
+  }
+
 }

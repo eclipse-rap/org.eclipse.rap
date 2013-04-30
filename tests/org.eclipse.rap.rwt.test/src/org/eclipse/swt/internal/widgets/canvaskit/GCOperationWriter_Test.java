@@ -26,6 +26,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.internal.graphics.GCOperation;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
@@ -260,7 +261,7 @@ public class GCOperationWriter_Test {
   }
 
   @Test
-  public void testfillPolygon() {
+  public void testFillPolygon() {
     gc.setLineWidth( 2 );
     gc.fillPolygon( new int[]{ 10, 20, 30, 40, 50, 60, 90, 100 } );
 
@@ -563,6 +564,50 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertTrue( getOperation( 0, ops ).contains( "drawImage" ) );
+  }
+
+  @Test
+  public void testDrawPath() {
+    Path path = new Path( display );
+    path.lineTo( 10, 10 );
+    path.moveTo( 20, 20 );
+    path.quadTo( 25, 25, 30, 20 );
+    path.cubicTo( 55, 55, 65, 55, 70, 40 );
+    path.close();
+
+    gc.drawPath( path );
+
+    JsonArray ops = getGCOperations( canvas );
+    assertEquals( "[\"beginPath\"]", getOperation( 0, ops ) );
+    assertEquals( "[\"moveTo\",0,0]", getOperation( 1, ops ) );
+    assertEquals( "[\"lineTo\",10,10]", getOperation( 2, ops ) );
+    assertEquals( "[\"moveTo\",20,20]", getOperation( 3, ops ) );
+    assertEquals( "[\"quadraticCurveTo\",25,25,30,20]", getOperation( 4, ops ) );
+    assertEquals( "[\"bezierCurveTo\",55,55,65,55,70,40]", getOperation( 5, ops ) );
+    assertEquals( "[\"closePath\"]", getOperation( 6, ops ) );
+    assertEquals( "[\"stroke\"]", getOperation( 7, ops ) );
+  }
+
+  @Test
+  public void testFillPath() {
+    Path path = new Path( display );
+    path.lineTo( 10, 10 );
+    path.moveTo( 20, 20 );
+    path.quadTo( 25, 25, 30, 20 );
+    path.cubicTo( 55, 55, 65, 55, 70, 40 );
+    path.close();
+
+    gc.fillPath( path );
+
+    JsonArray ops = getGCOperations( canvas );
+    assertEquals( "[\"beginPath\"]", getOperation( 0, ops ) );
+    assertEquals( "[\"moveTo\",0,0]", getOperation( 1, ops ) );
+    assertEquals( "[\"lineTo\",10,10]", getOperation( 2, ops ) );
+    assertEquals( "[\"moveTo\",20,20]", getOperation( 3, ops ) );
+    assertEquals( "[\"quadraticCurveTo\",25,25,30,20]", getOperation( 4, ops ) );
+    assertEquals( "[\"bezierCurveTo\",55,55,65,55,70,40]", getOperation( 5, ops ) );
+    assertEquals( "[\"closePath\"]", getOperation( 6, ops ) );
+    assertEquals( "[\"fill\"]", getOperation( 7, ops ) );
   }
 
   private static JsonArray getGCOperations( Canvas canvas ) {

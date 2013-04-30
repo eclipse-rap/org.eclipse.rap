@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -785,8 +785,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawLine( int x1, int y1, int x2, int y2 )
-  {
+  public void drawLine( int x1, int y1, int x2, int y2 ) {
     checkDisposed();
     delegate.drawLine( x1, y1, x2, y2 );
   }
@@ -829,8 +828,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawRectangle( int x, int y, int width, int height )
-  {
+  public void drawRectangle( int x, int y, int width, int height ) {
     checkDisposed();
     drawRectangle( x, y, width, height, 0, 0, false );
   }
@@ -852,8 +850,7 @@ public class GC extends Resource {
    *
    * @see #drawRectangle(int, int, int, int)
    */
-  public void drawFocus( int x, int y, int width, int height )
-  {
+  public void drawFocus( int x, int y, int width, int height ) {
     drawRectangle( x, y, width, height );
   }
 
@@ -919,8 +916,7 @@ public class GC extends Resource {
    *
    * @see #drawRectangle(int, int, int, int)
    */
-  public void fillGradientRectangle( int x, int y, int width, int height, boolean vertical )
-  {
+  public void fillGradientRectangle( int x, int y, int width, int height, boolean vertical ) {
     checkDisposed();
     if( width != 0 && height != 0 ) {
       if( delegate.getBackground().equals( delegate.getForeground() ) ) {
@@ -1340,8 +1336,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawString( String string, int x, int y, boolean isTransparent )
-  {
+  public void drawString( String string, int x, int y, boolean isTransparent ) {
     int flags = isTransparent ? SWT.DRAW_TRANSPARENT : SWT.NONE;
     drawText( string, x, y, flags );
   }
@@ -1438,6 +1433,74 @@ public class GC extends Resource {
     if( string.length() != 0 ) {
       delegate.drawText( string, x, y, flags );
     }
+  }
+
+  /**
+   * Draws the path described by the parameter.
+   * <p>
+   * This operation requires the operating system's advanced
+   * graphics subsystem which may not be available on some
+   * platforms.
+   * </p>
+   *
+   * @param path the path to draw
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parameter is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the parameter has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_NO_GRAPHICS_LIBRARY - if advanced graphics are not available</li>
+   * </ul>
+   *
+   * @see Path
+   *
+   * @since 2.1
+   */
+  public void drawPath( Path path ) {
+    checkDisposed();
+    if( path == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( path.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    delegate.drawPath( path, false );
+  }
+
+  /**
+   * Fills the path described by the parameter.
+   * <p>
+   * This operation requires the operating system's advanced
+   * graphics subsystem which may not be available on some
+   * platforms.
+   * </p>
+   *
+   * @param path the path to fill
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parameter is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the parameter has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_NO_GRAPHICS_LIBRARY - if advanced graphics are not available</li>
+   * </ul>
+   *
+   * @see Path
+   *
+   * @since 2.1
+   */
+  public void fillPath( Path path ) {
+    checkDisposed();
+    if( path == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( path.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    delegate.drawPath( path, true );
   }
 
   /**
@@ -1547,4 +1610,5 @@ public class GC extends Resource {
   void writeObject( ObjectOutputStream stream ) throws IOException {
     throw new NotSerializableException( getClass().getName() );
   }
+
 }

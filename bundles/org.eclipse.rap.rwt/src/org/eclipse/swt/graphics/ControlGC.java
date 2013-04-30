@@ -19,6 +19,7 @@ import org.eclipse.swt.internal.graphics.GCOperation;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawArc;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawImage;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawLine;
+import org.eclipse.swt.internal.graphics.GCOperation.DrawPath;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawPoint;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawPolyline;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawRectangle;
@@ -215,6 +216,13 @@ class ControlGC extends GCDelegate {
     addGCOperation( operation );
   }
 
+  @Override
+  void drawPath( Path path, boolean fill ) {
+    PathData pathData = path.getPathData();
+    GCOperation operation = new DrawPath( pathData.types, pathData.points, fill );
+    addGCOperation( operation );
+  }
+
   GCAdapter getGCAdapter() {
     return ( GCAdapter )control.getAdapter( IGCAdapter.class );
   }
@@ -231,4 +239,5 @@ class ControlGC extends GCDelegate {
     result.setLocale( fontData.getLocale() );
     return result;
   }
+
 }

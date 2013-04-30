@@ -782,6 +782,46 @@ public class GC_Test {
     assertSame( color, gc.getForeground() );
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void testDrawPath_withNullArgument() {
+    gc.drawPath( null );
+  }
+
+  @Test(expected = SWTException.class)
+  public void testDrawPath_withDisposedGC() {
+    gc.dispose();
+
+    gc.drawPath( new Path( display ) );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testDrawPath_withDisposedPath() {
+    Path path = new Path( display );
+    path.dispose();
+
+    gc.drawPath( path );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testFillPath_withNullArgument() {
+    gc.fillPath( null );
+  }
+
+  @Test(expected = SWTException.class)
+  public void testFillPath_withDisposedGC() {
+    gc.dispose();
+
+    gc.fillPath( new Path( display ) );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testFillPath_withDisposedPath() {
+    Path path = new Path( display );
+    path.dispose();
+
+    gc.fillPath( path );
+  }
+
   private Image createImage() throws IOException {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );

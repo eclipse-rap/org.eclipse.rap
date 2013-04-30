@@ -161,4 +161,9 @@ class DeviceGC extends GCDelegate {
   @Override
   void drawText( String string, int x, int y, int flags ) {
   }
+
+  @Override
+  void drawPath( Path path, boolean fill ) {
+  }
+
 }
