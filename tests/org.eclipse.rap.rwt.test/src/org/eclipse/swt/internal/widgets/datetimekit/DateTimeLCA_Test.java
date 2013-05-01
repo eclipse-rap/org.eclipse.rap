@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -316,7 +317,7 @@ public class DateTimeLCA_Test {
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( dateTime, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( dateTime, "Selection" ) );
   }
 
   @Test
@@ -332,7 +333,7 @@ public class DateTimeLCA_Test {
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( dateTime, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( dateTime, "Selection" ) );
   }
 
   @Test
@@ -369,7 +370,7 @@ public class DateTimeLCA_Test {
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 2000 ), message.findSetProperty( dateTime, "year" ) );
+    assertEquals( 2000, message.findSetProperty( dateTime, "year" ).asInt() );
   }
 
   @Test
@@ -406,7 +407,7 @@ public class DateTimeLCA_Test {
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 2 ), message.findSetProperty( dateTime, "month" ) );
+    assertEquals( 2, message.findSetProperty( dateTime, "month" ).asInt() );
   }
 
   @Test
@@ -443,7 +444,7 @@ public class DateTimeLCA_Test {
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 3 ), message.findSetProperty( dateTime, "day" ) );
+    assertEquals( 3, message.findSetProperty( dateTime, "day" ).asInt() );
   }
 
   @Test
@@ -514,7 +515,7 @@ public class DateTimeLCA_Test {
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 10 ), message.findSetProperty( dateTime, "hours" ) );
+    assertEquals( 10, message.findSetProperty( dateTime, "hours" ).asInt() );
   }
 
   @Test
@@ -550,7 +551,7 @@ public class DateTimeLCA_Test {
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 10 ), message.findSetProperty( dateTime, "minutes" ) );
+    assertEquals( 10, message.findSetProperty( dateTime, "minutes" ).asInt() );
   }
 
   @Test
@@ -586,7 +587,7 @@ public class DateTimeLCA_Test {
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 10 ), message.findSetProperty( dateTime, "seconds" ) );
+    assertEquals( 10, message.findSetProperty( dateTime, "seconds" ).asInt() );
   }
 
   @Test
@@ -657,7 +658,7 @@ public class DateTimeLCA_Test {
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 2000 ), message.findSetProperty( dateTime, "year" ) );
+    assertEquals( 2000, message.findSetProperty( dateTime, "year" ).asInt() );
   }
 
   @Test
@@ -694,7 +695,7 @@ public class DateTimeLCA_Test {
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 2 ), message.findSetProperty( dateTime, "month" ) );
+    assertEquals( 2, message.findSetProperty( dateTime, "month" ).asInt() );
   }
 
   @Test
@@ -731,7 +732,7 @@ public class DateTimeLCA_Test {
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 3 ), message.findSetProperty( dateTime, "day" ) );
+    assertEquals( 3, message.findSetProperty( dateTime, "day" ).asInt() );
   }
 
   @Test
@@ -747,4 +748,5 @@ public class DateTimeLCA_Test {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( dateTime, "day" ) );
   }
+
 }

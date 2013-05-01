@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -21,7 +22,6 @@ import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -87,11 +87,11 @@ public class CanvasLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation canvasCreate = message.findCreateOperation( canvas );
     assertEquals( "rwt.widgets.Canvas", canvasCreate.getType() );
-    assertEquals( WidgetUtil.getId( shell ), canvasCreate.getProperty( "parent" ) );
-    String canvasId = WidgetUtil.getId( canvas );
+    assertEquals( getId( shell ), canvasCreate.getProperty( "parent" ).asString() );
+    String canvasId = getId( canvas );
     CreateOperation gcCreate = message.findCreateOperation( getGcId( canvas ) );
     assertEquals( "rwt.widgets.GC", gcCreate.getType() );
-    assertEquals( canvasId, gcCreate.getProperty( "parent" ) );
+    assertEquals( canvasId, gcCreate.getProperty( "parent" ).asString() );
   }
 
   @Test
@@ -107,8 +107,8 @@ public class CanvasLCA_Test {
     new CanvasLCA().renderChanges( canvas );
 
     CallOperation init = getGCOperation( canvas, "init" );
-    assertEquals( new Integer( 50 ), init.getProperty( "width" ) );
-    assertEquals( new Integer( 50 ), init.getProperty( "height" ) );
+    assertEquals( 50, init.getProperty( "width" ).asInt() );
+    assertEquals( 50, init.getProperty( "height" ).asInt() );
     JsonArray expectedFont = JsonArray.readFrom( "[[\"Arial\"], 11, false, false]" );
     assertEquals( expectedFont, init.getProperty( "font" ) );
     JsonArray expectedFillStyle = JsonArray.readFrom( "[255, 255, 255, 255]" );
@@ -116,8 +116,7 @@ public class CanvasLCA_Test {
     JsonArray expectedStrokeStyle = JsonArray.readFrom( "[74, 74, 74, 255]" );
     assertEquals( expectedStrokeStyle, init.getProperty( "strokeStyle" ) );
     CallOperation draw = getGCOperation( canvas, "draw" );
-    JsonArray operations = ( JsonArray )draw.getProperty( "operations" );
-    assertEquals( 4, operations.size() );
+    assertEquals( 4, draw.getProperty( "operations" ).asArray().size() );
   }
 
   @Test
@@ -134,8 +133,7 @@ public class CanvasLCA_Test {
     new CanvasLCA().renderChanges( canvas );
 
     CallOperation draw = getGCOperation( canvas, "draw" );
-    JsonArray operations = ( JsonArray )draw.getProperty( "operations" );
-    assertEquals( 8, operations.size() );
+    assertEquals( 8, draw.getProperty( "operations" ).asArray().size() );
   }
 
   // see bug 323080
@@ -180,8 +178,7 @@ public class CanvasLCA_Test {
     new CanvasLCA().renderChanges( canvas );
 
     CallOperation draw = getGCOperation( canvas, "draw" );
-    JsonArray operations = ( JsonArray )draw.getProperty( "operations" );
-    assertEquals( 8, operations.size() );
+    assertEquals( 8, draw.getProperty( "operations" ).asArray().size() );
     assertEquals( 0, adapter.getGCOperations().length );
   }
 
@@ -247,11 +244,10 @@ public class CanvasLCA_Test {
     new CanvasLCA().renderChanges( canvas );
 
     CallOperation init = getGCOperation( canvas, "init" );
-    assertEquals( new Integer( 150 ), init.getProperty( "width" ) );
-    assertEquals( new Integer( 150 ), init.getProperty( "height" ) );
+    assertEquals( 150, init.getProperty( "width" ).asInt() );
+    assertEquals( 150, init.getProperty( "height" ).asInt() );
     CallOperation draw = getGCOperation( canvas, "draw" );
-    JsonArray operations = ( JsonArray )draw.getProperty( "operations" );
-    assertEquals( 8, operations.size() );
+    assertEquals( 8, draw.getProperty( "operations" ).asArray().size() );
   }
 
   @Test
@@ -274,8 +270,7 @@ public class CanvasLCA_Test {
     new CanvasLCA().renderChanges( canvas );
 
     CallOperation draw = getGCOperation( canvas, "draw" );
-    JsonArray operations = ( JsonArray )draw.getProperty( "operations" );
-    assertEquals( 8, operations.size() );
+    assertEquals( 8, draw.getProperty( "operations" ).asArray().size() );
   }
 
   @Test

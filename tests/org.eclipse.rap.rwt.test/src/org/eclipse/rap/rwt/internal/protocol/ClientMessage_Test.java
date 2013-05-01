@@ -12,10 +12,8 @@ package org.eclipse.rap.rwt.internal.protocol;
 
 import static org.junit.Assert.*;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
+import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
@@ -174,7 +172,7 @@ public class ClientMessage_Test {
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "p1" );
 
-    assertEquals( "bar", operation.getProperty( "p1" ) );
+    assertEquals( "bar", operation.getProperty( "p1" ).asString() );
   }
 
   @Test
@@ -268,8 +266,8 @@ public class ClientMessage_Test {
     List<CallOperation> operations = message.getAllCallOperationsFor( "w4", "foo" );
 
     assertEquals( 2, operations.size() );
-    assertEquals( "abc", operations.get( 0 ).getProperty( "p1" ) );
-    assertEquals( "def", operations.get( 1 ).getProperty( "p2" ) );
+    assertEquals( "abc", operations.get( 0 ).getProperty( "p1" ).asString() );
+    assertEquals( "def", operations.get( 1 ).getProperty( "p2" ).asString() );
   }
 
   @Test
@@ -335,7 +333,7 @@ public class ClientMessage_Test {
 
     assertEquals( "w3", operation.getTarget() );
     assertEquals( "store", operation.getMethodName() );
-    assertEquals( Integer.valueOf( 123 ), operation.getProperty( "id" ) );
+    assertEquals( 123, operation.getProperty( "id" ).asInt() );
   }
 
   @Test
@@ -373,8 +371,8 @@ public class ClientMessage_Test {
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
 
-    Integer[] extected = new Integer[] { Integer.valueOf( 1 ),  Integer.valueOf( 2 ) };
-    assertTrue( Arrays.equals( extected, ( Object[] )operation.getProperty( "result" ) ) );
+    JsonArray expected = new JsonArray().add( 1 ).add( 2 );
+    assertEquals( expected, operation.getProperty( "result" ) );
   }
 
   @Test
@@ -386,12 +384,8 @@ public class ClientMessage_Test {
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
 
-    Object[] extected = new Object[] {
-      Integer.valueOf( 1 ),
-      "foo",
-      Integer.valueOf( 3 ),
-      Integer.valueOf( 4 ) };
-    assertTrue( Arrays.equals( extected, ( Object[] )operation.getProperty( "result" ) ) );
+    JsonArray expected = new JsonArray().add( 1 ).add( "foo" ).add( 3 ).add( 4 );
+    assertEquals( expected, operation.getProperty( "result" ) );
   }
 
   @Test
@@ -403,11 +397,9 @@ public class ClientMessage_Test {
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
 
-    Object value = operation.getProperty( "result" );
-    assertTrue( value instanceof Map );
-    Map map = ( Map )value;
-    assertEquals( "foo", map.get( "p1" ) );
-    assertEquals( "bar", map.get( "p2" ) );
+    JsonObject value = operation.getProperty( "result" ).asObject();
+    assertEquals( "foo", value.get( "p1" ).asString() );
+    assertEquals( "bar", value.get( "p2" ).asString() );
   }
 
   @Test
@@ -419,12 +411,9 @@ public class ClientMessage_Test {
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
 
-    Object value = operation.getProperty( "result" );
-    assertTrue( value instanceof Map );
-    Map map = ( Map )value;
-    Integer[] extected = new Integer[] { Integer.valueOf( 1 ),  Integer.valueOf( 2 ) };
-    assertTrue( Arrays.equals( extected, ( Object[] )map.get( "p1" ) ) );
-    assertEquals( "bar", map.get( "p2" ) );
+    JsonObject value = operation.getProperty( "result" ).asObject();
+    assertEquals( new JsonArray().add( 1 ).add( 2 ), value.get( "p1" ) );
+    assertEquals( "bar", value.get( "p2" ).asString() );
   }
 
   @Test

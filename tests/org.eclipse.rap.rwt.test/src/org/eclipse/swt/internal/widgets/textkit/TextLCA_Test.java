@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -347,7 +348,7 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( text, "Modify" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( text, "Modify" ) );
   }
 
   @Test
@@ -445,7 +446,7 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "test", message.findSetProperty( text, "message" ) );
+    assertEquals( "test", message.findSetProperty( text, "message" ).asString() );
   }
 
   @Test
@@ -468,7 +469,7 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "?", message.findSetProperty( text, "echoChar" ) );
+    assertEquals( "?", message.findSetProperty( text, "echoChar" ).asString() );
   }
 
   @Test
@@ -495,7 +496,7 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "*", message.findSetProperty( text, "echoChar" ) );
+    assertEquals( "*", message.findSetProperty( text, "echoChar" ).asString() );
   }
 
   @Test
@@ -525,7 +526,7 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findSetProperty( text, "editable" ) );
+    assertEquals( JsonValue.FALSE, message.findSetProperty( text, "editable" ) );
   }
 
   @Test
@@ -609,7 +610,7 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 10 ), message.findSetProperty( text, "textLimit" ) );
+    assertEquals( 10, message.findSetProperty( text, "textLimit" ).asInt() );
   }
 
   @Test
@@ -663,7 +664,7 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( text, "DefaultSelection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( text, "DefaultSelection" ) );
     assertNull( message.findListenOperation( text, "Selection" ) );
   }
 
@@ -679,7 +680,7 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( text, "DefaultSelection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( text, "DefaultSelection" ) );
     assertNull( message.findListenOperation( text, "Selection" ) );
   }
 
@@ -707,7 +708,7 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( text, "Modify" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( text, "Modify" ) );
   }
 
   @Test
@@ -722,7 +723,7 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( text, "Modify" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( text, "Modify" ) );
   }
 
   @Test
@@ -749,7 +750,7 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( text, "Modify" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( text, "Modify" ) );
   }
 
   @Test
@@ -764,7 +765,7 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( text, "Modify" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( text, "Modify" ) );
   }
 
   @Test
@@ -795,7 +796,7 @@ public class TextLCA_Test {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "test", message.findSetProperty( text, "text" ) );
+    assertEquals( "test", message.findSetProperty( text, "text" ).asString() );
   }
 
   @Test

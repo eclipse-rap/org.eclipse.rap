@@ -198,8 +198,8 @@ public class Message_Test {
     CallOperation operation = ( CallOperation )getMessage().getOperation( 0 );
     assertEquals( "w2", operation.getTarget() );
     assertEquals( "method", operation.getMethodName() );
-    assertEquals( "a", operation.getProperty( "key1" ) );
-    assertEquals( new Integer( 2 ), operation.getProperty( "key2" ) );
+    assertEquals( "a", operation.getProperty( "key1" ).asString() );
+    assertEquals( 2, operation.getProperty( "key2" ).asInt() );
   }
 
   @Test
@@ -209,8 +209,8 @@ public class Message_Test {
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
     assertEquals( "w1", operation.getTarget() );
-    assertEquals( Boolean.TRUE, operation.getProperty( "key" ) );
-    assertEquals( "value", operation.getProperty( "key2" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperty( "key" ) );
+    assertEquals( JsonValue.valueOf( "value" ), operation.getProperty( "key2" ) );
   }
 
   @Test
@@ -251,7 +251,7 @@ public class Message_Test {
     Message message = getMessage();
 
     SetOperation operation = message.findSetOperation( "w1", "key" );
-    assertEquals( Boolean.TRUE, operation.getProperty( "key" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperty( "key" ) );
   }
 
   @Test
@@ -270,7 +270,7 @@ public class Message_Test {
 
     Message message = getMessage();
 
-    assertEquals( Boolean.TRUE, message.findSetProperty( "w1", "key" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( "w1", "key" ) );
   }
 
   @Test
@@ -300,7 +300,7 @@ public class Message_Test {
     Message message = getMessage();
 
     ListenOperation operation = message.findListenOperation( "w1", "key" );
-    assertEquals( Boolean.TRUE, operation.getProperty( "key" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperty( "key" ) );
   }
 
   @Test
@@ -319,7 +319,7 @@ public class Message_Test {
 
     Message message = getMessage();
 
-    assertEquals( Boolean.TRUE, message.findListenProperty( "w1", "key" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( "w1", "key" ) );
   }
 
   @Test
@@ -352,7 +352,7 @@ public class Message_Test {
     CreateOperation operation = message.findCreateOperation( "w2" );
     assertEquals( "w2", operation.getTarget() );
     assertEquals( "myType", operation.getType() );
-    assertEquals( Boolean.TRUE, operation.getProperty( "key" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperty( "key" ) );
   }
 
   @Test
@@ -371,7 +371,7 @@ public class Message_Test {
 
     Message message = getMessage();
 
-    assertEquals( Boolean.TRUE, message.findCreateProperty( "w2", "key" ) );
+    assertEquals( JsonValue.TRUE, message.findCreateProperty( "w2", "key" ) );
   }
 
   @Test
@@ -421,21 +421,8 @@ public class Message_Test {
     writer.appendSet( "w1", "foo", 23 );
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
 
-    assertEquals( Integer.valueOf( 23 ), operation.getProperty( "foo" ) );
+    assertEquals( 23, operation.getProperty( "foo" ).asInt() );
   }
-
-  @Test
-  public void testOperationGetPropertyWithNonExistingValue() {
-    writer.appendSet( "w1", "foo", 23 );
-
-    SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
-    try {
-      operation.getProperty( "bar" );
-      fail();
-    } catch ( IllegalStateException expected ) {
-    }
-  }
-
 
   @Test
   public void testNonExistingOperation() {

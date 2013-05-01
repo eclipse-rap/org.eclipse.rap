@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -232,7 +233,7 @@ public class ScaleLCA_Test {
     lca.renderChanges( scale );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 10 ), message.findSetProperty( scale, "minimum" ) );
+    assertEquals( 10, message.findSetProperty( scale, "minimum" ).asInt() );
   }
 
   @Test
@@ -263,7 +264,7 @@ public class ScaleLCA_Test {
     lca.renderChanges( scale );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 10 ), message.findSetProperty( scale, "maximum" ) );
+    assertEquals( 10, message.findSetProperty( scale, "maximum" ).asInt() );
   }
 
   @Test
@@ -294,7 +295,7 @@ public class ScaleLCA_Test {
     lca.renderChanges( scale );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 10 ), message.findSetProperty( scale, "selection" ) );
+    assertEquals( 10, message.findSetProperty( scale, "selection" ).asInt() );
   }
 
   @Test
@@ -325,7 +326,7 @@ public class ScaleLCA_Test {
     lca.renderChanges( scale );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 2 ), message.findSetProperty( scale, "increment" ) );
+    assertEquals( 2, message.findSetProperty( scale, "increment" ).asInt() );
   }
 
   @Test
@@ -356,7 +357,7 @@ public class ScaleLCA_Test {
     lca.renderChanges( scale );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 20 ), message.findSetProperty( scale, "pageIncrement" ) );
+    assertEquals( 20, message.findSetProperty( scale, "pageIncrement" ).asInt() );
   }
 
   @Test
@@ -382,7 +383,7 @@ public class ScaleLCA_Test {
     lca.renderChanges( scale );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( scale, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( scale, "Selection" ) );
     assertNull( message.findListenOperation( scale, "DefaultSelection" ) );
   }
 
@@ -398,7 +399,7 @@ public class ScaleLCA_Test {
     lca.renderChanges( scale );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( scale, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( scale, "Selection" ) );
     assertNull( message.findListenOperation( scale, "DefaultSelection" ) );
   }
 
@@ -424,4 +425,5 @@ public class ScaleLCA_Test {
     parameters.put( ClientMessageConst.EVENT_PARAM_TIME, Integer.valueOf( 0 ) );
     Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_MOUSE_DOWN, parameters );
   }
+
 }

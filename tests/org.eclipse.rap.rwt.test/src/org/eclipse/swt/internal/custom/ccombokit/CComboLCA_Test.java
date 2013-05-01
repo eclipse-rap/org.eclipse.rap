@@ -24,6 +24,7 @@ import java.util.Arrays;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -345,7 +346,7 @@ public class CComboLCA_Test {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 0 ), message.findSetProperty( ccombo, PROP_SELECTION_INDEX ) );
+    assertEquals( 0, message.findSetProperty( ccombo, PROP_SELECTION_INDEX ).asInt() );
   }
 
   @Test
@@ -355,7 +356,7 @@ public class CComboLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( ccombo );
     assertEquals( "rwt.widgets.Combo", operation.getType() );
-    assertEquals( Boolean.TRUE, operation.getProperty( "ccombo" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperty( "ccombo" ) );
   }
 
   @Test
@@ -394,7 +395,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 22 ), message.findSetProperty( ccombo, "itemHeight" ) );
+    assertEquals( 22, message.findSetProperty( ccombo, "itemHeight" ).asInt() );
   }
 
   @Test
@@ -425,7 +426,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 10 ), message.findSetProperty( ccombo, "visibleItemCount" ) );
+    assertEquals( 10, message.findSetProperty( ccombo, "visibleItemCount" ).asInt() );
   }
 
   @Test
@@ -488,7 +489,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( ccombo, "listVisible" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( ccombo, "listVisible" ) );
   }
 
   @Test
@@ -521,7 +522,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 1 ), message.findSetProperty( ccombo, "selectionIndex" ) );
+    assertEquals( 1, message.findSetProperty( ccombo, "selectionIndex" ).asInt() );
   }
 
   @Test
@@ -553,7 +554,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findSetProperty( ccombo, "editable" ) );
+    assertEquals( JsonValue.FALSE, message.findSetProperty( ccombo, "editable" ) );
   }
 
   @Test
@@ -584,7 +585,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( ccombo, "text" ) );
+    assertEquals( "foo", message.findSetProperty( ccombo, "text" ).asString() );
   }
 
   @Test
@@ -595,7 +596,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( ccombo, "text" ) );
+    assertEquals( "foo", message.findSetProperty( ccombo, "text" ).asString() );
   }
 
   @Test
@@ -606,7 +607,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( ccombo, "text" ) );
+    assertEquals( "foo", message.findSetProperty( ccombo, "text" ).asString() );
   }
 
   @Test
@@ -672,7 +673,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 10 ), message.findSetProperty( ccombo, "textLimit" ) );
+    assertEquals( 10, message.findSetProperty( ccombo, "textLimit" ).asInt() );
   }
 
   @Test
@@ -740,7 +741,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( ccombo, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( ccombo, "Selection" ) );
     assertNull( message.findListenOperation( ccombo, "DefaultSelection" ) );
   }
 
@@ -754,7 +755,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( ccombo, "DefaultSelection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( ccombo, "DefaultSelection" ) );
     assertNull( message.findListenOperation( ccombo, "Selection" ) );
   }
 
@@ -770,7 +771,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( ccombo, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( ccombo, "Selection" ) );
   }
 
   @Test
@@ -785,7 +786,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( ccombo, "DefaultSelection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( ccombo, "DefaultSelection" ) );
   }
 
   @Test
@@ -815,7 +816,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( ccombo, "Modify" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( ccombo, "Modify" ) );
   }
 
   @Test
@@ -833,7 +834,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( ccombo, "Modify" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( ccombo, "Modify" ) );
   }
 
   @Test
@@ -866,7 +867,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( ccombo, "Modify" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( ccombo, "Modify" ) );
   }
 
   @Test
@@ -884,7 +885,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( ccombo, "Modify" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( ccombo, "Modify" ) );
   }
 
   @Test
@@ -909,4 +910,5 @@ public class CComboLCA_Test {
     Fixture.fakeSetParameter( getId( ccombo ), "selectionStart", Integer.valueOf( start ) );
     Fixture.fakeSetParameter( getId( ccombo ), "selectionLength", Integer.valueOf( length ) );
   }
+
 }

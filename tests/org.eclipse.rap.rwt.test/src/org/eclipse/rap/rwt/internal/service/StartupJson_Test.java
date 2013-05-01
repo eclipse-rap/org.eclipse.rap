@@ -66,7 +66,7 @@ public class StartupJson_Test {
     String content = StartupJson.get();
 
     Message message = new Message( content );
-    assertEquals( "rap", message.findHeadProperty( PROPERTY_URL ) );
+    assertEquals( "rap", message.getHead().get( PROPERTY_URL ).asString() );
   }
 
   @Test
@@ -88,7 +88,7 @@ public class StartupJson_Test {
       = message.findCallOperation( THEME_STORE_TYPE, METHOD_LOAD_FALLBACK_THEME );
     assertNotNull( operation );
     String expected = "rwt-resources/rap-rwt.theme.Fallback.json";
-    assertEquals( expected, operation.getProperty( PROPERTY_URL ) );
+    assertEquals( expected, operation.getProperty( PROPERTY_URL ).asString() );
   }
 
   @Test
@@ -102,7 +102,7 @@ public class StartupJson_Test {
       = message.findCallOperation( THEME_STORE_TYPE, METHOD_LOAD_ACTIVE_THEME );
     assertNotNull( operation );
     String expected = "rwt-resources/rap-rwt.theme.Default.json";
-    assertEquals( expected, operation.getProperty( PROPERTY_URL ) );
+    assertEquals( expected, operation.getProperty( PROPERTY_URL ).asString() );
   }
 
   @Test
@@ -120,7 +120,7 @@ public class StartupJson_Test {
       = message.findCallOperation( THEME_STORE_TYPE, METHOD_LOAD_ACTIVE_THEME );
     assertNotNull( operation );
     String expected = "rwt-resources/rap-rwt.theme.Custom_1465393d.json";
-    assertEquals( expected, operation.getProperty( PROPERTY_URL ) );
+    assertEquals( expected, operation.getProperty( PROPERTY_URL ).asString() );
   }
 
   @Test

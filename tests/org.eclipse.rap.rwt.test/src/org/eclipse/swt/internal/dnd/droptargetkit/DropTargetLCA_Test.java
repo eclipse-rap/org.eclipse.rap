@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.droptargetkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -18,8 +19,8 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -71,7 +72,7 @@ public class DropTargetLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( target );
     assertEquals( "rwt.widgets.DropTarget", operation.getType() );
-    assertEquals( WidgetUtil.getId( control ), operation.getProperty( "control" ) );
+    assertEquals( getId( control ), operation.getProperty( "control" ).asString() );
     JsonArray expected = new JsonArray().add( "DROP_COPY" ).add( "DROP_MOVE" );
     assertEquals( expected, operation.getProperty( "style" ) );
   }
@@ -138,11 +139,11 @@ public class DropTargetLCA_Test {
     lca.renderChanges( target );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( target, "DragEnter" ) );
-    assertEquals( Boolean.TRUE, message.findListenProperty( target, "DragOver" ) );
-    assertEquals( Boolean.TRUE, message.findListenProperty( target, "DragLeave" ) );
-    assertEquals( Boolean.TRUE, message.findListenProperty( target, "DragOperationChanged" ) );
-    assertEquals( Boolean.TRUE, message.findListenProperty( target, "DropAccept" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( target, "DragEnter" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( target, "DragOver" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( target, "DragLeave" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( target, "DragOperationChanged" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( target, "DropAccept" ) );
   }
 
   @Test
@@ -158,11 +159,11 @@ public class DropTargetLCA_Test {
     lca.renderChanges( target );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( target, "DragEnter" ) );
-    assertEquals( Boolean.FALSE, message.findListenProperty( target, "DragOver" ) );
-    assertEquals( Boolean.FALSE, message.findListenProperty( target, "DragLeave" ) );
-    assertEquals( Boolean.FALSE, message.findListenProperty( target, "DragOperationChanged" ) );
-    assertEquals( Boolean.FALSE, message.findListenProperty( target, "DropAccept" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( target, "DragEnter" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( target, "DragOver" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( target, "DragLeave" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( target, "DragOperationChanged" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( target, "DropAccept" ) );
   }
 
   @Test

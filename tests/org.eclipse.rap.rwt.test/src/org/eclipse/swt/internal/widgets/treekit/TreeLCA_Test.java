@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -705,11 +706,11 @@ public class TreeLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
     assertEquals( "rwt.widgets.Grid", operation.getType() );
-    assertEquals( "tree", operation.getProperty( "appearance" ) );
-    assertEquals( Integer.valueOf( 16 ), operation.getProperty( "indentionWidth" ) );
+    assertEquals( "tree", operation.getProperty( "appearance" ).asString() );
+    assertEquals( 16, operation.getProperty( "indentionWidth" ).asInt() );
     assertEquals( JsonArray.readFrom( "[3, 5]" ), operation.getProperty( "selectionPadding" ) );
     assertFalse( operation.getPropertyNames().contains( "checkBoxMetrics" ) );
-    assertEquals( Boolean.FALSE, operation.getProperty( "markupEnabled" ) );
+    assertEquals( JsonValue.FALSE, operation.getProperty( "markupEnabled" ) );
   }
 
   @Test
@@ -720,7 +721,7 @@ public class TreeLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertEquals( Boolean.TRUE, operation.getProperty( "splitContainer" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperty( "splitContainer" ) );
   }
 
   @Test
@@ -745,7 +746,7 @@ public class TreeLCA_Test {
     assertTrue( Arrays.asList( styles ).contains( "VIRTUAL" ) );
     assertTrue( Arrays.asList( styles ).contains( "NO_SCROLL" ) );
     assertTrue( Arrays.asList( styles ).contains( "MULTI" ) );
-    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "SetData" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( tree, "SetData" ) );
   }
 
   @Test
@@ -815,7 +816,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 10 ), message.findSetProperty( tree, "itemCount" ) );
+    assertEquals( 10, message.findSetProperty( tree, "itemCount" ).asInt() );
   }
 
   @Test
@@ -847,7 +848,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 39 ), message.findSetProperty( tree, "itemHeight" ) );
+    assertEquals( 39, message.findSetProperty( tree, "itemHeight" ).asInt() );
   }
 
   @Test
@@ -913,7 +914,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( tree, "columnCount" ) );
+    assertEquals( 1, message.findSetProperty( tree, "columnCount" ).asInt() );
   }
 
   @Test
@@ -946,7 +947,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( tree, "fixedColumns" ) );
+    assertEquals( 1, message.findSetProperty( tree, "fixedColumns" ).asInt() );
   }
 
   @Test
@@ -984,7 +985,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( tree, "treeColumn" ) );
+    assertEquals( 1, message.findSetProperty( tree, "treeColumn" ).asInt() );
   }
 
   @Test
@@ -1017,7 +1018,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 31 ), message.findSetProperty( tree, "headerHeight" ) );
+    assertEquals( 31, message.findSetProperty( tree, "headerHeight" ).asInt() );
   }
 
   @Test
@@ -1048,7 +1049,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( tree, "headerVisible" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( tree, "headerVisible" ) );
   }
 
   @Test
@@ -1079,7 +1080,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( tree, "linesVisible" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( tree, "linesVisible" ) );
   }
 
   @Test
@@ -1114,7 +1115,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( tree, "topItemIndex" ) );
+    assertEquals( 2, message.findSetProperty( tree, "topItemIndex" ).asInt() );
   }
 
   @Test
@@ -1148,7 +1149,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 10 ), message.findSetProperty( tree, "scrollLeft" ) );
+    assertEquals( 10, message.findSetProperty( tree, "scrollLeft" ).asInt() );
   }
 
   @Test
@@ -1219,7 +1220,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( hScroll, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( hScroll, "Selection" ) );
   }
 
   @Test
@@ -1237,7 +1238,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( hScroll, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( hScroll, "Selection" ) );
   }
 
   @Test
@@ -1268,7 +1269,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( vScroll, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( vScroll, "Selection" ) );
   }
 
   @Test
@@ -1286,7 +1287,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( vScroll, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( vScroll, "Selection" ) );
   }
 
   @Test
@@ -1326,7 +1327,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( tree.getHorizontalBar(), "visibility" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( tree.getHorizontalBar(), "visibility" ) );
     assertNull( message.findSetOperation( tree.getVerticalBar(), "visibility" ) );
   }
 
@@ -1340,7 +1341,7 @@ public class TreeLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( tree.getHorizontalBar(), "visibility" ) );
-    assertEquals( Boolean.TRUE, message.findSetProperty( tree.getVerticalBar(), "visibility" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( tree.getVerticalBar(), "visibility" ) );
   }
 
   @Test
@@ -1372,7 +1373,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( tree, "Selection" ) );
     assertNull( message.findListenOperation( tree, "DefaultSelection" ) );
   }
 
@@ -1388,7 +1389,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( tree, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( tree, "Selection" ) );
     assertNull( message.findListenOperation( tree, "DefaultSelection" ) );
   }
 
@@ -1402,7 +1403,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "DefaultSelection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( tree, "DefaultSelection" ) );
     assertNull( message.findListenOperation( tree, "Selection" ) );
   }
 
@@ -1418,7 +1419,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( tree, "DefaultSelection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( tree, "DefaultSelection" ) );
     assertNull( message.findListenOperation( tree, "Selection" ) );
   }
 
@@ -1441,7 +1442,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "Expand" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( tree, "Expand" ) );
   }
 
   @Test
@@ -1449,7 +1450,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "Collapse" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( tree, "Collapse" ) );
   }
 
   @Test
@@ -1467,7 +1468,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( tree, "enableCellToolTip" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( tree, "enableCellToolTip" ) );
   }
 
   @Test
@@ -1506,7 +1507,7 @@ public class TreeLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     String expected = "[" + itemId + ",0]";
-    assertEquals( expected, message.findSetProperty( tree, "cellToolTipText" ) );
+    assertEquals( expected, message.findSetProperty( tree, "cellToolTipText" ).asString() );
   }
 
   @Test
@@ -1546,7 +1547,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "up", message.findSetProperty( tree, "sortDirection" ) );
+    assertEquals( "up", message.findSetProperty( tree, "sortDirection" ).asString() );
   }
 
   @Test
@@ -1581,7 +1582,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( WidgetUtil.getId( column ), message.findSetProperty( tree, "sortColumn" ) );
+    assertEquals( getId( column ), message.findSetProperty( tree, "sortColumn" ).asString() );
   }
 
   @Test
@@ -1617,7 +1618,7 @@ public class TreeLCA_Test {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( WidgetUtil.getId( item ), message.findSetProperty( tree, "focusItem" ) );
+    assertEquals( getId( item ), message.findSetProperty( tree, "focusItem" ).asString() );
   }
 
   @Test
@@ -1660,7 +1661,7 @@ public class TreeLCA_Test {
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findCreateProperty( tree, "markupEnabled" ) );
+    assertEquals( JsonValue.TRUE, message.findCreateProperty( tree, "markupEnabled" ) );
   }
 
   @Test
@@ -1729,4 +1730,5 @@ public class TreeLCA_Test {
   private void fakeSetTopItemIndex( Tree tree, int index ) {
     Fixture.fakeSetParameter( getId( tree ), "topItemIndex", Integer.valueOf( index ) );
   }
+
 }

@@ -10,13 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -383,15 +377,15 @@ public class ProtocolUtil_Test {
   public void testReadPropertyValue() {
     fakeNewJsonMessage();
 
-    Object[] expected = new Object[]{ "a", new Integer( 2 ), Boolean.TRUE };
-    Object[] actual = ( Object[] )ProtocolUtil.readPropertyValue( "w3", "p8" );
-    assertTrue( Arrays.equals( expected, actual ) );
+    JsonValue expected = JsonValue.readFrom( "[\"a\", 2, true]" );
+    JsonValue actual = ProtocolUtil.readPropertyValue( "w3", "p8" );
+    assertEquals( expected, actual );
   }
 
   @Test
     public void testWasCallReceived() {
       fakeNewJsonMessage();
-  
+
       assertTrue( ProtocolUtil.wasCallReceived( "w3", "resize" ) );
       assertFalse( ProtocolUtil.wasCallReceived( "w4", "resize" ) );
     }
@@ -415,6 +409,64 @@ public class ProtocolUtil_Test {
     fakeNewJsonMessage();
 
     assertNull( ProtocolUtil.readCallPropertyValueAsString( "w4", "resize", "left" ) );
+  }
+
+  @Test
+  public void testToPoint() {
+    JsonValue value = new JsonArray().add( 23 ).add( 42 );
+
+    Point result = ProtocolUtil.toPoint( value );
+
+    assertEquals( new Point( 23, 42 ), result );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testToPoint_withNull() {
+    ProtocolUtil.toPoint( null );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testToPoint_withIllegalValue() {
+    ProtocolUtil.toPoint( JsonValue.valueOf( true ) );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testToPoint_withWrongArraySize() {
+    ProtocolUtil.toPoint( new JsonArray().add( 1 ).add( 2 ).add( 3 ) );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testToPoint_withWrongElementType() {
+    ProtocolUtil.toPoint( new JsonArray().add( 1 ).add( true ) );
+  }
+
+  @Test
+  public void testToRectangle() {
+    JsonValue value = new JsonArray().add( 1 ).add( 2 ).add( 3 ).add( 4 );
+
+    Rectangle result = ProtocolUtil.toRectangle( value );
+
+    assertEquals( new Rectangle( 1, 2, 3, 4 ), result );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testToRectangle_withNull() {
+    ProtocolUtil.toRectangle( null );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testToRectangle_withIllegalValue() {
+    ProtocolUtil.toRectangle( JsonValue.valueOf( true ) );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testToRectangle_withWrongArraySize() {
+    ProtocolUtil.toRectangle( new JsonArray().add( 1 ).add( 2 ).add( 3 ).add( 4 ).add( 5 ) );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testToRectangle_withWrongElementType() {
+    ProtocolUtil.toRectangle( new JsonArray().add( 1 ).add( true ) );
   }
 
   //////////////////

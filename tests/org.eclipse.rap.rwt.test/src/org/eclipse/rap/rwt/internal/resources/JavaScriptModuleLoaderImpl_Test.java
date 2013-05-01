@@ -203,7 +203,7 @@ public class JavaScriptModuleLoaderImpl_Test {
     String expectedOne = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
     String expectedTwo = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_2;
     CallOperation operation = findLoadOperation( message, expectedOne );
-    JsonArray files = ( JsonArray )operation.getProperty( "files" );
+    JsonArray files = operation.getProperty( "files" ).asArray();
     assertEquals( expectedOne, files.get( 0 ).asString() );
     assertEquals( expectedTwo, files.get( 1 ).asString() );
   }
@@ -288,7 +288,7 @@ public class JavaScriptModuleLoaderImpl_Test {
         if(    operation.getTarget().equals( "rwt.client.JavaScriptLoader" )
             && "load".equals( operation.getMethodName() )
         ) {
-          JsonArray files = ( JsonArray )operation.getProperty( "files" );
+          JsonArray files = operation.getProperty( "files" ).asArray();
           for( int j = 0; j < files.size(); j++ ) {
             if( files.get( j ).asString().equals( file ) ) {
               result = operation;

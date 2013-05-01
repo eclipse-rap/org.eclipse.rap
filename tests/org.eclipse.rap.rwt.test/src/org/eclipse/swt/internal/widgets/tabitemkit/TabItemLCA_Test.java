@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tabitemkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -89,8 +90,8 @@ public class TabItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertEquals( "rwt.widgets.TabItem", operation.getType() );
-    assertEquals( WidgetUtil.getId( item ), operation.getProperty( "id" ) );
-    assertEquals( Integer.valueOf( 0 ), operation.getProperty( "index" ) );
+    assertEquals( getId( item ), operation.getProperty( "id" ).asString() );
+    assertEquals( 0, operation.getProperty( "index" ).asInt() );
   }
 
   @Test
@@ -117,7 +118,7 @@ public class TabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( item, "toolTip" ) );
+    assertEquals( "foo", message.findSetProperty( item, "toolTip" ).asString() );
   }
 
   @Test
@@ -148,7 +149,7 @@ public class TabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( item, "text" ) );
+    assertEquals( "foo", message.findSetProperty( item, "text" ).asString() );
   }
 
   @Test
@@ -157,7 +158,7 @@ public class TabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foobar", message.findSetProperty( item, "text" ) );
+    assertEquals( "foobar", message.findSetProperty( item, "text" ).asString() );
   }
 
   @Test
@@ -241,7 +242,7 @@ public class TabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( contentId, message.findSetProperty( item, "control" ) );
+    assertEquals( contentId, message.findSetProperty( item, "control" ).asString() );
   }
 
   @Test
@@ -272,7 +273,7 @@ public class TabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( item, "mnemonicIndex" ) );
+    assertEquals( 2, message.findSetProperty( item, "mnemonicIndex" ).asInt() );
   }
 
   @Test
@@ -286,7 +287,7 @@ public class TabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( item, "mnemonicIndex" ) );
+    assertEquals( 2, message.findSetProperty( item, "mnemonicIndex" ).asInt() );
   }
 
   @Test

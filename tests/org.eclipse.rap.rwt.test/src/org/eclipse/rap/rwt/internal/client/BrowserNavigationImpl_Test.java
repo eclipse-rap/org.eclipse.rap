@@ -24,6 +24,7 @@ import java.util.Map;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -175,7 +176,7 @@ public class BrowserNavigationImpl_Test {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( TYPE, "Navigation" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( TYPE, "Navigation" ) );
   }
 
   @Test
@@ -195,7 +196,7 @@ public class BrowserNavigationImpl_Test {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( TYPE, "Navigation" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( TYPE, "Navigation" ) );
   }
 
   @Test

@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.jsonToJava;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -82,8 +84,8 @@ public final class ProtocolUtil {
     return serviceStore.getAttribute( CLIENT_MESSAGE ) != null;
   }
 
-  public static Object readPropertyValue( String target, String property ) {
-    Object result = null;
+  public static JsonValue readPropertyValue( String target, String property ) {
+    JsonValue result = null;
     ClientMessage message = getClientMessage();
     SetOperation operation =  message.getLastSetOperationFor( target, property );
     if( operation != null ) {
@@ -122,7 +124,7 @@ public final class ProtocolUtil {
     ClientMessage message = getClientMessage();
     SetOperation operation =  message.getLastSetOperationFor( target, property );
     if( operation != null ) {
-      Object value = operation.getProperty( property );
+      Object value = jsonToJava( operation.getProperty( property ) );
       if( value != null ) {
         if( String.class.equals( clazz ) ) {
           result = ( T )value.toString();
@@ -152,7 +154,7 @@ public final class ProtocolUtil {
     ClientMessage message = getClientMessage();
     NotifyOperation operation = message.getLastNotifyOperationFor( target, eventName );
     if( operation != null ) {
-      Object value = operation.getProperty( property );
+      Object value = jsonToJava( operation.getProperty( property ) );
       if( value != null ) {
         result = value.toString();
       }
@@ -175,7 +177,7 @@ public final class ProtocolUtil {
     List<CallOperation> operations = message.getAllCallOperationsFor( target, methodName );
     if( !operations.isEmpty() ) {
       CallOperation operation = operations.get( operations.size() - 1 );
-      Object value = operation.getProperty( property );
+      Object value = jsonToJava( operation.getProperty( property ) );
       if( value != null ) {
         result = value.toString();
       }
@@ -260,6 +262,35 @@ public final class ProtocolUtil {
       return JsonValue.NULL;
     }
     return new JsonArray().add( rect.x ).add( rect.y ).add( rect.width ).add( rect.height );
+  }
+
+  public static Point toPoint( JsonValue value ) {
+    try {
+      JsonArray array = value.asArray();
+      if( array.size() != 2 ) {
+        throw new IllegalArgumentException( "Expected array of size 2" );
+      }
+      return new Point( array.get( 0 ).asInt(), array.get( 1 ).asInt() );
+    } catch( Exception exception ) {
+      String message = "Could not convert property to Point: " + value;
+      throw new IllegalArgumentException( message, exception );
+    }
+  }
+
+  public static Rectangle toRectangle( JsonValue value ) {
+    try {
+      JsonArray array = value.asArray();
+      if( array.size() != 4 ) {
+        throw new IllegalArgumentException( "Expected array of size 4" );
+      }
+      return new Rectangle( array.get( 0 ).asInt(),
+                            array.get( 1 ).asInt(),
+                            array.get( 2 ).asInt(),
+                            array.get( 3 ).asInt() );
+    } catch( Exception exception ) {
+      String message = "Could not convert property to Rectangle: " + value;
+      throw new IllegalArgumentException( message, exception );
+    }
   }
 
   public static Rectangle toRectangle( Object value ) {

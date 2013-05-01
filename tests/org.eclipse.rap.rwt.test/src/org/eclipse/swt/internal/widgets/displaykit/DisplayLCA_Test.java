@@ -39,6 +39,7 @@ import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
@@ -211,7 +212,7 @@ public class DisplayLCA_Test {
     displayLCA.render( display );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( getId( display ), "Resize" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( getId( display ), "Resize" ) );
   }
 
   @Test
@@ -222,7 +223,7 @@ public class DisplayLCA_Test {
     displayLCA.render( display );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( getId( display ), "Resize" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( getId( display ), "Resize" ) );
   }
 
   @Test
@@ -233,7 +234,7 @@ public class DisplayLCA_Test {
     displayLCA.render( display );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( getId( display ), "Resize" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( getId( display ), "Resize" ) );
   }
 
   @Test
@@ -435,7 +436,7 @@ public class DisplayLCA_Test {
     // must be the first operation, before any widgets are rendered
     SetOperation firstOperation = (SetOperation)message.getOperation( 0 );
     assertEquals( DisplayUtil.getId( display ), firstOperation.getTarget() );
-    assertEquals( Boolean.TRUE, firstOperation.getProperty( "enableUiTests" ) );
+    assertEquals( JsonValue.TRUE, firstOperation.getProperty( "enableUiTests" ) );
   }
 
   @Test
@@ -482,7 +483,7 @@ public class DisplayLCA_Test {
     displayLCA.render( display );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "test", message.findSetProperty( displayId, "exitConfirmation" ) );
+    assertEquals( "test", message.findSetProperty( displayId, "exitConfirmation" ).asString() );
   }
 
   @Test
@@ -630,4 +631,5 @@ public class DisplayLCA_Test {
       return 0;
     }
   }
+
 }

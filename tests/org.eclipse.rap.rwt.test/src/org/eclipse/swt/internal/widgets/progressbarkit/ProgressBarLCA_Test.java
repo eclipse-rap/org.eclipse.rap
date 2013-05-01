@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -126,7 +126,7 @@ public class ProgressBarLCA_Test {
     lca.renderChanges( progressBar );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 10 ), message.findSetProperty( progressBar, "minimum" ) );
+    assertEquals( 10, message.findSetProperty( progressBar, "minimum" ).asInt() );
   }
 
   @Test
@@ -162,7 +162,7 @@ public class ProgressBarLCA_Test {
     lca.renderChanges( progressBar );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 10 ), message.findSetProperty( progressBar, "maximum" ) );
+    assertEquals( 10, message.findSetProperty( progressBar, "maximum" ).asInt() );
   }
 
   @Test
@@ -198,7 +198,7 @@ public class ProgressBarLCA_Test {
     lca.renderChanges( progressBar );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 10 ), message.findSetProperty( progressBar, "selection" ) );
+    assertEquals( 10, message.findSetProperty( progressBar, "selection" ).asInt() );
   }
 
   @Test
@@ -234,7 +234,7 @@ public class ProgressBarLCA_Test {
     lca.renderChanges( progressBar );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "error", message.findSetProperty( progressBar, "state" ) );
+    assertEquals( "error", message.findSetProperty( progressBar, "state" ).asString() );
   }
 
   @Test
@@ -250,4 +250,5 @@ public class ProgressBarLCA_Test {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( progressBar, "state" ) );
   }
+
 }

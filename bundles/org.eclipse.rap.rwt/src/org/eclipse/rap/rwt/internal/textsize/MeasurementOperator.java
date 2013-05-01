@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.rap.rwt.SingletonUtil;
@@ -166,9 +165,9 @@ class MeasurementOperator implements SerializableCompatibility {
   private static Point readMeasuredSize( List<CallOperation> operations, String id ) {
     Point result = null;
     for( CallOperation operation : operations ) {
-      Map resultsMap = ( Map )operation.getProperty( PROPERTY_RESULTS );
-      if( resultsMap != null ) {
-        Object value = resultsMap.get( id );
+      JsonObject results = operation.getProperty( PROPERTY_RESULTS ).asObject();
+      if( results != null ) {
+        JsonValue value = results.get( id );
         if( value != null ) {
           result = ProtocolUtil.toPoint( value );
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -70,7 +71,7 @@ public class ServerPushRenderer_Test {
     renderer.render();
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( REMOTE_OBJECT_ID, "active" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( REMOTE_OBJECT_ID, "active" ) );
   }
 
   @Test
@@ -96,7 +97,7 @@ public class ServerPushRenderer_Test {
     renderer.render();
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findSetProperty( REMOTE_OBJECT_ID, "active" ) );
+    assertEquals( JsonValue.FALSE, message.findSetProperty( REMOTE_OBJECT_ID, "active" ) );
   }
 
   @Test

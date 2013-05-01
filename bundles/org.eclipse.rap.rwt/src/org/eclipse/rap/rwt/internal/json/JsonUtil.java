@@ -17,6 +17,10 @@ import java.util.Map;
 
 public final class JsonUtil {
 
+  /**
+   * @deprecated
+   */
+  @Deprecated
   public static JsonValue createJsonValue( Object value ) {
     JsonValue result;
     if( value == null ) {
@@ -54,6 +58,10 @@ public final class JsonUtil {
     return result;
   }
 
+  /**
+   * @deprecated
+   */
+  @Deprecated
   public static JsonValue createJsonObject( Map properties ) {
     JsonValue result;
     if( properties != null ) {
@@ -126,6 +134,10 @@ public final class JsonUtil {
     return result;
   }
 
+  /**
+   * @deprecated
+   */
+  @Deprecated
   public static JsonValue createJsonArray( Object[] values ) {
     JsonValue result;
     if( values != null ) {
@@ -140,6 +152,10 @@ public final class JsonUtil {
     return result;
   }
 
+  /**
+   * @deprecated
+   */
+  @Deprecated
   public static Object jsonToJava( JsonValue object ) {
     Object result = null;
     if( object != null ) {

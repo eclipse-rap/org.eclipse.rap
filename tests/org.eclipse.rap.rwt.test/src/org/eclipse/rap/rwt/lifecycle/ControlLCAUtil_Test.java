@@ -32,6 +32,7 @@ import java.util.Map;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -424,7 +425,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderVisible( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findSetProperty( control, "visibility" ) );
+    assertEquals( JsonValue.FALSE, message.findSetProperty( control, "visibility" ) );
   }
 
   @Test
@@ -533,7 +534,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderTabIndex( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 1 ), message.findSetProperty( control, "tabIndex" ) );
+    assertEquals( 1, message.findSetProperty( control, "tabIndex" ).asInt() );
   }
 
   @Test
@@ -545,7 +546,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderTabIndex( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 2 ), message.findSetProperty( control, "tabIndex" ) );
+    assertEquals( 2, message.findSetProperty( control, "tabIndex" ).asInt() );
   }
 
   @Test
@@ -580,7 +581,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderToolTip( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( control, "toolTip" ) );
+    assertEquals( "foo", message.findSetProperty( control, "toolTip" ).asString() );
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
@@ -613,8 +614,8 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderMenu( control );
 
     Message message = Fixture.getProtocolMessage();
-    String expected = WidgetUtil.getId( control.getMenu() );
-    assertEquals( expected, message.findSetProperty( control, "menu" ) );
+    String expected = getId( control.getMenu() );
+    assertEquals( expected, message.findSetProperty( control, "menu" ).asString() );
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
@@ -647,7 +648,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderEnabled( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findSetProperty( control, "enabled" ) );
+    assertEquals( JsonValue.FALSE, message.findSetProperty( control, "enabled" ) );
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
@@ -787,7 +788,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderCursor( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "pointer", message.findSetProperty( control, "cursor" ) );
+    assertEquals( "pointer", message.findSetProperty( control, "cursor" ).asString() );
   }
 
   @Test
@@ -833,7 +834,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderListenActivate( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "Activate" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "Activate" ) );
   }
 
   @Test
@@ -843,7 +844,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderListenActivate( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "Deactivate" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "Deactivate" ) );
   }
 
   @Test
@@ -875,8 +876,8 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderListenActivate( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "Activate" ) );
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "Deactivate" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "Activate" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "Deactivate" ) );
   }
 
   @Test
@@ -910,8 +911,8 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderListenFocus( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "FocusIn" ) );
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "FocusOut" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "FocusIn" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "FocusOut" ) );
   }
 
   @Test
@@ -941,8 +942,8 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderListenFocus( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "FocusIn" ) );
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "FocusOut" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "FocusIn" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "FocusOut" ) );
   }
 
   @Test
@@ -963,9 +964,9 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderListenMouse( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "MouseDown" ) );
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "MouseDoubleClick" ) );
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "MouseUp" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "MouseDown" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "MouseDoubleClick" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "MouseUp" ) );
   }
 
   @Test
@@ -997,9 +998,9 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderListenMouse( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "MouseDown" ) );
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "MouseDoubleClick" ) );
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "MouseUp" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "MouseDown" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "MouseDoubleClick" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "MouseUp" ) );
   }
 
   @Test
@@ -1016,7 +1017,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderListenKey( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "KeyDown" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "KeyDown" ) );
   }
 
   @Test
@@ -1044,7 +1045,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderListenKey( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "KeyDown" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "KeyDown" ) );
   }
 
   @Test
@@ -1061,7 +1062,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderListenTraverse( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "Traverse" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "Traverse" ) );
   }
 
   @Test
@@ -1089,7 +1090,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderListenTraverse( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "Traverse" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "Traverse" ) );
   }
 
   @Test
@@ -1110,7 +1111,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderListenMenuDetect( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "MenuDetect" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "MenuDetect" ) );
   }
 
   @Test
@@ -1145,7 +1146,7 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderListenMenuDetect( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "MenuDetect" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "MenuDetect" ) );
   }
 
   private void fakeKeyDown( String target, int keyCode, int charCode, String modifier ) {

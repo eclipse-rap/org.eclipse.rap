@@ -173,7 +173,7 @@ public class FileUploadLCA_Test {
     lca.renderChanges( fileUpload );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "test", message.findSetProperty( fileUpload, "text" ) );
+    assertEquals( "test", message.findSetProperty( fileUpload, "text" ).asString() );
   }
 
   @Test
@@ -249,7 +249,7 @@ public class FileUploadLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( fileUpload, "submit" );
-    assertEquals( "bar", operation.getProperty( "url" ) );
+    assertEquals( "bar", operation.getProperty( "url" ).asString() );
   }
 
   @Test
@@ -276,7 +276,7 @@ public class FileUploadLCA_Test {
     lca.renderChanges( fileUpload );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "variant_blue", message.findSetProperty( fileUpload, "customVariant" ) );
+    assertEquals( "variant_blue", message.findSetProperty( fileUpload, "customVariant" ).asString() );
   }
 
   @Test

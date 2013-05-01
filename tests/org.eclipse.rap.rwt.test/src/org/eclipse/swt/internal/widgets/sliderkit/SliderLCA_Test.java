@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -237,7 +238,7 @@ public class SliderLCA_Test {
     lca.renderChanges( slider );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 10 ), message.findSetProperty( slider, "minimum" ) );
+    assertEquals( 10, message.findSetProperty( slider, "minimum" ).asInt() );
   }
 
   @Test
@@ -268,7 +269,7 @@ public class SliderLCA_Test {
     lca.renderChanges( slider );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 10 ), message.findSetProperty( slider, "maximum" ) );
+    assertEquals( 10, message.findSetProperty( slider, "maximum" ).asInt() );
   }
 
   @Test
@@ -299,7 +300,7 @@ public class SliderLCA_Test {
     lca.renderChanges( slider );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 10 ), message.findSetProperty( slider, "selection" ) );
+    assertEquals( 10, message.findSetProperty( slider, "selection" ).asInt() );
   }
 
   @Test
@@ -330,7 +331,7 @@ public class SliderLCA_Test {
     lca.renderChanges( slider );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 2 ), message.findSetProperty( slider, "increment" ) );
+    assertEquals( 2, message.findSetProperty( slider, "increment" ).asInt() );
   }
 
   @Test
@@ -361,7 +362,7 @@ public class SliderLCA_Test {
     lca.renderChanges( slider );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 20 ), message.findSetProperty( slider, "pageIncrement" ) );
+    assertEquals( 20, message.findSetProperty( slider, "pageIncrement" ).asInt() );
   }
 
   @Test
@@ -392,7 +393,7 @@ public class SliderLCA_Test {
     lca.renderChanges( slider );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 20 ), message.findSetProperty( slider, "thumb" ) );
+    assertEquals( 20, message.findSetProperty( slider, "thumb" ).asInt() );
   }
 
   @Test
@@ -418,7 +419,7 @@ public class SliderLCA_Test {
     lca.renderChanges( slider );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( slider, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( slider, "Selection" ) );
   }
 
   @Test
@@ -433,7 +434,7 @@ public class SliderLCA_Test {
     lca.renderChanges( slider );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( slider, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( slider, "Selection" ) );
   }
 
   @Test
@@ -466,4 +467,5 @@ public class SliderLCA_Test {
     parameters.put( ClientMessageConst.EVENT_PARAM_MODIFIER, "" );
     Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_KEY_DOWN, parameters );
   }
+
 }

@@ -258,7 +258,7 @@ public class TabFolderLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
-    assertEquals( WidgetUtil.getId( item ), operation.getProperty( "selection" ) );
+    assertEquals( getId( item ), operation.getProperty( "selection" ).asString() );
   }
 
   @Test
@@ -271,7 +271,7 @@ public class TabFolderLCA_Test {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( WidgetUtil.getId( item ), message.findSetProperty( folder, "selection" ) );
+    assertEquals( getId( item ), message.findSetProperty( folder, "selection" ).asString() );
   }
 
   @Test
@@ -319,7 +319,7 @@ public class TabFolderLCA_Test {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( WidgetUtil.getId( item1 ), message.findSetProperty( folder, "selection" ) );
+    assertEquals( getId( item1 ), message.findSetProperty( folder, "selection" ).asString() );
   }
 
   private void fakeWidgetSelected( TabFolder folder, TabItem item ) {

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -181,7 +182,7 @@ public final class CoolBarLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( bar, "locked" );
-    assertEquals( Boolean.TRUE, operation.getProperty( "locked" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperty( "locked" ) );
   }
 
   @Test

@@ -24,6 +24,7 @@ import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -208,7 +209,7 @@ public class ToolTipLCA_Test {
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "variant_blue", message.findSetProperty( toolTip, "customVariant" ) );
+    assertEquals( "variant_blue", message.findSetProperty( toolTip, "customVariant" ).asString() );
   }
 
   @Test
@@ -318,7 +319,7 @@ public class ToolTipLCA_Test {
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( toolTip, "autoHide" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( toolTip, "autoHide" ) );
   }
 
   @Test
@@ -347,7 +348,7 @@ public class ToolTipLCA_Test {
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( toolTip, "text" ) );
+    assertEquals( "foo", message.findSetProperty( toolTip, "text" ).asString() );
   }
 
   @Test
@@ -376,7 +377,7 @@ public class ToolTipLCA_Test {
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( toolTip, "message" ) );
+    assertEquals( "foo", message.findSetProperty( toolTip, "message" ).asString() );
   }
 
   @Test
@@ -435,7 +436,7 @@ public class ToolTipLCA_Test {
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( toolTip, "visible" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( toolTip, "visible" ) );
   }
 
   @Test
@@ -459,7 +460,7 @@ public class ToolTipLCA_Test {
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( toolTip, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( toolTip, "Selection" ) );
     assertNull( message.findListenOperation( toolTip, "DefaultSelection" ) );
   }
 
@@ -474,7 +475,7 @@ public class ToolTipLCA_Test {
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( toolTip, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( toolTip, "Selection" ) );
     assertNull( message.findListenOperation( toolTip, "DefaultSelection" ) );
   }
 
@@ -490,4 +491,5 @@ public class ToolTipLCA_Test {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( toolTip, "selection" ) );
   }
+
 }

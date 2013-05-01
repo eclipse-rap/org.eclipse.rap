@@ -23,6 +23,7 @@ import java.util.Arrays;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -212,7 +213,7 @@ public class LabelLCA_Test {
     lca.renderChanges( label );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "test", message.findSetProperty( label, "text" ) );
+    assertEquals( "test", message.findSetProperty( label, "text" ).asString() );
   }
 
   @Test
@@ -221,7 +222,7 @@ public class LabelLCA_Test {
     lca.renderChanges( label );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "te\"s't", message.findSetProperty( label, "text" ) );
+    assertEquals( "te\"s't", message.findSetProperty( label, "text" ).asString() );
   }
 
   @Test
@@ -230,7 +231,7 @@ public class LabelLCA_Test {
     lca.renderChanges( label );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "test", message.findSetProperty( label, "text" ) );
+    assertEquals( "test", message.findSetProperty( label, "text" ).asString() );
   }
 
   @Test
@@ -239,7 +240,7 @@ public class LabelLCA_Test {
     lca.renderChanges( label );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "\ntes\r\nt\n", message.findSetProperty( label, "text" ) );
+    assertEquals( "\ntes\r\nt\n", message.findSetProperty( label, "text" ).asString() );
   }
 
   @Test
@@ -291,7 +292,7 @@ public class LabelLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( label );
-    assertEquals( Boolean.TRUE, operation.getProperty( "markupEnabled" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperty( "markupEnabled" ) );
   }
 
   @Test
@@ -358,7 +359,7 @@ public class LabelLCA_Test {
     lca.renderChanges( label );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "right", message.findSetProperty( label, "alignment" ) );
+    assertEquals( "right", message.findSetProperty( label, "alignment" ).asString() );
   }
 
   @Test
@@ -402,7 +403,7 @@ public class LabelLCA_Test {
     lca.renderChanges( label );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( label, "mnemonicIndex" ) );
+    assertEquals( 2, message.findSetProperty( label, "mnemonicIndex" ).asInt() );
   }
 
   @Test

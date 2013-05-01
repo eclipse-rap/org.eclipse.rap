@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.json.JsonUtil;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
@@ -96,7 +98,8 @@ public class RemoteObjectLifeCycleAdapter {
     Map<String, Object> result = new HashMap<String, Object>();
     List<String> propertyNames = operation.getPropertyNames();
     for( String name : propertyNames ) {
-      result.put( name, operation.getProperty( name ) );
+      JsonValue value = operation.getProperty( name );
+      result.put( name, JsonUtil.jsonToJava( value ) );
     }
     return result;
   }

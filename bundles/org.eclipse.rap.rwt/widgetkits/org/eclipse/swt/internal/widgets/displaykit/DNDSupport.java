@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.jsonToJava;
+
 import java.util.ArrayList;
 
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
@@ -440,7 +442,7 @@ public final class DNDSupport {
 
   private static String readStringParam( NotifyOperation operation, String property ) {
     String result = null;
-    Object value = operation.getProperty( property );
+    Object value = jsonToJava( operation.getProperty( property ) );
     if( value != null ) {
       result = value.toString();
     }
@@ -454,7 +456,7 @@ public final class DNDSupport {
 
   private static Control readControlParam( NotifyOperation operation ) {
     Control result = null;
-    String value = ( String )operation.getProperty( EVENT_PARAM_SOURCE );
+    String value = operation.getProperty( EVENT_PARAM_SOURCE ).asString();
     if( value != null ) {
       result = ( Control )findWidgetById( value );
     }

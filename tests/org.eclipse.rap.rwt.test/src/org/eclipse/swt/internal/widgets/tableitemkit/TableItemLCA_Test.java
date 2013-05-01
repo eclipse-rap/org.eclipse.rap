@@ -325,7 +325,7 @@ public class TableItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
+    assertEquals( 1, operation.getProperty( "index" ).asInt() );
   }
 
   @Test
@@ -336,7 +336,7 @@ public class TableItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( item, "index" ) );
+    assertEquals( 1, message.findSetProperty( item, "index" ).asInt() );
   }
 
   @Test
@@ -352,7 +352,7 @@ public class TableItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( item, "index" ) );
+    assertEquals( 1, message.findSetProperty( item, "index" ).asInt() );
   }
 
   @Test
@@ -720,7 +720,7 @@ public class TableItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( item, "checked" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( item, "checked" ) );
   }
 
   @Test
@@ -759,7 +759,7 @@ public class TableItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( item, "grayed" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( item, "grayed" ) );
   }
 
   @Test
@@ -796,7 +796,7 @@ public class TableItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "variant_blue", message.findSetProperty( item, "customVariant" ) );
+    assertEquals( "variant_blue", message.findSetProperty( item, "customVariant" ).asString() );
   }
 
   @Test

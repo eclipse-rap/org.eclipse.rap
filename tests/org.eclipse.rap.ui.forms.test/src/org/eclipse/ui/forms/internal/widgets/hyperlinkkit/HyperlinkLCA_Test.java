@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.*;
@@ -109,7 +110,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( hyperlink );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "test", message.findSetProperty( hyperlink, "text" ) );
+    assertEquals( "test", message.findSetProperty( hyperlink, "text" ).asString() );
   }
 
   public void testRenderTextUnchanged() throws IOException {
@@ -136,7 +137,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( hyperlink );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( hyperlink, "underlined" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( hyperlink, "underlined" ) );
   }
 
   public void testRenderUnderlinedUnchanged() throws IOException {
@@ -163,7 +164,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( hyperlink );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( 2, message.findSetProperty( hyperlink, "underlineMode" ) );
+    assertEquals( 2, message.findSetProperty( hyperlink, "underlineMode" ).asInt() );
   }
 
   public void testRenderUnderlineModeUnchanged() throws IOException {
@@ -246,7 +247,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( hyperlink );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( hyperlink, "DefaultSelection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( hyperlink, "DefaultSelection" ) );
   }
 
   @SuppressWarnings("serial")
@@ -267,7 +268,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   }
 
   private IHyperlinkAdapter getAdapter( Hyperlink hyperlink ) {
-    return ( IHyperlinkAdapter )hyperlink.getAdapter( IHyperlinkAdapter.class );
+    return hyperlink.getAdapter( IHyperlinkAdapter.class );
   }
 
 }

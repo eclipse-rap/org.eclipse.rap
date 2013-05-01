@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
-import org.eclipse.rap.rwt.internal.json.JsonUtil;
 import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
@@ -190,18 +189,8 @@ public class ClientMessage {
       return getProperties().names();
     }
 
-    public Object getProperty( String key ) {
-      Object result = null;
-      JsonObject properties = getProperties();
-      try {
-        JsonValue value = properties.get( key );
-        if( value != null ) {
-          result = JsonUtil.jsonToJava( value );
-        }
-      } catch( Exception exception ) {
-        // do nothing
-      }
-      return result;
+    public JsonValue getProperty( String key ) {
+      return getProperties().get( key );
     }
 
     abstract protected JsonObject getProperties();

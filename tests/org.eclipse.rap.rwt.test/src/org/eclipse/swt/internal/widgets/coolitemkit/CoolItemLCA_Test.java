@@ -134,7 +134,7 @@ public class CoolItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( item, "control" );
-    assertEquals( WidgetUtil.getId( button ), operation.getProperty( "control" ) );
+    assertEquals( getId( button ), operation.getProperty( "control" ).asString() );
   }
 
   @Test

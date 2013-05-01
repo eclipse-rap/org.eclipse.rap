@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.browser.browserkit;
 
 import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.json.JsonUtil.jsonToJava;
 import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
@@ -29,6 +30,7 @@ import java.io.InputStream;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.json.JsonUtil;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
@@ -132,7 +134,8 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   private static void readExecuteResult( Browser browser ) {
     String executeValue = readPropertyValue( browser, PARAM_EXECUTE_RESULT );
     if( executeValue != null ) {
-      Object evalValue = readPropertyValue( getId( browser ), PARAM_EVALUATE_RESULT );
+      JsonValue value = readPropertyValue( getId( browser ), PARAM_EVALUATE_RESULT );
+      Object evalValue = jsonToJava( value );
       boolean executeResult = Boolean.valueOf( executeValue ).booleanValue();
       Object evalResult = null;
       if( evalValue != null && evalValue instanceof Object[] ) {
@@ -248,8 +251,8 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   private static void executeFunction( final Browser browser ) {
     String function = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_FUNCTION );
-    final Object[] arguments
-      = ( Object[] )readPropertyValue( getId( browser ), PARAM_EXECUTE_ARGUMENTS );
+    JsonValue value = readPropertyValue( getId( browser ), PARAM_EXECUTE_ARGUMENTS );
+    final Object[] arguments = ( Object[] )jsonToJava( value );
     if( function != null ) {
       IBrowserAdapter adapter = browser.getAdapter( IBrowserAdapter.class );
       BrowserFunction[] functions = adapter.getBrowserFunctions();

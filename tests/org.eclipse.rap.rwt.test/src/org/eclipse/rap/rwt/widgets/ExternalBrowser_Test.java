@@ -139,7 +139,7 @@ public class ExternalBrowser_Test {
       if( operation instanceof CallOperation ) {
         CallOperation callOperation = ( CallOperation )operation;
         if(    method.equals( callOperation.getMethodName() )
-            && idProperty.equals( callOperation.getProperty( "id" ) ) )
+            && idProperty.equals( callOperation.getProperty( "id" ).asString() ) )
         {
           result = position;
         }

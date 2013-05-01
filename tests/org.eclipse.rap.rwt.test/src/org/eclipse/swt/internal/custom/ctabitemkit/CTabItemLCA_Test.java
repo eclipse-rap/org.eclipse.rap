@@ -20,6 +20,7 @@ import java.util.Arrays;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -73,7 +74,7 @@ public class CTabItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertEquals( "rwt.widgets.CTabItem", operation.getType() );
-    assertEquals( Integer.valueOf( 0 ), operation.getProperty( "index" ) );
+    assertEquals( 0, operation.getProperty( "index" ).asInt() );
   }
 
   @Test
@@ -98,7 +99,7 @@ public class CTabItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
+    assertEquals( 1, operation.getProperty( "index" ).asInt() );
   }
 
   @Test
@@ -135,7 +136,7 @@ public class CTabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( item, "toolTip" ) );
+    assertEquals( "foo", message.findSetProperty( item, "toolTip" ).asString() );
   }
 
   @Test
@@ -166,7 +167,7 @@ public class CTabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "variant_blue", message.findSetProperty( item, "customVariant" ) );
+    assertEquals( "variant_blue", message.findSetProperty( item, "customVariant" ).asString() );
   }
 
   @Test
@@ -261,7 +262,7 @@ public class CTabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( item, "text" ) );
+    assertEquals( "foo", message.findSetProperty( item, "text" ).asString() );
   }
 
   @Test
@@ -270,7 +271,7 @@ public class CTabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foobar", message.findSetProperty( item, "text" ) );
+    assertEquals( "foobar", message.findSetProperty( item, "text" ).asString() );
   }
 
   @Test
@@ -356,7 +357,7 @@ public class CTabItemLCA_Test {
     lca.renderChanges( lastItem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findSetProperty( lastItem, "showing" ) );
+    assertEquals( JsonValue.FALSE, message.findSetProperty( lastItem, "showing" ) );
   }
 
   @Test
@@ -388,7 +389,7 @@ public class CTabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( item, "showClose" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( item, "showClose" ) );
   }
 
   @Test
@@ -418,7 +419,7 @@ public class CTabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( item, "mnemonicIndex" ) );
+    assertEquals( 2, message.findSetProperty( item, "mnemonicIndex" ).asInt() );
   }
 
   @Test
@@ -432,7 +433,7 @@ public class CTabItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( item, "mnemonicIndex" ) );
+    assertEquals( 2, message.findSetProperty( item, "mnemonicIndex" ).asInt() );
   }
 
   @Test

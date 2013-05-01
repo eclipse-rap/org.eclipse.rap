@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.json.JsonUtil;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -117,8 +118,8 @@ public class ProtocolMessageWriter_Test {
     CallOperation operation = (CallOperation)getMessage().getOperation( 0 );
     assertEquals( shellId, operation.getTarget() );
     assertEquals( "methodName", operation.getMethodName() );
-    assertEquals( "a", operation.getProperty( "key1" ) );
-    assertEquals( "b", operation.getProperty( "key2" ) );
+    assertEquals( "a", operation.getProperty( "key1" ).asString() );
+    assertEquals( "b", operation.getProperty( "key2" ).asString() );
   }
 
   @Test
@@ -134,9 +135,9 @@ public class ProtocolMessageWriter_Test {
     CallOperation operation = ( CallOperation )getMessage().getOperation( 1 );
     assertEquals( shellId, operation.getTarget() );
     assertEquals( "methodName", operation.getMethodName() );
-    assertEquals( new Integer( 5 ), operation.getProperty( "key1" ) );
-    assertEquals( "b", operation.getProperty( "key2" ) );
-    assertEquals( Boolean.FALSE, operation.getProperty( "key3" ) );
+    assertEquals( 5, operation.getProperty( "key1" ).asInt() );
+    assertEquals( "b", operation.getProperty( "key2" ).asString() );
+    assertEquals( JsonValue.FALSE, operation.getProperty( "key3" ) );
   }
 
   @Test
@@ -155,8 +156,8 @@ public class ProtocolMessageWriter_Test {
     assertEquals( displayId, operation.getParent() );
     assertEquals( "org.Text", operation.getType() );
     assertArrayEquals( styles, operation.getStyles() );
-    assertEquals( "a", operation.getProperty( "key1" ) );
-    assertEquals( "b", operation.getProperty( "key2" ) );
+    assertEquals( "a", operation.getProperty( "key1" ).asString() );
+    assertEquals( "b", operation.getProperty( "key2" ).asString() );
   }
 
   @Test
@@ -219,8 +220,8 @@ public class ProtocolMessageWriter_Test {
 
     Message message = getMessage();
     assertEquals( 1, message.getOperationCount() );
-    assertEquals( "value-1", message.getOperation( 0 ).getProperty( "property-1" ) );
-    assertEquals( Integer.valueOf( 23 ), message.getOperation( 0 ).getProperty( "property-2" ) );
+    assertEquals( "value-1", message.getOperation( 0 ).getProperty( "property-1" ).asString() );
+    assertEquals( 23, message.getOperation( 0 ).getProperty( "property-2" ).asInt() );
   }
 
   @Test
@@ -231,9 +232,9 @@ public class ProtocolMessageWriter_Test {
     Message message = getMessage();
     assertEquals( 2, message.getOperationCount() );
     assertEquals( "id-1", message.getOperation( 0 ).getTarget() );
-    assertEquals( "value-2", message.getOperation( 1 ).getProperty( "property" ) );
+    assertEquals( "value-2", message.getOperation( 1 ).getProperty( "property" ).asString() );
     assertEquals( "id-2", message.getOperation( 1 ).getTarget() );
-    assertEquals( "value-2", message.getOperation( 1 ).getProperty( "property" ) );
+    assertEquals( "value-2", message.getOperation( 1 ).getProperty( "property" ).asString() );
   }
 
   @Test
@@ -244,7 +245,7 @@ public class ProtocolMessageWriter_Test {
 
     Message message = getMessage();
     assertEquals( 1, message.getOperationCount() );
-    assertEquals( "value-2", message.getOperation( 0 ).getProperty( "property" ) );
+    assertEquals( "value-2", message.getOperation( 0 ).getProperty( "property" ).asString() );
   }
 
   @Test
@@ -255,8 +256,8 @@ public class ProtocolMessageWriter_Test {
 
     Message message = getMessage();
     assertEquals( 3, message.getOperationCount() );
-    assertEquals( "value-1", message.getOperation( 0 ).getProperty( "property" ) );
-    assertEquals( "value-2", message.getOperation( 2 ).getProperty( "property" ) );
+    assertEquals( "value-1", message.getOperation( 0 ).getProperty( "property" ).asString() );
+    assertEquals( "value-2", message.getOperation( 2 ).getProperty( "property" ).asString() );
   }
 
   @Test
@@ -268,11 +269,11 @@ public class ProtocolMessageWriter_Test {
     Message message = getMessage();
     assertEquals( 3, message.getOperationCount() );
     assertEquals( "id-1", message.getOperation( 0 ).getTarget() );
-    assertEquals( "value-1", message.getOperation( 0 ).getProperty( "property" ) );
+    assertEquals( "value-1", message.getOperation( 0 ).getProperty( "property" ).asString() );
     assertEquals( "id-2", message.getOperation( 1 ).getTarget() );
-    assertEquals( "value-2", message.getOperation( 1 ).getProperty( "property" ) );
+    assertEquals( "value-2", message.getOperation( 1 ).getProperty( "property" ).asString() );
     assertEquals( "id-1", message.getOperation( 2 ).getTarget() );
-    assertEquals( "value-3", message.getOperation( 2 ).getProperty( "property" ) );
+    assertEquals( "value-3", message.getOperation( 2 ).getProperty( "property" ).asString() );
   }
 
   @Test
@@ -335,8 +336,8 @@ public class ProtocolMessageWriter_Test {
 
     Message message = getMessage();
     SetOperation operation = ( SetOperation )message.getOperation( 0 );
-    assertEquals( "value1", operation.getProperty( "key1" ) );
-    assertEquals( "value2", operation.getProperty( "key2" ) );
+    assertEquals( "value1", operation.getProperty( "key1" ).asString() );
+    assertEquals( "value2", operation.getProperty( "key2" ).asString() );
   }
 
   @Test
@@ -347,8 +348,8 @@ public class ProtocolMessageWriter_Test {
 
     Message message = getMessage();
     CreateOperation createOperation = ( CreateOperation )message.getOperation( 0 );
-    assertEquals( "value1", createOperation.getProperty( "key1" ) );
-    assertEquals( "value2", createOperation.getProperty( "key2" ) );
+    assertEquals( "value1", createOperation.getProperty( "key1" ).asString() );
+    assertEquals( "value2", createOperation.getProperty( "key2" ).asString() );
   }
 
   @Test
@@ -361,7 +362,7 @@ public class ProtocolMessageWriter_Test {
 
     Message message = getMessage();
     SetOperation firstOperation = ( SetOperation )message.getOperation( 0 );
-    assertEquals( "value1", firstOperation.getProperty( "key1" ) );
+    assertEquals( "value1", firstOperation.getProperty( "key1" ).asString() );
     assertFalse( firstOperation.getPropertyNames().contains( "key2" ) );
   }
 
@@ -379,8 +380,8 @@ public class ProtocolMessageWriter_Test {
     Message message = getMessage();
     CreateOperation createOperation = ( CreateOperation )message.getOperation( 1 );
     assertEquals( shellId, createOperation.getParent() );
-    assertEquals( "value1", createOperation.getProperty( "key1" ) );
-    assertEquals( "value2", createOperation.getProperty( "key2" ) );
+    assertEquals( "value1", createOperation.getProperty( "key1" ).asString() );
+    assertEquals( "value2", createOperation.getProperty( "key2" ).asString() );
   }
 
   @Test
@@ -388,7 +389,7 @@ public class ProtocolMessageWriter_Test {
     writer.appendSet( shellId, "key", new JsonArray().add( 1 ).add( 2 ) );
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
-    JsonArray property = ( JsonArray )operation.getProperty( "key" );
+    JsonArray property = operation.getProperty( "key" ).asArray();
     assertEquals( 1, property.get( 0 ).asInt() );
     assertEquals( 2, property.get( 1 ).asInt() );
   }
@@ -398,8 +399,7 @@ public class ProtocolMessageWriter_Test {
     writer.appendSet( shellId, "key", new JsonArray() );
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
-    JsonArray property = ( JsonArray )operation.getProperty( "key" );
-    assertEquals( 0, property.size() );
+    assertEquals( 0, operation.getProperty( "key" ).asArray().size() );
   }
 
   @Test
@@ -407,7 +407,7 @@ public class ProtocolMessageWriter_Test {
     writer.appendSet( shellId, "key", new JsonArray().add( 23 ).add( "Hello" ) );
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
-    JsonArray property = ( JsonArray )operation.getProperty( "key" );
+    JsonArray property = operation.getProperty( "key" ).asArray();
     assertEquals( 2, property.size() );
     assertEquals( 23, property.get( 0 ).asInt() );
     assertEquals( "Hello", property.get( 1 ).asString() );

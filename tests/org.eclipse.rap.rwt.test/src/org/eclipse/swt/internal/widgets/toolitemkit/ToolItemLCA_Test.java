@@ -27,6 +27,7 @@ import java.util.Map;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -206,7 +207,7 @@ public class ToolItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( "rwt.widgets.ToolItem", operation.getType() );
-    assertEquals( Integer.valueOf( 0 ), operation.getProperty( "index" ) );
+    assertEquals( 0, operation.getProperty( "index" ).asInt() );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "PUSH" ) );
   }
@@ -220,7 +221,7 @@ public class ToolItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( "rwt.widgets.ToolItem", operation.getType() );
-    assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
+    assertEquals( 1, operation.getProperty( "index" ).asInt() );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "CHECK" ) );
   }
@@ -234,7 +235,7 @@ public class ToolItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( "rwt.widgets.ToolItem", operation.getType() );
-    assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
+    assertEquals( 1, operation.getProperty( "index" ).asInt() );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "RADIO" ) );
   }
@@ -248,7 +249,7 @@ public class ToolItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( "rwt.widgets.ToolItem", operation.getType() );
-    assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
+    assertEquals( 1, operation.getProperty( "index" ).asInt() );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "DROP_DOWN" ) );
   }
@@ -262,7 +263,7 @@ public class ToolItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( "rwt.widgets.ToolItem", operation.getType() );
-    assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
+    assertEquals( 1, operation.getProperty( "index" ).asInt() );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "SEPARATOR" ) );
   }
@@ -291,7 +292,7 @@ public class ToolItemLCA_Test {
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findSetProperty( toolitem, "enabled" ) );
+    assertEquals( JsonValue.FALSE, message.findSetProperty( toolitem, "enabled" ) );
   }
 
   @Test
@@ -322,7 +323,7 @@ public class ToolItemLCA_Test {
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( toolitem, "toolTip" ) );
+    assertEquals( "foo", message.findSetProperty( toolitem, "toolTip" ).asString() );
   }
 
   @Test
@@ -353,7 +354,7 @@ public class ToolItemLCA_Test {
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "variant_blue", message.findSetProperty( toolitem, "customVariant" ) );
+    assertEquals( "variant_blue", message.findSetProperty( toolitem, "customVariant" ).asString() );
   }
 
   @Test
@@ -388,7 +389,7 @@ public class ToolItemLCA_Test {
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findSetProperty( toolitem, "visible" ) );
+    assertEquals( JsonValue.FALSE, message.findSetProperty( toolitem, "visible" ) );
   }
 
   @Test
@@ -420,7 +421,7 @@ public class ToolItemLCA_Test {
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( toolitem, "text" ) );
+    assertEquals( "foo", message.findSetProperty( toolitem, "text" ).asString() );
   }
 
   @Test
@@ -429,7 +430,7 @@ public class ToolItemLCA_Test {
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( toolitem, "text" ) );
+    assertEquals( "foo", message.findSetProperty( toolitem, "text" ).asString() );
   }
 
   @Test
@@ -551,7 +552,7 @@ public class ToolItemLCA_Test {
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( controlId, message.findSetProperty( toolitem, "control" ) );
+    assertEquals( controlId, message.findSetProperty( toolitem, "control" ).asString() );
   }
 
   @Test
@@ -588,7 +589,7 @@ public class ToolItemLCA_Test {
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( toolitem, "selection" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( toolitem, "selection" ) );
   }
 
   @Test
@@ -615,7 +616,7 @@ public class ToolItemLCA_Test {
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( toolitem, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( toolitem, "Selection" ) );
   }
 
   @Test
@@ -630,7 +631,7 @@ public class ToolItemLCA_Test {
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( toolitem, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( toolitem, "Selection" ) );
   }
 
   @Test
@@ -661,7 +662,7 @@ public class ToolItemLCA_Test {
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( toolitem, "mnemonicIndex" ) );
+    assertEquals( 2, message.findSetProperty( toolitem, "mnemonicIndex" ).asInt() );
   }
 
   @Test
@@ -675,7 +676,7 @@ public class ToolItemLCA_Test {
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( toolitem, "mnemonicIndex" ) );
+    assertEquals( 2, message.findSetProperty( toolitem, "mnemonicIndex" ).asInt() );
   }
 
   @Test

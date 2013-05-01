@@ -255,7 +255,7 @@ public class ActiveKeysUtil_Test {
     ActiveKeysUtil.renderMnemonicActivator( display );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "ALT+CTRL+", message.findSetProperty( "w1", "mnemonicActivator" ) );
+    assertEquals( "ALT+CTRL+", message.findSetProperty( "w1", "mnemonicActivator" ).asString() );
   }
 
   @Test(expected = IllegalArgumentException.class)

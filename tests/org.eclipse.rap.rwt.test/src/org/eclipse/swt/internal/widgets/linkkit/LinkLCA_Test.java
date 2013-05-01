@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -286,7 +287,7 @@ public class LinkLCA_Test {
     lca.renderChanges( link );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( link, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( link, "Selection" ) );
     assertNull( message.findListenOperation( link, "DefaultSelection" ) );
   }
 
@@ -302,7 +303,7 @@ public class LinkLCA_Test {
     lca.renderChanges( link );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( link, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( link, "Selection" ) );
   }
 
   @Test
@@ -326,4 +327,5 @@ public class LinkLCA_Test {
                                  ClientMessageConst.EVENT_SELECTION,
                                  properties );
   }
+
 }

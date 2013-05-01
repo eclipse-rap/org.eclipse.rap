@@ -276,7 +276,7 @@ public class BrowserLCA_Test {
     lca.renderChanges( browser );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( browser, "Progress" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( browser, "Progress" ) );
   }
 
   @Test
@@ -291,7 +291,7 @@ public class BrowserLCA_Test {
     lca.renderChanges( browser );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( browser, "Progress" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( browser, "Progress" ) );
   }
 
   @Test
@@ -328,7 +328,7 @@ public class BrowserLCA_Test {
     lca.renderChanges( browser );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "http://eclipse.org/rap", message.findSetProperty( browser, "url" ) );
+    assertEquals( "http://eclipse.org/rap", message.findSetProperty( browser, "url" ).asString() );
   }
 
   @Test
@@ -361,7 +361,7 @@ public class BrowserLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     CallOperation callOperation = message.findCallOperation( browser, "evaluate" );
-    assertEquals( "(function(){alert('33');})();", callOperation.getProperty( "script" ) );
+    assertEquals( "(function(){alert('33');})();", callOperation.getProperty( "script" ).asString() );
   }
 
   @Test
@@ -455,4 +455,5 @@ public class BrowserLCA_Test {
   private static IBrowserAdapter getAdapter( Browser browser ) {
     return browser.getAdapter( IBrowserAdapter.class );
   }
+
 }

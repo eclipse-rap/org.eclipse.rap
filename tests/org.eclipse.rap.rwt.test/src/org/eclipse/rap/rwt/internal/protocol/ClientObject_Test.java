@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -70,7 +71,7 @@ public class ClientObject_Test {
     Message message = getMessage();
     assertEquals( 1, message.getOperationCount() );
     assertTrue( message.getOperation( 0 ) instanceof CreateOperation );
-    assertEquals( new Integer( 23 ), message.getOperation( 0 ).getProperty( "foo" ) );
+    assertEquals( 23, message.getOperation( 0 ).getProperty( "foo" ).asInt() );
   }
 
   @Test
@@ -84,10 +85,10 @@ public class ClientObject_Test {
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
     assertEquals( shellId, operation.getTarget() );
-    assertEquals( Integer.valueOf( 2 ), operation.getProperty( "int" ) );
-    assertEquals( Double.valueOf( 3.5 ), operation.getProperty( "double" ) );
-    assertEquals( Boolean.TRUE, operation.getProperty( "boolean" ) );
-    assertEquals( "foo", operation.getProperty( "string" ) );
+    assertEquals( JsonValue.valueOf( 2 ), operation.getProperty( "int" ) );
+    assertEquals( JsonValue.valueOf( 3.5 ), operation.getProperty( "double" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperty( "boolean" ));
+    assertEquals( JsonValue.valueOf( "foo" ), operation.getProperty( "string" ) );
     assertEquals( new JsonArray().add( 23 ).add( 42 ), operation.getProperty( "array" ) );
     assertEquals( new JsonObject().add( "foo", 23 ), operation.getProperty( "object" ) );
   }
@@ -142,8 +143,8 @@ public class ClientObject_Test {
     CallOperation operation = ( CallOperation )getMessage().getOperation( 1 );
     assertEquals( shellId, operation.getTarget() );
     assertEquals( "method2", operation.getMethodName() );
-    assertEquals( "a", operation.getProperty( "key1" ) );
-    assertEquals( new Integer( 3 ), operation.getProperty( "key2" ) );
+    assertEquals( "a", operation.getProperty( "key1" ).asString() );
+    assertEquals( 3, operation.getProperty( "key2" ).asInt() );
   }
 
   private Message getMessage() {

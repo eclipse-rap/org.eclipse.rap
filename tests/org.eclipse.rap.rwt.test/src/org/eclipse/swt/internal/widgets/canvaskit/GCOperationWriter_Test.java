@@ -615,8 +615,7 @@ public class GCOperationWriter_Test {
     Message message = Fixture.getProtocolMessage();
     String id = CanvasLCA_Test.getGcId( canvas );
     CallOperation draw = message.findCallOperation( id, "draw" );
-    JsonArray operations = ( JsonArray )draw.getProperty( "operations" );
-    return operations;
+    return draw.getProperty( "operations" ).asArray();
   }
 
   private static String getOperation( int i, JsonArray operations ) {
@@ -638,4 +637,5 @@ public class GCOperationWriter_Test {
     }
     operationWriter.render();
   }
+
 }

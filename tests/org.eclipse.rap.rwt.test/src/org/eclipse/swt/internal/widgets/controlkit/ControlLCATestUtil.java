@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -109,7 +110,7 @@ public class ControlLCATestUtil {
 
     Message message = Fixture.getProtocolMessage();
     String listenerName = getListenerName( eventType );
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, listenerName ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, listenerName ) );
 
     control.removeListener( eventType, listener );
   }
@@ -127,7 +128,7 @@ public class ControlLCATestUtil {
 
     Message message = Fixture.getProtocolMessage();
     String listenerName = getListenerName( eventType );
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, listenerName ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, listenerName ) );
   }
 
   private static void testRenderListenerUnchanged( Control control, int eventType )
@@ -191,4 +192,5 @@ public class ControlLCATestUtil {
     }
     return result;
   }
+
 }

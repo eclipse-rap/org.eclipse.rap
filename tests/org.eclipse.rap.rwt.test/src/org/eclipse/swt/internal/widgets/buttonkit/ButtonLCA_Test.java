@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -409,7 +410,7 @@ public class ButtonLCA_Test {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "test", message.findSetProperty( button, "text" ) );
+    assertEquals( "test", message.findSetProperty( button, "text" ).asString() );
   }
 
   @Test
@@ -418,7 +419,7 @@ public class ButtonLCA_Test {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "te\"s't", message.findSetProperty( button, "text" ) );
+    assertEquals( "te\"s't", message.findSetProperty( button, "text" ).asString() );
   }
 
   @Test
@@ -427,7 +428,7 @@ public class ButtonLCA_Test {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "test", message.findSetProperty( button, "text" ) );
+    assertEquals( "test", message.findSetProperty( button, "text" ).asString() );
   }
 
   @Test
@@ -436,7 +437,7 @@ public class ButtonLCA_Test {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "\ntes\r\nt\n", message.findSetProperty( button, "text" ) );
+    assertEquals( "\ntes\r\nt\n", message.findSetProperty( button, "text" ).asString() );
   }
 
   @Test
@@ -467,7 +468,7 @@ public class ButtonLCA_Test {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "up", message.findSetProperty( button, "alignment" ) );
+    assertEquals( "up", message.findSetProperty( button, "alignment" ).asString() );
   }
 
   @Test
@@ -476,7 +477,7 @@ public class ButtonLCA_Test {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "right", message.findSetProperty( button, "alignment" ) );
+    assertEquals( "right", message.findSetProperty( button, "alignment" ).asString() );
   }
 
   @Test
@@ -486,7 +487,7 @@ public class ButtonLCA_Test {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "down", message.findSetProperty( button, "alignment" ) );
+    assertEquals( "down", message.findSetProperty( button, "alignment" ).asString() );
   }
 
   @Test
@@ -512,7 +513,7 @@ public class ButtonLCA_Test {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( button, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( button, "Selection" ) );
   }
 
   @Test
@@ -527,7 +528,7 @@ public class ButtonLCA_Test {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( button, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( button, "Selection" ) );
   }
 
   @Test
@@ -612,7 +613,7 @@ public class ButtonLCA_Test {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( button, "selection" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( button, "selection" ) );
   }
 
   @Test
@@ -647,7 +648,7 @@ public class ButtonLCA_Test {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( button, "grayed" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( button, "grayed" ) );
   }
 
   @Test
@@ -678,7 +679,7 @@ public class ButtonLCA_Test {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( button, "mnemonicIndex" ) );
+    assertEquals( 2, message.findSetProperty( button, "mnemonicIndex" ).asInt() );
   }
 
   @Test
@@ -692,7 +693,7 @@ public class ButtonLCA_Test {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( button, "mnemonicIndex" ) );
+    assertEquals( 2, message.findSetProperty( button, "mnemonicIndex" ).asInt() );
   }
 
   @Test

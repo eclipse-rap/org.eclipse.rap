@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -22,6 +23,7 @@ import java.util.Date;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -340,7 +342,8 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderCustomVariant( widget );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "variant_my_variant", message.findSetProperty( widget, "customVariant" ) );
+    assertEquals( "variant_my_variant",
+                  message.findSetProperty( widget, "customVariant" ).asString() );
   }
 
   @Test
@@ -370,7 +373,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderListenHelp( widget );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( widget, "Help" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( widget, "Help" ) );
   }
 
   @Test
@@ -398,7 +401,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderListenHelp( widget );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( widget, "Help" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( widget, "Help" ) );
   }
 
   @Test
@@ -555,7 +558,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderMenu( widget, widget.getMenu() );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( WidgetUtil.getId( menu ), message.findSetProperty( widget, "menu" ) );
+    assertEquals( getId( menu ), message.findSetProperty( widget, "menu" ).asString() );
   }
 
   @Test

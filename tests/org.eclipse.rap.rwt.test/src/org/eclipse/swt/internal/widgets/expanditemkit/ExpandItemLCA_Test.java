@@ -208,7 +208,7 @@ public class ExpandItemLCA_Test {
     lca.renderChanges( expandItem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "variant_blue", message.findSetProperty( expandItem, "customVariant" ) );
+    assertEquals( "variant_blue", message.findSetProperty( expandItem, "customVariant" ).asString() );
   }
 
   @Test
@@ -276,7 +276,7 @@ public class ExpandItemLCA_Test {
     lca.renderChanges( expandItem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( expandItem, "text" ) );
+    assertEquals( "foo", message.findSetProperty( expandItem, "text" ).asString() );
   }
 
   @Test
@@ -357,7 +357,7 @@ public class ExpandItemLCA_Test {
     lca.renderChanges( expandItem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 26 ), message.findSetProperty( expandItem, "headerHeight" ) );
+    assertEquals( 26, message.findSetProperty( expandItem, "headerHeight" ).asInt() );
   }
 
   @Test
@@ -406,4 +406,5 @@ public class ExpandItemLCA_Test {
     parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
     Fixture.fakeNotifyOperation( getId( item.getParent() ), eventName, parameters );
   }
+
 }

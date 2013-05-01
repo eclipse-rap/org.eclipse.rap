@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture;
 
-import static org.eclipse.rap.rwt.internal.json.JsonUtil.jsonToJava;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
 import org.eclipse.rap.rwt.internal.json.JsonValue;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -56,15 +55,15 @@ public final class Message {
   }
 
   public int getRequestCounter() {
-    return ( ( Integer )findHeadProperty( "requestCounter" ) ).intValue();
+    return message.get( "head" ).asObject().get( "requestCounter" ).asInt();
   }
 
   public String getError() {
-    return findHeadProperty( "error" ).toString();
+    return message.get( "head" ).asObject().get( "error" ).asString();
   }
 
   public String getErrorMessage() {
-    return findHeadProperty( "message" ).toString();
+    return message.get( "head" ).asObject().get( "message" ).asString();
   }
 
   public int getOperationCount() {
@@ -91,20 +90,11 @@ public final class Message {
     return result;
   }
 
-  public Object findHeadProperty( String property ) {
-    try {
-      return jsonToJava( message.get( "head" ).asObject().get( property ) );
-    } catch( Exception e ) {
-      throw new RuntimeException( "Head property does not exist for key: " + property );
-    }
+  public JsonValue findSetProperty( Widget widget, String property ) {
+    return findSetProperty( getId( widget ), property );
   }
 
-  public Object findSetProperty( Widget widget, String property ) {
-    String target = WidgetUtil.getId( widget );
-    return findSetProperty( target, property );
-  }
-
-  public Object findSetProperty( String target, String property ) {
+  public JsonValue findSetProperty( String target, String property ) {
     SetOperation operation = findSetOperation( target, property );
     if( operation == null ) {
       throw new IllegalStateException( "operation not found" );
@@ -113,25 +103,22 @@ public final class Message {
   }
 
   public SetOperation findSetOperation( Widget widget, String property ) {
-    String target = WidgetUtil.getId( widget );
-    return findSetOperation( target, property );
+    return findSetOperation( getId( widget ), property );
   }
 
   public ListenOperation findListenOperation( Widget widget, String property ) {
-    String target = WidgetUtil.getId( widget );
-    return findListenOperation( target, property );
+    return findListenOperation( getId( widget ), property );
   }
 
   public ListenOperation findListenOperation( String target, String property ) {
     return ( ListenOperation )findOperation( ListenOperation.class, target, property );
   }
 
-  public Object findListenProperty( Widget widget, String property ) {
-    String target = WidgetUtil.getId( widget );
-    return findListenProperty( target, property );
+  public JsonValue findListenProperty( Widget widget, String property ) {
+    return findListenProperty( getId( widget ), property );
   }
 
-  public Object findListenProperty( String target, String property ) {
+  public JsonValue findListenProperty( String target, String property ) {
     ListenOperation operation = findListenOperation( target, property );
     if( operation == null ) {
       throw new IllegalStateException( "operation not found" );
@@ -140,16 +127,14 @@ public final class Message {
   }
 
   public CreateOperation findCreateOperation( Widget widget ) {
-    String target = WidgetUtil.getId( widget );
-    return findCreateOperation( target );
+    return findCreateOperation( getId( widget ) );
   }
 
-  public Object findCreateProperty( Widget widget, String property ) {
-    String target = WidgetUtil.getId( widget );
-    return findCreateProperty( target, property );
+  public JsonValue findCreateProperty( Widget widget, String property ) {
+    return findCreateProperty( getId( widget ), property );
   }
 
-  public Object findCreateProperty( String target, String property ) {
+  public JsonValue findCreateProperty( String target, String property ) {
     CreateOperation operation = findCreateOperation( target );
     if( operation == null || operation.getPropertyNames().indexOf( property ) == -1 ) {
       throw new IllegalStateException( "operation not found" );
@@ -162,8 +147,7 @@ public final class Message {
   }
 
   public DestroyOperation findDestroyOperation( Widget widget ) {
-    String target = WidgetUtil.getId( widget );
-    return ( DestroyOperation )findOperation( DestroyOperation.class, target );
+    return ( DestroyOperation )findOperation( DestroyOperation.class, getId( widget ) );
   }
 
   public SetOperation findSetOperation( String target, String property ) {
@@ -171,8 +155,7 @@ public final class Message {
   }
 
   public CallOperation findCallOperation( Widget widget, String method ) {
-    String target = WidgetUtil.getId( widget );
-    return findCallOperation( target, method );
+    return findCallOperation( getId( widget ), method );
   }
 
   public CallOperation findCallOperation( String target, String method ) {
@@ -258,16 +241,8 @@ public final class Message {
       return getProperties().names();
     }
 
-    public Object getProperty( String key ) {
-      JsonValue value = getProperties().get( key );
-      if( value == null ) {
-        throw new IllegalStateException( "Property does not exist for key: " + key );
-      }
-      Object result = value;
-      if( !value.isObject() && !value.isArray() ) {
-        result = jsonToJava( value );
-      }
-      return result;
+    public JsonValue getProperty( String key ) {
+      return getProperties().get( key );
     }
 
     public int getPosition() {
@@ -285,7 +260,7 @@ public final class Message {
     }
 
     public String getParent() {
-      return ( String )getProperty( "parent" );
+      return getProperty( "parent" ).asString();
     }
 
     public String getType() {
@@ -310,12 +285,12 @@ public final class Message {
     }
 
     public Object[] getStyles() {
-      Object detail = getProperty( "style" );
       Object[] result = null;
-      if( !detail.equals( JsonObject.NULL ) ) {
-        JsonArray parameters = ( JsonArray )detail;
+      JsonValue detail = getProperty( "style" );
+      if( detail != null ) {
+        JsonArray parameters = detail.asArray();
         result = new Object[ parameters.size() ];
-        for( int i = 0; i < parameters.size(); i++ ) {
+        for( int i = 0; i < result.length; i++ ) {
           try {
             result[ i ] = parameters.get( i ).asString();
           } catch( Exception e ) {
@@ -383,7 +358,7 @@ public final class Message {
     }
 
     public boolean listensTo( String eventName ) {
-      return ( ( Boolean )getProperty( eventName ) ).booleanValue();
+      return getProperty( eventName ).asBoolean();
     }
 
     @Override

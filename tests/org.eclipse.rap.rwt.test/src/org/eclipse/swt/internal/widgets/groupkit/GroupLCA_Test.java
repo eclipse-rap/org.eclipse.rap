@@ -95,7 +95,7 @@ public class GroupLCA_Test {
     lca.renderChanges( group );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( group, "text" ) );
+    assertEquals( "foo", message.findSetProperty( group, "text" ).asString() );
   }
 
   @Test
@@ -104,7 +104,7 @@ public class GroupLCA_Test {
     lca.renderChanges( group );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "test", message.findSetProperty( group, "text" ) );
+    assertEquals( "test", message.findSetProperty( group, "text" ).asString() );
   }
 
   @Test
@@ -134,7 +134,7 @@ public class GroupLCA_Test {
     lca.renderChanges( group );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( group, "mnemonicIndex" ) );
+    assertEquals( 2, message.findSetProperty( group, "mnemonicIndex" ).asInt() );
   }
 
   @Test

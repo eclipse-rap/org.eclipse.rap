@@ -15,6 +15,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.*;
@@ -92,7 +93,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( twistie );
-    JsonArray images = ( JsonArray )operation.getProperty( "images" );
+    JsonArray images = operation.getProperty( "images" ).asArray();
     assertNotNull( images.get( 0 ) );
     assertNotNull( images.get( 1 ) );
     assertNotNull( images.get( 2 ) );
@@ -105,7 +106,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( twistie );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( twistie, "DefaultSelection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( twistie, "DefaultSelection" ) );
   }
 
   @SuppressWarnings("serial")
@@ -142,7 +143,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( twistie );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( twistie, "expanded" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( twistie, "expanded" ) );
   }
 
   public void testRenderExpandedUnchanged() throws IOException {

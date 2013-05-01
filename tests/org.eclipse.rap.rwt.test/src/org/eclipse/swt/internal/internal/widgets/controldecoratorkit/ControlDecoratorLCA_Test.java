@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -216,7 +217,7 @@ public class ControlDecoratorLCA_Test {
     lca.renderChanges( decorator );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( decorator, "text" ) );
+    assertEquals( "foo", message.findSetProperty( decorator, "text" ).asString() );
   }
 
   @Test
@@ -301,7 +302,7 @@ public class ControlDecoratorLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     decorator.isVisible();
-    assertEquals( Boolean.TRUE, message.findSetProperty( decorator, "visible" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( decorator, "visible" ) );
   }
 
   @Test
@@ -334,7 +335,7 @@ public class ControlDecoratorLCA_Test {
     lca.renderChanges( decorator );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findSetProperty( decorator, "showHover" ) );
+    assertEquals( JsonValue.FALSE, message.findSetProperty( decorator, "showHover" ) );
   }
 
   @Test
@@ -360,8 +361,8 @@ public class ControlDecoratorLCA_Test {
     lca.renderChanges( decorator );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( decorator, "Selection" ) );
-    assertEquals( Boolean.TRUE, message.findListenProperty( decorator, "DefaultSelection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( decorator, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( decorator, "DefaultSelection" ) );
   }
 
   @Test
@@ -376,8 +377,8 @@ public class ControlDecoratorLCA_Test {
     lca.renderChanges( decorator );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( decorator, "Selection" ) );
-    assertEquals( Boolean.FALSE, message.findListenProperty( decorator, "DefaultSelection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( decorator, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( decorator, "DefaultSelection" ) );
   }
 
   @Test
@@ -405,7 +406,7 @@ public class ControlDecoratorLCA_Test {
     lca.renderChanges( decorator );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( decorator, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( decorator, "Selection" ) );
     assertNull( message.findListenOperation( decorator, "DefaultSelection" ) );
   }
 
@@ -419,7 +420,7 @@ public class ControlDecoratorLCA_Test {
     lca.renderChanges( decorator );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( decorator, "DefaultSelection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( decorator, "DefaultSelection" ) );
     assertNull( message.findListenOperation( decorator, "Selection" ) );
   }
 

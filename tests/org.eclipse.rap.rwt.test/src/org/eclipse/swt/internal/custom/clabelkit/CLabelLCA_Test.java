@@ -22,6 +22,7 @@ import java.util.Arrays;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -92,7 +93,7 @@ public class CLabelLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
-    assertEquals( Boolean.TRUE, operation.getProperty( "markupEnabled" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperty( "markupEnabled" ) );
   }
 
   @Test
@@ -115,7 +116,7 @@ public class CLabelLCA_Test {
     lca.render( clabel );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "center", message.findCreateProperty( clabel, "alignment" ) );
+    assertEquals( "center", message.findCreateProperty( clabel, "alignment" ).asString() );
   }
 
   @Test
@@ -142,7 +143,7 @@ public class CLabelLCA_Test {
     lca.renderChanges( clabel );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( clabel, "text" ) );
+    assertEquals( "foo", message.findSetProperty( clabel, "text" ).asString() );
   }
 
   @Test
@@ -224,7 +225,7 @@ public class CLabelLCA_Test {
     lca.renderChanges( clabel );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "right", message.findSetProperty( clabel, "alignment" ) );
+    assertEquals( "right", message.findSetProperty( clabel, "alignment" ).asString() );
   }
 
   @Test
@@ -255,7 +256,7 @@ public class CLabelLCA_Test {
     lca.renderChanges( clabel );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 5 ), message.findSetProperty( clabel, "leftMargin" ) );
+    assertEquals( 5, message.findSetProperty( clabel, "leftMargin" ).asInt() );
   }
 
   @Test
@@ -287,7 +288,7 @@ public class CLabelLCA_Test {
     lca.renderChanges( clabel );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 5 ), message.findSetProperty( clabel, "topMargin" ) );
+    assertEquals( 5, message.findSetProperty( clabel, "topMargin" ).asInt() );
   }
 
   @Test
@@ -318,7 +319,7 @@ public class CLabelLCA_Test {
     lca.renderChanges( clabel );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 5 ), message.findSetProperty( clabel, "rightMargin" ) );
+    assertEquals( 5, message.findSetProperty( clabel, "rightMargin" ).asInt() );
   }
 
   @Test
@@ -349,7 +350,7 @@ public class CLabelLCA_Test {
     lca.renderChanges( clabel );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 5 ), message.findSetProperty( clabel, "bottomMargin" ) );
+    assertEquals( 5, message.findSetProperty( clabel, "bottomMargin" ).asInt() );
   }
 
   @Test

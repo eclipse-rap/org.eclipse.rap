@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -231,7 +232,7 @@ public class ScrolledCompositeLCA_Test {
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( contentId, message.findSetProperty( sc, "content" ) );
+    assertEquals( contentId, message.findSetProperty( sc, "content" ).asString() );
   }
 
   @Test
@@ -318,7 +319,7 @@ public class ScrolledCompositeLCA_Test {
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( sc, "showFocusedControl" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( sc, "showFocusedControl" ) );
   }
 
   @Test
@@ -345,7 +346,7 @@ public class ScrolledCompositeLCA_Test {
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( hScroll, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( hScroll, "Selection" ) );
   }
 
   @Test
@@ -361,7 +362,7 @@ public class ScrolledCompositeLCA_Test {
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( hScroll, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( hScroll, "Selection" ) );
   }
 
   @Test
@@ -390,7 +391,7 @@ public class ScrolledCompositeLCA_Test {
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( vScroll, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( vScroll, "Selection" ) );
   }
 
   @Test
@@ -406,7 +407,7 @@ public class ScrolledCompositeLCA_Test {
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( vScroll, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( vScroll, "Selection" ) );
   }
 
   @Test
@@ -439,7 +440,7 @@ public class ScrolledCompositeLCA_Test {
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( hScroll, "visibility" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( hScroll, "visibility" ) );
     assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 
@@ -450,7 +451,7 @@ public class ScrolledCompositeLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( hScroll, "visibility" ) );
-    assertEquals( Boolean.TRUE, message.findSetProperty( vScroll, "visibility" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( vScroll, "visibility" ) );
   }
 
   @Test
@@ -469,4 +470,5 @@ public class ScrolledCompositeLCA_Test {
     assertNull( message.findSetOperation( hScroll, "visibility" ) );
     assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
+
 }

@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -251,7 +252,7 @@ public class MeasurementOperator_Test {
   private void checkResponseContainsMeasurementCall() {
     Message message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS );
-    Object itemsProperty = operation.getProperty( PROPERTY_ITEMS );
+    JsonValue itemsProperty = operation.getProperty( PROPERTY_ITEMS );
     String[] expected = getMeasurementCall();
     checkResponseContainsContent( expected, itemsProperty.toString() );
   }
@@ -259,7 +260,7 @@ public class MeasurementOperator_Test {
   private void checkResponseContainsProbeCall() {
     Message message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS );
-    Object itemsProperty = operation.getProperty( PROPERTY_ITEMS );
+    JsonValue itemsProperty = operation.getProperty( PROPERTY_ITEMS );
     String[] expected = getProbeCall();
     checkResponseContainsContent( expected, itemsProperty.toString() );
   }

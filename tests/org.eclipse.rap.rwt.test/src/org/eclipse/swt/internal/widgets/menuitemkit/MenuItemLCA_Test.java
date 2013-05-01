@@ -30,6 +30,7 @@ import java.util.List;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -363,7 +364,7 @@ public class MenuItemLCA_Test {
     lca.renderInitialization( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 0 ), message.findCreateProperty( item, "index" ) );
+    assertEquals( 0, message.findCreateProperty( item, "index" ).asInt() );
   }
 
   @Test
@@ -398,7 +399,7 @@ public class MenuItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( WidgetUtil.getId( subMenu ), message.findSetProperty( item, "menu" ) );
+    assertEquals( getId( subMenu ), message.findSetProperty( item, "menu" ).asString() );
   }
 
   @Test
@@ -435,7 +436,7 @@ public class MenuItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findSetProperty( item, "enabled" ) );
+    assertEquals( JsonValue.FALSE, message.findSetProperty( item, "enabled" ) );
   }
 
   @Test
@@ -471,7 +472,7 @@ public class MenuItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( item, "selection" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( item, "selection" ) );
   }
 
   @Test
@@ -507,7 +508,7 @@ public class MenuItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "variant_blue", message.findSetProperty( item, "customVariant" ) );
+    assertEquals( "variant_blue", message.findSetProperty( item, "customVariant" ).asString() );
   }
 
   @Test
@@ -543,7 +544,7 @@ public class MenuItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( item, "text" ) );
+    assertEquals( "foo", message.findSetProperty( item, "text" ).asString() );
   }
 
   @Test
@@ -554,7 +555,7 @@ public class MenuItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( item, "text" ) );
+    assertEquals( "foo", message.findSetProperty( item, "text" ).asString() );
   }
 
   @Test
@@ -589,7 +590,7 @@ public class MenuItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( item, "mnemonicIndex" ) );
+    assertEquals( 2, message.findSetProperty( item, "mnemonicIndex" ).asInt() );
   }
 
   @Test
@@ -615,7 +616,7 @@ public class MenuItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( item, "mnemonicIndex" ) );
+    assertEquals( 2, message.findSetProperty( item, "mnemonicIndex" ).asInt() );
   }
 
   @Test
@@ -683,7 +684,7 @@ public class MenuItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( item, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( item, "Selection" ) );
     assertNull( message.findListenOperation( item, "DefaultSelection" ) );
   }
 
@@ -700,7 +701,7 @@ public class MenuItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( item, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( item, "Selection" ) );
     assertNull( message.findListenOperation( item, "DefaultSelection" ) );
   }
 
@@ -733,7 +734,7 @@ public class MenuItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( item, "Help" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( item, "Help" ) );
   }
 
   @Test
@@ -752,7 +753,7 @@ public class MenuItemLCA_Test {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( item, "Help" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( item, "Help" ) );
   }
 
   @Test

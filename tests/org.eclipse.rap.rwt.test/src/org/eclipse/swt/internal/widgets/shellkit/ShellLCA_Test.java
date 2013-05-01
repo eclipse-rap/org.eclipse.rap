@@ -30,6 +30,7 @@ import java.util.Arrays;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -427,7 +428,7 @@ public class ShellLCA_Test {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 23 ), message.findSetProperty( shell, "alpha" ) );
+    assertEquals( 23, message.findSetProperty( shell, "alpha" ).asInt() );
   }
 
   @Test
@@ -439,7 +440,7 @@ public class ShellLCA_Test {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "maximized", message.findSetProperty( shell, "mode" ) );
+    assertEquals( "maximized", message.findSetProperty( shell, "mode" ).asString() );
   }
 
   @Test
@@ -467,7 +468,7 @@ public class ShellLCA_Test {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "fullscreen", message.findSetProperty( shell, "mode" ) );
+    assertEquals( "fullscreen", message.findSetProperty( shell, "mode" ).asString() );
   }
 
   @Test
@@ -489,7 +490,7 @@ public class ShellLCA_Test {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( WidgetUtil.getId( button ), message.findSetProperty( shell, "defaultButton" ) );
+    assertEquals( getId( button ), message.findSetProperty( shell, "defaultButton" ).asString() );
   }
 
   @Test
@@ -561,7 +562,7 @@ public class ShellLCA_Test {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( WidgetUtil.getId( button ), message.findSetProperty( shell, "activeControl" ) );
+    assertEquals( getId( button ), message.findSetProperty( shell, "activeControl" ).asString() );
   }
 
   @Test
@@ -648,7 +649,7 @@ public class ShellLCA_Test {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( shell, "text" ) );
+    assertEquals( "foo", message.findSetProperty( shell, "text" ).asString() );
   }
 
   // NOTE: Resize and Move are currently always set to listen after creation. This is to keep
@@ -663,8 +664,8 @@ public class ShellLCA_Test {
     lca.renderInitialization( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( shell, "Resize" ) );
-    assertEquals( Boolean.TRUE, message.findListenProperty( shell, "Move" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( shell, "Resize" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( shell, "Move" ) );
   }
 
   @Test
@@ -677,7 +678,7 @@ public class ShellLCA_Test {
     lca.render( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( shell, "Activate" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( shell, "Activate" ) );
   }
 
   @Test
@@ -690,7 +691,7 @@ public class ShellLCA_Test {
     lca.render( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( shell, "Close" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( shell, "Close" ) );
   }
 
   @Test
@@ -706,7 +707,7 @@ public class ShellLCA_Test {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( shell, "active" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( shell, "active" ) );
   }
 
   @Test
@@ -721,8 +722,8 @@ public class ShellLCA_Test {
     lca.renderInitialization( dialogShell );
 
     Message message = Fixture.getProtocolMessage();
-    String parentId = WidgetUtil.getId( parentShell );
-    assertEquals( parentId, message.findCreateProperty( dialogShell, "parentShell" ) );
+    String parentId = getId( parentShell );
+    assertEquals( parentId, message.findCreateProperty( dialogShell, "parentShell" ).asString() );
   }
 
   @Test
@@ -809,7 +810,7 @@ public class ShellLCA_Test {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( shell, "visibility" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( shell, "visibility" ) );
   }
 
   private static Control getActiveControl( Shell shell ) {

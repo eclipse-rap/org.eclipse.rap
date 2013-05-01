@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -230,7 +231,7 @@ public class ExpandBarLCA_Test {
     lca.renderChanges( expandBar );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( vScroll, "visibility" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( vScroll, "visibility" ) );
   }
 
   @Test
@@ -298,7 +299,7 @@ public class ExpandBarLCA_Test {
     lca.renderChanges( expandBar );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( expandBar, "Expand" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( expandBar, "Expand" ) );
   }
 
   @Test
@@ -306,7 +307,7 @@ public class ExpandBarLCA_Test {
     lca.renderChanges( expandBar );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( expandBar, "Collapse" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( expandBar, "Collapse" ) );
   }
 
   @Test
@@ -320,7 +321,7 @@ public class ExpandBarLCA_Test {
     lca.renderChanges( expandBar );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( vScroll, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( vScroll, "Selection" ) );
   }
 
   @Test
@@ -336,7 +337,7 @@ public class ExpandBarLCA_Test {
     lca.renderChanges( expandBar );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( vScroll, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( vScroll, "Selection" ) );
   }
 
   @Test
@@ -353,4 +354,5 @@ public class ExpandBarLCA_Test {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( vScroll, "Selection" ) );
   }
+
 }

@@ -25,6 +25,7 @@ import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -390,7 +391,7 @@ public class ListLCA_Test {
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( list, "topIndex" ) );
+    assertEquals( 2, message.findSetProperty( list, "topIndex" ).asInt() );
   }
 
   @Test
@@ -426,7 +427,7 @@ public class ListLCA_Test {
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( list, "focusIndex" ) );
+    assertEquals( 2, message.findSetProperty( list, "focusIndex" ).asInt() );
   }
 
   @Test
@@ -461,7 +462,7 @@ public class ListLCA_Test {
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( hScroll, "visibility" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( hScroll, "visibility" ) );
     assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 
@@ -474,7 +475,7 @@ public class ListLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( hScroll, "visibility" ) );
-    assertEquals( Boolean.TRUE, message.findSetProperty( vScroll, "visibility" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( vScroll, "visibility" ) );
   }
 
   @Test
@@ -538,7 +539,7 @@ public class ListLCA_Test {
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( list, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( list, "Selection" ) );
     assertNull( message.findListenOperation( list, "DefaultSelection" ) );
   }
 
@@ -554,7 +555,7 @@ public class ListLCA_Test {
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( list, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( list, "Selection" ) );
     assertNull( message.findListenOperation( list, "DefaultSelection" ) );
   }
 
@@ -568,7 +569,7 @@ public class ListLCA_Test {
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( list, "DefaultSelection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( list, "DefaultSelection" ) );
     assertNull( message.findListenOperation( list, "Selection" ) );
   }
 
@@ -584,7 +585,7 @@ public class ListLCA_Test {
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( list, "DefaultSelection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( list, "DefaultSelection" ) );
     assertNull( message.findListenOperation( list, "Selection" ) );
   }
 
@@ -610,7 +611,7 @@ public class ListLCA_Test {
     lca.render( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findCreateProperty( list, "markupEnabled" ) );
+    assertEquals( JsonValue.TRUE, message.findCreateProperty( list, "markupEnabled" ) );
   }
 
   private static void setFocusIndex( List list, int focusIndex ) {

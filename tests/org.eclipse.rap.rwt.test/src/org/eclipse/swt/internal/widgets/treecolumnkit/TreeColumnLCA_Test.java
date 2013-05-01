@@ -29,6 +29,7 @@ import java.util.Map;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.json.JsonObject;
+import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -179,7 +180,7 @@ public class TreeColumnLCA_Test {
     verify( listener, times( 0 ) ).controlMoved( any( ControlEvent.class ) );
     assertEquals( newWidth, column.getWidth() );
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( newWidth ), message.findSetProperty( column, "width" ) );
+    assertEquals( newWidth, message.findSetProperty( column, "width" ).asInt() );
   }
 
   @Test
@@ -363,7 +364,7 @@ public class TreeColumnLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
     assertTrue( operation.getPropertyNames().indexOf( "style" ) == -1 );
-    assertEquals( "right", message.findCreateProperty( column, "alignment" ) );
+    assertEquals( "right", message.findCreateProperty( column, "alignment" ).asString() );
   }
 
   @Test
@@ -390,7 +391,7 @@ public class TreeColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( column, "index" ) );
+    assertEquals( 1, message.findSetProperty( column, "index" ).asInt() );
   }
 
   @Test
@@ -421,7 +422,7 @@ public class TreeColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( column, "toolTip" ) );
+    assertEquals( "foo", message.findSetProperty( column, "toolTip" ).asString() );
   }
 
   @Test
@@ -452,7 +453,7 @@ public class TreeColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "variant_blue", message.findSetProperty( column, "customVariant" ) );
+    assertEquals( "variant_blue", message.findSetProperty( column, "customVariant" ).asString() );
   }
 
   @Test
@@ -483,7 +484,7 @@ public class TreeColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( column, "text" ) );
+    assertEquals( "foo", message.findSetProperty( column, "text" ).asString() );
   }
 
   @Test
@@ -565,7 +566,7 @@ public class TreeColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 50 ), message.findSetProperty( column, "left" ) );
+    assertEquals( 50, message.findSetProperty( column, "left" ).asInt() );
   }
 
   @Test
@@ -597,7 +598,7 @@ public class TreeColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 50 ), message.findSetProperty( column, "width" ) );
+    assertEquals( 50, message.findSetProperty( column, "width" ).asInt() );
   }
 
   @Test
@@ -628,7 +629,7 @@ public class TreeColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findSetProperty( column, "resizable" ) );
+    assertEquals( JsonValue.FALSE, message.findSetProperty( column, "resizable" ) );
   }
 
   @Test
@@ -659,7 +660,7 @@ public class TreeColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( column, "moveable" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( column, "moveable" ) );
   }
 
   @Test
@@ -690,7 +691,7 @@ public class TreeColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "right", message.findSetProperty( column, "alignment" ) );
+    assertEquals( "right", message.findSetProperty( column, "alignment" ).asString() );
   }
 
   @Test
@@ -721,7 +722,7 @@ public class TreeColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( column, "fixed" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( column, "fixed" ) );
   }
 
   @Test
@@ -747,7 +748,7 @@ public class TreeColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( column, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( column, "Selection" ) );
   }
 
   @Test
@@ -762,7 +763,7 @@ public class TreeColumnLCA_Test {
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( column, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( column, "Selection" ) );
   }
 
   @Test
@@ -864,4 +865,5 @@ public class TreeColumnLCA_Test {
     }
     return tree;
   }
+
 }
