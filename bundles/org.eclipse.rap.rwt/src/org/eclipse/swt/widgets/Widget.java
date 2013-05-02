@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.clientscripting.ClientScriptingSupport.addClientListenerTo;
+import static org.eclipse.rap.rwt.internal.clientscripting.ClientScriptingSupport.removeClientListenerFrom;
+
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
@@ -529,6 +532,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     }
     ensureEventTable();
     eventTable.hook( eventType, listener );
+    addClientListenerTo( this, eventType, listener );
   }
 
   /**
@@ -562,6 +566,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     if( eventTable != null ) {
       eventTable.unhook( eventType, listener );
     }
+    removeClientListenerFrom( this, eventType, listener );
   }
 
   /**
