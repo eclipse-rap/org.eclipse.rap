@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ var appearances = {
       result.textColor = tv.getCssColor( "Text", "color" );
       result.backgroundColor = tv.getCssColor( "Text", "background-color" );
       result.backgroundImage = tv.getCssImage( "Text", "background-image" );
+      result.backgroundRepeat = tv.getCssIdentifier( "Text", "background-repeat" );
+      result.backgroundPosition = tv.getCssIdentifier( "Text", "background-position" );
       result.backgroundGradient = tv.getCssGradient( "Text", "background-image" );
       result.border = tv.getCssBorder( "Text", "border" );
       // [if] Do not apply top/bottom paddings on the client
