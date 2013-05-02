@@ -1152,6 +1152,8 @@ Text {
   border-radius: 0;
   padding: 5px 10px 5px 10px;
   color: #4a4a4a;
+  background-repeat: repeat;
+  background-position: left top;
   background-color: #ffffff;
   background-image: none;
   text-shadow: none;
