@@ -8,11 +8,12 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.json;
+package org.eclipse.rap.rwt.internal.protocol;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.swt.layout.GridLayout;
 import org.junit.Test;
 

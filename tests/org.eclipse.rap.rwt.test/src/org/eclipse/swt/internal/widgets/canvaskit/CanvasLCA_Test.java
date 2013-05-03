@@ -17,8 +17,8 @@ import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.rap.rwt.internal.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;

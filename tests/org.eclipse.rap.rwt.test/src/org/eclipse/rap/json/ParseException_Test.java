@@ -8,10 +8,11 @@
  * Contributors:
  *    Ralf Sternberg - initial implementation and API
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.json;
+package org.eclipse.rap.json;
 
 import static org.junit.Assert.assertEquals;
 
+import org.eclipse.rap.json.ParseException;
 import org.junit.Test;
 
 

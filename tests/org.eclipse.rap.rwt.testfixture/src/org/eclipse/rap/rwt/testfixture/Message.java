@@ -15,9 +15,9 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rap.rwt.internal.json.JsonArray;
-import org.eclipse.rap.rwt.internal.json.JsonObject;
-import org.eclipse.rap.rwt.internal.json.JsonValue;
+import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.swt.widgets.Widget;
 
 

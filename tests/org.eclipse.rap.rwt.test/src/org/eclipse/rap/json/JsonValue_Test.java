@@ -8,9 +8,9 @@
  * Contributors:
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.json;
+package org.eclipse.rap.json;
 
-import static org.eclipse.rap.rwt.internal.json.TestUtil.assertException;
+import static org.eclipse.rap.json.TestUtil.assertException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -19,6 +19,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.json.JsonWriter;
 import org.junit.Test;
 
 

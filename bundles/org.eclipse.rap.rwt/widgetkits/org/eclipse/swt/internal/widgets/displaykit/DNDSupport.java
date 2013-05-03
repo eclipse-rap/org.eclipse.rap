@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
-import static org.eclipse.rap.rwt.internal.json.JsonUtil.jsonToJava;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.jsonToJava;
 
 import java.util.ArrayList;
 

@@ -19,7 +19,7 @@ import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.rap.rwt.internal.json.*;
+import org.eclipse.rap.json.*;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;

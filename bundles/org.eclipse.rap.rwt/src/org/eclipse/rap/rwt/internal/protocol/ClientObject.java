@@ -10,8 +10,8 @@
 *******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import org.eclipse.rap.rwt.internal.json.JsonObject;
-import org.eclipse.rap.rwt.internal.json.JsonValue;
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 
 

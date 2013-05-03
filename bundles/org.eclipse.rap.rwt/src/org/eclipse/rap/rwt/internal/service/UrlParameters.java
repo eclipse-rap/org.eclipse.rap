@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.internal.service;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getClientMessage;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rap.rwt.internal.json.JsonValue;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 

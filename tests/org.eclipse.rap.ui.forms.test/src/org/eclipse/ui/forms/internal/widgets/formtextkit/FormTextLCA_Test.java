@@ -12,7 +12,7 @@ package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;

@@ -17,7 +17,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.json.JsonArray;
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;

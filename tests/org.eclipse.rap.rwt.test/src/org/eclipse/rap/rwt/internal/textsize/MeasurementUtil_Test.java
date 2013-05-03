@@ -11,7 +11,8 @@
 package org.eclipse.rap.rwt.internal.textsize;
 
 import static org.junit.Assert.assertEquals;
-import org.eclipse.rap.rwt.internal.json.JsonArray;
+
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;

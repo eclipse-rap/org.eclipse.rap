@@ -18,9 +18,9 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.ACTION_SET
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.HEAD;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.OPERATIONS;
 
-import org.eclipse.rap.rwt.internal.json.JsonArray;
-import org.eclipse.rap.rwt.internal.json.JsonObject;
-import org.eclipse.rap.rwt.internal.json.JsonValue;
+import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 
 
 public class ProtocolMessageWriter {

@@ -11,9 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
-import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.json.JsonUtil.createJsonValue;
 import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonValue;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForColor;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForFont;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForImage;
@@ -25,11 +25,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.client.WidgetDataWhiteList;
-import org.eclipse.rap.rwt.internal.json.JsonArray;
-import org.eclipse.rap.rwt.internal.json.JsonObject;
-import org.eclipse.rap.rwt.internal.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.protocol.StylesUtil;

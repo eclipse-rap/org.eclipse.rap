@@ -8,11 +8,15 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.json;
+package org.eclipse.rap.rwt.internal.protocol;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 
 
 public final class JsonUtil {

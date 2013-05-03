@@ -12,7 +12,8 @@
 package org.eclipse.swt.internal.widgets.menukit;
 
 import java.io.IOException;
-import org.eclipse.rap.rwt.internal.json.JsonObject;
+
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
