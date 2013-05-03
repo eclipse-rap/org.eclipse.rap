@@ -21,6 +21,4 @@ public interface WidgetDataWhiteList extends ClientService {
 
   String[] getKeys();
 
-  void setKeys( String[] keys );
-
 }
