@@ -48,6 +48,7 @@ import java.util.List;
  * <p>
  * This class is <strong>not supposed to be extended</strong> by clients.
  * </p>
+ * @since 2.1
  */
 public class JsonArray extends JsonValue implements Iterable<JsonValue> {
 
@@ -57,7 +58,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue> {
    * Creates a new empty JsonArray.
    */
   public JsonArray() {
-    this.values = new ArrayList<JsonValue>();
+    values = new ArrayList<JsonValue>();
   }
 
   /**
@@ -70,7 +71,7 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue> {
     if( array == null ) {
       throw new NullPointerException( "array is null" );
     }
-    this.values = new ArrayList<JsonValue>( array.values );
+    values = new ArrayList<JsonValue>( array.values );
   }
 
   private JsonArray( List<JsonValue> values ) {

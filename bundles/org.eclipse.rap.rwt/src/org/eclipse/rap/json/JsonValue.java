@@ -48,6 +48,7 @@ import java.io.Writer;
  * <p>
  * This class is <strong>not supposed to be extended</strong> by clients.
  * </p>
+ * @since 2.1
  */
 public abstract class JsonValue {
 

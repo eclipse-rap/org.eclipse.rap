@@ -13,6 +13,7 @@ package org.eclipse.rap.json;
 
 /**
  * An unchecked exception to indicate that an input does not qualify as valid JSON.
+ * @since 2.1
  */
 public class ParseException extends RuntimeException {
 
