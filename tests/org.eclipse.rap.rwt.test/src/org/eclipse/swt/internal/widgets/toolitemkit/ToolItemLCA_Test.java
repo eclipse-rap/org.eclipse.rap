@@ -21,9 +21,6 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -82,7 +79,7 @@ public class ToolItemLCA_Test {
   public void testReadSelection_Check() {
     ToolItem item = new ToolItem( toolbar, SWT.CHECK );
 
-    Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
+    Fixture.fakeSetProperty( getId( item ), "selection", true );
     lca.readData( item );
 
     assertTrue( item.getSelection() );
@@ -94,8 +91,7 @@ public class ToolItemLCA_Test {
     Listener listener = mock( Listener.class );
     item.addListener( SWT.Selection, listener );
 
-    Map<String,Object> params = new HashMap<String,Object>();
-    params.put( "altKey", "true" );
+    JsonObject params = new JsonObject().add( "altKey", "true" );
     Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, params );
     Fixture.readDataAndProcessAction( display );
 
@@ -116,7 +112,7 @@ public class ToolItemLCA_Test {
   public void testReadSelection_Radio() {
     ToolItem item = new ToolItem( toolbar, SWT.RADIO );
 
-    Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
+    Fixture.fakeSetProperty( getId( item ), "selection", true );
     lca.readData( item );
 
     assertTrue( item.getSelection() );
@@ -128,8 +124,7 @@ public class ToolItemLCA_Test {
     Listener listener = mock( Listener.class );
     item.addListener( SWT.Selection, listener );
 
-    Map<String,Object> params = new HashMap<String,Object>();
-    params.put( "altKey", "true" );
+    JsonObject params = new JsonObject().add( "altKey", "true" );
     Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, params );
     Fixture.readDataAndProcessAction( display );
 
@@ -168,10 +163,10 @@ public class ToolItemLCA_Test {
     } );
     shell.open();
 
-    Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
-    Map<String,Object> params = new HashMap<String,Object>();
-    params.put( "altKey", "true" );
-    params.put( ClientMessageConst.EVENT_PARAM_DETAIL, "arrow" );
+    Fixture.fakeSetProperty( getId( item ), "selection", true );
+    JsonObject params = new JsonObject()
+      .add( "altKey", "true" )
+      .add( ClientMessageConst.EVENT_PARAM_DETAIL, "arrow" );
     Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, params );
     Fixture.readDataAndProcessAction( display );
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,7 +77,7 @@ public class FocusEvent_Test {
     Button focusControl = new Button( shell, SWT.PUSH );
     focusControl.setText( "focusControl" );
 
-    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( focusControl ) );
+    Fixture.fakeSetProperty( getId( display ), "focusControl", getId( focusControl ) );
     Fixture.readDataAndProcessAction( display );
 
     verify( focusListener, never() ).focusGained( any( FocusEvent.class ) );
@@ -91,7 +91,7 @@ public class FocusEvent_Test {
     Control control = new Button( shell, SWT.PUSH );
     control.addFocusListener( focusListener );
 
-    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( control ) );
+    Fixture.fakeSetProperty( getId( display ), "focusControl", getId( control ) );
     Fixture.readDataAndProcessAction( display );
 
     verify( focusListener, never() ).focusLost( any( FocusEvent.class ) );
@@ -108,7 +108,7 @@ public class FocusEvent_Test {
     button1.addFocusListener( focusListener );
     button2.addFocusListener( focusListener );
 
-    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( button2 ) );
+    Fixture.fakeSetProperty( getId( display ), "focusControl", getId( button2 ) );
     Fixture.readDataAndProcessAction( display );
 
     ArgumentCaptor<FocusEvent> captor1 = ArgumentCaptor.forClass( FocusEvent.class );

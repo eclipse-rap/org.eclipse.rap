@@ -21,9 +21,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
@@ -149,7 +147,7 @@ public class TypedEvent_Test {
     } );
     Fixture.fakeNewRequest();
     fakeMouseDownRequest( button, 1, 2 );
-    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( button ) );
+    Fixture.fakeSetProperty( getId( display ), "focusControl", getId( button ) );
 
     Fixture.executeLifeCycleFromServerThread( );
 
@@ -186,11 +184,11 @@ public class TypedEvent_Test {
   }
 
   private static void fakeMouseDownRequest( Widget widget, int x, int y ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_BUTTON, Integer.valueOf( 1 ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( x ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( y ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_TIME, Integer.valueOf( 0 ) );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_BUTTON, 1 )
+      .add( ClientMessageConst.EVENT_PARAM_X, x )
+      .add( ClientMessageConst.EVENT_PARAM_Y, y )
+      .add( ClientMessageConst.EVENT_PARAM_TIME, 0 );
     Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_MOUSE_DOWN, parameters );
   }
 

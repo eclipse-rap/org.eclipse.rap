@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -287,7 +287,7 @@ public class EventUtil_Test {
     // Within this request a focusLost and widgetSelected (for the button)
     // is sent. The focusList listener opens a modal shell, thus the event on
     // button must not be executed
-    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( button ) );
+    Fixture.fakeSetProperty( getId( display ), "focusControl", getId( button ) );
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread( );
 

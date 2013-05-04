@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,11 +15,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -143,16 +141,16 @@ public class KeyEvent_Test {
   }
 
   private static void fakeSelectionRequest( Widget widget, Widget item ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
     Fixture.fakeNotifyOperation( getId( widget ),
                                  ClientMessageConst.EVENT_SELECTION,
-                                 parameters  );
+                                 parameters );
   }
 
   private static void fakeTreeRequest( TreeItem item ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
     Fixture.fakeNotifyOperation( getId( item.getParent() ), "Expand", parameters );
   }
 
@@ -161,10 +159,10 @@ public class KeyEvent_Test {
   }
 
   private static void fakeKeyDownRequest( Widget widget, int keyCode, int charCode ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_KEY_CODE, Integer.valueOf( keyCode ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_CHAR_CODE, Integer.valueOf( charCode ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_MODIFIER, "" );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_KEY_CODE, keyCode )
+      .add( ClientMessageConst.EVENT_PARAM_CHAR_CODE, charCode )
+      .add( ClientMessageConst.EVENT_PARAM_MODIFIER, "" );
     Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_KEY_DOWN, parameters );
   }
 

@@ -10,14 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -252,8 +251,8 @@ public class ProtocolUtil_Test {
   @Test
   public void testReadPropertyValue_LastSetValue() {
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( "w3", "p1", "foo" );
-    Fixture.fakeSetParameter( "w3", "p1", "bar" );
+    Fixture.fakeSetProperty( "w3", "p1", "foo" );
+    Fixture.fakeSetProperty( "w3", "p1", "bar" );
 
     assertEquals( "bar", ProtocolUtil.readPropertyValueAsString( "w3", "p1" ) );
   }
@@ -475,25 +474,23 @@ public class ProtocolUtil_Test {
   private void fakeNewJsonMessage() {
     Fixture.fakeNewRequest();
     Fixture.fakeHeadParameter( "requestCounter", 21 );
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "p1", "foo" );
-    parameters.put( "p2", Integer.valueOf( 123 ) );
-    Fixture.fakeSetOperation( "w3", parameters  );
-    parameters = new HashMap<String, Object>();
-    parameters.put( "detail", "check" );
-    Fixture.fakeNotifyOperation( "w3", "widgetSelected", parameters );
-    parameters = new HashMap<String, Object>();
-    parameters.put( "p3", Boolean.TRUE );
-    parameters.put( "p4", null );
-    parameters.put( "p5", new int[] { 1, 2 } );
-    parameters.put( "p6", new int[] { 1, 2, 3, 4 } );
-    parameters.put( "p7", new String[] { "a", "b", "c" } );
-    parameters.put( "p8", new Object[]{ "a", new Integer( 2 ), Boolean.TRUE } );
-    parameters.put( "p9", new boolean[] { true, false, true } );
-    Fixture.fakeSetOperation( "w3", parameters  );
-    parameters = new HashMap<String, Object>();
-    parameters.put( "width", Integer.valueOf( 10 ) );
-    Fixture.fakeCallOperation( "w3", "resize", parameters );
+    JsonObject setProperties1 = new JsonObject()
+      .add( "p1", "foo" )
+      .add( "p2", 123 );
+    Fixture.fakeSetOperation( "w3", setProperties1  );
+    JsonObject notifyParameters = new JsonObject().add( "detail", "check" );
+    Fixture.fakeNotifyOperation( "w3", "widgetSelected", notifyParameters );
+    JsonObject setProperites2 = new JsonObject()
+      .add( "p3", true )
+      .add( "p4", JsonValue.NULL )
+      .add( "p5", createJsonArray( 1, 2 ) )
+      .add( "p6", createJsonArray( 1, 2, 3, 4 ) )
+      .add( "p7", createJsonArray( "a", "b", "c" ) )
+      .add( "p8", new JsonArray().add( "a" ).add( 2 ).add( true ) )
+      .add( "p9", createJsonArray( true, false, true ) );
+    Fixture.fakeSetOperation( "w3", setProperites2  );
+    JsonObject callParameters = new JsonObject().add( "width", 10 );
+    Fixture.fakeCallOperation( "w3", "resize", callParameters );
   }
 
   @SuppressWarnings( "resource" )

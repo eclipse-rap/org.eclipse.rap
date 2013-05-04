@@ -110,7 +110,7 @@ public class DisplayLCAFocus_Test {
   private void fakeSetFocusControl() {
     Fixture.fakeNewRequest();
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( button ) );
+    Fixture.fakeSetProperty( getId( display ), "focusControl", getId( button ) );
   }
 
 }

@@ -175,7 +175,7 @@ public class CComboLCA_Test {
     ccombo.add( "item 1" );
     ccombo.add( "item 2" );
 
-    Fixture.fakeSetParameter( getId( ccombo ), "listVisible", Boolean.TRUE );
+    Fixture.fakeSetProperty( getId( ccombo ), "listVisible", true );
     lca.readData( ccombo );
 
     assertTrue( ccombo.getListVisible() );
@@ -186,7 +186,7 @@ public class CComboLCA_Test {
     ccombo.add( "item 1" );
     ccombo.add( "item 2" );
 
-    Fixture.fakeSetParameter( getId( ccombo ), "selectionIndex", Integer.valueOf( 1 ) );
+    Fixture.fakeSetProperty( getId( ccombo ), "selectionIndex", 1 );
     lca.readData( ccombo );
 
     assertEquals( 1, ccombo.getSelectionIndex() );
@@ -218,7 +218,7 @@ public class CComboLCA_Test {
 
   @Test
   public void testReadData_Text() {
-    Fixture.fakeSetParameter( getId( ccombo ), "text", "abc" );
+    Fixture.fakeSetProperty( getId( ccombo ), "text", "abc" );
 
     lca.readData( ccombo );
 
@@ -227,9 +227,9 @@ public class CComboLCA_Test {
 
   @Test
   public void testReadData_TextAndSelection() {
-    Fixture.fakeSetParameter( getId( ccombo ), "text", "abc" );
-    Fixture.fakeSetParameter( getId( ccombo ), "selectionStart", Integer.valueOf( 1 ) );
-    Fixture.fakeSetParameter( getId( ccombo ), "selectionLength", Integer.valueOf( 1 ) );
+    Fixture.fakeSetProperty( getId( ccombo ), "text", "abc" );
+    Fixture.fakeSetProperty( getId( ccombo ), "selectionStart", 1 );
+    Fixture.fakeSetProperty( getId( ccombo ), "selectionLength", 1 );
 
     lca.readData( ccombo );
 
@@ -242,7 +242,7 @@ public class CComboLCA_Test {
     Fixture.markInitialized( shell );
     Fixture.markInitialized( ccombo );
 
-    Fixture.fakeSetParameter( getId( ccombo ), "text", "some text" );
+    Fixture.fakeSetProperty( getId( ccombo ), "text", "some text" );
     Fixture.executeLifeCycleFromServerThread();
 
     // ensure that no text is sent back to the client
@@ -261,7 +261,7 @@ public class CComboLCA_Test {
     VerifyListener listener = mock( VerifyListener.class );
     ccombo.addVerifyListener( listener );
 
-    Fixture.fakeSetParameter( getId( ccombo ), "text", "verify me" );
+    Fixture.fakeSetProperty( getId( ccombo ), "text", "verify me" );
     Fixture.executeLifeCycleFromServerThread();
 
     assertEquals( "verify me", ccombo.getText() );
@@ -906,9 +906,9 @@ public class CComboLCA_Test {
   }
 
   private void fakeTextAndSelectionParameters( String text, int start, int length ) {
-    Fixture.fakeSetParameter( getId( ccombo ), "text", text );
-    Fixture.fakeSetParameter( getId( ccombo ), "selectionStart", Integer.valueOf( start ) );
-    Fixture.fakeSetParameter( getId( ccombo ), "selectionLength", Integer.valueOf( length ) );
+    Fixture.fakeSetProperty( getId( ccombo ), "text", text );
+    Fixture.fakeSetProperty( getId( ccombo ), "selectionStart", start );
+    Fixture.fakeSetProperty( getId( ccombo ), "selectionLength", length );
   }
 
 }

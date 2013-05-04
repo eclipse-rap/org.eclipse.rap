@@ -176,7 +176,7 @@ public class ComboLCA_Test {
     combo.add( "item 1" );
     combo.add( "item 2" );
 
-    Fixture.fakeSetParameter( getId( combo ), "listVisible", Boolean.TRUE );
+    Fixture.fakeSetProperty( getId( combo ), "listVisible", true );
     lca.readData( combo );
 
     assertTrue( combo.getListVisible() );
@@ -187,7 +187,7 @@ public class ComboLCA_Test {
     combo.add( "item 1" );
     combo.add( "item 2" );
 
-    Fixture.fakeSetParameter( getId( combo ), "selectionIndex", Integer.valueOf( 1 ) );
+    Fixture.fakeSetProperty( getId( combo ), "selectionIndex", 1 );
     lca.readData( combo );
 
     assertEquals( 1, combo.getSelectionIndex() );
@@ -217,7 +217,7 @@ public class ComboLCA_Test {
 
   @Test
   public void testReadData_Text() {
-    Fixture.fakeSetParameter( getId( combo ), "text", "abc" );
+    Fixture.fakeSetProperty( getId( combo ), "text", "abc" );
 
     lca.readData( combo );
 
@@ -226,9 +226,9 @@ public class ComboLCA_Test {
 
   @Test
   public void testReadData_TextAndSelection() {
-    Fixture.fakeSetParameter( getId( combo ), "text", "abc" );
-    Fixture.fakeSetParameter( getId( combo ), "selectionStart", Integer.valueOf( 1 ) );
-    Fixture.fakeSetParameter( getId( combo ), "selectionLength", Integer.valueOf( 1 ) );
+    Fixture.fakeSetProperty( getId( combo ), "text", "abc" );
+    Fixture.fakeSetProperty( getId( combo ), "selectionStart", 1 );
+    Fixture.fakeSetProperty( getId( combo ), "selectionLength", 1 );
 
     lca.readData( combo );
 
@@ -241,7 +241,7 @@ public class ComboLCA_Test {
     Fixture.markInitialized( shell );
     Fixture.markInitialized( combo );
 
-    Fixture.fakeSetParameter( getId( combo ), "text", "some text" );
+    Fixture.fakeSetProperty( getId( combo ), "text", "some text" );
     Fixture.executeLifeCycleFromServerThread();
 
     // ensure that no text is sent back to the client
@@ -260,7 +260,7 @@ public class ComboLCA_Test {
     VerifyListener listener = mock( VerifyListener.class );
     combo.addVerifyListener( listener );
 
-    Fixture.fakeSetParameter( getId( combo ), "text", "verify me" );
+    Fixture.fakeSetProperty( getId( combo ), "text", "verify me" );
     Fixture.executeLifeCycleFromServerThread();
 
     assertEquals( "verify me", combo.getText() );
@@ -871,9 +871,9 @@ public class ComboLCA_Test {
   }
 
   private void fakeTextAndSelectionParameters( String text, int start, int length ) {
-    Fixture.fakeSetParameter( getId( combo ), "text", text );
-    Fixture.fakeSetParameter( getId( combo ), "selectionStart", Integer.valueOf( start ) );
-    Fixture.fakeSetParameter( getId( combo ), "selectionLength", Integer.valueOf( length ) );
+    Fixture.fakeSetProperty( getId( combo ), "text", text );
+    Fixture.fakeSetProperty( getId( combo ), "selectionStart", start );
+    Fixture.fakeSetProperty( getId( combo ), "selectionLength", length );
   }
 
 }

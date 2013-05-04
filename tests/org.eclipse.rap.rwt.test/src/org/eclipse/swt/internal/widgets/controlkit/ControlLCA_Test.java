@@ -22,9 +22,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -131,9 +129,9 @@ public class ControlLCA_Test {
     MenuDetectListener listener = mock( MenuDetectListener.class );
     label.addMenuDetectListener( listener );
 
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( 10 ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( 30 ) );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_X, 10 )
+      .add( ClientMessageConst.EVENT_PARAM_Y, 30 );
     Fixture.fakeNotifyOperation( getId( label ), ClientMessageConst.EVENT_MENU_DETECT, parameters );
     Fixture.readDataAndProcessAction( display );
 

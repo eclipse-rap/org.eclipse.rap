@@ -12,13 +12,9 @@ package org.eclipse.rap.rwt.internal.remote;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getClientMessage;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
-import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
@@ -73,35 +69,25 @@ public class RemoteObjectLifeCycleAdapter {
 
   public static void dispatchOperation( OperationHandler handler, Operation operation ) {
     if( operation instanceof SetOperation ) {
-      handler.handleSet( getProperties( operation ) );
+      handler.handleSet( operation.getProperties() );
     } else if( operation instanceof CallOperation ) {
       CallOperation callOperation = ( CallOperation )operation;
-      handler.handleCall( callOperation.getMethodName(), getProperties( operation ) );
+      handler.handleCall( callOperation.getMethodName(), operation.getProperties() );
     } else if( operation instanceof NotifyOperation ) {
       NotifyOperation notifyOperation = ( NotifyOperation )operation;
-      scheduleHandleNotify( handler, notifyOperation.getEventName(), getProperties( operation ) );
+      scheduleHandleNotify( handler, notifyOperation.getEventName(), operation.getProperties() );
     }
   }
 
   private static void scheduleHandleNotify( final OperationHandler handler,
                                             final String event,
-                                            final Map<String, Object> properties )
+                                            final JsonObject properties )
   {
     ProcessActionRunner.add( new Runnable() {
       public void run() {
         handler.handleNotify( event, properties );
       }
     } );
-  }
-
-  private static Map<String, Object> getProperties( ClientMessage.Operation operation ) {
-    Map<String, Object> result = new HashMap<String, Object>();
-    List<String> propertyNames = operation.getPropertyNames();
-    for( String name : propertyNames ) {
-      JsonValue value = operation.getProperty( name );
-      result.put( name, JsonUtil.jsonToJava( value ) );
-    }
-    return result;
   }
 
 }

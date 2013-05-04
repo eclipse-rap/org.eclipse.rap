@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.listkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -166,7 +167,7 @@ public class ListLCA_Test {
   public void testReadSelectionForSingle() {
     createListItems( 3 );
 
-    fakeSelection( new int[]{ 0 } );
+    fakeSelection( 0 );
     lca.readData( list );
 
     assertEquals( 0, list.getSelectionIndex() );
@@ -177,7 +178,7 @@ public class ListLCA_Test {
     createListItems( 3 );
     list.setSelection( 1 );
 
-    fakeSelection( new int[]{} );
+    fakeSelection();
     lca.readData( list );
 
     assertEquals( -1, list.getSelectionIndex() );
@@ -188,7 +189,7 @@ public class ListLCA_Test {
     list = new List( shell, SWT.MULTI );
     createListItems( 3 );
 
-    fakeSelection( new int[]{ 0, 1 } );
+    fakeSelection( 0, 1 );
     lca.readData( list );
 
     int[] expected = new int[]{ 0, 1 };
@@ -624,18 +625,19 @@ public class ListLCA_Test {
     }
   }
 
-  private void fakeSelection( int[] values ) {
+  private void fakeSelection( int... values ) {
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( list ), "selection", values );
+    Fixture.fakeSetProperty( getId( list ), "selection", createJsonArray( values ) );
   }
 
   private void fakeFocusIndex( int value ) {
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( list ), "focusIndex", Integer.valueOf( value ) );
+    Fixture.fakeSetProperty( getId( list ), "focusIndex", value );
   }
 
   private void fakeTopIndex( int value ) {
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( list ), "topIndex", Integer.valueOf( value ) );
+    Fixture.fakeSetProperty( getId( list ), "topIndex", value );
   }
+
 }

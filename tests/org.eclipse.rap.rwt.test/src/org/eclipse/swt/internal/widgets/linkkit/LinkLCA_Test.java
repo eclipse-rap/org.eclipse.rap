@@ -22,9 +22,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -321,11 +318,8 @@ public class LinkLCA_Test {
   }
 
   private void fakeWidgetSelectedEvent() {
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( ClientMessageConst.EVENT_PARAM_INDEX, Integer.valueOf( 0 ) );
-    Fixture.fakeNotifyOperation( getId( link ),
-                                 ClientMessageConst.EVENT_SELECTION,
-                                 properties );
+    JsonObject properties = new JsonObject().add( ClientMessageConst.EVENT_PARAM_INDEX, 0 );
+    Fixture.fakeNotifyOperation( getId( link ), ClientMessageConst.EVENT_SELECTION, properties );
   }
 
 }

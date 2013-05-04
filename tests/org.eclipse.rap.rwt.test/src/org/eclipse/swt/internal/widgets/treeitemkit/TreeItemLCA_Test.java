@@ -198,13 +198,13 @@ public class TreeItemLCA_Test {
     new TreeItem( treeItem, SWT.NONE );
     treeItem.setExpanded( false );
 
-    Fixture.fakeSetParameter( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, Boolean.TRUE  );
+    Fixture.fakeSetProperty( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, true  );
     Fixture.readDataAndProcessAction( treeItem );
 
     assertTrue( treeItem.getExpanded() );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, Boolean.FALSE  );
+    Fixture.fakeSetProperty( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, false  );
     Fixture.readDataAndProcessAction( treeItem );
 
     assertFalse( treeItem.getExpanded() );
@@ -217,7 +217,7 @@ public class TreeItemLCA_Test {
     new TreeItem( treeItem, SWT.NONE );
     treeItem.setExpanded( false );
 
-    Fixture.fakeSetParameter( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, Boolean.TRUE  );
+    Fixture.fakeSetProperty( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, true  );
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
@@ -230,7 +230,7 @@ public class TreeItemLCA_Test {
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( treeItem ), "checked", "true" );
+    Fixture.fakeSetProperty( getId( treeItem ), "checked", "true" );
     Fixture.readDataAndProcessAction( display );
 
     assertTrue( treeItem.getChecked() );
@@ -249,8 +249,8 @@ public class TreeItemLCA_Test {
     assertEquals( 54, rootItem3.getBounds().y );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( tree ), "scrollLeft", "0" );
-    Fixture.fakeSetParameter( getId( tree ), "topItemIndex", "2" );
+    Fixture.fakeSetProperty( getId( tree ), "scrollLeft", "0" );
+    Fixture.fakeSetProperty( getId( tree ), "topItemIndex", "2" );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( -54, rootItem.getBounds().y );

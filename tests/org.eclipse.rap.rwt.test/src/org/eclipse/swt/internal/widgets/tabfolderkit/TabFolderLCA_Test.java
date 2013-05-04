@@ -22,9 +22,7 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -323,11 +321,9 @@ public class TabFolderLCA_Test {
   }
 
   private void fakeWidgetSelected( TabFolder folder, TabItem item ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
-    Fixture.fakeNotifyOperation( getId( folder ),
-                                 ClientMessageConst.EVENT_SELECTION,
-                                 parameters );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
+    Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_SELECTION, parameters );
   }
 
 }

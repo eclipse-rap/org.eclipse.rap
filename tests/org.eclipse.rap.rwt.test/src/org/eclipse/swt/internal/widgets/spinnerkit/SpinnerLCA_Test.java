@@ -208,7 +208,7 @@ public class SpinnerLCA_Test {
   public void testReadSelection() {
     spinner.setMaximum( 100 );
 
-    Fixture.fakeSetParameter( getId( spinner ), "selection", Integer.valueOf( 77 ) );
+    Fixture.fakeSetProperty( getId( spinner ), "selection", 77 );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 77, spinner.getSelection() );
@@ -218,7 +218,7 @@ public class SpinnerLCA_Test {
   public void testReadSelection_Invalid() {
     spinner.setMaximum( 100 );
 
-    Fixture.fakeSetParameter( getId( spinner ), "selection", Integer.valueOf( 777 ) );
+    Fixture.fakeSetProperty( getId( spinner ), "selection", 777 );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( spinner.getMaximum(), spinner.getSelection() );
@@ -251,7 +251,7 @@ public class SpinnerLCA_Test {
     ModifyListener listener = mock( ModifyListener.class );
     spinner.addModifyListener( listener );
 
-    Fixture.fakeSetParameter( getId( spinner ), "selection", Integer.valueOf( 2 ) );
+    Fixture.fakeSetProperty( getId( spinner ), "selection", 2 );
     Fixture.readDataAndProcessAction( spinner );
 
     verify( listener, times( 1 ) ).modifyText( any( ModifyEvent.class ) );

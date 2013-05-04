@@ -11,7 +11,8 @@
 package org.eclipse.rap.rwt.remote;
 
 import java.io.Serializable;
-import java.util.Map;
+
+import org.eclipse.rap.json.JsonObject;
 
 
 /**
@@ -37,15 +38,24 @@ import java.util.Map;
  */
 public abstract class AbstractOperationHandler implements OperationHandler, Serializable {
 
-  public void handleSet( Map<String, Object> properties ) {
+  /**
+   * @since 2.1
+   */
+  public void handleSet( JsonObject properties ) {
     throw new UnsupportedOperationException( "set operations not supported by this handler" );
   }
 
-  public void handleCall( String method, Map<String, Object> parameters ) {
+  /**
+   * @since 2.1
+   */
+  public void handleCall( String method, JsonObject parameters ) {
     throw new UnsupportedOperationException( "call operations not supported by this handler" );
   }
 
-  public void handleNotify( String event, Map<String, Object> properties ) {
+  /**
+   * @since 2.1
+   */
+  public void handleNotify( String event, JsonObject properties ) {
     throw new UnsupportedOperationException( "notify operations not supported by this handler" );
   }
 

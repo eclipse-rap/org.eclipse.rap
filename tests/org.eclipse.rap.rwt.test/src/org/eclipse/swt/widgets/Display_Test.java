@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -1862,7 +1863,7 @@ public class Display_Test {
 
   @Test
   public void testReadInitialBounds() {
-    Fixture.fakeSetParameter( "w1", "bounds", new int[] { 1, 2, 3, 4 } );
+    Fixture.fakeSetProperty( "w1", "bounds", createJsonArray( 1, 2, 3, 4 ) );
 
     Display display = new Display();
 
@@ -1875,7 +1876,7 @@ public class Display_Test {
 
   @Test
   public void testReadDPI() {
-    Fixture.fakeSetParameter( "w1", "dpi", new int[] { 1, 2 } );
+    Fixture.fakeSetProperty( "w1", "dpi", createJsonArray( 1, 2 ) );
 
     Display display = new Display();
 
@@ -1886,7 +1887,7 @@ public class Display_Test {
 
   @Test
   public void testReadColorDepth() {
-    Fixture.fakeSetParameter( "w1", "colorDepth", Integer.valueOf( 32 ) );
+    Fixture.fakeSetProperty( "w1", "colorDepth", 32 );
 
     Display display = new Display();
 
@@ -1895,9 +1896,9 @@ public class Display_Test {
 
   @Test
   public void testBoundsDPIAndColorDepthIsSerializable() throws Exception {
-    Fixture.fakeSetParameter( "w1", "bounds", new int[] { 1, 2, 3, 4 } );
-    Fixture.fakeSetParameter( "w1", "dpi", new int[] { 1, 2 } );
-    Fixture.fakeSetParameter( "w1", "colorDepth", Integer.valueOf( 32 ) );
+    Fixture.fakeSetProperty( "w1", "bounds", createJsonArray( 1, 2, 3, 4 ) );
+    Fixture.fakeSetProperty( "w1", "dpi", createJsonArray( 1, 2 ) );
+    Fixture.fakeSetProperty( "w1", "colorDepth", 32 );
     TestDisplay display = new TestDisplay();
 
     TestDisplay deserializedDisplay = Fixture.serializeAndDeserialize( display );

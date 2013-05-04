@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -85,13 +86,12 @@ public class ControlEvent_Test {
 
     // this does not belong to all controls, only to those which allow
     // resize or move operations by the user (e.g. Shell)
-    Integer[] param = new Integer[] {
-      Integer.valueOf( 50 ),
-      Integer.valueOf( 50 ),
-      Integer.valueOf( 50 ),
-      Integer.valueOf( 100 )
-    };
-    Fixture.fakeSetParameter( getId( control ), "bounds", param );
+    JsonArray bounds = new JsonArray()
+      .add( 50 )
+      .add( 50 )
+      .add( 50 )
+      .add( 100 );
+    Fixture.fakeSetProperty( getId( control ), "bounds", bounds );
     Fixture.readDataAndProcessAction( control );
 
     verify( listener ).controlResized( any( ControlEvent.class ) );
@@ -117,13 +117,12 @@ public class ControlEvent_Test {
 
     // this does not belong to all controls, only to those which allow
     // resize or move operations by the user (e.g. Shell)
-    Integer[] param = new Integer[] {
-      Integer.valueOf( 150 ),
-      Integer.valueOf( 200 ),
-      Integer.valueOf( control.getSize().x ),
-      Integer.valueOf( control.getSize().y )
-    };
-    Fixture.fakeSetParameter( getId( control ), "bounds", param );
+    JsonArray bounds = new JsonArray()
+      .add( 150 )
+      .add( 200 )
+      .add( control.getSize().x )
+      .add( control.getSize().y );
+    Fixture.fakeSetProperty( getId( control ), "bounds", bounds );
     Fixture.readDataAndProcessAction( control );
 
     verify( listener ).controlMoved( any( ControlEvent.class ) );

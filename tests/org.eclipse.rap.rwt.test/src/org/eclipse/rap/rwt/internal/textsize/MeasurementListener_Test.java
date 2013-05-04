@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.METHOD_MEASURE_ITEMS;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.METHOD_STORE_MEASUREMENTS;
@@ -22,9 +23,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
@@ -195,10 +194,9 @@ public class MeasurementListener_Test {
   private void fakeRequestWithProbeMeasurementResults() {
     MeasurementOperator.getInstance().addProbeToMeasure( FONT_DATA );
     listener.afterPhase( createPhaseEvent( PhaseId.RENDER ) );
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    Map<String, Object> results = new HashMap<String, Object>();
-    results.put( MeasurementUtil.getId( FONT_DATA ), new int[] { 5, 10 }  );
-    parameters.put( PROPERTY_RESULTS, results );
+    JsonObject results = new JsonObject()
+      .add( MeasurementUtil.getId( FONT_DATA ), createJsonArray( 5, 10 ) );
+    JsonObject parameters = new JsonObject().add( PROPERTY_RESULTS, results );
     Fixture.fakeCallOperation( TYPE, METHOD_STORE_MEASUREMENTS, parameters  );
   }
 
@@ -206,10 +204,9 @@ public class MeasurementListener_Test {
     MeasurementItem itemToMeasure = createItem();
     MeasurementOperator.getInstance().addItemToMeasure( itemToMeasure );
     fakeRequestWithProbeMeasurementResults();
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    Map<String, Object> results = new HashMap<String, Object>();
-    results.put( MeasurementUtil.getId( itemToMeasure ), new int[] { 100, 10 } );
-    parameters.put( PROPERTY_RESULTS, results );
+    JsonObject results = new JsonObject()
+      .add( MeasurementUtil.getId( itemToMeasure ), createJsonArray( 100, 10 ) );
+    JsonObject parameters = new JsonObject().add( PROPERTY_RESULTS, results );
     Fixture.fakeCallOperation( TYPE, METHOD_STORE_MEASUREMENTS, parameters  );
   }
 

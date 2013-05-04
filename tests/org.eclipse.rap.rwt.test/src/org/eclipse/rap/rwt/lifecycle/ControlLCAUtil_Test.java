@@ -25,10 +25,7 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -1150,27 +1147,27 @@ public class ControlLCAUtil_Test {
   }
 
   private void fakeKeyDown( String target, int keyCode, int charCode, String modifier ) {
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( ClientMessageConst.EVENT_PARAM_KEY_CODE, Integer.valueOf( keyCode ) );
-    properties.put( ClientMessageConst.EVENT_PARAM_CHAR_CODE, Integer.valueOf( charCode ) );
-    properties.put( ClientMessageConst.EVENT_PARAM_MODIFIER, modifier );
+    JsonObject properties = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_KEY_CODE, keyCode )
+      .add( ClientMessageConst.EVENT_PARAM_CHAR_CODE, charCode )
+      .add( ClientMessageConst.EVENT_PARAM_MODIFIER, modifier );
     Fixture.fakeNotifyOperation( target, ClientMessageConst.EVENT_KEY_DOWN, properties  );
   }
 
   private void fakeTraverse( String target, int keyCode, int charCode, String modifier ) {
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( ClientMessageConst.EVENT_PARAM_KEY_CODE, Integer.valueOf( keyCode ) );
-    properties.put( ClientMessageConst.EVENT_PARAM_CHAR_CODE, Integer.valueOf( charCode ) );
-    properties.put( ClientMessageConst.EVENT_PARAM_MODIFIER, modifier );
+    JsonObject properties = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_KEY_CODE, keyCode )
+      .add( ClientMessageConst.EVENT_PARAM_CHAR_CODE, charCode )
+      .add( ClientMessageConst.EVENT_PARAM_MODIFIER, modifier );
     Fixture.fakeNotifyOperation( target, ClientMessageConst.EVENT_KEY_DOWN, properties  );
     Fixture.fakeNotifyOperation( target, ClientMessageConst.EVENT_TRAVERSE, properties  );
   }
 
   private static void fakeSelectionEvent( Control control, String key, String value ) {
     String id = getId( control );
-    Map<String, Object> parameters = new HashMap<String,Object>();
+    JsonObject parameters = new JsonObject();
     if( key != null ) {
-      parameters.put( key, value );
+      parameters.add( key, value );
     }
     Fixture.fakeNotifyOperation( id, ClientMessageConst.EVENT_SELECTION, parameters );
   }

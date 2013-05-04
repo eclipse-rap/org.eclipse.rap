@@ -10,9 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
@@ -22,8 +20,6 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 public final class JavaScriptExecutorImpl implements JavaScriptExecutor {
 
   private static final String REMOTE_ID = "rwt.client.JavaScriptExecutor";
-  private static final String PARAM_CONTENT = "content";
-  private static final String METHOD_EXECUTE = "execute";
   private final RemoteObject remoteObject;
 
   public JavaScriptExecutorImpl() {
@@ -32,9 +28,7 @@ public final class JavaScriptExecutorImpl implements JavaScriptExecutor {
   }
 
   public void execute( String code ) {
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( PARAM_CONTENT, code.trim() );
-    remoteObject.call( METHOD_EXECUTE, properties );
+    remoteObject.call( "execute", new JsonObject().add( "content", code.trim() ) );
   }
 
 }

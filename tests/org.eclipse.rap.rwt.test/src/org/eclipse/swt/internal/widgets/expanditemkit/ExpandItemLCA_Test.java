@@ -22,8 +22,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.rap.json.JsonArray;
@@ -83,7 +81,7 @@ public class ExpandItemLCA_Test {
     ExpandListener listener = mock( ExpandListener.class );
     expandBar.addExpandListener( listener );
 
-    Fixture.fakeSetParameter( WidgetUtil.getId( expandItem ), "expanded", Boolean.TRUE );
+    Fixture.fakeSetProperty( WidgetUtil.getId( expandItem ), "expanded", true );
     fakeExpandEvent( expandItem, "Expand" );
     Fixture.readDataAndProcessAction( display );
 
@@ -113,7 +111,7 @@ public class ExpandItemLCA_Test {
     };
     expandBar.addExpandListener( listener );
 
-    Fixture.fakeSetParameter( WidgetUtil.getId( expandItem ), "expanded", Boolean.TRUE );
+    Fixture.fakeSetProperty( WidgetUtil.getId( expandItem ), "expanded", true );
     fakeExpandEvent( expandItem, "Expand" );
     Fixture.readDataAndProcessAction( display );
 
@@ -126,7 +124,7 @@ public class ExpandItemLCA_Test {
     expandBar.addExpandListener( listener );
     expandItem.setExpanded( true );
 
-    Fixture.fakeSetParameter( WidgetUtil.getId( expandItem ), "expanded", Boolean.FALSE );
+    Fixture.fakeSetProperty( WidgetUtil.getId( expandItem ), "expanded", false );
     fakeExpandEvent( expandItem, "Collapse" );
     Fixture.readDataAndProcessAction( display );
 
@@ -157,7 +155,7 @@ public class ExpandItemLCA_Test {
     expandItem.setExpanded( true );
     expandBar.addExpandListener( listener );
 
-    Fixture.fakeSetParameter( WidgetUtil.getId( expandItem ), "expanded", Boolean.FALSE );
+    Fixture.fakeSetProperty( WidgetUtil.getId( expandItem ), "expanded", false );
     fakeExpandEvent( expandItem, "Collapse" );
     Fixture.readDataAndProcessAction( display );
 
@@ -402,9 +400,8 @@ public class ExpandItemLCA_Test {
   }
 
   private static void fakeExpandEvent( ExpandItem item, String eventName ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
-    Fixture.fakeNotifyOperation( getId( item.getParent() ), eventName, parameters );
+    JsonObject properties = new JsonObject().add( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
+    Fixture.fakeNotifyOperation( getId( item.getParent() ), eventName, properties );
   }
 
 }

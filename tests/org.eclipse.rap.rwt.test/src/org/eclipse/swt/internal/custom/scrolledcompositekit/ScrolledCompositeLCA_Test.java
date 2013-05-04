@@ -172,8 +172,8 @@ public class ScrolledCompositeLCA_Test {
   public void testReadData_ScrollBarsSelection() {
     sc.setContent( new Composite( sc, SWT.NONE ) );
 
-    Fixture.fakeSetParameter( getId( sc ), "horizontalBar.selection", Integer.valueOf( 1 ) );
-    Fixture.fakeSetParameter( getId( sc ), "verticalBar.selection", Integer.valueOf( 2 ) );
+    Fixture.fakeSetProperty( getId( sc ), "horizontalBar.selection", 1 );
+    Fixture.fakeSetProperty( getId( sc ), "verticalBar.selection", 2 );
     Fixture.readDataAndProcessAction( sc );
 
     assertEquals( new Point( 1, 2 ), sc.getOrigin() );

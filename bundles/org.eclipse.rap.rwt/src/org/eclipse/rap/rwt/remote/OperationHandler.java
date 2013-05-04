@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.remote;
 
-import java.util.Map;
+import org.eclipse.rap.json.JsonObject;
 
 
 /**
@@ -19,12 +19,6 @@ import java.util.Map;
  * <p>
  * It is recommended to extend {@link AbstractOperationHandler} rather than to implement this
  * interface.
- * </p>
- * <p>
- * <strong>Note:</strong> The classes and interfaces in the package
- * <em>org.eclipse.rap.rwt.remote</em> are still considered <strong>provisional</strong>. They are
- * expected to evolve over the next releases, which may lead to slight changes. We make the package
- * available to enable the development of custom components with the new API.
  * </p>
  *
  * @see AbstractOperationHandler
@@ -40,8 +34,9 @@ public interface OperationHandler {
    * suitable order.
    *
    * @param properties a map with the properties
+   * @since 2.1
    */
-  public abstract void handleSet( Map<String, Object> properties );
+  public abstract void handleSet( JsonObject properties );
 
   /**
    * Handles a <em>call</em> operation from the remote object. With a call operation, the remote
@@ -49,9 +44,10 @@ public interface OperationHandler {
    * parameterized with the given properties.
    *
    * @param method the name of the method to call
-   * @param parameters the parameters for the method call, may be empty, but never <code>null</code>
+   * @param parameters the parameters for the method call, may be empty but never <code>null</code>
+   * @since 2.1
    */
-  public abstract void handleCall( String method, Map<String, Object> parameters );
+  public abstract void handleCall( String method, JsonObject parameters );
 
   /**
    * Handles a <em>notify</em> operation from the remote object. With a notify operation, the remote
@@ -59,8 +55,9 @@ public interface OperationHandler {
    * notify the corresponding listeners attached to the target object.
    *
    * @param event the name of the event that occurred
-   * @param properties the event properties, maybe empty but never <code>null</code>
+   * @param properties the event properties, may be empty but never <code>null</code>
+   * @since 2.1
    */
-  public abstract void handleNotify( String event, Map<String, Object> properties );
+  public abstract void handleNotify( String event, JsonObject properties );
 
 }

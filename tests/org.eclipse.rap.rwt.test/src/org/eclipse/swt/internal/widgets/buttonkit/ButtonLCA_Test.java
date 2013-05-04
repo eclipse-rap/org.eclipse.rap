@@ -25,10 +25,7 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -274,7 +271,7 @@ public class ButtonLCA_Test {
     SelectionListener listener = mock( SelectionListener.class );
     button.addSelectionListener( listener );
 
-    Fixture.fakeSetParameter( getId( button ), "selection", Boolean.TRUE );
+    Fixture.fakeSetProperty( getId( button ), "selection", true );
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( button );
 
@@ -290,7 +287,7 @@ public class ButtonLCA_Test {
     SelectionListener listener = mock( SelectionListener.class );
     button.addSelectionListener( listener );
 
-    Fixture.fakeSetParameter( getId( button ), "selection", Boolean.FALSE );
+    Fixture.fakeSetProperty( getId( button ), "selection", false );
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( button );
 
@@ -313,8 +310,8 @@ public class ButtonLCA_Test {
     button1.addSelectionListener( listener );
     button2.addSelectionListener( listener );
 
-    Fixture.fakeSetParameter( getId( button1 ), "selection", Boolean.TRUE );
-    Fixture.fakeSetParameter( getId( button2 ), "selection", Boolean.FALSE );
+    Fixture.fakeSetProperty( getId( button1 ), "selection", true );
+    Fixture.fakeSetProperty( getId( button2 ), "selection", false );
     Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.fakeNotifyOperation( getId( button2 ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( display );
@@ -336,8 +333,8 @@ public class ButtonLCA_Test {
     button1.addListener( SWT.Selection, listener );
     button2.addListener( SWT.Selection, listener );
 
-    Fixture.fakeSetParameter( getId( button1 ), "selection", Boolean.TRUE );
-    Fixture.fakeSetParameter( getId( button2 ), "selection", Boolean.FALSE );
+    Fixture.fakeSetProperty( getId( button1 ), "selection", true );
+    Fixture.fakeSetProperty( getId( button2 ), "selection", false );
     Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.fakeNotifyOperation( getId( button2 ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( display );
@@ -710,9 +707,7 @@ public class ButtonLCA_Test {
   }
 
   private void fakeActiveControl( Control control ) {
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( "activeControl", getId( control ) );
-    Fixture.fakeSetOperation( getId( control.getShell() ), properties );
+    Fixture.fakeSetProperty( getId( control.getShell() ), "activeControl", getId( control ) );
   }
 
 }

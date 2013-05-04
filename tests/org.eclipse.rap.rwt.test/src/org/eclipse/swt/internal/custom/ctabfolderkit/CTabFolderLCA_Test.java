@@ -27,12 +27,11 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
@@ -205,7 +204,7 @@ public class CTabFolderLCA_Test {
 
     // The actual test request: item1 is selected, the request selects item2
     folder.setSelection( item1 );
-    Fixture.fakeSetParameter( getId( folder ), "selection", getId( item2 ) );
+    Fixture.fakeSetProperty( getId( folder ), "selection", getId( item2 ) );
     Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread();
 
@@ -223,10 +222,10 @@ public class CTabFolderLCA_Test {
     CTabItem item2 = new CTabItem( folder, SWT.NONE );
     folder.setSelection( item1 );
 
-    Map<String, Object> parameters = new HashMap<String, Object>();
-//    parameters.put( "item", WidgetUtil.getId( item2 ) );
+    JsonObject parameters = new JsonObject();
+//    parameters.add( "item", WidgetUtil.getId( item2 ) );
     Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_SELECTION, parameters );
-    Fixture.fakeSetParameter( getId( folder ),
+    Fixture.fakeSetProperty( getId( folder ),
                               CTabFolderLCA.PARAM_SELECTION,
                               getId( item2 ) );
 
@@ -1059,10 +1058,9 @@ public class CTabFolderLCA_Test {
   }
 
   private static void fakeFolderEvent( CTabFolder folder, String detail, String itemId ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_DETAIL, detail );
+    JsonObject parameters = new JsonObject().add( ClientMessageConst.EVENT_PARAM_DETAIL, detail );
     if( itemId != null ) {
-      parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, itemId );
+      parameters.add( ClientMessageConst.EVENT_PARAM_ITEM, itemId );
     }
     Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_FOLDER, parameters );
   }

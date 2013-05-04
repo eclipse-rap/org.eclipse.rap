@@ -82,7 +82,7 @@ public final class JsonUtil {
     return result;
   }
 
-  public static JsonValue createJsonArray( int[] values ) {
+  public static JsonValue createJsonArray( int... values ) {
     JsonValue result;
     if( values != null ) {
       JsonArray array = new JsonArray();
@@ -96,7 +96,7 @@ public final class JsonUtil {
     return result;
   }
 
-  public static JsonValue createJsonArray( float[] values ) {
+  public static JsonValue createJsonArray( float... values ) {
     JsonValue result;
     if( values != null ) {
       JsonArray array = new JsonArray();
@@ -110,7 +110,7 @@ public final class JsonUtil {
     return result;
   }
 
-  public static JsonValue createJsonArray( boolean[] values ) {
+  public static JsonValue createJsonArray( boolean... values ) {
     JsonValue result;
     if( values != null ) {
       JsonArray array = new JsonArray();
@@ -124,7 +124,7 @@ public final class JsonUtil {
     return result;
   }
 
-  public static JsonValue createJsonArray( String[] values ) {
+  public static JsonValue createJsonArray( String... values ) {
     JsonValue result;
     if( values != null ) {
       JsonArray array = new JsonArray();

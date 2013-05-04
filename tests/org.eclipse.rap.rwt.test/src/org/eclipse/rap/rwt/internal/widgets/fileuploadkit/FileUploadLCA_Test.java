@@ -98,7 +98,7 @@ public class FileUploadLCA_Test {
   @Test
   public void testReadFileName() {
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( fileUpload ), "fileName", "foo" );
+    Fixture.fakeSetProperty( getId( fileUpload ), "fileName", "foo" );
     Fixture.executeLifeCycleFromServerThread( );
 
     assertEquals( "foo", fileUpload.getFileName() );
@@ -112,7 +112,7 @@ public class FileUploadLCA_Test {
   @Test
   public void testReadEmptyFileName() {
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( fileUpload ), "fileName", "" );
+    Fixture.fakeSetProperty( getId( fileUpload ), "fileName", "" );
     Fixture.executeLifeCycleFromServerThread( );
 
     assertEquals( null, fileUpload.getFileName() );
@@ -124,7 +124,7 @@ public class FileUploadLCA_Test {
     fileUpload.addSelectionListener( listener );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( fileUpload ), "fileName", "foo" );
+    Fixture.fakeSetProperty( getId( fileUpload ), "fileName", "foo" );
     Fixture.executeLifeCycleFromServerThread( );
 
     assertEquals( "foo", fileUpload.getFileName() );

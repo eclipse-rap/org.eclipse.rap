@@ -16,9 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -301,9 +299,7 @@ public final class CoolBarLCA_Test {
 
   private void fakeMove( CoolItem coolItem, int x, int y ) {
     Fixture.fakeNewRequest();
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "left", Integer.valueOf( x ) );
-    Fixture.fakeCallOperation( getId( coolItem ), "move", parameters );
+    Fixture.fakeCallOperation( getId( coolItem ), "move", new JsonObject().add( "left", x ) );
   }
 
 }

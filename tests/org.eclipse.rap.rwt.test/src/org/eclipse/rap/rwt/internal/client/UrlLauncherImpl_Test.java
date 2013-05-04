@@ -11,15 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Map;
-
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -28,7 +26,6 @@ import org.eclipse.swt.widgets.Display;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 
 public class UrlLauncherImpl_Test {
@@ -65,7 +62,7 @@ public class UrlLauncherImpl_Test {
     UrlLauncher launcher = new UrlLauncherImpl();
     launcher.openURL( URL );
 
-    assertEquals( URL, getURL( remoteObject ) );
+    verify( remoteObject ).call( eq( "openURL" ), eq( new JsonObject().add( "url", URL ) ) );
   }
 
   private ConnectionImpl fakeConnection( RemoteObject remoteObject ) {
@@ -73,13 +70,6 @@ public class UrlLauncherImpl_Test {
     when( connection.createServiceObject( anyString() ) ).thenReturn( remoteObject );
     Fixture.fakeConnection( connection );
     return connection;
-  }
-
-  @SuppressWarnings( "unchecked" )
-  private static String getURL( RemoteObject remoteObject ) {
-    ArgumentCaptor< Map > captor = ArgumentCaptor.forClass( Map.class );
-    verify( remoteObject ).call( eq( "openURL" ), captor.capture() );
-    return ( String )captor.getValue().get( "url" );
   }
 
 }

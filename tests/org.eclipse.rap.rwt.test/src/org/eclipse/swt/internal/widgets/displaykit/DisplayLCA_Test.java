@@ -13,6 +13,7 @@
 package org.eclipse.swt.internal.widgets.displaykit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
@@ -32,7 +33,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.HashMap;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -172,7 +172,7 @@ public class DisplayLCA_Test {
 
   @Test
   public void testReadDisplayBounds() {
-    Fixture.fakeSetParameter( getId( display ), "bounds", new int[] { 0, 0, 30, 70 } );
+    Fixture.fakeSetProperty( getId( display ), "bounds", createJsonArray( 0, 0, 30, 70 ) );
 
     displayLCA.readData( display );
 
@@ -184,7 +184,7 @@ public class DisplayLCA_Test {
     Listener listener = mock( Listener.class );
     display.addListener( SWT.Resize, listener  );
 
-    Fixture.fakeSetParameter( getId( display ), "bounds", new int[] { 1, 2, 3, 4 } );
+    Fixture.fakeSetProperty( getId( display ), "bounds", createJsonArray( 1, 2, 3, 4 ) );
     Fixture.fakeNotifyOperation( getId( display ), "Resize", null );
     Fixture.readDataAndProcessAction( display );
 
@@ -361,14 +361,14 @@ public class DisplayLCA_Test {
     Control control = new Button( shell, SWT.PUSH );
     shell.open();
 
-    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( control ) );
+    Fixture.fakeSetProperty( getId( display ), "focusControl", getId( control ) );
     Fixture.readDataAndProcessAction( display );
     assertEquals( control, display.getFocusControl() );
 
     // Request parameter focusControl with value 'null' is ignored
     Control previousFocusControl = display.getFocusControl();
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( display ), "focusControl", "null" );
+    Fixture.fakeSetProperty( getId( display ), "focusControl", "null" );
     Fixture.readDataAndProcessAction( display );
     assertEquals( previousFocusControl, display.getFocusControl() );
   }
@@ -384,7 +384,7 @@ public class DisplayLCA_Test {
     shell2.setBounds( 0, 0, 300, 400 );
     shell2.setMaximized( true );
     // fake display resize
-    Fixture.fakeSetParameter( getId( display ), "bounds", new int[] { 0, 0, 700, 500 } );
+    Fixture.fakeSetProperty( getId( display ), "bounds", createJsonArray( 0, 0, 700, 500 ) );
 
     displayLCA.readData( display );
 
@@ -399,7 +399,7 @@ public class DisplayLCA_Test {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     displayAdapter.setBounds( new Rectangle( 0, 0, 800, 600 ) );
-    Fixture.fakeSetParameter( getId( display ), "cursorLocation", new int[] { 1, 2 } );
+    Fixture.fakeSetProperty( getId( display ), "cursorLocation", createJsonArray( 1, 2 ) );
 
     displayLCA.readData( display );
 
@@ -527,13 +527,12 @@ public class DisplayLCA_Test {
     when( remoteObject.getId() ).thenReturn( "id" );
     when( remoteObject.getHandler() ).thenReturn( handler );
     RemoteObjectRegistry.getInstance().register( remoteObject );
-    HashMap<String, Object> properties = new HashMap<String, Object>();
-    properties.put( "foo", "bar" );
+    JsonObject properties = new JsonObject().add( "foo", "bar" );
     Fixture.fakeCallOperation( "id", "method", properties );
 
     displayLCA.readData( display );
 
-    verify( handler ).handleCall( eq( "method" ), eq( properties ) );
+    verify( handler ).handleCall( eq( "method" ), eq( new JsonObject().add( "foo", "bar" ) ) );
   }
 
   private static void setEnableUiTests( boolean value ) {

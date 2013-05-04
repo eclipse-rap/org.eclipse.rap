@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
@@ -24,12 +25,10 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -349,8 +348,8 @@ public class TreeLCA_Test {
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     tree.addSelectionListener( new LoggingSelectionListener( events ) );
 
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( treeItem ) );
+    JsonObject properties = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( treeItem ) );
     Fixture.fakeNotifyOperation( getId( tree ),
                                  ClientMessageConst.EVENT_SELECTION,
                                  properties );
@@ -377,8 +376,8 @@ public class TreeLCA_Test {
     tree.addSelectionListener( new LoggingSelectionListener( events ) );
 
     Fixture.fakeNewRequest();
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( tree ) + "#" + 50 );
+    JsonObject properties = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( tree ) + "#" + 50 );
     Fixture.fakeNotifyOperation( getId( tree ),
                                  ClientMessageConst.EVENT_SELECTION,
                                  properties );
@@ -403,8 +402,8 @@ public class TreeLCA_Test {
     tree.addSelectionListener( new LoggingSelectionListener( events ) );
 
     Fixture.fakeNewRequest();
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) + "#" + 50 );
+    JsonObject properties = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) + "#" + 50 );
     Fixture.fakeNotifyOperation( getId( tree ),
                                  ClientMessageConst.EVENT_SELECTION,
                                  properties );
@@ -423,8 +422,8 @@ public class TreeLCA_Test {
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     tree.addSelectionListener( new LoggingSelectionListener( events ) );
 
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( treeItem ) );
+    JsonObject properties = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( treeItem ) );
     Fixture.fakeNotifyOperation( getId( tree ),
                                  ClientMessageConst.EVENT_DEFAULT_SELECTION,
                                  properties );
@@ -453,8 +452,8 @@ public class TreeLCA_Test {
       }
     } );
 
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( treeItem ) );
+    JsonObject properties = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( treeItem ) );
     Fixture.fakeNotifyOperation( getId( tree ),
                                  ClientMessageConst.EVENT_DEFAULT_SELECTION,
                                  properties );
@@ -473,7 +472,7 @@ public class TreeLCA_Test {
 
   @Test
   public void testInvalidScrollValues() {
-    Fixture.fakeSetParameter( getId( tree ), "scrollLeft", "undefined" );
+    Fixture.fakeSetProperty( getId( tree ), "scrollLeft", "undefined" );
     fakeSetTopItemIndex( tree, 80 );
     Fixture.readDataAndProcessAction( tree );
 
@@ -490,7 +489,7 @@ public class TreeLCA_Test {
     hScroll.addSelectionListener( listener );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( tree ), "scrollLeft", Integer.valueOf( 10 ) );
+    Fixture.fakeSetProperty( getId( tree ), "scrollLeft", 10 );
     Fixture.fakeNotifyOperation( getId( hScroll ), "Selection", null );
     Fixture.readDataAndProcessAction( tree );
 
@@ -502,7 +501,7 @@ public class TreeLCA_Test {
     vScroll.addSelectionListener( listener );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( tree ), "topItemIndex", Integer.valueOf( 10 ) );
+    Fixture.fakeSetProperty( getId( tree ), "topItemIndex", 10 );
     Fixture.fakeNotifyOperation( getId( vScroll ), "Selection", null );
     Fixture.readDataAndProcessAction( tree );
 
@@ -591,7 +590,7 @@ public class TreeLCA_Test {
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( tree ), "selection", new String[]{ getId( tree ) + "#" + 50 } );
+    Fixture.fakeSetProperty( getId( tree ), "selection", createJsonArray( getId( tree ) + "#" + 50 ) );
     Fixture.readDataAndProcessAction( tree );
 
     assertEquals( 1, tree.getSelection().length );
@@ -609,7 +608,7 @@ public class TreeLCA_Test {
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( tree ), "selection", new String[]{ getId( item ) + "#" + 50 } );
+    Fixture.fakeSetProperty( getId( tree ), "selection", createJsonArray( getId( item ) + "#" + 50 ) );
     Fixture.readDataAndProcessAction( tree );
 
     assertEquals( 1, tree.getSelection().length );
@@ -623,7 +622,7 @@ public class TreeLCA_Test {
     new TreeItem( tree, SWT.NONE );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( tree ), "selection", new String[]{ getId( item1 ) } );
+    Fixture.fakeSetProperty( getId( tree ), "selection", createJsonArray( getId( item1 ) ) );
     Fixture.readDataAndProcessAction( tree );
 
     TreeItem[] selectedItems = tree.getSelection();
@@ -638,7 +637,7 @@ public class TreeLCA_Test {
     item1.dispose();
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( tree ), "selection", new String[]{ getId( item1 ) } );
+    Fixture.fakeSetProperty( getId( tree ), "selection", createJsonArray( getId( item1 ) ) );
     Fixture.executeLifeCycleFromServerThread();
 
     TreeItem[] selectedItems = tree.getSelection();
@@ -677,9 +676,9 @@ public class TreeLCA_Test {
 
   private static void processCellToolTipRequest( Tree tree, String itemId, int column ) {
     Fixture.fakeNewRequest();
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "item", itemId );
-    parameters.put( "column", Integer.valueOf( column ) );
+    JsonObject parameters = new JsonObject()
+      .add( "item", itemId )
+      .add( "column", column );
     Fixture.fakeCallOperation( getId( tree ), "renderToolTipText", parameters );
     Fixture.executeLifeCycleFromServerThread();
   }
@@ -1722,13 +1721,13 @@ public class TreeLCA_Test {
   }
 
   private static void fakeTreeEvent( TreeItem item, String eventName ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
     Fixture.fakeNotifyOperation( getId( item.getParent() ), eventName, parameters );
   }
 
   private void fakeSetTopItemIndex( Tree tree, int index ) {
-    Fixture.fakeSetParameter( getId( tree ), "topItemIndex", Integer.valueOf( index ) );
+    Fixture.fakeSetProperty( getId( tree ), "topItemIndex", index );
   }
 
 }

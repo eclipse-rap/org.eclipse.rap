@@ -10,19 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.remote;
 
-import java.util.Map;
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 
 
 /**
  * Instances of this interface represent an object on the client that is synchronized with an object
  * on the server. A RemoteObject is used to transfer changes to the remote object. To create a
  * remote object, use {@link Connection#createRemoteObject(String)}.
- * <p>
- * <strong>Note:</strong> The classes and interfaces in the package
- * <em>org.eclipse.rap.rwt.remote</em> are still considered <strong>provisional</strong>. They are
- * expected to evolve over the next releases, which may lead to slight changes. We make the package
- * available to enable the development of custom components with the new API.
- * </p>
  *
  * @noimplement This interface is not intended to be implemented by clients.
  * @see Connection
@@ -74,9 +69,10 @@ public interface RemoteObject {
    * Sets the specified property of the remote object to the given value.
    *
    * @param name the name of the property to set
-   * @param value the value to set
+   * @param value the value to set, must not be <code>null</code>
+   * @since 2.1
    */
-  void set( String name, Object value );
+  void set( String name, JsonValue value );
 
   /**
    * Instructs the remote object to listen or to stop listening on the given type
@@ -92,9 +88,10 @@ public interface RemoteObject {
    * Calls the method with the given name on the remote object.
    *
    * @param method the name of the method to call
-   * @param properties the named properties to pass as arguments to the method call
+   * @param parameters the named parameters to pass to the method call
+   * @since 2.1
    */
-  void call( String method, Map<String, Object> properties );
+  void call( String method, JsonObject parameters );
 
   /**
    * Instructs the client to destroy the remote object.

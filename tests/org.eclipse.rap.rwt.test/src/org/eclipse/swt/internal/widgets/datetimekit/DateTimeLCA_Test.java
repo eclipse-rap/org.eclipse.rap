@@ -139,9 +139,9 @@ public class DateTimeLCA_Test {
     Fixture.preserveWidgets();
 
     Fixture.fakeNotifyOperation( getId( dateTime ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.fakeSetParameter( getId( dateTime ), "day", Integer.valueOf( 31 ) );
-    Fixture.fakeSetParameter( getId( dateTime ), "month", Integer.valueOf( 4 ) );
-    Fixture.fakeSetParameter( getId( dateTime ), "year", Integer.valueOf( 2010 ) );
+    Fixture.fakeSetProperty( getId( dateTime ), "day", 31 );
+    Fixture.fakeSetProperty( getId( dateTime ), "month", 4 );
+    Fixture.fakeSetProperty( getId( dateTime ), "year", 2010 );
     Fixture.readDataAndProcessAction( dateTime );
 
     assertEquals( 31, dateTime.getDay() );

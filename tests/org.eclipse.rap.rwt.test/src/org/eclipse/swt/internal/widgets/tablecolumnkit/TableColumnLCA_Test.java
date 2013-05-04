@@ -23,9 +23,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -154,8 +151,7 @@ public class TableColumnLCA_Test {
     column.addControlListener( listener );
 
     int newWidth = column.getWidth() + 2;
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "width", Integer.valueOf( newWidth ) );
+    JsonObject parameters = new JsonObject().add( "width", newWidth );
     Fixture.fakeCallOperation( getId( column ), "resize", parameters );
     Fixture.executeLifeCycleFromServerThread( );
 
@@ -314,8 +310,7 @@ public class TableColumnLCA_Test {
     table.getColumn( 2 ).setWidth( 0 );
 
     TableColumn column1 = table.getColumn( 1 );
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "left", Integer.valueOf( 35 ) );
+    JsonObject parameters = new JsonObject().add( "left", 35 );
     Fixture.fakeCallOperation( getId( column1 ), "move", parameters  );
     Fixture.executeLifeCycleFromServerThread( );
 

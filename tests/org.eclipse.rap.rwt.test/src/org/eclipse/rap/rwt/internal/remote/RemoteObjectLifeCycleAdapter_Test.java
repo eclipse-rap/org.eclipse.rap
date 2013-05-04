@@ -19,9 +19,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -57,7 +55,7 @@ public class RemoteObjectLifeCycleAdapter_Test {
   public void testReadData_delegatesSetOperationsToHandlers() {
     OperationHandler handler = mock( OperationHandler.class );
     mockAndRegisterRemoteObject( "id", handler );
-    Map<String, Object> properties = createTestProperties();
+    JsonObject properties = new JsonObject().add( "foo", "bar" );
     Fixture.fakeSetOperation( "id", properties );
 
     RemoteObjectLifeCycleAdapter.readData();
@@ -69,7 +67,7 @@ public class RemoteObjectLifeCycleAdapter_Test {
   public void testReadData_delegatesCallOperationsToHandlers() {
     OperationHandler handler = mock( OperationHandler.class );
     mockAndRegisterRemoteObject( "id", handler );
-    Map<String, Object> properties = createTestProperties();
+    JsonObject properties = new JsonObject().add( "foo", "bar" );
     Fixture.fakeCallOperation( "id", "method", properties );
 
     RemoteObjectLifeCycleAdapter.readData();
@@ -81,7 +79,7 @@ public class RemoteObjectLifeCycleAdapter_Test {
   public void testReadData_doesNotDirectlyDelegateNotifyOperationsToHandlers() {
     OperationHandler handler = mock( OperationHandler.class );
     mockAndRegisterRemoteObject( "id", handler );
-    Map<String, Object> properties = createTestProperties();
+    JsonObject properties = new JsonObject().add( "foo", "bar" );
     Fixture.fakeNotifyOperation( "id", "event", properties );
 
     RemoteObjectLifeCycleAdapter.readData();
@@ -93,7 +91,7 @@ public class RemoteObjectLifeCycleAdapter_Test {
   public void testReadData_schedulesNotifyOperationsForHandlers() {
     OperationHandler handler = mock( OperationHandler.class );
     mockAndRegisterRemoteObject( "id", handler );
-    Map<String, Object> properties = createTestProperties();
+    JsonObject properties = new JsonObject().add( "foo", "bar" );
     Fixture.fakeNotifyOperation( "id", "event", properties );
 
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -112,7 +110,7 @@ public class RemoteObjectLifeCycleAdapter_Test {
   @Test
   public void testReadData_failsWhenNoHandlerRegisteredForOperations() {
     mockAndRegisterRemoteObject( "id", null );
-    Fixture.fakeCallOperation( "id", "method", createTestProperties() );
+    Fixture.fakeCallOperation( "id", "method", new JsonObject().add( "foo", "bar" ) );
 
     try {
       RemoteObjectLifeCycleAdapter.readData();
@@ -135,12 +133,6 @@ public class RemoteObjectLifeCycleAdapter_Test {
     when( remoteObject.getId() ).thenReturn( id );
     when( remoteObject.getHandler() ).thenReturn( handler );
     return remoteObject;
-  }
-
-  private static Map<String, Object> createTestProperties() {
-    HashMap<String, Object> result = new HashMap<String, Object>();
-    result.put( "foo", "bar" );
-    return result;
   }
 
 }

@@ -17,9 +17,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -145,8 +142,7 @@ public class CoolItemLCA_Test {
     item2.setSize( 20, 10 );
     int oldX = item.getBounds().x;
 
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "left", Integer.valueOf( 25 ) );
+    JsonObject parameters = new JsonObject().add( "left", 25 );
     Fixture.fakeCallOperation( getId( item ), "move", parameters  );
     Fixture.readDataAndProcessAction( display );
 

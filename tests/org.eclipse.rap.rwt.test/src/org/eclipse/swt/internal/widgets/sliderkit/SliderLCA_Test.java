@@ -22,9 +22,7 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
@@ -452,19 +450,19 @@ public class SliderLCA_Test {
   }
 
   private static void fakeMouseDownNotifyOperation( Widget widget, int x, int y ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_BUTTON, Integer.valueOf( 1 ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( x ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( y ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_TIME, Integer.valueOf( 0 ) );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_BUTTON, 1 )
+      .add( ClientMessageConst.EVENT_PARAM_X, x )
+      .add( ClientMessageConst.EVENT_PARAM_Y, y )
+      .add( ClientMessageConst.EVENT_PARAM_TIME, 0 );
     Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_MOUSE_DOWN, parameters );
   }
 
   private static void fakeKeyDownNotifyOperation( Widget widget, int keyCode, int charCode ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_KEY_CODE, Integer.valueOf( keyCode ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_CHAR_CODE, Integer.valueOf( charCode ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_MODIFIER, "" );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_KEY_CODE, keyCode )
+      .add( ClientMessageConst.EVENT_PARAM_CHAR_CODE, charCode )
+      .add( ClientMessageConst.EVENT_PARAM_MODIFIER, "" );
     Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_KEY_DOWN, parameters );
   }
 

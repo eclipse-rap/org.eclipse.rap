@@ -19,10 +19,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -34,7 +33,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-public class CientInfoImpl_Test {
+public class ClientInfoImpl_Test {
 
   @Before
   public void setUp() {
@@ -75,9 +74,7 @@ public class CientInfoImpl_Test {
     ClientInfoImpl clientInfo = new ClientInfoImpl();
     OperationHandler handler = getHandler( remoteObject );
 
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "timezoneOffset", new Integer( -90 ) );
-    handler.handleSet( parameters );
+    handler.handleSet( new JsonObject().add( "timezoneOffset", -90 ) );
 
     assertEquals( -90, clientInfo.getTimezoneOffset() );
   }

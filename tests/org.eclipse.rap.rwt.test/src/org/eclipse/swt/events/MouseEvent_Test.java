@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,11 +21,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -383,48 +381,48 @@ public class MouseEvent_Test {
   }
 
   private static void fakeSelectionRequest( Widget widget, Widget item ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
     Fixture.fakeNotifyOperation( getId( widget ),
                                  ClientMessageConst.EVENT_SELECTION,
                                  parameters );
   }
 
   private static void fakeMenuDetectRequest( Widget widget, int x, int y ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( x ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( y ) );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_X, x )
+      .add( ClientMessageConst.EVENT_PARAM_Y, y );
     Fixture.fakeNotifyOperation( getId( widget ),
                                  ClientMessageConst.EVENT_MENU_DETECT,
                                  parameters );
   }
 
   private static void fakeMouseDoubleClickRequest( Widget widget, int x, int y ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_BUTTON, Integer.valueOf( 1 ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( x ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( y ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_TIME, Integer.valueOf( 0 ) );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_BUTTON, 1 )
+      .add( ClientMessageConst.EVENT_PARAM_X, x )
+      .add( ClientMessageConst.EVENT_PARAM_Y, y )
+      .add( ClientMessageConst.EVENT_PARAM_TIME, 0 );
     Fixture.fakeNotifyOperation( getId( widget ),
                                  ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK,
                                  parameters );
   }
 
   private static void fakeMouseUpRequest( Widget widget, int x, int y ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_BUTTON, Integer.valueOf( 1 ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( x ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( y ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_TIME, Integer.valueOf( 0 ) );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_BUTTON, 1 )
+      .add( ClientMessageConst.EVENT_PARAM_X, x )
+      .add( ClientMessageConst.EVENT_PARAM_Y, y )
+      .add( ClientMessageConst.EVENT_PARAM_TIME, 0 );
     Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_MOUSE_UP, parameters );
   }
 
   private static void fakeMouseDownRequest( Widget widget, int x, int y ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_BUTTON, Integer.valueOf( 1 ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( x ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( y ) );
-    parameters.put( ClientMessageConst.EVENT_PARAM_TIME, Integer.valueOf( 0 ) );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_BUTTON, 1 )
+      .add( ClientMessageConst.EVENT_PARAM_X, x )
+      .add( ClientMessageConst.EVENT_PARAM_Y, y )
+      .add( ClientMessageConst.EVENT_PARAM_TIME, 0 );
     Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_MOUSE_DOWN, parameters );
   }
 
@@ -453,4 +451,5 @@ public class MouseEvent_Test {
       events.add( event );
     }
   }
+
 }

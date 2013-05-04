@@ -106,19 +106,17 @@ public class MenuLCA_Test {
     Fixture.markInitialized( menuBar );
     shell.setMenuBar( menuBar );
 
-    Integer[] param = new Integer[] {
-      Integer.valueOf( 0 ),
-      Integer.valueOf( 0 ),
-      Integer.valueOf( 1234 ),
-      Integer.valueOf( 4321 )
-    };
-    Fixture.fakeSetParameter( getId( shell ), "bounds", param );
+    JsonArray bounds = new JsonArray()
+      .add( 0 )
+      .add( 0 )
+      .add( 1234 )
+      .add( 4321 );
+    Fixture.fakeSetProperty( getId( shell ), "bounds", bounds );
     Fixture.executeLifeCycleFromServerThread( );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray bounds = ( JsonArray )message.findSetProperty( menuBar, "bounds" );
-    assertEquals( 1234, bounds.get( 2 ).asInt() );
-    assertNotNull( message.findSetOperation( menuBar, "bounds" ) );
+    JsonArray result = message.findSetProperty( menuBar, "bounds" ).asArray();
+    assertEquals( 1234, result.get( 2 ).asInt() );
   }
 
   @Test

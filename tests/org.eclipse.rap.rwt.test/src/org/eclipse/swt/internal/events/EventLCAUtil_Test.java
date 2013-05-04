@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,9 +18,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -60,10 +58,10 @@ public class EventLCAUtil_Test {
     SelectionListener listener = mock( SelectionListener.class );
     button.addSelectionListener( listener );
 
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "altKey", Boolean.TRUE );
-    parameters.put( "ctrlKey", Boolean.FALSE );
-    parameters.put( "shiftKey", Boolean.FALSE );
+    JsonObject parameters = new JsonObject()
+      .add( "altKey", true )
+      .add( "ctrlKey", false )
+      .add( "shiftKey", false );
     Fixture.fakeNotifyOperation( getId( button ), EVENT_SELECTION, parameters );
     Fixture.readDataAndProcessAction( button );
 

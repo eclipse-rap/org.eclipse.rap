@@ -150,7 +150,7 @@ public class MenuItemLCA_Test {
     shell.setMenu( menu );
     MenuItem menuItem = new MenuItem( menu, SWT.CHECK );
 
-    Fixture.fakeSetParameter( getId( menuItem ), "selection", Boolean.TRUE );
+    Fixture.fakeSetProperty( getId( menuItem ), "selection", true );
     Fixture.readDataAndProcessAction( menuItem );
 
     assertTrue( menuItem.getSelection() );
@@ -165,7 +165,7 @@ public class MenuItemLCA_Test {
     SelectionListener listener = mock( SelectionListener.class );
     item.addSelectionListener( listener );
 
-    Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
+    Fixture.fakeSetProperty( getId( item ), "selection", true );
     Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( item );
 
@@ -184,7 +184,7 @@ public class MenuItemLCA_Test {
     SelectionListener listener = mock( SelectionListener.class );
     item.addSelectionListener( listener );
 
-    Fixture.fakeSetParameter( getId( item ), "selection", Boolean.FALSE );
+    Fixture.fakeSetProperty( getId( item ), "selection", false );
     Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( item );
 
@@ -210,8 +210,8 @@ public class MenuItemLCA_Test {
     radioItem1.addSelectionListener( listener );
     radioItem2.addSelectionListener( listener );
 
-    Fixture.fakeSetParameter( getId( radioItem1 ), "selection", Boolean.TRUE );
-    Fixture.fakeSetParameter( getId( radioItem2 ), "selection", Boolean.FALSE );
+    Fixture.fakeSetProperty( getId( radioItem1 ), "selection", true );
+    Fixture.fakeSetProperty( getId( radioItem2 ), "selection", false );
     Fixture.fakeNotifyOperation( getId( radioItem1 ), EVENT_SELECTION, null );
     Fixture.fakeNotifyOperation( getId( radioItem2 ), EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( display );
@@ -236,8 +236,8 @@ public class MenuItemLCA_Test {
     radioItem1.addListener( SWT.Selection, listener );
     radioItem2.addListener( SWT.Selection, listener );
 
-    Fixture.fakeSetParameter( getId( radioItem1 ), "selection", Boolean.TRUE );
-    Fixture.fakeSetParameter( getId( radioItem2 ), "selection", Boolean.FALSE );
+    Fixture.fakeSetProperty( getId( radioItem1 ), "selection", true );
+    Fixture.fakeSetProperty( getId( radioItem2 ), "selection", false );
     Fixture.fakeNotifyOperation( getId( radioItem1 ), EVENT_SELECTION, null );
     Fixture.fakeNotifyOperation( getId( radioItem2 ), EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( display );

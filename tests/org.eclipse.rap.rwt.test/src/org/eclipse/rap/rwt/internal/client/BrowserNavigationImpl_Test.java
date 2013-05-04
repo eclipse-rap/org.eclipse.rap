@@ -18,10 +18,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
@@ -149,8 +147,7 @@ public class BrowserNavigationImpl_Test {
     BrowserNavigationListener listener = mock( BrowserNavigationListener.class );
     navigation.addBrowserNavigationListener( listener );
 
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "state", "foo" );
+    JsonObject parameters = new JsonObject().add( "state", "foo" );
     Fixture.fakeNotifyOperation( TYPE, "Navigation", parameters  );
     Fixture.executeLifeCycleFromServerThread();
 

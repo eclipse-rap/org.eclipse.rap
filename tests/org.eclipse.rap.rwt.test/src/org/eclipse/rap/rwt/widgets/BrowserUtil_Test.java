@@ -14,6 +14,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -119,8 +120,8 @@ public class BrowserUtil_Test {
     };
     BrowserUtil.evaluate( browser, "return 5;", browserCallback );
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( browser ), "executeResult", Boolean.TRUE );
-    Fixture.fakeSetParameter( getId( browser ), "evaluateResult", new Object[]{ Double.valueOf( 5 ) } );
+    Fixture.fakeSetProperty( getId( browser ), "executeResult", true );
+    Fixture.fakeSetProperty( getId( browser ), "evaluateResult", new JsonArray().add( 5 ) );
 
     Fixture.readDataAndProcessAction( browser );
 
@@ -140,11 +141,12 @@ public class BrowserUtil_Test {
     };
     BrowserUtil.evaluate( browser, "return 5/0;", browserCallback );
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( browser ), "executeResult", Boolean.FALSE );
-    Fixture.fakeSetParameter( getId( browser ), "evaluateResult", "devide by zero" );
+    Fixture.fakeSetProperty( getId( browser ), "executeResult", false );
+    Fixture.fakeSetProperty( getId( browser ), "evaluateResult", "devide by zero" );
 
     Fixture.readDataAndProcessAction( browser );
 
     assertEquals( "Failed to evaluate Javascript expression", log[ 0 ] );
   }
+
 }

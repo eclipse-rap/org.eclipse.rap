@@ -1,5 +1,77 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <component id="org.eclipse.rap.rwt" version="2">
+    <resource path="src/org/eclipse/rap/rwt/remote/AbstractOperationHandler.java" type="org.eclipse.rap.rwt.remote.AbstractOperationHandler">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.eclipse.rap.rwt.remote.AbstractOperationHandler"/>
+                <message_argument value="handleCall(String, Map&lt;String,Object&gt;)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.eclipse.rap.rwt.remote.AbstractOperationHandler"/>
+                <message_argument value="handleNotify(String, Map&lt;String,Object&gt;)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.eclipse.rap.rwt.remote.AbstractOperationHandler"/>
+                <message_argument value="handleSet(Map&lt;String,Object&gt;)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/eclipse/rap/rwt/remote/OperationHandler.java" type="org.eclipse.rap.rwt.remote.OperationHandler">
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.eclipse.rap.rwt.remote.OperationHandler"/>
+                <message_argument value="handleCall(String, JsonObject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.eclipse.rap.rwt.remote.OperationHandler"/>
+                <message_argument value="handleNotify(String, JsonObject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.eclipse.rap.rwt.remote.OperationHandler"/>
+                <message_argument value="handleSet(JsonObject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="405901410">
+            <message_arguments>
+                <message_argument value="org.eclipse.rap.rwt.remote.OperationHandler"/>
+                <message_argument value="handleCall(String, Map&lt;String,Object&gt;)"/>
+            </message_arguments>
+        </filter>
+        <filter id="405901410">
+            <message_arguments>
+                <message_argument value="org.eclipse.rap.rwt.remote.OperationHandler"/>
+                <message_argument value="handleNotify(String, Map&lt;String,Object&gt;)"/>
+            </message_arguments>
+        </filter>
+        <filter id="405901410">
+            <message_arguments>
+                <message_argument value="org.eclipse.rap.rwt.remote.OperationHandler"/>
+                <message_argument value="handleSet(Map&lt;String,Object&gt;)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/eclipse/rap/rwt/remote/RemoteObject.java" type="org.eclipse.rap.rwt.remote.RemoteObject">
+        <filter id="405901410">
+            <message_arguments>
+                <message_argument value="org.eclipse.rap.rwt.remote.RemoteObject"/>
+                <message_argument value="call(String, Map&lt;String,Object&gt;)"/>
+            </message_arguments>
+        </filter>
+        <filter id="405901410">
+            <message_arguments>
+                <message_argument value="org.eclipse.rap.rwt.remote.RemoteObject"/>
+                <message_argument value="set(String, Object)"/>
+            </message_arguments>
+        </filter>
+    </resource>
     <resource path="src/org/eclipse/swt/dnd/DragSourceEvent.java" type="org.eclipse.swt.dnd.DragSourceEvent">
         <filter id="643850349">
             <message_arguments>

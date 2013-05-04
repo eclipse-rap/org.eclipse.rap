@@ -26,11 +26,9 @@ import static org.mockito.Mockito.verify;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -755,10 +753,10 @@ public class DNDSupport_Test {
   }
 
   private void createDragSourceEvent( String eventType, int x, int y, String operation, int time ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "x", String.valueOf( x ) );
-    parameters.put( "y", String.valueOf( y ) );
-    parameters.put( "time", String.valueOf( time ) );
+    JsonObject parameters = new JsonObject()
+      .add( "x", String.valueOf( x ) )
+      .add( "y", String.valueOf( y ) )
+      .add( "time", String.valueOf( time ) );
     Fixture.fakeNotifyOperation( getId( sourceControl ), eventType, parameters );
   }
 
@@ -773,14 +771,14 @@ public class DNDSupport_Test {
                                       int dataType,
                                       int time )
   {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "x", String.valueOf( x ) );
-    parameters.put( "y", String.valueOf( y ) );
-    parameters.put( "time", String.valueOf( time ) );
-    parameters.put( "operation", operation );
-    parameters.put( "feedback", String.valueOf( 0 ) );
-    parameters.put( "source", getId( sourceControl ) );
-    parameters.put( "dataType", String.valueOf( dataType ) );
+    JsonObject parameters = new JsonObject()
+      .add( "x", String.valueOf( x ) )
+      .add( "y", String.valueOf( y ) )
+      .add( "time", String.valueOf( time ) )
+      .add( "operation", operation )
+      .add( "feedback", String.valueOf( 0 ) )
+      .add( "source", getId( sourceControl ) )
+      .add( "dataType", String.valueOf( dataType ) );
     Fixture.fakeNotifyOperation( getId( targetControl ), eventType, parameters );
 
   }

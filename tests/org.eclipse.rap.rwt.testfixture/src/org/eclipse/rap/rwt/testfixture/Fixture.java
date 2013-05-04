@@ -12,7 +12,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonValue;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
 import java.io.BufferedInputStream;
@@ -27,10 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.ServletContext;
@@ -60,7 +56,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
@@ -74,7 +69,6 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.Connection;
-import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
@@ -396,13 +390,23 @@ public final class Fixture {
     }
   }
 
-  public static void fakeSetParameter( String target, String key, Object value ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( key, value );
-    fakeSetOperation( target, parameters );
+  public static void fakeSetProperty( String target, String propertyName, long propertyValue ) {
+    fakeSetProperty( target, propertyName, JsonValue.valueOf( propertyValue ) );
   }
 
-  public static void fakeSetOperation( String target, Map<String, Object> properties ) {
+  public static void fakeSetProperty( String target, String propertyName, boolean propertyValue ) {
+    fakeSetProperty( target, propertyName, JsonValue.valueOf( propertyValue ) );
+  }
+
+  public static void fakeSetProperty( String target, String propertyName, String propertyValue ) {
+    fakeSetProperty( target, propertyName, JsonValue.valueOf( propertyValue ) );
+  }
+
+  public static void fakeSetProperty( String target, String key, JsonValue value ) {
+    fakeSetOperation( target, new JsonObject().add( key, value ) );
+  }
+
+  public static void fakeSetOperation( String target, JsonObject properties ) {
     checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     String json = request.getBody();
@@ -412,7 +416,7 @@ public final class Fixture {
       JsonArray newOperation = new JsonArray();
       newOperation.add( ClientMessage.OPERATION_SET );
       newOperation.add( target );
-      newOperation.add( createJsonValue( ensureProperties( properties ) ) );
+      newOperation.add( properties != null ? properties : new JsonObject() );
       operations.add( newOperation );
       request.setBody( message.toString() );
     } catch( Exception exception ) {
@@ -422,7 +426,7 @@ public final class Fixture {
 
   public static void fakeNotifyOperation( String target,
                                           String eventName,
-                                          Map<String, Object> properties )
+                                          JsonObject properties )
   {
     checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
@@ -434,7 +438,7 @@ public final class Fixture {
       newOperation.add( ClientMessage.OPERATION_NOTIFY );
       newOperation.add( target );
       newOperation.add( eventName );
-      newOperation.add( createJsonValue( ensureProperties( properties ) ) );
+      newOperation.add( properties != null ? properties : new JsonObject() );
       operations.add( newOperation );
       request.setBody( message.toString() );
     } catch( Exception exception ) {
@@ -444,7 +448,7 @@ public final class Fixture {
 
   public static void fakeCallOperation( String target,
                                         String methodName,
-                                        Map<String, Object> properties )
+                                        JsonObject parameters )
   {
     checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
@@ -456,7 +460,7 @@ public final class Fixture {
       newOperation.add( ClientMessage.OPERATION_CALL );
       newOperation.add( target );
       newOperation.add( methodName );
-      newOperation.add( createJsonValue( ensureProperties( properties ) ) );
+      newOperation.add( parameters != null ? parameters : new JsonObject() );
       operations.add( newOperation );
       request.setBody( message.toString() );
     } catch( Exception exception ) {
@@ -464,35 +468,10 @@ public final class Fixture {
     }
   }
 
-  public static void dispatchSet( RemoteObject remoteObject, Map<String, Object> properties ) {
-    RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
-    remoteObjectImpl.getHandler().handleSet( properties );
-  }
-
-  public static void dispatchNotify( RemoteObject remoteObject,
-                                     String eventName,
-                                     Map<String, Object> properties )
-  {
-    RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
-    remoteObjectImpl.getHandler().handleNotify( eventName, properties );
-  }
-
-  public static void dispatchCall( RemoteObject remoteObject,
-                                   String methodName,
-                                   Map<String, Object> parameters )
-  {
-    RemoteObjectImpl remoteObjectImpl = ( RemoteObjectImpl )remoteObject;
-    remoteObjectImpl.getHandler().handleCall( methodName, parameters );
-  }
-
   private static void checkMessage() {
     if( ProtocolUtil.isClientMessageProcessed() ) {
       throw new IllegalStateException( "Client message is already processed" );
     }
-  }
-
-  private static Map ensureProperties( Map<String,Object> properties ) {
-    return properties == null ? Collections.EMPTY_MAP : properties;
   }
 
   public static void fakeResourceManager( ResourceManager resourceManager ) {

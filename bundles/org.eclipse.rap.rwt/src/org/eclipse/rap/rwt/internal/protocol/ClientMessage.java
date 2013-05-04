@@ -193,7 +193,7 @@ public class ClientMessage {
       return getProperties().get( key );
     }
 
-    abstract protected JsonObject getProperties();
+    abstract public JsonObject getProperties();
 
   }
 
@@ -211,7 +211,7 @@ public class ClientMessage {
     }
 
     @Override
-    protected JsonObject getProperties() {
+    public JsonObject getProperties() {
       return properties;
     }
 
@@ -241,7 +241,7 @@ public class ClientMessage {
     }
 
     @Override
-    protected JsonObject getProperties() {
+    public JsonObject getProperties() {
       return properties;
     }
 
@@ -271,7 +271,7 @@ public class ClientMessage {
     }
 
     @Override
-    protected JsonObject getProperties() {
+    public JsonObject getProperties() {
       return properties;
     }
 

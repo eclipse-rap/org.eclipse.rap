@@ -73,7 +73,7 @@ public class ToolTipLCA_Test {
   public void testReadVisibleWithRequestParamFalse() {
     toolTip.setVisible( true );
 
-    Fixture.fakeSetParameter( getId( toolTip ), "visible", Boolean.FALSE );
+    Fixture.fakeSetProperty( getId( toolTip ), "visible", false );
     Fixture.readDataAndProcessAction( display );
 
     assertFalse( toolTip.isVisible() );

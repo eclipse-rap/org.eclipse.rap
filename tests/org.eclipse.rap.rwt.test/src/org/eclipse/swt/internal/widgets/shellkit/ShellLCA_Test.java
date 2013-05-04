@@ -217,7 +217,7 @@ public class ShellLCA_Test {
     Label otherLabel = new Label( shell, SWT.NONE );
     setActiveControl( shell, otherLabel );
 
-    Fixture.fakeSetParameter( getId( shell ), "activeControl", getId( label ) );
+    Fixture.fakeSetProperty( getId( shell ), "activeControl", getId( label ) );
     Fixture.readDataAndProcessAction( display );
 
     assertSame( label, getActiveControl( shell ) );
@@ -227,7 +227,7 @@ public class ShellLCA_Test {
   public void testReadDataForMode_Maximixed() {
     shell.open();
 
-    Fixture.fakeSetParameter( getId( shell ), "mode", "maximized" );
+    Fixture.fakeSetProperty( getId( shell ), "mode", "maximized" );
     Fixture.readDataAndProcessAction( shell );
 
     assertTrue( shell.getMaximized() );
@@ -238,7 +238,7 @@ public class ShellLCA_Test {
   public void testReadDataForMode_Minimixed() {
     shell.open();
 
-    Fixture.fakeSetParameter( getId( shell ), "mode", "minimized" );
+    Fixture.fakeSetProperty( getId( shell ), "mode", "minimized" );
     Fixture.readDataAndProcessAction( shell );
 
     assertFalse( shell.getMaximized() );
@@ -250,7 +250,7 @@ public class ShellLCA_Test {
     shell.open();
     shell.setMaximized( true );
 
-    Fixture.fakeSetParameter( getId( shell ), "mode", "null" );
+    Fixture.fakeSetProperty( getId( shell ), "mode", "null" );
     Fixture.readDataAndProcessAction( shell );
 
     assertFalse( shell.getMaximized() );
@@ -531,11 +531,11 @@ public class ShellLCA_Test {
     Text text = new Text( shell, SWT.NONE );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( button ) );
+    Fixture.fakeSetProperty( getId( display ), "focusControl", getId( button ) );
     Fixture.executeLifeCycleFromServerThread();
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( text ) );
+    Fixture.fakeSetProperty( getId( display ), "focusControl", getId( text ) );
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
@@ -831,11 +831,11 @@ public class ShellLCA_Test {
   }
 
   private void fakeModeAndBounds( String mode, int x, int y, int width, int heigth ) {
-    Fixture.fakeSetParameter( getId( shell ), "mode", mode );
-    Fixture.fakeSetParameter( getId( shell ), "bounds.x", Integer.valueOf( x ) );
-    Fixture.fakeSetParameter( getId( shell ), "bounds.y", Integer.valueOf( y ) );
-    Fixture.fakeSetParameter( getId( shell ), "bounds.width", Integer.valueOf( width ) );
-    Fixture.fakeSetParameter( getId( shell ), "bounds.heigth", Integer.valueOf( heigth ) );
+    Fixture.fakeSetProperty( getId( shell ), "mode", mode );
+    Fixture.fakeSetProperty( getId( shell ), "bounds.x", x );
+    Fixture.fakeSetProperty( getId( shell ), "bounds.y", y );
+    Fixture.fakeSetProperty( getId( shell ), "bounds.width", width );
+    Fixture.fakeSetProperty( getId( shell ), "bounds.heigth", heigth );
   }
 
 }

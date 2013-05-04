@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablekit;
 
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
@@ -28,14 +29,13 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -365,7 +365,8 @@ public class TableLCA_Test {
     TableItem item1 = new TableItem( table, SWT.NONE );
     TableItem item2 = new TableItem( table, SWT.NONE );
 
-    Fixture.fakeSetParameter( getId( table ), "selection", new String[]{ getId( item1 ), getId( item2 ) } );
+    JsonValue selection = createJsonArray( getId( item1 ), getId( item2 ) );
+    Fixture.fakeSetProperty( getId( table ), "selection", selection );
     Fixture.executeLifeCycleFromServerThread();
 
     TableItem[] selectedItems = table.getSelection();
@@ -382,8 +383,8 @@ public class TableLCA_Test {
     item.setText( "Item 1" );
 
     Fixture.fakeNewRequest();
-    String[] selection = new String[]{ getId( item ), getId( table ) + "#2" };
-    Fixture.fakeSetParameter( getId( table ), "selection", selection );
+    JsonValue selection = createJsonArray( getId( item ), getId( table ) + "#2" );
+    Fixture.fakeSetProperty( getId( table ), "selection", selection );
     Fixture.executeLifeCycleFromServerThread();
 
     int[] selectedIndices = table.getSelectionIndices();
@@ -401,7 +402,7 @@ public class TableLCA_Test {
     item.dispose();
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( table ), "selection", new String[]{ getId( item ) } );
+    Fixture.fakeSetProperty( getId( table ), "selection", createJsonArray( getId( item ) ) );
     Fixture.executeLifeCycleFromServerThread();
 
     TableItem[] selectedItems = table.getSelection();
@@ -605,9 +606,9 @@ public class TableLCA_Test {
       new TableItem( table, SWT.NONE );
     }
 
-    Fixture.fakeSetParameter( getId( table ), "focusItem", indexToId( table, 4 ) );
-    String[] items = indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } );
-    Fixture.fakeSetParameter( getId( table ), "selection", items );
+    Fixture.fakeSetProperty( getId( table ), "focusItem", indexToId( table, 4 ) );
+    JsonValue items = JsonUtil.createJsonArray( indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } ) );
+    Fixture.fakeSetProperty( getId( table ), "selection", items );
     TableLCA tableLCA = new TableLCA();
     tableLCA.readData( table );
 
@@ -620,9 +621,9 @@ public class TableLCA_Test {
     table = new Table( shell, SWT.MULTI );
     createTableItems( table, 5 );
 
-    Fixture.fakeSetParameter( getId( table ), "focusItem", getId( table ) + "#4" );
-    String[] items = indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } );
-    Fixture.fakeSetParameter( getId( table ), "selection", items );
+    Fixture.fakeSetProperty( getId( table ), "focusItem", getId( table ) + "#4" );
+    JsonValue items = createJsonArray( indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } ) );
+    Fixture.fakeSetProperty( getId( table ), "selection", items );
     TableLCA tableLCA = new TableLCA();
     tableLCA.readData( table );
 
@@ -635,9 +636,9 @@ public class TableLCA_Test {
     table = new Table( shell, SWT.MULTI );
     createTableItems( table, 5 );
 
-    String[] items = indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } );
-    Fixture.fakeSetParameter( getId( table ), "selection", items );
-    Fixture.fakeSetParameter( getId( table ), "focusItem", indexToId( table, 4 ) );
+    JsonValue items = createJsonArray( indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } ) );
+    Fixture.fakeSetProperty( getId( table ), "selection", items );
+    Fixture.fakeSetProperty( getId( table ), "focusItem", indexToId( table, 4 ) );
     table.getItem( 4 ).dispose();
     TableLCA tableLCA = new TableLCA();
     tableLCA.readData( table );
@@ -657,8 +658,8 @@ public class TableLCA_Test {
       99,100,101,102,103,104,105,106,107,108,109,
       110,111,112,113,0
     };
-    String[] items = indicesToIds( table, indices );
-    Fixture.fakeSetParameter( getId( table ), "selection", items );
+    JsonValue items = createJsonArray( indicesToIds( table, indices ) );
+    Fixture.fakeSetProperty( getId( table ), "selection", items );
     fakeSetTopItemIndex( table, 0 );
     TableLCA tableLCA = new TableLCA();
     tableLCA.readData( table );
@@ -1701,9 +1702,9 @@ public class TableLCA_Test {
 
   private static void fakeCellToolTipRequest( Table table, String itemId, int column ) {
     Fixture.fakeNewRequest();
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "item", itemId );
-    parameters.put( "column", Integer.valueOf( column ) );
+    JsonObject parameters = new JsonObject()
+      .add( "item", itemId )
+      .add( "column", column );
     Fixture.fakeCallOperation( getId( table ), "renderToolTipText", parameters );
   }
 
@@ -1728,10 +1729,10 @@ public class TableLCA_Test {
   }
 
   private void fakeWidgetSelected( Table table, String itemId, String detail ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, itemId );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_ITEM, itemId );
     if( detail != null ) {
-      parameters.put( ClientMessageConst.EVENT_PARAM_DETAIL, detail );
+      parameters.add( ClientMessageConst.EVENT_PARAM_DETAIL, detail );
     }
     Fixture.fakeNotifyOperation( getId( table ),
                                  ClientMessageConst.EVENT_SELECTION,
@@ -1740,15 +1741,15 @@ public class TableLCA_Test {
 
   private void fakeWidgetDefaultSelected( Table table, TableItem item ) {
     Fixture.fakeNewRequest();
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
+    JsonObject parameters = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
     Fixture.fakeNotifyOperation( getId( table ),
                                  ClientMessageConst.EVENT_DEFAULT_SELECTION,
                                  parameters );
   }
 
   private void fakeSetTopItemIndex( Table table, int index ) {
-    Fixture.fakeSetParameter( getId( table ), "topItemIndex", Integer.valueOf( index ) );
+    Fixture.fakeSetProperty( getId( table ), "topItemIndex", index );
   }
 
 }

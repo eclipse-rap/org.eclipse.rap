@@ -20,9 +20,7 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -157,13 +155,13 @@ public class SashLCA_Test {
     SelectionListener listener = mock( SelectionListener.class );
     sash.addSelectionListener( listener );
 
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( ClientMessageConst.EVENT_PARAM_DETAIL, "drag" );
-    properties.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( 1 ) );
-    properties.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( 2 ) );
-    properties.put( ClientMessageConst.EVENT_PARAM_WIDTH, Integer.valueOf( 3 ) );
-    properties.put( ClientMessageConst.EVENT_PARAM_HEIGHT, Integer.valueOf( 4 ) );
-    properties.put( "altKey", "true" );
+    JsonObject properties = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_DETAIL, "drag" )
+      .add( ClientMessageConst.EVENT_PARAM_X, 1 )
+      .add( ClientMessageConst.EVENT_PARAM_Y, 2 )
+      .add( ClientMessageConst.EVENT_PARAM_WIDTH, 3 )
+      .add( ClientMessageConst.EVENT_PARAM_HEIGHT, 4 )
+      .add( "altKey", "true" );
     Fixture.fakeNotifyOperation( getId( sash ),
                                  ClientMessageConst.EVENT_SELECTION,
                                  properties );
@@ -212,4 +210,5 @@ public class SashLCA_Test {
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "HORIZONTAL" ) );
   }
+
 }

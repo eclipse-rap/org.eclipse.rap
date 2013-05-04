@@ -25,11 +25,8 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -116,7 +113,7 @@ public class TextLCA_Test {
 
   @Test
   public void testReadText() {
-    Fixture.fakeSetParameter( getId( text ), "text", "abc" );
+    Fixture.fakeSetProperty( getId( text ), "text", "abc" );
 
     WidgetUtil.getLCA( text ).readData( text );
 
@@ -125,9 +122,9 @@ public class TextLCA_Test {
 
   @Test
   public void testReadSelection() {
-    Fixture.fakeSetParameter( getId( text ), "text", "abc" );
-    Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
-    Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 1 ) );
+    Fixture.fakeSetProperty( getId( text ), "text", "abc" );
+    Fixture.fakeSetProperty( getId( text ), "selectionStart", 1 );
+    Fixture.fakeSetProperty( getId( text ), "selectionLength", 1 );
 
     WidgetUtil.getLCA( text ).readData( text );
 
@@ -139,7 +136,7 @@ public class TextLCA_Test {
     ModifyListener listener = mock( ModifyListener.class );
     text.addModifyListener( listener );
 
-    Fixture.fakeSetParameter( getId( text ), "text", "new text" );
+    Fixture.fakeSetProperty( getId( text ), "text", "new text" );
     Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY, null );
     Fixture.readDataAndProcessAction( text );
 
@@ -151,7 +148,7 @@ public class TextLCA_Test {
     VerifyListener listener = mock( VerifyListener.class );
     text.addVerifyListener( listener );
 
-    Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
+    Fixture.fakeSetProperty( getId( text ), "text", "verify me" );
     Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY, null );
     Fixture.readDataAndProcessAction( display );
 
@@ -167,9 +164,9 @@ public class TextLCA_Test {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
 
-    Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
-    Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
-    Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 0 ) );
+    Fixture.fakeSetProperty( getId( text ), "text", "verify me" );
+    Fixture.fakeSetProperty( getId( text ), "selectionStart", 1 );
+    Fixture.fakeSetProperty( getId( text ), "selectionLength", 0 );
     Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY, null );
 
     Fixture.executeLifeCycleFromServerThread();
@@ -193,9 +190,9 @@ public class TextLCA_Test {
         event.text = "verified";
       }
     } );
-    Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
-    Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
-    Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 0 ) );
+    Fixture.fakeSetProperty( getId( text ), "text", "verify me" );
+    Fixture.fakeSetProperty( getId( text ), "selectionStart", 1 );
+    Fixture.fakeSetProperty( getId( text ), "selectionLength", 0 );
     Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY, null );
 
     Fixture.executeLifeCycleFromServerThread( );
@@ -213,9 +210,9 @@ public class TextLCA_Test {
         event.text = "";
       }
     } );
-    Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
-    Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
-    Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 0 ) );
+    Fixture.fakeSetProperty( getId( text ), "text", "verify me" );
+    Fixture.fakeSetProperty( getId( text ), "selectionStart", 1 );
+    Fixture.fakeSetProperty( getId( text ), "selectionLength", 0 );
     Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY, null );
 
     Fixture.executeLifeCycleFromServerThread( );
@@ -228,9 +225,9 @@ public class TextLCA_Test {
   public void testPreserveText() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
-    Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
-    Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
-    Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 0 ) );
+    Fixture.fakeSetProperty( getId( text ), "text", "verify me" );
+    Fixture.fakeSetProperty( getId( text ), "selectionStart", 1 );
+    Fixture.fakeSetProperty( getId( text ), "selectionLength", 0 );
 
     Fixture.executeLifeCycleFromServerThread();
 
@@ -257,9 +254,9 @@ public class TextLCA_Test {
       }
     } );
 
-    Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
-    Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
-    Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 0 ) );
+    Fixture.fakeSetProperty( getId( text ), "text", "verify me" );
+    Fixture.fakeSetProperty( getId( text ), "selectionStart", 1 );
+    Fixture.fakeSetProperty( getId( text ), "selectionLength", 0 );
     Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY, null );
     Fixture.readDataAndProcessAction( text );
 
@@ -834,8 +831,7 @@ public class TextLCA_Test {
     text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL );
     text.addListener( SWT.DefaultSelection, new LoggingListener( events ) );
 
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( ClientMessageConst.EVENT_PARAM_DETAIL, "search" );
+    JsonObject properties = new JsonObject().add( ClientMessageConst.EVENT_PARAM_DETAIL, "search" );
     Fixture.fakeNotifyOperation( getId( text ),
                                  ClientMessageConst.EVENT_DEFAULT_SELECTION,
                                  properties );
@@ -855,8 +851,8 @@ public class TextLCA_Test {
     text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL );
     text.addListener( SWT.DefaultSelection, new LoggingListener( events ) );
 
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( ClientMessageConst.EVENT_PARAM_DETAIL, "cancel" );
+    JsonObject properties = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_DETAIL, "cancel" );
     Fixture.fakeNotifyOperation( getId( text ),
                                  ClientMessageConst.EVENT_DEFAULT_SELECTION,
                                  properties );

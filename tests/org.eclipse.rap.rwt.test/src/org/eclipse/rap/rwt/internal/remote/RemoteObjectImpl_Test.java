@@ -21,12 +21,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -68,7 +64,7 @@ public class RemoteObjectImpl_Test {
 
   @Test
   public void testDoesNotRenderOperationsImmediately() {
-    remoteObject.call( "method", mockParameters() );
+    remoteObject.call( "method", new JsonObject() );
 
     assertEquals( 0, getMessage().getOperationCount() );
   }
@@ -208,29 +204,29 @@ public class RemoteObjectImpl_Test {
   }
 
   @Test
-  public void testSet_object_isRendered() {
-    Object object = Integer.valueOf( 23 );
-    remoteObject.set( "property", object );
+  public void testSet_jsonValue_isRendered() {
+    JsonValue value = JsonValue.valueOf( 23 );
+    remoteObject.set( "property", value );
 
     remoteObject.render( writer );
 
-    verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( JsonValue.valueOf( 23 ) ) );
+    verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( value ) );
   }
 
   @Test
-  public void testSet_object_checksName() {
+  public void testSet_jsonValue_checksName() {
     try {
-      remoteObject.set( null, new Object() );
+      remoteObject.set( null, JsonValue.TRUE );
       fail();
     } catch( NullPointerException exception ) {
     }
   }
 
   @Test
-  public void testSet_object_checksState() {
+  public void testSet_jsonValue_checksState() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
-    remoteObjectSpy.set( "property", new Object() );
+    remoteObjectSpy.set( "property", JsonValue.TRUE );
 
     verify( remoteObjectSpy ).checkState();
   }
@@ -264,19 +260,18 @@ public class RemoteObjectImpl_Test {
 
   @Test
   public void testCall_isRendered() {
-    Map<String, Object> parameters = mockParameters();
+    JsonObject parameters = mock( JsonObject.class );
     remoteObject.call( "method", parameters );
 
     remoteObject.render( writer );
 
-    JsonObject jsonParameters = propertiesToJson( parameters );
-    verify( writer ).appendCall( eq( objectId ), eq( "method" ), eq( jsonParameters ) );
+    verify( writer ).appendCall( eq( objectId ), eq( "method" ), eq( parameters ) );
   }
 
   @Test
   public void testCall_checksName() {
     try {
-      remoteObject.call( null, mockParameters() );
+      remoteObject.call( null, mock( JsonObject.class ) );
       fail();
     } catch( NullPointerException exception ) {
     }
@@ -286,7 +281,7 @@ public class RemoteObjectImpl_Test {
   public void testCall_checksState() {
     RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
-    remoteObjectSpy.call( "method", mockParameters() );
+    remoteObjectSpy.call( "method", mock( JsonObject.class ) );
 
     verify( remoteObjectSpy ).checkState();
   }
@@ -337,7 +332,7 @@ public class RemoteObjectImpl_Test {
   public void testPreventsCallWhenDestroyed() {
     remoteObject.destroy();
     try {
-      remoteObject.call( "method", mockParameters() );
+      remoteObject.call( "method", mock( JsonObject.class ) );
       fail();
     } catch( IllegalStateException exception ) {
       assertEquals( "Remote object is destroyed", exception.getMessage() );
@@ -349,7 +344,7 @@ public class RemoteObjectImpl_Test {
     try {
       runInBackgroundThread( new Runnable() {
         public void run() {
-          remoteObject.call( "method", mockParameters() );
+          remoteObject.call( "method", mock( JsonObject.class ) );
         }
       } );
       fail();
@@ -385,19 +380,6 @@ public class RemoteObjectImpl_Test {
     } catch( Throwable exception ) {
       throw new RuntimeException( exception );
     }
-  }
-
-  @SuppressWarnings( "unchecked" )
-  private static Map<String, Object> mockParameters() {
-    return mock( Map.class );
-  }
-
-  private static JsonObject propertiesToJson( Map<String, Object> properties ) {
-    JsonObject result = new JsonObject();
-    for( Entry<String, Object> entry : properties.entrySet() ) {
-      result.add( entry.getKey(), JsonUtil.createJsonValue( entry.getValue() ) );
-    }
-    return result;
   }
 
   private static Message getMessage() {

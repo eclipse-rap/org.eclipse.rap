@@ -14,7 +14,7 @@ package org.eclipse.swt.internal.browser.browserkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.Fixture.fakeNewRequest;
-import static org.eclipse.rap.rwt.testfixture.Fixture.fakeSetParameter;
+import static org.eclipse.rap.rwt.testfixture.Fixture.fakeSetProperty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -188,9 +188,9 @@ public class BrowserLCA_Test {
       }
     };
     fakeNewRequest();
-    fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_FUNCTION, "func" );
-    Object[] args = new Object[] { "eclipse", Double.valueOf( 3.6 ) };
-    fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_ARGUMENTS, args );
+    fakeSetProperty( getId( browser ), BrowserLCA.PARAM_EXECUTE_FUNCTION, "func" );
+    JsonArray args = new JsonArray().add( "eclipse" ).add( 3.6 );
+    fakeSetProperty( getId( browser ), BrowserLCA.PARAM_EXECUTE_ARGUMENTS, args );
 
     Fixture.readDataAndProcessAction( browser );
 
@@ -373,9 +373,9 @@ public class BrowserLCA_Test {
     BrowserUtil.evaluate( browser, "alert('33');", browserCallback );
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest();
-    Fixture.fakeSetParameter( getId( browser ), "executeResult", Boolean.TRUE );
-    Object[] result = new Object[]{ Integer.valueOf( 27 ) };
-    Fixture.fakeSetParameter( getId( browser ), "evaluateResult", result );
+    Fixture.fakeSetProperty( getId( browser ), "executeResult", true );
+    JsonArray result = new JsonArray().add( 27 );
+    Fixture.fakeSetProperty( getId( browser ), "evaluateResult", result );
     Fixture.executeLifeCycleFromServerThread();
 
     verify( browserCallback, times( 1 ) ).evaluationSucceeded( Integer.valueOf( 27 ) );
@@ -430,9 +430,9 @@ public class BrowserLCA_Test {
       }
     };
     fakeNewRequest();
-    fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_FUNCTION, "func" );
-    Object[] args = new Object[] { "eclipse", Double.valueOf( 3.6 )};
-    fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_ARGUMENTS, args );
+    fakeSetProperty( getId( browser ), BrowserLCA.PARAM_EXECUTE_FUNCTION, "func" );
+    JsonArray args = new JsonArray().add( "eclipse" ).add( 3.6 );
+    fakeSetProperty( getId( browser ), BrowserLCA.PARAM_EXECUTE_ARGUMENTS, args );
 
     Fixture.executeLifeCycleFromServerThread();
 
