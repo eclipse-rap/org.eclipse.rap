@@ -11,7 +11,6 @@
 package org.eclipse.swt.internal.dnd.dragsourcekit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -62,7 +61,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     IClientObject clientObject = getClientObject( dragSource );
     clientObject.create( TYPE );
     clientObject.set( "control", getId( dragSource.getControl() ) );
-    clientObject.set( "style", createJsonArray( convertOperations( dragSource.getStyle() ) ) );
+    clientObject.set( "style", convertOperations( dragSource.getStyle() ) );
   }
 
   @Override
@@ -87,7 +86,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
   private static void renderTransfer( DragSource dragSource ) {
     Transfer[] newValue = dragSource.getTransfer();
     if( hasChanged( dragSource, PROP_TRANSFER, newValue, DEFAULT_TRANSFER ) ) {
-      JsonValue renderValue = createJsonArray( convertTransferTypes( newValue ) );
+      JsonValue renderValue = convertTransferTypes( newValue );
       getClientObject( dragSource ).set( "transfer", renderValue );
     }
   }
@@ -96,10 +95,9 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     IDNDAdapter dndAdapter = dragSource.getAdapter( IDNDAdapter.class  );
     // TODO [tb] : would be rendered by all DragSources:
     if( dndAdapter.hasDetailChanged() ) {
-      String[] operations = DNDLCAUtil.convertOperations( dndAdapter.getDetailChangedValue() );
-      String detail = operations.length > 0 ? operations[ 0 ] : "DROP_NONE";
+      JsonArray operations = convertOperations( dndAdapter.getDetailChangedValue() );
       JsonObject parameters = new JsonObject()
-        .add( "detail", detail )
+        .add( "detail", operations.isEmpty() ? JsonValue.valueOf( "DROP_NONE" ) : operations.get( 0 ) )
         .add( "control", getId( dndAdapter.getDetailChangedControl() ) );
       getClientObject( dragSource ).call( "changeDetail", parameters );
     }

@@ -82,60 +82,36 @@ public final class JsonUtil {
     return result;
   }
 
-  public static JsonValue createJsonArray( int... values ) {
-    JsonValue result;
-    if( values != null ) {
-      JsonArray array = new JsonArray();
-      for( int i = 0; i < values.length; i++ ) {
-        array.add( values[ i ] );
-      }
-      result = array;
-    } else {
-      result = JsonValue.NULL;
+  public static JsonArray createJsonArray( int... values ) {
+    JsonArray array = new JsonArray();
+    for( int i = 0; i < values.length; i++ ) {
+      array.add( values[ i ] );
     }
-    return result;
+    return array;
   }
 
-  public static JsonValue createJsonArray( float... values ) {
-    JsonValue result;
-    if( values != null ) {
-      JsonArray array = new JsonArray();
-      for( int i = 0; i < values.length; i++ ) {
-        array.add( values[ i ] );
-      }
-      result = array;
-    } else {
-      result = JsonValue.NULL;
+  public static JsonArray createJsonArray( float... values ) {
+    JsonArray array = new JsonArray();
+    for( int i = 0; i < values.length; i++ ) {
+      array.add( values[ i ] );
     }
-    return result;
+    return array;
   }
 
-  public static JsonValue createJsonArray( boolean... values ) {
-    JsonValue result;
-    if( values != null ) {
-      JsonArray array = new JsonArray();
-      for( int i = 0; i < values.length; i++ ) {
-        array.add( values[ i ] );
-      }
-      result = array;
-    } else {
-      result = JsonValue.NULL;
+  public static JsonArray createJsonArray( boolean... values ) {
+    JsonArray array = new JsonArray();
+    for( int i = 0; i < values.length; i++ ) {
+      array.add( values[ i ] );
     }
-    return result;
+    return array;
   }
 
-  public static JsonValue createJsonArray( String... values ) {
-    JsonValue result;
-    if( values != null ) {
-      JsonArray array = new JsonArray();
-      for( int i = 0; i < values.length; i++ ) {
-        array.add( values[ i ] );
-      }
-      result = array;
-    } else {
-      result = JsonValue.NULL;
+  public static JsonArray createJsonArray( String... values ) {
+    JsonArray array = new JsonArray();
+    for( int i = 0; i < values.length; i++ ) {
+      array.add( values[ i ] );
     }
-    return result;
+    return array;
   }
 
   /**

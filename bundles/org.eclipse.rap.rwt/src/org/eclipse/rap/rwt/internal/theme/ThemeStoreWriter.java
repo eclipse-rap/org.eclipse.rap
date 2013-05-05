@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -19,7 +21,6 @@ import java.util.Set;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rap.rwt.service.ApplicationContext;
@@ -76,7 +77,7 @@ public final class ThemeStoreWriter {
       for( int j = 0; j < values.length; j++ ) {
         ConditionalValue conditionalValue = values[ j ];
         JsonArray array = new JsonArray();
-        array.add( JsonUtil.createJsonArray( conditionalValue.constraints ) );
+        array.add( createJsonArray( conditionalValue.constraints ) );
         QxType value = conditionalValue.value;
         ThemePropertyAdapter adapter = registry.getPropertyAdapter( value.getClass() );
         String cssKey = adapter.getKey( value );

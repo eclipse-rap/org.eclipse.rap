@@ -29,7 +29,6 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
@@ -244,12 +243,12 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                                                    Boolean.FALSE );
     if( hasChanged ) {
       JsonValue gradient = JsonValue.NULL;
-      if( bgGradientColors!= null ) {
+      if( bgGradientColors != null ) {
         JsonArray colors = new JsonArray();
         for( int i = 0; i < bgGradientColors.length; i++ ) {
           colors.add( ProtocolUtil.getJsonForColor( bgGradientColors[ i ], false ) );
         }
-        JsonValue percents = JsonUtil.createJsonArray( bgGradientPercents );
+        JsonValue percents = createJsonArray( bgGradientPercents );
         gradient = new JsonArray()
           .add( colors )
           .add( percents )

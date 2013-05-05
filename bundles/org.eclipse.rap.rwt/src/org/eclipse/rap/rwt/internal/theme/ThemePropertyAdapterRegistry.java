@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -139,9 +141,9 @@ public final class ThemePropertyAdapterRegistry {
       if( image.isGradient() ) {
         JsonObject gradientObject = null;
         gradientObject = new JsonObject();
-        JsonValue percents = JsonUtil.createJsonArray( image.gradientPercents );
+        JsonValue percents = createJsonArray( image.gradientPercents );
         gradientObject.add( "percents", percents );
-        JsonValue colors = JsonUtil.createJsonArray( image.gradientColors );
+        JsonValue colors = createJsonArray( image.gradientColors );
         gradientObject.add( "colors", colors );
         gradientObject.add( "vertical", image.vertical );
         result = gradientObject;
@@ -341,4 +343,5 @@ public final class ThemePropertyAdapterRegistry {
   public ThemePropertyAdapter getPropertyAdapter( Class key ) {
     return map.get( key );
   }
+
 }

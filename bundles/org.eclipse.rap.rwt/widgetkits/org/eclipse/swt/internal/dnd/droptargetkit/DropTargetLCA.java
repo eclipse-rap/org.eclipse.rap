@@ -11,7 +11,6 @@
 package org.eclipse.swt.internal.dnd.droptargetkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -73,7 +72,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
     IClientObject clientObject = getClientObject( dropTarget );
     clientObject.create( TYPE );
     clientObject.set( "control", getId( dropTarget.getControl() ) );
-    clientObject.set( "style", createJsonArray( convertOperations( dropTarget.getStyle() ) ) );
+    clientObject.set( "style", convertOperations( dropTarget.getStyle() ) );
   }
 
   @Override
@@ -105,7 +104,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
   private static void renderTransfer( DropTarget dropTarget ) {
     Transfer[] newValue = dropTarget.getTransfer();
     if( hasChanged( dropTarget, PROP_TRANSFER, newValue, DEFAULT_TRANSFER ) ) {
-      JsonValue renderValue = createJsonArray( convertTransferTypes( newValue ) );
+      JsonValue renderValue = convertTransferTypes( newValue );
       getClientObject( dropTarget ).set( "transfer", renderValue );
     }
   }

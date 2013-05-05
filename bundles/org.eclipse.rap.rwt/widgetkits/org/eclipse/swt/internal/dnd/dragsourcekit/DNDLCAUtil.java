@@ -10,9 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.dragsourcekit;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
@@ -24,34 +22,29 @@ public final class DNDLCAUtil {
     // prevent instantiation
   }
 
-  public static String[] convertTransferTypes( Transfer[] transfer ) {
-    List<TransferData> allTypes = new ArrayList<TransferData>();
+  public static JsonArray convertTransferTypes( Transfer[] transfer ) {
+    JsonArray array = new JsonArray();
     for( int i = 0; i < transfer.length; i++ ) {
       TransferData[] supported = transfer[ i ].getSupportedTypes();
       for( int j = 0; j < supported.length; j++ ) {
-        allTypes.add( supported[ j ] );
+        array.add( Integer.toString( supported[ j ].type ) );
       }
     }
-    String[] result = new String[ allTypes.size() ];
-    for( int i = 0; i < allTypes.size(); i++ ) {
-      TransferData dataType = allTypes.get( i );
-      result[ i ] = String.valueOf( dataType.type );
-    }
-    return result;
+    return array;
   }
 
-  public static String[] convertOperations( int operations ) {
-    List<String> result = new ArrayList<String>();
+  public static JsonArray convertOperations( int operations ) {
+    JsonArray array = new JsonArray();
     if( ( operations & DND.DROP_COPY ) != 0  ) {
-      result.add( "DROP_COPY" );
+      array.add( "DROP_COPY" );
     }
     if( ( operations & DND.DROP_MOVE ) != 0  ) {
-      result.add( "DROP_MOVE" );
+      array.add( "DROP_MOVE" );
     }
     if( ( operations & DND.DROP_LINK ) != 0  ) {
-      result.add( "DROP_LINK" );
+      array.add( "DROP_LINK" );
     }
-    return result.toArray( new String[ result.size() ] );
+    return array;
   }
 
 }

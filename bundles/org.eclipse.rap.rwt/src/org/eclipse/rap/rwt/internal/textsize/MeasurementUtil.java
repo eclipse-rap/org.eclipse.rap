@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.swt.SWT;
@@ -32,7 +33,7 @@ public class MeasurementUtil {
     JsonArray result = new JsonArray()
       .add( getId( item ) )
       .add( item.getTextToMeasure() )
-      .add( JsonUtil.createJsonArray( ProtocolUtil.parseFontName( fontData.getName() ) ) )
+      .add( createJsonArray( ProtocolUtil.parseFontName( fontData.getName() ) ) )
       .add( fontData.getHeight() )
       .add( ( fontData.getStyle() & SWT.BOLD ) != 0 )
       .add( ( fontData.getStyle() & SWT.ITALIC ) != 0 )
@@ -46,7 +47,7 @@ public class MeasurementUtil {
     JsonArray result = new JsonArray()
       .add( getId( probe ) )
       .add( probe.getText() )
-      .add( JsonUtil.createJsonArray( ProtocolUtil.parseFontName( fontData.getName() ) ) )
+      .add( createJsonArray( ProtocolUtil.parseFontName( fontData.getName() ) ) )
       .add( fontData.getHeight() )
       .add( ( fontData.getStyle() & SWT.BOLD ) != 0 )
       .add( ( fontData.getStyle() & SWT.ITALIC ) != 0 )

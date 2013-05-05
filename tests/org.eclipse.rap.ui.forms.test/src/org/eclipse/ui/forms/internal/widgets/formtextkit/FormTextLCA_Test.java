@@ -22,7 +22,6 @@ import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.widgets.FormText;
 
 
-@SuppressWarnings( "restriction" )
 public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
 
   private FormText formText;
