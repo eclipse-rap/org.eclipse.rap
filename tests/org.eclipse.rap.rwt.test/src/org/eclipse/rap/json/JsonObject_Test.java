@@ -20,10 +20,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 
-import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.json.JsonWriter;
 import org.eclipse.rap.json.JsonObject.HashIndexTable;
 import org.junit.Before;
 import org.junit.Test;
@@ -473,6 +469,16 @@ public class JsonObject_Test {
     assertFalse( object().hashCode() == object( "a", "1" ).hashCode() );
     assertFalse( object( "a", "1" ).hashCode() == object( "a", "2" ).hashCode() );
     assertFalse( object( "a", "1" ).hashCode() == object( "b", "1" ).hashCode() );
+  }
+
+  @Test
+  public void hashIndexTable_copyConstructor() {
+    HashIndexTable original = new HashIndexTable();
+    original.add( "name", 23 );
+
+    HashIndexTable copy = new HashIndexTable( original );
+
+    assertEquals( 23, copy.get( "name" ) );
   }
 
   @Test
