@@ -37,7 +37,11 @@ public class ClientScriptingSupport {
     invokeMethod( "removeFrom", widget, eventType, listener );
   }
 
-  private static void invokeMethod( String methodName, Widget widget, int eventType, Listener listener ) {
+  private static void invokeMethod( String methodName,
+                                    Widget widget,
+                                    int eventType,
+                                    Listener listener )
+  {
     try {
       Method method = findMethod( methodName, listener );
       if( method != null ) {
