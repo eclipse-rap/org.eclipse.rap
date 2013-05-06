@@ -11,10 +11,10 @@
 package org.eclipse.swt.internal.events;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValueAsString;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -86,12 +86,12 @@ public final class EventLCAUtil {
 
   public static void processRadioSelection( Widget widget, boolean isWidgetSelected ) {
     String eventName = ClientMessageConst.EVENT_SELECTION;
-    if( WidgetLCAUtil.wasEventSent( widget, eventName ) ) {
+    if( wasEventSent( widget, eventName ) ) {
       Event event = new Event();
       if( !isWidgetSelected ) {
         event.time = -1;
       }
-      event.stateMask = EventLCAUtil.readStateMask( widget, eventName );
+      event.stateMask = readStateMask( widget, eventName );
       widget.notifyListeners( SWT.Selection, event );
     }
   }
@@ -108,4 +108,5 @@ public final class EventLCAUtil {
   private EventLCAUtil() {
     // prevent instantiation
   }
+
 }
