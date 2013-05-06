@@ -1556,6 +1556,8 @@ DateTime[BORDER]:focused {
 }
 
 DateTime-Field {
+  color: inherit;
+  background-color: transparent;
   padding: 5px 3px 6px 3px;
   text-shadow: none;
 }
@@ -1566,6 +1568,8 @@ DateTime[BORDER] {
 }
 
 DateTime-Calendar-Day {
+  color: inherit;
+  background-color: transparent;
   text-shadow: none;
 }
 
