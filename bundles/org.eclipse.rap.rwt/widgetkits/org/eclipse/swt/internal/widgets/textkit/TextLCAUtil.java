@@ -21,6 +21,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
@@ -90,7 +91,7 @@ final class TextLCAUtil {
     preserveListener( text, PROP_MODIFY_LISTENER, hasModifyListener( text ) );
     preserveListener( text,
                       PROP_DEFAULT_SELECTION_LISTENER,
-                      text.isListening( SWT.DefaultSelection ) );
+                      isListening( text, SWT.DefaultSelection ) );
   }
 
   static void renderInitialization( Text text ) {
@@ -112,7 +113,7 @@ final class TextLCAUtil {
     renderListener( text, PROP_MODIFY_LISTENER, hasModifyListener( text ), false );
     renderListener( text,
                     PROP_DEFAULT_SELECTION_LISTENER,
-                    text.isListening( SWT.DefaultSelection ),
+                    isListening( text, SWT.DefaultSelection ),
                     false );
   }
 
@@ -120,7 +121,7 @@ final class TextLCAUtil {
     final Point selection = readSelection( text );
     final String txt = readPropertyValue( text, "text" );
     if( txt != null ) {
-      if( text.isListening( SWT.Verify ) ) {
+      if( isListening( text, SWT.Verify ) ) {
         // setText needs to be executed in a ProcessAction runnable as it may
         // fire a VerifyEvent whose fields (text and doit) need to be evaluated
         // before actually setting the new value
@@ -200,7 +201,7 @@ final class TextLCAUtil {
 
   private static boolean hasModifyListener( Text text ) {
     // NOTE : Client does not support Verify, it is created server-side from Modify
-    return text.isListening( SWT.Modify ) || text.isListening( SWT.Verify );
+    return isListening( text, SWT.Modify ) || isListening( text, SWT.Verify );
   }
 
 }

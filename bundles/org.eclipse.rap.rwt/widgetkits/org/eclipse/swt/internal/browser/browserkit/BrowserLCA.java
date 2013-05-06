@@ -22,6 +22,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -307,8 +308,8 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   }
 
   private boolean hasProgressListener( Browser browser ) {
-    return browser.isListening( EventTypes.PROGRESS_CHANGED )
-        || browser.isListening( EventTypes.PROGRESS_COMPLETED );
+    return isListening( browser, EventTypes.PROGRESS_CHANGED )
+        || isListening( browser, EventTypes.PROGRESS_COMPLETED );
   }
 
 }

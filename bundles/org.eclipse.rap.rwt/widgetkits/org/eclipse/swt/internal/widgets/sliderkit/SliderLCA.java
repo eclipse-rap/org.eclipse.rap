@@ -18,6 +18,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
@@ -67,7 +68,7 @@ public class SliderLCA extends AbstractWidgetLCA {
     preserveProperty( slider, PROP_INCREMENT, slider.getIncrement() );
     preserveProperty( slider, PROP_PAGE_INCREMENT, slider.getPageIncrement() );
     preserveProperty( slider, PROP_THUMB, slider.getThumb() );
-    preserveListener( slider, PROP_SELECTION_LISTENER, slider.isListening( SWT.Selection ) );
+    preserveListener( slider, PROP_SELECTION_LISTENER, isListening( slider, SWT.Selection ) );
   }
 
   public void readData( Widget widget ) {
@@ -104,7 +105,7 @@ public class SliderLCA extends AbstractWidgetLCA {
     renderProperty( slider, PROP_INCREMENT, slider.getIncrement(), DEFAULT_INCREMENT );
     renderProperty( slider, PROP_PAGE_INCREMENT, slider.getPageIncrement(), DEFAULT_PINCREMENT );
     renderProperty( slider, PROP_THUMB, slider.getThumb(), DEFAULT_THUMB );
-    renderListener( slider, PROP_SELECTION_LISTENER, slider.isListening( SWT.Selection ), false );
+    renderListener( slider, PROP_SELECTION_LISTENER, isListening( slider, SWT.Selection ), false );
   }
 
 }

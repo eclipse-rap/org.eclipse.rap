@@ -18,6 +18,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.dnd.dragsourcekit.DNDLCAUtil.convertOperations;
 import static org.eclipse.swt.internal.dnd.dragsourcekit.DNDLCAUtil.convertTransferTypes;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
@@ -48,8 +49,8 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     preserveProperty( dragSource, PROP_TRANSFER, dragSource.getTransfer() );
     preserveListener( dragSource,
                       PROP_DRAG_START_LISTENER,
-                      dragSource.isListening( DND.DragStart ) );
-    preserveListener( dragSource, PROP_DRAG_END_LISTENER, dragSource.isListening( DND.DragEnd ) );
+                      isListening( dragSource, DND.DragStart ) );
+    preserveListener( dragSource, PROP_DRAG_END_LISTENER, isListening( dragSource, DND.DragEnd ) );
   }
 
   public void readData( Widget widget ) {
@@ -75,11 +76,11 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     renderCancel( dragSource );
     renderListener( dragSource,
                     PROP_DRAG_START_LISTENER,
-                    dragSource.isListening( DND.DragStart ),
+                    isListening( dragSource, DND.DragStart ),
                     false );
     renderListener( dragSource,
                     PROP_DRAG_END_LISTENER,
-                    dragSource.isListening( DND.DragEnd ),
+                    isListening( dragSource, DND.DragEnd ),
                     false );
   }
 

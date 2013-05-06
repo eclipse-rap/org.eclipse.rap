@@ -22,6 +22,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
@@ -55,7 +56,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.preserveValues( link );
     WidgetLCAUtil.preserveCustomVariant( link );
     preserveProperty( link, PROP_TEXT, link.getText() );
-    preserveListener( link, PROP_SELECTION_LISTENER, link.isListening( SWT.Selection ) );
+    preserveListener( link, PROP_SELECTION_LISTENER, isListening( link, SWT.Selection ) );
   }
 
   public void readData( Widget widget ) {
@@ -82,7 +83,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.renderChanges( link );
     WidgetLCAUtil.renderCustomVariant( link );
     renderText( link );
-    renderListener( link, PROP_SELECTION_LISTENER, link.isListening( SWT.Selection ), false );
+    renderListener( link, PROP_SELECTION_LISTENER, isListening( link, SWT.Selection ), false );
   }
 
   ///////////////////////////////////////////////////

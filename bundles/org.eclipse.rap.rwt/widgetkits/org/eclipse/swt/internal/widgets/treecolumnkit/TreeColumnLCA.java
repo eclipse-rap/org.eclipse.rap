@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -27,8 +28,8 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -71,7 +72,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     preserveProperty( column, PROP_MOVEABLE, column.getMoveable() );
     preserveProperty( column, PROP_ALIGNMENT, getAlignment( column ) );
     preserveProperty( column, PROP_FIXED, isFixed( column ) );
-    preserveListener( column, PROP_SELECTION_LISTENER, column.isListening( SWT.Selection ) );
+    preserveListener( column, PROP_SELECTION_LISTENER, isListening( column, SWT.Selection ) );
   }
 
   public void readData( Widget widget ) {
@@ -125,7 +126,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     renderProperty( column, PROP_MOVEABLE, column.getMoveable(), false );
     renderProperty( column, PROP_ALIGNMENT, getAlignment( column ), DEFAULT_ALIGNMENT );
     renderProperty( column, PROP_FIXED, isFixed( column ), false );
-    renderListener( column, PROP_SELECTION_LISTENER, column.isListening( SWT.Selection ), false );
+    renderListener( column, PROP_SELECTION_LISTENER, isListening( column, SWT.Selection ), false );
   }
 
   //////////////////////////////////////////////////

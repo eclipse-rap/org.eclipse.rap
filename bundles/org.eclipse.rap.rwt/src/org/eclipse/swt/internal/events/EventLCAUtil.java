@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,12 +17,16 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Scrollable;
 import org.eclipse.swt.widgets.Widget;
 
 
 public final class EventLCAUtil {
+
+  private static final String CLIENT_LISTENER_CLASS_NAME
+    = "org.eclipse.rap.clientscripting.ClientListener";
 
   public static int readStateMask( Widget widget, String eventName ) {
     String altKey = readEventPropertyValueAsString( getId( widget ), eventName, "altKey" );
@@ -71,11 +75,11 @@ public final class EventLCAUtil {
     boolean result = false;
     ScrollBar horizontalBar = scrollable.getHorizontalBar();
     if( horizontalBar != null ) {
-      result = result || horizontalBar.isListening( SWT.Selection );
+      result = result || isListening( horizontalBar, SWT.Selection );
     }
     ScrollBar verticalBar = scrollable.getVerticalBar();
     if( verticalBar != null ) {
-      result = result || verticalBar.isListening( SWT.Selection );
+      result = result || isListening( verticalBar, SWT.Selection );
     }
     return result;
   }
@@ -90,6 +94,15 @@ public final class EventLCAUtil {
       event.stateMask = EventLCAUtil.readStateMask( widget, eventName );
       widget.notifyListeners( SWT.Selection, event );
     }
+  }
+
+  public static boolean isListening( Widget widget, int eventType ) {
+    for( Listener listener : widget.getListeners( eventType ) ) {
+      if( !CLIENT_LISTENER_CLASS_NAME.equals( listener.getClass().getName() ) ) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private EventLCAUtil() {

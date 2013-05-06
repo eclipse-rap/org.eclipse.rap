@@ -19,6 +19,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
@@ -61,7 +62,7 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
     preserveProperty( toolTip, PROP_MESSAGE, toolTip.getMessage() );
     preserveProperty( toolTip, PROP_LOCATION, getLocation( toolTip ) );
     preserveProperty( toolTip, PROP_VISIBLE, toolTip.isVisible() );
-    preserveListener( toolTip, PROP_SELECTION_LISTENER, toolTip.isListening( SWT.Selection ) );
+    preserveListener( toolTip, PROP_SELECTION_LISTENER, isListening( toolTip, SWT.Selection ) );
   }
 
   public void readData( Widget widget ) {
@@ -91,7 +92,10 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
     renderProperty( toolTip, PROP_MESSAGE, toolTip.getMessage(), "" );
     renderProperty( toolTip, PROP_LOCATION, getLocation( toolTip ), DEFAULT_LOCATION );
     renderProperty( toolTip, PROP_VISIBLE, toolTip.isVisible(), false );
-    renderListener( toolTip, PROP_SELECTION_LISTENER, toolTip.isListening( SWT.Selection ), false );
+    renderListener( toolTip,
+                    PROP_SELECTION_LISTENER,
+                    isListening( toolTip, SWT.Selection ),
+                    false );
   }
 
   private static void readVisible( ToolTip toolTip ) {

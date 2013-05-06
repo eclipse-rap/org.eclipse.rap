@@ -18,6 +18,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.dnd.dragsourcekit.DNDLCAUtil.convertOperations;
 import static org.eclipse.swt.internal.dnd.dragsourcekit.DNDLCAUtil.convertTransferTypes;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
@@ -48,19 +49,19 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
     preserveProperty( dropTarget, PROP_TRANSFER, dropTarget.getTransfer() );
     preserveListener( dropTarget,
                       PROP_DRAG_ENTER_LISTENER,
-                      dropTarget.isListening( DND.DragEnter ) );
+                      isListening( dropTarget, DND.DragEnter ) );
     preserveListener( dropTarget,
                       PROP_DRAG_OVER_LISTENER,
-                      dropTarget.isListening( DND.DragOver ) );
+                      isListening( dropTarget, DND.DragOver ) );
     preserveListener( dropTarget,
                       PROP_DRAG_LEAVE_LISTENER,
-                      dropTarget.isListening( DND.DragLeave ) );
+                      isListening( dropTarget, DND.DragLeave ) );
     preserveListener( dropTarget,
                       PROP_DRAG_OPERATION_CHANGED_LISTENER,
-                      dropTarget.isListening( DND.DragOperationChanged ) );
+                      isListening( dropTarget, DND.DragOperationChanged ) );
     preserveListener( dropTarget,
                       PROP_DROP_ACCEPT_LISTENER,
-                      dropTarget.isListening( DND.DropAccept ) );
+                      isListening( dropTarget, DND.DropAccept ) );
   }
 
   public void readData( Widget widget ) {
@@ -81,23 +82,23 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
     renderTransfer( dropTarget );
     renderListener( dropTarget,
                     PROP_DRAG_ENTER_LISTENER,
-                    dropTarget.isListening( DND.DragEnter ),
+                    isListening( dropTarget, DND.DragEnter ),
                     false );
     renderListener( dropTarget,
                     PROP_DRAG_OVER_LISTENER,
-                    dropTarget.isListening( DND.DragOver ),
+                    isListening( dropTarget, DND.DragOver ),
                     false );
     renderListener( dropTarget,
                     PROP_DRAG_LEAVE_LISTENER,
-                    dropTarget.isListening( DND.DragLeave ),
+                    isListening( dropTarget, DND.DragLeave ),
                     false );
     renderListener( dropTarget,
                     PROP_DRAG_OPERATION_CHANGED_LISTENER,
-                    dropTarget.isListening( DND.DragOperationChanged ),
+                    isListening( dropTarget, DND.DragOperationChanged ),
                     false );
     renderListener( dropTarget,
                     PROP_DROP_ACCEPT_LISTENER,
-                    dropTarget.isListening( DND.DropAccept ),
+                    isListening( dropTarget, DND.DropAccept ),
                     false );
   }
 

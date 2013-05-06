@@ -21,6 +21,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
@@ -68,7 +69,7 @@ final class ToolItemLCAUtil {
     preserveProperty( toolItem, PROP_HOT_IMAGE, toolItem.getHotImage() );
     preserveProperty( toolItem, PROP_CONTROL, toolItem.getControl() );
     preserveProperty( toolItem, PROP_SELECTION, toolItem.getSelection() );
-    preserveListener( toolItem, PROP_SELECTION_LISTENER, toolItem.isListening( SWT.Selection ) );
+    preserveListener( toolItem, PROP_SELECTION_LISTENER, isListening( toolItem, SWT.Selection ) );
   }
 
   static void renderInitialization( ToolItem toolItem ) {
@@ -101,7 +102,7 @@ final class ToolItemLCAUtil {
     renderProperty( toolItem, PROP_SELECTION, toolItem.getSelection(), false );
     renderListener( toolItem,
                     PROP_SELECTION_LISTENER,
-                    toolItem.isListening( SWT.Selection ),
+                    isListening( toolItem, SWT.Selection ),
                     false );
   }
 

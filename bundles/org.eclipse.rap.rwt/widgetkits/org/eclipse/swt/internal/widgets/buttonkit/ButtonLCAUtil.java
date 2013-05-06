@@ -18,6 +18,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
@@ -58,7 +59,7 @@ final class ButtonLCAUtil {
     preserveProperty( button, PROP_SELECTION, Boolean.valueOf( button.getSelection() ) );
     preserveProperty( button, PROP_GRAYED, Boolean.valueOf( button.getGrayed() ) );
     preserveProperty( button, PROP_ALIGNMENT, getAlignment( button ) );
-    preserveListener( button, PROP_SELECTION_LISTENERS, button.isListening( SWT.Selection ) );
+    preserveListener( button, PROP_SELECTION_LISTENERS, isListening( button, SWT.Selection ) );
   }
 
   static void renderInitialization( Button button ) {
@@ -77,7 +78,7 @@ final class ButtonLCAUtil {
     renderProperty( button, PROP_ALIGNMENT, getAlignment( button ), DEFAULT_ALIGNMENT );
     renderProperty( button, PROP_SELECTION, button.getSelection(), false );
     renderProperty( button, PROP_GRAYED, button.getGrayed(), false );
-    renderListener( button, PROP_SELECTION_LISTENERS, button.isListening( SWT.Selection ), false );
+    renderListener( button, PROP_SELECTION_LISTENERS, isListening( button, SWT.Selection ), false );
   }
 
   static boolean readSelection( Button button ) {

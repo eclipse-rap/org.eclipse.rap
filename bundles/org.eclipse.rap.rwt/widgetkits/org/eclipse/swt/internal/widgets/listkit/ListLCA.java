@@ -20,6 +20,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
@@ -68,10 +69,10 @@ public class ListLCA extends AbstractWidgetLCA {
     preserveProperty( list, PROP_TOP_INDEX, list.getTopIndex() );
     preserveProperty( list, PROP_FOCUS_INDEX, list.getFocusIndex() );
     preserveProperty( list, PROP_ITEM_DIMENSIONS, getItemDimensions( list ) );
-    preserveListener( list, PROP_SELECTION_LISTENER, list.isListening( SWT.Selection ) );
+    preserveListener( list, PROP_SELECTION_LISTENER, isListening( list, SWT.Selection ) );
     preserveListener( list,
                       PROP_DEFAULT_SELECTION_LISTENER,
-                      list.isListening( SWT.DefaultSelection ) );
+                      isListening( list, SWT.DefaultSelection ) );
     ScrollBarLCAUtil.preserveValues( list );
   }
 
@@ -112,10 +113,10 @@ public class ListLCA extends AbstractWidgetLCA {
                     DEFAUT_SELECTION_INDICES );
     renderProperty( list, PROP_TOP_INDEX, list.getTopIndex(), DEFAULT_TOP_INDEX );
     renderProperty( list, PROP_FOCUS_INDEX, list.getFocusIndex(), DEFAULT_FOCUS_INDEX );
-    renderListener( list, PROP_SELECTION_LISTENER, list.isListening( SWT.Selection ), false );
+    renderListener( list, PROP_SELECTION_LISTENER, isListening( list, SWT.Selection ), false );
     renderListener( list,
                     PROP_DEFAULT_SELECTION_LISTENER,
-                    list.isListening( SWT.DefaultSelection ),
+                    isListening( list, SWT.DefaultSelection ),
                     false );
     renderProperty( list,
                     PROP_ITEM_DIMENSIONS,

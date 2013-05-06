@@ -21,6 +21,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
@@ -117,10 +118,10 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                       getSelectionBackgroundImage( folder ) );
     preserveSelectionBgGradient( folder );
     preserveProperty( folder, PROP_BORDER_VISIBLE, folder.getBorderVisible() );
-    preserveListener( folder, PROP_SELECTION_LISTENER, folder.isListening( SWT.Selection ) );
+    preserveListener( folder, PROP_SELECTION_LISTENER, isListening( folder, SWT.Selection ) );
     preserveListener( folder,
                       PROP_DEFAULT_SELECTION_LISTENER,
-                      folder.isListening( SWT.DefaultSelection ) );
+                      isListening( folder, SWT.DefaultSelection ) );
     preserveListener( folder, PROP_FOLDER_LISTENER, hasFolderListener( folder ) );
   }
 
@@ -199,9 +200,9 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                     null);
     renderSelectionBackgroundGradient( folder );
     renderProperty( folder, PROP_BORDER_VISIBLE, folder.getBorderVisible(), false );
-    renderListener( folder, PROP_SELECTION_LISTENER, folder.isListening( SWT.Selection ), false );
+    renderListener( folder, PROP_SELECTION_LISTENER, isListening( folder, SWT.Selection ), false );
     renderListener( folder, PROP_DEFAULT_SELECTION_LISTENER,
-                    folder.isListening( SWT.DefaultSelection ),
+                    isListening( folder, SWT.DefaultSelection ),
                     false );
     renderListener( folder, PROP_FOLDER_LISTENER, hasFolderListener( folder ), false );
   }
@@ -375,11 +376,11 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   }
 
   private boolean hasFolderListener( CTabFolder folder ) {
-    return folder.isListening( EventTypes.CTAB_FOLDER_CLOSE )
-        || folder.isListening( EventTypes.CTAB_FOLDER_MAXIMIZE )
-        || folder.isListening( EventTypes.CTAB_FOLDER_MINIMIZE )
-        || folder.isListening( EventTypes.CTAB_FOLDER_RESTORE )
-        || folder.isListening( EventTypes.CTAB_FOLDER_SHOW_LIST );
+    return isListening( folder, EventTypes.CTAB_FOLDER_CLOSE )
+        || isListening( folder, EventTypes.CTAB_FOLDER_MAXIMIZE )
+        || isListening( folder, EventTypes.CTAB_FOLDER_MINIMIZE )
+        || isListening( folder, EventTypes.CTAB_FOLDER_RESTORE )
+        || isListening( folder, EventTypes.CTAB_FOLDER_SHOW_LIST );
   }
 
 }

@@ -19,6 +19,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 import java.text.DecimalFormatSymbols;
@@ -79,7 +80,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     preserveListener( spinner, PROP_SELECTION_LISTENER, hasSelectionListener( spinner ) );
     preserveListener( spinner,
                       PROP_DEFAULT_SELECTION_LISTENER,
-                      spinner.isListening( SWT.DefaultSelection ) );
+                      isListening( spinner, SWT.DefaultSelection ) );
   }
 
   /* (intentionally non-JavaDoc'ed)
@@ -166,7 +167,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     renderListener( spinner, PROP_SELECTION_LISTENER, hasSelectionListener( spinner ), false );
     renderListener( spinner,
                     PROP_DEFAULT_SELECTION_LISTENER,
-                    spinner.isListening( SWT.DefaultSelection ),
+                    isListening( spinner, SWT.DefaultSelection ),
                     false );
   }
 
@@ -188,7 +189,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   }
 
   private static boolean hasSelectionListener( Spinner spinner ) {
-    return spinner.isListening( SWT.Selection ) || spinner.isListening( SWT.Modify );
+    return isListening( spinner, SWT.Selection ) || isListening( spinner, SWT.Modify );
   }
 
 }

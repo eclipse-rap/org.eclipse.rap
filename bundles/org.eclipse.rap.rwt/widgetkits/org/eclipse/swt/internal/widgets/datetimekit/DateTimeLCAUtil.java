@@ -19,6 +19,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
@@ -54,7 +55,7 @@ final class DateTimeLCAUtil {
   static void preserveValues( DateTime dateTime ) {
     ControlLCAUtil.preserveValues( dateTime );
     WidgetLCAUtil.preserveCustomVariant( dateTime );
-    preserveListener( dateTime, PROP_SELECTION_LISTENER, dateTime.isListening( SWT.Selection ) );
+    preserveListener( dateTime, PROP_SELECTION_LISTENER, isListening( dateTime, SWT.Selection ) );
   }
 
   static void renderInitialization( DateTime dateTime ) {
@@ -69,7 +70,7 @@ final class DateTimeLCAUtil {
     WidgetLCAUtil.renderCustomVariant( dateTime );
     renderListener( dateTime,
                     PROP_SELECTION_LISTENER,
-                    dateTime.isListening( SWT.Selection ),
+                    isListening( dateTime, SWT.Selection ),
                     false );
   }
 

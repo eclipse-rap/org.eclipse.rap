@@ -20,6 +20,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForImage
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForPoint;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForRectangle;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -327,7 +328,7 @@ public final class WidgetLCAUtil {
    * @param widget the widget to preserve
    */
   public static void preserveHelpListener( Widget widget ) {
-    preserveListener( widget, PROP_HELP_LISTENER, widget.isListening( SWT.Help ) );
+    preserveListener( widget, PROP_HELP_LISTENER, isListening( widget, SWT.Help ) );
   }
 
   /**
@@ -418,7 +419,7 @@ public final class WidgetLCAUtil {
    * @param widget
    */
   public static void renderListenHelp( Widget widget ) {
-    renderListener( widget, PROP_HELP_LISTENER, widget.isListening( SWT.Help ), false );
+    renderListener( widget, PROP_HELP_LISTENER, isListening( widget, SWT.Help ), false );
   }
 
   /**

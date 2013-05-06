@@ -14,6 +14,7 @@ package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
@@ -62,7 +63,7 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveProperty( hyperlink,
                                     PROP_ACTIVE_BACKGROUND,
                                     getActiveBackground( hyperlink ) );
-    boolean hasListener = hyperlink.isListening( SWT.DefaultSelection );
+    boolean hasListener = isListening( hyperlink, SWT.DefaultSelection );
     WidgetLCAUtil.preserveListener( hyperlink, PROP_DEFAULT_SELECTION_LISTENER, hasListener );
   }
 
@@ -94,7 +95,7 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
                                   PROP_ACTIVE_BACKGROUND,
                                   getActiveBackground( hyperlink ),
                                   null );
-    boolean hasListener = hyperlink.isListening( SWT.DefaultSelection );
+    boolean hasListener = isListening( hyperlink, SWT.DefaultSelection );
     WidgetLCAUtil.renderListener( hyperlink, PROP_DEFAULT_SELECTION_LISTENER, hasListener, false );
   }
 

@@ -19,6 +19,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -91,11 +92,11 @@ final class MenuLCAUtil {
   private static boolean hasShowListener( Menu menu ) {
     boolean result = false;
     if( ( menu.getStyle() & SWT.BAR ) == 0 ) {
-      result = menu.isListening( SWT.Show );
+      result = isListening( menu, SWT.Show );
       if( !result ) {
         MenuItem[] items = menu.getItems();
         for( int i = 0; !result && i < items.length && !result; i++ ) {
-          result = items[ i ].isListening( SWT.Arm );
+          result = isListening( items[ i ], SWT.Arm );
         }
       }
     }
@@ -105,7 +106,7 @@ final class MenuLCAUtil {
   private static boolean hasHideListener( Menu menu ) {
     boolean result = false;
     if( ( menu.getStyle() & SWT.BAR ) == 0 ) {
-      result = menu.isListening( SWT.Hide );
+      result = isListening( menu, SWT.Hide );
     }
     return result;
   }

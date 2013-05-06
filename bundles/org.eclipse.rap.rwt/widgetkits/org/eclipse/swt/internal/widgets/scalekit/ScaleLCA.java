@@ -18,6 +18,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
@@ -64,7 +65,7 @@ public final class ScaleLCA extends AbstractWidgetLCA {
     preserveProperty( scale, PROP_SELECTION, scale.getSelection() );
     preserveProperty( scale, PROP_INCREMENT, scale.getIncrement() );
     preserveProperty( scale, PROP_PAGE_INCREMENT, scale.getPageIncrement() );
-    preserveListener( scale, PROP_SELECTION_LISTENER, scale.isListening( SWT.Selection ) );
+    preserveListener( scale, PROP_SELECTION_LISTENER, isListening( scale, SWT.Selection ) );
   }
 
   public void readData( Widget widget ) {
@@ -100,7 +101,7 @@ public final class ScaleLCA extends AbstractWidgetLCA {
     renderProperty( scale, PROP_SELECTION, scale.getSelection(), DEFAULT_SELECTION );
     renderProperty( scale, PROP_INCREMENT, scale.getIncrement(), DEFAULT_INCREMENT );
     renderProperty( scale, PROP_PAGE_INCREMENT, scale.getPageIncrement(), DEFAULT_PAGE_INCREMENT );
-    renderListener( scale, PROP_SELECTION_LISTENER, scale.isListening( SWT.Selection ), false );
+    renderListener( scale, PROP_SELECTION_LISTENER, isListening( scale, SWT.Selection ), false );
   }
 
 }

@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit;
 
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -57,7 +59,7 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.preserveValues( hyperlink );
     WidgetLCAUtil.preserveCustomVariant( hyperlink );
     WidgetLCAUtil.preserveProperty( hyperlink, PROP_EXPANDED, hyperlink.isExpanded() );
-    boolean hasListener = hyperlink.isListening( SWT.DefaultSelection );
+    boolean hasListener = isListening( hyperlink, SWT.DefaultSelection );
     WidgetLCAUtil.preserveListener( hyperlink, PROP_DEFAULT_SELECTION_LISTENER, hasListener );
   }
 
@@ -83,7 +85,7 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.renderChanges( hyperlink );
     WidgetLCAUtil.renderCustomVariant( hyperlink );
     WidgetLCAUtil.renderProperty( hyperlink, PROP_EXPANDED, hyperlink.isExpanded(), false );
-    boolean hasListener = hyperlink.isListening( SWT.DefaultSelection );
+    boolean hasListener = isListening( hyperlink, SWT.DefaultSelection );
     WidgetLCAUtil.renderListener( hyperlink, PROP_DEFAULT_SELECTION_LISTENER, hasListener, false );
   }
 

@@ -21,6 +21,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
@@ -76,10 +77,10 @@ public final class CComboLCA extends AbstractWidgetLCA {
     preserveProperty( ccombo, PROP_TEXT, ccombo.getText() );
     preserveProperty( ccombo, PROP_LIST_VISIBLE, ccombo.getListVisible() );
     preserveProperty( ccombo, PROP_EDITABLE, Boolean.valueOf( ccombo.getEditable() ) );
-    preserveListener( ccombo, PROP_SELECTION_LISTENER, ccombo.isListening( SWT.Selection ) );
+    preserveListener( ccombo, PROP_SELECTION_LISTENER, isListening( ccombo, SWT.Selection ) );
     preserveListener( ccombo,
                       PROP_DEFAULT_SELECTION_LISTENER,
-                      ccombo.isListening( SWT.DefaultSelection ) );
+                      isListening( ccombo, SWT.DefaultSelection ) );
     preserveListener( ccombo, PROP_MODIFY_LISTENER, hasModifyListener( ccombo ) );
   }
 
@@ -138,7 +139,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     final Point selection = readSelection( ccombo );
     final String txt = readPropertyValue( ccombo, "text" );
     if( txt != null ) {
-      if( ccombo.isListening( SWT.Verify ) ) {
+      if( isListening( ccombo, SWT.Verify ) ) {
         // setText needs to be executed in a ProcessAcction runnable as it may
         // fire a VerifyEvent whose fields (text and doit) need to be evaluated
         // before actually setting the new value
@@ -238,13 +239,13 @@ public final class CComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenSelection( CCombo ccombo ) {
-    renderListener( ccombo, PROP_SELECTION_LISTENER, ccombo.isListening( SWT.Selection ), false );
+    renderListener( ccombo, PROP_SELECTION_LISTENER, isListening( ccombo, SWT.Selection ), false );
   }
 
   private static void renderListenDefaultSelection( CCombo ccombo ) {
     renderListener( ccombo,
                     PROP_DEFAULT_SELECTION_LISTENER,
-                    ccombo.isListening( SWT.DefaultSelection ),
+                    isListening( ccombo, SWT.DefaultSelection ),
                     false );
   }
 
@@ -252,8 +253,8 @@ public final class CComboLCA extends AbstractWidgetLCA {
     renderListener( ccombo, PROP_MODIFY_LISTENER, hasModifyListener( ccombo ), false );
   }
 
-  private static boolean hasModifyListener( CCombo combo ) {
-    return combo.isListening( SWT.Modify ) || combo.isListening( SWT.Verify );
+  private static boolean hasModifyListener( CCombo ccombo ) {
+    return isListening( ccombo, SWT.Modify ) || isListening( ccombo, SWT.Verify );
   }
 
   //////////////////

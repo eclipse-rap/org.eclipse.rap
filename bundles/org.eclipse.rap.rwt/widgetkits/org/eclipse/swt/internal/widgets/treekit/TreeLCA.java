@@ -27,6 +27,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
@@ -116,11 +117,11 @@ public final class TreeLCA extends AbstractWidgetLCA {
     preserveProperty( tree, PROP_SELECTION, getSelection( tree ) );
     preserveProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ) );
     preserveProperty( tree, PROP_SORT_COLUMN, tree.getSortColumn() );
-    preserveListener( tree, PROP_SELECTION_LISTENER, tree.isListening( SWT.Selection ) );
+    preserveListener( tree, PROP_SELECTION_LISTENER, isListening( tree, SWT.Selection ) );
     preserveListener( tree, PROP_SETDATA_LISTENER, listensToSetData( tree ) );
     preserveListener( tree,
                       PROP_DEFAULT_SELECTION_LISTENER,
-                      tree.isListening( SWT.DefaultSelection ) );
+                      isListening( tree, SWT.DefaultSelection ) );
     preserveListener( tree, PROP_EXPAND_LISTENER, hasExpandListener( tree ) );
     preserveListener( tree, PROP_COLLAPSE_LISTENER, hasCollapseListener( tree ) );
     preserveProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ) );
@@ -197,11 +198,11 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderProperty( tree, PROP_SELECTION, getSelection( tree ), DEFAULT_SELECTION );
     renderProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ), DEFAULT_SORT_DIRECTION );
     renderProperty( tree, PROP_SORT_COLUMN, tree.getSortColumn(), null );
-    renderListener( tree, PROP_SELECTION_LISTENER, tree.isListening( SWT.Selection ), false );
+    renderListener( tree, PROP_SELECTION_LISTENER, isListening( tree, SWT.Selection ), false );
     renderListener( tree, PROP_SETDATA_LISTENER, listensToSetData( tree ), false );
     renderListener( tree,
                     PROP_DEFAULT_SELECTION_LISTENER,
-                    tree.isListening( SWT.DefaultSelection ),
+                    isListening( tree, SWT.DefaultSelection ),
                     false );
     renderListener( tree, PROP_EXPAND_LISTENER, hasExpandListener( tree ), false );
     renderListener( tree, PROP_COLLAPSE_LISTENER, hasCollapseListener( tree ), false );

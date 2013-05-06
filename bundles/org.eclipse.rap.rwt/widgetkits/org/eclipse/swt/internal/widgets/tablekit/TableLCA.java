@@ -28,6 +28,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
@@ -115,11 +116,11 @@ public final class TableLCA extends AbstractWidgetLCA {
     preserveProperty( table, PROP_SELECTION, getSelection( table ) );
     preserveProperty( table, PROP_SORT_DIRECTION, getSortDirection( table ) );
     preserveProperty( table, PROP_SORT_COLUMN, table.getSortColumn() );
-    preserveListener( table, PROP_SELECTION_LISTENER, table.isListening( SWT.Selection ) );
+    preserveListener( table, PROP_SELECTION_LISTENER, isListening( table, SWT.Selection ) );
     preserveListener( table, PROP_SETDATA_LISTENER, listensToSetData( table ) );
     preserveListener( table,
                       PROP_DEFAULT_SELECTION_LISTENER,
-                      table.isListening( SWT.DefaultSelection ) );
+                      isListening( table, SWT.DefaultSelection ) );
     preserveProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ) );
     preserveProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ) );
     preserveProperty( table, PROP_CELL_TOOLTIP_TEXT, null );
@@ -184,11 +185,11 @@ public final class TableLCA extends AbstractWidgetLCA {
     renderProperty( table, PROP_SELECTION, getSelection( table ), DEFAULT_SELECTION );
     renderProperty( table, PROP_SORT_DIRECTION, getSortDirection( table ), DEFAULT_SORT_DIRECTION );
     renderProperty( table, PROP_SORT_COLUMN, table.getSortColumn(), null );
-    renderListener( table, PROP_SELECTION_LISTENER, table.isListening( SWT.Selection ), false );
+    renderListener( table, PROP_SELECTION_LISTENER, isListening( table, SWT.Selection ), false );
     renderListener( table, PROP_SETDATA_LISTENER, listensToSetData( table ), false );
     renderListener( table,
                     PROP_DEFAULT_SELECTION_LISTENER,
-                    table.isListening( SWT.DefaultSelection ),
+                    isListening( table, SWT.DefaultSelection ),
                     false );
     renderProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ), false );
     renderProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ), false );

@@ -18,6 +18,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
@@ -53,7 +54,7 @@ public class ScrollBarLCAUtil {
       preserveProperty( scrollBar, PROP_VISIBILITY, scrollBar.getVisible() );
       preserveListener( scrollBar,
                         PROP_SELECTION_LISTENER,
-                        scrollBar.isListening( SWT.Selection ) );
+                        isListening( scrollBar, SWT.Selection ) );
     }
   }
 
@@ -82,7 +83,7 @@ public class ScrollBarLCAUtil {
       renderProperty( scrollBar, PROP_VISIBILITY, scrollBar.getVisible(), false );
       renderListener( scrollBar,
                       PROP_SELECTION_LISTENER,
-                      scrollBar.isListening( SWT.Selection ),
+                      isListening( scrollBar, SWT.Selection ),
                       false );
     }
   }
