@@ -22,6 +22,13 @@ import org.eclipse.swt.widgets.Widget;
  */
 public class ClientScriptingSupport {
 
+  private static final String CLIENT_LISTENER_CLASS_NAME
+    = "org.eclipse.rap.clientscripting.ClientListener";
+
+  public static boolean isClientListener( Listener listener ) {
+    return CLIENT_LISTENER_CLASS_NAME.equals( listener.getClass().getName() );
+  }
+
   public static void addClientListenerTo( Widget widget, int eventType, Listener listener ) {
     invokeMethod( "addTo", widget, eventType, listener );
   }
@@ -63,4 +70,5 @@ public class ClientScriptingSupport {
   private ClientScriptingSupport() {
     // prevent instantiation
   }
+
 }

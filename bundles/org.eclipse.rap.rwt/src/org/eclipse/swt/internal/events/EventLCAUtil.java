@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
+import static org.eclipse.rap.rwt.internal.clientscripting.ClientScriptingSupport.isClientListener;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValueAsString;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -24,9 +25,6 @@ import org.eclipse.swt.widgets.Widget;
 
 
 public final class EventLCAUtil {
-
-  private static final String CLIENT_LISTENER_CLASS_NAME
-    = "org.eclipse.rap.clientscripting.ClientListener";
 
   public static int readStateMask( Widget widget, String eventName ) {
     String altKey = readEventPropertyValueAsString( getId( widget ), eventName, "altKey" );
@@ -98,7 +96,7 @@ public final class EventLCAUtil {
 
   public static boolean isListening( Widget widget, int eventType ) {
     for( Listener listener : widget.getListeners( eventType ) ) {
-      if( !CLIENT_LISTENER_CLASS_NAME.equals( listener.getClass().getName() ) ) {
+      if( !isClientListener( listener ) ) {
         return true;
       }
     }

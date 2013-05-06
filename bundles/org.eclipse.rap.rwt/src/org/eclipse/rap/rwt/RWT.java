@@ -440,7 +440,7 @@ public final class RWT {
    * @return instance of {@link ILifeCycle}
    * @deprecated As of 2.0, PhaseListeners should only be registered in an
    *             {@link ApplicationConfiguration}. For new applications and custom widgets, consider
-   *             the (provisional) {@link RemoteObject} API which is going to replace PhaseListener.
+   *             the {@link RemoteObject} API which is going to replace PhaseListener.
    * @see Application#addPhaseListener(PhaseListener)
    */
   @Deprecated
