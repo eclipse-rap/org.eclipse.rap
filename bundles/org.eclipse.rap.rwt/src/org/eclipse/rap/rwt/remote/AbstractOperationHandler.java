@@ -27,12 +27,6 @@ import org.eclipse.rap.json.JsonObject;
  * It is recommended to extend this base class rather than to implement the OperationHandler
  * interface itself.
  * </p>
- * <p>
- * <strong>Note:</strong> The classes and interfaces in the package
- * <em>org.eclipse.rap.rwt.remote</em> are still considered <strong>provisional</strong>. They are
- * expected to evolve over the next releases, which may lead to slight changes. We make the package
- * available to enable the development of custom components with the new API.
- * </p>
  *
  * @since 2.0
  */

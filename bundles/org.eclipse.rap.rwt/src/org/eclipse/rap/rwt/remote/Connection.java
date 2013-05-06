@@ -17,12 +17,6 @@ import org.eclipse.rap.rwt.service.UISession;
  * An instance of this interface represents a connection used to communicate with the client. Every
  * UI session has exactly one connection which can be obtained by calling
  * {@link UISession#getConnection()}.
- * <p>
- * <strong>Note:</strong> The classes and interfaces in the package
- * <em>org.eclipse.rap.rwt.remote</em> are still considered <strong>provisional</strong>. They are
- * expected to evolve over the next releases, which may lead to slight changes. We make the package
- * available to enable the development of custom components with the new API.
- * </p>
  *
  * @see UISession#getConnection()
  * @since 2.0
