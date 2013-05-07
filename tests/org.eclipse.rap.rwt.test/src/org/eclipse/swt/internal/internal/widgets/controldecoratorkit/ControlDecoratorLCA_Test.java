@@ -27,7 +27,6 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -155,7 +154,7 @@ public class ControlDecoratorLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
-    assertEquals( WidgetUtil.getId( decorator.getParent() ), operation.getParent() );
+    assertEquals( getId( decorator.getParent() ), operation.getParent() );
   }
 
   @Test
@@ -165,7 +164,19 @@ public class ControlDecoratorLCA_Test {
     Message message = Fixture.getProtocolMessage();
     Operation operation = message.getOperation( 0 );
     assertTrue( operation instanceof DestroyOperation );
-    assertEquals( WidgetUtil.getId( decorator ), operation.getTarget() );
+    assertEquals( getId( decorator ), operation.getTarget() );
+  }
+
+  @Test
+  public void testRenderDispose_withDisposedControl() throws IOException {
+    control.dispose();
+
+    lca.renderDispose( decorator );
+
+    Message message = Fixture.getProtocolMessage();
+    Operation operation = message.getOperation( 0 );
+    assertTrue( operation instanceof DestroyOperation );
+    assertEquals( getId( decorator ), operation.getTarget() );
   }
 
   @Test
