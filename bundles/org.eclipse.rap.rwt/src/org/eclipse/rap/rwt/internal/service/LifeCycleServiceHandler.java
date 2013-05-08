@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.service;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getClientMessage;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWriter;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -218,9 +219,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   }
 
   private static void writeProtocolMessage( ServletResponse response ) throws IOException {
-    ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-    String message = protocolWriter.createMessage();
-    response.getWriter().write( message );
+    getProtocolWriter().createMessage().writeTo( response.getWriter() );
   }
 
 }

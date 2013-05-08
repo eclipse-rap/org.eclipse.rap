@@ -10,7 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
-import static org.junit.Assert.*;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWriter;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -24,7 +28,6 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -383,7 +386,7 @@ public class RemoteObjectImpl_Test {
   }
 
   private static Message getMessage() {
-    return new Message( ContextProvider.getProtocolWriter().createMessage() );
+    return new Message( getProtocolWriter().createMessage() );
   }
 
 }

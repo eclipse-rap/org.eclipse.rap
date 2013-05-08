@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -31,13 +32,9 @@ public final class Message {
   private JsonObject message;
   private JsonArray operations;
 
-  public Message( String string ) {
-    String json = string.trim();
-    try {
-      message = JsonObject.readFrom( json );
-    } catch( Exception e ) {
-      throw new IllegalArgumentException( "Could not parse json: " + json );
-    }
+  public Message( JsonObject json ) {
+    ParamCheck.notNull( json, "json" );
+    message = json;
     try {
       operations = message.get( "operations" ).asArray();
     } catch( Exception e ) {

@@ -107,11 +107,10 @@ public class ProtocolMessageWriter {
     }
   }
 
-  public String createMessage() {
+  public JsonObject createMessage() {
     ensureMessagePending();
     alreadyCreated = true;
-    JsonObject message = createMessageObject();
-    return message.toString();
+    return createMessageObject();
   }
 
   private void ensureMessagePending() {

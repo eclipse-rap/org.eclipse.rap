@@ -71,8 +71,7 @@ public class ProtocolMessageWriter_Test {
 
   @Test
   public void testEmptyMessage() {
-    String messageString = writer.createMessage();
-    JsonObject message = JsonObject.readFrom( messageString );
+    JsonObject message = writer.createMessage();
     JsonObject head = message.get( "head" ).asObject();
     assertEquals( 0, head.size() );
     JsonArray operations = message.get( "operations" ).asArray();
@@ -413,8 +412,7 @@ public class ProtocolMessageWriter_Test {
   }
 
   private Message getMessage() {
-    String message = writer.createMessage();
-    return new Message( message );
+    return new Message( writer.createMessage() );
   }
 
 }

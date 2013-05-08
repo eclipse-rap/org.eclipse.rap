@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.service;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,11 +46,10 @@ public class StartupJson {
 
   static void send( HttpServletResponse response ) throws IOException {
     setResponseHeaders( response );
-    PrintWriter writer = response.getWriter();
-    writer.write( get() );
+    get().writeTo( response.getWriter() );
   }
 
-  static String get() {
+  static JsonObject get() {
     ProtocolMessageWriter writer = new ProtocolMessageWriter();
     appendLoadThemeDefinitions( writer );
     appendCreateDisplay( "w1", writer );

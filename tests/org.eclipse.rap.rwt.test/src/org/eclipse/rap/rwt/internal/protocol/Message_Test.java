@@ -47,39 +47,15 @@ public class Message_Test {
     Fixture.tearDown();
   }
 
-  @Test
+  @Test( expected = NullPointerException.class )
   public void testConstructWithNull() {
-    try {
-      new Message( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  @Test
-  public void testConstructWithEmptyString() {
-    try {
-      new Message( "" );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-      assertTrue( expected.getMessage().contains( "Could not parse json" ) );
-    }
-  }
-
-  @Test
-  public void testConstructWithInvalidJson() {
-    try {
-      new Message( "{" );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-      assertTrue( expected.getMessage().contains( "Could not parse json" ) );
-    }
+    new Message( (JsonObject)null );
   }
 
   @Test
   public void testConstructWithoutOperations() {
     try {
-      new Message( "{ \"foo\": 23 }" );
+      new Message( new JsonObject().add( "foo", 23 ) );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Missing operations array" ) );
@@ -89,7 +65,7 @@ public class Message_Test {
   @Test
   public void testConstructWithInvalidOperations() {
     try {
-      new Message( "{ \"operations\": 23 }" );
+      new Message( new JsonObject().add( "operations", 23 ) );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Missing operations array" ) );
@@ -161,7 +137,8 @@ public class Message_Test {
 
   @Test
   public void testGetOperationWithUnknownType() {
-    Message message = new Message( "{ \"operations\" : [ { \"action\" : \"foo\" } ] }" );
+    JsonObject json = JsonObject.readFrom( "{ \"operations\" : [ { \"action\" : \"foo\" } ] }" );
+    Message message = new Message( json );
     try {
       message.getOperation( 0 );
       fail();

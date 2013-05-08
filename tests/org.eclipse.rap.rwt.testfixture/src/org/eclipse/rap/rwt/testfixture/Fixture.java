@@ -13,6 +13,7 @@
 package org.eclipse.rap.rwt.testfixture;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWriter;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -54,7 +55,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -303,14 +303,13 @@ public final class Fixture {
   public static Message getProtocolMessage() {
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     finishResponse( response );
-    return new Message( response.getContent() );
+    return new Message( JsonObject.readFrom( response.getContent() ) );
   }
 
   private static void finishResponse( TestResponse response ) {
     if( response.getContent().length() == 0 ) {
-      ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
       try {
-        response.getWriter().write( protocolWriter.createMessage() );
+        getProtocolWriter().createMessage().writeTo( response.getWriter() );
       } catch( IOException exception ) {
         throw new IllegalStateException( "Failed to get response writer", exception );
       }

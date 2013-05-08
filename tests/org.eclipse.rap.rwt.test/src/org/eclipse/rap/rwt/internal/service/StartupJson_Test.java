@@ -24,6 +24,7 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
@@ -63,7 +64,7 @@ public class StartupJson_Test {
 
   @Test
   public void testStartupJsonContent_Url() {
-    String content = StartupJson.get();
+    JsonObject content = StartupJson.get();
 
     Message message = new Message( content );
     assertEquals( "rap", message.getHead().get( PROPERTY_URL ).asString() );
@@ -71,7 +72,7 @@ public class StartupJson_Test {
 
   @Test
   public void testStartupJsonContent_CreateDisplay() {
-    String content = StartupJson.get();
+    JsonObject content = StartupJson.get();
 
     Message message = new Message( content );
     assertNotNull( message.findCreateOperation( "w1" ) );
@@ -81,7 +82,7 @@ public class StartupJson_Test {
   public void testStartupJsonContent_LoadFallbackTheme() {
     clientResources.registerResources();
 
-    String content = StartupJson.get();
+    JsonObject content = StartupJson.get();
 
     Message message = new Message( content );
     CallOperation operation
@@ -95,7 +96,7 @@ public class StartupJson_Test {
   public void testStartupJsonContent_LoadActiveTheme_DefaultTheme() {
     clientResources.registerResources();
 
-    String content = StartupJson.get();
+    JsonObject content = StartupJson.get();
 
     Message message = new Message( content );
     CallOperation operation
@@ -113,7 +114,7 @@ public class StartupJson_Test {
     registerEntryPoint( properties );
     clientResources.registerResources();
 
-    String content = StartupJson.get();
+    JsonObject content = StartupJson.get();
 
     Message message = new Message( content );
     CallOperation operation
