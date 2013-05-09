@@ -14,11 +14,12 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ControlDecorator", {
   factory : function( properties ) {
     var result = new rwt.widgets.ControlDecorator();
     rwt.remote.HandlerUtil.addStatesForStyles( result, properties.style );
-    // Do not use rwt.remote.HandlerUtil.setParent() here!
-    // ControlDecorator is destroyded by the protocol and must not be set as destroyable child.
+    rwt.remote.HandlerUtil.setParent( result, properties.parent );
+    // [if] ControlDecorator is destroyded by the protocol and must not be set as destroyable child.
     // See bug 407397
     rwt.remote.HandlerUtil.callWithTarget( properties.parent, function( parent ) {
-      result.setParent( parent );
+      rwt.remote.HandlerUtil.removeDestroyableChild( parent, result );
+      result.setUserData( "protocolParent", null );
     } );
     return result;
   },

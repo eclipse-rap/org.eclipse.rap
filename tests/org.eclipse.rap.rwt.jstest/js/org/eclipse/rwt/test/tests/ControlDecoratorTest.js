@@ -26,6 +26,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
 
       assertTrue( widget instanceof rwt.widgets.ControlDecorator );
       assertIdentical( shell, widget.getParent() );
+      // see bug 407397
+      assertNull( widget.getUserData( "protocolParent" ) );
     },
 
     testSetBoundsByProtocol : function() {
