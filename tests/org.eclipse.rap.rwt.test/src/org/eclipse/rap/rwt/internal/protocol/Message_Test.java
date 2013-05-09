@@ -17,6 +17,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -442,6 +443,29 @@ public class Message_Test {
       fail();
     } catch ( RuntimeException expected ) {
     }
+  }
+
+  @Test
+  public void testEquals() {
+    JsonObject json = new JsonObject().add( "operations", new JsonArray() );
+
+    Message message1 = new Message( json );
+    Message message2 = new Message( json );
+
+    assertEquals( message1, message2 );
+  }
+
+  @Test
+  public void testEquals_withDifferentObjects() {
+    JsonObject json1 = new JsonObject().add( "operations", new JsonArray() );
+    JsonObject json2 = new JsonObject()
+      .add( "head", new JsonObject() )
+      .add( "operations", new JsonArray() );
+
+    Message message1 = new Message( json1 );
+    Message message2 = new Message( json2 );
+
+    assertFalse( message1.equals( message2 ) );
   }
 
   private Message getMessage() {

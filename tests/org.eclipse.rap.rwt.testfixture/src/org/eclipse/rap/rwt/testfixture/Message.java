@@ -29,8 +29,8 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class Message {
 
-  private JsonObject message;
-  private JsonArray operations;
+  private final JsonObject message;
+  private final JsonArray operations;
 
   public Message( JsonObject json ) {
     ParamCheck.notNull( json, "json" );
@@ -40,11 +40,6 @@ public final class Message {
     } catch( Exception e ) {
       throw new IllegalArgumentException( "Missing operations array: " + json );
     }
-  }
-
-  @Override
-  public String toString() {
-    return message.toString();
   }
 
   public JsonObject getHead() {
@@ -166,6 +161,28 @@ public final class Message {
       }
     }
     return result;
+  }
+
+  @Override
+  public String toString() {
+    return message.toString();
+  }
+
+  @Override
+  public int hashCode() {
+    return message.hashCode();
+  }
+
+  @Override
+  public boolean equals( Object obj ) {
+    boolean equals = false;
+    if( this == obj ) {
+      equals = true;
+    } else if( obj != null && getClass() == obj.getClass() ) {
+      Message other = ( Message )obj;
+      equals = message.equals( other.message );
+    }
+    return equals;
   }
 
   private List<Operation> getOperations() {
