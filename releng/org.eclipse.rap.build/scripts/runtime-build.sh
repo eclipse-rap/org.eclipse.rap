@@ -44,8 +44,8 @@ else
   mv repository/target/repository "$WORKSPACE/runtimeRepo" || exit 1
 fi
 
-VERSION=$(ls "$WORKSPACE"/runtimeRepo/features/org.eclipse.rap.feature_*.jar | sed 's/.*_\([0-9.-]\+\)\..*\.jar/\1/')
-TIMESTAMP=$(ls "$WORKSPACE"/runtimeRepo/features/org.eclipse.rap.feature_*.jar | sed 's/.*\.\([0-9-]\+\)\.jar/\1/')
+VERSION=$(ls "$WORKSPACE"/runtimeRepo/features/org.eclipse.rap.sdk.feature_*.jar | sed 's/.*_\([0-9.-]\+\)\..*\.jar/\1/')
+TIMESTAMP=$(ls "$WORKSPACE"/runtimeRepo/features/org.eclipse.rap.sdk.feature_*.jar | sed 's/.*\.\([0-9-]\+\)\.jar/\1/')
 echo "Version is $VERSION"
 echo "Timestamp is $TIMESTAMP"
 test -n "$VERSION" || exit 1
