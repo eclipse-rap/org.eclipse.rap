@@ -6,8 +6,7 @@ Bundle-SymbolicName: org.eclipse.rap.rwt.test
 Bundle-Version: 2.1.0.qualifier
 Bundle-ClassPath: .
 Require-Bundle: org.junit;bundle-version="4.8.2",
- org.mockito;bundle-version="[1.8.4,2.0.0)",
- org.objenesis;bundle-version="[1.0.0,2.0.0)",
+ org.mockito.mockito-all;bundle-version="1.9.5",
  org.eclipse.rap.rwt;bundle-version="[2.1.0,3.0.0)"
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
