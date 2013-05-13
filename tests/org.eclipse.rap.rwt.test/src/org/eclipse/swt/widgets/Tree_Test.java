@@ -20,6 +20,8 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -2124,6 +2126,17 @@ public class Tree_Test {
     tree.setSize( 100, ( 5 * itemHeight ) + ( itemHeight / 2 ) );
     assertEquals( 6, tree.getVisibleRowCount( true ) );
     assertEquals( 5, tree.getVisibleRowCount( false ) );
+  }
+
+  @Test
+  public void testClearCachedHeightsOnResize() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    tree.setSize( 200, 200 );
+    Tree spyTree = spy( tree );
+
+    spyTree.setSize( 210, 200 );
+
+    verify( spyTree ).clearCachedHeights();
   }
 
   /////////

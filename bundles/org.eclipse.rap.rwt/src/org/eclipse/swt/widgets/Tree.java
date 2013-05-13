@@ -235,8 +235,7 @@ public class Tree extends Composite {
         items[ i ].clearPreferredWidthBuffers( true );
       }
     }
-    layoutCache.invalidateHeaderHeight();
-    layoutCache.invalidateItemHeight();
+    clearCachedHeights();
     updateScrollBars();
   }
 
@@ -2088,11 +2087,17 @@ public class Tree extends Composite {
   @Override
   void notifyResize( Point oldSize ) {
     if( !oldSize.equals( getSize() ) && !TextSizeUtil.isTemporaryResize() ) {
+      clearCachedHeights();
       updateAllItems();
       updateScrollBars();
       adjustTopItemIndex();
     }
     super.notifyResize( oldSize );
+  }
+
+  void clearCachedHeights() {
+    layoutCache.invalidateHeaderHeight();
+    layoutCache.invalidateItemHeight();
   }
 
   private void adjustTopItemIndex() {
