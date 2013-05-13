@@ -248,11 +248,11 @@ rwt.qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
       if( this._touchSession !== null ) {
         var touch = this._getTouch( domEvent );
         var pos = [ touch.clientX, touch.clientY ];
-        if( !this._touchSession.type.scroll ) {
-          domEvent.preventDefault();
-        }
         if( this._touchSession.type.virtualScroll ) {
           this._handleVirtualScroll( pos );
+        }
+        if( !this._touchSession.type.scroll ) {
+          domEvent.preventDefault();
         }
         if ( this._touchSession.type.drag ) {
           domEvent.preventDefault();
@@ -303,7 +303,7 @@ rwt.qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
 
     _getSessionType : function( widgetTarget ) {
       var result = {};
-      if( this._isSelectableWidget( widgetTarget ) ) {
+      if( this._isSelectableWidget( widgetTarget ) || this._isFocusable( widgetTarget ) ) {
         result.delayedClick = true;
       } else {
         result.click = true;

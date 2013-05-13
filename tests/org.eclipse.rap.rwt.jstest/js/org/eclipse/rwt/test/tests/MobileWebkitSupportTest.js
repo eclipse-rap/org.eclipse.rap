@@ -256,47 +256,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       }
     },
 
-    testTextFocusIOS : function() {
-      if( rwt.client.Client.isMobileSafari() ) {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var text = new rwt.widgets.Text( false );
-        text.addToDocument();
-        TestUtil.flush();
-        assertFalse( text.isFocused() );
-        var node = text._inputElement;
-        var over = false;
-        text.addEventListener( "mouseover", function(){
-          over = true;
-        } );
-
-        this.touch( node, "touchstart" );
-        TestUtil.fakeMouseEventDOM( node, "mouseover", 1, 0, 0, 0, true ); // fakes "native" event
-        if( !over ) {
-          // the ipad will only send a mousedown if mouseover is not processed
-          TestUtil.fakeMouseEventDOM( node, "mousedown", 1, 0, 0, 0, true );
-        }
-
-        assertTrue( text.isFocused() );
-      }
-    },
-
-    testTextFocusAndroid : function() {
-      if( rwt.client.Client.isAndroidBrowser() ) {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var text = new rwt.widgets.Text( false );
-        text.addToDocument();
-        TestUtil.flush();
-        var node = text._inputElement;
-        var log = [];
-
-        log.push( this.touch( node, "touchstart" ) );
-        log.push( this.touch( node, "touchend" ) );
-
-        assertEquals( [ true, false ], log );
-        assertTrue( text.isFocused() );
-      }
-    },
-
     /////////
     // Events
 
@@ -540,6 +499,31 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var expected = [ "touchstart", "touchend", "mousedown", "mouseup", "click" ];
       assertEquals( expected, log );
       grid.destroy();
+    },
+
+    testDelayedClickOnText : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var log = [];
+      var logger = function( event ){
+        log.push( event.getType() );
+      };
+      var text = new rwt.widgets.Text();
+      text.addEventListener( "mousedown", logger );
+      text.addEventListener( "mouseup", logger );
+      text.addEventListener( "click", logger );
+      text.addToDocument();
+      TestUtil.flush();
+      //var node = text.getInputElement(); // emulation of touch events does not work on input?
+      var node = text.getElement();
+
+      log.push( "touchstart" );
+      this.touchAt( node, "touchstart", 0, 500 );
+      log.push( "touchend" );
+      this.touchAt( node, "touchend", 0, 500 );
+
+      var expected = [ "touchstart", "touchend", "mousedown", "mouseup", "click" ];
+      assertEquals( expected, log );
+      text.destroy();
     },
 
     testDelayedClickAborted : function() {
