@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,7 +66,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       var widget = this.createDefaultWidget();
       this.initWidget( widget, true );
       assertTrue( this.TestUtil.getCssBackgroundImage(
-        widget._getTargetNode().firstChild).search( "test.jpg" ) != -1 
+        widget._getTargetNode().firstChild).search( "test.jpg" ) != -1
       );
       assertEquals( "test text", widget._getTargetNode().lastChild.innerHTML );
       this.disposeWidget( widget );
@@ -254,16 +254,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       widget.setFlexibleCell( 1 );
       widget.setCellContent( 1, "some longer text that wraps" );
       this.flush();
-      var originalTextDimension = widget.getCellDimension( 1 );
+      var originalTextBounds = this.TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       widget.setWidth( 80 );
       this.flush();
-      var newTextDimension = widget.getCellDimension( 1 );
-      assertTrue( originalTextDimension[ 0 ] > newTextDimension[ 0 ] );
-      assertTrue( originalTextDimension[ 1 ] < newTextDimension[ 1 ] );
+      var newTextBounds = this.TestUtil.getElementBounds( widget._getTargetNode().lastChild );
+      assertTrue( originalTextBounds.width > newTextBounds.width );
+      assertTrue( originalTextBounds.height < newTextBounds.height );
       widget.setWidth( 400 );
       this.flush();
-      var newTextDimension = widget.getCellDimension( 1 );
-      assertEquals( originalTextDimension, newTextDimension );
+      newTextBounds = this.TestUtil.getElementBounds( widget._getTargetNode().lastChild );
+      assertEquals( originalTextBounds, newTextBounds );
       this.disposeWidget( widget );
     },
 

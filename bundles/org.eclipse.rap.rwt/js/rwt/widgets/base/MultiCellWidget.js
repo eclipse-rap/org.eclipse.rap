@@ -562,7 +562,8 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       changes.layoutY =    changes.height
                         || changes.layoutY
                         || changes.frameHeight
-                        || changes.initial;
+                        || changes.initial
+                        || ( changes.layoutX && this._flexibleCell != -1 );
       this._beforeRenderLayout( changes );
       if ( changes.layoutX ) {
         this._renderLayoutX();
