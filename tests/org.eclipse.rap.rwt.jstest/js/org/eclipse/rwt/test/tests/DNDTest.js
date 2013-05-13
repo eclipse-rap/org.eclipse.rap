@@ -1170,6 +1170,43 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       tree.destroy();
     },
 
+    testTreeFeedbackScroll_EmptryRow : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
+      var dndHandler = rwt.event.DragAndDropHandler.getInstance();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
+      var tree = this.createTreeTarget();
+      this.createTreeItem( 0, tree, tree );
+      var source = this.createSource();
+      TestUtil.flush();
+      var sourceNode = source._getTargetNode();
+      var targetNode = tree._rowContainer._children[ 1 ]._getTargetNode();
+      var treeNode = tree.getElement();
+      var doc = document.body;
+      // drag
+      TestUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
+      TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
+      // Over tree
+      TestUtil.fakeMouseEventDOM( treeNode, "mouseover", leftButton );
+      TestUtil.fakeMouseEventDOM( treeNode, "mousemove", leftButton );
+      // over row 2 (empty)
+      TestUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
+      TestUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
+      assertIdentical( tree._rowContainer._children[ 1 ], dndSupport._getCurrentFeedbackTarget() );
+      dndSupport.setFeedback( tree, [ "FEEDBACK_SCROLL" ] );
+      TestUtil.forceInterval( dndSupport._dropFeedbackRenderer._scrollTimer );
+      TestUtil.flush();
+
+      assertEquals( 0, tree._topItemIndex );
+
+      TestUtil.fakeMouseEventDOM( treeNode, "mouseup", leftButton );
+      dndSupport.cancel();
+      dndSupport.deregisterDragSource( source );
+      dndSupport.deregisterDropTarget( tree );
+      source.destroy();
+      tree.destroy();
+    },
+
     testTreeRequestItem : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndHandler = rwt.event.DragAndDropHandler.getInstance();

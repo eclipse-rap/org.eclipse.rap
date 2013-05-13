@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2009, 2013 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -224,17 +224,19 @@ rwt.qx.Class.define( "rwt.widgets.util.GridDNDFeedback", {
       var offset = this._getScrollDirection( this._currentRow );
       if( offset !== 0 ) {
         var item = this._tree._rowContainer.findItemByRow( this._currentRow );
-        var index = item.getFlatIndex();
-        var newItem = offset > 0 ? item.getNextItem() : item.getPreviousItem();
-        if( newItem != null ) {
-          var newTopIndex = this._tree._topItemIndex + offset;
-          this._tree.setTopItemIndex( newTopIndex );
-          var newRow = this._tree._rowContainer._findRowByItem( newItem );
-          var oldRow = this._currentRow;
-          var wrapper = function() {
-            this._targetUpdateCheck( oldRow, newRow );
-          };
-          rwt.client.Timer.once( wrapper, this, 1 );
+        if( item != null ) {
+          var index = item.getFlatIndex();
+          var newItem = offset > 0 ? item.getNextItem() : item.getPreviousItem();
+          if( newItem != null ) {
+            var newTopIndex = this._tree._topItemIndex + offset;
+            this._tree.setTopItemIndex( newTopIndex );
+            var newRow = this._tree._rowContainer._findRowByItem( newItem );
+            var oldRow = this._currentRow;
+            var wrapper = function() {
+              this._targetUpdateCheck( oldRow, newRow );
+            };
+            rwt.client.Timer.once( wrapper, this, 1 );
+          }
         }
       }
     },
