@@ -38,6 +38,12 @@
         border-bottom: 1px dotted;
       }
     </style>
+    <!-- IE 10 specific styles -->
+    <style type="text/css">
+      input::-ms-clear, input::-ms-reveal {
+        display: none;
+      }
+    </style>
   </head>
 
   <body background="${backgroundImage}">
