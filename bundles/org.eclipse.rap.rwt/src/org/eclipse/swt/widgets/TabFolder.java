@@ -330,32 +330,8 @@ public class TabFolder extends Composite {
    */
   public void setSelection( int index ) {
     checkWidget ();
-    int count = itemHolder.size();
-    if( index >= 0 && index < count ) {
+    if( index >= 0 && index < itemHolder.size() ) {
       setSelection( index, false );
-    }
-  }
-
-  private void setSelection( int index, boolean notify ) {
-    int oldIndex = getSelectionIndex();
-    if( oldIndex != index ) {
-      if( oldIndex != -1 ) {
-        TabItem item = itemHolder.getItem( oldIndex );
-        Control control = item.getControl();
-        if( control != null && !control.isDisposed() ) {
-          control.setVisible( false );
-        }
-      }
-      selectionIndex = index;
-      int newIndex = selectionIndex;
-      if( newIndex != -1 ) {
-        updateSelectedItemControl();
-        if( notify ) {
-          Event event = new Event();
-          event.item = itemHolder.getItem( newIndex );
-          notifyListeners( SWT.Selection, event );
-        }
-      }
     }
   }
 
@@ -519,9 +495,6 @@ public class TabFolder extends Composite {
     removeListener( SWT.DefaultSelection, listener );
   }
 
-  ///////////
-  // Disposal
-
   @Override
   void releaseChildren() {
     TabItem[] items = getItems();
@@ -531,18 +504,27 @@ public class TabFolder extends Composite {
     super.releaseChildren();
   }
 
-  ////////////////
-  // Item creation
-
   void createItem( TabItem item, int index ) {
     itemHolder.insert( item, index );
     if( getItemCount() == 1 ) {
       setSelection( 0, true );
+    } else if( index <= selectionIndex ) {
+      setSelection( selectionIndex + 1, false );
     }
   }
 
-  /////////
-  // Resize
+  void destroyItem( TabItem item ) {
+    int index = itemHolder.indexOf( item );
+    int oldSelectionIndex = getSelectionIndex();
+    if( index == oldSelectionIndex ) {
+      setSelection( -1, false );
+    }
+    itemHolder.remove( item );
+    if( itemHolder.size() > 0 && index <= oldSelectionIndex ) {
+      boolean notifySelectionChanged = index == oldSelectionIndex;
+      setSelection( Math.max( 0, oldSelectionIndex - 1 ), notifySelectionChanged );
+    }
+  }
 
   @Override
   void notifyResize( Point oldSize ) {
@@ -561,8 +543,27 @@ public class TabFolder extends Composite {
     }
   }
 
-  ///////////////////
-  // Helping methods
+  private void setSelection( int index, boolean notify ) {
+    int oldIndex = getSelectionIndex();
+    if( oldIndex != index ) {
+      if( oldIndex != -1 ) {
+        TabItem item = itemHolder.getItem( oldIndex );
+        Control control = item.getControl();
+        if( control != null && !control.isDisposed() ) {
+          control.setVisible( false );
+        }
+      }
+      selectionIndex = index;
+      if( index != -1 ) {
+        updateSelectedItemControl();
+        if( notify ) {
+          Event event = new Event();
+          event.item = itemHolder.getItem( index );
+          notifyListeners( SWT.Selection, event );
+        }
+      }
+    }
+  }
 
   private static int checkStyle( int style ) {
     int result = checkBits( style, SWT.TOP, SWT.BOTTOM, 0, 0, 0, 0 );
@@ -593,9 +594,6 @@ public class TabFolder extends Composite {
     return themeAdapter.getItemPadding( true );
   }
 
-  ///////////////////
-  // Skinning support
-
   @Override
   void reskinChildren( int flags ) {
     TabItem[] items = getItems();
@@ -609,4 +607,5 @@ public class TabFolder extends Composite {
     }
     super.reskinChildren( flags );
   }
+
 }

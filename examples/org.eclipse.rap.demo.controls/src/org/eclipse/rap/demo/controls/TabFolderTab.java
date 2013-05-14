@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,8 +29,8 @@ public class TabFolderTab extends ExampleTab {
 
   private boolean onDemandContent;
   private TabFolder folder;
-  private TabItem[] tabItems;
   private Button[] tabRadios;
+  private int counter;
 
   public TabFolderTab() {
     super( "TabFolder" );
@@ -49,7 +49,7 @@ public class TabFolderTab extends ExampleTab {
     createFontChooser();
     tabRadios = new Button[ MAX_ITEMS ];
     for( int i = 0; i < MAX_ITEMS; i++ ) {
-      tabRadios[ i ] = createPropertyButton( "Select Tab " + i, SWT.RADIO );
+      tabRadios[ i ] = createPropertyButton( "Select TabItem at index " + i, SWT.RADIO );
       final int itemIndex = i;
       tabRadios[ i ].addSelectionListener( new SelectionAdapter() {
         @Override
@@ -64,15 +64,16 @@ public class TabFolderTab extends ExampleTab {
     tabRadios[ 0 ].setSelection( true );
     createChangeContentButton( parent );
     createInsertItemButton( parent );
-    createDisposeItemButton( parent );
+    createDisposeSelectedItemButton( parent );
+    createDisposeFirstItemButton( parent );
   }
 
   @Override
   protected void createExampleControls( Composite parent ) {
     parent.setLayout( new FillLayout() );
+    counter = 0;
     folder = new TabFolder( parent, getStyle() );
     folder.setToolTipText( "Tab Folder Tooltip" );
-    tabItems = new TabItem[ MAX_ITEMS ];
     folder.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
@@ -85,15 +86,20 @@ public class TabFolderTab extends ExampleTab {
             }
           }
         }
+        if( item.getData( "id" ) == null ) {
+          item.setData( "id", Integer.valueOf( counter ) );
+        }
         createItemContent( item );
       }
     } );
     for( int i = 0; i < MAX_ITEMS; i++ ) {
-      tabItems[ i ] = new TabItem( folder, SWT.NONE );
-      tabItems[ i ].setText( "TabItem " + i );
-      tabItems[ i ].setToolTipText( "Tooltip for TabItem " + i );
+      TabItem item = new TabItem( folder, SWT.NONE );
+      item.setData( "id", Integer.valueOf( counter ) );
+      item.setText( "TabItem " + counter );
+      item.setToolTipText( "Tooltip for TabItem " + counter );
+      counter++;
       if( !onDemandContent ) {
-        createItemContent( tabItems[ i ] );
+        createItemContent( item );
       }
     }
     registerControl( folder );
@@ -133,19 +139,21 @@ public class TabFolderTab extends ExampleTab {
     button.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
-        TabItem tabItem = new TabItem( folder, SWT.NONE, 0 );
-        tabItem.setText( "TabItem " + folder.indexOf( tabItem ) );
-        tabItem.setToolTipText( "Tooltip for TabItem " + folder.indexOf( tabItem ) );
+        TabItem item = new TabItem( folder, SWT.NONE, 0 );
+        item.setData( "id", Integer.valueOf( counter ) );
+        item.setText( "TabItem " + counter );
+        item.setToolTipText( "Tooltip for TabItem " + counter );
+        counter++;
         if( !onDemandContent ) {
-          createItemContent( tabItem );
+          createItemContent( item );
         }
       }
     } );
   }
 
-  private void createDisposeItemButton( Composite parent ) {
+  private void createDisposeSelectedItemButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
-    button.setText( "Dispose of selected item" );
+    button.setText( "Dispose selected item" );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
@@ -157,12 +165,24 @@ public class TabFolderTab extends ExampleTab {
     } );
   }
 
+  private void createDisposeFirstItemButton( Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Dispose first item" );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        if( folder.getItemCount() > 0 ) {
+          folder.getItem( 0 ).dispose();
+        }
+      }
+    } );
+  }
+
   private void createItemContent( TabItem item ) {
     if( item.getControl() == null ) {
       TabFolder folder = item.getParent();
       Text content = new Text( folder, SWT.WRAP | SWT.MULTI | SWT.READ_ONLY );
-      int index = folder.indexOf( item );
-      String text = "This is the content for item " + index;
+      String text = "This is the content for TabItem " + item.getData( "id" );
       if( onDemandContent ) {
         text += "\nIt was created on demand, when the item was selected "
              +  "for the first time through user interaction.";

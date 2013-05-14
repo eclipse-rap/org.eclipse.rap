@@ -13,8 +13,8 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.TabItem", {
 
   factory : function( properties ) {
     var result = rwt.widgets.util.TabUtil.createTabItem( properties.id,
-                                                        properties.parent,
-                                                        properties.index );
+                                                         properties.parent,
+                                                         properties.index );
 
     rwt.remote.HandlerUtil.callWithTarget( properties.parent, function( parent ) {
       rwt.remote.HandlerUtil.addDestroyableChild( parent, result );

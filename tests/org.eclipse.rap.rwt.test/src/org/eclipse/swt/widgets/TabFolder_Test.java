@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -20,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -32,7 +30,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ItemHolder;
@@ -41,10 +38,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class TabFolderAndItem_Test {
+public class TabFolder_Test {
 
   private Display display;
   private Shell shell;
+  private TabFolder folder;
 
   @Before
   public void setUp() {
@@ -52,6 +50,7 @@ public class TabFolderAndItem_Test {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
+    folder = new TabFolder( shell, SWT.NONE );
   }
 
   @After
@@ -60,12 +59,11 @@ public class TabFolderAndItem_Test {
   }
 
   @Test
-  public void testGetItemsAndGetItemCount() {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    assertEquals( 0, folder.getItemCount() );
+  public void testGetItems() {
     assertEquals( 0, folder.getItems().length );
+
     TabItem item = new TabItem( folder, SWT.NONE );
-    assertEquals( 1, folder.getItemCount() );
+
     assertEquals( 1, folder.getItems().length );
     assertSame( item, folder.getItems()[ 0 ] );
   }
@@ -73,7 +71,6 @@ public class TabFolderAndItem_Test {
   @Test
   public void testInitialSelection() {
     final java.util.List<SelectionEvent> log = new ArrayList<SelectionEvent>();
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
     folder.setSize( 100, 100 );
     SelectionListener selectionListener = new SelectionAdapter() {
       @Override
@@ -104,7 +101,7 @@ public class TabFolderAndItem_Test {
     assertEquals( SWT.NONE, event.detail );
     assertNull( event.text );
 
-    // ... and the same wihtout a SelectionListener
+    // ... and the same without a SelectionListener
     folder.removeSelectionListener( selectionListener );
     item.dispose();
     item = new TabItem( folder, SWT.NONE );
@@ -115,8 +112,6 @@ public class TabFolderAndItem_Test {
 
   @Test
   public void testIndexOf() {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-
     TabItem item0 = new TabItem( folder, SWT.NONE );
     TabItem item1 = new TabItem( folder, SWT.NONE );
     assertEquals( 0, folder.indexOf( item0 ) );
@@ -132,7 +127,6 @@ public class TabFolderAndItem_Test {
 
   @Test
   public void testSelection() {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item0 = new TabItem( folder, SWT.NONE );
     TabItem item1 = new TabItem( folder, SWT.NONE );
 
@@ -223,58 +217,7 @@ public class TabFolderAndItem_Test {
   }
 
   @Test
-  public void testSelectedControl() {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    shell.open();
-
-    TabItem item0 = new TabItem( folder, SWT.NONE );
-    Control control0 = new Button( folder, SWT.PUSH );
-    item0.setControl( control0 );
-    assertTrue( control0.getVisible() );
-
-    TabItem item1 = new TabItem( folder, SWT.NONE );
-    Control control1 = new Button( folder, SWT.PUSH );
-    item1.setControl( control1 );
-    assertFalse( control1.getVisible() );
-
-    folder.setSelection( item1 );
-    assertTrue( control1.getVisible() );
-
-    Control alternativeControl1 = new Button( folder, SWT.PUSH );
-    item1.setControl( alternativeControl1 );
-    assertFalse( control1.getVisible() );
-    assertTrue( alternativeControl1.getVisible() );
-  }
-
-  @Test
-  public void testImages() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item0 = new TabItem( folder, SWT.NONE );
-    Image image = createImage( display, Fixture.IMAGE1 );
-    item0.setImage( image );
-    assertSame( image, item0.getImage() );
-  }
-
-  @Test
-  public void testHierarchy() {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
-    assertSame( folder, item.getParent() );
-    assertSame( display, item.getDisplay() );
-    Control control = new Label( folder, SWT.NONE );
-    item.setControl( control );
-    assertSame( control, item.getControl() );
-    try {
-      item.setControl( shell );
-      fail( "Wrong parent." );
-    } catch( IllegalArgumentException iae ) {
-      // expected
-    }
-  }
-
-  @Test
   public void testDispose() {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item = new TabItem( folder, SWT.NONE );
     folder.dispose();
     assertTrue( item.isDisposed() );
@@ -282,48 +225,10 @@ public class TabFolderAndItem_Test {
   }
 
   @Test
-  public void testIndexedItemCreation() {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem secondItem = new TabItem( folder, SWT.NONE );
-    TabItem firstItem = new TabItem( folder, SWT.NONE, 0 );
-    assertSame( firstItem, folder.getItem( 0 ) );
-    assertEquals( 0, folder.indexOf( firstItem ) );
-    assertSame( secondItem, folder.getItem( 1 ) );
-    assertEquals( 1, folder.indexOf( secondItem ) );
-  }
-
-  @Test
-  public void testItemDispose() {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    new TabItem( folder, SWT.NONE );
-    new TabItem( folder, SWT.NONE );
-    new TabItem( folder, SWT.NONE );
-
-    TabItem item = folder.getItem( 2 );
-    item.dispose();
-    assertTrue( item.isDisposed() );
-    assertEquals( 2, folder.getItemCount() );
-  }
-
-  @Test
-  public void testToolTip() {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem tabItem = new TabItem( folder, SWT.NONE );
-
-    assertEquals( null, tabItem.getToolTipText() );
-    tabItem.setToolTipText( "funny" );
-    assertEquals( "funny", tabItem.getToolTipText() );
-  }
-
-  @Test
   public void testGetItemAtPoint() {
     // Test with bar on top
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
     folder.setSize( 400, 400 );
-    for( int i = 0; i < 3; i++ ) {
-      TabItem tabItem = new TabItem( folder, SWT.NONE );
-      tabItem.setText( "TabItem " + i );
-    }
+    createItems( folder, 3 );
     Rectangle expected = new Rectangle( 0, 0, 74, 33 );
     assertEquals( expected, folder.getItem( 0 ).getBounds() );
     expected = new Rectangle( 74, 3, 73, 30 );
@@ -369,7 +274,6 @@ public class TabFolderAndItem_Test {
 
   @Test
   public void testClientArea() {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
     folder.setSize( 100, 100 );
     Rectangle expected = new Rectangle( 1, 31, 98, 68 );
     assertEquals( expected, folder.getClientArea() );
@@ -392,7 +296,6 @@ public class TabFolderAndItem_Test {
 
   @Test
   public void testComputeTrim() {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
     Rectangle expected = new Rectangle( -1, -31, 2, 32 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
 
@@ -411,9 +314,7 @@ public class TabFolderAndItem_Test {
 
   @Test
   public void testDisposeWithFontDisposeInDisposeListener() {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    new TabItem( folder, SWT.NONE );
-    new TabItem( folder, SWT.NONE );
+    createItems( folder, 2 );
     final Font font = new Font( display, "font-name", 10, SWT.NORMAL );
     folder.setFont( font );
     folder.addDisposeListener( new DisposeListener() {
@@ -426,7 +327,6 @@ public class TabFolderAndItem_Test {
 
   @Test
   public void testIsSerializable() throws Exception {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item = new TabItem( folder, SWT.NONE );
     item.setText( "item1" );
 
@@ -476,6 +376,91 @@ public class TabFolderAndItem_Test {
     try {
       tabFolder.removeSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  @Test
+  public void testSelection_onFirstCreatedItem() {
+    createItems( folder, 3 );
+
+    assertEquals( 0, folder.getSelectionIndex() );
+  }
+
+  @Test
+  public void testSelection_addItem() {
+    createItems( folder, 3 );
+
+    new TabItem( folder, SWT.NONE, 0 );
+
+    assertEquals( 1, folder.getSelectionIndex() );
+  }
+
+  @Test
+  public void testSelection_removeSelectedItem() {
+    createItems( folder, 3 );
+    folder.setSelection( 1 );
+
+    folder.getItem( 1 ).dispose();
+
+    assertEquals( 0, folder.getSelectionIndex() );
+  }
+
+  @Test
+  public void testSelection_removeSelectedItemAtPositionZero() {
+    createItems( folder, 3 );
+    folder.setSelection( 0 );
+
+    folder.getItem( 0 ).dispose();
+
+    assertEquals( 0, folder.getSelectionIndex() );
+  }
+
+  @Test
+  public void testSelection_removeItemBeforeSelected() {
+    createItems( folder, 3 );
+    folder.setSelection( 1 );
+
+    folder.getItem( 0 ).dispose();
+
+    assertEquals( 0, folder.getSelectionIndex() );
+  }
+
+  @Test
+  public void testSelection_removeAllItems() {
+    createItems( folder, 3 );
+
+    for( int i = 0; i < 3; i++ ) {
+      folder.getItem( 0 ).dispose();
+    }
+
+    assertEquals( -1, folder.getSelectionIndex() );
+  }
+
+  @Test
+  public void testGetItemCount() {
+    createItems( folder, 3 );
+
+    assertEquals( 3, folder.getItemCount() );
+  }
+
+  @Test
+  public void testGetItemCount_initial() {
+    assertEquals( 0, folder.getItemCount() );
+  }
+
+  @Test
+  public void testGetItemCount_afterItemDispose() {
+    createItems( folder, 3 );
+
+    folder.getItem( 0 ).dispose();
+
+    assertEquals( 2, folder.getItemCount() );
+  }
+
+  private void createItems( TabFolder folder, int number ) {
+    for( int i = 0; i < number; i++ ) {
+      TabItem item = new TabItem( folder, SWT.NONE );
+      item.setText( "TabItem " + i );
     }
   }
 

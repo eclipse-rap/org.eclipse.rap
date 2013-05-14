@@ -17,7 +17,6 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.ItemHolder;
 
 
 /**
@@ -318,7 +317,7 @@ public class TabItem extends Item {
   @Override
   void releaseParent() {
     super.releaseParent();
-    ItemHolder.getItemHolder( parent ).remove( this );
+    parent.destroyItem( this );
   }
 
   //////////////////
