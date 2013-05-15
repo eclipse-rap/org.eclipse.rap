@@ -57,9 +57,8 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     _applyTopIndex : function( newIndex ) {
       var items = this.getManager().getItems();
       if( items.length > 0 && items[ 0 ].isCreated() ) {
-        var itemHeight = this.getManager().getItemHeight( items[ 0 ] );
-        if( itemHeight > 0 ) {
-          this.setVBarSelection( newIndex * itemHeight );
+        if( this._itemHeight > 0 ) {
+          this.setVBarSelection( newIndex * this._itemHeight );
         }
       }
     },

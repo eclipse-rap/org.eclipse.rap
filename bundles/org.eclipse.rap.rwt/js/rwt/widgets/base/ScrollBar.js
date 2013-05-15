@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2011, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,9 +72,6 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
 
     setMaximum : function( value ) {
       this._setMaximum( value );
-      if( this._idealValue !== null ) {
-        this._setSelection( this._idealValue );
-      }
       this._updateThumbLength();
     },
 
@@ -138,18 +135,16 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
       this.base( arguments );
       this._updateThumbLength();
       this._updatePageIncrement();
-      if( this._idealValue !== null ) {
-        this._setSelection( this._idealValue );
-      }
     },
 
     _updateThumbSize : function() {
       this.base( arguments );
       var size = this._getThumbSize();
       if( size < this._minThumbSize ) {
-        this.addToQueue( "minThumbSize" );
+        this._renderMinThumbSize();
       } else {
         this._selectionFactor = 1;
+        this._checkIdealValue();
       }
       if( this._horizontal ) {
         var iconWidth = this._thumb.getCellWidth( 1 );
@@ -162,27 +157,33 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
       }
     },
 
-    _layoutPost : function( changes ) {
-      this.base( arguments, changes );
-      if( changes[ "minThumbSize" ] ) {
-        if( this._maximum > 0 && this._getLineSize() > 0 ) {
-          var size = this._getThumbSize();
-          if( size < this._minThumbSize ) {
-            var idealLength = this._getSliderSize();
-            var newLength = this._minThumbSize * this._maximum / this._getLineSize();
-            this._setThumb( newLength );
-            if( this._maximum === idealLength ) {
-              this._selectionFactor = 1;
-            } else {
-              this._selectionFactor = ( this._maximum - newLength ) / ( this._maximum - idealLength );
-            }
-          }
-        }
+    _checkIdealValue : function() {
+      if( this._idealValue !== null && this._idealValue) {
+        this._setSelection( this._idealValue * this._selectionFactor );
       }
     },
 
+
+    _renderMinThumbSize : function() {
+      if( this._maximum > 0 && this._getLineSize() > 0 ) {
+        var size = this._getThumbSize();
+        if( size < this._minThumbSize ) {
+          var idealLength = this._getSliderSize();
+          var newLength = this._minThumbSize * this._maximum / this._getLineSize();
+          this._setThumb( newLength );
+          if( this._maximum === idealLength ) {
+            this._selectionFactor = 1;
+          } else {
+            this._selectionFactor
+              = ( this._maximum - newLength ) / ( this._maximum - idealLength );
+          }
+        }
+      }
+      this._checkIdealValue();
+    },
+
     _setSelection : function( value ) {
-      if( value !== this._idealValue ) {
+      if( value !== ( this._idealValue * this._selectionFactor ) ) {
         this._idealValue = null;
       }
       this.base( arguments, value );

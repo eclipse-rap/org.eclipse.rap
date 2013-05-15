@@ -15,6 +15,8 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var ObjectRegistry = rwt.remote.ObjectRegistry;
 var MessageProcessor = rwt.remote.MessageProcessor;
 
+var fireOnScroll;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
   extend : rwt.qx.Object,
@@ -646,6 +648,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.destroy();
     },
 
+    testSetItemDimensions_UpdatesScrollPosition : function() {
+      var list = this._createDefaultList( true );
+      list.setItemDimensions( 200, 20 );
+      this._addItems( list, 100 );
+      list.setTopIndex( 20 );
+      TestUtil.flush();
+
+      list.setItemDimensions( 100, 30 );
+      TestUtil.flush();
+
+      assertEquals( 30 * 20, this._getScrollPosition( list )[ 1 ] );
+      list.destroy();
+    },
+
     testSendDefaultSelected : function() {
       var list = this._createDefaultList();
       list.setItems( [ "item0", "item1", "item2" ] );
@@ -819,6 +835,30 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
       var position = this._getScrollPosition( list );
       assertEquals( [ 10, 400 ], position );
+      list.destroy();
+    },
+
+    // see 395053
+    testScrollManualAddItemsAndScroll : function() {
+      var list = this._createDefaultList();
+      list.setItemDimensions( 500, 20 );
+      this._addItems( list, 30 );
+      list.setTopIndex( 30 );
+      TestUtil.flush();
+      TestUtil.forceTimerOnce();
+      TestUtil.click( list.getVerticalBar()._minButton );
+      fireOnScroll();
+      TestUtil.flush();
+      TestUtil.forceTimerOnce();
+
+      this._addItems( list, 70 );
+      list.setTopIndex( 40 );
+      fireOnScroll();
+      TestUtil.flush();
+      TestUtil.forceTimerOnce();
+
+      var position = this._getScrollPosition( list );
+      assertEquals( [ 0, 40 * 20 ], position );
       list.destroy();
     },
 
@@ -999,6 +1039,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
     _createDefaultList : function( noflush ) {
       var list = new rwt.widgets.List( true );
+      var onScrollFired = false;
+      list.__onscroll = rwt.util.Functions.bindEvent( function( ev ) {
+        list._onscroll.call( list, ev );
+        onScrollFired = true;
+      }, list );
+      fireOnScroll = function() {
+        if( !onScrollFired ) { // some browser fire the event synchronously, some don't
+          list.__onscroll( {} );
+          onScrollFired = false;
+        }
+      };
       list.setItemDimensions( 100, 20 );
       list.addToDocument();
       list.setSpace( 5, 238, 5, 436 );
@@ -1008,7 +1059,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       if( noflush !== true ) {
         TestUtil.flush();
       }
-
       return list;
     },
 

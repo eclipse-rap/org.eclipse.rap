@@ -204,13 +204,65 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
       vBar.setValue( 500 );
+      TestUtil.flush();
       assertEquals( 300 - 100, vBar.getValue() );
       vBar.setMaximum( 700 );
-      assertEquals( 500, vBar.getValue() );
+      TestUtil.flush();
+      assertEquals( 500, vBar.getValue() );  // uses ideal vaue from before
       vBar.setValue( 650 );
-      assertEquals( 600, vBar.getValue() );
+      TestUtil.flush();
+      assertEquals( 600, vBar.getValue() );  // limited to max ( 700 ) - height
       vBar.setHeight( 50 );
-      assertEquals( 650, vBar.getValue() );
+      TestUtil.flush();
+      assertEquals( 650, vBar.getValue() ); //
+      vBar.destroy();
+    },
+
+    testGoNearIdealValue : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var vBar = this._createScrollBar( false, false );
+      vBar.setMaximum( 500 );
+      vBar.setValue( 800 );
+      TestUtil.flush();
+
+      vBar.setMaximum( 700 );
+      TestUtil.flush();
+
+      assertEquals( 600, vBar.getValue() );
+      vBar.destroy();
+    },
+
+    testKeepIdealValueWhileThumbHasMinLength : function() {
+      // NOTE : The flushes are important since the thumb length is updated during flush
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var vBar = this._createScrollBar( false, false );
+      vBar.setMaximum( 5000 );
+      vBar.setValue( 6000 );
+      TestUtil.flush();
+      assertEquals( 5000 - 100, vBar.getValue() );
+      vBar.setMaximum( 7000 );
+      TestUtil.flush();
+      assertEquals( 6000, vBar.getValue() );
+      vBar.setValue( 6950 );
+      TestUtil.flush();
+      assertEquals( 6900, vBar.getValue() );
+      vBar.setHeight( 50 );
+      TestUtil.flush();
+      assertEquals( 6950, vBar.getValue() );
+      vBar.destroy();
+    },
+
+    testGoNearIdealValueWhileThumbHasMinLength : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var vBar = this._createScrollBar( false, false );
+      vBar.setMaximum( 5000 );
+      vBar.setValue( 8000 );
+      TestUtil.flush();
+
+      vBar.setMaximum( 7000 );
+      TestUtil.flush();
+
+      assertEquals( 6900, vBar.getValue() );
       vBar.destroy();
     },
 
