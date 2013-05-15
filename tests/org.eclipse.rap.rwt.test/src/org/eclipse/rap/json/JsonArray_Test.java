@@ -11,6 +11,7 @@
 package org.eclipse.rap.json;
 
 import static org.eclipse.rap.json.TestUtil.assertException;
+import static org.eclipse.rap.json.TestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -400,6 +401,22 @@ public class JsonArray_Test {
   public void hashCode_differsForDifferentArrays() {
     assertFalse( array().hashCode() == array( "bar" ).hashCode() );
     assertFalse( array( "foo" ).hashCode() == array( "bar" ).hashCode() );
+  }
+
+  @Test
+  public void canBeSerializedAndDeserialized() throws Exception {
+    array.add( true ).add( 3.14d ).add( 23 ).add( "foo" ).add( new JsonArray().add( false ) );
+
+    assertEquals( array, serializeAndDeserialize( array ) );
+  }
+
+  @Test
+  public void deserializedArrayCanBeAccessed() throws Exception {
+    array.add( 23 );
+
+    JsonArray deserializedArray = serializeAndDeserialize( array );
+
+    assertEquals( 23, deserializedArray.get( 0 ).asInt() );
   }
 
   private static JsonArray array( String... values ) {

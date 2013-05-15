@@ -11,6 +11,7 @@
 package org.eclipse.rap.json;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,11 +41,12 @@ import java.util.List;
  * </p>
  * @since 2.1
  */
+@SuppressWarnings( "serial" ) // use default serial UID
 public class JsonObject extends JsonValue {
 
   private final List<String> names;
   private final List<JsonValue> values;
-  private final HashIndexTable table;
+  private transient HashIndexTable table;
 
   /**
    * Creates a new empty JsonObject.
@@ -62,18 +64,22 @@ public class JsonObject extends JsonValue {
    *          the JSON object to get the initial contents from, must not be <code>null</code>
    */
   public JsonObject( JsonObject object ) {
-    if( object == null ) {
-      throw new NullPointerException( "object is null" );
-    }
-    names = new ArrayList<String>( object.names );
-    values = new ArrayList<JsonValue>( object.values );
-    table = new HashIndexTable( object.table );
+    this( object, false );
   }
 
   private JsonObject( JsonObject object, boolean unmodifiable ) {
-    names = Collections.unmodifiableList( object.names );
-    values = Collections.unmodifiableList( object.values );
-    table = new HashIndexTable( object.table );
+    if( object == null ) {
+      throw new NullPointerException( "object is null" );
+    }
+    if( unmodifiable ) {
+      names = Collections.unmodifiableList( object.names );
+      values = Collections.unmodifiableList( object.values );
+    } else {
+      names = new ArrayList<String>( object.names );
+      values = new ArrayList<JsonValue>( object.values );
+    }
+    table = new HashIndexTable();
+    updateHashIndex();
   }
 
   /**
@@ -115,7 +121,7 @@ public class JsonObject extends JsonValue {
    * The returned JsonObject is backed by the given object and reflect changes that happen to it.
    * Attempts to modify the returned JsonObject result in an
    * <code>UnsupportedOperationException</code>.
-   * <p>
+   * </p>
    *
    * @param object
    *          the JsonObject for which an unmodifiable JsonObject is to be returned
@@ -385,6 +391,21 @@ public class JsonObject extends JsonValue {
       return index;
     }
     return names.indexOf( name );
+  }
+
+  private synchronized void readObject( ObjectInputStream inputStream ) throws IOException,
+      ClassNotFoundException
+  {
+    inputStream.defaultReadObject();
+    table = new HashIndexTable();
+    updateHashIndex();
+  }
+
+  private void updateHashIndex() {
+    int size = names.size();
+    for( int i = 0; i < size; i++ ) {
+      table.add( names.get( i ), i );
+    }
   }
 
   static class HashIndexTable {

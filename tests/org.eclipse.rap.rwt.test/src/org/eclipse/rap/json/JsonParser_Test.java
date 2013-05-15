@@ -16,13 +16,6 @@ import static org.junit.Assert.assertSame;
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.json.JsonNumber;
-import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.json.JsonParser;
-import org.eclipse.rap.json.JsonString;
-import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.json.ParseException;
 import org.junit.Test;
 
 

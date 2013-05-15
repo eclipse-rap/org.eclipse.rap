@@ -19,10 +19,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.json.JsonWriter;
 import org.junit.Test;
 
 

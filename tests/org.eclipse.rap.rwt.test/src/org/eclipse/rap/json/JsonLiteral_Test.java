@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.json;
 
+import static org.eclipse.rap.json.TestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -17,8 +18,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.json.JsonWriter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -107,6 +106,13 @@ public class JsonLiteral_Test {
     assertFalse( JsonValue.NULL.isFalse() );
     assertFalse( JsonValue.TRUE.isFalse() );
     assertTrue( JsonValue.FALSE.isFalse() );
+  }
+
+  @Test
+  public void canBeSerializedAndDeserialized() throws Exception {
+    assertEquals( JsonValue.NULL, serializeAndDeserialize( JsonValue.NULL ) );
+    assertEquals( JsonValue.TRUE, serializeAndDeserialize( JsonValue.TRUE ) );
+    assertEquals( JsonValue.FALSE, serializeAndDeserialize( JsonValue.FALSE ) );
   }
 
 }

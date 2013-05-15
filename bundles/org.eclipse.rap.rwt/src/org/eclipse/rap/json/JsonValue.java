@@ -12,6 +12,7 @@ package org.eclipse.rap.json;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -50,7 +51,8 @@ import java.io.Writer;
  * </p>
  * @since 2.1
  */
-public abstract class JsonValue {
+@SuppressWarnings( "serial" ) // use default serial UID
+public abstract class JsonValue implements Serializable {
 
   /**
    * Represents the JSON literal <code>true</code>.
