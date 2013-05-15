@@ -12,11 +12,8 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.endsWith;
 import static org.mockito.Mockito.mock;
@@ -93,55 +90,6 @@ public class RequestCounter_Test {
     int requestId = RequestCounter.getInstance().currentRequestId();
 
     assertEquals( 0, requestId );
-  }
-
-  @Test
-  public void testIsValid_trueWithValidParameter() {
-    int nextRequestId = RequestCounter.getInstance().nextRequestId();
-    Fixture.fakeHeadParameter( "requestCounter", nextRequestId );
-
-    boolean valid = RequestCounter.getInstance().isValid();
-
-    assertTrue( valid );
-  }
-
-  @Test
-  public void testIsValid_falseWithInvalidParameter() {
-    RequestCounter.getInstance().nextRequestId();
-    Fixture.fakeHeadParameter( "requestCounter", 23 );
-
-    boolean valid = RequestCounter.getInstance().isValid();
-
-    assertFalse( valid );
-  }
-
-  @Test
-  public void testIsValid_failsWithIllegalParameterFormat() {
-    RequestCounter.getInstance().nextRequestId();
-    Fixture.fakeHeadParameter( "requestCounter", "not-a-number" );
-
-    try {
-      RequestCounter.getInstance().isValid();
-      fail();
-    } catch( Exception exception ) {
-      assertTrue( exception.getMessage().contains( "Not a number" ) );
-    }
-  }
-
-  @Test
-  public void testIsValid_toleratesMissingParameterInFirstRequest() {
-    boolean valid = RequestCounter.getInstance().isValid();
-
-    assertTrue( valid );
-  }
-
-  @Test
-  public void testIsValid_falseWithMissingParameter() {
-    RequestCounter.getInstance().nextRequestId();
-
-    boolean valid = RequestCounter.getInstance().isValid();
-
-    assertFalse( valid );
   }
 
   @Test

@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
@@ -254,7 +256,7 @@ public class LifeCycleServiceHandler_Test {
 
     service( handler );
 
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    TestResponse response = getResponse();
     assertTrue( response.getContent().contains( "\"head\":" ) );
   }
 
@@ -264,7 +266,7 @@ public class LifeCycleServiceHandler_Test {
 
     service( handler );
 
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    TestResponse response = getResponse();
     assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }
 
@@ -274,7 +276,7 @@ public class LifeCycleServiceHandler_Test {
 
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    TestResponse response = getResponse();
     assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }
 
@@ -288,7 +290,7 @@ public class LifeCycleServiceHandler_Test {
     service( new LifeCycleServiceHandler( getLifeCycleFactory(),
                                           getApplicationContext().getStartupPage() ) );
 
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    TestResponse response = getResponse();
     assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }
 
@@ -302,7 +304,7 @@ public class LifeCycleServiceHandler_Test {
 
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), startupPage ) );
 
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    TestResponse response = getResponse();
     assertEquals( "text/html; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }
 
@@ -316,7 +318,7 @@ public class LifeCycleServiceHandler_Test {
 
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), startupPage ) );
 
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    TestResponse response = getResponse();
     assertEquals( "text/html; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }
 
@@ -327,24 +329,92 @@ public class LifeCycleServiceHandler_Test {
 
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( 0, message.getOperationCount() );
-    assertEquals( "invalid request counter", message.getError() );
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    TestResponse response = getResponse();
     assertEquals( HttpServletResponse.SC_PRECONDITION_FAILED, response.getStatus() );
+    Message message = getMessageFromResponse();
+    assertEquals( "invalid request counter", message.getError() );
+    assertEquals( 0, message.getOperationCount() );
   }
 
   @Test
-  public void testHandleSessionTimeout() throws IOException {
+  public void testHandlesSessionTimeout() throws IOException {
     simulateUiRequest();
 
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( 0, message.getOperationCount() );
-    assertEquals( "session timeout", message.getError() );
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    TestResponse response = getResponse();
     assertEquals( HttpServletResponse.SC_FORBIDDEN, response.getStatus() );
+    Message message = getMessageFromResponse();
+    assertEquals( "session timeout", message.getError() );
+    assertEquals( 0, message.getOperationCount() );
+  }
+
+  @Test
+  public void testSendBufferedResponse() throws IOException {
+    LifeCycleServiceHandler.markSessionStarted();
+    simulateUiRequest();
+    RequestCounter.getInstance().nextRequestId();
+    int requestCounter = RequestCounter.getInstance().nextRequestId();
+    Fixture.fakeHeadParameter( "requestCounter", requestCounter );
+
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
+    Message firstResponse = getMessageFromResponse();
+
+    simulateUiRequest();
+    Fixture.fakeHeadParameter( "requestCounter", requestCounter );
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
+    Message secondResponse = getMessageFromResponse();
+
+    assertEquals( firstResponse, secondResponse );
+  }
+
+  @Test
+  public void testHasValidRequestCounter_trueWithValidParameter() {
+    int nextRequestId = RequestCounter.getInstance().nextRequestId();
+    Fixture.fakeHeadParameter( "requestCounter", nextRequestId );
+
+    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter();
+
+    assertTrue( valid );
+  }
+
+  @Test
+  public void testHasValidRequestCounter_falseWithInvalidParameter() {
+    RequestCounter.getInstance().nextRequestId();
+    Fixture.fakeHeadParameter( "requestCounter", 23 );
+
+    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter();
+
+    assertFalse( valid );
+  }
+
+  @Test
+  public void testHasValidRequestCounter_failsWithIllegalParameterFormat() {
+    RequestCounter.getInstance().nextRequestId();
+    Fixture.fakeHeadParameter( "requestCounter", "not-a-number" );
+
+    try {
+      LifeCycleServiceHandler.hasValidRequestCounter();
+      fail();
+    } catch( Exception exception ) {
+      assertTrue( exception.getMessage().contains( "Not a number" ) );
+    }
+  }
+
+  @Test
+  public void testHasValidRequestCounter_toleratesMissingParameterInFirstRequest() {
+    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter();
+
+    assertTrue( valid );
+  }
+
+  @Test
+  public void testHasValidRequestCounter_falseWithMissingParameter() {
+    RequestCounter.getInstance().nextRequestId();
+
+    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter();
+
+    assertFalse( valid );
   }
 
   private void simulateInitialUiRequest() {
@@ -391,6 +461,14 @@ public class LifeCycleServiceHandler_Test {
 
   private static void service( LifeCycleServiceHandler serviceHandler ) throws IOException {
     serviceHandler.service( ContextProvider.getRequest(), ContextProvider.getResponse() );
+  }
+
+  private static TestResponse getResponse() {
+    return ( TestResponse )ContextProvider.getResponse();
+  }
+
+  private static Message getMessageFromResponse() {
+    return new Message( JsonObject.readFrom( getResponse().getContent() ) );
   }
 
   private class TestHandler extends LifeCycleServiceHandler {

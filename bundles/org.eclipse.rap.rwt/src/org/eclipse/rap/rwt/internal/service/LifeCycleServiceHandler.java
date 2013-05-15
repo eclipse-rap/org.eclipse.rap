@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.service;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getClientMessage;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWriter;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -22,6 +23,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
@@ -40,9 +42,13 @@ import org.eclipse.rap.rwt.service.UISession;
 
 
 public class LifeCycleServiceHandler implements ServiceHandler {
+
   private static final String PROP_ERROR = "error";
   private static final String PROP_MESSAGE = "message";
-  private static final String SESSION_STARTED
+  private static final String PROP_REQUEST_COUNTER = "requestCounter";
+  private static final String ATTR_LAST_PROTOCOL_MESSAGE
+    = LifeCycleServiceHandler.class.getName() + "#lastProtocolMessage";
+  private static final String ATTR_SESSION_STARTED
     = LifeCycleServiceHandler.class.getName() + "#isSessionStarted";
 
   private final LifeCycleFactory lifeCycleFactory;
@@ -95,11 +101,15 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   {
     setJsonResponseHeaders( response );
     if( isSessionShutdown() ) {
-      handleSessionShutdown( request );
+      shutdownUISession( request );
     } else if( isSessionTimeout() ) {
-      handleSessionTimeout( response );
+      writeSessionTimeoutError( response );
     } else if( !isRequestCounterValid() ) {
-      handleInvalidRequestCounter( response );
+      if( isDuplicateRequest() ) {
+        writeBufferedResponse( response );
+      } else {
+        writeInvalidRequestCounterError( response );
+      }
     } else {
       if( isSessionRestart() ) {
         reinitializeUISession( request );
@@ -107,8 +117,8 @@ public class LifeCycleServiceHandler implements ServiceHandler {
       }
       UrlParameters.merge();
       runLifeCycle();
+      writeProtocolMessage( response );
     }
-    writeProtocolMessage( response );
   }
 
   private void runLifeCycle() throws IOException {
@@ -127,26 +137,43 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   // helping methods
 
   private static boolean isRequestCounterValid() {
-    return hasInitializeParameter() || RequestCounter.getInstance().isValid();
+    return hasInitializeParameter() || hasValidRequestCounter();
   }
 
-  private static void handleSessionShutdown( HttpServletRequest request ) {
+  static boolean hasValidRequestCounter() {
+    int currentRequestId = RequestCounter.getInstance().currentRequestId();
+    JsonValue sentRequestId = getClientMessage().getHeader( PROP_REQUEST_COUNTER );
+    if( sentRequestId == null ) {
+      return currentRequestId == 0;
+    }
+    return currentRequestId == sentRequestId.asInt();
+  }
+
+  private static boolean isDuplicateRequest() {
+    int currentRequestId = RequestCounter.getInstance().currentRequestId();
+    JsonValue sentRequestId = getClientMessage().getHeader( PROP_REQUEST_COUNTER );
+    return sentRequestId != null && sentRequestId.asInt() == currentRequestId - 1;
+  }
+
+  private static void shutdownUISession( HttpServletRequest request ) {
     UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
     uiSession.shutdown();
   }
 
-  private static void handleInvalidRequestCounter( HttpServletResponse response ) {
+  private static void writeInvalidRequestCounterError( HttpServletResponse response )
+    throws IOException
+  {
     int statusCode = HttpServletResponse.SC_PRECONDITION_FAILED;
     String errorType = "invalid request counter";
     String errorMessage = RWTMessages.getMessage( "RWT_MultipleInstancesErrorMessage" );
-    renderError( response, statusCode, errorType, formatMessage( errorMessage ) );
+    writeError( response, statusCode, errorType, formatMessage( errorMessage ) );
   }
 
-  private static void handleSessionTimeout( HttpServletResponse response ) {
+  private static void writeSessionTimeoutError( HttpServletResponse response ) throws IOException {
     int statusCode = HttpServletResponse.SC_FORBIDDEN;
     String errorType = "session timeout";
     String errorMessage = RWTMessages.getMessage( "RWT_SessionTimeoutErrorMessage" );
-    renderError( response, statusCode, errorType, formatMessage( errorMessage ) );
+    writeError( response, statusCode, errorType, formatMessage( errorMessage ) );
   }
 
   private static String formatMessage( String message ) {
@@ -154,15 +181,16 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     return MessageFormat.format( message, arguments );
   }
 
-  private static void renderError( HttpServletResponse response,
-                                   int statusCode,
-                                   String errorType,
-                                   String errorMessage )
+  private static void writeError( HttpServletResponse response,
+                                  int statusCode,
+                                  String errorType,
+                                  String errorMessage ) throws IOException
   {
     response.setStatus( statusCode );
-    ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
+    ProtocolMessageWriter writer = new ProtocolMessageWriter();
     writer.appendHead( PROP_ERROR, JsonValue.valueOf( errorType ) );
     writer.appendHead( PROP_MESSAGE, JsonValue.valueOf( errorMessage ) );
+    writer.createMessage().writeTo( response.getWriter() );
   }
 
   private static void reinitializeUISession( HttpServletRequest request ) {
@@ -195,12 +223,12 @@ public class LifeCycleServiceHandler implements ServiceHandler {
 
   static void markSessionStarted() {
     UISession uiSession = ContextProvider.getUISession();
-    uiSession.setAttribute( SESSION_STARTED, Boolean.TRUE );
+    uiSession.setAttribute( ATTR_SESSION_STARTED, Boolean.TRUE );
   }
 
   private static boolean isSessionStarted() {
     UISession uiSession = ContextProvider.getUISession();
-    return Boolean.TRUE.equals( uiSession.getAttribute( SESSION_STARTED ) );
+    return Boolean.TRUE.equals( uiSession.getAttribute( ATTR_SESSION_STARTED ) );
   }
 
   private static boolean isSessionShutdown() {
@@ -219,7 +247,24 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   }
 
   private static void writeProtocolMessage( ServletResponse response ) throws IOException {
-    getProtocolWriter().createMessage().writeTo( response.getWriter() );
+    JsonObject message = getProtocolWriter().createMessage();
+    bufferProtocolMessage( message );
+    message.writeTo( response.getWriter() );
+  }
+
+  private static void writeBufferedResponse( HttpServletResponse response ) throws IOException {
+    getBufferedMessage().writeTo( response.getWriter() );
+  }
+
+  private static void bufferProtocolMessage( JsonObject message ) {
+    UISession uiSession = getUISession();
+    if( uiSession != null ) {
+      uiSession.setAttribute( ATTR_LAST_PROTOCOL_MESSAGE, message );
+    }
+  }
+
+  private static JsonObject getBufferedMessage() {
+    return ( JsonObject )getUISession().getAttribute( ATTR_LAST_PROTOCOL_MESSAGE );
   }
 
 }
