@@ -64,9 +64,6 @@ public final class CCombo extends Composite {
   static final int DEFAULT_WIDTH = 64;
   static final int DEFAULT_HEIGHT = 64;
 
-  // Must be in sync with appearance "list-item"
-  private static final int LIST_ITEM_PADDING = 3;
-
   //This factor must be kept in sync with TextUtil.js#_updateLineHeight
   private static final double LINE_HEIGHT_FACTOR = 1.2;
 
@@ -584,9 +581,7 @@ public final class CCombo extends Composite {
    */
   public int getItemHeight() {
     checkWidget();
-    int charHeight = TextSizeUtil.getCharHeight( getFont() );
-    int padding = 2 * LIST_ITEM_PADDING;
-    return charHeight + padding;
+    return TextSizeUtil.getCharHeight( getFont() ) + getListItemPadding().height;
   }
 
   /**
@@ -1108,13 +1103,19 @@ public final class CCombo extends Composite {
   }
 
   private Rectangle getFieldPadding() {
-    CComboThemeAdapter themeAdapter = ( CComboThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getFieldPadding( this );
+    return getThemeAdapter().getFieldPadding( this );
+  }
+
+  private Rectangle getListItemPadding() {
+    return getThemeAdapter().getListItemPadding( this );
   }
 
   private int getButtonWidth() {
-    CComboThemeAdapter themeAdapter = ( CComboThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getButtonWidth( this );
+    return getThemeAdapter().getButtonWidth( this );
+  }
+
+  private CComboThemeAdapter getThemeAdapter() {
+    return ( CComboThemeAdapter )getAdapter( IThemeAdapter.class );
   }
 
   private static int checkStyle( int style ) {

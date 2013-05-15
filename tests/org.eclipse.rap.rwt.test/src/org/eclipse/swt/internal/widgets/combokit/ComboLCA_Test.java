@@ -381,7 +381,7 @@ public class ComboLCA_Test {
     lca.renderChanges( combo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( 22, message.findSetProperty( combo, "itemHeight" ).asInt() );
+    assertEquals( 28, message.findSetProperty( combo, "itemHeight" ).asInt() );
   }
 
   @Test

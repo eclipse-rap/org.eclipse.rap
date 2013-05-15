@@ -27,6 +27,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
@@ -36,6 +37,7 @@ import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Widget;
 
@@ -44,9 +46,6 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Combo";
   private static final String[] ALLOWED_STYLES = new String[] { "DROP_DOWN", "SIMPLE", "BORDER" };
-
-  // Must be in sync with appearance "list-item"
-  private static final int LIST_ITEM_PADDING = 3;
 
   // Property names for preserve-value facility
   static final String PROP_ITEMS = "items";
@@ -271,9 +270,12 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   private static int getItemHeight( Combo combo ) {
-    int charHeight = TextSizeUtil.getCharHeight( combo.getFont() );
-    int padding = 2 * LIST_ITEM_PADDING;
-    return charHeight + padding;
+    return TextSizeUtil.getCharHeight( combo.getFont() ) + getListItemPadding( combo ).height;
+  }
+
+  private static Rectangle getListItemPadding( Combo combo ) {
+    ComboThemeAdapter themeAdapter = ( ComboThemeAdapter )combo.getAdapter( IThemeAdapter.class );
+    return themeAdapter.getListItemPadding( combo );
   }
 
   private static Integer getTextLimit( Combo combo ) {

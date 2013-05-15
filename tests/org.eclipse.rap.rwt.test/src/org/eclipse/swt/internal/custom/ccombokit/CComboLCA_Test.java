@@ -395,7 +395,7 @@ public class CComboLCA_Test {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( 22, message.findSetProperty( ccombo, "itemHeight" ).asInt() );
+    assertEquals( 28, message.findSetProperty( ccombo, "itemHeight" ).asInt() );
   }
 
   @Test
