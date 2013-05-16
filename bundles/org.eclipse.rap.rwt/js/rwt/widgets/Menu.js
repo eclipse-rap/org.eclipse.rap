@@ -94,7 +94,10 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
     getAllowContextMenu : function( target, domTarget ) {
       var result = false;
       switch( target.classname ) {
+        case "rwt.widgets.Label":
         case "rwt.widgets.Text":
+        case "rwt.widgets.base.GridRow":
+        case "rwt.widgets.ListItem":
         case "rwt.widgets.base.BasicText":
         case "qx.ui.form.TextArea":
           // NOTE: "enabled" can be "inherit", so it is not always a boolean
@@ -108,9 +111,16 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       return result;
     },
 
+
     _hasNativeMenu : function( element ) {
-      var tagName = typeof element.tagName == "string" ? element.tagName.toUpperCase() : "";
-      return tagName === "INPUT" || tagName === "TEXTAREA";
+      var result;
+      var tagName = typeof element.tagName == "string" ? element.tagName.toLowerCase() : "";
+      if( tagName === "a" ) {
+        result = element.getAttribute( "href" ) && element.getAttribute( "target" ) !== "_rwt";
+      } else {
+        result = tagName === "input" || tagName === "textarea";
+      }
+      return result;
     }
 
   },

@@ -130,10 +130,21 @@ public class ListTab extends ExampleTab {
     if( markup ) {
       list2.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 60 ) );
       list2.add( "<b>Some Markup Text</b><br/><i>This is italic</i>" );
+      list2.add( "A real <a href='http://eclipse.org/rap'>link</a>" );
+      list2.add( "This one opens <a href='http://eclipse.org/rap' target='_blank'>a new tab</a>" );
+      list2.add( "This is a special <a href='value_of_href' target='_rwt'>RWT Hyperlink</a>" );
+      list2.addListener( SWT.Selection, new Listener() {
+        public void handleEvent( Event event ) {
+          if( event.detail == RWT.HYPERLINK ) {
+            log( "Clicked link \"" + event.text + "\"" );
+          }
+        }
+      } );
+    } else {
+      createPopupMenu( parent.getShell(), list2 );
     }
     list2.setLayoutData( new GridData( GridData.FILL_BOTH ) );
     registerControl( list2 );
-    createPopupMenu( parent.getShell(), list2 );
 
     // Code
     int separatorStyle = SWT.SEPARATOR | SWT.HORIZONTAL | SWT.SHADOW_OUT;

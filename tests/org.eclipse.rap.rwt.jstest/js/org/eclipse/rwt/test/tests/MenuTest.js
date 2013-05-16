@@ -1590,19 +1590,128 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       menuBar.addMenuItemAt( separator, 0 );
     },
 
-    testHasNativeMenu : function() {
+    testGetAllowContextMenu_Text : function() {
       var text = new rwt.widgets.Text( false );
       text.addToDocument();
       TestUtil.flush();
       var element = text.getElement().getElementsByTagName( "input" )[ 0 ];
-      assertTrue( rwt.widgets.Menu._hasNativeMenu( element ) );
-      text.dispose();
-      text = new rwt.widgets.Text( true );
+
+      assertTrue( rwt.widgets.Menu.getAllowContextMenu( text, element ) );
+      text.destroy();
+    },
+
+    testGetAllowContextMenu_Disabled : function() {
+      var text = new rwt.widgets.Text( false );
       text.addToDocument();
       TestUtil.flush();
-      element = text.getElement().getElementsByTagName( "textarea" )[ 0 ];
-      assertTrue( rwt.widgets.Menu._hasNativeMenu( element ) );
-      text.dispose();
+      var element = text.getElement().getElementsByTagName( "input" )[ 0 ];
+
+      text.setEnabled( false );
+
+      assertFalse( rwt.widgets.Menu.getAllowContextMenu( text, element ) );
+      text.destroy();
+    },
+
+    testGetAllowContextMenu_HasMenuWidget : function() {
+      var text = new rwt.widgets.Text( false );
+      text.addToDocument();
+      TestUtil.flush();
+      var element = text.getElement().getElementsByTagName( "input" )[ 0 ];
+
+      text.setContextMenu( new rwt.widgets.Menu() );
+
+      assertFalse( rwt.widgets.Menu.getAllowContextMenu( text, element ) );
+      text.destroy();
+    },
+
+    testGetAllowContextMenu_MultiText : function() {
+      var text = new rwt.widgets.Text( true );
+      text.addToDocument();
+      TestUtil.flush();
+      var element = text.getElement().getElementsByTagName( "textarea" )[ 0 ];
+
+      assertTrue( rwt.widgets.Menu.getAllowContextMenu( text, element ) );
+      text.destroy();
+    },
+
+    testGetAllowContextMenu_LabelLink : function() {
+      var label = new rwt.widgets.Label( { "MARKUP_ENABLED" : true } );
+      label.addToDocument();
+
+      label.setText( "foo<a href='asdf.html' >bar</a>foo" );
+      TestUtil.flush();
+
+      var element = label.getElement().getElementsByTagName( "a" )[ 0 ];
+      assertTrue( rwt.widgets.Menu.getAllowContextMenu( label, element ) );
+      label.destroy();
+    },
+
+    testGetAllowContextMenu_LabelLinkNoHref : function() {
+      var label = new rwt.widgets.Label( { "MARKUP_ENABLED" : true } );
+      label.addToDocument();
+
+      label.setText( "foo<a>bar</a>foo" );
+      TestUtil.flush();
+
+      var element = label.getElement().getElementsByTagName( "a" )[ 0 ];
+      assertFalse( rwt.widgets.Menu.getAllowContextMenu( label, element ) );
+      label.destroy();
+    },
+
+    testGetAllowContextMenu_Grid : function() {
+      var args = { "appearance": "tree" };
+      args[ "selectionPadding" ] = [ 2, 4 ];
+      args[ "indentionWidth" ] = 16;
+      var tree = new rwt.widgets.Grid( args );
+      tree.setItemHeight( 20 );
+      tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500, 0, 10 );
+      tree.addToDocument();
+      TestUtil.flush();
+      tree.getRenderConfig().markupEnabled = true;
+      tree.setItemCount( 1 );
+      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0, false );
+
+      item.setTexts( [ "<a href=\"foo\">Test</a>" ] );
+      TestUtil.flush();
+
+      var row = tree.getRowContainer().getChildren()[ 0 ];
+      var element = row.getElement().getElementsByTagName( "a" )[ 0 ];
+      assertTrue( rwt.widgets.Menu.getAllowContextMenu( row, element ) );
+      tree.destroy();
+    },
+
+    testGetAllowContextMenu_List : function() {
+      rwt.remote.EventUtil.setSuspended( true );
+      var list = new rwt.widgets.List( true );
+      list.setItemDimensions( 100, 20 );
+      list.addToDocument();
+      list.setMarkupEnabled( true );
+
+      list.setItems( [ "<a href=\"foo\" >Test</a>" ] );
+      TestUtil.flush();
+
+      var item = list.getItems()[ 0 ];
+      var element = item.getElement().getElementsByTagName( "a" )[ 0 ];
+      assertTrue( rwt.widgets.Menu.getAllowContextMenu( item, element ) );
+      list.destroy();
+      rwt.remote.EventUtil.setSuspended( false );
+    },
+
+    testGetAllowContextMenu_ListTargetIsRWT : function() {
+      rwt.remote.EventUtil.setSuspended( true );
+      var list = new rwt.widgets.List( true );
+      list.setItemDimensions( 100, 20 );
+      list.addToDocument();
+      list.setMarkupEnabled( true );
+
+      list.setItems( [ "<a href=\"foo\" target=\"_rwt\">Test</a>" ] );
+      TestUtil.flush();
+
+      var item = list.getItems()[ 0 ];
+      var element = item.getElement().getElementsByTagName( "a" )[ 0 ];
+      assertFalse( rwt.widgets.Menu.getAllowContextMenu( item, element ) );
+      list.destroy();
+      rwt.remote.EventUtil.setSuspended( false );
     },
 
     testMenuFiresChangeHoverItemEvent : function() {
