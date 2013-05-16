@@ -436,6 +436,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       TestUtil.press( button, "Space" );
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertFalse( TestUtil.getMessageObject().findSetProperty( "w11", "selection" ) );
+      button.destroy();
     },
 
     testExecuteRadioButton_ByMouse : function() {
@@ -554,6 +555,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertFalse( button2.hasState( "selected" ) );
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertFalse( TestUtil.getMessageObject().findSetProperty( "w2", "selection" ) );
+      button1.destroy();
+      button2.destroy();
     },
 
     testSelectNextRadioButtonByKeyboard : function() {
