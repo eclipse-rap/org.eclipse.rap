@@ -133,6 +133,7 @@ public class ListTab extends ExampleTab {
       list2.add( "A real <a href='http://eclipse.org/rap'>link</a>" );
       list2.add( "This one opens <a href='http://eclipse.org/rap' target='_blank'>a new tab</a>" );
       list2.add( "This is a special <a href='value_of_href' target='_rwt'>RWT Hyperlink</a>" );
+      list2.add( "This RWT Hyperlik <a href='http://eclipse.org/rap' target='_rwt'>has an URL</a>" );
       list2.addListener( SWT.Selection, new Listener() {
         public void handleEvent( Event event ) {
           if( event.detail == RWT.HYPERLINK ) {

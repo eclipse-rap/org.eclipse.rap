@@ -696,7 +696,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( "hyperlink", message.findNotifyProperty( "w3", "Selection", "detail" ) );
-      assertEquals( "foo", message.findNotifyProperty( "w3", "Selection", "text" ) );
+      var text = message.findNotifyProperty( "w3", "Selection", "text" );
+      if( text.indexOf( "/" ) !== 0 ) {
+        text = text.slice( text.lastIndexOf( "/" ) + 1 );
+      }
+      assertEquals( "foo", text );
     },
 
     testClickOnRWTHyperlinkWithoutHref : function() {

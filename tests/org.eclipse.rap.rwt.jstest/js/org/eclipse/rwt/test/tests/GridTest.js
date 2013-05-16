@@ -1454,7 +1454,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var message = TestUtil.getMessageObject();
       assertEquals( "w2", message.findNotifyProperty( "w11", "Selection", "item" ) );
       assertEquals( "hyperlink", message.findNotifyProperty( "w11", "Selection", "detail" ) );
-      assertEquals( "foo", message.findNotifyProperty( "w11", "Selection", "text" ) );
+      var text = message.findNotifyProperty( "w11", "Selection", "text" );
+      if( text.indexOf( "/" ) !== 0 ) {
+        text = text.slice( text.lastIndexOf( "/" ) + 1 );
+      }
+      assertEquals( "foo", text );
       tree.destroy();
     },
 

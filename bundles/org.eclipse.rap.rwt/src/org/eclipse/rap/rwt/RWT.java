@@ -369,6 +369,7 @@ public final class RWT {
    * </p>
    *
    * @see Control#setData(String,Object)
+   * @see RWT#HYPERLINK
    */
   public static final String MARKUP_ENABLED = "org.eclipse.rap.rwt.markupEnabled";
 
@@ -420,7 +421,9 @@ public final class RWT {
 
   /**
    * Used as extra detail information about the selection event.
-   * Indicates that hyperlink in the item markup text is clicked.
+   * Indicates that a hyperlink (anchor) in the item markup text was clicked.
+   * The hyperlink must have it's target property set to "_rwt", otherwise there
+   * will be no selection event and the client will follow the URL given in the HREF attribute.
    *
    * <p><b>Used By:</b><ul>
    * <li><code>Table</code></li>
@@ -430,6 +433,7 @@ public final class RWT {
    *
    * @see RWT#MARKUP_ENABLED
    * @see org.eclipse.swt.events.SelectionEvent#detail
+   * @see org.eclipse.swt.events.SelectionEvent#text
    * @since 2.1
    */
   public static final int HYPERLINK = 1 << 26;

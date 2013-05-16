@@ -67,15 +67,19 @@ public class SelectionEvent extends TypedEvent {
    * This will be either the text of the hyperlink or the value of its HREF,
    * if one was specified.
    *
+   * If the hyperlink was embedded in a widget using {@link org.eclipse.rap.rwt.RWT#MARKUP_ENABLED},
+   * the client (especially Internet Explorer) may re-write the value to be an absolute URL.
+   *
    * @see org.eclipse.swt.widgets.Link#setText(String)
+   * @see org.eclipse.rap.rwt.RWT#HYPERLINK
    */
   public String text;
 
-	/**
-	 * A flag indicating whether the operation should be allowed.
-	 * Setting this field to <code>false</code> will cancel the
-	 * operation, depending on the widget.
-	 */
+  /**
+   * A flag indicating whether the operation should be allowed.
+   * Setting this field to <code>false</code> will cancel the
+   * operation, depending on the widget.
+   */
   public boolean doit;
 
   /**
