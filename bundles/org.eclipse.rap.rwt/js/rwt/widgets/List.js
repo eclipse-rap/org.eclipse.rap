@@ -141,8 +141,6 @@ rwt.qx.Class.define( "rwt.widgets.List", {
           var text = domTarget.getAttribute( "href" );
           if( !text ) {
             text = domTarget.innerHTML;
-          } else if( text.indexOf( "/" ) !== 0 ) {
-            text = text.slice( text.lastIndexOf( "/" ) + 1 );
           }
           var properties = {
             "detail" : "hyperlink",
