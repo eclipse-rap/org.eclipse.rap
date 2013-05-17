@@ -175,7 +175,7 @@
         <executions>
           <execution>
             <id>test</id>
-            <phase>test</phase>
+            <phase>integration-test</phase>
             <configuration>
               <testClassesDirectory>${project.build.outputDirectory}</testClassesDirectory>
               <includes>
@@ -184,7 +184,7 @@
               <runOrder>random</runOrder>
             </configuration>
             <goals>
-              <goal>test</goal>
+              <goal>integration-test</goal>
             </goals>
           </execution>
         </executions>
