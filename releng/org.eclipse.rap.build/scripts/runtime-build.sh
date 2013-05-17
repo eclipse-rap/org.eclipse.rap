@@ -9,7 +9,7 @@ SCRIPTS_DIR=$(dirname $(readlink -nm $0))
 
 if [ "${BUILD_TYPE:0:1}" == "S" ]; then
   sign=true
-  SIGNPROFILE="-Peclipse-sign -Dmaven.test.skip=true"
+  SIGNPROFILE="-Peclipse-sign"
 else
   sign=false
   SIGNPROFILE=""
