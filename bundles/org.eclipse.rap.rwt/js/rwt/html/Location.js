@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -275,7 +275,7 @@ rwt.qx.Class.define("rwt.html.Location",
      */
     __computeOffset : rwt.util.Variant.select("qx.client",
     {
-      "mshtml|newmshtml|webkit" : function(elem)
+      "mshtml|newmshtml|webkit|opera" : function(elem)
       {
         var doc = rwt.html.Nodes.getDocument(elem);
 
