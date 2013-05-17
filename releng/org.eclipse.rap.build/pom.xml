@@ -184,7 +184,7 @@
               <runOrder>random</runOrder>
             </configuration>
             <goals>
-              <goal>integration-test</goal>
+              <goal>test</goal>
             </goals>
           </execution>
         </executions>
