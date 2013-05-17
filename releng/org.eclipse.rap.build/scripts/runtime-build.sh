@@ -9,7 +9,7 @@ SCRIPTS_DIR=$(dirname $(readlink -nm $0))
 
 if [ "${BUILD_TYPE:0:1}" == "S" ]; then
   sign=true
-  SIGNPROFILE="-Peclipse-sign"
+  SIGNPROFILE="-Peclipse-sign -Dmaven.test.skip=true"
 else
   sign=false
   SIGNPROFILE=""
@@ -32,7 +32,7 @@ done
 
 cd "$WORKSPACE/org.eclipse.rap/releng/org.eclipse.rap.build"
 echo "Running maven on $PWD, $SIGNPROFILE"
-${MVN} -e clean verify $SIGNPROFILE -Dmaven.repo.local=${MAVEN_LOCAL_REPO_PATH}
+${MVN} -e clean package $SIGNPROFILE -Dmaven.repo.local=${MAVEN_LOCAL_REPO_PATH}
 exitcode=$?
 if [ "$exitcode" != "0" ]; then
   echo "Maven exited with error code " + $exitcode
@@ -56,7 +56,7 @@ test -n "$TIMESTAMP" || exit 1
 
 cd "$WORKSPACE/org.eclipse.rap/releng/org.eclipse.rap.target.build"
 echo "Running maven on $PWD, sign=$sign"
-$MVN -e clean verify -DruntimeRepo="file://$WORKSPACE/runtimeRepo" -Dmaven.repo.local=${MAVEN_LOCAL_REPO_PATH} -Dsign=$sign || exit 1
+$MVN -e clean package -DruntimeRepo="file://$WORKSPACE/runtimeRepo" -Dmaven.repo.local=${MAVEN_LOCAL_REPO_PATH} -Dsign=$sign || exit 1
 
 # Example: rap-1.5.0-N-20110814-2110.zip
 zipFileName=rap-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
