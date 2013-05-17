@@ -23,9 +23,12 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
+import org.eclipse.rap.rwt.internal.client.ClientMessages;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
@@ -51,10 +54,29 @@ public class StartupJson {
 
   static JsonObject get() {
     ProtocolMessageWriter writer = new ProtocolMessageWriter();
+    appendClientMessages( writer );
     appendLoadThemeDefinitions( writer );
     appendCreateDisplay( "w1", writer );
     MeasurementUtil.appendStartupTextSizeProbe( writer );
     return writer.createMessage();
+  }
+
+  private static void appendClientMessages( ProtocolMessageWriter writer ) {
+    ClientMessages clientMessages = RWT.getClient().getService( ClientMessages.class );
+    if( clientMessages != null ) {
+      clientMessages.update( RWT.getLocale() );
+      renderRemoteObjects( writer );
+    }
+  }
+
+  /*
+   * The StartupJson is requested in the initial GET request where there is no lifecycle
+   */
+  private static void renderRemoteObjects( ProtocolMessageWriter writer ) {
+    RemoteObjectRegistry registry = RemoteObjectRegistry.getInstance();
+    for( RemoteObjectImpl remoteObject : registry.getRemoteObjects() ) {
+      remoteObject.render( writer );
+    }
   }
 
   private static void setResponseHeaders( HttpServletResponse response ) {

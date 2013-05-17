@@ -238,19 +238,13 @@ public class RWTLifeCycle2_Test {
   }
 
   @Test
-  public void testGetRequestDoesNotClearUISession() throws Exception {
+  public void testGetRequestShutdownsDummyUISession() throws Exception {
     Class<? extends EntryPoint> entryPoint = TestEntryPoint.class;
     getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );
-    // initial GET request
-    runRWTServlet( newGetRequest() );
-    // initial POST request starts the UI thread
-    runRWTServlet( newPostRequest( 0 ) );
-    ContextProvider.getUISession().setAttribute( "dummy", Boolean.TRUE );
 
-    // subsequent GET request should not run the lifecycle
     runRWTServlet( newGetRequest() );
 
-    assertEquals( Boolean.TRUE, ContextProvider.getUISession().getAttribute( "dummy" ) );
+    assertNull( ContextProvider.getUISession() );
   }
 
   @Test

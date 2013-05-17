@@ -274,6 +274,8 @@ public final class ClientResources {
     "rwt/remote/KeyEventSupport.js",
     "rwt/client/JavaScriptExecutor.js",
     "rwt/remote/handler/ConnectionMessagesHandler.js",
+    "rwt/client/ClientMessages.js",
+    "rwt/remote/handler/ClientMessagesHandler.js",
     "rwt/remote/handler/JavaScriptExecutorHandler.js",
     "rwt/client/UrlLauncher.js",
     "rwt/remote/handler/UrlLauncherHandler.js",

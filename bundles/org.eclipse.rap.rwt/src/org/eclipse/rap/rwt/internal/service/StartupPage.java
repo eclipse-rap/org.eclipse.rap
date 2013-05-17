@@ -118,7 +118,7 @@ public class StartupPage {
   }
 
   protected void writeNoScriptMessage( PrintWriter printWriter ) {
-    String message = RWTMessages.getMessage( "RWT_NoScriptWarning" );
+    String message = RWTMessages.getMessage( RWTMessages.NO_SCRIPT_WARNING );
     printWriter.write( message );
   }
 
@@ -126,7 +126,7 @@ public class StartupPage {
     StringBuilder code = new StringBuilder();
     code.append( "rwt.remote.MessageProcessor.processMessage( " );
     code.append( StartupJson.get() );
-    code.append( ");/*EOM*/" );
+    code.append( ");" );
     printWriter.write( code.toString() );
   }
 

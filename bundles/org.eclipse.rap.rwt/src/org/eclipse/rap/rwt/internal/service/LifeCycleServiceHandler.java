@@ -16,7 +16,6 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWr
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -27,7 +26,6 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
@@ -44,7 +42,6 @@ import org.eclipse.rap.rwt.service.UISession;
 public class LifeCycleServiceHandler implements ServiceHandler {
 
   private static final String PROP_ERROR = "error";
-  private static final String PROP_MESSAGE = "message";
   private static final String PROP_REQUEST_COUNTER = "requestCounter";
   private static final String ATTR_LAST_PROTOCOL_MESSAGE
     = LifeCycleServiceHandler.class.getName() + "#lastProtocolMessage";
@@ -82,7 +79,13 @@ public class LifeCycleServiceHandler implements ServiceHandler {
         }
       }
     } else {
-      handleGetRequest( request, response );
+      try {
+        handleGetRequest( request, response );
+      } finally {
+        // The GET request currently creates a dummy UI session needed for accessing the client
+        // information. It is not meant to be reused by other requests.
+        shutdownUISession();
+      }
     }
   }
 
@@ -101,7 +104,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   {
     setJsonResponseHeaders( response );
     if( isSessionShutdown() ) {
-      shutdownUISession( request );
+      shutdownUISession();
     } else if( isSessionTimeout() ) {
       writeSessionTimeoutError( response );
     } else if( !isRequestCounterValid() ) {
@@ -155,7 +158,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     return sentRequestId != null && sentRequestId.asInt() == currentRequestId - 1;
   }
 
-  private static void shutdownUISession( HttpServletRequest request ) {
+  private static void shutdownUISession() {
     UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
     uiSession.shutdown();
   }
@@ -163,33 +166,22 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   private static void writeInvalidRequestCounterError( HttpServletResponse response )
     throws IOException
   {
-    int statusCode = HttpServletResponse.SC_PRECONDITION_FAILED;
     String errorType = "invalid request counter";
-    String errorMessage = RWTMessages.getMessage( "RWT_MultipleInstancesErrorMessage" );
-    writeError( response, statusCode, errorType, formatMessage( errorMessage ) );
+    writeError( response, HttpServletResponse.SC_PRECONDITION_FAILED, errorType );
   }
 
   private static void writeSessionTimeoutError( HttpServletResponse response ) throws IOException {
-    int statusCode = HttpServletResponse.SC_FORBIDDEN;
     String errorType = "session timeout";
-    String errorMessage = RWTMessages.getMessage( "RWT_SessionTimeoutErrorMessage" );
-    writeError( response, statusCode, errorType, formatMessage( errorMessage ) );
-  }
-
-  private static String formatMessage( String message ) {
-    Object[] arguments = new Object[]{ "<a {HREF_URL}>", "</a>" };
-    return MessageFormat.format( message, arguments );
+    writeError( response, HttpServletResponse.SC_FORBIDDEN, errorType );
   }
 
   private static void writeError( HttpServletResponse response,
                                   int statusCode,
-                                  String errorType,
-                                  String errorMessage ) throws IOException
+                                  String errorType ) throws IOException
   {
     response.setStatus( statusCode );
     ProtocolMessageWriter writer = new ProtocolMessageWriter();
     writer.appendHead( PROP_ERROR, JsonValue.valueOf( errorType ) );
-    writer.appendHead( PROP_MESSAGE, JsonValue.valueOf( errorMessage ) );
     writer.createMessage().writeTo( response.getWriter() );
   }
 

@@ -25,12 +25,14 @@ import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.eclipse.rap.rwt.internal.client.BrowserNavigationImpl;
 import org.eclipse.rap.rwt.internal.client.ClientInfoImpl;
+import org.eclipse.rap.rwt.internal.client.ClientMessages;
 import org.eclipse.rap.rwt.internal.client.ConnectionMessages;
 import org.eclipse.rap.rwt.internal.client.ConnectionMessagesImpl;
 import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
 import org.eclipse.rap.rwt.internal.client.UrlLauncherImpl;
+import org.eclipse.rap.rwt.internal.client.WebClientMessages;
 import org.eclipse.rap.rwt.internal.client.WidgetDataWhiteList;
 import org.eclipse.rap.rwt.internal.client.WidgetDataWhiteListImpl;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
@@ -133,6 +135,12 @@ public class WebClient_Test {
   public void testGetJavaScriptModuleLoaderService() {
     ClientService service = client.getService( JavaScriptModuleLoader.class );
     assertTrue( service instanceof JavaScriptModuleLoaderImpl );
+  }
+
+  @Test
+  public void testGetClientMessagesService() {
+    ClientService service = client.getService( ClientMessages.class );
+    assertTrue( service instanceof WebClientMessages );
   }
 
   private static class UnsupportedService implements ClientService {

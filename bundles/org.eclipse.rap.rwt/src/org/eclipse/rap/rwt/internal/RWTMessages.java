@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,18 @@ import org.eclipse.rap.rwt.internal.service.ServletLog;
 public final class RWTMessages {
 
   private static final String BUNDLE_NAME = "org.eclipse.rap.rwt.internal.RWTMessages";
+
+  public static final String SERVER_ERROR = "ServerError";
+  public static final String SERVER_ERROR_DESCRIPTION = "ServerErrorDescription";
+  public static final String CONNECTION_ERROR = "ConnectionError";
+  public static final String CONNECTION_ERROR_DESCRIPTION = "ConnectionErrorDescription";
+  public static final String SESSION_TIMEOUT = "SessionTimeout";
+  public static final String SESSION_TIMEOUT_DESCRIPTION = "SessionTimeoutDescription";
+  public static final String CLIENT_ERROR = "ClientError";
+  public static final String RETRY = "Retry";
+  public static final String RESTART = "Restart";
+  public static final String DETAILS = "Details";
+  public static final String NO_SCRIPT_WARNING = "NoScriptWarning";
 
   private RWTMessages() {
     // prevent instantiation
@@ -57,4 +69,5 @@ public final class RWTMessages {
     }
     return result;
   }
+
 }

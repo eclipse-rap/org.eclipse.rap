@@ -20,8 +20,11 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,6 +43,7 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
+import org.eclipse.rap.rwt.internal.client.ClientMessages;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rap.rwt.remote.Connection;
@@ -593,6 +597,7 @@ public class UISessionImpl_Test {
 
   @Test
   public void testGetLocale_returnsSetLocale() {
+    fakeClient( mockClientWithLocale( null ) );
     uiSession.setLocale( Locale.UK );
 
     Locale locale = uiSession.getLocale();
@@ -639,6 +644,42 @@ public class UISessionImpl_Test {
     } );
 
     assertNotNull( localeCaptor.get() );
+  }
+
+  @Test
+  public void testSetLocale_updatesClientMessages() {
+    ClientMessages messages = mock( ClientMessages.class );
+    fakeClient( mockClientWithClientMessages( messages ) );
+
+    uiSession.setLocale( Locale.CANADA );
+
+    verify( messages ).update( eq( Locale.CANADA ) );
+  }
+
+  @Test
+  public void testSetLocale_doesNotUpdateClientMessagesIfUnchanged() {
+    ClientMessages messages = mock( ClientMessages.class );
+    Client client = mockClientWithLocale( Locale.CANADA );
+    when( client.getService( same( ClientMessages.class ) ) ).thenReturn( messages );
+    fakeClient( client );
+
+    uiSession.setLocale( Locale.CANADA );
+
+    verify( messages, times( 0 ) ).update( eq( Locale.CANADA ) );
+  }
+
+  @Test
+  public void testSetLocale_updatesWithDefault() {
+    ClientMessages messages = mock( ClientMessages.class );
+    Client client = mockClientWithLocale( Locale.CANADA );
+    when( client.getService( same( ClientMessages.class ) ) ).thenReturn( messages );
+    fakeClient( client );
+    uiSession.setLocale( Locale.ITALY );
+    reset( messages );
+
+    uiSession.setLocale( null );
+
+    verify( messages ).update( eq( Locale.CANADA ) );
   }
 
   @Test
@@ -738,6 +779,12 @@ public class UISessionImpl_Test {
     ClientInfo clientInfo = mock( ClientInfo.class );
     when( clientInfo.getLocale() ).thenReturn( locale );
     when( client.getService( same( ClientInfo.class ) ) ).thenReturn( clientInfo  );
+    return client;
+  }
+
+  private static Client mockClientWithClientMessages( ClientMessages messages ) {
+    Client client = mock( Client.class );
+    when( client.getService( same( ClientMessages.class ) ) ).thenReturn( messages  );
     return client;
   }
 

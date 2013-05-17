@@ -27,6 +27,7 @@ import javax.servlet.http.HttpSessionBindingListener;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
+import org.eclipse.rap.rwt.internal.client.ClientMessages;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.ContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.ISessionShutdownAdapter;
@@ -204,7 +205,15 @@ public final class UISessionImpl
   }
 
   public void setLocale( Locale locale ) {
+    Locale oldLocale = getLocale();
     setAttribute( ATTR_LOCALE, locale );
+    Locale newLocale = getLocale();
+    if( !newLocale.equals( oldLocale ) ) {
+      ClientMessages messages = getClient().getService( ClientMessages.class );
+      if( messages != null ) {
+        messages.update( newLocale );
+      }
+    }
   }
 
   public void exec( Runnable runnable ) {
