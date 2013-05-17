@@ -61,7 +61,6 @@
     <module>../../examples/org.eclipse.rap.examples.pages</module>
     <!-- Test projects -->
     <module>../../tests/org.eclipse.rap.rwt.testfixture</module>
-    <module>../../tests/org.eclipse.rap.rwt.jstest</module>
     <module>../../tests/org.eclipse.rap.rwt.cluster.testfixture</module>
     <module>../../tests/org.eclipse.rap.rwt.test</module>
     <module>../../tests/org.eclipse.rap.rwt.osgi.test</module>
