@@ -196,6 +196,8 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       var element = document.createElement( "div" );
       var style = element.style;
       style.position = "absolute";
+      style.left = "0px";
+      style.top = "0px";
       style.width = "100%";
       style.height = "40px";
       style.padding = "10px";
@@ -212,9 +214,10 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       var element = document.createElement( "div" );
       var style = element.style;
       style.position = "absolute";
+      style.left = "0px";
+      style.top = "40px";
       style.width = "100%";
       style.height = "70px";
-      style.top = "40px";
       style.padding = "10px";
       style.overflow = "auto";
       style.textAlign = "left";
@@ -228,11 +231,13 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       var element = document.createElement( "div" );
       var style = element.style;
       style.position = "absolute";
+      style.left = "0px";
+      style.top = "110px";
       style.width = "100%";
       style.height = "40px";
-      style.top = "110px";
       style.padding = "10px";
       style.textAlign = "center";
+      style.borderTop = "1px solid #CCCCCC";
       style.backgroundColor = "#F2F2F2";
       style.fontSize = "14px";
       parentElement.appendChild( element );
