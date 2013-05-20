@@ -69,16 +69,18 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       this._box.style.padding = "0px";
       this._box.style.border = "1px solid #3B5998";
       this._box.style.overflow = "hidden";
-      var errorMessage = this._getErrorMessage( errorType );
+      var errorBoxData = this._getErrorBoxData( errorType );
       this._title = this._createErrorBoxTitleArea( this._box );
-      this._title.innerHTML = errorMessage[ 0 ];
+      this._title.innerHTML = errorBoxData.title;
       this._description = this._createErrorBoxDescriptionArea( this._box );
-      this._description.innerHTML = errorMessage[ 1 ];
+      this._description.innerHTML = errorBoxData.description;
       this._action = this._createErrorBoxActionArea( this._box );
-      this._action.innerHTML = errorMessage[ 2 ];
-      var hyperlink = this._box.getElementsByTagName( "a" )[ 0 ];
+      if( errorBoxData.action ) {
+        this._action.innerHTML = errorBoxData.action;
+      }
+      var hyperlink = this._action.getElementsByTagName( "a" )[ 0 ];
       if( hyperlink ) {
-        hyperlink.style.outline = "none";
+        this._styleHyperlinkAsButton( hyperlink );
         hyperlink.focus();
       }
     },
@@ -110,9 +112,9 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
     },
 
     _getErrorPageHeader : function() {
-       var errorMessage = this._getErrorMessage( "client error" );
-       var result = "<h2>" + errorMessage[ 0 ] + "</h2>";
-       result += "<h3>" + errorMessage[ 1 ] + "</h3>";
+       var errorBoxData = this._getErrorBoxData( "client error" );
+       var result = "<h2>" + errorBoxData.title + "</h2>";
+       result += "<h3>" + errorBoxData.action + "</h3>";
        result += "<hr/>";
        return result;
     },
@@ -279,39 +281,43 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       }
     },
 
-    _getErrorMessage : function( errorType ) {
-      var result = [];
-      var encodingUtil = rwt.util.Encoding;
+    _getErrorBoxData : function( errorType ) {
+      var result = {
+        title : "",
+        description : ""
+      };
       var messages = rwt.client.ClientMessages.getInstance();
       switch( errorType ) {
         case "invalid request counter":
         case "request failed":
-          result[ 0 ] = messages.getMessage( "ServerError" );
-          result[ 1 ] = messages.getMessage( "ServerErrorDescription" );
-          result[ 2 ] = "<a href=\"" + this._getRestartURL()+ "\">" 
-                      + messages.getMessage( "Restart" ) + "</a>";
+          result.title = messages.getMessage( "ServerError" );
+          result.description = messages.getMessage( "ServerErrorDescription" );
+          result.action = "<a href=\"" + this._getRestartURL() + "\">"
+                        + messages.getMessage( "Restart" ) + "</a>";
           break;
         case "session timeout":
-          result[ 0 ] = messages.getMessage( "SessionTimeout" );
-          result[ 1 ] = messages.getMessage( "SessionTimeoutDescription" );
-          result[ 2 ] = "<a href=\"" + this._getRestartURL()+ "\">" 
-                      + messages.getMessage( "Restart" ) + "</a>";
+          result.title = messages.getMessage( "SessionTimeout" );
+          result.description = messages.getMessage( "SessionTimeoutDescription" );
+          result.action = "<a href=\"" + this._getRestartURL() + "\">"
+                        + messages.getMessage( "Restart" ) + "</a>";
           break;
         case "connection error":
-          result[ 0 ] = messages.getMessage( "ConnectionError" );
-          result[ 1 ] = messages.getMessage( "ConnectionErrorDescription" );
-          result[ 2 ] = "<a href=\"javascript:rwt.remote.Server.getInstance()._retry();\">" 
-                      + messages.getMessage( "Retry" ) + "</a>";
+          result.title = messages.getMessage( "ConnectionError" );
+          result.description = messages.getMessage( "ConnectionErrorDescription" );
+          result.action = "<a href=\"javascript:rwt.remote.Server.getInstance()._retry();\">"
+                        + messages.getMessage( "Retry" ) + "</a>";
           break;
         case "client error":
-          result[ 0 ] = messages.getMessage( "ClientError" );
-          result[ 1 ] = messages.getMessage( "Details" );
+          result.title = messages.getMessage( "ClientError" );
+          result.action = messages.getMessage( "Details" );
           break;
         default:
-          result[ 0 ] = messages.getMessage( "ServerError" );
+          result.title = messages.getMessage( "ServerError" );
+          result.action = "<a href=\"" + this._getRestartURL() + "\">"
+                        + messages.getMessage( "Restart" ) + "</a>";
       }
-      result[ 0 ] = result[ 0 ] ? encodingUtil.replaceNewLines( result[ 0 ], "" ) : "";
-      result[ 1 ] = result[ 1 ] ? encodingUtil.replaceNewLines( result[ 1 ], "<br/>" ) : "";
+      result.title = rwt.util.Encoding.replaceNewLines( result.title, "" );
+      result.description = rwt.util.Encoding.replaceNewLines( result.description, "<br/>" );
       return result;
     },
 
@@ -322,6 +328,19 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
         result = result.substring( 0, index );
       }
       return result;
+    },
+
+    _styleHyperlinkAsButton : function( element ) {
+      var style = element.style;
+      style.outline = "none";
+      style.textDecoration = "none";
+      style.backgroundColor = "#E8E8E8";
+      style.color = "#333333";
+      style.padding = "5px 15px";
+      style.borderTop = "1px solid #CCCCCC";
+      style.borderRight = "1px solid #333333";
+      style.borderBottom = "1px solid #333333";
+      style.borderLeft = "1px solid #CCCCCC";
     }
 
   }

@@ -36,7 +36,7 @@ rwt.client.ClientMessages.prototype = {
   },
 
   getMessage : function( id ) {
-    return this._messages[ id ];
+    return this._messages[ id ] ? this._messages[ id ] : "";
   }
 
 };

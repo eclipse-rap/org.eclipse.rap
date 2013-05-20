@@ -56,6 +56,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientMessagesTest", {
       assertEquals( "bar3", clientMessages.getMessage( "foo3" ) );
     },
 
+    testMessingMessageReturnsEmptyString : function() {
+      var clientMessages = this._createClientMessages();
+
+      assertEquals( "", clientMessages.getMessage( "missing" ) );
+    },
+
     _createClientMessages : function() {
       return ObjectManager.getObject( "rwt.client.ClientMessages" );
     }
