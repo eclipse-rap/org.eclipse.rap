@@ -19,9 +19,8 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
     _box : null,
 
     processJavaScriptErrorInResponse : function( script, error, currentRequest ) {
-      var content = "<p>Could not process server response:</p><pre>";
-      content += this._gatherErrorInfo( error, script, currentRequest );
-      content += "</pre>";
+      var content = this._getErrorPageHeader();
+      content += "<pre>" + this._gatherErrorDetails( error, script, currentRequest ) + "</pre>";
       this.showErrorPage( content );
     },
 
@@ -47,9 +46,8 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
         // ignore: Variant may not be loaded yet
       }
       if( debug ) {
-        var content = "<p>Javascript error occurred:</p><pre>";
-        content += this._gatherErrorInfo( error );
-        content += "</pre>";
+        var content = this._getErrorPageHeader();
+        content += "<pre>" + this._gatherErrorDetails( error ) + "</pre>";
         this.showErrorPage( content );
         throw error;
       }
@@ -71,12 +69,13 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       this._box.style.padding = "0px";
       this._box.style.border = "1px solid #3B5998";
       this._box.style.overflow = "hidden";
+      var errorMessage = this._getErrorMessage( errorType );
       this._title = this._createErrorBoxTitleArea( this._box );
-      this._title.innerHTML = this._getErrorMessage( errorType )[ 0 ];
+      this._title.innerHTML = errorMessage[ 0 ];
       this._description = this._createErrorBoxDescriptionArea( this._box );
-      this._description.innerHTML = this._getErrorMessage( errorType )[ 1 ];
+      this._description.innerHTML = errorMessage[ 1 ];
       this._action = this._createErrorBoxActionArea( this._box );
-      this._action.innerHTML = this._getErrorMessage( errorType )[ 2 ];
+      this._action.innerHTML = errorMessage[ 2 ];
       var hyperlink = this._box.getElementsByTagName( "a" )[ 0 ];
       if( hyperlink ) {
         hyperlink.style.outline = "none";
@@ -110,7 +109,15 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       rwt.event.EventHandler.setBlockKeyEvents( false );
     },
 
-    _gatherErrorInfo : function( error, script, currentRequest ) {
+    _getErrorPageHeader : function() {
+       var errorMessage = this._getErrorMessage( "client error" );
+       var result = "<h2>" + errorMessage[ 0 ] + "</h2>";
+       result += "<h3>" + errorMessage[ 1 ] + "</h3>";
+       result += "<hr/>";
+       return result;
+    },
+
+    _gatherErrorDetails : function( error, script, currentRequest ) {
       var info = [];
       try {
         info.push( "Error: " + error + "\n" );
@@ -273,7 +280,7 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
     },
 
     _getErrorMessage : function( errorType ) {
-      var result = [ "", "", "" ];
+      var result = [];
       var encodingUtil = rwt.util.Encoding;
       var messages = rwt.client.ClientMessages.getInstance();
       switch( errorType ) {
@@ -281,7 +288,8 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
         case "request failed":
           result[ 0 ] = messages.getMessage( "ServerError" );
           result[ 1 ] = messages.getMessage( "ServerErrorDescription" );
-          result[ 2 ] = "<a {HREF_URL}>" + messages.getMessage( "Restart" ) + "</a>";
+          result[ 2 ] = "<a href=\"" + this._getRestartURL()+ "\">" 
+                      + messages.getMessage( "Restart" ) + "</a>";
           break;
         case "session timeout":
           result[ 0 ] = messages.getMessage( "SessionTimeout" );
@@ -295,12 +303,15 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
           result[ 2 ] = "<a href=\"javascript:rwt.remote.Server.getInstance()._retry();\">" 
                       + messages.getMessage( "Retry" ) + "</a>";
           break;
+        case "client error":
+          result[ 0 ] = messages.getMessage( "ClientError" );
+          result[ 1 ] = messages.getMessage( "Details" );
+          break;
         default:
           result[ 0 ] = messages.getMessage( "ServerError" );
       }
-      result[ 0 ] = encodingUtil.replaceNewLines( result[ 0 ], "" );
-      result[ 1 ] = encodingUtil.escapeText( result[ 1 ] );
-      result[ 1 ] = encodingUtil.replaceNewLines( result[ 1 ], "<br/>" );
+      result[ 0 ] = result[ 0 ] ? encodingUtil.replaceNewLines( result[ 0 ], "" ) : "";
+      result[ 1 ] = result[ 1 ] ? encodingUtil.replaceNewLines( result[ 1 ], "<br/>" ) : "";
       return result;
     },
 

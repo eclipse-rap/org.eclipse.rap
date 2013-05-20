@@ -744,11 +744,9 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   initErrorPageLog : function() {
-    var handler = rwt.runtime.ErrorHandler;
     org.eclipse.rwt.test.fixture.TestUtil.clearErrorPage();
-    handler.showErrorPage = function( content ) {
-      TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      TestUtil._errorPage = content;
+    rwt.runtime.ErrorHandler.showErrorPage = function( content ) {
+      org.eclipse.rwt.test.fixture.TestUtil._errorPage = content;
     };
   },
 
