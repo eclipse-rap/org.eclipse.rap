@@ -195,12 +195,12 @@ rwt.qx.Class.define( "rwt.remote.Server", {
         if( text && text.length > 0 ) {
           if( this._isJsonResponse( event ) ) {
             var messageObject = JSON.parse( text );
-            ErrorHandler.showErrorBox( this._getErrorMessage( messageObject.head.error ), true );
+            ErrorHandler.showErrorBox( messageObject.head.error, true );
           } else {
             ErrorHandler.showErrorPage( text );
           }
         } else {
-          ErrorHandler.showErrorPage( this._getErrorMessage( "request failed" ) );
+          ErrorHandler.showErrorBox( "request failed" );
         }
       }
     },
@@ -226,7 +226,7 @@ rwt.qx.Class.define( "rwt.remote.Server", {
 
     _handleConnectionError : function( event ) {
       ClientDocument.getInstance().setGlobalCursor( null );
-      rwt.runtime.ErrorHandler.showErrorBox( this._getErrorMessage( "connection error" ), false );
+      rwt.runtime.ErrorHandler.showErrorBox( "connection error", false );
       this._retryHandler = function() {
         var request = this._createRequest();
         var failedRequest = event.target;
@@ -277,33 +277,6 @@ rwt.qx.Class.define( "rwt.remote.Server", {
     _isJsonResponse : function( event ) {
       var contentType = event.responseHeaders[ "Content-Type" ];
       return contentType.indexOf( "application/json" ) !== -1;
-    },
-
-    _getErrorMessage : function( errorType ) {
-      var result;
-      var messages = rwt.client.ClientMessages.getInstance();
-      switch( errorType ) {
-        case "invalid request counter":
-        case "request failed":
-          result = "<p><b>" + messages.getMessage( "ServerError" ) + "</b></p>"
-                 + "<p>" + messages.getMessage( "ServerErrorDescription" ) + "</p>"
-                 + "<a {HREF_URL}>" + messages.getMessage( "Restart" ) + "</a>";
-          break;
-        case "session timeout":
-          result = "<p><b>" + messages.getMessage( "SessionTimeout" ) + "</b></p>"
-                 + "<p>" + messages.getMessage( "SessionTimeoutDescription" ) + "</p>"
-                 + "<a {HREF_URL}>" + messages.getMessage( "Restart" ) + "</a>";
-          break;
-        case "connection error":
-          result = "<p><b>" + messages.getMessage( "ConnectionError" ) + "</b></p>"
-                 + "<p>" + messages.getMessage( "ConnectionErrorDescription" ) + "</p>"
-                 + "<p><a href=\"javascript:rwt.remote.Server.getInstance()._retry();\">" 
-                 + messages.getMessage( "Retry" ) + "</a></p>";
-          break;
-        default:
-          result = "<p><b>" + messages.getMessage( "ServerError" ) + "</b></p>";
-      }
-      return result;
     },
 
     ///////////////////////////////////////////////////

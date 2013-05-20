@@ -62,24 +62,21 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       this._createErrorPageArea().innerHTML = content;
     },
 
-    showErrorBox : function( content, freeze ) {
-      var location = String( window.location );
-      var index = location.indexOf( "#" );
-      if( index != -1 ) {
-        location = location.substring( 0, index );
-      }
-      var hrefAttr = "href=\"" + location + "\"";
-      var html = content.replace( /\{HREF_URL\}/, hrefAttr );
-      html = rwt.util.Encoding.replaceNewLines( html, "<br/>" );
+    showErrorBox : function( errorType, freeze ) {
       if( freeze ) {
         this._freezeApplication();
       }
       this._overlay = this._createOverlay();
-      this._box = this._createErrorBoxArea( 400, 100 );
-      this._box.innerHTML = html;
-      this._box.style.backgroundColor = "#dae9f7";
-      this._box.style.border = "1px solid black";
-      this._box.style.overflow = "auto";
+      this._box = this._createErrorBoxArea( 450, 150 );
+      this._box.style.padding = "0px";
+      this._box.style.border = "1px solid #3B5998";
+      this._box.style.overflow = "hidden";
+      this._title = this._createErrorBoxTitleArea( this._box );
+      this._title.innerHTML = this._getErrorMessage( errorType )[ 0 ];
+      this._description = this._createErrorBoxDescriptionArea( this._box );
+      this._description.innerHTML = this._getErrorMessage( errorType )[ 1 ];
+      this._action = this._createErrorBoxActionArea( this._box );
+      this._action.innerHTML = this._getErrorMessage( errorType )[ 2 ];
       var hyperlink = this._box.getElementsByTagName( "a" )[ 0 ];
       if( hyperlink ) {
         hyperlink.style.outline = "none";
@@ -195,6 +192,53 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       return element;
     },
 
+    _createErrorBoxTitleArea : function( parentElement ) {
+      var element = document.createElement( "div" );
+      var style = element.style;
+      style.position = "absolute";
+      style.width = "100%";
+      style.height = "40px";
+      style.padding = "10px";
+      style.textAlign = "left";
+      style.backgroundColor = "#406796";
+      style.color = "white";
+      style.fontSize = "14px";
+      style.fontWeight = "bold";
+      parentElement.appendChild( element );
+      return element;
+    },
+
+    _createErrorBoxDescriptionArea : function( parentElement ) {
+      var element = document.createElement( "div" );
+      var style = element.style;
+      style.position = "absolute";
+      style.width = "100%";
+      style.height = "70px";
+      style.top = "40px";
+      style.padding = "10px";
+      style.overflow = "auto";
+      style.textAlign = "left";
+      style.backgroundColor = "white";
+      style.fontSize = "14px";
+      parentElement.appendChild( element );
+      return element;
+    },
+
+    _createErrorBoxActionArea : function( parentElement ) {
+      var element = document.createElement( "div" );
+      var style = element.style;
+      style.position = "absolute";
+      style.width = "100%";
+      style.height = "40px";
+      style.top = "110px";
+      style.padding = "10px";
+      style.textAlign = "center";
+      style.backgroundColor = "#F2F2F2";
+      style.fontSize = "14px";
+      parentElement.appendChild( element );
+      return element;
+    },
+
     _freezeApplication : function() {
       try {
         var display = rwt.widgets.Display.getCurrent();
@@ -218,9 +262,50 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       if( rwt.client.Client.isGecko() ) {
         var EventHandlerUtil = rwt.event.EventHandlerUtil;
         rwt.html.EventRegistration.removeEventListener( document.documentElement,
-                                                       "mousedown",
-                                                       EventHandlerUtil._ffMouseFixListener );
+                                                        "mousedown",
+                                                        EventHandlerUtil._ffMouseFixListener );
       }
+    },
+
+    _getErrorMessage : function( errorType ) {
+      var result = [ "", "", "" ];
+      var encodingUtil = rwt.util.Encoding;
+      var messages = rwt.client.ClientMessages.getInstance();
+      switch( errorType ) {
+        case "invalid request counter":
+        case "request failed":
+          result[ 0 ] = messages.getMessage( "ServerError" );
+          result[ 1 ] = messages.getMessage( "ServerErrorDescription" );
+          result[ 2 ] = "<a {HREF_URL}>" + messages.getMessage( "Restart" ) + "</a>";
+          break;
+        case "session timeout":
+          result[ 0 ] = messages.getMessage( "SessionTimeout" );
+          result[ 1 ] = messages.getMessage( "SessionTimeoutDescription" );
+          result[ 2 ] = "<a href=\"" + this._getRestartURL()+ "\">" 
+                      + messages.getMessage( "Restart" ) + "</a>";
+          break;
+        case "connection error":
+          result[ 0 ] = messages.getMessage( "ConnectionError" );
+          result[ 1 ] = messages.getMessage( "ConnectionErrorDescription" );
+          result[ 2 ] = "<a href=\"javascript:rwt.remote.Server.getInstance()._retry();\">" 
+                      + messages.getMessage( "Retry" ) + "</a>";
+          break;
+        default:
+          result[ 0 ] = messages.getMessage( "ServerError" );
+      }
+      result[ 0 ] = encodingUtil.replaceNewLines( result[ 0 ], "" );
+      result[ 1 ] = encodingUtil.escapeText( result[ 1 ] );
+      result[ 1 ] = encodingUtil.replaceNewLines( result[ 1 ], "<br/>" );
+      return result;
+    },
+
+    _getRestartURL : function() {
+      var result = String( window.location );
+      var index = result.indexOf( "#" );
+      if( index != -1 ) {
+        result = result.substring( 0, index );
+      }
+      return result;
     }
 
   }
