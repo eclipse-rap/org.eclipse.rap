@@ -231,6 +231,7 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       style.overflow = "auto";
       style.textAlign = "left";
       style.backgroundColor = "white";
+      style.color = "#4a4a4a";
       style.fontSize = "14px";
       parentElement.appendChild( element );
       return element;
@@ -335,7 +336,7 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       style.outline = "none";
       style.textDecoration = "none";
       style.backgroundColor = "#E8E8E8";
-      style.color = "#333333";
+      style.color = "#4a4a4a";
       style.padding = "5px 15px";
       style.borderTop = "1px solid #CCCCCC";
       style.borderRight = "1px solid #333333";
