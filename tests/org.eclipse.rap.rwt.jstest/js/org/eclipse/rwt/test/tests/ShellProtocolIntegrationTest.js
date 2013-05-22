@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -599,6 +599,27 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
       rwt.remote.EventUtil.setSuspended( false );
 
       TestUtil.click( shell, 10, 20 );
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( 1, message.findNotifyProperty( "w3", "MouseDown", "button" ) );
+      assertEquals( 10, message.findNotifyProperty( "w3", "MouseDown", "x" ) );
+      assertEquals( 20, message.findNotifyProperty( "w3", "MouseDown", "y" ) );
+      assertNotNull( message.findNotifyProperty( "w3", "MouseDown", "time" ) );
+      assertFalse( message.findNotifyProperty( "w3", "MouseDown", "shiftKey" ) );
+      assertFalse( message.findNotifyProperty( "w3", "MouseDown", "ctrlKey" ) );
+      assertFalse( message.findNotifyProperty( "w3", "MouseDown", "altKey" ) );
+      this._disposeShell();
+    },
+
+    testNotifyMouseDown_FloatPointValues : function() {
+      rwt.remote.EventUtil.setSuspended( true );
+      var shell = this._protocolCreateShell();
+      this._protocolListen( { "MouseDown" : true } );
+      this._protocolSet( { "visibility" : true } );
+      TestUtil.flush();
+      rwt.remote.EventUtil.setSuspended( false );
+
+      TestUtil.click( shell, 10.4, 20.3 );
 
       var message = TestUtil.getMessageObject();
       assertEquals( 1, message.findNotifyProperty( "w3", "MouseDown", "button" ) );

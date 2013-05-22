@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -224,11 +224,11 @@ rwt.qx.Class.define("rwt.event.MouseEvent",
     getPageX : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function() {
-        return this.getDomEvent().clientX + rwt.html.Viewport.getScrollLeft(window);
+        return Math.round( this.getDomEvent().clientX + rwt.html.Viewport.getScrollLeft( window ) );
       },
 
       "default" : function() {
-        return this.getDomEvent().pageX;
+        return Math.round( this.getDomEvent().pageX );
       }
     }),
 
@@ -242,11 +242,11 @@ rwt.qx.Class.define("rwt.event.MouseEvent",
     getPageY : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function() {
-        return this.getDomEvent().clientY + rwt.html.Viewport.getScrollTop(window);
+        return Math.round( this.getDomEvent().clientY + rwt.html.Viewport.getScrollTop( window ) );
       },
 
       "default" : function() {
-        return this.getDomEvent().pageY;
+        return Math.round( this.getDomEvent().pageY );
       }
     }),
 
