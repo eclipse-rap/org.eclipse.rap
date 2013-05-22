@@ -106,7 +106,7 @@ rwt.qx.Class.define( "rwt.remote.EventUtil", {
 
     addModifierToProperties : function( properties, event ) {
       var isMac = rwt.client.Client.getPlatform() === "mac";
-      var commandKey = isMac && ( event ? event.metaKey : rwt.remote.EventUtil._metaKey );
+      var commandKey = isMac && ( event ? event.metaKey : rwt.remote.EventUtil._metaKey ) === true;
       properties.shiftKey = event ? event.shiftKey : rwt.remote.EventUtil._shiftKey;
       properties.ctrlKey = ( event ? event.ctrlKey : rwt.remote.EventUtil._ctrlKey ) || commandKey;
       properties.altKey = event ? event.altKey : rwt.remote.EventUtil._altKey;

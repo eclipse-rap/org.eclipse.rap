@@ -103,7 +103,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       ] );
             
       var context = gc._context;
-      assertTrue( context.isPointInPath( 101, 115 ) );
+      assertTrue( context.isPointInPath( 101, 115.1 ) );
       assertTrue( context.isPointInPath( 159, 115 ) );
       assertTrue( context.isPointInPath( 104, 122 ) );
       assertTrue( context.isPointInPath( 155, 122 ) );
