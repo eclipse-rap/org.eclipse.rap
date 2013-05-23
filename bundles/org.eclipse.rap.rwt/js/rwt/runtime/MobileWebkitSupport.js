@@ -127,26 +127,42 @@ rwt.qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
 
     _registerListeners : function() {
       var target = document.body;
-      target.ontouchstart = this.__onTouchEvent;
-      target.ontouchmove = this.__onTouchEvent;
-      target.ontouchend = this.__onTouchEvent;
-      target.ontouchcancel = this.__onTouchEvent;
-      target.ongesturestart = this.__onGestureEvent;
-      target.ongesturechange = this.__onGestureEvent;
-      target.ongestureend = this.__onGestureEvent;
-      target.onorientationchange = this.__onOrientationEvent;
+      if( rwt.client.Client.isGecko() ) {
+        target.addEventListener( "touchstart", this.__onTouchEvent, false );
+        target.addEventListener( "touchmove", this.__onTouchEvent, false );
+        target.addEventListener( "touchend", this.__onTouchEvent, false );
+        target.addEventListener( "touchcancel", this.__onTouchEvent, false );
+        target.addEventListener( "deviceorientation", this.__onOrientationEvent, false );
+      } else {
+        target.ontouchstart = this.__onTouchEvent;
+        target.ontouchmove = this.__onTouchEvent;
+        target.ontouchend = this.__onTouchEvent;
+        target.ontouchcancel = this.__onTouchEvent;
+        target.ongesturestart = this.__onGestureEvent;
+        target.ongesturechange = this.__onGestureEvent;
+        target.ongestureend = this.__onGestureEvent;
+        target.onorientationchange = this.__onOrientationEvent;
+      }
     },
 
     _removeListeners : function() {
       var target = document.body;
-      target.ontouchstart = null;
-      target.ontouchmove = null;
-      target.ontouchend = null;
-      target.ontouchcancel = null;
-      target.ongesturestart = null;
-      target.ongesturechange = null;
-      target.ongestureend = null;
-      target.onorientationchange = null;
+      if( rwt.client.Client.isGecko() ) {
+        target.removeEventListener( "touchstart", this.__onTouchEvent, false );
+        target.removeEventListener( "touchmove", this.__onTouchEvent, false );
+        target.removeEventListener( "touchend", this.__onTouchEvent, false );
+        target.removeEventListener( "touchcancel", this.__onTouchEvent, false );
+        target.removeEventListener( "deviceorientation", this.__onOrientationEvent, false );
+      } else {
+        target.ontouchstart = null;
+        target.ontouchmove = null;
+        target.ontouchend = null;
+        target.ontouchcancel = null;
+        target.ongesturestart = null;
+        target.ongesturechange = null;
+        target.ongestureend = null;
+        target.onorientationchange = null;
+      }
     },
 
     _registerFilter : function() {
