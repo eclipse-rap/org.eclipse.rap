@@ -1050,6 +1050,8 @@ Text {
   color: #464a4e;
   background-color: #fcfcfc;
   background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   text-shadow: none;
   box-shadow: none
 }
