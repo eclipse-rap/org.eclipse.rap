@@ -254,7 +254,8 @@ rwt.qx.Class.define( "rwt.remote.Server", {
                        || statusCode === 12029    // ERROR_INTERNET_CANNOT_CONNECT
                        || statusCode === 12030    // ERROR_INTERNET_CONNECTION_ABORTED
                        || statusCode === 12031    // ERROR_INTERNET_CONNECTION_RESET
-                       || statusCode === 12152 ); // ERROR_HTTP_INVALID_SERVER_RESPONSE
+                       || statusCode === 12152    // ERROR_HTTP_INVALID_SERVER_RESPONSE
+                       || statusCode === 0 );     // Some modern IEs use standard, but not all
         return result;
       },
       "gecko" : function( statusCode ) {
