@@ -215,20 +215,6 @@ rwt.qx.Class.define( "rwt.event.EventHandlerUtil", {
       "gecko" : function( event ) {
         return event.keyCode;
       },
-      "opera" : function( event ) {
-        var result;
-        if( event.type === "keypress" ) {
-          if( this._lastKeyCode === event.keyCode ) {
-            result = event.keyCode;
-          } else {
-            // This is a printable "keypress", the keyCode is not relevant:
-            result = 0;
-          }
-        } else {
-          result = event.keyCode;
-        }
-        return result;
-      },
       "default" : function( event ) {
         // the value in "keyCode" on "keypress" is actually the charcode:
         var hasKeyCode = event.type !== "keypress" || event.keyCode === 13 || event.keyCode === 27;
@@ -241,23 +227,9 @@ rwt.qx.Class.define( "rwt.event.EventHandlerUtil", {
         var hasCharCode = event.type === "keypress" && event.keyCode !== 13 && event.keyCode !== 27;
         return hasCharCode ? event.charCode : 0;
       },
-      "mshtml|newmshtml" : function( event ) {
+      "mshtml|newmshtml|opera" : function( event ) {
         var hasCharCode = event.type === "keypress" && event.keyCode !== 13 && event.keyCode !== 27;
         return hasCharCode ? event.keyCode : 0;
-      },
-      "opera" : function( event ) {
-        var result;
-        if( event.type === "keypress" ) {
-          if( this._lastKeyCode !== event.keyCode ) {
-            result = event.keyCode;
-          } else {
-            // This is a non-printable "keypress"
-            result = 0;
-          }
-        } else {
-          result = 0;
-        }
-        return result;
       }
     } ),
 
@@ -299,9 +271,6 @@ rwt.qx.Class.define( "rwt.event.EventHandlerUtil", {
           }
         }
         return result;
-      },
-      "opera" : function( event, keyCode, charCode ) {
-        return [ event.type ];
       }
     } ),
 
