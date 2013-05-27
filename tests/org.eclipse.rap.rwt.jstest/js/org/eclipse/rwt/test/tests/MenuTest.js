@@ -170,6 +170,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.destroy();
     },
 
+    testCreateMenuItemByProtocolAtPosition : function() {
+      var menu = createPopUpMenuByProtocol( "w3" );
+      menu.setHasShowListener( true );
+      menu._menuShown();
+
+      createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
+      createMenuItemByProtocol( "w5", "w3", [ "PUSH" ] );
+      var item = createMenuItemByProtocol( "w6", "w3", [ "PUSH" ], 1 );
+
+      assertEquals( 0, menu._layout.indexOf( menu._preItem ) );
+      assertEquals( 2, menu._layout.indexOf( item ) );
+      menu.destroy();
+    },
+
     testCreateMenuItemWithMnemonicByProtocol : function() {
       var menu = createPopUpMenuByProtocol( "w3" );
       var item = createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -1833,7 +1847,7 @@ var createPopUpMenuByProtocol = function( id ) {
   return ObjectRegistry.getObject( id );
 };
 
-var createMenuItemByProtocol = function( id, parentId, style ) {
+var createMenuItemByProtocol = function( id, parentId, style, index ) {
   MessageProcessor.processOperation( {
     "target" : id,
     "action" : "create",
@@ -1841,7 +1855,7 @@ var createMenuItemByProtocol = function( id, parentId, style ) {
     "properties" : {
       "style" : style,
       "parent" : parentId,
-      "index" : 0
+      "index" : index ? index : 0
     }
   } );
   return ObjectRegistry.getObject( id );

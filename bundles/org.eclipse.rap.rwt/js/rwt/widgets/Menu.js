@@ -187,7 +187,11 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
         // it is essential that this happens before the menuItem is added
         menuItem.setParentMenu( this );
       }
-      this._layout.addAt( menuItem, index );
+      var position = index;
+      if( this._preItem && this._preItem !== menuItem ) {
+        position++;
+      }
+      this._layout.addAt( menuItem, position );
     },
 
     scheduleMenuLayout : function() {
