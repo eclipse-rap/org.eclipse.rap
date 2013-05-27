@@ -25,7 +25,7 @@
     <tycho-version>0.16.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
     <signing-plugin-version>1.0.5</signing-plugin-version>
-    <base-platform>4.3milestones/S-4.3RC1-201305162200/</base-platform>
+    <base-platform>4.3milestones/S-4.3RC2-201305231400/</base-platform>
     <base-platform-repository>http://download.eclipse.org/eclipse/updates/${base-platform}</base-platform-repository>
     <baseline-repository>http://download.eclipse.org/rt/rap/nightly/runtime/</baseline-repository>
   </properties>

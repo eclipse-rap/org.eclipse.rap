@@ -34,7 +34,7 @@
       <id>base-platform-repository-with-ICU-bundle</id>
       <layout>p2</layout>
       <!-- This repository is required in order to pull in the base ICU bundle -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/2.1/RC1/runtime-base</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/2.1/RC2/runtime-base</url>
     </repository>
   </repositories>
 
