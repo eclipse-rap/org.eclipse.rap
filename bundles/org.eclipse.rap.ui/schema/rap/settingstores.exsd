@@ -157,7 +157,7 @@ Developers wishing to provide their own setting store must implement &lt;code&gt
          <meta.section type="copyright"/>
       </appInfo>
       <documentation>
-         Copyright (c) 2008 Innoopract Informationssysteme GmbH and others.&lt;br&gt;
+         Copyright (c) 2008, 2013 EclipseSource and others.&lt;br&gt;
 All rights reserved. This program and the accompanying materials are made
 available under the terms of the Eclipse Public License v1.0 which accompanies
 this distribution, and is available at &lt;a 
