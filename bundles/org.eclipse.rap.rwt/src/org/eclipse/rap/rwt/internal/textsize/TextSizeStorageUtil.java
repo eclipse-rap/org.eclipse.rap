@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.textsize;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 
@@ -22,8 +23,16 @@ final class TextSizeStorageUtil {
   static Point lookup( FontData fontData, String string, int wrapWidth, int mode ) {
     Point result = null;
     if( ProbeResultStore.getInstance().containsProbeResult( fontData ) ) {
+      TextSizeStorage textSizeStorage = getApplicationContext().getTextSizeStorage();
       Integer key = getKey( fontData, string, wrapWidth, mode );
-      result = getApplicationContext().getTextSizeStorage().lookupTextSize( key );
+      result = textSizeStorage.lookupTextSize( key );
+      if( result == null && wrapWidth > 0 ) {
+        key = getKey( fontData, string, SWT.DEFAULT, mode );
+        Point notWrappedSize = textSizeStorage.lookupTextSize( key );
+        if( notWrappedSize != null && notWrappedSize.x <= wrapWidth ) {
+          result = notWrappedSize;
+        }
+      }
     } else {
       MeasurementOperator.getInstance().addProbeToMeasure( fontData );
     }

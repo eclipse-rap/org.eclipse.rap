@@ -14,6 +14,7 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
 
   statics : {
 
+    _wrapNode : null,
     _measureNode : null,
     _offset : rwt.client.Client.isZoomed() ? 1 : 0,
 
@@ -43,8 +44,9 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
     },
 
     computeTextDimensions : function( text, fontProps, wrapWidth ) {
-      var element = this._getMeasureNode();
-      var style = element.style;
+      var textElement = this._getMeasureNode();
+      var wrapElement = this._getWrapNode();
+      var style = textElement.style;
       // Resetting style.font causes errors in IE with any of these syntaxes:
       // node.style.font = null | undefined | "inherit" | "";
       if( !rwt.client.Client.isMshtml() ) {
@@ -54,15 +56,17 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
       style.fontSize = fontProps.fontSize || "";
       style.fontWeight = fontProps.fontWeight || "";
       style.fontStyle = fontProps.fontStyle || "";
-      element.innerHTML = text;
+      textElement.innerHTML = text;
       if( wrapWidth ) {
-        style.width = wrapWidth + "px";
+        wrapElement.style.width = wrapWidth + "px";
+        wrapElement.style.whiteSpace = "normal";
         style.whiteSpace = "normal";
       } else {
-        style.width = "auto";
+        wrapElement.style.width = "auto";
+        wrapElement.style.whiteSpace = "nowrap";
         style.whiteSpace = "nowrap";
       }
-      return this._measureElement( element );
+      return this._measureElement( textElement );
     },
 
     _measureElement : rwt.util.Variant.select( "qx.client", {
@@ -106,9 +110,29 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
         style.width = style.height = "auto";
         style.visibility = "hidden";
         style.position = "absolute";
+        style.margin = "0px";
+        style.zIndex = "-1";
+        this._getWrapNode().appendChild( node );
+        this._measureNode = node;
+      }
+      if( !rwt.client.Client.isMshtml() ) {
+        node.style.font = "";
+      }
+      return node;
+    },
+
+    _getWrapNode : function() {
+      var node = this._wrapNode;
+      if( !node ) {
+        node = document.createElement( "div" );
+        var style = node.style;
+        style.width = style.height = "auto";
+        style.visibility = "hidden";
+        style.padding = "0px";
+        style.position = "absolute";
         style.zIndex = "-1";
         document.body.appendChild( node );
-        this._measureNode = node;
+        this._wrapNode = node;
       }
       if( !rwt.client.Client.isMshtml() ) {
         node.style.font = "";

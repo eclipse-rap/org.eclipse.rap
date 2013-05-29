@@ -95,10 +95,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
 
       assertTrue( size1[ 0 ] > size2[ 0 ] );
       assertTrue( size1[ 1 ] < size2[ 1 ] );
-      // TODO: div is resized in IE8 even the style.width (wrap width) is fixed
-      if( !rwt.client.Client.isMshtml() ) {
-        assertTrue( size2[ 0 ] === size3[ 0 ] );
-      }
+      assertTrue( size2[ 0 ] < size3[ 0 ] );
       assertTrue( size2[ 1 ] === size3[ 1 ] );
     },
 
@@ -110,7 +107,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
       }
       var item = [ "id1", veryLongText, "Arial", 12, false, false, -1, false ];
 
-      var size = FontSizeCalculation._measureItem( item, true);
+      var size = FontSizeCalculation._measureItem( item, true );
 
       assertTrue( size[ 1 ] < 25 );
     },
@@ -123,9 +120,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
       }
       var item = [ "id1", veryLongText, "Arial", 12, false, false, 500, false ];
 
-      var size = FontSizeCalculation._measureItem( item, true);
+      var size = FontSizeCalculation._measureItem( item, true );
 
       assertTrue( size[ 1 ] > 100 );
+    },
+
+    testMeasureShortTextWithWrap : function() {
+      var FontSizeCalculation = rwt.widgets.util.FontSizeCalculation;
+      var item = [ "id1", "foo", "Arial", 12, false, false, 200, false ];
+
+      var size = FontSizeCalculation._measureItem( item, true );
+
+      assertTrue( size[ 0 ] < 100 );
+    },
+
+    testMeasureShortTextWithWrapReturnsSameWidthOnDifferentWrapWidth : function() {
+      var FontSizeCalculation = rwt.widgets.util.FontSizeCalculation;
+      var item1 = [ "id1", "foo", "Arial", 12, false, false, 200, false ];
+      var item2 = [ "id1", "foo", "Arial", 12, false, false, 250, false ];
+
+      var size1 = FontSizeCalculation._measureItem( item1, true );
+      var size2 = FontSizeCalculation._measureItem( item2, true );
+
+      assertEquals( size1[ 0 ], size2[ 0 ] );
     }
 
   }

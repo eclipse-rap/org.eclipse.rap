@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2013 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,6 +68,40 @@ public class TextSizeStorageUtil_Test {
     Point lookupSize = TextSizeStorageUtil.lookup( FONT_DATA, TEST_STRING, SWT.DEFAULT, MODE );
 
     assertEquals( storedSize, lookupSize );
+  }
+
+  @Test
+  public void testLookup_withBiggerWrapWidth() {
+    ProbeResultStore probeResultStore = ProbeResultStore.getInstance();
+    probeResultStore.createProbeResult( new Probe( FONT_DATA ), new Point( 2, 10 ) );
+    Point notWrappedSize = new Point( 50, 10 );
+
+    TextSizeStorageUtil.store( FONT_DATA, TEST_STRING, SWT.DEFAULT, MODE, notWrappedSize );
+    Point lookupSize = TextSizeStorageUtil.lookup( FONT_DATA, TEST_STRING, 100, MODE );
+
+    assertEquals( notWrappedSize, lookupSize );
+  }
+
+  @Test
+  public void testLookup_withSmallerWrapWidth() {
+    ProbeResultStore probeResultStore = ProbeResultStore.getInstance();
+    probeResultStore.createProbeResult( new Probe( FONT_DATA ), new Point( 2, 10 ) );
+    Point notWrappedSize = new Point( 50, 10 );
+
+    TextSizeStorageUtil.store( FONT_DATA, TEST_STRING, SWT.DEFAULT, MODE, notWrappedSize );
+    Point lookupSize = TextSizeStorageUtil.lookup( FONT_DATA, TEST_STRING, 25, MODE );
+
+    assertNull( lookupSize );
+  }
+
+  @Test
+  public void testLookup_withMissingSize() {
+    ProbeResultStore probeResultStore = ProbeResultStore.getInstance();
+    probeResultStore.createProbeResult( new Probe( FONT_DATA ), new Point( 2, 10 ) );
+
+    Point lookupSize = TextSizeStorageUtil.lookup( FONT_DATA, TEST_STRING, 25, MODE );
+
+    assertNull( lookupSize );
   }
 
   @Test
