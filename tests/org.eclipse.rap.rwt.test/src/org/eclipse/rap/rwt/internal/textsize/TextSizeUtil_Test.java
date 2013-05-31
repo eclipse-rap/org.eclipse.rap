@@ -15,6 +15,8 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicatio
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -50,6 +52,15 @@ public class TextSizeUtil_Test {
     assertEquals( 1, getMeasurementItems().length );
     assertEquals( TEST_STRING, getMeasurementItems()[ 0 ].getTextToMeasure() );
     assertEquals( FONT_DATA, getMeasurementItems()[ 0 ].getFontData() );
+  }
+
+  @Test
+  public void testStringExtentDoesNotAssignsUnknownStringsToTextSizeMeasuringIfTemporaryResize() {
+    markTemporaryResize();
+
+    TextSizeUtil.stringExtent( getFont(), TEST_STRING );
+
+    assertEquals( 0, getMeasurementItems().length );
   }
 
   @Test
@@ -198,6 +209,12 @@ public class TextSizeUtil_Test {
 
   private Font getFont() {
     return new Font( display, FONT_DATA );
+  }
+
+  private void markTemporaryResize() {
+    ServiceStore serviceStore = ContextProvider.getServiceStore();
+    String key = "org.eclipse.rap.rwt.internal.textsize.TextSizeRecalculation#temporaryResize";
+    serviceStore.setAttribute( key, Boolean.TRUE );
   }
 
 }

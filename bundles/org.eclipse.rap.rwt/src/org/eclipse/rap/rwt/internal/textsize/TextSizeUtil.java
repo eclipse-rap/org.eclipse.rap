@@ -97,7 +97,9 @@ public class TextSizeUtil {
     Point result = lookup( font, string, normalizedWrapWidth, mode );
     if( result == null ) {
       result = estimate( font, string, normalizedWrapWidth, mode );
-      addItemToMeasure( font, string, normalizedWrapWidth, mode );
+      if( !isTemporaryResize() ) {
+        addItemToMeasure( font, string, normalizedWrapWidth, mode );
+      }
     }
 
     // TODO [rst] Still returns wrong result for texts that contain only
