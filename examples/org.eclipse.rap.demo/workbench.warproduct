@@ -4,6 +4,7 @@
 <product name="RAP Workbench Demo" uid="org.eclipse.rap.demo" version="1.0.0" useFeatures="false" includeLaunchers="false">
    <plugins>
       <plugin id="com.ibm.icu.base"/>
+      <plugin id="javax.xml"/>
       <plugin id="org.apache.felix.gogo.command"/>
       <plugin id="org.apache.felix.gogo.runtime"/>
       <plugin id="org.apache.felix.gogo.shell"/>
@@ -40,6 +41,7 @@
 
    <configurations>
       <plugin id="com.ibm.icu.base" autoStart="true" startLevel="0" />
+      <plugin id="javax.xml" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.command" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.shell" autoStart="true" startLevel="0" />
@@ -76,7 +78,7 @@
 
    <warConfiguration webXml="/org.eclipse.rap.demo/WEB-INF/web.xml" launchIni="/org.eclipse.rap.demo/WEB-INF/launch.ini">
    <libraries>
-      <library path="org.eclipse.equinox.servletbridge_1.2.200.v20120522-2049.jar" fromTarget="true"/>
+      <library path="org.eclipse.equinox.servletbridge_1.2.300.v20130508-1243.jar" fromTarget="true"/>
    </libraries>
    </warConfiguration>
 </product>
