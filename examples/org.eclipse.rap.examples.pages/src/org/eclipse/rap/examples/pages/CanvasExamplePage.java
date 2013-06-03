@@ -20,8 +20,6 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -31,6 +29,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
@@ -42,8 +42,8 @@ public final class CanvasExamplePage implements IExamplePage {
   private static final int MODE_OVAL = 2;
   private static final int MODE_STAMP = 3;
 
-  private static final int SNAP_DISTANCE = 10;
-  private static final int LINE_WIDTH = 2;
+  private static final int SNAP_DISTANCE = 6;
+  private static final int LINE_WIDTH = 1;
 
   private static final RGB[] COLORS = new RGB[] {
     new RGB( 21,184,185 ),
@@ -59,13 +59,6 @@ public final class CanvasExamplePage implements IExamplePage {
     new RGB( 66,187,134 )
   };
 
-  private static final int[] IMAGES = new int[] {
-    SWT.ICON_QUESTION,
-    SWT.ICON_INFORMATION,
-    SWT.ICON_WARNING,
-    SWT.ICON_ERROR
-  };
-
   private static final String ICON_POLYFORM = "polyform.png";
   private static final String ICON_OVAL = "oval.png";
   private static final String ICON_STAMP = "stamp.png";
@@ -78,7 +71,7 @@ public final class CanvasExamplePage implements IExamplePage {
   private int[] currentParam;
   private Point currentStart;
   private int currentColor;
-  private int currentImage;
+  private Image stampImage;
   private int currentAlpha;
 
   public CanvasExamplePage() {
@@ -94,73 +87,105 @@ public final class CanvasExamplePage implements IExamplePage {
     ExampleUtil.createHeading( composite, "click to draw shapes", 2 );
     createControlToolBar( composite );
     createDrawingArea( composite );
+    createStampImage( parent.getDisplay() );
     parent.layout();
     init();
  }
+
+  private void createControlToolBar( Composite parent ) {
+    ToolBar toolBar = new ToolBar( parent, SWT.VERTICAL );
+    toolBar.setLayoutData( new GridData( SWT.BEGINNING, SWT.TOP, false, true ) );
+    createPolyformButton( toolBar ).setSelection( true );
+    createOvalButton( toolBar );
+    createStampButton( toolBar );
+    createSeparator( toolBar );
+    createTransparencyButton( toolBar ).setSelection( true );
+    createSeparator( toolBar );
+    createClearButton( toolBar );
+  }
+
+  private ToolItem createPolyformButton( ToolBar toolBar ) {
+    ToolItem button = createToolButton( toolBar, SWT.RADIO, ICON_POLYFORM, "Polyform" );
+    button.addListener( SWT.Selection, new Listener() {
+      public void handleEvent( Event event ) {
+        if( ( ( ToolItem )event.widget ).getSelection() ) {
+          setMode( MODE_POLYFORM );
+        }
+      }
+    } );
+    return button;
+  }
+
+  private void createOvalButton( ToolBar toolBar ) {
+    ToolItem button = createToolButton( toolBar, SWT.RADIO, ICON_OVAL, "Oval" );
+    button.addListener( SWT.Selection, new Listener() {
+      public void handleEvent( Event event ) {
+        if( ( ( ToolItem )event.widget ).getSelection() ) {
+          setMode( MODE_OVAL );
+        }
+      }
+    } );
+  }
+
+  private void createStampButton( ToolBar toolBar ) {
+    ToolItem button = createToolButton( toolBar, SWT.RADIO, ICON_STAMP, "Stamp" );
+    button.addListener( SWT.Selection, new Listener() {
+      public void handleEvent( Event event ) {
+        if( ( ( ToolItem )event.widget ).getSelection() ) {
+          setMode( MODE_STAMP );
+        }
+      }
+    } );
+  }
+
+  private ToolItem createTransparencyButton( ToolBar toolBar ) {
+    ToolItem button = createToolButton( toolBar, SWT.CHECK, ICON_TRANSPARENCY, "Transparency" );
+    button.addListener( SWT.Selection, new Listener() {
+      public void handleEvent( Event event ) {
+        boolean selected = ( ( ToolItem )event.widget ).getSelection();
+        currentAlpha = selected ? 128 : 255;
+      }
+    } );
+    return button;
+  }
+
+  private void createClearButton( ToolBar toolBar ) {
+    ToolItem toolButton = createToolButton( toolBar, SWT.PUSH, ICON_CLEAR, "Clear" );
+    toolButton.addListener( SWT.Selection, new Listener() {
+      public void handleEvent( Event event ) {
+        clear();
+      }
+    } );
+  }
+
+  private static ToolItem createToolButton( ToolBar parent, int style, String icon, String tooltip )
+  {
+    ToolItem toolButton = new ToolItem( parent, style );
+    toolButton.setImage( ImageUtil.getImage( parent.getDisplay(), icon ) );
+    toolButton.setToolTipText( tooltip );
+    return toolButton;
+  }
+
+  private void createSeparator( ToolBar toolBar ) {
+    new ToolItem( toolBar, SWT.SEPARATOR );
+  }
 
   private void createDrawingArea( Composite parent ) {
     drawingArea = new Canvas( parent, SWT.BORDER );
     drawingArea.setLayoutData( ExampleUtil.createFillData() );
     drawingArea.setBackground( parent.getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
+    drawingArea.setCursor( parent.getDisplay().getSystemCursor( SWT.CURSOR_CROSS ) );
     drawingArea.addPaintListener( new DrawingAreaPaintListener() );
     drawingArea.addMouseListener( new DrawingAreaMouseListener() );
   }
 
-  private void createControlToolBar( Composite parent ) {
-    Display display = parent.getDisplay();
-    ToolBar toolBar = new ToolBar( parent, SWT.VERTICAL );
-    toolBar.setLayoutData( new GridData( SWT.BEGINNING, SWT.TOP, false, true ) );
-    ToolItem polyformButton = new ToolItem( toolBar, SWT.RADIO );
-    polyformButton.setImage( ImageUtil.getImage( display, ICON_POLYFORM ) );
-    polyformButton.setToolTipText( "Polyform" );
-    polyformButton.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent e ) {
-        newOperation();
-        mode = MODE_POLYFORM;
-      }
-    } );
-    ToolItem ovalButton = new ToolItem( toolBar, SWT.RADIO );
-    ovalButton.setImage( ImageUtil.getImage( display, ICON_OVAL ) );
-    ovalButton.setToolTipText( "Oval" );
-    ovalButton.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent e ) {
-        newOperation();
-        mode = MODE_OVAL;
-      }
-    } );
-    ToolItem stampButton = new ToolItem( toolBar, SWT.RADIO );
-    stampButton.setImage( ImageUtil.getImage( display, ICON_STAMP ) );
-    stampButton.setToolTipText( "Stamp" );
-    stampButton.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent e ) {
-        newOperation();
-        mode = MODE_STAMP;
-      }
-    } );
-    final ToolItem transparencyButton = new ToolItem( toolBar, SWT.CHECK );
-    transparencyButton.setImage( ImageUtil.getImage( display, ICON_TRANSPARENCY ) );
-    transparencyButton.setToolTipText( "Transparency" );
-    transparencyButton.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent e ) {
-        boolean selected = transparencyButton.getSelection();
-        currentAlpha = selected ? 128 : 255;
-      }
-    } );
-    ToolItem clearButton = new ToolItem( toolBar, SWT.PUSH );
-    clearButton.setImage( ImageUtil.getImage( display, ICON_CLEAR ) );
-    clearButton.setToolTipText( "Clear" );
-    clearButton.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent e ) {
-        clear();
-      }
-    } );
-    polyformButton.setSelection( true );
-    transparencyButton.setSelection( true );
+  private void createStampImage( Display display ) {
+    stampImage = ImageUtil.getImage( drawingArea.getDisplay(), "rap.png" );
+  }
+
+  private void setMode( int mode ) {
+    newOperation();
+    this.mode = mode;
   }
 
   private void addToCurrentParam( int x, final int y ) {
@@ -181,16 +206,11 @@ public final class CanvasExamplePage implements IExamplePage {
     Object fill = getCurrentFill();
     switch( mode ) {
       case MODE_OVAL:
-        int centerX = currentParam[ 0 ];
-        int centerY = currentParam[ 1 ];
-        int radiusX = Math.abs( centerX - currentParam[ 2 ] );
-        int radiusY = Math.abs( centerY - currentParam[ 3 ] );
-        currentParam = new int[]{
-          centerX - radiusX,
-          centerY - radiusY,
-          radiusX * 2,
-          radiusY * 2
-        };
+        int x0 = currentParam[ 0 ];
+        int y0 = currentParam[ 1 ];
+        int x1 = currentParam[ 2 ];
+        int y1 = currentParam[ 3 ];
+        currentParam = new int[]{ x0, y0, x1 - x0, y1 - y0 };
       break;
       case MODE_STAMP:
         Image stamp = ( Image )fill;
@@ -211,11 +231,7 @@ public final class CanvasExamplePage implements IExamplePage {
     Object result;
     switch( mode ) {
       case MODE_STAMP:
-        result = drawingArea.getDisplay().getSystemImage( IMAGES[ currentImage ] );
-        currentImage++;
-        if( currentImage >= IMAGES.length ) {
-          currentImage = 0;
-        }
+        result = stampImage;
       break;
       default:
         result = new Color( drawingArea.getDisplay(), COLORS[ currentColor ] );
@@ -342,4 +358,5 @@ public final class CanvasExamplePage implements IExamplePage {
       drawingArea.redraw();
     }
   }
+
 }
