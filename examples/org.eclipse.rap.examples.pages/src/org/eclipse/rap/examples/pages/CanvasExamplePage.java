@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.examples.pages.internal.ImageUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -26,16 +27,20 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 
 
 public final class CanvasExamplePage implements IExamplePage {
 
-  private static final int MODE_POLYFORM = 0;
-  private static final int MODE_OVAL = 1;
-  private static final int MODE_STAMP = 2;
+  private static final int MODE_INIT = 0;
+  private static final int MODE_POLYFORM = 1;
+  private static final int MODE_OVAL = 2;
+  private static final int MODE_STAMP = 3;
 
   private static final int SNAP_DISTANCE = 10;
   private static final int LINE_WIDTH = 2;
@@ -61,6 +66,12 @@ public final class CanvasExamplePage implements IExamplePage {
     SWT.ICON_ERROR
   };
 
+  private static final String ICON_POLYFORM = "polyform.png";
+  private static final String ICON_OVAL = "oval.png";
+  private static final String ICON_STAMP = "stamp.png";
+  private static final String ICON_TRANSPARENCY = "transparency.png";
+  private static final String ICON_CLEAR = "clear.png";
+
   private Canvas drawingArea;
   private int mode;
   private ArrayList<Object[]> path;
@@ -72,19 +83,19 @@ public final class CanvasExamplePage implements IExamplePage {
 
   public CanvasExamplePage() {
     path = new ArrayList<Object[]>();
-    currentAlpha = 255;
+    currentAlpha = 128;
   }
 
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayoutData( ExampleUtil.createFillData() );
-    composite.setLayout( ExampleUtil.createGridLayout( 1, false, true, true ) );
-    ExampleUtil.createHeading( composite, "click to draw shapes", 1 );
+    composite.setLayout( ExampleUtil.createGridLayout( 2, false, true, true ) );
+    ExampleUtil.createHeading( composite, "click to draw shapes", 2 );
+    createControlToolBar( composite );
     createDrawingArea( composite );
-    createControlButtons( composite );
     parent.layout();
-    clear();
+    init();
  }
 
   private void createDrawingArea( Composite parent ) {
@@ -95,11 +106,13 @@ public final class CanvasExamplePage implements IExamplePage {
     drawingArea.addMouseListener( new DrawingAreaMouseListener() );
   }
 
-  private void createControlButtons( Composite parent ) {
-    Composite buttonArea = new Composite( parent, SWT.NONE );
-    buttonArea.setLayout( ExampleUtil.createRowLayout( SWT.HORIZONTAL, false ) );
-    Button polyformButton = new Button( buttonArea, SWT.RADIO );
-    polyformButton.setText( "Polyform" );
+  private void createControlToolBar( Composite parent ) {
+    Display display = parent.getDisplay();
+    ToolBar toolBar = new ToolBar( parent, SWT.VERTICAL );
+    toolBar.setLayoutData( new GridData( SWT.BEGINNING, SWT.TOP, false, true ) );
+    ToolItem polyformButton = new ToolItem( toolBar, SWT.RADIO );
+    polyformButton.setImage( ImageUtil.getImage( display, ICON_POLYFORM ) );
+    polyformButton.setToolTipText( "Polyform" );
     polyformButton.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -107,8 +120,9 @@ public final class CanvasExamplePage implements IExamplePage {
         mode = MODE_POLYFORM;
       }
     } );
-    Button ovalButton = new Button( buttonArea, SWT.RADIO );
-    ovalButton.setText( "Oval" );
+    ToolItem ovalButton = new ToolItem( toolBar, SWT.RADIO );
+    ovalButton.setImage( ImageUtil.getImage( display, ICON_OVAL ) );
+    ovalButton.setToolTipText( "Oval" );
     ovalButton.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -116,8 +130,9 @@ public final class CanvasExamplePage implements IExamplePage {
         mode = MODE_OVAL;
       }
     } );
-    Button stampButton = new Button( buttonArea, SWT.RADIO );
-    stampButton.setText( "Stamp" );
+    ToolItem stampButton = new ToolItem( toolBar, SWT.RADIO );
+    stampButton.setImage( ImageUtil.getImage( display, ICON_STAMP ) );
+    stampButton.setToolTipText( "Stamp" );
     stampButton.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -125,8 +140,9 @@ public final class CanvasExamplePage implements IExamplePage {
         mode = MODE_STAMP;
       }
     } );
-    final Button transparencyButton = new Button( buttonArea, SWT.CHECK );
-    transparencyButton.setText( "Transparency" );
+    final ToolItem transparencyButton = new ToolItem( toolBar, SWT.CHECK );
+    transparencyButton.setImage( ImageUtil.getImage( display, ICON_TRANSPARENCY ) );
+    transparencyButton.setToolTipText( "Transparency" );
     transparencyButton.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -134,8 +150,9 @@ public final class CanvasExamplePage implements IExamplePage {
         currentAlpha = selected ? 128 : 255;
       }
     } );
-    Button clearButton = new Button( buttonArea, SWT.PUSH );
-    clearButton.setText( "Clear" );
+    ToolItem clearButton = new ToolItem( toolBar, SWT.PUSH );
+    clearButton.setImage( ImageUtil.getImage( display, ICON_CLEAR ) );
+    clearButton.setToolTipText( "Clear" );
     clearButton.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -143,6 +160,7 @@ public final class CanvasExamplePage implements IExamplePage {
       }
     } );
     polyformButton.setSelection( true );
+    transparencyButton.setSelection( true );
   }
 
   private void addToCurrentParam( int x, final int y ) {
@@ -215,6 +233,15 @@ public final class CanvasExamplePage implements IExamplePage {
     newOperation();
   }
 
+  private void init() {
+    path = new ArrayList<Object[]>();
+    newOperation();
+    mode = MODE_INIT;
+    addOperationToPath();
+    newOperation();
+    mode = MODE_POLYFORM;
+  }
+
   private void newOperation() {
     currentParam = null;
     currentStart = null;
@@ -250,6 +277,14 @@ public final class CanvasExamplePage implements IExamplePage {
         int[] param = ( int[] )operation[ 1 ];
         gc.setAlpha( ( ( Integer )operation[ 3 ] ).intValue() );
         switch( operationMode ) {
+          case MODE_INIT:
+            gc.setBackground( new Color( drawingArea.getDisplay(), COLORS[ 4 ] ) );
+            gc.fillOval( 100, 50, 350, 350 );
+            gc.setBackground( new Color( drawingArea.getDisplay(), COLORS[ 5 ] ) );
+            gc.fillOval( 300, 150, 400, 300 );
+            gc.setBackground( new Color( drawingArea.getDisplay(), COLORS[ 6 ] ) );
+            gc.fillOval( 500, 100, 250, 300 );
+          break;
           case MODE_POLYFORM:
             gc.setBackground( ( Color )operation[ 2 ] );
             gc.fillPolygon( param );
