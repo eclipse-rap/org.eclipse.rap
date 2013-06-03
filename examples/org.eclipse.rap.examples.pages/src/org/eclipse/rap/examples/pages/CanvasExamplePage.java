@@ -21,8 +21,10 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
@@ -40,7 +42,8 @@ public final class CanvasExamplePage implements IExamplePage {
   private static final int MODE_INIT = 0;
   private static final int MODE_POLYFORM = 1;
   private static final int MODE_OVAL = 2;
-  private static final int MODE_STAMP = 3;
+  private static final int MODE_CURVE = 3;
+  private static final int MODE_STAMP = 4;
 
   private static final int SNAP_DISTANCE = 6;
   private static final int LINE_WIDTH = 1;
@@ -61,6 +64,7 @@ public final class CanvasExamplePage implements IExamplePage {
 
   private static final String ICON_POLYFORM = "polyform.png";
   private static final String ICON_OVAL = "oval.png";
+  private static final String ICON_CURVE = "curve.png";
   private static final String ICON_STAMP = "stamp.png";
   private static final String ICON_TRANSPARENCY = "transparency.png";
   private static final String ICON_CLEAR = "clear.png";
@@ -97,6 +101,7 @@ public final class CanvasExamplePage implements IExamplePage {
     toolBar.setLayoutData( new GridData( SWT.BEGINNING, SWT.TOP, false, true ) );
     createPolyformButton( toolBar ).setSelection( true );
     createOvalButton( toolBar );
+    createCurveButton( toolBar );
     createStampButton( toolBar );
     createSeparator( toolBar );
     createTransparencyButton( toolBar ).setSelection( true );
@@ -122,6 +127,17 @@ public final class CanvasExamplePage implements IExamplePage {
       public void handleEvent( Event event ) {
         if( ( ( ToolItem )event.widget ).getSelection() ) {
           setMode( MODE_OVAL );
+        }
+      }
+    } );
+  }
+
+  private void createCurveButton( ToolBar toolBar ) {
+    ToolItem button = createToolButton( toolBar, SWT.RADIO, ICON_CURVE, "Curved Line" );
+    button.addListener( SWT.Selection, new Listener() {
+      public void handleEvent( Event event ) {
+        if( ( ( ToolItem )event.widget ).getSelection() ) {
+          setMode( MODE_CURVE );
         }
       }
     } );
@@ -278,7 +294,9 @@ public final class CanvasExamplePage implements IExamplePage {
     int x = currentStart.x - SNAP_DISTANCE;
     int y = currentStart.y - SNAP_DISTANCE;
     int diameter = 2 * SNAP_DISTANCE;
-    gc.setBackground( drawingArea.getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
+    gc.setForeground( gc.getDevice().getSystemColor( SWT.COLOR_BLACK ) );
+    gc.setBackground( gc.getDevice().getSystemColor( SWT.COLOR_WHITE ) );
+    gc.setLineWidth( LINE_WIDTH );
     gc.fillOval( x, y, diameter, diameter );
     gc.drawOval( x, y, diameter, diameter );
   }
@@ -286,11 +304,12 @@ public final class CanvasExamplePage implements IExamplePage {
   private final class DrawingAreaPaintListener implements PaintListener {
     public void paintControl( PaintEvent event ) {
       GC gc = event.gc;
-      gc.setLineWidth( LINE_WIDTH );
       for( int i = 0; i < path.size(); i++ ) {
         Object[] operation = path.get( i );
         int operationMode = ( ( Integer )operation[ 0 ] ).intValue();
         int[] param = ( int[] )operation[ 1 ];
+        gc.setForeground( gc.getDevice().getSystemColor( SWT.COLOR_BLACK ) );
+        gc.setLineWidth( LINE_WIDTH );
         gc.setAlpha( ( ( Integer )operation[ 3 ] ).intValue() );
         switch( operationMode ) {
           case MODE_INIT:
@@ -304,14 +323,16 @@ public final class CanvasExamplePage implements IExamplePage {
           case MODE_POLYFORM:
             gc.setBackground( ( Color )operation[ 2 ] );
             gc.fillPolygon( param );
-            gc.setAlpha( 255 );
-            gc.drawPolygon( param );
           break;
           case MODE_OVAL:
             gc.setBackground( ( Color ) operation[ 2 ] );
             gc.fillOval( param[ 0 ], param[ 1 ], param[ 2 ], param[ 3 ] );
+          break;
+          case MODE_CURVE:
+            gc.setForeground( ( Color ) operation[ 2 ] );
+            gc.setLineWidth( 3 );
             gc.setAlpha( 255 );
-            gc.drawOval( param[ 0 ], param[ 1 ], param[ 2 ], param[ 3 ] );
+            gc.drawPath( createCurvedPath( drawingArea.getDisplay(), param ) );
           break;
           case MODE_STAMP:
             gc.drawImage( ( Image )operation[ 2 ], param[ 0 ], param[ 1 ] );
@@ -324,6 +345,11 @@ public final class CanvasExamplePage implements IExamplePage {
         switch( mode ) {
           case MODE_POLYFORM:
             gc.drawPolyline( currentParam );
+          break;
+          case MODE_CURVE:
+            gc.setForeground( gc.getDevice().getSystemColor( SWT.COLOR_BLACK ) );
+            gc.setLineWidth( LINE_WIDTH );
+            gc.drawPath( createCurvedPath( gc.getDevice(), currentParam ) );
           break;
         }
       }
@@ -349,6 +375,13 @@ public final class CanvasExamplePage implements IExamplePage {
             newOperation();
           }
         break;
+        case MODE_CURVE:
+          addToCurrentParam( e.x, e.y );
+          if( currentParam.length == 8 ) {
+            addOperationToPath();
+            newOperation();
+          }
+        break;
         case MODE_STAMP:
           addToCurrentParam( e.x, e.y );
           addOperationToPath();
@@ -357,6 +390,22 @@ public final class CanvasExamplePage implements IExamplePage {
       }
       drawingArea.redraw();
     }
+  }
+
+  public static Path createCurvedPath( Device device, int[] param ) {
+    Path path = new Path( device );
+    if( param.length >= 2 ) {
+      path.moveTo( param[ 0 ], param[ 1 ] );
+      for( int i = 2; i < param.length; i += 2 ) {
+        int cx = param[ i - 2 ];
+        int cy = param[ i - 1 ];
+        int x = ( param[ i ] + param[ i - 2 ] ) / 2;
+        int y = ( param[ i + 1 ] + param[ i - 1 ] ) / 2;
+        path.quadTo( cx, cy, x, y );
+      }
+      path.lineTo( param[ param.length - 2 ], param[ param.length - 1] );
+    }
+    return path;
   }
 
 }
