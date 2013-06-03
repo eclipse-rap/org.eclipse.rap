@@ -85,7 +85,7 @@
         TODO [rst]: Because of bug 348045, we cannot add the entire platform repository to the
                     target platform, try target definitions instead.
         -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/2.1/RC2/runtime-base</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/2.1/RC3/runtime-base</url>
     </repository>
     <repository>
       <id>extra-dependencies-repository</id>
