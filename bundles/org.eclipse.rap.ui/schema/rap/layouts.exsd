@@ -26,21 +26,21 @@ The default Layout can be defined by contributing to the &lt;code&gt;org.eclipse
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="id" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="name" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
                <appInfo>
                   <meta.attribute translatable="true"/>
@@ -97,14 +97,14 @@ The default Layout can be defined by contributing to the &lt;code&gt;org.eclipse
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  The unique identifier for a Layout.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="name" type="string">
             <annotation>
                <documentation>
-                  
+                  This optional attribute is just to give the Layout a readable name.
                </documentation>
             </annotation>
          </attribute>
@@ -125,36 +125,36 @@ The default Layout can be defined by contributing to the &lt;code&gt;org.eclipse
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         The following is an example of a Layout with three LayoutSets: 
-&lt;p&gt;
+         The following is an example of a Layout with three LayoutSets:
 &lt;pre&gt;
 &lt;extension
-         id=&quot;org.eclipse.presentation.example.layout&quot;
-         name=&quot;Example Layout&quot;
-         point=&quot;org.eclipse.ui.presentations.Layouts&quot;&gt;
-      &lt;LayoutSet
-            class=&quot;org.eclipse.rap.ui.interactiondesign.example.layoutset.HeaderLayoutSet2&quot;
-            id=&quot;header.layoutset&quot;
-            name=&quot;Header2&quot;&gt;
-      &lt;/LayoutSet&gt;
-      &lt;LayoutSet
-            class=&quot;org.eclipse.rap.ui.interactiondesign.example.layoutset.MacBarLayoutSet2&quot;
-            id=&quot;macBar.layoutset&quot;
-            name=&quot;MacBar 2&quot;&gt;
-      &lt;/LayoutSet&gt;
-      &lt;LayoutSet
-            class=&quot;org.eclipse.rap.ui.interactiondesign.example.layoutset.FooterLayoutSet2&quot;
-            id=&quot;footer.layoutset&quot;
-            name=&quot;Footer&quot;&gt;
-      &lt;/LayoutSet&gt;
-      &lt;LayoutSet
-            class=&quot;org.eclipse.rap.ui.interactiondesign.example.layoutset.NavigationPaneLayoutSet2&quot;
-            id=&quot;navigationpane.layoutset&quot;
-            name=&quot;NavigationPane&quot;&gt;
-      &lt;/LayoutSet&gt;
-   &lt;/extension&gt;
- &lt;/pre&gt;
- &lt;/p&gt;
+    point=&quot;org.eclipse.rap.ui.layouts&quot;&gt;
+  &lt;layout
+      id=&quot;org.eclipse.presentation.example.layout&quot;
+      name=&quot;Example Layout&quot;&gt;
+    &lt;layoutSet
+        class=&quot;org.eclipse.rap.ui.interactiondesign.example.layoutset.HeaderLayoutSet2&quot;
+        id=&quot;header.layoutset&quot;
+        name=&quot;Header2&quot;&gt;
+    &lt;/layoutSet&gt;
+    &lt;layoutSet
+        class=&quot;org.eclipse.rap.ui.interactiondesign.example.layoutset.MacBarLayoutSet2&quot;
+        id=&quot;macBar.layoutset&quot;
+        name=&quot;MacBar 2&quot;&gt;
+    &lt;/layoutSet&gt;
+    &lt;layoutSet
+        class=&quot;org.eclipse.rap.ui.interactiondesign.example.layoutset.FooterLayoutSet2&quot;
+        id=&quot;footer.layoutset&quot;
+        name=&quot;Footer&quot;&gt;
+    &lt;/layoutSet&gt;
+    &lt;layoutSet
+        class=&quot;org.eclipse.rap.ui.interactiondesign.example.layoutset.NavigationPaneLayoutSet2&quot;
+        id=&quot;navigationpane.layoutset&quot;
+        name=&quot;NavigationPane&quot;&gt;
+    &lt;/layoutSet&gt;
+  &lt;/layout&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
       </documentation>
    </annotation>
 

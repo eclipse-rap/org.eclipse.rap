@@ -29,21 +29,21 @@ As an alternative to registering an entrypoint, Eclipse applications can also us
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="id" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="name" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
                <appInfo>
                   <meta.attribute translatable="true"/>
@@ -77,7 +77,7 @@ As an alternative to registering an entrypoint, Eclipse applications can also us
          <attribute name="class" type="string">
             <annotation>
                <documentation>
-                  An implementation of &lt;code&gt;IEntryPoint&lt;/code&gt; which starts the application. Either this attribute or applicationId must be specified.
+                  An implementation of &lt;code&gt;EntryPoint&lt;/code&gt; which starts the application. Either this attribute or applicationId must be specified.
                </documentation>
                <appInfo>
                   <meta.attribute kind="java" basedOn=":org.eclipse.rap.rwt.application.EntryPoint"/>
@@ -150,7 +150,7 @@ public class MyEntryPoint implements EntryPoint {
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         &lt;pre&gt;
+&lt;pre&gt;
 &lt;extension
     id=&quot;org.eclipse.rap.demo.demoentrypoint&quot;
     point=&quot;org.eclipse.rap.ui.entrypoint&quot;&gt;

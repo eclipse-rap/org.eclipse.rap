@@ -6,7 +6,7 @@
          <meta.schema plugin="org.eclipse.rap.ui" id="phaselistener" name="PhaseListener"/>
       </appInfo>
       <documentation>
-         The extension point is used to register a &lt;code&gt;PhaseListener&lt;/code&gt; implementation. PhaseListeners are objects that are registered to be notified at the beginning and ending of each phase of the request processing lifecycle (see &lt;code&gt;ILifeCycle&lt;/code&gt;). Extensions should provide a class that implements &lt;code&gt;org.eclipse.rap.rwt.lifecycle.PhaseListener&lt;/code&gt;.
+         The extension point is used to register a &lt;code&gt;PhaseListener&lt;/code&gt; implementation. PhaseListeners are objects that are registered to be notified at the beginning and ending of each phase of the request processing lifecycle (see &lt;code&gt;LifeCycle&lt;/code&gt;). Extensions should provide a class that implements &lt;code&gt;org.eclipse.rap.rwt.lifecycle.PhaseListener&lt;/code&gt;.
       </documentation>
    </annotation>
 
@@ -23,21 +23,21 @@
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="id" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="name" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
                <appInfo>
                   <meta.attribute translatable="true"/>
@@ -52,7 +52,7 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+
                </documentation>
                <appInfo>
                   <meta.attribute kind="java" basedOn="org.eclipse.rap.rwt.lifecycle.PhaseListener"/>
@@ -76,14 +76,14 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         &lt;pre&gt;
+&lt;pre&gt;
 &lt;extension
     id=&quot;org.eclipse.rap.demo.phaselistenerextension&quot;
     point=&quot;org.eclipse.rap.ui.phaselistener&quot;&gt;
   &lt;entrypoint
-     id=&quot;org.eclipse.rap.demo.phaselistener&quot;
-        class=&quot;org.eclipse.rap.demo.DemoPhaseListener&quot; /&gt;
-  &lt;/extension&gt;
+      id=&quot;org.eclipse.rap.demo.phaselistener&quot;
+      class=&quot;org.eclipse.rap.demo.DemoPhaseListener&quot; /&gt;
+&lt;/extension&gt;
 &lt;/pre&gt;
       </documentation>
    </annotation>
@@ -101,7 +101,7 @@ import org.eclipse.rap.rwt.lifecycle.*;
 
 public class DemoPhaseListener implements PhaseListener {
 
-  public void beforePhase( final PhaseEvent event ) {
+  public void beforePhase( PhaseEvent event ) {
     // ...
     RWT.getLifeCycle().removePhaseListener( this );
   }

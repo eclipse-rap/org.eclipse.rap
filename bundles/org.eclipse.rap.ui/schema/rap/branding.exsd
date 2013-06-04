@@ -6,7 +6,7 @@
          <meta.schema plugin="org.eclipse.rap.ui" id="branding" name="Branding"/>
       </appInfo>
       <documentation>
-         A branding adds customizations and styling to the UI of a RAP application.  It can be used to set the title and icon displayed in the browser, or to apply a custom theme and styling.  A branding is associated with a name and can be activated by using this name as the servlet name in the URL.
+         A branding adds customizations and styling to the UI of a RAP application.  It can be used to set the title and icon displayed in the browser, or to apply a custom theme and styling. The branding is associated with &lt;code&gt;EntryPoint&lt;/code&gt; or &lt;code&gt;IApplication&lt;/code&gt; implementation.
 &lt;p&gt;
 Brandings can reside in a separate bundle, i.e. it is possible to brand applications without modifying their containing bundles.
 &lt;/p&gt;
@@ -26,21 +26,21 @@ Brandings can reside in a separate bundle, i.e. it is possible to brand applicat
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="id" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="name" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
                <appInfo>
                   <meta.attribute translatable="true"/>
@@ -308,19 +308,16 @@ The icon should be in the .ico format for compatibility with all browsers.
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         &lt;pre&gt;
+&lt;pre&gt;
 &lt;extension
-      point=&quot;org.eclipse.rap.ui.branding&quot;&gt;
-   &lt;branding
-         id=&quot;org.example.tea.teabranding&quot;
-         servletName=&quot;tea&quot;
-         defaultEntrypointId=&quot;org.example.tea.application&quot;
-         themeId=&quot;org.example.tea.teatheme&quot;
-         title=&quot;Tea Portal&quot;
-         favicon=&quot;icons/favicon.ico&quot;
-         body=&quot;body.html&quot;
-         exitConfirmationClass=&quot;org.example.tea.ExitConfirmation&quot;&gt;
-   &lt;/branding&gt;
+    point=&quot;org.eclipse.rap.ui.branding&quot;&gt;
+  &lt;branding
+      id=&quot;org.example.tea.teabranding&quot;
+      themeId=&quot;org.example.tea.teatheme&quot;
+      title=&quot;Tea Portal&quot;
+      favicon=&quot;icons/favicon.ico&quot;
+      body=&quot;body.html&quot;
+  &lt;/branding&gt;
 &lt;/extension&gt;
 &lt;/pre&gt;
       </documentation>

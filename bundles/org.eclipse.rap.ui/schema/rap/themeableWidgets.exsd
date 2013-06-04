@@ -29,21 +29,21 @@ None of these files are mandatory, files which are found are respected, but file
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="id" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="name" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
                <appInfo>
                   <meta.attribute translatable="true"/>
@@ -101,18 +101,16 @@ None of these files are mandatory, files which are found are respected, but file
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         The following is an example of a themeable widget extension definition: 
-&lt;p&gt;
+         The following is an example of a themeable widget extension definition:
 &lt;pre&gt;
-   &lt;extension
-         point=&quot;org.eclipse.rap.ui.themeableWidgets&quot;&gt;
-      &lt;widget
-            id=&quot;my.custom.datepicker&quot;
-            class=&quot;my.custom.controls.DatePicker&quot;&gt;
-      &lt;/widget&gt;
-   &lt;/extension&gt;
+&lt;extension
+    point=&quot;org.eclipse.rap.ui.themeableWidgets&quot;&gt;
+  &lt;widget
+      id=&quot;my.custom.datepicker&quot;
+      class=&quot;my.custom.controls.DatePicker&quot;&gt;
+  &lt;/widget&gt;
+&lt;/extension&gt;
 &lt;/pre&gt;
-&lt;/p&gt;
       </documentation>
    </annotation>
 
@@ -121,7 +119,7 @@ None of these files are mandatory, files which are found are respected, but file
          <meta.section type="apiInfo"/>
       </appInfo>
       <documentation>
-         
+
       </documentation>
    </annotation>
 
@@ -130,7 +128,7 @@ None of these files are mandatory, files which are found are respected, but file
          <meta.section type="implementation"/>
       </appInfo>
       <documentation>
-         
+
       </documentation>
    </annotation>
 

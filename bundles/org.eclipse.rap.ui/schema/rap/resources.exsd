@@ -23,21 +23,21 @@
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="id" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="name" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
                <appInfo>
                   <meta.attribute translatable="true"/>
@@ -106,14 +106,13 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         &lt;pre&gt;
+&lt;pre&gt;
 &lt;extension
-      id=&quot;example.customwidget.customjs&quot;
-      point=&quot;org.eclipse.rap.ui.resources&quot;&gt;
-   &lt;resource class=&quot;example.customwidget.CustomJavaScriptResource&quot;/&gt;
+    id=&quot;example.customwidget.customjs&quot;
+    point=&quot;org.eclipse.rap.ui.resources&quot;&gt;
+  &lt;resource class=&quot;example.customwidget.CustomJavaScriptResource&quot;/&gt;
 &lt;/extension&gt;
 &lt;/pre&gt;
-
       </documentation>
    </annotation>
 

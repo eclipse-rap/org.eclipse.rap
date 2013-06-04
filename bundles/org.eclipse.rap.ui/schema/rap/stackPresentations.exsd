@@ -25,21 +25,21 @@ You can define default StackPresentations for a part using the &lt;code&gt;org.e
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="id" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="name" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
                <appinfo>
                   <meta.attribute translatable="true"/>
@@ -140,19 +140,19 @@ With this action you can implement configuration bahaviour e.g. this action can 
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         &lt;pre&gt;
+&lt;pre&gt;
 &lt;extension
-         point=&quot;org.eclipse.ui.presentations.StackPresentations&quot;&gt;
-      &lt;stackPresentation
-            actionClass=&quot;org.eclipse.rap.ui.interactiondesign.example.configaction.ExampleConfigAction&quot;
-            actionIcon=&quot;icons/configure.png&quot;
-            class=&quot;org.eclipse.rap.ui.interactiondesign.example.stacks.NavigationPaneStackPresentation&quot;
-            id=&quot;org.eclipse.rap.ui.interactiondesign.navigationPaneStackPresentation&quot;
-            menuIcon=&quot;icons/menuIcon.gif&quot;
-            name=&quot;Navigation Pane&quot;
-            type=&quot;view&quot;&gt;
-      &lt;/stackPresentation&gt;
-&lt;/extension&gt;      
+    point=&quot;org.eclipse.ui.presentations.StackPresentations&quot;&gt;
+  &lt;stackPresentation
+      actionClass=&quot;org.eclipse.rap.ui.interactiondesign.example.configaction.ExampleConfigAction&quot;
+      actionIcon=&quot;icons/configure.png&quot;
+      class=&quot;org.eclipse.rap.ui.interactiondesign.example.stacks.NavigationPaneStackPresentation&quot;
+      id=&quot;org.eclipse.rap.ui.interactiondesign.navigationPaneStackPresentation&quot;
+      menuIcon=&quot;icons/menuIcon.gif&quot;
+      name=&quot;Navigation Pane&quot;
+      type=&quot;view&quot;&gt;
+  &lt;/stackPresentation&gt;
+&lt;/extension&gt;
 &lt;/pre&gt;
       </documentation>
    </annotation>

@@ -7,7 +7,7 @@
       </appInfo>
       <documentation>
          This extension point is used to register custom RWT themes.
-An RWT theme is used to customize the look and feel of applications built with the Rich Ajax Platform. To create a custom theme, a CSS file must be provided. With this file the styling of one ore more widgets can be customized. A list of themeable widgets and properties can be found in the &quot;RAP Theming Reference&quot;.
+An RWT theme is used to customize the look and feel of applications built with the Remote Application Platform. To create a custom theme, a CSS file must be provided. With this file the styling of one ore more widgets can be customized. A list of themeable widgets and properties can be found in the &quot;RAP Theming Reference&quot;.
 
 It is also possible to register contributions to existing RWT themes.
 A theme contribution contains CSS rules that are appended to an existing theme. If more than one contributions are registered for the same theme, the order in which these contributions are appended is undefined. The user of this extension point must ensure that the rules specified in a theme contribution can not interfere with the rules in other theme contributions. Ideally, theme contributions contain only rules for custom variants.
@@ -138,28 +138,24 @@ A theme contribution contains CSS rules that are appended to an existing theme. 
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         The following is an example of a theme extension with a new theme: 
-&lt;p&gt;
+         The following is an example of a theme extension with a new theme:
 &lt;pre&gt;
-   &lt;extension point=&quot;org.eclipse.rap.ui.themes&quot;&gt;
-      &lt;theme
-            id=&quot;my.application.aquablue&quot;
-            name=&quot;Aqua Blue Theme&quot;
-            file=&quot;aqua-blue.css&quot; /&gt;
-   &lt;/extension&gt;
+&lt;extension point=&quot;org.eclipse.rap.ui.themes&quot;&gt;
+  &lt;theme
+      id=&quot;my.application.aquablue&quot;
+      name=&quot;Aqua Blue Theme&quot;
+      file=&quot;aqua-blue.css&quot; /&gt;
+&lt;/extension&gt;
 &lt;/pre&gt;
-&lt;/p&gt;
 
 The following is an example of a theme extension that defines a contribution to an existing theme:
-&lt;p&gt;
 &lt;pre&gt;
-   &lt;extension point=&quot;org.eclipse.rap.ui.themes&quot;&gt;
-      &lt;themeContribution
-            themeId=&quot;my.application.aquablue&quot;
-            file=&quot;aqua-blue-additions.css&quot; /&gt;
-   &lt;/extension&gt;
+&lt;extension point=&quot;org.eclipse.rap.ui.themes&quot;&gt;
+  &lt;themeContribution
+      themeId=&quot;my.application.aquablue&quot;
+      file=&quot;aqua-blue-additions.css&quot; /&gt;
+&lt;/extension&gt;
 &lt;/pre&gt;
-&lt;/p&gt;
       </documentation>
    </annotation>
 
@@ -169,7 +165,7 @@ The following is an example of a theme extension that defines a contribution to 
          <meta.section type="implementation"/>
       </appInfo>
       <documentation>
-         The RAP demo plugin &lt;code&gt;org.eclipse.rap.demo&lt;/code&gt; contains an example of a theme extension.
+         The RAP demo plugin &lt;code&gt;org.eclipse.rap.design.example&lt;/code&gt; contains an example of a theme extension.
 
       </documentation>
    </annotation>

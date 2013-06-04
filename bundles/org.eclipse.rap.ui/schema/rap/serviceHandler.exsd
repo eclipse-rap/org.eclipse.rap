@@ -26,21 +26,21 @@ A service handler can be accessed by a URL with a specific parameter. This URL c
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="id" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="name" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
                <appInfo>
                   <meta.attribute translatable="true"/>
@@ -55,7 +55,7 @@ A service handler can be accessed by a URL with a specific parameter. This URL c
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  A unique ID for this service manager. This ID is used to obtain the URL to access the service manager.
+                  A unique ID for this service handler. This ID is used to obtain the URL to access the service handler.
                </documentation>
             </annotation>
          </attribute>
@@ -88,18 +88,17 @@ A service handler can be accessed by a URL with a specific parameter. This URL c
       <documentation>
          Here&apos;s an example of an extension that registers two service handlers:
 &lt;pre&gt;
-   &lt;extension point=&quot;org.eclipse.rap.ui.serviceHandler&quot;&gt;
-      &lt;serviceHandler
-            class=&quot;org.eclipse.rap.ui.impl.ServiceHandler1&quot;
-            id=&quot;myHandler1&quot;&gt;
-      &lt;/serviceHandler&gt;
-      &lt;serviceHandler
-            class=&quot;org.eclipse.rap.ui.ServiceHandler2&quot;
-            id=&quot;myHandler2&quot;&gt;
-      &lt;/serviceHandler&gt;
-   &lt;/extension&gt;
+&lt;extension point=&quot;org.eclipse.rap.ui.serviceHandler&quot;&gt;
+  &lt;serviceHandler
+      class=&quot;org.eclipse.rap.ui.impl.ServiceHandler1&quot;
+      id=&quot;myHandler1&quot;&gt;
+  &lt;/serviceHandler&gt;
+  &lt;serviceHandler
+      class=&quot;org.eclipse.rap.ui.ServiceHandler2&quot;
+      id=&quot;myHandler2&quot;&gt;
+  &lt;/serviceHandler&gt;
+&lt;/extension&gt;
 &lt;/pre&gt;
-
       </documentation>
    </annotation>
 
