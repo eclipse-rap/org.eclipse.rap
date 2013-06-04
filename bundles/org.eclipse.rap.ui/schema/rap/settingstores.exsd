@@ -19,13 +19,19 @@ Note that at runtime only &lt;b&gt;one&lt;/b&gt; (out of all available) factorie
 org.eclipse.rap.rwt.settingStoreFactory=file
 &lt;/pre&gt;
 &lt;/li&gt;
-&lt;li&gt;In an RWT-only deployment you can specify the factory to be used by placing the following snippet in the web.xml file:&lt;br&gt;
+&lt;li&gt;In RWT-only deployment you can specify the factory to be used in the application configuration:
 &lt;pre&gt;
-&lt;init-param&gt;
-  &lt;param-name&gt;org.eclipse.rap.rwt.settingStoreFactory&lt;/param-name&gt;
-  &lt;param-value&gt;org.eclipse.rap.rwt.service.FileSettingStoreFactory&lt;/param-value&gt;
-&lt;/init-param&gt;
+public class SimpleConfiguration implements ApplicationConfiguration {
+
+  public void configure( Application application ) {
+    ...
+    application.setSettingStoreFactory( new FileSettingStoreFactory() );
+    ...
+  }
+
+}
 &lt;/pre&gt;
+&lt;/li&gt;
 &lt;li&gt;If nothing is specified, the class &lt;code&gt;WorkbenchFileSettingStoreFactory&lt;/code&gt; will be used in a regular RAP deployment. In an RWT only deployment the class &lt;code&gt;FileSettingStoreFactory&lt;/code&gt; will be used instead.&lt;/li&gt;
 &lt;/ul&gt;
       </documentation>
