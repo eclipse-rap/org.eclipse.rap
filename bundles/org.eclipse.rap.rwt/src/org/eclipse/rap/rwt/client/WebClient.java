@@ -104,12 +104,14 @@ public class WebClient implements Client {
   public static final String PAGE_TITLE = PREFIX + ".pageTitle";
 
   /**
-   * Entrypoint property name for the website icon (a.k.a favicon or shortcut
-   * icon) that will be displayed by the web browser. The value must contain a
-   * valid path where the image can be accessed on the server.
+   * Entrypoint property name for the website icon (a.k.a favicon or shortcut icon) that will be
+   * displayed by the web browser. The value must contain a valid path where the image can be
+   * accessed on the server.
    * <p>
-   * <strong>Note:</strong> if this property is provided, the image resource
-   * must be registered to be available.
+   * <strong>Note:</strong> if this property is provided, the image resource must be registered to
+   * be available. Favicons are usually expected to be 16x16 px in size. If the icon has to work
+   * with legacy browsers, use a file in the <a
+   * href="http://en.wikipedia.org/wiki/ICO_%28file_format%29">ICO format</a>.
    * </p>
    *
    * @see Application#addResource(String, ResourceLoader)
