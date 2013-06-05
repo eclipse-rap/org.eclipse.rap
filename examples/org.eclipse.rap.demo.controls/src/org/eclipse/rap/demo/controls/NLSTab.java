@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,16 +51,15 @@ public final class NLSTab extends ExampleTab {
 
   @Override
   protected void createStyleControls( final Composite parent ) {
-    Label lblInfo = new Label( parent, SWT.NONE );
-    String info
-      = "Select one of the locales below to be set for the current session:";
-    lblInfo.setText( info );
+    String info = "Select one of the locales below to be set for the current session:";
+    new Label( parent, SWT.NONE ).setText( info );
     String text = "Default (" + RWT.getLocale().getDisplayLanguage() + ")";
-    Button btnDefault = createLocaleButton( parent, text, null );
-    btnDefault.setSelection( true );
+    createLocaleButton( parent, text, null ).setSelection( true );
     createLocaleButton( parent, "English", Locale.ENGLISH );
     createLocaleButton( parent, "German", Locale.GERMAN );
     createLocaleButton( parent, "Spanish", new Locale( "es" ) );
+    createLocaleButton( parent, "Japanese (missing)", Locale.JAPANESE );
+    Locale.setDefault( Locale.CHINESE );
   }
 
   @Override
@@ -70,10 +69,7 @@ public final class NLSTab extends ExampleTab {
     updateTranslatable();
   }
 
-  private Button createLocaleButton( final Composite parent,
-                                     final String text,
-                                     final Locale locale )
-  {
+  private Button createLocaleButton( Composite parent, String text, Locale locale ) {
     SelectionListener listener = new SelectionAdapter() {
       @Override
       public void widgetSelected( final SelectionEvent event ) {
@@ -84,14 +80,15 @@ public final class NLSTab extends ExampleTab {
         }
       }
     };
-    Button result = new Button( parent, SWT.RADIO );
-    result.setText( text );
-    result.setData( LOCALE_DATA, locale );
-    result.addSelectionListener( listener );
-    return result;
+    Button button = new Button( parent, SWT.RADIO );
+    button.setText( text );
+    button.setData( LOCALE_DATA, locale );
+    button.addSelectionListener( listener );
+    return button;
   }
 
   private void updateTranslatable() {
     lblTranslatable.setText( NLSTabMessages.get().TranslatableMessage );
   }
+
 }
