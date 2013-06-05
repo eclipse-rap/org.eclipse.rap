@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.internal.service;
 
 import javax.servlet.http.Cookie;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.SettingStore;
 import org.eclipse.rap.rwt.service.SettingStoreFactory;
@@ -59,20 +58,6 @@ public class SettingStoreManager {
     return factory != null;
   }
 
-  //////////////////
-  // helping methods
-
-  private synchronized String createUniqueStoreId() {
-    long now = System.currentTimeMillis();
-    if( last == now ) {
-      instanceCount++;
-    } else {
-      last = now;
-      instanceCount = 0;
-    }
-    return String.valueOf( now ) + "_" + String.valueOf( instanceCount );
-  }
-
   private String getStoreId() {
     UISession uiSession = ContextProvider.getUISession();
     // 1. storeId stored in session? (implies cookie exists)
@@ -86,7 +71,7 @@ public class SettingStoreManager {
       }
       // (2+3) do refresh cookie, to ensure it expires in COOKIE_MAX_AGE_SEC
       Cookie cookie = new Cookie( COOKIE_NAME, result );
-      cookie.setSecure( RWT.getRequest().isSecure() );
+      cookie.setSecure( ContextProvider.getRequest().isSecure() );
       cookie.setMaxAge( COOKIE_MAX_AGE_SEC );
       cookie.setHttpOnly( true );
       ContextProvider.getResponse().addCookie( cookie );
@@ -115,6 +100,17 @@ public class SettingStoreManager {
       }
     }
     return result;
+  }
+
+  private synchronized String createUniqueStoreId() {
+    long now = System.currentTimeMillis();
+    if( last == now ) {
+      instanceCount++;
+    } else {
+      last = now;
+      instanceCount = 0;
+    }
+    return String.valueOf( now ) + "_" + String.valueOf( instanceCount );
   }
 
   static boolean isValidCookieValue( String value ) {

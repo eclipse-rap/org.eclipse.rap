@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.Random;
 import java.util.Set;
 
 import org.eclipse.rap.rwt.internal.service.ServletLog;
@@ -44,8 +43,6 @@ public final class FileSettingStore implements SettingStore {
   public static final String FILE_SETTING_STORE_DIR
     = "org.eclipse.rap.rwt.service.FileSettingStore.dir";
 
-  private static final Random RANDOM = new Random( System.currentTimeMillis() );
-
   private final File workDir;
   private final Properties props;
   private final Set<SettingStoreListener> listeners;
@@ -65,7 +62,6 @@ public final class FileSettingStore implements SettingStore {
     workDir = baseDirectory;
     props = new Properties();
     listeners = new HashSet<SettingStoreListener>();
-    id = generateId();
   }
 
   public String getId() {
@@ -213,10 +209,6 @@ public final class FileSettingStore implements SettingStore {
     if( !workDir.isDirectory() ) {
       throw new IllegalArgumentException( "workDir is not a directory: " + workDir );
     }
-  }
-
-  private static String generateId() {
-    return String.valueOf( System.currentTimeMillis() ) + "_" + RANDOM.nextInt( Short.MAX_VALUE );
   }
 
 }
