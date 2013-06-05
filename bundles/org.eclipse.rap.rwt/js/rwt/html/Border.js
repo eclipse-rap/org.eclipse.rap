@@ -1,7 +1,6 @@
 /*******************************************************************************
- *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
- *
+ * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
