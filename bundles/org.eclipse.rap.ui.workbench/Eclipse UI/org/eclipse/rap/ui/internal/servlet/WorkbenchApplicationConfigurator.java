@@ -33,10 +33,10 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.rap.rwt.application.Application;
-import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.application.EntryPoint;
+import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -68,6 +68,9 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   private static final String ID_PHASE_LISTENER = "org.eclipse.rap.ui.phaselistener";
   private static final String ID_SERVICE_HANDLER = "org.eclipse.rap.ui.serviceHandler";
   private static final String ID_SETTING_STORES = "org.eclipse.rap.ui.settingstores";
+
+  private static final String PROP_SETTING_STORES_FACTORY
+    = "org.eclipse.rap.rwt.settingStoreFactory";
 
   private static final String RUN = "run"; //$NON-NLS-1$
   private static final String PI_RUNTIME = "org.eclipse.core.runtime"; //$NON-NLS-1$
@@ -113,9 +116,8 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
 
   private void registerSettingStoreFactory( Application application ) {
     // determine which factory to use via an environment setting / config.ini
-    String settingStoreFactoryParam = "org.eclipse.rwt.settingStoreFactory";
-    String factoryId = getOSGiProperty( settingStoreFactoryParam );
     SettingStoreFactory result = null;
+    String factoryId = getOSGiProperty( PROP_SETTING_STORES_FACTORY );
     if( factoryId != null ) {
       result = loadSettingStoreFactory( factoryId );
     }
