@@ -17,7 +17,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 
@@ -219,7 +222,9 @@ public class TabFolder_Test {
   @Test
   public void testDispose() {
     TabItem item = new TabItem( folder, SWT.NONE );
+
     folder.dispose();
+
     assertTrue( item.isDisposed() );
     assertEquals( 0, ItemHolder.getItemHolder( folder ).getItems().length );
   }
@@ -455,6 +460,17 @@ public class TabFolder_Test {
     folder.getItem( 0 ).dispose();
 
     assertEquals( 2, folder.getItemCount() );
+  }
+
+  @Test
+  public void testDispose_doesNotFireSelectionEvent() {
+    createItems( folder, 3 );
+    Listener listener = mock( Listener.class );
+    folder.addListener( SWT.Selection, listener );
+
+    folder.dispose();
+
+    verify( listener, times( 0 ) ).handleEvent( any( Event.class ) );
   }
 
   private void createItems( TabFolder folder, int number ) {
