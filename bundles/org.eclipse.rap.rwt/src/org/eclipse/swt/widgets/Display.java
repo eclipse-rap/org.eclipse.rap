@@ -1729,6 +1729,12 @@ public class Display extends Device implements Adaptable {
    * performance, debugging and code maintenance reasons.
    * </p>
    *
+   * <p>
+   * <b>NOTE:</b> In RAP, only events that have a matching listener registered on the event's
+   * source widget are processed on the server. One exception are key events, for which a
+   * whitelist can be define using {@link org.eclipse.rap.rwt.RWT#ACTIVE_KEYS}.
+   * </p>
+   *
    * @param eventType the type of event to listen for
    * @param listener the listener which should be notified when the event occurs
    * @exception IllegalArgumentException
