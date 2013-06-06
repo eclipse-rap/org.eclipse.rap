@@ -520,7 +520,7 @@ public class TabFolder extends Composite {
       setSelection( -1, false );
     }
     itemHolder.remove( item );
-    if( itemHolder.size() > 0 && index <= oldSelectionIndex ) {
+    if( itemHolder.size() > 0 && index <= oldSelectionIndex && !isInDispose() ) {
       boolean notifySelectionChanged = index == oldSelectionIndex;
       setSelection( Math.max( 0, oldSelectionIndex - 1 ), notifySelectionChanged );
     }
