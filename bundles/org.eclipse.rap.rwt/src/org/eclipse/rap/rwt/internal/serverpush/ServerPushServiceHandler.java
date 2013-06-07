@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,17 @@ public class ServerPushServiceHandler implements ServiceHandler {
   public void service( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
+    setResponseHeaders( response );
     ServerPushManager.getInstance().processRequest( response );
+  }
+
+  private static void setResponseHeaders( HttpServletResponse response ) {
+    // Ensures that the response is not cached
+    // 410157: [ServerPush] ServerPush requests always return immediately in IE
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=410157
+    response.setHeader( "Cache-Control", "no-cache, no-store, must-revalidate" );
+    response.setHeader( "Pragma", "no-cache" );
+    response.setDateHeader( "Expires", 0 );
   }
 
 }
