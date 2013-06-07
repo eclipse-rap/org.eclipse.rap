@@ -139,7 +139,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
           this.setValue( "" );
           detail = "cancel";
         }
-        if( this.hasSelectionListener() && detail != null ) {
+        if( this._hasDefaultSelectionListener && detail != null ) {
           this._sendWidgetDefaultSelected( detail );
         }
       }
