@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,16 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
@@ -97,9 +105,11 @@ public class TestResponse implements HttpServletResponse {
   }
 
   public void setDateHeader( String arg0, long arg1 ) {
+    headers.put( arg0, new Date( arg1 ).toString() );
   }
 
   public void addDateHeader( String arg0, long arg1 ) {
+    headers.put( arg0, new Date( arg1 ).toString() );
   }
 
   public void setHeader( String arg0, String arg1 ) {

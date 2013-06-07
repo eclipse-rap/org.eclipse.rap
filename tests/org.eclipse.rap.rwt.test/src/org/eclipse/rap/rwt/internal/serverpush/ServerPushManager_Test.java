@@ -516,6 +516,17 @@ public class ServerPushManager_Test {
     }
   }
 
+  @Test
+  public void testResponseHeaders() throws IOException {
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+
+    pushServiceHandler.service( ContextProvider.getRequest(), response );
+
+    assertNotNull( response.getHeader( "Cache-Control" ) );
+    assertNotNull( response.getHeader( "Pragma" ) );
+    assertNotNull( response.getHeader( "Expires" ) );
+  }
+
   private void simulateBackgroundAddition( final ServiceContext serviceContext ) throws Throwable {
     Runnable runnable = new Runnable() {
       public void run() {
