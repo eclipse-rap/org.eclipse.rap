@@ -75,6 +75,8 @@ public class StartupPage {
     //      whether the cached page can be used.
     //      fix for bug 220733: append no-store to the Cache-Control header
     response.addHeader( "Cache-Control", "max-age=0, no-cache, must-revalidate, no-store" );
+    response.setHeader( "Pragma", "no-cache" );
+    response.setDateHeader( "Expires", 0 );
   }
 
   protected void writeTitle( PrintWriter printWriter ) {

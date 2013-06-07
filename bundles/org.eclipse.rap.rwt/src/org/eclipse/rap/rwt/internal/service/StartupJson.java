@@ -83,6 +83,8 @@ public class StartupJson {
     response.setContentType( HTTP.CONTENT_TYPE_JSON );
     response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
     response.addHeader( "Cache-Control", "max-age=0, no-cache, must-revalidate, no-store" );
+    response.setHeader( "Pragma", "no-cache" );
+    response.setDateHeader( "Expires", 0 );
   }
 
   private static void appendCreateDisplay( String id, ProtocolMessageWriter writer ) {
