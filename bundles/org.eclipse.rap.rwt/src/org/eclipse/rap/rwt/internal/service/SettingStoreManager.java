@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,9 @@ package org.eclipse.rap.rwt.internal.service;
 import javax.servlet.http.Cookie;
 
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.SettingStore;
 import org.eclipse.rap.rwt.service.SettingStoreFactory;
-import org.eclipse.rap.rwt.service.UISession;
 
 
 public class SettingStoreManager {
@@ -73,7 +73,6 @@ public class SettingStoreManager {
       Cookie cookie = new Cookie( COOKIE_NAME, result );
       cookie.setSecure( ContextProvider.getRequest().isSecure() );
       cookie.setMaxAge( COOKIE_MAX_AGE_SEC );
-      cookie.setHttpOnly( true );
       ContextProvider.getResponse().addCookie( cookie );
       // (2+3) update storeId stored in session
       // Note: This attribute must be checked for validity to prevent attacks

@@ -106,7 +106,6 @@ public class SettingStoreManager_Test {
     Cookie cookie = response.getCookie( "settingStore" );
     assertTrue( cookie.getMaxAge() > 0 );
     assertTrue( Pattern.matches( "[0-9]*_[0-9]*", cookie.getValue() ) );
-    assertTrue( cookie.isHttpOnly() );
   }
 
   @Test
