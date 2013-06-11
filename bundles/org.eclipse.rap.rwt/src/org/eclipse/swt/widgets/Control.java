@@ -2344,19 +2344,17 @@ public abstract class Control extends Widget implements Drawable {
       menu.dispose();
       menu = null;
     }
+    Shell shell = internalGetShell();
     if( display.getFocusControl() == this ) {
-      Control focusControl = null;
-      Control parent = this.parent;
-      while( focusControl == null && parent != null ) {
-        if( !parent.isInDispose() ) {
-          focusControl = parent;
-        } else {
-          parent = parent.getParent();
-        }
+      Control focusControl = parent;
+      while( focusControl != null && focusControl.isInDispose() ) {
+        focusControl = focusControl.getParent();
+      }
+      if( focusControl != null && focusControl.internalGetShell() != shell ) {
+        focusControl = null;
       }
       setFocusControl( focusControl );
     }
-    Shell shell = internalGetShell();
     if( shell.getSavedFocus() == this ) {
       shell.setSavedFocus( null );
     }

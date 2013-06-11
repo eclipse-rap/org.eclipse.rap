@@ -710,6 +710,35 @@ public class Control_Test {
     assertTrue( control1.isDisposed() );
   }
 
+  @Test
+  public void testDisposeOfActiveShell_withFocusedControl_restoresFocusControl() {
+    Control control = new Button( shell, SWT.PUSH );
+    shell.open();
+    control.setFocus();
+    Shell shell1 = new Shell( shell, SWT.NONE );
+    Control control1 = new Button( shell1, SWT.PUSH );
+    shell1.open();
+    control1.setFocus();
+
+    shell1.dispose();
+
+    assertSame( control, display.getFocusControl() );
+  }
+
+  @Test
+  public void testDisposeOfActiveShell_withFocusedShell_restoresFocusControl() {
+    Control control = new Button( shell, SWT.PUSH );
+    shell.open();
+    control.setFocus();
+    Shell shell1 = new Shell( shell, SWT.NONE );
+    shell1.open();
+    shell1.setFocus();
+
+    shell1.dispose();
+
+    assertSame( control, display.getFocusControl() );
+  }
+
   // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=265634
   @Test
   public void testNoFocusOutOnDispose() {
