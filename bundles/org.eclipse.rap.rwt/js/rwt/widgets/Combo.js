@@ -294,27 +294,25 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     _setListBounds : function() {
       if( this.getElement() ){
-        var elementPos = rwt.html.Location.get( this.getElement() );
-        var listLeft = elementPos.left;
-        var comboTop = elementPos.top;
-        var listTop = comboTop + this.getHeight();
-        var browserHeight = rwt.html.Window.getInnerHeight( window );
         var browserWidth = rwt.html.Window.getInnerWidth( window );
-        var itemsWidth = this._list.getPreferredWidth();
-        var listWidth = Math.min( browserWidth - listLeft, itemsWidth );
-        listWidth = Math.max( this.getWidth(), listWidth );
+        var browserHeight = rwt.html.Window.getInnerHeight( window );
+        var elementPos = rwt.html.Location.get( this.getElement() );
+        var left = elementPos.left;
+        var top = elementPos.top + this.getHeight();
+        var width = Math.max( this.getWidth(), this._list.getPreferredWidth() );
         var itemsHeight = this._list.getItemsCount() * this._itemHeight;
-        var listHeight = Math.min( this._getListMaxHeight(), itemsHeight );
-        listHeight += this._list.getFrameHeight();
-        if(    browserHeight < listTop + listHeight
-            && comboTop > browserHeight - listTop )
-        {
-          listTop = elementPos.top - listHeight;
+        var height = Math.min( this._getListMaxHeight(), itemsHeight );
+        height += this._list.getFrameHeight();
+        if( top + height > browserHeight && elementPos.top - height > 0 ) {
+          top = elementPos.top - height;
         }
-        this._list.setLocation( listLeft, listTop );
-        this._list.setWidth( listWidth );
-        this._list.setHeight( listHeight );
-        this._list.setItemDimensions( listWidth, this._itemHeight );
+        if( left + width > browserWidth ) {
+          left =  Math.max( 0, browserWidth - width );
+        }
+        this._list.setLocation( left, top );
+        this._list.setWidth( width );
+        this._list.setHeight( height );
+        this._list.setItemDimensions( width, this._itemHeight );
       }
     },
 

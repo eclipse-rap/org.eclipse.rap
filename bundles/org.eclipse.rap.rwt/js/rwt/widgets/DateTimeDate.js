@@ -851,14 +851,20 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
 
     _setCalendarLocation : function() {
       if( this.getElement() && this._calendar != null ){
-        var elementPos = rwt.html.Location.get( this.getElement() );
+        var browserWidth = rwt.html.Window.getInnerWidth( window );
         var browserHeight = rwt.html.Window.getInnerHeight( window );
+        var elementPos = rwt.html.Location.get( this.getElement() );
+        var left = elementPos.left;
         var top = elementPos.top + this.getHeight();
+        var width = this._calendar.getWidthValue();
         var height = this._calendar.getHeightValue();
-        if( top + height > browserHeight ) {
+        if( top + height > browserHeight && elementPos.top - height > 0 ) {
           top = elementPos.top - height;
         }
-        this._calendar.setLocation( elementPos.left, top );
+        if( left + width > browserWidth ) {
+          left =  Math.max( 0, browserWidth - width );
+        }
+        this._calendar.setLocation( left, top );
       }
     },
 
