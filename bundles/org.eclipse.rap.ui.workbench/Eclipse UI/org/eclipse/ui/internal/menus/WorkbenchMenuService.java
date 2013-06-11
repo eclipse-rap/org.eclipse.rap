@@ -253,7 +253,7 @@ public final class WorkbenchMenuService extends InternalMenuService {
 		evaluationService = (IEvaluationService) serviceLocator
 				.getService(IEvaluationService.class);
 		evaluationService.addServiceListener(getServiceListener());
-		IWorkbenchLocationService wls = (IWorkbenchLocationService) serviceLocator
+		final IWorkbenchLocationService wls = (IWorkbenchLocationService) serviceLocator
 			.getService(IWorkbenchLocationService.class);
 		wls.getWorkbench()
 				.getActivitySupport().getActivityManager()
@@ -263,7 +263,7 @@ public final class WorkbenchMenuService extends InternalMenuService {
 		final IExtensionRegistry registry = Platform.getExtensionRegistry();
 		final IRegistryChangeListener registryChangeListener = new IRegistryChangeListener() {
 			public void registryChanged(final IRegistryChangeEvent event) {
-				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+				wls.getWorkbench().getDisplay().syncExec(new Runnable() {
 					public void run() {
 						handleRegistryChanges(event);
 					}
