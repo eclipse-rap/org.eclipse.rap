@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -93,7 +93,6 @@ public class TableViewerTab extends ExampleTab {
 
   @Override
   protected void createStyleControls( Composite parent ) {
-    initializeImages();
     createStyleButton( "MULTI", SWT.MULTI );
     createStyleButton( "VIRTUAL", SWT.VIRTUAL );
     createAddItemsButton();
@@ -104,12 +103,15 @@ public class TableViewerTab extends ExampleTab {
   }
 
   private void initializeImages() {
-    uncheckedImage = loadImage( "resources/unchecked.png" );
-    checkedImage = loadImage( "resources/checked.png" );
+    if( uncheckedImage == null || checkedImage == null ) {
+      uncheckedImage = loadImage( "resources/unchecked.png" );
+      checkedImage = loadImage( "resources/checked.png" );
+    }
   }
 
   @Override
   protected void createExampleControls( Composite parent ) {
+    initializeImages();
     if( btnCreateCellEditor != null && !btnCreateCellEditor.isDisposed() ) {
       btnCreateCellEditor.setEnabled( true );
     }
