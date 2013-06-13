@@ -18,8 +18,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Tree;
 
 /**
  * A ControlEditor is a manager for a Control that appears above a composite and
@@ -192,18 +190,8 @@ public class ControlEditor implements SerializableCompatibility {
       for( int i = 0; i < EVENTS.length; i++ ) {
         parent.removeListener( EVENTS[ i ], controlListener );
       }
-      // TODO: [if] Remove instance check when ScrollBars are moved to Scrollable
-      ScrollBar hBar = null;
-      ScrollBar vBar = null;
-      if( parent instanceof Table ) {
-        Table table = ( Table )parent;
-        hBar = table.getHorizontalBar();
-        vBar = table.getVerticalBar();
-      } else if( parent instanceof Tree ) {
-        Tree tree = ( Tree )parent;
-        hBar = tree.getHorizontalBar();
-        vBar = tree.getVerticalBar();
-      }
+      ScrollBar hBar = parent.getHorizontalBar();
+      ScrollBar vBar = parent.getVerticalBar();
       if( hBar != null ) {
         hBar.removeListener( SWT.Selection, scrollbarListener );
       }
