@@ -889,7 +889,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
-    testDummyIgnoresIvisibleColumn : function() {
+    testDummyIgnoresInvisibleColumn : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       tree.setItemMetrics( 0, 0, 200, 0, 0, 0, 0 );
       tree.setHeaderVisible( true );
@@ -904,6 +904,46 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       assertEquals( 23, dummyLabel.getLeft() );
       column.dispose();
       colTwo.dispose();
+      tree.destroy();
+    },
+
+    testDummyLeftOnLastColumnDispose : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setItemMetrics( 0, 0, 200, 0, 0, 0, 0 );
+      tree.setHeaderVisible( true );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      var colTwo = this._createColumnByProtocol( "w5", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20 } );
+      TestUtil.protocolSet( "w5", { "left" : 23, "width" : 40 } );
+      TestUtil.flush();
+
+      colTwo.dispose();
+      TestUtil.flush();
+
+      var dummyLabel = this._getDummyLabel( tree );
+      assertEquals( 23, dummyLabel.getLeft() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testDestroyCleansInternalHeaderMaps : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setItemMetrics( 0, 0, 200, 0, 0, 0, 0 );
+      tree.setHeaderVisible( true );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      var colTwo = this._createColumnByProtocol( "w5", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20 } );
+      TestUtil.protocolSet( "w5", { "left" : 23, "width" : 40 } );
+      TestUtil.flush();
+      var labelTwo = this._getColumnLabel( tree, colTwo );
+
+      colTwo.dispose();
+      TestUtil.flush();
+
+      var header = tree.getTableHeader();
+      assertTrue( header._columnToLabelMap[ colTwo.toHashCode() ] === undefined );
+      assertTrue( header._labelToColumnMap[ labelTwo.toHashCode() ] === undefined );
+      column.dispose();
       tree.destroy();
     },
 
