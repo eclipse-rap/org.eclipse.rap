@@ -22,6 +22,7 @@
   </parent>
 
   <artifactId>org.eclipse.rap.equinox.juno.target.feature</artifactId>
+  <version>2.0.1-SNAPSHOT</version>
   <packaging>eclipse-feature</packaging>
 
   <repositories>

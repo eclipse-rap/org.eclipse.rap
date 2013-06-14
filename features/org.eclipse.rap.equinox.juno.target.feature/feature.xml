@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.rap.equinox.juno.target.feature"
       label="RAP Basic Equinox Target for Juno"
-      version="2.0.0.qualifier"
+      version="2.0.1.qualifier"
       provider-name="Eclipse.org - RAP">
 
    <description url="http://eclipse.org/rap/">
@@ -22,7 +22,7 @@
    </url>
 
    <requires>
-      <import feature="org.eclipse.rap.feature" version="2.0.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.rap.feature" version="2.0.1" match="greaterOrEqual"/>
       <!--
       <import plugin="javax.servlet"/>
       <import plugin="javax.servlet.source"/>
