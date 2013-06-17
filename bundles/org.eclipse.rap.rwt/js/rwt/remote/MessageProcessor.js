@@ -30,6 +30,7 @@ rwt.remote.MessageProcessor = {
       server.setRequestCounter( head.requestCounter );
     }
     if( head.redirect !== undefined ) {
+      rwt.widgets.Display.getCurrent().setExitConfirmation( null );
       document.location = head.redirect;
     }
   },
