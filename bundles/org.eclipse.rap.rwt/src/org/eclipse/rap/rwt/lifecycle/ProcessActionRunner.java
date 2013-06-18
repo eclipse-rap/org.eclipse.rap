@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,21 +28,18 @@ public class ProcessActionRunner {
 
   @SuppressWarnings("unchecked")
   public static void add( Runnable runnable ) {
-    if( CurrentPhase.get() != null ) {
-      if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() )
-          || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) )
-      {
-        runnable.run();
-      } else {
-        ServiceStore serviceStore = ContextProvider.getServiceStore();
-        List<Runnable> list = ( List<Runnable> )serviceStore.getAttribute( ATTR_RUNNABLE_LIST );
-        if( list == null ) {
-          list = new ArrayList<Runnable>();
-          serviceStore.setAttribute( ATTR_RUNNABLE_LIST, list );
-        }
-        if( !list.contains( runnable ) ) {
-          list.add( runnable );
-        }
+    PhaseId phaseId = CurrentPhase.get();
+    if( PhaseId.PREPARE_UI_ROOT.equals( phaseId ) || PhaseId.PROCESS_ACTION.equals( phaseId ) ) {
+      runnable.run();
+    } else {
+      ServiceStore serviceStore = ContextProvider.getServiceStore();
+      List<Runnable> list = ( List<Runnable> )serviceStore.getAttribute( ATTR_RUNNABLE_LIST );
+      if( list == null ) {
+        list = new ArrayList<Runnable>();
+        serviceStore.setAttribute( ATTR_RUNNABLE_LIST, list );
+      }
+      if( !list.contains( runnable ) ) {
+        list.add( runnable );
       }
     }
   }

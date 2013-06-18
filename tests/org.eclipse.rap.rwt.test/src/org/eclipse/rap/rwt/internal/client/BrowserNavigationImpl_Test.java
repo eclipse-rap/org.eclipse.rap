@@ -21,6 +21,8 @@ import static org.mockito.Mockito.verify;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -44,7 +46,7 @@ public class BrowserNavigationImpl_Test {
   @Before
   public void setUp() {
     Fixture.setUp();
-    navigation = new BrowserNavigationImpl();
+    navigation = ( BrowserNavigationImpl )RWT.getClient().getService( BrowserNavigation.class );
     new Display();
     Fixture.fakeNewRequest();
   }
@@ -52,24 +54,6 @@ public class BrowserNavigationImpl_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
-  }
-
-  @Test
-  public void testCreateHistoryEntry() {
-    navigation.pushState( "state", "title" );
-
-    assertEquals( 1, navigation.getEntries().length );
-    assertEquals( "state", navigation.getEntries()[ 0 ].state );
-    assertEquals( "title", navigation.getEntries()[ 0 ].title );
-  }
-
-  @Test
-  public void testCreateHistoryEntryWithNullText() {
-    navigation.pushState( "state", null );
-
-    assertEquals( 1, navigation.getEntries().length );
-    assertEquals( "state", navigation.getEntries()[ 0 ].state );
-    assertNull( navigation.getEntries()[ 0 ].title );
   }
 
   @Test
@@ -237,15 +221,12 @@ public class BrowserNavigationImpl_Test {
   @Test
   public void testRenderAddToHistoryOrder() {
     navigation.pushState( "testId1", "testText1" );
-    navigation.pushState( "testId2", "testText2" );
 
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( TYPE, "addToHistory" );
-    JsonArray expected = new JsonArray();
-    expected.add( new JsonArray().add( "testId1" ).add( "testText1" ) );
-    expected.add( new JsonArray().add( "testId2" ).add( "testText2" ) );
+    JsonArray expected = new JsonArray().add( new JsonArray().add( "testId1" ).add( "testText1" ) );
     assertEquals( expected, operation.getProperty( "entries" ) );
   }
 

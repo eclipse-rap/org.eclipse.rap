@@ -157,6 +157,7 @@ public class WebClient implements Client {
 
   private void initializeServices() {
     getServiceImpl( ClientInfoImpl.class );
+    getServiceImpl( BrowserNavigationImpl.class );
   }
 
 }
