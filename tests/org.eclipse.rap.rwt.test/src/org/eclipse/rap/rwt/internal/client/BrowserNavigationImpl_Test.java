@@ -18,7 +18,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
@@ -201,9 +200,8 @@ public class BrowserNavigationImpl_Test {
 
     Message message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( TYPE, "addToHistory" );
-    JsonArray expected = new JsonArray();
-    expected.add( new JsonArray().add( "testId" ).add( "testText" ) );
-    assertEquals( expected, operation.getProperty( "entries" ) );
+    assertEquals( "testId", operation.getProperty( "state" ).asString() );
+    assertEquals( "testText", operation.getProperty( "title" ).asString() );
   }
 
   @Test
@@ -221,13 +219,20 @@ public class BrowserNavigationImpl_Test {
   @Test
   public void testRenderAddToHistoryOrder() {
     navigation.pushState( "testId1", "testText1" );
+    navigation.pushState( "testId2", "testText2" );
 
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    CallOperation operation = message.findCallOperation( TYPE, "addToHistory" );
-    JsonArray expected = new JsonArray().add( new JsonArray().add( "testId1" ).add( "testText1" ) );
-    assertEquals( expected, operation.getProperty( "entries" ) );
+    CallOperation callOperation1 = ( CallOperation )message.getOperation( 0 );
+    CallOperation callOperation2 = ( CallOperation )message.getOperation( 1 );
+
+    assertEquals( "addToHistory", callOperation1.getMethodName() );
+    assertEquals( "testId1", callOperation1.getProperty( "state" ).asString() );
+    assertEquals( "testText1", callOperation1.getProperty( "title" ).asString() );
+    assertEquals( "addToHistory", callOperation2.getMethodName() );
+    assertEquals( "testId2", callOperation2.getProperty( "state" ).asString() );
+    assertEquals( "testText2", callOperation2.getProperty( "title" ).asString() );
   }
 
 }

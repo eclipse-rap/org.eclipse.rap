@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.internal.client;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
-import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
@@ -32,7 +31,8 @@ public final class BrowserNavigationImpl implements BrowserNavigation {
   private final static String TYPE = "rwt.client.BrowserNavigation";
   private final static String PROP_NAVIGATION_LISTENER = "Navigation";
   private final static String METHOD_ADD_TO_HISTORY = "addToHistory";
-  private final static String PROP_ENTRIES = "entries";
+  private final static String PROP_STATE = "state";
+  private final static String PROP_TITLE = "title";
   private static final Object EVENT_HISTORY_NAVIGATED = "Navigation";
   private static final String EVENT_HISTORY_NAVIGATED_STATE = "state";
 
@@ -46,10 +46,10 @@ public final class BrowserNavigationImpl implements BrowserNavigation {
     listeners = new LinkedHashSet<BrowserNavigationListener>();
   }
 
-  public void pushState( String state, String text ) {
+  public void pushState( String state, String title ) {
     ParamCheck.notNullOrEmpty( state, "state" );
-    JsonArray entries = new JsonArray().add( new JsonArray().add( state ).add( text ) );
-    remoteObject.call( METHOD_ADD_TO_HISTORY, new JsonObject().add( PROP_ENTRIES, entries ) );
+    JsonObject properties = new JsonObject().add( PROP_STATE, state ).add( PROP_TITLE, title );
+    remoteObject.call( METHOD_ADD_TO_HISTORY, properties );
   }
 
   public void addBrowserNavigationListener( BrowserNavigationListener listener ) {
