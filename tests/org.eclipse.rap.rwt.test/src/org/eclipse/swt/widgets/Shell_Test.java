@@ -259,7 +259,7 @@ public class Shell_Test {
     assertNotNull( shellEvent );
     assertSame( shell, shellEvent[ 0 ].widget );
     assertSame( shell, shellEvent[ 0 ].getSource() );
-    assertSame( shell.getDisplay(), shellEvent[ 0 ].display );
+    assertSame( display, shellEvent[ 0 ].display );
   }
 
   @Test

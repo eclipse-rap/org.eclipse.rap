@@ -408,9 +408,9 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * </ul>
    */
   public Display getDisplay() {
-    Display display = this.display;
-//    if( display == null )
-//      error( SWT.ERROR_WIDGET_DISPOSED );
+    if( ( state & DISPOSED ) != 0 ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     return display;
   }
 
