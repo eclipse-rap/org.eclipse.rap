@@ -284,12 +284,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * @see #setData(String, Object)
    */
   public Object getData( String key ) {
-    // Must not call checkWidget() here to allow to obtain the custom id after
-    // the widget has been disposed of (see WidgetUtil#getId). Only validate
-    // thread.
-    if( !isValidThread() ) {
-      error( SWT.ERROR_THREAD_INVALID_ACCESS );
-    }
+    checkWidget();
     if( key == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }

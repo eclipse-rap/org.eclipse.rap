@@ -170,12 +170,32 @@ public class Widget_Test {
     }
   }
 
+  @Test(expected = SWTException.class)
+  public void testGetData_onDisposedWidget() {
+    Widget widget = new Label( shell, SWT.NONE );
+    widget.setData( "foo", "bar" );
+    widget.dispose();
+
+    widget.getData( "foo" );
+  }
+
   @Test
   public void testSetData_handlesCustomId() {
     UITestUtilAdapter.setUITestEnabled( true );
     Widget widget = new Label( shell, SWT.NONE );
 
     widget.setData( WidgetUtil.CUSTOM_WIDGET_ID, "custom-id" );
+
+    assertEquals( "custom-id", WidgetUtil.getId( widget ) );
+  }
+
+  @Test
+  public void testGetCustomIdOnDisposedWidget() {
+    UITestUtilAdapter.setUITestEnabled( true );
+    Widget widget = new Label( shell, SWT.NONE );
+
+    widget.setData( WidgetUtil.CUSTOM_WIDGET_ID, "custom-id" );
+    widget.dispose();
 
     assertEquals( "custom-id", WidgetUtil.getId( widget ) );
   }
