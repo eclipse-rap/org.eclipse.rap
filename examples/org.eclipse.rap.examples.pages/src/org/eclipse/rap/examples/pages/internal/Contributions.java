@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.eclipse.rap.examples.pages.CanvasExamplePage;
 import org.eclipse.rap.examples.pages.DialogExamplePage;
 import org.eclipse.rap.examples.pages.FillLayoutExample;
 import org.eclipse.rap.examples.pages.GridLayoutExample;
+import org.eclipse.rap.examples.pages.InternationalizationExamplePage;
 import org.eclipse.rap.examples.pages.ListExample;
 import org.eclipse.rap.examples.pages.MarkupExample;
 import org.eclipse.rap.examples.pages.MarkupLabelExample;
@@ -56,6 +57,7 @@ class Contributions {
     addContribution( "fill-layout", "Fill Layout", FillLayoutExample.class );
     addContribution( "grid-layout", "Grid Layout", GridLayoutExample.class );
     addContribution( "table-markup", "Table with Markup", MarkupExample.class );
+    addContribution( "nls", "Internationalization", InternationalizationExamplePage.class );
   }
 
   private void addContribution( final String id,
