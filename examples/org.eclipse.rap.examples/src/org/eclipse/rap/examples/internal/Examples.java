@@ -72,7 +72,7 @@ public final class Examples {
                                            "grid-layout", "row-layout", "fill-layout" ) );
     exampleCategories.add( createCategory( "Custom Widgets",
                                            "gmaps", "ckeditor", "oscilloscope", "carousel", "chart",
-                                           "nebula-grid" ) );
+                                           "nebula-grid", "drop-down" ) );
     return exampleCategories;
   }
 
