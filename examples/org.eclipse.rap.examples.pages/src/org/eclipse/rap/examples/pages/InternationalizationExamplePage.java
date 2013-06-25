@@ -13,7 +13,9 @@ package org.eclipse.rap.examples.pages;
 import static org.eclipse.rap.examples.pages.internal.ImageUtil.getImage;
 
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.Locale;
 
 import org.eclipse.rap.examples.ExampleUtil;
@@ -28,6 +30,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -41,6 +44,7 @@ public class InternationalizationExamplePage implements IExamplePage {
   private Language[] languages;
   private Composite parentContainer;
   private Composite contentContainer;
+  private final float EQUATOR = 40075.017F;
 
   public void createControl( Composite parent ) {
     initLanguages( parent.getDisplay() );
@@ -54,11 +58,11 @@ public class InternationalizationExamplePage implements IExamplePage {
   private void initLanguages( Device device ) {
     languages = new Language[] {
       new Language( null, getImage( device, "no-flag.png" ) ),
-      new Language( Locale.ENGLISH, getImage( device, "en-flag.png" ) ),
-      new Language( Locale.GERMAN, getImage( device, "de-flag.png" ) ),
-      new Language( Locale.FRENCH, getImage( device, "fr-flag.png" ) ),
+      new Language( Locale.US, getImage( device, "en-flag.png" ) ),
+      new Language( Locale.GERMANY, getImage( device, "de-flag.png" ) ),
+      new Language( Locale.FRANCE, getImage( device, "fr-flag.png" ) ),
       new Language( new Locale( "bg", "", "" ), getImage( device, "bg-flag.png" ) ),
-      new Language( Locale.CHINESE, getImage( device, "zh-flag.png" ) )
+      new Language( Locale.CHINA, getImage( device, "zh-flag.png" ) )
     };
   }
 
@@ -99,29 +103,53 @@ public class InternationalizationExamplePage implements IExamplePage {
     }
     contentContainer = new Composite( parentContainer, SWT.NONE );
     contentContainer.setLayoutData( ExampleUtil.createFillData() );
-    contentContainer.setLayout( ExampleUtil.createGridLayout( 1, false, true, true ) );
-    createWhatIsUnicodeArea();
-    createCurrentDateArea();
+    contentContainer.setLayout( ExampleUtil.createGridLayout( 2, false, true, true ) );
+    createTextArea();
+    createCurrentDataArea();
     parentContainer.layout();
   }
 
-  private void createWhatIsUnicodeArea() {
-    Label title = new Label( contentContainer, SWT.CENTER );
+  private void createTextArea() {
+    Group area = new Group( contentContainer, SWT.NONE );
+    area.setLayoutData( new GridData( SWT.TOP, SWT.FILL, true, false ) );
+    area.setText( "Text" );
+    area.setLayout( ExampleUtil.createGridLayout( 1, false, true, true ) );
+    Label title = new Label( area, SWT.CENTER );
     title.setLayoutData( ExampleUtil.createHorzFillData() );
     title.setData( RWT.CUSTOM_VARIANT, "heading" );
     title.setText( ExamplesMessages.get().WhatIsUnicode_Title );
-    Label text = new Label( contentContainer, SWT.WRAP );
+    Label text = new Label( area, SWT.WRAP );
     text.setLayoutData( ExampleUtil.createFillData() );
     text.setText( ExamplesMessages.get().WhatIsUnicode_Descritption );
   }
 
-  private void createCurrentDateArea() {
-    Label today = new Label( contentContainer, SWT.RIGHT );
-    today.setLayoutData( ExampleUtil.createHorzFillData() );
+  private void createCurrentDataArea() {
+    Group area = new Group( contentContainer, SWT.NONE );
+    area.setLayoutData( new GridData( SWT.TOP, SWT.FILL, false, false ) );
+    area.setText( "Data" );
+    area.setLayout( ExampleUtil.createGridLayout( 2, false, true, true ) );
     Locale locale = RWT.getLocale();
     Calendar calendar = Calendar.getInstance( locale );
-    DateFormat formatter = DateFormat.getDateInstance( DateFormat.FULL, locale );
-    today.setText( formatter.format( calendar.getTime() ) );
+    DateFormat dateFormatter = DateFormat.getDateInstance( DateFormat.FULL, locale );
+    addDataEntry( area, "Date:", dateFormatter.format( calendar.getTime() ) );
+    DateFormat timeFormatter = DateFormat.getTimeInstance( DateFormat.SHORT, locale );
+    addDataEntry( area, "Time:", timeFormatter.format( calendar.getTime() ) );
+    NumberFormat numberFormatter = NumberFormat.getNumberInstance( locale );
+    addDataEntry( area, "Equator:", numberFormatter.format( EQUATOR ) + " km" );
+    try {
+      Currency currentCurrency = Currency.getInstance( locale );
+      addDataEntry( area, "Currency:", currentCurrency.getCurrencyCode()  );
+    } catch( IllegalArgumentException ex ) {
+      // Currency.getInstance not supported for all locale?
+    }
+  }
+
+  private void addDataEntry( Group area, String heading, String data ) {
+    Label title = new Label( area, SWT.RIGHT );
+    title.setText( heading );
+    title.setData( RWT.CUSTOM_VARIANT, "heading" );
+    Label today = new Label( area, SWT.RIGHT );
+    today.setText( data );
   }
 
   private GridData createClientLanguageGridData() {
@@ -129,7 +157,7 @@ public class InternationalizationExamplePage implements IExamplePage {
   }
 
   private GridData createToolBarGridData() {
-    return new GridData( 150, SWT.DEFAULT );
+    return new GridData( 180, SWT.DEFAULT );
   }
 
   private final class Language {
