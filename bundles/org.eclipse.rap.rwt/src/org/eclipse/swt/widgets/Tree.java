@@ -173,7 +173,6 @@ public class Tree extends Composite {
     sortDirection = SWT.NONE;
     selection = EMPTY_SELECTION;
     customItemHeight = -1;
-    visibleItemsCount = -1;
     layoutCache = new LayoutCache();
   }
 
