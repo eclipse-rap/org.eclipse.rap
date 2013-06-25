@@ -61,7 +61,7 @@ public class InternationalizationExamplePage implements IExamplePage {
       new Language( Locale.US, getImage( device, "en-flag.png" ) ),
       new Language( Locale.GERMANY, getImage( device, "de-flag.png" ) ),
       new Language( Locale.FRANCE, getImage( device, "fr-flag.png" ) ),
-      new Language( new Locale( "bg", "", "" ), getImage( device, "bg-flag.png" ) ),
+      new Language( new Locale( "bg", "BG", "" ), getImage( device, "bg-flag.png" ) ),
       new Language( Locale.CHINA, getImage( device, "zh-flag.png" ) )
     };
   }
