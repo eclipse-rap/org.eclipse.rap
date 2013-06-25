@@ -1480,7 +1480,7 @@ public class Tree_Test {
   }
 
   @Test
-  public void testTopIndexOnTemporaryResize() {
+  public void testTopItemOnTemporaryResize() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 100, 100 );
     createTreeItems( tree, 10 );
@@ -1708,6 +1708,19 @@ public class Tree_Test {
     tree.setTopItem( subItem );
 
     assertTrue( item.getItem( 25 ).isCached() );
+  }
+
+  @Test
+  public void testVirtualMaterializeItemOnItemCountChange() {
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
+    tree.setSize( 300, 300 );
+    tree.setItemCount( 100 );
+    tree.setTopItem( tree.getItem( 80 ) );
+
+    tree.setItemCount( 50 );
+    redrawTree( tree );
+
+    assertTrue( tree.getItem( 45 ).isCached() );
   }
 
   @Test

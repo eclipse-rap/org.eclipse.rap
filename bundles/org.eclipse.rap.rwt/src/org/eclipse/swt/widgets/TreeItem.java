@@ -217,7 +217,7 @@ public class TreeItem extends Item {
     if( parentItem != null ) {
       depth = parentItem.depth + 1;
     }
-    parent.isFlatIndexValid = false;
+    parent.invalidateFlatIndex();
     setEmpty();
     if( create ) {
       int numberOfItems;
@@ -358,6 +358,7 @@ public class TreeItem extends Item {
         updateSelection();
       }
       markCached();
+      parent.invalidateFlatIndex();
       parent.updateScrollBars();
       parent.updateAllItems();
     }
@@ -1417,7 +1418,7 @@ public class TreeItem extends Item {
         }
       }
       itemCount = newItemCount;
-      parent.isFlatIndexValid = false;
+      parent.invalidateFlatIndex();
       parent.updateScrollBars();
       parent.redraw();
     }
@@ -1443,7 +1444,7 @@ public class TreeItem extends Item {
       parent.destroyItem( this, index );
     }
     if( !parent.isInDispose() ) {
-      parent.isFlatIndexValid = false;
+      parent.invalidateFlatIndex();
       parent.removeFromSelection( this );
       parent.updateScrollBars();
     }

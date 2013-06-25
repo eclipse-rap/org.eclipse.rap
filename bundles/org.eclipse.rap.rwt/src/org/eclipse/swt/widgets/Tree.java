@@ -173,6 +173,7 @@ public class Tree extends Composite {
     sortDirection = SWT.NONE;
     selection = EMPTY_SELECTION;
     customItemHeight = -1;
+    visibleItemsCount = -1;
     layoutCache = new LayoutCache();
   }
 
@@ -276,7 +277,7 @@ public class Tree extends Composite {
         }
       }
       itemCount = newItemCount;
-      isFlatIndexValid = false;
+      invalidateFlatIndex();
       updateScrollBars();
       redraw();
     }
@@ -457,12 +458,13 @@ public class Tree extends Composite {
         parent = parent.getParentItem();
       }
       int flatIndex = item.getFlatIndex();
-      if( flatIndex <= topItemIndex ) {
+      int topIndex = getTopItemIndex();
+      if( flatIndex <= topIndex ) {
         setTopItemIndex( flatIndex );
       } else {
         int itemsAreaHeight = getClientArea().height - getHeaderHeight();
         int rows = ( int )Math.floor( itemsAreaHeight / getItemHeight() );
-        if( flatIndex >= topItemIndex + rows ) {
+        if( flatIndex >= topIndex + rows ) {
           setTopItemIndex( flatIndex - rows + 1 );
         }
       }
@@ -503,15 +505,7 @@ public class Tree extends Composite {
         parent.setExpanded( true );
         parent = parent.getParentItem();
       }
-      int itemsAreaHeight = getClientArea().height - getHeaderHeight();
-      int rows = ( int )Math.floor( itemsAreaHeight / getItemHeight() );
-      int flatIndex = item.getFlatIndex();
-      if( flatIndex <= topItemIndex || flatIndex + rows <= visibleItemsCount ) {
-        setTopItemIndex( flatIndex );
-      } else {
-        int index = Math.max( 0, visibleItemsCount - rows );
-        setTopItemIndex( index );
-      }
+      setTopItemIndex( item.getFlatIndex() );
     }
   }
 
@@ -548,8 +542,7 @@ public class Tree extends Composite {
   }
 
   int getTopItemIndex() {
-    if( !isFlatIndexValid ) {
-      updateAllItems();
+    if( !isVisibleItemsCountValid() ) {
       adjustTopItemIndex();
     }
     return topItemIndex;
@@ -1011,24 +1004,10 @@ public class Tree extends Composite {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
     TreeItem result = null;
-    int index = ( point.y - getHeaderHeight() ) / getItemHeight() + topItemIndex;
+    int index = ( point.y - getHeaderHeight() ) / getItemHeight() + getTopItemIndex();
     List visibleItems = collectVisibleItems( null );
     if( 0 <= index && index < visibleItems.size() ) {
       result = ( TreeItem )visibleItems.get( index );
-    }
-    return result;
-  }
-
-  private List<TreeItem> collectVisibleItems( TreeItem parentItem ) {
-    List<TreeItem> result = new ArrayList<TreeItem>();
-    TreeItem[] items = parentItem == null ? this.items : parentItem.items;
-    int itemCount = parentItem == null ? this.itemCount : parentItem.itemCount;
-    for( int i = 0; i < itemCount; i++ ) {
-      TreeItem item = items[ i ];
-      result.add( item );
-      if( item != null && item.getExpanded() ) {
-        result.addAll( collectVisibleItems( item ) );
-      }
     }
     return result;
   }
@@ -2101,10 +2080,11 @@ public class Tree extends Composite {
   }
 
   private void adjustTopItemIndex() {
-    int visibleRowCount = getVisibleRowCount( false );
-    int correction = visibleRowCount == 0 ? 1 : 0;
-    if( topItemIndex > visibleItemsCount - visibleRowCount - correction ) {
-      topItemIndex = Math.max( 0, visibleItemsCount - visibleRowCount - correction );
+    int visibleItems = getVisibleItemsCount();
+    int visibleRows = getVisibleRowCount( false );
+    int correction = visibleRows == 0 ? 1 : 0;
+    if( topItemIndex > visibleItems - visibleRows - correction ) {
+      topItemIndex = Math.max( 0, visibleItems - visibleRows - correction );
     }
   }
 
@@ -2116,6 +2096,31 @@ public class Tree extends Composite {
       result = clientHeight / itemHeight;
       if( includePartlyVisible && clientHeight % itemHeight != 0 ) {
         result++;
+      }
+    }
+    return result;
+  }
+
+  private int getVisibleItemsCount() {
+    if( !isVisibleItemsCountValid() ) {
+      visibleItemsCount = collectVisibleItems( null ).size();
+    }
+    return visibleItemsCount;
+  }
+
+  private boolean isVisibleItemsCountValid() {
+    return visibleItemsCount != -1;
+  }
+
+  private List<TreeItem> collectVisibleItems( TreeItem parentItem ) {
+    List<TreeItem> result = new ArrayList<TreeItem>();
+    TreeItem[] items = parentItem == null ? this.items : parentItem.items;
+    int itemCount = parentItem == null ? this.itemCount : parentItem.itemCount;
+    for( int i = 0; i < itemCount; i++ ) {
+      TreeItem item = items[ i ];
+      result.add( item );
+      if( item != null && item.getExpanded() ) {
+        result.addAll( collectVisibleItems( item ) );
       }
     }
     return result;
@@ -2155,7 +2160,7 @@ public class Tree extends Composite {
     boolean result = false;
     int headerHeight = getHeaderHeight();
     int itemHeight = getItemHeight();
-    int itemPosition = headerHeight + ( flatIndex - topItemIndex ) * itemHeight;
+    int itemPosition = headerHeight + ( flatIndex - getTopItemIndex() ) * itemHeight;
     // TODO shouldn't we call getClientArea() instead?
     if( itemPosition >= 0 && itemPosition <= getSize().y ) {
       result = true;
@@ -2177,6 +2182,11 @@ public class Tree extends Composite {
       }
     }
     return result;
+  }
+
+  void invalidateFlatIndex() {
+    visibleItemsCount = -1;
+    isFlatIndexValid = false;
   }
 
   private static int checkStyle( int style ) {
