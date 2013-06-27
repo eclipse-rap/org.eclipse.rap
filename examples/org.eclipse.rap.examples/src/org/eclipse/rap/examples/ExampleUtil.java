@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.examples;
+
+import java.io.File;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
@@ -23,6 +25,13 @@ import org.eclipse.swt.widgets.Label;
 public final class ExampleUtil {
 
   private static final int DEFAULT_SPACE = 10;
+
+  private static final String DATA_DIR_PROP = "org.eclipse.rap.examples.dataDir";
+  private static final String DEFAULT_DATA_DIR = "/data/rapdemo";
+
+  public static File getDataDirectory() {
+    return new File( System.getProperty( DATA_DIR_PROP, DEFAULT_DATA_DIR ) );
+  }
 
   public static Composite initPage( String title, Composite parent ) {
     Composite pageComp = new Composite( parent, SWT.NONE );
