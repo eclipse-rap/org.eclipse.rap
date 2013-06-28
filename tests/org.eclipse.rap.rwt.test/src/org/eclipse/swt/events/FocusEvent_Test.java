@@ -22,6 +22,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
+
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -147,10 +149,11 @@ public class FocusEvent_Test {
     ArgumentCaptor<FocusEvent> captor = ArgumentCaptor.forClass( FocusEvent.class );
     verify( focusListener, times( 2 ) ).focusLost( captor.capture() );
     verify( focusListener, times( 2 ) ).focusGained( captor.capture() );
-    assertEquals( button1, captor.getAllValues().get( 0 ).widget );
-    assertEquals( button2, captor.getAllValues().get( 1 ).widget );
-    assertEquals( button2, captor.getAllValues().get( 2 ).widget );
-    assertEquals( button3, captor.getAllValues().get( 3 ).widget );
+    List<FocusEvent> events = captor.getAllValues();
+    assertEquals( button1, events.get( 0 ).widget );
+    assertEquals( button2, events.get( 1 ).widget );
+    assertEquals( button2, events.get( 2 ).widget );
+    assertEquals( button3, events.get( 3 ).widget );
   }
 
 }
