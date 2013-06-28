@@ -1222,7 +1222,7 @@ public class Shell extends Decorations {
   private void bringToTop() {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
-    displayAdapter.setFocusControl( this );
+    displayAdapter.setFocusControl( this, true );
     // When a Shell is opened client-side the widget that is currently focused
     // loses its focus. This is unwanted in the case that the request that
     // opened the Shell sets the focus to some widget after opening the Shell.

@@ -2430,7 +2430,7 @@ public abstract class Control extends Widget implements Drawable {
     }
     // focus
     IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
-    displayAdapter.setFocusControl( control );
+    displayAdapter.setFocusControl( control, true );
     // active
     if( control != null ) {
       Shell shell = control.getShell();
@@ -2477,7 +2477,7 @@ public abstract class Control extends Widget implements Drawable {
 //    OS.SetFocus (0);
     // Replacement for OS.setFocus( 0 )
     IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
-    displayAdapter.setFocusControl( null );
+    displayAdapter.setFocusControl( null, true );
   }
 
   // Copied from SWT/win32 as is

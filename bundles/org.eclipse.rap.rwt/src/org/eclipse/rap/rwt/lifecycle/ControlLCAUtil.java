@@ -117,7 +117,17 @@ public class ControlLCAUtil {
   }
 
   public static void processEvents( Control control ) {
+    processFocusEvents( control );
     processMouseEvents( control );
+  }
+
+  private static void processFocusEvents( Control control ) {
+    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_FOCUS_IN ) ) {
+      control.notifyListeners( SWT.FocusIn, new Event() );
+    }
+    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_FOCUS_OUT ) ) {
+      control.notifyListeners( SWT.FocusOut, new Event() );
+    }
   }
 
   public static void processMouseEvents( Control control ) {

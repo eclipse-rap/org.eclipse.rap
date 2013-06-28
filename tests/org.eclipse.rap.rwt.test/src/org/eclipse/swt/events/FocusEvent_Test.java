@@ -12,11 +12,14 @@
 package org.eclipse.swt.events;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_IN;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_OUT;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -78,6 +81,8 @@ public class FocusEvent_Test {
     focusControl.setText( "focusControl" );
 
     Fixture.fakeSetProperty( getId( display ), "focusControl", getId( focusControl ) );
+    Fixture.fakeNotifyOperation( getId( unfocusControl ), EVENT_FOCUS_OUT, null );
+    Fixture.fakeNotifyOperation( getId( focusControl ), EVENT_FOCUS_IN, null );
     Fixture.readDataAndProcessAction( display );
 
     verify( focusListener, never() ).focusGained( any( FocusEvent.class ) );
@@ -92,6 +97,7 @@ public class FocusEvent_Test {
     control.addFocusListener( focusListener );
 
     Fixture.fakeSetProperty( getId( display ), "focusControl", getId( control ) );
+    Fixture.fakeNotifyOperation( getId( control ), EVENT_FOCUS_IN, null );
     Fixture.readDataAndProcessAction( display );
 
     verify( focusListener, never() ).focusLost( any( FocusEvent.class ) );
@@ -109,6 +115,8 @@ public class FocusEvent_Test {
     button2.addFocusListener( focusListener );
 
     Fixture.fakeSetProperty( getId( display ), "focusControl", getId( button2 ) );
+    Fixture.fakeNotifyOperation( getId( button1 ), EVENT_FOCUS_OUT, null );
+    Fixture.fakeNotifyOperation( getId( button2 ), EVENT_FOCUS_IN, null );
     Fixture.readDataAndProcessAction( display );
 
     ArgumentCaptor<FocusEvent> captor1 = ArgumentCaptor.forClass( FocusEvent.class );
@@ -117,6 +125,32 @@ public class FocusEvent_Test {
     ArgumentCaptor<FocusEvent> captor2 = ArgumentCaptor.forClass( FocusEvent.class );
     verify( focusListener ).focusGained( captor2.capture() );
     assertEquals( button2, captor2.getValue().widget );
+  }
+
+  @Test
+  public void testFocusEvent_withMultipleNotifyOperations() {
+    Button button1 = new Button( shell, SWT.PUSH );
+    Button button2 = new Button( shell, SWT.PUSH );
+    Button button3 = new Button( shell, SWT.PUSH );
+    button1.setFocus();
+    button1.addFocusListener( focusListener );
+    button2.addFocusListener( focusListener );
+    button3.addFocusListener( focusListener );
+
+    Fixture.fakeSetProperty( getId( display ), "focusControl", getId( button3 ) );
+    Fixture.fakeNotifyOperation( getId( button1 ), EVENT_FOCUS_OUT, null );
+    Fixture.fakeNotifyOperation( getId( button2 ), EVENT_FOCUS_IN, null );
+    Fixture.fakeNotifyOperation( getId( button2 ), EVENT_FOCUS_OUT, null );
+    Fixture.fakeNotifyOperation( getId( button3 ), EVENT_FOCUS_IN, null );
+    Fixture.readDataAndProcessAction( display );
+
+    ArgumentCaptor<FocusEvent> captor = ArgumentCaptor.forClass( FocusEvent.class );
+    verify( focusListener, times( 2 ) ).focusLost( captor.capture() );
+    verify( focusListener, times( 2 ) ).focusGained( captor.capture() );
+    assertEquals( button1, captor.getAllValues().get( 0 ).widget );
+    assertEquals( button2, captor.getAllValues().get( 1 ).widget );
+    assertEquals( button2, captor.getAllValues().get( 2 ).widget );
+    assertEquals( button3, captor.getAllValues().get( 3 ).widget );
   }
 
 }
