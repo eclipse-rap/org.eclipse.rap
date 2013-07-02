@@ -49,19 +49,19 @@ Gregoire Dupe
 	</xsl:template>
 
 
-	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.feature']/properties">
-		<xsl:call-template name="artifact_properties_feature"/>
-	</xsl:template>
-
 	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.equinox.target.feature']/properties">
 		<xsl:call-template name="artifact_properties_feature"/>
 	</xsl:template>
 
-	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.equinox.juno.target.feature']/properties">
+	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.examples.feature']/properties">
 		<xsl:call-template name="artifact_properties_feature"/>
 	</xsl:template>
 
-	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.examples.feature']/properties">
+	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.feature']/properties">
+		<xsl:call-template name="artifact_properties_feature"/>
+	</xsl:template>
+
+	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.sdk.feature']/properties">
 		<xsl:call-template name="artifact_properties_feature"/>
 	</xsl:template>
 
