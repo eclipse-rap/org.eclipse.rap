@@ -18,7 +18,7 @@
 
   <groupId>org.eclipse.rap</groupId>
   <artifactId>org.eclipse.rap.runtime-parent</artifactId>
-  <version>2.1.0-SNAPSHOT</version>
+  <version>2.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
@@ -85,12 +85,12 @@
         TODO [rst]: Because of bug 348045, we cannot add the entire platform repository to the
                     target platform, try target definitions instead.
         -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/2.1/RC4/runtime-base</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/2.2/M0/runtime-base</url>
     </repository>
     <repository>
       <id>extra-dependencies-repository</id>
       <layout>p2</layout>
-      <url>http://build.eclipse.org/rt/rap/base-platforms/2.1/extra-dependencies</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/2.2/extra-dependencies</url>
     </repository>
   </repositories>
 
