@@ -10,7 +10,8 @@
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
@@ -20,8 +21,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.rap.json.*;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ImageFactory;
@@ -72,9 +73,8 @@ public class FormTextLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     FormText formText = ( FormText )widget;
-    IClientObject clientObject = getClientObject( formText );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( formText.getParent() ) ); //$NON-NLS-1$
+    RemoteObject remoteObject = createRemoteObject( formText, TYPE );
+    remoteObject.set( "parent", getId( formText.getParent() ) ); //$NON-NLS-1$
   }
 
   public void readData( Widget widget ) {
@@ -106,7 +106,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
         .add( underlineMode )
         .add( getColorAsArray( foreground ) )
         .add( getColorAsArray( activeForeground ) );
-      getClientObject( formText ).set( PROP_HYPERLINK_SETTINGS, args );
+      getRemoteObject( formText ).set( PROP_HYPERLINK_SETTINGS, args );
     }
   }
 
@@ -126,7 +126,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
         ParagraphSegment[] segments = paragraph.getSegments();
         appendSegments( formText, segments, buffer );
       }
-      getClientObject( formText ).set( PROP_TEXT, buffer );
+      getRemoteObject( formText ).set( PROP_TEXT, buffer );
     }
   }
 

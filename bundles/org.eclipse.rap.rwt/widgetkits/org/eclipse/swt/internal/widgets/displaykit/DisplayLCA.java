@@ -13,7 +13,10 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_RESIZE;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsString;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
@@ -24,10 +27,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
@@ -172,8 +174,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
                        ? oldExitConfirmation != null
                        : !exitConfirmation.equals( oldExitConfirmation );
     if( hasChanged ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( display );
-      clientObject.set( PROP_EXIT_CONFIRMATION, exitConfirmation );
+      getRemoteObject( display ).set( PROP_EXIT_CONFIRMATION, exitConfirmation );
     }
   }
 
@@ -223,8 +224,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
         // TODO [rst] Added null check as a NPE occurred in some rare cases
         Control focusControl = display.getFocusControl();
         if( focusControl != null ) {
-          IClientObject clientObject = ClientObjectFactory.getClientObject( display );
-          clientObject.set( PROP_FOCUS_CONTROL, WidgetUtil.getId( display.getFocusControl() ) );
+          getRemoteObject( display ).set( PROP_FOCUS_CONTROL, getId( display.getFocusControl() ) );
         }
       }
     }
@@ -234,8 +234,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     IDisplayAdapter displayAdapter = getDisplayAdapter( display );
     if( displayAdapter.isBeepCalled() ) {
       displayAdapter.resetBeep();
-      IClientObject clientObject = ClientObjectFactory.getClientObject( display );
-      clientObject.call( METHOD_BEEP, null );
+      getRemoteObject( display ).call( METHOD_BEEP, null );
     }
   }
 
@@ -247,8 +246,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     }
     Boolean newValue = Boolean.valueOf( hasResizeListener( display ) );
     if( !oldValue.equals( newValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( display );
-      clientObject.listen( ClientMessageConst.EVENT_RESIZE, newValue.booleanValue() );
+      getRemoteObject( display ).listen( EVENT_RESIZE, newValue.booleanValue() );
     }
   }
 
@@ -259,8 +257,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   private static void renderEnableUiTests( Display display ) {
     if( UITestUtil.isEnabled() ) {
       if( !getAdapter( display ).isInitialized() ) {
-        IClientObject clientObject = ClientObjectFactory.getClientObject( display );
-        clientObject.set( "enableUiTests", true );
+        RemoteObjectFactory.getRemoteObject( display ).set( "enableUiTests", true );
       }
     }
   }

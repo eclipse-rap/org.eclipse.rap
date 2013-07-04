@@ -11,17 +11,18 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tableitemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -86,9 +87,8 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   public void renderInitialization( Widget widget ) throws IOException {
     TableItem item = ( TableItem )widget;
     Table parent = item.getParent();
-    IClientObject clientObject = ClientObjectFactory.getClientObject( item );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( parent ) );
+    RemoteObject remoteObject = createRemoteObject( item, TYPE );
+    remoteObject.set( "parent", WidgetUtil.getId( parent ) );
   }
 
   @Override
@@ -151,8 +151,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   private static void renderClear( TableItem item ) {
-    IClientObject clientObject = ClientObjectFactory.getClientObject( item );
-    clientObject.call( "clear", null );
+    getRemoteObject( item ).call( "clear", null );
   }
 
   //////////////////
@@ -258,4 +257,5 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     WidgetAdapterImpl adapter = ( WidgetAdapterImpl )item.getAdapter( WidgetAdapter.class );
     adapter.setInitialized( initialized );
   }
+
 }

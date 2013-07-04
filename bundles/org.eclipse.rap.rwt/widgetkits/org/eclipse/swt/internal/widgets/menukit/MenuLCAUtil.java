@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menukit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -23,9 +24,8 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
@@ -53,9 +53,8 @@ final class MenuLCAUtil {
   }
 
   static void renderInitialization( Menu menu ) {
-    IClientObject clientObject = ClientObjectFactory.getClientObject( menu );
-    clientObject.create( TYPE );
-    clientObject.set( "style", createJsonArray( getStyles( menu, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( menu, TYPE );
+    remoteObject.set( "style", createJsonArray( getStyles( menu, ALLOWED_STYLES ) ) );
   }
 
   static void renderChanges( Menu menu ) {
@@ -82,7 +81,7 @@ final class MenuLCAUtil {
   static void renderUnhideItems( Menu menu ) {
     if( wasEventSent( menu, ClientMessageConst.EVENT_SHOW ) ) {
       boolean reveal = menu.getItemCount() > 0;
-      getClientObject( menu ).call( METHOD_UNHIDE_ITEMS, new JsonObject().add( "reveal", reveal ) );
+      getRemoteObject( menu ).call( METHOD_UNHIDE_ITEMS, new JsonObject().add( "reveal", reveal ) );
     }
   }
 

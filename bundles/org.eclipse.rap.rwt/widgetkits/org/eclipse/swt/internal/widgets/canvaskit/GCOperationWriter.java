@@ -10,12 +10,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.swt.SWT;
@@ -35,7 +34,6 @@ import org.eclipse.swt.internal.graphics.GCOperation.DrawText;
 import org.eclipse.swt.internal.graphics.GCOperation.FillGradientRectangle;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 
@@ -55,7 +53,6 @@ final class GCOperationWriter {
 
   void initialize() {
     if( !initialized ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( getGC( control ) );
       Point size = control.getSize();
       lineWidth = 1;
       foreground = control.getForeground().getRGB();
@@ -66,7 +63,7 @@ final class GCOperationWriter {
         .add( "font", ProtocolUtil.getJsonForFont( control.getFont() ) )
         .add( "fillStyle", ProtocolUtil.getJsonForColor( background, false ) )
         .add( "strokeStyle", ProtocolUtil.getJsonForColor( foreground, false ) );
-      clientObject.call( "init", parameters );
+      getRemoteObject( getGcId( control ) ).call( "init", parameters );
       operations = new JsonArray();
       initialized = true;
     }
@@ -105,9 +102,8 @@ final class GCOperationWriter {
   void render() {
     if( operations != null ) {
       if( !operations.isEmpty() ) {
-        IClientObject clientObject = ClientObjectFactory.getClientObject( getGC( control ) );
         JsonObject parameters = new JsonObject().add( "operations", operations );
-        clientObject.call( "draw", parameters );
+        getRemoteObject( getGcId( control ) ).call( "draw", parameters );
       }
       operations = null;
     }
@@ -411,11 +407,6 @@ final class GCOperationWriter {
     operations.add( operation );
   }
 
-  private static Adaptable getGC( Widget widget ) {
-    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )widget.getAdapter( WidgetAdapter.class );
-    return adapter.getGCForClient();
-  }
-
   private float getOffset( boolean fill ) {
     float result = 0;
     if( !fill && lineWidth % 2 != 0 ) {
@@ -427,6 +418,11 @@ final class GCOperationWriter {
   float round( double value, int decimals ) {
     int factor = ( int )Math.pow( 10, decimals );
     return ( ( float )Math.round( factor * value ) ) / factor;
+  }
+
+  static String getGcId( Widget widget ) {
+    WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
+    return adapter.getId() + ".gc";
   }
 
 }

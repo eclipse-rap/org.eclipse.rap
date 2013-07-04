@@ -11,13 +11,13 @@
 package org.eclipse.swt.internal.widgets.canvaskit;
 
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.eclipse.swt.internal.widgets.canvaskit.GCOperationWriter.getGcId;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -610,11 +610,17 @@ public class GCOperationWriter_Test {
     assertEquals( "[\"fill\"]", getOperation( 7, ops ) );
   }
 
+  @Test
+  public void testGetGcId() {
+    String gcId = GCOperationWriter.getGcId( canvas );
+
+    assertEquals( WidgetUtil.getId( canvas ) + ".gc", gcId );
+  }
+
   private static JsonArray getGCOperations( Canvas canvas ) {
     writeGCOperations( canvas );
     Message message = Fixture.getProtocolMessage();
-    String id = CanvasLCA_Test.getGcId( canvas );
-    CallOperation draw = message.findCallOperation( id, "draw" );
+    CallOperation draw = message.findCallOperation( getGcId( canvas ), "draw" );
     return draw.getProperty( "operations" ).asArray();
   }
 

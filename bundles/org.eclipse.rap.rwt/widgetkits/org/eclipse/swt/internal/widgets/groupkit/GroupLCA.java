@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.groupkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -20,12 +21,11 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Widget;
 
@@ -64,10 +64,9 @@ public class GroupLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Group group = ( Group )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( group );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( group.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( group, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( group, TYPE );
+    remoteObject.set( "parent", getId( group.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( group, ALLOWED_STYLES ) ) );
   }
 
   @Override
@@ -86,7 +85,7 @@ public class GroupLCA extends AbstractWidgetLCA {
     String newValue = group.getText();
     if( hasChanged( group, PROP_TEXT, newValue, "" ) ) {
       String text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
-      getClientObject( group ).set( PROP_TEXT, text );
+      getRemoteObject( group ).set( PROP_TEXT, text );
     }
   }
 
@@ -95,7 +94,7 @@ public class GroupLCA extends AbstractWidgetLCA {
     if( hasChanged( group, PROP_TEXT, text, "" ) ) {
       int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
       if( mnemonicIndex != -1 ) {
-        getClientObject( group ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+        getRemoteObject( group ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
       }
     }
   }

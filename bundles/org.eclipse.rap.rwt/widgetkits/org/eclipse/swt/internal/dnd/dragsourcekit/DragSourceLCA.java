@@ -10,7 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.dragsourcekit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -25,8 +26,8 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.Transfer;
@@ -59,10 +60,9 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     DragSource dragSource = ( DragSource )widget;
-    IClientObject clientObject = getClientObject( dragSource );
-    clientObject.create( TYPE );
-    clientObject.set( "control", getId( dragSource.getControl() ) );
-    clientObject.set( "style", convertOperations( dragSource.getStyle() ) );
+    RemoteObject remoteObject = createRemoteObject( dragSource, TYPE );
+    remoteObject.set( "control", getId( dragSource.getControl() ) );
+    remoteObject.set( "style", convertOperations( dragSource.getStyle() ) );
   }
 
   @Override
@@ -88,7 +88,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     Transfer[] newValue = dragSource.getTransfer();
     if( hasChanged( dragSource, PROP_TRANSFER, newValue, DEFAULT_TRANSFER ) ) {
       JsonValue renderValue = convertTransferTypes( newValue );
-      getClientObject( dragSource ).set( "transfer", renderValue );
+      getRemoteObject( dragSource ).set( "transfer", renderValue );
     }
   }
 
@@ -100,7 +100,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
       JsonObject parameters = new JsonObject()
         .add( "detail", operations.isEmpty() ? JsonValue.valueOf( "DROP_NONE" ) : operations.get( 0 ) )
         .add( "control", getId( dndAdapter.getDetailChangedControl() ) );
-      getClientObject( dragSource ).call( "changeDetail", parameters );
+      getRemoteObject( dragSource ).call( "changeDetail", parameters );
     }
   }
 
@@ -114,7 +114,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
         .add( "control", feedbackChangedControlId )
         .add( "flags", value )
         .add( "feedback", convertFeedback( value ) );
-      getClientObject( dragSource ).call( "changeFeedback", parameters );
+      getRemoteObject( dragSource ).call( "changeFeedback", parameters );
     }
   }
 
@@ -126,7 +126,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
       JsonObject parameters = new JsonObject()
         .add( "control", dataTypeChangedControlId )
         .add( "dataType", dndAdapter.getDataTypeChangedValue().type );
-      getClientObject( dragSource ).call( "changeDataType", parameters );
+      getRemoteObject( dragSource ).call( "changeDataType", parameters );
     }
   }
 
@@ -134,7 +134,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     IDNDAdapter dndAdapter = dragSource.getAdapter( IDNDAdapter.class  );
     // TODO [tb] : would be rendered by all DragSources:
     if( dndAdapter.isCanceled() ) {
-      getClientObject( dragSource ).call( "cancel", null );
+      getRemoteObject( dragSource ).call( "cancel", null );
     }
   }
 

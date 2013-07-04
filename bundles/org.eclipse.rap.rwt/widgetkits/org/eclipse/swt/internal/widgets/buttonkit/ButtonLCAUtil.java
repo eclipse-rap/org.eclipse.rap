@@ -12,6 +12,8 @@
 package org.eclipse.swt.internal.widgets.buttonkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -20,11 +22,10 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 
@@ -63,10 +64,9 @@ final class ButtonLCAUtil {
   }
 
   static void renderInitialization( Button button ) {
-    IClientObject clientObject = ClientObjectFactory.getClientObject( button );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( button.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( button, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( button, TYPE );
+    remoteObject.set( "parent", getId( button.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( button, ALLOWED_STYLES ) ) );
   }
 
   static void renderChanges( Button button ) {
@@ -115,8 +115,7 @@ final class ButtonLCAUtil {
     String newValue = button.getText();
     if( WidgetLCAUtil.hasChanged( button, PROP_TEXT, newValue, "" ) ) {
       String text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
-      IClientObject clientObject = ClientObjectFactory.getClientObject( button );
-      clientObject.set( PROP_TEXT, text );
+      getRemoteObject( button ).set( PROP_TEXT, text );
     }
   }
 
@@ -125,8 +124,7 @@ final class ButtonLCAUtil {
     if( WidgetLCAUtil.hasChanged( button, PROP_TEXT, text, "" ) ) {
       int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
       if( mnemonicIndex != -1 ) {
-        IClientObject clientObject = ClientObjectFactory.getClientObject( button );
-        clientObject.set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+        getRemoteObject( button ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
       }
     }
   }

@@ -12,15 +12,15 @@
 package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Widget;
@@ -70,10 +70,9 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Hyperlink hyperlink = ( Hyperlink )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( hyperlink );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( hyperlink.getParent() ) ); //$NON-NLS-1$
-    clientObject.set( "style", createJsonArray( getStyles( hyperlink, ALLOWED_STYLES ) ) ); //$NON-NLS-1$
+    RemoteObject remoteObject = createRemoteObject( hyperlink, TYPE );
+    remoteObject.set( "parent", getId( hyperlink.getParent() ) ); //$NON-NLS-1$
+    remoteObject.set( "style", createJsonArray( getStyles( hyperlink, ALLOWED_STYLES ) ) ); //$NON-NLS-1$
   }
 
   @Override

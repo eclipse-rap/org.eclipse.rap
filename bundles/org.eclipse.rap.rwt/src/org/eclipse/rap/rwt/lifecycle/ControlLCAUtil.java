@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_TEXT;
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
@@ -380,7 +380,7 @@ public class ControlLCAUtil {
     Integer newValue = new Integer( tabIndex );
     // there is no reliable default value for all controls
     if( WidgetLCAUtil.hasChanged( control, PROP_TAB_INDEX, newValue ) ) {
-      getClientObject( control ).set( "tabIndex", tabIndex );
+      getRemoteObject( control ).set( "tabIndex", tabIndex );
     }
   }
 
@@ -420,7 +420,7 @@ public class ControlLCAUtil {
     Boolean defValue = control instanceof Shell ? Boolean.FALSE : Boolean.TRUE;
     // TODO [tb] : Can we have a shorthand for this, like in JSWriter?
     if( WidgetLCAUtil.hasChanged( control, Props.VISIBLE, newValue, defValue ) ) {
-      getClientObject( control ).set( "visibility", visible );
+      getRemoteObject( control ).set( "visibility", visible );
     }
   }
 
@@ -496,7 +496,7 @@ public class ControlLCAUtil {
   static void renderCursor( Control control ) {
     Cursor newValue = control.getCursor();
     if( WidgetLCAUtil.hasChanged( control, PROP_CURSOR, newValue, null ) ) {
-      getClientObject( control ).set( PROP_CURSOR, getQxCursor( newValue ) );
+      getRemoteObject( control ).set( PROP_CURSOR, getQxCursor( newValue ) );
     }
   }
 

@@ -11,17 +11,18 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tabitemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Widget;
@@ -54,12 +55,11 @@ public class TabItemLCA extends AbstractWidgetLCA {
   public void renderInitialization( Widget widget ) throws IOException {
     TabItem item = ( TabItem )widget;
     TabFolder parent = item.getParent();
-    IClientObject clientObject = ClientObjectFactory.getClientObject( item );
-    clientObject.create( TYPE );
+    RemoteObject remoteObject = createRemoteObject( item, TYPE );
     // TODO [tb] : Do not render id!
-    clientObject.set( "id", WidgetUtil.getId( item ) );
-    clientObject.set( "parent", WidgetUtil.getId( parent ) );
-    clientObject.set( "index", parent.indexOf( item ) ) ;
+    remoteObject.set( "id", WidgetUtil.getId( item ) );
+    remoteObject.set( "parent", WidgetUtil.getId( parent ) );
+    remoteObject.set( "index", parent.indexOf( item ) ) ;
   }
 
   @Override
@@ -81,8 +81,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     String newValue = item.getText();
     if( WidgetLCAUtil.hasChanged( item, PROP_TEXT, newValue, "" ) ) {
       String text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
-      IClientObject clientObject = ClientObjectFactory.getClientObject( item );
-      clientObject.set( PROP_TEXT, text );
+      getRemoteObject( item ).set( PROP_TEXT, text );
     }
   }
 
@@ -91,8 +90,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.hasChanged( item, PROP_TEXT, text, "" ) ) {
       int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
       if( mnemonicIndex != -1 ) {
-        IClientObject clientObject = ClientObjectFactory.getClientObject( item );
-        clientObject.set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+        getRemoteObject( item ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
       }
     }
   }

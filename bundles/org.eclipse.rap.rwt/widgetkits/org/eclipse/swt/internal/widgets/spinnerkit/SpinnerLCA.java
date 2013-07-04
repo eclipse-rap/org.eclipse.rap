@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -25,12 +26,11 @@ import java.io.IOException;
 import java.text.DecimalFormatSymbols;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Widget;
@@ -104,10 +104,9 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Spinner spinner = ( Spinner )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( spinner );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( spinner.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( spinner, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( spinner, TYPE );
+    remoteObject.set( "parent", getId( spinner.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( spinner, ALLOWED_STYLES ) ) );
   }
 
   @Override

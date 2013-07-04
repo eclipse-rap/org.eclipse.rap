@@ -11,16 +11,16 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.labelkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.Label;
 
 
@@ -47,10 +47,9 @@ final class SeparatorLabelLCA extends AbstractLabelLCADelegate {
 
   @Override
   void renderInitialization( Label label ) throws IOException {
-    IClientObject clientObject = getClientObject( label );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( label.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( label, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( label, TYPE );
+    remoteObject.set( "parent", getId( label.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( label, ALLOWED_STYLES ) ) );
   }
 
   @Override

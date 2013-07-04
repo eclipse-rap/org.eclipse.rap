@@ -11,11 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsStringArray;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasCallReceived;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
@@ -34,11 +35,11 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
@@ -149,30 +150,29 @@ public final class TreeLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
-    IClientObject clientObject = getClientObject( tree );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( tree.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( tree, ALLOWED_STYLES ) ) );
-    clientObject.set( "appearance", "tree" );
+    RemoteObject remoteObject = createRemoteObject( tree, TYPE );
+    remoteObject.set( "parent", getId( tree.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( tree, ALLOWED_STYLES ) ) );
+    remoteObject.set( "appearance", "tree" );
     ITreeAdapter adapter = getTreeAdapter( tree );
     if( ( tree.getStyle() & SWT.CHECK ) != 0 ) {
       JsonArray metrics = new JsonArray()
         .add( adapter.getCheckLeft() )
         .add( adapter.getCheckWidth() );
-      clientObject.set( "checkBoxMetrics", metrics );
+      remoteObject.set( "checkBoxMetrics", metrics );
     }
     if( getFixedColumns( tree ) >= 0 ) {
-      clientObject.set( "splitContainer", true );
+      remoteObject.set( "splitContainer", true );
     }
     if( ( tree.getStyle() & SWT.FULL_SELECTION ) == 0 ) {
       Rectangle textMargin = getTreeAdapter( tree ).getTextMargin();
       JsonArray padding = new JsonArray()
         .add( textMargin.x )
         .add( textMargin.width - textMargin.x );
-      clientObject.set( "selectionPadding", padding );
+      remoteObject.set( "selectionPadding", padding );
     }
-    clientObject.set( "indentionWidth", adapter.getIndentionWidth() );
-    clientObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( tree ) );
+    remoteObject.set( "indentionWidth", adapter.getIndentionWidth() );
+    remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( tree ) );
     ScrollBarLCAUtil.renderInitialization( tree );
   }
 
@@ -435,7 +435,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
                                     .add( itemMetrics[ i ].textLeft )
                                     .add( itemMetrics[ i ].textWidth ) );
       }
-      getClientObject( tree ).set( PROP_ITEM_METRICS, metrics );
+      getRemoteObject( tree ).set( PROP_ITEM_METRICS, metrics );
     }
   }
 
@@ -491,4 +491,5 @@ public final class TreeLCA extends AbstractWidgetLCA {
       throw new UnsupportedOperationException( msg );
     }
   }
+
 }

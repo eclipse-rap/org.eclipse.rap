@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.progressbarkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
@@ -19,11 +20,10 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Widget;
@@ -69,10 +69,9 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ProgressBar progressBar = ( ProgressBar )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( progressBar );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( progressBar.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( progressBar, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( progressBar, TYPE );
+    remoteObject.set( "parent", getId( progressBar.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( progressBar, ALLOWED_STYLES ) ) );
   }
 
   @Override

@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.clabelkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -22,13 +23,12 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.Rectangle;
@@ -80,12 +80,11 @@ public final class CLabelLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     CLabel clabel = ( CLabel )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( clabel );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( clabel.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( clabel, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( clabel, TYPE );
+    remoteObject.set( "parent", getId( clabel.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( clabel, ALLOWED_STYLES ) ) );
     // NOTE : This is consistent with Tree and Table, but might change - See Bug 373764
-    clientObject.set( "appearance", "clabel" );
+    remoteObject.set( "appearance", "clabel" );
     renderProperty( clabel, PROP_MARKUP_ENABLED, isMarkupEnabled( clabel ), false );
   }
 
@@ -144,7 +143,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
       if( !isMarkupEnabled( clabel ) ) {
         text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
       }
-      getClientObject( clabel ).set( PROP_TEXT, text );
+      getRemoteObject( clabel ).set( PROP_TEXT, text );
     }
   }
 
@@ -154,7 +153,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
       if( hasChanged( clabel, PROP_TEXT, text, null ) ) {
         int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
         if( mnemonicIndex != -1 ) {
-          getClientObject( clabel ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+          getRemoteObject( clabel ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
         }
       }
     }
@@ -163,4 +162,5 @@ public final class CLabelLCA extends AbstractWidgetLCA {
   private static CLabelThemeAdapter getThemeAdapter( CLabel clabel ) {
     return ( CLabelThemeAdapter )clabel.getAdapter( IThemeAdapter.class );
   }
+
 }

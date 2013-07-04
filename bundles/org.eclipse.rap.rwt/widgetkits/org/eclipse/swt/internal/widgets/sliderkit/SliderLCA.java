@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.sliderkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -22,12 +23,11 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.Widget;
@@ -87,10 +87,9 @@ public class SliderLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Slider slider = ( Slider )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( slider );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( slider.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( slider, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( slider, TYPE );
+    remoteObject.set( "parent", getId( slider.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( slider, ALLOWED_STYLES ) ) );
   }
 
 

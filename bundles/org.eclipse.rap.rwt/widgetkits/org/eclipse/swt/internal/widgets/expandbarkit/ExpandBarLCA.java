@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.expandbarkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -25,11 +26,10 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
@@ -75,10 +75,9 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ExpandBar expandBar = ( ExpandBar )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( expandBar );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( expandBar.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( expandBar, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( expandBar, TYPE );
+    remoteObject.set( "parent", getId( expandBar.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( expandBar, ALLOWED_STYLES ) ) );
     ScrollBarLCAUtil.renderInitialization( expandBar );
   }
 
@@ -148,4 +147,5 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
   private static ExpandItem getItem( ExpandBar bar, String itemId ) {
     return ( ExpandItem )find( bar, itemId );
   }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Control;
@@ -84,7 +85,7 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
   public void renderDispose( Widget widget ) throws IOException {
     WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
     if( adapter.getParent() == null || !adapter.getParent().isDisposed() ) {
-      ClientObjectFactory.getClientObject( widget ).destroy();
+      getRemoteObject( widget ).destroy();
     }
   }
 
@@ -105,4 +106,5 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
    */
   public void doRedrawFake( Control control ) {
   }
+
 }

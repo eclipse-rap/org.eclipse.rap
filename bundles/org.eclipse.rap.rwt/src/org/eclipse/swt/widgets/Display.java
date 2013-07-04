@@ -33,7 +33,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -786,7 +785,7 @@ public class Display extends Device implements Adaptable {
         displayAdapter = new DisplayAdapter();
       }
       result = ( T )displayAdapter;
-    } else if( adapter == IClientObjectAdapter.class || adapter == WidgetAdapter.class ) {
+    } else if( adapter == WidgetAdapter.class ) {
       if( widgetAdapter == null ) {
         String id = IdGeneratorProvider.getIdGenerator().createId( this );
         widgetAdapter = new WidgetAdapterImpl( id );

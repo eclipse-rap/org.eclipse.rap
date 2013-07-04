@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,20 +14,15 @@ package org.eclipse.swt.internal.widgets;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectAdapter;
-import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class WidgetAdapterImpl
-  implements WidgetAdapter, IClientObjectAdapter, SerializableCompatibility
-{
+public final class WidgetAdapterImpl implements WidgetAdapter, SerializableCompatibility {
 
   private final String id;
   private String customId;
@@ -35,7 +30,6 @@ public final class WidgetAdapterImpl
   private transient Map<String,Object> preservedValues;
   private transient IRenderRunnable renderRunnable;
   private transient String cachedVariant;
-  private ClientObjectAdapter gcObjectAdapter;
   private Widget parent;
 
   public WidgetAdapterImpl( String id ) {
@@ -116,26 +110,6 @@ public final class WidgetAdapterImpl
     if( initialized ) {
       DisposedWidgets.add( widget );
     }
-  }
-
-  public Adaptable getGCForClient() {
-    if( gcObjectAdapter == null ) {
-      gcObjectAdapter = new ClientObjectAdapter( "gc" );
-    }
-    return createGcAdaptable();
-  }
-
-  @SuppressWarnings("unchecked")
-  private Adaptable createGcAdaptable() {
-    return new Adaptable() {
-
-      public <T> T getAdapter( Class<T> adapter ) {
-        if( adapter == IClientObjectAdapter.class ) {
-          return ( T )gcObjectAdapter;
-        }
-        return null;
-      }
-    };
   }
 
   private Object readResolve() {

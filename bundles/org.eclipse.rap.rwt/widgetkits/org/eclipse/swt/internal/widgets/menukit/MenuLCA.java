@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menukit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
@@ -44,7 +45,7 @@ public final class MenuLCA extends AbstractWidgetLCA {
 
   public void renderDispose( Widget widget ) throws IOException {
     // TODO [tb] : The menu can currently not be destroyed automatically on the client
-    ClientObjectFactory.getClientObject( widget ).destroy();
+    getRemoteObject( widget ).destroy();
   }
 
   private static MenuDelegateLCA getDelegateLCA( Widget widget ) {
@@ -60,4 +61,5 @@ public final class MenuLCA extends AbstractWidgetLCA {
     }
     return result;
   }
+
 }

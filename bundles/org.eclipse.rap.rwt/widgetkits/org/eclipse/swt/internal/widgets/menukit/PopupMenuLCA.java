@@ -11,11 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menukit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IMenuAdapter;
@@ -53,11 +53,10 @@ final class PopupMenuLCA extends MenuDelegateLCA {
     if( menu.isVisible() ) {
       IMenuAdapter adapter = menu.getAdapter( IMenuAdapter.class );
       Point location = adapter.getLocation();
-      IClientObject clientObject = ClientObjectFactory.getClientObject( menu );
       JsonObject parameters = new JsonObject()
         .add( "x", location.x )
         .add( "y", location.y );
-      clientObject.call( METHOD_SHOW_MENU, parameters );
+      getRemoteObject( menu ).call( METHOD_SHOW_MENU, parameters );
       menu.setVisible( false );
     }
   }

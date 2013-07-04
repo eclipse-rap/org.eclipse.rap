@@ -12,11 +12,12 @@
 package org.eclipse.swt.internal.widgets.tablekit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_ITEM;
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsStringArray;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasCallReceived;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
@@ -35,12 +36,12 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
@@ -145,24 +146,23 @@ public final class TableLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Table table = ( Table )widget;
-    IClientObject clientObject = getClientObject( table );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( table.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( table, ALLOWED_STYLES ) ) );
-    clientObject.set( "appearance", "table" );
+    RemoteObject remoteObject = createRemoteObject( table, TYPE );
+    remoteObject.set( "parent", getId( table.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( table, ALLOWED_STYLES ) ) );
+    remoteObject.set( "appearance", "table" );
     ITableAdapter adapter = getTableAdapter( table );
     if( ( table.getStyle() & SWT.CHECK ) != 0 ) {
       JsonArray metrics = new JsonArray()
         .add( adapter.getCheckLeft() )
         .add( adapter.getCheckWidth() );
-      clientObject.set( "checkBoxMetrics", metrics );
+      remoteObject.set( "checkBoxMetrics", metrics );
     }
     if( getFixedColumns( table ) >= 0 ) {
-      clientObject.set( "splitContainer", true );
+      remoteObject.set( "splitContainer", true );
     }
-    clientObject.set( "indentionWidth", 0 );
-    clientObject.set( PROP_TREE_COLUMN, -1 );
-    clientObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( table ) );
+    remoteObject.set( "indentionWidth", 0 );
+    remoteObject.set( PROP_TREE_COLUMN, -1 );
+    remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( table ) );
     ScrollBarLCAUtil.renderInitialization( table );
   }
 
@@ -387,7 +387,7 @@ public final class TableLCA extends AbstractWidgetLCA {
                                     .add( itemMetrics[ i ].textLeft )
                                     .add( itemMetrics[ i ].textWidth ) );
       }
-      getClientObject( table ).set( PROP_ITEM_METRICS, metrics );
+      getRemoteObject( table ).set( PROP_ITEM_METRICS, metrics );
     }
   }
 

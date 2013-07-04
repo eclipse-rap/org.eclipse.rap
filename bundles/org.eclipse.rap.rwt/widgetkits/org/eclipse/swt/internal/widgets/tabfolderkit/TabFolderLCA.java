@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
@@ -23,12 +24,11 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Widget;
@@ -63,10 +63,9 @@ public class TabFolderLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     TabFolder folder = ( TabFolder )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( folder );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( folder.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( folder, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( folder, TYPE );
+    remoteObject.set( "parent", getId( folder.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( folder, ALLOWED_STYLES ) ) );
   }
 
   @Override

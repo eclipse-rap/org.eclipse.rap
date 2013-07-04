@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,17 +11,17 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.expanditemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
@@ -64,9 +64,8 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ExpandItem item = ( ExpandItem )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( item );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( item.getParent() ) );
+    RemoteObject remoteObject = createRemoteObject( item, TYPE );
+    remoteObject.set( "parent", getId( item.getParent() ) );
   }
 
   @Override
@@ -89,4 +88,5 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
   private static IExpandBarAdapter getExpandBarAdapter( ExpandItem item ) {
     return item.getParent().getAdapter( IExpandBarAdapter.class );
   }
+
 }

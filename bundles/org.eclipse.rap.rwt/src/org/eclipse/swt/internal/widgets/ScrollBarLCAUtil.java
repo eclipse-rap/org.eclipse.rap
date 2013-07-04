@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.widgets;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -21,9 +22,8 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.ScrollBar;
@@ -65,10 +65,9 @@ public class ScrollBarLCAUtil {
 
   private static void renderCreate( ScrollBar scrollBar ) {
     if( scrollBar != null ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( scrollBar );
-      clientObject.create( TYPE );
-      clientObject.set( "parent", getId( scrollBar.getParent() ) );
-      clientObject.set( "style", createJsonArray( getStyles( scrollBar, ALLOWED_STYLES ) ) );
+      RemoteObject remoteObject = createRemoteObject( scrollBar, TYPE );
+      remoteObject.set( "parent", getId( scrollBar.getParent() ) );
+      remoteObject.set( "style", createJsonArray( getStyles( scrollBar, ALLOWED_STYLES ) ) );
     }
   }
 

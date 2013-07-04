@@ -11,23 +11,21 @@
 package org.eclipse.swt.internal.widgets.canvaskit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.widgets.canvaskit.GCOperationWriter.getGcId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.internal.graphics.GCOperation;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
@@ -59,13 +57,11 @@ public final class CanvasLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Canvas canvas = ( Canvas )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( canvas );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( canvas.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( canvas, ALLOWED_STYLES ) ) );
-    IClientObject clientObjectGC = ClientObjectFactory.getClientObject( getGC( canvas ) );
-    clientObjectGC.create( TYPE_GC );
-    clientObjectGC.set( "parent", WidgetUtil.getId( canvas ) );
+    RemoteObject remoteObject = createRemoteObject( canvas, TYPE );
+    remoteObject.set( "parent", getId( canvas.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( canvas, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObjectForGC = createRemoteObject( getGcId( canvas ), TYPE_GC );
+    remoteObjectForGC.set( "parent", WidgetUtil.getId( canvas ) );
   }
 
   @Override
@@ -91,11 +87,6 @@ public final class CanvasLCA extends AbstractWidgetLCA {
     }
     adapter.clearGCOperations();
     adapter.setForceRedraw( false );
-  }
-
-  private static Adaptable getGC( Widget widget ) {
-    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )widget.getAdapter( WidgetAdapter.class );
-    return adapter.getGCForClient();
   }
 
   public void renderClientArea( Canvas canvas ) {

@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.util;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,8 +19,6 @@ import java.util.Map;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Control;
@@ -128,8 +128,7 @@ public final class ActiveKeysUtil {
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_ACTIVE_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
       if( hasChanged ) {
-        IClientObject clientObject = ClientObjectFactory.getClientObject( display );
-        clientObject.set( "activeKeys", translateKeySequences( newValue ) );
+        getRemoteObject( display ).set( "activeKeys", translateKeySequences( newValue ) );
       }
     }
   }
@@ -141,8 +140,7 @@ public final class ActiveKeysUtil {
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_ACTIVE_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
       if( hasChanged ) {
-        IClientObject clientObject = ClientObjectFactory.getClientObject( control );
-        clientObject.set( "activeKeys", translateKeySequences( newValue ) );
+        getRemoteObject( control ).set( "activeKeys", translateKeySequences( newValue ) );
       }
     }
   }
@@ -154,8 +152,7 @@ public final class ActiveKeysUtil {
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_CANCEL_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
       if( hasChanged ) {
-        IClientObject clientObject = ClientObjectFactory.getClientObject( display );
-        clientObject.set( "cancelKeys", translateKeySequences( newValue ) );
+        getRemoteObject( display ).set( "cancelKeys", translateKeySequences( newValue ) );
       }
     }
   }
@@ -167,8 +164,7 @@ public final class ActiveKeysUtil {
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_CANCEL_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
       if( hasChanged ) {
-        IClientObject clientObject = ClientObjectFactory.getClientObject( control );
-        clientObject.set( "cancelKeys", translateKeySequences( newValue ) );
+        getRemoteObject( control ).set( "cancelKeys", translateKeySequences( newValue ) );
       }
     }
   }
@@ -179,8 +175,7 @@ public final class ActiveKeysUtil {
       String newValue = getMnemonicActivator( display );
       String oldValue = ( String )adapter.getPreserved( PROP_MNEMONIC_ACTIVATOR );
       if( !equals( oldValue, newValue ) ) {
-        IClientObject clientObject = ClientObjectFactory.getClientObject( display );
-        clientObject.set( "mnemonicActivator", getModifierKeys( newValue ) );
+        getRemoteObject( display ).set( "mnemonicActivator", getModifierKeys( newValue ) );
       }
     }
   }

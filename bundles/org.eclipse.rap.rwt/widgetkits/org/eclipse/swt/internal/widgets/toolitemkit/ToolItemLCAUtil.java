@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
@@ -24,10 +25,9 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.events.EventLCAUtil;
@@ -80,11 +80,10 @@ final class ToolItemLCAUtil {
     //           this could lead to an incorrect order of the items on the
     //           client, which is problematic with the keyboard-control
     //           and radio-groups.
-    IClientObject clientObject = ClientObjectFactory.getClientObject( toolItem );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( toolItem.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( toolItem, ALLOWED_STYLES ) ) );
-    clientObject.set( "index", toolBar.indexOf( toolItem ) );
+    RemoteObject remoteObject = createRemoteObject( toolItem, TYPE );
+    remoteObject.set( "parent", getId( toolItem.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( toolItem, ALLOWED_STYLES ) ) );
+    remoteObject.set( "index", toolBar.indexOf( toolItem ) );
   }
 
   static void renderChanges( ToolItem toolItem ) {
@@ -129,7 +128,7 @@ final class ToolItemLCAUtil {
     String newValue = toolItem.getText();
     if( hasChanged( toolItem, PROP_TEXT, newValue, "" ) ) {
       String text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
-      getClientObject( toolItem ).set( PROP_TEXT, text );
+      getRemoteObject( toolItem ).set( PROP_TEXT, text );
     }
   }
 
@@ -138,7 +137,7 @@ final class ToolItemLCAUtil {
     if( hasChanged( toolItem, PROP_TEXT, text, "" ) ) {
       int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
       if( mnemonicIndex != -1 ) {
-        getClientObject( toolItem ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+        getRemoteObject( toolItem ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
       }
     }
   }
@@ -155,4 +154,5 @@ final class ToolItemLCAUtil {
     }
     return result;
   }
+
 }

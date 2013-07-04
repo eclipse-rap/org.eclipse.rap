@@ -8,55 +8,68 @@
 * Contributors:
 *    EclipseSource - initial API and implementation
 *******************************************************************************/
-package org.eclipse.rap.rwt.internal.protocol;
+package org.eclipse.rap.rwt.internal.lifecycle;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 
 
-public final class ClientObject implements IClientObject {
+/**
+ * A remote object that writes directly to the message writer. Used for widgets and other objects
+ * that are rendered by LCAs.
+ */
+public final class LifeCycleRemoteObject implements RemoteObject {
 
-  private final String targetId;
+  private final String id;
 
-  public ClientObject( String targetId ) {
-    this.targetId = targetId;
+  public LifeCycleRemoteObject( String id, String type ) {
+    this.id = id;
+    if( type != null ) {
+      getWriter().appendCreate( id, type );
+    }
   }
 
-  public void create( String type ) {
-    getWriter().appendCreate( targetId, type );
+  public String getId() {
+    return id;
   }
 
   public void destroy() {
-    getWriter().appendDestroy( targetId );
+    getWriter().appendDestroy( id );
   }
 
   public void set( String name, int value ) {
-    getWriter().appendSet( targetId, name, value );
+    getWriter().appendSet( id, name, value );
   }
 
   public void set( String name, double value ) {
-    getWriter().appendSet( targetId, name, value );
+    getWriter().appendSet( id, name, value );
   }
 
   public void set( String name, boolean value ) {
-    getWriter().appendSet( targetId, name, value );
+    getWriter().appendSet( id, name, value );
   }
 
   public void set( String name, String value ) {
-    getWriter().appendSet( targetId, name, value );
+    getWriter().appendSet( id, name, value );
   }
 
   public void set( String name, JsonValue value ) {
-    getWriter().appendSet( targetId, name, value );
+    getWriter().appendSet( id, name, value );
   }
 
   public void listen( String eventName, boolean listen ) {
-    getWriter().appendListen( targetId, eventName, listen );
+    getWriter().appendListen( id, eventName, listen );
   }
 
   public void call( String method, JsonObject parameters ) {
-    getWriter().appendCall( targetId, method, parameters );
+    getWriter().appendCall( id, method, parameters );
+  }
+
+  public void setHandler( OperationHandler handler ) {
   }
 
   private static ProtocolMessageWriter getWriter() {

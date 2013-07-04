@@ -11,10 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.browser.browserkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.jsonToJava;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValue;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
@@ -33,7 +34,6 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
@@ -45,6 +45,7 @@ import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
@@ -106,10 +107,9 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Browser browser = ( Browser )widget;
-    IClientObject clientObject = getClientObject( browser );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( browser.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( browser, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( browser, TYPE );
+    remoteObject.set( "parent", getId( browser.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( browser, ALLOWED_STYLES ) ) );
   }
 
   @Override
@@ -148,7 +148,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   private static void renderUrl( Browser browser ) throws IOException {
     if( hasUrlChanged( browser ) ) {
-      getClientObject( browser ).set( "url", getUrl( browser ) );
+      getRemoteObject( browser ).set( "url", getUrl( browser ) );
       browser.getAdapter( IBrowserAdapter.class ).resetUrlChanged();
     }
   }
@@ -188,7 +188,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
           if( browser.getDisplay() == LifeCycleUtil.getSessionDisplay() ) {
             try {
               JsonObject parameters = new JsonObject().add( PARAM_SCRIPT, executeScript );
-              getClientObject( browser ).call( METHOD_EVALUATE, parameters );
+              getRemoteObject( browser ).call( METHOD_EVALUATE, parameters );
             } finally {
               lifeCycle.removePhaseListener( this );
             }
@@ -235,7 +235,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     if( functions != null ) {
       JsonObject parameters = new JsonObject()
         .add( PARAM_FUNCTIONS, JsonUtil.createJsonArray( functions ) );
-      getClientObject( browser ).call( METHOD_CREATE_FUNCTIONS, parameters );
+      getRemoteObject( browser ).call( METHOD_CREATE_FUNCTIONS, parameters );
     }
   }
 
@@ -246,7 +246,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     if( functions != null ) {
       JsonObject parameters = new JsonObject()
         .add( PARAM_FUNCTIONS, JsonUtil.createJsonArray( functions ) );
-      getClientObject( browser ).call( METHOD_DESTROY_FUNCTIONS, parameters );
+      getRemoteObject( browser ).call( METHOD_DESTROY_FUNCTIONS, parameters );
     }
   }
 
@@ -288,7 +288,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
       Object[] value = new Object[] {
         name, result, error
       };
-      getClientObject( browser ).set( PARAM_FUNCTION_RESULT, createJsonArray( value ) );
+      getRemoteObject( browser ).set( PARAM_FUNCTION_RESULT, createJsonArray( value ) );
     }
   }
 

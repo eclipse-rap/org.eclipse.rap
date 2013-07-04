@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.widgets.canvaskit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.widgets.canvaskit.GCOperationWriter.getGcId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -18,10 +19,7 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -36,12 +34,10 @@ import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawLine;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Widget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -342,14 +338,7 @@ public class CanvasLCA_Test {
 
   private static CallOperation getGCOperation( Canvas canvas, String method ) {
     Message message = Fixture.getProtocolMessage();
-    String id = getGcId( canvas );
-    return message.findCallOperation( id, method );
-  }
-
-  static String getGcId( Widget widget ) {
-    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )widget.getAdapter( WidgetAdapter.class );
-    Adaptable gcForClient = adapter.getGCForClient();
-    return gcForClient.getAdapter( IClientObjectAdapter.class ).getId();
+    return message.findCallOperation( getGcId( canvas ), method );
   }
 
 }

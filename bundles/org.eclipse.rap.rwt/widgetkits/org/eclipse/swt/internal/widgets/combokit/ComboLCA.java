@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.combokit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
@@ -25,7 +26,6 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
@@ -35,6 +35,7 @@ import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -110,10 +111,9 @@ public class ComboLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Combo combo = ( Combo )widget;
-    IClientObject clientObject = getClientObject( combo );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( combo.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( combo, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( combo, TYPE );
+    remoteObject.set( "parent", getId( combo.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( combo, ALLOWED_STYLES ) ) );
   }
 
   @Override
@@ -192,7 +192,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static void renderItemHeight( Combo combo ) {
     Integer newValue = Integer.valueOf( getItemHeight( combo ) );
     if( hasChanged( combo, PROP_ITEM_HEIGHT, newValue ) ) {
-      getClientObject( combo ).set( PROP_ITEM_HEIGHT, newValue.intValue() );
+      getRemoteObject( combo ).set( PROP_ITEM_HEIGHT, newValue.intValue() );
     }
   }
 
@@ -221,7 +221,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     boolean textChanged
       = !isEditable( combo ) && hasChanged( combo, PROP_TEXT, combo.getText(), "" );
     if( selectionChanged || textChanged ) {
-      getClientObject( combo ).set( PROP_SELECTION_INDEX, newValue.intValue() );
+      getRemoteObject( combo ).set( PROP_SELECTION_INDEX, newValue.intValue() );
     }
   }
 
@@ -285,4 +285,5 @@ public class ComboLCA extends AbstractWidgetLCA {
     }
     return result;
   }
+
 }

@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabitemkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -21,11 +22,10 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.Font;
@@ -67,11 +67,10 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   public void renderInitialization( Widget widget ) throws IOException {
     CTabItem item = ( CTabItem )widget;
     CTabFolder parent = item.getParent();
-    IClientObject clientObject = ClientObjectFactory.getClientObject( item );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( parent ) );
-    clientObject.set( "index", parent.indexOf( item ) );
-    clientObject.set( "style", createJsonArray( getStyles( item, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( item, TYPE );
+    remoteObject.set( "parent", getId( parent ) );
+    remoteObject.set( "index", parent.indexOf( item ) );
+    remoteObject.set( "style", createJsonArray( getStyles( item, ALLOWED_STYLES ) ) );
   }
 
   @Override
@@ -96,7 +95,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     String newValue = getText( item );
     if( hasChanged( item, PROP_TEXT, newValue, "" ) ) {
       String text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
-      getClientObject( item ).set( PROP_TEXT, text );
+      getRemoteObject( item ).set( PROP_TEXT, text );
     }
   }
 
@@ -105,7 +104,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     if( hasChanged( item, PROP_TEXT, text, "" ) ) {
       int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
       if( mnemonicIndex != -1 ) {
-        getClientObject( item ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+        getRemoteObject( item ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
       }
     }
   }
@@ -125,4 +124,5 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   private static ICTabFolderAdapter getCTabFolderAdapter( CTabItem item ) {
     return item.getParent().getAdapter( ICTabFolderAdapter.class );
   }
+
 }

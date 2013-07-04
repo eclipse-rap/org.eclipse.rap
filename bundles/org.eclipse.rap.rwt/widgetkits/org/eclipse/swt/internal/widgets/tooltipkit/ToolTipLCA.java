@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.tooltipkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -23,11 +24,10 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IToolTipAdapter;
@@ -75,10 +75,9 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ToolTip toolTip = ( ToolTip )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( toolTip );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( toolTip.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( toolTip, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( toolTip, TYPE );
+    remoteObject.set( "parent", getId( toolTip.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( toolTip, ALLOWED_STYLES ) ) );
   }
 
   @Override
@@ -108,4 +107,5 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
   private static Point getLocation( ToolTip toolTip ) {
     return toolTip.getAdapter( IToolTipAdapter.class ).getLocation();
   }
+
 }

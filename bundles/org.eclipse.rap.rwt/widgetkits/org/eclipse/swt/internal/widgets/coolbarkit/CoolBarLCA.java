@@ -12,19 +12,19 @@
 package org.eclipse.swt.internal.widgets.coolbarkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.Widget;
@@ -59,10 +59,9 @@ public class CoolBarLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     CoolBar coolbar = ( CoolBar )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( coolbar );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( coolbar.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( coolbar, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( coolbar, TYPE );
+    remoteObject.set( "parent", getId( coolbar.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( coolbar, ALLOWED_STYLES ) ) );
   }
 
   @Override

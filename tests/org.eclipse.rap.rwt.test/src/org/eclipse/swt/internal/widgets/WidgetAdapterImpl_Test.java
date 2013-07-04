@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,19 +13,15 @@ package org.eclipse.swt.internal.widgets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
-import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtilAdapter;
-import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Composite;
@@ -167,54 +163,6 @@ public class WidgetAdapterImpl_Test {
 
     assertTrue( widget.isDisposed() );
     assertEquals( 1, DisposedWidgets.getAll().length );
-  }
-
-  @Test
-  public void testGetGCForClient() {
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
-
-    Adaptable gc = adapter.getGCForClient();
-
-    assertNotNull( gc );
-  }
-
-  @Test
-  public void testGetGCForClient_hasClientObjectAdapter() {
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
-
-    Adaptable gc = adapter.getGCForClient();
-
-    assertNotNull( gc.getAdapter( IClientObjectAdapter.class ) );
-  }
-
-  @Test
-  public void testGetGCForClient_hasNoAdapterForInvalidClass() {
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
-
-    Adaptable gc = adapter.getGCForClient();
-
-    assertNull( gc.getAdapter( WidgetAdapter.class ) );
-  }
-
-  @Test
-  public void testGetGCForClient_adapterHasIdWithGcPrefix() {
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
-    Adaptable gc = adapter.getGCForClient();
-
-    String id = gc.getAdapter( IClientObjectAdapter.class ).getId();
-
-    assertTrue( id.startsWith( "gc" ) );
-  }
-
-  @Test
-  public void testGetGCForClient_hasSameClientObjectAdapter() {
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
-    Adaptable gc = adapter.getGCForClient();
-
-    IClientObjectAdapter adapter1 = gc.getAdapter( IClientObjectAdapter.class );
-    IClientObjectAdapter adapter2 = gc.getAdapter( IClientObjectAdapter.class );
-
-    assertSame( adapter1, adapter2 );
   }
 
   @Test

@@ -10,7 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.droptargetkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -23,8 +24,8 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.Transfer;
@@ -70,10 +71,9 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     DropTarget dropTarget = ( DropTarget )widget;
-    IClientObject clientObject = getClientObject( dropTarget );
-    clientObject.create( TYPE );
-    clientObject.set( "control", getId( dropTarget.getControl() ) );
-    clientObject.set( "style", convertOperations( dropTarget.getStyle() ) );
+    RemoteObject remoteObject = createRemoteObject( dropTarget, TYPE );
+    remoteObject.set( "control", getId( dropTarget.getControl() ) );
+    remoteObject.set( "style", convertOperations( dropTarget.getStyle() ) );
   }
 
   @Override
@@ -106,7 +106,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
     Transfer[] newValue = dropTarget.getTransfer();
     if( hasChanged( dropTarget, PROP_TRANSFER, newValue, DEFAULT_TRANSFER ) ) {
       JsonValue renderValue = convertTransferTypes( newValue );
-      getClientObject( dropTarget ).set( "transfer", renderValue );
+      getRemoteObject( dropTarget ).set( "transfer", renderValue );
     }
   }
 

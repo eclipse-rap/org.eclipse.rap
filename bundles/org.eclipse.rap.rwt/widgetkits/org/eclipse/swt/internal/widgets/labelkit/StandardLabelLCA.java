@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.labelkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
@@ -21,11 +21,11 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 
@@ -62,10 +62,9 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   @Override
   void renderInitialization( Label label ) throws IOException {
-    IClientObject clientObject = getClientObject( label );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( label.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( label, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = RemoteObjectFactory.createRemoteObject( label, TYPE );
+    remoteObject.set( "parent", getId( label.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( label, ALLOWED_STYLES ) ) );
     renderProperty( label, PROP_MARKUP_ENABLED, isMarkupEnabled( label ), false );
   }
 
@@ -108,8 +107,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
       if( !isMarkupEnabled( label ) ) {
         text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
       }
-      IClientObject clientObject = ClientObjectFactory.getClientObject( label );
-      clientObject.set( PROP_TEXT, text );
+      getRemoteObject( label ).set( PROP_TEXT, text );
     }
   }
 
@@ -119,8 +117,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
       if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, text, "" ) ) {
         int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
         if( mnemonicIndex != -1 ) {
-          IClientObject clientObject = ClientObjectFactory.getClientObject( label );
-          clientObject.set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+          getRemoteObject( label ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
         }
       }
     }

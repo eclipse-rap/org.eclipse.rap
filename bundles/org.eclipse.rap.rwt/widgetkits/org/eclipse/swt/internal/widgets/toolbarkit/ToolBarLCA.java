@@ -12,16 +12,16 @@
 package org.eclipse.swt.internal.widgets.toolbarkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Widget;
@@ -51,10 +51,9 @@ public class ToolBarLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ToolBar toolBar = ( ToolBar )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( toolBar );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( toolBar.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( toolBar, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( toolBar, TYPE );
+    remoteObject.set( "parent", getId( toolBar.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( toolBar, ALLOWED_STYLES ) ) );
   }
 
   @Override

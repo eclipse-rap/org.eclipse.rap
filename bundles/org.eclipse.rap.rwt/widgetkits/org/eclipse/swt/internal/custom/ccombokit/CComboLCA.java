@@ -10,8 +10,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ccombokit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
@@ -25,13 +26,13 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Point;
@@ -106,11 +107,10 @@ public final class CComboLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     CCombo ccombo = ( CCombo )widget;
-    IClientObject clientObject = getClientObject( ccombo );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( ccombo.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( ccombo, ALLOWED_STYLES ) ) );
-    clientObject.set( "ccombo", true );
+    RemoteObject remoteObject = createRemoteObject( ccombo, TYPE );
+    remoteObject.set( "parent", getId( ccombo.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( ccombo, ALLOWED_STYLES ) ) );
+    remoteObject.set( "ccombo", true );
   }
 
   @Override
@@ -189,7 +189,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
   private static void renderItemHeight( CCombo ccombo ) {
     Integer newValue = Integer.valueOf( ccombo.getItemHeight() );
     if( hasChanged( ccombo, PROP_ITEM_HEIGHT, newValue ) ) {
-      getClientObject( ccombo ).set( PROP_ITEM_HEIGHT, newValue.intValue() );
+      getRemoteObject( ccombo ).set( PROP_ITEM_HEIGHT, newValue.intValue() );
     }
   }
 
@@ -218,7 +218,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     boolean textChanged = !ccombo.getEditable()
                           && hasChanged( ccombo, PROP_TEXT, ccombo.getText(), "" );
     if( selectionChanged || textChanged ) {
-      getClientObject( ccombo ).set( PROP_SELECTION_INDEX, newValue.intValue() );
+      getRemoteObject( ccombo ).set( PROP_SELECTION_INDEX, newValue.intValue() );
     }
   }
 

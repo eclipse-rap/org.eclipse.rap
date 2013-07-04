@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.scalekit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -22,12 +23,11 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Widget;
@@ -84,10 +84,9 @@ public final class ScaleLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Scale scale = ( Scale )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( scale );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( scale.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( scale, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( scale, TYPE );
+    remoteObject.set( "parent", getId( scale.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( scale, ALLOWED_STYLES ) ) );
   }
 
 

@@ -11,9 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.shellkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsRectangle;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -28,11 +29,11 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -120,20 +121,19 @@ public final class ShellLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
-    IClientObject clientObject = getClientObject( shell );
-    clientObject.create( TYPE );
-    clientObject.set( "style", createJsonArray( getStyles( shell, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( shell, TYPE );
+    remoteObject.set( "style", createJsonArray( getStyles( shell, ALLOWED_STYLES ) ) );
     Composite parent = shell.getParent();
     if( parent instanceof Shell ) {
-      clientObject.set( "parentShell", getId( parent ) );
+      remoteObject.set( "parentShell", getId( parent ) );
     }
     // TODO [tb] : These should be rendered only when there is an actual listener attached:
-    clientObject.listen( PROP_MOVE_LISTENER, true );
-    clientObject.listen( PROP_RESIZE_LISTENER, true );
+    remoteObject.listen( PROP_MOVE_LISTENER, true );
+    remoteObject.listen( PROP_RESIZE_LISTENER, true );
     // Always listen for "Activate" and "Close" events. Client send these events regardless
     // listeners attached
-    clientObject.listen( PROP_ACTIVATE_LISTENER, true );
-    clientObject.listen( PROP_CLOSE_LISTENER, true );
+    remoteObject.listen( PROP_ACTIVATE_LISTENER, true );
+    remoteObject.listen( PROP_CLOSE_LISTENER, true );
   }
 
   @Override
@@ -153,7 +153,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   @Override
   public void renderDispose( Widget widget ) throws IOException {
-    getClientObject( widget ).destroy();
+    getRemoteObject( widget ).destroy();
   }
 
   //////////////////
@@ -170,8 +170,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
   private static void renderMinimumSize( Shell shell ) {
     Point newValue = shell.getMinimumSize();
     if( hasChanged( shell, PROP_MINIMUM_SIZE, newValue ) ) {
-      IClientObject clientObject = getClientObject( shell );
-      clientObject.set( "minimumSize", new JsonArray().add( newValue.x ).add( newValue.y ) );
+      RemoteObject remoteObject = getRemoteObject( shell );
+      remoteObject.set( "minimumSize", new JsonArray().add( newValue.x ).add( newValue.y ) );
     }
   }
 
@@ -182,7 +182,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
       if( defaultButton != null ) {
         defaultButtonId = WidgetUtil.getId( defaultButton );
       }
-      getClientObject( shell ).set( "defaultButton", defaultButtonId );
+      getRemoteObject( shell ).set( "defaultButton", defaultButtonId );
     }
   }
 
@@ -193,7 +193,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     Shell activeShell = shell.getDisplay().getActiveShell();
     boolean hasChanged = hasChanged( shell, PROP_ACTIVE_SHELL, activeShell, null );
     if( shell == activeShell && hasChanged ) {
-      getClientObject( shell ).set( "active", true );
+      getRemoteObject( shell ).set( "active", true );
     }
   }
 
@@ -219,7 +219,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
       if( activeControl != null ) {
         activeControlId = getId( activeControl );
       }
-      getClientObject( shell ).set( "activeControl", activeControlId );
+      getRemoteObject( shell ).set( "activeControl", activeControlId );
     }
   }
 

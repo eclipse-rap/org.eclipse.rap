@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
@@ -23,10 +23,10 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
@@ -60,12 +60,11 @@ final class MenuItemLCAUtil {
   }
 
   static void renderInitialization( MenuItem item ) {
-    IClientObject clientObject = ClientObjectFactory.getClientObject( item );
-    clientObject.create( TYPE );
+    RemoteObject remoteObject = RemoteObjectFactory.createRemoteObject( item, TYPE );
     Menu parent = item.getParent();
-    clientObject.set( "parent", getId( parent ) );
-    clientObject.set( "style", createJsonArray( getStyles( item, ALLOWED_STYLES ) ) );
-    clientObject.set( "index", parent.indexOf( item ) );
+    remoteObject.set( "parent", getId( parent ) );
+    remoteObject.set( "style", createJsonArray( getStyles( item, ALLOWED_STYLES ) ) );
+    remoteObject.set( "index", parent.indexOf( item ) );
   }
 
   static void renderChanges( MenuItem item ) {
@@ -95,7 +94,7 @@ final class MenuItemLCAUtil {
     String newValue = item.getText();
     if( WidgetLCAUtil.hasChanged( item, PROP_TEXT, newValue, "" ) ) {
       String text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
-      getClientObject( item ).set( PROP_TEXT, text );
+      getRemoteObject( item ).set( PROP_TEXT, text );
     }
   }
 
@@ -105,7 +104,7 @@ final class MenuItemLCAUtil {
       if( WidgetLCAUtil.hasChanged( item, PROP_TEXT, text, "" ) ) {
         int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
         if( mnemonicIndex != -1 ) {
-          getClientObject( item ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+          getRemoteObject( item ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
         }
       }
     }

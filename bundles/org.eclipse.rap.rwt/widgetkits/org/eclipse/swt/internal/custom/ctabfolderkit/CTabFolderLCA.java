@@ -14,6 +14,8 @@ package org.eclipse.swt.internal.custom.ctabfolderkit;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_ITEM;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -28,14 +30,13 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -160,17 +161,16 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     CTabFolder folder = ( CTabFolder )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( folder );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( folder.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( folder, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( folder, TYPE );
+    remoteObject.set( "parent", WidgetUtil.getId( folder.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( folder, ALLOWED_STYLES ) ) );
     JsonArray toolTipTexts = new JsonArray()
       .add( SWT.getMessage( "SWT_Minimize" ) )
       .add( SWT.getMessage( "SWT_Maximize" ) )
       .add( SWT.getMessage( "SWT_Restore" ) )
       .add( SWT.getMessage( "SWT_ShowList" ) )
       .add( SWT.getMessage( "SWT_Close" ) );
-    clientObject.set( PROP_TOOLTIP_TEXTS, toolTipTexts );
+    remoteObject.set( PROP_TOOLTIP_TEXTS, toolTipTexts );
   }
 
   @Override
@@ -255,8 +255,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
           .add( percents )
           .add( bgGradientVertical.booleanValue() );
       }
-      IClientObject clientObject = ClientObjectFactory.getClientObject( folder );
-      clientObject.set( PROP_SELECTION_BG_GRADIENT, gradient );
+      getRemoteObject( folder ).set( PROP_SELECTION_BG_GRADIENT, gradient );
     }
   }
 

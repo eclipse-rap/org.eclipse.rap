@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
@@ -22,15 +23,16 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
 import org.eclipse.swt.widgets.DateTime;
+
 
 final class DateTimeLCAUtil {
 
@@ -59,10 +61,9 @@ final class DateTimeLCAUtil {
   }
 
   static void renderInitialization( DateTime dateTime ) {
-    IClientObject clientObject = getClientObject( dateTime );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( dateTime.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( dateTime, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( dateTime, TYPE );
+    remoteObject.set( "parent", getId( dateTime.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( dateTime, ALLOWED_STYLES ) ) );
   }
 
   static void renderChanges( DateTime dateTime ) {
@@ -76,36 +77,36 @@ final class DateTimeLCAUtil {
 
   static void renderCellSize( DateTime dateTime ) {
     Point cellSize = getDateTimeAdapter( dateTime ).getCellSize();
-    IClientObject clientObject = getClientObject( dateTime );
-    clientObject.set( PROP_CELL_SIZE, new JsonArray().add( cellSize.x ).add( cellSize.y ) );
+    RemoteObject remoteObject = getRemoteObject( dateTime );
+    remoteObject.set( PROP_CELL_SIZE, new JsonArray().add( cellSize.x ).add( cellSize.y ) );
   }
 
   static void renderMonthNames( DateTime dateTime ) {
     String[] monthNames = getDateTimeAdapter( dateTime ).getMonthNames();
-    IClientObject clientObject = getClientObject( dateTime );
-    clientObject.set( PROP_MONTH_NAMES, createJsonArray( monthNames ) );
+    RemoteObject remoteObject = getRemoteObject( dateTime );
+    remoteObject.set( PROP_MONTH_NAMES, createJsonArray( monthNames ) );
   }
 
   static void renderWeekdayNames( DateTime dateTime ) {
     String[] weekdayNames = getDateTimeAdapter( dateTime ).getWeekdayNames();
-    IClientObject clientObject = getClientObject( dateTime );
-    clientObject.set( PROP_WEEKDAY_NAMES, createJsonArray( weekdayNames ) );
+    RemoteObject remoteObject = getRemoteObject( dateTime );
+    remoteObject.set( PROP_WEEKDAY_NAMES, createJsonArray( weekdayNames ) );
   }
 
   static void renderWeekdayShortNames( DateTime dateTime ) {
     String[] weekdayShortNames = getDateTimeAdapter( dateTime ).getWeekdayShortNames();
-    IClientObject clientObject = getClientObject( dateTime );
-    clientObject.set( PROP_WEEKDAY_SHORT_NAMES, createJsonArray( weekdayShortNames ) );
+    RemoteObject remoteObject = getRemoteObject( dateTime );
+    remoteObject.set( PROP_WEEKDAY_SHORT_NAMES, createJsonArray( weekdayShortNames ) );
   }
 
   static void renderDateSeparator( DateTime dateTime ) {
     String dateSeparator = getDateTimeAdapter( dateTime ).getDateSeparator();
-    getClientObject( dateTime ).set( PROP_DATE_SEPARATOR, dateSeparator );
+    getRemoteObject( dateTime ).set( PROP_DATE_SEPARATOR, dateSeparator );
   }
 
   static void renderDatePattern( DateTime dateTime ) {
     String datePattern = getDateTimeAdapter( dateTime ).getDatePattern();
-    getClientObject( dateTime ).set( PROP_DATE_PATTERN, datePattern );
+    getRemoteObject( dateTime ).set( PROP_DATE_PATTERN, datePattern );
   }
 
   static void preserveSubWidgetsBounds( DateTime dateTime, SubWidgetBounds[] subWidgetBounds ) {
@@ -122,7 +123,7 @@ final class DateTimeLCAUtil {
                                    .add( subWidgetBounds[ i ].width )
                                    .add( subWidgetBounds[ i ].height ) );
       }
-      getClientObject( dateTime ).set( PROP_SUB_WIDGETS_BOUNDS, bounds );
+      getRemoteObject( dateTime ).set( PROP_SUB_WIDGETS_BOUNDS, bounds );
     }
   }
 
@@ -145,10 +146,10 @@ final class DateTimeLCAUtil {
     public SubWidgetBounds( int id, Rectangle bounds ) {
       ParamCheck.notNull( bounds, "subWidgetBounds" );
       this.id = id;
-      this.x = bounds.x;
-      this.y = bounds.y;
-      this.width = bounds.width;
-      this.height = bounds.height;
+      x = bounds.x;
+      y = bounds.y;
+      width = bounds.width;
+      height = bounds.height;
     }
 
     @Override
@@ -174,5 +175,7 @@ final class DateTimeLCAUtil {
       String msg = "SubWidgetBounds#hashCode() not implemented";
       throw new UnsupportedOperationException( msg );
     }
+
   }
+
 }

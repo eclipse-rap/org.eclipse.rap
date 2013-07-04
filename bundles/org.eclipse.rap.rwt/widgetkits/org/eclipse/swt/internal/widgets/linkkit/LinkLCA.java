@@ -9,11 +9,11 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.linkkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
@@ -29,11 +29,11 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.events.EventLCAUtil;
@@ -41,6 +41,7 @@ import org.eclipse.swt.internal.widgets.ILinkAdapter;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Widget;
+
 
 public class LinkLCA extends AbstractWidgetLCA {
 
@@ -71,10 +72,9 @@ public class LinkLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Link link = ( Link )widget;
-    IClientObject clientObject = getClientObject( link );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( link.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( link, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( link, TYPE );
+    remoteObject.set( "parent", getId( link.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( link, ALLOWED_STYLES ) ) );
   }
 
   @Override
@@ -92,7 +92,7 @@ public class LinkLCA extends AbstractWidgetLCA {
   private static void renderText( Link link ) {
     String newValue = link.getText();
     if( hasChanged( link, PROP_TEXT, newValue, "" ) ) {
-      getClientObject( link ).set( PROP_TEXT, getTextObject( link ) );
+      getRemoteObject( link ).set( PROP_TEXT, getTextObject( link ) );
     }
   }
 
@@ -143,4 +143,5 @@ public class LinkLCA extends AbstractWidgetLCA {
       }
     }
   }
+
 }

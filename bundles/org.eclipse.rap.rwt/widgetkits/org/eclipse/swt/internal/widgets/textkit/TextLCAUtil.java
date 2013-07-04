@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.textkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory.getClientObject;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
@@ -24,13 +25,13 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
@@ -95,10 +96,9 @@ final class TextLCAUtil {
   }
 
   static void renderInitialization( Text text ) {
-    IClientObject clientObject = getClientObject( text );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( text.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( text, getAllowedStyles( text ) ) ) );
+    RemoteObject remoteObject = createRemoteObject( text, TYPE );
+    remoteObject.set( "parent", getId( text.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( text, getAllowedStyles( text ) ) ) );
   }
 
   static void renderChanges( Text text ) {
@@ -174,8 +174,8 @@ final class TextLCAUtil {
       changed = hasChanged( text, PROP_TEXT, text.getText() ) && !newValue.equals( ZERO_SELECTION );
     }
     if( changed ) {
-      IClientObject clientObject = getClientObject( text );
-      clientObject.set( PROP_SELECTION, new JsonArray().add( newValue.x ).add( newValue.y ) );
+      RemoteObject remoteObject = getRemoteObject( text );
+      remoteObject.set( PROP_SELECTION, new JsonArray().add( newValue.x ).add( newValue.y ) );
     }
   }
 

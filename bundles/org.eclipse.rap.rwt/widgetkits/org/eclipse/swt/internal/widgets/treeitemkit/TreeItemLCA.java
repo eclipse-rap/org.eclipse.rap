@@ -11,17 +11,18 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -96,10 +97,9 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     TreeItem item = ( TreeItem )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( item );
-    clientObject.create( TYPE );
+    RemoteObject remoteObject = createRemoteObject( item, TYPE );
     Widget parent = item.getParentItem() == null ? item.getParent() : item.getParentItem();
-    clientObject.set( "parent", WidgetUtil.getId( parent ) );
+    remoteObject.set( "parent", WidgetUtil.getId( parent ) );
   }
 
   @Override
@@ -139,7 +139,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
     // The parent by the clients logic is the parent-item, not the tree (except for root layer)
     if( !itemAdapter.isParentDisposed() ) {
-      ClientObjectFactory.getClientObject( widget ).destroy();
+      getRemoteObject( widget ).destroy();
     }
   }
 

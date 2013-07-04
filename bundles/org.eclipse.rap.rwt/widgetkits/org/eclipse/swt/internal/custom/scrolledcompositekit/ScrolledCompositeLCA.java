@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.custom.scrolledcompositekit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
@@ -19,12 +20,11 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
@@ -84,10 +84,9 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ScrolledComposite composite = ( ScrolledComposite )widget;
-    IClientObject clientObject = ClientObjectFactory.getClientObject( composite );
-    clientObject.create( TYPE );
-    clientObject.set( "parent", getId( composite.getParent() ) );
-    clientObject.set( "style", createJsonArray( getStyles( composite, ALLOWED_STYLES ) ) );
+    RemoteObject remoteObject = createRemoteObject( composite, TYPE );
+    remoteObject.set( "parent", getId( composite.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( composite, ALLOWED_STYLES ) ) );
     ScrollBarLCAUtil.renderInitialization( composite );
   }
 
