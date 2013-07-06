@@ -11,14 +11,14 @@
   <packaging>pom</packaging>
 
   <properties>
-    <tycho-version>0.16.0</tycho-version>
+    <tycho-version>0.18.0</tycho-version>
     <tycho.showEclipseLog>true</tycho.showEclipseLog>
     <assembly-version>2.2.1</assembly-version>
     <replacer-version>1.3.8</replacer-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <rap-repository>http://download.eclipse.org/rt/rap/nightly/runtime/</rap-repository>
     <rap-incubator-repository>http://download.eclipse.org/rt/rap/incubator/nightly/</rap-incubator-repository>
-    <eclipse-simultaneous-release-repository>http://download.eclipse.org/releases/juno/</eclipse-simultaneous-release-repository>
+    <eclipse-simultaneous-release-repository>http://download.eclipse.org/releases/kepler/</eclipse-simultaneous-release-repository>
   </properties>
 
   <repositories>

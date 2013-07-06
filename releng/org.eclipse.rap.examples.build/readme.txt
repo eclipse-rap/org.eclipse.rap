@@ -32,11 +32,13 @@ by setting the following properties
   rap-incubator-repository, and 
   eclipse-simultaneous-release-repository
 
-Example with RAP 2.0 final and RAP Incubator builds for 2.0:
+Example with RAP 2.1 final and RAP Incubator builds for 2.1 using the
+Kepler Simultaneous Release:
 
   mvn -e \
-      -Drap-repository=http://download.eclipse.org/rt/rap/2.0/R-20130205-1849/ \
-      -Drap-incubator-repository=http://download.eclipse.org/rt/rap/incubator/2.0/ \
+      -Drap-repository=http://download.eclipse.org/rt/rap/2.1/ \
+      -Drap-incubator-repository=http://download.eclipse.org/rt/rap/incubator/2.1/ \
+      -Declipse-simultaneous-release-repository=http://download.eclipse.org/releases/kepler/ \
       clean install
 
 Adding additional pre-built bundles to .war files
