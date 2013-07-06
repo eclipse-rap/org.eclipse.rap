@@ -12,9 +12,20 @@
 package org.eclipse.rap.rwt.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
+import java.util.List;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Control;
@@ -51,6 +62,27 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
   @Deprecated
   public Rectangle adjustCoordinates( Widget widget, Rectangle bounds ) {
     return bounds;
+  }
+
+  /**
+   * {@inheritDoc}
+   * <p>
+   * The default implementation of this method passes all operations for the given widget to the
+   * operation handler registered with the corresponding remote object.
+   * </p>
+   *
+   * @since 2.2
+   */
+  public void readData( Widget widget ) {
+    ClientMessage clientMessage = ProtocolUtil.getClientMessage();
+    String id = getId( widget );
+    List<Operation> operations = clientMessage.getAllOperationsFor( id );
+    if( !operations.isEmpty() ) {
+      OperationHandler handler = getOperationHandler( id );
+      for( Operation operation : operations ) {
+        handleOperation( handler, operation );
+      }
+    }
   }
 
   public abstract void preserveValues( Widget widget );
@@ -105,6 +137,31 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
    * @param control the control on which redraw was called.
    */
   public void doRedrawFake( Control control ) {
+  }
+
+  private static OperationHandler getOperationHandler( String id ) {
+    RemoteObjectImpl remoteObject = RemoteObjectRegistry.getInstance().get( id );
+    if( remoteObject == null ) {
+      throw new IllegalStateException( "No remote object found for widget: " + id );
+    }
+    OperationHandler handler = remoteObject.getHandler();
+    if( handler == null ) {
+      throw new IllegalStateException( "No operation handler found for widget: " + id );
+    }
+    return handler;
+  }
+
+  private static void handleOperation( OperationHandler handler, Operation operation ) {
+    if( operation instanceof SetOperation ) {
+      SetOperation setOperation = ( SetOperation )operation;
+      handler.handleSet( setOperation.getProperties() );
+    } else if( operation instanceof CallOperation ) {
+      CallOperation callOperation = ( CallOperation )operation;
+      handler.handleCall( callOperation.getMethodName(), callOperation.getProperties() );
+    } else if( operation instanceof NotifyOperation ) {
+      NotifyOperation notifyOperation = ( NotifyOperation )operation;
+      handler.handleNotify( notifyOperation.getEventName(), notifyOperation.getProperties() );
+    }
   }
 
 }
