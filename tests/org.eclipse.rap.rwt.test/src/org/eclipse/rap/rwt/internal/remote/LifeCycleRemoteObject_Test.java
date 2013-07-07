@@ -8,18 +8,19 @@
 * Contributors:
 *    EclipseSource - initial API and implementation
 *******************************************************************************/
-package org.eclipse.rap.rwt.internal.lifecycle;
+package org.eclipse.rap.rwt.internal.remote;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWriter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleRemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -94,35 +95,78 @@ public class LifeCycleRemoteObject_Test {
   }
 
   @Test
-  public void testDestroy() {
-    remoteObject.destroy();
+  public void testSet_int_checksState() {
+    RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
-    DestroyOperation operation = ( DestroyOperation )getMessage().getOperation( 0 );
-    assertEquals( "id", operation.getTarget() );
+    remoteObjectSpy.set( "foo", 23 );
+
+    verify( remoteObjectSpy ).checkState();
   }
 
   @Test
-  public void testAddListener() {
-    remoteObject.listen( "selection", true );
-    remoteObject.listen( "fake", true );
+  public void testSet_double_checksState() {
+    RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
 
-    ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
-    assertEquals( "id", operation.getTarget() );
-    assertTrue( operation.listensTo( "selection" ) );
-    assertTrue( operation.listensTo( "fake" ) );
+    remoteObjectSpy.set( "foo", 3.14 );
+
+    verify( remoteObjectSpy ).checkState();
   }
 
   @Test
-  public void testRemoveListener() {
-    remoteObject.listen( "selection", false );
-    remoteObject.listen( "fake", false );
-    remoteObject.listen( "fake2", true );
+  public void testSet_boolean_checksState() {
+    RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
+
+    remoteObjectSpy.set( "foo", true );
+
+    verify( remoteObjectSpy ).checkState();
+  }
+
+  @Test
+  public void testSet_String_checksState() {
+    RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
+
+    remoteObjectSpy.set( "foo", "bar" );
+
+    verify( remoteObjectSpy ).checkState();
+  }
+
+  @Test
+  public void testSet_JsonValue_checksState() {
+    RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
+
+    remoteObjectSpy.set( "foo", JsonValue.TRUE );
+
+    verify( remoteObjectSpy ).checkState();
+  }
+
+  @Test
+  public void testListen() {
+    remoteObject.listen( "foo", true );
+    remoteObject.listen( "bar", false );
 
     ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
     assertEquals( "id", operation.getTarget() );
-    assertFalse( operation.listensTo( "selection" ) );
-    assertFalse( operation.listensTo( "fake" ) );
-    assertTrue( operation.listensTo( "fake2" ) );
+    assertTrue( operation.listensTo( "foo" ) );
+    assertFalse( operation.listensTo( "bar" ) );
+  }
+
+  @Test
+  public void testListen_addAndRemove() {
+    remoteObject.listen( "foo", true );
+    remoteObject.listen( "foo", false );
+
+    ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
+    assertEquals( "id", operation.getTarget() );
+    assertFalse( operation.listensTo( "foo" ) );
+  }
+
+  @Test
+  public void testListen_checksState() {
+    RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
+
+    remoteObjectSpy.listen( "foo", true );
+
+    verify( remoteObjectSpy ).checkState();
   }
 
   @Test
@@ -145,6 +189,23 @@ public class LifeCycleRemoteObject_Test {
     assertEquals( "method2", operation.getMethodName() );
     assertEquals( "a", operation.getProperty( "key1" ).asString() );
     assertEquals( 3, operation.getProperty( "key2" ).asInt() );
+  }
+
+  @Test
+  public void testCall_checksState() {
+    RemoteObjectImpl remoteObjectSpy = spy( remoteObject );
+
+    remoteObjectSpy.call( "foo", new JsonObject() );
+
+    verify( remoteObjectSpy ).checkState();
+  }
+
+  @Test
+  public void testDestroy() {
+    remoteObject.destroy();
+
+    DestroyOperation operation = ( DestroyOperation )getMessage().getOperation( 0 );
+    assertEquals( "id", operation.getTarget() );
   }
 
   private Message getMessage() {

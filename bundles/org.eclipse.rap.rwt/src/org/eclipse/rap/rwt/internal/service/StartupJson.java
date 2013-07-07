@@ -27,6 +27,7 @@ import org.eclipse.rap.rwt.internal.client.ClientMessages;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
+import org.eclipse.rap.rwt.internal.remote.DeferredRemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementUtil;
@@ -75,7 +76,9 @@ public class StartupJson {
   private static void renderRemoteObjects( ProtocolMessageWriter writer ) {
     RemoteObjectRegistry registry = RemoteObjectRegistry.getInstance();
     for( RemoteObjectImpl remoteObject : registry.getRemoteObjects() ) {
-      remoteObject.render( writer );
+      if( remoteObject instanceof DeferredRemoteObject ) {
+        ( ( DeferredRemoteObject )remoteObject ).render( writer );
+      }
     }
   }
 
@@ -128,4 +131,5 @@ public class StartupJson {
     String url = request.getServletPath().substring( 1 );
     return ContextProvider.getResponse().encodeURL( url );
   }
+
 }

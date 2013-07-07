@@ -15,6 +15,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +54,7 @@ public class RemoteObjectRegistry_Test {
 
   @Test
   public void testCanRegisterRemoteObject() {
-    RemoteObjectImpl remoteObject = new RemoteObjectImpl( "id", "type" );
+    RemoteObjectImpl remoteObject = mockRemoteObjectImpl( "id" );
     registry.register( remoteObject );
 
     RemoteObject result = registry.get( "id" );
@@ -62,7 +64,7 @@ public class RemoteObjectRegistry_Test {
 
   @Test
   public void testCanRemoveRegisteredObject() {
-    RemoteObjectImpl remoteObject = new RemoteObjectImpl( "id", "type" );
+    RemoteObjectImpl remoteObject = mockRemoteObjectImpl( "id" );
     registry.register( remoteObject );
 
     registry.remove( remoteObject );
@@ -72,10 +74,10 @@ public class RemoteObjectRegistry_Test {
 
   @Test
   public void testPreventsRegisterDuplicateIds() {
-    registry.register( new RemoteObjectImpl( "id", "type" ) );
+    registry.register( mockRemoteObjectImpl( "id" ) );
 
     try {
-      registry.register( new RemoteObjectImpl( "id", "type" ) );
+      registry.register( mockRemoteObjectImpl( "id" ) );
       fail();
     } catch( IllegalArgumentException exception ) {
       assertEquals( "Remote object already registered, id: id", exception.getMessage() );
@@ -85,7 +87,7 @@ public class RemoteObjectRegistry_Test {
   @Test
   public void testPreventsRemoveNonExisting() {
     try {
-      registry.remove( new RemoteObjectImpl( "id", "type" ) );
+      registry.remove( mockRemoteObjectImpl( "id" ) );
       fail();
     } catch( IllegalArgumentException exception ) {
       assertEquals( "Remote object not found in registry, id: id", exception.getMessage() );
@@ -93,19 +95,25 @@ public class RemoteObjectRegistry_Test {
   }
 
   @Test
-  public void testReturnsOrderedListOfRegisteredObjects() {
+  public void testGetRemoteObjects_returnsOrderedList() {
     for( int i = 0; i < 10; i++ ) {
-      registry.register( new RemoteObjectImpl( "id" + i, "type" ) );
+      registry.register( new DeferredRemoteObject( "id" + i, "type" ) );
     }
 
-    List<RemoteObjectImpl> allObjects = registry.getRemoteObjects();
+    List<? extends RemoteObject> allObjects = registry.getRemoteObjects();
 
     assertEquals( "id0 id1 id2 id3 id4 id5 id6 id7 id8 id9", join( getIds( allObjects ), " " ) );
   }
 
-  private static List<String> getIds( List<RemoteObjectImpl> allObjects ) {
+  private static RemoteObjectImpl mockRemoteObjectImpl( String id ) {
+    RemoteObjectImpl remoteObject = mock( RemoteObjectImpl.class );
+    when( remoteObject.getId() ).thenReturn( id );
+    return remoteObject;
+  }
+
+  private static List<String> getIds( List<? extends RemoteObject> objects ) {
     List<String> ids = new ArrayList<String>();
-    for( RemoteObjectImpl object : allObjects ) {
+    for( RemoteObject object : objects ) {
       ids.add( object.getId() );
     }
     return ids;

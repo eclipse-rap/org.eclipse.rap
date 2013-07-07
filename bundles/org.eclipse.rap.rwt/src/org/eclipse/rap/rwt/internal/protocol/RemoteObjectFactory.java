@@ -10,13 +10,10 @@
 *******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleRemoteObject;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.ServiceStore;
+import org.eclipse.rap.rwt.internal.remote.LifeCycleRemoteObject;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -30,8 +27,6 @@ import org.eclipse.swt.widgets.Widget;
  * @see RemoteObject
  */
 public final class RemoteObjectFactory {
-
-  private static final String CLIENT_OBJECT_MAP_KEY = "synchronizerMapKey";
 
   public static RemoteObject getRemoteObject( Widget widget ) {
     ParamCheck.notNull( widget, "widget" );
@@ -61,35 +56,19 @@ public final class RemoteObjectFactory {
   }
 
   private static RemoteObject createForId( String id, String type ) {
-    Map<String, RemoteObject> map = getRemoteObjectMap();
-    if( map.containsKey( id ) ) {
-      throw new IllegalStateException( "Client object already created for id: " + id );
-    }
     LifeCycleRemoteObject remoteObject = new LifeCycleRemoteObject( id, type );
-    map.put( id, remoteObject );
+    RemoteObjectRegistry.getInstance().register( remoteObject );
     return remoteObject;
   }
 
   private static RemoteObject getForId( String id ) {
-    Map<String, RemoteObject> map = getRemoteObjectMap();
-    RemoteObject remoteObject = map.get( id );
+    RemoteObjectImpl remoteObject = RemoteObjectRegistry.getInstance().get( id );
+    // TODO [rst] Required for LCA tests, remove lazy initialization
     if( remoteObject == null ) {
       remoteObject = new LifeCycleRemoteObject( id, null );
-      map.put( id, remoteObject );
+      RemoteObjectRegistry.getInstance().register( remoteObject );
     }
     return remoteObject;
-  }
-
-  @SuppressWarnings("unchecked")
-  private static Map<String, RemoteObject> getRemoteObjectMap() {
-    ServiceStore serviceStore = ContextProvider.getServiceStore();
-    Map<String, RemoteObject> map
-      = ( Map<String, RemoteObject> )serviceStore.getAttribute( CLIENT_OBJECT_MAP_KEY );
-    if( map == null ) {
-      map = new HashMap<String, RemoteObject>();
-      serviceStore.setAttribute( CLIENT_OBJECT_MAP_KEY, map );
-    }
-    return map;
   }
 
   private RemoteObjectFactory() {

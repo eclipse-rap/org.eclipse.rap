@@ -70,7 +70,7 @@ public class RemoteObjectFactory_Test {
     RemoteObjectFactory.createRemoteObject( "id", null );
   }
 
-  @Test( expected = IllegalStateException.class )
+  @Test( expected = IllegalArgumentException.class )
   public void testCreate_failsIfAlreadyCreated() {
     RemoteObjectFactory.createRemoteObject( "id", "type" );
 

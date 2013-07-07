@@ -11,8 +11,6 @@
 package org.eclipse.rap.rwt.internal.remote;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -22,25 +20,15 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 
 
-public class RemoteObjectImpl implements RemoteObject, Serializable {
+public abstract class RemoteObjectImpl implements RemoteObject, Serializable {
 
   private final String id;
-  private final List<RenderRunnable> renderQueue;
-  private boolean created;
   private boolean destroyed;
   private OperationHandler handler;
 
   public RemoteObjectImpl( final String id, final String createType ) {
     this.id = id;
     destroyed = false;
-    renderQueue = new ArrayList<RenderRunnable>();
-    if( createType != null ) {
-      renderQueue.add( new RenderRunnable() {
-        public void render( ProtocolMessageWriter writer ) {
-          writer.appendCreate( id, createType );
-        }
-      } );
-    }
   }
 
   public String getId() {
@@ -50,80 +38,41 @@ public class RemoteObjectImpl implements RemoteObject, Serializable {
   public void set( final String name, final int value ) {
     ParamCheck.notNullOrEmpty( name, "name" );
     checkState();
-    renderQueue.add( new RenderRunnable() {
-      public void render( ProtocolMessageWriter writer ) {
-        writer.appendSet( id, name, value );
-      }
-    } );
   }
 
   public void set( final String name, final double value ) {
     ParamCheck.notNullOrEmpty( name, "name" );
     checkState();
-    renderQueue.add( new RenderRunnable() {
-      public void render( ProtocolMessageWriter writer ) {
-        writer.appendSet( id, name, value );
-      }
-    } );
   }
 
   public void set( final String name, final boolean value ) {
     ParamCheck.notNullOrEmpty( name, "name" );
     checkState();
-    renderQueue.add( new RenderRunnable() {
-      public void render( ProtocolMessageWriter writer ) {
-        writer.appendSet( id, name, value );
-      }
-    } );
   }
 
   public void set( final String name, final String value ) {
     ParamCheck.notNullOrEmpty( name, "name" );
     checkState();
-    renderQueue.add( new RenderRunnable() {
-      public void render( ProtocolMessageWriter writer ) {
-        writer.appendSet( id, name, value );
-      }
-    } );
   }
 
   public void set( final String name, final JsonValue value ) {
     ParamCheck.notNullOrEmpty( name, "name" );
+    ParamCheck.notNull( value, "value" );
     checkState();
-    renderQueue.add( new RenderRunnable() {
-      public void render( ProtocolMessageWriter writer ) {
-        writer.appendSet( id, name, value );
-      }
-    } );
   }
 
   public void listen( final String eventType, final boolean listen ) {
     ParamCheck.notNullOrEmpty( eventType, "eventType" );
     checkState();
-    renderQueue.add( new RenderRunnable() {
-      public void render( ProtocolMessageWriter writer ) {
-        writer.appendListen( id, eventType, listen );
-      }
-    } );
   }
 
   public void call( final String method, final JsonObject parameters ) {
     ParamCheck.notNullOrEmpty( method, "method" );
     checkState();
-    renderQueue.add( new RenderRunnable() {
-      public void render( ProtocolMessageWriter writer ) {
-        writer.appendCall( id, method, parameters );
-      }
-    } );
   }
 
   public void destroy() {
     checkState();
-    renderQueue.add( new RenderRunnable() {
-      public void render( ProtocolMessageWriter writer ) {
-        writer.appendDestroy( id );
-      }
-    } );
     destroyed = true;
   }
 
@@ -137,18 +86,6 @@ public class RemoteObjectImpl implements RemoteObject, Serializable {
 
   public OperationHandler getHandler() {
     return handler;
-  }
-
-  public void render( ProtocolMessageWriter writer ) {
-    if( destroyed && !created ) {
-      // skip rendering for objects that are disposed just after creation (see bug 395272)
-    } else {
-      for( RenderRunnable runnable : renderQueue ) {
-        runnable.render( writer );
-      }
-      created = true;
-    }
-    renderQueue.clear();
   }
 
   void checkState() {

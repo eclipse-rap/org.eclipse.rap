@@ -23,7 +23,7 @@ public class ConnectionImpl implements Connection, Serializable {
   public RemoteObject createRemoteObject( String remoteType ) {
     ParamCheck.notNullOrEmpty( remoteType, "type" );
     String id = IdGeneratorProvider.getIdGenerator().createId( "r" );
-    RemoteObjectImpl remoteObject = new RemoteObjectImpl( id, remoteType );
+    RemoteObjectImpl remoteObject = new DeferredRemoteObject( id, remoteType );
     RemoteObjectRegistry.getInstance().register( remoteObject );
     return remoteObject;
   }
@@ -40,7 +40,7 @@ public class ConnectionImpl implements Connection, Serializable {
   //            i.e. remote objects that aren't created in the protocol, but used by agreed ids.
   public RemoteObject createServiceObject( String id ) {
     ParamCheck.notNullOrEmpty( id, "id" );
-    RemoteObjectImpl remoteObject = new RemoteObjectImpl( id, null );
+    RemoteObjectImpl remoteObject = new DeferredRemoteObject( id, null );
     RemoteObjectRegistry.getInstance().register( remoteObject );
     return remoteObject;
   }

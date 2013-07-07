@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -47,22 +47,14 @@ public class ConnectionImpl_Test {
     assertNotNull( remoteObject );
   }
 
-  @Test
+  @Test( expected = NullPointerException.class )
   public void testCreateRemoteObject_failsWithNullType() {
-    try {
-      new ConnectionImpl().createRemoteObject( null );
-      fail();
-    } catch( NullPointerException exception ) {
-    }
+    new ConnectionImpl().createRemoteObject( null );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testCreateRemoteObject_failsWithEmptyType() {
-    try {
-      new ConnectionImpl().createRemoteObject( "" );
-      fail();
-    } catch( IllegalArgumentException exception ) {
-    }
+    new ConnectionImpl().createRemoteObject( "" );
   }
 
   @Test
@@ -70,6 +62,13 @@ public class ConnectionImpl_Test {
     RemoteObject remoteObject = new ConnectionImpl().createRemoteObject( "type" );
 
     assertRendersCreateWithType( remoteObject, "type" );
+  }
+
+  @Test
+  public void testCreatedRemoteObjectsHaveIds() {
+    RemoteObject remoteObject = new ConnectionImpl().createRemoteObject( "type" );
+
+    assertTrue( remoteObject.getId().length() > 0 );
   }
 
   @Test
@@ -94,22 +93,14 @@ public class ConnectionImpl_Test {
     assertNotNull( remoteObject );
   }
 
-  @Test
+  @Test( expected = NullPointerException.class )
   public void testCreateServiceObject_failsWithNullId() {
-    try {
-      new ConnectionImpl().createServiceObject( null );
-      fail();
-    } catch( NullPointerException exception ) {
-    }
+    new ConnectionImpl().createServiceObject( null );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testCreateServiceObject_failsWithEmptyId() {
-    try {
-      new ConnectionImpl().createServiceObject( "" );
-      fail();
-    } catch( IllegalArgumentException exception ) {
-    }
+    new ConnectionImpl().createServiceObject( "" );
   }
 
   @Test
@@ -126,10 +117,11 @@ public class ConnectionImpl_Test {
     assertSame( remoteObject, RemoteObjectRegistry.getInstance().get( remoteObject.getId() ) );
   }
 
-  private static void assertRendersCreateWithType( RemoteObject remoteObject, String type ) {
+  private static void assertRendersCreateWithType( RemoteObject remoteObject, String type )
+  {
     ProtocolMessageWriter writer = mock( ProtocolMessageWriter.class );
 
-    ( ( RemoteObjectImpl )remoteObject ).render( writer );
+    ( ( DeferredRemoteObject )remoteObject ).render( writer );
 
     verify( writer ).appendCreate( anyString(), eq( type ) );
   }

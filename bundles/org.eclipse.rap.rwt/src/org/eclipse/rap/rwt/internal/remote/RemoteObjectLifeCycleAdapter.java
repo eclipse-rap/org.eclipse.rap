@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.remote;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getClientMessage;
 
 import java.util.List;
+
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
@@ -28,18 +29,25 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 
 public class RemoteObjectLifeCycleAdapter {
 
+  public static void readData() {
+    RemoteObjectRegistry registry = RemoteObjectRegistry.getInstance();
+    for( RemoteObjectImpl remoteObject : registry.getRemoteObjects() ) {
+      if( remoteObject instanceof DeferredRemoteObject ) {
+        dispatchOperations( remoteObject );
+      }
+    }
+  }
+
   public static void render() {
     RemoteObjectRegistry registry = RemoteObjectRegistry.getInstance();
     ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
     for( RemoteObjectImpl remoteObject : registry.getRemoteObjects() ) {
-      remoteObject.render( writer );
-    }
-  }
-
-  public static void readData() {
-    RemoteObjectRegistry registry = RemoteObjectRegistry.getInstance();
-    for( RemoteObjectImpl remoteObject : registry.getRemoteObjects() ) {
-      dispatchOperations( remoteObject );
+      if( remoteObject instanceof DeferredRemoteObject ) {
+        ( ( DeferredRemoteObject )remoteObject ).render( writer );
+      }
+      if( remoteObject.isDestroyed() ) {
+        RemoteObjectRegistry.getInstance().remove( remoteObject );
+      }
     }
   }
 
@@ -53,7 +61,11 @@ public class RemoteObjectLifeCycleAdapter {
     }
   }
 
-  public static OperationHandler getHandler( RemoteObjectImpl remoteObject ) {
+  private static List<ClientMessage.Operation> getOperations( RemoteObject remoteObject ) {
+    return getClientMessage().getAllOperationsFor( remoteObject.getId() );
+  }
+
+  private static OperationHandler getHandler( RemoteObjectImpl remoteObject ) {
     OperationHandler handler = remoteObject.getHandler();
     if( handler == null ) {
       String message = "No operation handler registered for remote object: "
@@ -63,11 +75,7 @@ public class RemoteObjectLifeCycleAdapter {
     return handler;
   }
 
-  private static List<ClientMessage.Operation> getOperations( RemoteObject remoteObject ) {
-    return getClientMessage().getAllOperationsFor( remoteObject.getId() );
-  }
-
-  public static void dispatchOperation( OperationHandler handler, Operation operation ) {
+  private static void dispatchOperation( OperationHandler handler, Operation operation ) {
     if( operation instanceof SetOperation ) {
       handler.handleSet( operation.getProperties() );
     } else if( operation instanceof CallOperation ) {

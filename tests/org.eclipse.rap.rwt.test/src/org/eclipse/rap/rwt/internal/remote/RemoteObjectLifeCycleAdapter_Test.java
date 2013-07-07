@@ -10,11 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -43,8 +44,7 @@ public class RemoteObjectLifeCycleAdapter_Test {
 
   @Test
   public void testRender_delegatesToRegisteredRemoteObjects() {
-    RemoteObjectImpl remoteObject = mock( RemoteObjectImpl.class );
-    RemoteObjectRegistry.getInstance().register( remoteObject );
+    DeferredRemoteObject remoteObject = mockAndRegisterDeferredRemoteObject( "id", null );
 
     RemoteObjectLifeCycleAdapter.render();
 
@@ -52,9 +52,31 @@ public class RemoteObjectLifeCycleAdapter_Test {
   }
 
   @Test
+  public void testRender_removesAllDestroyedRemoteObjectsFromRegistry() {
+    setDestroyed( mockAndRegisterDeferredRemoteObject( "deferred", null ) );
+    setDestroyed( mockAndRegisterLifeCycleRemoteObject( "lifecycle", null ) );
+
+    RemoteObjectLifeCycleAdapter.render();
+
+    assertNull( RemoteObjectRegistry.getInstance().get( "deferred" ) );
+    assertNull( RemoteObjectRegistry.getInstance().get( "lifecycle" ) );
+  }
+
+  @Test
+  public void testRender_doesNotRemoveAliveRemoteObjectsFromRegistry() {
+    mockAndRegisterDeferredRemoteObject( "deferred", null );
+    mockAndRegisterLifeCycleRemoteObject( "lifecycle", null );
+
+    RemoteObjectLifeCycleAdapter.render();
+
+    assertNotNull( RemoteObjectRegistry.getInstance().get( "deferred" ) );
+    assertNotNull( RemoteObjectRegistry.getInstance().get( "lifecycle" ) );
+  }
+
+  @Test
   public void testReadData_delegatesSetOperationsToHandlers() {
     OperationHandler handler = mock( OperationHandler.class );
-    mockAndRegisterRemoteObject( "id", handler );
+    mockAndRegisterDeferredRemoteObject( "id", handler );
     JsonObject properties = new JsonObject().add( "foo", "bar" );
     Fixture.fakeSetOperation( "id", properties );
 
@@ -66,7 +88,7 @@ public class RemoteObjectLifeCycleAdapter_Test {
   @Test
   public void testReadData_delegatesCallOperationsToHandlers() {
     OperationHandler handler = mock( OperationHandler.class );
-    mockAndRegisterRemoteObject( "id", handler );
+    mockAndRegisterDeferredRemoteObject( "id", handler );
     JsonObject properties = new JsonObject().add( "foo", "bar" );
     Fixture.fakeCallOperation( "id", "method", properties );
 
@@ -78,7 +100,7 @@ public class RemoteObjectLifeCycleAdapter_Test {
   @Test
   public void testReadData_doesNotDirectlyDelegateNotifyOperationsToHandlers() {
     OperationHandler handler = mock( OperationHandler.class );
-    mockAndRegisterRemoteObject( "id", handler );
+    mockAndRegisterDeferredRemoteObject( "id", handler );
     JsonObject properties = new JsonObject().add( "foo", "bar" );
     Fixture.fakeNotifyOperation( "id", "event", properties );
 
@@ -90,7 +112,7 @@ public class RemoteObjectLifeCycleAdapter_Test {
   @Test
   public void testReadData_schedulesNotifyOperationsForHandlers() {
     OperationHandler handler = mock( OperationHandler.class );
-    mockAndRegisterRemoteObject( "id", handler );
+    mockAndRegisterDeferredRemoteObject( "id", handler );
     JsonObject properties = new JsonObject().add( "foo", "bar" );
     Fixture.fakeNotifyOperation( "id", "event", properties );
 
@@ -102,14 +124,14 @@ public class RemoteObjectLifeCycleAdapter_Test {
 
   @Test
   public void testReadData_doesNotFailWhenNoHandlerRegistered() {
-    mockAndRegisterRemoteObject( "id", null );
+    mockAndRegisterDeferredRemoteObject( "id", null );
 
     RemoteObjectLifeCycleAdapter.readData();
   }
 
   @Test
   public void testReadData_failsWhenNoHandlerRegisteredForOperations() {
-    mockAndRegisterRemoteObject( "id", null );
+    mockAndRegisterDeferredRemoteObject( "id", null );
     Fixture.fakeCallOperation( "id", "method", new JsonObject().add( "foo", "bar" ) );
 
     try {
@@ -121,18 +143,43 @@ public class RemoteObjectLifeCycleAdapter_Test {
     }
   }
 
-  private static RemoteObjectImpl mockAndRegisterRemoteObject( String id, OperationHandler handler )
+  @Test
+  public void testReadData_delegatesOnlyToDeferredRemoteObjects() {
+    OperationHandler deferredHandler = mock( OperationHandler.class );
+    OperationHandler lifecycleHandler = mock( OperationHandler.class );
+    mockAndRegisterDeferredRemoteObject( "deferred", deferredHandler );
+    mockAndRegisterLifeCycleRemoteObject( "lifecycle", lifecycleHandler );
+    Fixture.fakeCallOperation( "deferred", "method", new JsonObject().add( "foo", "bar" ) );
+    Fixture.fakeCallOperation( "lifecycle", "method", new JsonObject().add( "foo", "bar" ) );
+
+    RemoteObjectLifeCycleAdapter.readData();
+
+    verify( deferredHandler ).handleCall( eq( "method" ), any( JsonObject.class ) );
+    verify( lifecycleHandler, never() ).handleCall( eq( "method" ), any( JsonObject.class ) );
+  }
+
+  private static DeferredRemoteObject mockAndRegisterDeferredRemoteObject( String id,
+                                                                           OperationHandler handler )
   {
-    RemoteObjectImpl remoteObject = mockRemoteObjectImpl( id, handler );
+    DeferredRemoteObject remoteObject = mock( DeferredRemoteObject.class );
+    when( remoteObject.getId() ).thenReturn( id );
+    when( remoteObject.getHandler() ).thenReturn( handler );
     RemoteObjectRegistry.getInstance().register( remoteObject );
     return remoteObject;
   }
 
-  private static RemoteObjectImpl mockRemoteObjectImpl( String id, OperationHandler handler ) {
-    RemoteObjectImpl remoteObject = mock( RemoteObjectImpl.class );
+  private static LifeCycleRemoteObject mockAndRegisterLifeCycleRemoteObject( String id,
+                                                                             OperationHandler handler )
+  {
+    LifeCycleRemoteObject remoteObject = mock( LifeCycleRemoteObject.class );
     when( remoteObject.getId() ).thenReturn( id );
     when( remoteObject.getHandler() ).thenReturn( handler );
+    RemoteObjectRegistry.getInstance().register( remoteObject );
     return remoteObject;
+  }
+
+  private static void setDestroyed( RemoteObjectImpl remoteObject ) {
+    when( Boolean.valueOf( remoteObject.isDestroyed() ) ).thenReturn( Boolean.TRUE );
   }
 
 }

@@ -8,68 +8,73 @@
 * Contributors:
 *    EclipseSource - initial API and implementation
 *******************************************************************************/
-package org.eclipse.rap.rwt.internal.lifecycle;
+package org.eclipse.rap.rwt.internal.remote;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.remote.OperationHandler;
-import org.eclipse.rap.rwt.remote.RemoteObject;
 
 
 /**
- * A remote object that writes directly to the message writer. Used for widgets and other objects
- * that are rendered by LCAs.
+ * A remote object implementation that writes directly to the message writer. Used for widgets and
+ * other objects that are rendered by LCAs.
  */
-public final class LifeCycleRemoteObject implements RemoteObject {
-
-  private final String id;
+public class LifeCycleRemoteObject extends RemoteObjectImpl {
 
   public LifeCycleRemoteObject( String id, String type ) {
-    this.id = id;
+    super( id, type );
     if( type != null ) {
       getWriter().appendCreate( id, type );
     }
   }
 
-  public String getId() {
-    return id;
-  }
-
-  public void destroy() {
-    getWriter().appendDestroy( id );
-  }
-
+  @Override
   public void set( String name, int value ) {
-    getWriter().appendSet( id, name, value );
+    super.set( name, value );
+    getWriter().appendSet( getId(), name, value );
   }
 
+  @Override
   public void set( String name, double value ) {
-    getWriter().appendSet( id, name, value );
+    super.set( name, value );
+    getWriter().appendSet( getId(), name, value );
   }
 
+  @Override
   public void set( String name, boolean value ) {
-    getWriter().appendSet( id, name, value );
+    super.set( name, value );
+    getWriter().appendSet( getId(), name, value );
   }
 
+  @Override
   public void set( String name, String value ) {
-    getWriter().appendSet( id, name, value );
+    super.set( name, value );
+    getWriter().appendSet( getId(), name, value );
   }
 
+  @Override
   public void set( String name, JsonValue value ) {
-    getWriter().appendSet( id, name, value );
+    super.set( name, value );
+    getWriter().appendSet( getId(), name, value );
   }
 
-  public void listen( String eventName, boolean listen ) {
-    getWriter().appendListen( id, eventName, listen );
+  @Override
+  public void listen( String eventType, boolean listen ) {
+    super.listen( eventType, listen );
+    getWriter().appendListen( getId(), eventType, listen );
   }
 
+  @Override
   public void call( String method, JsonObject parameters ) {
-    getWriter().appendCall( id, method, parameters );
+    super.call( method, parameters );
+    getWriter().appendCall( getId(), method, parameters );
   }
 
-  public void setHandler( OperationHandler handler ) {
+  @Override
+  public void destroy() {
+    super.destroy();
+    getWriter().appendDestroy( getId() );
   }
 
   private static ProtocolMessageWriter getWriter() {

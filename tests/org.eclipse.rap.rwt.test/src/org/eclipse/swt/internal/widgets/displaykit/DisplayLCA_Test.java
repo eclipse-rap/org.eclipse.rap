@@ -47,6 +47,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
+import org.eclipse.rap.rwt.internal.remote.DeferredRemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
@@ -511,7 +512,7 @@ public class DisplayLCA_Test {
 
   @Test
   public void testRendersRemoteObjects() throws IOException {
-    RemoteObjectImpl remoteObject = mock( RemoteObjectImpl.class );
+    DeferredRemoteObject remoteObject = mock( DeferredRemoteObject.class );
     when( remoteObject.getId() ).thenReturn( "id" );
     RemoteObjectRegistry.getInstance().register( remoteObject );
 
@@ -523,7 +524,7 @@ public class DisplayLCA_Test {
   @Test
   public void testReadDataDelegatesToRemoteObjects() {
     OperationHandler handler = mock( OperationHandler.class );
-    RemoteObjectImpl remoteObject = mock( RemoteObjectImpl.class );
+    RemoteObjectImpl remoteObject = mock( DeferredRemoteObject.class );
     when( remoteObject.getId() ).thenReturn( "id" );
     when( remoteObject.getHandler() ).thenReturn( handler );
     RemoteObjectRegistry.getInstance().register( remoteObject );

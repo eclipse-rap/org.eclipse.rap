@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.SingletonUtil;
-import org.eclipse.rap.rwt.remote.RemoteObject;
 
 
 public class RemoteObjectRegistry implements Serializable {
@@ -51,7 +50,7 @@ public class RemoteObjectRegistry implements Serializable {
     remoteObjects.remove( id );
   }
 
-  public RemoteObject get( String id ) {
+  public RemoteObjectImpl get( String id ) {
     return remoteObjects.get( id );
   }
 
