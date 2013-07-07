@@ -22,12 +22,14 @@
   <packaging>pom</packaging>
 
   <properties>
-    <tycho-version>0.16.0</tycho-version>
+    <tycho-version>0.18.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
-    <signing-plugin-version>1.0.1</signing-plugin-version>
+    <signing-plugin-version>1.0.5</signing-plugin-version>
     <surefire-version>2.12.4</surefire-version>
     <junit-version>4.8.2</junit-version>
     <mockito-version>1.8.4</mockito-version>
+    <base-platform>4.3/R-4.3-201306052000/</base-platform>
+    <base-platform-repository>http://download.eclipse.org/eclipse/updates/${base-platform}</base-platform-repository>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- disabled due to bug 393977
     <baseline-repository>http://download.eclipse.org/rt/rap/nightly/runtime/</baseline-repository>
@@ -74,7 +76,9 @@
     <module>../../features/org.eclipse.rap.feature</module>
     <module>../../features/org.eclipse.rap.sdk.feature</module>
     <module>../../features/org.eclipse.rap.examples.feature</module>
+    <module>../../features/org.eclipse.rap.equinox.target.feature</module>
     <module>repository</module>
+    <module>repository.kepler</module>
   </modules>
 
   <repositories>
@@ -145,7 +149,6 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-p2-plugin</artifactId>
         <version>${tycho-version}</version>
-        <!-- disabled due to bug 393977
         <configuration>
           <baselineRepositories>
             <repository>
@@ -153,7 +156,6 @@
             </repository>
           </baselineRepositories>
         </configuration>
-         -->
       </plugin>
 
       <plugin>
