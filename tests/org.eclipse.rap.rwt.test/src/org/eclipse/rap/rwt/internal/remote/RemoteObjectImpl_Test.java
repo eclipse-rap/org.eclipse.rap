@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -173,6 +174,13 @@ public class RemoteObjectImpl_Test {
   @Test
   public void testIsDestroyed_trueAfterDestroy() {
     remoteObject.destroy();
+
+    assertTrue( remoteObject.isDestroyed() );
+  }
+
+  @Test
+  public void testIsDestroyed_trueAfterMarkDestroyed() {
+    remoteObject.markDestroyed();
 
     assertTrue( remoteObject.isDestroyed() );
   }

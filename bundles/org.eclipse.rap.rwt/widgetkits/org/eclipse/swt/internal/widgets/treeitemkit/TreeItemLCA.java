@@ -18,6 +18,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
@@ -77,6 +78,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     }
   }
 
+  @Override
   public void readData( Widget widget ) {
     final TreeItem item = ( TreeItem )widget;
     String checked = WidgetLCAUtil.readPropertyValue( widget, PROP_CHECKED );
@@ -137,9 +139,12 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public void renderDispose( Widget widget ) throws IOException {
     TreeItem item = ( TreeItem )widget;
     ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
+    RemoteObject remoteObject = getRemoteObject( widget );
     // The parent by the clients logic is the parent-item, not the tree (except for root layer)
     if( !itemAdapter.isParentDisposed() ) {
-      getRemoteObject( widget ).destroy();
+      remoteObject.destroy();
+    } else {
+      ( ( RemoteObjectImpl )remoteObject ).markDestroyed();
     }
   }
 

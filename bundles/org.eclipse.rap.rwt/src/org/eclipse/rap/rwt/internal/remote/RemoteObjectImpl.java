@@ -11,13 +11,14 @@
 package org.eclipse.rap.rwt.internal.remote;
 
 import java.io.Serializable;
+
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 
 
 public abstract class RemoteObjectImpl implements RemoteObject, Serializable {
@@ -78,6 +79,14 @@ public abstract class RemoteObjectImpl implements RemoteObject, Serializable {
 
   public boolean isDestroyed() {
     return destroyed;
+  }
+
+  /*
+   * In some cases, widgets don't render destroy operations, those have to be marked as destroyed
+   * to be removed from the registry.
+   */
+  public void markDestroyed() {
+    destroyed = true;
   }
 
   public void setHandler( OperationHandler handler ) {

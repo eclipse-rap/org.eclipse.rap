@@ -25,6 +25,8 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -322,6 +324,18 @@ public class TreeItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
+  }
+
+  @Test
+  public void testRenderDispose_withDisposedParent_destroysRemoteObjects() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    lca.renderInitialization( item );
+    RemoteObjectImpl remoteObject = RemoteObjectRegistry.getInstance().get( getId( item ) );
+    tree.dispose();
+
+    lca.renderDispose( item );
+
+    assertTrue( remoteObject.isDestroyed() );
   }
 
   @Test

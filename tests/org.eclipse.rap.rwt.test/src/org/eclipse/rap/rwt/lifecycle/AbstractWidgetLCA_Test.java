@@ -147,19 +147,39 @@ public class AbstractWidgetLCA_Test {
     lca.readData( widget );
   }
 
+  @Test
+  public void testRenderDispose_destroysRemoteObjects() throws IOException {
+    RemoteObjectImpl remoteObject = mockAndRegisterRemoteObject( widgetId, null );
+
+    lca.renderDispose( widget );
+
+    verify( remoteObject ).destroy();
+  }
+
+  @Test
+  public void testRenderDispose_withDisposedParent_destroysRemoteObjects() throws IOException {
+    RemoteObjectImpl remoteObject = mockAndRegisterRemoteObject( widgetId, null );
+    shell.dispose();
+
+    lca.renderDispose( widget );
+
+    verify( remoteObject ).markDestroyed();
+  }
+
   private static OperationHandler mockAndRegisterOperationHandler( String id ) {
     OperationHandler handler = mock( OperationHandler.class );
     mockAndRegisterRemoteObject( id, handler );
     return handler;
   }
 
-  private static void mockAndRegisterRemoteObject( String id,
+  private static RemoteObjectImpl mockAndRegisterRemoteObject( String id,
                                                    OperationHandler handler )
   {
     RemoteObjectImpl remoteObject = mock( RemoteObjectImpl.class );
     when( remoteObject.getId() ).thenReturn( id );
     when( remoteObject.getHandler() ).thenReturn( handler );
     RemoteObjectRegistry.getInstance().register( remoteObject );
+    return remoteObject;
   }
 
   private static class TestWidgetLCA extends AbstractWidgetLCA {

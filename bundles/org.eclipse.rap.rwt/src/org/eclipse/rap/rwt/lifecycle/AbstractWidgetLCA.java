@@ -26,6 +26,7 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Control;
@@ -116,8 +117,11 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
    */
   public void renderDispose( Widget widget ) throws IOException {
     WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
+    RemoteObject remoteObject = getRemoteObject( widget );
     if( adapter.getParent() == null || !adapter.getParent().isDisposed() ) {
-      getRemoteObject( widget ).destroy();
+      remoteObject.destroy();
+    } else {
+      ( ( RemoteObjectImpl )remoteObject ).markDestroyed();
     }
   }
 
