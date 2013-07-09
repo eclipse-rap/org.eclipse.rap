@@ -21,6 +21,10 @@ fi
 basedirectory="$WORKSPACE/org.eclipse.rap/releng/org.eclipse.rap.build"
 
 ######################################################################
+# clean up WORKSPACE
+rm -r ${WORKSPACE}/rap*.zip
+
+######################################################################
 # clean up local Maven repository to circumvent p2 cache problems
 
 for II in .cache .meta p2 ; do
