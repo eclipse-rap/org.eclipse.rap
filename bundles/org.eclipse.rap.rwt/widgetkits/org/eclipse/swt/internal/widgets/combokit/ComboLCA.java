@@ -18,7 +18,6 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -28,13 +27,9 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -89,29 +84,11 @@ public class ComboLCA extends AbstractWidgetLCA {
     preserveListener( combo, PROP_MODIFY_LISTENER, hasModifyListener( combo ) );
   }
 
-  public void readData( Widget widget ) {
-    Combo combo = ( Combo )widget;
-    String value = readPropertyValue( widget, "selectionIndex" );
-    if( value != null ) {
-      combo.select( NumberFormatUtil.parseInt( value ) );
-    }
-    String listVisible = readPropertyValue( combo, "listVisible" );
-    if( listVisible != null ) {
-      combo.setListVisible( Boolean.valueOf( listVisible ).booleanValue() );
-    }
-    readTextAndSelection( combo );
-    ControlLCAUtil.processSelection( combo, null, true );
-    ControlLCAUtil.processDefaultSelection( combo, null );
-    ControlLCAUtil.processEvents( combo );
-    ControlLCAUtil.processKeyEvents( combo );
-    ControlLCAUtil.processMenuDetect( combo );
-    WidgetLCAUtil.processHelp( combo );
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Combo combo = ( Combo )widget;
     RemoteObject remoteObject = createRemoteObject( combo, TYPE );
+    remoteObject.setHandler( new ComboOperationHandler( combo ) );
     remoteObject.set( "parent", getId( combo.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( combo, ALLOWED_STYLES ) ) );
   }
@@ -133,57 +110,6 @@ public class ComboLCA extends AbstractWidgetLCA {
     renderListenSelection( combo );
     renderListenDefaultSelection( combo );
     renderListenModify( combo );
-  }
-
-  ///////////////////////////////////////
-  // Helping methods to read client state
-
-  private static void readTextAndSelection( final Combo combo ) {
-    final Point selection = readSelection( combo );
-    final String value = readPropertyValue( combo, "text" );
-    if( value != null ) {
-      if( isListening( combo, SWT.Verify ) ) {
-        // setText needs to be executed in a ProcessAcction runnable as it may
-        // fire a VerifyEvent whose fields (text and doit) need to be evaluated
-        // before actually setting the new value
-        ProcessActionRunner.add( new Runnable() {
-          public void run() {
-            combo.setText( value );
-            // since text is set in process action, preserved values have to be
-            // replaced
-            WidgetAdapter adapter = WidgetUtil.getAdapter( combo );
-            adapter.preserve( PROP_TEXT, value );
-            if( selection != null ) {
-              combo.setSelection( selection );
-              adapter.preserve( PROP_SELECTION, selection );
-            }
-         }
-        } );
-      } else {
-        combo.setText( value );
-        if( selection != null ) {
-          combo.setSelection( selection );
-        }
-      }
-    } else if( selection != null ) {
-      combo.setSelection( selection );
-    }
-  }
-
-  private static Point readSelection( Combo combo ) {
-    Point result = null;
-    String selStart = readPropertyValue( combo, "selectionStart" );
-    String selLength = readPropertyValue( combo, "selectionLength" );
-    if( selStart != null || selLength != null ) {
-      result = new Point( 0, 0 );
-      if( selStart != null ) {
-        result.x = NumberFormatUtil.parseInt( selStart );
-      }
-      if( selLength != null ) {
-        result.y = result.x + NumberFormatUtil.parseInt( selLength );
-      }
-    }
-    return result;
   }
 
   ///////////////////////////////////////////////////

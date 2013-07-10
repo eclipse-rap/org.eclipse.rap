@@ -15,10 +15,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
@@ -26,9 +23,11 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.remote.LifeCycleRemoteObject;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -50,10 +49,10 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 
 public class ComboLCA_Test {
@@ -172,74 +171,11 @@ public class ComboLCA_Test {
   }
 
   @Test
-  public void testReadData_ListVisible() {
-    combo.add( "item 1" );
-    combo.add( "item 2" );
-
-    Fixture.fakeSetProperty( getId( combo ), "listVisible", true );
-    lca.readData( combo );
-
-    assertTrue( combo.getListVisible() );
-  }
-
-  @Test
-  public void testReadData_SelectedItem() {
-    combo.add( "item 1" );
-    combo.add( "item 2" );
-
-    Fixture.fakeSetProperty( getId( combo ), "selectionIndex", 1 );
-    lca.readData( combo );
-
-    assertEquals( 1, combo.getSelectionIndex() );
-  }
-
-  @Test
-  public void testFireSelectionEvent() {
-    SelectionListener listener = mock( SelectionListener.class );
-    combo.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( combo ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.readDataAndProcessAction( combo );
-
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testFireDefaultSelectionEvent() {
-    SelectionListener listener = mock( SelectionListener.class );
-    combo.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( combo ), ClientMessageConst.EVENT_DEFAULT_SELECTION, null );
-    Fixture.readDataAndProcessAction( combo );
-
-    verify( listener, times( 1 ) ).widgetDefaultSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testReadData_Text() {
-    Fixture.fakeSetProperty( getId( combo ), "text", "abc" );
-
-    lca.readData( combo );
-
-    assertEquals( "abc", combo.getText() );
-  }
-
-  @Test
-  public void testReadData_TextAndSelection() {
-    Fixture.fakeSetProperty( getId( combo ), "text", "abc" );
-    Fixture.fakeSetProperty( getId( combo ), "selectionStart", 1 );
-    Fixture.fakeSetProperty( getId( combo ), "selectionLength", 1 );
-
-    lca.readData( combo );
-
-    assertEquals( new Point( 1, 2 ), combo.getSelection() );
-  }
-
-  @Test
   public void testTextIsNotRenderdBack() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( combo );
+    registerOperationHandler( combo, new ComboOperationHandler( combo ) );
 
     Fixture.fakeSetProperty( getId( combo ), "text", "some text" );
     Fixture.executeLifeCycleFromServerThread();
@@ -248,79 +184,6 @@ public class ComboLCA_Test {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( combo, "text" ) );
     assertEquals( "some text", combo.getText() );
-  }
-
-  @Test
-  public void testReadText_WithVerifyListener() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    Fixture.markInitialized( combo );
-    combo.setText( "some text" );
-    VerifyListener listener = mock( VerifyListener.class );
-    combo.addVerifyListener( listener );
-
-    Fixture.fakeSetProperty( getId( combo ), "text", "verify me" );
-    Fixture.executeLifeCycleFromServerThread();
-
-    assertEquals( "verify me", combo.getText() );
-    ArgumentCaptor<VerifyEvent> captor = ArgumentCaptor.forClass( VerifyEvent.class );
-    verify( listener, times( 1 ) ).verifyText( captor.capture() );
-    VerifyEvent event = captor.getValue();
-    assertEquals( "verify me", event.text );
-    assertEquals( 0, event.start );
-    assertEquals( 9, event.end );
-  }
-
-  @Test
-  public void testTextSelectionWithVerifyEvent_EmptyListener() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    Fixture.markInitialized( combo );
-    VerifyListener listener = mock( VerifyListener.class );
-    combo.addVerifyListener( listener );
-
-    fakeTextAndSelectionParameters( "verify me", 1, 0 );
-    Fixture.executeLifeCycleFromServerThread();
-
-    verify( listener, times( 1 ) ).verifyText( any( VerifyEvent.class ) );
-    assertEquals( "verify me", combo.getText() );
-    assertEquals( new Point( 1, 1 ), combo.getSelection() );
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( combo, "text" ) );
-    assertNull( message.findSetOperation( combo, "selection" ) );
-  }
-
-  @Test
-  public void testTextSelectionWithVerifyEvent_ListenerDoesNotChangeSelection() {
-    combo.setText( "" );
-    combo.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-        event.text = "verified";
-      }
-    } );
-
-    fakeTextAndSelectionParameters( "verify me", 1, 0 );
-    Fixture.executeLifeCycleFromServerThread( );
-
-    assertEquals( new Point( 1, 1 ), combo.getSelection() );
-    assertEquals( "verified", combo.getText() );
-  }
-
-  @Test
-  public void testTextSelectionWithVerifyEvent_ListenerAdjustsSelection() {
-    combo.setText( "" );
-    combo.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-        event.text = "";
-      }
-    } );
-
-    fakeTextAndSelectionParameters( "verify me", 1, 0 );
-    Fixture.executeLifeCycleFromServerThread( );
-
-    assertEquals( new Point( 0, 0 ), combo.getSelection() );
-    assertEquals( "", combo.getText() );
   }
 
   @Test
@@ -355,6 +218,15 @@ public class ComboLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( combo );
     assertEquals( "rwt.widgets.Combo", operation.getType() );
+  }
+
+  @Test
+  public void testRenderCreate_setsOperationHandler() throws IOException {
+    String id = getId( combo );
+    lca.renderInitialization( combo );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof ComboOperationHandler );
   }
 
   @Test
@@ -869,11 +741,10 @@ public class ComboLCA_Test {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( combo, "verify" ) );
   }
-
-  private void fakeTextAndSelectionParameters( String text, int start, int length ) {
-    Fixture.fakeSetProperty( getId( combo ), "text", text );
-    Fixture.fakeSetProperty( getId( combo ), "selectionStart", start );
-    Fixture.fakeSetProperty( getId( combo ), "selectionLength", length );
+  private static void registerOperationHandler( Widget widget, OperationHandler operationHandler ) {
+    LifeCycleRemoteObject remoteObject = new LifeCycleRemoteObject( getId( widget ), null );
+    remoteObject.setHandler( operationHandler );
+    RemoteObjectRegistry.getInstance().register( remoteObject );
   }
 
 }
