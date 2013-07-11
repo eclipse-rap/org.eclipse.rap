@@ -13,6 +13,7 @@ package org.eclipse.swt.events;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_IN;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
@@ -31,6 +32,7 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.widgets.buttonkit.ButtonOperationHandler;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -94,6 +96,8 @@ public class TypedEvent_Test {
   public void testPhase() {
     final StringBuilder log = new StringBuilder();
     Button button = new Button( shell, SWT.PUSH );
+    getRemoteObject( button ).setHandler( new ButtonOperationHandler( button ) );
+    Fixture.markInitialized( button );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
@@ -135,6 +139,8 @@ public class TypedEvent_Test {
   public void testFireFocusEventBeforeMouseEvent() {
     final java.util.List<TypedEvent> eventLog = new ArrayList<TypedEvent>();
     Button button = new Button( shell, SWT.PUSH );
+    getRemoteObject( button ).setHandler( new ButtonOperationHandler( button ) );
+    Fixture.markInitialized( button );
     button.addMouseListener( new MouseAdapter() {
       @Override
       public void mouseDown( MouseEvent event ) {

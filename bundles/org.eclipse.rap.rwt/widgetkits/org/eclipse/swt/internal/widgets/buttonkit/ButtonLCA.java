@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,26 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.buttonkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.findMnemonicCharacterIndex;
+import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
+
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Widget;
@@ -21,38 +38,92 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class ButtonLCA extends AbstractWidgetLCA {
 
-  private final static ButtonDelegateLCA PUSH = new PushButtonDelegateLCA();
-  private final static ButtonDelegateLCA CHECK = new CheckButtonDelegateLCA();
-  private final static ButtonDelegateLCA RADIO = new RadioButtonDelegateLCA();
+  private static final String TYPE = "rwt.widgets.Button";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "ARROW", "CHECK", "PUSH", "RADIO", "TOGGLE", "FLAT", "WRAP", "BORDER"
+  };
 
+  private static final String PROP_TEXT = "text";
+  private static final String PROP_MNEMONIC_INDEX = "mnemonicIndex";
+  private static final String PROP_IMAGE = "image";
+  private static final String PROP_SELECTION = "selection";
+  private static final String PROP_GRAYED = "grayed";
+  private static final String PROP_ALIGNMENT = "alignment";
+  private static final String PROP_SELECTION_LISTENERS = "Selection";
+
+  private static final String DEFAULT_ALIGNMENT = "center";
+
+  @Override
   public void preserveValues( Widget widget ) {
-    getLCADelegate( widget ).preserveValues( ( Button )widget );
+    Button button = ( Button )widget;
+    ControlLCAUtil.preserveValues( button );
+    WidgetLCAUtil.preserveCustomVariant( button );
+    preserveProperty( button, PROP_TEXT, button.getText() );
+    preserveProperty( button, PROP_IMAGE, button.getImage() );
+    preserveProperty( button, PROP_SELECTION, Boolean.valueOf( button.getSelection() ) );
+    preserveProperty( button, PROP_GRAYED, Boolean.valueOf( button.getGrayed() ) );
+    preserveProperty( button, PROP_ALIGNMENT, getAlignment( button ) );
+    preserveListener( button, PROP_SELECTION_LISTENERS, isListening( button, SWT.Selection ) );
   }
 
-  public void readData( Widget widget ) {
-    getLCADelegate( widget ).readData( ( Button )widget );
-  }
-
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
-    getLCADelegate( widget ).renderInitialization( ( Button )widget );
+    Button button = ( Button )widget;
+    RemoteObject remoteObject = createRemoteObject( button, TYPE );
+    remoteObject.setHandler( new ButtonOperationHandler( button ) );
+    remoteObject.set( "parent", getId( button.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( button, ALLOWED_STYLES ) ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
-    getLCADelegate( widget ).renderChanges( ( Button )widget );
+    Button button = ( Button )widget;
+    ControlLCAUtil.renderChanges( button );
+    WidgetLCAUtil.renderCustomVariant( button );
+    renderText( button );
+    renderMnemonicIndex( button );
+    renderProperty( button, PROP_IMAGE, button.getImage(), null );
+    renderProperty( button, PROP_ALIGNMENT, getAlignment( button ), DEFAULT_ALIGNMENT );
+    renderProperty( button, PROP_SELECTION, button.getSelection(), false );
+    renderProperty( button, PROP_GRAYED, button.getGrayed(), false );
+    renderListener( button, PROP_SELECTION_LISTENERS, isListening( button, SWT.Selection ), false );
   }
 
-  private static ButtonDelegateLCA getLCADelegate( Widget widget ) {
-    ButtonDelegateLCA result;
-    int style = ( ( Button )widget ).getStyle();
-    if( ( style & SWT.CHECK ) != 0 ) {
-      result = CHECK;
-    } else if( ( style & SWT.PUSH ) != 0 ) {
-      result = PUSH;
-    } else if( ( style & SWT.RADIO ) != 0 ) {
-      result = RADIO;
+  private static String getAlignment( Button button ) {
+    int alignment = button.getAlignment();
+    String result;
+    if( ( alignment & SWT.LEFT ) != 0 ) {
+      result = "left";
+    } else if( ( alignment & SWT.CENTER ) != 0 ) {
+      result = "center";
+    } else if( ( alignment & SWT.RIGHT ) != 0 ) {
+      result = "right";
+    } else if( ( alignment & SWT.UP ) != 0 ) {
+      result = "up";
+    } else if( ( alignment & SWT.DOWN ) != 0 ) {
+      result = "down";
     } else {
-      result = PUSH;
+      result = "left";
     }
     return result;
   }
+
+  private static void renderText( Button button ) {
+    String newValue = button.getText();
+    if( hasChanged( button, PROP_TEXT, newValue, "" ) ) {
+      String text = removeAmpersandControlCharacters( newValue );
+      getRemoteObject( button ).set( PROP_TEXT, text );
+    }
+  }
+
+  private static void renderMnemonicIndex( Button button ) {
+    String text = button.getText();
+    if( hasChanged( button, PROP_TEXT, text, "" ) ) {
+      int mnemonicIndex = findMnemonicCharacterIndex( text );
+      if( mnemonicIndex != -1 ) {
+        getRemoteObject( button ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+      }
+    }
+  }
+
 }

@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.combokit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -23,7 +24,6 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.remote.LifeCycleRemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -43,13 +43,13 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.buttonkit.ButtonOperationHandler;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Widget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -175,7 +175,7 @@ public class ComboLCA_Test {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( combo );
-    registerOperationHandler( combo, new ComboOperationHandler( combo ) );
+    getRemoteObject( getId( combo ) ).setHandler( new ComboOperationHandler( combo ) );
 
     Fixture.fakeSetProperty( getId( combo ), "text", "some text" );
     Fixture.executeLifeCycleFromServerThread();
@@ -189,11 +189,13 @@ public class ComboLCA_Test {
   @Test
   public void testSelectionAfterRemoveAll() {
     combo = new Combo( shell, SWT.READ_ONLY );
+    Button button = new Button( shell, SWT.PUSH );
+    getRemoteObject( getId( button ) ).setHandler( new ButtonOperationHandler( button ) );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
+    Fixture.markInitialized( button );
     combo.add( "item 1" );
     combo.select( 0 );
-    Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -740,11 +742,6 @@ public class ComboLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( combo, "verify" ) );
-  }
-  private static void registerOperationHandler( Widget widget, OperationHandler operationHandler ) {
-    LifeCycleRemoteObject remoteObject = new LifeCycleRemoteObject( getId( widget ), null );
-    remoteObject.setHandler( operationHandler );
-    RemoteObjectRegistry.getInstance().register( remoteObject );
   }
 
 }

@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.buttonkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -26,12 +27,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -63,7 +67,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-// TODO [rst] Split into different test classes for button types
 public class ButtonLCA_Test {
 
   private static final String PROP_SELECTION_LISTENER = "listener_Selection";
@@ -235,6 +238,7 @@ public class ButtonLCA_Test {
   @Test
   public void testDisabledButtonSelection() {
     button = new Button( shell, SWT.NONE );
+    getRemoteObject( button ).setHandler( new ButtonOperationHandler( button ) );
     Label label = new Label( shell, SWT.NONE );
     button.addListener( SWT.Activate, new Listener() {
       public void handleEvent( Event event ) {
@@ -255,51 +259,12 @@ public class ButtonLCA_Test {
   }
 
   @Test
-  public void testSelectionEvent() {
-    SelectionListener listener = mock( SelectionListener.class );
-    button.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.readDataAndProcessAction( button );
-
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testRadioSelectionEvent() {
-    button = new Button( shell, SWT.RADIO );
-    SelectionListener listener = mock( SelectionListener.class );
-    button.addSelectionListener( listener );
-
-    Fixture.fakeSetProperty( getId( button ), "selection", true );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.readDataAndProcessAction( button );
-
-    assertTrue( button.getSelection() );
-    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872
-  @Test
-  public void testRadioDeselectionEvent() {
-    button = new Button( shell, SWT.RADIO );
-    button.setSelection( true );
-    SelectionListener listener = mock( SelectionListener.class );
-    button.addSelectionListener( listener );
-
-    Fixture.fakeSetProperty( getId( button ), "selection", false );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.readDataAndProcessAction( button );
-
-    assertFalse( button.getSelection() );
-    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
   public void testRadioTypedSelectionEventOrder_TypedListener() {
     final List<Widget> log = new ArrayList<Widget>();
     Button button1 = new Button( shell, SWT.RADIO );
+    getRemoteObject( button1 ).setHandler( new ButtonOperationHandler( button1 ) );
     Button button2 = new Button( shell, SWT.RADIO );
+    getRemoteObject( button2 ).setHandler( new ButtonOperationHandler( button2 ) );
     button2.setSelection( true );
     SelectionAdapter listener = new SelectionAdapter() {
       @Override
@@ -310,10 +275,10 @@ public class ButtonLCA_Test {
     button1.addSelectionListener( listener );
     button2.addSelectionListener( listener );
 
-    Fixture.fakeSetProperty( getId( button1 ), "selection", true );
     Fixture.fakeSetProperty( getId( button2 ), "selection", false );
-    Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.fakeNotifyOperation( getId( button2 ), ClientMessageConst.EVENT_SELECTION, null );
+    Fixture.fakeSetProperty( getId( button1 ), "selection", true );
+    Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( display );
 
     assertTrue( Arrays.equals( new Widget[]{ button2, button1 }, log.toArray() ) );
@@ -323,7 +288,9 @@ public class ButtonLCA_Test {
   public void testRadioTypedSelectionEventOrder_UntypedListener() {
     final List<Widget> log = new ArrayList<Widget>();
     Button button1 = new Button( shell, SWT.RADIO );
+    getRemoteObject( button1 ).setHandler( new ButtonOperationHandler( button1 ) );
     Button button2 = new Button( shell, SWT.RADIO );
+    getRemoteObject( button2 ).setHandler( new ButtonOperationHandler( button2 ) );
     button2.setSelection( true );
     Listener listener = new Listener() {
       public void handleEvent( Event event ) {
@@ -333,10 +300,10 @@ public class ButtonLCA_Test {
     button1.addListener( SWT.Selection, listener );
     button2.addListener( SWT.Selection, listener );
 
-    Fixture.fakeSetProperty( getId( button1 ), "selection", true );
     Fixture.fakeSetProperty( getId( button2 ), "selection", false );
-    Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.fakeNotifyOperation( getId( button2 ), ClientMessageConst.EVENT_SELECTION, null );
+    Fixture.fakeSetProperty( getId( button1 ), "selection", true );
+    Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( display );
 
     assertTrue( Arrays.equals( new Widget[]{ button2, button1 }, log.toArray() ) );
@@ -346,7 +313,6 @@ public class ButtonLCA_Test {
   public void testRenderWrap() throws Exception {
     button = new Button( shell, SWT.PUSH | SWT.WRAP );
     Fixture.fakeResponseWriter();
-    PushButtonDelegateLCA lca = new PushButtonDelegateLCA();
 
     lca.renderInitialization( button );
 
@@ -380,6 +346,15 @@ public class ButtonLCA_Test {
     assertEquals( "rwt.widgets.Button", operation.getType() );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "ARROW" ) );
+  }
+
+  @Test
+  public void testRenderCreate_setsOperationHandler() throws IOException {
+    String id = getId( button );
+    lca.renderInitialization( button );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof ButtonOperationHandler );
   }
 
   @Test
