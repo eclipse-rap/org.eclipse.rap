@@ -74,10 +74,6 @@ public class ComboOperationHandler extends AbstractOperationHandler {
    * @param altKey (boolean) true if the ALT key was pressed
    * @param ctrlKey (boolean) true if the CTRL key was pressed
    * @param shiftKey (boolean) true if the SHIFT key was pressed
-   * @param x (int) the x coordinate of the widget
-   * @param y (int) the y coordinate of the widget
-   * @param width (int) the width of the widget
-   * @param height (int) the height of the widget
    */
   public void handleNotifySelection( JsonObject properties ) {
     combo.notifyListeners( SWT.Selection, createSelectionEvent( properties ) );
