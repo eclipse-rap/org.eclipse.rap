@@ -91,7 +91,7 @@ public class ComboOperationHandler extends AbstractOperationHandler {
    * @param shiftKey (boolean) true if the SHIFT key was pressed
    */
   public void handleNotifyDefaultSelection( JsonObject properties ) {
-    combo.notifyListeners( SWT.DefaultSelection, createDefaultSelectionEvent( properties ) );
+    combo.notifyListeners( SWT.DefaultSelection, createSelectionEvent( properties ) );
   }
 
   /*
@@ -205,13 +205,6 @@ public class ComboOperationHandler extends AbstractOperationHandler {
   }
 
   private Event createSelectionEvent( JsonObject properties ) {
-    Event event = new Event();
-    event.stateMask = readStateMask( properties );
-    event.setBounds( readBounds( properties, combo.getBounds() ) );
-    return event;
-  }
-
-  private Event createDefaultSelectionEvent( JsonObject properties ) {
     Event event = new Event();
     event.stateMask = readStateMask( properties );
     return event;
@@ -431,19 +424,6 @@ public class ComboOperationHandler extends AbstractOperationHandler {
     boolean ctrlKey = JsonValue.TRUE.equals( properties.get( "ctrlKey" ) );
     boolean shiftKey = JsonValue.TRUE.equals( properties.get( "shiftKey" ) );
     return translateModifier( altKey, ctrlKey, shiftKey );
-  }
-
-  private static Rectangle readBounds( JsonObject properties, Rectangle defaultBounds ) {
-    Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-    JsonValue x = properties.get( "x" );
-    bounds.x = x == null ? defaultBounds.x : x.asInt();
-    JsonValue y = properties.get( "y" );
-    bounds.y = y == null ? defaultBounds.y : y.asInt();
-    JsonValue width = properties.get( "width" );
-    bounds.width = width == null ? defaultBounds.width : width.asInt();
-    JsonValue height = properties.get( "height" );
-    bounds.height = height == null ? defaultBounds.height : height.asInt();
-    return bounds;
   }
 
   @Override

@@ -148,51 +148,12 @@ public class ComboOperationHandler_Test {
     when( mockedCombo.getBounds() ).thenReturn( new Rectangle( 1, 2, 3, 4) );
     handler = new ComboOperationHandler( mockedCombo );
 
-    JsonObject properties = new JsonObject()
-      .add( "altKey", true )
-      .add( "ctrlKey", false )
-      .add( "shiftKey", true );
+    JsonObject properties = new JsonObject().add( "altKey", true ).add( "shiftKey", true );
     handler.handleNotify( EVENT_SELECTION, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
     verify( mockedCombo ).notifyListeners( eq( SWT.Selection ), captor.capture() );
     assertEquals( SWT.ALT | SWT.SHIFT, captor.getValue().stateMask );
-  }
-
-  @Test
-  public void testHandleNotifySelection_setsDefaultBounds() {
-    when( mockedCombo.getBounds() ).thenReturn( new Rectangle( 1, 2, 3, 4) );
-    handler = new ComboOperationHandler( mockedCombo );
-
-    JsonObject properties = new JsonObject()
-    .add( "altKey", true )
-    .add( "ctrlKey", false )
-    .add( "shiftKey", true );
-    handler.handleNotify( EVENT_SELECTION, properties );
-
-    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
-    verify( mockedCombo ).notifyListeners( eq( SWT.Selection ), captor.capture() );
-    assertEquals( new Rectangle( 1, 2, 3, 4 ), captor.getValue().getBounds() );
-  }
-
-  @Test
-  public void testHandleNotifySelection_setsBounds() {
-    when( mockedCombo.getBounds() ).thenReturn( new Rectangle( 1, 2, 3, 4) );
-    handler = new ComboOperationHandler( mockedCombo );
-
-    JsonObject properties = new JsonObject()
-      .add( "altKey", true )
-      .add( "ctrlKey", false )
-      .add( "shiftKey", true )
-      .add( "x", 11 )
-      .add( "y", 22)
-      .add( "width", 33 )
-      .add( "height", 44 );
-    handler.handleNotify( EVENT_SELECTION, properties );
-
-    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
-    verify( mockedCombo ).notifyListeners( eq( SWT.Selection ), captor.capture() );
-    assertEquals( new Rectangle( 11, 22, 33, 44 ), captor.getValue().getBounds() );
   }
 
   @Test
@@ -415,6 +376,11 @@ public class ComboOperationHandler_Test {
     handler.handleNotify( EVENT_HELP, null );
 
     verify( mockedCombo ).notifyListeners( eq( SWT.Help ), any( Event.class ) );
+  }
+
+  @Test( expected=UnsupportedOperationException.class )
+  public void testHandleNotify_unknownOperation() {
+    handler.handleNotify( "Unknown", null );
   }
 
 }
