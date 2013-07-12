@@ -431,7 +431,7 @@ public class ComboOperationHandler extends AbstractOperationHandler {
   }
 
   /*
-   * PROTOCOL SET selection index
+   * PROTOCOL SET selectionIndex
    *
    * @param selectionIndex (int) the index of the item to select
    */
@@ -443,7 +443,7 @@ public class ComboOperationHandler extends AbstractOperationHandler {
   }
 
   /*
-   * PROTOCOL SET list visibility
+   * PROTOCOL SET listVisible
    *
    * @param listVisible (boolean) the visibility state of the list
    */
@@ -481,7 +481,7 @@ public class ComboOperationHandler extends AbstractOperationHandler {
   }
 
   /*
-   * PROTOCOL SET text selection
+   * PROTOCOL SET textSelection
    *
    * @param selectionStart (int) the text selection start
    * @param selectionLength (int) the text selection length
