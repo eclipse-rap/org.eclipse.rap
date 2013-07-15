@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
@@ -41,6 +42,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
 import org.eclipse.swt.internal.widgets.WidgetDataUtil;
+import org.eclipse.swt.internal.widgets.treekit.TreeOperationHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
@@ -240,6 +242,7 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testGetBoundsWithScrolling() {
+    getRemoteObject( tree ).setHandler( new TreeOperationHandler( tree ) );
     TreeItem rootItem = new TreeItem( tree, 0 );
     TreeItem rootItem2 = new TreeItem( tree, 0 );
     TreeItem rootItem3 = new TreeItem( tree, 0 );
@@ -251,8 +254,8 @@ public class TreeItemLCA_Test {
     assertEquals( 54, rootItem3.getBounds().y );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( tree ), "scrollLeft", "0" );
-    Fixture.fakeSetProperty( getId( tree ), "topItemIndex", "2" );
+    Fixture.fakeSetProperty( getId( tree ), "scrollLeft", 0 );
+    Fixture.fakeSetProperty( getId( tree ), "topItemIndex", 2 );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( -54, rootItem.getBounds().y );

@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
@@ -17,10 +18,12 @@ import static org.mockito.Mockito.mock;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.widgets.treekit.TreeOperationHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
@@ -75,12 +78,12 @@ public class KeyEvent_Test {
     KeyListener keyListener = mock( KeyListener.class );
     SelectionListener selectionListener = mock( SelectionListener.class );
     Tree tree = createTreeWithKeyListener();
+    tree.addKeyListener( keyListener );
+    tree.addSelectionListener( selectionListener );
+
     Fixture.fakeNewRequest();
     fakeKeyDownRequest( tree, 65, 65 );
     fakeSelectionRequest( tree, tree.getItem( 1 ) );
-
-    tree.addKeyListener( keyListener );
-    tree.addSelectionListener( selectionListener );
     Fixture.readDataAndProcessAction( display );
 
     InOrder inOrder = inOrder( keyListener, selectionListener );
@@ -128,16 +131,17 @@ public class KeyEvent_Test {
   }
 
   private Tree createTreeWithKeyListener() {
-    Tree result = new Tree( shell, SWT.NONE );
-    result.setSize( 100, 100 );
+    Tree tree = new Tree( shell, SWT.NONE );
+    getRemoteObject( tree ).setHandler( new TreeOperationHandler( tree ) );
+    tree.setSize( 100, 100 );
     for( int i = 0; i < 5; i++ ) {
-      TreeItem item = new TreeItem( result, SWT.NONE);
+      TreeItem item = new TreeItem( tree, SWT.NONE);
       for( int j = 0; j < 5; j++ ) {
         new TreeItem( item, SWT.NONE);
       }
     }
-    result.addKeyListener( new LoggingKeyListener( events ) );
-    return result;
+    tree.addKeyListener( new LoggingKeyListener( events ) );
+    return tree;
   }
 
   private static void fakeSelectionRequest( Widget widget, Widget item ) {

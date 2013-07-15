@@ -127,11 +127,11 @@ public class ComboOperationHandler_Test {
   public void testHandleSetTextAndSelection_inSameOperation() {
     handler = new ComboOperationHandler( combo );
     combo.setText( "original text" );
-
     JsonObject properties = new JsonObject()
       .add( "text", "abc" )
       .add( "selectionStart", 1 )
       .add( "selectionLength", 1 );
+
     handler.handleSet( properties );
 
     assertEquals( "abc", combo.getText() );
@@ -153,6 +153,7 @@ public class ComboOperationHandler_Test {
   @Test
   public void testHandleNotifySelection() {
     JsonObject properties = new JsonObject().add( "altKey", true ).add( "shiftKey", true );
+
     handler.handleNotify( EVENT_SELECTION, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -163,6 +164,7 @@ public class ComboOperationHandler_Test {
   @Test
   public void testHandleNotifyDefaultSelection() {
     JsonObject properties = new JsonObject().add( "altKey", true ).add( "shiftKey", true );
+
     handler.handleNotify( EVENT_DEFAULT_SELECTION, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -195,7 +197,6 @@ public class ComboOperationHandler_Test {
   public void testHandleNotifyMouseDown() {
     Combo spyCombo = spy( combo );
     handler = new ComboOperationHandler( spyCombo );
-
     JsonObject properties = new JsonObject()
       .add( "altKey", true )
       .add( "shiftKey", true )
@@ -203,6 +204,7 @@ public class ComboOperationHandler_Test {
       .add( "x", 2 )
       .add( "y", 3 )
       .add( "time", 4 );
+
     handler.handleNotify( EVENT_MOUSE_DOWN, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -220,7 +222,6 @@ public class ComboOperationHandler_Test {
   public void testHandleNotifyMouseDown_coordinatesOutOfClientArea() {
     Combo spyCombo = spy( combo );
     handler = new ComboOperationHandler( spyCombo );
-
     JsonObject properties = new JsonObject()
       .add( "altKey", true )
       .add( "shiftKey", true )
@@ -228,6 +229,7 @@ public class ComboOperationHandler_Test {
       .add( "x", 110 )
       .add( "y", 3 )
       .add( "time", 4 );
+
     handler.handleNotify( EVENT_MOUSE_DOWN, properties );
 
     verify( spyCombo, times( 0 ) ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
@@ -237,7 +239,6 @@ public class ComboOperationHandler_Test {
   public void testHandleNotifyMouseDoubleClick() {
     Combo spyCombo = spy( combo );
     handler = new ComboOperationHandler( spyCombo );
-
     JsonObject properties = new JsonObject()
       .add( "altKey", true )
       .add( "shiftKey", true )
@@ -245,6 +246,7 @@ public class ComboOperationHandler_Test {
       .add( "x", 2 )
       .add( "y", 3 )
       .add( "time", 4 );
+
     handler.handleNotify( EVENT_MOUSE_DOUBLE_CLICK, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -262,7 +264,6 @@ public class ComboOperationHandler_Test {
   public void testHandleNotifyMouseUp() {
     Combo spyCombo = spy( combo );
     handler = new ComboOperationHandler( spyCombo );
-
     JsonObject properties = new JsonObject()
       .add( "altKey", true )
       .add( "shiftKey", true )
@@ -270,6 +271,7 @@ public class ComboOperationHandler_Test {
       .add( "x", 2 )
       .add( "y", 3 )
       .add( "time", 4 );
+
     handler.handleNotify( EVENT_MOUSE_UP, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -289,6 +291,7 @@ public class ComboOperationHandler_Test {
       .add( "shiftKey", true )
       .add( "keyCode", 9 )
       .add( "charCode", 0 );
+
     handler.handleNotify( EVENT_TRAVERSE, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -305,6 +308,7 @@ public class ComboOperationHandler_Test {
       .add( "ctrlKey", true )
       .add( "keyCode", 9 )
       .add( "charCode", 0 );
+
     handler.handleNotify( EVENT_TRAVERSE, properties );
 
     verify( mockedCombo, times( 0 ) ).notifyListeners( eq( SWT.Traverse ), any( Event.class ) );
@@ -314,8 +318,9 @@ public class ComboOperationHandler_Test {
   public void testHandleNotifyKeyDown() {
     JsonObject properties = new JsonObject()
       .add( "shiftKey", true )
-      .add( "keyCode", 97 )
-      .add( "charCode", 65 );
+      .add( "keyCode", 65 )
+      .add( "charCode", 97 );
+
     handler.handleNotify( EVENT_KEY_DOWN, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -323,15 +328,16 @@ public class ComboOperationHandler_Test {
     Event event = captor.getValue();
     assertEquals( SWT.SHIFT, event.stateMask );
     assertEquals( 97, event.keyCode );
-    assertEquals( 65, event.character );
+    assertEquals( 'a', event.character );
   }
 
   @Test
   public void testHandleNotifyKeyUp() {
     JsonObject properties = new JsonObject()
       .add( "shiftKey", true )
-      .add( "keyCode", 97 )
-      .add( "charCode", 65 );
+      .add( "keyCode", 65 )
+      .add( "charCode", 97 );
+
     handler.handleNotify( EVENT_KEY_DOWN, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -339,12 +345,13 @@ public class ComboOperationHandler_Test {
     Event event = captor.getValue();
     assertEquals( SWT.SHIFT, event.stateMask );
     assertEquals( 97, event.keyCode );
-    assertEquals( 65, event.character );
+    assertEquals( 'a', event.character );
   }
 
   @Test
   public void testHandleNotifyMenuDetect() {
     JsonObject properties = new JsonObject().add( "x", 1 ).add( "y", 2 );
+
     handler.handleNotify( EVENT_MENU_DETECT, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );

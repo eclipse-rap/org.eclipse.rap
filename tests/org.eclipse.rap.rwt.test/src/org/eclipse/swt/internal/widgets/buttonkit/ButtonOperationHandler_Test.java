@@ -80,6 +80,7 @@ public class ButtonOperationHandler_Test {
   @Test
   public void testHandleNotifySelection() {
     JsonObject properties = new JsonObject().add( "altKey", true ).add( "shiftKey", true );
+
     handler.handleNotify( EVENT_SELECTION, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -104,6 +105,7 @@ public class ButtonOperationHandler_Test {
   @Test
   public void testHandleNotifyDefaultSelection() {
     JsonObject properties = new JsonObject().add( "altKey", true ).add( "shiftKey", true );
+
     handler.handleNotify( EVENT_DEFAULT_SELECTION, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -129,7 +131,6 @@ public class ButtonOperationHandler_Test {
   public void testHandleNotifyMouseDown() {
     Button spyButton = spy( button );
     handler = new ButtonOperationHandler( spyButton );
-
     JsonObject properties = new JsonObject()
       .add( "altKey", true )
       .add( "shiftKey", true )
@@ -137,6 +138,7 @@ public class ButtonOperationHandler_Test {
       .add( "x", 2 )
       .add( "y", 3 )
       .add( "time", 4 );
+
     handler.handleNotify( EVENT_MOUSE_DOWN, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -154,7 +156,6 @@ public class ButtonOperationHandler_Test {
   public void testHandleNotifyMouseDown_negativeCoordinates() {
     Button spyButton = spy( button );
     handler = new ButtonOperationHandler( spyButton );
-
     JsonObject properties = new JsonObject()
       .add( "altKey", true )
       .add( "shiftKey", true )
@@ -162,6 +163,7 @@ public class ButtonOperationHandler_Test {
       .add( "x", -10 )
       .add( "y", 3 )
       .add( "time", 4 );
+
     handler.handleNotify( EVENT_MOUSE_DOWN, properties );
 
     verify( spyButton, times( 0 ) ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
@@ -171,7 +173,6 @@ public class ButtonOperationHandler_Test {
   public void testHandleNotifyMouseDoubleClick() {
     Button spyButton = spy( button );
     handler = new ButtonOperationHandler( spyButton );
-
     JsonObject properties = new JsonObject()
       .add( "altKey", true )
       .add( "shiftKey", true )
@@ -179,6 +180,7 @@ public class ButtonOperationHandler_Test {
       .add( "x", 2 )
       .add( "y", 3 )
       .add( "time", 4 );
+
     handler.handleNotify( EVENT_MOUSE_DOUBLE_CLICK, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -196,7 +198,6 @@ public class ButtonOperationHandler_Test {
   public void testHandleNotifyMouseUp() {
     Button spyButton = spy( button );
     handler = new ButtonOperationHandler( spyButton );
-
     JsonObject properties = new JsonObject()
       .add( "altKey", true )
       .add( "shiftKey", true )
@@ -204,6 +205,7 @@ public class ButtonOperationHandler_Test {
       .add( "x", 2 )
       .add( "y", 3 )
       .add( "time", 4 );
+
     handler.handleNotify( EVENT_MOUSE_UP, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -223,6 +225,7 @@ public class ButtonOperationHandler_Test {
       .add( "shiftKey", true )
       .add( "keyCode", 9 )
       .add( "charCode", 0 );
+
     handler.handleNotify( EVENT_TRAVERSE, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -239,6 +242,7 @@ public class ButtonOperationHandler_Test {
       .add( "ctrlKey", true )
       .add( "keyCode", 9 )
       .add( "charCode", 0 );
+
     handler.handleNotify( EVENT_TRAVERSE, properties );
 
     verify( mockedButton, times( 0 ) ).notifyListeners( eq( SWT.Traverse ), any( Event.class ) );
@@ -248,8 +252,9 @@ public class ButtonOperationHandler_Test {
   public void testHandleNotifyKeyDown() {
     JsonObject properties = new JsonObject()
       .add( "shiftKey", true )
-      .add( "keyCode", 97 )
-      .add( "charCode", 65 );
+      .add( "keyCode", 65 )
+      .add( "charCode", 97 );
+
     handler.handleNotify( EVENT_KEY_DOWN, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -257,15 +262,16 @@ public class ButtonOperationHandler_Test {
     Event event = captor.getValue();
     assertEquals( SWT.SHIFT, event.stateMask );
     assertEquals( 97, event.keyCode );
-    assertEquals( 65, event.character );
+    assertEquals( 'a', event.character );
   }
 
   @Test
   public void testHandleNotifyKeyUp() {
     JsonObject properties = new JsonObject()
       .add( "shiftKey", true )
-      .add( "keyCode", 97 )
-      .add( "charCode", 65 );
+      .add( "keyCode", 65 )
+      .add( "charCode", 97 );
+
     handler.handleNotify( EVENT_KEY_DOWN, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -273,12 +279,13 @@ public class ButtonOperationHandler_Test {
     Event event = captor.getValue();
     assertEquals( SWT.SHIFT, event.stateMask );
     assertEquals( 97, event.keyCode );
-    assertEquals( 65, event.character );
+    assertEquals( 'a', event.character );
   }
 
   @Test
   public void testHandleNotifyMenuDetect() {
     JsonObject properties = new JsonObject().add( "x", 1 ).add( "y", 2 );
+
     handler.handleNotify( EVENT_MENU_DETECT, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
