@@ -70,7 +70,7 @@ public class TreeOperationHandler extends AbstractOperationHandler {
   }
 
   /*
-   * PROTOCOL NOTIFY Selection
+   * PROTOCOL NOTIFY DefaultSelection
    *
    * @param altKey (boolean) true if the ALT key was pressed
    * @param ctrlKey (boolean) true if the CTRL key was pressed
@@ -219,7 +219,7 @@ public class TreeOperationHandler extends AbstractOperationHandler {
   /*
    * PROTOCOL CALL renderToolTipText
    *
-   * @item item (string) id of the hovered item
+   * @item (string) id of the hovered item
    * @column (int) column index of the hovered cell
    */
   private void handleCallRenderToolTipText( JsonObject properties ) {
