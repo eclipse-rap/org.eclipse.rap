@@ -197,26 +197,9 @@ public class TreeItemLCA_Test {
   }
 
   @Test
-  public void testExpandCollapse() {
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    new TreeItem( treeItem, SWT.NONE );
-    treeItem.setExpanded( false );
-
-    Fixture.fakeSetProperty( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, true  );
-    Fixture.readDataAndProcessAction( treeItem );
-
-    assertTrue( treeItem.getExpanded() );
-
-    Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, false  );
-    Fixture.readDataAndProcessAction( treeItem );
-
-    assertFalse( treeItem.getExpanded() );
-  }
-
-  @Test
   public void testExpandedPropertyNotRenderedBack() {
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    getRemoteObject( treeItem ).setHandler( new TreeItemOperationHandler( treeItem ) );
     Fixture.markInitialized( treeItem );
     new TreeItem( treeItem, SWT.NONE );
     treeItem.setExpanded( false );
@@ -226,18 +209,6 @@ public class TreeItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( treeItem, TreeItemLCA.PROP_EXPANDED ) );
-  }
-
-  @Test
-  public void testChecked() {
-    tree = new Tree( shell, SWT.CHECK );
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-
-    Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( treeItem ), "checked", "true" );
-    Fixture.readDataAndProcessAction( display );
-
-    assertTrue( treeItem.getChecked() );
   }
 
   @Test
