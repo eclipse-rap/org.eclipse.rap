@@ -211,6 +211,11 @@ public class DateTime extends Composite {
     computeSubWidgetsBounds();
   }
 
+  @Override
+  void initState() {
+    state &= ~( /* CANVAS | */THEME_BACKGROUND );
+  }
+
   /**
    * Adds the listener to the collection of listeners who will be notified when
    * the control is selected by the user, by sending it one of the messages
