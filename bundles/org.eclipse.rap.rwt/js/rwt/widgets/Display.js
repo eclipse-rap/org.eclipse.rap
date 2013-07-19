@@ -169,7 +169,7 @@ rwt.widgets.Display.prototype = {
 
   _sendShutdown : function() {
     var server = rwt.remote.Server.getInstance();
-    server.getMessageWriter().appendHead( "rwt_shutdown", true );
+    server.getMessageWriter().appendHead( "shutdown", true );
     server.sendImmediate( false );
   },
 

@@ -18,9 +18,8 @@ public final class ClientMessageConst {
 
   // Head parameters
   public static final String RWT_INITIALIZE = "rwt_initialize";
-  public static final String RWT_SHUTDOWN = "rwt_shutdown";
+  public static final String SHUTDOWN = "shutdown";
   public static final String QUERY_STRING = "queryString";
-  public static final String UI_SESSION = "uiSession";
 
   // SWT keys used to identify which kind of SWT-Event is requested
   public static final String EVENT_SELECTION = "Selection";

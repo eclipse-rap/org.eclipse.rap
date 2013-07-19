@@ -426,7 +426,7 @@ public class LifeCycleServiceHandler_Test {
 
   private void simulateShutdownUiRequest() {
     Fixture.fakeNewRequest();
-    Fixture.fakeHeadParameter( ClientMessageConst.RWT_SHUTDOWN, true );
+    Fixture.fakeHeadParameter( ClientMessageConst.SHUTDOWN, true );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
   }
