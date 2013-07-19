@@ -572,7 +572,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       disposeMenuBar();
     },
 
-    testMenuBarItemWithMnemonic_Trigger : function() {
+    testMenuBarItemWithMnemonic_Trigger_onCascade : function() {
       createMenuBar( "push" );
       menuBarItem.setText( "foo" );
       menuBarItem.setMnemonicIndex( 1 );
@@ -586,6 +586,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( success );
       assertTrue( menu.isSeeable() );
       assertFalse( rwt.widgets.util.MnemonicHandler.getInstance().isActive() );
+      disposeMenuBar();
+    },
+
+    testMenuBarItemWithMnemonic_Trigger_onPush : function() {
+      createMenuBar( "push", "push" );
+      menuBarItem.setText( "foo" );
+      menuBarItem.setMnemonicIndex( 1 );
+      TestUtil.flush();
+      var success = false;
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      success = rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      TestUtil.flush();
+
+      assertTrue( success );
+      assertFalse( menu.isSeeable() );
+      assertTrue( rwt.widgets.util.MnemonicHandler.getInstance().isActive() );
       disposeMenuBar();
     },
 
@@ -1067,7 +1084,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     },
 
     testExecutePushItemInMenuBar : function() {
-      createMenuBar( "push" );
+      createMenuBar( "push", "push" );
       rwt.remote.ObjectRegistry.add( "w3", menuBarItem, menuItemHandler );
       TestUtil.flush();
       TestUtil.clearRequestLog();
@@ -1872,14 +1889,14 @@ var createSimpleMenu = function( type ) {
   menu.show();
 };
 
-var createMenuBar = function( type ) {
+var createMenuBar = function( type, barItemType ) {
   menuBar = new MenuBar();
   menuBar.addToDocument();
   menu = new Menu();
   menuItem = new MenuItem( type );
   menuItem.setText( "bla" );
   menu.addMenuItemAt( menuItem, 0 );
-  menuBarItem = new MenuItem( "bar" );
+  menuBarItem = new MenuItem( barItemType ? barItemType : "cascade" );
   menuBarItem.setMenu( menu );
   menuBar.addMenuItemAt( menuBarItem, 0 );
 };
