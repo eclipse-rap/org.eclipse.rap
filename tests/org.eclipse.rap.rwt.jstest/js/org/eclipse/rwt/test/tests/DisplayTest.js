@@ -87,6 +87,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       TestUtil.protocolListen( "w1", { "Resize" : true } );
 
       rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
+      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
 
       var message = TestUtil.getMessageObject();
       assertNotNull( message.findNotifyOperation( "w1", "Resize" ) );

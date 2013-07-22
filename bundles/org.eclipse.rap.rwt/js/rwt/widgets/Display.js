@@ -132,7 +132,7 @@ rwt.widgets.Display.prototype = {
   _onResize : function( evt ) {
     this._appendWindowSize();
     if( this._hasResizeListener ) {
-      rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Resize" );
+      rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Resize", null, 500 );
     }
   },
 
