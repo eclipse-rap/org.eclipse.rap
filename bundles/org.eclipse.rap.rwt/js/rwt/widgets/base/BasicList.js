@@ -22,6 +22,8 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
     this.addEventListener( "mouseover", this._onmouseover );
     this.addEventListener( "mousedown", this._onmousedown );
     this.addEventListener( "mouseup", this._onmouseup );
+    this.addEventListener( "click", this._onclick );
+    this.addEventListener( "dblclick", this._ondblclick );
     this.addEventListener( "keypress", this._onkeypress );
     this.addEventListener( "keypress", this._onkeyinput );
     this.initOverflow();
@@ -34,11 +36,9 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
     var selMgr = this.getManager();
     selMgr.setMultiSelection( multiSelection );
     selMgr.setDragSelection( false );
-    this.addEventListener( "dblclick", this._ondblclick, this );
   },
 
   destruct : function() {
-    this.removeEventListener( "dblclick", this._ondblclick, this );
     this._disposeObjects("_manager" );
   },
 
@@ -95,37 +95,37 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
     },
 
     _onmousedown : function( event ) {
-      if( !this._isHyperlinkTarget( event ) ) {
-        var vItem = this.getListItemTarget( event.getTarget() );
-        if( vItem ) {
-          this._manager.handleMouseDown( vItem, event );
+      if( !this._checkAndProcessHyperlink( event ) ) {
+        var item = this.getListItemTarget( event.getTarget() );
+        if( item ) {
+          this._manager.handleMouseDown( item, event );
         }
       }
     },
 
     _onmouseup : function( event ) {
-      if( !this._isHyperlinkTarget( event ) ) {
-        var vItem = this.getListItemTarget( event.getTarget() );
-        if( vItem ) {
-          this._manager.handleMouseUp( vItem, event );
+      if( !this._checkAndProcessHyperlink( event ) ) {
+        var item = this.getListItemTarget( event.getTarget() );
+        if( item ) {
+          this._manager.handleMouseUp( item, event );
         }
       }
     },
 
     _onclick : function( event ) {
-      if( !this._isHyperlinkTarget( event ) ) {
-        var vItem = this.getListItemTarget( event.getTarget() );
-        if( vItem ) {
-          this._manager.handleClick( vItem, event );
+      if( !this._checkAndProcessHyperlink( event ) ) {
+        var item = this.getListItemTarget( event.getTarget() );
+        if( item ) {
+          this._manager.handleClick( item, event );
         }
       }
     },
 
     _ondblclick : function( event ) {
-      if( !this._isHyperlinkTarget( event ) ) {
-        var vItem = this.getListItemTarget( event.getTarget() );
-        if( vItem ) {
-          this._manager.handleDblClick( vItem, event );
+      if( this._findHyperlink( event ) === null ) {
+        var item = this.getListItemTarget( event.getTarget() );
+        if( item ) {
+          this._manager.handleDblClick( item, event );
         }
       }
     },
@@ -377,8 +377,33 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
       evt.getTarget().removeState( "over" );
     },
 
-    _isHyperlinkTarget : function( event ) {
-      return event.getDomTarget().tagName.toLowerCase() === "a";
+    _checkAndProcessHyperlink : function( event ) {
+      var hyperlink = null;
+      if( this._markupEnabled ) {
+        hyperlink = this._findHyperlink( event );
+        if( hyperlink !== null && this._isRWTHyperlink( hyperlink ) ) {
+          event.setDefaultPrevented( true );
+          if( event.getType() === "click" ) {
+            this.dispatchSimpleEvent( "activateHyperlink", { "target" : hyperlink } );
+          }
+        }
+      }
+      return hyperlink !== null;
+    },
+
+    _findHyperlink : function( event ) {
+      var widgetElement = this.getElement();
+      var targetElement = event.getDomTarget();
+      var tagName = targetElement.tagName.toLowerCase();
+      while( targetElement !== widgetElement && tagName !== 'a' ) {
+        targetElement = targetElement.parentNode;
+        tagName = targetElement.tagName.toLowerCase();
+      }
+      return tagName === 'a' ? targetElement : null;
+    },
+
+    _isRWTHyperlink : function( hyperlink ) {
+      return hyperlink.getAttribute( "target" ) === "_rwt";
     }
 
   }

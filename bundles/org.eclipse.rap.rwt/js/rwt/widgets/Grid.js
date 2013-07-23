@@ -134,11 +134,9 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _registerListeners : function() {
       this._rootItem.addEventListener( "update", this._onItemUpdate, this );
-      this.addEventListener( "mousedown", this._handleHyperlinkActivation, this );
-      this.addEventListener( "mouseup", this._handleHyperlinkActivation, this );
-      this.addEventListener( "click", this._handleHyperlinkActivation, this );
       this.addEventListener( "mousedown", this._onMouseDown, this );
       this.addEventListener( "mouseup", this._onMouseUp, this );
+      this.addEventListener( "click", this._onClick, this );
       this.addEventListener( "mouseout", this._onMouseOut, this );
       this.addEventListener( "keypress", this._onKeyPress, this );
       this._rowContainer.addEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
@@ -537,16 +535,24 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _onMouseDown : function( event ) {
       this._delayedSelection = false;
-      var target = event.getOriginalTarget();
-      if( target instanceof rwt.widgets.base.GridRow && !this._isHyperlinkTarget( event ) ) {
-        this._onRowMouseDown( target, event );
+      if( !this._checkAndProcessHyperlink( event ) ) {
+        var target = event.getOriginalTarget();
+        if( target instanceof rwt.widgets.base.GridRow ) {
+          this._onRowMouseDown( target, event );
+        }
       }
     },
 
     _onMouseUp : function( event ) {
       if( this._delayedSelection ) {
         this._onMouseDown( event );
+      } else {
+        this._checkAndProcessHyperlink( event );
       }
+    },
+
+    _onClick : function( event ) {
+      this._checkAndProcessHyperlink( event );
     },
 
     _onRowMouseDown : function( row, event ) {
@@ -567,29 +573,39 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       }
     },
 
-    _handleHyperlinkActivation : function( event ) {
-      if( this._isRWTHyperlinkTarget( event ) ) {
-        event.setDefaultPrevented( true );
-        if( event.getType() === "click" ) {
-          var domTarget = event.getDomTarget();
-          var row = event.getOriginalTarget();
-          var item = this._rowContainer.findItemByRow( row );
-          var text = domTarget.getAttribute( "href" );
-          if( !text ) {
-            text = domTarget.innerHTML;
+    _checkAndProcessHyperlink : function( event ) {
+      var hyperlink = null;
+      if( this._config.markupEnabled ) {
+        hyperlink = this._findHyperlink( event );
+        if( hyperlink !== null && this._isRWTHyperlink( hyperlink ) ) {
+          event.setDefaultPrevented( true );
+          if( event.getType() === "click" ) {
+            var row = event.getOriginalTarget();
+            var item = this._rowContainer.findItemByRow( row );
+            var text = hyperlink.getAttribute( "href" );
+            if( !text ) {
+              text = hyperlink.innerHTML;
+            }
+            this._sendSelectionEvent( item, false, "hyperlink", undefined, text );
           }
-          this._sendSelectionEvent( item, false, "hyperlink", undefined, text );
         }
       }
+      return hyperlink !== null;
     },
 
-    _isHyperlinkTarget : function( event ) {
-      return event.getDomTarget().tagName.toLowerCase() === "a";
+    _findHyperlink : function( event ) {
+      var widgetElement = this.getElement();
+      var targetElement = event.getDomTarget();
+      var tagName = targetElement.tagName.toLowerCase();
+      while( targetElement !== widgetElement && tagName !== 'a' ) {
+        targetElement = targetElement.parentNode;
+        tagName = targetElement.tagName.toLowerCase();
+      }
+      return tagName === 'a' ? targetElement : null;
     },
 
-    _isRWTHyperlinkTarget : function( event ) {
-      var domTarget = event.getDomTarget();
-      return this._isHyperlinkTarget( event ) && domTarget.getAttribute( "target" ) === "_rwt";
+    _isRWTHyperlink : function( hyperlink ) {
+      return hyperlink.getAttribute( "target" ) === "_rwt";
     },
 
     _isSelectionClick : function( identifier ) {

@@ -23,14 +23,12 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     var selMgr = this.getManager();
     selMgr.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
     selMgr.addEventListener( "changeSelection", this._onSelectionChange, this );
-    this.addEventListener( "mousedown", this._handleHyperlinkActivation, this );
-    this.addEventListener( "mouseup", this._handleHyperlinkActivation, this );
-    this.addEventListener( "click", this._handleHyperlinkActivation, this );
     this.addEventListener( "focus", this._onFocusIn, this );
     this.addEventListener( "blur", this._onFocusOut, this );
     this.addEventListener( "dblclick", this._onDblClick, this );
     this.addEventListener( "appear", this._onAppear, this );
     this.addEventListener( "userScroll", this._onUserScroll );
+    this.addEventListener( "activateHyperlink", this._onActivateHyperlink );
   },
 
   destruct : function() {
@@ -38,9 +36,6 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     var selMgr = this.getManager();
     selMgr.removeEventListener( "changeLeadItem", this._onChangeLeadItem, this );
     selMgr.removeEventListener( "changeSelection", this._onSelectionChange, this );
-    this.removeEventListener( "mousedown", this._handleHyperlinkActivation, this );
-    this.removeEventListener( "mouseup", this._handleHyperlinkActivation, this );
-    this.removeEventListener( "click", this._handleHyperlinkActivation, this );
     this.removeEventListener( "focus", this._onFocusIn, this );
     this.removeEventListener( "blur", this._onFocusOut, this );
     this.removeEventListener( "dblclick", this._onDblClick, this );
@@ -133,27 +128,19 @@ rwt.qx.Class.define( "rwt.widgets.List", {
       }
     },
 
-    _handleHyperlinkActivation : function( event ) {
-      if( this._isRWTHyperlinkTarget( event ) ) {
-        event.setDefaultPrevented( true );
-        if( event.getType() === "click" && this._hasSelectionListener ) {
-          var domTarget = event.getDomTarget();
-          var text = domTarget.getAttribute( "href" );
-          if( !text ) {
-            text = domTarget.innerHTML;
-          }
-          var properties = {
-            "detail" : "hyperlink",
-            "text" : text
-          };
-          rwt.remote.EventUtil.notifySelected( this, properties );
+    _onActivateHyperlink : function( event ) {
+      if( this._hasSelectionListener ) {
+        var hyperlink = event.target;
+        var text = hyperlink.getAttribute( "href" );
+        if( !text ) {
+          text = hyperlink.innerHTML;
         }
+        var properties = {
+          "detail" : "hyperlink",
+          "text" : text
+        };
+        rwt.remote.EventUtil.notifySelected( this, properties );
       }
-    },
-
-    _isRWTHyperlinkTarget : function( event ) {
-      var domTarget = event.getDomTarget();
-      return this._isHyperlinkTarget( event ) && domTarget.getAttribute( "target" ) === "_rwt";
     },
 
     _onFocusIn : function( evt ) {

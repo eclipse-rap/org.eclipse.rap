@@ -722,6 +722,30 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       assertEquals( "Test", message.findNotifyProperty( "w3", "Selection", "text" ) );
     },
 
+    testClickOnRWTHyperlinkWithInnerHTML : function() {
+      var list = this._createDefaultList();
+      list.setMarkupEnabled( true );
+      list.setItems( [ "<a href=\"foo\" target=\"_rwt\"><b>Test</b></a>" ] );
+      list.setHasSelectionListener( true );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.List" );
+      ObjectRegistry.add( "w3", list, handler );
+      TestUtil.flush();
+      TestUtil.initRequestLog();
+      var itemNode = this._getItems( list )[ 0 ]._getTargetNode();
+      var node = itemNode.childNodes[ 0 ].childNodes[ 0 ].childNodes[ 0 ];
+
+      TestUtil.clickDOM( node );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "hyperlink", message.findNotifyProperty( "w3", "Selection", "detail" ) );
+      var text = message.findNotifyProperty( "w3", "Selection", "text" );
+      if( text.indexOf( "/" ) !== 0 ) {
+        text = text.slice( text.lastIndexOf( "/" ) + 1 );
+      }
+      assertEquals( "foo", text );
+    },
+
     testBasicLayout : function() {
       var list = this._createDefaultList();
       var client = list._clientArea;
