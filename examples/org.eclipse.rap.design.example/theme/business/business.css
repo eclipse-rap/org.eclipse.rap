@@ -611,6 +611,7 @@ ProgressBar {
   background-image: none;
   border: 1px solid #A4A4A4;
   border-radius: 2px;
+  width: 16px;
 }
 
 ProgressBar-Indicator {

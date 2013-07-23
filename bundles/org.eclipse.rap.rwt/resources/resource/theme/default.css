@@ -672,6 +672,7 @@ ProgressBar {
   background-image: url( resource/widget/rap/progressbar/progressbar-background.png );
   border: 1px solid #bdbdbd;
   border-radius: 15px;
+  width: 16px;
 }
 
 ProgressBar-Indicator {
