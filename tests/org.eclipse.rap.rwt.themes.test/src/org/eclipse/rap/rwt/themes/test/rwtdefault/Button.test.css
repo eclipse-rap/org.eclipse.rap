@@ -38,6 +38,7 @@ Button[TOGGLE][FLAT] {
   opacity: 1;
   text-shadow: 0 1px 0 #ffffff;
   text-decoration: none;
+  box-shadow: none;
 }
 
 Button[ARROW],
@@ -109,8 +110,8 @@ Button[TOGGLE][FLAT]:pressed {
   );
 }
 
-Button[TOGGLE]:selected, 
-Button[TOGGLE][BORDER]:selected, 
+Button[TOGGLE]:selected,
+Button[TOGGLE][BORDER]:selected,
 Button[TOGGLE][FLAT]:selected {
   background-image: gradient(
     linear, left top, left bottom,
@@ -129,7 +130,7 @@ Button[TOGGLE]:selected:hover {
 
 /* CHECK and RADIO */
 
-Button[CHECK], 
+Button[CHECK],
 Button[RADIO] {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
@@ -148,7 +149,7 @@ Button[RADIO] {
   text-decoration: none;
 }
 
-Button[CHECK][BORDER], 
+Button[CHECK][BORDER],
 Button[RADIO][BORDER] {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
@@ -221,7 +222,7 @@ Button-ArrowIcon[RIGHT] {
 }
 
 Button-FocusIndicator[ARROW], Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
-  background-color: transparent; 
+  background-color: transparent;
   border: 1px dotted #b8b8b8;
   margin: 2px;
   padding: 0px;
@@ -229,7 +230,7 @@ Button-FocusIndicator[ARROW], Button-FocusIndicator[PUSH], Button-FocusIndicator
 }
 
 Button-FocusIndicator[CHECK], Button-FocusIndicator[RADIO] {
-  background-color: transparent; 
+  background-color: transparent;
   border: 1px dotted #b8b8b8;
   padding: 2px 2px 2px 1px;
   margin: 0px;

@@ -28,6 +28,7 @@ Button {
   opacity: 1;
   text-shadow: none;
   text-decoration: none;
+  box-shadow: none;
 }
 
 Button[PUSH],
@@ -42,7 +43,7 @@ Button[ARROW] {
   border: 1px solid #aaaaaa;
 }
 
-Button[CHECK], 
+Button[CHECK],
 Button[RADIO] {
   padding: 3px 3px 3px 3px;
   spacing: 7px;
@@ -85,7 +86,7 @@ Button-ArrowIcon[RIGHT] {
 }
 
 Button-FocusIndicator {
-  background-color: transparent; 
+  background-color: transparent;
   border: 1px dotted #aaaaaa;
   margin: 2px;
   padding: 0px;

@@ -101,6 +101,7 @@ Button {
   opacity: 1;
   text-shadow: none;
   text-decoration: none;
+  box-shadow: none;
 }
 
 Button[PUSH], Button[TOGGLE], Button[BORDER] {

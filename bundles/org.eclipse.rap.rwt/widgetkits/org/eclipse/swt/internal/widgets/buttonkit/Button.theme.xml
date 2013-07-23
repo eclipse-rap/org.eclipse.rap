@@ -70,6 +70,9 @@
     <property name="text-shadow"
         description="Shadow for text." />
 
+    <property name="box-shadow"
+        description="A shadow effect for button." />
+
     <style name="PUSH"
         description="Indicates that the button is a push button." />
 

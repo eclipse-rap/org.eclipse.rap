@@ -33,6 +33,7 @@ Button[PUSH], Button[TOGGLE], Button[BORDER] {
   animation: hoverIn 100ms ease-in, hoverOut 500ms ease-out;
   opacity: 1;
   text-decoration: none;
+  box-shadow: none;
 }
 
 Button[ARROW], Button[ARROW][BORDER] {
@@ -120,7 +121,7 @@ Button[RADIO][BORDER] {
 }
 
 Button-FocusIndicator[ARROW], Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
-  background-color: transparent; 
+  background-color: transparent;
   border: 1px dotted #b8b8b8;
   margin: 2px;
   padding: 0px;
@@ -128,7 +129,7 @@ Button-FocusIndicator[ARROW], Button-FocusIndicator[PUSH], Button-FocusIndicator
 }
 
 Button-FocusIndicator[CHECK], Button-FocusIndicator[RADIO] {
-  background-color: transparent; 
+  background-color: transparent;
   border: 1px dotted #b8b8b8;
   padding: 2px 2px 2px 1px;
   margin: 0px;

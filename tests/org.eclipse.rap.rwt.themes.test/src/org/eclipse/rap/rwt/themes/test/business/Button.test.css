@@ -33,6 +33,7 @@ Button[PUSH], Button[TOGGLE] {
   animation: hoverOut 500ms ease-out;
   opacity: 1;
   text-decoration: none;
+  box-shadow: none;
 }
 
 Button[ARROW] {

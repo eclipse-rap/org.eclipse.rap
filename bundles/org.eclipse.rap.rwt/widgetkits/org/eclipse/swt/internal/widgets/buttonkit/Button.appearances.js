@@ -42,6 +42,7 @@ var appearances = {
       result.cursor = tv.getCssCursor( "Button", "cursor" );
       result.opacity = tv.getCssFloat( "Button", "opacity" );
       result.textShadow = tv.getCssShadow( "Button", "text-shadow" );
+      result.shadow = tv.getCssShadow( "Button", "box-shadow" );
       return result;
     }
   },
