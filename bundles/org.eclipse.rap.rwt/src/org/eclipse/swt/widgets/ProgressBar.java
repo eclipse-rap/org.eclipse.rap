@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.progressbarkit.ProgressBarThemeAdapter;
 
 /**
  * Instances of the receiver represent is an unselectable user interface object
@@ -35,8 +37,6 @@ import org.eclipse.swt.graphics.Point;
  */
 public class ProgressBar extends Control {
 
-  // TODO [fappel]: base for progressbar size calculation, should this be themable?
-  private static final int SIZE_BASE = 16;
   private int minimum;
   private int selection;
   private int maximum;
@@ -85,17 +85,19 @@ public class ProgressBar extends Control {
     return checkBits( currStyle, SWT.HORIZONTAL, SWT.VERTICAL, 0, 0, 0, 0 );
   }
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int border = getBorderWidth();
+    int barWidth = getProgressBarWidth();
     int width = border * 2;
     int height = border * 2;
     if( ( style & SWT.HORIZONTAL ) != 0 ) {
-      width += SIZE_BASE * 10;
-      height += SIZE_BASE;
+      width += barWidth * 10;
+      height += barWidth;
     } else {
-      width += SIZE_BASE;
-      height += SIZE_BASE * 10;
+      width += barWidth;
+      height += barWidth * 10;
     }
      if( wHint != SWT.DEFAULT ) {
        width = wHint + ( border * 2 );
@@ -276,4 +278,10 @@ public class ProgressBar extends Control {
     checkWidget();
     return this.state;
   }
+
+  private int getProgressBarWidth() {
+    IThemeAdapter themeAdapter = getAdapter( IThemeAdapter.class );
+    return ( ( ProgressBarThemeAdapter )themeAdapter ).getProgressBarWidth( this );
+  }
+
 }

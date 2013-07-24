@@ -1486,6 +1486,35 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    testClickOnRWTHyperlinkWithInnerHTML : function() {
+      var tree = this._createDefaultTree( false, false );
+      tree.getRenderConfig().markupEnabled = true;
+      tree.setHasSelectionListener( true );
+      this._fakeCheckBoxAppearance();
+      tree.setItemCount( 1 );
+      var item = this._createItem( tree.getRootItem(), 0 );
+      item.setTexts( [ "<a href=\"foo\" target=\"_rwt\"><b>Test</b></a>" ] );
+      rwt.remote.ObjectRegistry.add( "w11", tree, gridHandler );
+      rwt.remote.ObjectRegistry.add( "w2", item, itemHandler );
+      TestUtil.flush();
+      TestUtil.initRequestLog();
+      var rowContainerNode = tree._rowContainer._getTargetNode();
+      var node = rowContainerNode.childNodes[ 0 ].childNodes[ 0 ].childNodes[ 0 ].childNodes[ 0 ];
+
+      TestUtil.clickDOM( node );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "w2", message.findNotifyProperty( "w11", "Selection", "item" ) );
+      assertEquals( "hyperlink", message.findNotifyProperty( "w11", "Selection", "detail" ) );
+      var text = message.findNotifyProperty( "w11", "Selection", "text" );
+      if( text.indexOf( "/" ) !== 0 ) {
+        text = text.slice( text.lastIndexOf( "/" ) + 1 );
+      }
+      assertEquals( "foo", text );
+      tree.destroy();
+    },
+
     testHasFullSelection : function() {
       var tree = this._createDefaultTree();
       assertTrue( tree.getRenderConfig().fullSelection );

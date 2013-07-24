@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -79,6 +81,16 @@ public class ScrollBar_Test {
       scrollBar.removeSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
     }
+  }
+
+  @Test
+  public void testDispose_destroysRemoteObject() {
+    ScrollBar scrollBar = new ScrollBar( shell, SWT.NONE );
+    RemoteObjectImpl remoteObject = ( RemoteObjectImpl )getRemoteObject( scrollBar );
+
+    scrollBar.dispose();
+
+    assertTrue( remoteObject.isDestroyed() );
   }
 
 }

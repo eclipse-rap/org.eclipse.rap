@@ -26,6 +26,8 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -33,6 +35,7 @@ import org.eclipse.swt.internal.widgets.buttonkit.ButtonOperationHandler;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 import org.junit.After;
@@ -127,6 +130,34 @@ public class FocusEvent_Test {
     ArgumentCaptor<FocusEvent> captor2 = ArgumentCaptor.forClass( FocusEvent.class );
     verify( focusListener ).focusGained( captor2.capture() );
     assertEquals( button2, captor2.getValue().widget );
+  }
+
+  @Test
+  public void testFocusTraverseOrder() {
+    Listener listener = mock( Listener.class );
+    Button button1 = createButton( focusListener );
+    Button button2 = createButton( focusListener );
+    button1.setFocus();
+    button1.addListener( SWT.Traverse, listener );
+    button1.addListener( SWT.FocusOut, listener );
+    button2.addListener( SWT.FocusIn, listener );
+
+    Fixture.fakeSetProperty( getId( display ), "focusControl", getId( button2 ) );
+    JsonObject properties = new JsonObject()
+      .add( ClientMessageConst.EVENT_PARAM_KEY_CODE, 9 )
+      .add( ClientMessageConst.EVENT_PARAM_CHAR_CODE, 0 )
+      .add( ClientMessageConst.EVENT_PARAM_MODIFIER, SWT.None );
+    Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_TRAVERSE, properties );
+    Fixture.fakeNotifyOperation( getId( button1 ), EVENT_FOCUS_OUT, null );
+    Fixture.fakeNotifyOperation( getId( button2 ), EVENT_FOCUS_IN, null );
+    Fixture.readDataAndProcessAction( display );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( listener, times( 3 ) ).handleEvent( captor.capture() );
+    List<Event> events = captor.getAllValues();
+    assertEquals( SWT.Traverse, events.get( 0 ).type );
+    assertEquals( SWT.FocusOut, events.get( 1 ).type );
+    assertEquals( SWT.FocusIn, events.get( 2 ).type );
   }
 
   @Test

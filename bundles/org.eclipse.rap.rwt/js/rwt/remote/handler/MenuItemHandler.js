@@ -15,14 +15,13 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.MenuItem", {
     var result;
     rwt.remote.HandlerUtil.callWithTarget( properties.parent, function( menu ) {
       var styleMap = rwt.remote.HandlerUtil.createStyleMap( properties.style );
+      var onMenuBar = menu.hasState( "rwt_BAR" );
       var menuItemType = "push";
-      if( menu.hasState( "rwt_BAR" ) ) {
-        menuItemType = "bar";
-      } else if( styleMap.CASCADE ) {
+      if( styleMap.CASCADE ) {
         menuItemType = "cascade";
-      } else if( styleMap.CHECK ) {
+      } else if( styleMap.CHECK && !onMenuBar ) {
         menuItemType = "check";
-      } else if( styleMap.RADIO ) {
+      } else if( styleMap.RADIO && !onMenuBar ) {
         menuItemType = "radio";
       }
       if( styleMap.SEPARATOR ) {
@@ -30,6 +29,9 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.MenuItem", {
       } else {
         result = new rwt.widgets.MenuItem( menuItemType );
         result.setNoRadioGroup( menu.hasState( "rwt_NO_RADIO_GROUP" ) );
+        if( onMenuBar ) {
+          result.addState( "onMenuBar" );
+        }
       }
       menu.addMenuItemAt( result, properties.index );
       rwt.remote.HandlerUtil.addDestroyableChild( menu, result );

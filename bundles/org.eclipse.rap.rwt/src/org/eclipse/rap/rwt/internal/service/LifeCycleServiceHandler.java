@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.RWT_INITIALIZE;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.SHUTDOWN;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getClientMessage;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWriter;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
@@ -30,7 +32,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
@@ -224,12 +225,12 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   }
 
   private static boolean isSessionShutdown() {
-    JsonValue shutdownHeader = getClientMessage().getHeader( ClientMessageConst.RWT_SHUTDOWN );
+    JsonValue shutdownHeader = getClientMessage().getHeader( SHUTDOWN );
     return JsonValue.TRUE.equals( shutdownHeader );
   }
 
   private static boolean hasInitializeParameter() {
-    JsonValue initializeHeader = getClientMessage().getHeader( ClientMessageConst.RWT_INITIALIZE );
+    JsonValue initializeHeader = getClientMessage().getHeader( RWT_INITIALIZE );
     return JsonValue.TRUE.equals( initializeHeader );
   }
 

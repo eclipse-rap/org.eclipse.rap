@@ -24,9 +24,11 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
 
@@ -109,6 +111,8 @@ public final class CompositeTab extends ExampleTab {
     composite2.setBackground( bgColors[ BG_COLOR_GREEN ] );
     Group group = new Group( composite, SWT.NONE );
     group.setText( "Group" );
+    new DateTime( composite, SWT.BORDER | SWT.TIME );
+    new Spinner( composite, SWT.BORDER | SWT.NONE );
   }
 
   protected void createBackgroundModeControls( final Composite parent ) {
