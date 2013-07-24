@@ -20,6 +20,7 @@ import org.eclipse.jface.util.Geometry;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellAdapter;
@@ -444,9 +445,25 @@ public abstract class Window implements IShellProvider, Serializable {
 		shell = createShell();
 		contents = createContents(shell);
 
-		//initialize the bounds of the shell to that appropriate for the
+		// initialize the bounds of the shell to that appropriate for the
 		// contents
 		initializeBounds();
+
+		// RAP [if]: Workaround for RWT Text Size Determination
+		shell.addListener( SWT.Resize, new Listener() {
+          private boolean temporaryResize;
+          public void handleEvent( Event event ) {
+            if( TextSizeUtil.isTemporaryResize() ) {
+              temporaryResize = true;
+            } else if( temporaryResize ) {
+              shell.removeListener( SWT.Resize, this );
+              initializeBounds();
+            } else {
+              shell.removeListener( SWT.Resize, this );
+            }
+          }
+        } );
+	    // RAPEND
 	}
 
 	/**
