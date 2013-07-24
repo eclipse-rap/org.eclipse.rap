@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,16 +15,16 @@ import org.eclipse.swt.dnd.DND;
 
 
 public final class EventTypes {
-  
+
   public static final int MIN_SWT_EVENT = SWT.None;
   public static final int MAX_SWT_EVENT = SWT.Skin;
-  
+
   public static final int MIN_DND_EVENT = DND.DragEnd;
   public static final int MAX_DND_EVENT = DND.DragStart;
-  
+
   public static final int LOCALTION_CHANGING = 5011;
   public static final int LOCALTION_CHANGED = 5012;
-  
+
   public static final int PROGRESS_CHANGED = 5021;
   public static final int PROGRESS_COMPLETED = 5022;
 
@@ -33,7 +33,7 @@ public final class EventTypes {
   public static final int CTAB_FOLDER_MAXIMIZE = 5033;
   public static final int CTAB_FOLDER_RESTORE = 5034;
   public static final int CTAB_FOLDER_SHOW_LIST = 5035;
-  
+
   public static final int[] EVENT_ORDER = {
     SWT.Move,
     SWT.Resize,
@@ -44,9 +44,9 @@ public final class EventTypes {
     SWT.Show,
     SWT.Dispose,
     SWT.SetData,
+    SWT.Traverse,
     SWT.FocusOut,
     SWT.FocusIn,
-    SWT.Traverse,
     SWT.KeyDown,
     SWT.Expand,
     SWT.Collapse,
