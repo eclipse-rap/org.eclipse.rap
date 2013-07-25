@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ var appearances = {
   "cursor-dnd-move" : {
     style : function( states ) {
       return {
-        source : rwt.remote.Server.RESOURCE_PATH + "widget/rap/cursors/move.gif"
+        source : rwt.remote.Connection.RESOURCE_PATH + "widget/rap/cursors/move.gif"
       };
     }
   },
@@ -40,7 +40,7 @@ var appearances = {
   "cursor-dnd-copy" : {
     style : function( states ) {
       return {
-        source : rwt.remote.Server.RESOURCE_PATH + "widget/rap/cursors/copy.gif"
+        source : rwt.remote.Connection.RESOURCE_PATH + "widget/rap/cursors/copy.gif"
       };
     }
   },
@@ -48,7 +48,7 @@ var appearances = {
   "cursor-dnd-alias" : {
     style : function( states ) {
       return {
-        source : rwt.remote.Server.RESOURCE_PATH + "widget/rap/cursors/alias.gif"
+        source : rwt.remote.Connection.RESOURCE_PATH + "widget/rap/cursors/alias.gif"
       };
     }
   },
@@ -56,7 +56,7 @@ var appearances = {
   "cursor-dnd-nodrop" : {
     style : function( states ) {
       return {
-        source : rwt.remote.Server.RESOURCE_PATH + "widget/rap/cursors/nodrop.gif"
+        source : rwt.remote.Connection.RESOURCE_PATH + "widget/rap/cursors/nodrop.gif"
       };
     }
   },

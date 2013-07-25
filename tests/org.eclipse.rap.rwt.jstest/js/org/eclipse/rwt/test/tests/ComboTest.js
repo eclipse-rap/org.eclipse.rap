@@ -794,7 +794,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
 
       combo._field.setValue( "a" );
       combo._field._oninput();
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();

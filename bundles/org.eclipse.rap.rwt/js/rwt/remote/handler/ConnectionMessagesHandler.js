@@ -12,7 +12,7 @@
 rwt.remote.HandlerRegistry.add( "rwt.client.ConnectionMessages", {
 
   factory : function( properties ) {
-    return rwt.remote.Server.getInstance();
+    return rwt.remote.Connection.getInstance();
   },
 
   service : true,

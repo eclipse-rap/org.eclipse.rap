@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -114,7 +114,7 @@ rwt.qx.Class.define( "rwt.widgets.ScrolledComposite", {
     },
 
     _onUserScroll : function( horizontal ) {
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       var scrollbar = horizontal ? this._horzScrollBar : this._vertScrollBar;
       var remoteObject = server.getRemoteObject( this );
       var prop = horizontal ? "horizontalBar.selection" : "verticalBar.selection";
@@ -130,12 +130,12 @@ rwt.qx.Class.define( "rwt.widgets.ScrolledComposite", {
     },
 
     _sendVerticalScrolled : function() {
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       server.getRemoteObject( this._vertScrollBar ).notify( "Selection" );
     },
 
     _sendHorizontalScrolled : function() {
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       server.getRemoteObject( this._horzScrollBar ).notify( "Selection" );
     },
 

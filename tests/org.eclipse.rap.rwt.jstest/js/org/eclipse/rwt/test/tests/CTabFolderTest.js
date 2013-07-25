@@ -425,7 +425,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       TestUtil.flush();
 
       TestUtil.click( widget );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       //assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
@@ -632,7 +632,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
 
       rwt.widgets.util.MnemonicHandler.getInstance().activate();
       var success = rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       assertTrue( success );
       var message = TestUtil.getMessageObject();

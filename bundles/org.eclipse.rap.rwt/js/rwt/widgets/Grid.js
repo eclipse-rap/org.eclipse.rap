@@ -981,21 +981,21 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     _sendSelectionChange : function( item ) {
       if( !this._inServerResponse() ) {
         var selection = this._getSelectionList();
-        rwt.remote.Server.getInstance().getRemoteObject( this ).set( "selection", selection );
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "selection", selection );
         this._sendSelectionEvent( item, false, null );
       }
     },
 
     _sendItemCheckedChange : function( item ) { // TODO [tb] : item events should be send by item
       if( !this._inServerResponse() ) {
-        rwt.remote.Server.getInstance().getRemoteObject( item ).set( "checked", item.isChecked() );
+        rwt.remote.Connection.getInstance().getRemoteObject( item ).set( "checked", item.isChecked() );
         this._sendSelectionEvent( item, false, "check" );
       }
     },
 
     _sendCellCheckedChange : function( item, cell ) { // TODO [tb] : item events should be send by item
       if( !this._inServerResponse() ) {
-        var server = rwt.remote.Server.getInstance();
+        var server = rwt.remote.Connection.getInstance();
         var arr = item.getCellChecked();
         var sendArr = [];
         for( var i = 0; i < this._config.columnCount; i++ ) {
@@ -1009,12 +1009,12 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     _sendItemFocusChange : function() {
       if( !this._inServerResponse() ) {
         var focusItemId = this._getItemId( this._focusItem );
-        rwt.remote.Server.getInstance().getRemoteObject( this ).set( "focusItem", focusItemId );
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "focusItem", focusItemId );
       }
     },
 
     _sendTopItemIndexChange : function() {
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       var remoteObject = server.getRemoteObject( this );
       remoteObject.set( "topItemIndex", this._topItemIndex );
       if( this._hasSetDataListener || this._vertScrollBar.getHasSelectionListener() ) {
@@ -1026,7 +1026,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       // TODO [tb] : There should be a check for _inServerResponse,
       // but currently this is needed to sync the value with the
       // server when the scrollbars are hidden by the server.
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       var remoteObject = server.getRemoteObject( this );
       remoteObject.set( "scrollLeft", this._horzScrollBar.getValue() );
       if( this._hasSetDataListener || this._horzScrollBar.getHasSelectionListener() ) {
@@ -1035,7 +1035,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _startScrollBarChangesTimer : function( horizontal ) {
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       if( horizontal && this._horzScrollBar.getHasSelectionListener() ) {
         server.onNextSend( this._sendHorizontalScrolled, this );
       } else {
@@ -1050,17 +1050,17 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _sendVerticalScrolled : function() {
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       server.getRemoteObject( this._vertScrollBar ).notify( "Selection" );
     },
 
     _sendHorizontalScrolled : function() {
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       server.getRemoteObject( this._horzScrollBar ).notify( "Selection" );
     },
 
     _sendSetData : function() {
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       server.getRemoteObject( this ).notify( "SetData" );
     },
 
@@ -1068,13 +1068,13 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       if( !this._inServerResponse() ) {
         if( event.msg === "expanded" || event.msg === "collapsed" ) {
           var expanded = event.msg === "expanded";
-          rwt.remote.Server.getInstance().getRemoteObject( item ).set( "expanded", expanded );
+          rwt.remote.Connection.getInstance().getRemoteObject( item ).set( "expanded", expanded );
           if( expanded && this._hasExpandListener ) {
-            rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Expand", {
+            rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Expand", {
               "item" : rwt.remote.ObjectRegistry.getId( item )
             } );
           } else if( !expanded && this._hasCollapseListener ) {
-            rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Collapse", {
+            rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Collapse", {
               "item" : rwt.remote.ObjectRegistry.getId( item )
             } );
           }

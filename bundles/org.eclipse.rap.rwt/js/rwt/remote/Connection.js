@@ -21,7 +21,7 @@ var ServerPush = rwt.client.ServerPush;
 var ClientDocument = rwt.widgets.base.ClientDocument;
 var Widget = rwt.widgets.base.Widget;
 
-rwt.qx.Class.define( "rwt.remote.Server", {
+rwt.qx.Class.define( "rwt.remote.Connection", {
   type : "singleton",
   extend : rwt.qx.Target,
 
@@ -304,4 +304,4 @@ rwt.qx.Class.define( "rwt.remote.Server", {
  * Path that points to the "resources/resource" path in the bundle. Files
  * must be registered in ClientResources.java.
  */
-rwt.remote.Server.RESOURCE_PATH = "./rwt-resources/resource/";
+rwt.remote.Connection.RESOURCE_PATH = "./rwt-resources/resource/";

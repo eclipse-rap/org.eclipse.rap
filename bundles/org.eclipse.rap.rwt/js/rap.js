@@ -102,7 +102,7 @@ rap = {
    * @returns {RemoteObject}
    */
   getRemoteObject : function( object ) {
-    return rwt.remote.Server.getInstance().getRemoteObject( object );
+    return rwt.remote.Connection.getInstance().getRemoteObject( object );
   },
 
   /**

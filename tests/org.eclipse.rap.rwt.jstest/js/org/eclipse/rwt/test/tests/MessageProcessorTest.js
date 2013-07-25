@@ -639,7 +639,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
         "operations" : []
       };
       processor.processMessage( message );
-      var req = rwt.remote.Server.getInstance();
+      var req = rwt.remote.Connection.getInstance();
       assertEquals( 3, req.getRequestCounter() );
     },
 

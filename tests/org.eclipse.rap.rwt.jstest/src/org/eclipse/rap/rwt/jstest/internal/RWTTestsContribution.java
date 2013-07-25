@@ -110,7 +110,7 @@ public class RWTTestsContribution implements TestContribution {
     "tests/FontSizeCalculationTest.js",
     "tests/MessageTest.js",
     "tests/ClientMessagesTest.js",
-    "tests/ServerTest.js",
+    "tests/ConnectionTest.js",
     "tests/RemoteObjectTest.js",
     "tests/RemoteObjectFactoryTest.js",
     "tests/BrowserTest.js"

@@ -70,7 +70,7 @@ rwt.qx.Class.define("rwt.client.BrowserNavigation",
        * Setting the source before adding the iframe to the document.
        * Otherwise IE will bring up a "Unsecure items ..." warning in SSL mode
        */
-      var src = rwt.remote.Server.RESOURCE_PATH + "static/html/blank.html";
+      var src = rwt.remote.Connection.RESOURCE_PATH + "static/html/blank.html";
       this._iframe.src = src;
       document.body.appendChild(this._iframe);
 
@@ -369,7 +369,7 @@ rwt.qx.Class.define("rwt.client.BrowserNavigation",
 
     _historyNavigated : function( event ) {
       var state = event.getData();
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       server.getRemoteObject( this ).notify( "Navigation", {
         "state" : state
       } );

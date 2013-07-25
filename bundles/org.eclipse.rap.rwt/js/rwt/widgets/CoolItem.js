@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -134,7 +134,7 @@ rwt.qx.Class.define( "rwt.widgets.CoolItem", {
       this.getTopLevelWidget().setGlobalCursor( null );
       // Send request that informs about dragged CoolItem
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        rwt.remote.Server.getInstance().getRemoteObject( this ).call( "move", {
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).call( "move", {
           "left" : this.getLeft()
         } );
       }

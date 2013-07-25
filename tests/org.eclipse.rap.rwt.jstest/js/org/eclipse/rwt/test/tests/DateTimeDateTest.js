@@ -141,7 +141,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       dateTime.setYear( 2010 );
       TestUtil.clearRequestLog();
       dateTime._sendChanges();
-      var req = rwt.remote.Server.getInstance();
+      var req = rwt.remote.Connection.getInstance();
       req.send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );

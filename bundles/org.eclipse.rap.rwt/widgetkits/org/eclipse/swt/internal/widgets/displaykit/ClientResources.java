@@ -264,7 +264,7 @@ public final class ClientResources {
     "rwt/remote/MessageWriter.js",
     "rwt/client/ServerPush.js",
     "rwt/remote/handler/ServerPushHandler.js",
-    "rwt/remote/Server.js",
+    "rwt/remote/Connection.js",
     "rwt/widgets/CTabItem.js",
     "rwt/remote/handler/CTabItemHandler.js",
     "rwt/widgets/CTabFolder.js",

@@ -60,7 +60,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       shell.setActive( true );
 
       TestUtil.click( button );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       assertTrue( shell.getActive() );
       var message = TestUtil.getLastMessage();
@@ -77,7 +77,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
 
     testSendResizeEventByProtocol_WithoutListener : function() {
       rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var message = TestUtil.getMessageObject();
       assertNull( message.findNotifyOperation( "w1", "Resize" ) );
@@ -87,7 +87,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       TestUtil.protocolListen( "w1", { "Resize" : true } );
 
       rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
-      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       var message = TestUtil.getMessageObject();
       assertNotNull( message.findNotifyOperation( "w1", "Resize" ) );
@@ -98,7 +98,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       var height = rwt.html.Window.getInnerHeight( window );
 
       rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var message = TestUtil.getMessageObject();
       assertEquals( [ 0, 0, width, height ], message.findSetProperty( "w1", "bounds" ) );
@@ -113,7 +113,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
 
     testSendCursorLocation : function() {
       TestUtil.clickDOM( document.body, 10, 20 );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var message = TestUtil.getMessageObject();
       assertEquals( [ 10, 20 ], message.findSetProperty( "w1", "cursorLocation" ) );
@@ -122,7 +122,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
     testSendDPI : function() {
       var dpi = display.getDPI();
       display._appendSystemDPI();
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var message = TestUtil.getMessageObject();
       assertEquals( dpi, message.findSetProperty( "w1", "dpi" ) );
@@ -131,7 +131,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
 
     testSendTimezoneOffset : function() {
       display._appendTimezoneOffset();
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var message = TestUtil.getMessageObject();
       var expected = ( new Date() ).getTimezoneOffset();
@@ -141,7 +141,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
 
     testSendColorDepth : function() {
       display._appendColorDepth();
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var message = TestUtil.getMessageObject();
       assertTrue( typeof message.findSetProperty( "w1", "colorDepth" ) === "number" );

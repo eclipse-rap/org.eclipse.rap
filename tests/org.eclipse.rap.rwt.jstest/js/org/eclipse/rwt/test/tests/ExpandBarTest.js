@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -234,7 +234,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
       TestUtil.flush();
 
       TestUtil.click( item._header );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var message = TestUtil.getLastMessage();
       assertTrue( message.findSetProperty( "w4", "expanded" ) );
@@ -251,7 +251,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
       TestUtil.flush();
 
       TestUtil.click( item._header );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var message = TestUtil.getLastMessage();
       assertFalse( message.findSetProperty( "w4", "expanded" ) );

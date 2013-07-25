@@ -305,7 +305,7 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
         case "connection error":
           result.title = messages.getMessage( "ConnectionError" );
           result.description = messages.getMessage( "ConnectionErrorDescription" );
-          result.action = "<a href=\"javascript:rwt.remote.Server.getInstance()._retry();\">"
+          result.action = "<a href=\"javascript:rwt.remote.Connection.getInstance()._retry();\">"
                         + messages.getMessage( "Retry" ) + "</a>";
           break;
         case "client error":

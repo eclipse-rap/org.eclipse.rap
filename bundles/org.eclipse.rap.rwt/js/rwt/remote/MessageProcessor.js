@@ -22,7 +22,7 @@ rwt.remote.MessageProcessor = {
   },
 
   processHead : function( head ) {
-    var server = rwt.remote.Server.getInstance();
+    var server = rwt.remote.Connection.getInstance();
     if( head.url !== undefined ) {
       server.setUrl( head.url );
     }

@@ -19,7 +19,7 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     this._hasSelectionListener = false;
     this._hasDefaultSelectionListener = false;
     // Listen to send event of request to report topIndex
-    var req = rwt.remote.Server.getInstance();
+    var req = rwt.remote.Connection.getInstance();
     var selMgr = this.getManager();
     selMgr.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
     selMgr.addEventListener( "changeSelection", this._onSelectionChange, this );
@@ -32,7 +32,7 @@ rwt.qx.Class.define( "rwt.widgets.List", {
   },
 
   destruct : function() {
-    var req = rwt.remote.Server.getInstance();
+    var req = rwt.remote.Connection.getInstance();
     var selMgr = this.getManager();
     selMgr.removeEventListener( "changeLeadItem", this._onChangeLeadItem, this );
     selMgr.removeEventListener( "changeSelection", this._onSelectionChange, this );
@@ -93,7 +93,7 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     _onChangeLeadItem : function( evt ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         var focusIndex = this._clientArea.indexOf( this.getManager().getLeadItem() );
-        rwt.remote.Server.getInstance().getRemoteObject( this ).set( "focusIndex", focusIndex );
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "focusIndex", focusIndex );
       }
     },
 
@@ -114,12 +114,12 @@ rwt.qx.Class.define( "rwt.widgets.List", {
         var index = this._clientArea.indexOf( selectedItems[ i ] );
         selection.push( index );
       }
-      rwt.remote.Server.getInstance().getRemoteObject( this ).set( "selection", selection );
+      rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "selection", selection );
     },
 
     _onUserScroll : function( horizontal ) {
       this._topIndex = this._isCreated ? this._getTopIndex() : 0;
-      rwt.remote.Server.getInstance().getRemoteObject( this ).set( "topIndex", this._topIndex );
+      rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "topIndex", this._topIndex );
     },
 
     _onDblClick : function( evt ) {
