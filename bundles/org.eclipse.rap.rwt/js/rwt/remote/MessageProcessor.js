@@ -9,15 +9,30 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
 namespace( "rwt.remote" );
+
+var paused = false;
+var pendingMessage = null;
 
 rwt.remote.MessageProcessor = {
 
-  processMessage : function( messageObject ) {
-    this.processHead( messageObject.head );
+  processMessage : function( messageObject, startOffset ) {
     var operations = messageObject.operations;
-    for( var i = 0; i < operations.length; i++ ) {
-      this.processOperationArray( operations[ i ] );
+    var offset = 0;
+    if( arguments.length === 1 ) {
+      this.processHead( messageObject.head );
+    } else {
+      offset = startOffset;
+    }
+    while( offset < operations.length ) {
+      this.processOperationArray( operations[ offset ] );
+      offset++;
+      if( paused ) {
+        this._suspendMessageProcessing( messageObject, offset );
+        return;
+      }
     }
   },
 
@@ -78,6 +93,17 @@ rwt.remote.MessageProcessor = {
         this._processListen( operation.target, operation.properties );
       break;
     }
+  },
+
+  pauseExecution : function() {
+    paused = true;
+  },
+
+  continueExecution : function() {
+    paused = false;
+    var resumingMessage = pendingMessage;
+    pendingMessage = null;
+    this.processMessage.apply( this, resumingMessage );
   },
 
   ////////////
@@ -259,6 +285,16 @@ rwt.remote.MessageProcessor = {
 
   _getListenerSetterName : function( eventType ) {
     return "setHas" + rwt.util.Strings.toFirstUp( eventType ) + "Listener";
+  },
+
+  _suspendMessageProcessing : function( message, offset ) {
+    if( pendingMessage != null ) {
+      throw new Error( "A message is already suspended" );
+    }
+    pendingMessage = [ message, offset ];
   }
 
+
 };
+
+}());

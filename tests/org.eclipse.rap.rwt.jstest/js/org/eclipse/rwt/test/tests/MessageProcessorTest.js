@@ -776,6 +776,58 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       HandlerRegistry.remove( "dummyType" );
     },
 
+    testPauseExecution : function() {
+      HandlerRegistry.add( "dummyType", {
+        factory : this._getDummyFactory(),
+        properties : [ "width" ]
+      } );
+      var message = {
+        "head" : {},
+          "operations" : [
+            [ "create", "dummyId", "dummyType", { "style" : [], "width" : 44 } ],
+            [
+              "call",
+              "rwt.client.JavaScriptExecutor",
+              "execute",
+              { "content" : "rwt.remote.MessageProcessor.pauseExecution();" }
+            ],
+            [ "set", "dummyId", { "width" : 45 } ]
+          ]
+        };
+
+        MessageProcessor.processMessage( message );
+        assertEquals( [ "width", 44 ], this._getTargetById( "dummyId" ).getLog() );
+        MessageProcessor.continueExecution();
+
+        assertEquals( [ "width", 44, "width", 45 ], this._getTargetById( "dummyId" ).getLog() );
+    },
+
+    testPauseExecutionWhileFirstMessageStillPendingFails : function() {
+      HandlerRegistry.add( "dummyType", {
+        factory : this._getDummyFactory(),
+        properties : [ "width" ]
+      } );
+      var message = {
+        "head" : {},
+          "operations" : [
+            [
+              "call",
+              "rwt.client.JavaScriptExecutor",
+              "execute",
+              { "content" : "rwt.remote.MessageProcessor.pauseExecution();" }
+            ]
+          ]
+        };
+
+        MessageProcessor.processMessage( message );
+
+        try {
+          MessageProcessor.processMessage( message );
+          fail();
+        } catch( ex ) {
+          MessageProcessor.continueExecution();
+        }
+    },
 
     /////////
     // Helper
