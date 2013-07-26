@@ -287,7 +287,7 @@ public final class UISessionImpl
   /*
    * test hook
    */
-  void setConnection( Connection connection ) {
+  public void setConnection( Connection connection ) {
     this.connection = connection;
   }
 
