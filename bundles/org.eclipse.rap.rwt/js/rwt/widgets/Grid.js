@@ -594,14 +594,14 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _findHyperlink : function( event ) {
-      var widgetElement = this.getElement();
-      var targetElement = event.getDomTarget();
-      var tagName = targetElement.tagName.toLowerCase();
-      while( targetElement !== widgetElement && tagName !== 'a' ) {
-        targetElement = targetElement.parentNode;
-        tagName = targetElement.tagName.toLowerCase();
+      var widgetNode = this._getTargetNode();
+      var targetNode = event.getDomTarget();
+      var tagName = targetNode.tagName ? targetNode.tagName.toLowerCase() : "";
+      while( targetNode !== widgetNode && tagName !== 'a' ) {
+        targetNode = targetNode.parentNode;
+        tagName = targetNode.tagName ? targetNode.tagName.toLowerCase() : "";
       }
-      return tagName === 'a' ? targetElement : null;
+      return tagName === 'a' ? targetNode : null;
     },
 
     _isRWTHyperlink : function( hyperlink ) {
