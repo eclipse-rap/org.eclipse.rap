@@ -254,7 +254,8 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     },
 
     _onMouseUp : function( evt ) {
-      if(    evt.getTarget() != this._closeButton
+      if(    ( this._canClose || this._showClose )
+          && evt.getTarget() != this._closeButton
           && evt.getButton() === rwt.event.MouseEvent.C_BUTTON_MIDDLE ) {
         this._onClose( evt );
       }
