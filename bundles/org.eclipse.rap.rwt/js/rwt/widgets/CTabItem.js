@@ -53,6 +53,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     this.updateCloseButton();
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
+    this.addEventListener( "mouseup", this._onMouseUp, this );
     this.addEventListener( "click", this._onClick, this );
     this.addEventListener( "dblclick", this._onDblClick, this );
     this.addEventListener( "changeParent", this._onChangeParent, this );
@@ -62,6 +63,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
   destruct : function() {
     this.removeEventListener( "mouseover", this._onMouseOver, this );
     this.removeEventListener( "mouseout", this._onMouseOut, this );
+    this.removeEventListener( "mouseup", this._onMouseUp, this );
     this.removeEventListener( "click", this._onClick, this );
     this.removeEventListener( "dblclick", this._onDblClick, this );
     this.removeEventListener( "changeParent", this._onChangeParent, this );
@@ -249,6 +251,13 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
         this._closeButton.removeState( rwt.widgets.CTabItem.STATE_OVER );
       }
       this.updateCloseButton();
+    },
+
+    _onMouseUp : function( evt ) {
+      if(    evt.getTarget() != this._closeButton
+          && evt.getButton() === rwt.event.MouseEvent.C_BUTTON_MIDDLE ) {
+        this._onClose( evt );
+      }
     },
 
     _onClick : function( evt ) {

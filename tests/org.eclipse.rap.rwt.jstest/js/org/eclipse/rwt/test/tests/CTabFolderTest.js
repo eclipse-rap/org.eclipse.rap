@@ -591,6 +591,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       assertEquals( "w4", message.findNotifyProperty( "w3", "Folder", "item" ) );
     },
 
+    testSendClose_withMiddleButton : function() {
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      var item = this._createCTabItemByProtocol( "w4", "w3" );
+      TestUtil.protocolSet( "w4", { "showClose" : true } );
+      TestUtil.protocolSet( "w3", { "selection" : "w4" } );
+      TestUtil.protocolListen( "w3", { "Folder" : true } );
+      TestUtil.flush();
+
+      var button = rwt.event.MouseEvent.buttons.middle;
+      TestUtil.fakeMouseEventDOM( item._getTargetNode(), "mouseup", button );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "close", message.findNotifyProperty( "w3", "Folder", "detail" ) );
+      assertEquals( "w4", message.findNotifyProperty( "w3", "Folder", "item" ) );
+    },
+
     testRenderMnemonic_OnActivate : function() {
       var folder = this._createCTabFolderByProtocol( "w3", "w2" );
       var item = this._createCTabItemByProtocol( "w4", "w3" );
