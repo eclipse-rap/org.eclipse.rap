@@ -19,7 +19,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -43,6 +47,8 @@ import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
+import org.eclipse.rap.rwt.service.ApplicationContextEvent;
+import org.eclipse.rap.rwt.service.ApplicationContextListener;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.SettingStoreFactory;
@@ -51,6 +57,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 
 public class ApplicationContextImpl_Test {
@@ -249,6 +256,101 @@ public class ApplicationContextImpl_Test {
     applicationContext.removeFromServletContext();
 
     assertNull( ApplicationContextImpl.getFrom( servletContext ) );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testAddApplicationContextListener_failsWithNullArgument() {
+    applicationContext = new ApplicationContextImpl( null, null );
+
+    applicationContext.addApplicationContextListener( null );
+  }
+
+  @Test
+  public void testAddApplicationContextListener() {
+    ServletContext servletContext = createServletContext( Fixture.WEB_CONTEXT_DIR );
+    applicationContext = new ApplicationContextImpl( createConfiguration(), servletContext );
+    applicationContext.activate();
+    ApplicationContextListener listener = mock( ApplicationContextListener.class );
+    applicationContext.addApplicationContextListener( listener );
+
+    applicationContext.deactivate();
+
+    verify( listener ).beforeDestroy( any( ApplicationContextEvent.class ) );
+  }
+
+  @Test
+  public void testAddApplicationContextListener_twice() {
+    ServletContext servletContext = createServletContext( Fixture.WEB_CONTEXT_DIR );
+    applicationContext = new ApplicationContextImpl( createConfiguration(), servletContext );
+    applicationContext.activate();
+    ApplicationContextListener listener = mock( ApplicationContextListener.class );
+    applicationContext.addApplicationContextListener( listener );
+    applicationContext.addApplicationContextListener( listener );
+
+    applicationContext.deactivate();
+
+    verify( listener ).beforeDestroy( any( ApplicationContextEvent.class ) );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testRemoveApplicationContextListener_failsWithNullArgument() {
+    applicationContext = new ApplicationContextImpl( null, null );
+
+    applicationContext.removeApplicationContextListener( null );
+  }
+
+  @Test
+  public void testRemoveApplicationContextListener_missingListener() {
+    ServletContext servletContext = createServletContext( Fixture.WEB_CONTEXT_DIR );
+    applicationContext = new ApplicationContextImpl( createConfiguration(), servletContext );
+
+    applicationContext.removeApplicationContextListener( mock( ApplicationContextListener.class ) );
+  }
+
+  @Test
+  public void testRemoveApplicationContextListener() {
+    ServletContext servletContext = createServletContext( Fixture.WEB_CONTEXT_DIR );
+    applicationContext = new ApplicationContextImpl( createConfiguration(), servletContext );
+    applicationContext.activate();
+    ApplicationContextListener listener = mock( ApplicationContextListener.class );
+    applicationContext.addApplicationContextListener( listener );
+
+    applicationContext.removeApplicationContextListener( listener );
+    applicationContext.deactivate();
+
+    verify( listener, never() ).beforeDestroy( any( ApplicationContextEvent.class ) );
+  }
+
+  @Test
+  public void testBeforeDestroyEvent() {
+    ServletContext servletContext = createServletContext( Fixture.WEB_CONTEXT_DIR );
+    applicationContext = new ApplicationContextImpl( createConfiguration(), servletContext );
+    applicationContext.activate();
+    ApplicationContextListener listener = mock( ApplicationContextListener.class );
+    applicationContext.addApplicationContextListener( listener );
+
+    applicationContext.deactivate();
+
+    ArgumentCaptor<ApplicationContextEvent> captor
+      = ArgumentCaptor.forClass( ApplicationContextEvent.class );
+    verify( listener ).beforeDestroy( captor.capture() );
+    assertSame( applicationContext, captor.getValue().getSource() );
+  }
+
+  @Test
+  public void testExceptionHandlingInApplicationContextListeners() {
+    ServletContext servletContext = createServletContext( Fixture.WEB_CONTEXT_DIR );
+    applicationContext = new ApplicationContextImpl( createConfiguration(), servletContext );
+    applicationContext.activate();
+    applicationContext.addApplicationContextListener( new ApplicationContextListener() {
+      public void beforeDestroy( ApplicationContextEvent event ) {
+        throw new RuntimeException();
+      }
+    } );
+
+    applicationContext.deactivate();
+
+    verify( servletContext ).log( anyString(), any( RuntimeException.class ) );
   }
 
   private ServletContext createServletContext( File contextDirectory ) {

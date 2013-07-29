@@ -11,6 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.application;
 
+import java.text.MessageFormat;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
@@ -33,7 +37,11 @@ import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.internal.util.SerializableLock;
 import org.eclipse.rap.rwt.service.ApplicationContext;
+import org.eclipse.rap.rwt.service.ApplicationContextEvent;
+import org.eclipse.rap.rwt.service.ApplicationContextListener;
 import org.eclipse.rap.rwt.service.FileSettingStoreFactory;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.swt.internal.graphics.FontDataFactory;
@@ -93,6 +101,8 @@ public class ApplicationContextImpl implements ApplicationContext {
   private final ProbeStore probeStore;
   private final ServletContext servletContext;
   private final ClientSelector clientSelector;
+  private final Set<ApplicationContextListener> listeners;
+  private final SerializableLock lock;
   private ExceptionHandler exceptionHandler;
   private boolean active;
 
@@ -122,6 +132,8 @@ public class ApplicationContextImpl implements ApplicationContext {
     textSizeStorage = new TextSizeStorage();
     probeStore = new ProbeStore( textSizeStorage );
     clientSelector = new ClientSelector();
+    listeners = new HashSet<ApplicationContextListener>();
+    lock = new SerializableLock();
   }
 
   public static ApplicationContextImpl getFrom( ServletContext servletContext ) {
@@ -148,6 +160,20 @@ public class ApplicationContextImpl implements ApplicationContext {
     applicationStore.removeAttribute( name );
   }
 
+  public void addApplicationContextListener( ApplicationContextListener listener ) {
+    ParamCheck.notNull( listener, "listener" );
+    synchronized( lock ) {
+      listeners.add( listener );
+    }
+  }
+
+  public void removeApplicationContextListener( ApplicationContextListener listener ) {
+    ParamCheck.notNull( listener, "listener" );
+    synchronized( lock ) {
+      listeners.remove( listener );
+    }
+  }
+
   public boolean isActive() {
     return active;
   }
@@ -166,6 +192,7 @@ public class ApplicationContextImpl implements ApplicationContext {
   public void deactivate() {
     checkIsNotActivated();
     try {
+      fireBeforeDestroy();
       doDeactivate();
     } finally {
       active = false;
@@ -345,6 +372,31 @@ public class ApplicationContextImpl implements ApplicationContext {
     if( !settingStoreManager.hasFactory() ) {
       settingStoreManager.register( new FileSettingStoreFactory() );
     }
+  }
+
+  private void fireBeforeDestroy() {
+    ApplicationContextListener[] listenersCopy;
+    synchronized( lock ) {
+      int size = listeners.size();
+      listenersCopy = listeners.toArray( new ApplicationContextListener[ size ] );
+    }
+    ApplicationContextEvent event = new ApplicationContextEvent( this );
+    for( ApplicationContextListener listener : listenersCopy ) {
+      try {
+        listener.beforeDestroy( event );
+      } catch( RuntimeException exception ) {
+        handleBeforeDestroyException( listener, exception );
+      }
+    }
+  }
+
+  private void handleBeforeDestroyException( ApplicationContextListener listener,
+                                             RuntimeException exception )
+  {
+    String txt = "Could not execute {0}.beforeDestroy(ApplicationContextEvent).";
+    Object[] param = new Object[] { listener.getClass().getName() };
+    String msg = MessageFormat.format( txt, param );
+    servletContext.log( msg, exception );
   }
 
 }
