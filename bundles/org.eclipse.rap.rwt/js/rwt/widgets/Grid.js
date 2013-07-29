@@ -575,13 +575,13 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _checkAndProcessHyperlink : function( event ) {
       var hyperlink = null;
-      if( this._config.markupEnabled ) {
+      var target = event.getOriginalTarget();
+      if( this._config.markupEnabled && target instanceof rwt.widgets.base.GridRow ) {
         hyperlink = this._findHyperlink( event );
         if( hyperlink !== null && this._isRWTHyperlink( hyperlink ) ) {
           event.setDefaultPrevented( true );
           if( event.getType() === "click" ) {
-            var row = event.getOriginalTarget();
-            var item = this._rowContainer.findItemByRow( row );
+            var item = this._rowContainer.findItemByRow( target );
             var text = hyperlink.getAttribute( "href" );
             if( !text ) {
               text = hyperlink.innerHTML;
@@ -594,12 +594,11 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _findHyperlink : function( event ) {
-      var widgetNode = this._getTargetNode();
       var targetNode = event.getDomTarget();
-      var tagName = targetNode.tagName ? targetNode.tagName.toLowerCase() : "";
-      while( targetNode !== widgetNode && tagName !== 'a' ) {
+      var tagName = targetNode.tagName.toLowerCase();
+      while( tagName !== 'a' && tagName !== 'div' ) {
         targetNode = targetNode.parentNode;
-        tagName = targetNode.tagName ? targetNode.tagName.toLowerCase() : "";
+        tagName = targetNode.tagName.toLowerCase();
       }
       return tagName === 'a' ? targetNode : null;
     },

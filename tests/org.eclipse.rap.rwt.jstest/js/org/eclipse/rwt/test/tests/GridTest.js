@@ -1067,6 +1067,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    testScrollVertically_dragScrollThumb_releaseOnOtherWidget : function() {
+      var tree = this._createDefaultTree();
+      tree.getRenderConfig().markupEnabled = true;
+      this._fillTree( tree, 100 );
+      tree._vertScrollBar.setVisibility( true );
+      var button = new rwt.widgets.Button( "push" );
+      button.setSpace( 550, 50, 0, 25 );
+      button.addToDocument();
+      TestUtil.flush();
+      var thumbNode = tree._vertScrollBar._thumb._getTargetNode();
+      var buttonNode = button._getTargetNode();
+
+      TestUtil.fakeMouseEventDOM( thumbNode, "mousedown", rwt.event.MouseEvent.buttons.left );
+      TestUtil.fakeMouseEventDOM( buttonNode, "mouseup", rwt.event.MouseEvent.buttons.left );
+
+      // ensures no exception is thrown when executing _findHyperlink on mouseup
+      button.destroy();
+      tree.destroy();
+    },
+
     testScrollVerticallyOnlyOneLayer : function() {
       var tree = this._createDefaultTree();
       this._fillTree( tree, 100 );

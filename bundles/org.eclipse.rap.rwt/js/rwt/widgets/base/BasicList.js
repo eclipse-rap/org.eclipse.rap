@@ -23,7 +23,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
     this.addEventListener( "mousedown", this._onmousedown );
     this.addEventListener( "mouseup", this._onmouseup );
     this.addEventListener( "click", this._onclick );
-    this.addEventListener( "dblclick", this._ondblclick );
     this.addEventListener( "keypress", this._onkeypress );
     this.addEventListener( "keypress", this._onkeyinput );
     this.initOverflow();
@@ -117,15 +116,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
         var item = this.getListItemTarget( event.getTarget() );
         if( item ) {
           this._manager.handleClick( item, event );
-        }
-      }
-    },
-
-    _ondblclick : function( event ) {
-      if( this._findHyperlink( event ) === null ) {
-        var item = this.getListItemTarget( event.getTarget() );
-        if( item ) {
-          this._manager.handleDblClick( item, event );
         }
       }
     },
@@ -379,7 +369,8 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
 
     _checkAndProcessHyperlink : function( event ) {
       var hyperlink = null;
-      if( this._markupEnabled ) {
+      var target = event.getOriginalTarget();
+      if( this._markupEnabled && target instanceof rwt.widgets.ListItem ) {
         hyperlink = this._findHyperlink( event );
         if( hyperlink !== null && this._isRWTHyperlink( hyperlink ) ) {
           event.setDefaultPrevented( true );
@@ -392,12 +383,11 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
     },
 
     _findHyperlink : function( event ) {
-      var widgetNode = this._getTargetNode();
       var targetNode = event.getDomTarget();
-      var tagName = targetNode.tagName ? targetNode.tagName.toLowerCase() : "";
-      while( targetNode !== widgetNode && tagName !== 'a' ) {
+      var tagName = targetNode.tagName.toLowerCase();
+      while( tagName !== 'a' && tagName !== 'div' ) {
         targetNode = targetNode.parentNode;
-        tagName = targetNode.tagName ? targetNode.tagName.toLowerCase() : "";
+        tagName = targetNode.tagName.toLowerCase();
       }
       return tagName === 'a' ? targetNode : null;
     },
