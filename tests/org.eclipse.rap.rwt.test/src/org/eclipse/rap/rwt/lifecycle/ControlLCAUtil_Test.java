@@ -26,6 +26,7 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -560,39 +561,6 @@ public class ControlLCAUtil_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "tabIndex" ) );
-  }
-
-  // TODO [tb] : Move to WidgetLCAUtil_Test?
-  @Test
-  public void testRenderIntialToolTip() {
-    ControlLCAUtil.renderToolTip( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "toolTip" ) );
-  }
-
-  // TODO [tb] : Move to WidgetLCAUtil_Test?
-  @Test
-  public void testRenderToolTip() {
-    control.setToolTipText( "foo" );
-    ControlLCAUtil.renderToolTip( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( "foo", message.findSetProperty( control, "toolTip" ).asString() );
-  }
-
-  // TODO [tb] : Move to WidgetLCAUtil_Test?
-  @Test
-  public void testRenderToolTipUnchanged() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.setToolTipText( "foo" );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderToolTip( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "toolTip" ) );
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?

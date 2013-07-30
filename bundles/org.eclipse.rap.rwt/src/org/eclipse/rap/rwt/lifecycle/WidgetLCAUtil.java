@@ -19,6 +19,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForImage
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForPoint;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForRectangle;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
@@ -449,7 +450,9 @@ public final class WidgetLCAUtil {
    */
   public static void renderToolTip( Widget widget, String toolTip ) {
     String text = toolTip == null ? "" : toolTip;
-    WidgetLCAUtil.renderProperty( widget, PROP_TOOL_TIP, text, "" );
+    if( hasChanged( widget, PROP_TOOL_TIP, text, "" ) ) {
+      getRemoteObject( widget ).set( PROP_TOOL_TIP, removeAmpersandControlCharacters( text ) );
+    }
   }
 
   /**
