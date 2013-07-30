@@ -8,25 +8,17 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.util;
+package org.eclipse.rap.rwt.internal.protocol;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_BUTTON;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_CHAR_CODE;
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_HEIGHT;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_KEY_CODE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_TIME;
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_WIDTH;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_X;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_Y;
 import static org.eclipse.swt.internal.events.EventLCAUtil.translateButton;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -35,41 +27,109 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Scrollable;
 
 
-public class OperationHandlerUtil {
+public class ControlOperationHandler extends WidgetOperationHandler {
 
-  public static void handleNotify( OperationHandler handler,
-                                   String eventName,
-                                   JsonObject properties )
-  {
-    try {
-      String name = "handleNotify" + eventName;
-      Method method = handler.getClass().getDeclaredMethod( name, JsonObject.class );
-      method.invoke( handler, properties );
-    } catch( SecurityException exception ) {
-      throw new RuntimeException( exception );
-    } catch( NoSuchMethodException e ) {
-      String message = eventName + " notify operation not supported by this handler";
-      throw new UnsupportedOperationException( message );
-    } catch( IllegalArgumentException exception ) {
-      throw new RuntimeException( exception );
-    } catch( IllegalAccessException exception ) {
-      throw new RuntimeException( exception );
-    } catch( InvocationTargetException exception ) {
-      throw new RuntimeException( exception );
-    }
+  public ControlOperationHandler( Control control ) {
+    super( control );
   }
 
-  public static Event createSelectionEvent( int eventType, JsonObject properties )
-  {
-    Event event = new Event();
-    event.type = eventType;
-    event.stateMask = readStateMask( properties );
-    event.detail = readDetail( properties );
-    event.setBounds( readBounds( properties ) );
-    return event;
+  /*
+   * PROTOCOL NOTIFY FocusIn
+   */
+  public void handleNotifyFocusIn( JsonObject properties ) {
+    widget.notifyListeners( SWT.FocusIn, new Event() );
   }
 
-  public static void processMouseEvent( int eventType, Control control, JsonObject properties ) {
+  /*
+   * PROTOCOL NOTIFY FocusOut
+   */
+  public void handleNotifyFocusOut( JsonObject properties ) {
+    widget.notifyListeners( SWT.FocusOut, new Event() );
+  }
+
+  /*
+   * PROTOCOL NOTIFY MouseDown
+   *
+   * @param altKey (boolean) true if the ALT key was pressed
+   * @param ctrlKey (boolean) true if the CTRL key was pressed
+   * @param shiftKey (boolean) true if the SHIFT key was pressed
+   * @param button (int) the number of the mouse button as in Event.button
+   * @param x (int) the x coordinate of the pointer
+   * @param y (int) the y coordinate of the pointer
+   * @param time (int) the time when the event occurred
+   */
+  public void handleNotifyMouseDown( JsonObject properties ) {
+    processMouseEvent( SWT.MouseDown, ( Control )widget, properties );
+  }
+
+  /*
+   * PROTOCOL NOTIFY MouseDoubleClick
+   *
+   * @param altKey (boolean) true if the ALT key was pressed
+   * @param ctrlKey (boolean) true if the CTRL key was pressed
+   * @param shiftKey (boolean) true if the SHIFT key was pressed
+   * @param button (int) the number of the mouse button as in Event.button
+   * @param x (int) the x coordinate of the pointer
+   * @param y (int) the y coordinate of the pointer
+   * @param time (int) the time when the event occurred
+   */
+  public void handleNotifyMouseDoubleClick( JsonObject properties ) {
+    processMouseEvent( SWT.MouseDoubleClick, ( Control )widget, properties );
+  }
+
+  /*
+   * PROTOCOL NOTIFY MouseUp
+   *
+   * @param altKey (boolean) true if the ALT key was pressed
+   * @param ctrlKey (boolean) true if the CTRL key was pressed
+   * @param shiftKey (boolean) true if the SHIFT key was pressed
+   * @param button (int) the number of the mouse button as in Event.button
+   * @param x (int) the x coordinate of the pointer
+   * @param y (int) the y coordinate of the pointer
+   * @param time (int) the time when the event occurred
+   */
+  public void handleNotifyMouseUp( JsonObject properties ) {
+    processMouseEvent( SWT.MouseUp, ( Control )widget, properties );
+  }
+
+  /*
+   * PROTOCOL NOTIFY Traverse
+   *
+   * @param altKey (boolean) true if the ALT key was pressed
+   * @param ctrlKey (boolean) true if the CTRL key was pressed
+   * @param shiftKey (boolean) true if the SHIFT key was pressed
+   * @param keyCode (int) the key code of the key that was typed
+   * @param charCode (int) the char code of the key that was typed
+   */
+  public void handleNotifyTraverse( JsonObject properties ) {
+    processTraverseEvent( ( Control )widget, properties );
+  }
+
+  /*
+   * PROTOCOL NOTIFY KeyDown
+   *
+   * @param altKey (boolean) true if the ALT key was pressed
+   * @param ctrlKey (boolean) true if the CTRL key was pressed
+   * @param shiftKey (boolean) true if the SHIFT key was pressed
+   * @param keyCode (int) the key code of the key that was typed
+   * @param charCode (int) the char code of the key that was typed
+   */
+  public void handleNotifyKeyDown( JsonObject properties ) {
+    widget.notifyListeners( SWT.KeyDown, createKeyEvent( properties ) );
+    widget.notifyListeners( SWT.KeyUp, createKeyEvent( properties ) );
+  }
+
+  /*
+   * PROTOCOL NOTIFY MenuDetect
+   *
+   * @param x (int) the x coordinate of the pointer
+   * @param y (int) the y coordinate of the pointer
+   */
+  public void handleNotifyMenuDetect( JsonObject properties ) {
+    widget.notifyListeners( SWT.MenuDetect, createMenuDetectEvent( properties ) );
+  }
+
+  static void processMouseEvent( int eventType, Control control, JsonObject properties ) {
     Event event = createMouseEvent( eventType, control, properties );
     boolean pass = false;
     if( control instanceof Scrollable ) {
@@ -84,7 +144,7 @@ public class OperationHandlerUtil {
     }
   }
 
-  public static Event createMouseEvent( int eventType, Control control, JsonObject properties ) {
+  static Event createMouseEvent( int eventType, Control control, JsonObject properties ) {
     Event event = new Event();
     event.type = eventType;
     event.widget = control;
@@ -100,7 +160,7 @@ public class OperationHandlerUtil {
     return event;
   }
 
-  public static void processTraverseEvent( Control control, JsonObject properties ) {
+  static void processTraverseEvent( Control control, JsonObject properties ) {
     int keyCode = properties.get( EVENT_PARAM_KEY_CODE ).asInt();
     int charCode = properties.get( EVENT_PARAM_CHAR_CODE ).asInt();
     int stateMask = readStateMask( properties );
@@ -112,21 +172,21 @@ public class OperationHandlerUtil {
     }
   }
 
-  public static Event createKeyEvent( JsonObject properties ) {
+  static Event createKeyEvent( JsonObject properties ) {
     int keyCode = properties.get( EVENT_PARAM_KEY_CODE ).asInt();
     int charCode = properties.get( EVENT_PARAM_CHAR_CODE ).asInt();
     int stateMask = readStateMask( properties );
     return createKeyEvent( keyCode, charCode, stateMask );
   }
 
-  public static Event createMenuDetectEvent( JsonObject properties ) {
+  static Event createMenuDetectEvent( JsonObject properties ) {
     Event event = new Event();
     event.x = properties.get( EVENT_PARAM_X ).asInt();
     event.y = properties.get( EVENT_PARAM_Y ).asInt();
     return event;
   }
 
-  private static Event createKeyEvent( int keyCode, int charCode, int stateMask ) {
+  static Event createKeyEvent( int keyCode, int charCode, int stateMask ) {
     Event event = new Event();
     event.keyCode = translateKeyCode( keyCode );
     if( charCode == 0 ) {
@@ -142,44 +202,6 @@ public class OperationHandlerUtil {
     }
     event.stateMask = stateMask;
     return event;
-  }
-
-  private static int readStateMask( JsonObject properties ) {
-    int stateMask = SWT.NONE;
-    if( JsonValue.TRUE.equals( properties.get( "altKey" ) ) ) {
-      stateMask |= SWT.ALT;
-    }
-    if( JsonValue.TRUE.equals( properties.get( "ctrlKey" ) ) ) {
-      stateMask |= SWT.CTRL;
-    }
-    if( JsonValue.TRUE.equals( properties.get( "shiftKey" ) ) ) {
-      stateMask |= SWT.SHIFT;
-    }
-    return stateMask;
-  }
-
-  private static int readDetail( JsonObject properties ) {
-    int detail = SWT.NONE;
-    JsonValue value = properties.get( EVENT_PARAM_DETAIL );
-    if( value != null && value.isString() ) {
-      if( "check".equals( value.asString() ) ) {
-        detail = SWT.CHECK;
-      }
-    }
-    return detail;
-  }
-
-  private static Rectangle readBounds( JsonObject properties ) {
-    Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-    JsonValue x = properties.get( EVENT_PARAM_X );
-    bounds.x = x == null ? 0 : x.asInt();
-    JsonValue y = properties.get( EVENT_PARAM_Y );
-    bounds.y = y == null ? 0 : y.asInt();
-    JsonValue width = properties.get( EVENT_PARAM_WIDTH );
-    bounds.width = width == null ? 0 : width.asInt();
-    JsonValue height = properties.get( EVENT_PARAM_HEIGHT );
-    bounds.height = height == null ? 0 : height.asInt();
-    return bounds;
   }
 
   static int getTraverseKey( int keyCode, int stateMask ) {
@@ -307,10 +329,6 @@ public class OperationHandlerUtil {
       result = ( char )keyCode;
     }
     return result;
-  }
-
-  private OperationHandlerUtil() {
-    // prevent instantiation
   }
 
 }

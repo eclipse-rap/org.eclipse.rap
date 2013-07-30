@@ -8,16 +8,16 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.util;
+package org.eclipse.rap.rwt.internal.protocol;
 
-import static org.eclipse.rap.rwt.internal.util.OperationHandlerUtil.createKeyEvent;
-import static org.eclipse.rap.rwt.internal.util.OperationHandlerUtil.createMenuDetectEvent;
-import static org.eclipse.rap.rwt.internal.util.OperationHandlerUtil.createMouseEvent;
-import static org.eclipse.rap.rwt.internal.util.OperationHandlerUtil.createSelectionEvent;
-import static org.eclipse.rap.rwt.internal.util.OperationHandlerUtil.getTraverseKey;
-import static org.eclipse.rap.rwt.internal.util.OperationHandlerUtil.processMouseEvent;
-import static org.eclipse.rap.rwt.internal.util.OperationHandlerUtil.processTraverseEvent;
-import static org.eclipse.rap.rwt.internal.util.OperationHandlerUtil.translateKeyCode;
+import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.createKeyEvent;
+import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.createMenuDetectEvent;
+import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.createMouseEvent;
+import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.createSelectionEvent;
+import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.getTraverseKey;
+import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.processMouseEvent;
+import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.processTraverseEvent;
+import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.translateKeyCode;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -41,7 +41,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-public class OperationHandlerUtil_Test {
+public class ControlOperationHandler_Test {
 
   private Shell shell;
   private Button control;

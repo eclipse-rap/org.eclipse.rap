@@ -10,62 +10,27 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treecolumnkit;
 
-import static org.eclipse.rap.rwt.internal.util.OperationHandlerUtil.createSelectionEvent;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getAdapter;
 
 import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.internal.util.OperationHandlerUtil;
+import org.eclipse.rap.rwt.internal.protocol.WidgetOperationHandler;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
-import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
 
-public class TreeColumnOperationHandler extends AbstractOperationHandler {
+public class TreeColumnOperationHandler extends WidgetOperationHandler {
 
   private static final String METHOD_MOVE = "move";
   private static final String METHOD_RESIZE = "resize";
   private static final String PROP_LEFT = "left";
   private static final String PROP_WIDTH = "width";
 
-  private final TreeColumn column;
-
   public TreeColumnOperationHandler( TreeColumn column ) {
-    this.column = column;
-  }
-
-  @Override
-  public void handleNotify( String eventName, JsonObject properties ) {
-    OperationHandlerUtil.handleNotify( this, eventName, properties );
-  }
-
-  /*
-   * PROTOCOL NOTIFY Selection
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   */
-  public void handleNotifySelection( JsonObject properties ) {
-    Event event = createSelectionEvent( SWT.Selection, properties );
-    column.notifyListeners( SWT.Selection, event );
-  }
-
-  /*
-   * PROTOCOL NOTIFY DefaultSelection
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   */
-  public void handleNotifyDefaultSelection( JsonObject properties ) {
-    Event event = createSelectionEvent( SWT.DefaultSelection, properties );
-    column.notifyListeners( SWT.DefaultSelection, event );
+    super( column );
   }
 
   @Override
@@ -83,6 +48,7 @@ public class TreeColumnOperationHandler extends AbstractOperationHandler {
    * @left (int) the left position of the column
    */
   private void handleCallMove( JsonObject properties ) {
+    final TreeColumn column = ( TreeColumn )widget;
     final int newLeft = properties.get( PROP_LEFT ).asInt();
     ProcessActionRunner.add( new Runnable() {
       public void run() {
@@ -97,6 +63,7 @@ public class TreeColumnOperationHandler extends AbstractOperationHandler {
    * @width (int) the width of the column
    */
   private void handleCallResize( JsonObject properties ) {
+    final TreeColumn column = ( TreeColumn )widget;
     final int width = properties.get( PROP_WIDTH ).asInt();
     ProcessActionRunner.add( new Runnable() {
       public void run() {

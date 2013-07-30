@@ -10,26 +10,19 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.combokit;
 
-import static org.eclipse.rap.rwt.internal.util.OperationHandlerUtil.createKeyEvent;
-import static org.eclipse.rap.rwt.internal.util.OperationHandlerUtil.createMenuDetectEvent;
-import static org.eclipse.rap.rwt.internal.util.OperationHandlerUtil.createSelectionEvent;
-import static org.eclipse.rap.rwt.internal.util.OperationHandlerUtil.processMouseEvent;
-import static org.eclipse.rap.rwt.internal.util.OperationHandlerUtil.processTraverseEvent;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.util.OperationHandlerUtil;
+import org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Event;
 
 
-public class ComboOperationHandler extends AbstractOperationHandler {
+public class ComboOperationHandler extends ControlOperationHandler {
 
   private static final String PROP_SELECTION_INDEX = "selectionIndex";
   private static final String PROP_LIST_VISIBLE = "listVisible";
@@ -37,39 +30,8 @@ public class ComboOperationHandler extends AbstractOperationHandler {
   private static final String PROP_SELECTION_START = "selectionStart";
   private static final String PROP_SELECTION_LENGTH = "selectionLength";
 
-  private final Combo combo;
-
   public ComboOperationHandler( Combo combo ) {
-    this.combo = combo;
-  }
-
-  @Override
-  public void handleNotify( String eventName, JsonObject properties ) {
-    OperationHandlerUtil.handleNotify( this, eventName, properties );
-  }
-
-  /*
-   * PROTOCOL NOTIFY Selection
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   */
-  public void handleNotifySelection( JsonObject properties ) {
-    Event event = createSelectionEvent( SWT.Selection, properties );
-    combo.notifyListeners( SWT.Selection, event );
-  }
-
-  /*
-   * PROTOCOL NOTIFY DefaultSelection
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   */
-  public void handleNotifyDefaultSelection( JsonObject properties ) {
-    Event event = createSelectionEvent( SWT.DefaultSelection, properties );
-    combo.notifyListeners( SWT.DefaultSelection, event );
+    super( combo );
   }
 
   /*
@@ -77,109 +39,6 @@ public class ComboOperationHandler extends AbstractOperationHandler {
    * ignored, Modify event is fired when set text
    */
   public void handleNotifyModify( JsonObject properties ) {
-  }
-
-  /*
-   * PROTOCOL NOTIFY FocusIn
-   */
-  public void handleNotifyFocusIn( JsonObject properties ) {
-    combo.notifyListeners( SWT.FocusIn, new Event() );
-  }
-
-  /*
-   * PROTOCOL NOTIFY FocusOut
-   */
-  public void handleNotifyFocusOut( JsonObject properties ) {
-    combo.notifyListeners( SWT.FocusOut, new Event() );
-  }
-
-  /*
-   * PROTOCOL NOTIFY MouseDown
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   * @param button (int) the number of the mouse button as in Event.button
-   * @param x (int) the x coordinate of the pointer
-   * @param y (int) the y coordinate of the pointer
-   * @param time (int) the time when the event occurred
-   */
-  public void handleNotifyMouseDown( JsonObject properties ) {
-    processMouseEvent( SWT.MouseDown, combo, properties );
-  }
-
-  /*
-   * PROTOCOL NOTIFY MouseDoubleClick
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   * @param button (int) the number of the mouse button as in Event.button
-   * @param x (int) the x coordinate of the pointer
-   * @param y (int) the y coordinate of the pointer
-   * @param time (int) the time when the event occurred
-   */
-  public void handleNotifyMouseDoubleClick( JsonObject properties ) {
-    processMouseEvent( SWT.MouseDoubleClick, combo, properties );
-  }
-
-  /*
-   * PROTOCOL NOTIFY MouseUp
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   * @param button (int) the number of the mouse button as in Event.button
-   * @param x (int) the x coordinate of the pointer
-   * @param y (int) the y coordinate of the pointer
-   * @param time (int) the time when the event occurred
-   */
-  public void handleNotifyMouseUp( JsonObject properties ) {
-    processMouseEvent( SWT.MouseUp, combo, properties );
-  }
-
-  /*
-   * PROTOCOL NOTIFY Traverse
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   * @param keyCode (int) the key code of the key that was typed
-   * @param charCode (int) the char code of the key that was typed
-   */
-  public void handleNotifyTraverse( JsonObject properties ) {
-    processTraverseEvent( combo, properties );
-  }
-
-  /*
-   * PROTOCOL NOTIFY KeyDown
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   * @param keyCode (int) the key code of the key that was typed
-   * @param charCode (int) the char code of the key that was typed
-   */
-  public void handleNotifyKeyDown( JsonObject properties ) {
-    combo.notifyListeners( SWT.KeyDown, createKeyEvent( properties ) );
-    combo.notifyListeners( SWT.KeyUp, createKeyEvent( properties ) );
-  }
-
-  /*
-   * PROTOCOL NOTIFY MenuDetect
-   *
-   * @param x (int) the x coordinate of the pointer
-   * @param y (int) the y coordinate of the pointer
-   */
-  public void handleNotifyMenuDetect( JsonObject properties ) {
-    combo.notifyListeners( SWT.MenuDetect, createMenuDetectEvent( properties ) );
-  }
-
-  /*
-   * PROTOCOL NOTIFY Help
-   */
-  public void handleNotifyHelp( JsonObject properties ) {
-    combo.notifyListeners( SWT.Help, new Event() );
   }
 
   @Override
@@ -196,6 +55,7 @@ public class ComboOperationHandler extends AbstractOperationHandler {
    * @param selectionIndex (int) the index of the item to select
    */
   private void handleSetSelectionIndex( JsonObject properties ) {
+    Combo combo = ( Combo )widget;
     JsonValue selectionIndex = properties.get( PROP_SELECTION_INDEX );
     if( selectionIndex != null ) {
       combo.select( selectionIndex.asInt() );
@@ -208,6 +68,7 @@ public class ComboOperationHandler extends AbstractOperationHandler {
    * @param listVisible (boolean) the visibility state of the list
    */
   private void handleSetListVisible( JsonObject properties ) {
+    Combo combo = ( Combo )widget;
     JsonValue listVisible = properties.get( PROP_LIST_VISIBLE );
     if( listVisible != null ) {
       combo.setListVisible( listVisible.asBoolean() );
@@ -220,6 +81,7 @@ public class ComboOperationHandler extends AbstractOperationHandler {
    * @param text (string) the text
    */
   private void handleSetText( JsonObject properties ) {
+    final Combo combo = ( Combo )widget;
     final JsonValue value = properties.get( PROP_TEXT );
     if( value != null ) {
       final String text = value.asString();
@@ -247,6 +109,7 @@ public class ComboOperationHandler extends AbstractOperationHandler {
    * @param selectionLength (int) the text selection length
    */
   private void handleSetSelection( JsonObject properties ) {
+    Combo combo = ( Combo )widget;
     JsonValue selectionStart = properties.get( PROP_SELECTION_START );
     JsonValue selectionLength = properties.get( PROP_SELECTION_LENGTH );
     if( selectionStart != null || selectionLength != null ) {
