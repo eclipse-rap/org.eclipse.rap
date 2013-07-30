@@ -1106,7 +1106,9 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 			// not have the notion of item.
 			// For details, see bug 90161 [Navigator] DefaultSelecting folders shouldn't always expand first one
 			ISelection selection;
-			if (event.item != null && event.item.getData() != null) {
+			// RAP [if] Add a check for disposed item - see bug 413920
+			if (event.item != null && !event.item.isDisposed() && event.item.getData() != null) {
+//			if (event.item != null && event.item.getData() != null) {
 				selection = new StructuredSelection(event.item.getData());
 			}
 			else {
