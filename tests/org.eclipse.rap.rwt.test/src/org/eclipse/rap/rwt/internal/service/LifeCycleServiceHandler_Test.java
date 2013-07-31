@@ -350,6 +350,19 @@ public class LifeCycleServiceHandler_Test {
   }
 
   @Test
+  public void testHandlesInvalidRequestContentType() throws IOException {
+    simulateUiRequestWithIllegalContentType();
+
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
+
+    TestResponse response = getResponse();
+    assertEquals( HttpServletResponse.SC_BAD_REQUEST, response.getStatus() );
+    Message message = getMessageFromResponse();
+    assertEquals( "invalid content type", message.getError() );
+    assertEquals( 0, message.getOperationCount() );
+  }
+
+  @Test
   public void testSendBufferedResponse() throws IOException {
     LifeCycleServiceHandler.markSessionStarted();
     simulateUiRequest();
@@ -441,6 +454,13 @@ public class LifeCycleServiceHandler_Test {
     Fixture.fakeNewRequest();
     Fixture.fakeHeadParameter( "requestCounter", 23 );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setServletPath( "/test" );
+  }
+
+  private void simulateUiRequestWithIllegalContentType() {
+    Fixture.fakeNewRequest();
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setContentType( "text/plain" );
     request.setServletPath( "/test" );
   }
 
