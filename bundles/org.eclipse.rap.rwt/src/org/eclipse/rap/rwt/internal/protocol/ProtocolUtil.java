@@ -65,8 +65,8 @@ public final class ProtocolUtil {
       try {
         JsonObject json = JsonObject.readFrom( request.getReader() );
         clientMessage = new ClientMessage( json );
-      } catch( IOException e ) {
-        throw new IllegalStateException( "Unable to read the json message" );
+      } catch( IOException ioe ) {
+        throw new IllegalStateException( "Unable to read the json message", ioe );
       }
       serviceStore.setAttribute( CLIENT_MESSAGE, clientMessage );
     }
