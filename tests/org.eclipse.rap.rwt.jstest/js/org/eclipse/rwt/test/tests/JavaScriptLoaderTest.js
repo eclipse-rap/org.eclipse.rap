@@ -22,67 +22,56 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.JavaScriptLoaderTest", {
 
   members : {
 
-    testLoadSendsRequest : function() {
-      scheduleResponse();
-
+    testLoad_pausesScriptExecution : function() {
       load( [ "rwt-resource/myJS" ] );
 
-      assertNotNull( getRequestArguments( "send" ) );
+      assertTrue( MessageProcessor.isPaused() );
+      MessageProcessor.continueExecution();
     },
 
-    testRequestOpenParams : function() {
-      scheduleResponse();
+    testLoad_failsWithMultipleFiles : function() {
+      try {
+        load( [ "rwt-resource/myJS", "rwt-resource/myJS2" ] );
+        fail();
+      } catch( ex ) {
+        // expected as long as parallel loading is not implemented
+      }
+    },
 
+    testLoad_failsWithNoFiles : function() {
+      try {
+        load( [] );
+        fail();
+      } catch( ex ) {
+      }
+    },
+
+    testLoad_addsScriptTagToHead : function() {
       load( [ "rwt-resource/myJS" ] );
 
-      var open = getRequestArguments( "open" );
-      assertEquals( "GET", open[ 0 ] );
-      assertEquals( "rwt-resource/myJS", open[ 1 ] );
-      assertFalse( open[ 2 ] );
+      var head = document.getElementsByTagName( "head" )[ 0 ];
+      var candidate = head.lastChild;
+      assertEquals( "script", candidate.tagName.toLowerCase() );
+      assertEquals( "text/javascript", candidate.getAttribute( "type" ).toLowerCase() );
+      assertEquals( "rwt-resource/myjs", candidate.getAttribute( "src" ).toLowerCase() );
+      MessageProcessor.continueExecution();
+      head.removeChild( candidate ); // cleaning up
     },
 
-    testParseScript : function() {
-      scheduleResponse( "rwt.remote.ObjectRegistry.add( \"testObj\", { \"value\" : 42 } );" );
+    testLoad_addsOnLoadToScriptTagThatContinuesExecution : function() {
+      // NOTE : old IE can not be tested because they rely on "readyState", which can
+      // note be overwritten
+      if( !rwt.client.Client.isMshtml() ) {
+        load( [ "rwt-resource/myJS" ] );
+        var head = document.getElementsByTagName( "head" )[ 0 ];
+        var scriptEl = head.lastChild;
 
-      load( [ "rwt-resource/myJS" ] );
+        scriptEl.onload();
 
-      var result = ObjectRegistry.getObject( "testObj" );
-      assertEquals( 42, result.value );
-    },
-
-    testLoadMultipleSendsMultipleRequest : function() {
-      scheduleResponse();
-
-      load( [ "rwt-resource/myJS", "rwt-resource/myOtherJS" ] );
-
-      assertNotNull( getRequestArguments( "send", 0 ) );
-      assertNotNull( getRequestArguments( "send", 1 ) );
-    },
-
-    testMultipleRequestOpenParams : function() {
-      scheduleResponse();
-
-      load( [ "rwt-resource/myJS", "rwt-resource/myOtherJS" ] );
-
-      assertEquals( "rwt-resource/myJS", getRequestArguments( "open", 0 )[ 1 ] );
-      assertEquals( "rwt-resource/myOtherJS", getRequestArguments( "open", 1 )[ 1 ] );
-    },
-
-    testParseMultipleScriptsInOrder : function() {
-      FakeServer.getInstance().setRequestHandler( function( message, url ) {
-        var response;
-        if( url === "rwt-resource/myJS" ) {
-          response = "rwt.remote.ObjectRegistry.add( \"testObj\", { \"value\" : 42 } );";
-        } else if( url === "rwt-resource/myOtherJS" ) {
-          response = "rwt.remote.ObjectRegistry.getObject( \"testObj\" ).value++;";
-        }
-        return response;
-      } );
-
-      load( [ "rwt-resource/myJS", "rwt-resource/myOtherJS" ] );
-
-      var result = ObjectRegistry.getObject( "testObj" );
-      assertEquals( 43, result.value );
+        assertFalse( MessageProcessor.isPaused() );
+        assertNull( scriptEl.onload );
+        head.removeChild( scriptEl ); // cleaning up
+      }
     }
 
   }
@@ -90,24 +79,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.JavaScriptLoaderTest", {
 } );
 
 function load( files ) {
-  TestUtil.protocolCall( "rwt.client.JavaScriptLoader", "load", { "files" : files } );
-}
-
-function scheduleResponse( response ) {
-  FakeServer.getInstance().setRequestHandler( function() {
-    return response;
-  } );
-}
-
-function getRequestArguments( type, position ) {
-  var log = TestUtil.getXMLHttpRequests()[ position ? position : 0 ].getLog();
-  var result = null;
-  for( var i = 0; i < log.length; i++ ) {
-    if( log[ i ][ 0 ] === type ) {
-      result = log[ i ][ 1 ];
-    }
-  }
-  return result;
+  var message = {
+  "head" : {},
+    "operations" : [
+      [ "call", "rwt.client.JavaScriptLoader", "load", { "files" : files } ]
+    ]
+  };
+  MessageProcessor.processMessage( message );
 }
 
 }());

@@ -18,21 +18,23 @@ var pendingMessage = null;
 
 rwt.remote.MessageProcessor = {
 
-  processMessage : function( messageObject, startOffset ) {
+  processMessage : function( messageObject, callback, startOffset ) {
     var operations = messageObject.operations;
     var offset = 0;
-    if( arguments.length === 1 ) {
-      this.processHead( messageObject.head );
-    } else {
+    if( typeof startOffset !== "undefined" ) {
       offset = startOffset;
     }
     while( offset < operations.length ) {
       this.processOperationArray( operations[ offset ] );
       offset++;
       if( paused ) {
-        this._suspendMessageProcessing( messageObject, offset );
+        this._suspendMessageProcessing( messageObject, callback, offset );
         return;
       }
+    }
+    this.processHead( messageObject.head );
+    if( callback ) {
+      callback();
     }
   },
 
@@ -97,6 +99,10 @@ rwt.remote.MessageProcessor = {
 
   pauseExecution : function() {
     paused = true;
+  },
+
+  isPaused : function() {
+    return paused;
   },
 
   continueExecution : function() {
@@ -287,11 +293,11 @@ rwt.remote.MessageProcessor = {
     return "setHas" + rwt.util.Strings.toFirstUp( eventType ) + "Listener";
   },
 
-  _suspendMessageProcessing : function( message, offset ) {
+  _suspendMessageProcessing : function( message, callback, offset ) {
     if( pendingMessage != null ) {
       throw new Error( "A message is already suspended" );
     }
-    pendingMessage = [ message, offset ];
+    pendingMessage = [ message, callback, offset ];
   }
 
 
