@@ -658,7 +658,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         this._selected = null;
         this._resetListSelection();
         if( !rwt.remote.EventUtil.getSuspended() ) {
-          var req = rwt.remote.Server.getInstance();
+          var req = rwt.remote.Connection.getInstance();
           req.addEventListener( "send", this._onSend, this );
           if( this._hasModifyListener ) {
             rwt.client.Timer.once( this._sendModifyText, this, 500 );
@@ -672,13 +672,13 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     _onTextBlur : function( evt ) {
       if( !rwt.remote.EventUtil.getSuspended() && this._isModified ) {
-        var req = rwt.remote.Server.getInstance();
+        var req = rwt.remote.Connection.getInstance();
         req.send();
       }
     },
 
     _onSend : function( evt ) {
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       server.getRemoteObject( this ).set( "text", this._field.getComputedValue() );
       server.removeEventListener( "send", this._onSend, this );
       this._isModified = false;
@@ -686,7 +686,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     },
 
     _sendModifyText : function() {
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       server.getRemoteObject( this ).notify( "Modify" );
       this._isModified = false;
     },
@@ -694,7 +694,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     _sendWidgetSelected : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         var listItem = this._list.getSelectedItem();
-        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
         remoteObject.set( "selectionIndex", this._list.getItemIndex( listItem ) );
         if( this._hasSelectionListener ) {
           rwt.remote.EventUtil.notifySelected( this );
@@ -713,7 +713,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     _updateListVisibleRequestParam : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var server = rwt.remote.Server.getInstance();
+        var server = rwt.remote.Connection.getInstance();
         server.getRemoteObject( this ).set( "listVisible", this._list.getDisplay() );
       }
     },
@@ -738,7 +738,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         length = 0;
       }
       if( this._selectionStart != start || this._selectionLength != length ) {
-        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
         this._selectionStart = start;
         remoteObject.set( "selectionStart", start );
         this._selectionLength = length;

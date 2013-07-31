@@ -715,7 +715,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   clearRequestLog : function() {
-    var server = rwt.remote.Server.getInstance();
+    var server = rwt.remote.Connection.getInstance();
     if( server.getMessageWriter() && server.getMessageWriter().hasOperations() ) {
       server.send();
     }

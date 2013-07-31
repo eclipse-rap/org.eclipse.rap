@@ -1503,7 +1503,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var label = this._getColumnLabel( tree, column );
       TestUtil.clickDOM( label.getCellNode( 2  ) );
       TestUtil.flush();
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertFalse( TestUtil.getMessageObject().findSetProperty( "w4", "expanded" ) );
@@ -1523,7 +1523,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var label = this._getColumnLabel( tree, column );
       TestUtil.clickDOM( label.getCellNode( 2  ) );
       TestUtil.flush();
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertTrue( TestUtil.getMessageObject().findSetProperty( "w4", "expanded" ) );

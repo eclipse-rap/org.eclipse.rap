@@ -21,7 +21,7 @@ var ServerPush = rwt.client.ServerPush;
 var ClientDocument = rwt.widgets.base.ClientDocument;
 var Widget = rwt.widgets.base.Widget;
 
-rwt.qx.Class.define( "rwt.remote.Server", {
+rwt.qx.Class.define( "rwt.remote.Connection", {
   type : "singleton",
   extend : rwt.qx.Target,
 
@@ -209,16 +209,19 @@ rwt.qx.Class.define( "rwt.remote.Server", {
       try {
         var messageObject = JSON.parse( event.responseText );
         rwt.remote.EventUtil.setSuspended( true );
-        Processor.processMessage( messageObject );
-        Widget.flushGlobalQueues();
-        rap._.notify( "render" );
-        EventUtil.setSuspended( false );
-        ServerPush.getInstance().sendUICallBackRequest();
-        this.dispatchSimpleEvent( "received" );
+        var that = this;
+        Processor.processMessage( messageObject, function() {
+          Widget.flushGlobalQueues();
+          rap._.notify( "render" );
+          EventUtil.setSuspended( false );
+          ServerPush.getInstance().sendUICallBackRequest();
+          that.dispatchSimpleEvent( "received" );
+          that._hideWaitHint();
+        } );
       } catch( ex ) {
         ErrorHandler.processJavaScriptErrorInResponse( event.responseText, ex, event.target );
+        this._hideWaitHint();
       }
-      this._hideWaitHint();
     },
 
     ///////////////////////////////
@@ -304,4 +307,4 @@ rwt.qx.Class.define( "rwt.remote.Server", {
  * Path that points to the "resources/resource" path in the bundle. Files
  * must be registered in ClientResources.java.
  */
-rwt.remote.Server.RESOURCE_PATH = "./rwt-resources/resource/";
+rwt.remote.Connection.RESOURCE_PATH = "./rwt-resources/resource/";

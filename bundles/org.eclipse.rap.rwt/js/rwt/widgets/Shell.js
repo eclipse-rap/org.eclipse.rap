@@ -49,7 +49,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     this.addEventListener( "changeWidth", this._onChangeSize, this );
     this.addEventListener( "changeHeight", this._onChangeSize, this );
     this.addEventListener( "keydown", this._onKeydown );
-    var req = rwt.remote.Server.getInstance();
+    var req = rwt.remote.Connection.getInstance();
     req.addEventListener( "send", this._onSend, this );
     this.getCaptionBar().setWidth( "100%" );
     // [if] Listen for DOM event instead of qooxdoo event - see bug 294846.
@@ -158,7 +158,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
 
   destruct : function() {
     this.setParentShell( null );
-    var req = rwt.remote.Server.getInstance();
+    var req = rwt.remote.Connection.getInstance();
     req.removeEventListener( "send", this._onSend, this );
     if( this.isCreated() ) {
       rwt.html.EventRegistration.removeEventListener( this.getElement(),
@@ -317,7 +317,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
      */
     close : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Close" );
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Close" );
       }
     },
 
@@ -349,7 +349,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       {
         this._notifyDeactivate( this._activeControl, widget );
         var id = rwt.remote.WidgetManager.getInstance().findIdByWidget( widget );
-        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
         remoteObject.set( "activeControl", id );
         this._notifyActivate( this._activeControl, widget );
         this._activeControl = widget;
@@ -366,7 +366,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
         }
       }
       if( target != null && !target.contains( newActive ) ) {
-        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( target );
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( target );
         remoteObject.notify( "Deactivate" );
       }
     },
@@ -381,7 +381,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
         }
       }
       if( target != null && !target.contains( oldActive ) ) {
-        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( target );
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( target );
         remoteObject.notify( "Activate" );
       }
     },
@@ -409,7 +409,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       }
       // end of workaround
       if( !rwt.remote.EventUtil.getSuspended() && this.getActive() ) {
-        rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Activate" );
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Activate" );
       }
       var active = evt.getValue();
       if( active ) {
@@ -425,14 +425,14 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
 
     _onChangeMode : function( evt ) {
       var value = evt.getValue();
-      rwt.remote.Server.getInstance().getRemoteObject( evt.getTarget() ).set( "mode", value );
+      rwt.remote.Connection.getInstance().getRemoteObject( evt.getTarget() ).set( "mode", value );
     },
 
     _onChangeSize : function( evt ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         this._sendBounds();
         if( this._hasResizeListener ) {
-          var server = rwt.remote.Server.getInstance();
+          var server = rwt.remote.Connection.getInstance();
           server.getRemoteObject( this ).notify( "Resize", {} );
         }
       }
@@ -442,14 +442,14 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         this._sendBounds();
         if( this._hasMoveListener ) {
-          var server = rwt.remote.Server.getInstance();
+          var server = rwt.remote.Connection.getInstance();
           server.getRemoteObject( this ).notify( "Move", {} );
         }
       }
     },
 
     _sendBounds : function() {
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       var left = this._parseNumber( this.getLeft() );
       var top = this._parseNumber( this.getTop() );
       var height = this._parseNumber( this.getHeightValue() );
@@ -487,7 +487,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
           this._focusControl = focusedChild;
           var widgetManager = rwt.remote.WidgetManager.getInstance();
           var focusedChildId = widgetManager.findIdByWidget( focusedChild );
-          var server = rwt.remote.Server.getInstance();
+          var server = rwt.remote.Connection.getInstance();
           var serverDisplay = server.getRemoteObject( rwt.widgets.Display.getCurrent() );
           serverDisplay.set( "focusControl", focusedChildId );
         }

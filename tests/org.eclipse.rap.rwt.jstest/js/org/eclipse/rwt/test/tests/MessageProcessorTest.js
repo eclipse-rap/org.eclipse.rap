@@ -598,6 +598,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       registry.remove( "dummyType" );
     },
 
+    testProcessMessage_withCallback : function() {
+      var registry = rwt.remote.HandlerRegistry;
+      var processor = rwt.remote.MessageProcessor;
+      registry.add( "dummyType", {
+        properties : [ "width", "height" ]
+      } );
+      var log;
+      var targetObject = this._getDummyTarget( "dummyId" );
+      var operation1 = [ "set", "dummyId", { "height" : 33 } ];
+      var operation2 = [ "set", "dummyId", { "width" : 24 } ];
+      var message = { "head" : {}, "operations" : [ operation1, operation2 ] };
+
+      processor.processMessage( message, function() {
+        log = targetObject.getLog();
+      } );
+
+      assertEquals( [ "height", 33, "width", 24 ], log );
+      registry.remove( "dummyType" );
+    },
+
     testSetError : function() {
       var registry = rwt.remote.HandlerRegistry;
       var processor = rwt.remote.MessageProcessor;
@@ -639,7 +659,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
         "operations" : []
       };
       processor.processMessage( message );
-      var req = rwt.remote.Server.getInstance();
+      var req = rwt.remote.Connection.getInstance();
       assertEquals( 3, req.getRequestCounter() );
     },
 
@@ -776,6 +796,82 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       HandlerRegistry.remove( "dummyType" );
     },
 
+    testPauseExecution : function() {
+      HandlerRegistry.add( "dummyType", {
+        factory : this._getDummyFactory(),
+        properties : [ "width" ]
+      } );
+      var message = {
+        "head" : {},
+          "operations" : [
+            [ "create", "dummyId", "dummyType", { "style" : [], "width" : 44 } ],
+            [
+              "call",
+              "rwt.client.JavaScriptExecutor",
+              "execute",
+              { "content" : "rwt.remote.MessageProcessor.pauseExecution();" }
+            ],
+            [ "set", "dummyId", { "width" : 45 } ]
+          ]
+        };
+
+        MessageProcessor.processMessage( message );
+        assertTrue( MessageProcessor.isPaused() );
+        assertEquals( [ "width", 44 ], this._getTargetById( "dummyId" ).getLog() );
+        MessageProcessor.continueExecution();
+
+        assertEquals( [ "width", 44, "width", 45 ], this._getTargetById( "dummyId" ).getLog() );
+    },
+
+    testPauseExecution_alsoDelaysHeadProcessing : function() {
+      // note: this is relevant because the request counter is used to check if a request is active
+      var connection = rwt.remote.Connection.getInstance();
+      connection.setRequestCounter( 2 );
+      var message = {
+        "head" : { "requestCounter": 33 },
+          "operations" : [
+            [
+              "call",
+              "rwt.client.JavaScriptExecutor",
+              "execute",
+              { "content" : "rwt.remote.MessageProcessor.pauseExecution();" }
+            ]
+          ]
+        };
+
+        MessageProcessor.processMessage( message );
+
+        assertEquals( 2, connection.getRequestCounter() );
+        MessageProcessor.continueExecution();
+        assertEquals( 33, connection.getRequestCounter() );
+    },
+
+    testPauseExecutionWhileFirstMessageStillPendingFails : function() {
+      HandlerRegistry.add( "dummyType", {
+        factory : this._getDummyFactory(),
+        properties : [ "width" ]
+      } );
+      var message = {
+        "head" : {},
+          "operations" : [
+            [
+              "call",
+              "rwt.client.JavaScriptExecutor",
+              "execute",
+              { "content" : "rwt.remote.MessageProcessor.pauseExecution();" }
+            ]
+          ]
+        };
+
+        MessageProcessor.processMessage( message );
+
+        try {
+          MessageProcessor.processMessage( message );
+          fail();
+        } catch( ex ) {
+          MessageProcessor.continueExecution();
+        }
+    },
 
     /////////
     // Helper

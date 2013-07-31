@@ -51,7 +51,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerPushTest", {
     },
 
     testCreateRequest : function() {
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       var serverPush = this._createServerPush();
 
       var request = serverPush._createRequest();

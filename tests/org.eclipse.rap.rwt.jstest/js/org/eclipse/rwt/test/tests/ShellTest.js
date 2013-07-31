@@ -321,7 +321,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       TestUtil.clearRequestLog();
 
       shell.setActiveChild( ObjectRegistry.getObject( "w7" ) );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var messages = TestUtil.getMessages();
       assertEquals( 1, messages.length );
@@ -338,7 +338,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       TestUtil.clearRequestLog();
 
       shell.setActiveChild( ObjectRegistry.getObject( "w9" ) );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var messages = TestUtil.getMessages();
       assertEquals( 1, messages.length );
@@ -355,7 +355,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       TestUtil.clearRequestLog();
 
       shell.setActiveChild( ObjectRegistry.getObject( "w9" ) );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var messages = TestUtil.getMessages();
       assertEquals( 1, messages.length );
@@ -387,7 +387,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       TestUtil.clearRequestLog();
 
       shell.setActiveChild( ObjectRegistry.getObject( "w9" ) );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var messages = TestUtil.getMessages();
       assertEquals( 2, messages.length );

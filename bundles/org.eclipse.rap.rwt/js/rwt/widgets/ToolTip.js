@@ -168,7 +168,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
     _hide : function() {
       this.setVisible( false );
       rwt.widgets.base.Widget.flushGlobalQueues();
-      rwt.remote.Server.getInstance().getRemoteObject( this ).set( "visible", false );
+      rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "visible", false );
     },
 
     _getMessageFont : function() {

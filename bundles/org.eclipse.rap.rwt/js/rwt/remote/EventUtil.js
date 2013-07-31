@@ -48,7 +48,7 @@ rwt.qx.Class.define( "rwt.remote.EventUtil", {
 
     widgetDefaultSelected : function( evt, target ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var server = rwt.remote.Server.getInstance();
+        var server = rwt.remote.Connection.getInstance();
         var properties = {};
         rwt.remote.EventUtil.addModifierToProperties( properties );
         var remoteObject = server.getRemoteObject( target ? target : evt.getTarget() );
@@ -66,7 +66,7 @@ rwt.qx.Class.define( "rwt.remote.EventUtil", {
 
     notifySelected : function( target, left, top, width, height, detail ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var server = rwt.remote.Server.getInstance();
+        var server = rwt.remote.Connection.getInstance();
         var properties;
         if( arguments.length === 2 ) {
           properties = left;
@@ -86,7 +86,7 @@ rwt.qx.Class.define( "rwt.remote.EventUtil", {
 
     notifyDefaultSelected : function( target, left, top, width, height, detail ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var server = rwt.remote.Server.getInstance();
+        var server = rwt.remote.Connection.getInstance();
         var properties;
         if( arguments.length === 2 ) {
           properties = left;
@@ -130,14 +130,14 @@ rwt.qx.Class.define( "rwt.remote.EventUtil", {
 
     focusGained : function( evt ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( evt.getTarget() );
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( evt.getTarget() );
         remoteObject.notify( "FocusIn" );
       }
     },
 
     focusLost : function( evt ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( evt.getTarget() );
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( evt.getTarget() );
         remoteObject.notify( "FocusOut" );
       }
     },
@@ -258,7 +258,7 @@ rwt.qx.Class.define( "rwt.remote.EventUtil", {
     _notifyMouseListeners : function( widget, evt, eventType ) {
       var button = rwt.remote.EventUtil._determineMouseButton( evt );
       var modifier = rwt.remote.EventUtil._getKeyModifier();
-      var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( widget );
+      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
       var properties = {
         "button" : button,
         "x" : evt.getPageX(),
@@ -309,7 +309,7 @@ rwt.qx.Class.define( "rwt.remote.EventUtil", {
           id = widgetManager.findIdByWidget( widget );
         }
         if( id != null ) {
-          var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( widget );
+          var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
           remoteObject.notify( "Help" );
         }
       }
@@ -348,7 +348,7 @@ rwt.qx.Class.define( "rwt.remote.EventUtil", {
         }
         var id = widgetManager.findIdByWidget( widget );
         if( id != null ) {
-          var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( widget );
+          var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
           remoteObject.notify( "MenuDetect", { "x" : x, "y" : y } );
         }
       }

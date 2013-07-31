@@ -412,7 +412,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
 
       assertEquals( 0, TestUtil.getRequestsSend() );
       assertTrue( button.hasState( "selected" ) );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
       assertTrue( TestUtil.getMessageObject().findSetProperty( "w11", "selection" ) );
     },
 

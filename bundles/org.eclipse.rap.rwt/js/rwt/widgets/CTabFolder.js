@@ -292,7 +292,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
       var maxIcon = "";
       var minToolTip = "";
       var maxToolTip = "";
-      var path = rwt.remote.Server.RESOURCE_PATH + "widget/rap/ctabfolder/";
+      var path = rwt.remote.Connection.RESOURCE_PATH + "widget/rap/ctabfolder/";
       switch( state ) {
         case "min":
           minIcon = path + "restore.gif";
@@ -447,7 +447,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
     _onChevronExecute : function( evt ) {
       if( this._chevronMenu == null || !this._chevronMenu.isSeeable() ) {
         if( !rwt.remote.EventUtil.getSuspended() ) {
-          var server = rwt.remote.Server.getInstance();
+          var server = rwt.remote.Connection.getInstance();
           server.getRemoteObject( this ).notify( "Folder", { "detail" : "showList" } );
         }
       }
@@ -475,7 +475,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
             detail = "restore";
           }
         }
-        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
         remoteObject.set( "minimized", this._minMaxState == "min" );
         remoteObject.set( "maximized", this._minMaxState == "max" );
         if( this._hasFolderListener ) {
@@ -515,7 +515,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
           this.deselectAll();
           item.setSelected( true );
           var itemId = rwt.remote.WidgetManager.getInstance().findIdByWidget( item );
-          var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+          var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
           remoteObject.set( "selection", itemId );
           rwt.remote.EventUtil.notifySelected( this );
         }
@@ -529,7 +529,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
           // TODO [rst] remove this parameter as soon as server-side code is revised
           //      -> CTabFolderLCA.readData()
           var itemId = rwt.remote.WidgetManager.getInstance().findIdByWidget( item );
-          var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+          var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
           remoteObject.set( "selection", itemId );
           rwt.remote.EventUtil.widgetDefaultSelected( evt, this );
         }

@@ -1312,7 +1312,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( subMenuItem.hasState( "over" ) );
       rwt.remote.ObjectRegistry.add( "w3", subMenuItem, menuItemHandler );
       subMenuItem.setHasSelectionListener( true );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
       TestUtil.clearRequestLog();
       TestUtil.press( subMenu, "Enter", true );
       TestUtil.flush();

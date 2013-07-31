@@ -110,7 +110,7 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
       // TODO [tb] : implement setHasValueChangedListener?
       var fileName = this._formatFileName( this._getFileName() );
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var server = rwt.remote.Server.getInstance();
+        var server = rwt.remote.Connection.getInstance();
         server.getRemoteObject( this ).set( "fileName", fileName );
         server.send();
       }

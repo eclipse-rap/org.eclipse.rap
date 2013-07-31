@@ -28,7 +28,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.RemoteObjectTest", {
       remoteObject.set( "key3", 3.5 );
       remoteObject.set( "key4", true );
       remoteObject.set( "key5", "aString" );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var operation = TestUtil.getMessageObject().getOperation( 0 );
       assertEquals( "set", operation.type );

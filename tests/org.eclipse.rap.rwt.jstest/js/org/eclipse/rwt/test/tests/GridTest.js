@@ -955,7 +955,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       rwt.remote.EventUtil.setSuspended( false );
       assertEquals( 0, tree._horzScrollBar.getValue() );
       assertEquals( 0, tree._vertScrollBar.getValue() );
-      var req = rwt.remote.Server.getInstance();
+      var req = rwt.remote.Connection.getInstance();
       req.send();
       assertEquals( "0", TestUtil.getMessageObject().findSetProperty( "wtest", "scrollLeft" ) );
       tree.destroy();
@@ -1330,7 +1330,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       TestUtil.clickDOM( checkNode );
 
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
       var message = TestUtil.getMessageObject();
       assertEquals( [ true ], message.findSetProperty( "w2", "cellChecked" ) );
       tree.destroy();
@@ -1390,7 +1390,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       TestUtil.clickDOM( checkNode );
 
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
       var message = TestUtil.getMessageObject();
       assertNull( message.findSetOperation( "w2", "cellChecked" ) );
       tree.destroy();
@@ -1411,7 +1411,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var checkNode = tree.getRowContainer().getChildren()[ 0 ]._getTargetNode().childNodes[ 0 ];
 
       TestUtil.clickDOM( checkNode );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var message = TestUtil.getMessageObject();
       assertNull( message.findNotifyOperation( "w11", "Selection" ) );
@@ -1433,7 +1433,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       TestUtil.clickDOM( checkNode );
 
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
       var message = TestUtil.getMessageObject();
       assertEquals( [ true, false, false, false ], message.findSetProperty( "w2", "cellChecked" ) );
       tree.destroy();
@@ -1598,7 +1598,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testFocusItem : function() {
-      var req = rwt.remote.Server.getInstance();
+      var req = rwt.remote.Connection.getInstance();
       var tree = this._createDefaultTree();
       TestUtil.initRequestLog();
       tree.setItemCount( 3 );
@@ -1617,7 +1617,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testChangeFocusItem : function() {
-      var req = rwt.remote.Server.getInstance();
+      var req = rwt.remote.Connection.getInstance();
       var tree = this._createDefaultTree();
       tree.setItemCount( 3 );
       this._createItem( tree.getRootItem(), 0 );
@@ -1638,7 +1638,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testFocusUnresolvedItem : function() {
-      var req = rwt.remote.Server.getInstance();
+      var req = rwt.remote.Connection.getInstance();
       var tree = this._createDefaultTree();
       TestUtil.initRequestLog();
       tree.setItemCount( 3 );
@@ -1919,7 +1919,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       rwt.remote.ObjectRegistry.add( "wtest", child1, itemHandler );
 
       child1.setExpanded( true );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
@@ -1936,7 +1936,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.initRequestLog();
 
       child1.setExpanded( false );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
@@ -2015,7 +2015,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.ctrlClick( tree._rowContainer._children[ 1 ] );
 
       assertEquals( 0, TestUtil.getRequestsSend() );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
       var message = TestUtil.getMessageObject();
       assertEquals( [ "w2","w3" ], message.findSetProperty( "w11", "selection" ) );
       tree.destroy();
@@ -2437,7 +2437,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       tree._vertScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       assertEquals( 8, TestUtil.getMessageObject().findSetProperty( "w3", "topItemIndex" ) );
       tree.destroy();
@@ -2990,7 +2990,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       tree._horzScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       assertEquals( 160, TestUtil.getMessageObject().findSetProperty( "w3", "scrollLeft" ) );
       tree.destroy();
@@ -3323,7 +3323,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree._vertScrollBar.setValue( 50 );
       tree._vertScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertEquals( 8, TestUtil.getMessageObject().findSetProperty( "w3", "topItemIndex" ) );
@@ -3342,7 +3342,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree._horzScrollBar.setValue( 50 );
       tree._horzScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertEquals( 160, TestUtil.getMessageObject().findSetProperty( "w3", "scrollLeft" ) );
@@ -3359,7 +3359,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree._vertScrollBar.setValue( 50 );
       tree._vertScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertEquals( 8, TestUtil.getMessageObject().findSetProperty( "w3", "topItemIndex" ) );
@@ -3377,8 +3377,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
       tree._horzScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      rwt.remote.Server.getInstance().send();
-      assertFalse( rwt.remote.Server.getInstance()._delayTimer.getEnabled() );
+      rwt.remote.Connection.getInstance().send();
+      assertFalse( rwt.remote.Connection.getInstance()._delayTimer.getEnabled() );
       assertEquals( 1, TestUtil.getRequestsSend() );
       tree.destroy();
     },
@@ -4284,7 +4284,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
 
       tree.setScrollLeft( 30 );
-      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
@@ -4312,7 +4312,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
 
       tree.setTopItemIndex( 3 );
-      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();

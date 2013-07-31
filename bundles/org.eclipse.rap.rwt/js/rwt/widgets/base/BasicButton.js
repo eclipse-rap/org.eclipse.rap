@@ -170,7 +170,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
           this.removeState( "selected" );
         }
         if( !rwt.remote.EventUtil.getSuspended() ) {
-          var server = rwt.remote.Server.getInstance();
+          var server = rwt.remote.Connection.getInstance();
           server.getRemoteObject( this ).set( "selection", this._selected );
         }
       }

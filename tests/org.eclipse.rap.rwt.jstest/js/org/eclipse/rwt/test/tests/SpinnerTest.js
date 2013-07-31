@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -322,7 +322,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       var widget = ObjectManager.getObject( "w3" );
 
       widget.setValue( 10 );
-      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var messages = TestUtil.getMessages();
@@ -351,7 +351,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       widget.setValue( 10 );
       widget.setValue( 20 );
       widget.setValue( 30 );
-      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var messages = TestUtil.getMessages();

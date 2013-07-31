@@ -13,10 +13,10 @@
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
-var server = rwt.remote.Server.getInstance();
+var server = rwt.remote.Connection.getInstance();
 var ClientDocument = rwt.widgets.base.ClientDocument;
 
-rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ConnectionTest", {
 
   extend : rwt.qx.Object,
 
@@ -42,7 +42,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       server.setRequestCounter( null );
 
       server.sendImmediate( true );
-      // NOTE [tb] : can not test sending second request since fixture for Server.js
+      // NOTE [tb] : can not test sending second request since fixture for Connection.js
       //             does not support the requestCounter -1 case
 
       assertEquals( -1, server.getRequestCounter() );

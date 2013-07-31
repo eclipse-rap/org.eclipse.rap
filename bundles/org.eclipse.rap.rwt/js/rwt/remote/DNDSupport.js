@@ -116,7 +116,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
       // fix for Bug 301544: block new dragStarts until request is send
       this._blockDrag = true;
       if( !this._requestScheduled ) {
-        var req = rwt.remote.Server.getInstance();
+        var req = rwt.remote.Connection.getInstance();
         req.addEventListener( "send", this._onSend, this );
       }
       this._sendDragSourceEvent( target, "DragEnd", mouseEvent );
@@ -136,7 +136,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
         "y" : y,
         "time" : rwt.remote.EventUtil.eventTimestamp()
       };
-      rwt.remote.Server.getInstance().getRemoteObject( widget ).notify( type, parameters );
+      rwt.remote.Connection.getInstance().getRemoteObject( widget ).notify( type, parameters );
     },
 
     /////////////
@@ -251,7 +251,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
       event[ "param" ] = param;
       this._dropTargetEventQueue[ type ] = event;
       if( !this._requestScheduled ) {
-        var req = rwt.remote.Server.getInstance();
+        var req = rwt.remote.Connection.getInstance();
         req.addEventListener( "send", this._onSend, this );
         this._requestScheduled = true;
         rwt.client.Timer.once( req.send, req, 200 );
@@ -276,7 +276,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
     },
 
     _attachDropTargetEvents : function() {
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       var events = this._dropTargetEventQueue;
       for( var type in events ) {
         var event = events[ type ];
@@ -471,7 +471,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
       this._attachDropTargetEvents();
       this._requestScheduled = false;
       this._blockDrag = false;
-      var req = rwt.remote.Server.getInstance();
+      var req = rwt.remote.Connection.getInstance();
       req.removeEventListener( "send", this._onSend, this );
     },
 

@@ -9,20 +9,37 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
 namespace( "rwt.remote" );
+
+var paused = false;
+var pendingMessage = null;
 
 rwt.remote.MessageProcessor = {
 
-  processMessage : function( messageObject ) {
-    this.processHead( messageObject.head );
+  processMessage : function( messageObject, callback, startOffset ) {
     var operations = messageObject.operations;
-    for( var i = 0; i < operations.length; i++ ) {
-      this.processOperationArray( operations[ i ] );
+    var offset = 0;
+    if( typeof startOffset !== "undefined" ) {
+      offset = startOffset;
+    }
+    while( offset < operations.length ) {
+      this.processOperationArray( operations[ offset ] );
+      offset++;
+      if( paused ) {
+        this._suspendMessageProcessing( messageObject, callback, offset );
+        return;
+      }
+    }
+    this.processHead( messageObject.head );
+    if( callback ) {
+      callback();
     }
   },
 
   processHead : function( head ) {
-    var server = rwt.remote.Server.getInstance();
+    var server = rwt.remote.Connection.getInstance();
     if( head.url !== undefined ) {
       server.setUrl( head.url );
     }
@@ -78,6 +95,21 @@ rwt.remote.MessageProcessor = {
         this._processListen( operation.target, operation.properties );
       break;
     }
+  },
+
+  pauseExecution : function() {
+    paused = true;
+  },
+
+  isPaused : function() {
+    return paused;
+  },
+
+  continueExecution : function() {
+    paused = false;
+    var resumingMessage = pendingMessage;
+    pendingMessage = null;
+    this.processMessage.apply( this, resumingMessage );
   },
 
   ////////////
@@ -259,6 +291,16 @@ rwt.remote.MessageProcessor = {
 
   _getListenerSetterName : function( eventType ) {
     return "setHas" + rwt.util.Strings.toFirstUp( eventType ) + "Listener";
+  },
+
+  _suspendMessageProcessing : function( message, callback, offset ) {
+    if( pendingMessage != null ) {
+      throw new Error( "A message is already suspended" );
+    }
+    pendingMessage = [ message, callback, offset ];
   }
 
+
 };
+
+}());

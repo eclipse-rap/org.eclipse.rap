@@ -23,12 +23,12 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
     this._bufferedEvents = [];
     this._keyEventRequestRunning = false;
     this._ignoreNextKeypress = false;
-    var req = rwt.remote.Server.getInstance();
+    var req = rwt.remote.Connection.getInstance();
     req.addEventListener( "received", this._onRequestReceived, this );
   },
 
   destruct : function() {
-    var req = rwt.remote.Server.getInstance();
+    var req = rwt.remote.Connection.getInstance();
     req.removeEventListener( "received", this._onRequestReceived, this );
   },
 
@@ -162,12 +162,12 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
 
     _sendRequestAsync : function() {
       window.setTimeout( function() {
-        rwt.remote.Server.getInstance().sendImmediate( true );
+        rwt.remote.Connection.getInstance().sendImmediate( true );
       }, 0 );
     },
 
     _attachKeyEvent : function( widget, keyCode, charCode, domEvent ) {
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       var remoteObject;
       if( widget === null ) {
         remoteObject = server.getRemoteObject( rwt.widgets.Display.getCurrent() );

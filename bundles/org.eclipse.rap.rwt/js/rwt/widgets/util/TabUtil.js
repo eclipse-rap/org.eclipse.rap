@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,7 @@ rwt.qx.Class.define( "rwt.widgets.util.TabUtil", {
       if( !rwt.remote.EventUtil.getSuspended() && tab.getChecked() ) {
         var widgetManager = rwt.remote.WidgetManager.getInstance();
         var itemId = widgetManager.findIdByWidget( tab );
-        var server = rwt.remote.Server.getInstance();
+        var server = rwt.remote.Connection.getInstance();
         var folder = tab.getParent().getParent();
         server.getRemoteObject( folder ).notify( "Selection", {
           "item" : itemId

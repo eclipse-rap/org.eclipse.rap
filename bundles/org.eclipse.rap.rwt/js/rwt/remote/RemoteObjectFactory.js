@@ -13,7 +13,7 @@
 
 var ObjectManager = rwt.remote.ObjectRegistry;
 
-rwt.remote.RemoteObjectFactory = { // TODO [tb] : merge with Server.js? (not a factory)
+rwt.remote.RemoteObjectFactory = { // TODO [tb] : merge with Connection.js? (not a factory)
 
   _db : {},
 

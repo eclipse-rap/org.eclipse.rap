@@ -38,7 +38,7 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
   {
     this.base(arguments);
 
-    this._blank = rwt.remote.Server.RESOURCE_PATH + "static/image/blank.gif";
+    this._blank = rwt.remote.Connection.RESOURCE_PATH + "static/image/blank.gif";
 
     // Source
     if (vSource != null) {
