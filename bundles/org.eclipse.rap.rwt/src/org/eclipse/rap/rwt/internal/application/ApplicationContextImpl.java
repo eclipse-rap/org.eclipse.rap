@@ -12,8 +12,11 @@
 package org.eclipse.rap.rwt.internal.application;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.ServletContext;
 
@@ -54,6 +57,8 @@ import org.eclipse.swt.internal.widgets.displaykit.ClientResources;
 
 
 public class ApplicationContextImpl implements ApplicationContext {
+
+  private static enum State { INACTIVE, ACTIVATING, ACTIVE, DEACTIVATING }
 
   private final static String ATTR_APPLICATION_CONTEXT
     = ApplicationContextImpl.class.getName() + "#instance";
@@ -102,9 +107,9 @@ public class ApplicationContextImpl implements ApplicationContext {
   private final ServletContext servletContext;
   private final ClientSelector clientSelector;
   private final Set<ApplicationContextListener> listeners;
-  private final SerializableLock lock;
+  private final SerializableLock listenersLock;
+  private final AtomicReference<State> state;
   private ExceptionHandler exceptionHandler;
-  private boolean active;
 
   public ApplicationContextImpl( ApplicationConfiguration applicationConfiguration,
                                  ServletContext servletContext )
@@ -133,7 +138,8 @@ public class ApplicationContextImpl implements ApplicationContext {
     probeStore = new ProbeStore( textSizeStorage );
     clientSelector = new ClientSelector();
     listeners = new HashSet<ApplicationContextListener>();
-    lock = new SerializableLock();
+    listenersLock = new SerializableLock();
+    state = new AtomicReference<State>( State.INACTIVE );
   }
 
   public static ApplicationContextImpl getFrom( ServletContext servletContext ) {
@@ -160,42 +166,56 @@ public class ApplicationContextImpl implements ApplicationContext {
     applicationStore.removeAttribute( name );
   }
 
-  public void addApplicationContextListener( ApplicationContextListener listener ) {
+  public boolean addApplicationContextListener( ApplicationContextListener listener ) {
     ParamCheck.notNull( listener, "listener" );
-    synchronized( lock ) {
-      listeners.add( listener );
+    boolean result = false;
+    synchronized( listenersLock ) {
+      if( state.get().equals( State.ACTIVE ) ) {
+        result = true;
+        listeners.add( listener );
+      }
     }
+    return result;
   }
 
-  public void removeApplicationContextListener( ApplicationContextListener listener ) {
+  public boolean removeApplicationContextListener( ApplicationContextListener listener ) {
     ParamCheck.notNull( listener, "listener" );
-    synchronized( lock ) {
-      listeners.remove( listener );
+    boolean result = false;
+    synchronized( listenersLock ) {
+      if( state.get().equals( State.ACTIVE ) ) {
+        result = true;
+        listeners.remove( listener );
+      }
     }
+    return result;
   }
 
   public boolean isActive() {
-    return active;
+    return state.get().equals( State.ACTIVE );
   }
 
   public void activate() {
-    checkIsActivated();
-    active = true;
+    if( !state.compareAndSet( State.INACTIVE, State.ACTIVATING ) ) {
+      throw new IllegalStateException( "ApplicationContext is already active" );
+    }
     try {
       doActivate();
+      state.set( State.ACTIVE );
     } catch( RuntimeException rte ) {
-      active = false;
+      state.set( State.INACTIVE );
       throw rte;
     }
   }
 
   public void deactivate() {
-    checkIsNotActivated();
+    if( !state.compareAndSet( State.ACTIVE, State.DEACTIVATING ) ) {
+      throw new IllegalStateException( "ApplicationContext is not active" );
+    }
     try {
       fireBeforeDestroy();
       doDeactivate();
     } finally {
-      active = false;
+      state.set( State.INACTIVE );
     }
   }
 
@@ -299,19 +319,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     this.exceptionHandler = exceptionHandler;
   }
 
-  private void checkIsNotActivated() {
-    if( !active ) {
-      throw new IllegalStateException( "The ApplicationContext has not been activated." );
-    }
-  }
-
-  private void checkIsActivated() {
-    if( active ) {
-      throw new IllegalStateException( "The ApplicationContext has already been activated." );
-    }
-  }
-
-  private void doActivate() {
+  void doActivate() {
     themeManager.initialize();
     applicationConfiguration.configure( new ApplicationImpl( this, applicationConfiguration ) );
     resourceDirectory.configure( getContextDirectory() );
@@ -330,7 +338,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     clientSelector.activate();
   }
 
-  private void doDeactivate() {
+  void doDeactivate() {
     startupPage.deactivate();
     lifeCycleFactory.deactivate();
     serviceManager.clear();
@@ -375,18 +383,19 @@ public class ApplicationContextImpl implements ApplicationContext {
   }
 
   private void fireBeforeDestroy() {
-    ApplicationContextListener[] listenersCopy;
-    synchronized( lock ) {
-      int size = listeners.size();
-      listenersCopy = listeners.toArray( new ApplicationContextListener[ size ] );
-    }
     ApplicationContextEvent event = new ApplicationContextEvent( this );
-    for( ApplicationContextListener listener : listenersCopy ) {
+    for( ApplicationContextListener listener : copyListeners() ) {
       try {
         listener.beforeDestroy( event );
       } catch( RuntimeException exception ) {
         handleBeforeDestroyException( listener, exception );
       }
+    }
+  }
+
+  private List<ApplicationContextListener> copyListeners() {
+    synchronized( listenersLock ) {
+      return new ArrayList<ApplicationContextListener>( listeners );
     }
   }
 

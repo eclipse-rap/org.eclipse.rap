@@ -18,6 +18,7 @@ import java.util.EventObject;
  *
  * @since 2.2
  * @noextend This class is not intended to be subclassed by clients.
+ * @noinstantiate This class is not intended to be instantiated by clients.
  */
 public class ApplicationContextEvent extends EventObject {
   private static final long serialVersionUID = 1L;
@@ -32,7 +33,7 @@ public class ApplicationContextEvent extends EventObject {
   }
 
   /**
-   * Returns the application context that this event is related to
+   * Returns the application context that this event is related to.
    *
    * @return the application context
    */

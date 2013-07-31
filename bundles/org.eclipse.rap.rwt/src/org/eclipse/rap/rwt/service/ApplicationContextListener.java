@@ -14,8 +14,8 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 
 /**
- * <code>ApplicationContextListener</code>s can be attached to an application context to receive a
- * notification before the application context is destroyed.
+ * A listener that can be attached to an <code>ApplicationContext</code> to receive a notification
+ * before the application context is destroyed.
  *
  * @since 2.2
  */
