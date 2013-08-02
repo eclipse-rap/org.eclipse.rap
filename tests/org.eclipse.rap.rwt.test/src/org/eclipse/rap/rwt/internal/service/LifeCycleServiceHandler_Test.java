@@ -351,6 +351,7 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testHandlesInvalidRequestContentType() throws IOException {
+    // SECURITY: Checking the content-type prevents CSRF attacks, see bug 413668
     simulateUiRequestWithIllegalContentType();
 
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
