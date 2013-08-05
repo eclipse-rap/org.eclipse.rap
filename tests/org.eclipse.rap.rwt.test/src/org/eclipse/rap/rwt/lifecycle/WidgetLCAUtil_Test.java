@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderToolTip;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -639,6 +640,43 @@ public class WidgetLCAUtil_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
+  }
+
+  @Test
+  public void testRenderIntialToolTip() {
+    renderToolTip( widget, null );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( widget, "toolTip" ) );
+  }
+
+  @Test
+  public void testRenderToolTip() {
+    renderToolTip( widget, "foo" );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "foo", message.findSetProperty( widget, "toolTip" ).asString() );
+  }
+
+  @Test
+  public void testRenderToolTip_withAmpersand() {
+    renderToolTip( widget, "&foo" );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "foo", message.findSetProperty( widget, "toolTip" ).asString() );
+  }
+
+  @Test
+  public void testRenderToolTipUnchanged() {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( widget );
+    widget.setToolTipText( "foo" );
+    Fixture.preserveWidgets();
+
+    renderToolTip( widget, "foo" );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( widget, "toolTip" ) );
   }
 
 }
