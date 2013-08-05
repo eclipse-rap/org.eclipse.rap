@@ -75,6 +75,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     preserveListener( column, PROP_SELECTION_LISTENER, isListening( column, SWT.Selection ) );
   }
 
+  @Override
   public void readData( Widget widget ) {
     final TreeColumn column = ( TreeColumn )widget;
     String methodName = "resize";
@@ -118,7 +119,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderCustomVariant( column );
     WidgetLCAUtil.renderFont( column, getFont( column ) );
     ItemLCAUtil.renderChanges( column );
-    renderProperty( column, PROP_INDEX, getIndex( column ), ZERO );
+    renderProperty( column, PROP_INDEX, getIndex( column ), -1 );
     renderProperty( column, PROP_LEFT, getLeft( column ), ZERO );
     renderProperty( column, PROP_WIDTH, column.getWidth(), ZERO );
     renderProperty( column, PROP_RESIZABLE, column.getResizable(), true );

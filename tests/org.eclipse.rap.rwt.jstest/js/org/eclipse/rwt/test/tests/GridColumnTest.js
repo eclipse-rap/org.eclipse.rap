@@ -69,6 +69,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
+    testSetIndex_adjustsAlignmentInRenderConfig : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      column.setAlignment( "right" );
+
+      TestUtil.protocolSet( "w4", { "index" : 3 } );
+
+      assertEquals( "right", tree.getRenderConfig().alignment[ 3 ] );
+      column.dispose();
+      tree.destroy();
+    },
+
     testSetLeftByProtocol : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );

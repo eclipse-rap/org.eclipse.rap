@@ -187,6 +187,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
     },
 
     setIndex : function( value ) {
+      this._grid.setAlignment( value, this._alignment );
       this._index = value;
       this._update();
     },
