@@ -11,7 +11,7 @@
 package org.eclipse.rap.rwt.internal.scripting;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 
 import java.util.List;
@@ -62,7 +62,7 @@ public class ClientListenerUtil_Test {
 
     ClientListenerUtil.clearAddedClientListeners( widget );
 
-    assertTrue( ClientListenerUtil.getAddedClientListeners( widget ).isEmpty() );
+    assertNull( ClientListenerUtil.getAddedClientListeners( widget ) );
   }
 
   @Test
@@ -83,7 +83,7 @@ public class ClientListenerUtil_Test {
 
     ClientListenerUtil.clearRemovedClientListeners( widget );
 
-    assertTrue( ClientListenerUtil.getRemovedClientListeners( widget ).isEmpty() );
+    assertNull( ClientListenerUtil.getRemovedClientListeners( widget ) );
   }
 
 }

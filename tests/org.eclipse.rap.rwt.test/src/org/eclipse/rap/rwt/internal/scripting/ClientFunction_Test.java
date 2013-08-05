@@ -26,7 +26,7 @@ import org.junit.Test;
 
 public class ClientFunction_Test {
 
-  private static final String CLIENT_LISTENER_TYPE = "rwt.clientscripting.Listener";
+  private static final String CLIENT_LISTENER_TYPE = "rwt.scripting.Function";
 
   @Before
   public void setup() {

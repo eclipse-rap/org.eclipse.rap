@@ -44,7 +44,7 @@ public class ClientListener_Test {
 
     new ClientListener( "" );
 
-    verify( connection ).createRemoteObject( "rwt.clientscripting.Listener" );
+    verify( connection ).createRemoteObject( "rwt.scripting.Function" );
   }
 
 }
