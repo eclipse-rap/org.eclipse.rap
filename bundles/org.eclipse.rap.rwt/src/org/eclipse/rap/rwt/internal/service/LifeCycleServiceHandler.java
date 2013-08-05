@@ -103,7 +103,9 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     throws IOException
   {
     setJsonResponseHeaders( response );
-    if( isSessionShutdown() ) {
+    if( !isContentTypeValid( request ) ) {
+      writeInvalidContentType( response );
+    } else if( isSessionShutdown() ) {
       shutdownUISession();
     } else if( isSessionTimeout() ) {
       writeSessionTimeoutError( response );
@@ -158,6 +160,11 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     return sentRequestId != null && sentRequestId.asInt() == currentRequestId - 1;
   }
 
+  private static boolean isContentTypeValid( ServletRequest request ) {
+    String contentType = request.getContentType();
+    return contentType != null && contentType.startsWith( HTTP.CONTENT_TYPE_JSON );
+  }
+
   private static void shutdownUISession() {
     UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
     uiSession.shutdown();
@@ -173,6 +180,11 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   private static void writeSessionTimeoutError( HttpServletResponse response ) throws IOException {
     String errorType = "session timeout";
     writeError( response, HttpServletResponse.SC_FORBIDDEN, errorType );
+  }
+
+  private static void writeInvalidContentType( HttpServletResponse response ) throws IOException {
+    String errorType = "invalid content type";
+    writeError( response, HttpServletResponse.SC_BAD_REQUEST, errorType );
   }
 
   private static void writeError( HttpServletResponse response,

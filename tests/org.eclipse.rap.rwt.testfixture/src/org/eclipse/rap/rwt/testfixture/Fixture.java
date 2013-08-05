@@ -327,6 +327,7 @@ public final class Fixture {
 
   public static TestRequest fakeNewRequest() {
     TestRequest request = createNewRequest( HTTP.METHOD_POST );
+    request.setContentType( HTTP.CONTENT_TYPE_JSON );
     request.setBody( createEmptyMessage() );
     createNewServiceContext( request, new TestResponse() );
     fakeResponseWriter();
