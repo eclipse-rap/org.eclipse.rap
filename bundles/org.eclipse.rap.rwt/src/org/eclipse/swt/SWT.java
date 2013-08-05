@@ -108,6 +108,50 @@ public class SWT {
   public static final int MouseUp = 4;
 
   /**
+   * The mouse move event type (value is 5).
+   * <p>
+   * <strong>Note:</strong> In RAP, this event type is <strong>only supported for
+   * ClientListeners</strong>. Server-side events of this type will not be fired.
+   * </p>
+   *
+   * @see org.eclipse.rap.rwt.scripting.ClientListener
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   * @since 2.2
+   */
+  public static final int MouseMove = 5;
+
+  /**
+   * The mouse enter event type (value is 6).
+   * <p>
+   * <strong>Note:</strong> In RAP, this event type is <strong>only supported for
+   * ClientListeners</strong>. Server-side events of this type will not be fired.
+   * </p>
+   *
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   * @since 2.2
+   */
+  public static final int MouseEnter = 6;
+
+  /**
+   * The mouse exit event type (value is 7).
+   * <p>
+   * <strong>Note:</strong> In RAP, this event type is <strong>only supported for
+   * ClientListeners</strong>. Server-side events of this type will not be fired.
+   * </p>
+   *
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   *
+   * @since 2.2
+   */
+  public static final int MouseExit = 7;
+
+  /**
    * The mouse double click event type (value is 8).
    *
    * @see org.eclipse.swt.widgets.Widget#addListener

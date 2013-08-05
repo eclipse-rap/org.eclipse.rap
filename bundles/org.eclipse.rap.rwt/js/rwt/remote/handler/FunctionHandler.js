@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,15 +8,17 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.clientscripting;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
+rwt.remote.HandlerRegistry.add( "rwt.scripting.Function", {
 
-
-public class ClientListener implements Listener {
-
-  public void handleEvent( Event event ) {
+  factory : function( properties ) {
+    var scriptCode = properties.scriptCode;
+    if( !scriptCode ) {
+      scriptCode = rap.getObject( properties.scriptId ).getText();
+    }
+    var name = properties.name;
+    var scope = { "SWT" : "rwt.scripting.SWT" };
+    return rwt.scripting.FunctionFactory.createFunction( scriptCode, name, scope );
   }
 
-}
+} );

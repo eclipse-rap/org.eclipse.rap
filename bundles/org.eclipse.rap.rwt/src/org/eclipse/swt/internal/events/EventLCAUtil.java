@@ -10,12 +10,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
-import static org.eclipse.rap.rwt.internal.clientscripting.ClientScriptingSupport.isClientListener;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValueAsString;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -96,7 +96,7 @@ public final class EventLCAUtil {
 
   public static boolean isListening( Widget widget, int eventType ) {
     for( Listener listener : widget.getListeners( eventType ) ) {
-      if( !isClientListener( listener ) ) {
+      if( !( listener instanceof ClientListener ) ) {
         return true;
       }
     }

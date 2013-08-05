@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getAddedClientListeners;
+import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getRemovedClientListeners;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -28,13 +30,16 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtilAdapter;
+import org.eclipse.rap.rwt.internal.scripting.ClientListenerBinding;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -418,6 +423,45 @@ public class Widget_Test {
   }
 
   @Test
+  public void testAddListener_handlesClientListeners() {
+    ClientListener listener = mock( ClientListener.class );
+
+    widget.addListener( SWT.Selection, listener );
+
+    List<ClientListenerBinding> bindings = getAddedClientListeners( widget );
+    assertEquals( 1, bindings.size() );
+    assertEquals( listener, bindings.get( 0 ).getListener() );
+    assertEquals( SWT.Selection, bindings.get( 0 ).getEventType() );
+  }
+
+  @Test
+  public void testAddListener_handlesMultipleClientListeners() {
+    ClientListener listener1 = mock( ClientListener.class );
+    ClientListener listener2 = mock( ClientListener.class );
+
+    widget.addListener( SWT.Selection, listener1 );
+    widget.addListener( SWT.Selection, listener2 );
+
+    List<ClientListenerBinding> bindings = getAddedClientListeners( widget );
+    assertEquals( 2, bindings.size() );
+    assertEquals( listener1, bindings.get( 0 ).getListener() );
+    assertEquals( listener2, bindings.get( 1 ).getListener() );
+  }
+
+  @Test
+  public void testAddListener_handlesDuplicateClientListeners() {
+    ClientListener listener = mock( ClientListener.class );
+
+    widget.addListener( SWT.Selection, listener );
+    widget.addListener( SWT.Selection, listener );
+
+    List<ClientListenerBinding> bindings = getAddedClientListeners( widget );
+    assertEquals( 2, bindings.size() );
+    assertEquals( listener, bindings.get( 0 ).getListener() );
+    assertEquals( listener, bindings.get( 1 ).getListener() );
+  }
+
+  @Test
   public void testRemoveListener() {
     Listener listener = mock( Listener.class );
     widget.addListener( SWT.Selection, listener );
@@ -443,6 +487,45 @@ public class Widget_Test {
     // Ensure that removing a listener that was never added is ignored
     // silently see https://bugs.eclipse.org/251816
     widget.removeListener( SWT.Activate, mock( Listener.class ) );
+  }
+
+  @Test
+  public void testRemoveListener_handlesClientListeners() {
+    ClientListener listener = mock( ClientListener.class );
+
+    widget.removeListener( SWT.Selection, listener );
+
+    List<ClientListenerBinding> bindings = getRemovedClientListeners( widget );
+    assertEquals( 1, bindings.size() );
+    assertEquals( listener, bindings.get( 0 ).getListener() );
+    assertEquals( SWT.Selection, bindings.get( 0 ).getEventType() );
+  }
+
+  @Test
+  public void testRemoveListener_handlesMultipleClientListeners() {
+    ClientListener listener1 = mock( ClientListener.class );
+    ClientListener listener2 = mock( ClientListener.class );
+
+    widget.removeListener( SWT.Selection, listener1 );
+    widget.removeListener( SWT.Selection, listener2 );
+
+    List<ClientListenerBinding> bindings = getRemovedClientListeners( widget );
+    assertEquals( 2, bindings.size() );
+    assertEquals( listener1, bindings.get( 0 ).getListener() );
+    assertEquals( listener2, bindings.get( 1 ).getListener() );
+  }
+
+  @Test
+  public void testRemoveListener_handlesDuplicateClientListeners() {
+    ClientListener listener = mock( ClientListener.class );
+
+    widget.removeListener( SWT.Selection, listener );
+    widget.removeListener( SWT.Selection, listener );
+
+    List<ClientListenerBinding> bindings = getRemovedClientListeners( widget );
+    assertEquals( 2, bindings.size() );
+    assertEquals( listener, bindings.get( 0 ).getListener() );
+    assertEquals( listener, bindings.get( 1 ).getListener() );
   }
 
   @Test

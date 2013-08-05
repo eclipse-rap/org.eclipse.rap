@@ -113,6 +113,10 @@ public class RWTTestsContribution implements TestContribution {
     "tests/ConnectionTest.js",
     "tests/RemoteObjectTest.js",
     "tests/RemoteObjectFactoryTest.js",
+    "tests/Function_Test.js",
+    "tests/EventBinding_Test.js",
+    "tests/EventProxy_Test.js",
+    "tests/WidgetProxyFactory_Test.js",
     "tests/BrowserTest.js"
   };
 
