@@ -102,6 +102,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
       this._contentArea.setWidth( "100%" );
       this._contentArea.setHeight( "100%" );
       this._contentArea.setSpacing( 5 );
+      this._contentArea.setOverflow( "hidden" );
       this._contentArea.setParent( this );
       this._image = new rwt.widgets.base.Image();
       this._image.setAppearance( "tool-tip-image" );
