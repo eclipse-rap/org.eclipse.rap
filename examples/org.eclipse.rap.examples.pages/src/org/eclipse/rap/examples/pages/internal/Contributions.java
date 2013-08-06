@@ -29,6 +29,7 @@ import org.eclipse.rap.examples.pages.RowLayoutExample;
 import org.eclipse.rap.examples.pages.TableViewerExample;
 import org.eclipse.rap.examples.pages.TextInputExamplePage;
 import org.eclipse.rap.examples.pages.TreeViewerExample;
+import org.eclipse.rap.examples.pages.ValidationExamplePage;
 
 
 class Contributions {
@@ -58,6 +59,7 @@ class Contributions {
     addContribution( "grid-layout", "Grid Layout", GridLayoutExample.class );
     addContribution( "table-markup", "Table with Markup", MarkupExample.class );
     addContribution( "nls", "Internationalization", InternationalizationExamplePage.class );
+    addContribution( "validation", "Input Validation", ValidationExamplePage.class );
   }
 
   private void addContribution( final String id,
@@ -84,4 +86,5 @@ class Contributions {
     };
     contributions.add( contribution );
   }
+
 }
