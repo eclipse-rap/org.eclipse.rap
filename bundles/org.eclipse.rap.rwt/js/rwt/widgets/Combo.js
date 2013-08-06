@@ -80,8 +80,6 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     this.addEventListener( "appear", this._onAppear, this );
     this.addEventListener( "focusin", this._onFocusIn, this );
     this.addEventListener( "blur", this._onBlur, this );
-    this.addEventListener( "changeWidth", this._onChangeSize, this );
-    this.addEventListener( "changeHeight", this._onChangeSize, this );
     this.addEventListener( "contextmenu", this._onContextMenu, this );
     this.addEventListener( "changeFont", this._onChangeFont, this );
     this.addEventListener( "changeTextColor", this._onChangeTextColor, this );
@@ -112,8 +110,6 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     this.removeEventListener( "appear", this._onAppear, this );
     this.removeEventListener( "focusin", this._onFocusIn, this );
     this.removeEventListener( "blur", this._onBlur, this );
-    this.removeEventListener( "changeWidth", this._onChangeSize, this );
-    this.removeEventListener( "changeHeight", this._onChangeSize, this );
     this.removeEventListener( "contextmenu", this._onContextMenu, this );
     this.removeEventListener( "changeFont", this._onChangeFont, this );
     this.removeEventListener( "changeTextColor", this._onChangeTextColor, this );
@@ -168,10 +164,6 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       }
     },
 
-    _onChangeSize : function( evt ) {
-      this._setListBounds();
-    },
-
     _onAppear : function( evt ) {
         if( this.hasState( "rwt_FLAT" ) ) {
           this._field.addState( "rwt_FLAT" );
@@ -187,9 +179,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     },
 
     _onFocusIn : function( evt ) {
-      if(    this._field.isCreated()
-          && !rwt.remote.EventUtil.getSuspended() )
-      {
+      if( this._field.isCreated() && !rwt.remote.EventUtil.getSuspended() ) {
         this._handleSelectionChange();
       }
     },
@@ -362,6 +352,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     },
 
     _onListAppear : function( evt ) {
+      this._setListBounds();
       if( this._selected ) {
         this._selected.scrollIntoView();
         this._list._syncScrollBars();
@@ -477,9 +468,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       if( !this._dropped ) {
         this.setCapture( false );
       }
-      if(    evt.getTarget() == this._field
-          && !rwt.remote.EventUtil.getSuspended() )
-      {
+      if( evt.getTarget() == this._field && !rwt.remote.EventUtil.getSuspended() ) {
         this._handleSelectionChange();
       } else if( this._dropped ) {
         this._reDispatch( evt );
