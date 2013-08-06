@@ -36,6 +36,21 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Canvas", {
 
   listeners : rwt.remote.HandlerUtil.extendControlListeners( [] ),
 
-  listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} )
+  listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} ),
+
+  methods: [ "addListener", "removeListener" ],
+
+  methodHandler: {
+    "addListener": function( widget, properties ) {
+      rwt.remote.HandlerUtil.callWithTarget( properties.listenerId, function( targetFunction ) {
+        rwt.scripting.EventBinding.addListener( widget, properties.eventType, targetFunction );
+      } );
+    },
+    "removeListener": function( widget, properties ) {
+      rwt.remote.HandlerUtil.callWithTarget( properties.listenerId, function( targetFunction ) {
+        rwt.scripting.EventBinding.removeListener( widget, properties.eventType, targetFunction );
+      } );
+    }
+  }
 
 } );

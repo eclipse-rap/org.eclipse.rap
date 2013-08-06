@@ -17,6 +17,7 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemot
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderClientListeners;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -79,6 +80,7 @@ final class ButtonLCAUtil {
     renderProperty( button, PROP_SELECTION, button.getSelection(), false );
     renderProperty( button, PROP_GRAYED, button.getGrayed(), false );
     renderListener( button, PROP_SELECTION_LISTENERS, isListening( button, SWT.Selection ), false );
+    renderClientListeners( button );
   }
 
   static boolean readSelection( Button button ) {

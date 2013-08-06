@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.canvaskit;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderClientListeners;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.widgets.canvaskit.GCOperationWriter.getGcId;
@@ -48,6 +49,7 @@ public final class CanvasLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveProperty( canvas, PROP_CLIENT_AREA, canvas.getClientArea() );
   }
 
+  @Override
   public void readData( Widget widget ) {
     ControlLCAUtil.processEvents( ( Control )widget );
     ControlLCAUtil.processKeyEvents( ( Control )widget );
@@ -72,6 +74,7 @@ public final class CanvasLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderCustomVariant( widget );
     renderClientArea( ( Canvas )widget );
     writeGCOperations( ( Canvas )widget );
+    renderClientListeners( widget );
   }
 
   private static void writeGCOperations( Canvas canvas ) {
