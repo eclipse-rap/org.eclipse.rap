@@ -246,6 +246,7 @@ public class MnemonicsTab extends ExampleTab {
   private void createButtonExample( Composite content ) {
     createButton( content, SWT.PUSH, "Push &One" );
     createButton( content, SWT.PUSH, "Push &Two" );
+    createButton( content, SWT.PUSH, "Push &Three" );
     createButton( content, SWT.TOGGLE, "To&ggle" );
     createButton( content, SWT.CHECK, "&Checkbox" );
     createButton( content, SWT.RADIO, "Radio &X" );
