@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -108,6 +109,39 @@ public class WidgetUtil_Test {
     WidgetAdapter adapter = WidgetUtil.getAdapter( shell );
 
     assertSame( shell.getAdapter( WidgetAdapter.class ), adapter );
+  }
+
+  @Test
+  public void testRegisterDataKeys() {
+    String[] keys = new String[] { "a", "b", "c" };
+
+    WidgetUtil.registerDataKeys( keys );
+
+    assertArrayEquals( keys, WidgetUtil.getDataKeys().toArray() );
+  }
+
+  @Test
+  public void testRegisterDataKeys_appendKeys() {
+    String[] keys = new String[] { "a", "b", "c", "d", "e", "f" };
+
+    WidgetUtil.registerDataKeys( "a", "b", "c" );
+    WidgetUtil.registerDataKeys( "d", "e", "f" );
+
+    assertArrayEquals( keys, WidgetUtil.getDataKeys().toArray() );
+  }
+
+  @Test
+  public void testRegisterDataKeys_duplicateKeys() {
+    String[] keys = new String[] { "a", "b", "c" };
+
+    WidgetUtil.registerDataKeys( "a", "b", "a", "c", "c" );
+
+    assertArrayEquals( keys, WidgetUtil.getDataKeys().toArray() );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testRegisterDataKeys_withNullArgument() {
+    WidgetUtil.registerDataKeys( ( String[] )null );
   }
 
 }

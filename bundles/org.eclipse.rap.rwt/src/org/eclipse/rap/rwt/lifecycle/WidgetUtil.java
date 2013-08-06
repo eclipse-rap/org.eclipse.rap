@@ -11,10 +11,15 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
+
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.RWTProperties;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -29,6 +34,8 @@ import org.eclipse.swt.widgets.Widget;
  * @since 2.0
  */
 public final class WidgetUtil {
+
+  private static final String ATTR_DATA_KEYS = WidgetUtil.class.getName() + "#dataKeys";
 
   /**
    * @deprecated Use {@link RWT#CUSTOM_VARIANT} instead
@@ -163,7 +170,7 @@ public final class WidgetUtil {
 
   /**
    * This method searches for a widget with the given <code>id</code> within
-   * the widget hierachy starting at <code>root</code>.
+   * the widget hierarchy starting at <code>root</code>.
    *
    * @param root the root widget where to start the search
    * @param id the id of the widget to search for
@@ -184,6 +191,35 @@ public final class WidgetUtil {
       } );
     }
     return result[ 0 ];
+  }
+
+  /**
+   * Adds keys to the list of keys of widget data that are synchronized with the client.
+   * It is save to add the same key twice, there are no side-effects.
+   * The method has to be called from the UI thread and affects the entire UI-session.
+   * The data is only transferred from server to client, not back.
+   *
+   * @see org.eclipse.swt.widgets.Widget#setData(String, Object)
+   * @param keys The keys to add to the list.
+   * @since 2.2
+   */
+  public static void registerDataKeys( String... keys ) {
+    ParamCheck.notNull( keys, "keys" );
+    List<String> dataKeys = getDataKeys();
+    if( dataKeys == null ) {
+      dataKeys = new ArrayList<String>();
+      getUISession().setAttribute( ATTR_DATA_KEYS, dataKeys );
+    }
+    for( String key : keys ) {
+      if( !dataKeys.contains( key ) ) {
+        dataKeys.add( key );
+      }
+    }
+  }
+
+  @SuppressWarnings( "unchecked" )
+  static List<String> getDataKeys() {
+    return ( List<String> )getUISession().getAttribute( ATTR_DATA_KEYS );
   }
 
   private static void throwAdapterException( Class clazz ) {
