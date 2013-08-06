@@ -11,6 +11,7 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var MessageProcessor = rwt.remote.MessageProcessor;
 var DomEvent = rwt.event.DomEvent;
 
 var handler = rwt.widgets.util.MnemonicHandler.getInstance();
@@ -251,6 +252,37 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
 
       var totalSuccess = charLog.length + secondLog.length;
       assertEquals( 1, totalSuccess );
+    },
+
+    testFireTrigger_menuRecievesEventLast : function() {
+      handler.setActivator( "CTRL" );
+      MessageProcessor.processOperationArray(
+        [ "create", "w4", "rwt.widgets.Menu", { "style" : [ "BAR" ], "parent" : "w2" } ]
+      );
+      var itemProperties = { "style" : [ "CASCADE" ], "parent" : "w4", "index" : 0 };
+      MessageProcessor.processOperationArray(
+        [ "create", "w5", "rwt.widgets.MenuItem", itemProperties ]
+      );
+      var menuItem = rwt.remote.ObjectRegistry.getObject( "w5" );
+      // widget from setup may be first in any case, need a new one:
+      var widgetTwo = TestUtil.createWidgetByProtocol( "w6", "w2" );
+      TestUtil.flush();
+      var order = [];
+      handler.add( widgetTwo, function( event ) {
+        if( event.type === "trigger" ) {
+          order.push( widgetTwo );
+        }
+      } );
+      handler.add( menuItem, function( event ) {
+        if( event.type === "trigger" ) {
+          order.push( menuItem );
+        }
+      } );
+
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyDown( widget, "B", DomEvent.CTRL_MASK );
+
+      assertEquals( [ widgetTwo, menuItem ], order );
     }
 
   }
