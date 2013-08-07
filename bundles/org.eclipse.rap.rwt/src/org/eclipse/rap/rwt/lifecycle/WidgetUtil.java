@@ -11,14 +11,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
-
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.RWTProperties;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetDataUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
@@ -34,8 +31,6 @@ import org.eclipse.swt.widgets.Widget;
  * @since 2.0
  */
 public final class WidgetUtil {
-
-  private static final String ATTR_DATA_KEYS = WidgetUtil.class.getName() + "#dataKeys";
 
   /**
    * @deprecated Use {@link RWT#CUSTOM_VARIANT} instead
@@ -205,21 +200,7 @@ public final class WidgetUtil {
    */
   public static void registerDataKeys( String... keys ) {
     ParamCheck.notNull( keys, "keys" );
-    List<String> dataKeys = getDataKeys();
-    if( dataKeys == null ) {
-      dataKeys = new ArrayList<String>();
-      getUISession().setAttribute( ATTR_DATA_KEYS, dataKeys );
-    }
-    for( String key : keys ) {
-      if( !dataKeys.contains( key ) ) {
-        dataKeys.add( key );
-      }
-    }
-  }
-
-  @SuppressWarnings( "unchecked" )
-  static List<String> getDataKeys() {
-    return ( List<String> )getUISession().getAttribute( ATTR_DATA_KEYS );
+    WidgetDataUtil.registerDataKeys( keys );
   }
 
   private static void throwAdapterException( Class clazz ) {
@@ -258,4 +239,5 @@ public final class WidgetUtil {
       || ( ch >= '0' && ch <= '9' )
       || ch == '-';
   }
+
 }

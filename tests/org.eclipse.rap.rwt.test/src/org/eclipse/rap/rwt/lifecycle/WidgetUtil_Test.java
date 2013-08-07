@@ -18,6 +18,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetDataUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -117,31 +118,12 @@ public class WidgetUtil_Test {
 
     WidgetUtil.registerDataKeys( keys );
 
-    assertArrayEquals( keys, WidgetUtil.getDataKeys().toArray() );
-  }
-
-  @Test
-  public void testRegisterDataKeys_appendKeys() {
-    String[] keys = new String[] { "a", "b", "c", "d", "e", "f" };
-
-    WidgetUtil.registerDataKeys( "a", "b", "c" );
-    WidgetUtil.registerDataKeys( "d", "e", "f" );
-
-    assertArrayEquals( keys, WidgetUtil.getDataKeys().toArray() );
-  }
-
-  @Test
-  public void testRegisterDataKeys_duplicateKeys() {
-    String[] keys = new String[] { "a", "b", "c" };
-
-    WidgetUtil.registerDataKeys( "a", "b", "a", "c", "c" );
-
-    assertArrayEquals( keys, WidgetUtil.getDataKeys().toArray() );
+    assertArrayEquals( keys, WidgetDataUtil.getDataKeys().toArray() );
   }
 
   @Test( expected = NullPointerException.class )
   public void testRegisterDataKeys_withNullArgument() {
-    WidgetUtil.registerDataKeys( ( String[] )null );
+    WidgetDataUtil.registerDataKeys( ( String[] )null );
   }
 
 }
