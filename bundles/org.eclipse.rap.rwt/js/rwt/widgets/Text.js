@@ -57,7 +57,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     // API
 
     setMessage : function( value ) {
-      this._message = value;
+      this._message = value ? rwt.util.Encoding.escapeText( value, false ) : null;
       this._updateMessage();
     },
 

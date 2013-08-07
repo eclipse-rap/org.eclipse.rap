@@ -831,6 +831,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( "konnichiwa", element.innerHTML );
     },
 
+    testSetMessageEscapesText : function() {
+      createText();
+
+      text.setMessage( ">konnichiwa<" );
+
+      var element = text._getTargetNode().firstChild;
+      assertEquals( "&gt;konnichiwa&lt;", element.innerHTML );
+    },
+
     testSetMessageOnMulti : function() {
       createText( false, true );
 
