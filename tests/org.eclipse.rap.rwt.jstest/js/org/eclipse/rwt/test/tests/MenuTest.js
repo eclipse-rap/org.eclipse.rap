@@ -558,6 +558,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       disposeMenuBar();
     },
 
+    testMenuBar_setActive_hoversFirstItem : function() {
+      createMenuBar();
+      TestUtil.flush();
+
+      menuBar.setActive( true );
+      TestUtil.flush();
+
+      assertIdentical( menuBarItem, menuBar._hoverItem );
+      disposeMenuBar();
+    },
+
     testMenuBarItemWithMnemonic_HideMnemonic : function() {
       createMenuBar( "push" );
       menuBarItem.setText( "foo" );

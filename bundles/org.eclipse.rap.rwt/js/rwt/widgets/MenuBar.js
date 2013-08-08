@@ -16,6 +16,7 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
     this.base( arguments );
     this._hoverItem = null;
     this._openItem = null;
+    this._active = false;
     this.addEventListener( "mousedown", this._onMouseDown );
     this.addEventListener( "mouseover", this._onMouseOver );
     this.addEventListener( "mouseout", this._onMouseOut );
@@ -36,6 +37,15 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
   },
 
   members : {
+
+    setActive : function( active ) {
+      this._active = active;
+      this.setHoverItem( this.getFirstChild() );
+    },
+
+    getActive : function() {
+      return this._active;
+    },
 
     addMenuItemAt : function( menuItem, index ) {
       // seperator does not have this function:

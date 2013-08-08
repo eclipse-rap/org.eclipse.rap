@@ -21,6 +21,7 @@ var typeLog;
 var charLog;
 var keyLog;
 var success;
+var menuItem;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
 
@@ -256,13 +257,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
 
     testFireTrigger_menuRecievesEventLast : function() {
       handler.setActivator( "CTRL" );
-      MessageProcessor.processOperationArray(
-        [ "create", "w4", "rwt.widgets.Menu", { "style" : [ "BAR" ], "parent" : "w2" } ]
-      );
-      var itemProperties = { "style" : [ "CASCADE" ], "parent" : "w4", "index" : 0 };
-      MessageProcessor.processOperationArray(
-        [ "create", "w5", "rwt.widgets.MenuItem", itemProperties ]
-      );
+      this._createMenu();
       var menuItem = rwt.remote.ObjectRegistry.getObject( "w5" );
       // widget from setup may be first in any case, need a new one:
       var widgetTwo = TestUtil.createWidgetByProtocol( "w6", "w2" );
@@ -283,8 +278,62 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       TestUtil.keyDown( widget, "B", DomEvent.CTRL_MASK );
 
       assertEquals( [ widgetTwo, menuItem ], order );
-    }
+    },
 
+    testHide_activateMenu : function() {
+      handler.setActivator( "CTRL" );
+      this._createMenu();
+      var menuBar = rwt.remote.ObjectRegistry.getObject( "w4" );
+      var menuItem = rwt.remote.ObjectRegistry.getObject( "w5" );
+      menuItem.setText( "foo" );
+      menuItem.setMnemonicIndex( 1 );
+
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyUp( shell, "Control", 0 );
+
+      assertTrue( menuBar.getActive() );
+    },
+
+    testHide_doNotactivateMenuIfKeyWasPressed : function() {
+      handler.setActivator( "CTRL" );
+      this._createMenu();
+      var menuBar = rwt.remote.ObjectRegistry.getObject( "w4" );
+      var menuItem = rwt.remote.ObjectRegistry.getObject( "w5" );
+      menuItem.setText( "foo" );
+      menuItem.setMnemonicIndex( 1 );
+
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyDown( shell, "X", DomEvent.CTRL_MASK );
+      TestUtil.keyUp( shell, "X", DomEvent.CTRL_MASK );
+      TestUtil.keyUp( shell, "Control", 0 );
+
+      assertFalse( menuBar.getActive() );
+    },
+
+    testHide_activateMenuWhenAcivatorWasHeldDown : function() {
+      handler.setActivator( "CTRL" );
+      this._createMenu();
+      var menuBar = rwt.remote.ObjectRegistry.getObject( "w4" );
+      var menuItem = rwt.remote.ObjectRegistry.getObject( "w5" );
+      menuItem.setText( "foo" );
+      menuItem.setMnemonicIndex( 1 );
+
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyHold( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyUp( shell, "Control", 0 );
+
+      assertTrue( menuBar.getActive() );
+    },
+
+    _createMenu : function() {
+      MessageProcessor.processOperationArray(
+        [ "create", "w4", "rwt.widgets.Menu", { "style" : [ "BAR" ], "parent" : "w2" } ]
+      );
+      var itemProperties = { "style" : [ "CASCADE" ], "parent" : "w4", "index" : 0 };
+      MessageProcessor.processOperationArray(
+        [ "create", "w5", "rwt.widgets.MenuItem", itemProperties ]
+      );
+    }
   }
 
 } );

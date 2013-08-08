@@ -23,6 +23,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     this._map = {};
     this._activator = null;
     this._active = null;
+    this._menuActivate = false;
   },
 
   members : {
@@ -81,6 +82,9 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
         this.deactivate();
       } else if( this._isTrigger( eventType, keyCode, charCode, domEvent ) ) {
         result = this.trigger( keyCode );
+        this._menuActivate = false;
+      } else if( this.isActive() && !this._isActivatorCombo( domEvent ) ) {
+        this._menuActivate = false;
       }
       return result;
     },
@@ -94,6 +98,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
           root = rwt.widgets.base.ClientDocument.getInstance();
         }
         this._active = root.toHashCode();
+        this._menuActivate = true;
         this._fire( { "type" : "show" } );
       }
     },
@@ -101,6 +106,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     deactivate : function() {
       if( this._active ) {
         this._fire( { "type" : "hide" } );
+        this._activateMenuBar();
         this._active = null;
       }
     },
@@ -156,6 +162,21 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
       }
     },
 
+    _activateMenuBar : function() {
+      // It is assumed that all menuItems belong to the same bar
+      console.log( this._menuActivate, this._map[ this._active ] );
+      if( this._menuActivate && this._map[ this._active ] ) {
+        var items = this._map[ this._active ].menu;
+        for( var key in items ) {
+          var bar = items[ key ][ 0 ].getParentMenu();
+          bar.setActive( true );
+          break;
+        }
+      }
+    },
+
+    /////////
+    // Helper
 
     _isActivation : function( eventType, keyCode, charCode, domEvent ) {
       return    this._activator
