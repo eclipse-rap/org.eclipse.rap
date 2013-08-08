@@ -189,10 +189,14 @@ public final class WidgetUtil {
   }
 
   /**
-   * Adds keys to the list of keys of widget data that are synchronized with the client.
-   * It is save to add the same key twice, there are no side-effects.
-   * The method has to be called from the UI thread and affects the entire UI-session.
-   * The data is only transferred from server to client, not back.
+   * Adds keys to the list of keys of widget data that are synchronized with the client. It is save
+   * to add the same key twice, there are no side-effects. The method has to be called from the UI
+   * thread and affects the entire UI-session. The data is only transferred from server to client,
+   * not back.
+   * <p>
+   * <strong>Note:</strong> This method is considered <strong>provisional</strong> and may change
+   * again until the final release.
+   * </p>
    *
    * @see org.eclipse.swt.widgets.Widget#setData(String, Object)
    * @param keys The keys to add to the list.
