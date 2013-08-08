@@ -78,8 +78,8 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     STATE_OVER : "over",
     STATE_SELECTED : "selected",
 
-    IMG_CLOSE : rwt.remote.Server.RESOURCE_PATH + "widget/rap/ctabfolder/close.gif",
-    IMG_CLOSE_HOVER : rwt.remote.Server.RESOURCE_PATH + "widget/rap/ctabfolder/close_hover.gif"
+    IMG_CLOSE : rwt.remote.Connection.RESOURCE_PATH + "widget/rap/ctabfolder/close.gif",
+    IMG_CLOSE_HOVER : rwt.remote.Connection.RESOURCE_PATH + "widget/rap/ctabfolder/close_hover.gif"
   },
 
   members : {
@@ -267,7 +267,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
 
     _onClose : function( evt ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var server = rwt.remote.Server.getInstance();
+        var server = rwt.remote.Connection.getInstance();
         server.getRemoteObject( this.getParent() ).notify( "Folder", {
           "detail" : "close",
           "item" : rwt.remote.ObjectRegistry.getId( this )

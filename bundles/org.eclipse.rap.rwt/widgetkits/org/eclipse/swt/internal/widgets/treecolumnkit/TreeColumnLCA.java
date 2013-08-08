@@ -82,7 +82,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderCustomVariant( column );
     WidgetLCAUtil.renderFont( column, getFont( column ) );
     ItemLCAUtil.renderChanges( column );
-    renderProperty( column, PROP_INDEX, getIndex( column ), ZERO );
+    renderProperty( column, PROP_INDEX, getIndex( column ), -1 );
     renderProperty( column, PROP_LEFT, getLeft( column ), ZERO );
     renderProperty( column, PROP_WIDTH, column.getWidth(), ZERO );
     renderProperty( column, PROP_RESIZABLE, column.getResizable(), true );

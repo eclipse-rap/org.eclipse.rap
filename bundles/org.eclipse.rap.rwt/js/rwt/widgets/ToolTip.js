@@ -102,6 +102,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
       this._contentArea.setWidth( "100%" );
       this._contentArea.setHeight( "100%" );
       this._contentArea.setSpacing( 5 );
+      this._contentArea.setOverflow( "hidden" );
       this._contentArea.setParent( this );
       this._image = new rwt.widgets.base.Image();
       this._image.setAppearance( "tool-tip-image" );
@@ -168,7 +169,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
     _hide : function() {
       this.setVisible( false );
       rwt.widgets.base.Widget.flushGlobalQueues();
-      rwt.remote.Server.getInstance().getRemoteObject( this ).set( "visible", false );
+      rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "visible", false );
     },
 
     _getMessageFont : function() {

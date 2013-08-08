@@ -62,7 +62,6 @@ import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.service.UISessionBuilder;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
-import org.eclipse.rap.rwt.internal.service.UISessionTestAdapter;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -322,11 +321,12 @@ public final class Fixture {
 
   public static void fakeConnection( Connection connection ) {
     UISession uiSession = ContextProvider.getUISession();
-    UISessionTestAdapter.setConnection( uiSession, connection );
+    ( ( UISessionImpl )uiSession ).setConnection( connection );
   }
 
   public static TestRequest fakeNewRequest() {
     TestRequest request = createNewRequest( HTTP.METHOD_POST );
+    request.setContentType( HTTP.CONTENT_TYPE_JSON );
     request.setBody( createEmptyMessage() );
     createNewServiceContext( request, new TestResponse() );
     fakeResponseWriter();

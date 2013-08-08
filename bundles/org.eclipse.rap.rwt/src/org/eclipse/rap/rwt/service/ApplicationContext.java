@@ -62,6 +62,39 @@ public interface ApplicationContext extends IApplicationStore {
   void removeAttribute( String name );
 
   /**
+   * Adds an <code>ApplicationContextListener</code> to this application context.
+   * ApplicationContextListeners are used to receive a notification before the application context
+   * is destroyed. If the given listener was already added the method has no effect.
+   * <p>
+   * If the ApplicationContext is already deactivated or is about to be deactivated, the listener
+   * will not be added and this method will return <code>false</code>. A return value of
+   * <code>true</code> asserts that this listener is registered and will be called on destroy.
+   * </p>
+   * 
+   * @param listener the listener to be added
+   * @return <code>true</code> if the listener is registered, <code>false</code> if not
+   * @since 2.2
+   */
+  boolean addApplicationContextListener( ApplicationContextListener listener );
+
+  /**
+   * Removes an <code>ApplicationContextListener</code> from this application context.
+   * ApplicationContextListeners are used to receive a notification before the application context
+   * is destroyed. If the given listener was not added to the session store this method has no
+   * effect.
+   * <p>
+   * If the ApplicationContext is already deactivated or is about to be deactivated, the listener
+   * will not be removed and this method will return <code>false</code>. A return value of
+   * <code>true</code> asserts that this listener is not registered and will not be called anymore.
+   * </p>
+   *
+   * @param listener the listener to be removed
+   * @return<code>true</code> if the listener was removed, <code>false</code> if not
+   * @since 2.2
+   */
+  boolean removeApplicationContextListener( ApplicationContextListener listener );
+
+  /**
    * Returns the instance of the resource manager for this application context. The resource manager
    * is used to register static resources such as images of JavaScript files.
    *

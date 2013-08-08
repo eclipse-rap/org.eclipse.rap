@@ -57,7 +57,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     // API
 
     setMessage : function( value ) {
-      this._message = value;
+      this._message = value ? rwt.util.Encoding.escapeText( value, false ) : null;
       this._updateMessage();
     },
 
@@ -151,14 +151,14 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     _handleSelectionChange : function( start, length ) {
       this.base( arguments, start, length );
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
         remoteObject.set( "selectionStart", start );
         remoteObject.set( "selectionLength", length );
       }
     },
 
     _handleModification : function() {
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       if( !this._modifyScheduled && this.hasModifyListener() ) {
         this._modifyScheduled = true;
         server.sendDelayed( 500 );
@@ -170,7 +170,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
 
     _onSend : function() {
       if( this._modifyScheduled ) {
-        rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Modify", null, true );
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Modify", null, true );
         this._modifyScheduled = false;
       }
     },

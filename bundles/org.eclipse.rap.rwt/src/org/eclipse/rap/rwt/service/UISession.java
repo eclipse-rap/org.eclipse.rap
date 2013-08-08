@@ -88,13 +88,18 @@ public interface UISession extends ISessionStore {
   String getId();
 
   /**
-   * Adds a <code>UISessionListener</code> to this UI session. <code>UISessionListener</code>s are
-   * used to receive notifications before the UI session is destroyed. If the given listener is
-   * already added the method has no effect.
+   * Adds a <code>UISessionListener</code> to this UI session. UISessionListeners are used to
+   * receive a notification before the UI session is destroyed. If the given listener was already
+   * added the method has no effect.
+   * <p>
+   * If the UI session is already destroyed or is about to be destroyed the listener will not be
+   * added. In this case, this method returns <code>false</code>. A return value of
+   * <code>true</code> ensures that the listener is registered and will be called.
+   * </p>
    *
    * @param listener the listener to be added
-   * @return <code>true</code> if the listener was added or <code>false</code> if the listener could
-   *         not be added because the session was invalidated
+   * @return <code>true</code> if the listener was added and will be called, or <code>false</code>
+   *         if the listener could not be added
    * @see #isBound()
    */
   boolean addUISessionListener( UISessionListener listener );
@@ -106,13 +111,18 @@ public interface UISession extends ISessionStore {
   boolean addSessionStoreListener( UISessionListener listener );
 
   /**
-   * Removes a <code>UISessionListener</code> from this UI session. <code>UISessionListener</code>s
-   * are used to receive notifications before the UI session is destroyed. If the given listener is
-   * not added to the session store this method has no effect.
-   *
+   * Removes a <code>UISessionListener</code> from this UI session. UISessionListeners are used to
+   * receive notifications before the UI session is destroyed. If the given listener was not added
+   * to the session store this method has no effect.
+   * <p>
+   * If the UI session is already destroyed or is about to be destroyed the listener will not be
+   * removed. In this case, this method returns <code>false</code>. A return value of
+   * <code>true</code> ensures that the listener is removed and will not be called anymore.
+   * </p>
+   * 
    * @param listener the listener to be removed
-   * @return <code>true</code> if the listener was removed or <code>false</code> if the listener
-   *         could not be removed because the session was invalidated
+   * @return <code>true</code> if the listener was removed and will not be called anymore, or
+   *         <code>false</code> if the listener could not be removed
    * @see #isBound()
    */
   boolean removeUISessionListener( UISessionListener listener );

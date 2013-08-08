@@ -19,6 +19,7 @@ import java.util.EventObject;
  *
  * @since 2.0
  * @noextend This class is not intended to be subclassed by clients.
+ * @noinstantiate This class is not intended to be instantiated by clients.
  */
 public class UISessionEvent extends EventObject {
   private static final long serialVersionUID = 1L;
@@ -33,7 +34,7 @@ public class UISessionEvent extends EventObject {
   }
 
   /**
-   * Returns the UI session that this event is related to
+   * Returns the UI session that this event is related to.
    *
    * @return the UI session
    */

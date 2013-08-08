@@ -1,0 +1,21 @@
+{
+  "curly": true,
+  "immed": true,
+  "newcap": true,
+  "eqnull": true,
+  "shadow": true,
+  "funcscope": true,
+  "undef": true,
+  "browser": true,
+  "evil": true,
+  "onecase": true,
+  "laxbreak": true,
+  "sub": true,
+  "globals": {
+    "org": false,
+    "qx": false,
+    "rwt": false,
+    "namespace": false,
+    "rap": true
+  }
+}

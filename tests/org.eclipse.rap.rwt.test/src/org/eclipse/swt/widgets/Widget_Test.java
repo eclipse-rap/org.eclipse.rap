@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getAddedClientListeners;
+import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getRemovedClientListeners;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -20,6 +22,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -27,12 +30,16 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtilAdapter;
+import org.eclipse.rap.rwt.internal.scripting.ClientListenerBinding;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -41,7 +48,6 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.internal.events.EventList;
 import org.junit.After;
@@ -55,6 +61,7 @@ public class Widget_Test {
 
   private Display display;
   private Shell shell;
+  private Widget widget;
 
   @Before
   public void setUp() {
@@ -62,6 +69,7 @@ public class Widget_Test {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
+    widget = new Widget( shell, SWT.NONE ) {};
   }
 
   @After
@@ -72,42 +80,40 @@ public class Widget_Test {
 
   @Test
   public void testGetAdapter_forWidgetAdapter() {
-    Object adapter = shell.getAdapter( WidgetAdapter.class );
+    Object adapter = widget.getAdapter( WidgetAdapter.class );
 
     assertTrue( adapter instanceof WidgetAdapter );
   }
 
   @Test
   public void testGetAdapter_forWidgetAdapter_returnsSameInstance() {
-    Object adapter1 = shell.getAdapter( WidgetAdapter.class );
-    Object adapter2 = shell.getAdapter( WidgetAdapter.class );
+    Object adapter1 = widget.getAdapter( WidgetAdapter.class );
+    Object adapter2 = widget.getAdapter( WidgetAdapter.class );
 
     assertSame( adapter1, adapter2 );
   }
 
   @Test
   public void testGetAdapter_forWidgetAdapter_returnsDifferentInstances() {
-    Object adapter1 = shell.getAdapter( WidgetAdapter.class );
-    Shell anotherShell = new Shell( display, SWT.NONE );
+    Object adapter1 = widget.getAdapter( WidgetAdapter.class );
+    Widget anotherWidget = new Widget( shell, SWT.NONE ) {};
 
-    Object adapter2 = anotherShell.getAdapter( WidgetAdapter.class );
+    Object adapter2 = anotherWidget.getAdapter( WidgetAdapter.class );
 
     assertNotSame( adapter1, adapter2 );
   }
 
   @Test
   public void testGetAdapter_succeedsForDisposedWidget() {
-    shell.dispose();
+    widget.dispose();
 
-    Object adapter = shell.getAdapter( WidgetAdapter.class );
+    Object adapter = widget.getAdapter( WidgetAdapter.class );
 
     assertNotNull( adapter );
   }
 
   @Test
-  public void testSetsParentToAdapter() {
-    Widget widget = new Button( shell, SWT.NONE );
-
+  public void testSetsParentOnAdapter() {
     WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
 
     assertSame( shell, adapter.getParent() );
@@ -115,7 +121,6 @@ public class Widget_Test {
 
   @Test
   public void testCheckWidget() throws Throwable {
-    final Widget widget = new Text( shell, SWT.NONE );
     Runnable target = new Runnable() {
       public void run() {
         widget.checkWidget();
@@ -130,49 +135,104 @@ public class Widget_Test {
   }
 
   @Test
-  public void testData() {
-    Widget widget = new Text( shell, SWT.NONE );
-
-    // Test initial state
-    assertEquals( null, widget.getData() );
-
-    Object singleData = new Object();
-    // Set/get some single data
-    widget.setData( singleData );
-    assertSame( singleData, widget.getData() );
-
-    // Set/get some keyed data, ensure that single data remains unchanged
-    Object keyedData = new Object();
-    widget.setData( "key", keyedData );
-    widget.setData( "null-key", null );
-    assertSame( singleData, widget.getData() );
-    assertSame( keyedData, widget.getData( "key" ) );
-    assertSame( null, widget.getData( "null-key" ) );
-
-    // Test 'deleting' a key
-    widget.setData( "key", null );
-    assertNull( widget.getData( "key" ) );
-
-    // Test keyed data with non-existing key
-    assertNull( widget.getData( "non-existing-key" ) );
-
-    // Test keyed data with illegal arguments
-    try {
-      widget.setData( null, new Object() );
-      fail( "Must not allow to set data with null key" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    try {
-      widget.getData( null );
-      fail( "Must not allow to get data for null key" );
-    } catch( IllegalArgumentException expected ) {
-    }
+  public void testCheckBits() {
+    int style = SWT.VERTICAL | SWT.HORIZONTAL;
+    int result = Widget.checkBits( style, SWT.VERTICAL, SWT.HORIZONTAL, 0, 0, 0, 0 );
+    assertTrue( ( result & SWT.VERTICAL ) != 0 );
+    assertFalse( ( result & SWT.HORIZONTAL ) != 0 );
   }
 
-  @Test(expected = SWTException.class)
-  public void testGetData_onDisposedWidget() {
-    Widget widget = new Label( shell, SWT.NONE );
+  @Test
+  public void testGetData_initiallyNull() {
+    assertNull( widget.getData() );
+  }
+
+  @Test
+  public void testGetData_nullForNonExistingKey() {
+    assertNull( widget.getData( "non-existing-key" ) );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testGetData_failsWithNullKey() {
+    widget.getData( null );
+  }
+
+  @Test( expected = SWTException.class )
+  public void testGetData_failsWhenDisposed() {
+    widget.setData( "foo", "bar" );
+    widget.dispose();
+
+    widget.getData( "foo" );
+  }
+
+  @Test
+  public void testSetData_singleData() {
+    Object data = new Object();
+
+    widget.setData( data );
+    Object result = widget.getData();
+
+    assertSame( data, result );
+  }
+
+  @Test
+  public void testSetData_keyedData() {
+    Object data1 = new Object();
+    Object data2 = new Object();
+
+    widget.setData( "key1", data1 );
+    widget.setData( "key2", data2 );
+
+    assertSame( data1, widget.getData( "key1" ) );
+    assertSame( data2, widget.getData( "key2" ) );
+  }
+
+  @Test
+  public void testSetData_keyedDataDoesNotChangeSingleData() {
+    Object singleData = new Object();
+    Object keyedData = new Object();
+
+    widget.setData( singleData );
+    widget.setData( "key", keyedData );
+
+    assertSame( singleData, widget.getData() );
+    assertSame( keyedData, widget.getData( "key" ) );
+  }
+
+  @Test
+  public void testSetData_nullRemovesSingleData() {
+    widget.setData( new Object() );
+
+    widget.setData( null );
+
+    assertNull( widget.getData() );
+  }
+
+  @Test
+  public void testSetData_nullRemovesKeyedData() {
+    widget.setData( "key", new Object() );
+
+    widget.setData( "key", null );
+
+    assertNull( widget.getData( "key" ) );
+  }
+
+  @Test
+  public void testSetData_singleNullDoesNotRemoteKeyedData() {
+    widget.setData( "key", new Object() );
+
+    widget.setData( null );
+
+    assertNotNull( widget.getData( "key" ) );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetData_failsWithNullKey() {
+    widget.setData( null, new Object() );
+  }
+
+  @Test( expected = SWTException.class )
+  public void testSetData_failsWhenDisposed() {
     widget.setData( "foo", "bar" );
     widget.dispose();
 
@@ -182,7 +242,6 @@ public class Widget_Test {
   @Test
   public void testSetData_handlesCustomId() {
     UITestUtilAdapter.setUITestEnabled( true );
-    Widget widget = new Label( shell, SWT.NONE );
 
     widget.setData( WidgetUtil.CUSTOM_WIDGET_ID, "custom-id" );
 
@@ -192,12 +251,59 @@ public class Widget_Test {
   @Test
   public void testGetCustomIdOnDisposedWidget() {
     UITestUtilAdapter.setUITestEnabled( true );
-    Widget widget = new Label( shell, SWT.NONE );
 
     widget.setData( WidgetUtil.CUSTOM_WIDGET_ID, "custom-id" );
     widget.dispose();
 
     assertEquals( "custom-id", WidgetUtil.getId( widget ) );
+  }
+
+  @Test
+  public void testIsDisposed_initiallyFalse() {
+    assertFalse( widget.isDisposed() );
+  }
+
+  @Test
+  public void testIsDisposed_trueAfterDispose() {
+    widget.dispose();
+
+    assertTrue( widget.isDisposed() );
+  }
+
+  @Test
+  public void testDispose_calledTwiceDoesNotHurt() {
+    widget.dispose();
+    widget.dispose();
+
+    assertTrue( widget.isDisposed() );
+  }
+
+  @Test( expected = SWTException.class )
+  public void testDispose_failsOnIllegalThread() throws Throwable {
+    Fixture.runInThread( new Runnable() {
+      public void run() {
+        widget.dispose();
+      }
+    } );
+  }
+
+  @Test
+  public void testDispose_withException() {
+    widget.addListener( SWT.Dispose, new Listener() {
+      public void handleEvent( Event event ) {
+        throw new RuntimeException();
+      }
+    } );
+
+    try {
+      widget.dispose();
+      fail( "Wrong test setup: dispose listener must throw exception" );
+    } catch( Exception exception ) {
+      // expected
+    }
+
+    assertFalse( widget.isDisposed() );
+    assertEquals( 0, DisposedWidgets.getAll().length );
   }
 
   @Test
@@ -218,34 +324,34 @@ public class Widget_Test {
       }
     } );
     item[ 0 ] = new ToolItem( toolbar, SWT.PUSH );
-    shell.dispose();
+    widget.dispose();
     // no assert: this test ensures that no StackOverflowError occurs
   }
 
   @Test
   public void testDisposeSelfWhileInDispose() {
-    shell.addDisposeListener( new DisposeListener() {
+    widget.addDisposeListener( new DisposeListener() {
       public void widgetDisposed( DisposeEvent event ) {
-        shell.dispose();
+        widget.dispose();
       }
     } );
-    shell.dispose();
+    widget.dispose();
     // no assert: this test ensures that no exception occurs
   }
 
   @Test
   public void testDisposeSelfWhileInDispose_RenderOnce() {
-    Fixture.markInitialized( shell );
-    shell.addDisposeListener( new DisposeListener() {
+    Fixture.markInitialized( widget );
+    widget.addDisposeListener( new DisposeListener() {
       public void widgetDisposed( DisposeEvent event ) {
-        shell.dispose();
+        widget.dispose();
       }
     } );
-    shell.dispose();
+    widget.dispose();
     int counter = 0;
     Widget[] disposedWidgets = DisposedWidgets.getAll();
     for( int i = 0; i < disposedWidgets.length; i++ ) {
-      if( disposedWidgets[ i ] == shell ) {
+      if( disposedWidgets[ i ] == widget ) {
         counter++;
       }
     }
@@ -253,145 +359,207 @@ public class Widget_Test {
   }
 
   @Test
-  public void testCheckBits() {
-    int style = SWT.VERTICAL | SWT.HORIZONTAL;
-    int result = Widget.checkBits( style, SWT.VERTICAL, SWT.HORIZONTAL, 0, 0, 0, 0 );
-    assertTrue( ( result & SWT.VERTICAL ) != 0 );
-    assertFalse( ( result & SWT.HORIZONTAL ) != 0 );
-  }
-
-  @Test
-  public void testDispose() {
-    Widget widget = new Button( shell, SWT.NONE );
-
-    // Ensure initial state
-    assertFalse( widget.isDisposed() );
-
-    // Test dispose the first time
-    widget.dispose();
-    assertTrue( widget.isDisposed() );
-
-    // Disposing of an already disposed of widget does nothing
-    widget.dispose();
-    assertTrue( widget.isDisposed() );
-  }
-
-  @Test
-  public void testDisposeFromIllegalThread() throws Throwable {
-    final Widget widget = new Button( shell, SWT.NONE );
-    Runnable runnable = new Runnable() {
-      public void run() {
-        widget.dispose();
-      }
-    };
-    try {
-      Fixture.runInThread( runnable );
-      fail( "Must not allow to dispose of a widget from a non-UI-thread" );
-    } catch( SWTException expected ) {
-    }
-  }
-
-  @Test
-  public void testDisposeWithException() {
-    shell.addDisposeListener( new DisposeListener() {
-      public void widgetDisposed( DisposeEvent event ) {
-        throw new RuntimeException();
-      }
-    } );
-    try {
-      shell.dispose();
-      fail( "Wrong test setup: dispose listener must throw exception" );
-    } catch( Exception e ) {
-      // expected
-    }
-    assertFalse( shell.isDisposed() );
-    assertEquals( 0, DisposedWidgets.getAll().length );
-  }
-
-  @Test
   public void testAddDisposeListener() {
-    shell.addDisposeListener( mock( DisposeListener.class ) );
+    widget.addDisposeListener( mock( DisposeListener.class ) );
 
-    assertTrue( shell.isListening( SWT.Dispose ) );
+    assertTrue( widget.isListening( SWT.Dispose ) );
   }
 
-  @Test
-  public void testAddDisposeListenerWithNullArgument() {
-    try {
-      shell.addDisposeListener( null );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+  @Test( expected = IllegalArgumentException.class )
+  public void testAddDisposeListener_failsWithNullArgument() {
+    widget.addDisposeListener( null );
   }
 
   @Test
   public void testRemoveDisposeListenerWithRegisteredListener() {
     DisposeListener listener = mock( DisposeListener.class );
-    shell.addDisposeListener( listener );
+    widget.addDisposeListener( listener );
 
-    shell.removeDisposeListener( listener );
+    widget.removeDisposeListener( listener );
 
-    assertFalse( shell.isListening( SWT.Dispose ) );
+    assertFalse( widget.isListening( SWT.Dispose ) );
   }
 
   @Test
   public void testRemoveDisposeListenerWithUnregisteredListener() {
     DisposeListener listener = mock( DisposeListener.class );
 
-    shell.removeDisposeListener( listener );
+    widget.removeDisposeListener( listener );
 
-    assertFalse( shell.isListening( SWT.Dispose ) );
-  }
-
-  @Test
-  public void testRemoveListener() {
-    // Ensure that removing a listener that was never added is ignored
-    // silently see https://bugs.eclipse.org/251816
-    shell.removeListener( SWT.Activate, mock( Listener.class ) );
+    assertFalse( widget.isListening( SWT.Dispose ) );
   }
 
   // bug 328043
   @Test
   public void testUntypedDisposeListener() {
     DisposeListener listener = mock( DisposeListener.class );
-    shell.addDisposeListener( listener );
+    widget.addDisposeListener( listener );
 
-    shell.notifyListeners( SWT.Dispose, new Event() );
+    widget.notifyListeners( SWT.Dispose, new Event() );
 
     verify( listener ).widgetDisposed( any( DisposeEvent.class ) );
   }
 
   @Test
-  public void testNotifyListeners() {
-    final StringBuilder log = new StringBuilder();
-    shell.addListener( SWT.Resize, new Listener() {
-      public void handleEvent( Event event ) {
-        log.append( "untyped" );
-      }
-    } );
-    shell.notifyListeners( SWT.Resize, new Event() );
-    assertEquals( "untyped", log.toString() );
+  public void testAddListener() {
+    Listener listener = mock( Listener.class );
+
+    widget.addListener( SWT.Selection, listener );
+
+    Listener[] listeners = widget.getListeners( SWT.Selection );
+    assertEquals( 1, listeners.length );
+    assertSame( listener, listeners[ 0 ] );
   }
 
   @Test
-  public void testNotifyListenersTyped() {
-    ControlListener listener = mock( ControlListener.class );
-    shell.addControlListener( listener );
+  public void testAddListener_addsSameListenerTwice() {
+    Listener listener = mock( Listener.class );
 
-    shell.notifyListeners( SWT.Resize, new Event() );
+    widget.addListener( SWT.Selection, listener );
+    widget.addListener( SWT.Selection, listener );
+
+    Listener[] listeners = widget.getListeners( SWT.Selection );
+    assertEquals( 2, listeners.length );
+  }
+
+  @Test
+  public void testAddListener_handlesClientListeners() {
+    ClientListener listener = mock( ClientListener.class );
+
+    widget.addListener( SWT.Selection, listener );
+
+    List<ClientListenerBinding> bindings = getAddedClientListeners( widget );
+    assertEquals( 1, bindings.size() );
+    assertEquals( listener, bindings.get( 0 ).getListener() );
+    assertEquals( SWT.Selection, bindings.get( 0 ).getEventType() );
+  }
+
+  @Test
+  public void testAddListener_handlesMultipleClientListeners() {
+    ClientListener listener1 = mock( ClientListener.class );
+    ClientListener listener2 = mock( ClientListener.class );
+
+    widget.addListener( SWT.Selection, listener1 );
+    widget.addListener( SWT.Selection, listener2 );
+
+    List<ClientListenerBinding> bindings = getAddedClientListeners( widget );
+    assertEquals( 2, bindings.size() );
+    assertEquals( listener1, bindings.get( 0 ).getListener() );
+    assertEquals( listener2, bindings.get( 1 ).getListener() );
+  }
+
+  @Test
+  public void testAddListener_handlesDuplicateClientListeners() {
+    ClientListener listener = mock( ClientListener.class );
+
+    widget.addListener( SWT.Selection, listener );
+    widget.addListener( SWT.Selection, listener );
+
+    List<ClientListenerBinding> bindings = getAddedClientListeners( widget );
+    assertEquals( 2, bindings.size() );
+    assertEquals( listener, bindings.get( 0 ).getListener() );
+    assertEquals( listener, bindings.get( 1 ).getListener() );
+  }
+
+  @Test
+  public void testRemoveListener() {
+    Listener listener = mock( Listener.class );
+    widget.addListener( SWT.Selection, listener );
+
+    widget.removeListener( SWT.Selection, listener );
+
+    assertEquals( 0, widget.getListeners( SWT.Selection ).length );
+  }
+
+  @Test
+  public void testRemoveListener_removesOnlyOneListener() {
+    Listener listener = mock( Listener.class );
+    widget.addListener( SWT.Selection, listener );
+    widget.addListener( SWT.Selection, listener );
+
+    widget.removeListener( SWT.Selection, listener );
+
+    assertEquals( 1, widget.getListeners( SWT.Selection ).length );
+  }
+
+  @Test
+  public void testRemoveListener_doesNotFailIfNotAdded() {
+    // Ensure that removing a listener that was never added is ignored
+    // silently see https://bugs.eclipse.org/251816
+    widget.removeListener( SWT.Activate, mock( Listener.class ) );
+  }
+
+  @Test
+  public void testRemoveListener_handlesClientListeners() {
+    ClientListener listener = mock( ClientListener.class );
+
+    widget.removeListener( SWT.Selection, listener );
+
+    List<ClientListenerBinding> bindings = getRemovedClientListeners( widget );
+    assertEquals( 1, bindings.size() );
+    assertEquals( listener, bindings.get( 0 ).getListener() );
+    assertEquals( SWT.Selection, bindings.get( 0 ).getEventType() );
+  }
+
+  @Test
+  public void testRemoveListener_handlesMultipleClientListeners() {
+    ClientListener listener1 = mock( ClientListener.class );
+    ClientListener listener2 = mock( ClientListener.class );
+
+    widget.removeListener( SWT.Selection, listener1 );
+    widget.removeListener( SWT.Selection, listener2 );
+
+    List<ClientListenerBinding> bindings = getRemovedClientListeners( widget );
+    assertEquals( 2, bindings.size() );
+    assertEquals( listener1, bindings.get( 0 ).getListener() );
+    assertEquals( listener2, bindings.get( 1 ).getListener() );
+  }
+
+  @Test
+  public void testRemoveListener_handlesDuplicateClientListeners() {
+    ClientListener listener = mock( ClientListener.class );
+
+    widget.removeListener( SWT.Selection, listener );
+    widget.removeListener( SWT.Selection, listener );
+
+    List<ClientListenerBinding> bindings = getRemovedClientListeners( widget );
+    assertEquals( 2, bindings.size() );
+    assertEquals( listener, bindings.get( 0 ).getListener() );
+    assertEquals( listener, bindings.get( 1 ).getListener() );
+  }
+
+  @Test
+  public void testNotifyListeners() {
+    Listener listener = mock( Listener.class );
+    widget.addListener( SWT.Resize, listener );
+    Event event = mock( Event.class );
+
+    widget.notifyListeners( SWT.Resize, event );
+
+    verify( listener ).handleEvent( same( event ) );
+  }
+
+  @Test
+  public void testNotifyListeners_notifiesTypedListeners() {
+    ControlListener listener = mock( ControlListener.class );
+    TypedListener typedListener = new TypedListener( listener );
+    widget.addListener( SWT.Move, typedListener );
+    widget.addListener( SWT.Resize, typedListener );
+
+    widget.notifyListeners( SWT.Resize, new Event() );
 
     verify( listener ).controlResized( any( ControlEvent.class ) );
     verify( listener, never() ).controlMoved( any( ControlEvent.class ) );
   }
 
   @Test
-  public void testNotifyListenersWithFilter() {
+  public void testNotifyListeners_notifiesDisplayFilters() {
     Listener filter = mock( Listener.class );
     display.addFilter( SWT.Resize, filter );
     Listener listener = mock( Listener.class );
-    shell.addListener( SWT.Resize, listener );
+    widget.addListener( SWT.Resize, listener );
 
-    shell.notifyListeners( SWT.Resize, new Event() );
+    widget.notifyListeners( SWT.Resize, new Event() );
 
     InOrder inOrder = inOrder( filter, listener );
     inOrder.verify( filter ).handleEvent( any( Event.class ) );
@@ -399,7 +567,7 @@ public class Widget_Test {
   }
 
   @Test
-  public void testNotifyListenersWithDenyingFilter() {
+  public void testNotifyListeners_withDenyingFilter() {
     Listener filter = spy( new Listener() {
       public void handleEvent( Event event ) {
         event.type = SWT.None;
@@ -407,9 +575,9 @@ public class Widget_Test {
     } );
     display.addFilter( SWT.Resize, filter );
     Listener listener = mock( Listener.class );
-    shell.addListener( SWT.Resize, listener );
+    widget.addListener( SWT.Resize, listener );
 
-    shell.notifyListeners( SWT.Resize, new Event() );
+    widget.notifyListeners( SWT.Resize, new Event() );
 
     verify( filter ).handleEvent( any( Event.class ) );
     verify( listener, never() ).handleEvent( any( Event.class ) );
@@ -417,35 +585,13 @@ public class Widget_Test {
 
   // SWT always overrides e.type, e.display and e.widget
   @Test
-  public void testNotifyListenersEventFields() {
-    final StringBuilder log = new StringBuilder();
+  public void testNotifyListeners_eventFields() {
+    final AtomicReference<Event> eventCaptor = new AtomicReference<Event>();
     display.addFilter( SWT.Resize, new Listener() {
       public void handleEvent( Event event ) {
-        assertEquals( 2, event.button );
-        assertEquals( 'a', event.character );
-        assertEquals( 4, event.count );
-        assertNotNull( event.data );
-        assertEquals( 6, event.detail );
-        assertSame( display, event.display );
-        assertFalse( event.doit );
-        assertEquals( 8, event.end );
-        assertEquals( 10, event.height );
-        assertEquals( 12, event.index );
-        assertEquals( shell, event.item );
-        assertEquals( 14, event.keyCode );
-        assertEquals( 16, event.start );
-        assertEquals( 18, event.stateMask );
-        assertEquals( "foo", event.text );
-        assertEquals( 20, event.width );
-        assertEquals( 22, event.x );
-        assertEquals( 24, event.y );
-        assertEquals( SWT.Resize, event.type );
-        assertEquals( shell, event.widget );
-        assertTrue( event.time > 0 );
-        log.append( "filter" );
+        eventCaptor.set( event );
       }
     });
-
     Event event = new Event();
     event.button = 2;
     event.character = 'a';
@@ -457,71 +603,94 @@ public class Widget_Test {
     event.end = 8;
     event.height = 10;
     event.index = 12;
-    event.item = shell;
+    event.item = widget;
     event.keyCode = 14;
     event.start = 16;
     event.stateMask = 18;
     event.text = "foo";
     event.type = SWT.MouseDoubleClick;
-    event.widget = shell;
+    event.widget = widget;
     event.width = 20;
     event.x = 22;
     event.y = 24;
 
-    shell.notifyListeners( SWT.Resize, event );
-    assertEquals( "filter", log.toString() );
+    widget.notifyListeners( SWT.Resize, event );
+
+    Event capturedEvent = eventCaptor.get();
+    assertEquals( 2, capturedEvent.button );
+    assertEquals( 'a', capturedEvent.character );
+    assertEquals( 4, capturedEvent.count );
+    assertNotNull( capturedEvent.data );
+    assertEquals( 6, capturedEvent.detail );
+    assertSame( display, capturedEvent.display );
+    assertFalse( capturedEvent.doit );
+    assertEquals( 8, capturedEvent.end );
+    assertEquals( 10, capturedEvent.height );
+    assertEquals( 12, capturedEvent.index );
+    assertEquals( widget, capturedEvent.item );
+    assertEquals( 14, capturedEvent.keyCode );
+    assertEquals( 16, capturedEvent.start );
+    assertEquals( 18, capturedEvent.stateMask );
+    assertEquals( "foo", capturedEvent.text );
+    assertEquals( 20, capturedEvent.width );
+    assertEquals( 22, capturedEvent.x );
+    assertEquals( 24, capturedEvent.y );
+    assertEquals( SWT.Resize, capturedEvent.type );
+    assertEquals( widget, capturedEvent.widget );
+    assertTrue( capturedEvent.time > 0 );
   }
 
   @Test
-  public void testNotifyListenersWithEmptyEvent() {
+  public void testNotifyListeners_withEmptyEvent() {
     Event event = new Event();
     Listener listener = mock( Listener.class );
-    shell.addListener( SWT.Resize, listener );
+    widget.addListener( SWT.Resize, listener );
 
-    shell.notifyListeners( SWT.Resize, event );
+    widget.notifyListeners( SWT.Resize, event );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
     verify( listener ).handleEvent( captor.capture() );
     assertSame( event, captor.getValue() );
-    assertEquals( shell.getDisplay(), event.display );
-    assertEquals( shell, event.widget );
+    assertEquals( widget.getDisplay(), event.display );
+    assertEquals( widget, event.widget );
     assertEquals( SWT.Resize, event.type );
     assertTrue( event.time > 0 );
   }
 
   @Test
-  public void testNotifyListenersNullEvent() {
-    final StringBuilder log = new StringBuilder();
-    shell.addControlListener( new ControlAdapter() {
+  public void testNotifyListeners_withNullEvent() {
+    final AtomicReference<ControlEvent> eventCaptor = new AtomicReference<ControlEvent>();
+    widget.addListener( SWT.Resize, new TypedListener( new ControlAdapter() {
       @Override
       public void controlResized( ControlEvent event ) {
-        assertSame( shell, event.widget );
-        assertSame( display, event.display );
-        log.append( "typed" );
+        eventCaptor.set( event );
       }
-    } );
-    shell.notifyListeners( SWT.Resize, null );
-    assertEquals( "typed", log.toString() );
+    } ) );
+
+    widget.notifyListeners( SWT.Resize, null );
+
+    assertSame( widget, eventCaptor.get().widget );
+    assertSame( display, eventCaptor.get().display );
   }
 
   @Test
-  public void testNotifyListenersInvalidEventType() {
+  public void testNotifyListeners_withInvalidEventType() {
     Listener listener = mock( Listener.class );
-    shell.addListener( SWT.Resize, listener );
+    widget.addListener( SWT.Resize, listener );
 
-    shell.notifyListeners( 4711, new Event() );
+    widget.notifyListeners( 4711, new Event() );
 
     verify( listener, never() ).handleEvent( any( Event.class ) );
   }
 
   @Test
-  public void testNotifyListenersInReadDataPhase() {
+  public void testNotifyListeners_inReadDataPhase() {
     Fixture.fakePhase( PhaseId.READ_DATA );
     Listener listener = mock( Listener.class );
-    shell.addListener( SWT.Resize, listener );
+    widget.addListener( SWT.Resize, listener );
 
     Event event = new Event();
-    shell.notifyListeners( SWT.Resize, event );
+    widget.notifyListeners( SWT.Resize, event );
 
     verify( listener, never() ).handleEvent( any( Event.class ) );
     assertEquals( 1, EventList.getInstance().getAll().length );
@@ -529,25 +698,25 @@ public class Widget_Test {
   }
 
   @Test
-  public void testNotifyListenersWithNullPhase() {
+  public void testNotifyListeners_withNullPhase() {
     Fixture.fakePhase( null );
     Listener listener = mock( Listener.class );
-    shell.addListener( SWT.Resize, listener );
+    widget.addListener( SWT.Resize, listener );
 
-    shell.notifyListeners( SWT.Resize, new Event() );
+    widget.notifyListeners( SWT.Resize, new Event() );
 
     verify( listener, never() ).handleEvent( any( Event.class ) );
   }
 
   @Test
-  public void testNotifyListenersWithPreInitializedTime() {
+  public void testNotifyListeners_withPreInitializedTime() {
     int predefinedTime = 12345;
     Listener listener = mock( Listener.class );
-    shell.addListener( SWT.Resize, listener );
+    widget.addListener( SWT.Resize, listener );
 
     Event event = new Event();
     event.time = predefinedTime;
-    shell.notifyListeners( SWT.Resize, event );
+    widget.notifyListeners( SWT.Resize, event );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
     verify( listener ).handleEvent( captor.capture() );
@@ -558,11 +727,11 @@ public class Widget_Test {
   @Test
   public void testRemoveUntypedListenerLeavesNeighbourListenerIntact() {
     Listener listener = mock( Listener.class );
-    shell.addListener( SWT.Move, listener );
+    widget.addListener( SWT.Move, listener );
 
-    shell.addListener( SWT.Resize, listener );
-    shell.removeListener( SWT.Resize, listener );
-    shell.notifyListeners( SWT.Move, new Event() );
+    widget.addListener( SWT.Resize, listener );
+    widget.removeListener( SWT.Resize, listener );
+    widget.notifyListeners( SWT.Move, new Event() );
 
     verify( listener ).handleEvent( any( Event.class ) );
   }
@@ -570,95 +739,107 @@ public class Widget_Test {
   // bug 332511
   @Test
   public void testRemoveTypedListenerWithUntypedRemoveListener() {
-    shell.addDisposeListener( mock( DisposeListener.class ) );
+    widget.addDisposeListener( mock( DisposeListener.class ) );
 
-    Listener[] listeners = shell.getListeners( SWT.Dispose );
+    Listener[] listeners = widget.getListeners( SWT.Dispose );
     for( Listener listener : listeners ) {
-      shell.removeListener( SWT.Dispose, listener );
+      widget.removeListener( SWT.Dispose, listener );
     }
 
-    assertFalse( shell.isListening( SWT.Dispose ) );
+    assertFalse( widget.isListening( SWT.Dispose ) );
   }
 
   @Test
-  public void testGetListeners() {
-    Listener[] listeners = shell.getListeners( 0 );
+  public void testGetListeners_initiallyEmpty() {
+    Listener[] listeners = widget.getListeners( 0 );
+
     assertNotNull( listeners );
     assertEquals( 0, listeners.length );
-    Listener dummyListener = new Listener() {
-      public void handleEvent( Event event ) {
-      }
-    };
-    Listener dummyListener2 = new Listener() {
-      public void handleEvent( Event event ) {
-      }
-    };
-    shell.addListener( SWT.Resize, dummyListener );
-    assertEquals( 0, shell.getListeners( SWT.Move ).length );
-    assertEquals( 1, shell.getListeners( SWT.Resize ).length );
-    assertSame( dummyListener, shell.getListeners( SWT.Resize )[0] );
-    shell.addListener( SWT.Resize, dummyListener2 );
-    assertEquals( 2, shell.getListeners( SWT.Resize ).length );
   }
 
   @Test
-  public void testIsListeningWithoutRegisteredListeners() {
-    boolean listening = shell.isListening( SWT.Dispose );
+  public void testGetListeners_returnsAddedListener() {
+    Listener listener = mock( Listener.class );
+
+    widget.addListener( SWT.Resize, listener );
+
+    assertEquals( 1, widget.getListeners( SWT.Resize ).length );
+    assertSame( listener, widget.getListeners( SWT.Resize )[0] );
+  }
+
+  @Test
+  public void testGetListeners_returnsAllListenersForType() {
+    widget.addListener( SWT.Resize, mock( Listener.class ) );
+    widget.addListener( SWT.Resize, mock( Listener.class ) );
+
+    assertEquals( 2, widget.getListeners( SWT.Resize ).length );
+  }
+
+  @Test
+  public void testGetListeners_doesNotReturnListenersForOtherTypes() {
+    Listener listener = mock( Listener.class );
+
+    widget.addListener( SWT.Move, listener );
+
+    assertEquals( 0, widget.getListeners( SWT.Resize ).length );
+  }
+
+  @Test
+  public void testIsListening_falseWithoutRegisteredListeners() {
+    boolean listening = widget.isListening( SWT.Dispose );
 
     assertFalse( listening );
   }
 
   @Test
-  public void testIsListeningAfterAddListener() {
+  public void testIsListening_trueAfterAddListener() {
     Listener listener = mock( Listener.class );
 
-    shell.addListener( SWT.Resize, listener );
+    widget.addListener( SWT.Resize, listener );
 
-    assertTrue( shell.isListening( SWT.Resize ) );
+    assertTrue( widget.isListening( SWT.Resize ) );
   }
 
   @Test
-  public void testIsListeningAfterRemoveListener() {
+  public void testIsListening_falseAfterRemoveListener() {
     Listener listener = mock( Listener.class );
-    shell.addListener( SWT.Resize, listener );
+    widget.addListener( SWT.Resize, listener );
 
-    shell.removeListener( SWT.Resize, listener );
+    widget.removeListener( SWT.Resize, listener );
 
-    assertFalse( shell.isListening( SWT.Resize ) );
+    assertFalse( widget.isListening( SWT.Resize ) );
   }
 
   @Test
-  public void testIsListeningForTypedEvent() {
-    shell.addHelpListener( new HelpListener() {
-      public void helpRequested( HelpEvent event ) {
-      }
-    } );
-    assertTrue( shell.isListening( SWT.Help ) );
+  public void testIsListening_forTypedEvent() {
+    widget.addListener( SWT.Help, new TypedListener( mock( HelpListener.class ) ) );
+
+    assertTrue( widget.isListening( SWT.Help ) );
   }
 
   @Test
   public void testGetDisplay() {
-    assertSame( display, shell.getDisplay() );
+    assertSame( display, widget.getDisplay() );
   }
 
   @Test(expected = SWTException.class)
-  public void testGetDisplayOnDisposedWidget() {
-    shell.dispose();
+  public void testGetDisplay_failsWhenDisposed() {
+    widget.dispose();
 
-    shell.getDisplay();
+    widget.getDisplay();
   }
 
   @Test
-  public void testGetDisplayFromNonUIThread() throws Exception {
-    final Display[] widgetDisplay = { null };
-    Thread thread = new Thread( new Runnable() {
+  public void testGetDisplay_worksFromNonUIThread() throws Throwable {
+    final AtomicReference<Display> displayCaptor = new AtomicReference<Display>();
+
+    Fixture.runInThread( new Runnable() {
       public void run() {
-        widgetDisplay[ 0 ] = shell.getDisplay();
+        displayCaptor.set( widget.getDisplay() );
       }
     } );
-    thread.start();
-    thread.join();
-    assertSame( display, widgetDisplay[ 0 ] );
+
+    assertSame( display, displayCaptor.get() );
   }
 
   @Test
@@ -671,6 +852,7 @@ public class Widget_Test {
         }
       }
     };
+    widget.dispose();
     display.addListener( SWT.Skin, listener );
     Composite child1 = new Composite( shell, SWT.NONE );
     Label subchild1 = new Label( child1, SWT.NONE );
@@ -727,4 +909,5 @@ public class Widget_Test {
     display.readAndDispatch();
     assertEquals( 0, log.size() );
   }
+
 }

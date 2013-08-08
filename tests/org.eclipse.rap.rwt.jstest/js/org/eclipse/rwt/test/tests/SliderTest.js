@@ -411,7 +411,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       TestUtil.forceTimerOnce();
       assertFalse( slider._requestScheduled );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
       assertEquals( 5, TestUtil.getMessageObject().findSetProperty( "w99", "selection" ) );
       TestUtil.clearRequestLog();
       slider.setHasSelectionListener( true );

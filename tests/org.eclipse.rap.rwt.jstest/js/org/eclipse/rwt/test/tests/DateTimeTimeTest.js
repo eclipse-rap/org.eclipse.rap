@@ -167,7 +167,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
       dateTime.setSeconds( 55 );
       TestUtil.clearRequestLog();
       dateTime._sendChanges();
-      var req = rwt.remote.Server.getInstance();
+      var req = rwt.remote.Connection.getInstance();
       req.send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );

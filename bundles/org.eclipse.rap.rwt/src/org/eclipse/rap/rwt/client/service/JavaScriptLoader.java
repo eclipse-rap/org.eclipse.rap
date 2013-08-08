@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,9 +24,9 @@ public interface JavaScriptLoader extends ClientService  {
    * Instructs the client to immediately load and evaluate a JavaScript file from the given URL.
    *
    * If the file has already been loaded by the client, nothing happens.
-   * The URL has to be within the same domain as the RAP server.
    * The {@link org.eclipse.rap.rwt.RWT#getResourceManager() ResourceManager} can be used to
-   * register a file that can be loaded by the JavaScriptLoader.
+   * register a file that can be loaded by the JavaScriptLoader. Since 2.2 the file can also loaded
+   * from any other server the client can connect to.
    *
    * @param url the URL from which to load the JavaScript file
    */

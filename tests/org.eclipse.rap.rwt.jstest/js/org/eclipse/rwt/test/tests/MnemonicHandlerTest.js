@@ -11,6 +11,7 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var MessageProcessor = rwt.remote.MessageProcessor;
 var DomEvent = rwt.event.DomEvent;
 
 var handler = rwt.widgets.util.MnemonicHandler.getInstance();
@@ -69,7 +70,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( [ "show" ], typeLog );
     },
 
-    testFireShowMnemonics_MultipleModifier : function() {
+    testFireShowMnemonics_multipleModifier : function() {
       handler.setActivator( "CTRL+ALT" );
 
       TestUtil.keyDown( shell, "Control", ( DomEvent.CTRL_MASK | DomEvent.ALT_MASK ) );
@@ -86,7 +87,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( [ "show", "hide" ], typeLog );
     },
 
-    testFireHideMnemonics_MultipleModifier : function() {
+    testFireHideMnemonics_multipleModifier : function() {
       handler.setActivator( "CTRL+ALT" );
 
       TestUtil.keyDown( shell, "Control", ( DomEvent.CTRL_MASK | DomEvent.ALT_MASK ) );
@@ -95,7 +96,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( [ "show", "hide" ], typeLog );
     },
 
-    testFireHideMnemonics_ShellDeActivate : function() {
+    testFireHideMnemonics_shellDeActivate : function() {
       handler.setActivator( "CTRL" );
 
       TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
@@ -104,7 +105,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( [ "show", "hide" ], typeLog );
     },
 
-    testDoNotFireShowMnemonics_WrongModifier : function() {
+    testDoNotFireShowMnemonics_wrongModifier : function() {
       handler.setActivator( "CTRL" );
 
       TestUtil.keyDown( shell, "Alt", DomEvent.ALT_MASK );
@@ -112,7 +113,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( [], typeLog );
     },
 
-    testDoNotFireShowMnemonics_ShellNotActive : function() {
+    testDoNotFireShowMnemonics_shellNotActive : function() {
       handler.setActivator( "CTRL" );
       shell.setActive( false );
 
@@ -121,7 +122,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( [], typeLog );
     },
 
-    testDoNotFireShowMnemonics_WrongSecondModifier : function() {
+    testDoNotFireShowMnemonics_wrongSecondModifier : function() {
       handler.setActivator( "CTRL+ALT" );
 
       TestUtil.keyDown( shell, "Shift", DomEvent.ALT_MASK );
@@ -129,7 +130,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( [], typeLog );
     },
 
-    testDoNotFireShowMnemonics_NotModifierKey : function() {
+    testDoNotFireShowMnemonics_notModifierKey : function() {
       handler.setActivator( "CTRL+ALT" );
 
       TestUtil.keyDown( shell, "B", ( DomEvent.CTRL_MASK | DomEvent.ALT_MASK ) );
@@ -137,7 +138,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( [], typeLog );
     },
 
-    testDoNotFireShowMnemonics_NoActivatorSet : function() {
+    testDoNotFireShowMnemonics_noActivatorSet : function() {
       TestUtil.keyDown( shell, "Control", ( DomEvent.CTRL_MASK | DomEvent.ALT_MASK ) );
 
       assertEquals( [], typeLog );
@@ -168,7 +169,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( [ "show", "trigger" ], typeLog );
     },
 
-    testFireTrigger_ToSeeableWidgetsOnly : function() {
+    testFireTrigger_toSeeableWidgetsOnly : function() {
       handler.setActivator( "CTRL" );
       widget.setVisibility( false );
 
@@ -178,7 +179,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( [ "show" ], typeLog );
     },
 
-    testFireTrigger_CharCodeIsSet : function() {
+    testFireTrigger_charCodeIsSet : function() {
       handler.setActivator( "CTRL" );
 
       TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
@@ -188,7 +189,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
     },
 
     // Alwasy use upper key char code to prevent confusion and support shift
-    testFireTrigger_CharCodeIsAlwaysUpper : function() {
+    testFireTrigger_charCodeIsAlwaysUpper : function() {
       handler.setActivator( "CTRL" );
 
       TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
@@ -197,7 +198,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( [ 66 ], charLog );
     },
 
-    testFireTrigger_NoSuccessAllowsKeyEvent : function() {
+    testFireTrigger_noSuccessAllowsKeyEvent : function() {
       handler.setActivator( "CTRL" );
       TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
 
@@ -207,7 +208,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( [ "keydown", "keypress" ], keyLog );
     },
 
-    testFireTrigger_SuccessStopsKeyEvent : function() {
+    testFireTrigger_successStopsKeyEvent : function() {
       handler.setActivator( "CTRL" );
       success = true;
       TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
@@ -219,7 +220,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( expected, keyLog );
     },
 
-    testFireTrigger_SuccessStopsActiveKey : function() {
+    testFireTrigger_successStopsActiveKey : function() {
       handler.setActivator( "CTRL" );
       success = true;
       TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
@@ -230,6 +231,58 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
 
       TestUtil.keyDown( widget, "B", DomEvent.CTRL_MASK );
       assertEquals( 0, TestUtil.getRequestsSend() );
+    },
+
+    testFireTrigger_successStopsTriggerEvent : function() {
+      handler.setActivator( "CTRL" );
+      success = true;
+      widget.focus();
+      var widgetTwo = TestUtil.createWidgetByProtocol( "w4", "w2" );
+      TestUtil.flush();
+      var secondLog = [];
+      handler.add( widgetTwo, function( event ) {
+        if( event.type === "trigger" ) {
+          secondLog.push( event );
+          event.success = true;
+        }
+      } );
+
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyDown( widget, "B", DomEvent.CTRL_MASK );
+
+      var totalSuccess = charLog.length + secondLog.length;
+      assertEquals( 1, totalSuccess );
+    },
+
+    testFireTrigger_menuRecievesEventLast : function() {
+      handler.setActivator( "CTRL" );
+      MessageProcessor.processOperationArray(
+        [ "create", "w4", "rwt.widgets.Menu", { "style" : [ "BAR" ], "parent" : "w2" } ]
+      );
+      var itemProperties = { "style" : [ "CASCADE" ], "parent" : "w4", "index" : 0 };
+      MessageProcessor.processOperationArray(
+        [ "create", "w5", "rwt.widgets.MenuItem", itemProperties ]
+      );
+      var menuItem = rwt.remote.ObjectRegistry.getObject( "w5" );
+      // widget from setup may be first in any case, need a new one:
+      var widgetTwo = TestUtil.createWidgetByProtocol( "w6", "w2" );
+      TestUtil.flush();
+      var order = [];
+      handler.add( widgetTwo, function( event ) {
+        if( event.type === "trigger" ) {
+          order.push( widgetTwo );
+        }
+      } );
+      handler.add( menuItem, function( event ) {
+        if( event.type === "trigger" ) {
+          order.push( menuItem );
+        }
+      } );
+
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyDown( widget, "B", DomEvent.CTRL_MASK );
+
+      assertEquals( [ widgetTwo, menuItem ], order );
     }
 
   }

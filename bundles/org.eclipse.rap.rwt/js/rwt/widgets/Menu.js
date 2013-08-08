@@ -624,7 +624,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
           }
           //this.setDisplay( true ); //wouldn't be called if display was false
           // send event
-          rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Show" );
+          rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Show" );
         } else {
           var display = this._layout.getChildren().length !== 0;
           //no items and no listener to add some:
@@ -641,7 +641,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
     _menuHidden : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         if( this._hasHideListener ) {
-          rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Hide" );
+          rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Hide" );
         }
       }
     },

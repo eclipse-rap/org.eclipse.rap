@@ -20,9 +20,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -173,7 +173,7 @@ public class EventLCAUtil_Test {
   @Test
   public void testIsListening_withClientListenerOnly() {
     Button button = new Button( shell, SWT.PUSH );
-    button.addListener( SWT.Selection, new ClientListener() );
+    button.addListener( SWT.Selection, mock( ClientListener.class ) );
 
     assertFalse( EventLCAUtil.isListening( button, SWT.Selection ) );
   }
@@ -182,7 +182,7 @@ public class EventLCAUtil_Test {
   public void testIsListening_withClientListenerAndSWTListener() {
     Button button = new Button( shell, SWT.PUSH );
     button.addListener( SWT.Selection, mock( Listener.class ) );
-    button.addListener( SWT.Selection, new ClientListener() );
+    button.addListener( SWT.Selection, mock( ClientListener.class ) );
 
     assertTrue( EventLCAUtil.isListening( button, SWT.Selection ) );
   }

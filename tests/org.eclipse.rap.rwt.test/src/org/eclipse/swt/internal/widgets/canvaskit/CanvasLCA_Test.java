@@ -15,11 +15,11 @@ import static org.eclipse.swt.internal.widgets.canvaskit.GCOperationWriter.getGc
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -323,6 +323,16 @@ public class CanvasLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( canvas, "clientArea" ) );
+  }
+
+  @Test
+  public void testRenderChanges_rendersClientListener() throws IOException {
+    canvas.addListener( SWT.Paint, new ClientListener( "" ) );
+
+    lca.renderChanges( canvas );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCallOperation( canvas, "addListener" ) );
   }
 
   private Rectangle toRectangle( Object property ) {

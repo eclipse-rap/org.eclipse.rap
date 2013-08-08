@@ -568,7 +568,7 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
       var currentSource = this.getSource();
 
       if (currentSource == null || currentSource === "") {
-        currentSource = rwt.remote.Server.RESOURCE_PATH + "static/html/blank.html";
+        currentSource = rwt.remote.Connection.RESOURCE_PATH + "static/html/blank.html";
       }
 
       this._isLoaded = false;

@@ -8,15 +8,27 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.clientscripting;
+package org.eclipse.rap.rwt.internal.scripting;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
+import org.eclipse.rap.rwt.scripting.ClientListener;
 
 
-public class ClientListener implements Listener {
+public class ClientListenerBinding {
 
-  public void handleEvent( Event event ) {
+  private final ClientListener listener;
+  private final int eventType;
+
+  public ClientListenerBinding( ClientListener listener, int eventType ) {
+    this.listener = listener;
+    this.eventType = eventType;
+  }
+
+  public ClientListener getListener() {
+    return listener;
+  }
+
+  public int getEventType() {
+    return eventType;
   }
 
 }

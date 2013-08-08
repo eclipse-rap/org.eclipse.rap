@@ -407,7 +407,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       composite._clientArea.setScrollTop( 20 );
       composite._onscroll( {} ); // The dom event would be fired after the test
       TestUtil.forceTimerOnce();
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var msg = TestUtil.getMessageObject();
       assertEquals( 10, msg.findSetProperty( "w3", "horizontalBar.selection" ) );
@@ -473,7 +473,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       composite._clientArea.setScrollTop( 70 );
       composite._onscroll( {} );
       TestUtil.forceTimerOnce();
-      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       var position = this._getScrollPosition( composite );
       assertEquals( [ 50, 0 ], position );
@@ -497,7 +497,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       composite._clientArea.setScrollTop( 70 );
       composite._onscroll( {} );
       TestUtil.forceTimerOnce();
-      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var position = this._getScrollPosition( composite );
@@ -580,7 +580,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       TestUtil.protocolListen( "w3_hscroll", { "Selection" : true } );
 
       composite.getHorizontalBar().setValue( 20 );
-      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       var message = TestUtil.getLastMessage();
       assertEquals( 20, message.findSetProperty( "w3", "horizontalBar.selection" ) );
@@ -595,7 +595,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       TestUtil.protocolListen( "w3_vscroll", { "Selection" : true } );
 
       composite.getVerticalBar().setValue( 20 );
-      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       var message = TestUtil.getLastMessage();
       assertEquals( 20, message.findSetProperty( "w3", "verticalBar.selection" ) );

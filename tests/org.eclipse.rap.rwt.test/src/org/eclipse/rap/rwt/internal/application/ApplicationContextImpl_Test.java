@@ -19,7 +19,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -43,6 +48,8 @@ import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
+import org.eclipse.rap.rwt.service.ApplicationContextEvent;
+import org.eclipse.rap.rwt.service.ApplicationContextListener;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.SettingStoreFactory;
@@ -51,6 +58,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 
 public class ApplicationContextImpl_Test {
@@ -65,12 +73,14 @@ public class ApplicationContextImpl_Test {
   private SettingStoreFactory settingStoreFactory;
   private ServiceHandler serviceHandler;
   private ApplicationContextImpl applicationContext;
+  private ApplicationContextListener listener;
 
   @Before
   public void setUp() {
     phaseListener = mock( PhaseListener.class );
     settingStoreFactory = mock( SettingStoreFactory.class );
     serviceHandler = mock( ServiceHandler.class );
+    listener = mock( ApplicationContextListener.class );
   }
 
   @Test
@@ -151,8 +161,17 @@ public class ApplicationContextImpl_Test {
   }
 
   @Test
+  public void testIsActive_isTrueAfterActivate() {
+    applicationContext = createApplicationContextSpy();
+
+    applicationContext.activate();
+
+    assertTrue( applicationContext.isActive() );
+  }
+
+  @Test
   public void testActivate_initializesSubSystems() {
-    ServletContext servletContext = createServletContext( Fixture.WEB_CONTEXT_DIR );
+    ServletContext servletContext = createServletContext();
     applicationContext = new ApplicationContextImpl( createConfiguration(), servletContext );
 
     applicationContext.activate();
@@ -190,7 +209,7 @@ public class ApplicationContextImpl_Test {
         application.addStyleSheet( THEME_ID, STYLE_SHEET );
       }
     };
-    ServletContext servletContext = createServletContext( Fixture.WEB_CONTEXT_DIR );
+    ServletContext servletContext = createServletContext();
     applicationContext = new ApplicationContextImpl( configuration, servletContext );
 
     applicationContext.activate();
@@ -199,20 +218,33 @@ public class ApplicationContextImpl_Test {
   }
 
   @Test
+  public void testActivate_failsIfAlreadyActivated() {
+    applicationContext = createApplicationContextSpy();
+    applicationContext.activate();
+
+    try {
+      applicationContext.activate();
+      fail();
+    } catch( IllegalStateException expected ) {
+      assertEquals( "ApplicationContext is already active", expected.getMessage() );
+    }
+  }
+
+  @Test
   public void testDeactivate_failsIfNotActivated() {
-    applicationContext = new ApplicationContextImpl( null, null );
+    applicationContext = createApplicationContextSpy();
 
     try {
       applicationContext.deactivate();
       fail();
     } catch( IllegalStateException expected ) {
-      assertEquals( "The ApplicationContext has not been activated.", expected.getMessage() );
+      assertEquals( "ApplicationContext is not active", expected.getMessage() );
     }
   }
 
   @Test
   public void testDeactivate_resetsSubSystems() {
-    ServletContext servletContext = createServletContext( Fixture.WEB_CONTEXT_DIR );
+    ServletContext servletContext = createServletContext();
     applicationContext = new ApplicationContextImpl( createConfiguration(), servletContext );
     applicationContext.activate();
 
@@ -251,13 +283,152 @@ public class ApplicationContextImpl_Test {
     assertNull( ApplicationContextImpl.getFrom( servletContext ) );
   }
 
-  private ServletContext createServletContext( File contextDirectory ) {
-    ServletContext servletContext = mock( ServletContext.class );
-    if( contextDirectory != null ) {
-      when( servletContext.getAttribute( ApplicationConfiguration.RESOURCE_ROOT_LOCATION ) )
-        .thenReturn( contextDirectory.toString() );
-    }
-    return servletContext;
+  @Test( expected = NullPointerException.class )
+  public void testAddApplicationContextListener_failsWithNullArgument() {
+    applicationContext = new ApplicationContextImpl( null, null );
+
+    applicationContext.addApplicationContextListener( null );
+  }
+
+  @Test
+  public void testAddApplicationContextListener_addsListener() {
+    applicationContext = createApplicationContextSpy();
+    applicationContext.activate();
+    applicationContext.addApplicationContextListener( listener );
+
+    applicationContext.deactivate();
+
+    verify( listener ).beforeDestroy( any( ApplicationContextEvent.class ) );
+  }
+
+  @Test
+  public void testAddApplicationContextListener_doesNotAddListenerTwice() {
+    applicationContext = createApplicationContextSpy();
+    applicationContext.activate();
+    applicationContext.addApplicationContextListener( listener );
+    applicationContext.addApplicationContextListener( listener );
+
+    applicationContext.deactivate();
+
+    verify( listener ).beforeDestroy( any( ApplicationContextEvent.class ) );
+  }
+
+  @Test
+  public void testAddApplicationContextListener_returnsTrueWhenActive() {
+    applicationContext = createApplicationContextSpy();
+    applicationContext.activate();
+
+    boolean result = applicationContext.addApplicationContextListener( listener );
+
+    assertTrue( result );
+  }
+
+  @Test
+  public void testAddApplicationContextListener_returnsTrueEvenIfAlreadyAdded() {
+    applicationContext = createApplicationContextSpy();
+    applicationContext.activate();
+    applicationContext.addApplicationContextListener( listener );
+
+    boolean result = applicationContext.addApplicationContextListener( listener );
+
+    assertTrue( result );
+  }
+
+  @Test
+  public void testAddApplicationContextListener_returnsFalseWhenInactive() {
+    applicationContext = createApplicationContextSpy();
+
+    boolean result = applicationContext.addApplicationContextListener( listener );
+
+    assertFalse( result );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testRemoveApplicationContextListener_failsWithNullArgument() {
+    applicationContext = new ApplicationContextImpl( null, null );
+
+    applicationContext.removeApplicationContextListener( null );
+  }
+
+  @Test
+  public void testRemoveApplicationContextListener_toleratesMissingListener() {
+    applicationContext = createApplicationContextSpy();
+
+    applicationContext.removeApplicationContextListener( listener );
+  }
+
+  @Test
+  public void testRemoveApplicationContextListener_removesListener() {
+    applicationContext = createApplicationContextSpy();
+    applicationContext.activate();
+    applicationContext.addApplicationContextListener( listener );
+
+    applicationContext.removeApplicationContextListener( listener );
+    applicationContext.deactivate();
+
+    verify( listener, never() ).beforeDestroy( any( ApplicationContextEvent.class ) );
+  }
+
+  @Test
+  public void testRemoveApplicationContextListener_returnsTrueWhenActive() {
+    applicationContext = createApplicationContextSpy();
+    applicationContext.activate();
+    applicationContext.addApplicationContextListener( listener );
+
+    boolean result = applicationContext.removeApplicationContextListener( listener );
+
+    assertTrue( result );
+  }
+
+  @Test
+  public void testRemoveApplicationContextListener_returnsTrueEvenIfMissing() {
+    applicationContext = createApplicationContextSpy();
+    applicationContext.activate();
+
+    boolean result = applicationContext.removeApplicationContextListener( listener );
+
+    assertTrue( result );
+  }
+
+  @Test
+  public void testRemoveApplicationContextListener_returnsFalseWhenInActive() {
+    applicationContext = createApplicationContextSpy();
+    applicationContext.addApplicationContextListener( listener );
+
+    boolean result = applicationContext.removeApplicationContextListener( listener );
+
+    assertFalse( result );
+  }
+
+  @Test
+  public void testBeforeDestroyEvent() {
+    applicationContext = createApplicationContextSpy();
+    applicationContext.activate();
+    applicationContext.addApplicationContextListener( listener );
+
+    applicationContext.deactivate();
+
+    ArgumentCaptor<ApplicationContextEvent> captor
+      = ArgumentCaptor.forClass( ApplicationContextEvent.class );
+    verify( listener ).beforeDestroy( captor.capture() );
+    assertSame( applicationContext, captor.getValue().getSource() );
+    assertSame( applicationContext, captor.getValue().getApplicationContext() );
+  }
+
+  @Test
+  public void testExceptionHandlingInApplicationContextListeners() {
+    ServletContext servletContext = createServletContext();
+    applicationContext = new ApplicationContextImpl( createConfiguration(), servletContext );
+    applicationContext.activate();
+    applicationContext.addApplicationContextListener( new ApplicationContextListener() {
+      public void beforeDestroy( ApplicationContextEvent event ) {
+        throw new RuntimeException();
+      }
+    } );
+
+    applicationContext.deactivate();
+
+    verify( servletContext ).log( anyString(), any( RuntimeException.class ) );
   }
 
   private File createTempDirectory() {
@@ -414,6 +585,30 @@ public class ApplicationContextImpl_Test {
       }
     }
     return false;
+  }
+
+  private static ApplicationContextImpl createApplicationContextSpy() {
+    return spy( new ApplicationContextImpl( null, null ) {
+      @Override
+      void doActivate() {
+      }
+      @Override
+      void doDeactivate() {
+      }
+    } );
+  }
+
+  private static ServletContext createServletContext() {
+    return createServletContext( Fixture.WEB_CONTEXT_DIR );
+  }
+
+  private static ServletContext createServletContext( File contextDirectory ) {
+    ServletContext servletContext = mock( ServletContext.class );
+    if( contextDirectory != null ) {
+      when( servletContext.getAttribute( ApplicationConfiguration.RESOURCE_ROOT_LOCATION ) )
+        .thenReturn( contextDirectory.toString() );
+    }
+    return servletContext;
   }
 
   private static class TestWidget extends Composite {

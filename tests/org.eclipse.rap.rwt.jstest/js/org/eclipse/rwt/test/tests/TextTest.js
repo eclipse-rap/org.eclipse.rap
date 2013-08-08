@@ -17,7 +17,7 @@ var ObjectRegistry = rwt.remote.ObjectRegistry;
 var Font = rwt.html.Font;
 var Border = rwt.html.Border;
 var Client = rwt.client.Client;
-var Server = rwt.remote.Server;
+var Server = rwt.remote.Connection;
 
 var shell;
 var text;
@@ -829,6 +829,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       var element = text._getTargetNode().firstChild;
       assertEquals( "konnichiwa", element.innerHTML );
+    },
+
+    testSetMessageEscapesText : function() {
+      createText();
+
+      text.setMessage( ">konnichiwa<" );
+
+      var element = text._getTargetNode().firstChild;
+      assertEquals( "&gt;konnichiwa&lt;", element.innerHTML );
     },
 
     testSetMessageOnMulti : function() {

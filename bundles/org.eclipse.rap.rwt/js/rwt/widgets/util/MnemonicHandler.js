@@ -30,13 +30,31 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     add : function( widget, listener ) {
       var root = widget.getFocusRoot();
       this._registerFocusRoot( root );
-      this._map[ root.toHashCode() ][ widget.toHashCode() ] = [ widget, listener ];
+      var handlers = this._map[ root.toHashCode() ];
+      if( widget instanceof rwt.widgets.MenuItem ) {
+        handlers.menu[ widget.toHashCode() ] = [ widget, listener ];
+      } else {
+        handlers.controls[ widget.toHashCode() ] = [ widget, listener ];
+      }
     },
 
     remove : function( widget ) {
       // NOTE: The focus root may be gone if the widget is in dispose, therefore we have to search:
-      for( var key in this._map ) {
-        delete this._map[ key ][ widget.toHashCode() ];
+      var hash = widget.toHashCode();
+      if( widget instanceof rwt.widgets.MenuItem ) {
+        for( var key in this._map ) {
+          if( this._map[ key ].menu[ widget.toHashCode() ] ) {
+            delete this._map[ key ].menu[ hash ];
+            return;
+          }
+        }
+      } else {
+        for( var key in this._map ) {
+          if( this._map[ key ].controls[ widget.toHashCode() ] ) {
+            delete this._map[ key ].controls[ hash ];
+            return;
+          }
+        }
       }
     },
 
@@ -99,7 +117,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
     _registerFocusRoot : function( root ) {
       if( !this._map[ root.toHashCode() ] ) {
-        this._map[ root.toHashCode() ] = {};
+        this._map[ root.toHashCode() ] = { "menu" : {}, "controls" : {} };
         root.addEventListener( "dispose", function() {
           this.deactivate();
           delete this._map[ root.toHashCode() ];
@@ -109,27 +127,35 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     },
 
     _fire : function( event, onlyVisible ) {
-      var result = null;
       if( this._map[ this._active ] ) {
-        var handlers = this._map[ this._active ];
-        for( var key in handlers ) {
-          var entry = handlers[ key ];
-          if( !onlyVisible || entry[ 0 ].isSeeable() ) {
-            try{
-              entry[ 1 ].call( entry[ 0 ], event );
-            } catch( ex ) {
-              var msg = "Could not handle mnemonic " + event.type + ". ";
-              if( entry[ 0 ].isDisposed() ) {
-                msg +=  entry[ 0 ].classname + " is disposed. ";
-              }
-              msg += ex.message;
-              throw new Error( msg );
+        this._doFire( event, onlyVisible, this._map[ this._active ].controls );
+        if( !event.success ) {
+          this._doFire( event, onlyVisible, this._map[ this._active ].menu );
+        }
+      }
+    },
+
+    _doFire : function( event, onlyVisible, handlers ) {
+      for( var key in handlers ) {
+        var entry = handlers[ key ];
+        if( !onlyVisible || entry[ 0 ].isSeeable() ) {
+          try{
+            entry[ 1 ].call( entry[ 0 ], event );
+            if( event.success ) {
+              break;
             }
+          } catch( ex ) {
+            var msg = "Could not handle mnemonic " + event.type + ". ";
+            if( entry[ 0 ].isDisposed() ) {
+              msg +=  entry[ 0 ].classname + " is disposed. ";
+            }
+            msg += ex.message;
+            throw new Error( msg );
           }
         }
       }
-      return result;
     },
+
 
     _isActivation : function( eventType, keyCode, charCode, domEvent ) {
       return    this._activator

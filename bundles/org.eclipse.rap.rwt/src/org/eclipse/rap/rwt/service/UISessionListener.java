@@ -16,8 +16,8 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 
 /**
- * <code>UISessionListener</code>s can be attached to a UI session to receive a notification before
- * the UI session is destroyed.
+ * A listener that can be attached to a <code>UISession</code> to receive a notification before the
+ * UI session is destroyed.
  *
  * @since 2.0
  */

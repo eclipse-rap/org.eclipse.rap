@@ -11,7 +11,7 @@
 
 (function(){
 
-var server = rwt.remote.Server.getInstance();
+var server = rwt.remote.Connection.getInstance();
 
 /**
  * @private

@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import static org.eclipse.rap.rwt.internal.clientscripting.ClientScriptingSupport.addClientListenerTo;
-import static org.eclipse.rap.rwt.internal.clientscripting.ClientScriptingSupport.removeClientListenerFrom;
+import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.clientListenerAdded;
+import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.clientListenerRemoved;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
@@ -24,6 +24,7 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeListener;
@@ -526,7 +527,9 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     }
     ensureEventTable();
     eventTable.hook( eventType, listener );
-    addClientListenerTo( this, eventType, listener );
+    if( listener instanceof ClientListener ) {
+      clientListenerAdded( this, eventType, ( ClientListener )listener );
+    }
   }
 
   /**
@@ -560,7 +563,9 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     if( eventTable != null ) {
       eventTable.unhook( eventType, listener );
     }
-    removeClientListenerFrom( this, eventType, listener );
+    if( listener instanceof ClientListener ) {
+      clientListenerRemoved( this, eventType, ( ClientListener )listener );
+    }
   }
 
   /**

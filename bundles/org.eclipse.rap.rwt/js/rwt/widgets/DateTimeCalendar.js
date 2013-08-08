@@ -110,7 +110,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
 
     _sendChanges : function( date, month, year ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
         remoteObject.set( "day", date );
         remoteObject.set( "month", month );
         remoteObject.set( "year", year );

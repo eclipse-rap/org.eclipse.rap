@@ -362,7 +362,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
 
     _sendChanges : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
         remoteObject.set( "hours", this._removeLeadingZero( this._hoursTextField.getText() ) );
         remoteObject.set( "minutes", this._removeLeadingZero( this._minutesTextField.getText() ) );
         remoteObject.set( "seconds", this._removeLeadingZero( this._secondsTextField.getText() ) );

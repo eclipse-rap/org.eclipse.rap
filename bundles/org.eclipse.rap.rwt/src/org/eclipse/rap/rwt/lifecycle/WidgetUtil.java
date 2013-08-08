@@ -15,6 +15,8 @@ import java.text.MessageFormat;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.RWTProperties;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetDataUtil;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -163,7 +165,7 @@ public final class WidgetUtil {
 
   /**
    * This method searches for a widget with the given <code>id</code> within
-   * the widget hierachy starting at <code>root</code>.
+   * the widget hierarchy starting at <code>root</code>.
    *
    * @param root the root widget where to start the search
    * @param id the id of the widget to search for
@@ -184,6 +186,25 @@ public final class WidgetUtil {
       } );
     }
     return result[ 0 ];
+  }
+
+  /**
+   * Adds keys to the list of keys of widget data that are synchronized with the client. It is save
+   * to add the same key twice, there are no side-effects. The method has to be called from the UI
+   * thread and affects the entire UI-session. The data is only transferred from server to client,
+   * not back.
+   * <p>
+   * <strong>Note:</strong> This method is considered <strong>provisional</strong> and may change
+   * again until the final release.
+   * </p>
+   *
+   * @see org.eclipse.swt.widgets.Widget#setData(String, Object)
+   * @param keys The keys to add to the list.
+   * @since 2.2
+   */
+  public static void registerDataKeys( String... keys ) {
+    ParamCheck.notNull( keys, "keys" );
+    WidgetDataUtil.registerDataKeys( keys );
   }
 
   private static void throwAdapterException( Class clazz ) {
@@ -222,4 +243,5 @@ public final class WidgetUtil {
       || ( ch >= '0' && ch <= '9' )
       || ch == '-';
   }
+
 }

@@ -264,7 +264,7 @@ public final class ClientResources {
     "rwt/remote/MessageWriter.js",
     "rwt/client/ServerPush.js",
     "rwt/remote/handler/ServerPushHandler.js",
-    "rwt/remote/Server.js",
+    "rwt/remote/Connection.js",
     "rwt/widgets/CTabItem.js",
     "rwt/remote/handler/CTabItemHandler.js",
     "rwt/widgets/CTabFolder.js",
@@ -284,7 +284,14 @@ public final class ClientResources {
     "rwt/runtime/System.js",
     "rwt/remote/handler/ClientInfoHandler.js",
     "rwt/widgets/util/MnemonicHandler.js",
-    "rap.js"
+    "rap.js",
+    "rwt/scripting/SWT.js",
+    "rwt/scripting/EventBinding.js",
+    "rwt/scripting/EventProxy.js",
+    "rwt/scripting/FunctionFactory.js",
+    "rwt/scripting/WidgetProxyFactory.js",
+    "rwt/scripting/init.js",
+    "rwt/remote/handler/FunctionHandler.js"
   };
 
   private static final String[] WIDGET_IMAGES = new String[] {
@@ -420,4 +427,5 @@ public final class ClientResources {
   private InputStream openResourceStream( String name ) {
     return getClass().getClassLoader().getResourceAsStream( name );
   }
+
 }

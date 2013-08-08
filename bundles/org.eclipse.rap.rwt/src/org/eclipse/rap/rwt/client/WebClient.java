@@ -33,8 +33,6 @@ import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
 import org.eclipse.rap.rwt.internal.client.UrlLauncherImpl;
 import org.eclipse.rap.rwt.internal.client.WebClientMessages;
-import org.eclipse.rap.rwt.internal.client.WidgetDataWhiteList;
-import org.eclipse.rap.rwt.internal.client.WidgetDataWhiteListImpl;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoader;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoaderImpl;
 import org.eclipse.rap.rwt.service.ResourceLoader;
@@ -141,8 +139,6 @@ public class WebClient implements Client {
       result = ( T )getServiceImpl( ExitConfirmationImpl.class );
     } else if( type == ConnectionMessages.class ) {
       result = ( T )getServiceImpl( ConnectionMessagesImpl.class );
-    } else if( type == WidgetDataWhiteList.class ) {
-      result = ( T )getServiceImpl( WidgetDataWhiteListImpl.class );
     } else if( type == ClientInfo.class ) {
       result = ( T )getServiceImpl( ClientInfoImpl.class );
     } else if( type == ClientMessages.class ) {

@@ -203,7 +203,7 @@ rwt.qx.Class.define( "rwt.widgets.Slider", {
     },
 
     _sendChanges : function() {
-      rwt.remote.Server.getInstance().getRemoteObject( this ).set( "selection", this._selection );
+      rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "selection", this._selection );
       if( this._hasSelectionListener ) {
         rwt.remote.EventUtil.notifySelected( this );
       }

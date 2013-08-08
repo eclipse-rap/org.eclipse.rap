@@ -595,7 +595,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.getVerticalBar().setHasSelectionListener( true );
 
       list.getVerticalBar().setValue( 40 );
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       var message = TestUtil.getLastMessage();
       assertEquals( 2, message.findSetProperty( "w3", "topIndex" ) );

@@ -69,6 +69,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
+    testSetIndex_adjustsAlignmentInRenderConfig : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      column.setAlignment( "right" );
+
+      TestUtil.protocolSet( "w4", { "index" : 3 } );
+
+      assertEquals( "right", tree.getRenderConfig().alignment[ 3 ] );
+      column.dispose();
+      tree.destroy();
+    },
+
     testSetLeftByProtocol : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
@@ -1503,7 +1515,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var label = this._getColumnLabel( tree, column );
       TestUtil.clickDOM( label.getCellNode( 2  ) );
       TestUtil.flush();
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertFalse( TestUtil.getMessageObject().findSetProperty( "w4", "expanded" ) );
@@ -1523,7 +1535,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var label = this._getColumnLabel( tree, column );
       TestUtil.clickDOM( label.getCellNode( 2  ) );
       TestUtil.flush();
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertTrue( TestUtil.getMessageObject().findSetProperty( "w4", "expanded" ) );

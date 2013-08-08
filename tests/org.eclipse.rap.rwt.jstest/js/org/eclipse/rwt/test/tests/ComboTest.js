@@ -646,6 +646,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.destroy();
     },
 
+    testListPosition_afterSetBoundsAndListVisibleTogether : function() {
+      var combo = this._createDefaultCombo();
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "set",
+        "properties" : {
+          "bounds" : [ 11, 12, 13, 14 ],
+          "listVisible" : true
+        }
+      } );
+      TestUtil.flush();
+
+      assertTrue( combo._list.isSeeable() );
+      assertEquals( 11, combo._list.getLeft() );
+      assertEquals( 26, combo._list.getTop() );
+      combo.destroy();
+    },
+
     testScrollToSelectedItem : function() {
       var combo = this._createDefaultCombo();
       combo.select( 5 );
@@ -794,7 +812,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
 
       combo._field.setValue( "a" );
       combo._field._oninput();
-      rwt.remote.Server.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();

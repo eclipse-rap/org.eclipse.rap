@@ -122,7 +122,7 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
 
     _sendProgressEvent : function() {
       if( this._hasProgressListener ) {
-        rwt.remote.Server.getInstance().getRemoteObject( this ).notify( "Progress" );
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Progress" );
       }
     },
 
@@ -141,8 +141,8 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
       } catch( ex ) {
         success = false;
       }
-      var req = rwt.remote.Server.getInstance();
-      var remoteObject = rwt.remote.Server.getInstance().getRemoteObject( this );
+      var req = rwt.remote.Connection.getInstance();
+      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
       remoteObject.set( "executeResult", success );
       remoteObject.set( "evaluateResult", result );
       if( this.getExecutedFunctionPending() ) {
@@ -253,7 +253,7 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
 
     _createFunctionImpl : function( name ) {
       var win = this.getContentWindow();
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       var remoteObject = server.getRemoteObject( this );
       var that = this;
       win[ name + "_impl" ] = function() {

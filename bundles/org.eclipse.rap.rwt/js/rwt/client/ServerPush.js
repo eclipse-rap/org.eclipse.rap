@@ -38,7 +38,7 @@ rwt.client.ServerPush.prototype = {
   },
 
   sendUIRequest : function() {
-    rwt.remote.Server.getInstance().sendImmediate( true );
+    rwt.remote.Connection.getInstance().sendImmediate( true );
   },
 
   sendUICallBackRequest : function() {
@@ -55,7 +55,7 @@ rwt.client.ServerPush.prototype = {
   },
 
   _createRequest : function() {
-    var server = rwt.remote.Server.getInstance();
+    var server = rwt.remote.Connection.getInstance();
     var request = new rwt.remote.Request( server.getUrl(), "GET", "application/javascript" );
     request.setSuccessHandler( this._handleSuccess, this );
     request.setErrorHandler( this._handleError, this );
@@ -71,7 +71,7 @@ rwt.client.ServerPush.prototype = {
 
   _handleError : function( event ) {
     this._running = false;
-    if( rwt.remote.Server.getInstance()._isConnectionError( event.status ) ) {
+    if( rwt.remote.Connection.getInstance()._isConnectionError( event.status ) ) {
       rwt.client.Timer.once( this.sendUICallBackRequest, this, this._retryInterval );
       this._increaseRetryInterval();
     }

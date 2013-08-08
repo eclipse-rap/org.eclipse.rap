@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.treecolumnkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -39,7 +40,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.internal.widgets.WidgetDataUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
@@ -221,8 +221,7 @@ public class TreeColumnLCA_Test {
     lca.render( column );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( column );
-    assertTrue( operation.getPropertyNames().indexOf( "index" ) == -1 );
+    assertEquals( 0, message.findCreateProperty( column, "index" ).asInt() );
   }
 
   @Test
@@ -669,7 +668,7 @@ public class TreeColumnLCA_Test {
 
   @Test
   public void testRenderData() throws IOException {
-    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
+    registerDataKeys( new String[]{ "foo", "bar" } );
     column.setData( "foo", "string" );
     column.setData( "bar", Integer.valueOf( 1 ) );
 
@@ -683,7 +682,7 @@ public class TreeColumnLCA_Test {
 
   @Test
   public void testRenderDataUnchanged() throws IOException {
-    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo" } );
+    registerDataKeys( new String[]{ "foo" } );
     column.setData( "foo", "string" );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );

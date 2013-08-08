@@ -1408,7 +1408,9 @@ public abstract class AbstractTreeViewer extends ColumnViewer {
 			// For details, see bug 90161 [Navigator] DefaultSelecting folders
 			// shouldn't always expand first one
 			ISelection selection;
-			if (event.item != null && event.item.getData() != null) {
+			// RAP [if] Add a check for disposed item - see bug 413920
+			if (event.item != null && !event.item.isDisposed() && event.item.getData() != null) {
+//			if (event.item != null && event.item.getData() != null) {
 
 				// changes to fix bug 108102 follow
 				TreePath treePath = getTreePathFromItem((Item) event.item);

@@ -41,7 +41,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
 
       var result = rap.getRemoteObject( obj );
 
-      assertIdentical( result, rwt.remote.Server.getInstance().getRemoteObject( obj ) );
+      assertIdentical( result, rwt.remote.Connection.getInstance().getRemoteObject( obj ) );
       AdapterRegistry.remove( "myTestType" );
     },
 
@@ -314,7 +314,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
 
     testOn_FireRenderEventAfterProcess : function() {
       var logger = TestUtil.getLogger();
-      var server = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Connection.getInstance();
       var now = server.getRequestCounter();
 
       rap.on( "render", function(){ logger.log( server.getRequestCounter() ); } );
