@@ -113,7 +113,7 @@ public class ShellLCA_Test {
     assertEquals( null, adapter.getPreserved( ShellLCA.PROP_ACTIVE_CONTROL ) );
     assertEquals( null, adapter.getPreserved( ShellLCA.PROP_ACTIVE_SHELL ) );
     assertEquals( null, adapter.getPreserved( ShellLCA.PROP_MODE ) );
-    assertEquals( new Point( 80, 0 ), adapter.getPreserved( ShellLCA.PROP_MINIMUM_SIZE ) );
+    assertEquals( new Point( 30, 0 ), adapter.getPreserved( ShellLCA.PROP_MINIMUM_SIZE ) );
     Fixture.clearPreserved();
     shell.setText( "some text" );
     shell.open();
