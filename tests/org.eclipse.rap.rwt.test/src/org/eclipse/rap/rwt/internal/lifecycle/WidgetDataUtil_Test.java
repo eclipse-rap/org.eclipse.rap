@@ -10,7 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.*;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
@@ -32,39 +36,45 @@ public class WidgetDataUtil_Test {
 
   @Test
   public void testRegisterDataKeys() {
-    String[] keys = new String[] { "a", "b", "c" };
+    WidgetDataUtil.registerDataKeys(  "a", "b", "c" );
 
-    WidgetDataUtil.registerDataKeys( keys );
-
-    assertArrayEquals( keys, WidgetDataUtil.getDataKeys().toArray() );
+    assertEquals( createSet( "a", "b", "c" ), WidgetDataUtil.getDataKeys() );
   }
 
   @Test
   public void testRegisterDataKeys_appendKeys() {
-    String[] keys = new String[] { "a", "b", "c", "d", "e", "f" };
-
     WidgetDataUtil.registerDataKeys( "a", "b", "c" );
     WidgetDataUtil.registerDataKeys( "d", "e", "f" );
 
-    assertArrayEquals( keys, WidgetDataUtil.getDataKeys().toArray() );
+    assertEquals( createSet( "a", "b", "c", "d", "e", "f" ), WidgetDataUtil.getDataKeys() );
   }
 
   @Test
   public void testRegisterDataKeys_duplicateKeys() {
-    String[] keys = new String[] { "a", "b", "c" };
-
     WidgetDataUtil.registerDataKeys( "a", "b", "a", "c", "c" );
 
-    assertArrayEquals( keys, WidgetDataUtil.getDataKeys().toArray() );
+    assertEquals( createSet( "a", "b", "c" ), WidgetDataUtil.getDataKeys() );
   }
 
   @Test
   public void testRegisterDataKeys_nullKey() {
-    String[] keys = new String[] { "a", "b", "c" };
-
     WidgetDataUtil.registerDataKeys( "a", "b", null, "c" );
 
-    assertArrayEquals( keys, WidgetDataUtil.getDataKeys().toArray() );
+    assertEquals( createSet( "a", "b", "c" ), WidgetDataUtil.getDataKeys() );
+  }
+
+  @Test
+  public void testGetDataKeys_returnsEmptySet() {
+    assertEquals( createSet(), WidgetDataUtil.getDataKeys() );
+  }
+
+  @Test( expected = UnsupportedOperationException.class )
+  public void testGetDataKeys_returnsUnmodifiableSet() {
+    WidgetDataUtil.getDataKeys().add( "foo" );
+  }
+
+  private static Set<String> createSet( String... keys ) {
+    return new HashSet<String>( Arrays.asList( keys ) );
   }
 
 }

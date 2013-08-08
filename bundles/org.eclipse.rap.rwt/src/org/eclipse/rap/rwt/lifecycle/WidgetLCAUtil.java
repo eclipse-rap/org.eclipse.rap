@@ -29,7 +29,6 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -401,16 +400,11 @@ public final class WidgetLCAUtil {
 
   private static Object[] getDataAsArray( Widget widget ) {
     List<Object> result = new ArrayList<Object>();
-    List<String> dataKeys = WidgetDataUtil.getDataKeys();
-    if( dataKeys != null ) {
-      for( String key : dataKeys ) {
-        if( key != null ) {
-          Object value = widget.getData( key );
-          if( value != null ) {
-            result.add( key );
-            result.add( value );
-          }
-        }
+    for( String key : WidgetDataUtil.getDataKeys() ) {
+      Object value = widget.getData( key );
+      if( value != null ) {
+        result.add( key );
+        result.add( value );
       }
     }
     return result.toArray();

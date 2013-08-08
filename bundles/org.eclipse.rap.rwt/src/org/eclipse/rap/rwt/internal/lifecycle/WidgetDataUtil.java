@@ -12,8 +12,10 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 
@@ -23,21 +25,30 @@ public final class WidgetDataUtil {
   private static final String ATTR_DATA_KEYS = WidgetUtil.class.getName() + "#dataKeys";
 
   public static void registerDataKeys( String... keys ) {
-    List<String> dataKeys = getDataKeys();
-    if( dataKeys == null ) {
-      dataKeys = new ArrayList<String>();
-      getUISession().setAttribute( ATTR_DATA_KEYS, dataKeys );
-    }
+    Collection<String> dataKeys = getDataKeys( true );
     for( String key : keys ) {
-      if( key != null && !dataKeys.contains( key ) ) {
+      if( key != null ) {
         dataKeys.add( key );
       }
     }
   }
 
+  public static Collection<String> getDataKeys() {
+    Set<String> dataKeys =  getDataKeys( false );
+    if( dataKeys != null ) {
+      return Collections.unmodifiableSet( dataKeys );
+    }
+    return Collections.emptySet();
+  }
+
   @SuppressWarnings( "unchecked" )
-  public static List<String> getDataKeys() {
-    return ( List<String> )getUISession().getAttribute( ATTR_DATA_KEYS );
+  private static Set<String> getDataKeys( boolean create ) {
+    Set<String> dataKeys = ( Set<String> )getUISession().getAttribute( ATTR_DATA_KEYS );
+    if( dataKeys == null && create ) {
+      dataKeys = new HashSet<String>();
+      getUISession().setAttribute( ATTR_DATA_KEYS, dataKeys );
+    }
+    return dataKeys;
   }
 
   private WidgetDataUtil() {

@@ -11,11 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetDataUtil;
@@ -114,11 +116,10 @@ public class WidgetUtil_Test {
 
   @Test
   public void testRegisterDataKeys() {
-    String[] keys = new String[] { "a", "b", "c" };
+    WidgetUtil.registerDataKeys( "a", "b", "c" );
 
-    WidgetUtil.registerDataKeys( keys );
-
-    assertArrayEquals( keys, WidgetDataUtil.getDataKeys().toArray() );
+    assertEquals( new HashSet<String>( Arrays.asList( "a", "b", "c" ) ),
+                  WidgetDataUtil.getDataKeys() );
   }
 
   @Test( expected = NullPointerException.class )
