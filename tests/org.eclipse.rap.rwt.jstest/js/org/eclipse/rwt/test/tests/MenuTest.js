@@ -554,11 +554,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       rwt.widgets.util.MnemonicHandler.getInstance().activate();
       TestUtil.flush();
 
-      assertEquals( "f<span style=\"text-decoration:underline\">o</span>o", menuBarItem.getCellContent( 2 ) );
+      var expected = "f<span style=\"text-decoration:underline\">o</span>o";
+      assertEquals( expected, menuBarItem.getCellContent( 2 ) );
       disposeMenuBar();
     },
 
-    testMenuBar_setActive_hoversFirstItem : function() {
+    testMenuBar_setActiveTrue_hoversFirstItem : function() {
       createMenuBar();
       TestUtil.flush();
 
@@ -566,6 +567,53 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.flush();
 
       assertIdentical( menuBarItem, menuBar._hoverItem );
+      disposeMenuBar();
+    },
+
+    testMenuBar_setActiveTrue_setsAsActiveChild : function() {
+      createMenuBar();
+      TestUtil.flush();
+
+      menuBar.setActive( true );
+
+      assertIdentical( menuBar, menuBar.getFocusRoot().getActiveChild() );
+      disposeMenuBar();
+    },
+
+    testMenuBar_setActiveFalse_restoresActiveAndFocusedChild : function() {
+      createMenuBar();
+      var button = new rwt.widgets.base.BasicButton( "push" );
+      button.addToDocument();
+      TestUtil.flush();
+      button.focus();
+      menuBar.setActive( true );
+
+      menuBar.setActive( false );
+
+      assertIdentical( button, menuBar.getFocusRoot().getActiveChild() );
+      assertIdentical( button, menuBar.getFocusRoot().getFocusedChild() );
+      disposeMenuBar();
+    },
+
+    testMenuBar_setActiveFalse_clearsHoverItem : function() {
+      createMenuBar();
+      TestUtil.flush();
+
+      menuBar.setActive( true );
+      menuBar.setActive( false );
+
+      assertNull( menuBar._hoverItem );
+      disposeMenuBar();
+    },
+
+    testMenuBar_setActiveFalse_isCalledOnOutsideClick : function() {
+      createMenuBar();
+      TestUtil.flush();
+
+      menuBar.setActive( true );
+      TestUtil.click( rwt.widgets.base.ClientDocument.getInstance() );
+
+      assertFalse( menuBar.getActive() );
       disposeMenuBar();
     },
 

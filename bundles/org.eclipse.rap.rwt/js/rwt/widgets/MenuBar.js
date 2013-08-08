@@ -17,10 +17,18 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
     this._hoverItem = null;
     this._openItem = null;
     this._active = false;
+    this._lastActive = null;
+    this._lastFocus = null;
     this.addEventListener( "mousedown", this._onMouseDown );
     this.addEventListener( "mouseover", this._onMouseOver );
     this.addEventListener( "mouseout", this._onMouseOut );
-    // TODO [tb] : optional: implement keyboard control
+  },
+
+  destruct : function() {
+    this._hoverItem = null;
+    this._openItem = null;
+    this._lastActive = null;
+    this._lastFocus = null;
   },
 
   properties : {
@@ -39,8 +47,26 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
   members : {
 
     setActive : function( active ) {
-      this._active = active;
-      this.setHoverItem( this.getFirstChild() );
+      if( this._active != active ) {
+        this._active = active;
+        var focusRoot = this.getFocusRoot();
+        if( active ) {
+          rwt.widgets.util.PopupManager.getInstance().add( this );
+          this.setHoverItem( this.getFirstChild() );
+          if( focusRoot ) {
+            this._lastActive = this.getFocusRoot().getActiveChild();
+            this._lastFocus = this.getFocusRoot().getFocusedChild();
+            this.getFocusRoot().setActiveChild( this );
+          }
+        } else {
+          rwt.widgets.util.PopupManager.getInstance().remove( this );
+          if( focusRoot ) {
+            this.setHoverItem( null );
+            focusRoot.setActiveChild( this._lastActive );
+            focusRoot.setFocusedChild( this._lastFocus );
+          }
+        }
+      }
     },
 
     getActive : function() {
@@ -54,27 +80,6 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
         menuItem.setParentMenu( this );
       }
       this.addAt( menuItem, index );
-    },
-
-    _onMouseOver : function( event ) {
-      var target = event.getTarget();
-      var hoverItem = target == this ? null : target;
-      this.setHoverItem( hoverItem );
-    },
-
-    _onMouseOut : function( event ) {
-      var target = event.getTarget();
-      var related = event.getRelatedTarget();
-      if( target == this || !this.contains( related ) ) {
-        this.setHoverItem( null );
-      }
-    },
-
-    _onMouseDown : function( event ) {
-      var target = event.getTarget();
-      if( target != this ) {
-        this.setOpenItem( target );
-      }
     },
 
     setHoverItem : function( item ) {
@@ -120,6 +125,34 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
 
     getOpenItem : function() {
       return this._openItem;
+    },
+
+    //Overwritten, called by PopupManager
+    hide : function() {
+      this.setActive( false );
+    },
+
+    getAutoHide : rwt.util.Functions.returnTrue,
+
+    _onMouseOver : function( event ) {
+      var target = event.getTarget();
+      var hoverItem = target == this ? null : target;
+      this.setHoverItem( hoverItem );
+    },
+
+    _onMouseOut : function( event ) {
+      var target = event.getTarget();
+      var related = event.getRelatedTarget();
+      if( target == this || !this.contains( related ) ) {
+        this.setHoverItem( null );
+      }
+    },
+
+    _onMouseDown : function( event ) {
+      var target = event.getTarget();
+      if( target != this ) {
+        this.setOpenItem( target );
+      }
     }
 
   }

@@ -280,7 +280,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertEquals( [ widgetTwo, menuItem ], order );
     },
 
-    testHide_activateMenu : function() {
+    testDeactivate_activateMenu : function() {
       handler.setActivator( "CTRL" );
       this._createMenu();
       var menuBar = rwt.remote.ObjectRegistry.getObject( "w4" );
@@ -294,7 +294,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertTrue( menuBar.getActive() );
     },
 
-    testHide_doNotactivateMenuIfKeyWasPressed : function() {
+    testDeactivate_doNotactivateMenuIfKeyWasPressed : function() {
       handler.setActivator( "CTRL" );
       this._createMenu();
       var menuBar = rwt.remote.ObjectRegistry.getObject( "w4" );
@@ -310,7 +310,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertFalse( menuBar.getActive() );
     },
 
-    testHide_activateMenuWhenAcivatorWasHeldDown : function() {
+    testDeactivate_activateMenuWhenAcivatorWasHeldDown : function() {
       handler.setActivator( "CTRL" );
       this._createMenu();
       var menuBar = rwt.remote.ObjectRegistry.getObject( "w4" );
@@ -320,6 +320,39 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
 
       TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
       TestUtil.keyHold( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyUp( shell, "Control", 0 );
+
+      assertTrue( menuBar.getActive() );
+    },
+
+    testActivate_notCalledIfKeysHoldDownFromMenuDeactivate : function() {
+      handler.setActivator( "CTRL" );
+      this._createMenu();
+      var menuBar = rwt.remote.ObjectRegistry.getObject( "w4" );
+      var menuItem = rwt.remote.ObjectRegistry.getObject( "w5" );
+      menuItem.setText( "foo" );
+      menuItem.setMnemonicIndex( 1 );
+
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyUp( shell, "Control", 0 ); // menu made active
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK ); //menu de-activate
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK ); // should not activate anything
+
+      assertFalse( menuBar.getActive() );
+      assertFalse( handler.isActive() );
+    },
+
+    testDeactivate_activatesMenuAfterItWasDeacivatedProgramatically : function() {
+      handler.setActivator( "CTRL" );
+      this._createMenu();
+      var menuBar = rwt.remote.ObjectRegistry.getObject( "w4" );
+      var menuItem = rwt.remote.ObjectRegistry.getObject( "w5" );
+      menuItem.setText( "foo" );
+      menuItem.setMnemonicIndex( 1 );
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyUp( shell, "Control", 0 );
+      menuBar.setActive( false );
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
       TestUtil.keyUp( shell, "Control", 0 );
 
       assertTrue( menuBar.getActive() );

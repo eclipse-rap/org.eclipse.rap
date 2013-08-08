@@ -23,7 +23,8 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     this._map = {};
     this._activator = null;
     this._active = null;
-    this._menuActivate = false;
+    this._activeMenu = null;
+    this._allowMenuActivate = false;
   },
 
   members : {
@@ -76,15 +77,19 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
     handleKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
       var result = false;
-      if( this._isActivation( eventType, keyCode, charCode, domEvent ) ) {
-        this.activate();
-      } else if( this._isDeactivation( eventType, keyCode, charCode, domEvent ) ) {
-        this.deactivate();
-      } else if( this._isTrigger( eventType, keyCode, charCode, domEvent ) ) {
-        result = this.trigger( keyCode );
-        this._menuActivate = false;
-      } else if( this.isActive() && !this._isActivatorCombo( domEvent ) ) {
-        this._menuActivate = false;
+      this._checkActiveMenu();
+      // Some browser fire multiple keydown for modifier keys:
+      if( eventType !== "keydown" || rwt.event.EventHandlerUtil.isFirstKeyDown( keyCode ) ) {
+        if( this._isActivation( eventType, keyCode, charCode, domEvent ) ) {
+          this.activate();
+        } else if( this._isDeactivation( eventType, keyCode, charCode, domEvent ) ) {
+          this.deactivate( true );
+        } else if( this._isTrigger( eventType, keyCode, charCode, domEvent ) ) {
+          result = this.trigger( keyCode );
+          this._allowMenuActivate = false;
+        } else if( this.isActive() && !this._isActivatorCombo( domEvent ) ) {
+          this._allowMenuActivate = false;
+        }
       }
       return result;
     },
@@ -98,15 +103,21 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
           root = rwt.widgets.base.ClientDocument.getInstance();
         }
         this._active = root.toHashCode();
-        this._menuActivate = true;
+        this._allowMenuActivate = true;
         this._fire( { "type" : "show" } );
       }
     },
 
-    deactivate : function() {
+    deactivate : function( byKey ) {
+      if( this._activeMenu ) {
+        this._activeMenu.setActive( false );
+        this._activeMenu = null;
+      }
       if( this._active ) {
         this._fire( { "type" : "hide" } );
-        this._activateMenuBar();
+        if( byKey ) {
+          this._activateMenuBar();
+        }
         this._active = null;
       }
     },
@@ -163,15 +174,21 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     },
 
     _activateMenuBar : function() {
-      // It is assumed that all menuItems belong to the same bar
-      console.log( this._menuActivate, this._map[ this._active ] );
-      if( this._menuActivate && this._map[ this._active ] ) {
+      // Accepted limitation: MenuBars without mnemonics can not be activated by mnemonic keys
+      if( this._allowMenuActivate && this._map[ this._active ] ) {
         var items = this._map[ this._active ].menu;
         for( var key in items ) {
           var bar = items[ key ][ 0 ].getParentMenu();
           bar.setActive( true );
+          this._activeMenu = bar;
           break;
         }
+      }
+    },
+
+    _checkActiveMenu : function() {
+      if( this._activeMenu && !this._activeMenu.getActive() ) {
+        this._activeMenu = null;
       }
     },
 
@@ -180,13 +197,25 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
     _isActivation : function( eventType, keyCode, charCode, domEvent ) {
       return    this._activator
-             && this._active == null
+             && this._active == null && this._activeMenu == null
              && eventType === "keydown"
              && EventHandlerUtil.isModifier( keyCode )
              && this._isActivatorCombo( domEvent );
     },
 
     _isDeactivation : function( eventType, keyCode, charCode, domEvent ) {
+      return    this._isGlobalDeactivation( eventType, keyCode, charCode, domEvent )
+             || this._isMenuDeactivation( eventType, keyCode, charCode, domEvent );
+    },
+
+    _isMenuDeactivation : function( eventType, keyCode, charCode, domEvent ) {
+      return    this._activator != null
+             && this._activeMenu != null
+             && EventHandlerUtil.isModifier( keyCode )
+             && this._isActivatorCombo( domEvent );
+    },
+
+    _isGlobalDeactivation : function( eventType, keyCode, charCode, domEvent ) {
       return    this._activator != null
              && this._active != null
              && eventType != "keypress"

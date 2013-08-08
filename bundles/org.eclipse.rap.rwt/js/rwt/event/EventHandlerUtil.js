@@ -233,7 +233,7 @@ rwt.qx.Class.define( "rwt.event.EventHandlerUtil", {
       }
     } ),
 
-    _isFirstKeyDown : function( keyCode ) {
+    isFirstKeyDown : function( keyCode ) {
       return this._lastUpDownType[ keyCode ] !== "keydown";
     },
 
@@ -242,7 +242,7 @@ rwt.qx.Class.define( "rwt.event.EventHandlerUtil", {
         var result;
         if( event.type === "keydown" ) {
           var printable = !this.isNonPrintableKeyCode( keyCode );
-          if( this._isFirstKeyDown( keyCode ) ) {
+          if( this.isFirstKeyDown( keyCode ) ) {
             // add a "keypress" for non-printable keys:
             result = printable ? [ "keydown" ] : [ "keydown", "keypress" ];
           } else {
@@ -257,13 +257,13 @@ rwt.qx.Class.define( "rwt.event.EventHandlerUtil", {
       "gecko" : function( event, keyCode, charCode ) {
         var result;
         if( event.type === "keydown" && this.isModifier( keyCode ) ) {
-          if( this._isFirstKeyDown( keyCode ) ) {
+          if( this.isFirstKeyDown( keyCode ) ) {
             result = [ "keydown", "keypress" ];
           } else {
             result = [ "keypress" ];
           }
         } else {
-          if( event.type === "keydown" && !this._isFirstKeyDown( keyCode ) ) {
+          if( event.type === "keydown" && !this.isFirstKeyDown( keyCode ) ) {
             // suppress unwanted "keydown":
             result = [];
           } else {
@@ -280,7 +280,7 @@ rwt.qx.Class.define( "rwt.event.EventHandlerUtil", {
       // than the key being hold down while another key is pressed.
       var result = [];
       if( pseudoTypes[ 0 ] === "keydown" ) {
-        if( !this._isFirstKeyDown( 93 ) && keyCode !== 93 ) {
+        if( !this.isFirstKeyDown( 93 ) && keyCode !== 93 ) {
           result.push( 93 );
         }
       }
