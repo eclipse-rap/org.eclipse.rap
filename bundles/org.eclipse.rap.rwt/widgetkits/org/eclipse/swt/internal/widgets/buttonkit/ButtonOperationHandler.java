@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
 
 
-public class ButtonOperationHandler extends ControlOperationHandler {
+public class ButtonOperationHandler extends ControlOperationHandler<Button> {
 
   private static final String PROP_SELECTION = "selection";
 
@@ -33,8 +33,9 @@ public class ButtonOperationHandler extends ControlOperationHandler {
    * @param ctrlKey (boolean) true if the CTRL key was pressed
    * @param shiftKey (boolean) true if the SHIFT key was pressed
    */
+  @Override
   public void handleNotifySelection( JsonObject properties ) {
-    Button button = ( Button )widget;
+    Button button = widget;
     Event event = createSelectionEvent( SWT.Selection, properties );
     if( ( button.getStyle() & SWT.RADIO ) != 0 && !button.getSelection() ) {
       event.time = -1;
@@ -53,7 +54,7 @@ public class ButtonOperationHandler extends ControlOperationHandler {
    * @param selection (boolean) true if the button was selected, otherwise false
    */
   private void handleSetSelection( JsonObject properties ) {
-    Button button = ( Button )widget;
+    Button button = widget;
     JsonValue selection = properties.get( PROP_SELECTION );
     if( selection != null ) {
       button.setSelection( selection.asBoolean() );

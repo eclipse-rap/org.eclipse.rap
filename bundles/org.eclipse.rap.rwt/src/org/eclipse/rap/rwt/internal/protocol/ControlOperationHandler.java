@@ -27,9 +27,9 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Scrollable;
 
 
-public class ControlOperationHandler extends WidgetOperationHandler {
+public abstract class ControlOperationHandler<T extends Control> extends WidgetOperationHandler<T> {
 
-  public ControlOperationHandler( Control control ) {
+  public ControlOperationHandler( T control ) {
     super( control );
   }
 
@@ -59,7 +59,7 @@ public class ControlOperationHandler extends WidgetOperationHandler {
    * @param time (int) the time when the event occurred
    */
   public void handleNotifyMouseDown( JsonObject properties ) {
-    processMouseEvent( SWT.MouseDown, ( Control )widget, properties );
+    processMouseEvent( SWT.MouseDown, widget, properties );
   }
 
   /*
@@ -74,7 +74,7 @@ public class ControlOperationHandler extends WidgetOperationHandler {
    * @param time (int) the time when the event occurred
    */
   public void handleNotifyMouseDoubleClick( JsonObject properties ) {
-    processMouseEvent( SWT.MouseDoubleClick, ( Control )widget, properties );
+    processMouseEvent( SWT.MouseDoubleClick, widget, properties );
   }
 
   /*
@@ -89,7 +89,7 @@ public class ControlOperationHandler extends WidgetOperationHandler {
    * @param time (int) the time when the event occurred
    */
   public void handleNotifyMouseUp( JsonObject properties ) {
-    processMouseEvent( SWT.MouseUp, ( Control )widget, properties );
+    processMouseEvent( SWT.MouseUp, widget, properties );
   }
 
   /*
@@ -102,7 +102,7 @@ public class ControlOperationHandler extends WidgetOperationHandler {
    * @param charCode (int) the char code of the key that was typed
    */
   public void handleNotifyTraverse( JsonObject properties ) {
-    processTraverseEvent( ( Control )widget, properties );
+    processTraverseEvent( widget, properties );
   }
 
   /*

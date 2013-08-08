@@ -28,11 +28,11 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class WidgetOperationHandler extends AbstractOperationHandler {
+public abstract class WidgetOperationHandler<T extends Widget> extends AbstractOperationHandler {
 
-  protected final Widget widget;
+  protected final T widget;
 
-  public WidgetOperationHandler( Widget widget ) {
+  public WidgetOperationHandler( T widget ) {
     this.widget = widget;
   }
 

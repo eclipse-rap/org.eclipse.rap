@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class TreeOperationHandler extends ControlOperationHandler {
+public class TreeOperationHandler extends ControlOperationHandler<Tree> {
 
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_SCROLL_LEFT = "scrollLeft";
@@ -109,7 +109,7 @@ public class TreeOperationHandler extends ControlOperationHandler {
    * @column (int) column index of the hovered cell
    */
   private void handleCallRenderToolTipText( JsonObject properties ) {
-    Tree tree = ( Tree )widget;
+    Tree tree = widget;
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
     adapter.setCellToolTipText( null );
     ICellToolTipProvider provider = adapter.getCellToolTipProvider();
@@ -135,7 +135,7 @@ public class TreeOperationHandler extends ControlOperationHandler {
    * @param selection ([string]) array with ids of selected items
    */
   private void handleSetSelection( JsonObject properties ) {
-    Tree tree = ( Tree )widget;
+    Tree tree = widget;
     JsonValue values = properties.get( PROP_SELECTION );
     if( values != null ) {
       JsonArray itemIds = values.asArray();
@@ -160,7 +160,7 @@ public class TreeOperationHandler extends ControlOperationHandler {
    * @param scrollLeft (int) left scroll offset in pixels
    */
   private void handleSetScrollLeft( JsonObject properties ) {
-    Tree tree = ( Tree )widget;
+    Tree tree = widget;
     JsonValue value = properties.get( PROP_SCROLL_LEFT );
     if( value != null ) {
       int scrollLeft = value.asInt();
@@ -175,7 +175,7 @@ public class TreeOperationHandler extends ControlOperationHandler {
    * @param topItemIndex (int) visual index of the item, which is on the top of the tree
    */
   private void handleSetTopItemIndex( JsonObject properties ) {
-    Tree tree = ( Tree )widget;
+    Tree tree = widget;
     JsonValue value = properties.get( PROP_TOP_ITEM_INDEX );
     if( value != null ) {
       int topItemIndex = value.asInt();
@@ -186,7 +186,7 @@ public class TreeOperationHandler extends ControlOperationHandler {
   }
 
   private TreeItem getItem( String itemId ) {
-    Tree tree = ( Tree )widget;
+    Tree tree = widget;
     TreeItem item = null;
     String[] idParts = itemId.split( "#" );
     if( idParts.length == 2 ) {

@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Combo;
 
 
-public class ComboOperationHandler extends ControlOperationHandler {
+public class ComboOperationHandler extends ControlOperationHandler<Combo> {
 
   private static final String PROP_SELECTION_INDEX = "selectionIndex";
   private static final String PROP_LIST_VISIBLE = "listVisible";
@@ -55,7 +55,7 @@ public class ComboOperationHandler extends ControlOperationHandler {
    * @param selectionIndex (int) the index of the item to select
    */
   private void handleSetSelectionIndex( JsonObject properties ) {
-    Combo combo = ( Combo )widget;
+    Combo combo = widget;
     JsonValue selectionIndex = properties.get( PROP_SELECTION_INDEX );
     if( selectionIndex != null ) {
       combo.select( selectionIndex.asInt() );
@@ -68,7 +68,7 @@ public class ComboOperationHandler extends ControlOperationHandler {
    * @param listVisible (boolean) the visibility state of the list
    */
   private void handleSetListVisible( JsonObject properties ) {
-    Combo combo = ( Combo )widget;
+    Combo combo = widget;
     JsonValue listVisible = properties.get( PROP_LIST_VISIBLE );
     if( listVisible != null ) {
       combo.setListVisible( listVisible.asBoolean() );
@@ -81,7 +81,7 @@ public class ComboOperationHandler extends ControlOperationHandler {
    * @param text (string) the text
    */
   private void handleSetText( JsonObject properties ) {
-    final Combo combo = ( Combo )widget;
+    final Combo combo = widget;
     final JsonValue value = properties.get( PROP_TEXT );
     if( value != null ) {
       final String text = value.asString();
@@ -109,7 +109,7 @@ public class ComboOperationHandler extends ControlOperationHandler {
    * @param selectionLength (int) the text selection length
    */
   private void handleSetSelection( JsonObject properties ) {
-    Combo combo = ( Combo )widget;
+    Combo combo = widget;
     JsonValue selectionStart = properties.get( PROP_SELECTION_START );
     JsonValue selectionLength = properties.get( PROP_SELECTION_LENGTH );
     if( selectionStart != null || selectionLength != null ) {

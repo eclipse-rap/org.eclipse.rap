@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
 
-public class TreeColumnOperationHandler extends WidgetOperationHandler {
+public class TreeColumnOperationHandler extends WidgetOperationHandler<TreeColumn> {
 
   private static final String METHOD_MOVE = "move";
   private static final String METHOD_RESIZE = "resize";
@@ -48,7 +48,7 @@ public class TreeColumnOperationHandler extends WidgetOperationHandler {
    * @left (int) the left position of the column
    */
   private void handleCallMove( JsonObject properties ) {
-    final TreeColumn column = ( TreeColumn )widget;
+    final TreeColumn column = widget;
     final int newLeft = properties.get( PROP_LEFT ).asInt();
     ProcessActionRunner.add( new Runnable() {
       public void run() {
@@ -63,7 +63,7 @@ public class TreeColumnOperationHandler extends WidgetOperationHandler {
    * @width (int) the width of the column
    */
   private void handleCallResize( JsonObject properties ) {
-    final TreeColumn column = ( TreeColumn )widget;
+    final TreeColumn column = widget;
     final int width = properties.get( PROP_WIDTH ).asInt();
     ProcessActionRunner.add( new Runnable() {
       public void run() {

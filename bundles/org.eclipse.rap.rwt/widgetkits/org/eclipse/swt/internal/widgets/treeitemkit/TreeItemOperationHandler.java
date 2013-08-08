@@ -19,7 +19,7 @@ import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.widgets.TreeItem;
 
 
-public class TreeItemOperationHandler extends WidgetOperationHandler {
+public class TreeItemOperationHandler extends WidgetOperationHandler<TreeItem> {
 
   private static final String PROP_CHECKED = "checked";
   private static final String PROP_EXPANDED = "expanded";
@@ -40,7 +40,7 @@ public class TreeItemOperationHandler extends WidgetOperationHandler {
    * @param checked (boolean) true if the item was checked, false otherwise
    */
   private void handleSetChecked( JsonObject properties ) {
-    TreeItem item = ( TreeItem )widget;
+    TreeItem item = widget;
     JsonValue checked = properties.get( PROP_CHECKED );
     if( checked != null ) {
       item.setChecked( checked.asBoolean() );
@@ -53,7 +53,7 @@ public class TreeItemOperationHandler extends WidgetOperationHandler {
    * @param expanded (boolean) true if the item was expanded, false otherwise
    */
   private void handleSetExpanded( JsonObject properties ) {
-    final TreeItem item = ( TreeItem )widget;
+    final TreeItem item = widget;
     final JsonValue expanded = properties.get( PROP_EXPANDED );
     if( expanded != null ) {
       ProcessActionRunner.add( new Runnable() {
