@@ -710,7 +710,7 @@ public class ButtonLCA_Test {
   }
 
   @Test
-  public void testRenderChanges_rendersClientArea() throws IOException {
+  public void testRenderChanges_rendersClientListener() throws IOException {
     button.addListener( SWT.Paint, new ClientListener( "" ) );
 
     lca.renderChanges( button );
