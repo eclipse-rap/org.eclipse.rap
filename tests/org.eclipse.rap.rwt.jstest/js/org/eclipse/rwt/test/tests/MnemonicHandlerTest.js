@@ -295,7 +295,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertTrue( menuBar.getMnemonics() );
     },
 
-    testDeactivate_doNotactivateMenuIfKeyWasPressed : function() {
+    testDeactivate_doNotActivateMenuIfKeyWasPressed : function() {
       handler.setActivator( "CTRL" );
       this._createMenu();
       var menuBar = rwt.remote.ObjectRegistry.getObject( "w4" );

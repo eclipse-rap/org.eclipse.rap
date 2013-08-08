@@ -509,7 +509,6 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
          }
        }
      }
-
    },
 
     _onKeyPress : function( event ) {

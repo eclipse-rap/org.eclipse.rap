@@ -23,6 +23,7 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
     this.addEventListener( "mousedown", this._onMouseDown );
     this.addEventListener( "mouseover", this._onMouseOver );
     this.addEventListener( "mouseout", this._onMouseOut );
+    this.addEventListener( "keydown", this._onKeyDown );
   },
 
   destruct : function() {
@@ -30,6 +31,8 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
     this._openItem = null;
     this._lastActive = null;
     this._lastFocus = null;
+    this._active = false;
+    this._mnemonics = false;
   },
 
   properties : {
@@ -48,6 +51,9 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
   members : {
 
     setActive : function( active ) {
+      if( this.isDisposed() ) {
+        return;
+      }
       if( this._active != active ) {
         this._active = active;
         if( active ) {
@@ -63,6 +69,9 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
     },
 
     setMnemonics : function( value ) {
+      if( this.isDisposed() ) {
+        return;
+      }
       if( this._mnemonics !== value ) {
         this._mnemonics = value;
         var items = this.getChildren();
@@ -166,6 +175,27 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
       for( var i = 0; i < items.length; i++ ) {
         if( items[ i ].renderText ) {
           items[ i ].renderText();
+        }
+      }
+    },
+
+    _onKeyDown :function( event ) {
+      if( this._mnemonics ) {
+        var keyCode = event.getKeyCode();
+        var isChar =    !isNaN( keyCode )
+                     && rwt.event.EventHandlerUtil.isAlphaNumericKeyCode( keyCode );
+        if( isChar ) {
+          var event = {
+            "type" : "trigger",
+            "charCode" : keyCode,
+            "success" : false
+          };
+          var items = this.getChildren();
+          for( var i = 0; i < items.length; i++ ) {
+            if( items[ i ].handleMnemonic ) {
+              items[ i ].handleMnemonic( event );
+            }
+          }
         }
       }
     },

@@ -83,7 +83,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
         if( this._isActivation( eventType, keyCode, charCode, domEvent ) ) {
           this.activate();
         } else if( this._isDeactivation( eventType, keyCode, charCode, domEvent ) ) {
-          this.deactivate( true );
+          this.deactivate( this._allowMenuActivate || this._activeMenu );
         } else if( this._isTrigger( eventType, keyCode, charCode, domEvent ) ) {
           result = this.trigger( keyCode );
           this._allowMenuActivate = false;
@@ -108,14 +108,14 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
       }
     },
 
-    deactivate : function( byKey ) {
-      if( this._activeMenu ) {
+    deactivate : function( preventMenuToggle ) {
+      if( this._activeMenu && preventMenuToggle ) {
         this._activeMenu.setActive( false );
         this._activeMenu = null;
       }
       if( this._active ) {
         this._fire( { "type" : "hide" } );
-        if( byKey ) {
+        if( preventMenuToggle ) {
           this._activateMenuBar();
         }
         this._active = null;
@@ -175,7 +175,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
     _activateMenuBar : function() {
       // Accepted limitation: MenuBars without mnemonics can not be activated by mnemonic keys
-      if( this._allowMenuActivate && this._map[ this._active ] ) {
+      if( this._map[ this._active ] ) {
         var items = this._map[ this._active ].menu;
         for( var key in items ) {
           var bar = items[ key ][ 0 ].getParentMenu();

@@ -580,13 +580,46 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       disposeMenuBar();
     },
 
-    testMenuBar_setMnemonics : function() {
+    testMenuBar_setMnemonicsTrue_rendersMnemonic : function() {
       createMenuBar();
       menuBarItem.setText( "foo" );
       menuBarItem.setMnemonicIndex( 1 );
       TestUtil.flush();
 
       menuBar.setMnemonics( true );
+      TestUtil.flush();
+
+      var expected = "f<span style=\"text-decoration:underline\">o</span>o";
+      assertEquals( expected, menuBarItem.getCellContent( 2 ) );
+      disposeMenuBar();
+    },
+
+    testMenuBar_setMnemonicsTrue_triggerMnemonic : function() {
+      createMenuBar();
+      menuBarItem.setText( "foo" );
+      menuBarItem.setMnemonicIndex( 1 );
+      menuBar.setMnemonics( true );
+      TestUtil.flush();
+
+      TestUtil.press( menuBar, "O" );
+      TestUtil.flush();
+
+      assertTrue( menu.isSeeable() );
+      disposeMenuBar();
+    },
+
+    testMenuBar_triggerMnemonicWhileActiveDoesNotHideMnemonics : function() {
+      createMenuBar();
+      menuBarItem.setText( "foo" );
+      menuBarItem.setMnemonicIndex( 1 );
+      TestUtil.flush();
+      // This test can only fail if mnemonics are activated by key
+      rwt.widgets.util.MnemonicHandler.getInstance().setActivator( "CTRL" );
+      var DomEvent = rwt.event.DomEvent;
+
+      TestUtil.keyDown( menuBar, "Control", DomEvent.CTRL_MASK ); // important!
+      TestUtil.keyUp( menuBar, "Control", 0 );
+      TestUtil.press( menuBar, "O" ); // shows menu
       TestUtil.flush();
 
       var expected = "f<span style=\"text-decoration:underline\">o</span>o";
