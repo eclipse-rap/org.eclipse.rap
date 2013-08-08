@@ -131,8 +131,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
     },
 
     _isMnemonicMenu : function() {
-      return     this._parentMenu instanceof rwt.widgets.Menu
-              && this._parentMenu.getMnemonics();
+      return this._parentMenu != null && this._parentMenu.getMnemonics();
     },
 
     getMnemonicIndex : function() {

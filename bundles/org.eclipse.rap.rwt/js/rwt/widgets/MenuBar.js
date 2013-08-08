@@ -19,6 +19,7 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
     this._active = false;
     this._lastActive = null;
     this._lastFocus = null;
+    this._mnemonics = false;
     this.addEventListener( "mousedown", this._onMouseDown );
     this.addEventListener( "mouseover", this._onMouseOver );
     this.addEventListener( "mouseout", this._onMouseOut );
@@ -49,28 +50,32 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
     setActive : function( active ) {
       if( this._active != active ) {
         this._active = active;
-        var focusRoot = this.getFocusRoot();
         if( active ) {
-          rwt.widgets.util.PopupManager.getInstance().add( this );
-          this.setHoverItem( this.getFirstChild() );
-          if( focusRoot ) {
-            this._lastActive = this.getFocusRoot().getActiveChild();
-            this._lastFocus = this.getFocusRoot().getFocusedChild();
-            this.getFocusRoot().setActiveChild( this );
-          }
+          this._activate();
         } else {
-          rwt.widgets.util.PopupManager.getInstance().remove( this );
-          if( focusRoot ) {
-            this.setHoverItem( null );
-            focusRoot.setActiveChild( this._lastActive );
-            focusRoot.setFocusedChild( this._lastFocus );
-          }
+          this._deactivate();
         }
       }
     },
 
     getActive : function() {
       return this._active;
+    },
+
+    setMnemonics : function( value ) {
+      if( this._mnemonics !== value ) {
+        this._mnemonics = value;
+        var items = this.getChildren();
+        for( var i = 0; i < items.length; i++ ) {
+          if( items[ i ].renderText ) {
+            items[ i ].renderText();
+          }
+        }
+      }
+    },
+
+    getMnemonics : function() {
+      return this._mnemonics;
     },
 
     addMenuItemAt : function( menuItem, index ) {
@@ -133,6 +138,37 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
     },
 
     getAutoHide : rwt.util.Functions.returnTrue,
+
+    _activate : function() {
+      var focusRoot = this.getFocusRoot();
+      rwt.widgets.util.PopupManager.getInstance().add( this );
+      this.setHoverItem( this.getFirstChild() );
+      if( focusRoot ) {
+        this._lastActive = this.getFocusRoot().getActiveChild();
+        this._lastFocus = this.getFocusRoot().getFocusedChild();
+        this.getFocusRoot().setActiveChild( this );
+      }
+    },
+
+    _deactivate : function() {
+      var focusRoot = this.getFocusRoot();
+      rwt.widgets.util.PopupManager.getInstance().remove( this );
+      this.setMnemonics( false );
+      if( focusRoot ) {
+        this.setHoverItem( null );
+        focusRoot.setActiveChild( this._lastActive );
+        focusRoot.setFocusedChild( this._lastFocus );
+      }
+    },
+
+    _setMnemonics : function( value ) {
+      var items = this.getChildren();
+      for( var i = 0; i < items.length; i++ ) {
+        if( items[ i ].renderText ) {
+          items[ i ].renderText();
+        }
+      }
+    },
 
     _onMouseOver : function( event ) {
       var target = event.getTarget();

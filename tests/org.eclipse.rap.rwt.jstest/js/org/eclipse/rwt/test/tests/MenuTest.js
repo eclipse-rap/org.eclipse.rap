@@ -580,6 +580,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       disposeMenuBar();
     },
 
+    testMenuBar_setMnemonics : function() {
+      createMenuBar();
+      menuBarItem.setText( "foo" );
+      menuBarItem.setMnemonicIndex( 1 );
+      TestUtil.flush();
+
+      menuBar.setMnemonics( true );
+      TestUtil.flush();
+
+      var expected = "f<span style=\"text-decoration:underline\">o</span>o";
+      assertEquals( expected, menuBarItem.getCellContent( 2 ) );
+      disposeMenuBar();
+    },
+
     testMenuBar_setActiveFalse_restoresActiveAndFocusedChild : function() {
       createMenuBar();
       var button = new rwt.widgets.base.BasicButton( "push" );
@@ -592,6 +606,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
       assertIdentical( button, menuBar.getFocusRoot().getActiveChild() );
       assertIdentical( button, menuBar.getFocusRoot().getFocusedChild() );
+      disposeMenuBar();
+    },
+
+    testMenuBar_setActiveFalse_setsMnemonicsFalse : function() {
+      createMenuBar();
+      menuBar.setActive( true );
+      menuBar.setMnemonics( true );
+
+      menuBar.setActive( false );
+
+      assertFalse( menuBar.getMnemonics() );
       disposeMenuBar();
     },
 

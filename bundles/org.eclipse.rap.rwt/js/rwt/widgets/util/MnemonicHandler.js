@@ -179,6 +179,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
         var items = this._map[ this._active ].menu;
         for( var key in items ) {
           var bar = items[ key ][ 0 ].getParentMenu();
+          bar.setMnemonics( true );
           bar.setActive( true );
           this._activeMenu = bar;
           break;
