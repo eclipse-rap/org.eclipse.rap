@@ -10,24 +10,72 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.eclipse.rap.rwt.internal.protocol.WidgetOperationHandler.createSelectionEvent;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class WidgetOperationHandler_Test {
 
+  private Widget widget;
+  private WidgetOperationHandler<Widget> handler;
+
+  @Before
+  public void setUp() {
+    widget = mock( Widget.class );
+    handler = new WidgetOperationHandler<Widget>( widget ) {};
+  }
+
+  @Test
+  public void testCreateSelectionEvent_withoutProperties() {
+    Event event = createSelectionEvent( SWT.Selection, new JsonObject() );
+
+    assertEquals( SWT.Selection, event.type );
+  }
+
+  @Test
+  public void testCreateSelectionEvent_withStateMask() {
+    JsonObject properties = new JsonObject().add( "altKey", true ).add( "ctrlKey", true );
+
+    Event event = createSelectionEvent( SWT.Selection, properties );
+
+    assertEquals( SWT.ALT | SWT.CTRL, event.stateMask );
+  }
+
+  @Test
+  public void testCreateSelectionEvent_withDetail() {
+    JsonObject properties = new JsonObject().add( "detail", "check" );
+
+    Event event = createSelectionEvent( SWT.Selection, properties );
+
+    assertEquals( SWT.CHECK, event.detail );
+  }
+
+  @Test
+  public void testCreateSelectionEvent_withBounds() {
+    JsonObject properties = new JsonObject()
+      .add( "x", 1 )
+      .add( "y", 2 )
+      .add( "width", 3 )
+      .add( "height", 4 );
+
+    Event event = createSelectionEvent( SWT.Selection, properties );
+
+    assertEquals( new Rectangle( 1, 2, 3, 4 ), event.getBounds() );
+  }
+
   @Test
   public void testHandleSet_delegatesToHandleSetWithWidget() {
-    Widget widget = mock( Widget.class );
     JsonObject properties = new JsonObject();
     WidgetOperationHandler<Widget> handler = spy( new TestWidgetOperationHandler( widget ) );
 
@@ -38,16 +86,13 @@ public class WidgetOperationHandler_Test {
 
   @Test( expected = UnsupportedOperationException.class )
   public void testHandleSet_throwsExceptionIfNotSupported() {
-    Widget widget = mock( Widget.class );
     JsonObject properties = new JsonObject();
-    WidgetOperationHandler<Widget> handler = spy( new WidgetOperationHandler<Widget>( widget ) {} );
 
     handler.handleSet( properties );
   }
 
   @Test
   public void testHandleCall_delegatesToHandleCallWithWidget() {
-    Widget widget = mock( Widget.class );
     JsonObject properties = new JsonObject();
     WidgetOperationHandler<Widget> handler = spy( new TestWidgetOperationHandler( widget ) );
 
@@ -58,9 +103,7 @@ public class WidgetOperationHandler_Test {
 
   @Test( expected = UnsupportedOperationException.class )
   public void testHandleCall_throwsExceptionIfNotSupported() {
-    Widget widget = mock( Widget.class );
     JsonObject properties = new JsonObject();
-    WidgetOperationHandler<Widget> handler = spy( new WidgetOperationHandler<Widget>( widget ) {} );
 
     handler.handleCall( "foo", properties );
   }
@@ -78,22 +121,9 @@ public class WidgetOperationHandler_Test {
 
   @Test( expected = UnsupportedOperationException.class )
   public void testHandleNotify_throwsExceptionIfNotSupported() {
-    Widget widget = mock( Widget.class );
     JsonObject properties = new JsonObject();
-    WidgetOperationHandler<Widget> handler = spy( new WidgetOperationHandler<Widget>( widget ) {} );
 
     handler.handleNotify( "foo", properties );
-  }
-
-  @Test
-  public void testHandleNotify_processesHelp() {
-    Widget widget = mock( Widget.class );
-    JsonObject properties = new JsonObject();
-    WidgetOperationHandler<Widget> handler = new WidgetOperationHandler<Widget>( widget ) {};
-
-    handler.handleNotify( "Help", properties );
-
-    verify( widget ).notifyListeners( eq( SWT.Help ), any( Event.class ) );
   }
 
   private static class TestWidgetOperationHandler extends WidgetOperationHandler<Widget> {

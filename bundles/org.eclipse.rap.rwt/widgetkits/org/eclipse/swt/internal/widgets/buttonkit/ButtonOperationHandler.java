@@ -32,22 +32,6 @@ public class ButtonOperationHandler extends ControlOperationHandler<Button> {
   }
 
   /*
-   * PROTOCOL NOTIFY Selection
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   */
-  @Override
-  public void handleNotifySelection( Button button, JsonObject properties ) {
-    Event event = createSelectionEvent( SWT.Selection, properties );
-    if( ( button.getStyle() & SWT.RADIO ) != 0 && !button.getSelection() ) {
-      event.time = -1;
-    }
-    button.notifyListeners( SWT.Selection, event );
-  }
-
-  /*
    * PROTOCOL SET selection
    *
    * @param selection (boolean) true if the button was selected, otherwise false
@@ -57,6 +41,44 @@ public class ButtonOperationHandler extends ControlOperationHandler<Button> {
     if( selection != null ) {
       button.setSelection( selection.asBoolean() );
     }
+  }
+
+  @Override
+  public void handleNotify( Button button, String eventName, JsonObject properties ) {
+    if( "Selection".equals( eventName ) ) {
+      handleNotifySelection( button, properties );
+    } else if( "DefaultSelection".equals( eventName ) ) {
+      handleNotifyDefaultSelection( button, properties );
+    } else {
+      super.handleNotify( button, eventName, properties );
+    }
+  }
+
+  /*
+   * PROTOCOL NOTIFY Selection
+   *
+   * @param altKey (boolean) true if the ALT key was pressed
+   * @param ctrlKey (boolean) true if the CTRL key was pressed
+   * @param shiftKey (boolean) true if the SHIFT key was pressed
+   */
+  public void handleNotifySelection( Button button, JsonObject properties ) {
+    Event event = createSelectionEvent( SWT.Selection, properties );
+    if( ( button.getStyle() & SWT.RADIO ) != 0 && !button.getSelection() ) {
+      event.time = -1;
+    }
+    button.notifyListeners( SWT.Selection, event );
+  }
+
+  /*
+   * PROTOCOL NOTIFY DefaultSelection
+   *
+   * @param altKey (boolean) true if the ALT key was pressed
+   * @param ctrlKey (boolean) true if the CTRL key was pressed
+   * @param shiftKey (boolean) true if the SHIFT key was pressed
+   */
+  public void handleNotifyDefaultSelection( Button button, JsonObject properties ) {
+    Event event = createSelectionEvent( SWT.DefaultSelection, properties );
+    button.notifyListeners( SWT.DefaultSelection, event );
   }
 
 }

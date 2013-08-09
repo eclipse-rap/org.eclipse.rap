@@ -17,7 +17,9 @@ import java.util.Arrays;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.WidgetOperationHandler;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
@@ -39,6 +41,17 @@ public class TreeColumnOperationHandler extends WidgetOperationHandler<TreeColum
       handleCallMove( column, properties );
     } else if( method.equals( METHOD_RESIZE ) ) {
       handleCallResize( column, properties );
+    }
+  }
+
+  @Override
+  public void handleNotify( TreeColumn column, String eventName, JsonObject properties ) {
+    if( "Selection".equals( eventName ) ) {
+      handleNotifySelection( column, properties );
+    } else if( "DefaultSelection".equals( eventName ) ) {
+      handleNotifyDefaultSelection( column, properties );
+    } else {
+      super.handleNotify( column, eventName, properties );
     }
   }
 
@@ -68,6 +81,30 @@ public class TreeColumnOperationHandler extends WidgetOperationHandler<TreeColum
         column.setWidth( width );
       }
     } );
+  }
+
+  /*
+   * PROTOCOL NOTIFY Selection
+   *
+   * @param altKey (boolean) true if the ALT key was pressed
+   * @param ctrlKey (boolean) true if the CTRL key was pressed
+   * @param shiftKey (boolean) true if the SHIFT key was pressed
+   */
+  public void handleNotifySelection( TreeColumn column, JsonObject properties ) {
+    Event event = createSelectionEvent( SWT.Selection, properties );
+    column.notifyListeners( SWT.Selection, event );
+  }
+
+  /*
+   * PROTOCOL NOTIFY DefaultSelection
+   *
+   * @param altKey (boolean) true if the ALT key was pressed
+   * @param ctrlKey (boolean) true if the CTRL key was pressed
+   * @param shiftKey (boolean) true if the SHIFT key was pressed
+   */
+  public void handleNotifyDefaultSelection( TreeColumn column, JsonObject properties ) {
+    Event event = createSelectionEvent( SWT.DefaultSelection, properties );
+    column.notifyListeners( SWT.DefaultSelection, event );
   }
 
   static void moveColumn( TreeColumn column, int newLeft ) {

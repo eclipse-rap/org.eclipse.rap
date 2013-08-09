@@ -20,6 +20,7 @@ import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Event;
 
 
 public class ComboOperationHandler extends ControlOperationHandler<Combo> {
@@ -44,7 +45,11 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
 
   @Override
   public void handleNotify( Combo combo, String eventName, JsonObject properties ) {
-    if( "Modify".equals( eventName ) ) {
+    if( "Selection".equals( eventName ) ) {
+      handleNotifySelection( combo, properties );
+    } else if( "DefaultSelection".equals( eventName ) ) {
+      handleNotifyDefaultSelection( combo, properties );
+    } else if( "Modify".equals( eventName ) ) {
       handleNotifyModify( combo, properties );
     } else {
       super.handleNotify( combo, eventName, properties );
@@ -52,10 +57,34 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
   }
 
   /*
+   * PROTOCOL NOTIFY Selection
+   *
+   * @param altKey (boolean) true if the ALT key was pressed
+   * @param ctrlKey (boolean) true if the CTRL key was pressed
+   * @param shiftKey (boolean) true if the SHIFT key was pressed
+   */
+  public void handleNotifySelection( Combo combo, JsonObject properties ) {
+    Event event = createSelectionEvent( SWT.Selection, properties );
+    combo.notifyListeners( SWT.Selection, event );
+  }
+
+  /*
+   * PROTOCOL NOTIFY DefaultSelection
+   *
+   * @param altKey (boolean) true if the ALT key was pressed
+   * @param ctrlKey (boolean) true if the CTRL key was pressed
+   * @param shiftKey (boolean) true if the SHIFT key was pressed
+   */
+  public void handleNotifyDefaultSelection( Combo combo, JsonObject properties ) {
+    Event event = createSelectionEvent( SWT.DefaultSelection, properties );
+    combo.notifyListeners( SWT.DefaultSelection, event );
+  }
+
+  /*
    * PROTOCOL NOTIFY Modify
    * ignored, Modify event is fired when set text
    */
-  public void handleNotifyModify( Combo control, JsonObject properties ) {
+  public void handleNotifyModify( Combo combo, JsonObject properties ) {
   }
 
   /*

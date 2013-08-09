@@ -71,60 +71,6 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
   }
 
   /*
-   * PROTOCOL NOTIFY Selection
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   * @param detail (string) "check" is checkbox is selected
-   * @item item (string) id of selected item
-   */
-  @Override
-  public void handleNotifySelection( Tree tree, JsonObject properties ) {
-    Event event = createSelectionEvent( SWT.Selection, properties );
-    event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
-    tree.notifyListeners( SWT.Selection, event );
-  }
-
-  /*
-   * PROTOCOL NOTIFY DefaultSelection
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   * @param detail (string) "check" is checkbox is selected
-   * @item item (string) id of selected item
-   */
-  @Override
-  public void handleNotifyDefaultSelection( Tree tree, JsonObject properties ) {
-    Event event = createSelectionEvent( SWT.DefaultSelection, properties );
-    event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
-    tree.notifyListeners( SWT.DefaultSelection, event );
-  }
-
-  /*
-   * PROTOCOL NOTIFY Expand
-   *
-   * @item item (string) id of expanded item
-   */
-  public void handleNotifyExpand( Tree tree, JsonObject properties ) {
-    Event event = new Event();
-    event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
-    tree.notifyListeners( SWT.Expand, event );
-  }
-
-  /*
-   * PROTOCOL NOTIFY Collapse
-   *
-   * @item item (string) id of collapsed item
-   */
-  public void handleNotifyCollapse( Tree tree, JsonObject properties ) {
-    Event event = new Event();
-    event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
-    tree.notifyListeners( SWT.Collapse, event );
-  }
-
-  /*
    * PROTOCOL SET selection
    *
    * @param selection ([string]) array with ids of selected items
@@ -194,6 +140,58 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
         provider.getToolTipText( item, columnIndex );
       }
     }
+  }
+
+  /*
+   * PROTOCOL NOTIFY Selection
+   *
+   * @param altKey (boolean) true if the ALT key was pressed
+   * @param ctrlKey (boolean) true if the CTRL key was pressed
+   * @param shiftKey (boolean) true if the SHIFT key was pressed
+   * @param detail (string) "check" is checkbox is selected
+   * @item item (string) id of selected item
+   */
+  public void handleNotifySelection( Tree tree, JsonObject properties ) {
+    Event event = createSelectionEvent( SWT.Selection, properties );
+    event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
+    tree.notifyListeners( SWT.Selection, event );
+  }
+
+  /*
+   * PROTOCOL NOTIFY DefaultSelection
+   *
+   * @param altKey (boolean) true if the ALT key was pressed
+   * @param ctrlKey (boolean) true if the CTRL key was pressed
+   * @param shiftKey (boolean) true if the SHIFT key was pressed
+   * @param detail (string) "check" is checkbox is selected
+   * @item item (string) id of selected item
+   */
+  public void handleNotifyDefaultSelection( Tree tree, JsonObject properties ) {
+    Event event = createSelectionEvent( SWT.DefaultSelection, properties );
+    event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
+    tree.notifyListeners( SWT.DefaultSelection, event );
+  }
+
+  /*
+   * PROTOCOL NOTIFY Expand
+   *
+   * @item item (string) id of expanded item
+   */
+  public void handleNotifyExpand( Tree tree, JsonObject properties ) {
+    Event event = new Event();
+    event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
+    tree.notifyListeners( SWT.Expand, event );
+  }
+
+  /*
+   * PROTOCOL NOTIFY Collapse
+   *
+   * @item item (string) id of collapsed item
+   */
+  public void handleNotifyCollapse( Tree tree, JsonObject properties ) {
+    Event event = new Event();
+    event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
+    tree.notifyListeners( SWT.Collapse, event );
   }
 
   private TreeItem getItem( Tree tree, String itemId ) {

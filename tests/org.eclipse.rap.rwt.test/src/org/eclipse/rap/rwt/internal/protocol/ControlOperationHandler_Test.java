@@ -10,13 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_KEY_DOWN;
 import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.createKeyEvent;
 import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.createMenuDetectEvent;
 import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.createMouseEvent;
-import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.createSelectionEvent;
 import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.getTraverseKey;
-import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.processMouseEvent;
-import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.processTraverseEvent;
 import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.translateKeyCode;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -29,7 +27,6 @@ import static org.mockito.Mockito.verify;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -46,6 +43,7 @@ public class ControlOperationHandler_Test {
   private Shell shell;
   private Button control;
   private Control mockedControl;
+  private ControlOperationHandler<Control> handler;
 
   @Before
   public void setUp() {
@@ -55,49 +53,12 @@ public class ControlOperationHandler_Test {
     control = new Button( shell, SWT.NONE );
     control.setBounds( 10, 10, 100, 20 );
     mockedControl = mock( Control.class );
+    handler = new ControlOperationHandler<Control>( mockedControl ) {};
   }
 
   @After
   public void tearDown() {
     Fixture.tearDown();
-  }
-
-  @Test
-  public void testCreateSelectionEvent_withoutProperties() {
-    Event event = createSelectionEvent( SWT.Selection, new JsonObject() );
-
-    assertEquals( SWT.Selection, event.type );
-  }
-
-  @Test
-  public void testCreateSelectionEvent_withStateMask() {
-    JsonObject properties = new JsonObject().add( "altKey", true ).add( "ctrlKey", true );
-
-    Event event = createSelectionEvent( SWT.Selection, properties );
-
-    assertEquals( SWT.ALT | SWT.CTRL, event.stateMask );
-  }
-
-  @Test
-  public void testCreateSelectionEvent_withDetail() {
-    JsonObject properties = new JsonObject().add( "detail", "check" );
-
-    Event event = createSelectionEvent( SWT.Selection, properties );
-
-    assertEquals( SWT.CHECK, event.detail );
-  }
-
-  @Test
-  public void testCreateSelectionEvent_withBounds() {
-    JsonObject properties = new JsonObject()
-      .add( "x", 1 )
-      .add( "y", 2 )
-      .add( "width", 3 )
-      .add( "height", 4 );
-
-    Event event = createSelectionEvent( SWT.Selection, properties );
-
-    assertEquals( new Rectangle( 1, 2, 3, 4 ), event.getBounds() );
   }
 
   @Test
@@ -140,92 +101,6 @@ public class ControlOperationHandler_Test {
     assertEquals( 9, event.y );
     assertEquals( 4, event.time );
     assertEquals( 2, event.count );
-  }
-
-  @Test
-  public void testProcessMouseEvent_onControl_valid() {
-    Control spyControl = spy( control );
-    JsonObject properties = new JsonObject()
-      .add( "button", 1 )
-      .add( "x", 15 )
-      .add( "y", 20 )
-      .add( "time", 4 );
-
-    processMouseEvent( SWT.MouseDown, spyControl, properties );
-
-    verify( spyControl ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
-  }
-
-  @Test
-  public void testProcessMouseEvent_onControl_invalid() {
-    Control spyControl = spy( control );
-    JsonObject properties = new JsonObject()
-      .add( "button", 1 )
-      .add( "x", -10 )
-      .add( "y", 3 )
-      .add( "time", 4 );
-
-    processMouseEvent( SWT.MouseDown, spyControl, properties );
-
-    verify( spyControl, never() ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
-  }
-
-  @Test
-  public void testProcessMouseEvent_onScrollable_valid() {
-    Control spyControl = spy( shell );
-    JsonObject properties = new JsonObject()
-      .add( "button", 1 )
-      .add( "x", 20 )
-      .add( "y", 60 )
-      .add( "time", 4 );
-
-    processMouseEvent( SWT.MouseDown, spyControl, properties );
-
-    verify( spyControl ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
-  }
-
-  @Test
-  public void testProcessMouseEvent_onScrollable_invalid() {
-    Control spyControl = spy( shell );
-    JsonObject properties = new JsonObject()
-      .add( "button", 1 )
-      .add( "x", 2 )
-      .add( "y", 3 )
-      .add( "time", 4 );
-
-    processMouseEvent( SWT.MouseDown, spyControl, properties );
-
-    verify( spyControl, never() ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
-  }
-
-  @Test
-  public void testProcessTraverseEvent() {
-    JsonObject properties = new JsonObject()
-      .add( "shiftKey", true )
-      .add( "keyCode", 9 )
-      .add( "charCode", 0 );
-
-    processTraverseEvent( mockedControl, properties );
-
-    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
-    verify( mockedControl ).notifyListeners( eq( SWT.Traverse ), captor.capture() );
-    Event event = captor.getValue();
-    assertEquals( SWT.SHIFT, event.stateMask );
-    assertEquals( 9, event.keyCode );
-    assertEquals( 9, event.character );
-    assertEquals( SWT.TRAVERSE_TAB_PREVIOUS, event.detail );
-  }
-
-  @Test
-  public void testProcessTraverseEvent_wrongKeyModifier() {
-    JsonObject properties = new JsonObject()
-      .add( "ctrlKey", true )
-      .add( "keyCode", 9 )
-      .add( "charCode", 0 );
-
-    processTraverseEvent( mockedControl, properties );
-
-    verify( mockedControl, never() ).notifyListeners( eq( SWT.Traverse ), any( Event.class ) );
   }
 
   @Test
@@ -334,6 +209,163 @@ public class ControlOperationHandler_Test {
 
     assertEquals( 1, event.x );
     assertEquals( 2, event.y );
+  }
+
+  @Test
+  public void testHandleNotify_processesFocusIn() {
+    JsonObject properties = new JsonObject();
+
+    handler.handleNotify( "FocusIn", properties );
+
+    verify( mockedControl ).notifyListeners( eq( SWT.FocusIn ), any( Event.class ) );
+  }
+
+  @Test
+  public void testHandleNotify_processesFocusOut() {
+    JsonObject properties = new JsonObject();
+
+    handler.handleNotify( "FocusOut", properties );
+
+    verify( mockedControl ).notifyListeners( eq( SWT.FocusOut ), any( Event.class ) );
+  }
+
+  @Test
+  public void testHandleNotify_processesMouseDown_onControl_valid() {
+    Control spyControl = spy( control );
+    handler = new ControlOperationHandler<Control>( spyControl ) {};
+    JsonObject properties = new JsonObject()
+      .add( "button", 1 )
+      .add( "x", 15 )
+      .add( "y", 20 )
+      .add( "time", 4 );
+
+    handler.handleNotifyMouseDown( spyControl, properties );
+
+    verify( spyControl ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
+  }
+
+  @Test
+  public void testHandleNotify_processesMouseDown_onControl_invalid() {
+    Control spyControl = spy( control );
+    JsonObject properties = new JsonObject()
+      .add( "button", 1 )
+      .add( "x", -10 )
+      .add( "y", 3 )
+      .add( "time", 4 );
+
+    handler.handleNotifyMouseDown( spyControl, properties );
+
+    verify( spyControl, never() ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
+  }
+
+  @Test
+  public void testHandleNotify_processesMouseDown_onScrollable_valid() {
+    Control spyControl = spy( shell );
+    JsonObject properties = new JsonObject()
+      .add( "button", 1 )
+      .add( "x", 20 )
+      .add( "y", 60 )
+      .add( "time", 4 );
+
+    handler.handleNotifyMouseDown( spyControl, properties );
+
+    verify( spyControl ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
+  }
+
+  @Test
+  public void testHandleNotify_processesMouseDown_onScrollable_invalid() {
+    Control spyControl = spy( shell );
+    JsonObject properties = new JsonObject()
+      .add( "button", 1 )
+      .add( "x", 2 )
+      .add( "y", 3 )
+      .add( "time", 4 );
+
+    handler.handleNotifyMouseDown( spyControl, properties );
+
+    verify( spyControl, never() ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
+  }
+
+  @Test
+  public void testHandleNotify_processesKeyDown() {
+    JsonObject properties = new JsonObject()
+      .add( "shiftKey", true )
+      .add( "keyCode", 65 )
+      .add( "charCode", 97 );
+
+    handler.handleNotify( EVENT_KEY_DOWN, properties );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( mockedControl ).notifyListeners( eq( SWT.KeyDown ), captor.capture() );
+    Event event = captor.getValue();
+    assertEquals( SWT.SHIFT, event.stateMask );
+    assertEquals( 97, event.keyCode );
+    assertEquals( 'a', event.character );
+  }
+
+  @Test
+  public void testHandleNotify_processesKeyUp() {
+    JsonObject properties = new JsonObject()
+    .add( "shiftKey", true )
+    .add( "keyCode", 65 )
+    .add( "charCode", 97 );
+
+    handler.handleNotify( EVENT_KEY_DOWN, properties );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( mockedControl ).notifyListeners( eq( SWT.KeyUp ), captor.capture() );
+    Event event = captor.getValue();
+    assertEquals( SWT.SHIFT, event.stateMask );
+    assertEquals( 97, event.keyCode );
+    assertEquals( 'a', event.character );
+  }
+
+  @Test
+  public void testHandleNotify_processesTraverse() {
+    JsonObject properties = new JsonObject()
+      .add( "shiftKey", true )
+      .add( "keyCode", 9 )
+      .add( "charCode", 0 );
+
+    handler.handleNotify( "Traverse", properties );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( mockedControl ).notifyListeners( eq( SWT.Traverse ), captor.capture() );
+    Event event = captor.getValue();
+    assertEquals( SWT.SHIFT, event.stateMask );
+    assertEquals( 9, event.keyCode );
+    assertEquals( 9, event.character );
+    assertEquals( SWT.TRAVERSE_TAB_PREVIOUS, event.detail );
+  }
+
+  @Test
+  public void testHandleNotify_processesTraverse_wrongKeyModifier() {
+    JsonObject properties = new JsonObject()
+      .add( "ctrlKey", true )
+      .add( "keyCode", 9 )
+      .add( "charCode", 0 );
+
+    handler.handleNotify( "Traverse", properties );
+
+    verify( mockedControl, never() ).notifyListeners( eq( SWT.Traverse ), any( Event.class ) );
+  }
+
+  @Test
+  public void testHandleNotify_processesMenuDetect() {
+    JsonObject properties = new JsonObject().add( "x", 1 ).add( "y", 2 );
+
+    handler.handleNotify( "MenuDetect", properties );
+
+    verify( mockedControl ).notifyListeners( eq( SWT.MenuDetect ), any( Event.class ) );
+  }
+
+  @Test
+  public void testHandleNotify_processesHelp() {
+    JsonObject properties = new JsonObject();
+
+    handler.handleNotify( "Help", properties );
+
+    verify( mockedControl ).notifyListeners( eq( SWT.Help ), any( Event.class ) );
   }
 
 }

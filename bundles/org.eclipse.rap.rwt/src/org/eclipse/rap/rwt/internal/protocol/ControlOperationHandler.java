@@ -51,6 +51,8 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
       handleNotifyKeyDown( control, properties );
     } else if( "MenuDetect".equals( eventName ) ) {
       handleNotifyMenuDetect( control, properties );
+    } else if( "Help".equals( eventName ) ) {
+      handleNotifyHelp( control, properties );
     } else {
       super.handleNotify( control, eventName, properties );
     }
@@ -152,7 +154,14 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
     control.notifyListeners( SWT.MenuDetect, createMenuDetectEvent( properties ) );
   }
 
-  static void processMouseEvent( int eventType, Control control, JsonObject properties ) {
+  /*
+   * PROTOCOL NOTIFY Help
+   */
+  public void handleNotifyHelp( T widget, JsonObject properties ) {
+    widget.notifyListeners( SWT.Help, new Event() );
+  }
+
+  private static void processMouseEvent( int eventType, Control control, JsonObject properties ) {
     Event event = createMouseEvent( eventType, control, properties );
     boolean pass = false;
     if( control instanceof Scrollable ) {
@@ -183,7 +192,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
     return event;
   }
 
-  static void processTraverseEvent( Control control, JsonObject properties ) {
+  private static void processTraverseEvent( Control control, JsonObject properties ) {
     int keyCode = properties.get( EVENT_PARAM_KEY_CODE ).asInt();
     int charCode = properties.get( EVENT_PARAM_CHAR_CODE ).asInt();
     int stateMask = readStateMask( properties );

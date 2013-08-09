@@ -34,11 +34,6 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
   }
 
   @Override
-  public void handleNotify( String eventName, JsonObject properties ) {
-    handleNotify( widget, eventName, properties );
-  }
-
-  @Override
   public void handleSet( JsonObject properties ) {
     handleSet( widget, properties );
   }
@@ -46,6 +41,11 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
   @Override
   public void handleCall( String method, JsonObject parameters ) {
     handleCall( widget, method, parameters );
+  }
+
+  @Override
+  public void handleNotify( String eventName, JsonObject properties ) {
+    handleNotify( widget, eventName, properties );
   }
 
   public void handleSet( T widget, JsonObject properties ) {
@@ -57,46 +57,7 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
   }
 
   public void handleNotify( T widget, String eventName, JsonObject properties ) {
-    if( "Help".equals( eventName ) ) {
-      handleNotifyHelp( widget, properties );
-    } else if( "Selection".equals( eventName ) ) {
-      handleNotifySelection( widget, properties );
-    } else if( "DefaultSelection".equals( eventName ) ) {
-      handleNotifyDefaultSelection( widget, properties );
-    } else {
-      throw new UnsupportedOperationException( "notify operations not supported by this handler" );
-    }
-  }
-
-  /*
-   * PROTOCOL NOTIFY Selection
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   */
-  public void handleNotifySelection( T widget, JsonObject properties ) {
-    Event event = createSelectionEvent( SWT.Selection, properties );
-    widget.notifyListeners( SWT.Selection, event );
-  }
-
-  /*
-   * PROTOCOL NOTIFY DefaultSelection
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   */
-  public void handleNotifyDefaultSelection( T widget, JsonObject properties ) {
-    Event event = createSelectionEvent( SWT.DefaultSelection, properties );
-    widget.notifyListeners( SWT.DefaultSelection, event );
-  }
-
-  /*
-   * PROTOCOL NOTIFY Help
-   */
-  public void handleNotifyHelp( T widget, JsonObject properties ) {
-    widget.notifyListeners( SWT.Help, new Event() );
+    throw new UnsupportedOperationException( "notify operations not supported by this handler" );
   }
 
   protected static Event createSelectionEvent( int eventType, JsonObject properties ) {
