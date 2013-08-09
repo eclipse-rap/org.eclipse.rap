@@ -57,37 +57,6 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
   }
 
   /*
-   * PROTOCOL NOTIFY Selection
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   */
-  public void handleNotifySelection( Combo combo, JsonObject properties ) {
-    Event event = createSelectionEvent( SWT.Selection, properties );
-    combo.notifyListeners( SWT.Selection, event );
-  }
-
-  /*
-   * PROTOCOL NOTIFY DefaultSelection
-   *
-   * @param altKey (boolean) true if the ALT key was pressed
-   * @param ctrlKey (boolean) true if the CTRL key was pressed
-   * @param shiftKey (boolean) true if the SHIFT key was pressed
-   */
-  public void handleNotifyDefaultSelection( Combo combo, JsonObject properties ) {
-    Event event = createSelectionEvent( SWT.DefaultSelection, properties );
-    combo.notifyListeners( SWT.DefaultSelection, event );
-  }
-
-  /*
-   * PROTOCOL NOTIFY Modify
-   * ignored, Modify event is fired when set text
-   */
-  public void handleNotifyModify( Combo combo, JsonObject properties ) {
-  }
-
-  /*
    * PROTOCOL SET selectionIndex
    *
    * @param selectionIndex (int) the index of the item to select
@@ -156,6 +125,37 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
       }
       combo.setSelection( selection );
     }
+  }
+
+  /*
+   * PROTOCOL NOTIFY Selection
+   *
+   * @param altKey (boolean) true if the ALT key was pressed
+   * @param ctrlKey (boolean) true if the CTRL key was pressed
+   * @param shiftKey (boolean) true if the SHIFT key was pressed
+   */
+  public void handleNotifySelection( Combo combo, JsonObject properties ) {
+    Event event = createSelectionEvent( SWT.Selection, properties );
+    combo.notifyListeners( SWT.Selection, event );
+  }
+
+  /*
+   * PROTOCOL NOTIFY DefaultSelection
+   *
+   * @param altKey (boolean) true if the ALT key was pressed
+   * @param ctrlKey (boolean) true if the CTRL key was pressed
+   * @param shiftKey (boolean) true if the SHIFT key was pressed
+   */
+  public void handleNotifyDefaultSelection( Combo combo, JsonObject properties ) {
+    Event event = createSelectionEvent( SWT.DefaultSelection, properties );
+    combo.notifyListeners( SWT.DefaultSelection, event );
+  }
+
+  /*
+   * PROTOCOL NOTIFY Modify
+   * ignored, Modify event is fired when set text
+   */
+  public void handleNotifyModify( Combo combo, JsonObject properties ) {
   }
 
 }

@@ -31,6 +31,17 @@ public class ButtonOperationHandler extends ControlOperationHandler<Button> {
     handleSetSelection( button, properties );
   }
 
+  @Override
+  public void handleNotify( Button button, String eventName, JsonObject properties ) {
+    if( "Selection".equals( eventName ) ) {
+      handleNotifySelection( button, properties );
+    } else if( "DefaultSelection".equals( eventName ) ) {
+      handleNotifyDefaultSelection( button, properties );
+    } else {
+      super.handleNotify( button, eventName, properties );
+    }
+  }
+
   /*
    * PROTOCOL SET selection
    *
@@ -40,17 +51,6 @@ public class ButtonOperationHandler extends ControlOperationHandler<Button> {
     JsonValue selection = properties.get( PROP_SELECTION );
     if( selection != null ) {
       button.setSelection( selection.asBoolean() );
-    }
-  }
-
-  @Override
-  public void handleNotify( Button button, String eventName, JsonObject properties ) {
-    if( "Selection".equals( eventName ) ) {
-      handleNotifySelection( button, properties );
-    } else if( "DefaultSelection".equals( eventName ) ) {
-      handleNotifyDefaultSelection( button, properties );
-    } else {
-      super.handleNotify( button, eventName, properties );
     }
   }
 
