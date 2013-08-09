@@ -29,9 +29,9 @@ public class TreeItemOperationHandler extends WidgetOperationHandler<TreeItem> {
   }
 
   @Override
-  public void handleSet( JsonObject properties ) {
-    handleSetChecked( properties );
-    handleSetExpanded( properties );
+  public void handleSet( TreeItem item, JsonObject properties ) {
+    handleSetChecked( item, properties );
+    handleSetExpanded( item, properties );
   }
 
   /*
@@ -39,8 +39,7 @@ public class TreeItemOperationHandler extends WidgetOperationHandler<TreeItem> {
    *
    * @param checked (boolean) true if the item was checked, false otherwise
    */
-  private void handleSetChecked( JsonObject properties ) {
-    TreeItem item = widget;
+  public void handleSetChecked( TreeItem item, JsonObject properties ) {
     JsonValue checked = properties.get( PROP_CHECKED );
     if( checked != null ) {
       item.setChecked( checked.asBoolean() );
@@ -52,8 +51,7 @@ public class TreeItemOperationHandler extends WidgetOperationHandler<TreeItem> {
    *
    * @param expanded (boolean) true if the item was expanded, false otherwise
    */
-  private void handleSetExpanded( JsonObject properties ) {
-    final TreeItem item = widget;
+  public void handleSetExpanded( final TreeItem item, JsonObject properties ) {
     final JsonValue expanded = properties.get( PROP_EXPANDED );
     if( expanded != null ) {
       ProcessActionRunner.add( new Runnable() {

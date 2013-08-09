@@ -34,19 +34,19 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
     super( combo );
   }
 
+  @Override
+  public void handleSet( Combo combo, JsonObject properties ) {
+    handleSetSelectionIndex( combo, properties );
+    handleSetListVisible( combo, properties );
+    handleSetText( combo, properties );
+    handleSetSelection( combo, properties );
+  }
+
   /*
    * PROTOCOL NOTIFY Modify
    * ignored, Modify event is fired when set text
    */
-  public void handleNotifyModify( JsonObject properties ) {
-  }
-
-  @Override
-  public void handleSet( JsonObject properties ) {
-    handleSetSelectionIndex( properties );
-    handleSetListVisible( properties );
-    handleSetText( properties );
-    handleSetSelection( properties );
+  public void handleNotifyModify( Combo control, JsonObject properties ) {
   }
 
   /*
@@ -54,8 +54,7 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
    *
    * @param selectionIndex (int) the index of the item to select
    */
-  private void handleSetSelectionIndex( JsonObject properties ) {
-    Combo combo = widget;
+  public void handleSetSelectionIndex( Combo combo, JsonObject properties ) {
     JsonValue selectionIndex = properties.get( PROP_SELECTION_INDEX );
     if( selectionIndex != null ) {
       combo.select( selectionIndex.asInt() );
@@ -67,8 +66,7 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
    *
    * @param listVisible (boolean) the visibility state of the list
    */
-  private void handleSetListVisible( JsonObject properties ) {
-    Combo combo = widget;
+  public void handleSetListVisible( Combo combo, JsonObject properties ) {
     JsonValue listVisible = properties.get( PROP_LIST_VISIBLE );
     if( listVisible != null ) {
       combo.setListVisible( listVisible.asBoolean() );
@@ -80,8 +78,7 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
    *
    * @param text (string) the text
    */
-  private void handleSetText( JsonObject properties ) {
-    final Combo combo = widget;
+  public void handleSetText( final Combo combo, JsonObject properties ) {
     final JsonValue value = properties.get( PROP_TEXT );
     if( value != null ) {
       final String text = value.asString();
@@ -108,8 +105,7 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
    * @param selectionStart (int) the text selection start
    * @param selectionLength (int) the text selection length
    */
-  private void handleSetSelection( JsonObject properties ) {
-    Combo combo = widget;
+  public void handleSetSelection( Combo combo, JsonObject properties ) {
     JsonValue selectionStart = properties.get( PROP_SELECTION_START );
     JsonValue selectionLength = properties.get( PROP_SELECTION_LENGTH );
     if( selectionStart != null || selectionLength != null ) {

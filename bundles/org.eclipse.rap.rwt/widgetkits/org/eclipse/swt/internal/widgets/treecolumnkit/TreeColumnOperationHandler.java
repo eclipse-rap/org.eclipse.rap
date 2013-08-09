@@ -34,11 +34,11 @@ public class TreeColumnOperationHandler extends WidgetOperationHandler<TreeColum
   }
 
   @Override
-  public void handleCall( String method, JsonObject properties ) {
+  public void handleCall( TreeColumn column, String method, JsonObject properties ) {
     if( method.equals( METHOD_MOVE ) ) {
-      handleCallMove( properties );
+      handleCallMove( column, properties );
     } else if( method.equals( METHOD_RESIZE ) ) {
-      handleCallResize( properties );
+      handleCallResize( column, properties );
     }
   }
 
@@ -47,8 +47,7 @@ public class TreeColumnOperationHandler extends WidgetOperationHandler<TreeColum
    *
    * @left (int) the left position of the column
    */
-  private void handleCallMove( JsonObject properties ) {
-    final TreeColumn column = widget;
+  public void handleCallMove( final TreeColumn column, JsonObject properties ) {
     final int newLeft = properties.get( PROP_LEFT ).asInt();
     ProcessActionRunner.add( new Runnable() {
       public void run() {
@@ -62,8 +61,7 @@ public class TreeColumnOperationHandler extends WidgetOperationHandler<TreeColum
    *
    * @width (int) the width of the column
    */
-  private void handleCallResize( JsonObject properties ) {
-    final TreeColumn column = widget;
+  public void handleCallResize( final TreeColumn column, JsonObject properties ) {
     final int width = properties.get( PROP_WIDTH ).asInt();
     ProcessActionRunner.add( new Runnable() {
       public void run() {

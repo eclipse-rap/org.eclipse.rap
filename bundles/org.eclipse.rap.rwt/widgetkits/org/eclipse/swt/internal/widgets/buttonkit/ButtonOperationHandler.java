@@ -26,6 +26,11 @@ public class ButtonOperationHandler extends ControlOperationHandler<Button> {
     super( button );
   }
 
+  @Override
+  public void handleSet( Button button, JsonObject properties ) {
+    handleSetSelection( button, properties );
+  }
+
   /*
    * PROTOCOL NOTIFY Selection
    *
@@ -34,8 +39,7 @@ public class ButtonOperationHandler extends ControlOperationHandler<Button> {
    * @param shiftKey (boolean) true if the SHIFT key was pressed
    */
   @Override
-  public void handleNotifySelection( JsonObject properties ) {
-    Button button = widget;
+  public void handleNotifySelection( Button button, JsonObject properties ) {
     Event event = createSelectionEvent( SWT.Selection, properties );
     if( ( button.getStyle() & SWT.RADIO ) != 0 && !button.getSelection() ) {
       event.time = -1;
@@ -43,18 +47,12 @@ public class ButtonOperationHandler extends ControlOperationHandler<Button> {
     button.notifyListeners( SWT.Selection, event );
   }
 
-  @Override
-  public void handleSet( JsonObject properties ) {
-    handleSetSelection( properties );
-  }
-
   /*
    * PROTOCOL SET selection
    *
    * @param selection (boolean) true if the button was selected, otherwise false
    */
-  private void handleSetSelection( JsonObject properties ) {
-    Button button = widget;
+  public void handleSetSelection( Button button, JsonObject properties ) {
     JsonValue selection = properties.get( PROP_SELECTION );
     if( selection != null ) {
       button.setSelection( selection.asBoolean() );

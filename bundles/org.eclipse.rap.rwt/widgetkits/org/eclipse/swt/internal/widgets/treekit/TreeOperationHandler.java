@@ -41,6 +41,20 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
     super( tree );
   }
 
+  @Override
+  public void handleSet( Tree tree, JsonObject properties ) {
+    handleSetSelection( tree, properties );
+    handleSetScrollLeft( tree, properties );
+    handleSetTopItemIndex( tree, properties );
+  }
+
+  @Override
+  public void handleCall( Tree tree, String method, JsonObject properties ) {
+    if( method.equals( METHOD_RENDER_TOOLTIP_TEXT ) ) {
+      handleCallRenderToolTipText( tree, properties );
+    }
+  }
+
   /*
    * PROTOCOL NOTIFY Selection
    *
@@ -51,10 +65,10 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
    * @item item (string) id of selected item
    */
   @Override
-  public void handleNotifySelection( JsonObject properties ) {
+  public void handleNotifySelection( Tree tree, JsonObject properties ) {
     Event event = createSelectionEvent( SWT.Selection, properties );
-    event.item = getItem( properties.get( EVENT_PARAM_ITEM ).asString() );
-    widget.notifyListeners( SWT.Selection, event );
+    event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
+    tree.notifyListeners( SWT.Selection, event );
   }
 
   /*
@@ -67,10 +81,10 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
    * @item item (string) id of selected item
    */
   @Override
-  public void handleNotifyDefaultSelection( JsonObject properties ) {
+  public void handleNotifyDefaultSelection( Tree tree, JsonObject properties ) {
     Event event = createSelectionEvent( SWT.DefaultSelection, properties );
-    event.item = getItem( properties.get( EVENT_PARAM_ITEM ).asString() );
-    widget.notifyListeners( SWT.DefaultSelection, event );
+    event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
+    tree.notifyListeners( SWT.DefaultSelection, event );
   }
 
   /*
@@ -78,10 +92,10 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
    *
    * @item item (string) id of expanded item
    */
-  public void handleNotifyExpand( JsonObject properties ) {
+  public void handleNotifyExpand( Tree tree, JsonObject properties ) {
     Event event = new Event();
-    event.item = getItem( properties.get( EVENT_PARAM_ITEM ).asString() );
-    widget.notifyListeners( SWT.Expand, event );
+    event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
+    tree.notifyListeners( SWT.Expand, event );
   }
 
   /*
@@ -89,44 +103,10 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
    *
    * @item item (string) id of collapsed item
    */
-  public void handleNotifyCollapse( JsonObject properties ) {
+  public void handleNotifyCollapse( Tree tree, JsonObject properties ) {
     Event event = new Event();
-    event.item = getItem( properties.get( EVENT_PARAM_ITEM ).asString() );
-    widget.notifyListeners( SWT.Collapse, event );
-  }
-
-  @Override
-  public void handleCall( String method, JsonObject properties ) {
-    if( method.equals( METHOD_RENDER_TOOLTIP_TEXT ) ) {
-      handleCallRenderToolTipText( properties );
-    }
-  }
-
-  /*
-   * PROTOCOL CALL renderToolTipText
-   *
-   * @item (string) id of the hovered item
-   * @column (int) column index of the hovered cell
-   */
-  private void handleCallRenderToolTipText( JsonObject properties ) {
-    Tree tree = widget;
-    ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
-    adapter.setCellToolTipText( null );
-    ICellToolTipProvider provider = adapter.getCellToolTipProvider();
-    if( provider != null ) {
-      TreeItem item = getItem( properties.get( "item" ).asString() );
-      int columnIndex = properties.get( "column" ).asInt();
-      if( item != null && ( columnIndex == 0 || columnIndex < tree.getColumnCount() ) ) {
-        provider.getToolTipText( item, columnIndex );
-      }
-    }
-  }
-
-  @Override
-  public void handleSet( JsonObject properties ) {
-    handleSetSelection( properties );
-    handleSetScrollLeft( properties );
-    handleSetTopItemIndex( properties );
+    event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
+    tree.notifyListeners( SWT.Collapse, event );
   }
 
   /*
@@ -134,15 +114,14 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
    *
    * @param selection ([string]) array with ids of selected items
    */
-  private void handleSetSelection( JsonObject properties ) {
-    Tree tree = widget;
+  public void handleSetSelection( Tree tree, JsonObject properties ) {
     JsonValue values = properties.get( PROP_SELECTION );
     if( values != null ) {
       JsonArray itemIds = values.asArray();
       TreeItem[] selectedItems = new TreeItem[ itemIds.size() ];
       boolean validItemFound = false;
       for( int i = 0; i < itemIds.size(); i++ ) {
-        selectedItems[ i ] = getItem( itemIds.get( i ).asString() );
+        selectedItems[ i ] = getItem( tree, itemIds.get( i ).asString() );
         if( selectedItems[ i ] != null ) {
           validItemFound = true;
         }
@@ -159,8 +138,7 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
    *
    * @param scrollLeft (int) left scroll offset in pixels
    */
-  private void handleSetScrollLeft( JsonObject properties ) {
-    Tree tree = widget;
+  public void handleSetScrollLeft( Tree tree, JsonObject properties ) {
     JsonValue value = properties.get( PROP_SCROLL_LEFT );
     if( value != null ) {
       int scrollLeft = value.asInt();
@@ -174,8 +152,7 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
    *
    * @param topItemIndex (int) visual index of the item, which is on the top of the tree
    */
-  private void handleSetTopItemIndex( JsonObject properties ) {
-    Tree tree = widget;
+  public void handleSetTopItemIndex( Tree tree, JsonObject properties ) {
     JsonValue value = properties.get( PROP_TOP_ITEM_INDEX );
     if( value != null ) {
       int topItemIndex = value.asInt();
@@ -185,8 +162,26 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
     }
   }
 
-  private TreeItem getItem( String itemId ) {
-    Tree tree = widget;
+  /*
+   * PROTOCOL CALL renderToolTipText
+   *
+   * @item (string) id of the hovered item
+   * @column (int) column index of the hovered cell
+   */
+  public void handleCallRenderToolTipText( Tree tree, JsonObject properties ) {
+    ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
+    adapter.setCellToolTipText( null );
+    ICellToolTipProvider provider = adapter.getCellToolTipProvider();
+    if( provider != null ) {
+      TreeItem item = getItem( tree, properties.get( "item" ).asString() );
+      int columnIndex = properties.get( "column" ).asInt();
+      if( item != null && ( columnIndex == 0 || columnIndex < tree.getColumnCount() ) ) {
+        provider.getToolTipText( item, columnIndex );
+      }
+    }
+  }
+
+  private TreeItem getItem( Tree tree, String itemId ) {
     TreeItem item = null;
     String[] idParts = itemId.split( "#" );
     if( idParts.length == 2 ) {

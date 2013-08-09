@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Widget;
 
 public abstract class WidgetOperationHandler<T extends Widget> extends AbstractOperationHandler {
 
-  protected final T widget;
+  private final T widget;
 
   public WidgetOperationHandler( T widget ) {
     this.widget = widget;
@@ -39,14 +39,14 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
   @Override
   public void handleNotify( String eventName, JsonObject properties ) {
     try {
-      String name = "handleNotify" + eventName;
-      Method method = getClass().getMethod( name, JsonObject.class );
-      method.invoke( this, properties );
+      Method method = findNotifyMethod( eventName );
+      if( method == null ) {
+        String message = eventName + " notify operation not supported by this handler";
+        throw new UnsupportedOperationException( message );
+      }
+      method.invoke( this, widget, properties );
     } catch( SecurityException exception ) {
       throw new RuntimeException( exception );
-    } catch( NoSuchMethodException e ) {
-      String message = eventName + " notify operation not supported by this handler";
-      throw new UnsupportedOperationException( message );
     } catch( IllegalArgumentException exception ) {
       throw new RuntimeException( exception );
     } catch( IllegalAccessException exception ) {
@@ -56,6 +56,24 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
     }
   }
 
+  @Override
+  public void handleSet( JsonObject properties ) {
+    handleSet( widget, properties );
+  }
+
+  @Override
+  public void handleCall( String method, JsonObject parameters ) {
+    handleCall( widget, method, parameters );
+  }
+
+  public void handleSet( T widget, JsonObject properties ) {
+    throw new UnsupportedOperationException( "set operations not supported by this handler" );
+  }
+
+  public void handleCall( T widget, String method, JsonObject parameters ) {
+    throw new UnsupportedOperationException( "call operations not supported by this handler" );
+  }
+
   /*
    * PROTOCOL NOTIFY Selection
    *
@@ -63,7 +81,7 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
    * @param ctrlKey (boolean) true if the CTRL key was pressed
    * @param shiftKey (boolean) true if the SHIFT key was pressed
    */
-  public void handleNotifySelection( JsonObject properties ) {
+  public void handleNotifySelection( T widget, JsonObject properties ) {
     Event event = createSelectionEvent( SWT.Selection, properties );
     widget.notifyListeners( SWT.Selection, event );
   }
@@ -75,7 +93,7 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
    * @param ctrlKey (boolean) true if the CTRL key was pressed
    * @param shiftKey (boolean) true if the SHIFT key was pressed
    */
-  public void handleNotifyDefaultSelection( JsonObject properties ) {
+  public void handleNotifyDefaultSelection( T widget, JsonObject properties ) {
     Event event = createSelectionEvent( SWT.DefaultSelection, properties );
     widget.notifyListeners( SWT.DefaultSelection, event );
   }
@@ -83,8 +101,25 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
   /*
    * PROTOCOL NOTIFY Help
    */
-  public void handleNotifyHelp( JsonObject properties ) {
+  public void handleNotifyHelp( T widget, JsonObject properties ) {
     widget.notifyListeners( SWT.Help, new Event() );
+  }
+
+  private Method findNotifyMethod( String eventName ) {
+    String name = "handleNotify" + eventName;
+    Method[] methods = getClass().getMethods();
+    for( Method method : methods ) {
+      if( name.equals( method.getName() ) ) {
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        if( parameterTypes.length > 1
+            && parameterTypes[ 0 ].isAssignableFrom( widget.getClass() )
+            && parameterTypes[ 1 ] == JsonObject.class )
+        {
+          return method;
+        }
+      }
+    }
+    return null;
   }
 
   protected static Event createSelectionEvent( int eventType, JsonObject properties ) {

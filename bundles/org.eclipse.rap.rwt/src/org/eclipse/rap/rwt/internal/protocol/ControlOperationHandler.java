@@ -36,15 +36,15 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
   /*
    * PROTOCOL NOTIFY FocusIn
    */
-  public void handleNotifyFocusIn( JsonObject properties ) {
-    widget.notifyListeners( SWT.FocusIn, new Event() );
+  public void handleNotifyFocusIn( T control, JsonObject properties ) {
+    control.notifyListeners( SWT.FocusIn, new Event() );
   }
 
   /*
    * PROTOCOL NOTIFY FocusOut
    */
-  public void handleNotifyFocusOut( JsonObject properties ) {
-    widget.notifyListeners( SWT.FocusOut, new Event() );
+  public void handleNotifyFocusOut( T control, JsonObject properties ) {
+    control.notifyListeners( SWT.FocusOut, new Event() );
   }
 
   /*
@@ -58,8 +58,8 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    * @param y (int) the y coordinate of the pointer
    * @param time (int) the time when the event occurred
    */
-  public void handleNotifyMouseDown( JsonObject properties ) {
-    processMouseEvent( SWT.MouseDown, widget, properties );
+  public void handleNotifyMouseDown( T control, JsonObject properties ) {
+    processMouseEvent( SWT.MouseDown, control, properties );
   }
 
   /*
@@ -73,8 +73,8 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    * @param y (int) the y coordinate of the pointer
    * @param time (int) the time when the event occurred
    */
-  public void handleNotifyMouseDoubleClick( JsonObject properties ) {
-    processMouseEvent( SWT.MouseDoubleClick, widget, properties );
+  public void handleNotifyMouseDoubleClick( T control, JsonObject properties ) {
+    processMouseEvent( SWT.MouseDoubleClick, control, properties );
   }
 
   /*
@@ -88,8 +88,8 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    * @param y (int) the y coordinate of the pointer
    * @param time (int) the time when the event occurred
    */
-  public void handleNotifyMouseUp( JsonObject properties ) {
-    processMouseEvent( SWT.MouseUp, widget, properties );
+  public void handleNotifyMouseUp( T control, JsonObject properties ) {
+    processMouseEvent( SWT.MouseUp, control, properties );
   }
 
   /*
@@ -101,8 +101,8 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    * @param keyCode (int) the key code of the key that was typed
    * @param charCode (int) the char code of the key that was typed
    */
-  public void handleNotifyTraverse( JsonObject properties ) {
-    processTraverseEvent( widget, properties );
+  public void handleNotifyTraverse( T control, JsonObject properties ) {
+    processTraverseEvent( control, properties );
   }
 
   /*
@@ -114,9 +114,9 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    * @param keyCode (int) the key code of the key that was typed
    * @param charCode (int) the char code of the key that was typed
    */
-  public void handleNotifyKeyDown( JsonObject properties ) {
-    widget.notifyListeners( SWT.KeyDown, createKeyEvent( properties ) );
-    widget.notifyListeners( SWT.KeyUp, createKeyEvent( properties ) );
+  public void handleNotifyKeyDown( T control, JsonObject properties ) {
+    control.notifyListeners( SWT.KeyDown, createKeyEvent( properties ) );
+    control.notifyListeners( SWT.KeyUp, createKeyEvent( properties ) );
   }
 
   /*
@@ -125,8 +125,8 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    * @param x (int) the x coordinate of the pointer
    * @param y (int) the y coordinate of the pointer
    */
-  public void handleNotifyMenuDetect( JsonObject properties ) {
-    widget.notifyListeners( SWT.MenuDetect, createMenuDetectEvent( properties ) );
+  public void handleNotifyMenuDetect( T control, JsonObject properties ) {
+    control.notifyListeners( SWT.MenuDetect, createMenuDetectEvent( properties ) );
   }
 
   static void processMouseEvent( int eventType, Control control, JsonObject properties ) {
