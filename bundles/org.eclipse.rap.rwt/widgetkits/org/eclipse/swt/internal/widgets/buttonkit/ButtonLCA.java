@@ -20,6 +20,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderClientListeners;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -87,6 +88,7 @@ public final class ButtonLCA extends AbstractWidgetLCA {
     renderProperty( button, PROP_SELECTION, button.getSelection(), false );
     renderProperty( button, PROP_GRAYED, button.getGrayed(), false );
     renderListener( button, PROP_SELECTION_LISTENERS, isListening( button, SWT.Selection ), false );
+    renderClientListeners( widget );
   }
 
   private static String getAlignment( Button button ) {
