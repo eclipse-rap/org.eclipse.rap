@@ -10,7 +10,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_COLLAPSE;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_EXPAND;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_ITEM;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
@@ -50,20 +54,20 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
 
   @Override
   public void handleCall( Tree tree, String method, JsonObject properties ) {
-    if( method.equals( METHOD_RENDER_TOOLTIP_TEXT ) ) {
+    if( METHOD_RENDER_TOOLTIP_TEXT.equals( method ) ) {
       handleCallRenderToolTipText( tree, properties );
     }
   }
 
   @Override
   public void handleNotify( Tree tree, String eventName, JsonObject properties ) {
-    if( "Selection".equals( eventName ) ) {
+    if( EVENT_SELECTION.equals( eventName ) ) {
       handleNotifySelection( tree, properties );
-    } else if( "DefaultSelection".equals( eventName ) ) {
+    } else if( EVENT_DEFAULT_SELECTION.equals( eventName ) ) {
       handleNotifyDefaultSelection( tree, properties );
-    } else if( "Expand".equals( eventName ) ) {
+    } else if( EVENT_EXPAND.equals( eventName ) ) {
       handleNotifyExpand( tree, properties );
-    } else if( "Collapse".equals( eventName ) ) {
+    } else if( EVENT_COLLAPSE.equals( eventName ) ) {
       handleNotifyCollapse( tree, properties );
     } else {
       super.handleNotify( tree, eventName, properties );

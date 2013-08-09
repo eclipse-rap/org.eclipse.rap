@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.buttonkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
+
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler;
@@ -33,9 +36,9 @@ public class ButtonOperationHandler extends ControlOperationHandler<Button> {
 
   @Override
   public void handleNotify( Button button, String eventName, JsonObject properties ) {
-    if( "Selection".equals( eventName ) ) {
+    if( EVENT_SELECTION.equals( eventName ) ) {
       handleNotifySelection( button, properties );
-    } else if( "DefaultSelection".equals( eventName ) ) {
+    } else if( EVENT_DEFAULT_SELECTION.equals( eventName ) ) {
       handleNotifyDefaultSelection( button, properties );
     } else {
       super.handleNotify( button, eventName, properties );

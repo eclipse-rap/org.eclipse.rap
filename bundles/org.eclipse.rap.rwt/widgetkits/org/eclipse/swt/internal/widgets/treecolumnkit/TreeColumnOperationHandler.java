@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treecolumnkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getAdapter;
 
 import java.util.Arrays;
@@ -37,18 +39,18 @@ public class TreeColumnOperationHandler extends WidgetOperationHandler<TreeColum
 
   @Override
   public void handleCall( TreeColumn column, String method, JsonObject properties ) {
-    if( method.equals( METHOD_MOVE ) ) {
+    if( METHOD_MOVE.equals( method ) ) {
       handleCallMove( column, properties );
-    } else if( method.equals( METHOD_RESIZE ) ) {
+    } else if( METHOD_RESIZE.equals( method ) ) {
       handleCallResize( column, properties );
     }
   }
 
   @Override
   public void handleNotify( TreeColumn column, String eventName, JsonObject properties ) {
-    if( "Selection".equals( eventName ) ) {
+    if( EVENT_SELECTION.equals( eventName ) ) {
       handleNotifySelection( column, properties );
-    } else if( "DefaultSelection".equals( eventName ) ) {
+    } else if( EVENT_DEFAULT_SELECTION.equals( eventName ) ) {
       handleNotifyDefaultSelection( column, properties );
     } else {
       super.handleNotify( column, eventName, properties );

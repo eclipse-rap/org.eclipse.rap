@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.combokit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MODIFY;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.json.JsonObject;
@@ -45,11 +48,11 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
 
   @Override
   public void handleNotify( Combo combo, String eventName, JsonObject properties ) {
-    if( "Selection".equals( eventName ) ) {
+    if( EVENT_SELECTION.equals( eventName ) ) {
       handleNotifySelection( combo, properties );
-    } else if( "DefaultSelection".equals( eventName ) ) {
+    } else if( EVENT_DEFAULT_SELECTION.equals( eventName ) ) {
       handleNotifyDefaultSelection( combo, properties );
-    } else if( "Modify".equals( eventName ) ) {
+    } else if( EVENT_MODIFY.equals( eventName ) ) {
       handleNotifyModify( combo, properties );
     } else {
       super.handleNotify( combo, eventName, properties );

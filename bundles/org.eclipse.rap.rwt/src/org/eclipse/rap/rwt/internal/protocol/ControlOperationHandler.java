@@ -10,12 +10,21 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_IN;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_OUT;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_HELP;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_KEY_DOWN;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MENU_DETECT;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOUSE_DOWN;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOUSE_UP;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_BUTTON;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_CHAR_CODE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_KEY_CODE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_TIME;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_X;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_Y;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_TRAVERSE;
 import static org.eclipse.swt.internal.events.EventLCAUtil.translateButton;
 
 import org.eclipse.rap.json.JsonObject;
@@ -35,23 +44,23 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
 
   @Override
   public void handleNotify( T control, String eventName, JsonObject properties ) {
-    if( "FocusIn".equals( eventName ) ) {
+    if( EVENT_FOCUS_IN.equals( eventName ) ) {
       handleNotifyFocusIn( control, properties );
-    } else if( "FocusOut".equals( eventName ) ) {
+    } else if( EVENT_FOCUS_OUT.equals( eventName ) ) {
       handleNotifyFocusOut( control, properties );
-    } else if( "MouseDown".equals( eventName ) ) {
+    } else if( EVENT_MOUSE_DOWN.equals( eventName ) ) {
       handleNotifyMouseDown( control, properties );
-    } else if( "MouseDoubleClick".equals( eventName ) ) {
+    } else if( EVENT_MOUSE_DOUBLE_CLICK.equals( eventName ) ) {
       handleNotifyMouseDoubleClick( control, properties );
-    } else if( "MouseUp".equals( eventName ) ) {
+    } else if( EVENT_MOUSE_UP.equals( eventName ) ) {
       handleNotifyMouseUp( control, properties );
-    } else if( "Traverse".equals( eventName ) ) {
+    } else if( EVENT_TRAVERSE.equals( eventName ) ) {
       handleNotifyTraverse( control, properties );
-    } else if( "KeyDown".equals( eventName ) ) {
+    } else if( EVENT_KEY_DOWN.equals( eventName ) ) {
       handleNotifyKeyDown( control, properties );
-    } else if( "MenuDetect".equals( eventName ) ) {
+    } else if( EVENT_MENU_DETECT.equals( eventName ) ) {
       handleNotifyMenuDetect( control, properties );
-    } else if( "Help".equals( eventName ) ) {
+    } else if( EVENT_HELP.equals( eventName ) ) {
       handleNotifyHelp( control, properties );
     } else {
       super.handleNotify( control, eventName, properties );
