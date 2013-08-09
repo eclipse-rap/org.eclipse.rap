@@ -97,20 +97,22 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
     },
 
     setHoverItem : function( item ) {
+      var newHover = item ? item : this._openItem;
       if( this._hoverItem != null && this._hoverItem != item ) {
         this._hoverItem.removeState( "over" );
       }
-      if( item != null ) {
-        item.addState( "over" );
-        if( this._openItem != null && this._openItem != item ) {
-          this.setOpenItem( item );
+      if( newHover != null ) {
+        newHover.addState( "over" );
+        if( this._openItem != null && this._openItem != newHover ) {
+          this.setOpenItem( newHover );
         }
       }
-      this._hoverItem = item;
+      this._hoverItem = newHover;
     },
 
     openByMnemonic : function( item ) {
       this.setOpenItem( item, true );
+      this.setHoverItem( null, true );
     },
 
     setOpenItem : function( item, byMnemonic ) {

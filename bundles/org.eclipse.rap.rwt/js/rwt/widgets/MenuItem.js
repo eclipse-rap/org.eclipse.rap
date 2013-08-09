@@ -167,15 +167,17 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
           this._applyText( false );
         break;
         case "trigger":
-          var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
-          if( event.charCode === charCode ) {
-            if( this.hasState( "cascade" ) ) {
-              this._parentMenu.openByMnemonic( this );
-            } else {
-              this.execute();
-              rwt.widgets.util.MenuManager.getInstance().update();
+          if( this._rawText ) {
+            var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
+            if( event.charCode === charCode ) {
+              if( this.hasState( "cascade" ) ) {
+                this._parentMenu.openByMnemonic( this );
+              } else {
+                this.execute();
+                rwt.widgets.util.MenuManager.getInstance().update();
+              }
+              event.success = true;
             }
-            event.success = true;
           }
         break;
       }
