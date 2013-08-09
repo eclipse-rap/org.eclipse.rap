@@ -299,10 +299,14 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       return this._hoverItem;
     },
 
-    hoverFirstItem : function() {
+    hoverFirstItem : function( reversed ) {
       if( this._isDisplayable && !this._itemsHiddenFlag ) {
         this.setHoverItem( null, true );
-        this._hoverNextItem();
+        if( reversed ) {
+          this._hoverPreviousItem();
+        } else {
+          this._hoverNextItem();
+        }
         this.removeState( "hoverFristItem" );
       } else {
         this.addState( "hoverFristItem" );

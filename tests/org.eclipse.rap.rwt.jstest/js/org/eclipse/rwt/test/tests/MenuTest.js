@@ -594,6 +594,34 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       disposeMenuBar();
     },
 
+    testMenuBar_setActiveTrue_allowsMenuOpenByKeyDown : function() {
+      createMenuBar();
+      menu.addMenuItemAt( new MenuItem(), 1 );
+      TestUtil.flush();
+
+      menuBar.setActive( true );
+      TestUtil.press( menuBar, "Down" );
+      TestUtil.flush();
+
+      assertTrue( menu.isSeeable() );
+      assertIdentical( menuItem, menu._hoverItem );
+      disposeMenuBar();
+    },
+
+    testMenuBar_setActiveTrue_allowsMenuOpenByKeyUp : function() {
+      createMenuBar();
+      menu.addMenuItemAt( new MenuItem(), 0 );
+      TestUtil.flush();
+
+      menuBar.setActive( true );
+      TestUtil.press( menuBar, "Up" );
+      TestUtil.flush();
+
+      assertTrue( menu.isSeeable() );
+      assertIdentical( menuItem, menu._hoverItem );
+      disposeMenuBar();
+    },
+
     testMenuBar_setMnemonicsTrue_rendersMnemonic : function() {
       createMenuBar();
       menuBarItem.setText( "foo" );

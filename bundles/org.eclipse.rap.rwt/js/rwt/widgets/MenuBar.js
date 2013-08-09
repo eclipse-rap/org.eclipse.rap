@@ -24,6 +24,7 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
     this.addEventListener( "mouseover", this._onMouseOver );
     this.addEventListener( "mouseout", this._onMouseOut );
     this.addEventListener( "keydown", this._onKeyDown );
+    this.addEventListener( "keypress", this._onKeyPress );
   },
 
   destruct : function() {
@@ -148,7 +149,7 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
     getOpener : rwt.util.Functions.returnNull,
 
 
-    // needed for the menu-manager:
+    // from original Menu, needed for the menu-manager:
     isSubElement : function( vElement, vButtonsOnly ) {
       var result = false;
       if (    ( vElement.getParent() === this )
@@ -231,6 +232,44 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
             }
           }
         }
+      }
+    },
+
+    _onKeyPress : function( event ) {
+      switch( event.getKeyIdentifier() ) {
+        case "Up":
+          this._handleKeyUp( event );
+        break;
+        case "Down":
+          this._handleKeyDown( event );
+        break;
+//        case "Left":
+//          this._handleKeyLeft( event );
+//        break;
+//        case "Right":
+//          this._handleKeyRight( event );
+//        break;
+//        case "Enter":
+//          this._handleKeyEnter( event );
+//        break;
+      }
+    },
+
+    _handleKeyDown : function( event ) {
+      if( this.hasSubmenu( this._hoverItem ) ) {
+        this.setOpenItem( this._hoverItem );
+        this._openItem.getMenu().hoverFirstItem();
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    },
+
+    _handleKeyUp : function( event ) {
+      if( this.hasSubmenu( this._hoverItem ) ) {
+        this.setOpenItem( this._hoverItem );
+        this._openItem.getMenu().hoverFirstItem( true );
+        event.preventDefault();
+        event.stopPropagation();
       }
     },
 
