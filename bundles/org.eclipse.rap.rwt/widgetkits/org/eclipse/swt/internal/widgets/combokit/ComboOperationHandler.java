@@ -42,6 +42,15 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
     handleSetSelection( combo, properties );
   }
 
+  @Override
+  public void handleNotify( Combo combo, String eventName, JsonObject properties ) {
+    if( "Modify".equals( eventName ) ) {
+      handleNotifyModify( combo, properties );
+    } else {
+      super.handleNotify( combo, eventName, properties );
+    }
+  }
+
   /*
    * PROTOCOL NOTIFY Modify
    * ignored, Modify event is fired when set text

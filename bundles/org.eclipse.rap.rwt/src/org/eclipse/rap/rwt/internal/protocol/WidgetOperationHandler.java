@@ -16,9 +16,6 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PAR
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_X;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_Y;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
@@ -38,22 +35,7 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
 
   @Override
   public void handleNotify( String eventName, JsonObject properties ) {
-    try {
-      Method method = findNotifyMethod( eventName );
-      if( method == null ) {
-        String message = eventName + " notify operation not supported by this handler";
-        throw new UnsupportedOperationException( message );
-      }
-      method.invoke( this, widget, properties );
-    } catch( SecurityException exception ) {
-      throw new RuntimeException( exception );
-    } catch( IllegalArgumentException exception ) {
-      throw new RuntimeException( exception );
-    } catch( IllegalAccessException exception ) {
-      throw new RuntimeException( exception );
-    } catch( InvocationTargetException exception ) {
-      throw new RuntimeException( exception );
-    }
+    handleNotify( widget, eventName, properties );
   }
 
   @Override
@@ -72,6 +54,18 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
 
   public void handleCall( T widget, String method, JsonObject parameters ) {
     throw new UnsupportedOperationException( "call operations not supported by this handler" );
+  }
+
+  public void handleNotify( T widget, String eventName, JsonObject properties ) {
+    if( "Help".equals( eventName ) ) {
+      handleNotifyHelp( widget, properties );
+    } else if( "Selection".equals( eventName ) ) {
+      handleNotifySelection( widget, properties );
+    } else if( "DefaultSelection".equals( eventName ) ) {
+      handleNotifyDefaultSelection( widget, properties );
+    } else {
+      throw new UnsupportedOperationException( "notify operations not supported by this handler" );
+    }
   }
 
   /*
@@ -103,23 +97,6 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
    */
   public void handleNotifyHelp( T widget, JsonObject properties ) {
     widget.notifyListeners( SWT.Help, new Event() );
-  }
-
-  private Method findNotifyMethod( String eventName ) {
-    String name = "handleNotify" + eventName;
-    Method[] methods = getClass().getMethods();
-    for( Method method : methods ) {
-      if( name.equals( method.getName() ) ) {
-        Class<?>[] parameterTypes = method.getParameterTypes();
-        if( parameterTypes.length > 1
-            && parameterTypes[ 0 ].isAssignableFrom( widget.getClass() )
-            && parameterTypes[ 1 ] == JsonObject.class )
-        {
-          return method;
-        }
-      }
-    }
-    return null;
   }
 
   protected static Event createSelectionEvent( int eventType, JsonObject properties ) {

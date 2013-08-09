@@ -55,6 +55,21 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
     }
   }
 
+  @Override
+  public void handleNotify( Tree tree, String eventName, JsonObject properties ) {
+    if( "Selection".equals( eventName ) ) {
+      handleNotifySelection( tree, properties );
+    } else if( "DefaultSelection".equals( eventName ) ) {
+      handleNotifyDefaultSelection( tree, properties );
+    } else if( "Expand".equals( eventName ) ) {
+      handleNotifyExpand( tree, properties );
+    } else if( "Collapse".equals( eventName ) ) {
+      handleNotifyCollapse( tree, properties );
+    } else {
+      super.handleNotify( tree, eventName, properties );
+    }
+  }
+
   /*
    * PROTOCOL NOTIFY Selection
    *

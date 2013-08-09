@@ -10,11 +10,15 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
 import org.junit.Test;
 
@@ -61,6 +65,37 @@ public class WidgetOperationHandler_Test {
     handler.handleCall( "foo", properties );
   }
 
+  @Test
+  public void testHandleNotify_delegatesToHandleCallWithWidget() {
+    Widget widget = mock( Widget.class );
+    JsonObject properties = new JsonObject();
+    WidgetOperationHandler<Widget> handler = spy( new TestWidgetOperationHandler( widget ) );
+
+    handler.handleNotify( "foo", properties );
+
+    verify( handler ).handleNotify( widget, "foo", properties );
+  }
+
+  @Test( expected = UnsupportedOperationException.class )
+  public void testHandleNotify_throwsExceptionIfNotSupported() {
+    Widget widget = mock( Widget.class );
+    JsonObject properties = new JsonObject();
+    WidgetOperationHandler<Widget> handler = spy( new WidgetOperationHandler<Widget>( widget ) {} );
+
+    handler.handleNotify( "foo", properties );
+  }
+
+  @Test
+  public void testHandleNotify_processesHelp() {
+    Widget widget = mock( Widget.class );
+    JsonObject properties = new JsonObject();
+    WidgetOperationHandler<Widget> handler = new WidgetOperationHandler<Widget>( widget ) {};
+
+    handler.handleNotify( "Help", properties );
+
+    verify( widget ).notifyListeners( eq( SWT.Help ), any( Event.class ) );
+  }
+
   private static class TestWidgetOperationHandler extends WidgetOperationHandler<Widget> {
 
     private TestWidgetOperationHandler( Widget widget ) {
@@ -73,6 +108,10 @@ public class WidgetOperationHandler_Test {
 
     @Override
     public void handleCall( Widget widget, String method, JsonObject parameters ) {
+    }
+
+    @Override
+    public void handleNotify( Widget widget, String eventType, JsonObject parameters ) {
     }
 
   }

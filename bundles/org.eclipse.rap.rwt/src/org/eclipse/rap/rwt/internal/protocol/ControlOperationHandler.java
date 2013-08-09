@@ -33,6 +33,29 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
     super( control );
   }
 
+  @Override
+  public void handleNotify( T control, String eventName, JsonObject properties ) {
+    if( "FocusIn".equals( eventName ) ) {
+      handleNotifyFocusIn( control, properties );
+    } else if( "FocusOut".equals( eventName ) ) {
+      handleNotifyFocusOut( control, properties );
+    } else if( "MouseDown".equals( eventName ) ) {
+      handleNotifyMouseDown( control, properties );
+    } else if( "MouseDoubleClick".equals( eventName ) ) {
+      handleNotifyMouseDoubleClick( control, properties );
+    } else if( "MouseUp".equals( eventName ) ) {
+      handleNotifyMouseUp( control, properties );
+    } else if( "Traverse".equals( eventName ) ) {
+      handleNotifyTraverse( control, properties );
+    } else if( "KeyDown".equals( eventName ) ) {
+      handleNotifyKeyDown( control, properties );
+    } else if( "MenuDetect".equals( eventName ) ) {
+      handleNotifyMenuDetect( control, properties );
+    } else {
+      super.handleNotify( control, eventName, properties );
+    }
+  }
+
   /*
    * PROTOCOL NOTIFY FocusIn
    */
