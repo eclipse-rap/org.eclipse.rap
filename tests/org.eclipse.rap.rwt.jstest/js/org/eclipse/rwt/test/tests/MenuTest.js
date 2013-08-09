@@ -570,6 +570,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       disposeMenuBar();
     },
 
+    testMenuBar_setActiveTrue_doesNotHoverFirstItemIfOtherItemIsHovered : function() {
+      createMenuBar();
+      var firstBarItem = new MenuItem( "cascade" );
+      menuBar.addMenuItemAt( firstBarItem, 0 );
+      TestUtil.flush();
+
+      TestUtil.hoverFromTo( menuBar.getElement(), menuBarItem.getElement() );
+      TestUtil.click( menuBarItem );
+      TestUtil.flush();
+
+      assertIdentical( menuBarItem, menuBar._hoverItem );
+      disposeMenuBar();
+    },
+
     testMenuBar_setActiveTrue_setsAsActiveChild : function() {
       createMenuBar();
       TestUtil.flush();
@@ -691,6 +705,49 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.click( rwt.widgets.base.ClientDocument.getInstance() );
 
       assertFalse( menuBar.getActive() );
+      disposeMenuBar();
+    },
+
+    testMenuBar_setActiveTrue_isCalledOnMenuBarItemClick : function() {
+      createMenuBar( "push" );
+      TestUtil.flush();
+
+      TestUtil.click( menuBarItem );
+      TestUtil.flush();
+
+      assertTrue( menuBar.getActive() );
+      disposeMenuBar();
+    },
+
+    testMenuBar_setActiveFalse_isCalledOnMenuPushItemClick : function() {
+      createMenuBar( "push" );
+      TestUtil.flush();
+
+      TestUtil.click( menuBarItem );
+      TestUtil.flush();
+      TestUtil.click( menuItem );
+      TestUtil.flush();
+
+      assertFalse( menuBar.getActive() );
+      assertNull( menuBar._hoverItem );
+      disposeMenuBar();
+    },
+
+    testMenuBar_setActiveFalse_isCalledOnMenuPushItemMnemonicTrigger : function() {
+      createMenuBar( "push" );
+      menuItem.setText( "foo" );
+      menuItem.setMnemonicIndex( 1 );
+      TestUtil.flush();
+
+      TestUtil.click( menuBarItem );
+      TestUtil.flush();
+      menu.setMnemonics( true );
+      TestUtil.press( menu, "O" );
+      TestUtil.flush();
+
+      assertFalse( menu.isSeeable() );
+      assertFalse( menuBar.getActive() );
+      assertNull( menuBar._hoverItem );
       disposeMenuBar();
     },
 

@@ -247,22 +247,22 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
 
     // needed for the menu-manager:
     isSubElement : function( vElement, vButtonsOnly ) {
-      var ret = false;
+      var result = false;
       if (    ( vElement.getParent() === this._layout )
            || ( ( !vButtonsOnly ) && ( vElement === this ) ) ) {
-        ret = true;
+        result = true;
       }
-      if( !ret ) {
+      if( !result ) {
         var a = this._layout.getChildren(), l=a.length;
         for ( var i = 0; i < l; i++ ) {
           if (    this.hasSubmenu( a[ i ] )
                && a[ i ].getMenu().isSubElement( vElement, vButtonsOnly ) )
           {
-            ret = true;
+            result = true;
           }
         }
       }
-      return ret;
+      return result;
     },
 
     ////////

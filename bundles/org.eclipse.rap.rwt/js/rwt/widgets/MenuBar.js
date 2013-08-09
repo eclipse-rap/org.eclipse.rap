@@ -33,6 +33,7 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
     this._lastFocus = null;
     this._active = false;
     this._mnemonics = false;
+    rwt.widgets.util.MenuManager.getInstance().remove( this );
   },
 
   properties : {
@@ -123,6 +124,7 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
       }
       if( item != null && item != oldItem && item.getMenu() != null ) {
         this._openItem = item;
+        this.setActive( true );
         item.addState( "pressed" );
         var subMenu = item.getMenu();
         item.setSubMenuOpen( true );
@@ -143,7 +145,34 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
       return this._openItem;
     },
 
-    //Overwritten, called by PopupManager
+    getOpener : rwt.util.Functions.returnNull,
+
+
+    // needed for the menu-manager:
+    isSubElement : function( vElement, vButtonsOnly ) {
+      var result = false;
+      if (    ( vElement.getParent() === this )
+           || ( ( !vButtonsOnly ) && ( vElement === this ) ) ) {
+        result = true;
+      }
+      if( !result ) {
+        var a = this.getChildren(), l=a.length;
+        for ( var i = 0; i < l; i++ ) {
+          if (    this.hasSubmenu( a[ i ] )
+               && a[ i ].getMenu().isSubElement( vElement, vButtonsOnly ) )
+          {
+            result = true;
+          }
+        }
+      }
+      return result;
+    },
+
+    hasSubmenu : function( item ) {
+      return item && item.getMenu && item.getMenu();
+    },
+
+    //Overwritten, called by MenuManager
     hide : function() {
       this.setActive( false );
     },
@@ -152,21 +181,24 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
 
     _activate : function() {
       var focusRoot = this.getFocusRoot();
-      rwt.widgets.util.PopupManager.getInstance().add( this );
-      this.setHoverItem( this.getFirstChild() );
+      rwt.widgets.util.MenuManager.getInstance().add( this );
+      if( this._openItem == null ) {
+        this.setHoverItem( this.getFirstChild() );
+      }
       if( focusRoot ) {
-        this._lastActive = this.getFocusRoot().getActiveChild();
-        this._lastFocus = this.getFocusRoot().getFocusedChild();
-        this.getFocusRoot().setActiveChild( this );
+        this._lastActive = focusRoot.getActiveChild();
+        this._lastFocus = focusRoot.getFocusedChild();
+        focusRoot.setActiveChild( this );
       }
     },
 
     _deactivate : function() {
       var focusRoot = this.getFocusRoot();
-      rwt.widgets.util.PopupManager.getInstance().remove( this );
+      rwt.widgets.util.MenuManager.getInstance().remove( this );
       this.setMnemonics( false );
+      this.setOpenItem( null );
+      this.setHoverItem( null );
       if( focusRoot ) {
-        this.setHoverItem( null );
         focusRoot.setActiveChild( this._lastActive );
         focusRoot.setFocusedChild( this._lastFocus );
       }
