@@ -243,15 +243,12 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
         case "Down":
           this._handleKeyDown( event );
         break;
-//        case "Left":
-//          this._handleKeyLeft( event );
-//        break;
-//        case "Right":
-//          this._handleKeyRight( event );
-//        break;
-//        case "Enter":
-//          this._handleKeyEnter( event );
-//        break;
+        case "Left":
+          this._handleKeyLeft( event );
+        break;
+        case "Right":
+          this._handleKeyRight( event );
+        break;
       }
     },
 
@@ -270,6 +267,24 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
         this._openItem.getMenu().hoverFirstItem( true );
         event.preventDefault();
         event.stopPropagation();
+      }
+    },
+
+    _handleKeyRight : function( event ) {
+      if( this._hoverItem ) {
+        var next = this._hoverItem.getNextSibling();
+        if( next ) {
+          this.setHoverItem( next );
+        }
+      }
+    },
+
+    _handleKeyLeft : function( event ) {
+      if( this._hoverItem ) {
+        var next = this._hoverItem.getPreviousSibling();
+        if( next ) {
+          this.setHoverItem( next );
+        }
       }
     },
 

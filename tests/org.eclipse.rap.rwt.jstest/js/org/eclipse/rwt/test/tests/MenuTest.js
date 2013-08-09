@@ -622,6 +622,47 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       disposeMenuBar();
     },
 
+    testMenuBar_setActiveTrue_allowsNavigatinoByKeyRight : function() {
+      createMenuBar();
+      menuBar.addMenuItemAt( new MenuItem( "push" ), 0 );
+      TestUtil.flush();
+
+      menuBar.setActive( true );
+      TestUtil.press( menuBar, "Right" );
+      TestUtil.flush();
+
+      assertIdentical( menuBarItem, menuBar._hoverItem );
+      disposeMenuBar();
+    },
+
+    testMenuBar_setActiveTrue_allowsNavigatinoByKeyLeft : function() {
+      createMenuBar();
+      menuBar.addMenuItemAt( new MenuItem( "push" ), 1 );
+      TestUtil.flush();
+
+      menuBar.setActive( true );
+      TestUtil.press( menuBar, "Right" );
+      TestUtil.press( menuBar, "Left" );
+      TestUtil.flush();
+
+      assertIdentical( menuBarItem, menuBar._hoverItem );
+      disposeMenuBar();
+    },
+
+    testMenuBar_setActiveTrue_allowsHover : function() {
+      createMenuBar();
+      menu.addMenuItemAt( new MenuItem(), 0 );
+      TestUtil.flush();
+
+      menuBar.setActive( true );
+      TestUtil.press( menuBar, "Up" );
+      TestUtil.flush();
+
+      assertTrue( menu.isSeeable() );
+      assertIdentical( menuItem, menu._hoverItem );
+      disposeMenuBar();
+    },
+
     testMenuBar_setMnemonicsTrue_rendersMnemonic : function() {
       createMenuBar();
       menuBarItem.setText( "foo" );
