@@ -765,9 +765,12 @@ public class Combo extends Composite {
       int index = indexOf( string );
       if( index != -1 ) {
         select( index );
+        selection.x = 0;
+        selection.y = string.length();
       }
     } else {
       internalSetText( string, true );
+      clearSelection();
     }
   }
 

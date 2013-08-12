@@ -14,11 +14,13 @@ package org.eclipse.swt.events;
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_IN;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_OUT;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -29,8 +31,8 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.widgets.buttonkit.ButtonOperationHandler;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -78,12 +80,12 @@ public class FocusEvent_Test {
 
   @Test
   public void testFocusLost() {
-    Button unfocusControl = new Button( shell, SWT.PUSH );
+    Button unfocusControl = createButton( focusListener );
     unfocusControl.setText( "unfocusControl" );
     unfocusControl.setFocus();
-    unfocusControl.addFocusListener( focusListener );
-    Button focusControl = new Button( shell, SWT.PUSH );
+    Button focusControl = createButton( null );
     focusControl.setText( "focusControl" );
+    reset( focusListener );
 
     Fixture.fakeSetProperty( getId( display ), "focusControl", getId( focusControl ) );
     Fixture.fakeNotifyOperation( getId( unfocusControl ), EVENT_FOCUS_OUT, null );
@@ -98,8 +100,7 @@ public class FocusEvent_Test {
 
   @Test
   public void testFocusGained() {
-    Control control = new Button( shell, SWT.PUSH );
-    control.addFocusListener( focusListener );
+    Button control = createButton( focusListener );
 
     Fixture.fakeSetProperty( getId( display ), "focusControl", getId( control ) );
     Fixture.fakeNotifyOperation( getId( control ), EVENT_FOCUS_IN, null );
@@ -113,11 +114,10 @@ public class FocusEvent_Test {
 
   @Test
   public void testFocusGainedLostOrder() {
-    Button button1 = new Button( shell, SWT.PUSH );
-    Button button2 = new Button( shell, SWT.PUSH );
+    Button button1 = createButton( focusListener );
+    Button button2 = createButton( focusListener );
     button1.setFocus();
-    button1.addFocusListener( focusListener );
-    button2.addFocusListener( focusListener );
+    reset( focusListener );
 
     Fixture.fakeSetProperty( getId( display ), "focusControl", getId( button2 ) );
     Fixture.fakeNotifyOperation( getId( button1 ), EVENT_FOCUS_OUT, null );
@@ -135,8 +135,8 @@ public class FocusEvent_Test {
   @Test
   public void testFocusTraverseOrder() {
     Listener listener = mock( Listener.class );
-    Button button1 = new Button( shell, SWT.PUSH );
-    Button button2 = new Button( shell, SWT.PUSH );
+    Button button1 = createButton( focusListener );
+    Button button2 = createButton( focusListener );
     button1.setFocus();
     button1.addListener( SWT.Traverse, listener );
     button1.addListener( SWT.FocusOut, listener );
@@ -162,13 +162,11 @@ public class FocusEvent_Test {
 
   @Test
   public void testFocusEvent_withMultipleNotifyOperations() {
-    Button button1 = new Button( shell, SWT.PUSH );
-    Button button2 = new Button( shell, SWT.PUSH );
-    Button button3 = new Button( shell, SWT.PUSH );
+    Button button1 = createButton( focusListener );
+    Button button2 = createButton( focusListener );
+    Button button3 = createButton( focusListener );
     button1.setFocus();
-    button1.addFocusListener( focusListener );
-    button2.addFocusListener( focusListener );
-    button3.addFocusListener( focusListener );
+    reset( focusListener );
 
     Fixture.fakeSetProperty( getId( display ), "focusControl", getId( button3 ) );
     Fixture.fakeNotifyOperation( getId( button1 ), EVENT_FOCUS_OUT, null );
@@ -187,4 +185,13 @@ public class FocusEvent_Test {
     assertEquals( button3, events.get( 3 ).widget );
   }
 
- }
+  private Button createButton( FocusListener listener ) {
+    Button button = new Button( shell, SWT.PUSH );
+    getRemoteObject( button ).setHandler( new ButtonOperationHandler( button ) );
+    if( listener != null ) {
+      button.addFocusListener( listener );
+    }
+    return button;
+  }
+
+}

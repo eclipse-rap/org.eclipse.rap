@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -127,7 +127,7 @@ public class Shell extends Decorations {
   private static final int MODE_FULLSCREEN = 4;
 
   private static final int INITIAL_SIZE_PERCENT = 60;
-  private static final int MIN_WIDTH_LIMIT = 80;
+  private static final int MIN_WIDTH_LIMIT = 30;
 
   private class ShellAdapter implements IShellAdapter {
     public Control getActiveControl() {

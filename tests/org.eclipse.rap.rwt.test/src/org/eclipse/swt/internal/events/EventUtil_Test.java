@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.events;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -18,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
@@ -36,6 +36,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.events.TypedEvent;
+import org.eclipse.swt.internal.widgets.buttonkit.ButtonOperationHandler;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
@@ -210,6 +211,7 @@ public class EventUtil_Test {
   @Test
   public void testЕventNotFiredOnDisabledButton() {
     Button button = new Button( shell, SWT.PUSH );
+    getRemoteObject( button ).setHandler( new ButtonOperationHandler( button ) );
     button.setEnabled( false );
     SelectionListener listener = mock( SelectionListener.class );
     button.addSelectionListener( listener );
@@ -218,12 +220,13 @@ public class EventUtil_Test {
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( button );
 
-    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
+    verify( listener, never() ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   @Test
   public void testЕventNotFiredOnInvisibleButton() {
     Button button = new Button( shell, SWT.PUSH );
+    getRemoteObject( button ).setHandler( new ButtonOperationHandler( button ) );
     button.setVisible( false );
     SelectionListener listener = mock( SelectionListener.class );
     button.addSelectionListener( listener );
@@ -232,7 +235,7 @@ public class EventUtil_Test {
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( button );
 
-    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
+    verify( listener, never() ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   @Test
@@ -247,12 +250,13 @@ public class EventUtil_Test {
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread();
 
-    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
+    verify( listener, never() ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   @Test
   public void testEventNotFiredOnBlockedParentShell() {
     Button button = new Button( shell, SWT.PUSH );
+    getRemoteObject( button ).setHandler( new ButtonOperationHandler( button ) );
     SelectionListener listener = mock( SelectionListener.class );
     button.addSelectionListener( listener );
     shell.open();
@@ -261,9 +265,9 @@ public class EventUtil_Test {
     dialog.open();
 
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
 
-    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
+    verify( listener, never() ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   @Test
@@ -280,6 +284,7 @@ public class EventUtil_Test {
       }
     } );
     Button button = new Button( shell, SWT.PUSH );
+    getRemoteObject( button ).setHandler( new ButtonOperationHandler( button ) );
     SelectionListener selectionListener = mock( SelectionListener.class );
     button.addSelectionListener( selectionListener );
     shell.open();
@@ -290,13 +295,13 @@ public class EventUtil_Test {
     Fixture.fakeSetProperty( getId( display ), "focusControl", getId( button ) );
     Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_FOCUS_OUT, null );
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
 
     assertEquals( 1, events.size() );
     assertEquals( FocusEvent.class, events.get( 0 ).getClass() );
     FocusEvent event = ( FocusEvent )events.get( 0 );
     assertSame( text, event.widget );
-    verify( selectionListener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
+    verify( selectionListener, never() ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   @Test
@@ -322,12 +327,13 @@ public class EventUtil_Test {
     Shell childShell = new Shell( parentShell, SWT.APPLICATION_MODAL );
     childShell.setSize( 100, 100 );
     Button button = new Button( childShell, SWT.PUSH );
+    getRemoteObject( button ).setHandler( new ButtonOperationHandler( button ) );
     SelectionListener selectionListener = mock( SelectionListener.class );
     button.addSelectionListener( selectionListener );
     childShell.open();
 
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
 
     verify( selectionListener ).widgetSelected( any( SelectionEvent.class ) );
   }

@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.tablekit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.io.IOException;
 import java.util.Arrays;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -57,6 +59,7 @@ import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.buttonkit.ButtonOperationHandler;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCA.ItemMetrics;
 import org.eclipse.swt.layout.FillLayout;
@@ -255,6 +258,7 @@ public class TableLCA_Test {
     final Table[] table = { null };
     shell.setSize( 100, 100 );
     Button button = new Button( shell, SWT.PUSH );
+    getRemoteObject( button ).setHandler( new ButtonOperationHandler( button ) );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
@@ -269,7 +273,7 @@ public class TableLCA_Test {
     shell.open();
 
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
 
     assertFalse( isItemVirtual( table[ 0 ], 0  ) );
   }

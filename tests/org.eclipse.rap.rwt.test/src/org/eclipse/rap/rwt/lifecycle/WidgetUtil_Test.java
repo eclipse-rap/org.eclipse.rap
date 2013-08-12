@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetDataUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -108,6 +112,19 @@ public class WidgetUtil_Test {
     WidgetAdapter adapter = WidgetUtil.getAdapter( shell );
 
     assertSame( shell.getAdapter( WidgetAdapter.class ), adapter );
+  }
+
+  @Test
+  public void testRegisterDataKeys() {
+    WidgetUtil.registerDataKeys( "a", "b", "c" );
+
+    assertEquals( new HashSet<String>( Arrays.asList( "a", "b", "c" ) ),
+                  WidgetDataUtil.getDataKeys() );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testRegisterDataKeys_withNullArgument() {
+    WidgetDataUtil.registerDataKeys( ( String[] )null );
   }
 
 }

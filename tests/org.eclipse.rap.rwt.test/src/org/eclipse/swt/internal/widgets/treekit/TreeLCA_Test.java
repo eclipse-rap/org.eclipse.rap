@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.treekit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
@@ -27,14 +28,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -43,8 +47,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.events.TreeEvent;
-import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -342,35 +344,10 @@ public class TreeLCA_Test {
   }
 
   @Test
-  public void testSelectionEvent() {
-    java.util.List<SelectionEvent> events = new LinkedList<SelectionEvent>();
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
-    tree.addSelectionListener( new LoggingSelectionListener( events ) );
-
-    JsonObject properties = new JsonObject()
-      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( treeItem ) );
-    Fixture.fakeNotifyOperation( getId( tree ),
-                                 ClientMessageConst.EVENT_SELECTION,
-                                 properties );
-    Fixture.readDataAndProcessAction( display );
-
-    assertEquals( 1, events.size() );
-    SelectionEvent event = events.get( 0 );
-    assertEquals( tree, event.getSource() );
-    assertEquals( treeItem, event.item );
-    assertTrue( event.doit );
-    // ensure same behaviour as SWT: bounds are undefined in tree selection
-    assertEquals( 0, event.x );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.width );
-    assertEquals( 0, event.height );
-  }
-
-  @Test
   public void testVirtualSelectionEvent() {
     java.util.List<SelectionEvent> events = new LinkedList<SelectionEvent>();
     Tree tree = new Tree( shell, SWT.VIRTUAL );
+    getRemoteObject( tree ).setHandler( new TreeOperationHandler( tree ) );
     tree.setItemCount( 100 );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     tree.addSelectionListener( new LoggingSelectionListener( events ) );
@@ -381,7 +358,7 @@ public class TreeLCA_Test {
     Fixture.fakeNotifyOperation( getId( tree ),
                                  ClientMessageConst.EVENT_SELECTION,
                                  properties );
-    Fixture.readDataAndProcessAction( display );
+    Fixture.readDataAndProcessAction( tree );
 
     assertEquals( 1, events.size() );
     SelectionEvent event = events.get( 0 );
@@ -393,6 +370,7 @@ public class TreeLCA_Test {
   public void testVirtualSelectionEventWithSubitem() {
     java.util.List<SelectionEvent> events = new LinkedList<SelectionEvent>();
     Tree tree = new Tree( shell, SWT.VIRTUAL );
+    getRemoteObject( tree ).setHandler( new TreeOperationHandler( tree ) );
     tree.setItemCount( 1 );
     TreeItem item = tree.getItem( 0 );
     // Important: parent item must be materialized
@@ -416,72 +394,6 @@ public class TreeLCA_Test {
   }
 
   @Test
-  public void testDefaultSelectionEvent() {
-    List<SelectionEvent> events = new LinkedList<SelectionEvent>();
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
-    tree.addSelectionListener( new LoggingSelectionListener( events ) );
-
-    JsonObject properties = new JsonObject()
-      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( treeItem ) );
-    Fixture.fakeNotifyOperation( getId( tree ),
-                                 ClientMessageConst.EVENT_DEFAULT_SELECTION,
-                                 properties );
-    Fixture.readDataAndProcessAction( display );
-
-    assertEquals( 1, events.size() );
-    SelectionEvent event = events.get( 0 );
-    assertEquals( tree, event.getSource() );
-    assertEquals( treeItem, event.item );
-    assertTrue( event.doit );
-    // ensure same behaviour as SWT: bounds are undefined in tree selection
-    assertEquals( 0, event.x );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.width );
-    assertEquals( 0, event.height );
-  }
-
-  @Test
-  public void testDefaultSelectionEventUntyped() {
-    final List<Event> events = new LinkedList<Event>();
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
-    tree.addListener( SWT.DefaultSelection, new Listener() {
-      public void handleEvent( Event event ) {
-        events.add( event );
-      }
-    } );
-
-    JsonObject properties = new JsonObject()
-      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( treeItem ) );
-    Fixture.fakeNotifyOperation( getId( tree ),
-                                 ClientMessageConst.EVENT_DEFAULT_SELECTION,
-                                 properties );
-    Fixture.readDataAndProcessAction( display );
-
-    assertEquals( 1, events.size() );
-    Event event = events.get( 0 );
-    assertEquals( treeItem, event.item );
-    assertTrue( event.doit );
-    // ensure same behaviour as SWT: bounds are undefined in tree selection
-    assertEquals( 0, event.x );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.width );
-    assertEquals( 0, event.height );
-  }
-
-  @Test
-  public void testInvalidScrollValues() {
-    Fixture.fakeSetProperty( getId( tree ), "scrollLeft", "undefined" );
-    fakeSetTopItemIndex( tree, 80 );
-    Fixture.readDataAndProcessAction( tree );
-
-    ITreeAdapter adapter = tree.getAdapter( ITreeAdapter.class );
-    assertEquals( 0, adapter.getScrollLeft() );
-    assertEquals( 0, adapter.getTopItemIndex() );
-  }
-
-  @Test
   public void testScrollbarsSelectionEvent() {
     List<SelectionEvent> events = new ArrayList<SelectionEvent>();
     SelectionListener listener = new LoggingSelectionListener( events );
@@ -489,28 +401,25 @@ public class TreeLCA_Test {
     hScroll.addSelectionListener( listener );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( tree ), "scrollLeft", 10 );
     Fixture.fakeNotifyOperation( getId( hScroll ), "Selection", null );
     Fixture.readDataAndProcessAction( tree );
 
     assertEquals( 1, events.size() );
-    assertEquals( 10, hScroll.getSelection() );
 
     events.clear();
     ScrollBar vScroll = tree.getVerticalBar();
     vScroll.addSelectionListener( listener );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( tree ), "topItemIndex", 10 );
     Fixture.fakeNotifyOperation( getId( vScroll ), "Selection", null );
     Fixture.readDataAndProcessAction( tree );
 
     assertEquals( 1, events.size() );
-    assertEquals( 10 * tree.getItemHeight(), vScroll.getSelection());
   }
 
   @Test
   public void testCellTooltipRequestForMissingCells() {
+    getRemoteObject( tree ).setHandler( new TreeOperationHandler( tree ) );
     createTreeItems( tree, 3 );
     final StringBuilder log = new StringBuilder();
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
@@ -586,11 +495,14 @@ public class TreeLCA_Test {
   @Test
   public void testVirtualReadSelection() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
+    getRemoteObject( tree ).setHandler( new TreeOperationHandler( tree ) );
     tree.setItemCount( 100 );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( tree ), "selection", createJsonArray( getId( tree ) + "#" + 50 ) );
+    Fixture.fakeSetProperty( getId( tree ),
+                             "selection",
+                             createJsonArray( getId( tree ) + "#" + 50 ) );
     Fixture.readDataAndProcessAction( tree );
 
     assertEquals( 1, tree.getSelection().length );
@@ -600,6 +512,7 @@ public class TreeLCA_Test {
   @Test
   public void testVirtualReadSelectionWithSubitem() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
+    getRemoteObject( tree ).setHandler( new TreeOperationHandler( tree ) );
     tree.setItemCount( 1 );
     TreeItem item = tree.getItem( 0 );
     // Important: parent item must be materialized
@@ -608,7 +521,9 @@ public class TreeLCA_Test {
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( tree ), "selection", createJsonArray( getId( item ) + "#" + 50 ) );
+    Fixture.fakeSetProperty( getId( tree ),
+                             "selection",
+                             createJsonArray( getId( item ) + "#" + 50 ) );
     Fixture.readDataAndProcessAction( tree );
 
     assertEquals( 1, tree.getSelection().length );
@@ -616,29 +531,16 @@ public class TreeLCA_Test {
   }
 
   @Test
-  public void testReadSelectionItem() {
-    Tree tree = new Tree( shell, SWT.MULTI );
-    TreeItem item1 = new TreeItem( tree, SWT.NONE );
-    new TreeItem( tree, SWT.NONE );
-
-    Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( tree ), "selection", createJsonArray( getId( item1 ) ) );
-    Fixture.readDataAndProcessAction( tree );
-
-    TreeItem[] selectedItems = tree.getSelection();
-    assertEquals( 1, selectedItems.length );
-  }
-
-  @Test
   public void testReadSelectionDisposedItem() {
     Tree tree = new Tree( shell, SWT.MULTI );
+    getRemoteObject( tree ).setHandler( new TreeOperationHandler( tree ) );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     item1.dispose();
 
     Fixture.fakeNewRequest();
     Fixture.fakeSetProperty( getId( tree ), "selection", createJsonArray( getId( item1 ) ) );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( tree );
 
     TreeItem[] selectedItems = tree.getSelection();
     assertEquals( 0, selectedItems.length );
@@ -680,7 +582,7 @@ public class TreeLCA_Test {
       .add( "item", itemId )
       .add( "column", column );
     Fixture.fakeCallOperation( getId( tree ), "renderToolTipText", parameters );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( tree );
   }
 
   private static class LoggingSelectionListener extends SelectionAdapter {
@@ -721,6 +623,16 @@ public class TreeLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
     assertEquals( JsonValue.TRUE, operation.getProperty( "splitContainer" ) );
+  }
+
+  @Test
+  public void testRenderCreate_setsOperationHandler() throws IOException {
+    String id = getId( tree );
+
+    lca.renderInitialization( tree );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof TreeOperationHandler );
   }
 
   @Test
@@ -1485,6 +1397,7 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderCellToolTipText() {
+    getRemoteObject( tree ).setHandler( new TreeOperationHandler( tree ) );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
     createTreeItems( tree, 5 );
@@ -1502,7 +1415,9 @@ public class TreeLCA_Test {
     } );
 
     String itemId = WidgetUtil.getId( tree.getItem( 2 ) );
-    processCellToolTipRequest( tree, itemId, 0 );
+    JsonObject parameters = new JsonObject().add( "item", itemId ).add( "column", 0 );
+    Fixture.fakeCallOperation( getId( tree ), "renderToolTipText", parameters );
+    Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
     String expected = "[" + itemId + ",0]";
@@ -1511,6 +1426,7 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderCellToolTipTextNull() {
+    getRemoteObject( tree ).setHandler( new TreeOperationHandler( tree ) );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
     createTreeItems( tree, 5 );
@@ -1663,54 +1579,7 @@ public class TreeLCA_Test {
     assertEquals( JsonValue.TRUE, message.findCreateProperty( tree, "markupEnabled" ) );
   }
 
-  @Test
-  public void testTreeEvent() {
-    tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
-    final TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    new TreeItem( treeItem, SWT.NONE );
-    final StringBuilder log = new StringBuilder();
-    TreeListener listener = new TreeListener() {
-      public void treeCollapsed( TreeEvent event ) {
-        assertEquals( tree, event.getSource() );
-        assertEquals( treeItem, event.item );
-        assertEquals( SWT.NONE, event.detail );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertTrue( event.doit );
-        log.append( "collapsed" );
-      }
-
-      public void treeExpanded( TreeEvent event ) {
-        assertEquals( tree, event.getSource() );
-        assertEquals( treeItem, event.item );
-        assertEquals( SWT.NONE, event.detail );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertTrue( event.doit );
-        log.append( "expanded" );
-      }
-    };
-    tree.addTreeListener( listener );
-
-    fakeTreeEvent( treeItem, ClientMessageConst.EVENT_EXPAND );
-    Fixture.readDataAndProcessAction( tree );
-
-    assertEquals( "expanded", log.toString() );
-
-    log.setLength( 0 );
-
-    Fixture.fakeNewRequest();
-    fakeTreeEvent( treeItem, ClientMessageConst.EVENT_COLLAPSE );
-    Fixture.readDataAndProcessAction( tree );
-
-    assertEquals( "collapsed", log.toString() );
-  }
-
-  private static void setScrollLeft( Tree tree, int scrollLeft ) {
+    private static void setScrollLeft( Tree tree, int scrollLeft ) {
     ITreeAdapter treeAdapter = getTreeAdapter( tree );
     treeAdapter.setScrollLeft( scrollLeft);
   }
@@ -1718,16 +1587,6 @@ public class TreeLCA_Test {
   private static ITreeAdapter getTreeAdapter( Tree tree ) {
     Object adapter = tree.getAdapter( ITreeAdapter.class );
     return ( ITreeAdapter )adapter;
-  }
-
-  private static void fakeTreeEvent( TreeItem item, String eventName ) {
-    JsonObject parameters = new JsonObject()
-      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
-    Fixture.fakeNotifyOperation( getId( item.getParent() ), eventName, parameters );
-  }
-
-  private void fakeSetTopItemIndex( Tree tree, int index ) {
-    Fixture.fakeSetProperty( getId( tree ), "topItemIndex", index );
   }
 
 }

@@ -811,6 +811,38 @@ public class Combo_Test {
   }
 
   @Test
+  public void testSetText_clearsSelection() {
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.setText( "original text" );
+    combo.setSelection( new Point( 1, 3 ) );
+
+    combo.setText( "new text" );
+
+    assertEquals( new Point( 0, 0 ), combo.getSelection() );
+  }
+
+  @Test
+  public void testSetText_sameTextClearsSelection() {
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.setText( "original text" );
+    combo.setSelection( new Point( 1, 3 ) );
+
+    combo.setText( "original text" );
+
+    assertEquals( new Point( 0, 0 ), combo.getSelection() );
+  }
+
+  @Test
+  public void testSetText_onReadOnlyComboSelectsAllText() {
+    Combo combo = new Combo( shell, SWT.READ_ONLY );
+    combo.setItems( new String[] { "item 1", "item 22" } );
+
+    combo.setText( "item 22" );
+
+    assertEquals( new Point( 0, 7 ), combo.getSelection() );
+  }
+
+  @Test
   public void testListVisible() {
     Combo combo = new Combo( shell, SWT.NONE );
     combo.setListVisible( true );

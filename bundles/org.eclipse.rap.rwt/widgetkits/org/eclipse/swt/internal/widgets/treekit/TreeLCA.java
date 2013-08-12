@@ -12,21 +12,14 @@
 package org.eclipse.swt.internal.widgets.treekit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsStringArray;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasCallReceived;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
@@ -34,8 +27,6 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
@@ -43,14 +34,9 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
-import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
-import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Item;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
@@ -130,27 +116,17 @@ public final class TreeLCA extends AbstractWidgetLCA {
     ScrollBarLCAUtil.preserveValues( tree );
   }
 
+  @Override
   public void readData( Widget widget ) {
-    Tree tree = ( Tree )widget;
-    readSelection( tree );
-    readScrollLeft( tree );
-    readTopItemIndex( tree );
-    processWidgetSelectedEvent( tree );
-    processWidgetDefaultSelectedEvent( tree );
-    processTreeEvent( tree, SWT.Expand, ClientMessageConst.EVENT_EXPAND );
-    processTreeEvent( tree, SWT.Collapse, ClientMessageConst.EVENT_COLLAPSE );
-    readCellToolTipTextRequested( tree );
-    ControlLCAUtil.processEvents( tree );
-    ControlLCAUtil.processKeyEvents( tree );
-    ControlLCAUtil.processMenuDetect( tree );
-    WidgetLCAUtil.processHelp( tree );
-    ScrollBarLCAUtil.processSelectionEvent( tree );
+    super.readData( widget );
+    ScrollBarLCAUtil.processSelectionEvent( ( Tree )widget );
   }
 
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
     RemoteObject remoteObject = createRemoteObject( tree, TYPE );
+    remoteObject.setHandler( new TreeOperationHandler( tree ) );
     remoteObject.set( "parent", getId( tree.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( tree, ALLOWED_STYLES ) ) );
     remoteObject.set( "appearance", "tree" );
@@ -217,113 +193,12 @@ public final class TreeLCA extends AbstractWidgetLCA {
     getTreeAdapter( tree ).checkData();
   }
 
-  private static void processWidgetSelectedEvent( Tree tree ) {
-    String eventName = ClientMessageConst.EVENT_SELECTION;
-    if( wasEventSent( tree, eventName ) ) {
-      String value = readEventPropertyValue( tree, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
-      Item treeItem = getItem( tree, value );
-      ControlLCAUtil.processSelection( tree, treeItem, false );
-    }
-  }
-
-  private static void processWidgetDefaultSelectedEvent( Tree tree ) {
-    String eventName = ClientMessageConst.EVENT_DEFAULT_SELECTION;
-    if( wasEventSent( tree, eventName ) ) {
-      String value = readEventPropertyValue( tree, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
-      Item treeItem = getItem( tree, value );
-      ControlLCAUtil.processDefaultSelection( tree, treeItem );
-    }
-  }
-
-  /////////////////////////////////
-  // Process expand/collapse events
-
-  private static void processTreeEvent( Tree tree, int eventType, String eventName ) {
-    if( wasEventSent( tree, eventName ) ) {
-      String value = readEventPropertyValue( tree, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
-      Event event = new Event();
-      event.item = getItem( tree, value );
-      tree.notifyListeners( eventType, event );
-    }
-  }
-
-  /////////////////////////////////////////////
-  // Helping methods to read client-side state
-
-  private static void readSelection( Tree tree ) {
-    String[] values = readPropertyValueAsStringArray( getId( tree ), "selection" );
-    if( values != null ) {
-      TreeItem[] selectedItems = new TreeItem[ values.length ];
-      boolean validItemFound = false;
-      for( int i = 0; i < values.length; i++ ) {
-        selectedItems[ i ] = getItem( tree, values[ i ] );
-        if( selectedItems[ i ] != null ) {
-          validItemFound = true;
-        }
-      }
-      if( !validItemFound ) {
-        selectedItems = new TreeItem[ 0 ];
-      }
-      tree.setSelection( selectedItems );
-    }
-  }
-
-  private static void readScrollLeft( Tree tree ) {
-    String left = readPropertyValue( tree, "scrollLeft" );
-    if( left != null ) {
-      int leftOffset = parsePosition( left );
-      final ITreeAdapter treeAdapter = getTreeAdapter( tree );
-      treeAdapter.setScrollLeft( leftOffset );
-      processScrollBarSelection( tree.getHorizontalBar(), leftOffset );
-    }
-  }
-
-  private static void readTopItemIndex( Tree tree ) {
-    String topItemIndex = readPropertyValue( tree, "topItemIndex" );
-    if( topItemIndex != null ) {
-      final ITreeAdapter treeAdapter = getTreeAdapter( tree );
-      int newIndex = parsePosition( topItemIndex );
-      int topOffset = newIndex * tree.getItemHeight();
-      treeAdapter.setTopItemIndex( newIndex );
-      processScrollBarSelection( tree.getVerticalBar(), topOffset );
-    }
-  }
-
-  private static int parsePosition( String position ) {
-    int result = 0;
-    try {
-      result = Integer.valueOf( position ).intValue();
-    } catch( NumberFormatException e ) {
-      // ignore and use default value
-    }
-    return result;
-  }
-
-  ////////////////
-  // Cell tooltips
-
-  private static void readCellToolTipTextRequested( Tree tree ) {
-    ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
-    adapter.setCellToolTipText( null );
-    ICellToolTipProvider provider = adapter.getCellToolTipProvider();
-    String methodName = "renderToolTipText";
-    if( provider != null && wasCallReceived( getId( tree ), methodName ) ) {
-      String itemId = readCallPropertyValueAsString( getId( tree ), methodName, "item" );
-      String column = readCallPropertyValueAsString( getId( tree ), methodName, "column" );
-      int columnIndex = NumberFormatUtil.parseInt( column );
-      TreeItem item = getItem( tree, itemId );
-      if( item != null && ( columnIndex == 0 || columnIndex < tree.getColumnCount() ) ) {
-        provider.getToolTipText( item, columnIndex );
-      }
-    }
-  }
+  //////////////////
+  // Helping methods
 
   private static String getCellToolTipText( Tree tree ) {
     return CellToolTipUtil.getAdapter( tree ).getCellToolTipText();
   }
-
-  //////////////////
-  // Helping methods
 
   private boolean listensToSetData( Tree tree ) {
     return ( tree.getStyle() & SWT.VIRTUAL ) != 0;
@@ -378,12 +253,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static void processScrollBarSelection( ScrollBar scrollBar, int selection ) {
-    if( scrollBar != null ) {
-      scrollBar.setSelection( selection );
-    }
-  }
-
   private static boolean hasExpandListener( Tree tree ) {
     // Always render listen for Expand and Collapse, currently required for scrollbar
     // visibility update and setData events.
@@ -394,25 +263,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     // Always render listen for Expand and Collapse, currently required for scrollbar
     // visibility update and setData events.
     return true;
-  }
-
-  private static TreeItem getItem( Tree tree, String itemId ) {
-    TreeItem item = null;
-    String[] idParts = itemId.split( "#" );
-    if( idParts.length == 2 ) {
-      Widget parent = find( tree, idParts[ 0 ] );
-      if( parent != null ) {
-        int itemIndex = Integer.parseInt( idParts[ 1 ] );
-        if( getId( tree ).equals( idParts[ 0 ] ) ) {
-          item = tree.getItem( itemIndex );
-        } else {
-          item = ( ( TreeItem )parent ).getItem( itemIndex );
-        }
-      }
-    } else {
-      item = ( TreeItem )find( tree, itemId );
-    }
-    return item;
   }
 
   private static ITreeAdapter getTreeAdapter( Tree tree ) {

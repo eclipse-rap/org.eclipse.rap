@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.lifecycle;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderToolTip;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
 import static org.eclipse.rap.rwt.testfixture.Fixture.getProtocolMessage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -39,7 +40,6 @@ import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.internal.widgets.WidgetDataUtil;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -590,7 +590,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderData() {
-    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
+    registerDataKeys( new String[]{ "foo", "bar" } );
     widget.setData( "foo", "string" );
     widget.setData( "bar", Integer.valueOf( 1 ) );
 
@@ -614,7 +614,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderData_MissingData() {
-    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "missing" } );
+    registerDataKeys( new String[]{ "missing" } );
 
     WidgetLCAUtil.renderData( widget );
 
@@ -624,7 +624,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderData_NullKey() {
-    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ null } );
+    registerDataKeys( new String[]{ null } );
 
     WidgetLCAUtil.renderData( widget );
 
@@ -634,7 +634,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderDataUnchanged() {
-    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo" } );
+    registerDataKeys( new String[]{ "foo" } );
     widget.setData( "foo", "string" );
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );

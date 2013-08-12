@@ -20,7 +20,6 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -79,27 +78,10 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   }
 
   @Override
-  public void readData( Widget widget ) {
-    final TreeItem item = ( TreeItem )widget;
-    String checked = WidgetLCAUtil.readPropertyValue( widget, PROP_CHECKED );
-    if( checked != null ) {
-      item.setChecked( Boolean.valueOf( checked ).booleanValue() );
-    }
-    final String expanded = WidgetLCAUtil.readPropertyValue( widget, PROP_EXPANDED );
-    if( expanded != null ) {
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          item.setExpanded( Boolean.valueOf( expanded ).booleanValue() );
-          preserveProperty( item, PROP_EXPANDED, item.getExpanded() );
-        }
-      } );
-    }
-  }
-
-  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     TreeItem item = ( TreeItem )widget;
     RemoteObject remoteObject = createRemoteObject( item, TYPE );
+    remoteObject.setHandler( new TreeItemOperationHandler( item ) );
     Widget parent = item.getParentItem() == null ? item.getParent() : item.getParentItem();
     remoteObject.set( "parent", WidgetUtil.getId( parent ) );
   }

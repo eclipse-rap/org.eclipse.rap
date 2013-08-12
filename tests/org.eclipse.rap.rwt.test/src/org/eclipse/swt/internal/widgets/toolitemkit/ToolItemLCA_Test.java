@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -21,6 +22,7 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -37,7 +39,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.widgets.WidgetDataUtil;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -689,7 +690,7 @@ public class ToolItemLCA_Test {
 
   @Test
   public void testRenderData() throws IOException {
-    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
+    registerDataKeys( new String[]{ "foo", "bar" } );
     toolitem.setData( "foo", "string" );
     toolitem.setData( "bar", Integer.valueOf( 1 ) );
 
@@ -703,7 +704,7 @@ public class ToolItemLCA_Test {
 
   @Test
   public void testRenderDataUnchanged() throws IOException {
-    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo" } );
+    registerDataKeys( new String[]{ "foo" } );
     toolitem.setData( "foo", "string" );
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );

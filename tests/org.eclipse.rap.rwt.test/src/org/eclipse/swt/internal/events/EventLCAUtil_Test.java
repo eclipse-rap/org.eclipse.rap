@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.events;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -26,6 +27,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.internal.widgets.buttonkit.ButtonOperationHandler;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
@@ -58,6 +60,7 @@ public class EventLCAUtil_Test {
   @Test
   public void testWidgetDefaultSeletedModifiers() {
     Button button = new Button( shell, SWT.PUSH );
+    getRemoteObject( button ).setHandler( new ButtonOperationHandler( button ) );
     SelectionListener listener = mock( SelectionListener.class );
     button.addSelectionListener( listener );
 

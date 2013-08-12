@@ -33,8 +33,6 @@ import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
 import org.eclipse.rap.rwt.internal.client.UrlLauncherImpl;
 import org.eclipse.rap.rwt.internal.client.WebClientMessages;
-import org.eclipse.rap.rwt.internal.client.WidgetDataWhiteList;
-import org.eclipse.rap.rwt.internal.client.WidgetDataWhiteListImpl;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoader;
 import org.eclipse.rap.rwt.internal.resources.JavaScriptModuleLoaderImpl;
@@ -123,12 +121,6 @@ public class WebClient_Test {
   public void testGetJavaScriptLoaderService() {
     ClientService service = client.getService( JavaScriptLoader.class );
     assertTrue( service instanceof JavaScriptLoaderImpl );
-  }
-
-  @Test
-  public void testGetDataWhitelistService() {
-    ClientService service = client.getService( WidgetDataWhiteList.class );
-    assertTrue( service instanceof WidgetDataWhiteListImpl );
   }
 
   @Test

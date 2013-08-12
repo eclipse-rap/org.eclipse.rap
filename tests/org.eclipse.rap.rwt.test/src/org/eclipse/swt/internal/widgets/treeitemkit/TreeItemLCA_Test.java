@@ -11,7 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -40,7 +42,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
-import org.eclipse.swt.internal.widgets.WidgetDataUtil;
+import org.eclipse.swt.internal.widgets.treekit.TreeOperationHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
@@ -195,26 +197,9 @@ public class TreeItemLCA_Test {
   }
 
   @Test
-  public void testExpandCollapse() {
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    new TreeItem( treeItem, SWT.NONE );
-    treeItem.setExpanded( false );
-
-    Fixture.fakeSetProperty( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, true  );
-    Fixture.readDataAndProcessAction( treeItem );
-
-    assertTrue( treeItem.getExpanded() );
-
-    Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, false  );
-    Fixture.readDataAndProcessAction( treeItem );
-
-    assertFalse( treeItem.getExpanded() );
-  }
-
-  @Test
   public void testExpandedPropertyNotRenderedBack() {
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    getRemoteObject( treeItem ).setHandler( new TreeItemOperationHandler( treeItem ) );
     Fixture.markInitialized( treeItem );
     new TreeItem( treeItem, SWT.NONE );
     treeItem.setExpanded( false );
@@ -227,19 +212,8 @@ public class TreeItemLCA_Test {
   }
 
   @Test
-  public void testChecked() {
-    tree = new Tree( shell, SWT.CHECK );
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-
-    Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( treeItem ), "checked", "true" );
-    Fixture.readDataAndProcessAction( display );
-
-    assertTrue( treeItem.getChecked() );
-  }
-
-  @Test
   public void testGetBoundsWithScrolling() {
+    getRemoteObject( tree ).setHandler( new TreeOperationHandler( tree ) );
     TreeItem rootItem = new TreeItem( tree, 0 );
     TreeItem rootItem2 = new TreeItem( tree, 0 );
     TreeItem rootItem3 = new TreeItem( tree, 0 );
@@ -251,8 +225,8 @@ public class TreeItemLCA_Test {
     assertEquals( 54, rootItem3.getBounds().y );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( tree ), "scrollLeft", "0" );
-    Fixture.fakeSetProperty( getId( tree ), "topItemIndex", "2" );
+    Fixture.fakeSetProperty( getId( tree ), "scrollLeft", 0 );
+    Fixture.fakeSetProperty( getId( tree ), "topItemIndex", 2 );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( -54, rootItem.getBounds().y );
@@ -936,7 +910,7 @@ public class TreeItemLCA_Test {
   @Test
   public void testRenderData() throws IOException {
     TreeItem item = new TreeItem( tree, SWT.NONE );
-    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
+    registerDataKeys( new String[]{ "foo", "bar" } );
     item.setData( "foo", "string" );
     item.setData( "bar", Integer.valueOf( 1 ) );
 
@@ -951,7 +925,7 @@ public class TreeItemLCA_Test {
   @Test
   public void testRenderDataUnchanged() throws IOException {
     TreeItem item = new TreeItem( tree, SWT.NONE );
-    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo" } );
+    registerDataKeys( new String[]{ "foo" } );
     item.setData( "foo", "string" );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );

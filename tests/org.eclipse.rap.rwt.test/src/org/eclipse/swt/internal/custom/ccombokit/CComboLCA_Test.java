@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ccombokit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -45,6 +46,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.buttonkit.ButtonOperationHandler;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -327,11 +329,13 @@ public class CComboLCA_Test {
   @Test
   public void testSelectionAfterRemoveAll() {
     ccombo = new CCombo( shell, SWT.READ_ONLY );
+    Button button = new Button( shell, SWT.PUSH );
+    getRemoteObject( button ).setHandler( new ButtonOperationHandler( button ) );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
+    Fixture.markInitialized( button );
     ccombo.add( "item 1" );
     ccombo.select( 0 );
-    Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {

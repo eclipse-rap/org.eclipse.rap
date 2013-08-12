@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.widgets.tabitemkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -29,7 +30,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.internal.widgets.WidgetDataUtil;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -305,7 +305,7 @@ public class TabItemLCA_Test {
 
   @Test
   public void testRenderData() throws IOException {
-    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
+    registerDataKeys( new String[]{ "foo", "bar" } );
     item.setData( "foo", "string" );
     item.setData( "bar", Integer.valueOf( 1 ) );
 
@@ -319,7 +319,7 @@ public class TabItemLCA_Test {
 
   @Test
   public void testRenderDataUnchanged() throws IOException {
-    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo" } );
+    registerDataKeys( new String[]{ "foo" } );
     item.setData( "foo", "string" );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );

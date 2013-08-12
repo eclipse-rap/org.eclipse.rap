@@ -12,15 +12,13 @@
 package org.eclipse.swt.internal.widgets.treecolumnkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
@@ -28,22 +26,20 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.internal.widgets.WidgetDataUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
@@ -161,26 +157,6 @@ public class TreeColumnLCA_Test {
   }
 
   @Test
-  public void testResizeEvent() {
-    Fixture.markInitialized( column );
-    column.setWidth( 20 );
-    ControlListener listener = mock( ControlListener.class );
-    column.addControlListener( listener );
-
-    int newWidth = column.getWidth() + 2;
-    Fixture.fakeNewRequest();
-    JsonObject parameters = new JsonObject().add( "width", newWidth );
-    Fixture.fakeCallOperation( getId( column ), "resize", parameters );
-    Fixture.executeLifeCycleFromServerThread();
-
-    verify( listener, times( 1 ) ).controlResized( any( ControlEvent.class ) );
-    verify( listener, times( 0 ) ).controlMoved( any( ControlEvent.class ) );
-    assertEquals( newWidth, column.getWidth() );
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( newWidth, message.findSetProperty( column, "width" ).asInt() );
-  }
-
-  @Test
   public void testGetLeft() {
     column.setWidth( 10 );
     TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
@@ -198,149 +174,6 @@ public class TreeColumnLCA_Test {
     assertEquals( 0, TreeColumnLCA.getLeft( column2 ) );
     assertEquals( 10, TreeColumnLCA.getLeft( column1 ) );
     assertEquals( 20, TreeColumnLCA.getLeft( column ) );
-  }
-
-  @Test
-  public void testMoveColumn() {
-    column.setText( "Col 0" );
-    column.setWidth( 10 );
-    TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
-    column1.setText( "Col 1" );
-    column1.setWidth( 20 );
-    TreeColumn column2 = new TreeColumn( tree, SWT.NONE );
-    column2.setText( "Col 2" );
-    column2.setWidth( 30 );
-    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60 (as created)
-    // Move Col 1 over Col 0 (left half), thereafter order should be:
-    // Col 1, Col 0, Col 2
-    tree.setColumnOrder( new int[]{
-      0, 1, 2
-    } );
-    TreeColumnLCA.moveColumn( column1, 3 );
-    int[] columnOrder = tree.getColumnOrder();
-    assertEquals( 1, columnOrder[ 0 ] );
-    assertEquals( 0, columnOrder[ 1 ] );
-    assertEquals( 2, columnOrder[ 2 ] );
-    // Current order: Col 1: 0..20, Col 0: 21..30, Col 2: 31..60
-    // Move Col 1 over Col 0 (right half), thereafter order should be:
-    // Col 0, Col 1, Col 2
-    tree.setColumnOrder( new int[]{
-      1, 0, 2
-    } );
-    TreeColumnLCA.moveColumn( column1, 27 );
-    columnOrder = tree.getColumnOrder();
-    assertEquals( 0, columnOrder[ 0 ] );
-    assertEquals( 1, columnOrder[ 1 ] );
-    assertEquals( 2, columnOrder[ 2 ] );
-    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60
-    // Move Col 2 over Col 1 (left half), thereafter order should be:
-    // Col 0, Col 2, Col 1
-    tree.setColumnOrder( new int[]{
-      0, 1, 2
-    } );
-    TreeColumnLCA.moveColumn( column2, 13 );
-    columnOrder = tree.getColumnOrder();
-    assertEquals( 0, columnOrder[ 0 ] );
-    assertEquals( 2, columnOrder[ 1 ] );
-    assertEquals( 1, columnOrder[ 2 ] );
-    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60
-    // Move Col 2 over Col 1 (right half), thereafter order should be:
-    // Col 2, Col 0, Col 1
-    tree.setColumnOrder( new int[]{
-      0, 1, 2
-    } );
-    TreeColumnLCA.moveColumn( column2, 3 );
-    columnOrder = tree.getColumnOrder();
-    assertEquals( 2, columnOrder[ 0 ] );
-    assertEquals( 0, columnOrder[ 1 ] );
-    assertEquals( 1, columnOrder[ 2 ] );
-    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60
-    // Move Col 2 way left of Col 0, thereafter order should be:
-    // Col 2, Col 0, Col 1
-    tree.setColumnOrder( new int[]{
-      0, 1, 2
-    } );
-    TreeColumnLCA.moveColumn( column2, -30 );
-    columnOrder = tree.getColumnOrder();
-    assertEquals( 2, columnOrder[ 0 ] );
-    assertEquals( 0, columnOrder[ 1 ] );
-    assertEquals( 1, columnOrder[ 2 ] );
-    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60
-    // Move Col 0 way right of Col 2, thereafter order should be:
-    // Col 1, Col 2, Col 0
-    tree.setColumnOrder( new int[]{
-      0, 1, 2
-    } );
-    TreeColumnLCA.moveColumn( column, 100 );
-    columnOrder = tree.getColumnOrder();
-    assertEquals( 1, columnOrder[ 0 ] );
-    assertEquals( 2, columnOrder[ 1 ] );
-    assertEquals( 0, columnOrder[ 2 ] );
-    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60
-    // Move Col 1 onto itself (left half), order should stay unchanged:
-    // Col 1, Col 2, Col 0
-    tree.setColumnOrder( new int[]{
-      0, 1, 2
-    } );
-    TreeColumnLCA.moveColumn( column1, 13 );
-    columnOrder = tree.getColumnOrder();
-    assertEquals( 0, columnOrder[ 0 ] );
-    assertEquals( 1, columnOrder[ 1 ] );
-    assertEquals( 2, columnOrder[ 2 ] );
-    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60
-    // Move Col 0 over Col 2 (left half), order should be:
-    // Col 1, Col 0, Col 2
-    tree.setColumnOrder( new int[]{
-      0, 1, 2
-    } );
-    TreeColumnLCA.moveColumn( column, 33 );
-    columnOrder = tree.getColumnOrder();
-    assertEquals( 1, columnOrder[ 0 ] );
-    assertEquals( 0, columnOrder[ 1 ] );
-    assertEquals( 2, columnOrder[ 2 ] );
-  }
-
-  @Test
-  public void testMoveColumnFixedColumnTarget() {
-    Tree tree = createFixedColumnsTree( shell );
-    tree.setSize( 200, 200 );
-    ITreeAdapter adapter = tree.getAdapter( ITreeAdapter.class );
-    adapter.setScrollLeft( 80 );
-    TreeColumn column3 = tree.getColumn( 3 );
-    TreeColumnLCA.moveColumn( column3, 105 );
-    int[] columnOrder = tree.getColumnOrder();
-    assertEquals( 0, columnOrder[ 0 ] );
-    assertEquals( 1, columnOrder[ 1 ] );
-    assertEquals( 2, columnOrder[ 2 ] );
-    assertEquals( 3, columnOrder[ 3 ] );
-  }
-
-  @Test
-  public void testMoveColumnFixedColumnSource() {
-    Tree tree = createFixedColumnsTree( shell );
-    tree.setSize( 200, 200 );
-    TreeColumn column0 = tree.getColumn( 0 );
-    TreeColumnLCA.moveColumn( column0, 105 );
-    int[] columnOrder = tree.getColumnOrder();
-    assertEquals( 0, columnOrder[ 0 ] );
-    assertEquals( 1, columnOrder[ 1 ] );
-    assertEquals( 2, columnOrder[ 2 ] );
-    assertEquals( 3, columnOrder[ 3 ] );
-  }
-
-  @Test
-  public void testMoveColumnFixedColumnRightHalfTarget() {
-    Tree tree = createFixedColumnsTree( shell );
-    tree.setSize( 200, 200 );
-    ITreeAdapter adapter = tree.getAdapter( ITreeAdapter.class );
-    adapter.setScrollLeft( 100 );
-    TreeColumn column3 = tree.getColumn( 3 );
-    TreeColumnLCA.moveColumn( column3, 145 );
-    int[] columnOrder = tree.getColumnOrder();
-    assertEquals( 0, columnOrder[ 0 ] );
-    assertEquals( 1, columnOrder[ 1 ] );
-    assertEquals( 2, columnOrder[ 2 ] );
-    assertEquals( 3, columnOrder[ 3 ] );
   }
 
   @Test
@@ -362,6 +195,16 @@ public class TreeColumnLCA_Test {
     CreateOperation operation = message.findCreateOperation( column );
     assertTrue( operation.getPropertyNames().indexOf( "style" ) == -1 );
     assertEquals( "right", message.findCreateProperty( column, "alignment" ).asString() );
+  }
+
+  @Test
+  public void testRenderCreate_setsOperationHandler() throws IOException {
+    String id = getId( column );
+
+    lca.renderInitialization( column );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof TreeColumnOperationHandler );
   }
 
   @Test
@@ -825,7 +668,7 @@ public class TreeColumnLCA_Test {
 
   @Test
   public void testRenderData() throws IOException {
-    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo", "bar" } );
+    registerDataKeys( new String[]{ "foo", "bar" } );
     column.setData( "foo", "string" );
     column.setData( "bar", Integer.valueOf( 1 ) );
 
@@ -839,7 +682,7 @@ public class TreeColumnLCA_Test {
 
   @Test
   public void testRenderDataUnchanged() throws IOException {
-    WidgetDataUtil.fakeWidgetDataWhiteList( new String[]{ "foo" } );
+    registerDataKeys( new String[]{ "foo" } );
     column.setData( "foo", "string" );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
@@ -849,17 +692,6 @@ public class TreeColumnLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
-  }
-
-  private Tree createFixedColumnsTree( Shell shell ) {
-    Tree tree = new Tree( shell, SWT.NONE );
-    tree.setData( RWT.FIXED_COLUMNS, new Integer( 1 ) );
-    for( int i = 0; i < 10; i++ ) {
-      TreeColumn column = new TreeColumn( tree, SWT.NONE );
-      column.setWidth( 50 );
-      column.setText( "Column " + i );
-    }
-    return tree;
   }
 
 }

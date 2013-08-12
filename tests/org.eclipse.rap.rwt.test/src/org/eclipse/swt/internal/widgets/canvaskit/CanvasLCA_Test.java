@@ -326,7 +326,7 @@ public class CanvasLCA_Test {
   }
 
   @Test
-  public void testRenderChanges_rendersClientArea() throws IOException {
+  public void testRenderChanges_rendersClientListener() throws IOException {
     canvas.addListener( SWT.Paint, new ClientListener( "" ) );
 
     lca.renderChanges( canvas );

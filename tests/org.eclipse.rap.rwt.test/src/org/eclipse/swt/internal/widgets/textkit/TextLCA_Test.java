@@ -813,7 +813,7 @@ public class TextLCA_Test {
   }
 
   @Test
-  public void testRenderChanges_rendersClientArea() throws IOException {
+  public void testRenderChanges_rendersClientListener() throws IOException {
     text.addListener( SWT.Paint, new ClientListener( "" ) );
 
     lca.renderChanges( text );

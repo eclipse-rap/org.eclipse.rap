@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treecolumnkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -21,16 +20,9 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
-import java.util.Arrays;
 
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -76,39 +68,10 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
   }
 
   @Override
-  public void readData( Widget widget ) {
-    final TreeColumn column = ( TreeColumn )widget;
-    String methodName = "resize";
-    if( ProtocolUtil.wasCallReceived( getId( column ), methodName ) ) {
-      // TODO [rh] HACK: force width to have changed when client-side changes
-      //      it. Since this is done while a column resize we must re-layout
-      //      all columns including the resized one.
-      String width = readCallPropertyValueAsString( getId( column ), methodName, "width" );
-      final int newWidth = NumberFormatUtil.parseInt( width );
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          column.setWidth( newWidth );
-        }
-      } );
-    }
-    methodName = "move";
-    if( ProtocolUtil.wasCallReceived( getId( column ), methodName ) ) {
-      String left = readCallPropertyValueAsString( getId( column ), methodName, "left" );
-      final int newLeft = NumberFormatUtil.parseInt( left );
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          moveColumn( column, newLeft );
-        }
-      } );
-    }
-    ControlLCAUtil.processSelection( column, null, false );
-    ControlLCAUtil.processDefaultSelection( column, null );
-  }
-
-  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     TreeColumn column = ( TreeColumn )widget;
     RemoteObject remoteObject = createRemoteObject( column, TYPE );
+    remoteObject.setHandler( new TreeColumnOperationHandler( column ) );
     remoteObject.set( "parent", getId( column.getParent() ) );
   }
 
@@ -161,107 +124,6 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
   private static boolean isFixed( TreeColumn column ) {
     ITreeAdapter adapter = column.getParent().getAdapter( ITreeAdapter.class );
     return adapter.isFixedColumn( column );
-  }
-
-  /////////////////////////////////
-  // Helping methods to move column
-
-  static void moveColumn( TreeColumn column, int newLeft ) {
-    Tree tree = column.getParent();
-    int targetColumn = findMoveTarget( tree, newLeft );
-    int[] columnOrder = tree.getColumnOrder();
-    int index = tree.indexOf( column );
-    int orderIndex = arrayIndexOf( columnOrder, index );
-    columnOrder = arrayRemove( columnOrder, orderIndex );
-    if( orderIndex < targetColumn ) {
-      targetColumn--;
-    }
-    if( isFixed( column ) || isFixed( tree.getColumn( targetColumn ) ) ) {
-      targetColumn = tree.indexOf( column );
-    }
-    columnOrder = arrayInsert( columnOrder, targetColumn, index );
-    if( Arrays.equals( columnOrder, tree.getColumnOrder() ) ) {
-      // TODO [rh] HACK mark left as changed
-      TreeColumn[] columns = tree.getColumns();
-      for( int i = 0; i < columns.length; i++ ) {
-        WidgetAdapter adapter = WidgetUtil.getAdapter( columns[ i ] );
-        adapter.preserve( PROP_LEFT, null );
-      }
-    } else {
-      tree.setColumnOrder( columnOrder );
-      // [if] HACK mark left as changed - see bug 336340
-      WidgetAdapter adapter = WidgetUtil.getAdapter( column );
-      adapter.preserve( PROP_LEFT, null );
-    }
-  }
-
-  /* (intentionally non-JavaDoc'ed)
-   * Returns the index in the columnOrder array at which the moved column
-   * should be inserted (moving remaining columns to the right). A return
-   * value of columnCount indicates that the moved column should be inserted
-   * after the right-most column.
-   */
-  private static int findMoveTarget( Tree tree, int newLeft ) {
-    int result = -1;
-    TreeColumn[] columns = tree.getColumns();
-    int[] columnOrder = tree.getColumnOrder();
-    if( newLeft < 0 ) {
-      result = 0;
-    } else {
-      for( int i = 0; result == -1 && i < columns.length; i++ ) {
-        TreeColumn column = columns[ columnOrder [ i ] ];
-        int left = getLeft( column );
-        int width = column.getWidth();
-        if( isFixed( column ) ) {
-          left += getLeftOffset( column );
-        }
-        if( newLeft >= left && newLeft <= left + width ) {
-          result = i;
-          if( newLeft >= left + width / 2 && result < columns.length && !isFixed( column ) ) {
-            result++;
-          }
-        }
-      }
-    }
-    // Column was moved right of the right-most column
-    if( result == -1 ) {
-      result = columns.length;
-    }
-    return result;
-  }
-
-  private static int getLeftOffset( TreeColumn column ) {
-    ITreeAdapter adapter = column.getParent().getAdapter( ITreeAdapter.class );
-    return adapter.getScrollLeft();
-  }
-
-  private static int arrayIndexOf( int[] array, int value ) {
-    int result = -1;
-    for( int i = 0; result == -1 && i < array.length; i++ ) {
-      if( array[ i ] == value ) {
-        result = i;
-      }
-    }
-    return result;
-  }
-
-  private static int[] arrayRemove( int[] array, int index ) {
-    int length = array.length;
-    int[] result = new int[ length - 1 ];
-    System.arraycopy( array, 0, result, 0, index );
-    if( index < length - 1 ) {
-      System.arraycopy( array, index + 1, result, index, length - index - 1 );
-    }
-    return result;
-  }
-
-  private static int[] arrayInsert( int[] array, int index, int value ) {
-    int length = array.length;
-    int[] result = new int[ length + 1 ];
-    System.arraycopy( array, 0, result, 0, length );
-    System.arraycopy( result, index, result, index + 1, length - index );
-    result[ index ] = value;
-    return result;
   }
 
 }
