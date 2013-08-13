@@ -1271,10 +1271,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "bounds" : [ 0, 0, 100, 20 ]
         }
       } );
-
       TestUtil.flush();
       text = ObjectRegistry.getObject( "w3" );
       text.setHasDefaultSelectionListener( true );
+
       TestUtil.clickDOM( text._searchIconElement, 5, 5 );
 
       var message = TestUtil.getMessageObject();
@@ -1292,10 +1292,42 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "bounds" : [ 0, 0, 100, 20 ]
         }
       } );
-
       TestUtil.flush();
       text = ObjectRegistry.getObject( "w3" );
       text.setHasDefaultSelectionListener( true );
+
+      TestUtil.clickDOM( text._cancelIconElement, 5, 5 );
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( "cancel", message.findNotifyProperty( "w3", "DefaultSelection", "detail" ) );
+    },
+
+    testSendDefaultSelectionEventOnCancelIconClickWithDefaultButton : function() {
+      Processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w2"
+        }
+      } );
+      var defaultButton = ObjectRegistry.getObject( "w4" );
+      shell.setDefaultButton( defaultButton );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SEARCH", "ICON_SEARCH", "ICON_CANCEL" ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 100, 20 ]
+        }
+      } );
+      TestUtil.flush();
+      text = ObjectRegistry.getObject( "w3" );
+      text.setHasDefaultSelectionListener( true );
+
       TestUtil.clickDOM( text._cancelIconElement, 5, 5 );
 
       var message = TestUtil.getMessageObject();
