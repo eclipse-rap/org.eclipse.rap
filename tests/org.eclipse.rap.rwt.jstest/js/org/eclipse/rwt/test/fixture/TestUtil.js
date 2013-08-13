@@ -861,13 +861,13 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     if( inResponse ) {
       rwt.remote.EventUtil.setSuspended( true );
       rwt.widgets.base.Widget.flushGlobalQueues();
-      rwt.remote.EventUtil.setSuspended( true );
+      rwt.remote.EventUtil.setSuspended( false );
     } else {
       rwt.widgets.base.Widget.flushGlobalQueues();
     }
   },
 
- fakeResponse : function( value ) {
+  fakeResponse : function( value ) {
     rwt.remote.EventUtil.setSuspended( value );
   },
 

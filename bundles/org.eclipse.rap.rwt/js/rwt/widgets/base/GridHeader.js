@@ -70,7 +70,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
     },
 
     _onColumnDispose : function( event ) {
-      this._getLabelByColumn( event.target ).destroy();
+      var column = event.target;
+      var label = this._getLabelByColumn( column );
+      delete this._labelToColumnMap[ label.toHashCode() ];
+      delete this._columnToLabelMap[ column.toHashCode() ];
+      label.destroy();
     },
 
     renderColumns : function( columns ) {
