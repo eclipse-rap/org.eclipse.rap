@@ -33,8 +33,8 @@ public class TextOperationHandler extends ControlOperationHandler<Text> {
   private static final String PROP_SELECTION_START = "selectionStart";
   private static final String PROP_SELECTION_LENGTH = "selectionLength";
 
-  public TextOperationHandler( Text control ) {
-    super( control );
+  public TextOperationHandler( Text text ) {
+    super( text );
   }
 
   @Override
