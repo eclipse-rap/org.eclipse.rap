@@ -13,7 +13,14 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
 
 
 /**
- * Note: Thise class is available within ClientScriptingFunction simply as "SWT" (no namespace)
+ * This object defines the public constants used by RWT Scripting, specifically
+ * event types and keycodes.
+ *
+ * @namespace RWT Scripting analoge to org.eclipse.swt.widgets.SWT
+ * @static
+ * @exports rwt.scripting.SWT as SWT
+ * @since 2.2
+ * @see Event
  */
 rwt.scripting.SWT = {
 
@@ -102,7 +109,7 @@ rwt.scripting.SWT = {
   /**
    * The verify event type
    *
-   * Current limitations:
+   * Limitations:
    *  - works for Text only
    *  - is not fired on programatic changes
    *  - calling setText in verify onsupported

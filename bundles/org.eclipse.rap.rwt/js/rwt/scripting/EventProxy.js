@@ -15,6 +15,16 @@ var SWT = rwt.scripting.SWT;
 
 rwt.qx.Class.createNamespace( "rwt.scripting", {} );
 
+/**
+ * Objects of this type are given to the handleEvent function (JavaScript) of
+ * org.eclipse.rap.rwt.scripting.ClientListener (Java) instances.
+ *
+ * @private
+ * @class RWT Scripting analoge to org.eclipse.swt.widgets.Event
+ * @exports rwt.scripting.EventProxy as Event
+ * @since 2.2
+ * @see SWT
+ */
 rwt.scripting.EventProxy = function( eventType, originalTarget, originalEvent ) {
   this.widget = rwt.scripting.WidgetProxyFactory.getWidgetProxy( originalTarget );
   this.type = eventType;
@@ -43,18 +53,17 @@ rwt.scripting.EventProxy = function( eventType, originalTarget, originalEvent ) 
 rwt.scripting.EventProxy.prototype = {
 
   /**
-   * An object representing the widget that issued the event.
-   * It has setter and getter named after the properties used in the RAP protocol.
-   * Only a subset of getter is currently supported.
-   * Setting properties might result in server and client getting out-of-sync in RAP 1.5,
-   * unless it is a property that can be changed by user-input (e.g. selection).
+   * an object representing the widget that issued the event.
+   *
+   * @see rap.getObject
    */
   widget : null,
 
   /**
    * depending on the event, a flag indicating whether the operation should be
    * allowed. Setting this field to false will cancel the operation.
-   * Currently only effective on key events for Text or Text-like widgets.
+   *
+   * Effective on KeyDown, KeyUp and Verify.
    */
   doit : true,
 
@@ -63,6 +72,8 @@ rwt.scripting.EventProxy.prototype = {
    * typed. This is the final character that results after all modifiers have
    * been applied. For non-printable keys (like arrow-keys) this field is not set.
    * Changing its value has no effect.
+   *
+   * Set for KeyDown, KeyUp and Verify.
    */
   character : '\u0000',
 
@@ -76,36 +87,45 @@ rwt.scripting.EventProxy.prototype = {
   keyCode : 0,
 
   /**
-   * the type of event, as defined by the event type constants in class <code>SWT</code>.
-   * Currently supports SWT.KeyDown
+   * the type of event, as defined by the event type constants in the {@link SWT} object.
    */
   type : 0,
 
   /**
    * depending on the event, the state of the keyboard modifier keys and mouse
    * masks at the time the event was generated.
+   *
+   * Set for KeyDown, KeyUp, MouseDown, MouseUp, MouseMove, MouseEvnet, MouseExit and MouseDoubleClick.
    */
   stateMask : 0,
 
   /**
    * the button that was pressed or released; 1 for the first button, 2 for the
    * second button, and 3 for the third button, etc.
+   *
+   * Set for MouseDown, MouseUp, MouseMove, MouseEvnet, MouseExit and MouseDoubleClick.
    */
   button : 0,
 
   /**
    * x coordinate of the pointer at the time of the event
+   *
+   * Set for MouseDown, MouseUp, MouseMove, MouseEvnet, MouseExit and MouseDoubleClick.
    */
   x : 0,
 
   /**
    * y coordinate of the pointer at the time of the event
+   *
+   * Set for MouseDown, MouseUp, MouseMove, MouseEvnet, MouseExit and MouseDoubleClick.
    */
   y : 0,
 
   /**
    * depending on the event, the range of text being modified. Setting these
    * fields has no effect.
+   *
+   * Set for Verify.
    */
   start : 0,
   end : 0,
@@ -114,40 +134,48 @@ rwt.scripting.EventProxy.prototype = {
    * depending on the event, the new text that will be inserted.
    * Setting this field will change the text that is about to
    * be inserted or deleted.
+   *
+   * Set for Verify.
    */
   text : "",
 
   /**
    * the graphics context to use when painting.
-   * It supports a subset of the HTML5 Canvas API (http://www.w3.org/TR/2dcontext/):
+   * It supports a subset of the <a href="http://www.w3.org/TR/2dcontext/">HTML5 Canvas API</a>.
    * Fields:
-   *  - strokeStyle
-   *  - fillStyle
-   *  - lineWidth
-   *  - lineJoin
-   *  - lineCap
-   *  - miterLimit
-   *  - globalAlpha
+   * <ul>
+   *  <li>strokeStyle</li>
+   *  <li>fillStyle</li>
+   *  <li>lineWidth</li>
+   *  <li>lineJoin</li>
+   *  <li>lineCap</li>
+   *  <li>miterLimit</li>
+   *  <li>globalAlpha</li>
+   *</ul>
    * Methods:
-   *  - save
-   *  - restore
-   *  - beginPath
-   *  - closePath
-   *  - clearRect (Limitation: in IE 7+8 arguments are ignored, the entire canvas is cleared)
-   *  - stroke
-   *  - fill
-   *  - moveTo
-   *  - lineTo
-   *  - quadraticCurveTo
-   *  - bezierCurveTo
-   *  - rect
-   *  - arc
-   *  - drawImage
-   *  - createLinearGradient (Limitations: In IE 7+8, the gradient can be only be drawn either
+   * <ul>
+   *  <li>save</li>
+   *  <li>restore</li>
+   *  <li>beginPath</li>
+   *  <li>closePath</li>
+   *  <li>clearRect (Limitation: in IE 7/8 arguments are ignored, the entire canvas is cleared)</li>
+   *  <li>stroke</li>
+   *  <li>fill</li>
+   *  <li>moveTo</li>
+   *  <li>lineTo</li>
+   *  <li>quadraticCurveTo</li>
+   *  <li>bezierCurveTo</li>
+   *  <li>rect</li>
+   *  <li>arc</li>
+   *  <li>drawImage</li>
+   *  <li>createLinearGradient (Limitations: In IE 7/8, the gradient can be only be drawn either
    *                          vertically or horizontally. Calls to "addColorStop" must be in the
-   *                          order of the offsets and can not overwrite previous colorsStops)
+   *                          order of the offsets and can not overwrite previous colorsStops)</li>
+   * </ul>
    *
-   * More methods may be supported on specific browser.
+   * More methods are supported on modern browser, but for IE 7/8 these are all.
+   *
+   * Set on Paint.
    */
   gc : null
 

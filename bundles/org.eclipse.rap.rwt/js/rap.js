@@ -12,9 +12,11 @@
 (function(){
 
 /**
+ * Contains methods required for custom widget development and RWT Scripting.
+ *
  * @public
  * @since 2.0
- * @namespace Holds all public API of the RAP WebClient.
+ * @namespace Holds all global public methods of the RAP WebClient.
  */
 rap = {
 
@@ -74,9 +76,14 @@ rap = {
   },
 
   /**
-   * @description Returns the client object associated with the given id.
-   * If there is no object registered for the given id, null is returned.
-   * For RAP internal objects (e.g. RWT widgets) a wrapper is returned instead of the real object.
+   * Returns the client object associated with the given id as returned
+   * by <code>org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId</code> and
+   * <code>org.eclipse.rap.rwt.remote.RemoteObject.getId</code>.
+   * If there is no object registered for the given id, <code>null</code> is returned.
+   * For internal objects (e.g. RWT/SWT widgets) a wrapper is returned that approximates
+   * the API of its Java analoge. {@link Composite} is a special case where additional API
+   * is present to allow HTML/DOM based custom widget development.
+   *
    * @see Composite
    * @param {string} id The protocol id for a client object.
    * @returns {Object} The client object associated with the id.
@@ -199,7 +206,7 @@ function convertEventType( type ) {
 
 /**
  * @private
- * @class Represents RWT Composite widgets
+ * @class RWT Scripting analoge to org.eclipse.swt.widgets.Composite
  * @description This constructor is not available in the global namespace. Instances can only
  * be obtained from {@link rap.getObject}.
  * @name Composite
