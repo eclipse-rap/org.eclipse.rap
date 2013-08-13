@@ -26,6 +26,13 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PAR
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_Y;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_TRAVERSE;
 import static org.eclipse.swt.internal.events.EventLCAUtil.translateButton;
+import static org.eclipse.swt.internal.widgets.displaykit.DNDSupport.EVENT_DRAG_END;
+import static org.eclipse.swt.internal.widgets.displaykit.DNDSupport.EVENT_DRAG_ENTER;
+import static org.eclipse.swt.internal.widgets.displaykit.DNDSupport.EVENT_DRAG_LEAVE;
+import static org.eclipse.swt.internal.widgets.displaykit.DNDSupport.EVENT_DRAG_OPERATION_CHANGED;
+import static org.eclipse.swt.internal.widgets.displaykit.DNDSupport.EVENT_DRAG_OVER;
+import static org.eclipse.swt.internal.widgets.displaykit.DNDSupport.EVENT_DRAG_START;
+import static org.eclipse.swt.internal.widgets.displaykit.DNDSupport.EVENT_DROP_ACCEPT;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.swt.SWT;
@@ -62,6 +69,21 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
       handleNotifyMenuDetect( control, properties );
     } else if( EVENT_HELP.equals( eventName ) ) {
       handleNotifyHelp( control, properties );
+    // TODO: [if] Transmit and handle the DND operations by DragSource/DropTarget
+    } else if( EVENT_DRAG_START.equals( eventName ) ) {
+      handleNotifyDragStart( control, properties );
+    } else if( EVENT_DRAG_ENTER.equals( eventName ) ) {
+      handleNotifyDragEnter( control, properties );
+    } else if( EVENT_DRAG_OPERATION_CHANGED.equals( eventName ) ) {
+      handleNotifyDragOperationChanged( control, properties );
+    } else if( EVENT_DRAG_OVER.equals( eventName ) ) {
+      handleNotifyDragOver( control, properties );
+    } else if( EVENT_DRAG_LEAVE.equals( eventName ) ) {
+      handleNotifyDragLeave( control, properties );
+    } else if( EVENT_DROP_ACCEPT.equals( eventName ) ) {
+      handleNotifyDropAccept( control, properties );
+    } else if( EVENT_DRAG_END.equals( eventName ) ) {
+      handleNotifyDragEnd( control, properties );
     } else {
       super.handleNotify( control, eventName, properties );
     }
@@ -168,6 +190,108 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    */
   public void handleNotifyHelp( T widget, JsonObject properties ) {
     widget.notifyListeners( SWT.Help, new Event() );
+  }
+
+  /*
+   * PROTOCOL NOTIFY DragStart
+   *
+   * @param x (int) the x coordinate of the pointer
+   * @param y (int) the y coordinate of the pointer
+   * @param time (int) the time when the event occurred
+   */
+  public void handleNotifyDragStart( T widget, JsonObject properties ) {
+    // DND events are handled by DNDSupport
+  }
+
+  /*
+   * PROTOCOL NOTIFY DragEnter
+   *
+   * @param x (int) the x coordinate of the pointer
+   * @param y (int) the y coordinate of the pointer
+   * @param time (int) the time when the event occurred
+   * @param operation (String) "copy", "move" or "link", optional
+   * @param feedback (int)
+   * @param source (String) id of the source control
+   * @param item (String) id of the source item
+   * @param dataType (String)
+   */
+  public void handleNotifyDragEnter( T widget, JsonObject properties ) {
+    // DND events are handled by DNDSupport
+  }
+
+  /*
+   * PROTOCOL NOTIFY DragOperationChanged
+   *
+   * @param x (int) the x coordinate of the pointer
+   * @param y (int) the y coordinate of the pointer
+   * @param time (int) the time when the event occurred
+   * @param operation (String) "copy", "move" or "link", optional
+   * @param feedback (int)
+   * @param source (String) id of the source control
+   * @param item (String) id of the source item
+   * @param dataType (String)
+   */
+  public void handleNotifyDragOperationChanged( T widget, JsonObject properties ) {
+    // DND events are handled by DNDSupport
+  }
+
+  /*
+   * PROTOCOL NOTIFY DragOver
+   *
+   * @param x (int) the x coordinate of the pointer
+   * @param y (int) the y coordinate of the pointer
+   * @param time (int) the time when the event occurred
+   * @param operation (String) "copy", "move" or "link", optional
+   * @param feedback (int)
+   * @param source (String) id of the source control
+   * @param item (String) id of the source item
+   * @param dataType (String)
+   */
+  public void handleNotifyDragOver( T widget, JsonObject properties ) {
+    // DND events are handled by DNDSupport
+  }
+
+  /*
+   * PROTOCOL NOTIFY DragLeave
+   *
+   * @param x (int) the x coordinate of the pointer
+   * @param y (int) the y coordinate of the pointer
+   * @param time (int) the time when the event occurred
+   * @param operation (String) "copy", "move" or "link", optional
+   * @param feedback (int)
+   * @param source (String) id of the source control
+   * @param item (String) id of the source item
+   * @param dataType (String)
+   */
+  public void handleNotifyDragLeave( T widget, JsonObject properties ) {
+    // DND events are handled by DNDSupport
+  }
+
+  /*
+   * PROTOCOL NOTIFY DropAccept
+   *
+   * @param x (int) the x coordinate of the pointer
+   * @param y (int) the y coordinate of the pointer
+   * @param time (int) the time when the event occurred
+   * @param operation (String) "copy", "move" or "link", optional
+   * @param feedback (int)
+   * @param source (String) id of the source control
+   * @param item (String) id of the source item
+   * @param dataType (String)
+   */
+  public void handleNotifyDropAccept( T widget, JsonObject properties ) {
+    // DND events are handled by DNDSupport
+  }
+
+  /*
+   * PROTOCOL NOTIFY DragEnd
+   *
+   * @param x (int) the x coordinate of the pointer
+   * @param y (int) the y coordinate of the pointer
+   * @param time (int) the time when the event occurred
+   */
+  public void handleNotifyDragEnd( T widget, JsonObject properties ) {
+    // DND events are handled by DNDSupport
   }
 
   private static void processMouseEvent( int eventType, Control control, JsonObject properties ) {

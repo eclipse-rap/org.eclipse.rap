@@ -38,16 +38,9 @@ final class SeparatorLabelLCA extends AbstractLabelLCADelegate {
   }
 
   @Override
-  void readData( Label label ) {
-    ControlLCAUtil.processEvents( label );
-    ControlLCAUtil.processKeyEvents( label );
-    ControlLCAUtil.processMenuDetect( label );
-    WidgetLCAUtil.processHelp( label );
-  }
-
-  @Override
   void renderInitialization( Label label ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( label, TYPE );
+    remoteObject.setHandler( new LabelOperationHandler( label ) );
     remoteObject.set( "parent", getId( label.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( label, ALLOWED_STYLES ) ) );
   }

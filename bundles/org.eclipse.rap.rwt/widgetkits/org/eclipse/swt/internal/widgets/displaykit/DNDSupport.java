@@ -42,13 +42,13 @@ import org.eclipse.swt.widgets.Widget;
 // TODO [rh] move these methods to DragSourceLCA
 public final class DNDSupport {
 
-  private static final String EVENT_DRAG_START = "DragStart";
-  private static final String EVENT_DRAG_ENTER = "DragEnter";
-  private static final String EVENT_DRAG_OPERATION_CHANGED = "DragOperationChanged";
-  private static final String EVENT_DRAG_OVER = "DragOver";
-  private static final String EVENT_DRAG_LEAVE = "DragLeave";
-  private static final String EVENT_DROP_ACCEPT = "DropAccept";
-  private static final String EVENT_DRAG_END = "DragEnd";
+  public static final String EVENT_DRAG_START = "DragStart";
+  public static final String EVENT_DRAG_ENTER = "DragEnter";
+  public static final String EVENT_DRAG_OPERATION_CHANGED = "DragOperationChanged";
+  public static final String EVENT_DRAG_OVER = "DragOver";
+  public static final String EVENT_DRAG_LEAVE = "DragLeave";
+  public static final String EVENT_DROP_ACCEPT = "DropAccept";
+  public static final String EVENT_DRAG_END = "DragEnd";
 
   private static final String EVENT_PARAM_OPERATION = "operation";
   private static final String EVENT_PARAM_ITEM = "item";

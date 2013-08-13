@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,18 +24,17 @@ public class LabelLCA extends AbstractWidgetLCA {
   private static final AbstractLabelLCADelegate SEPARATOR_LCA = new SeparatorLabelLCA();
   private static final AbstractLabelLCADelegate LABEL_LCA = new StandardLabelLCA();
 
+  @Override
   public void preserveValues( Widget widget ) {
     getDelegate( widget ).preserveValues( ( Label )widget );
   }
 
-  public void readData( Widget widget ) {
-    getDelegate( widget ).readData( ( Label )widget );
-  }
-
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     getDelegate( widget ).renderInitialization( ( Label )widget );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     getDelegate( widget ).renderChanges( ( Label )widget );
   }
@@ -49,4 +48,5 @@ public class LabelLCA extends AbstractWidgetLCA {
     }
     return result;
   }
+
 }

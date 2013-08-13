@@ -1,25 +1,23 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Innoopract Informationssysteme GmbH - initial API and implementation
- *    EclipseSource - ongoing development
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.labelkit;
 
-import java.io.IOException;
-
+import org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler;
 import org.eclipse.swt.widgets.Label;
 
 
-abstract class AbstractLabelLCADelegate {
+public class LabelOperationHandler extends ControlOperationHandler<Label> {
 
-  abstract void preserveValues( Label label );
-  abstract void renderInitialization( Label label ) throws IOException;
-  abstract void renderChanges( Label label ) throws IOException;
+  public LabelOperationHandler( Label label ) {
+    super( label );
+  }
 
 }

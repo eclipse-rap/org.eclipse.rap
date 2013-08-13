@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.controlkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
@@ -37,6 +39,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.labelkit.LabelOperationHandler;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -126,6 +129,7 @@ public class ControlLCA_Test {
   public void testMenuDetectListener() {
     Shell shell = new Shell( display );
     Label label = new Label( shell, SWT.NONE );
+    getRemoteObject( label ).setHandler( new LabelOperationHandler( label ) );
     MenuDetectListener listener = mock( MenuDetectListener.class );
     label.addMenuDetectListener( listener );
 
@@ -171,6 +175,7 @@ public class ControlLCA_Test {
             @Override
             public void renderInitialization( Widget widget ) throws IOException {
             }
+            @Override
             public void readData( Widget widget ) {
             }
             @Override
