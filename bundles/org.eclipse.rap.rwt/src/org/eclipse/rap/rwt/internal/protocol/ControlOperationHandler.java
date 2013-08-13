@@ -210,9 +210,9 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    * @param y (int) the y coordinate of the pointer
    * @param time (int) the time when the event occurred
    * @param operation (String) "copy", "move" or "link", optional
-   * @param feedback (int)
-   * @param source (String) id of the source control
-   * @param item (String) id of the source item
+   * @param feedback (int) the feedback as in DND.FEEDBACK_xxx
+   * @param source (String) the id of the source control
+   * @param item (String) the id of the source item
    * @param dataType (String)
    */
   public void handleNotifyDragEnter( T widget, JsonObject properties ) {
@@ -226,9 +226,9 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    * @param y (int) the y coordinate of the pointer
    * @param time (int) the time when the event occurred
    * @param operation (String) "copy", "move" or "link", optional
-   * @param feedback (int)
-   * @param source (String) id of the source control
-   * @param item (String) id of the source item
+   * @param feedback (int) the feedback as in DND.FEEDBACK_xxx
+   * @param source (String) the id of the source control
+   * @param item (String) the id of the source item
    * @param dataType (String)
    */
   public void handleNotifyDragOperationChanged( T widget, JsonObject properties ) {
@@ -242,9 +242,9 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    * @param y (int) the y coordinate of the pointer
    * @param time (int) the time when the event occurred
    * @param operation (String) "copy", "move" or "link", optional
-   * @param feedback (int)
-   * @param source (String) id of the source control
-   * @param item (String) id of the source item
+   * @param feedback (int) the feedback as in DND.FEEDBACK_xxx
+   * @param source (String) the id of the source control
+   * @param item (String) the id of the source item
    * @param dataType (String)
    */
   public void handleNotifyDragOver( T widget, JsonObject properties ) {
@@ -258,9 +258,9 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    * @param y (int) the y coordinate of the pointer
    * @param time (int) the time when the event occurred
    * @param operation (String) "copy", "move" or "link", optional
-   * @param feedback (int)
-   * @param source (String) id of the source control
-   * @param item (String) id of the source item
+    * @param feedback (int) the feedback as in DND.FEEDBACK_xxx
+   * @param source (String) the id of the source control
+   * @param item (String) the id of the source item
    * @param dataType (String)
    */
   public void handleNotifyDragLeave( T widget, JsonObject properties ) {
@@ -274,9 +274,9 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    * @param y (int) the y coordinate of the pointer
    * @param time (int) the time when the event occurred
    * @param operation (String) "copy", "move" or "link", optional
-   * @param feedback (int)
-   * @param source (String) id of the source control
-   * @param item (String) id of the source item
+   * @param feedback (int) the feedback as in DND.FEEDBACK_xxx
+   * @param source (String) the id of the source control
+   * @param item (String) the id of the source item
    * @param dataType (String)
    */
   public void handleNotifyDropAccept( T widget, JsonObject properties ) {
