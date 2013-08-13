@@ -152,7 +152,8 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
    * @param altKey (boolean) true if the ALT key was pressed
    * @param ctrlKey (boolean) true if the CTRL key was pressed
    * @param shiftKey (boolean) true if the SHIFT key was pressed
-   * @param detail (string) "check" is checkbox is selected
+   * @param detail (string) "check" if checkbox is selected, "hyperlink" if RWT hyperlink is
+   *        selected
    * @item item (string) id of selected item
    */
   public void handleNotifySelection( Tree tree, JsonObject properties ) {

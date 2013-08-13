@@ -35,6 +35,7 @@ import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
@@ -163,6 +164,42 @@ public class TreeOperationHandler_Test {
     Event event = captor.getValue();
     assertEquals( SWT.ALT | SWT.SHIFT, event.stateMask );
     assertEquals( item, event.item );
+  }
+
+  @Test
+  public void testHandleNotifySelection_withDetail_hyperlink() {
+    Tree spyTree = spy( tree );
+    handler = new TreeOperationHandler( spyTree );
+    TreeItem item = new TreeItem( spyTree, SWT.NONE );
+    JsonObject properties = new JsonObject()
+    .add( "item", getId( item ) )
+    .add( "detail", "hyperlink" );
+
+    handler.handleNotify( EVENT_SELECTION, properties );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( spyTree ).notifyListeners( eq( SWT.Selection ), captor.capture() );
+    Event event = captor.getValue();
+    assertEquals( item, event.item );
+    assertEquals( RWT.HYPERLINK, event.detail );
+  }
+
+  @Test
+  public void testHandleNotifySelection_withDetail_check() {
+    Tree spyTree = spy( tree );
+    handler = new TreeOperationHandler( spyTree );
+    TreeItem item = new TreeItem( spyTree, SWT.NONE );
+    JsonObject properties = new JsonObject()
+    .add( "item", getId( item ) )
+    .add( "detail", "check" );
+
+    handler.handleNotify( EVENT_SELECTION, properties );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( spyTree ).notifyListeners( eq( SWT.Selection ), captor.capture() );
+    Event event = captor.getValue();
+    assertEquals( item, event.item );
+    assertEquals( SWT.CHECK, event.detail );
   }
 
   @Test
