@@ -54,17 +54,11 @@ public class GroupLCA extends AbstractWidgetLCA {
     preserveProperty( group, PROP_TEXT, group.getText() );
   }
 
-  public void readData( Widget widget ) {
-    ControlLCAUtil.processEvents( ( Group )widget );
-    ControlLCAUtil.processKeyEvents( ( Group )widget );
-    ControlLCAUtil.processMenuDetect( ( Group )widget );
-    WidgetLCAUtil.processHelp( widget );
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Group group = ( Group )widget;
     RemoteObject remoteObject = createRemoteObject( group, TYPE );
+    remoteObject.setHandler( new GroupOperationHandler( group ) );
     remoteObject.set( "parent", getId( group.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( group, ALLOWED_STYLES ) ) );
   }
