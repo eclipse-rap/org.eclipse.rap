@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,6 +34,7 @@ import static org.mockito.Mockito.verify;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -106,9 +108,9 @@ public class ComboOperationHandler_Test {
     combo.setText( "some text" );
     Listener listener = mock( Listener.class );
     combo.addListener( SWT.Verify, listener );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
 
     handler.handleSet( new JsonObject().add( "text", "verify me" ) );
+    processEvents();
 
     assertEquals( "verify me", combo.getText() );
   }
@@ -151,6 +153,51 @@ public class ComboOperationHandler_Test {
   }
 
   @Test
+  public void testHandleSetTextAndSelection_withVerifyListener_changeText() {
+    handler = new ComboOperationHandler( combo );
+    combo.addListener( SWT.Verify, new Listener() {
+      public void handleEvent( Event event ) {
+        event.text = "verified";
+      }
+    } );
+
+    handler.handleSet( new JsonObject().add( "text", "abc" ) );
+    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
+    WidgetUtil.getLCA( combo ).preserveValues( combo );
+    processEvents();
+
+    assertEquals( "verified", combo.getText() );
+    assertEquals( new Point( 1, 2 ), combo.getSelection() );
+  }
+
+  @Test
+  public void testHandleSetTextAndSelection_withVerifyListener_doesNotChangeText() {
+    handler = new ComboOperationHandler( combo );
+    combo.addListener( SWT.Verify, mock( Listener.class ) );
+
+    handler.handleSet( new JsonObject().add( "text", "abc" ) );
+    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
+    WidgetUtil.getLCA( combo ).preserveValues( combo );
+    processEvents();
+
+    assertEquals( "abc", combo.getText() );
+    assertEquals( new Point( 1, 2 ), combo.getSelection() );
+  }
+
+  @Test
+  public void testHandleSelection_withVerifyListener() {
+    handler = new ComboOperationHandler( combo );
+    combo.setText( "abc" );
+    combo.addListener( SWT.Verify, mock( Listener.class ) );
+
+    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
+    WidgetUtil.getLCA( combo ).preserveValues( combo );
+    processEvents();
+
+    assertEquals( new Point( 1, 2 ), combo.getSelection() );
+  }
+
+  @Test
   public void testHandleNotifySelection() {
     JsonObject properties = new JsonObject().add( "altKey", true ).add( "shiftKey", true );
 
@@ -176,7 +223,7 @@ public class ComboOperationHandler_Test {
   public void testHandleNotifyModify() {
     handler.handleNotify( ClientMessageConst.EVENT_MODIFY, new JsonObject() );
 
-    verify( mockedCombo, times( 0 ) ).notifyListeners( eq( SWT.Modify ), any( Event.class ) );
+    verify( mockedCombo, never() ).notifyListeners( eq( SWT.Modify ), any( Event.class ) );
   }
 
   @Test
@@ -371,6 +418,12 @@ public class ComboOperationHandler_Test {
   @Test( expected=UnsupportedOperationException.class )
   public void testHandleNotify_unknownOperation() {
     handler.handleNotify( "Unknown", new JsonObject() );
+  }
+
+  private void processEvents() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    while( Display.getCurrent().readAndDispatch() ) {
+    }
   }
 
 }

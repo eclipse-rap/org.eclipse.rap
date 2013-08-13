@@ -23,7 +23,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontUtil;
-import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.eclipse.swt.internal.widgets.textkit.TextThemeAdapter;
 
 
@@ -77,7 +76,6 @@ public class Text extends Scrollable {
    */
   public static final String DELIMITER = "\n";
 
-  private ITextAdapter textAdapter;
   private String text;
   private String message;
   private int textLimit;
@@ -153,25 +151,6 @@ public class Text extends Scrollable {
         state |= THEME_BACKGROUND;
       }
     }
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public <T> T getAdapter( Class<T> adapter ) {
-    T result;
-    if( ITextAdapter.class.equals( adapter ) ) {
-      if( textAdapter == null ) {
-        textAdapter = new ITextAdapter() {
-          public void setText( String text, Point selection ) {
-            Text.this.setText( text, selection );
-          }
-        };
-      }
-      result = ( T )textAdapter;
-    } else {
-      result = super.getAdapter( adapter );
-    }
-    return result;
   }
 
   /**
@@ -1092,17 +1071,6 @@ public class Text extends Scrollable {
       return null;
     }
     return result;
-  }
-
-  private void setText( String text, Point selection ) {
-    String verifiedText = verifyText( text, 0, this.text.length() );
-    if( verifiedText != null ) {
-      this.text = verifiedText;
-      if( selection != null ) {
-        setSelection( selection.x, selection.y );
-      }
-      notifyListeners( SWT.Modify, new Event() );
-    }
   }
 
   ///////////////////////////////////////

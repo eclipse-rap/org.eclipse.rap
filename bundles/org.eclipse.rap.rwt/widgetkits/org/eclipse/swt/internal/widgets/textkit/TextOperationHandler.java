@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.widgets.combokit;
+package org.eclipse.swt.internal.widgets.textkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MODIFY;
@@ -22,65 +22,37 @@ import org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Text;
 
 
-public class ComboOperationHandler extends ControlOperationHandler<Combo> {
+public class TextOperationHandler extends ControlOperationHandler<Text> {
 
-  private static final String PROP_SELECTION_INDEX = "selectionIndex";
-  private static final String PROP_LIST_VISIBLE = "listVisible";
   private static final String PROP_TEXT = "text";
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_SELECTION_START = "selectionStart";
   private static final String PROP_SELECTION_LENGTH = "selectionLength";
 
-  public ComboOperationHandler( Combo combo ) {
-    super( combo );
+  public TextOperationHandler( Text control ) {
+    super( control );
   }
 
   @Override
-  public void handleSet( Combo combo, JsonObject properties ) {
-    handleSetSelectionIndex( combo, properties );
-    handleSetListVisible( combo, properties );
-    handleSetText( combo, properties );
-    handleSetSelection( combo, properties );
+  public void handleSet( Text text, JsonObject properties ) {
+    handleSetText( text, properties );
+    handleSetSelection( text, properties );
   }
 
   @Override
-  public void handleNotify( Combo combo, String eventName, JsonObject properties ) {
+  public void handleNotify( Text text, String eventName, JsonObject properties ) {
     if( EVENT_SELECTION.equals( eventName ) ) {
-      handleNotifySelection( combo, properties );
+      handleNotifySelection( text, properties );
     } else if( EVENT_DEFAULT_SELECTION.equals( eventName ) ) {
-      handleNotifyDefaultSelection( combo, properties );
+      handleNotifyDefaultSelection( text, properties );
     } else if( EVENT_MODIFY.equals( eventName ) ) {
-      handleNotifyModify( combo, properties );
+      handleNotifyModify( text, properties );
     } else {
-      super.handleNotify( combo, eventName, properties );
-    }
-  }
-
-  /*
-   * PROTOCOL SET selectionIndex
-   *
-   * @param selectionIndex (int) the index of the item to select
-   */
-  public void handleSetSelectionIndex( Combo combo, JsonObject properties ) {
-    JsonValue selectionIndex = properties.get( PROP_SELECTION_INDEX );
-    if( selectionIndex != null ) {
-      combo.select( selectionIndex.asInt() );
-    }
-  }
-
-  /*
-   * PROTOCOL SET listVisible
-   *
-   * @param listVisible (boolean) the visibility state of the list
-   */
-  public void handleSetListVisible( Combo combo, JsonObject properties ) {
-    JsonValue listVisible = properties.get( PROP_LIST_VISIBLE );
-    if( listVisible != null ) {
-      combo.setListVisible( listVisible.asBoolean() );
+      super.handleNotify( text, eventName, properties );
     }
   }
 
@@ -89,23 +61,23 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
    *
    * @param text (string) the text
    */
-  public void handleSetText( final Combo combo, JsonObject properties ) {
+  public void handleSetText( final Text text, JsonObject properties ) {
     final JsonValue value = properties.get( PROP_TEXT );
     if( value != null ) {
-      final String text = value.asString();
-      if( isListening( combo, SWT.Verify ) ) {
+      final String stringValue = value.asString();
+      if( isListening( text, SWT.Verify ) ) {
         // setText needs to be executed in a ProcessAcction runnable as it may
         // fire a VerifyEvent whose fields (text and doit) need to be evaluated
         // before actually setting the new value
         ProcessActionRunner.add( new Runnable() {
           public void run() {
-            combo.setText( text );
+            text.setText( stringValue );
             // since text is set in process action, preserved values have to be replaced
-            getAdapter( combo ).preserve( PROP_TEXT, text );
+            getAdapter( text ).preserve( PROP_TEXT, stringValue );
          }
         } );
       } else {
-        combo.setText( text );
+        text.setText( stringValue );
       }
     }
   }
@@ -116,20 +88,20 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
    * @param selectionStart (int) the text selection start
    * @param selectionLength (int) the text selection length
    */
-  public void handleSetSelection( final Combo combo, JsonObject properties ) {
+  public void handleSetSelection( final Text text, JsonObject properties ) {
     final Point selection = readSelection( properties );
     if( selection != null ) {
-      if( isListening( combo, SWT.Verify ) ) {
+      if( isListening( text, SWT.Verify ) ) {
         // if text is delayed, delay the selection too
         ProcessActionRunner.add( new Runnable() {
           public void run() {
-            combo.setSelection( selection );
+            text.setSelection( selection );
             // since selection is set in process action, preserved values have to be replaced
-            getAdapter( combo ).preserve( PROP_SELECTION, selection );
+            getAdapter( text ).preserve( PROP_SELECTION, selection );
           }
         } );
       } else {
-        combo.setSelection( selection );
+        text.setSelection( selection );
       }
     }
   }
@@ -141,28 +113,33 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
    * @param ctrlKey (boolean) true if the CTRL key was pressed
    * @param shiftKey (boolean) true if the SHIFT key was pressed
    */
-  public void handleNotifySelection( Combo combo, JsonObject properties ) {
-    Event event = createSelectionEvent( SWT.Selection, properties );
-    combo.notifyListeners( SWT.Selection, event );
+  public void handleNotifySelection( Text text, JsonObject properties ) {
+    if( ( text.getStyle() & SWT.MULTI ) == 0 ) {
+      Event event = createSelectionEvent( SWT.Selection, properties );
+      text.notifyListeners( SWT.Selection, event );
+    }
   }
 
   /*
    * PROTOCOL NOTIFY DefaultSelection
-   *
    * @param altKey (boolean) true if the ALT key was pressed
    * @param ctrlKey (boolean) true if the CTRL key was pressed
    * @param shiftKey (boolean) true if the SHIFT key was pressed
+   * @param detail (String) "search" if search button was pressed, "cancel" if cancel button was
+   *        pressed
    */
-  public void handleNotifyDefaultSelection( Combo combo, JsonObject properties ) {
-    Event event = createSelectionEvent( SWT.DefaultSelection, properties );
-    combo.notifyListeners( SWT.DefaultSelection, event );
+  public void handleNotifyDefaultSelection( Text text, JsonObject properties ) {
+    if( ( text.getStyle() & SWT.MULTI ) == 0 ) {
+      Event event = createSelectionEvent( SWT.DefaultSelection, properties );
+      text.notifyListeners( SWT.DefaultSelection, event );
+    }
   }
 
   /*
    * PROTOCOL NOTIFY Modify
    * ignored, Modify event is fired when set text
    */
-  public void handleNotifyModify( Combo combo, JsonObject properties ) {
+  public void handleNotifyModify( Text text, JsonObject properties ) {
   }
 
   private static Point readSelection( JsonObject properties ) {

@@ -1,0 +1,252 @@
+/*******************************************************************************
+ * Copyright (c) 2013 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
+package org.eclipse.swt.internal.widgets.textkit;
+
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+
+
+
+public class TextOperationHandler_Test {
+
+  private Display display;
+  private Shell shell;
+  private Text text;
+  private Text mockedText;
+  private TextOperationHandler handler;
+
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
+    text = new Text( shell, SWT.NONE );
+    text.setBounds( 0, 0, 100, 20 );
+    mockedText = mock( Text.class );
+    handler = new TextOperationHandler( mockedText );
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
+  @Test
+  public void testHandleText() {
+    handler = new TextOperationHandler( text );
+
+    handler.handleSet( new JsonObject().add( "text", "abc" ) );
+
+    assertEquals( "abc", text.getText() );
+  }
+
+  @Test
+  public void testHandleText_withVerifyListener() {
+    handler = new TextOperationHandler( text );
+    text.setText( "some text" );
+    text.addListener( SWT.Verify, mock( Listener.class ) );
+
+    handler.handleSet( new JsonObject().add( "text", "verify me" ) );
+    processEvents();
+
+    assertEquals( "verify me", text.getText() );
+  }
+
+  @Test
+  public void testHandleSelection() {
+    handler = new TextOperationHandler( text );
+    text.setText( "text" );
+
+    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
+
+    assertEquals( new Point( 1, 2 ), text.getSelection() );
+  }
+
+  @Test
+  public void testHandleSetTextAndSelection_inSameOperation() {
+    handler = new TextOperationHandler( text );
+    text.setText( "original text" );
+    JsonObject properties = new JsonObject()
+      .add( "text", "abc" )
+      .add( "selectionStart", 1 )
+      .add( "selectionLength", 1 );
+
+    handler.handleSet( properties );
+
+    assertEquals( "abc", text.getText() );
+    assertEquals( new Point( 1, 2 ), text.getSelection() );
+  }
+
+  @Test
+  public void testHandleSetTextAndSelection_inDifferentOperation() {
+    handler = new TextOperationHandler( text );
+    text.setText( "original text" );
+
+    handler.handleSet( new JsonObject().add( "text", "abc" ) );
+    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
+
+    assertEquals( "abc", text.getText() );
+    assertEquals( new Point( 1, 2 ), text.getSelection() );
+  }
+
+  @Test
+  public void testHandleSetTextAndSelection_withVerifyListener_changeText() {
+    handler = new TextOperationHandler( text );
+    text.addListener( SWT.Verify, new Listener() {
+      public void handleEvent( Event event ) {
+        event.text = "verified";
+      }
+    } );
+
+    handler.handleSet( new JsonObject().add( "text", "abc" ) );
+    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
+    WidgetUtil.getLCA( text ).preserveValues( text );
+    processEvents();
+
+    assertEquals( "verified", text.getText() );
+    assertEquals( new Point( 1, 2 ), text.getSelection() );
+  }
+
+  @Test
+  public void testHandleSetTextAndSelection_withVerifyListener_doesNotChangeText() {
+    handler = new TextOperationHandler( text );
+    text.addListener( SWT.Verify, mock( Listener.class ) );
+
+    handler.handleSet( new JsonObject().add( "text", "abc" ) );
+    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
+    WidgetUtil.getLCA( text ).preserveValues( text );
+    processEvents();
+
+    assertEquals( "abc", text.getText() );
+    assertEquals( new Point( 1, 2 ), text.getSelection() );
+  }
+
+  @Test
+  public void testHandleSelection_withVerifyListener() {
+    handler = new TextOperationHandler( text );
+    text.setText( "abc" );
+    text.addListener( SWT.Verify, mock( Listener.class ) );
+
+    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
+    WidgetUtil.getLCA( text ).preserveValues( text );
+    processEvents();
+
+    assertEquals( new Point( 1, 2 ), text.getSelection() );
+  }
+
+  @Test
+  public void testHandleNotifySelection() {
+    JsonObject properties = new JsonObject().add( "altKey", true ).add( "shiftKey", true );
+
+    handler.handleNotify( EVENT_SELECTION, properties );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( mockedText ).notifyListeners( eq( SWT.Selection ), captor.capture() );
+    assertEquals( SWT.ALT | SWT.SHIFT, captor.getValue().stateMask );
+  }
+
+  @Test
+  public void testHandleNotifySelection_onMulti() {
+    mockedText = spy( new Text( shell, SWT.MULTI ) );
+    JsonObject properties = new JsonObject().add( "altKey", true ).add( "shiftKey", true );
+
+    handler.handleNotify( EVENT_SELECTION, properties );
+
+    verify( mockedText, never() ).notifyListeners( eq( SWT.Selection ), any( Event.class ) );
+  }
+
+  @Test
+  public void testHandleNotifyDefaultSelection() {
+    JsonObject properties = new JsonObject().add( "altKey", true ).add( "shiftKey", true );
+
+    handler.handleNotify( EVENT_DEFAULT_SELECTION, properties );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( mockedText ).notifyListeners( eq( SWT.DefaultSelection ), captor.capture() );
+    assertEquals( SWT.ALT | SWT.SHIFT, captor.getValue().stateMask );
+  }
+
+  @Test
+  public void testHandleNotifyDefaultSelection_onMulti() {
+    mockedText = spy( new Text( shell, SWT.MULTI ) );
+    JsonObject properties = new JsonObject().add( "altKey", true ).add( "shiftKey", true );
+
+    handler.handleNotify( EVENT_DEFAULT_SELECTION, properties );
+
+    verify( mockedText, never() ).notifyListeners( eq( SWT.Selection ), any( Event.class ) );
+  }
+
+  @Test
+  public void testHandleNotifyDefaultSelection_withDetailSearch() {
+    JsonObject properties = new JsonObject()
+      .add( "altKey", true )
+      .add( "shiftKey", true )
+      .add( "detail", "search" );
+
+    handler.handleNotify( EVENT_DEFAULT_SELECTION, properties );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( mockedText ).notifyListeners( eq( SWT.DefaultSelection ), captor.capture() );
+    assertEquals( SWT.ICON_SEARCH, captor.getValue().detail );
+  }
+
+  @Test
+  public void testHandleNotifyDefaultSelection_withDetailCancel() {
+    JsonObject properties = new JsonObject()
+    .add( "altKey", true )
+    .add( "shiftKey", true )
+    .add( "detail", "cancel" );
+
+    handler.handleNotify( EVENT_DEFAULT_SELECTION, properties );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( mockedText ).notifyListeners( eq( SWT.DefaultSelection ), captor.capture() );
+    assertEquals( SWT.ICON_CANCEL, captor.getValue().detail );
+  }
+
+  @Test
+  public void testHandleNotifyModify() {
+    handler.handleNotify( ClientMessageConst.EVENT_MODIFY, new JsonObject() );
+
+    verify( mockedText, never() ).notifyListeners( eq( SWT.Modify ), any( Event.class ) );
+  }
+
+  private void processEvents() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    while( Display.getCurrent().readAndDispatch() ) {
+    }
+  }
+
+}

@@ -17,6 +17,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
@@ -53,12 +54,39 @@ public class WidgetOperationHandler_Test {
   }
 
   @Test
-  public void testCreateSelectionEvent_withDetail() {
+  public void testCreateSelectionEvent_withDetail_check() {
     JsonObject properties = new JsonObject().add( "detail", "check" );
 
     Event event = createSelectionEvent( SWT.Selection, properties );
 
     assertEquals( SWT.CHECK, event.detail );
+  }
+
+  @Test
+  public void testCreateSelectionEvent_withDetail_search() {
+    JsonObject properties = new JsonObject().add( "detail", "search" );
+
+    Event event = createSelectionEvent( SWT.Selection, properties );
+
+    assertEquals( SWT.ICON_SEARCH, event.detail );
+  }
+
+  @Test
+  public void testCreateSelectionEvent_withDetail_cancel() {
+    JsonObject properties = new JsonObject().add( "detail", "cancel" );
+
+    Event event = createSelectionEvent( SWT.Selection, properties );
+
+    assertEquals( SWT.ICON_CANCEL, event.detail );
+  }
+
+  @Test
+  public void testCreateSelectionEvent_withDetail_hyperlink() {
+    JsonObject properties = new JsonObject().add( "detail", "hyperlink" );
+
+    Event event = createSelectionEvent( SWT.Selection, properties );
+
+    assertEquals( RWT.HYPERLINK, event.detail );
   }
 
   @Test

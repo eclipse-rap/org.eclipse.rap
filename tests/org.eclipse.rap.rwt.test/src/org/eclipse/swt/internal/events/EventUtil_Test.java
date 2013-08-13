@@ -37,6 +37,7 @@ import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonOperationHandler;
+import org.eclipse.swt.internal.widgets.textkit.TextOperationHandler;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
@@ -274,6 +275,7 @@ public class EventUtil_Test {
   public void testFocusOutOpensModalShell() {
     final java.util.List<TypedEvent> events = new ArrayList<TypedEvent>();
     Text text = new Text( shell, SWT.NONE );
+    getRemoteObject( text ).setHandler( new TextOperationHandler( text ) );
     text.addFocusListener( new FocusAdapter() {
       @Override
       public void focusLost( FocusEvent event ) {

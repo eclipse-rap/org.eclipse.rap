@@ -18,6 +18,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PAR
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
@@ -87,8 +88,15 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
     int detail = SWT.NONE;
     JsonValue value = properties.get( EVENT_PARAM_DETAIL );
     if( value != null && value.isString() ) {
-      if( "check".equals( value.asString() ) ) {
+      String stringValue = value.asString();
+      if( "check".equals( stringValue ) ) {
         detail = SWT.CHECK;
+      } else if( "search".equals( stringValue ) ) {
+        detail = SWT.ICON_SEARCH;
+      } else if( "cancel".equals( stringValue ) ) {
+        detail = SWT.ICON_CANCEL;
+      } else if( "hyperlink".equals( stringValue ) ) {
+        detail = RWT.HYPERLINK;
       }
     }
     return detail;
