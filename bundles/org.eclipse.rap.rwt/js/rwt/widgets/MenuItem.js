@@ -33,11 +33,6 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
     this.addEventListener( "changeFont", this._onFontChange );
     this.addState( menuItemType );
     switch( menuItemType ){
-      case "bar" :
-       this._isSelectable = false;
-       this._isDeselectable = false;
-       this.addState( "onMenuBar" );
-      break;
       case "push" :
        this._isSelectable = false;
        this._isDeselectable = false;
@@ -175,7 +170,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
         case "trigger":
           var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
           if( event.charCode === charCode ) {
-            if( this.hasState( "bar" ) || this.hasState( "cascade" ) ) {
+            if( this.hasState( "cascade" ) ) {
               this._parentMenu.openByMnemonic( this );
             } else {
               this.execute();
@@ -345,7 +340,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
     },
 
     _shouldSendEvent : function() {
-      return !this.hasState( "rwt_CASCADE" );
+      return !this.hasState( "cascade" );
     },
 
     _onmouseup : function( event ) {
