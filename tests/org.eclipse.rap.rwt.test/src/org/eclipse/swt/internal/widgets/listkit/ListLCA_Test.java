@@ -11,14 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.listkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
@@ -27,17 +26,16 @@ import java.util.Arrays;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
@@ -45,6 +43,7 @@ import org.eclipse.swt.internal.widgets.IListAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -54,7 +53,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 public class ListLCA_Test {
 
@@ -164,103 +162,27 @@ public class ListLCA_Test {
   }
 
   @Test
-  public void testReadSelectionForSingle() {
-    createListItems( 3 );
+  public void testScrollBarsSelectionEvent_horizontal() {
+    Listener listener = mock( Listener.class );
+    hScroll.addListener( SWT.Selection, listener );
 
-    fakeSelection( 0 );
-    lca.readData( list );
-
-    assertEquals( 0, list.getSelectionIndex() );
-  }
-
-  @Test
-  public void testReadSelectionForSingle_DeselectAll() {
-    createListItems( 3 );
-    list.setSelection( 1 );
-
-    fakeSelection();
-    lca.readData( list );
-
-    assertEquals( -1, list.getSelectionIndex() );
-  }
-
-  @Test
-  public void testReadSelectionForMulti() {
-    list = new List( shell, SWT.MULTI );
-    createListItems( 3 );
-
-    fakeSelection( 0, 1 );
-    lca.readData( list );
-
-    int[] expected = new int[]{ 0, 1 };
-    assertTrue( Arrays.equals( expected, list.getSelectionIndices() ) );
-  }
-
-  @Test
-  public void testSelectionEvent() {
-    createListItems( 2 );
-    SelectionListener listener = mock( SelectionListener.class );
-    list.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( list ), ClientMessageConst.EVENT_SELECTION, null );
+    Fixture.fakeNewRequest();
+    Fixture.fakeNotifyOperation( getId( hScroll ), "Selection", null );
     Fixture.readDataAndProcessAction( list );
 
-    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
-    SelectionEvent event = captor.getValue();
-    assertEquals( list, event.getSource() );
-    assertEquals( null, event.item );
-    assertEquals( SWT.NONE, event.detail );
-    assertEquals( 0, event.x );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.width );
-    assertEquals( 0, event.height );
-    assertTrue( event.doit );
+    verify( listener ).handleEvent( any( Event.class ) );
   }
 
   @Test
-  public void testReadFocusedIndex() {
-    createListItems( 3 );
-    setFocusIndex( list, 0 );
+  public void testScrollBarsSelectionEvent_vertical() {
+    Listener listener = mock( Listener.class );
+    vScroll.addListener( SWT.Selection, listener );
 
-    fakeFocusIndex( 1 );
+    Fixture.fakeNewRequest();
+    Fixture.fakeNotifyOperation( getId( vScroll ), "Selection", null );
     Fixture.readDataAndProcessAction( list );
 
-
-    assertEquals( 1, list.getFocusIndex() );
-  }
-
-  @Test
-  public void testReadFocusedIndex_Reset() {
-    createListItems( 3 );
-    setFocusIndex( list, 0 );
-
-    fakeFocusIndex( -1 );
-    Fixture.readDataAndProcessAction( list );
-
-    assertEquals( -1, list.getFocusIndex() );
-  }
-
-  @Test
-  public void testReadFocusedIndex_OutOfRange() {
-    createListItems( 3 );
-    setFocusIndex( list, 0 );
-
-    fakeFocusIndex(22 );
-    Fixture.readDataAndProcessAction( list );
-
-    assertEquals( 0, list.getFocusIndex() );
-  }
-
-  @Test
-  public void testReadTopIndex() {
-    list.setSize( 100, 100 );
-    createListItems( 10 );
-
-    fakeTopIndex( 5 );
-    Fixture.readDataAndProcessAction( list );
-
-    assertEquals( 5, list.getTopIndex() );
+    verify( listener ).handleEvent( any( Event.class ) );
   }
 
   @Test
@@ -272,6 +194,16 @@ public class ListLCA_Test {
     assertEquals( "rwt.widgets.List", operation.getType() );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "SINGLE" ) );
+  }
+
+  @Test
+  public void testRenderCreate_setsOperationHandler() throws IOException {
+    String id = getId( list );
+
+    lca.renderInitialization( list );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof ListOperationHandler );
   }
 
   @Test
@@ -617,27 +549,6 @@ public class ListLCA_Test {
 
   private static void setFocusIndex( List list, int focusIndex ) {
     list.getAdapter( IListAdapter.class ).setFocusIndex( focusIndex );
-  }
-
-  private void createListItems( int number ) {
-    for( int i = 0; i < number; i++ ) {
-      list.add( "Item " + i );
-    }
-  }
-
-  private void fakeSelection( int... values ) {
-    Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( list ), "selection", createJsonArray( values ) );
-  }
-
-  private void fakeFocusIndex( int value ) {
-    Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( list ), "focusIndex", value );
-  }
-
-  private void fakeTopIndex( int value ) {
-    Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( list ), "topIndex", value );
   }
 
 }

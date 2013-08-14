@@ -12,12 +12,10 @@
 package org.eclipse.swt.internal.widgets.listkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsIntArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -26,7 +24,6 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
@@ -76,24 +73,17 @@ public class ListLCA extends AbstractWidgetLCA {
     ScrollBarLCAUtil.preserveValues( list );
   }
 
+  @Override
   public void readData( Widget widget ) {
-    List list = ( List )widget;
-    readTopIndex( list );
-    readSelection( list );
-    readFocusIndex( list );
-    ControlLCAUtil.processSelection( list, null, true );
-    ControlLCAUtil.processDefaultSelection( list, null );
-    ControlLCAUtil.processEvents( list );
-    ControlLCAUtil.processKeyEvents( list );
-    ControlLCAUtil.processMenuDetect( list );
-    WidgetLCAUtil.processHelp( list );
-    ScrollBarLCAUtil.processSelectionEvent( list );
+    super.readData( widget );
+    ScrollBarLCAUtil.processSelectionEvent( ( List )widget );
   }
 
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     List list = ( List )widget;
     RemoteObject remoteObject = createRemoteObject( list, TYPE );
+    remoteObject.setHandler( new ListOperationHandler( list ) );
     remoteObject.set( "parent", getId( list.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( list, ALLOWED_STYLES ) ) );
     remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( list ) );
@@ -122,31 +112,6 @@ public class ListLCA extends AbstractWidgetLCA {
                     getItemDimensions( list ),
                     DEFAULT_ITEM_DIMENSIONS );
     ScrollBarLCAUtil.renderChanges( list );
-  }
-
-  ////////////////////////////////////////////
-  // Helping methods to read client-side state
-
-  private static void readSelection( List list ) {
-    int[] value = readPropertyValueAsIntArray( getId( list ), "selection" );
-    if( value != null ) {
-      list.setSelection( value );
-    }
-  }
-
-  private static void readTopIndex( List list ) {
-    String value = readPropertyValue( list, PROP_TOP_INDEX );
-    if( value != null ) {
-      list.setTopIndex( NumberFormatUtil.parseInt( value ) );
-    }
-  }
-
-  private static void readFocusIndex( List list ) {
-    String paramValue = readPropertyValue( list, PROP_FOCUS_INDEX );
-    if( paramValue != null ) {
-      int focusIndex = NumberFormatUtil.parseInt( paramValue );
-      getAdapter( list ).setFocusIndex( focusIndex );
-    }
   }
 
   //////////////////
