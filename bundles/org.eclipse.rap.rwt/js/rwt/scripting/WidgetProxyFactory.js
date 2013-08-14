@@ -69,8 +69,8 @@ rwt.scripting.WidgetProxyFactory = {
     }
   },
 
-  /////////////////
-  // setter support
+  ////////////////////////
+  // setter/getter support
 
   _attachSetter : function( proxy, source ) {
     var id = ObjectRegistry.getId( source );
@@ -81,6 +81,17 @@ rwt.scripting.WidgetProxyFactory = {
         var property = properties[ i ];
         proxy[ "set" + rwt.util.Strings.toFirstUp( property ) ] =
           this._createSetter( id, property );
+      }
+    }
+  },
+
+  _attachGetter : function( proxy, source ) {
+    var id = ObjectRegistry.getId( source );
+    var handler = id ? ObjectRegistry.getEntry( id ).handler : null;
+    if( handler ) {
+      var methods = handler.scriptingMethods || {};
+      for( var name in methods ) {
+        proxy[ name ] = rwt.util.Functions.bind( methods[ name ], source );
       }
     }
   },
@@ -101,38 +112,6 @@ rwt.scripting.WidgetProxyFactory = {
       "action" : "set",
       "properties" : props
     } );
-  },
-
-  /////////////////
-  // Getter support
-
-  _attachGetter : function( proxy, source ) {
-    if( source.classname ) {
-      var getterMap = this._getterMapping[ source.classname ];
-      for( var key in getterMap ) {
-        proxy[ key ] = getterMap[ key ]( source );
-      }
-    }
-  },
-
-  _getterMapping : {
-    "rwt.widgets.Text" : {
-      "getText" : function( widget ) { return function() { return widget.getValue(); }; },
-      "getSelection" : function( widget ) { return function() { return widget.getSelection(); }; },
-      "getEditable" : function( widget ) { return function() { return !widget.getReadOnly(); }; }
-    },
-    "rwt.widgets.List" : {
-      "getSelection" : function( widget ) {
-        return function() {
-          var items = widget.getSelectedItems();
-          var result = [];
-          for( var i = 0; i < items.length; i++ ) {
-            result[ i ] = rwt.util.Encoding.unescape( items[ i ].getLabel() );
-          }
-          return result;
-        };
-      }
-    }
   },
 
   ///////////////////

@@ -48,10 +48,6 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxyFactory_Test", 
       TestUtil.flush();
 
       assertTrue( TestUtil.hasNoObjects( widgetProxy ) );
-      if( widgetProxy.__proto__ ) { // __proto__ is not an ECMA standard
-        var proto = widgetProxy.__proto__;
-        assertTrue( TestUtil.hasNoObjects( proto ) );
-      }
     },
 
     testDisposeUserData : function() {

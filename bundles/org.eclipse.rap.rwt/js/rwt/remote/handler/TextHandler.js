@@ -81,6 +81,19 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Text", {
         rwt.scripting.EventBinding.removeListener( widget, properties.eventType, targetFunction );
       } );
     }
+  },
+
+  scriptingMethods : {
+    "getText" : function() {
+       return this.getValue();
+     },
+    "getSelection" : function() {
+       return this.getSelection();
+     },
+    "getEditable" : function() {
+       return !this.getReadOnly();
+     }
   }
+
 
 } );
