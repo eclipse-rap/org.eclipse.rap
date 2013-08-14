@@ -73,12 +73,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
     testDisposeWrapperObjectWithOriginal : function() {
       var wrapper = rap.getObject( "w2" );
       var hash = shell.toHashCode();
-      assertIdentical( wrapper, rap._.wrapperMap[ hash ] );
+      assertIdentical( wrapper, rwt.scripting.WidgetProxyFactory._wrapperMap[ hash ] );
 
       MessageProcessor.processOperationArray( [ "destroy", "w2"] );
       shell = null;
 
-      assertEquals( undefined, rap._.wrapperMap[ hash ] );
+      assertEquals( undefined, rwt.scripting.WidgetProxyFactory._wrapperMap[ hash ] );
     },
 
     testCompositeWrapperAppend : function() {

@@ -17,12 +17,25 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
 
 rwt.scripting.WidgetProxyFactory = {
 
-  _PROXY_KEY : "rwt.scripting.WidgetProxyFactory.PROXY",
   _GC_KEY : "rwt.scripting.WidgetProxyFactory.GC",
+  _wrapperMap : {},
 
-  getWidgetProxy : function( widget ) {
-    // TODO [tb] : this delegates back to _initWrapper, see init.js. Should be simplified in RAP 2.2
-    return rap._.getWrapperFor( widget );
+  getWidgetProxy : function( obj ) {
+    var result = null;
+    if( obj instanceof Object ) {
+      var hash = rwt.qx.Object.toHashCode( obj );
+      if( this._wrapperMap[ hash ] == null ) {
+        if( obj instanceof rwt.widgets.Composite ) {
+          result = new CompositeWrapper( obj );
+        } else {
+          result = {};
+        }
+        this._wrapperMap[ hash ] = result;
+        this._initWrapper( obj, result );
+      }
+      result = this._wrapperMap[ hash ];
+    }
+    return result;
   },
 
   _initWrapper : function( originalWidget, wrapper ) {
@@ -32,24 +45,20 @@ rwt.scripting.WidgetProxyFactory = {
     if( rwt.remote.WidgetManager.getInstance().isControl( originalWidget ) ) {
       this._attachControlMethods( wrapper, originalWidget );
     }
-    this._addDisposeListener( originalWidget, function() {
+    originalWidget.addEventListener( "destroy", function() {
       rwt.scripting.WidgetProxyFactory._disposeWidgetProxy( originalWidget );
     } );
   },
 
-  _addDisposeListener : function( widget, listener ) {
-    var orgDestroy = widget.destroy;
-    widget.destroy = function() {
-      listener( this );
-      orgDestroy.call( widget );
-    };
-  },
-
   _disposeWidgetProxy : function( widget ) {
-    var protoInstance = widget.getUserData( this._PROXY_KEY );
-    var userData = widget.getUserData( rwt.remote.HandlerUtil.SERVER_DATA );
-    rwt.scripting.WidgetProxyFactory._disposeObject( protoInstance );
-    rwt.scripting.WidgetProxyFactory._disposeObject( userData );
+    var hash = rwt.qx.Object.toHashCode( widget );
+    var proxy = this._wrapperMap[ hash ];
+    if( proxy ) {
+      var userData = widget.getUserData( rwt.remote.HandlerUtil.SERVER_DATA );
+      rwt.scripting.WidgetProxyFactory._disposeObject( proxy );
+      rwt.scripting.WidgetProxyFactory._disposeObject( userData );
+      delete this._wrapperMap[ hash ];
+    }
   },
 
   _disposeObject : function( object ) {
@@ -242,5 +251,93 @@ rwt.scripting.WidgetProxyFactory = {
   }
 
 };
+
+/**
+ * @private
+ * @class RWT Scripting analoge to org.eclipse.swt.widgets.Composite
+ * @description This constructor is not available in the global namespace. Instances can only
+ * be obtained from {@link rap.getObject}.
+ * @name Composite
+ * @since 2.0
+ */
+ // TODO [tb] : where to put this? rap.CompositeWrapper? rwt.widget.Composite? in CompositeHandler?
+function CompositeWrapper( widget ) {
+  var children = null;
+  if( !widget.isCreated() ) {
+    children = [];
+    widget.addEventListener( "create", function() {
+      for( var i = 0; i < children.length; i++ ) {
+        widget._getTargetNode().appendChild( children[ i ] );
+      }
+      widget.removeEventListener( "create", arguments.callee );
+      children = null;
+    } );
+  }
+  /**
+   * @name append
+   * @function
+   * @memberOf Composite#
+   * @description Adds a given HTMLElement to the Composite.
+   * @param {HTMLElement} childElement The element to append.
+   */
+  this.append = function( childElement ) {
+    if( children ) {
+      children.push( childElement );
+    } else {
+      widget._getTargetNode().appendChild( childElement );
+    }
+  };
+  /**
+   * @name getClientArea
+   * @function
+   * @memberOf Composite#
+   * @description Returns the client Area of the Composite
+   * @returns {int[]} the client area as array [ x, y, width, height ]
+   */
+  this.getClientArea = function() {
+    return widget.getClientArea();
+  };
+
+  /**
+   * @name addListener
+   * @function
+   * @memberOf Composite#
+   * @description Register the function as a listener of the given type
+   * @param {string} type The type of the event (e.g. "Resize").
+   * @param {Function} listener The callback function. It is executed in global context.
+   */
+  this.addListener = function( type, listener ) {
+    widget.addEventListener( convertEventType( type ), listener, window );
+  };
+
+  /**
+   * @name removeListener
+   * @function
+   * @memberOf Composite#
+   * @description De-register the function as a listener of the given type
+   * @param {string} type The type of the event (e.g. "Resize").
+   * @param {Function} listener The callback function
+   */
+  this.removeListener = function( type, listener ) {
+    widget.removeEventListener( convertEventType( type ), listener, window );
+  };
+
+}
+
+//TODO [tb] : propper class/namespace for this event? (Control? SWT? RWT? rap? rwt.widget?)
+/**
+ * @event
+ * @description Sent when widget changes size.
+ * @name Composite#Resize
+ */
+function convertEventType( type ) {
+  var result;
+  if( type === "Resize" ) {
+    result = "clientAreaChanged"; // works only for Composite
+  } else {
+    throw new Error( "Unkown event type " + type );
+  }
+  return result;
+}
 
 }());
