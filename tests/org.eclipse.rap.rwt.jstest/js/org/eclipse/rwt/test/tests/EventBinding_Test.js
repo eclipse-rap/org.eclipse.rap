@@ -479,6 +479,7 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
     },
 
     _inputText : function( textWidget, text, oldSel ) {
+      TestUtil.forceTimerOnce(); // IE first input fix
       if( typeof oldSel !== "undefined" ) {
         textWidget._setSelectionStart( oldSel[ 0 ] );
         textWidget._setSelectionLength( oldSel[ 1 ] - oldSel[ 0 ] );
