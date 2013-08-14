@@ -588,7 +588,9 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       WidgetProxyFactory.getWidgetProxy( canvas ).redraw();
       WidgetProxyFactory.getWidgetProxy( canvas ).redraw();
 
-      assertEquals( [ "#bbbbbb", "#aaaaaa", "italic 11px Arial" ], props );
+      assertEquals( [ 187, 187, 187 ], rwt.util.Colors.stringToRgb( props[ 0 ] ) );
+      assertEquals( [ 170, 170, 170 ], rwt.util.Colors.stringToRgb( props[ 1 ] ) );
+      assertEquals( "italic 11px Arial", props[ 2 ] );
       canvas.destroy();
     },
 
@@ -618,7 +620,8 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       WidgetProxyFactory.getWidgetProxy( canvas ).redraw();
       WidgetProxyFactory.getWidgetProxy( canvas ).redraw();
 
-      assertEquals( [ "#000000", "#000000" ], props );
+      assertEquals( [ 0, 0, 0 ], rwt.util.Colors.stringToRgb( props[ 0 ] ) );
+      assertEquals( [ 0, 0, 0 ], rwt.util.Colors.stringToRgb( props[ 1 ] ) );
       canvas.destroy();
     },
 
@@ -659,7 +662,9 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       } );
       serverGc.init( 500, 500, fontArr, [ 170, 170, 170 ], [ 187, 187, 187 ] );
 
-      assertEquals( [ "#bbbbbb", "#aaaaaa", "italic 11px Arial" ], props );
+      assertEquals( [ 187, 187, 187 ], rwt.util.Colors.stringToRgb( props[ 0 ] ) );
+      assertEquals( [ 170, 170, 170 ], rwt.util.Colors.stringToRgb( props[ 1 ] ) );
+      assertEquals( "italic 11px Arial", props[ 2 ] );
       canvas.destroy();
     },
 
@@ -695,6 +700,7 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
     },
 
     _textCharInput : function( textWidget, character ) {
+      TestUtil.forceTimerOnce();
       TestUtil.keyDown( textWidget, character );
       // we will assume that the carret is at the end
       var newValue = textWidget._inputElement.value + character;
@@ -708,6 +714,7 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
     },
 
     _textPaste : function( textWidget, value, oldSel ) {
+      TestUtil.forceTimerOnce();
       if( typeof oldSel !== "undefined" ) {
         textWidget._setSelectionStart( oldSel[ 0 ] );
         textWidget._setSelectionLength( oldSel[ 1 ] - oldSel[ 0 ] );
