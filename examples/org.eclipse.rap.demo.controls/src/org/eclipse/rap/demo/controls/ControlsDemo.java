@@ -19,7 +19,6 @@ import org.eclipse.rap.rwt.application.AbstractEntryPoint;
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
-import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
@@ -44,8 +43,6 @@ public class ControlsDemo extends AbstractEntryPoint implements Serializable {
 
   @Override
   protected void createContents( Composite parent ) {
-    JavaScriptLoader jsl = RWT.getClient().getService( JavaScriptLoader.class );
-    jsl.require( "https://getfirebug.com/firebug-lite.js" );
     parent.setLayout( new FormLayout() );
     backgroundColor = new Color( parent.getDisplay(), 0x31, 0x61, 0x9C );
     header = new Composite( parent, SWT.NONE );
@@ -168,6 +165,7 @@ public class ControlsDemo extends AbstractEntryPoint implements Serializable {
       new ToolBarTab(),
       new ToolTipTab(),
       new TreeTab(),
+      new ScriptingTab(),
       new DNDExampleTab(),
       new ContainmentTab(),
       new ZOrderTab(),
@@ -176,7 +174,7 @@ public class ControlsDemo extends AbstractEntryPoint implements Serializable {
       new ErrorHandlingTab(),
       new ClientServicesTab(),
       new NLSTab(),
-      new MnemonicsTab()
+      new MnemonicsTab(),
     };
   }
 
