@@ -16,8 +16,6 @@
 rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
 
   statics : {
-     _GC_KEY : "rwt.scripting.WidgetProxyFactory.GC",
-
 
     /**
      * workaround for IE bug
@@ -55,26 +53,12 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
     },
 
     getGC : function( widget ) {
-      var gc = widget.getUserData( this._GC_KEY );
+      var gc = widget.getUserData( "rwt.widgets.GC" );
       if( gc == null ) {
-        gc = this._findExistingGC( widget );
-        if( gc == null ) {
-          gc = new rwt.widgets.GC( widget );
-        }
-        widget.setUserData( this._GC_KEY, gc );
+        gc = new rwt.widgets.GC( widget );
+        widget.setUserData( "rwt.widgets.GC", gc );
       }
       return gc;
-    },
-
-    _findExistingGC : function( widget ) {
-      var children = widget._getTargetNode().childNodes;
-      var result = null;
-      for( var i = 0; i < children.length && result == null; i++ ) {
-        if( children[ i ].rwtObject instanceof rwt.widgets.GC ) {
-          result = children[ i ].rwtObject;
-        }
-      }
-      return result;
     },
 
     /**
@@ -106,11 +90,11 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
           "preventDefault" : function(){}
         };
         var event = new rwt.event.MouseEvent( type,
-                                                  domEvent,
-                                                  domTarget,
-                                                  target,
-                                                  originalTarget,
-                                                  null );
+                                              domEvent,
+                                              domTarget,
+                                              target,
+                                              originalTarget,
+                                              null );
         target.dispatchEvent( event );
       }
     }

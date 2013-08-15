@@ -13,7 +13,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.GC", {
 
   factory : function( properties ) {
     var parent = rwt.remote.ObjectRegistry.getObject( properties.parent );
-    var result = new rwt.widgets.GC( parent );
+    var result = rwt.widgets.util.WidgetUtil.getGC( parent );
     rwt.remote.HandlerUtil.addDestroyableChild( parent, result );
     return result;
   },

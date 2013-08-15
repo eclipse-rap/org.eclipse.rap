@@ -39,7 +39,7 @@ rwt.scripting.WidgetProxyFactory = {
 
   _initWrapper : function( originalWidget, wrapper ) {
     this._attachSetter( wrapper, originalWidget );
-    this._attachGetter( wrapper, originalWidget );
+    this._attachMethods( wrapper, originalWidget );
     originalWidget.addEventListener( "destroy", function() {
       rwt.scripting.WidgetProxyFactory._disposeWidgetProxy( originalWidget );
     } );
@@ -64,9 +64,6 @@ rwt.scripting.WidgetProxyFactory = {
     }
   },
 
-  ////////////////////////
-  // setter/getter support
-
   _attachSetter : function( proxy, source ) {
     var id = ObjectRegistry.getId( source );
     var handler = id ? ObjectRegistry.getEntry( id ).handler : null;
@@ -80,7 +77,7 @@ rwt.scripting.WidgetProxyFactory = {
     }
   },
 
-  _attachGetter : function( proxy, source ) {
+  _attachMethods : function( proxy, source ) {
     var id = ObjectRegistry.getId( source );
     var handler = id ? ObjectRegistry.getEntry( id ).handler : null;
     if( handler ) {
