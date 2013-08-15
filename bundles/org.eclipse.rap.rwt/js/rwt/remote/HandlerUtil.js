@@ -299,6 +299,19 @@ rwt.remote.HandlerUtil = {
     }
   },
 
+  _listenerMethodHandler : {
+    "addListener": function( widget, properties ) {
+      rwt.remote.HandlerUtil.callWithTarget( properties.listenerId, function( targetFunction ) {
+        rwt.scripting.EventBinding.addListener( widget, properties.eventType, targetFunction );
+      } );
+    },
+    "removeListener": function( widget, properties ) {
+      rwt.remote.HandlerUtil.callWithTarget( properties.listenerId, function( targetFunction ) {
+        rwt.scripting.EventBinding.removeListener( widget, properties.eventType, targetFunction );
+      } );
+    }
+  },
+
   _controlScriptingMethods : {
     "setData" : function( property, value ) {
       if( arguments.length !== 2 ) {
@@ -352,6 +365,10 @@ rwt.remote.HandlerUtil = {
 
   extendControlPropertyHandler : function( handler ) {
     return rwt.util.Objects.mergeWith( handler, this._controlPropertyHandler, false );
+  },
+
+  extendListenerMethodHandler : function( handler ) {
+    return rwt.util.Objects.mergeWith( handler, this._listenerMethodHandler, false );
   },
 
   extendControlListeners : function( list ) {
