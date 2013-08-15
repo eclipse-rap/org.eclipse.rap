@@ -12,29 +12,29 @@
 
 package org.eclipse.swt.internal.widgets.linkkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
@@ -49,7 +49,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 
 public class LinkLCA_Test {
@@ -165,48 +164,32 @@ public class LinkLCA_Test {
   }
 
   @Test
-  public void testSelectionEvent() {
-    link.setText( "Big <a>Bang</a>" );
-    SelectionListener listener = mock( SelectionListener.class );
-    link.addSelectionListener( listener );
-
-    fakeWidgetSelectedEvent();
-    Fixture.readDataAndProcessAction( link );
-
-    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
-    SelectionEvent event = captor.getValue();
-    assertEquals( null, event.item );
-    assertEquals( SWT.NONE, event.detail );
-    assertEquals( 0, event.x );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.width );
-    assertEquals( 0, event.height );
-    assertTrue( event.doit );
-  }
-
-  @Test
-  public void testIllegalSelectionEvent() {
-    // Selection event should not fire if index out of bounds (see bug 252354)
-    link.setText( "No Link" );
-    link.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        fail( "Should not be fired" );
-      }
-    } );
-
-    fakeWidgetSelectedEvent();
-    Fixture.readDataAndProcessAction( link );
-  }
-
-  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( link );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( link );
     assertEquals( "rwt.widgets.Link", operation.getType() );
+  }
+
+  @Test
+  public void testRenderCreate_setsOperationHandler() throws IOException {
+    String id = getId( link );
+    lca.renderInitialization( link );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof LinkOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    LinkOperationHandler handler = spy( new LinkOperationHandler( link ) );
+    getRemoteObject( getId( link ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( link ), "Help", new JsonObject() );
+    lca.readData( link );
+
+    verify( handler ).handleNotifyHelp( link, new JsonObject() );
   }
 
   @Test
@@ -315,11 +298,6 @@ public class LinkLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( link, "Selection" ) );
-  }
-
-  private void fakeWidgetSelectedEvent() {
-    JsonObject properties = new JsonObject().add( ClientMessageConst.EVENT_PARAM_INDEX, 0 );
-    Fixture.fakeNotifyOperation( getId( link ), ClientMessageConst.EVENT_SELECTION, properties );
   }
 
 }
