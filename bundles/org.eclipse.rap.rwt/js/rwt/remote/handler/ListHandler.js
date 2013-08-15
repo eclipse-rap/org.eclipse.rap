@@ -64,7 +64,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.List", {
 
   listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} ),
 
-  scriptingMethods : {
+  scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods( {
     "getSelection" : function() {
       var items = this.getSelectedItems();
       var result = [];
@@ -73,7 +73,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.List", {
       }
       return result;
     }
-  }
+  } )
 
 
 } );

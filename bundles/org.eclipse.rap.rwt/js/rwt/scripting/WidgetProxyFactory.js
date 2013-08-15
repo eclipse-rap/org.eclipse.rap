@@ -41,7 +41,6 @@ rwt.scripting.WidgetProxyFactory = {
   _initWrapper : function( originalWidget, wrapper ) {
     this._attachSetter( wrapper, originalWidget );
     this._attachGetter( wrapper, originalWidget );
-    this._attachUserData( wrapper, originalWidget );
     if( rwt.remote.WidgetManager.getInstance().isControl( originalWidget ) ) {
       this._attachControlMethods( wrapper, originalWidget );
     }
@@ -114,45 +113,6 @@ rwt.scripting.WidgetProxyFactory = {
     } );
   },
 
-  ///////////////////
-  // widget data
-
-  _attachUserData : function( proxy, source ) {
-    var setter = this._setUserData;
-    var getter = this._getUserData;
-    proxy.setData = function( property, value ) {
-      setter( source, arguments );
-    };
-    proxy.getData = function( property ) {
-      return getter( source, arguments );
-    };
-  },
-
-  _setUserData : function( source, args ) {
-    if( args.length !== 2 ) {
-      var msg =  "Wrong number of arguments in SetData: Expected 2, found " + args.length;
-      throw new Error( msg );
-    }
-    var property = args[ 0 ];
-    var value = args[ 1 ];
-    var USERDATA_KEY = rwt.scripting.WidgetProxyFactory._USERDATA_KEY;
-    var data = rwt.remote.HandlerUtil.getServerData( source );
-    data[ property ] = value;
-  },
-
-  _getUserData : function( source, args ) {
-    if( args.length !== 1 ) {
-      var msg =  "Wrong number of arguments in SetData: Expected 1, found " + args.length;
-      throw new Error( msg );
-    }
-    var property = args[ 0 ];
-    var result = null;
-    var data = rwt.remote.HandlerUtil.getServerData( source );
-    if( typeof data[ property ] !== "undefined" ) {
-      result = data[ property ];
-    }
-    return result;
-  },
 
   ///////////////////////
   // misc methods support

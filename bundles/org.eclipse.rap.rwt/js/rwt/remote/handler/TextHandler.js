@@ -83,17 +83,16 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Text", {
     }
   },
 
-  scriptingMethods : {
+  scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods( {
     "getText" : function() {
-       return this.getValue();
-     },
+      return this.getValue();
+    },
     "getSelection" : function() {
-       return this.getSelection();
-     },
+      return this.getSelection();
+    },
     "getEditable" : function() {
-       return !this.getReadOnly();
-     }
-  }
-
+      return !this.getReadOnly();
+    }
+  } )
 
 } );

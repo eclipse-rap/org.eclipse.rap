@@ -299,6 +299,29 @@ rwt.remote.HandlerUtil = {
     }
   },
 
+  _controlScriptingMethods : {
+    "setData" : function( property, value ) {
+      if( arguments.length !== 2 ) {
+        var msg =  "Wrong number of arguments in setData: Expected 2, found " + arguments.length;
+        throw new Error( msg );
+      }
+      var data = rwt.remote.HandlerUtil.getServerData( this );
+      data[ property ] = value;
+    },
+    "getData" : function( property ) {
+      if( arguments.length !== 1 ) {
+        var msg =  "Wrong number of arguments in getData: Expected 1, found " + arguments.length;
+        throw new Error( msg );
+      }
+      var result = null;
+      var data = rwt.remote.HandlerUtil.getServerData( this );
+      if( typeof data[ property ] !== "undefined" ) {
+        result = data[ property ];
+      }
+      return result;
+    }
+  },
+
   ////////////////////
   // lists and handler
 
@@ -328,6 +351,10 @@ rwt.remote.HandlerUtil = {
 
   extendControlListenerHandler : function( handler ) {
     return rwt.util.Objects.mergeWith( handler, this._controlListenerHandler, false );
+  },
+
+  extendControlScriptingMethods : function( methods ) {
+    return rwt.util.Objects.mergeWith( methods, this._controlScriptingMethods, false );
   },
 
   getBackgroundGradientHandler : function() {
