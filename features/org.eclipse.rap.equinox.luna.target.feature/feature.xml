@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.rap.equinox.target.feature"
-      label="RAP Basic Equinox Target"
+      id="org.eclipse.rap.equinox.luna.target.feature"
+      label="RAP Basic Equinox Target for Eclipse Luna"
       version="2.2.0.qualifier"
       provider-name="Eclipse.org - RAP">
 

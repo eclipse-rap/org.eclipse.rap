@@ -20,20 +20,20 @@
     <version>2.2.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>org.eclipse.rap.kepler.runtime-aggregation-repository</artifactId>
+  <artifactId>org.eclipse.rap.luna.runtime-aggregation-repository</artifactId>
   <packaging>eclipse-repository</packaging>
 
   <repositories>
     <repository>
       <id>base-platform-repository</id>
       <layout>p2</layout>
-      <url>${base-platform-kepler-repository}</url>
+      <url>${base-platform-luna-repository}</url>
     </repository>
     <repository>
       <id>base-platform-repository-with-ICU-bundle</id>
       <layout>p2</layout>
       <!-- This repository is required in order to pull in the base ICU bundle -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/2.1/RC4/runtime-base</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/2.2/M1/runtime-base</url>
     </repository>
   </repositories>
 
@@ -64,7 +64,7 @@
         <configuration>
           <source>
             <repository>
-              <url>${base-platform-kepler-repository}</url>
+              <url>${base-platform-luna-repository}</url>
               <layout>p2</layout>
             </repository>
           </source>

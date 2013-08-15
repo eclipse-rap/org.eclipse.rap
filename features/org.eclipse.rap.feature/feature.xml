@@ -18,7 +18,7 @@
    </license>
 
    <url>
-      <update label="RAP 2.1 Repository" url="http://download.eclipse.org/rt/rap/2.1/"/>
+      <update label="RAP 2.2 Repository" url="http://download.eclipse.org/rt/rap/2.2/"/>
    </url>
 
    <plugin
