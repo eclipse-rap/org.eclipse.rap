@@ -81,7 +81,7 @@ public class CompositeLCA_Test {
   }
 
   @Test
-  public void testRenderCreate_setsOperationHandler() throws IOException {
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
     String id = getId( composite );
     lca.renderInitialization( composite );
 

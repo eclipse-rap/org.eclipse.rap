@@ -290,7 +290,7 @@ public class LabelLCA_Test {
   }
 
   @Test
-  public void testRenderCreate_setsOperationHandler() throws IOException {
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
     String id = getId( label );
     lca.renderInitialization( label );
 
@@ -299,7 +299,7 @@ public class LabelLCA_Test {
   }
 
   @Test
-  public void testRenderCreate_setsOperationHandler_onSeparator() throws IOException {
+  public void testRenderInitialization_setsOperationHandler_onSeparator() throws IOException {
     label = new Label( shell, SWT.SEPARATOR );
     String id = getId( label );
     lca.renderInitialization( label );

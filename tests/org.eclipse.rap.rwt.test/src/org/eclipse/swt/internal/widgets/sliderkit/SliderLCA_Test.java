@@ -153,7 +153,7 @@ public class SliderLCA_Test {
   }
 
   @Test
-  public void testRenderCreate_setsOperationHandler() throws IOException {
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
     String id = getId( slider );
     lca.renderInitialization( slider );
 

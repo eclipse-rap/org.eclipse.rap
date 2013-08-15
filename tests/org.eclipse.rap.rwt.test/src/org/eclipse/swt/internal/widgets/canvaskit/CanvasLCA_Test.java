@@ -99,7 +99,7 @@ public class CanvasLCA_Test {
   }
 
   @Test
-  public void testRenderCreate_setsOperationHandler() throws IOException {
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
     String id = getId( canvas );
     lca.renderInitialization( canvas );
 
