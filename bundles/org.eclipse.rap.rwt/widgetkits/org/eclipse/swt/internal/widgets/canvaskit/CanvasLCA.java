@@ -50,16 +50,10 @@ public final class CanvasLCA extends AbstractWidgetLCA {
   }
 
   @Override
-  public void readData( Widget widget ) {
-    ControlLCAUtil.processEvents( ( Control )widget );
-    ControlLCAUtil.processKeyEvents( ( Control )widget );
-    ControlLCAUtil.processMenuDetect( ( Control )widget );
-  }
-
-  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Canvas canvas = ( Canvas )widget;
     RemoteObject remoteObject = createRemoteObject( canvas, TYPE );
+    remoteObject.setHandler( new CanvasOperationHandler( canvas ) );
     remoteObject.set( "parent", getId( canvas.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( canvas, ALLOWED_STYLES ) ) );
     RemoteObject remoteObjectForGC = createRemoteObject( getGcId( canvas ), TYPE_GC );
