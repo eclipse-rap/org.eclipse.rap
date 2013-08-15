@@ -251,7 +251,7 @@ var initMouseEvent = function( event, originalEvent ) {
 };
 
 var initPaintEvent = function( event, target ) {
-  var gc = rwt.scripting.WidgetProxyFactory._getGCFor( target );
+  var gc = rwt.widgets.util.WidgetUtil.getGC( target );
   event.gc = gc.getNativeContext();
 };
 

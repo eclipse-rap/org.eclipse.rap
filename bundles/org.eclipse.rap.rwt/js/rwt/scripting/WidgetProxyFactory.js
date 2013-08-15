@@ -17,7 +17,6 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
 
 rwt.scripting.WidgetProxyFactory = {
 
-  _GC_KEY : "rwt.scripting.WidgetProxyFactory.GC",
   _wrapperMap : {},
 
   getWidgetProxy : function( obj ) {
@@ -41,9 +40,6 @@ rwt.scripting.WidgetProxyFactory = {
   _initWrapper : function( originalWidget, wrapper ) {
     this._attachSetter( wrapper, originalWidget );
     this._attachGetter( wrapper, originalWidget );
-    if( rwt.remote.WidgetManager.getInstance().isControl( originalWidget ) ) {
-      this._attachControlMethods( wrapper, originalWidget );
-    }
     originalWidget.addEventListener( "destroy", function() {
       rwt.scripting.WidgetProxyFactory._disposeWidgetProxy( originalWidget );
     } );
@@ -111,65 +107,8 @@ rwt.scripting.WidgetProxyFactory = {
       "action" : "set",
       "properties" : props
     } );
-  },
-
-
-  ///////////////////////
-  // misc methods support
-
-  _attachControlMethods : function( proxy, source ) {
-    var id = ObjectRegistry.getId( source );
-    var that = this;
-    proxy.redraw = function() {
-      that._initGC( source );
-    };
-  },
-
-  _initGC : function( widget ) {
-    var gc = this._getGCFor( widget );
-    var width = widget.getInnerWidth();
-    var height = widget.getInnerHeight();
-    var fillStyle = widget.getBackgroundColor();
-    var strokeStyle = widget.getTextColor();
-    var font = [[]];
-    if( widget.getFont() ) {
-      font[ 0 ] = widget.getFont().getFamily();
-      font[ 1 ] = widget.getFont().getSize();
-      font[ 2 ] = widget.getFont().getBold();
-      font[ 3 ] = widget.getFont().getItalic();
-    }
-    gc.init(
-      width,
-      height,
-      font,
-      rwt.util.Colors.stringToRgb( fillStyle ? fillStyle : "#000000" ),
-      rwt.util.Colors.stringToRgb( strokeStyle ? strokeStyle : "#000000" )
-    );
-
-  },
-
-  _getGCFor : function( widget ) {
-    var gc = widget.getUserData( rwt.scripting.WidgetProxyFactory._GC_KEY );
-    if( gc == null ) {
-      gc = this._findExistingGC( widget );
-      if( gc == null ) {
-        gc = new rwt.widgets.GC( widget );
-      }
-      widget.setUserData( rwt.scripting.WidgetProxyFactory._GC_KEY, gc );
-    }
-    return gc;
-  },
-
-  _findExistingGC : function( widget ) {
-    var children = widget._getTargetNode().childNodes;
-    var result = null;
-    for( var i = 0; i < children.length && result == null; i++ ) {
-      if( children[ i ].rwtObject instanceof rwt.widgets.GC ) {
-        result = children[ i ].rwtObject;
-      }
-    }
-    return result;
   }
+
 
 };
 

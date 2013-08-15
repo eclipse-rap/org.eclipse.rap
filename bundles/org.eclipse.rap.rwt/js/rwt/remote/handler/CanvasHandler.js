@@ -51,6 +51,31 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Canvas", {
         rwt.scripting.EventBinding.removeListener( widget, properties.eventType, targetFunction );
       } );
     }
-  }
+  },
+
+  scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods( {
+    "redraw" : function() {
+      var gc = rwt.widgets.util.WidgetUtil.getGC( this );
+      var width = this.getInnerWidth();
+      var height = this.getInnerHeight();
+      var fillStyle = this.getBackgroundColor();
+      var strokeStyle = this.getTextColor();
+      var font = [[]];
+      if( this.getFont() ) {
+        font[ 0 ] = this.getFont().getFamily();
+        font[ 1 ] = this.getFont().getSize();
+        font[ 2 ] = this.getFont().getBold();
+        font[ 3 ] = this.getFont().getItalic();
+      }
+      gc.init(
+        width,
+        height,
+        font,
+        rwt.util.Colors.stringToRgb( fillStyle ? fillStyle : "#000000" ),
+        rwt.util.Colors.stringToRgb( strokeStyle ? strokeStyle : "#000000" )
+      );
+    }
+  } )
+
 
 } );

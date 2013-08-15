@@ -16,6 +16,8 @@
 rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
 
   statics : {
+     _GC_KEY : "rwt.scripting.WidgetProxyFactory.GC",
+
 
     /**
      * workaround for IE bug
@@ -48,6 +50,29 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
       while( current && result ) {
         result = current.getVisibility();
         current = current.getParent();
+      }
+      return result;
+    },
+
+    getGC : function( widget ) {
+      var gc = widget.getUserData( this._GC_KEY );
+      if( gc == null ) {
+        gc = this._findExistingGC( widget );
+        if( gc == null ) {
+          gc = new rwt.widgets.GC( widget );
+        }
+        widget.setUserData( this._GC_KEY, gc );
+      }
+      return gc;
+    },
+
+    _findExistingGC : function( widget ) {
+      var children = widget._getTargetNode().childNodes;
+      var result = null;
+      for( var i = 0; i < children.length && result == null; i++ ) {
+        if( children[ i ].rwtObject instanceof rwt.widgets.GC ) {
+          result = children[ i ].rwtObject;
+        }
       }
       return result;
     },
