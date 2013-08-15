@@ -40,6 +40,8 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Composite", {
 
   methods: [ "addListener", "removeListener" ],
 
-  methodHandler : rwt.remote.HandlerUtil.extendListenerMethodHandler( {} )
+  methodHandler : rwt.remote.HandlerUtil.extendListenerMethodHandler( {} ),
+
+  scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods( {} )
 
 } );
