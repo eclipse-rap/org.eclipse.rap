@@ -36,6 +36,10 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Composite", {
 
   listeners : rwt.remote.HandlerUtil.extendControlListeners( [] ),
 
-  listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} )
+  listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} ),
+
+  methods: [ "addListener", "removeListener" ],
+
+  methodHandler : rwt.remote.HandlerUtil.extendListenerMethodHandler( {} )
 
 } );
