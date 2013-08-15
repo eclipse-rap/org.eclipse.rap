@@ -289,6 +289,7 @@ public final class ClientResources {
     "rwt/scripting/EventBinding.js",
     "rwt/scripting/EventProxy.js",
     "rwt/scripting/FunctionFactory.js",
+    "rwt/scripting/CompositeProxy.js",
     "rwt/scripting/WidgetProxyFactory.js",
     "rwt/remote/handler/FunctionHandler.js"
   };
