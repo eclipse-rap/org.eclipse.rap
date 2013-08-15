@@ -42,6 +42,16 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
       return widget.getUserData( "rwt_Children" );
     },
 
+    isVisible : function( widget ) {
+      var result = true;
+      var current = widget;
+      while( current && result ) {
+        result = current.getVisibility();
+        current = current.getParent();
+      }
+      return result;
+    },
+
     /**
      * Can be used simulate mouseEvents on the qooxdoo event-layer.
      * Manager and handler that are usually notified by

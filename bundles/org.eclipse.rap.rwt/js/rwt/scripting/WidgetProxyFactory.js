@@ -123,24 +123,6 @@ rwt.scripting.WidgetProxyFactory = {
     proxy.redraw = function() {
       that._initGC( source );
     };
-    proxy.forceFocus = function() {
-      var result = false;
-      if( source.getEnabled() && that._isVisible( source ) ) {
-        rwt.widgets.Display.getCurrent().setFocusControl( id );
-        result = true;
-      }
-      return result;
-    };
-  },
-
-  _isVisible : function( widget ) {
-    var result = true;
-    var current = widget;
-    while( current && result ) {
-      result = current.getVisibility();
-      current = current.getParent();
-    }
-    return result;
   },
 
   _initGC : function( widget ) {

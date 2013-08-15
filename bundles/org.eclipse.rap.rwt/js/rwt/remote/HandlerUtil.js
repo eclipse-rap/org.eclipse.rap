@@ -319,6 +319,15 @@ rwt.remote.HandlerUtil = {
         result = data[ property ];
       }
       return result;
+    },
+    "forceFocus" : function() {
+      var result = false;
+      if( this.getEnabled() && rwt.widgets.util.WidgetUtil.isVisible( this ) ) {
+        var id = rwt.remote.ObjectRegistry.getId( this );
+        rwt.widgets.Display.getCurrent().setFocusControl( id );
+        result = true;
+      }
+      return result;
     }
   },
 
