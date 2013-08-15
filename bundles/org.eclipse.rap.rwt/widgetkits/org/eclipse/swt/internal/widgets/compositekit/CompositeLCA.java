@@ -44,16 +44,11 @@ public class CompositeLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveProperty( composite, PROP_CLIENT_AREA, composite.getClientArea() );
   }
 
-  public void readData( Widget widget ) {
-    ControlLCAUtil.processEvents( ( Control )widget );
-    ControlLCAUtil.processKeyEvents( ( Control )widget );
-    ControlLCAUtil.processMenuDetect( ( Control )widget );
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Composite composite = ( Composite )widget;
     RemoteObject remoteObject = createRemoteObject( composite, TYPE );
+    remoteObject.setHandler( new CompositeOperationHandler( composite ) );
     remoteObject.set( "parent", getId( composite.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( composite, ALLOWED_STYLES ) ) );
   }

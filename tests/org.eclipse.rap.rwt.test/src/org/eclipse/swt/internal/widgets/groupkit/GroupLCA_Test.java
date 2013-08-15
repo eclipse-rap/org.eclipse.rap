@@ -10,13 +10,17 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.groupkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -81,6 +85,17 @@ public class GroupLCA_Test {
 
     OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
     assertTrue( handler instanceof GroupOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    GroupOperationHandler handler = spy( new GroupOperationHandler( group ) );
+    getRemoteObject( getId( group ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( group ), "Help", new JsonObject() );
+    lca.readData( group );
+
+    verify( handler ).handleNotifyHelp( group, new JsonObject() );
   }
 
   @Test
