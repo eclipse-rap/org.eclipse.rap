@@ -11,12 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.labelkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -287,7 +290,7 @@ public class LabelLCA_Test {
   }
 
   @Test
-  public void testRenderCreate_setsOperationHandler() throws IOException {
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
     String id = getId( label );
     lca.renderInitialization( label );
 
@@ -296,13 +299,24 @@ public class LabelLCA_Test {
   }
 
   @Test
-  public void testRenderCreate_setsOperationHandler_onSeparator() throws IOException {
+  public void testRenderInitialization_setsOperationHandler_onSeparator() throws IOException {
     label = new Label( shell, SWT.SEPARATOR );
     String id = getId( label );
     lca.renderInitialization( label );
 
     OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
     assertTrue( handler instanceof LabelOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    LabelOperationHandler handler = spy( new LabelOperationHandler( label ) );
+    getRemoteObject( getId( label ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( label ), "Help", new JsonObject() );
+    lca.readData( label );
+
+    verify( handler ).handleNotifyHelp( label, new JsonObject() );
   }
 
   @Test

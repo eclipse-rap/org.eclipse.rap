@@ -23,7 +23,6 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
@@ -68,27 +67,14 @@ public final class ScaleLCA extends AbstractWidgetLCA {
     preserveListener( scale, PROP_SELECTION_LISTENER, isListening( scale, SWT.Selection ) );
   }
 
-  public void readData( Widget widget ) {
-    Scale scale = ( Scale )widget;
-    String value = WidgetLCAUtil.readPropertyValue( scale, PROP_SELECTION );
-    if( value != null ) {
-      scale.setSelection( NumberFormatUtil.parseInt( value ) );
-    }
-    ControlLCAUtil.processSelection( scale, null, true );
-    ControlLCAUtil.processKeyEvents( scale );
-    ControlLCAUtil.processEvents( scale );
-    ControlLCAUtil.processMenuDetect( scale );
-    WidgetLCAUtil.processHelp( scale );
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Scale scale = ( Scale )widget;
     RemoteObject remoteObject = createRemoteObject( scale, TYPE );
+    remoteObject.setHandler( new ScaleOperationHandler( scale ) );
     remoteObject.set( "parent", getId( scale.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( scale, ALLOWED_STYLES ) ) );
   }
-
 
   @Override
   public void renderChanges( Widget widget ) throws IOException {

@@ -11,13 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
@@ -27,9 +27,10 @@ import java.util.Locale;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -37,8 +38,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
@@ -205,65 +204,32 @@ public class SpinnerLCA_Test {
   }
 
   @Test
-  public void testReadSelection() {
-    spinner.setMaximum( 100 );
-
-    Fixture.fakeSetProperty( getId( spinner ), "selection", 77 );
-    Fixture.readDataAndProcessAction( display );
-
-    assertEquals( 77, spinner.getSelection() );
-  }
-
-  @Test
-  public void testReadSelection_Invalid() {
-    spinner.setMaximum( 100 );
-
-    Fixture.fakeSetProperty( getId( spinner ), "selection", 777 );
-    Fixture.readDataAndProcessAction( display );
-
-    assertEquals( spinner.getMaximum(), spinner.getSelection() );
-  }
-
-  @Test
-  public void testSelectionEvent() {
-    SelectionListener listener = mock( SelectionListener.class );
-    spinner.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( spinner ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.readDataAndProcessAction( spinner );
-
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testDefaultSelectionEvent() {
-    SelectionListener listener = mock( SelectionListener.class );
-    spinner.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( spinner ), ClientMessageConst.EVENT_DEFAULT_SELECTION, null );
-    Fixture.readDataAndProcessAction( spinner );
-
-    verify( listener, times( 1 ) ).widgetDefaultSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testModifyEvent() {
-    ModifyListener listener = mock( ModifyListener.class );
-    spinner.addModifyListener( listener );
-
-    Fixture.fakeSetProperty( getId( spinner ), "selection", 2 );
-    Fixture.readDataAndProcessAction( spinner );
-
-    verify( listener, times( 1 ) ).modifyText( any( ModifyEvent.class ) );
-  }
-
-  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( spinner );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
     assertEquals( "rwt.widgets.Spinner", operation.getType() );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( spinner );
+    lca.renderInitialization( spinner );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof SpinnerOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    SpinnerOperationHandler handler = spy( new SpinnerOperationHandler( spinner ) );
+    getRemoteObject( getId( spinner ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( spinner ), "Help", new JsonObject() );
+    lca.readData( spinner );
+
+    verify( handler ).handleNotifyHelp( spinner, new JsonObject() );
   }
 
   @Test

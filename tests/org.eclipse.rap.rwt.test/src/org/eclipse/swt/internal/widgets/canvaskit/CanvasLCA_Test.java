@@ -10,15 +10,23 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.widgets.canvaskit.GCOperationWriter.getGcId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -88,6 +96,35 @@ public class CanvasLCA_Test {
     CreateOperation gcCreate = message.findCreateOperation( getGcId( canvas ) );
     assertEquals( "rwt.widgets.GC", gcCreate.getType() );
     assertEquals( canvasId, gcCreate.getProperty( "parent" ).asString() );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( canvas );
+    lca.renderInitialization( canvas );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof CanvasOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    CanvasOperationHandler handler = spy( new CanvasOperationHandler( canvas ) );
+    getRemoteObject( getId( canvas ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( canvas ), "Help", new JsonObject() );
+    lca.readData( canvas );
+
+    verify( handler ).handleNotifyHelp( canvas, new JsonObject() );
+  }
+
+  @Test
+  public void testRenderParent() throws IOException {
+    lca.renderInitialization( canvas );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( canvas );
+    assertEquals( getId( canvas.getParent() ), operation.getParent() );
   }
 
   @Test

@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_ACTIVATE;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEACTIVATE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_IN;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_OUT;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_HELP;
@@ -69,6 +71,10 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
       handleNotifyMenuDetect( control, properties );
     } else if( EVENT_HELP.equals( eventName ) ) {
       handleNotifyHelp( control, properties );
+    } else if( EVENT_ACTIVATE.equals( eventName ) ) {
+      handleNotifyActivate( control, properties );
+    } else if( EVENT_DEACTIVATE.equals( eventName ) ) {
+      handleNotifyDeactivate( control, properties );
     // TODO: [if] Transmit and handle the DND operations by DragSource/DropTarget
     } else if( EVENT_DRAG_START.equals( eventName ) ) {
       handleNotifyDragStart( control, properties );
@@ -188,8 +194,24 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
   /*
    * PROTOCOL NOTIFY Help
    */
-  public void handleNotifyHelp( T widget, JsonObject properties ) {
-    widget.notifyListeners( SWT.Help, new Event() );
+  public void handleNotifyHelp( T control, JsonObject properties ) {
+    control.notifyListeners( SWT.Help, new Event() );
+  }
+
+  /*
+   * PROTOCOL NOTIFY Activate
+   *
+   * ignored, Activate event is fired when set activeControl
+   */
+  public void handleNotifyActivate( T control, JsonObject properties ) {
+  }
+
+  /*
+   * PROTOCOL NOTIFY Deactivate
+   *
+   * ignored, Deactivate event is fired when set activeControl
+   */
+  public void handleNotifyDeactivate( T control, JsonObject properties ) {
   }
 
   /*

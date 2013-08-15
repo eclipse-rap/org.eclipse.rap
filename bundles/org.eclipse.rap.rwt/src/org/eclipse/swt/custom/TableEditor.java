@@ -215,7 +215,7 @@ void resize () {
     }
 
     public void afterPhase( PhaseEvent event ) {
-      if( table == null ) {
+      if( table == null || table.isDisposed() ) {
         lifeCycle.removePhaseListener( this );
       } else if( table.getDisplay() == Display.getCurrent()) {
         layout();

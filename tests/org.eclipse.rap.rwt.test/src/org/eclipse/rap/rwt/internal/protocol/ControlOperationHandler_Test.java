@@ -370,6 +370,24 @@ public class ControlOperationHandler_Test {
   }
 
   @Test
+  public void testHandleNotify_processesActivate() {
+    JsonObject properties = new JsonObject();
+
+    handler.handleNotify( "Activate", properties );
+
+    verify( mockedControl, never() ).notifyListeners( eq( SWT.Activate ), any( Event.class ) );
+  }
+
+  @Test
+  public void testHandleNotify_processesDeactivate() {
+    JsonObject properties = new JsonObject();
+
+    handler.handleNotify( "Deactivate", properties );
+
+    verify( mockedControl, never() ).notifyListeners( eq( SWT.Deactivate ), any( Event.class ) );
+  }
+
+  @Test
   public void testHandleNotify_processesDragStart() {
     JsonObject properties = new JsonObject();
 

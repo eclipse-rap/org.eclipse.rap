@@ -28,8 +28,10 @@
     <surefire-version>2.12.4</surefire-version>
     <junit-version>4.8.2</junit-version>
     <mockito-version>1.8.4</mockito-version>
-    <base-platform>4.3/R-4.3-201306052000/</base-platform>
-    <base-platform-repository>http://download.eclipse.org/eclipse/updates/${base-platform}</base-platform-repository>
+    <base-platform-kepler>4.3/R-4.3-201306052000/</base-platform-kepler>
+    <base-platform-kepler-repository>http://download.eclipse.org/eclipse/updates/${base-platform-kepler}</base-platform-kepler-repository>
+    <base-platform-luna>4.4milestones/S-4.4M1-201308072000/</base-platform-luna>
+    <base-platform-luna-repository>http://download.eclipse.org/eclipse/updates/${base-platform-luna}</base-platform-luna-repository>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- disabled due to bug 393977
     <baseline-repository>http://download.eclipse.org/rt/rap/nightly/runtime/</baseline-repository>
@@ -77,8 +79,10 @@
     <module>../../features/org.eclipse.rap.sdk.feature</module>
     <module>../../features/org.eclipse.rap.examples.feature</module>
     <module>../../features/org.eclipse.rap.equinox.target.feature</module>
+    <module>../../features/org.eclipse.rap.equinox.luna.target.feature</module>
     <module>repository</module>
     <module>repository.kepler</module>
+    <module>repository.luna</module>
   </modules>
 
   <repositories>
@@ -89,7 +93,7 @@
         TODO [rst]: Because of bug 348045, we cannot add the entire platform repository to the
                     target platform, try target definitions instead.
         -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/2.2/M0/runtime-base</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/2.2/M1/runtime-base</url>
     </repository>
     <repository>
       <id>extra-dependencies-repository</id>

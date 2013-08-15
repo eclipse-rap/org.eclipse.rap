@@ -18,9 +18,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
@@ -28,17 +26,13 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Widget;
 
@@ -60,19 +54,11 @@ public class LinkLCA extends AbstractWidgetLCA {
     preserveListener( link, PROP_SELECTION_LISTENER, isListening( link, SWT.Selection ) );
   }
 
-  public void readData( Widget widget ) {
-    Link link = ( Link )widget;
-    processSelectionEvent( link );
-    ControlLCAUtil.processEvents( link );
-    ControlLCAUtil.processKeyEvents( link );
-    ControlLCAUtil.processMenuDetect( link );
-    WidgetLCAUtil.processHelp( link );
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Link link = ( Link )widget;
     RemoteObject remoteObject = createRemoteObject( link, TYPE );
+    remoteObject.setHandler( new LinkOperationHandler( link ) );
     remoteObject.set( "parent", getId( link.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( link, ALLOWED_STYLES ) ) );
   }
@@ -126,22 +112,6 @@ public class LinkLCA extends AbstractWidgetLCA {
                                  .add( JsonObject.NULL ) );
     }
     return result;
-  }
-
-  private static void processSelectionEvent( Link link ) {
-    String eventName = ClientMessageConst.EVENT_SELECTION;
-    if( wasEventSent( link, eventName ) ) {
-      String value = readEventPropertyValue( link, eventName, ClientMessageConst.EVENT_PARAM_INDEX );
-      int index = NumberFormatUtil.parseInt( value );
-      ILinkAdapter adapter = link.getAdapter( ILinkAdapter.class );
-      String[] ids = adapter.getIds();
-      if( index < ids.length ) {
-        Event event = new Event();
-        event.text = ids[ index ];
-        event.stateMask = EventLCAUtil.readStateMask( link, eventName );
-        link.notifyListeners( SWT.Selection, event );
-      }
-    }
   }
 
 }
