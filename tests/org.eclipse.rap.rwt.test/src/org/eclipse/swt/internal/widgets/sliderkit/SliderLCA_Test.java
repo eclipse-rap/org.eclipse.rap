@@ -11,33 +11,29 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.sliderkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
+
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
@@ -47,11 +43,9 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Slider;
-import org.eclipse.swt.widgets.Widget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 public class SliderLCA_Test {
 
@@ -97,48 +91,6 @@ public class SliderLCA_Test {
     Fixture.clearPreserved();
     // Test preserved control properties
     testPreserveControlProperties( slider );
-  }
-
-  @Test
-  public void testSelectionEvent() {
-    SelectionListener listener = mock( SelectionListener.class );
-    slider.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( slider ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.readDataAndProcessAction( slider );
-
-    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
-    SelectionEvent event = captor.getValue();
-    assertEquals( slider, event.getSource() );
-    assertEquals( null, event.item );
-    assertEquals( 0, event.x );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.width );
-    assertEquals( 0, event.height );
-    assertTrue( event.doit );
-  }
-
-  @Test
-  public void testMouseEvent() {
-    MouseListener listener = mock( MouseListener.class );
-    slider.addMouseListener( listener );
-
-    fakeMouseDownNotifyOperation( slider, 1, 2 );
-    Fixture.readDataAndProcessAction( slider );
-
-    verify( listener ).mouseDown( any( MouseEvent.class ) );
-  }
-
-  @Test
-  public void testKeyEvent() {
-    KeyListener listener = mock( KeyListener.class );
-    slider.addKeyListener( listener );
-
-    fakeKeyDownNotifyOperation( slider, 1, 2 );
-    Fixture.readDataAndProcessAction( slider );
-
-    verify( listener ).keyPressed( any( KeyEvent.class ) );
   }
 
   private void testPreserveControlProperties( Slider slider ) {
@@ -198,6 +150,26 @@ public class SliderLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( slider );
     assertEquals( "rwt.widgets.Slider", operation.getType() );
+  }
+
+  @Test
+  public void testRenderCreate_setsOperationHandler() throws IOException {
+    String id = getId( slider );
+    lca.renderInitialization( slider );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof SliderOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    SliderOperationHandler handler = spy( new SliderOperationHandler( slider ) );
+    getRemoteObject( getId( slider ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( slider ), "Help", new JsonObject() );
+    lca.readData( slider );
+
+    verify( handler ).handleNotifyHelp( slider, new JsonObject() );
   }
 
   @Test
@@ -447,23 +419,6 @@ public class SliderLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( slider, "selection" ) );
-  }
-
-  private static void fakeMouseDownNotifyOperation( Widget widget, int x, int y ) {
-    JsonObject parameters = new JsonObject()
-      .add( ClientMessageConst.EVENT_PARAM_BUTTON, 1 )
-      .add( ClientMessageConst.EVENT_PARAM_X, x )
-      .add( ClientMessageConst.EVENT_PARAM_Y, y )
-      .add( ClientMessageConst.EVENT_PARAM_TIME, 0 );
-    Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_MOUSE_DOWN, parameters );
-  }
-
-  private static void fakeKeyDownNotifyOperation( Widget widget, int keyCode, int charCode ) {
-    JsonObject parameters = new JsonObject()
-      .add( ClientMessageConst.EVENT_PARAM_KEY_CODE, keyCode )
-      .add( ClientMessageConst.EVENT_PARAM_CHAR_CODE, charCode )
-      .add( ClientMessageConst.EVENT_PARAM_MODIFIER, "" );
-    Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_KEY_DOWN, parameters );
   }
 
 }

@@ -23,7 +23,6 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
@@ -71,27 +70,14 @@ public class SliderLCA extends AbstractWidgetLCA {
     preserveListener( slider, PROP_SELECTION_LISTENER, isListening( slider, SWT.Selection ) );
   }
 
-  public void readData( Widget widget ) {
-    Slider slider = ( Slider )widget;
-    String value = WidgetLCAUtil.readPropertyValue( slider, PROP_SELECTION );
-    if( value != null ) {
-      slider.setSelection( NumberFormatUtil.parseInt( value ) );
-    }
-    ControlLCAUtil.processSelection( slider, null, true );
-    ControlLCAUtil.processKeyEvents( slider );
-    ControlLCAUtil.processEvents( slider );
-    ControlLCAUtil.processMenuDetect( slider );
-    WidgetLCAUtil.processHelp( slider );
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Slider slider = ( Slider )widget;
     RemoteObject remoteObject = createRemoteObject( slider, TYPE );
+    remoteObject.setHandler( new SliderOperationHandler( slider ) );
     remoteObject.set( "parent", getId( slider.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( slider, ALLOWED_STYLES ) ) );
   }
-
 
   @Override
   public void renderChanges( Widget widget ) throws IOException {

@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.widgets.scalekit;
+package org.eclipse.swt.internal.widgets.sliderkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.junit.Assert.assertEquals;
@@ -19,28 +19,28 @@ import static org.mockito.Mockito.verify;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Scale;
+import org.eclipse.swt.widgets.Slider;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-public class ScaleOperationHandler_Test {
+public class SliderOperationHandler_Test {
 
-  private Scale scale;
-  private ScaleOperationHandler handler;
+  private Slider slider;
+  private SliderOperationHandler handler;
 
   @Before
   public void setUp() {
-    scale = mock( Scale.class );
-    handler = new ScaleOperationHandler( scale );
+    slider = mock( Slider.class );
+    handler = new SliderOperationHandler( slider );
   }
 
   @Test
   public void testHandleSetSelection() {
     handler.handleSet( new JsonObject().add( "selection", 1 ) );
 
-    verify( scale ).setSelection( 1 );
+    verify( slider ).setSelection( 1 );
   }
 
   @Test
@@ -49,7 +49,7 @@ public class ScaleOperationHandler_Test {
     handler.handleNotify( EVENT_SELECTION, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
-    verify( scale ).notifyListeners( eq( SWT.Selection ), captor.capture() );
+    verify( slider ).notifyListeners( eq( SWT.Selection ), captor.capture() );
     assertEquals( SWT.ALT | SWT.SHIFT, captor.getValue().stateMask );
   }
 
