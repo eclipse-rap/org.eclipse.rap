@@ -8,13 +8,11 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.widgets.linkkit;
+package org.eclipse.swt.internal.widgets.scalekit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -23,7 +21,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
@@ -31,18 +29,18 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
-public class LinkOperationHandler_Test {
+public class ScaleOperationHandler_Test {
 
-  private Link link;
-  private LinkOperationHandler handler;
+  private Scale scale;
+  private ScaleOperationHandler handler;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
-    link = spy( new Link( shell, SWT.NONE ) );
-    handler = new LinkOperationHandler( link );
+    scale = spy( new Scale( shell, SWT.NONE ) );
+    handler = new ScaleOperationHandler( scale );
   }
 
   @After
@@ -51,30 +49,20 @@ public class LinkOperationHandler_Test {
   }
 
   @Test
-  public void testHandleNotifySelection() {
-    link.setText( "foo <a>bar</a>" );
+  public void testHandleSetSelection() {
+    handler.handleSet( new JsonObject().add( "selection", 1 ) );
 
-    JsonObject properties = new JsonObject()
-      .add( "altKey", true )
-      .add( "shiftKey", true )
-      .add( "index", 0 );
-    handler.handleNotify( EVENT_SELECTION, properties );
-
-    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
-    verify( link ).notifyListeners( eq( SWT.Selection ), captor.capture() );
-    Event event = captor.getValue();
-    assertEquals( SWT.ALT | SWT.SHIFT, event.stateMask );
-    assertEquals( "bar", event.text );
+    verify( scale ).setSelection( 1 );
   }
 
   @Test
-  public void testHandleNotifySelection_invalidIndex() {
-    link.setText( "foo bar" );
-
-    JsonObject properties = new JsonObject().add( "index", 0 );
+  public void testHandleNotifySelection() {
+    JsonObject properties = new JsonObject().add( "altKey", true ).add( "shiftKey", true );
     handler.handleNotify( EVENT_SELECTION, properties );
 
-    verify( link, never() ).notifyListeners( eq( SWT.Selection ), any( Event.class ) );
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( scale ).notifyListeners( eq( SWT.Selection ), captor.capture() );
+    assertEquals( SWT.ALT | SWT.SHIFT, captor.getValue().stateMask );
   }
 
 }
