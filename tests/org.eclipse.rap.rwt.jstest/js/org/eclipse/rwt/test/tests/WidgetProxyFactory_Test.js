@@ -70,6 +70,14 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxyFactory_Test", 
       assertEquals( "foo", text.getValue() );
     },
 
+    testSetVisible : function() {
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+
+      widgetProxy.setVisible( false ); // not "visibility"!
+
+      assertFalse( text.getVisibility() );
+    },
+
     testSetGetData : function() {
       var widgetProxy1 = WidgetProxyFactory.getWidgetProxy( text );
       var widgetProxy2 = WidgetProxyFactory.getWidgetProxy( text );

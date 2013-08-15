@@ -18,6 +18,9 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
 rwt.scripting.WidgetProxyFactory = {
 
   _wrapperMap : {},
+  _ALIAS : {
+    "visibility" : "setVisible"
+  },
 
   getWidgetProxy : function( obj ) {
     var result = null;
@@ -71,8 +74,8 @@ rwt.scripting.WidgetProxyFactory = {
       var properties = handler.properties;
       for( var i = 0; i < properties.length; i++ ) {
         var property = properties[ i ];
-        proxy[ "set" + rwt.util.Strings.toFirstUp( property ) ] =
-          this._createSetter( id, property );
+        var setterName = this._ALIAS[ property ] || "set" + rwt.util.Strings.toFirstUp( property );
+        proxy[ setterName ] = this._createSetter( id, property );
       }
     }
   },
