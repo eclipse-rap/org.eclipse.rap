@@ -21,7 +21,7 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
  * @name Composite
  * @since 2.0
  */
- rwt.scripting.CompositeProxy= function( composite ) {
+ rwt.scripting.CompositeProxy = function( composite ) {
   var children = null;
   if( !composite.isCreated() ) {
     children = [];
@@ -82,7 +82,7 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
     composite.removeEventListener( convertEventType( type ), listener, window );
   };
 
-}
+};
 
 /**
  * @event

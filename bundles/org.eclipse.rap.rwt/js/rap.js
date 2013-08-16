@@ -93,7 +93,7 @@ rap = {
     var result;
     if( entry && entry.handler.isPublic ) {
       result = entry.object;
-    } else {
+    } else if( entry ) {
       result = rwt.scripting.WidgetProxyFactory.getWidgetProxy( entry.object );
     }
     return result;

@@ -116,7 +116,6 @@ public class ScriptingTab extends ExampleTab {
         createNew();
       }
     } );
-    connectWidgets();
     fillStyleControls();
   }
 
@@ -144,15 +143,11 @@ public class ScriptingTab extends ExampleTab {
     label = new Label( parent, SWT.BORDER );
     label.setLayoutData( new GridData( 150, 25 ) );
     label.setText( "Label" );
-    label.addListener( SWT.MouseDown, new Listener() {
-      public void handleEvent( Event event ) {
-        label.setBackground( null );
-      }
-    } );
     attachLabelListener();
     canvas = new Canvas( parent, SWT.BORDER );
     canvas.setLayoutData( new GridData( 300, 300 ) );
     attachCanvasListener();
+    connectWidgets();
   }
 
   private void fillStyleControls() {
@@ -322,7 +317,7 @@ public class ScriptingTab extends ExampleTab {
   private void initLabelListener() {
     labelScript =   "function handleEvent( event ){\n"
                   + "  var color = event.type == SWT.MouseEnter ? [ 255, 0, 0 ] : null;\n"
-                  + "  event.widget.setBackground( color );\n"
+                  + "  event.widget.setForeground( color );\n"
                   + "}\n";
     labelEventTypeIndex = new int[] {
       Arrays.asList( EVENT_TYPES ).indexOf( "MouseEnter" ),

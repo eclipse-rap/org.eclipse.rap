@@ -52,7 +52,7 @@ rwt.scripting.EventBinding = {
         rwt.scripting.EventProxy.disposeEventProxy( eventProxy );
       } catch( ex ) {
         var msg = "Error in scripting event type ";
-        throw new Error( msg + eventType + ": " + ex.message ? ex.message : ex );
+        throw new Error( msg + eventType + ": " + ( ex.message ? ex.message : ex ) );
       }
     };
   },

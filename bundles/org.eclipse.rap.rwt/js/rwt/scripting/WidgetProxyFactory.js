@@ -12,6 +12,7 @@
 (function(){
 
 var ObjectRegistry = rwt.remote.ObjectRegistry;
+var Synchronizer = rwt.scripting.Synchronizer;
 
 rwt.qx.Class.createNamespace( "rwt.scripting", {} );
 
@@ -41,6 +42,7 @@ rwt.scripting.WidgetProxyFactory = {
   },
 
   _initWrapper : function( originalWidget, wrapper ) {
+    new Synchronizer( originalWidget );
     this._attachSetter( wrapper, originalWidget );
     this._attachMethods( wrapper, originalWidget );
     originalWidget.addEventListener( "destroy", function() {
@@ -75,7 +77,7 @@ rwt.scripting.WidgetProxyFactory = {
       for( var i = 0; i < properties.length; i++ ) {
         var property = properties[ i ];
         var setterName = this._ALIAS[ property ] || "set" + rwt.util.Strings.toFirstUp( property );
-        proxy[ setterName ] = this._createSetter( id, property );
+        proxy[ setterName ] = this._createSetter( id, property, source );
       }
     }
   },
@@ -91,10 +93,12 @@ rwt.scripting.WidgetProxyFactory = {
     }
   },
 
-  _createSetter : function( id, property ) {
+  _createSetter : function( id, property, widget ) {
     var setProperty = this._setProperty;
     var result = function( value ) {
+      Synchronizer.enable( widget );
       setProperty( id, property, value );
+      Synchronizer.disable( widget );
     };
     return result;
   },
