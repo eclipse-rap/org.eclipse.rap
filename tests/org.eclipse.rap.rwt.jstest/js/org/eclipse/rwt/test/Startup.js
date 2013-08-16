@@ -38,7 +38,7 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
   };
   var server = rwt.remote.Connection.getInstance();
   server.send = function() {
-    if( !this._sendTimer.isEnabled() ) {
+    if( !this._ignoreSend && !this._sendTimer.isEnabled() ) {
       this._sendTimer.start();
       if( this._requestCounter === -1 ) {
         // prevent infinite loop:

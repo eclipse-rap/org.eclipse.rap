@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -23,12 +24,14 @@ import static org.mockito.Mockito.verify;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.shellkit.ShellOperationHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -56,6 +59,7 @@ public class MouseEvent_Test {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
+    getRemoteObject( shell ).setHandler( new ShellOperationHandler( shell ) );
     events = new LinkedList<Object>();
   }
 

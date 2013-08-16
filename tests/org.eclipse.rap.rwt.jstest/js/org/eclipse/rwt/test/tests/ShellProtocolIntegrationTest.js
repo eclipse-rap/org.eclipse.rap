@@ -795,6 +795,77 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
       assertTrue( child.isDisposed() );
     },
 
+    testSetMode_sendsMoveResizeOperations : function() {
+      var shell = this._protocolCreateShell();
+      this._protocolSet( { "bounds" : [ 1, 2, 3, 4 ] } );
+      this._protocolListen( { "Move" : true, "Resize" : true } );
+      TestUtil.setIgnoreSendRequests( true );
+
+      shell.setMode( "maximized" );
+      TestUtil.forceInterval( shell._sendBoundsTimer );
+
+      TestUtil.setIgnoreSendRequests( false );
+      rwt.remote.Connection.getInstance().send();
+      var message = TestUtil.getMessageObject();
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertNotNull( message.findNotifyOperation( "w3", "Resize" ) );
+      assertNotNull( message.findNotifyOperation( "w3", "Move" ) );
+      assertNotNull( message.findSetOperation( "w3", "bounds" ) );
+      assertEquals( "maximized", message.findSetProperty( "w3", "mode" ) );
+      this._disposeShell();
+    },
+
+    testSetMode_sendsMoveOperationOnce : function() {
+      var shell = this._protocolCreateShell();
+      this._protocolSet( { "bounds" : [ 1, 2, 3, 4 ] } );
+      this._protocolListen( { "Resize" : true, "Move" : true } );
+      TestUtil.setIgnoreSendRequests( true );
+
+      shell.setMode( "maximized" );
+      TestUtil.forceInterval( shell._sendBoundsTimer );
+
+      TestUtil.setIgnoreSendRequests( false );
+      rwt.remote.Connection.getInstance().send();
+      var message = TestUtil.getMessageObject();
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertEquals( 1, message.countNotifyOperations( "w3", "Move" ) );
+      this._disposeShell();
+    },
+
+    testSetMode_sendsResizeOperationOnce : function() {
+      var shell = this._protocolCreateShell();
+      this._protocolSet( { "bounds" : [ 1, 2, 3, 4 ] } );
+      this._protocolListen( { "Resize" : true, "Move" : true } );
+      TestUtil.setIgnoreSendRequests( true );
+
+      shell.setMode( "maximized" );
+      TestUtil.forceInterval( shell._sendBoundsTimer );
+
+      TestUtil.setIgnoreSendRequests( false );
+      rwt.remote.Connection.getInstance().send();
+      var message = TestUtil.getMessageObject();
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertEquals( 1, message.countNotifyOperations( "w3", "Resize" ) );
+      this._disposeShell();
+    },
+
+    testSetMode_sendsBoundsPropertyOnce : function() {
+      var shell = this._protocolCreateShell();
+      this._protocolSet( { "bounds" : [ 1, 2, 3, 4 ] } );
+      this._protocolListen( { "Resize" : true, "Move" : true } );
+      TestUtil.setIgnoreSendRequests( true );
+
+      shell.setMode( "maximized" );
+      TestUtil.forceInterval( shell._sendBoundsTimer );
+
+      TestUtil.setIgnoreSendRequests( false );
+      rwt.remote.Connection.getInstance().send();
+      var message = TestUtil.getMessageObject();
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertEquals( 1, message.countSetOperations( "w3", "bounds" ) );
+      this._disposeShell();
+    },
+
     /////////
     // Helper
 

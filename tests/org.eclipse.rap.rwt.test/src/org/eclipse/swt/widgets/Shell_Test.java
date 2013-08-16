@@ -20,6 +20,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -46,6 +47,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
 
 
 public class Shell_Test {
@@ -465,16 +467,84 @@ public class Shell_Test {
     shell.addShellListener( new ShellAdapter() {
       @Override
       public void shellActivated( ShellEvent event ) {
-        log .add( event );
+        log.add( event );
       }
       @Override
       public void shellDeactivated( ShellEvent event ) {
-        log .add( event );
+        log.add( event );
       }
     } );
     shell.setActive();
     shell.setActive();
     assertEquals( 0, log.size() );
+  }
+
+  @Test
+  public void testSetActive_notifyUntypedListener() {
+    shell.open();
+    Shell otherShell = new Shell( display );
+    otherShell.open();
+    Listener listener = mock( Listener.class );
+    shell.addListener( SWT.Activate, listener );
+
+    shell.setActive();
+
+    verify( listener ).handleEvent( any( Event.class ) );
+  }
+
+  @Test
+  public void testSetActive_notifyTypedListener() {
+    shell.open();
+    Shell otherShell = new Shell( display );
+    otherShell.open();
+    ShellListener listener = mock( ShellListener.class );
+    shell.addShellListener( listener );
+
+    shell.setActive();
+
+    verify( listener ).shellActivated( any( ShellEvent.class ) );
+  }
+
+  @Test
+  public void testDeactivateActivateEventsOrder() {
+    Listener activateListener = mock( Listener.class );
+    Listener deactivateListener = mock( Listener.class );
+    Shell shellToActivate = new Shell( display, SWT.NONE );
+    shellToActivate.open();
+    Shell activeShell = new Shell( display, SWT.NONE );
+    activeShell.open();
+    activeShell.setActive();
+    shellToActivate.addListener( SWT.Activate, activateListener );
+    activeShell.addListener( SWT.Deactivate, deactivateListener );
+
+    shellToActivate.setActive();
+
+    InOrder order = inOrder( activateListener, deactivateListener );
+    order.verify( deactivateListener ).handleEvent( any( Event.class ) );
+    order.verify( activateListener ).handleEvent( any( Event.class ) );
+    order.verifyNoMoreInteractions();
+  }
+
+  @Test
+  public void testSetActive_withoutActiveShell() {
+    // no deactivation event must be created for a null active shell (NPE)
+    shell.setVisible( true );
+    Shell shell2 = new Shell( display );
+    shell2.setVisible( true );
+
+    shell.setActive();
+
+    assertSame( shell, display.getActiveShell() );
+  }
+
+
+  @Test
+  public void testLatestOpenedShellIsActive() {
+    shell.open();
+    Shell secondShell = new Shell( display );
+    secondShell.open();
+
+    assertSame( secondShell, display.getActiveShell() );
   }
 
   @Test

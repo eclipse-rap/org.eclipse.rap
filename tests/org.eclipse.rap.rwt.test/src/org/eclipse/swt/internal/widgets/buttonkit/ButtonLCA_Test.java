@@ -54,6 +54,7 @@ import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
+import org.eclipse.swt.internal.widgets.shellkit.ShellOperationHandler;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -239,6 +240,7 @@ public class ButtonLCA_Test {
 
   @Test
   public void testDisabledButtonSelection() {
+    getRemoteObject( shell ).setHandler( new ShellOperationHandler( shell ) );
     button = new Button( shell, SWT.NONE );
     getRemoteObject( button ).setHandler( new ButtonOperationHandler( button ) );
     Label label = new Label( shell, SWT.NONE );

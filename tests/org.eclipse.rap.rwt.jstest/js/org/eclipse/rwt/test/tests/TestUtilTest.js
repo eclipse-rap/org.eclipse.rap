@@ -672,6 +672,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       assertEquals( 1, x );
     },
 
+    testSetMergeRequests : function() {
+      TestUtil.initRequestLog();
+      TestUtil.setIgnoreSendRequests( true );
+
+      rwt.remote.Connection.getInstance().send();
+      rwt.remote.Connection.getInstance().send();
+
+      assertEquals( 0, TestUtil.getRequestsSend() );
+      TestUtil.setIgnoreSendRequests( false );
+      rwt.remote.Connection.getInstance().send();
+      assertEquals( 1, TestUtil.getRequestsSend() );
+    },
+
     testCatchErrorPage : function() {
       TestUtil.clearErrorPage();
       rwt.runtime.ErrorHandler.showErrorPage( "foobar" );

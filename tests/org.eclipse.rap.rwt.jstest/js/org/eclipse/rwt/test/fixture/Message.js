@@ -64,6 +64,20 @@ org.eclipse.rwt.test.fixture.Message.prototype = {
     return result;
   },
 
+  countSetOperations : function( target, property ) {
+    var result = 0;
+    for( var i = 0; i < this.getOperationCount(); i++ ) {
+      var op = this.getOperation( i );
+      if(    op.type === "set"
+          && op.target === target
+          && typeof op.properties[ property ] !== "undefined" )
+      {
+        result++;
+      }
+    }
+    return result;
+  },
+
   findSetProperty : function( target, property ) {
     var op = this.findSetOperation( target, property );
     if( op == null ) {
@@ -81,6 +95,20 @@ org.eclipse.rwt.test.fixture.Message.prototype = {
           && op.eventType === eventType )
       {
         result = op;
+      }
+    }
+    return result;
+  },
+
+  countNotifyOperations : function( target, eventType ) {
+    var result = 0;
+    for( var i = 0; i < this.getOperationCount(); i++ ) {
+      var op = this.getOperation( i );
+      if(    op.type === "notify"
+          && op.target === target
+          && op.eventType === eventType )
+      {
+        result++;
       }
     }
     return result;

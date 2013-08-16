@@ -12,23 +12,18 @@
 package org.eclipse.swt.internal.widgets.shellkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsRectangle;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
@@ -37,9 +32,6 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.events.EventUtil;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
@@ -100,28 +92,18 @@ public final class ShellLCA extends AbstractWidgetLCA {
     preserveProperty( shell, PROP_DEFAULT_BUTTON, shell.getDefaultButton() );
   }
 
+  @Override
   public void readData( Widget widget ) {
-    Shell shell = ( Shell )widget;
     // [if] Preserve the menu bounds before setting the new shell bounds.
-    preserveMenuBounds( shell );
-    // Important: Order matters, readMode() before readBounds()
-    readMode( shell );
-    readBounds( shell );
-    if( wasEventSent( shell, ClientMessageConst.EVENT_CLOSE ) ) {
-      shell.close();
-    }
-    processActiveShell( shell );
-    readActiveControl( shell );
-    ControlLCAUtil.processEvents( shell );
-    ControlLCAUtil.processKeyEvents( shell );
-    ControlLCAUtil.processMenuDetect( shell );
-    WidgetLCAUtil.processHelp( shell );
+    preserveMenuBounds( ( Shell )widget );
+    super.readData( widget );
   }
 
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
     RemoteObject remoteObject = createRemoteObject( shell, TYPE );
+    remoteObject.setHandler( new ShellOperationHandler( shell ) );
     remoteObject.set( "style", createJsonArray( getStyles( shell, ALLOWED_STYLES ) ) );
     Composite parent = shell.getParent();
     if( parent instanceof Shell ) {
@@ -197,21 +179,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void processActiveShell( Shell shell ) {
-    if( wasEventSent( shell, ClientMessageConst.EVENT_ACTIVATE ) ) {
-      IDisplayAdapter displayAdapter = shell.getDisplay().getAdapter( IDisplayAdapter.class );
-      displayAdapter.setActiveShell( shell );
-    }
-  }
-
-  private static void readActiveControl( Shell shell ) {
-    String activeControlId = readPropertyValue( shell, PROP_ACTIVE_CONTROL );
-    Widget widget = find( shell, activeControlId );
-    if( widget != null ) {
-      setActiveControl( shell, widget );
-    }
-  }
-
   private static void renderActiveControl( Shell shell ) {
     final Control activeControl = getActiveControl( shell );
     if( hasChanged( shell, PROP_ACTIVE_CONTROL, activeControl, null ) ) {
@@ -236,36 +203,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void readBounds( Shell shell ) {
-    Rectangle bounds = readPropertyValueAsRectangle( getId( shell ), "bounds" );
-    if( bounds != null ) {
-      IShellAdapter shellAdapter = shell.getAdapter( IShellAdapter.class );
-      shellAdapter.setBounds( bounds );
-    }
-  }
-
-  private static void readMode( Shell shell ) {
-    final String value = readPropertyValue( shell, "mode" );
-    if( value != null ) {
-      if( "maximized".equals( value ) ) {
-        shell.setMaximized( true );
-      } else if( "minimized".equals( value ) ) {
-        shell.setMinimized( true );
-      } else {
-        shell.setMinimized( false );
-        shell.setMaximized( false );
-      }
-    }
-  }
-
   private static void renderMode( Shell shell ) {
     renderProperty( shell, PROP_MODE, getMode( shell), null );
-  }
-
-  private static void setActiveControl( Shell shell, Widget widget ) {
-    if( EventUtil.isAccessible( widget ) ) {
-      shell.getAdapter( IShellAdapter.class ).setActiveControl( ( Control )widget );
-    }
   }
 
   private static Control getActiveControl( Shell shell ) {

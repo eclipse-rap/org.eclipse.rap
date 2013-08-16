@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -26,6 +27,7 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
+import org.eclipse.swt.internal.widgets.shellkit.ShellOperationHandler;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -51,6 +53,7 @@ public class ActivateEvent_Test {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display, SWT.NONE );
+    getRemoteObject( shell ).setHandler( new ShellOperationHandler( shell ) );
   }
 
   @After

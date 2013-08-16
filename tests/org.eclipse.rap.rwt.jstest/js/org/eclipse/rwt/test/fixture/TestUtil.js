@@ -706,6 +706,10 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     } );
   },
 
+  setIgnoreSendRequests : function( value ) {
+    rwt.remote.Connection.getInstance()._ignoreSend = value;
+  },
+
   getRequestLog : function() {
     return this._requestLog;
   },

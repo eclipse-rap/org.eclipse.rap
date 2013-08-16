@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menukit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -40,6 +41,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ArmListener;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.MenuListener;
+import org.eclipse.swt.internal.widgets.shellkit.ShellOperationHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -100,6 +102,7 @@ public class MenuLCA_Test {
 
   @Test
   public void testRenderBoundsForMenuBar() {
+    getRemoteObject( shell ).setHandler( new ShellOperationHandler( shell ) );
     Menu menuBar = new Menu( shell, SWT.BAR );
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -112,7 +115,7 @@ public class MenuLCA_Test {
       .add( 1234 )
       .add( 4321 );
     Fixture.fakeSetProperty( getId( shell ), "bounds", bounds );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
     JsonArray result = message.findSetProperty( menuBar, "bounds" ).asArray();

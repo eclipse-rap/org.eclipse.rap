@@ -124,6 +124,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageTest", {
       assertTrue( operation.properties[ "key" ] );
     },
 
+    testCountSetOperations : function() {
+      writer.appendSet( "w1", "key", true );
+      writer.appendNotify( "w1", "foo", {} );
+      writer.appendSet( "w1", "key", false );
+      writer.appendSet( "w2", "key", false );
+
+      var message = getMessage();
+
+      var operationCount = message.countSetOperations( "w1", "key" );
+      assertEquals( 2, operationCount );
+    },
+
     testFindSetOperationFailed : function() {
       writer.appendSet( "w1", "key1", true );
 
@@ -169,6 +181,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageTest", {
       assertEquals( "notify", operation.type );
       assertEquals( "w1", operation.target );
       assertEquals( "method", operation.eventType );
+    },
+
+    testCountNotifyOperations : function() {
+      writer.appendNotify( "w1", "foo", {} );
+      writer.appendNotify( "w2", "foo", {} );
+      writer.appendNotify( "w1", "foo", {} );
+
+      var message = getMessage();
+
+      var operationCount = message.countNotifyOperations( "w1", "foo" );
+      assertEquals( 2, operationCount );
     },
 
     testFindNotifyProperty : function() {

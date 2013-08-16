@@ -27,6 +27,8 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PAR
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_X;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_Y;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_TRAVERSE;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasEventSent;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.translateButton;
 import static org.eclipse.swt.internal.widgets.displaykit.DNDSupport.EVENT_DRAG_END;
 import static org.eclipse.swt.internal.widgets.displaykit.DNDSupport.EVENT_DRAG_ENTER;
@@ -395,8 +397,18 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
     event.y = point.y;
     event.time = properties.get( EVENT_PARAM_TIME ).asInt();
     event.stateMask = readStateMask( properties ) | translateButton( event.button );
-    event.count = eventType == SWT.MouseDoubleClick ? 2 : 1;
+    // TODO: send count by the client
+    event.count = determineCount( eventType, control );
     return event;
+  }
+
+  private static int determineCount( int eventType, Control control ) {
+    if(    eventType == SWT.MouseDoubleClick
+        || wasEventSent( getId( control ), EVENT_MOUSE_DOUBLE_CLICK ) )
+    {
+      return 2;
+    }
+    return 1;
   }
 
   private static void processTraverseEvent( Control control, JsonObject properties ) {

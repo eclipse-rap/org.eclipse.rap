@@ -38,12 +38,15 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     this._focusControl = null;
     this._parentShell = null;
     this._renderZIndex = true;
+    this._sendBoundsTimer = new rwt.client.Timer( 0 );
+    this._sendBoundsTimer.addEventListener( "interval", this._sendBounds, this );
     this._hasResizeListener = false;
     this._hasMoveListener = false;
+    this._sendMoveFlag  = false;
+    this._sendResizeFlag = false;
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
     this.addEventListener( "changeFocusedChild", this._onChangeFocusedChild );
     this.addEventListener( "changeActive", this._onChangeActive );
-    this.addEventListener( "changeMode", this._onChangeMode );
     this.addEventListener( "changeLeft", this._onChangeLocation, this );
     this.addEventListener( "changeTop", this._onChangeLocation, this );
     this.addEventListener( "changeWidth", this._onChangeSize, this );
@@ -423,38 +426,42 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       }
     },
 
-    _onChangeMode : function( evt ) {
-      var value = evt.getValue();
-      rwt.remote.Connection.getInstance().getRemoteObject( evt.getTarget() ).set( "mode", value );
+    _applyMode : function( value, oldValue ) {
+      var mode = value == null ? "normal" : value;
+      rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "mode", mode );
+      this.base( arguments, value, oldValue );
     },
 
     _onChangeSize : function( evt ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        this._sendBounds();
-        if( this._hasResizeListener ) {
-          var server = rwt.remote.Connection.getInstance();
-          server.getRemoteObject( this ).notify( "Resize", {} );
-        }
+        this._sendResizeFlag = true;
+        this._sendBoundsTimer.start();
       }
     },
 
     _onChangeLocation : function( evt ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        this._sendBounds();
-        if( this._hasMoveListener ) {
-          var server = rwt.remote.Connection.getInstance();
-          server.getRemoteObject( this ).notify( "Move", {} );
-        }
+        this._sendMoveFlag = true;
+        this._sendBoundsTimer.start();
       }
     },
 
     _sendBounds : function() {
-      var server = rwt.remote.Connection.getInstance();
+      this._sendBoundsTimer.stop();
       var left = this._parseNumber( this.getLeft() );
       var top = this._parseNumber( this.getTop() );
       var height = this._parseNumber( this.getHeightValue() );
       var width = this._parseNumber( this.getWidthValue() );
-      server.getRemoteObject( this ).set( "bounds", [ left, top, width, height ] );
+      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
+      remoteObject.set( "bounds", [ left, top, width, height ] );
+      if( this._hasMoveListener && this._sendMoveFlag ) {
+        remoteObject.notify( "Move", {} );
+      }
+      if( this._hasResizeListener && this._sendResizeFlag ) {
+        remoteObject.notify( "Resize", {} );
+      }
+      this._sendMoveFlag  = false;
+      this._sendResizeFlag = false;
     },
 
     _parseNumber : function( value ) {

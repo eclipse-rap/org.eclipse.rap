@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -24,7 +25,7 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.internal.widgets.shellkit.ShellOperationHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
@@ -37,13 +38,14 @@ import org.junit.Test;
 public class ControlEvent_Test {
 
   private Display display;
-  private Control control;
+  private Shell control;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     display = new Display();
     control = new Shell( display, SWT.NONE );
+    getRemoteObject( control ).setHandler( new ShellOperationHandler( control ) );
     control.setVisible( true );
     Fixture.fakeNewRequest();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );

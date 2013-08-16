@@ -94,11 +94,30 @@ public class ControlOperationHandler_Test {
       .add( "y", 20 )
       .add( "time", 4 );
 
+    Event event = createMouseEvent( SWT.MouseUp, control, properties );
+
+    assertEquals( SWT.MouseUp, event.type );
+    assertEquals( control, event.widget );
+    assertEquals( SWT.ALT | SWT.CTRL | SWT.BUTTON1, event.stateMask );
+    assertEquals( 1, event.button );
+    assertEquals( 4, event.x );
+    assertEquals( 9, event.y );
+    assertEquals( 4, event.time );
+    assertEquals( 1, event.count );
+  }
+
+  @Test
+  public void testCreateMouseEvent_eventCount() {
+    JsonObject properties = new JsonObject()
+      .add( "button", 1 )
+      .add( "x", 15 )
+      .add( "y", 20 )
+      .add( "time", 4 );
+
     Event event = createMouseEvent( SWT.MouseDoubleClick, control, properties );
 
     assertEquals( SWT.MouseDoubleClick, event.type );
     assertEquals( control, event.widget );
-    assertEquals( SWT.ALT | SWT.CTRL | SWT.BUTTON1, event.stateMask );
     assertEquals( 1, event.button );
     assertEquals( 4, event.x );
     assertEquals( 9, event.y );

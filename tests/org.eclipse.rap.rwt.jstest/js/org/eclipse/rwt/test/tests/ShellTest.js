@@ -240,12 +240,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.setTop( 52 );
       shell.setWidth( 53 );
       shell.setHeight( 54 );
+      TestUtil.forceInterval( shell._sendBoundsTimer );
 
-      var messages = TestUtil.getMessages();
-      assertEquals( [ 51, 10, 100, 100 ], messages[ 0 ].findSetProperty( "w2", "bounds" ) );
-      assertEquals( [ 51, 52, 100, 100 ], messages[ 1 ].findSetProperty( "w2", "bounds" ) );
-      assertEquals( [ 51, 52, 53, 100 ], messages[ 2 ].findSetProperty( "w2", "bounds" ) );
-      assertEquals( [ 51, 52, 53, 54 ], messages[ 3 ].findSetProperty( "w2", "bounds" ) );
+      var message = TestUtil.getMessageObject();
+      assertEquals( [ 51, 52, 53, 54 ], message.findSetProperty( "w2", "bounds" ) );
       shell.destroy();
     },
 
@@ -261,15 +259,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.setTop( 52 );
       shell.setWidth( 53 );
       shell.setHeight( 54 );
+      TestUtil.forceInterval( shell._sendBoundsTimer );
 
-      var messages = TestUtil.getMessages();
-      assertEquals( 2, messages.length );
-      assertEquals( [ 51, 52, 53, 100 ], messages[ 0 ].findSetProperty( "w2", "bounds" ) );
-      assertNotNull( messages[ 0 ].findNotifyOperation( "w2", "Resize" ) );
-      assertNull( messages[ 0 ].findNotifyOperation( "w2", "Move" ) );
-      assertEquals( [ 51, 52, 53, 54 ], messages[ 1 ].findSetProperty( "w2", "bounds" ) );
-      assertNotNull( messages[ 1 ].findNotifyOperation( "w2", "Resize" ) );
-      assertNull( messages[ 1 ].findNotifyOperation( "w2", "Move" ) );
+      var message = TestUtil.getMessageObject();
+      assertEquals( [ 51, 52, 53, 54 ], message.findSetProperty( "w2", "bounds" ) );
+      assertNotNull( message.findNotifyOperation( "w2", "Resize" ) );
+      assertNull( message.findNotifyOperation( "w2", "Move" ) );
       shell.destroy();
     },
 
@@ -285,15 +280,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.setTop( 52 );
       shell.setWidth( 53 );
       shell.setHeight( 54 );
+      TestUtil.forceInterval( shell._sendBoundsTimer );
 
-      var messages = TestUtil.getMessages();
-      assertEquals( 2, messages.length );
-      assertEquals( [ 51, 10, 100, 100 ], messages[ 0 ].findSetProperty( "w2", "bounds" ) );
-      assertNull( messages[ 0 ].findNotifyOperation( "w2", "Resize" ) );
-      assertNotNull( messages[ 0 ].findNotifyOperation( "w2", "Move" ) );
-      assertEquals( [ 51, 52, 100, 100 ], messages[ 1 ].findSetProperty( "w2", "bounds" ) );
-      assertNull( messages[ 1 ].findNotifyOperation( "w2", "Resize" ) );
-      assertNotNull( messages[ 1 ].findNotifyOperation( "w2", "Move" ) );
+      var message = TestUtil.getMessageObject();
+      assertEquals( [ 51, 52, 53, 54 ], message.findSetProperty( "w2", "bounds" ) );
+      assertNull( message.findNotifyOperation( "w2", "Resize" ) );
+      assertNotNull( message.findNotifyOperation( "w2", "Move" ) );
       shell.destroy();
     },
 
