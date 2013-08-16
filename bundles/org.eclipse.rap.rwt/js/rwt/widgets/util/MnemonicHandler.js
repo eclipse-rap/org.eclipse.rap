@@ -29,8 +29,10 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
     add : function( widget, listener ) {
       var root = widget.getFocusRoot();
-      this._registerFocusRoot( root );
-      this._map[ root.toHashCode() ][ widget.toHashCode() ] = [ widget, listener ];
+      if( root != null ) {  // TODO [tb] : this is for MenuBar items, handle them like Menu items
+        this._registerFocusRoot( root );
+        this._map[ root.toHashCode() ][ widget.toHashCode() ] = [ widget, listener ];
+      }
     },
 
     remove : function( widget ) {

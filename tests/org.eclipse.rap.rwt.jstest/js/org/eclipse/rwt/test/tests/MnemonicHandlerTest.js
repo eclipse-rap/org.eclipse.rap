@@ -10,6 +10,7 @@
 
 (function(){
 
+var MessageProcessor = rwt.remote.MessageProcessor;
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var DomEvent = rwt.event.DomEvent;
 
@@ -251,7 +252,25 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
 
       var totalSuccess = charLog.length + secondLog.length;
       assertEquals( 1, totalSuccess );
+    },
+
+    testMenuBarWithMnemonicsDoesNotCrashWithoutParent : function() {
+      MessageProcessor.processOperationArray(
+        [ "create", "w4", "rwt.widgets.Menu", { "style" : [ "BAR" ] } ]
+      );
+      var itemProperties = { "style" : [ "CASCADE" ], "parent" : "w4", "index" : 0 };
+      MessageProcessor.processOperationArray(
+        [ "create", "w5", "rwt.widgets.MenuItem", itemProperties ]
+      );
+      var menuBar = rwt.remote.ObjectRegistry.getObject( "w4" );
+      var menuItem = rwt.remote.ObjectRegistry.getObject( "w5" );
+      menuItem.setText( "foo" );
+      menuItem.setMnemonicIndex( 1 );
+      MessageProcessor.processOperationArray(
+        [ "set", "w4", { "parent" : "w2" } ]
+      );
     }
+
 
   }
 
