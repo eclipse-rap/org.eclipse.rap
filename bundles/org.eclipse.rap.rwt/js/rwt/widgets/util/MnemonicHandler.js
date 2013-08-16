@@ -117,6 +117,9 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
           if( !onlyVisible || entry[ 0 ].isSeeable() ) {
             try{
               entry[ 1 ].call( entry[ 0 ], event );
+              if( event.success ) {
+                break;
+              }
             } catch( ex ) {
               var msg = "Could not handle mnemonic " + event.type + ". ";
               if( entry[ 0 ].isDisposed() ) {

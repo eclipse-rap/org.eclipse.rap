@@ -230,6 +230,27 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
 
       TestUtil.keyDown( widget, "B", DomEvent.CTRL_MASK );
       assertEquals( 0, TestUtil.getRequestsSend() );
+    },
+
+    testFireTrigger_successStopsTriggerEvent : function() {
+      handler.setActivator( "CTRL" );
+      success = true;
+      widget.focus();
+      var widgetTwo = TestUtil.createWidgetByProtocol( "w4", "w2" );
+      TestUtil.flush();
+      var secondLog = [];
+      handler.add( widgetTwo, function( event ) {
+        if( event.type === "trigger" ) {
+          secondLog.push( event );
+          event.success = true;
+        }
+      } );
+
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyDown( widget, "B", DomEvent.CTRL_MASK );
+
+      var totalSuccess = charLog.length + secondLog.length;
+      assertEquals( 1, totalSuccess );
     }
 
   }
