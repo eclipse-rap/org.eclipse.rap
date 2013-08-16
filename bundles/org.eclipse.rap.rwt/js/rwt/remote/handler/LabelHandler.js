@@ -44,6 +44,12 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Label", {
 
   listeners : rwt.remote.HandlerUtil.extendControlListeners( [] ),
 
-  listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} )
+  listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} ),
+
+  methods: [ "addListener", "removeListener" ],
+
+  methodHandler : rwt.remote.HandlerUtil.extendListenerMethodHandler( {} ),
+
+  scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods( {} )
 
 } );

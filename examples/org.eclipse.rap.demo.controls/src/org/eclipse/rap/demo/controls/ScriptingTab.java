@@ -14,6 +14,7 @@ package org.eclipse.rap.demo.controls;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -28,15 +29,16 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class ScriptingTab extends ExampleTab {
 
-  private static final String[] WIDGETS = new String[]{ "Text", "Button", "Canvas" };
+  private static final String[] WIDGETS = new String[]{ "Text", "Button", "Label", "Canvas" };
   private static final int WIDGET_TEXT = 0;
   private static final int WIDGET_BUTTON = 1;
-  private static final int WIDGET_CANVAS = 2;
-  private static final int WIDGET_LABEL = -1; // Not supported yet
+  private static final int WIDGET_LABEL = 2;
+  private static final int WIDGET_CANVAS = 3;
   private static final String[] EVENT_TYPES = new String[] {
     "KeyDown",
     "KeyUp",
@@ -76,6 +78,7 @@ public class ScriptingTab extends ExampleTab {
 
   public ScriptingTab() {
     super( "Scripting" );
+    WidgetUtil.registerDataKeys( "text", "button", "label", "canvas" );
     initListener();
   }
 
@@ -113,7 +116,18 @@ public class ScriptingTab extends ExampleTab {
         createNew();
       }
     } );
+    connectWidgets();
     fillStyleControls();
+  }
+
+  private void connectWidgets() {
+    Widget[] widgets = new Widget[]{ text, button, label, canvas };
+    for( Widget widget : widgets ) {
+      widget.setData( "text", WidgetUtil.getId( text ) );
+      widget.setData( "label", WidgetUtil.getId( label ) );
+      widget.setData( "button", WidgetUtil.getId( button ) );
+      widget.setData( "canvs", WidgetUtil.getId( canvas ) );
+    }
   }
 
   @Override
@@ -130,6 +144,11 @@ public class ScriptingTab extends ExampleTab {
     label = new Label( parent, SWT.BORDER );
     label.setLayoutData( new GridData( 150, 25 ) );
     label.setText( "Label" );
+    label.addListener( SWT.MouseDown, new Listener() {
+      public void handleEvent( Event event ) {
+        label.setBackground( null );
+      }
+    } );
     attachLabelListener();
     canvas = new Canvas( parent, SWT.BORDER );
     canvas.setLayoutData( new GridData( 300, 300 ) );
@@ -244,61 +263,56 @@ public class ScriptingTab extends ExampleTab {
   }
 
   private void initTextListener() {
-    textScript =
-        "var handleEvent = function( event ) {\n" +
-        "  event.doit = isNumber( event.character ) || event.text.length == 0;\n" +
-        "};\n" +
-        "\n" +
-        "var isNumber = function( character ) {\n" +
-        "  var charCode = character.charCodeAt( 0 );\n" +
-        "  return charCode >=48 && charCode <= 57;\n" +
-        "};";
+    textScript =   "var handleEvent = function( event ) {\n"
+                 + "  event.doit = isNumber( event.character ) || event.text.length == 0;\n"
+                 + "};\n"
+                 + "\n"
+                 + "var isNumber = function( character ) {\n"
+                 + "  var charCode = character.charCodeAt( 0 );\n"
+                 + "  return charCode >=48 && charCode <= 57;\n"
+                 + "};";
     textEventTypeIndex = new int[] {
       Arrays.asList( EVENT_TYPES ).indexOf( "Verify" )
     };
   }
 
   private void initButtonListener() {
-    buttonScript =
-      "var handleEvent = function( event ) {\n" +
-      "  var widget = event.widget;\n" +
-      "  var count = widget.getData( \"count\" );\n" +
-      "  if( count === null ) {\n" +
-      "    count = 0;\n" +
-      "  }\n" +
-      "  count++;\n" +
-      "  widget.setData( \"count\", count );\n" +
-      "  widget.setText( \"Click \" + count );\n" +
-      "};\n" +
-      "";
+    buttonScript =   "var handleEvent = function( event ) {\n"
+                   + "  var widget = event.widget;\n"
+                   + "  var label = rap.getObject( widget.getData( \"label\" ) );\n"
+                   + "  label.setBackground( [ randomByte(), randomByte(), randomByte() ] );\n"
+                   + "};\n"
+                   + "\n"
+                   + "var randomByte = function() {\n"
+                   + "  return Math.round( Math.random() * 255 );\n"
+                   + "}\n";
     buttonEventTypeIndex = new int[] {
       Arrays.asList( EVENT_TYPES ).indexOf( "MouseDown" )
     };
   }
 
   private void initCanvasListener() {
-    canvasScript =
-        "var points = [];\n" +
-        "\n" +
-        "var handleEvent = function( event ) {\n" +
-        "  switch( event.type ) {\n" +
-        "    case SWT.MouseMove:\n" +
-        "      points.push( [ event.x, event.y ] );\n" +
-        "      event.widget.redraw();\n" +
-        "    break;\n" +
-        "    case SWT.Paint:\n" +
-        "      if( points.length > 1 ) {\n" +
-        "        event.gc.lineWidth = 4;\n" +
-        "        event.gc.beginPath();\n" +
-        "        event.gc.moveTo( points[ 0 ][ 0 ], points[ 0 ][ 1 ] );\n" +
-        "        for( var i = 1; i < points.length; i++ ) {\n" +
-        "          event.gc.lineTo( points[ i ][ 0 ] , points[ i ][ 1 ] );\n" +
-        "        }\n" +
-        "        event.gc.stroke();\n" +
-        "      }\n" +
-        "    break;\n" +
-        "  }\n" +
-        "};";
+    canvasScript =   "var points = [];\n"
+                   + "\n"
+                   + "var handleEvent = function( event ) {\n"
+                   + "  switch( event.type ) {\n"
+                   + "    case SWT.MouseMove:\n"
+                   + "      points.push( [ event.x, event.y ] );\n"
+                   + "      event.widget.redraw();\n"
+                   + "    break;\n"
+                   + "    case SWT.Paint:\n"
+                   + "      if( points.length > 1 ) {\n"
+                   + "        event.gc.lineWidth = 4;\n"
+                   + "        event.gc.beginPath();\n"
+                   + "        event.gc.moveTo( points[ 0 ][ 0 ], points[ 0 ][ 1 ] );\n"
+                   + "        for( var i = 1; i < points.length; i++ ) {\n"
+                   + "          event.gc.lineTo( points[ i ][ 0 ] , points[ i ][ 1 ] );\n"
+                   + "        }\n"
+                   + "        event.gc.stroke();\n"
+                   + "      }\n"
+                   + "    break;\n"
+                   + "  }\n"
+                   + "};";
     canvasEventTypeIndex  = new int[] {
       Arrays.asList( EVENT_TYPES ).indexOf( "Paint" ),
       Arrays.asList( EVENT_TYPES ).indexOf( "MouseMove" )
@@ -306,7 +320,10 @@ public class ScriptingTab extends ExampleTab {
   }
 
   private void initLabelListener() {
-    labelScript = "function handleEvent(){}";
+    labelScript =   "function handleEvent( event ){\n"
+                  + "  var color = event.type == SWT.MouseEnter ? [ 255, 0, 0 ] : null;\n"
+                  + "  event.widget.setBackground( color );\n"
+                  + "}\n";
     labelEventTypeIndex = new int[] {
       Arrays.asList( EVENT_TYPES ).indexOf( "MouseEnter" ),
       Arrays.asList( EVENT_TYPES ).indexOf( "MouseExit" )

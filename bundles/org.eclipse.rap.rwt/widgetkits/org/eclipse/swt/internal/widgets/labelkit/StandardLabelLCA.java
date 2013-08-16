@@ -15,6 +15,7 @@ import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderClientListeners;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
@@ -66,6 +67,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
     ControlLCAUtil.renderChanges( label );
     WidgetLCAUtil.renderCustomVariant( label );
     renderText( label );
+    renderClientListeners( label );
     renderMnemonicIndex( label );
     renderProperty( label, PROP_IMAGE, label.getImage(), null );
     renderProperty( label, PROP_ALIGNMENT, getAlignment( label ), DEFAULT_ALIGNMENT );
