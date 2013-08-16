@@ -31,12 +31,14 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
     add : function( widget, listener ) {
       var root = widget.getFocusRoot();
-      this._registerFocusRoot( root );
-      var handlers = this._map[ root.toHashCode() ];
-      if( widget instanceof rwt.widgets.MenuItem ) {
-        handlers.menu[ widget.toHashCode() ] = [ widget, listener ];
-      } else {
-        handlers.controls[ widget.toHashCode() ] = [ widget, listener ];
+      if( root != null ) {  // TODO [tb] : this is for MenuBar items, handle them like Menu items
+        this._registerFocusRoot( root );
+        var handlers = this._map[ root.toHashCode() ];
+        if( widget instanceof rwt.widgets.MenuItem ) {
+          handlers.menu[ widget.toHashCode() ] = [ widget, listener ];
+        } else {
+          handlers.controls[ widget.toHashCode() ] = [ widget, listener ];
+        }
       }
     },
 

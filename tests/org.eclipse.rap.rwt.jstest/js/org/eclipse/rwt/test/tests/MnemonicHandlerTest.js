@@ -295,6 +295,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertTrue( menuBar.getMnemonics() );
     },
 
+    testMenuBarWithMnemonicsDoesNotCrashWithoutParent : function() {
+      MessageProcessor.processOperationArray(
+        [ "create", "w4", "rwt.widgets.Menu", { "style" : [ "BAR" ] } ]
+      );
+      var itemProperties = { "style" : [ "CASCADE" ], "parent" : "w4", "index" : 0 };
+      MessageProcessor.processOperationArray(
+        [ "create", "w5", "rwt.widgets.MenuItem", itemProperties ]
+      );
+      var menuBar = rwt.remote.ObjectRegistry.getObject( "w4" );
+      var menuItem = rwt.remote.ObjectRegistry.getObject( "w5" );
+      menuItem.setText( "foo" );
+      menuItem.setMnemonicIndex( 1 );
+      MessageProcessor.processOperationArray(
+        [ "set", "w4", { "parent" : "w2" } ]
+      );
+   },
+
     testDeactivate_doNotActivateMenuIfKeyWasPressed : function() {
       handler.setActivator( "CTRL" );
       this._createMenu();
