@@ -35,6 +35,7 @@ public class ListOperationHandler extends ControlOperationHandler<List> {
 
   @Override
   public void handleSet( List list, JsonObject properties ) {
+    super.handleSet( list, properties );
     handleSetTopIndex( list, properties );
     handleSetSelection( list, properties );
     handleSetFocusIndex( list, properties );

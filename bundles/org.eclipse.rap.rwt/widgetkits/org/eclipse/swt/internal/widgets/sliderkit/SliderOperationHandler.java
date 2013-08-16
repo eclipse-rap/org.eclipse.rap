@@ -30,6 +30,7 @@ public class SliderOperationHandler extends ControlOperationHandler<Slider> {
 
   @Override
   public void handleSet( Slider slider, JsonObject properties ) {
+    super.handleSet( slider, properties );
     handleSetSelection( slider, properties );
   }
 

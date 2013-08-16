@@ -30,9 +30,11 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -305,6 +307,36 @@ public class ButtonOperationHandler_Test {
   @Test( expected=UnsupportedOperationException.class )
   public void testHandleNotify_unknownOperation() {
     handler.handleNotify( "Unknown", new JsonObject() );
+  }
+
+  @Test
+  public void testHandleSetForeground() {
+    JsonArray foreground = new JsonArray().add( 1 ).add( 2 ).add( 3 );
+    JsonObject properties = new JsonObject().add( "foreground", foreground );
+
+    handler.handleSet( mockedButton, properties );
+
+    ArgumentCaptor<Color> captor = ArgumentCaptor.forClass( Color.class );
+    verify( mockedButton ).setForeground( captor.capture() );
+    Color foregroundColor = captor.getValue();
+    assertEquals( 1, foregroundColor.getRed() );
+    assertEquals( 2, foregroundColor.getGreen() );
+    assertEquals( 3, foregroundColor.getBlue() );
+  }
+
+  @Test
+  public void testHandleSetBackground() {
+    JsonArray background = new JsonArray().add( 1 ).add( 2 ).add( 3 );
+    JsonObject properties = new JsonObject().add( "background", background );
+
+    handler.handleSet( mockedButton, properties );
+
+    ArgumentCaptor<Color> captor = ArgumentCaptor.forClass( Color.class );
+    verify( mockedButton ).setBackground( captor.capture() );
+    Color backgroundColor = captor.getValue();
+    assertEquals( 1, backgroundColor.getRed() );
+    assertEquals( 2, backgroundColor.getGreen() );
+    assertEquals( 3, backgroundColor.getBlue() );
   }
 
 }

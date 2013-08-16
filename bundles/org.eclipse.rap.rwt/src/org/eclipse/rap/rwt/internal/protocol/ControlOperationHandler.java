@@ -36,8 +36,11 @@ import static org.eclipse.swt.internal.widgets.displaykit.DNDSupport.EVENT_DRAG_
 import static org.eclipse.swt.internal.widgets.displaykit.DNDSupport.EVENT_DRAG_START;
 import static org.eclipse.swt.internal.widgets.displaykit.DNDSupport.EVENT_DROP_ACCEPT;
 
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
@@ -47,8 +50,17 @@ import org.eclipse.swt.widgets.Scrollable;
 
 public abstract class ControlOperationHandler<T extends Control> extends WidgetOperationHandler<T> {
 
+  private static final String PROP_FOREGROUND = "foreground";
+  private static final String PROP_BACKGROUND = "background";
+
   public ControlOperationHandler( T control ) {
     super( control );
+  }
+
+  @Override
+  public void handleSet( T control, JsonObject properties ) {
+    handleSetForeground( control, properties );
+    handleSetBackground( control, properties );
   }
 
   @Override
@@ -92,6 +104,46 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
       handleNotifyDragEnd( control, properties );
     } else {
       super.handleNotify( control, eventName, properties );
+    }
+  }
+
+  /*
+   * PROTOCOL SET foreground
+   *
+   * @param foreground ([int]) the foreground color of the control as RGB array or null
+   */
+  public void handleSetForeground( T control, JsonObject properties ) {
+    JsonValue value = properties.get( PROP_FOREGROUND );
+    if( value != null ) {
+      Color foreground = null;
+      if( !value.isNull() ) {
+        JsonArray arrayValue = value.asArray();
+        foreground = new Color( control.getDisplay(),
+                                arrayValue.get( 0 ).asInt(),
+                                arrayValue.get( 1 ).asInt(),
+                                arrayValue.get( 2 ).asInt() );
+      }
+      control.setForeground( foreground );
+    }
+  }
+
+  /*
+   * PROTOCOL SET background
+   *
+   * @param foreground ([int]) the background color of the control as RGB array or null
+   */
+  public void handleSetBackground( T control, JsonObject properties ) {
+    JsonValue value = properties.get( PROP_BACKGROUND );
+    if( value != null ) {
+      Color background = null;
+      if( !value.isNull() ) {
+        JsonArray arrayValue = value.asArray();
+        background = new Color( control.getDisplay(),
+                                arrayValue.get( 0 ).asInt(),
+                                arrayValue.get( 1 ).asInt(),
+                                arrayValue.get( 2 ).asInt() );
+      }
+      control.setBackground( background );
     }
   }
 

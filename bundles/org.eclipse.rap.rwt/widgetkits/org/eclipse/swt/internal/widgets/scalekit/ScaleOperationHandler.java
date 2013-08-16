@@ -30,6 +30,7 @@ public class ScaleOperationHandler extends ControlOperationHandler<Scale> {
 
   @Override
   public void handleSet( Scale scale, JsonObject properties ) {
+    super.handleSet( scale, properties );
     handleSetSelection( scale, properties );
   }
 

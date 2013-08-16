@@ -47,6 +47,7 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
 
   @Override
   public void handleSet( Tree tree, JsonObject properties ) {
+    super.handleSet( tree, properties );
     handleSetSelection( tree, properties );
     handleSetScrollLeft( tree, properties );
     handleSetTopItemIndex( tree, properties );

@@ -39,6 +39,7 @@ public class TextOperationHandler extends ControlOperationHandler<Text> {
 
   @Override
   public void handleSet( Text text, JsonObject properties ) {
+    super.handleSet( text, properties );
     handleSetText( text, properties );
     handleSetSelection( text, properties );
   }

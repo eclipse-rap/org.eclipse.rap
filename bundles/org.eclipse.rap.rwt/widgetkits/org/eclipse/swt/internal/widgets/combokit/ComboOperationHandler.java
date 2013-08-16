@@ -41,6 +41,7 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
 
   @Override
   public void handleSet( Combo combo, JsonObject properties ) {
+    super.handleSet( combo, properties );
     handleSetSelectionIndex( combo, properties );
     handleSetListVisible( combo, properties );
     handleSetText( combo, properties );

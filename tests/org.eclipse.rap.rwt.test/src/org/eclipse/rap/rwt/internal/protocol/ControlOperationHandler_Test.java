@@ -24,10 +24,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -449,6 +451,54 @@ public class ControlOperationHandler_Test {
     handler.handleNotify( "DragEnd", properties );
 
     verify( mockedControl, never() ).notifyListeners( eq( DND.DragEnd ), any( Event.class ) );
+  }
+
+  @Test
+  public void testHandleSetForeground() {
+    JsonArray foreground = new JsonArray().add( 1 ).add( 2 ).add( 3 );
+    JsonObject properties = new JsonObject().add( "foreground", foreground );
+
+    handler.handleSet( mockedControl, properties );
+
+    ArgumentCaptor<Color> captor = ArgumentCaptor.forClass( Color.class );
+    verify( mockedControl ).setForeground( captor.capture() );
+    Color foregroundColor = captor.getValue();
+    assertEquals( 1, foregroundColor.getRed() );
+    assertEquals( 2, foregroundColor.getGreen() );
+    assertEquals( 3, foregroundColor.getBlue() );
+  }
+
+  @Test
+  public void testHandleSetForeground_toNull() {
+    JsonObject properties = new JsonObject().add( "foreground", JsonObject.NULL );
+
+    handler.handleSet( mockedControl, properties );
+
+    verify( mockedControl ).setForeground( eq( ( Color )null ) );
+  }
+
+  @Test
+  public void testHandleSetBackground() {
+    JsonArray background = new JsonArray().add( 1 ).add( 2 ).add( 3 );
+    JsonObject properties = new JsonObject().add( "background", background );
+
+    handler.handleSet( mockedControl, properties );
+
+    ArgumentCaptor<Color> captor = ArgumentCaptor.forClass( Color.class );
+    verify( mockedControl ).setBackground( captor.capture() );
+    Color backgroundColor = captor.getValue();
+    assertEquals( 1, backgroundColor.getRed() );
+    assertEquals( 2, backgroundColor.getGreen() );
+    assertEquals( 3, backgroundColor.getBlue() );
+  }
+
+  @Test
+  public void testHandleSetBackground_toNull() {
+    JsonObject properties = new JsonObject().add( "background", JsonObject.NULL );
+
+    handler.handleSet( mockedControl, properties );
+
+    verify( mockedControl ).setBackground( eq( ( Color )null ) );
   }
 
 }

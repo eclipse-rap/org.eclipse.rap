@@ -31,6 +31,7 @@ public class SpinnerOperationHandler extends ControlOperationHandler<Spinner> {
 
   @Override
   public void handleSet( Spinner spinner, JsonObject properties ) {
+    super.handleSet( spinner, properties );
     handleSetSelection( spinner, properties );
   }
 

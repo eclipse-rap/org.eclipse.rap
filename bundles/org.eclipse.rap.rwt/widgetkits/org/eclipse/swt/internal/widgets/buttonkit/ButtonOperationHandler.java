@@ -31,6 +31,7 @@ public class ButtonOperationHandler extends ControlOperationHandler<Button> {
 
   @Override
   public void handleSet( Button button, JsonObject properties ) {
+    super.handleSet( button, properties );
     handleSetSelection( button, properties );
   }
 
