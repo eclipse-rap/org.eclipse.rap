@@ -50,6 +50,13 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Label", {
 
   methodHandler : rwt.remote.HandlerUtil.extendListenerMethodHandler( {} ),
 
+  /**
+   * @class RWT Scripting analoge to org.eclipse.swt.widgets.Label
+   * @name Label
+   * @extends Control
+   * @description The constructor is not public.
+   * @since 2.2
+   */
   scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods( {} )
 
 } );

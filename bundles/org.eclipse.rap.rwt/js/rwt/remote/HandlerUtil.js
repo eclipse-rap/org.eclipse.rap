@@ -39,7 +39,23 @@ rwt.remote.HandlerUtil = {
     "toolTip",
     "visibility",
     "enabled",
+    /**
+     * @name setForeground
+     * @methodOf Control#
+     * @description Sets the receiver's foreground color to the color specified
+     * by the argument, or to the default system color for the control
+     * if the argument is null.
+     * @param {int[]|null} color the new color as array [ red, green, blue ] or null
+     */
     "foreground",
+    /**
+     * @name setBackground
+     * @methodOf Control#
+     * @description Sets the receiver's background color to the color specified
+     * by the argument, or to the default system color for the control
+     * if the argument is null.
+     * @param {int[]|null} color the new color as array [ red, green, blue ] or null
+     */
     "background",
     "backgroundImage",
     "cursor",
@@ -312,8 +328,27 @@ rwt.remote.HandlerUtil = {
     }
   },
 
-  _controlScriptingMethods : {
-    "setData" : function( property, value ) {
+
+  /**
+   * @class RWT Scripting analoge to org.eclipse.swt.widgets.Control
+   * @name Control
+   * @description The constructor is not public.
+   * @since 2.2
+   */
+  _controlScriptingMethods : /** @lends Control.prototype */ {
+
+    /**
+     * @description Sets the application defined property of the receiver
+     * with the specified name to the given value.
+     * <p>
+     *   The java widget is not affected by this method, but can itself set this object's
+     *   properties if the name was registered with WidgetUtil.registerDataKeys.
+     * </p>
+     * @param {string} property the name of the property
+     * @param {var} value the new value for the property
+     * @see Control#getData
+     */
+    setData : function( property, value ) {
       if( arguments.length !== 2 ) {
         var msg =  "Wrong number of arguments in setData: Expected 2, found " + arguments.length;
         throw new Error( msg );
@@ -321,7 +356,19 @@ rwt.remote.HandlerUtil = {
       var data = rwt.remote.HandlerUtil.getServerData( this );
       data[ property ] = value;
     },
-    "getData" : function( property ) {
+
+    /**
+     * @description  Returns the application defined property of the receiver
+     * with the specified name, or null if it has not been set.
+     * <p>
+     *   The java widget properties can be accessed if the
+     *   property name was registered with WidgetUtil.registerDataKeys.
+     * </p>
+     * @param {string} property the name of the property
+     * @return {var} the value
+     * @see Control#setData
+     */
+    getData : function( property ) {
       if( arguments.length !== 1 ) {
         var msg =  "Wrong number of arguments in getData: Expected 1, found " + arguments.length;
         throw new Error( msg );
@@ -333,7 +380,13 @@ rwt.remote.HandlerUtil = {
       }
       return result;
     },
-    "forceFocus" : function() {
+
+    /**
+     * @description  Forces the receiver to have the <em>keyboard focus</em>, causing
+     * all keyboard events to be delivered to it.
+     * @return {boolean} <code>true</code> if the control got focus, and <code>false</code> if it was unable to.
+     */
+    forceFocus : function() {
       var result = false;
       if( this.getEnabled() && rwt.widgets.util.WidgetUtil.isVisible( this ) ) {
         var id = rwt.remote.ObjectRegistry.getId( this );

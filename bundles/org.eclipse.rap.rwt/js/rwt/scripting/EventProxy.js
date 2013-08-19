@@ -141,7 +141,9 @@ rwt.scripting.EventProxy.prototype = {
 
   /**
    * the graphics context to use when painting.
+   * <p>
    * It supports a subset of the <a href="http://www.w3.org/TR/2dcontext/">HTML5 Canvas API</a>.
+   * </p>
    * Fields:
    * <ul>
    *  <li>strokeStyle</li>

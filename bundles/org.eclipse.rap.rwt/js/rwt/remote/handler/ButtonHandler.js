@@ -67,6 +67,13 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Button", {
 
   methodHandler : rwt.remote.HandlerUtil.extendListenerMethodHandler( {} ),
 
+  /**
+   * @class RWT Scripting analoge to org.eclipse.swt.widgets.Button
+   * @name Button
+   * @extends Control
+   * @description The constructor is not public.
+   * @since 2.2
+   */
   scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods( {} )
 
 } );

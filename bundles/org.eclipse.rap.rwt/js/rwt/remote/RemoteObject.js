@@ -17,7 +17,7 @@ var server = rwt.remote.Connection.getInstance();
  * @private
  * @class Instances of RemoteObject represent the server-side counterpart of a client object
  * and are used to write operations into the next protocol message.
- * @description This constructor is not available in the global namespace. Instances can only
+ * @description The constructor is not public. Instances can
  * be obtained from {@link rap.getRemoteObject}.
  * @exports rwt.remote.RemoteObject as RemoteObject
  * @since 2.0

@@ -42,8 +42,26 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Canvas", {
 
   methodHandler : rwt.remote.HandlerUtil.extendListenerMethodHandler( {} ),
 
-  scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods( {
-    "redraw" : function() {
+  /**
+   * @class RWT Scripting analoge to org.eclipse.swt.widgets.Canvas
+   * @name Canvas
+   * @extends Control
+   * @description The constructor is not public.
+   * @since 2.2
+   */
+  scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods(
+    /** @lends Canvas.prototype */
+  {
+
+    /**
+     * @description Fires a Paint event.
+     * <p>
+     *   Only <code>ClientListener</code> are notified, not server side listener.
+     * </p>
+     * @see SWT.Paint
+     * @see Event#gc
+     */
+    redraw : function() {
       var gc = rwt.widgets.util.WidgetUtil.getGC( this );
       var width = this.getInnerWidth();
       var height = this.getInnerHeight();

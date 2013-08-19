@@ -15,10 +15,9 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
 
 /**
  * @private
- * @class RWT Scripting analoge to org.eclipse.swt.widgets.Composite
- * @description This constructor is not available in the global namespace. Instances can only
- * be obtained from {@link rap.getObject}.
- * @name Composite
+ * @class RWT Scripting analoge to org.eclipse.swt.widgets.Composite and basis for Custom Widgets.
+ * @description The constructor is not public.
+ * @exports rwt.scripting.CompositeProxy as Composite
  * @since 2.0
  */
  rwt.scripting.CompositeProxy = function( composite ) {
@@ -35,8 +34,7 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
   }
   /**
    * @name append
-   * @function
-   * @memberOf Composite#
+   * @methodOf Composite#
    * @description Adds a given HTMLElement to the Composite.
    * @param {HTMLElement} childElement The element to append.
    */
@@ -49,8 +47,7 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
   };
   /**
    * @name getClientArea
-   * @function
-   * @memberOf Composite#
+   * @methodOf Composite#
    * @description Returns the client Area of the Composite
    * @returns {int[]} the client area as array [ x, y, width, height ]
    */
@@ -60,8 +57,7 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
 
   /**
    * @name addListener
-   * @function
-   * @memberOf Composite#
+   * @methodOf Composite#
    * @description Register the function as a listener of the given type
    * @param {string} type The type of the event (e.g. "Resize").
    * @param {Function} listener The callback function. It is executed in global context.
@@ -72,8 +68,7 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
 
   /**
    * @name removeListener
-   * @function
-   * @memberOf Composite#
+   * @methodOf Composite#
    * @description De-register the function as a listener of the given type
    * @param {string} type The type of the event (e.g. "Resize").
    * @param {Function} listener The callback function
