@@ -22,6 +22,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOU
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOUSE_DOWN;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOUSE_UP;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SET_DATA;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_TRAVERSE;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertArrayEquals;
@@ -29,6 +30,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -436,6 +438,13 @@ public class TreeOperationHandler_Test {
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
     verify( spyTree ).notifyListeners( eq( SWT.Collapse ), captor.capture() );
     assertEquals( item, captor.getValue().item );
+  }
+
+  @Test
+  public void testHandleNotifySetData() {
+    handler.handleNotify( EVENT_SET_DATA, new JsonObject() );
+
+    verify( mockedTree, never() ).notifyListeners( eq( SWT.SetData ), any( Event.class ) );
   }
 
   @Test

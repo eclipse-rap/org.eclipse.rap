@@ -15,6 +15,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEF
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_EXPAND;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_ITEM;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SET_DATA;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
@@ -70,6 +71,8 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
       handleNotifyExpand( tree, properties );
     } else if( EVENT_COLLAPSE.equals( eventName ) ) {
       handleNotifyCollapse( tree, properties );
+    } else if( EVENT_SET_DATA.equals( eventName ) ) {
+      handleNotifySetData( tree, properties );
     } else {
       super.handleNotify( tree, eventName, properties );
     }
@@ -198,6 +201,13 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
     Event event = new Event();
     event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
     tree.notifyListeners( SWT.Collapse, event );
+  }
+
+  /*
+   * PROTOCOL NOTIFY SetData
+   * ignored, SetData event is fired when set topItemIndex
+   */
+  public void handleNotifySetData( Tree tree, JsonObject properties ) {
   }
 
   private TreeItem getItem( Tree tree, String itemId ) {
