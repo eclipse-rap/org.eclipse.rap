@@ -11,8 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getAddedClientListeners;
-import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getRemovedClientListeners;
+import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getClientListenerOperations;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -35,7 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtilAdapter;
-import org.eclipse.rap.rwt.internal.scripting.ClientListenerBinding;
+import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -428,10 +427,10 @@ public class Widget_Test {
 
     widget.addListener( SWT.Selection, listener );
 
-    List<ClientListenerBinding> bindings = getAddedClientListeners( widget );
-    assertEquals( 1, bindings.size() );
-    assertEquals( listener, bindings.get( 0 ).getListener() );
-    assertEquals( SWT.Selection, bindings.get( 0 ).getEventType() );
+    List<ClientListenerOperation> operations = getClientListenerOperations( widget );
+    assertEquals( 1, operations.size() );
+    assertEquals( listener, operations.get( 0 ).getListener() );
+    assertEquals( SWT.Selection, operations.get( 0 ).getEventType() );
   }
 
   @Test
@@ -442,10 +441,10 @@ public class Widget_Test {
     widget.addListener( SWT.Selection, listener1 );
     widget.addListener( SWT.Selection, listener2 );
 
-    List<ClientListenerBinding> bindings = getAddedClientListeners( widget );
-    assertEquals( 2, bindings.size() );
-    assertEquals( listener1, bindings.get( 0 ).getListener() );
-    assertEquals( listener2, bindings.get( 1 ).getListener() );
+    List<ClientListenerOperation> operations = getClientListenerOperations( widget );
+    assertEquals( 2, operations.size() );
+    assertEquals( listener1, operations.get( 0 ).getListener() );
+    assertEquals( listener2, operations.get( 1 ).getListener() );
   }
 
   @Test
@@ -455,10 +454,10 @@ public class Widget_Test {
     widget.addListener( SWT.Selection, listener );
     widget.addListener( SWT.Selection, listener );
 
-    List<ClientListenerBinding> bindings = getAddedClientListeners( widget );
-    assertEquals( 2, bindings.size() );
-    assertEquals( listener, bindings.get( 0 ).getListener() );
-    assertEquals( listener, bindings.get( 1 ).getListener() );
+    List<ClientListenerOperation> operations = getClientListenerOperations( widget );
+    assertEquals( 2, operations.size() );
+    assertEquals( listener, operations.get( 0 ).getListener() );
+    assertEquals( listener, operations.get( 1 ).getListener() );
   }
 
   @Test
@@ -495,10 +494,10 @@ public class Widget_Test {
 
     widget.removeListener( SWT.Selection, listener );
 
-    List<ClientListenerBinding> bindings = getRemovedClientListeners( widget );
-    assertEquals( 1, bindings.size() );
-    assertEquals( listener, bindings.get( 0 ).getListener() );
-    assertEquals( SWT.Selection, bindings.get( 0 ).getEventType() );
+    List<ClientListenerOperation> operations = getClientListenerOperations( widget );
+    assertEquals( 1, operations.size() );
+    assertEquals( listener, operations.get( 0 ).getListener() );
+    assertEquals( SWT.Selection, operations.get( 0 ).getEventType() );
   }
 
   @Test
@@ -509,10 +508,10 @@ public class Widget_Test {
     widget.removeListener( SWT.Selection, listener1 );
     widget.removeListener( SWT.Selection, listener2 );
 
-    List<ClientListenerBinding> bindings = getRemovedClientListeners( widget );
-    assertEquals( 2, bindings.size() );
-    assertEquals( listener1, bindings.get( 0 ).getListener() );
-    assertEquals( listener2, bindings.get( 1 ).getListener() );
+    List<ClientListenerOperation> operations = getClientListenerOperations( widget );
+    assertEquals( 2, operations.size() );
+    assertEquals( listener1, operations.get( 0 ).getListener() );
+    assertEquals( listener2, operations.get( 1 ).getListener() );
   }
 
   @Test
@@ -522,10 +521,10 @@ public class Widget_Test {
     widget.removeListener( SWT.Selection, listener );
     widget.removeListener( SWT.Selection, listener );
 
-    List<ClientListenerBinding> bindings = getRemovedClientListeners( widget );
-    assertEquals( 2, bindings.size() );
-    assertEquals( listener, bindings.get( 0 ).getListener() );
-    assertEquals( listener, bindings.get( 1 ).getListener() );
+    List<ClientListenerOperation> operations = getClientListenerOperations( widget );
+    assertEquals( 2, operations.size() );
+    assertEquals( listener, operations.get( 0 ).getListener() );
+    assertEquals( listener, operations.get( 1 ).getListener() );
   }
 
   @Test

@@ -13,22 +13,38 @@ package org.eclipse.rap.rwt.internal.scripting;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 
 
-public class ClientListenerBinding {
+public abstract class ClientListenerOperation {
 
-  private final ClientListener listener;
   private final int eventType;
+  private final ClientListener listener;
 
-  public ClientListenerBinding( ClientListener listener, int eventType ) {
-    this.listener = listener;
+  public ClientListenerOperation( int eventType, ClientListener listener ) {
     this.eventType = eventType;
+    this.listener = listener;
+  }
+
+  public int getEventType() {
+    return eventType;
   }
 
   public ClientListener getListener() {
     return listener;
   }
 
-  public int getEventType() {
-    return eventType;
+  public static final class AddListener extends ClientListenerOperation {
+
+    public AddListener( int eventType, ClientListener listener ) {
+      super( eventType, listener );
+    }
+
+  }
+
+  public static final class RemoveListener extends ClientListenerOperation {
+
+    public RemoveListener( int eventType, ClientListener listener ) {
+      super( eventType, listener );
+    }
+
   }
 
 }

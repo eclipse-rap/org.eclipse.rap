@@ -13,6 +13,8 @@ package org.eclipse.rap.rwt.internal.scripting;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation.AddListener;
+import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation.RemoveListener;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Widget;
@@ -20,8 +22,7 @@ import org.eclipse.swt.widgets.Widget;
 
 public class ClientListenerUtil {
 
-  private static final String REMOVED = "rwt.removedClientListeners";
-  private static final String ADDED = "rwt.addedClientListeners";
+  private static final String OPERATIONS = "rwt.clientListenerOperations";
 
   public static String getRemoteId( ClientFunction function ) {
     return function.getRemoteId();
@@ -89,40 +90,31 @@ public class ClientListenerUtil {
   }
 
   public static void clientListenerAdded( Widget widget, int eventType, ClientListener listener ) {
-    List<ClientListenerBinding> bindings = getAddedClientListeners( widget );
-    if( bindings == null ) {
-      bindings = new ArrayList<ClientListenerBinding>( 1 );
-      widget.setData( ADDED, bindings );
+    List<ClientListenerOperation> operations = getClientListenerOperations( widget );
+    if( operations == null ) {
+      operations = new ArrayList<ClientListenerOperation>( 1 );
+      widget.setData( OPERATIONS, operations );
     }
-    bindings.add( new ClientListenerBinding( listener, eventType ) );
+    operations.add( new AddListener( eventType, listener ) );
   }
 
   public static void clientListenerRemoved( Widget widget, int eventType, ClientListener listener )
   {
-    List<ClientListenerBinding> bindings = getRemovedClientListeners( widget );
-    if( bindings == null ) {
-      bindings = new ArrayList<ClientListenerBinding>( 1 );
-      widget.setData( REMOVED, bindings );
+    List<ClientListenerOperation> operations = getClientListenerOperations( widget );
+    if( operations == null ) {
+      operations = new ArrayList<ClientListenerOperation>( 1 );
+      widget.setData( OPERATIONS, operations );
     }
-    bindings.add( new ClientListenerBinding( listener, eventType ) );
+    operations.add( new RemoveListener( eventType, listener ) );
   }
 
   @SuppressWarnings( "unchecked" )
-  public static List<ClientListenerBinding> getAddedClientListeners( Widget widget ) {
-    return ( List<ClientListenerBinding> )widget.getData( ADDED );
+  public static List<ClientListenerOperation> getClientListenerOperations( Widget widget ) {
+    return ( List<ClientListenerOperation> )widget.getData( OPERATIONS );
   }
 
-  @SuppressWarnings( "unchecked" )
-  public static List<ClientListenerBinding> getRemovedClientListeners( Widget widget ) {
-    return ( List<ClientListenerBinding> )widget.getData( REMOVED );
-  }
-
-  public static void clearAddedClientListeners( Widget widget ) {
-    widget.setData( ADDED, null );
-  }
-
-  public static void clearRemovedClientListeners( Widget widget ) {
-    widget.setData( REMOVED, null );
+  public static void clearClientListenerOperations( Widget widget ) {
+    widget.setData( OPERATIONS, null );
   }
 
 }

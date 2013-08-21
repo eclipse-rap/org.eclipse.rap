@@ -742,4 +742,23 @@ public class WidgetLCAUtil_Test {
     assertEquals( 2, getProtocolMessage().getOperationCount() );
   }
 
+  @Test
+  public void testRenderClientListeners_preserveOperationsOrder() {
+    ClientListener listener = new ClientListener( "" );
+
+    widget.addListener( SWT.Selection, listener );
+    widget.removeListener( SWT.Selection, listener );
+    widget.addListener( SWT.Selection, listener );
+    WidgetLCAUtil.renderClientListeners( widget );
+
+    Message message = getProtocolMessage();
+    assertEquals( 3, message.getOperationCount() );
+    CallOperation operation = ( CallOperation )message.getOperation( 0 );
+    assertEquals( "addListener", operation.getMethodName() );
+    operation = ( CallOperation )message.getOperation( 1 );
+    assertEquals( "removeListener", operation.getMethodName() );
+    operation = ( CallOperation )message.getOperation( 2 );
+    assertEquals( "addListener", operation.getMethodName() );
+  }
+
 }

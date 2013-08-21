@@ -14,21 +14,33 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
+import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation.AddListener;
+import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation.RemoveListener;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.swt.SWT;
 import org.junit.Test;
 
 
-public class ClientListenerBinding_Test {
+public class ClientListenerOperation_Test {
 
   @Test
-  public void testCreation() {
+  public void testCreation_addListenerOperation() {
     ClientListener listener = mock( ClientListener.class );
 
-    ClientListenerBinding binding = new ClientListenerBinding( listener, SWT.Selection );
+    ClientListenerOperation operation = new AddListener( SWT.Selection, listener );
 
-    assertSame( listener, binding.getListener() );
-    assertEquals( SWT.Selection, binding.getEventType() );
+    assertSame( listener, operation.getListener() );
+    assertEquals( SWT.Selection, operation.getEventType() );
+  }
+
+  @Test
+  public void testCreation_removeListenerOperation() {
+    ClientListener listener = mock( ClientListener.class );
+
+    ClientListenerOperation operation = new RemoveListener( SWT.Selection, listener );
+
+    assertSame( listener, operation.getListener() );
+    assertEquals( SWT.Selection, operation.getEventType() );
   }
 
 }

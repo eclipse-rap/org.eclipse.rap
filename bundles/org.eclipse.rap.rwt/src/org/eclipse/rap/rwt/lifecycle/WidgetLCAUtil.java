@@ -19,9 +19,8 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForImage
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForPoint;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForRectangle;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getAddedClientListeners;
+import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getClientListenerOperations;
 import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getRemoteId;
-import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getRemovedClientListeners;
 import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
@@ -29,6 +28,7 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -36,7 +36,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetDataUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.protocol.StylesUtil;
-import org.eclipse.rap.rwt.internal.scripting.ClientListenerBinding;
+import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation;
+import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation.AddListener;
+import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation.RemoveListener;
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil;
 import org.eclipse.rap.rwt.internal.util.EncodingUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
@@ -1002,26 +1004,20 @@ public final class WidgetLCAUtil {
    * @since 2.2
    */
   public static void renderClientListeners( Widget widget ) {
-    List<ClientListenerBinding> addedBindings = getAddedClientListeners( widget );
-    if( addedBindings != null ) {
-      for( ClientListenerBinding binding : addedBindings ) {
+    List<ClientListenerOperation> operations = getClientListenerOperations( widget );
+    if( operations != null ) {
+      for( ClientListenerOperation operation : operations ) {
         JsonObject parameters = new JsonObject();
-        parameters.add( "listenerId", getRemoteId( binding.getListener() ) );
-        parameters.add( "eventType", ClientListenerUtil.getEventType( binding.getEventType() ) );
-        getRemoteObject( widget ).call( "addListener", parameters );
+        parameters.add( "listenerId", getRemoteId( operation.getListener() ) );
+        parameters.add( "eventType", ClientListenerUtil.getEventType( operation.getEventType() ) );
+        if( operation instanceof AddListener ) {
+          getRemoteObject( widget ).call( "addListener", parameters );
+        } else if( operation instanceof RemoveListener ) {
+          getRemoteObject( widget ).call( "removeListener", parameters );
+        }
       }
     }
-    ClientListenerUtil.clearAddedClientListeners( widget );
-    List<ClientListenerBinding> removedBindings = getRemovedClientListeners( widget );
-    if( removedBindings != null ) {
-      for( ClientListenerBinding binding : removedBindings ) {
-        JsonObject parameters = new JsonObject();
-        parameters.add( "listenerId", getRemoteId( binding.getListener() ) );
-        parameters.add( "eventType", ClientListenerUtil.getEventType( binding.getEventType() ) );
-        getRemoteObject( widget ).call( "removeListener", parameters );
-      }
-    }
-    ClientListenerUtil.clearRemovedClientListeners( widget );
+    ClientListenerUtil.clearClientListenerOperations( widget );
   }
 
   ////////////////////
