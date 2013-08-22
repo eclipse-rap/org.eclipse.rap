@@ -1860,10 +1860,8 @@ public class Table extends Composite {
     int result = customItemHeight;
     if( result == -1 ) {
       int textHeight = TextSizeUtil.getCharHeight( getFont() );
-      int paddingHeight = getCellPadding().height;
-      textHeight += Math.max( paddingHeight, 4 );
-      int itemImageHeight = getItemImageSize().y + paddingHeight;
-      result = Math.max( itemImageHeight, textHeight );
+      int imageHeight = getItemImageSize().y;
+      result = Math.max( imageHeight, textHeight ) + getCellPadding().height;
       if( ( style & SWT.CHECK ) != 0 ) {
         result = Math.max( getCheckSize().y, result );
       }
