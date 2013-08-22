@@ -520,4 +520,22 @@ public class ControlOperationHandler_Test {
     verify( mockedControl ).setBackground( eq( ( Color )null ) );
   }
 
+  @Test
+  public void testHandleSetVisibility() {
+    JsonObject properties = new JsonObject().add( "visibility", false );
+
+    handler.handleSet( mockedControl, properties );
+
+    verify( mockedControl ).setVisible( false );
+  }
+
+  @Test
+  public void testHandleSetEnabled() {
+    JsonObject properties = new JsonObject().add( "enabled", false );
+
+    handler.handleSet( mockedControl, properties );
+
+    verify( mockedControl ).setEnabled( false );
+  }
+
 }

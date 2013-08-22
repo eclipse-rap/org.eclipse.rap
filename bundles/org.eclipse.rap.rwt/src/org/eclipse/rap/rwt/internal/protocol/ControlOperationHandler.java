@@ -54,6 +54,8 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
 
   private static final String PROP_FOREGROUND = "foreground";
   private static final String PROP_BACKGROUND = "background";
+  private static final String PROP_VISIBILITY = "visibility";
+  private static final String PROP_ENABLED = "enabled";
 
   public ControlOperationHandler( T control ) {
     super( control );
@@ -63,6 +65,8 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
   public void handleSet( T control, JsonObject properties ) {
     handleSetForeground( control, properties );
     handleSetBackground( control, properties );
+    handleSetVisibility( control, properties );
+    handleSetEnabled( control, properties );
   }
 
   @Override
@@ -146,6 +150,30 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
                                 arrayValue.get( 2 ).asInt() );
       }
       control.setBackground( background );
+    }
+  }
+
+  /*
+   * PROTOCOL SET visibility
+   *
+   * @param visibility (boolean) true if control is visible, false otherwise
+   */
+  public void handleSetVisibility( T control, JsonObject properties ) {
+    JsonValue value = properties.get( PROP_VISIBILITY );
+    if( value != null ) {
+      control.setVisible( value.asBoolean() );
+    }
+  }
+
+  /*
+   * PROTOCOL SET enabled
+   *
+   * @param enabled (boolean) true if control is enabled, false otherwise
+   */
+  public void handleSetEnabled( T control, JsonObject properties ) {
+    JsonValue value = properties.get( PROP_ENABLED );
+    if( value != null ) {
+      control.setEnabled( value.asBoolean() );
     }
   }
 
