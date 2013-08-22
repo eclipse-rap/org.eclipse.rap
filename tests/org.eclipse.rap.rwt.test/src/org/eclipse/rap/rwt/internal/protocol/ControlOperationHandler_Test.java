@@ -538,4 +538,22 @@ public class ControlOperationHandler_Test {
     verify( mockedControl ).setEnabled( false );
   }
 
+  @Test
+  public void testHandleSetToolTip() {
+    JsonObject properties = new JsonObject().add( "toolTip", "foo" );
+
+    handler.handleSet( mockedControl, properties );
+
+    verify( mockedControl ).setToolTipText( "foo" );
+  }
+
+  @Test
+  public void testHandleSetToolTip_toNull() {
+    JsonObject properties = new JsonObject().add( "toolTip", JsonObject.NULL );
+
+    handler.handleSet( mockedControl, properties );
+
+    verify( mockedControl ).setToolTipText( eq( ( String )null ) );
+  }
+
 }

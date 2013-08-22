@@ -56,6 +56,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
   private static final String PROP_BACKGROUND = "background";
   private static final String PROP_VISIBILITY = "visibility";
   private static final String PROP_ENABLED = "enabled";
+  private static final String PROP_TOOL_TIP = "toolTip";
 
   public ControlOperationHandler( T control ) {
     super( control );
@@ -67,6 +68,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
     handleSetBackground( control, properties );
     handleSetVisibility( control, properties );
     handleSetEnabled( control, properties );
+    handleSetToolTip( control, properties );
   }
 
   @Override
@@ -174,6 +176,19 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
     JsonValue value = properties.get( PROP_ENABLED );
     if( value != null ) {
       control.setEnabled( value.asBoolean() );
+    }
+  }
+
+  /*
+   * PROTOCOL SET toolTip
+   *
+   * @param toolTip (String) the new toolTip text
+   */
+  public void handleSetToolTip( T control, JsonObject properties ) {
+    JsonValue value = properties.get( PROP_TOOL_TIP );
+    if( value != null ) {
+      String toolTipText = value.isNull() ? null : value.asString();
+      control.setToolTipText( toolTipText );
     }
   }
 
