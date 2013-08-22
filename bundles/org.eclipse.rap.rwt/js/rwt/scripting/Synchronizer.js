@@ -16,6 +16,9 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
 rwt.scripting.Synchronizer = function( widget ) {
   widget.addEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
   widget.addEventListener( "changeTextColor", this._onChangeTextColor, this );
+  widget.addEventListener( "changeVisibility", this._onChangeVisibility, this );
+  widget.addEventListener( "changeEnabled", this._onChangeEnabled, this );
+  widget.addEventListener( "changeToolTipText", this._onChangeToolTipText, this );
 };
 
 rwt.scripting.Synchronizer._ENABLE_KEY = "rwt.scripting.Synchronizer.ENABLED";
@@ -40,6 +43,20 @@ rwt.scripting.Synchronizer.prototype = {
     var widget = event.getTarget();
     var color = widget.__user$textColor;
     this._sync( widget, "foreground", this._convertColor( color ) );
+  },
+
+  _onChangeVisibility : function( event ) {
+    var widget = event.getTarget();
+    this._sync( widget, "visibility", widget.getVisibility() );
+  },
+
+  _onChangeEnabled : function( event ) {
+    var widget = event.getTarget();
+    this._sync( widget, "enabled", widget.getEnabled() );
+  },
+
+  _onChangeToolTipText : function( widget ) {
+    this._sync( widget, "toolTip", widget.getUserData( "toolTipText" ) );
   },
 
   _sync : function( widget, property, value ) {

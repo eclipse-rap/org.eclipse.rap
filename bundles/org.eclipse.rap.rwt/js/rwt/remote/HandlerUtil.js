@@ -36,9 +36,43 @@ rwt.remote.HandlerUtil = {
   _controlProperties : [
     "children",
     "tabIndex",
-    "toolTip",
-    "visibility",
-    "enabled",
+    /**
+     * @name setToolTipText
+     * @methodOf Control#
+     * @description Sets the receiver's tool tip text to the argument, which
+     * may be null indicating that no tool tip text should be shown.
+     * @param {string|null} toolTipText the new tool tip text (or null)
+     */
+    "toolTip", // matching getter?
+    /**
+     * @name setVisible
+     * @methodOf Control#
+     * @description Marks the receiver as visible if the argument is <code>true</code>,
+     * and marks it invisible otherwise.
+     * <p>
+     * If one of the receiver's ancestors is not visible or some
+     * other condition makes the receiver not visible, marking
+     * it visible may not actually cause it to be displayed.
+     * </p>
+     * <p>
+     * <b>NOTE:</b> If there is a <code>Show</code> or <code>Hide</code> Java listener attached
+     * to this widget, it may be notified at a later point in time. <code>ClientListener</code>
+     * are notified right away.
+     * </p>
+     * @param {boolean} visible the new visibility state
+     */
+    "visibility", // TODO : matching getter
+    /**
+     * @name setEnabled
+     * @methodOf Control#
+     * @description Enables the receiver if the argument is <code>true</code>,
+     * and disables it otherwise. A disabled control is typically
+     * not selectable from the user interface and draws with an
+     * inactive or "grayed" look.
+     *
+     * @param {boolean} enabled the new enabled state
+     */
+    "enabled",// TODO : matching getter
     /**
      * @name setForeground
      * @methodOf Control#
@@ -154,6 +188,7 @@ rwt.remote.HandlerUtil = {
         widget.setToolTip( null );
         widget.setUserData( "toolTipText", null );
       }
+      widget.dispatchSimpleEvent( "changeToolTipText", widget ); // used by Synchronizer.js
     },
     "font" : function( widget, fontData ) {
       if( widget.setFont ) { // test if font property is supported - why wouldn't it? [tb]

@@ -20,7 +20,8 @@ rwt.scripting.WidgetProxyFactory = {
 
   _wrapperMap : {},
   _ALIAS : {
-    "visibility" : "setVisible"
+    "visibility" : "setVisible",
+    "toolTip" : "setToolTipText"
   },
 
   getWidgetProxy : function( obj ) {

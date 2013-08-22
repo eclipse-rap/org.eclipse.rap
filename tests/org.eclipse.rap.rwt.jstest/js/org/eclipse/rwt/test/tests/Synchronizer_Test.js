@@ -31,6 +31,7 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.Synchronizer_Test", {
       var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
 
       widgetProxy.setText( "foo" );
+
       rwt.remote.Connection.getInstance().send();
       var msg = TestUtil.getMessageObject();
       assertEquals( "foo", msg.findSetProperty( "w3", "text" ) );
@@ -41,6 +42,7 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.Synchronizer_Test", {
       var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
 
       widgetProxy.setBackground( [ 1, 2, 3 ] );
+
       rwt.remote.Connection.getInstance().send();
       var msg = TestUtil.getMessageObject();
       assertEquals( [ 1, 2, 3 ], msg.findSetProperty( "w3", "background" ) );
@@ -51,6 +53,7 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.Synchronizer_Test", {
       var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
 
       text.setBackgroundColor( "rgb( 1, 2, 3 )" );
+
       rwt.remote.Connection.getInstance().send();
       var msg = TestUtil.getMessageObject();
       assertNull( msg.findSetOperation( "w3", "background" ) );
@@ -61,6 +64,7 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.Synchronizer_Test", {
       var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
 
       widgetProxy.setBackground( [ 3, 2, 1 ] );
+
       text.setBackgroundColor( "rgb( 1, 2, 3 )" );
       rwt.remote.Connection.getInstance().send();
       var msg = TestUtil.getMessageObject();
@@ -83,9 +87,43 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.Synchronizer_Test", {
       var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
 
       widgetProxy.setForeground( [ 1, 2, 3 ] );
+
       rwt.remote.Connection.getInstance().send();
       var msg = TestUtil.getMessageObject();
       assertEquals( [ 1, 2, 3 ], msg.findSetProperty( "w3", "foreground" ) );
+    },
+
+    testSetVisible_sync : function() {
+      TestUtil.initRequestLog();
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+
+      widgetProxy.setVisible( false );
+
+      rwt.remote.Connection.getInstance().send();
+      var msg = TestUtil.getMessageObject();
+      assertFalse( msg.findSetProperty( "w3", "visibility" ) );
+    },
+
+    testSetEnabled_sync : function() {
+      TestUtil.initRequestLog();
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+
+      widgetProxy.setEnabled( false );
+
+      rwt.remote.Connection.getInstance().send();
+      var msg = TestUtil.getMessageObject();
+      assertFalse( msg.findSetProperty( "w3", "enabled" ) );
+    },
+
+    testSetToolTipText_sync : function() {
+      TestUtil.initRequestLog();
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+
+      widgetProxy.setToolTipText( "foo" );
+
+      rwt.remote.Connection.getInstance().send();
+      var msg = TestUtil.getMessageObject();
+      assertEquals( "foo", msg.findSetProperty( "w3", "toolTip" ) );
     },
 
     ////////
