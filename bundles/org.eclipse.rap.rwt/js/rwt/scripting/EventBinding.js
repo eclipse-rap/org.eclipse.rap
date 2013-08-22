@@ -22,24 +22,21 @@ rwt.scripting.EventBinding = {
 
   addListener : function( widget, eventType, targetFunction ) {
     var wrapperKey = this._getWrapperKey( widget, eventType, targetFunction );
-    if( wrapperRegistry[ wrapperKey ] == null ) {
-      var nativeType = this._getNativeEventType( widget, eventType );
-      var nativeSource = this._getNativeEventSource( widget, eventType );
-      var wrappedListener = this._wrapListener( widget, eventType, targetFunction );
-      nativeSource.addEventListener( nativeType, wrappedListener, window );
-      wrapperRegistry[ wrapperKey ] = wrappedListener;
-    }
+    var wrapperList = this._getWrapperList( wrapperKey );
+    var nativeType = this._getNativeEventType( widget, eventType );
+    var nativeSource = this._getNativeEventSource( widget, eventType );
+    var wrappedListener = this._wrapListener( widget, eventType, targetFunction );
+    nativeSource.addEventListener( nativeType, wrappedListener, window );
+    wrapperList.push( wrappedListener );
   },
 
   removeListener : function( widget, eventType, targetFunction ) {
     var wrapperKey = this._getWrapperKey( widget, eventType, targetFunction );
-    if( wrapperRegistry[ wrapperKey ] != null ) {
-      var nativeType = this._getNativeEventType( widget, eventType );
-      var nativeSource = this._getNativeEventSource( widget, eventType );
-      var wrappedListener = wrapperRegistry[ wrapperKey ];
-      nativeSource.removeEventListener( nativeType, wrappedListener, window );
-      wrapperRegistry[ wrapperKey ] = null;
-    }
+    var wrapperList = this._getWrapperList( wrapperKey );
+    var nativeType = this._getNativeEventType( widget, eventType );
+    var nativeSource = this._getNativeEventSource( widget, eventType );
+    var wrappedListener = wrapperList.pop();
+    nativeSource.removeEventListener( nativeType, wrappedListener, window );
   },
 
   _wrapListener : function( widget, eventType, targetFunction ) {
@@ -64,6 +61,13 @@ rwt.scripting.EventBinding = {
       rwt.qx.Object.toHashCode( targetFunction )
     ];
     return result.join( ":" );
+  },
+
+  _getWrapperList : function( wrapperKey ) {
+    if( wrapperRegistry[ wrapperKey ] == null ) {
+      wrapperRegistry[ wrapperKey ] = [];
+    }
+    return wrapperRegistry[ wrapperKey ];
   },
 
   _getNativeEventSource : function( source, eventType ) {

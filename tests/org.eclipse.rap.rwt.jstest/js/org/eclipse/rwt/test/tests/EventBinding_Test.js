@@ -38,6 +38,17 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertEquals( 1, logger.log.length );
     },
 
+    testAddListenerTwice_KeyEvent : function() {
+      TestUtil.flush();
+      var logger = this._createLogger();
+
+      EventBinding.addListener( text, "KeyDown", logger );
+      EventBinding.addListener( text, "KeyDown", logger );
+      TestUtil.press( text, "A" );
+
+      assertEquals( 2, logger.log.length );
+    },
+
     testDisposeBindKeyEvent : function() {
       var logger = this._createLogger();
       EventBinding.addListener( text, "KeyDown", logger );
