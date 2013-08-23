@@ -43,6 +43,7 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
@@ -57,6 +58,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
   private static final String PROP_VISIBILITY = "visibility";
   private static final String PROP_ENABLED = "enabled";
   private static final String PROP_TOOL_TIP = "toolTip";
+  private static final String PROP_CURSOR = "cursor";
 
   public ControlOperationHandler( T control ) {
     super( control );
@@ -69,6 +71,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
     handleSetVisibility( control, properties );
     handleSetEnabled( control, properties );
     handleSetToolTip( control, properties );
+    handleSetCursor( control, properties );
   }
 
   @Override
@@ -189,6 +192,22 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
     if( value != null ) {
       String toolTipText = value.isNull() ? null : value.asString();
       control.setToolTipText( toolTipText );
+    }
+  }
+
+  /*
+   * PROTOCOL SET cursor
+   *
+   * @param cursor (String) the new cursor as defined in CSS specification
+   */
+  public void handleSetCursor( T control, JsonObject properties ) {
+    JsonValue value = properties.get( PROP_CURSOR );
+    if( value != null ) {
+      Cursor cursor = null;
+      if( !value.isNull() ) {
+        cursor = new Cursor( control.getDisplay(), translateCursor( value.asString() ) );
+      }
+      control.setCursor( cursor );
     }
   }
 
@@ -621,6 +640,52 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
     char result = ( char )0;
     if( Character.isDefined( ( char )keyCode ) ) {
       result = ( char )keyCode;
+    }
+    return result;
+  }
+
+  private static int translateCursor( String cursor ) {
+    int result;
+    if( "default".equals( cursor ) ) {
+      result = SWT.CURSOR_ARROW;
+    } else if( "wait".equals( cursor ) ) {
+      result = SWT.CURSOR_WAIT;
+    } else if( "progress".equals( cursor ) ) {
+      result = SWT.CURSOR_APPSTARTING;
+    } else if( "crosshair".equals( cursor ) ) {
+      result = SWT.CURSOR_CROSS;
+    } else if( "help".equals( cursor ) ) {
+      result = SWT.CURSOR_HELP;
+    } else if( "move".equals( cursor ) ) {
+      result = SWT.CURSOR_SIZEALL;
+    } else if( "row-resize".equals( cursor ) ) {
+      result = SWT.CURSOR_SIZENS;
+    } else if( "col-resize".equals( cursor ) ) {
+      result = SWT.CURSOR_SIZEWE;
+    } else if( "n-resize".equals( cursor ) ) {
+      result = SWT.CURSOR_SIZEN;
+    } else if( "s-resize".equals( cursor ) ) {
+      result = SWT.CURSOR_SIZES;
+    } else if( "e-resize".equals( cursor ) ) {
+      result = SWT.CURSOR_SIZEE;
+    } else if( "w-resize".equals( cursor ) ) {
+      result = SWT.CURSOR_SIZEW;
+    } else if( "ne-resize".equals( cursor ) ) {
+      result = SWT.CURSOR_SIZENE;
+    } else if( "se-resize".equals( cursor ) ) {
+      result = SWT.CURSOR_SIZESE;
+    } else if( "sw-resize".equals( cursor ) ) {
+      result = SWT.CURSOR_SIZESW;
+    } else if( "nw-resize".equals( cursor ) ) {
+      result = SWT.CURSOR_SIZENW;
+    } else if( "text".equals( cursor ) ) {
+      result = SWT.CURSOR_IBEAM;
+    } else if( "pointer".equals( cursor ) ) {
+      result = SWT.CURSOR_HAND;
+    } else if( "not-allowed".equals( cursor ) ) {
+      result = SWT.CURSOR_NO;
+    } else {
+      throw new IllegalArgumentException( "Unsupported cursor: " + cursor );
     }
     return result;
   }

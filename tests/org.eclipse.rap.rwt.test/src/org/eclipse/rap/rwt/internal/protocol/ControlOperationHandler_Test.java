@@ -23,6 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
@@ -30,6 +31,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -56,6 +58,7 @@ public class ControlOperationHandler_Test {
     control = new Button( shell, SWT.NONE );
     control.setBounds( 10, 10, 100, 20 );
     mockedControl = mock( Control.class );
+    when( mockedControl.getDisplay() ).thenReturn( display );
     handler = new ControlOperationHandler<Control>( mockedControl ) {};
   }
 
@@ -554,6 +557,32 @@ public class ControlOperationHandler_Test {
     handler.handleSet( mockedControl, properties );
 
     verify( mockedControl ).setToolTipText( eq( ( String )null ) );
+  }
+
+  @Test
+  public void testHandleSetCursor() {
+    JsonObject properties = new JsonObject().add( "cursor", "help" );
+
+    handler.handleSet( mockedControl, properties );
+
+    Cursor expected = new Cursor( mockedControl.getDisplay(), SWT.CURSOR_HELP );
+    verify( mockedControl ).setCursor( eq( expected ) );
+  }
+
+  @Test
+  public void testHandleSetCursor_toNull() {
+    JsonObject properties = new JsonObject().add( "cursor", JsonObject.NULL );
+
+    handler.handleSet( mockedControl, properties );
+
+    verify( mockedControl ).setCursor( eq( ( Cursor )null ) );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testHandleSetCursor_invalidCursor() {
+    JsonObject properties = new JsonObject().add( "cursor", "foo" );
+
+    handler.handleSet( mockedControl, properties );
   }
 
 }
