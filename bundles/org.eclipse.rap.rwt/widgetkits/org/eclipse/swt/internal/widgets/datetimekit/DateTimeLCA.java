@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,18 +25,17 @@ public final class DateTimeLCA extends AbstractWidgetLCA {
   private static final AbstractDateTimeLCADelegate TIME_LCA = new DateTimeTimeLCA();
   private static final AbstractDateTimeLCADelegate CALENDAR_LCA = new DateTimeCalendarLCA();
 
+  @Override
   public void preserveValues( Widget widget ) {
     getDelegate( widget ).preserveValues( ( DateTime )widget );
   }
 
-  public void readData( Widget widget ) {
-    getDelegate( widget ).readData( ( DateTime )widget );
-  }
-
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     getDelegate( widget ).renderInitialization( ( DateTime )widget );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     getDelegate( widget ).renderChanges( ( DateTime )widget );
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,6 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
 import org.eclipse.swt.internal.widgets.datetimekit.DateTimeLCAUtil.SubWidgetBounds;
@@ -30,6 +27,7 @@ final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
   private static final String PROP_MONTH = "month";
   private static final String PROP_DAY = "day";
 
+  @Override
   void preserveValues( DateTime dateTime ) {
     DateTimeLCAUtil.preserveValues( dateTime );
     preserveProperty( dateTime, PROP_YEAR, dateTime.getYear() );
@@ -38,23 +36,7 @@ final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
     DateTimeLCAUtil.preserveSubWidgetsBounds( dateTime, getSubWidgetsBounds( dateTime ) );
   }
 
-  void readData( DateTime dateTime ) {
-    String year = WidgetLCAUtil.readPropertyValue( dateTime, PROP_YEAR );
-    String month = WidgetLCAUtil.readPropertyValue( dateTime, PROP_MONTH );
-    String day = WidgetLCAUtil.readPropertyValue( dateTime, PROP_DAY );
-    if( day != null && month != null && year != null ) {
-      dateTime.setDate( NumberFormatUtil.parseInt( year ),
-                        NumberFormatUtil.parseInt( month ),
-                        NumberFormatUtil.parseInt( day ) );
-    }
-    ControlLCAUtil.processSelection( dateTime, null, true );
-    ControlLCAUtil.processDefaultSelection( dateTime, null );
-    ControlLCAUtil.processEvents( dateTime );
-    ControlLCAUtil.processKeyEvents( dateTime );
-    ControlLCAUtil.processMenuDetect( dateTime );
-    WidgetLCAUtil.processHelp( dateTime );
-  }
-
+  @Override
   void renderInitialization( DateTime dateTime ) throws IOException {
     DateTimeLCAUtil.renderInitialization( dateTime );
     DateTimeLCAUtil.renderCellSize( dateTime );
@@ -65,6 +47,7 @@ final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
     DateTimeLCAUtil.renderDatePattern( dateTime );
   }
 
+  @Override
   void renderChanges( DateTime dateTime ) throws IOException {
     DateTimeLCAUtil.renderChanges( dateTime );
     renderProperty( dateTime, PROP_YEAR, dateTime.getYear(), SWT.DEFAULT );
@@ -89,4 +72,5 @@ final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
       DateTimeLCAUtil.getSubWidgetBounds( dateTime, IDateTimeAdapter.DROP_DOWN_BUTTON )
     };
   }
+
 }
