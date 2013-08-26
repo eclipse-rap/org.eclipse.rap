@@ -60,6 +60,7 @@ rwt.scripting.Synchronizer.prototype = {
   },
 
   _sync : function( widget, property, value ) {
+    // TODO : use eventUtil.getSuspended instead, catches changes made during response
     if( widget.getUserData( rwt.scripting.Synchronizer._ENABLE_KEY ) ) {
       rap.getRemoteObject( widget ).set( property, value );
     }

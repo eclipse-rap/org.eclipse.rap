@@ -156,7 +156,7 @@ rap = {
       "send" : []
     },
     notify : function( type ) {
-      var listener = this.events[ type ];
+      var listener = this.events[ type ].concat();
       for( var i = 0; i < listener.length; i++ ) {
         listener[ i ]();
       }

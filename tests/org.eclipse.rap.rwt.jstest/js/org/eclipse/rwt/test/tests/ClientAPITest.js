@@ -345,6 +345,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
       assertEquals( 1, logger.getLog().length );
     },
 
+    testOff_DeregisterSecondListenerInFirstListener : function() {
+      var logger= TestUtil.getLogger();
+
+      rap.on( "send", function() { rap.off( "send", arguments.callee.caller ); } );
+      rap.on( "send", logger.log );
+      rap.getRemoteObject( shell ).call( "foo" );
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
     testOff_DeregisterWithoutRegister : function() {
       var logger = TestUtil.getLogger();
 
