@@ -10,15 +10,22 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.progressbarkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -36,6 +43,7 @@ public class ProgressBarLCA_Test {
 
   private Shell shell;
   private Display display;
+  private ProgressBar progressBar;
   private ProgressBarLCA lca;
 
   @Before
@@ -43,6 +51,7 @@ public class ProgressBarLCA_Test {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    progressBar = new ProgressBar( shell, SWT.NONE );
     lca = new ProgressBarLCA();
     Fixture.fakeNewRequest();
   }
@@ -54,7 +63,6 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testControlListeners() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( progressBar );
     ControlLCATestUtil.testMouseListener( progressBar );
     ControlLCATestUtil.testKeyListener( progressBar );
@@ -65,7 +73,6 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testPreserveValues() {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     Fixture.preserveWidgets();
     WidgetAdapter adapter = WidgetUtil.getAdapter( progressBar );
     Object preserved = adapter.getPreserved( ProgressBarLCA.PROP_STATE );
@@ -74,8 +81,6 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testRenderCreate() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
-
     lca.renderInitialization( progressBar );
 
     Message message = Fixture.getProtocolMessage();
@@ -84,9 +89,27 @@ public class ProgressBarLCA_Test {
   }
 
   @Test
-  public void testRenderParent() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( progressBar );
+    lca.renderInitialization( progressBar );
 
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof ProgressBarOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    ProgressBarOperationHandler handler = spy( new ProgressBarOperationHandler( progressBar ) );
+    getRemoteObject( getId( progressBar ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( progressBar ), "Help", new JsonObject() );
+    lca.readData( progressBar );
+
+    verify( handler ).handleNotifyHelp( progressBar, new JsonObject() );
+  }
+
+  @Test
+  public void testRenderParent() throws IOException {
     lca.renderInitialization( progressBar );
 
     Message message = Fixture.getProtocolMessage();
@@ -96,7 +119,7 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testRenderCreateWithVerticalAndIndeterminate() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.VERTICAL | SWT.INDETERMINATE );
+    progressBar = new ProgressBar( shell, SWT.VERTICAL | SWT.INDETERMINATE );
 
     lca.renderInitialization( progressBar );
 
@@ -109,8 +132,6 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testRenderInitialMinimum() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
-
     lca.render( progressBar );
 
     Message message = Fixture.getProtocolMessage();
@@ -120,8 +141,6 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testRenderMinimum() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
-
     progressBar.setMinimum( 10 );
     lca.renderChanges( progressBar );
 
@@ -131,7 +150,6 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testRenderMinimumUnchanged() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     Fixture.markInitialized( display );
     Fixture.markInitialized( progressBar );
 
@@ -145,8 +163,6 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testRenderInitialMaxmum() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
-
     lca.render( progressBar );
 
     Message message = Fixture.getProtocolMessage();
@@ -156,8 +172,6 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testRenderMaxmum() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
-
     progressBar.setMaximum( 10 );
     lca.renderChanges( progressBar );
 
@@ -167,7 +181,6 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testRenderMaxmumUnchanged() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     Fixture.markInitialized( display );
     Fixture.markInitialized( progressBar );
 
@@ -181,8 +194,6 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testRenderInitialSelection() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
-
     lca.render( progressBar );
 
     Message message = Fixture.getProtocolMessage();
@@ -192,8 +203,6 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testRenderSelection() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
-
     progressBar.setSelection( 10 );
     lca.renderChanges( progressBar );
 
@@ -203,7 +212,6 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testRenderSelectionUnchanged() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     Fixture.markInitialized( display );
     Fixture.markInitialized( progressBar );
 
@@ -217,8 +225,6 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testRenderInitialState() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
-
     lca.render( progressBar );
 
     Message message = Fixture.getProtocolMessage();
@@ -228,8 +234,6 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testRenderState() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
-
     progressBar.setState( SWT.ERROR );
     lca.renderChanges( progressBar );
 
@@ -239,7 +243,6 @@ public class ProgressBarLCA_Test {
 
   @Test
   public void testRenderStateUnchanged() throws IOException {
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     Fixture.markInitialized( display );
     Fixture.markInitialized( progressBar );
 

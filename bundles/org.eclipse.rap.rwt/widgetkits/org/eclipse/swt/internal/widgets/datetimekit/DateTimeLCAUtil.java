@@ -62,6 +62,7 @@ final class DateTimeLCAUtil {
 
   static void renderInitialization( DateTime dateTime ) {
     RemoteObject remoteObject = createRemoteObject( dateTime, TYPE );
+    remoteObject.setHandler( new DateTimeOperationHandler( dateTime ) );
     remoteObject.set( "parent", getId( dateTime.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( dateTime, ALLOWED_STYLES ) ) );
   }

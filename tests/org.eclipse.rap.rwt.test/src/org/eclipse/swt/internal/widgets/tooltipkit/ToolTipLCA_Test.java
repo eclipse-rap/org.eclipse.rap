@@ -11,22 +11,24 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tooltipkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -34,7 +36,6 @@ import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
@@ -67,51 +68,6 @@ public class ToolTipLCA_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
-  }
-
-  @Test
-  public void testReadVisibleWithRequestParamFalse() {
-    toolTip.setVisible( true );
-
-    Fixture.fakeSetProperty( getId( toolTip ), "visible", false );
-    Fixture.readDataAndProcessAction( display );
-
-    assertFalse( toolTip.isVisible() );
-  }
-
-  @Test
-  public void testReadVisibleWithNoRequestParam() {
-    toolTip.setVisible( true );
-    Fixture.readDataAndProcessAction( display );
-    assertTrue( toolTip.isVisible() );
-  }
-
-  @Test
-  public void testSelectionEvent() {
-    final SelectionEvent[] eventLog = { null };
-    toolTip.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        eventLog[ 0 ] = event;
-      }
-    } );
-
-    Fixture.fakeNotifyOperation( getId( toolTip ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.readDataAndProcessAction( display );
-
-    SelectionEvent event = eventLog[ 0 ];
-    assertNotNull( event );
-    assertSame( toolTip, event.widget );
-    assertTrue( event.doit );
-    assertNull( event.data );
-    assertNull( event.text );
-    assertEquals( 0, event.detail );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.width );
-    assertEquals( 0, event.height );
-    assertSame( display, event.display );
-    assertNull( event.item );
   }
 
   @Test
@@ -173,6 +129,26 @@ public class ToolTipLCA_Test {
     assertEquals( "rwt.widgets.ToolTip", operation.getType() );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "ICON_INFORMATION" ) );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( toolTip );
+    lca.renderInitialization( toolTip );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof ToolTipOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    ToolTipOperationHandler handler = spy( new ToolTipOperationHandler( toolTip ) );
+    getRemoteObject( getId( toolTip ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( toolTip ), "Selection", new JsonObject() );
+    lca.readData( toolTip );
+
+    verify( handler ).handleNotifySelection( toolTip, new JsonObject() );
   }
 
   @Test

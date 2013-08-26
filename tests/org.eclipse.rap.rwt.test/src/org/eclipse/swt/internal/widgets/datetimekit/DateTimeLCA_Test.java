@@ -11,28 +11,30 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -46,7 +48,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 
 public class DateTimeLCA_Test {
@@ -114,34 +115,19 @@ public class DateTimeLCA_Test {
     testPreserveControlProperties( dateTime );
   }
 
-  @Test
-  public void testSelectionEvent_Date() {
-    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
-    fakeAndCheckSelectionEvent( dateTime );
-  }
-
-  @Test
-  public void testSelectionEvent_Time() {
-    DateTime dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
-    fakeAndCheckSelectionEvent( dateTime );
-  }
-
-  // 315950: [DateTime] method getDay() return wrong day in particular
-  // circumstances
+  // 315950: [DateTime] method getDay() return wrong day in particular circumstances
   @Test
   public void testDateTimeDate_Bug315950() {
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM | SWT.DROP_DOWN );
+    getRemoteObject( dateTime ).setHandler( new DateTimeOperationHandler( dateTime ) );
     dateTime.setDay( 15 );
     dateTime.setMonth( 5 );
     dateTime.setYear( 2010 );
     Fixture.markInitialized( display );
-    // Test preserved day, month, year
-    Fixture.preserveWidgets();
 
     Fixture.fakeNotifyOperation( getId( dateTime ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.fakeSetProperty( getId( dateTime ), "day", 31 );
-    Fixture.fakeSetProperty( getId( dateTime ), "month", 4 );
-    Fixture.fakeSetProperty( getId( dateTime ), "year", 2010 );
+    JsonObject properties = new JsonObject().add( "year", 2010 ).add( "month", 4 ).add( "day", 31 );
+    Fixture.fakeSetOperation( getId( dateTime ), properties );
     Fixture.readDataAndProcessAction( dateTime );
 
     assertEquals( 31, dateTime.getDay() );
@@ -200,26 +186,6 @@ public class DateTimeLCA_Test {
     Fixture.clearPreserved();
   }
 
-  private void fakeAndCheckSelectionEvent( DateTime dateTime ) {
-    SelectionListener listener = mock( SelectionListener.class );
-    dateTime.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( dateTime ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.readDataAndProcessAction( dateTime );
-
-    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
-    SelectionEvent event = captor.getValue();
-    assertEquals( dateTime, event.getSource() );
-    assertEquals( null, event.item );
-    assertEquals( SWT.NONE, event.detail );
-    assertEquals( 0, event.x );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.width );
-    assertEquals( 0, event.height );
-    assertTrue( event.doit );
-  }
-
   @Test
   public void testRenderCreateDate() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.SHORT | SWT.DROP_DOWN );
@@ -253,6 +219,28 @@ public class DateTimeLCA_Test {
   }
 
   @Test
+  public void testRenderInitialization_Date_setsOperationHandler() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+    String id = getId( dateTime );
+    lca.renderInitialization( dateTime );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof DateTimeOperationHandler );
+  }
+
+  @Test
+  public void testReadData_Date_usesOperationHandler() {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+    DateTimeOperationHandler handler = spy( new DateTimeOperationHandler( dateTime ) );
+    getRemoteObject( getId( dateTime ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( dateTime ), "Help", new JsonObject() );
+    lca.readData( dateTime );
+
+    verify( handler ).handleNotifyHelp( dateTime, new JsonObject() );
+  }
+
+  @Test
   public void testRenderCreateTime() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
 
@@ -267,6 +255,18 @@ public class DateTimeLCA_Test {
   }
 
   @Test
+  public void testReadData_Time_usesOperationHandler() {
+    DateTime dateTime = new DateTime( shell, SWT.TIME );
+    DateTimeOperationHandler handler = spy( new DateTimeOperationHandler( dateTime ) );
+    getRemoteObject( getId( dateTime ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( dateTime ), "Help", new JsonObject() );
+    lca.readData( dateTime );
+
+    verify( handler ).handleNotifyHelp( dateTime, new JsonObject() );
+  }
+
+  @Test
   public void testRenderCreateCalendar() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR | SWT.LONG );
 
@@ -278,6 +278,18 @@ public class DateTimeLCA_Test {
     java.util.List<Object> styles = Arrays.asList( operation.getStyles() );
     assertTrue( styles.contains( "CALENDAR" ) );
     assertTrue( styles.contains( "LONG" ) );
+  }
+
+  @Test
+  public void testReadData_Calendar_usesOperationHandler() {
+    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
+    DateTimeOperationHandler handler = spy( new DateTimeOperationHandler( dateTime ) );
+    getRemoteObject( getId( dateTime ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( dateTime ), "Help", new JsonObject() );
+    lca.readData( dateTime );
+
+    verify( handler ).handleNotifyHelp( dateTime, new JsonObject() );
   }
 
   @Test

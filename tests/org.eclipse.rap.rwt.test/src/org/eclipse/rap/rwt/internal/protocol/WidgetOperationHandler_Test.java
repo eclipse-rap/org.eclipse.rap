@@ -90,6 +90,15 @@ public class WidgetOperationHandler_Test {
   }
 
   @Test
+  public void testCreateSelectionEvent_withDetail_drag() {
+    JsonObject properties = new JsonObject().add( "detail", "drag" );
+
+    Event event = createSelectionEvent( SWT.Selection, properties );
+
+    assertEquals( SWT.DRAG, event.detail );
+  }
+
+  @Test
   public void testCreateSelectionEvent_withBounds() {
     JsonObject properties = new JsonObject()
       .add( "x", 1 )

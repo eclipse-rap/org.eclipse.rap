@@ -11,25 +11,25 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.sashkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
+
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
@@ -43,7 +43,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 
 public class SashLCA_Test {
@@ -151,43 +150,32 @@ public class SashLCA_Test {
   }
 
   @Test
-  public void testSelectionEvent() {
-    SelectionListener listener = mock( SelectionListener.class );
-    sash.addSelectionListener( listener );
-
-    JsonObject properties = new JsonObject()
-      .add( ClientMessageConst.EVENT_PARAM_DETAIL, "drag" )
-      .add( ClientMessageConst.EVENT_PARAM_X, 1 )
-      .add( ClientMessageConst.EVENT_PARAM_Y, 2 )
-      .add( ClientMessageConst.EVENT_PARAM_WIDTH, 3 )
-      .add( ClientMessageConst.EVENT_PARAM_HEIGHT, 4 )
-      .add( "altKey", "true" );
-    Fixture.fakeNotifyOperation( getId( sash ),
-                                 ClientMessageConst.EVENT_SELECTION,
-                                 properties );
-    Fixture.readDataAndProcessAction( sash );
-
-    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
-    SelectionEvent event = captor.getValue();
-    assertEquals( sash, event.getSource() );
-    assertEquals( null, event.item );
-    assertEquals( 1, event.x );
-    assertEquals( 2, event.y );
-    assertEquals( 3, event.width );
-    assertEquals( 4, event.height );
-    assertTrue( event.doit );
-    assertEquals( SWT.DRAG, event.detail );
-    assertTrue( ( event.stateMask & SWT.ALT ) != 0 );
-  }
-
-  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( sash );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( sash );
     assertEquals( "rwt.widgets.Sash", operation.getType() );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( sash );
+    lca.renderInitialization( sash );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof SashOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    SashOperationHandler handler = spy( new SashOperationHandler( sash ) );
+    getRemoteObject( getId( sash ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( sash ), "Help", new JsonObject() );
+    lca.readData( sash );
+
+    verify( handler ).handleNotifyHelp( sash, new JsonObject() );
   }
 
   @Test

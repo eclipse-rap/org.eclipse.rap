@@ -16,7 +16,6 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRe
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -25,7 +24,6 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
@@ -65,17 +63,11 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
     preserveListener( toolTip, PROP_SELECTION_LISTENER, isListening( toolTip, SWT.Selection ) );
   }
 
-  public void readData( Widget widget ) {
-    ToolTip toolTip = ( ToolTip )widget;
-    ControlLCAUtil.processSelection( toolTip, null, false );
-    ControlLCAUtil.processDefaultSelection( toolTip, null );
-    readVisible( toolTip );
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ToolTip toolTip = ( ToolTip )widget;
     RemoteObject remoteObject = createRemoteObject( toolTip, TYPE );
+    remoteObject.setHandler( new ToolTipOperationHandler( toolTip ) );
     remoteObject.set( "parent", getId( toolTip.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( toolTip, ALLOWED_STYLES ) ) );
   }
@@ -95,13 +87,6 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
                     PROP_SELECTION_LISTENER,
                     isListening( toolTip, SWT.Selection ),
                     false );
-  }
-
-  private static void readVisible( ToolTip toolTip ) {
-    String value = readPropertyValue( toolTip, PROP_VISIBLE );
-    if( value != null ) {
-      toolTip.setVisible( new Boolean( value ).booleanValue() );
-    }
   }
 
   private static Point getLocation( ToolTip toolTip ) {

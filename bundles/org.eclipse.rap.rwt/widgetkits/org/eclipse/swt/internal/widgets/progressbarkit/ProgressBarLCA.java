@@ -58,18 +58,11 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     preserveProperty( progressBar, PROP_STATE, getState( progressBar ) );
   }
 
-  public void readData( Widget widget ) {
-    ProgressBar progressBar = ( ProgressBar )widget;
-    ControlLCAUtil.processEvents( progressBar );
-    ControlLCAUtil.processKeyEvents( progressBar );
-    ControlLCAUtil.processMenuDetect( progressBar );
-    WidgetLCAUtil.processHelp( progressBar );
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ProgressBar progressBar = ( ProgressBar )widget;
     RemoteObject remoteObject = createRemoteObject( progressBar, TYPE );
+    remoteObject.setHandler( new ProgressBarOperationHandler( progressBar ) );
     remoteObject.set( "parent", getId( progressBar.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( progressBar, ALLOWED_STYLES ) ) );
   }
