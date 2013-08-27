@@ -307,14 +307,24 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxyFactory_Test", 
       assertEquals( "foo", widgetProxy.getText() );
     },
 
-    testComboGetSelection : function() {
-      var combo = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Combo" );
+    testButtonGetText : function() {
+      var button = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Button" );
       TestUtil.flush();
-      var widgetProxy = WidgetProxyFactory.getWidgetProxy( combo );
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( button );
 
-      widgetProxy.setSelection( [ 1, 2 ] );
+      widgetProxy.setText( "foo" );
 
-      assertEquals( [ 1, 2 ], widgetProxy.getSelection() );
+      assertEquals( "foo", widgetProxy.getText() );
+    },
+
+    testLabelGetText : function() {
+      var label = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Label" );
+      TestUtil.flush();
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( label );
+
+      widgetProxy.setText( "foo" );
+
+      assertEquals( "foo", widgetProxy.getText() );
     },
 
     testGetBackground : function() {

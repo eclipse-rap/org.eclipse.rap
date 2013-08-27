@@ -26,6 +26,12 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Label", {
   getDestroyableChildren : rwt.remote.HandlerUtil.getDestroyableChildrenFinder(),
 
   properties : rwt.remote.HandlerUtil.extendControlProperties( [
+    /**
+     * @name setText
+     * @methodOf Button#
+     * @description Sets the receivers text to the given string.
+     * @param {string} text the new text
+     */
     "text",
     "mnemonicIndex",
     "image",
@@ -57,6 +63,15 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Label", {
    * @description The constructor is not public.
    * @since 2.2
    */
-  scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods( {} )
-
+   scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods(
+     /** @lends Label.prototype */
+   {
+     /**
+      * @description  Returns the widget text.
+      * @return {string} the widget text
+      */
+     getText : function() {
+       return this.getCellContent( 1 );
+     }
+   } )
 } );

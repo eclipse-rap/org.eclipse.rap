@@ -57,6 +57,7 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
       this._rawText = value;
       this._mnemonicIndex = null;
       this._applyText( false );
+      this.dispatchSimpleEvent( "changeText", this ); // used by Synchronizer.js
     },
 
     setMnemonicIndex : function( value ) {

@@ -137,6 +137,32 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.Synchronizer_Test", {
       assertEquals( "wait", msg.findSetProperty( "w3", "cursor" ) );
     },
 
+    testButtonSetText_sync : function() {
+      TestUtil.initRequestLog();
+      var button = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Button" );
+      TestUtil.flush();
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( button );
+
+      widgetProxy.setText( "foo" );
+
+      rwt.remote.Connection.getInstance().send();
+      var msg = TestUtil.getMessageObject();
+      assertEquals( "foo", msg.findSetProperty( "w4", "text" ) );
+    },
+
+    testLabelSetText_sync : function() {
+      TestUtil.initRequestLog();
+      var label = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Label" );
+      TestUtil.flush();
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( label );
+
+      widgetProxy.setText( "foo" );
+
+      rwt.remote.Connection.getInstance().send();
+      var msg = TestUtil.getMessageObject();
+      assertEquals( "foo", msg.findSetProperty( "w4", "text" ) );
+    },
+
     ////////
     // Helper
     setUp : function() {

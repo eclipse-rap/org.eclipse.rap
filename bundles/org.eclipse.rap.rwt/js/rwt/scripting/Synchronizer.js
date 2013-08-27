@@ -20,6 +20,15 @@ rwt.scripting.Synchronizer = function( widget ) {
   widget.addEventListener( "changeEnabled", this._onChangeEnabled, this );
   widget.addEventListener( "changeToolTipText", this._onChangeToolTipText, this );
   widget.addEventListener( "changeCursor", this._onChangeCursor, this );
+  switch( widget.classname ) {
+    case "rwt.widgets.Button":
+      widget.addEventListener( "changeText", this._onChangeButtonText, this );
+    break;
+    case "rwt.widgets.Label":
+      widget.addEventListener( "changeText", this._onChangeLabelText, this );
+    break;
+  }
+
 };
 
 rwt.scripting.Synchronizer._ENABLE_KEY = "rwt.scripting.Synchronizer.ENABLED";
@@ -32,7 +41,7 @@ rwt.scripting.Synchronizer.disable = function( widget ) {
   widget.setUserData( this._ENABLE_KEY, false );
 };
 
-rwt.scripting.Synchronizer.prototype = {
+rwt.scripting.Synchronizer.prototype = { // TODO : use the getter defined by the proxy?
 
   _onChangeBackgroundColor : function( event ) {
     var widget = event.getTarget();
@@ -56,14 +65,27 @@ rwt.scripting.Synchronizer.prototype = {
     this._sync( widget, "enabled", widget.getEnabled() );
   },
 
-  _onChangeToolTipText : function( widget ) {
-    this._sync( widget, "toolTip", widget.getUserData( "toolTipText" ) );
-  },
-
   _onChangeCursor : function( event ) {
     var widget = event.getTarget();
     this._sync( widget, "cursor", widget.__user$cursor || null );
   },
+
+  // These events are fired by "dispatchSimpleEvent" in the widgets type handler or setter:
+
+  _onChangeToolTipText : function( widget ) {
+    this._sync( widget, "toolTip", widget.getUserData( "toolTipText" ) );
+  },
+
+  _onChangeButtonText : function( widget ) {
+    this._sync( widget, "text", widget.getCellContent( 2 ) );
+  },
+
+  _onChangeLabelText : function( widget ) {
+    this._sync( widget, "text", widget.getCellContent( 1 ) );
+  },
+
+  /////////
+  // helper
 
   _sync : function( widget, property, value ) {
     // TODO : use eventUtil.getSuspended instead, catches changes made during response

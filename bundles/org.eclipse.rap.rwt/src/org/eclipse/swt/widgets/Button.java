@@ -112,9 +112,8 @@ public class Button extends Control {
    * This method sets the button label.  The label may include
    * the mnemonic character but must not contain line delimiters.
    * </p>
-   * <p>
-   * Caution: Mnemonics are not implemented yet.
    *
+   * <p>
    * Mnemonics are indicated by an '&amp;' that causes the next
    * character to be the mnemonic.  When the user presses a
    * key sequence that matches the mnemonic, a selection

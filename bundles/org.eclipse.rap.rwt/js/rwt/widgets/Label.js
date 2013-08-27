@@ -54,6 +54,7 @@ rwt.qx.Class.define( "rwt.widgets.Label", {
       this._rawText = value;
       this._applyText( false );
       this._mnemonicIndex = null;
+      this.dispatchSimpleEvent( "changeText", this ); // used by Synchronizer.js
     },
 
     setMnemonicIndex : function( value ) {
