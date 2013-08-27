@@ -413,6 +413,139 @@ rwt.scripting.SWT = {
   /**
    * Keyboard event constant representing the tab key
    */
-  TAB : 9
+  TAB : 9,
+
+  /**
+   * System arrow cursor
+   * @see Control#setCursor
+   */
+  CURSOR_ARROW : "default",
+
+  /**
+   * System wait cursor
+   * @see Control#setCursor
+   */
+  CURSOR_WAIT : "wait",
+
+  /**
+   * System cross hair cursor
+   * @see Control#setCursor
+   */
+  CURSOR_CROSS : "crosshair",
+
+  /**
+   * System app startup cursor
+   * @see Control#setCursor
+   */
+  CURSOR_APPSTARTING : "progress",
+
+  /**
+   * System help cursor
+   * @see Control#setCursor
+   */
+  CURSOR_HELP : "help",
+
+  /**
+   * System resize all directions cursor
+   * @see Control#setCursor
+   */
+  CURSOR_SIZEALL : "move",
+
+  /**
+   * System resize north-east-south-west cursor
+   * @see Control#setCursor
+   */
+  CURSOR_SIZENESW : "ne-resize",
+
+  /**
+   * System resize north-south cursor
+   * @see Control#setCursor
+   */
+  CURSOR_SIZENS : "row-resize",
+
+  /**
+   * System resize north-west-south-east cursor
+   * @see Control#setCursor
+   */
+  CURSOR_SIZENWSE : "nw-resize",
+
+  /**
+   * System resize west-east cursor
+   * @see Control#setCursor
+   */
+  CURSOR_SIZEWE : "col-resize",
+
+  /**
+   * System resize north cursor
+   * @see Control#setCursor
+   */
+  CURSOR_SIZEN : "n-resize",
+
+  /**
+   * System resize south cursor
+   * @see Control#setCursor
+   */
+  CURSOR_SIZES : "s-resize",
+
+  /**
+   * System resize east cursor
+   * @see Control#setCursor
+   */
+  CURSOR_SIZEE : "e-resize",
+
+  /**
+   * System resize west cursor
+   * @see Control#setCursor
+   */
+  CURSOR_SIZEW : "w-resize",
+
+  /**
+   * System resize north-east cursor
+   * @see Control#setCursor
+   */
+  CURSOR_SIZENE : "ne-resize",
+
+  /**
+   * System resize south-east cursor
+   * @see Control#setCursor
+   */
+  CURSOR_SIZESE : "se-resize",
+
+  /**
+   * System resize south-west cursor
+   * @see Control#setCursor
+   */
+  CURSOR_SIZESW : "sw-resize",
+
+  /**
+   * System resize north-west cursor
+   * @see Control#setCursor
+   */
+  CURSOR_SIZENW : "nw-resize",
+
+  /**
+   * System up arrow cursor
+   * @see Control#setCursor
+   */
+  CURSOR_UPARROW : "rwt-resources/resource/widget/rap/cursors/up_arrow.cur",
+
+  /**
+   * System i-beam cursor
+   * @see Control#setCursor
+   */
+  CURSOR_IBEAM : "text",
+
+  /**
+   * System "not allowed" cursor
+   * @see Control#setCursor
+   */
+  CURSOR_NO : "not-allowed",
+
+  /**
+   * System hand cursor
+   * @see Control#setCursor
+   */
+  CURSOR_HAND : "pointer"
+
 
 };

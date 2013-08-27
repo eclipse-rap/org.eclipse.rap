@@ -92,6 +92,21 @@ rwt.remote.HandlerUtil = {
      */
     "background",
     "backgroundImage",
+    /**
+     * @name setCursor
+     * @methodOf Control#
+     * Sets the receiver's cursor to the cursor specified by the
+     * argument, or to the default cursor for that kind of control
+     * if the argument is null.
+     * <p>
+     * When the mouse pointer passes over a control its appearance
+     * is changed to match the control's cursor.
+     * </p>
+     * <p>
+     * All possible values are available as constants on the {@link SWT} object.
+     * </p>
+     * @param {string|null} cursor the new cursor (or null)
+     */
     "cursor",
     "customVariant",
     "bounds",
@@ -474,7 +489,21 @@ rwt.remote.HandlerUtil = {
       */
      getEnabled : function() {
        return this.getEnabled();
-     }
+     },
+     /**
+      * @description Returns the receiver's cursor, or null if it has not been set.
+      * <p>
+      * When the mouse pointer passes over a control its appearance
+      * is changed to match the control's cursor.
+      * </p>
+      * <p>
+      * All possible values are available as constants on the {@link SWT} object.
+      * </p>
+      * @return {string|null} the receiver's cursor or <code>null</code>
+      */
+      getCursor : function() {
+        return this.__user$cursor || null;
+      }
   },
 
   ////////////////////

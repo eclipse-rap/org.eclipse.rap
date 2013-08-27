@@ -847,6 +847,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     cursor : {
       check : "String",
       apply : "_applyCursor",
+      event : "changeCursor",
       themeable : true,
       nullable : true,
       init : null

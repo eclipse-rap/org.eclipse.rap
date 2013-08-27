@@ -126,6 +126,17 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.Synchronizer_Test", {
       assertEquals( "foo", msg.findSetProperty( "w3", "toolTip" ) );
     },
 
+    testSetCursor_sync : function() {
+      TestUtil.initRequestLog();
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+
+      widgetProxy.setCursor( SWT.CURSOR_WAIT );
+
+      rwt.remote.Connection.getInstance().send();
+      var msg = TestUtil.getMessageObject();
+      assertEquals( "wait", msg.findSetProperty( "w3", "cursor" ) );
+    },
+
     ////////
     // Helper
     setUp : function() {

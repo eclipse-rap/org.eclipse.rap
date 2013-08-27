@@ -323,6 +323,14 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxyFactory_Test", 
       assertFalse( widgetProxy.getEnabled() );
     },
 
+    testGetCursor : function() {
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+
+      widgetProxy.setCursor( SWT.CURSOR_HELP );
+
+      assertEquals( SWT.CURSOR_HELP, widgetProxy.getCursor() );
+    },
+
     ////////
     // Helper
 

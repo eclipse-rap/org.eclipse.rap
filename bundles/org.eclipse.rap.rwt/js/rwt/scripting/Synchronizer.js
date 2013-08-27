@@ -19,6 +19,7 @@ rwt.scripting.Synchronizer = function( widget ) {
   widget.addEventListener( "changeVisibility", this._onChangeVisibility, this );
   widget.addEventListener( "changeEnabled", this._onChangeEnabled, this );
   widget.addEventListener( "changeToolTipText", this._onChangeToolTipText, this );
+  widget.addEventListener( "changeCursor", this._onChangeCursor, this );
 };
 
 rwt.scripting.Synchronizer._ENABLE_KEY = "rwt.scripting.Synchronizer.ENABLED";
@@ -57,6 +58,11 @@ rwt.scripting.Synchronizer.prototype = {
 
   _onChangeToolTipText : function( widget ) {
     this._sync( widget, "toolTip", widget.getUserData( "toolTipText" ) );
+  },
+
+  _onChangeCursor : function( event ) {
+    var widget = event.getTarget();
+    this._sync( widget, "cursor", widget.__user$cursor || null );
   },
 
   _sync : function( widget, property, value ) {
