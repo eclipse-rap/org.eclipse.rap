@@ -283,6 +283,40 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxyFactory_Test", 
       canvas.destroy();
     },
 
+    testAddListenerToCombo_ModifyEvent : function() {
+      var combo = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Combo" );
+      TestUtil.flush();
+      var logger = this._createLogger();
+
+      EventBinding.addListener( combo, "Modify", logger );
+      TestUtil.fakeResponse( true );
+      combo._field.setValue( "foo" );
+      TestUtil.fakeResponse( false);
+
+      assertEquals( 1, logger.log.length );
+      combo.destroy();
+    },
+
+    testComboGetText : function() {
+      var combo = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Combo" );
+      TestUtil.flush();
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( combo );
+
+      widgetProxy.setText( "foo" );
+
+      assertEquals( "foo", widgetProxy.getText() );
+    },
+
+    testComboGetSelection : function() {
+      var combo = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Combo" );
+      TestUtil.flush();
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( combo );
+
+      widgetProxy.setSelection( [ 1, 2 ] );
+
+      assertEquals( [ 1, 2 ], widgetProxy.getSelection() );
+    },
+
     testGetBackground : function() {
       var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
 

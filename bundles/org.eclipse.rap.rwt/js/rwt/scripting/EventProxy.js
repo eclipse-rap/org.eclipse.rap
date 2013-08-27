@@ -259,7 +259,7 @@ var initPaintEvent = function( event, target ) {
 
 var initVerifyEvent = function( event, originalEvent ) {
   var text = originalEvent.getTarget();
-  if( text.classname === "rwt.widgets.Text" ) {
+  if( text instanceof rwt.widgets.base.BasicText ) {
     var keyCode = getLastKeyCode();
     var newValue = text.getComputedValue();
     var oldValue = text.getValue();

@@ -71,12 +71,15 @@ rwt.scripting.EventBinding = {
   },
 
   _getNativeEventSource : function( source, eventType ) {
-    var SWT = rwt.scripting.SWT;
-    var result;
-    if( source.classname === "rwt.widgets.List" && eventType === "Selection" ) {
-      result = source.getManager();
-    } else {
-      result = source;
+    var result = source;
+    switch( source.classname + ":" + eventType ) {
+      case "rwt.widgets.List:Selection":
+        result = source.getManager();
+      break;
+      case "rwt.widgets.Combo:Modify":
+      case "rwt.widgets.Combo:Verify":
+        result = source._field;
+      break;
     }
     return result;
   },
@@ -116,6 +119,10 @@ rwt.scripting.EventBinding = {
       "Selection" : "execute"
     },
     "rwt.widgets.Text" : {
+      "Verify" : "input", // TODO [tb] : does currently not react on programatic changes
+      "Modify" : "changeValue"
+    },
+    "rwt.widgets.Combo" : {
       "Verify" : "input", // TODO [tb] : does currently not react on programatic changes
       "Modify" : "changeValue"
     }

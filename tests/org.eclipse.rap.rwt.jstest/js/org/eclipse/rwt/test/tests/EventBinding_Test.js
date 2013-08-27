@@ -473,6 +473,33 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertEquals( 1, logger.log.length );
     },
 
+    testAddListenerToCombo_ModifyEvent : function() {
+      var combo = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Combo" );
+      TestUtil.flush();
+      var logger = this._createLogger();
+
+      EventBinding.addListener( combo, "Modify", logger );
+      TestUtil.fakeResponse( true );
+      combo._field.setValue( "foo" );
+      TestUtil.fakeResponse( false);
+
+      assertEquals( 1, logger.log.length );
+      combo.destroy();
+    },
+
+    testAddListenerToCombo_VerifyEvent : function() {
+      var combo = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Combo" );
+      TestUtil.flush();
+      var logger = this._createLogger();
+
+      EventBinding.addListener( combo, "Verify", logger );
+      this._inputText( combo._field, "goo" );
+
+      assertEquals( 1, logger.log.length );
+      rwt.remote.Connection.getInstance().send();
+      combo.destroy();
+    },
+
     /////////
     // helper
 

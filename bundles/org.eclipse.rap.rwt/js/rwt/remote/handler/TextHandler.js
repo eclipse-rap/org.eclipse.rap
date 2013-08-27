@@ -120,8 +120,6 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Text", {
 
     /**
      * @description  Returns the widget text.
-     * with the specified name, or null if it has not been set.
-     * The java widget is not affected by this method.
      * @return {string} the widget text
      */
     getText : function() {
