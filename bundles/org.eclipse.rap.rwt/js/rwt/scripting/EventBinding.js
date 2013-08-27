@@ -112,6 +112,9 @@ rwt.scripting.EventBinding = {
       "Selection" : "changeSelection",
       "DefaultSelection" : "dblclick"
     },
+    "rwt.widgets.Button" : {
+      "Selection" : "execute"
+    },
     "rwt.widgets.Text" : {
       "Verify" : "input", // TODO [tb] : does currently not react on programatic changes
       "Modify" : "changeValue"

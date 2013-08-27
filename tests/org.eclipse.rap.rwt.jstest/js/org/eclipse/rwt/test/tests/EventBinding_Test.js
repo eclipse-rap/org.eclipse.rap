@@ -430,6 +430,27 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertEquals( 1, logger.log.length );
     },
 
+    testAddListener_SelectionEventOnButton : function() {
+      Processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w2"
+        }
+      } );
+      var button = ObjectRegistry.getObject( "w4" );
+      var logger = this._createLogger();
+      TestUtil.flush();
+
+      EventBinding.addListener( button, "Selection", logger );
+      TestUtil.click( button );
+      TestUtil.flush();
+
+      assertEquals( 1, logger.log.length );
+    },
+
     testAddListener_DefaultSelectionEventOnList : function() {
       Processor.processOperation( {
         "target" : "w4",
