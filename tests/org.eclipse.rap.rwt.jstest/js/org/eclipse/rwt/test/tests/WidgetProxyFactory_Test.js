@@ -283,6 +283,46 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxyFactory_Test", 
       canvas.destroy();
     },
 
+    testGetBackground : function() {
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+
+      widgetProxy.setBackground( [ 1, 2, 3 ] );
+
+      assertEquals( [ 1, 2, 3 ], widgetProxy.getBackground() );
+    },
+
+    testGetForeground : function() {
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+
+      widgetProxy.setForeground( [ 1, 2, 3 ] );
+
+      assertEquals( [ 1, 2, 3 ], widgetProxy.getForeground() );
+    },
+
+    testGetToolTipText : function() {
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+
+      widgetProxy.setToolTipText( "foo" );
+
+      assertEquals( "foo", widgetProxy.getToolTipText() );
+    },
+
+    testGetVisible : function() {
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+
+      widgetProxy.setVisible( false );
+
+      assertFalse( widgetProxy.getVisible() );
+    },
+
+    testGetEnabled : function() {
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+
+      widgetProxy.setEnabled( false );
+
+      assertFalse( widgetProxy.getEnabled() );
+    },
+
     ////////
     // Helper
 

@@ -43,7 +43,7 @@ rwt.remote.HandlerUtil = {
      * may be null indicating that no tool tip text should be shown.
      * @param {string|null} toolTipText the new tool tip text (or null)
      */
-    "toolTip", // matching getter?
+    "toolTip",
     /**
      * @name setVisible
      * @methodOf Control#
@@ -61,7 +61,7 @@ rwt.remote.HandlerUtil = {
      * </p>
      * @param {boolean} visible the new visibility state
      */
-    "visibility", // TODO : matching getter
+    "visibility",
     /**
      * @name setEnabled
      * @methodOf Control#
@@ -72,7 +72,7 @@ rwt.remote.HandlerUtil = {
      *
      * @param {boolean} enabled the new enabled state
      */
-    "enabled",// TODO : matching getter
+    "enabled",
     /**
      * @name setForeground
      * @methodOf Control#
@@ -415,7 +415,6 @@ rwt.remote.HandlerUtil = {
       }
       return result;
     },
-
     /**
      * @description  Forces the receiver to have the <em>keyboard focus</em>, causing
      * all keyboard events to be delivered to it.
@@ -429,7 +428,53 @@ rwt.remote.HandlerUtil = {
         result = true;
       }
       return result;
-    }
+    },
+    /**
+     * @description Returns the receiver's background color.
+     * @return {int[]} the background color as array [ red, green, blue ]
+     */
+    getBackground : function() {
+       return rwt.util.Colors.stringToRgb( this.getBackgroundColor() );
+    },
+    /**
+     * @description Returns the receiver's foreground color.
+     * @return {int[]} the foreground color as array [ red, green, blue ]
+     */
+    getForeground : function() {
+       return rwt.util.Colors.stringToRgb( this.getTextColor() );
+     },
+     /**
+      * @description Returns the receiver's tool tip text, or null if it has
+      * not been set.
+      * @return {string|null} the receiver's tool tip text
+      */
+     getToolTipText : function() {
+       return this.getUserData( "toolTipText" );
+     },
+     /**
+      * @description Returns <code>true</code> if the receiver is visible, and
+      * <code>false</code> otherwise.
+      * <p>
+      * If one of the receiver's ancestors is not visible or some
+      * other condition makes the receiver not visible, this method
+      * may still indicate that it is considered visible even though
+      * it may not actually be showing.
+      * </p>
+      * @return {boolean} the receiver's visibility state
+      */
+     getVisible : function() {
+        return this.getVisibility();
+     },
+     /**
+      * @description Returns <code>true</code> if the receiver is enabled, and
+      * <code>false</code> otherwise. A disabled control is typically
+      * not selectable from the user interface and draws with an
+      * inactive or "grayed" look.
+      * @return {boolean} the receiver's enabled state
+      */
+     getEnabled : function() {
+       return this.getEnabled();
+     }
   },
 
   ////////////////////
