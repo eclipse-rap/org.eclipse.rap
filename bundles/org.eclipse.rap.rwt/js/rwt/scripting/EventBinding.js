@@ -76,6 +76,9 @@ rwt.scripting.EventBinding = {
       case "rwt.widgets.List:Selection":
         result = source.getManager();
       break;
+      case "rwt.widgets.Spinner:Modify":
+        result = source._textfield;
+      break;
       case "rwt.widgets.Combo:Modify":
       case "rwt.widgets.Combo:Verify":
         result = source._field;
@@ -116,6 +119,10 @@ rwt.scripting.EventBinding = {
     },
     "rwt.widgets.Button" : {
       "Selection" : "execute"
+    },
+    "rwt.widgets.Spinner" : {
+      "Selection" : "change",
+      "Modify" : "changeValue"
     },
     "rwt.widgets.Text" : {
       "Verify" : "input", // TODO [tb] : does currently not react on programatic changes

@@ -16,6 +16,7 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRe
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderClientListeners;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -104,6 +105,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     renderTextLimit( spinner );
     renderDecimalSeparator( spinner );
     renderListenSelection( spinner );
+    renderClientListeners( spinner );
   }
 
   ///////////////////////////////////////////////////

@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets.spinnerkit;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -31,6 +32,7 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -654,4 +656,15 @@ public class SpinnerLCA_Test {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( spinner, "Modify" ) );
   }
+
+  @Test
+  public void testRenderChanges_rendersClientListener() throws IOException {
+    spinner.addListener( SWT.Selection, new ClientListener( "" ) );
+
+    lca.renderChanges( spinner );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCallOperation( spinner, "addListener" ) );
+  }
+
 }

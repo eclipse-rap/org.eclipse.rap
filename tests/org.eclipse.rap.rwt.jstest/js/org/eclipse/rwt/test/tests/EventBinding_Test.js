@@ -469,6 +469,32 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       scale.destroy();
     },
 
+    testAddListenerToSpinner_SelectionEvent : function() {
+      var spinner = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Spinner" );
+      TestUtil.flush();
+      var logger = this._createLogger();
+
+      EventBinding.addListener( spinner, "Selection", logger );
+      spinner.setValue( 23 );
+
+      assertEquals( 1, logger.log.length );
+      rwt.remote.Connection.getInstance().send();
+      spinner.destroy();
+    },
+
+    testAddListenerToSpinner_ModifyEvent : function() {
+      var spinner = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Spinner" );
+      TestUtil.flush();
+      var logger = this._createLogger();
+
+      EventBinding.addListener( spinner, "Modify", logger );
+      spinner._textfield.setValue( "foo" );
+
+      assertEquals( 1, logger.log.length );
+      rwt.remote.Connection.getInstance().send();
+      spinner.destroy();
+    },
+
     /////////
     // helper
 

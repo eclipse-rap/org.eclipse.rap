@@ -34,6 +34,13 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Spinner", {
     // [if] Important: Order matters - minimum, maximum, selection
     "minimum",
     "maximum",
+    /**
+     * @name setSelection
+     * @methodOf Spinner#
+     * @description Sets the 'selection', which is the receiver's value, to the argument which
+     * must be greater than or equal to zero.
+     * @param {int} selection the new selection (must be zero or greater)
+     */
     "selection",
     "digits",
     "increment",
@@ -75,6 +82,52 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Spinner", {
     "DefaultSelection"
   ] ),
 
-  listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} )
+  listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} ),
+
+  methods: [ "addListener", "removeListener" ],
+
+  methodHandler : rwt.remote.HandlerUtil.extendListenerMethodHandler( {} ),
+
+  /**
+   * @class RWT Scripting analoge to org.eclipse.swt.widgets.Spinner
+   * @name Spinner
+   * @extends Control
+   * @description The constructor is not public.
+   * @since 2.2
+   */
+  scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods(
+    /** @lends Spinner.prototype */
+  {
+     /**
+      * @description Returns the 'selection', which is the receiver's position.
+      * @return {int} the selection
+      */
+    getSelection : function() {
+      return this.getValue();
+    },
+    /**
+     * @description  Returns a string containing a copy of the contents of the
+     * receiver's text field, or an empty string if there are no
+     * contents.
+     * @return {string} the receiver's text
+     */
+    getText : function() {
+      return this._textfield.getValue();
+    },
+     /**
+      * @description Returns the maximum value which the receiver will allow.
+      * @return {int} the maximum
+      */
+    getMaximum : function() {
+      return this.getMax();
+    },
+     /**
+      * @description Returns the minimum value which the receiver will allow.
+      * @return {int} the minimum
+      */
+     getMinimum : function() {
+      return this.getMin();
+    }
+  } )
 
 } );
