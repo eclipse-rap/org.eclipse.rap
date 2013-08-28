@@ -369,6 +369,27 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxyFactory_Test", 
       assertEquals( 30, widgetProxy.getMaximum() );
     },
 
+    testProgressBarGetSelection : function() {
+      var bar = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.ProgressBar" );
+      TestUtil.flush();
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( bar );
+
+      widgetProxy.setSelection( 23 );
+
+      assertEquals( 23, widgetProxy.getSelection() );
+    },
+
+    testProgressBarGetMinMax : function() {
+      var bar = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.ProgressBar" );
+      TestUtil.flush();
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( bar );
+
+      TestUtil.protocolSet( "w4", { "minimum" : 20, "maximum" : 30 } );
+
+      assertEquals( 20, widgetProxy.getMinimum() );
+      assertEquals( 30, widgetProxy.getMaximum() );
+    },
+
     testGetBackground : function() {
       var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
 

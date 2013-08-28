@@ -24,6 +24,9 @@ rwt.scripting.Synchronizer = function( widget ) {
     case "rwt.widgets.Button":
       widget.addEventListener( "changeText", this._onChangeButtonText, this );
     break;
+    case "rwt.widgets.ProgressBar":
+      widget.addEventListener( "selectionChanged", this._onChangeProgressBarSelection, this );
+    break;
     case "rwt.widgets.Label":
       widget.addEventListener( "changeText", this._onChangeLabelText, this );
     break;
@@ -82,6 +85,10 @@ rwt.scripting.Synchronizer.prototype = { // TODO : use the getter defined by the
 
   _onChangeLabelText : function( widget ) {
     this._sync( widget, "text", widget.getCellContent( 1 ) );
+  },
+
+  _onChangeProgressBarSelection : function( widget ) {
+    this._sync( widget, "selection", widget._selection );
   },
 
   /////////

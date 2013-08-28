@@ -126,7 +126,7 @@ rwt.qx.Class.define( "rwt.widgets.ProgressBar", {
     setSelection : function( selection ) {
       this._selection = selection;
       this.addToQueue( "indicatorSelection" );
-      this.dispatchSimpleEvent( "selectionChanged" );
+      this.dispatchSimpleEvent( "selectionChanged", this );
     },
 
     addState : function( state ) {

@@ -163,6 +163,19 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.Synchronizer_Test", {
       assertEquals( "foo", msg.findSetProperty( "w4", "text" ) );
     },
 
+    testProgressBarSetSelection_sync : function() {
+      TestUtil.initRequestLog();
+      var button = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.ProgressBar" );
+      TestUtil.flush();
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( button );
+
+      widgetProxy.setSelection( 23 );
+
+      rwt.remote.Connection.getInstance().send();
+      var msg = TestUtil.getMessageObject();
+      assertEquals( 23, msg.findSetProperty( "w4", "selection" ) );
+    },
+
     ////////
     // Helper
     setUp : function() {
