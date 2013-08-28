@@ -49,6 +49,19 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Button", {
     "mnemonicIndex",
     "alignment",
     "image",
+    /**
+     * @name setSelection
+     * @methodOf Button#
+     * @description Sets the selection state of the receiver, if it is of type <code>CHECK</code>,
+     * <code>RADIO</code>, or <code>TOGGLE</code>.
+     *
+     * <p>
+     * When the receiver is of type <code>CHECK</code> or <code>RADIO</code>,
+     * it is selected when it is checked. When it is of type <code>TOGGLE</code>,
+     * it is selected when it is pushed in.
+     * </p>
+     * @param {boolean} selected the new selection state
+     */
     "selection",
     "grayed"
   ] ),
@@ -89,6 +102,20 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Button", {
      */
     getText : function() {
       return this.getCellContent( 2 );
+    },
+    /**
+     * @description Returns <code>true</code> if the receiver is selected,
+     * and false otherwise.
+     * <p>
+     * When the receiver is of type <code>CHECK</code> or <code>RADIO</code>,
+     * it is selected when it is checked. When it is of type <code>TOGGLE</code>,
+     * it is selected when it is pushed in. If the receiver is of any other type,
+     * this method returns false.
+     *</p>
+     * @return {boolean} the selection state
+     */
+    getSelection : function() {
+      return this.hasState( "selected" );
     }
   } )
 

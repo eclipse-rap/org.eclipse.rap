@@ -317,6 +317,27 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxyFactory_Test", 
       assertEquals( "foo", widgetProxy.getText() );
     },
 
+    testButtonGetSelection : function() {
+      rwt.remote.EventUtil.setSuspended( true );
+      rwt.remote.MessageProcessor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w2"
+        }
+      } );
+      rwt.remote.EventUtil.setSuspended( false );
+      var button = rwt.remote.ObjectRegistry.getObject( "w4" );
+      TestUtil.flush();
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( button );
+
+      widgetProxy.setSelection( true );
+
+      assertTrue( widgetProxy.getSelection() );
+    },
+
     testLabelGetText : function() {
       var label = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Label" );
       TestUtil.flush();
