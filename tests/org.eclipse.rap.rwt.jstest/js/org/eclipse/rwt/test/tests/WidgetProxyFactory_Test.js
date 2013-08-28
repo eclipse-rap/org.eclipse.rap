@@ -348,6 +348,27 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxyFactory_Test", 
       assertEquals( "foo", widgetProxy.getText() );
     },
 
+    testScaleGetSelection : function() {
+      var scale = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Scale" );
+      TestUtil.flush();
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( scale );
+
+      widgetProxy.setSelection( 23 );
+
+      assertEquals( 23, widgetProxy.getSelection() );
+    },
+
+    testScaleGetMinMax : function() {
+      var scale = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Scale" );
+      TestUtil.flush();
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( scale );
+
+      TestUtil.protocolSet( "w4", { "minimum" : 20, "maximum" : 30 } );
+
+      assertEquals( 20, widgetProxy.getMinimum() );
+      assertEquals( 30, widgetProxy.getMaximum() );
+    },
+
     testGetBackground : function() {
       var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
 

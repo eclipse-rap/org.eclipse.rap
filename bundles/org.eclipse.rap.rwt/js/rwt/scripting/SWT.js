@@ -71,6 +71,8 @@ rwt.scripting.SWT = {
 
   /**
    * The selection event type
+   *
+   * Fired by Button and Scale
    */
   Selection : 13,
 
@@ -102,15 +104,16 @@ rwt.scripting.SWT = {
   /**
    * The modify event type
    *
-   * Currently only supported by Text
+   * Fired by Text and combo
    */
   Modify : 24,
 
   /**
    * The verify event type
    *
-   * Limitations:
-   *  - works for Text only
+   * Fired by Text and Combo
+   *
+   * Notes:
    *  - is not fired on programatic changes
    *  - calling setText in verify onsupported
    */

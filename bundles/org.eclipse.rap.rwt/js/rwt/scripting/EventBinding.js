@@ -86,7 +86,7 @@ rwt.scripting.EventBinding = {
 
   _getNativeEventType : function( source, eventType ) {
     var map = this._eventTypeMapping;
-    var result;
+    var result = "";
     if( map[ source.classname ] && map[ source.classname ][ eventType ] ) {
       result = map[ source.classname ][ eventType ];
     } else {
@@ -111,9 +111,8 @@ rwt.scripting.EventBinding = {
       "Show" : "appear",
       "Hide" : "disappear"
     },
-    "rwt.widgets.List" : {
-      "Selection" : "changeSelection",
-      "DefaultSelection" : "dblclick"
+    "rwt.widgets.Scale" : {
+      "Selection" : "selectionChanged"
     },
     "rwt.widgets.Button" : {
       "Selection" : "execute"

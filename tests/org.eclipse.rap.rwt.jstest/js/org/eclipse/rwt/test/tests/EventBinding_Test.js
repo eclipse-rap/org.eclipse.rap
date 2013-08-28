@@ -408,28 +408,6 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       canvas.destroy();
     },
 
-    testAddListener_SelectionEventOnList : function() {
-      Processor.processOperation( {
-        "target" : "w4",
-        "action" : "create",
-        "type" : "rwt.widgets.List",
-        "properties" : {
-          "style" : [ ],
-          "parent" : "w2",
-          "items" : [ "a", "b", "c" ]
-        }
-      } );
-      var list = ObjectRegistry.getObject( "w4" );
-      var logger = this._createLogger();
-      TestUtil.flush();
-
-      EventBinding.addListener( list, "Selection", logger );
-      TestUtil.click( list.getItems()[ 1 ] );
-      TestUtil.flush();
-
-      assertEquals( 1, logger.log.length );
-    },
-
     testAddListener_SelectionEventOnButton : function() {
       Processor.processOperation( {
         "target" : "w4",
@@ -446,28 +424,6 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
 
       EventBinding.addListener( button, "Selection", logger );
       TestUtil.click( button );
-      TestUtil.flush();
-
-      assertEquals( 1, logger.log.length );
-    },
-
-    testAddListener_DefaultSelectionEventOnList : function() {
-      Processor.processOperation( {
-        "target" : "w4",
-        "action" : "create",
-        "type" : "rwt.widgets.List",
-        "properties" : {
-          "style" : [ ],
-          "parent" : "w2",
-          "items" : [ "a", "b", "c" ]
-        }
-      } );
-      var list = ObjectRegistry.getObject( "w4" );
-      var logger = this._createLogger();
-      TestUtil.flush();
-
-      EventBinding.addListener( list, "DefaultSelection", logger );
-      TestUtil.doubleClick( list.getItems()[ 1 ] );
       TestUtil.flush();
 
       assertEquals( 1, logger.log.length );
@@ -498,6 +454,19 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertEquals( 1, logger.log.length );
       rwt.remote.Connection.getInstance().send();
       combo.destroy();
+    },
+
+    testAddListenerToScale_SelectionEvent : function() {
+      var scale = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Scale" );
+      TestUtil.flush();
+      var logger = this._createLogger();
+
+      EventBinding.addListener( scale, "Selection", logger );
+      scale.dispatchSimpleEvent( "selectionChanged" );
+
+      assertEquals( 1, logger.log.length );
+      rwt.remote.Connection.getInstance().send();
+      scale.destroy();
     },
 
     /////////

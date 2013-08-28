@@ -27,6 +27,13 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Scale", {
   properties : rwt.remote.HandlerUtil.extendControlProperties( [
     "minimum",
     "maximum",
+     /**
+      * @name setSelection
+      * @methodOf Scale#
+      * @description Sets the 'selection', which is the receiver's value, to the argument which
+      * must be greater than or equal to zero.
+      * @param {int} selection the new selection (must be zero or greater)
+      */
     "selection",
     "increment",
     "pageIncrement"
@@ -38,6 +45,43 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Scale", {
     "Selection"
   ] ),
 
-  listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} )
+  listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} ),
+
+  methods: [ "addListener", "removeListener" ],
+
+  methodHandler : rwt.remote.HandlerUtil.extendListenerMethodHandler( {} ),
+
+  /**
+   * @class RWT Scripting analoge to org.eclipse.swt.widgets.Scale
+   * @name Scale
+   * @extends Control
+   * @description The constructor is not public.
+   * @since 2.2
+   */
+  scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods(
+    /** @lends Scale.prototype */
+  {
+     /**
+      * @description Returns the 'selection', which is the receiver's position.
+      * @return {int} the selection
+      */
+     getSelection : function() {
+      return this._selection;
+    },
+     /**
+      * @description Returns the maximum value which the receiver will allow.
+      * @return {int} the maximum
+      */
+     getMaximum : function() {
+      return this._maximum;
+    },
+     /**
+      * @description Returns the minimum value which the receiver will allow.
+      * @return {int} the minimum
+      */
+     getMinimum : function() {
+      return this._minimum;
+    }
+  } )
 
 } );
