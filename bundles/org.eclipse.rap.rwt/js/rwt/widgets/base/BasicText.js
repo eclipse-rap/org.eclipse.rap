@@ -145,7 +145,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
 
     _renderSelection : function() {
       // setting selection here might de-select all other selections, so only render if focused
-      if( this.isCreated() && this.getFocused() ) {
+      if( this.isCreated() && ( this.getFocused() || this.getParent().getFocused() ) ) {
         this._setSelectionStart( this._selectionStart );
         this._setSelectionLength( this._selectionLength );
         this._selectionNeedsUpdate = false;

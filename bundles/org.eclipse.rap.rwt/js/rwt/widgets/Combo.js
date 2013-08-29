@@ -243,6 +243,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     _visualizeFocus : function() {
       if( this._field.isCreated() ) {
         this._field._visualizeFocus();
+        this._field._renderSelection();
       }
       if( !this._editable ) {
         var focusIndicator = rwt.widgets.util.FocusIndicator.getInstance();
@@ -782,11 +783,9 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     },
 
     setTextSelection : function( start, length ) {
-      if( this._field.isCreated() ) {
-        this._selectionStart = start;
-        this._selectionLength = length;
-        this._field.setSelection( start, start + length );
-      }
+      this._selectionStart = start;
+      this._selectionLength = length;
+      this._field.setSelection( [ start, start + length ] );
     },
 
     setTextLimit : function( value ) {

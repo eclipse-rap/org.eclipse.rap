@@ -281,7 +281,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.flush();
+
       Processor.processOperation( {
         "target" : "w3",
         "action" : "set",
@@ -290,9 +290,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "selection" : [ 2, 5 ]
         }
       } );
+      TestUtil.flush();
       var widget = ObjectManager.getObject( "w3" );
-      assertEquals( 2, widget._selectionStart );
-      assertEquals( 3, widget._selectionLength );
+      widget.focus();
+
+
+      assertEquals( [ 2, 5 ], widget._field.getComputedSelection() );
       shell.destroy();
       widget.destroy();
     },
