@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Event;
 public class ButtonOperationHandler extends ControlOperationHandler<Button> {
 
   private static final String PROP_SELECTION = "selection";
+  private static final String PROP_TEXT = "text";
 
   public ButtonOperationHandler( Button button ) {
     super( button );
@@ -33,6 +34,7 @@ public class ButtonOperationHandler extends ControlOperationHandler<Button> {
   public void handleSet( Button button, JsonObject properties ) {
     super.handleSet( button, properties );
     handleSetSelection( button, properties );
+    handleSetText( button, properties );
   }
 
   @Override
@@ -55,6 +57,18 @@ public class ButtonOperationHandler extends ControlOperationHandler<Button> {
     JsonValue selection = properties.get( PROP_SELECTION );
     if( selection != null ) {
       button.setSelection( selection.asBoolean() );
+    }
+  }
+
+  /*
+   * PROTOCOL SET text
+   *
+   * @param text (String) the new button text
+   */
+  public void handleSetText( Button button, JsonObject properties ) {
+    JsonValue text = properties.get( PROP_TEXT );
+    if( text != null ) {
+      button.setText( text.asString() );
     }
   }
 

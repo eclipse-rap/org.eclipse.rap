@@ -80,6 +80,13 @@ public class ButtonOperationHandler_Test {
   }
 
   @Test
+  public void testHandleSetText() {
+    handler.handleSet( new JsonObject().add( "text", "foo" ) );
+
+    verify( mockedButton ).setText( "foo" );
+  }
+
+  @Test
   public void testHandleNotifySelection() {
     JsonObject properties = new JsonObject().add( "altKey", true ).add( "shiftKey", true );
 
