@@ -107,6 +107,7 @@ rwt.scripting.EventBinding = {
       "MouseMove" : "mousemove",
       "MouseEnter" : "mouseover",
       "MouseExit" : "mouseout",
+      "MouseWheel" : "mousewheel",
       "MouseDoubleClick" : "dblclick",
       "Paint" : "paint",
       "FocusIn" : "focus",

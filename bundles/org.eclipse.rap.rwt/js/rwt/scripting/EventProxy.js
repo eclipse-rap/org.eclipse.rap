@@ -34,6 +34,7 @@ rwt.scripting.EventProxy = function( eventType, originalTarget, originalEvent ) 
       initKeyEvent( this, originalEvent );
     break;
     case SWT.MouseDown:
+    case SWT.MouseWheel:
     case SWT.MouseUp:
     case SWT.MouseMove:
     case SWT.MouseEnter:
@@ -200,6 +201,9 @@ rwt.scripting.EventProxy.postProcessEvent = function( event, wrappedEvent, origi
     case SWT.Verify:
       postProcessVerifyEvent( event, wrappedEvent, originalEvent );
     break;
+    case SWT.MouseWheel:
+      postProcessMouseWheelEvent( event, wrappedEvent, originalEvent );
+    break;
     case SWT.KeyDown:
     case SWT.KeyUp:
       postProcessKeyEvent( event, wrappedEvent, originalEvent );
@@ -337,6 +341,12 @@ var postProcessVerifyEvent = function( event, wrappedEvent, originalEvent ) {
 };
 
 var postProcessKeyEvent = function( event, wrappedEvent, originalEvent ) {
+  if( wrappedEvent.doit === false ) {
+    originalEvent.preventDefault();
+  }
+};
+
+var postProcessMouseWheelEvent = function( event, wrappedEvent, originalEvent ) {
   if( wrappedEvent.doit === false ) {
     originalEvent.preventDefault();
   }

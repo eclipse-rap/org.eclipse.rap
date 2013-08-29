@@ -217,6 +217,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       delete domEvent.originalEvent;
     }
     this.fireFakeDomEvent( domEvent );
+    return domEvent;
   },
 
   _createFakeMouseEventDOM : function( target, type, button, left, top, mod ) {

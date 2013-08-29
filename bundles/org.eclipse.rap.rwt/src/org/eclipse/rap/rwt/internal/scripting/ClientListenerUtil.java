@@ -82,6 +82,9 @@ public class ClientListenerUtil {
       case SWT.DefaultSelection:
         result = "DefaultSelection";
       break;
+      case SWT.MouseWheel:
+        result = "MouseWheel";
+      break;
     }
     if( result == null ) {
       throw new IllegalArgumentException( "Unsupported event type " + bindingType );

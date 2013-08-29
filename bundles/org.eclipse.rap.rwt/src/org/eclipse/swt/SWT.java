@@ -474,6 +474,19 @@ public class SWT {
   public static final int SetData = 36;
 
   /**
+   * The mouse vertical wheel event type (value is 37).
+   * <p>
+   * <strong>Note:</strong> In RAP, this event type is <strong>only supported for
+   * ClientListeners</strong>. Server-side events of this type will not be fired.
+   * </p>
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   *
+   * @since 2.2
+   */
+  public static final int MouseWheel = 37;
+
+  /**
    * The settings changed event type (value is 39).
    * <p>
    * The settings changed event is sent when an operating system
@@ -3806,7 +3819,7 @@ public class SWT {
    * @since 1.1
    */
   public static String getPlatform () {
-  	return "rap"; //$NON-NLS-1$
+    return "rap"; //$NON-NLS-1$
   }
 
   /**

@@ -120,6 +120,11 @@ rwt.scripting.SWT = {
   Verify : 25,
 
   /**
+   * The mouse wheel event type
+   */
+  MouseWheel : 37,
+
+  /**
    * Keyboard event constant representing the UP ARROW key
    */
   ARROW_UP : 38,

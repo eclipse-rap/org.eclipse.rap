@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 
@@ -57,13 +56,14 @@ public class ScriptingTab extends ExampleTab {
     "Show",
     "Hide",
     "Modify",
-    "Verify"
+    "Verify",
+    "MouseWheel"
   };
 
-  private Spinner button;
+  private Button button;
   private String buttonScript;
   private int[] buttonEventTypeIndex;
-  private Combo text;
+  private Text text;
   private String textScript;
   private int[] textEventTypeIndex;
   private Label label;
@@ -114,7 +114,6 @@ public class ScriptingTab extends ExampleTab {
     set.setText( "set" );
     set.addListener( SWT.Selection, new Listener() {
       public void handleEvent( Event event ) {
-        System.out.println( button.getSelection() );
         createNew();
       }
     } );
@@ -134,12 +133,12 @@ public class ScriptingTab extends ExampleTab {
   @Override
   protected void createExampleControls( Composite parent ) {
     parent.setLayout( new GridLayout( 1, false ) );
-    text = new Combo( parent, SWT.BORDER | SWT.SINGLE );
+    text = new Text( parent, SWT.BORDER | SWT.SINGLE );
     text.setText( "Text" );
     text.setLayoutData( new GridData( 150, 25 ) );
     attachTextListener();
-    button = new Spinner( parent, SWT.HORIZONTAL );
-    button.setMaximum( 100 );
+    button = new Button( parent, getStyle() | SWT.PUSH );
+    button.setText( "Button" );
     button.setLayoutData( new GridData( 150, 25 ) );
     attachButtonListener();
     label = new Label( parent, SWT.BORDER );

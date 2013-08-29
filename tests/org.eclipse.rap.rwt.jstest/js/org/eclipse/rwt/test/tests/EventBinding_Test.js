@@ -97,11 +97,24 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       };
 
       EventBinding.addListener( text, "MouseDown", listener );
-      var domEvent = TestUtil.createFakeDomKeyEvent( text.getElement(), "keypress", "a" );
+      var domEvent = TestUtil.fakeMouseEventDOM( text.getElement(), "mousedown", 1, 0, 0 );
       TestUtil.fireFakeDomEvent( domEvent );
 
       // SWT doesnt support preventing native selection behavior (e.g. Text widget)
       assertFalse( EventHandlerUtil.wasStopped( domEvent ) );
+    },
+
+    testDoItFalseMouseWheel : function() {
+      var listener = function( event ) {
+        event.doit = false;
+      };
+
+      EventBinding.addListener( text, "MouseWheel", listener );
+      var domEvent = TestUtil.fakeMouseEventDOM( text.getElement(), "mousewheel", 1, 0, 0 );
+      TestUtil.fireFakeDomEvent( domEvent );
+
+      // SWT doesnt support preventing native selection behavior (e.g. Text widget)
+      assertTrue( EventHandlerUtil.wasStopped( domEvent ) );
     },
 
     testAddListener_KeyUp : function() {
