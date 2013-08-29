@@ -28,7 +28,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Label", {
   properties : rwt.remote.HandlerUtil.extendControlProperties( [
     /**
      * @name setText
-     * @methodOf Button#
+     * @methodOf Label#
      * @description Sets the receivers text to the given string.
      * @param {string} text the new text
      */

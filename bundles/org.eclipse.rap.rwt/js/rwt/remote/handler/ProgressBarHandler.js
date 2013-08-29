@@ -27,6 +27,13 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ProgressBar", {
     // [if] Important: Order matters - minimum, maximum, selection
     "minimum",
     "maximum",
+    /**
+     * @name setSelection
+     * @methodOf ProgressBar#
+     * @description Sets the 'selection', which is the receiver's value, to the argument which
+     * must be greater than or equal to zero.
+     * @param {int} selection the new selection (must be zero or greater)
+     */
     "selection",
     "state"
   ] ),
@@ -58,7 +65,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ProgressBar", {
    * @since 2.2
    */
   scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods(
-    /** @lends Scale.prototype */
+    /** @lends ProgressBar.prototype */
   {
      /**
       * @description Returns the 'selection', which is the receiver's position.

@@ -18,6 +18,7 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
  * @class RWT Scripting analoge to org.eclipse.swt.widgets.Composite and basis for Custom Widgets.
  * @description The constructor is not public.
  * @exports rwt.scripting.CompositeProxy as Composite
+ * @extends Control
  * @since 2.0
  */
  rwt.scripting.CompositeProxy = function( composite ) {

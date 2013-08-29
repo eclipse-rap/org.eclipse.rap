@@ -79,8 +79,8 @@ public class SpinnerTab extends ExampleTab {
     modifySpinner.addModifyListener( new ModifyListener() {
 
       public void modifyText( final ModifyEvent event ) {
-        String value = String.valueOf( modifySpinner.getSelection() );
-        lblSpinnerValue.setText( value );
+        //String value = String.valueOf( modifySpinner.getSelection() );
+        lblSpinnerValue.setText( modifySpinner.getText() );
       }
     } );
     updateSpinners();
