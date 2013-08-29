@@ -101,26 +101,16 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
       assertEquals( 1, listener.x );
     },
 
-    testImportSWT : function() {
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      var code = "var handleEvent = function( obj ){ obj.SWT = SWT;};";
+    testStrictSupport : function() {
+      var code =   "\"use strict\";\n"
+                 + "var handleEvent = function(){ return foo(); };\n"
+                 + "var foo = function(){ return 1; };\n";
+      var listener = FunctionFactory.createFunction( code, "handleEvent" );
 
-      processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.scripting.Function",
-        "properties" : {
-          "scriptCode" : code,
-          "name" : "handleEvent"
-        }
-      } );
-      var result = ObjectManager.getObject( "w3" );
-      var obj = {};
+      var result = listener();
 
-      result( obj );
+      assertEquals( 1, result );
 
-      assertIdentical( rwt.scripting.SWT, obj.SWT );
     }
 
   }
