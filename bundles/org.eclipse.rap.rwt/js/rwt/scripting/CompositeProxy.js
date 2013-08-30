@@ -56,43 +56,6 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
     return composite.getClientArea();
   };
 
-  /**
-   * @name addListener
-   * @methodOf Composite#
-   * @description Register the function as a listener of the given type
-   * @param {string} type The type of the event (e.g. "Resize").
-   * @param {Function} listener The callback function. It is executed in global context.
-   */
-  this.addListener = function( type, listener ) {
-    composite.addEventListener( convertEventType( type ), listener, window );
-  };
-
-  /**
-   * @name removeListener
-   * @methodOf Composite#
-   * @description De-register the function as a listener of the given type
-   * @param {string} type The type of the event (e.g. "Resize").
-   * @param {Function} listener The callback function
-   */
-  this.removeListener = function( type, listener ) {
-    composite.removeEventListener( convertEventType( type ), listener, window );
-  };
-
 };
-
-/**
- * @event
- * @description Sent when widget changes size.
- * @name Composite#Resize
- */
-function convertEventType( type ) {
-  var result;
-  if( type === "Resize" ) {
-    result = "clientAreaChanged"; // works only for Composite
-  } else {
-    throw new Error( "Unkown event type " + type );
-  }
-  return result;
-}
 
 }());

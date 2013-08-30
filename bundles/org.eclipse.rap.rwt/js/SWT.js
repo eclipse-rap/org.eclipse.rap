@@ -66,6 +66,13 @@ SWT = {
   Paint : "Paint",
 
   /**
+   * The resize event type
+   *
+   * Fired by Composite and Canvas
+   */
+  Resize : "Resize",
+
+  /**
    * The selection event type
    *
    * Fired by Button and Scale

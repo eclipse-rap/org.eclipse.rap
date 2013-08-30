@@ -18,6 +18,8 @@ rwt.remote.HandlerRegistry.add( "rwt.scripting.Function", {
     }
     var name = properties.name;
     return rwt.scripting.FunctionFactory.createFunction( scriptCode, name );
-  }
+  },
+
+  isPublic : true
 
 } );

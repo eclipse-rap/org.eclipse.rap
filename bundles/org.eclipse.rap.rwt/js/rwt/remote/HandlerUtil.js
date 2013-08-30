@@ -388,6 +388,28 @@ rwt.remote.HandlerUtil = {
   _controlScriptingMethods : /** @lends Control.prototype */ {
 
     /**
+     * @name addListener
+     * @methodOf Control#
+     * @description Register the function as a listener of the given type
+     * @param {string} type The type of the event (e.g. SWT.Resize).
+     * @param {Function} listener The callback function. It is executed in global context.
+     */
+    addListener : function( type, listener ) {
+      rwt.scripting.EventBinding.addListener( this, type, listener );
+    },
+
+    /**
+     * @name removeListener
+     * @methodOf Control#
+     * @description De-register the function as a listener of the given type
+     * @param {string} type The type of the event (e.g. SWT.Resize).
+     * @param {Function} listener The callback function
+     */
+    removeListener : function( type, listener ) {
+      rwt.scripting.EventBinding.removeListener( this, type, listener );
+    },
+
+    /**
      * @description Sets the application defined property of the receiver
      * with the specified name to the given value.
      * <p>

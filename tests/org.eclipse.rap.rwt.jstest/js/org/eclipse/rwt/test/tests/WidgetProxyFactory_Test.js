@@ -282,6 +282,25 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxyFactory_Test", 
       canvas.destroy();
     },
 
+    testCanvasGetClientArea : function() {
+      Processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.Canvas",
+        "properties" : {
+          "style" : [ ],
+          "parent" : "w2",
+          "clientArea" : [ 10, 20, 30, 40 ]
+        }
+      } );
+      var canvas = ObjectManager.getObject( "w4" );
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( canvas );
+      var result = widgetProxy.getClientArea();
+
+      assertEquals( [ 10, 20, 30, 40 ], result );
+      canvas.destroy();
+    },
+
     testAddListenerToCombo_ModifyEvent : function() {
       var combo = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Combo" );
       TestUtil.flush();

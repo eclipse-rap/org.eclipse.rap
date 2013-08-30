@@ -45,7 +45,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Canvas", {
   /**
    * @class RWT Scripting analoge to org.eclipse.swt.widgets.Canvas
    * @name Canvas
-   * @extends Control
+   * @extends Composite
    * @description The constructor is not public.
    * @since 2.2
    */

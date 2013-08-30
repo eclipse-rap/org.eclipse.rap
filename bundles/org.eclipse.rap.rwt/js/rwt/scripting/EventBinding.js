@@ -19,6 +19,7 @@ var wrapperRegistry = {};
 rwt.scripting.EventBinding = {
 
   addListener : function( widget, eventType, targetFunction ) {
+    this._checkEventType( eventType );
     var wrapperKey = this._getWrapperKey( widget, eventType, targetFunction );
     var wrapperList = this._getWrapperList( wrapperKey );
     var nativeType = this._getNativeEventType( widget, eventType );
@@ -96,6 +97,13 @@ rwt.scripting.EventBinding = {
     return result;
   },
 
+  _checkEventType : function( type ) {
+    if( typeof SWT[ type ] === "string" ) {
+      return;
+    }
+    throw new Error( "Unkown event type " + type );
+  },
+
   _eventTypeMapping : {
     "*" : {
       "KeyDown" : "keypress",
@@ -115,6 +123,9 @@ rwt.scripting.EventBinding = {
     },
     "rwt.widgets.Scale" : {
       "Selection" : "selectionChanged"
+    },
+    "rwt.widgets.Composite" : {
+      "Resize" : "clientAreaChanged"
     },
     "rwt.widgets.Button" : {
       "Selection" : "execute"

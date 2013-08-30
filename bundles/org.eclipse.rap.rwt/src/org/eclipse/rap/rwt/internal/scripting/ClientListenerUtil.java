@@ -76,6 +76,9 @@ public class ClientListenerUtil {
       case SWT.Paint:
         result = "Paint";
       break;
+      case SWT.Resize:
+        result = "Resize";
+      break;
       case SWT.Selection:
         result = "Selection";
       break;
