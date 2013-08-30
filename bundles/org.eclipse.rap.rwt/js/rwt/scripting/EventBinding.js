@@ -106,40 +106,201 @@ rwt.scripting.EventBinding = {
 
   _eventTypeMapping : {
     "*" : {
+      /**
+       * @event
+       * @description Sent when a key is pressed
+       * @name Control#KeyDown
+       * @param {Event} event
+       * @see SWT.KeyDown
+       */
       "KeyDown" : "keypress",
+      /**
+       * @event
+       * @description Sent when a key is released
+       * @name Control#KeyUp
+       * @param {Event} event
+       * @see SWT.KeyUp
+       */
       "KeyUp" : "keyup",
+      /**
+       * @event
+       * @description Sent when a mouse button is pressed
+       * @name Control#MouseDown
+       * @param {Event} event
+       * @see SWT.MouseDown
+       */
       "MouseDown" : "mousedown",
+      /**
+       * @event
+       * @description Sent when a mouse button is released
+       * @name Control#MouseUp
+       * @param {Event} event
+       * @see SWT.MouseUp
+       */
       "MouseUp" : "mouseup",
+      /**
+       * @event
+       * @description Sent when the mouse pointer is moved
+       * @name Control#MouseMove
+       * @param {Event} event
+       * @see SWT.MouseMove
+       */
       "MouseMove" : "mousemove",
+      /**
+       * @event
+       * @description Sent when the mouse pointer enters the widget
+       * @name Control#MouseEnter
+       * @param {Event} event
+       * @see SWT.MouseEnter
+       */
       "MouseEnter" : "mouseover",
+      /**
+       * @event
+       * @description Sent when the mouse pointer exits the widget
+       * @name Control#MouseExit
+       * @param {Event} event
+       * @see SWT.MouseExit
+       */
       "MouseExit" : "mouseout",
+      /**
+       * @event
+       * @description Sent when the mouse wheel is moved
+       * @name Control#MouseWheel
+       * @param {Event} event
+       * @see SWT.MouseWheel
+       */
       "MouseWheel" : "mousewheel",
+      /**
+       * @event
+       * @description Sent when a mouse button is clicked twice
+       * @name Control#MouseDoubleClick
+       * @param {Event} event
+       * @see SWT.MouseDoubleClick
+       */
       "MouseDoubleClick" : "dblclick",
+      /**
+       * @event
+       * @description Sent when the widget is painted
+       * @name Control#Paint
+       * @param {Event} event
+       * @see SWT.Paint
+       */
       "Paint" : "paint",
+      /**
+       * @event
+       * @description Sent when the widget gains focus
+       * @name Control#FocusIn
+       * @param {Event} event
+       * @see SWT.FocusIn
+       */
       "FocusIn" : "focus",
+      /**
+       * @event
+       * @description Sent when the widget looses focus
+       * @name Control#FocusOut
+       * @param {Event} event
+       * @see SWT.FocusOut
+       */
       "FocusOut" : "blur",
+      /**
+       * @event
+       * @description Sent when the widget appears
+       * @name Control#Show
+       * @param {Event} event
+       * @see SWT.Show
+       */
       "Show" : "appear",
+      /**
+       * @event
+       * @description Sent when the widget is hidden
+       * @name Control#Hide
+       * @param {Event} event
+       * @see SWT.Hide
+       */
       "Hide" : "disappear"
     },
     "rwt.widgets.Scale" : {
+      /**
+       * @event
+       * @description Sent when the widget selection is changed
+       * @name Scale#Selection
+       * @param {Event} event
+       * @see SWT.Selection
+       */
       "Selection" : "selectionChanged"
     },
     "rwt.widgets.Composite" : {
+      /**
+       * @event
+       * @description Sent when the widget selection changes size
+       * @name Composite#Resize
+       * @param {Event} event
+       * @see SWT.Resize
+       */
       "Resize" : "clientAreaChanged"
     },
     "rwt.widgets.Button" : {
+      /**
+       * @event
+       * @description Sent when the widget is selected
+       * @name Button#Selection
+       * @param {Event} event
+       * @see SWT.Selection
+       */
       "Selection" : "execute"
     },
     "rwt.widgets.Spinner" : {
+      /**
+       * @event
+       * @description Sent when the widget selection is changed
+       * @name Spinner#Selection
+       * @param {Event} event
+       * @see SWT.Selection
+       */
       "Selection" : "change",
+      /**
+       * @event
+       * @description Sent when the widget text is changed
+       * @name Spinner#Modify
+       * @param {Event} event
+       * @see SWT.Modify
+       */
       "Modify" : "changeValue"
     },
     "rwt.widgets.Text" : {
+      /**
+       * @event
+       * @description Sent before the widget text is changed
+       * @name Text#Verify
+       * @param {Event} event
+       * @see SWT.Verify
+       */
       "Verify" : "input", // TODO [tb] : does currently not react on programatic changes
+      /**
+       * @event
+       * @description Sent when the widget text is changed
+       * @name Text#Modify
+       * @param {Event} event
+       * @see SWT.Modify
+       */
       "Modify" : "changeValue"
     },
     "rwt.widgets.Combo" : {
+      /**
+       * @event
+       * @description Sent before the widget text is changed
+       * @name Combo#Verify
+       * @param {Event} event
+       * @see SWT.Verify
+       */
       "Verify" : "input", // TODO [tb] : does currently not react on programatic changes
+      /**
+       * @event
+       * @description Sent when the widget text is changed
+       * @name Combo#Modify
+       * @param {Event} event
+       * @see SWT.Modify
+       */
       "Modify" : "changeValue"
     }
   }

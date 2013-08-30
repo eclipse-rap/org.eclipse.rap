@@ -12,7 +12,6 @@
 (function(){
 
 rwt.qx.Class.createNamespace( "rwt.scripting", {} );
-
 /**
  * @private
  * @class RWT Scripting analoge to org.eclipse.swt.widgets.Composite and basis for Custom Widgets.
