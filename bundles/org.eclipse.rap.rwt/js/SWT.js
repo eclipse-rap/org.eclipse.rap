@@ -9,104 +9,100 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-rwt.qx.Class.createNamespace( "rwt.scripting", {} );
-
-
 /**
  * This object defines the public constants used by RWT Scripting, specifically
  * event types and keycodes.
  *
  * @namespace RWT Scripting analoge to org.eclipse.swt.widgets.SWT
  * @static
- * @exports rwt.scripting.SWT as SWT
  * @since 2.2
  * @see Event
  */
-rwt.scripting.SWT = {
+SWT = {
 
   /**
    * The key down event type
    */
-  KeyDown : 1,
+  KeyDown : "KeyDown",
 
   /**
    * The key up event type
    */
-  KeyUp : 2,
+  KeyUp : "KeyUp",
 
   /**
    * The mouse down event type
    */
-  MouseDown : 3,
+  MouseDown : "MouseDown",
 
   /**
    * The mouse up event type
    */
-  MouseUp : 4,
+  MouseUp : "MouseUp",
 
   /**
    * The mouse move event type
    */
-  MouseMove : 5,
+  MouseMove : "MouseMove",
 
   /**
    * The mouse enter event type
    */
-  MouseEnter : 6,
+  MouseEnter : "MouseEnter",
 
   /**
    * The mouse exit event type
    */
-  MouseExit : 7,
+  MouseExit : "MouseExit",
 
   /**
    * The mouse double click event type
    */
-  MouseDoubleClick : 8,
+  MouseDoubleClick : "MouseDoubleClick",
 
   /**
    * The paint event type
    */
-  Paint : 9,
+  Paint : "Paint",
 
   /**
    * The selection event type
    *
    * Fired by Button and Scale
    */
-  Selection : 13,
+  Selection : "Selection",
 
   /**
    * The default selection event type
    */
-  DefaultSelection : 14,
+  DefaultSelection : "DefaultSelection",
 
   /**
    * The focus in event type
    */
-  FocusIn : 15,
+  FocusIn : "FocusIn",
 
   /**
    * The focus out event type
    */
-  FocusOut : 16,
+  FocusOut : "FocusOut",
 
   /**
    * The show event type
    */
-  Show : 22,
+  Show : "Show",
 
   /**
    * The hide event type
    */
-  Hide : 23,
+  Hide : "Hide",
 
   /**
    * The modify event type
    *
    * Fired by Text and combo
    */
-  Modify : 24,
+  Modify : "Modify",
 
   /**
    * The verify event type
@@ -117,12 +113,12 @@ rwt.scripting.SWT = {
    *  - is not fired on programatic changes
    *  - calling setText in verify onsupported
    */
-  Verify : 25,
+  Verify : "Verify",
 
   /**
    * The mouse wheel event type
    */
-  MouseWheel : 37,
+  MouseWheel : "MouseWheel",
 
   /**
    * Keyboard event constant representing the UP ARROW key
@@ -554,6 +550,5 @@ rwt.scripting.SWT = {
    * @see Control#setCursor
    */
   CURSOR_HAND : "pointer"
-
 
 };

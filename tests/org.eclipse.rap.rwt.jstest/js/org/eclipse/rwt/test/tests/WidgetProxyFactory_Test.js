@@ -16,7 +16,6 @@ var Processor = rwt.remote.MessageProcessor;
 var ObjectManager = rwt.remote.ObjectRegistry;
 var WidgetProxyFactory = rwt.scripting.WidgetProxyFactory;
 var EventBinding = rwt.scripting.EventBinding;
-var SWT = rwt.scripting.SWT;
 
 var text;
 

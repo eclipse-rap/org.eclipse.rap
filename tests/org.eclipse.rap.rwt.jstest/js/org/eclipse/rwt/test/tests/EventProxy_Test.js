@@ -17,7 +17,6 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = rwt.remote.MessageProcessor;
 var ObjectRegistry = rwt.remote.ObjectRegistry;
 var WidgetProxyFactory = rwt.scripting.WidgetProxyFactory;
-var SWT = rwt.scripting.SWT;
 
 var text;
 var shell;
@@ -49,7 +48,7 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
 
       // Test type (or initial value) of all currently supported fields
       assertTrue( eventProxy.doit );
-      assertEquals( "number", typeof eventProxy.type );
+      assertEquals( "string", typeof eventProxy.type );
       assertEquals( "string", typeof eventProxy.character );
       assertEquals( "string", typeof eventProxy.text );
       assertEquals( "number", typeof eventProxy.keyCode );

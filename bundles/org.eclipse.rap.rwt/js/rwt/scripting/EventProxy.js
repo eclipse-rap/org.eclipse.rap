@@ -11,8 +11,6 @@
 
 (function(){
 
-var SWT = rwt.scripting.SWT;
-
 rwt.qx.Class.createNamespace( "rwt.scripting", {} );
 
 /**
@@ -196,7 +194,6 @@ rwt.scripting.EventProxy.wrapAsProto = function( object ) {
   };
 
 rwt.scripting.EventProxy.postProcessEvent = function( event, wrappedEvent, originalEvent ) {
-  var SWT = rwt.scripting.SWT;
   switch( event.type ) {
     case SWT.Verify:
       postProcessVerifyEvent( event, wrappedEvent, originalEvent );
@@ -213,7 +210,6 @@ rwt.scripting.EventProxy.postProcessEvent = function( event, wrappedEvent, origi
 
 var initKeyEvent = function( event, originalEvent ) {
   var charCode = originalEvent.getCharCode();
-  var SWT = rwt.scripting.SWT;
   if( charCode !== 0 ) {
     event.character = String.fromCharCode( charCode );
     // TODO [tb] : keyCode will be off when character is not a-z

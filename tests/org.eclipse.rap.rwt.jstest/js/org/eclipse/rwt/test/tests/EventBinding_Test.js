@@ -16,7 +16,6 @@ var EventProxy = rwt.scripting.EventProxy;
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = rwt.remote.MessageProcessor;
 var ObjectRegistry = rwt.remote.ObjectRegistry;
-var SWT = rwt.scripting.SWT;
 var EventHandlerUtil = rwt.event.EventHandlerUtil;
 
 var text;

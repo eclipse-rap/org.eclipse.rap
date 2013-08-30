@@ -19,7 +19,6 @@ rwt.scripting.FunctionFactory = {
   createFunction : function( functionScript, name, scope ) {
     var result;
     var code = [
-      this._getScopeScript( scope ),
       functionScript,
       "\n\n",
       "typeof ",
@@ -41,16 +40,6 @@ rwt.scripting.FunctionFactory = {
 
   _secureEval : function() {
     return eval( arguments[ 0 ] );
-  },
-
-  _getScopeScript : function( scope ) {
-    var result = [];
-    for( var key in scope ) {
-      // NOTE: currently the values are evaluated "as is", i.e. json string.
-      //       Support for protocol objects would be possible, but may require "evalInScope" feature
-      result.push( "var ", key, " = ", scope[ key ], ";\n" );
-    }
-    return result.join( "" );
   }
 
 };

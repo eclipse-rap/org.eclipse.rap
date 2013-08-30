@@ -12,7 +12,6 @@
 (function() {
 
 var FunctionFactory = rwt.scripting.FunctionFactory;
-var SWT = rwt.scripting.SWT;
 
 rwt.qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
 

@@ -285,7 +285,7 @@ public final class ClientResources {
     "rwt/remote/handler/ClientInfoHandler.js",
     "rwt/widgets/util/MnemonicHandler.js",
     "rap.js",
-    "rwt/scripting/SWT.js",
+    "SWT.js",
     "rwt/scripting/EventBinding.js",
     "rwt/scripting/EventProxy.js",
     "rwt/scripting/FunctionFactory.js",

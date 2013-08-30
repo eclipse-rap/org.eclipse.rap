@@ -17,8 +17,7 @@ rwt.remote.HandlerRegistry.add( "rwt.scripting.Function", {
       scriptCode = rap.getObject( properties.scriptId ).getText();
     }
     var name = properties.name;
-    var scope = { "SWT" : "rwt.scripting.SWT" };
-    return rwt.scripting.FunctionFactory.createFunction( scriptCode, name, scope );
+    return rwt.scripting.FunctionFactory.createFunction( scriptCode, name );
   }
 
 } );

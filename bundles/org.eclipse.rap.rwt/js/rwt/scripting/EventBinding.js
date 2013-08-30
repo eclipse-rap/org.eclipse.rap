@@ -13,8 +13,6 @@
 
 rwt.qx.Class.createNamespace( "rwt.scripting", {} );
 
-var SWT = rwt.scripting.SWT;
-
 var wrapperRegistry = {};
 
 // TODO : better name?
