@@ -188,6 +188,7 @@ public class FileUpload extends Canvas {
    * Returns a (possibly empty) array with the names of all files that were selected.
    *
    * @return the names of the selected files
+   * @since 2.2
    *
    * @exception SWTException <ul>
    *   <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
