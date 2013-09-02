@@ -13,7 +13,7 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
 
   extend : rwt.widgets.Button,
 
-  construct : function() {
+  construct : function( multi ) {
     this.base( arguments, "push" );
     this.setAppearance( "file-upload" );
     this.addEventListener( "insertDom", this._layoutInputElement, this );
@@ -21,6 +21,7 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
     this._formElement = null;
     this._inputElement = null;
     this._iframe = null;
+    this._multi = multi;
     this._cursor = "";
     this.__onValueChange = rwt.util.Functions.bind( this._onValueChange, this );
     this.setEnableElementFocus( false );
@@ -89,6 +90,9 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
       this._inputElement.setAttribute( "type", "file" );
       this._inputElement.setAttribute( "name", "file" );
       this._inputElement.setAttribute( "size", "1" );
+      if( this._multi ) {
+        this._inputElement.setAttribute( "multiple", "multiple" );
+      }
       this._inputElement.style.cursor = this._cursor;
       this._inputElement.onchange = this.__onValueChange;
       rwt.html.Style.setOpacity( this._inputElement, 0 );

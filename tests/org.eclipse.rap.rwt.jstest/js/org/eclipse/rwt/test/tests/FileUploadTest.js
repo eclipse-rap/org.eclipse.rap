@@ -33,6 +33,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       widget.destroy();
     },
 
+    testCreateFileUploadByProtocol_withMULTI : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+
+      var upload = createFileUploadByProtocol( "w3", "w2", [ "MULTI" ] );
+
+      var input = upload._inputElement;
+      assertEquals( "multiple", input.getAttribute( "multiple" ) );
+      shell.destroy();
+    },
+
     testDisposeFileUploadByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = createFileUploadByProtocol( "w3", "w2" );
@@ -433,13 +443,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
 /////////
 // Helper
 
-var createFileUploadByProtocol = function( id, parentId ) {
+var createFileUploadByProtocol = function( id, parentId, style ) {
   rwt.remote.MessageProcessor.processOperation( {
     "target" : id,
     "action" : "create",
     "type" : "rwt.widgets.FileUpload",
     "properties" : {
-      "style" : [],
+      "style" : style ? style : [],
       "parent" : parentId
     }
   } );
