@@ -40,14 +40,15 @@ import org.eclipse.swt.widgets.TypedListener;
 
 /**
  * A button-like widget allowing to select a file from the client's file system and to upload this
- * file to a given URL using HTTP POST.
+ * file to a given URL using HTTP POST. Multiple files may be selected if MULTI style is given,
+ * but not all clients may support it.
  * <p>
  * Note that although this class is a subclass of <code>Composite</code>,
  * it does not make sense to set a layout on it.
  * </p>
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>(none)</dd>
+ * <dd>MULTI</dd>
  * </dl>
  * </p>
  *
@@ -343,7 +344,8 @@ public class FileUpload extends Canvas {
   }
 
   private static int checkStyle( int style ) {
-    return style & SWT.BORDER;
+    int mask = SWT.BORDER | SWT.MULTI;
+    return style & mask;
   }
 
   ////////////////

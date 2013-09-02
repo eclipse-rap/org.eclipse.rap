@@ -141,6 +141,16 @@ public class FileUploadLCA_Test {
   }
 
   @Test
+  public void testRenderCreate_withMULTI() throws IOException {
+    fileUpload = new FileUpload( shell, SWT.MULTI );
+    lca.renderInitialization( fileUpload );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( fileUpload );
+    assertEquals( new JsonArray().add( "MULTI" ), operation.getProperty( "style" ) );
+  }
+
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( fileUpload );
 

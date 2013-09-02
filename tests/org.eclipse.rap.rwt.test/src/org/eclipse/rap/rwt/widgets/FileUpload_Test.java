@@ -57,10 +57,11 @@ public class FileUpload_Test {
 
   @Test
   public void testStyle() {
-    FileUpload upload = new FileUpload( shell, SWT.BORDER | SWT.FLAT );
+    FileUpload upload = new FileUpload( shell, SWT.BORDER | SWT.FLAT | SWT.MULTI );
 
     assertEquals( 0, upload.getStyle() & SWT.FLAT );
     assertEquals( SWT.BORDER, upload.getStyle() & SWT.BORDER );
+    assertEquals( SWT.MULTI, upload.getStyle() & SWT.MULTI );
   }
 
   ///////
