@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets;
 
 public interface IFileUploadAdapter {
 
-  void setFileName( String value );
+  void setFileNames( String[] value );
 
   String getAndResetUrl();
 

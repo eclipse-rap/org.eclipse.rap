@@ -60,7 +60,7 @@ public class FileUpload extends Canvas {
   private final IFileUploadAdapter fileUploadAdapter;
   private String text;
   private Image image;
-  private String fileName;
+  private String[] fileNames = new String[ 0 ];
   private String url;
 
   /**
@@ -181,7 +181,7 @@ public class FileUpload extends Canvas {
    */
   public String getFileName() {
     checkWidget();
-    return fileName;
+    return fileNames.length > 0 ? fileNames[ 0 ] : null;
   }
 
   /**
@@ -209,7 +209,7 @@ public class FileUpload extends Canvas {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     checkWidget();
-    if( fileName != null ) {
+    if( fileNames.length > 0 ) {
       this.url  = url;
     }
   }
@@ -353,8 +353,8 @@ public class FileUpload extends Canvas {
 
   private final class FileUploadAdapter implements IFileUploadAdapter {
 
-    public void setFileName( String value ) {
-      fileName = value;
+    public void setFileNames( String[] value ) {
+      fileNames = value;
     }
 
     public String getAndResetUrl() {

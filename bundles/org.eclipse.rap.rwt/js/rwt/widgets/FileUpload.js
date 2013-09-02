@@ -39,7 +39,7 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
       if( typeof url !== "string" ) {
         throw new Error( "No url given!" );
       }
-      if( this._getFileName() === "" ) {
+      if( this._getFileNames().length === 0 ) {
         throw new Error( "No file selected!" );
       }
       if( this._formElement === null ) {
@@ -112,16 +112,23 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
 
     _onValueChange : function( event ) {
       // TODO [tb] : implement setHasValueChangedListener?
-      var fileName = this._formatFileName( this._getFileName() );
+      var fileNames = this._formatFileNames( this._getFileNames() );
       if( !rwt.remote.EventUtil.getSuspended() ) {
         var server = rwt.remote.Connection.getInstance();
-        server.getRemoteObject( this ).set( "fileName", fileName );
+        server.getRemoteObject( this ).set( "fileNames", fileNames );
         server.send();
       }
     },
 
-    _getFileName : function() {
-      return this._inputElement.value;
+    _getFileNames : function() {
+      var element = this._inputElement;
+      var result = element.value ? [ element.value ] : [];
+      if( element.files ) {
+        for( var i = 0; i < element.files.length; i++ ) {
+          result[ i ] = element.files[ i ].name;
+        }
+      }
+      return result;
     },
 
     ////////////
@@ -274,12 +281,16 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
     /////////
     // Helper
 
-    _formatFileName : function( fileName ) {
-      var result = fileName;
-      if( result.indexOf( "\\" ) != -1 ) {
-        result = result.substr( result.lastIndexOf( "\\" ) + 1 );
-      } else if( result.indexOf( "/" ) != -1 ) {
-        result = result.substr( result.lastIndexOf( "/" ) + 1 );
+    _formatFileNames : function( fileNames ) {
+      var result = [];
+      for( var i = 0; i < fileNames.length; i++ ) {
+        var fileName = fileNames[ i ];
+        if( fileName.indexOf( "\\" ) != -1 ) {
+          fileName = fileName.substr( fileName.lastIndexOf( "\\" ) + 1 );
+        } else if( fileName.indexOf( "/" ) != -1 ) {
+          fileName = fileName.substr( fileName.lastIndexOf( "/" ) + 1 );
+        }
+        result[ i ] = fileName;
       }
       return result;
     },

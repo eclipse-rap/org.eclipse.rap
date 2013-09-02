@@ -158,7 +158,7 @@ public class FileUpload_Test {
   public void testGetFileName() {
     FileUpload upload = new FileUpload( shell, SWT.NONE );
     IFileUploadAdapter adapter = getFileUploadAdapter( upload );
-    adapter.setFileName( "foo.txt" );
+    adapter.setFileNames( new String[]{ "foo.txt" } );
     assertEquals( "foo.txt", upload.getFileName() );
   }
 
@@ -169,7 +169,7 @@ public class FileUpload_Test {
   public void testSubmit() {
     FileUpload upload = new FileUpload( shell, SWT.NONE );
     IFileUploadAdapter adapter = getFileUploadAdapter( upload );
-    adapter.setFileName( "foo.txt" );
+    adapter.setFileNames( new String[] { "foo.txt" } );
     assertNull( adapter.getAndResetUrl() );
     upload.submit( "http://foo/" );
     assertEquals( "http://foo/", adapter.getAndResetUrl() );
@@ -180,7 +180,7 @@ public class FileUpload_Test {
     FileUpload upload = new FileUpload( shell, SWT.NONE );
     IFileUploadAdapter adapter = getFileUploadAdapter( upload );
     assertNull( adapter.getAndResetUrl() );
-    adapter.setFileName( "foo.txt" );
+    adapter.setFileNames( new String[]{ "foo.txt" } );
     upload.submit( "http://foo/" );
     upload.submit( "http://bar/" );
     assertEquals( "http://bar/", adapter.getAndResetUrl() );
