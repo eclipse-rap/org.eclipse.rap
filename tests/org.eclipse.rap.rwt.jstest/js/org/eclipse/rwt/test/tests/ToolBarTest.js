@@ -157,6 +157,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       widget.destroy();
     },
 
+    testCreateVerticalPushToolItemByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var toolbar = this._createToolBarByProtocol( "w3", "w2", [ "VERTICAL" ] );
+      var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
+      assertTrue( widget instanceof rwt.widgets.ToolItem );
+      assertIdentical( toolbar, widget.getParent() );
+      assertTrue( widget.hasState( "push" ) );
+      assertTrue( widget.hasState( "rwt_PUSH" ) );
+      assertFalse( widget.hasState( "rwt_FLAT" ) );
+      assertTrue( widget.hasState( "rwt_VERTICAL" ) );
+      shell.destroy();
+      toolbar.destroy();
+      widget.destroy();
+    },
+
     testCreateToolItemWithIndexByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );

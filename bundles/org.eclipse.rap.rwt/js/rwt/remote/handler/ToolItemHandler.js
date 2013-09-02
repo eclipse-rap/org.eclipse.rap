@@ -25,11 +25,11 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ToolItem", {
     }
     var result;
     rwt.remote.HandlerUtil.callWithTarget( properties.parent, function( toolbar ) {
+      var vertical = toolbar.hasState( "rwt_VERTICAL" );
       if( type === "separator" ) {
-        result = new rwt.widgets.ToolItemSeparator( toolbar.hasState( "rwt_FLAT" ),
-                                                            toolbar.hasState( "rwt_VERTICAL" ) );
+        result = new rwt.widgets.ToolItemSeparator( toolbar.hasState( "rwt_FLAT" ), vertical );
       } else {
-        result = new rwt.widgets.ToolItem( type );
+        result = new rwt.widgets.ToolItem( type, vertical );
         result.setNoRadioGroup( toolbar.hasState( "rwt_NO_RADIO_GROUP" ) );
       }
       toolbar.addAt( result, properties.index );

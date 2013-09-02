@@ -13,7 +13,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
 
   extend : rwt.widgets.base.BasicButton,
 
-  construct : function( itemType ) {
+  construct : function( itemType, vertical ) {
     this.base( arguments, itemType );
     this._isDropDown = false;
     if( itemType == "dropDown" ) {
@@ -23,6 +23,9 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
       this._sendEvent = true;
       this.setCellDimension( 3, 1, 0 );
       this.setCellContent( 3, "" );
+    }
+    if( vertical ) {
+      this.addState( "rwt_VERTICAL" );
     }
     this._separatorBorder = null;
     this._rawText = null;
