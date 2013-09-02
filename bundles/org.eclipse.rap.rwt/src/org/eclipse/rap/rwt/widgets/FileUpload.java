@@ -40,14 +40,15 @@ import org.eclipse.swt.widgets.TypedListener;
 
 /**
  * A button-like widget allowing to select a file from the client's file system and to upload this
- * file to a given URL using HTTP POST.
+ * file to a given URL using HTTP POST. Multiple files may be selected if MULTI style is given,
+ * but not all clients may support it.
  * <p>
  * Note that although this class is a subclass of <code>Composite</code>,
  * it does not make sense to set a layout on it.
  * </p>
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>(none)</dd>
+ * <dd>MULTI</dd>
  * </dl>
  * </p>
  *
@@ -59,7 +60,7 @@ public class FileUpload extends Canvas {
   private final IFileUploadAdapter fileUploadAdapter;
   private String text;
   private Image image;
-  private String fileName;
+  private String[] fileNames = new String[ 0 ];
   private String url;
 
   /**
@@ -169,7 +170,7 @@ public class FileUpload extends Canvas {
 
   /**
    * Returns the selected file name, without the path. If no file name has been selected,
-   * <code>null</code> is returned.
+   * <code>null</code> is returned. If multiple files have been selected, the first is returned.
    *
    * @return the selected file name
    *
@@ -180,7 +181,22 @@ public class FileUpload extends Canvas {
    */
   public String getFileName() {
     checkWidget();
-    return fileName;
+    return fileNames.length > 0 ? fileNames[ 0 ] : null;
+  }
+
+  /**
+   * Returns a (possibly empty) array with the names of all files that were selected.
+   *
+   * @return the names of the selected files
+   *
+   * @exception SWTException <ul>
+   *   <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *   <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public String[] getFileNames() {
+    checkWidget();
+    return fileNames.clone();
   }
 
   /**
@@ -208,7 +224,7 @@ public class FileUpload extends Canvas {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     checkWidget();
-    if( fileName != null ) {
+    if( fileNames.length > 0 ) {
       this.url  = url;
     }
   }
@@ -343,7 +359,8 @@ public class FileUpload extends Canvas {
   }
 
   private static int checkStyle( int style ) {
-    return style & SWT.BORDER;
+    int mask = SWT.BORDER | SWT.MULTI;
+    return style & mask;
   }
 
   ////////////////
@@ -351,8 +368,8 @@ public class FileUpload extends Canvas {
 
   private final class FileUploadAdapter implements IFileUploadAdapter {
 
-    public void setFileName( String value ) {
-      fileName = value;
+    public void setFileNames( String[] value ) {
+      fileNames = value;
     }
 
     public String getAndResetUrl() {

@@ -33,6 +33,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       widget.destroy();
     },
 
+    testCreateFileUploadByProtocol_withMULTI : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+
+      var upload = createFileUploadByProtocol( "w3", "w2", [ "MULTI" ] );
+
+      var input = upload._inputElement;
+      assertEquals( "multiple", input.getAttribute( "multiple" ) );
+      shell.destroy();
+    },
+
     testDisposeFileUploadByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = createFileUploadByProtocol( "w3", "w2" );
@@ -78,7 +88,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       function() {
         var shell = TestUtil.createShellByProtocol( "w2" );
         var widget = createFileUploadByProtocol( "w3", "w2" );
-        setFileName( widget, "foo" );
+        setFileName( widget, [ "foo" ] );
         rwt.remote.MessageProcessor.processOperation( {
           "target" : "w3",
           "action" : "call",
@@ -349,10 +359,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       var upload = createFileUpload();
       wm.add( upload, "w200", true );
 
-      setFileName( upload, "foo" );
+      setFileName( upload, [ "foo" ] );
       upload._onValueChange();
 
-      assertEquals( "foo", TestUtil.getMessageObject().findSetProperty( "w200", "fileName" ) );
+      assertEquals( [ "foo" ], TestUtil.getMessageObject().findSetProperty( "w200", "fileNames" ) );
       upload.destroy();
     },
 
@@ -362,10 +372,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       var upload = createFileUpload();
       wm.add( upload, "w200", true );
 
-      setFileName( upload, "c:/mypath/foo" );
+      setFileName( upload, [ "c:/mypath/foo" ] );
       upload._onValueChange();
 
-      assertEquals( "foo", TestUtil.getMessageObject().findSetProperty( "w200", "fileName" ) );
+      assertEquals( [ "foo" ], TestUtil.getMessageObject().findSetProperty( "w200", "fileNames" ) );
       upload.destroy();
     },
 
@@ -375,10 +385,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       var upload = createFileUpload();
       wm.add( upload, "w200", true );
 
-      setFileName( upload, "c:\\mypath\\foo" );
+      setFileName( upload, [ "c:\\mypath\\foo" ] );
       upload._onValueChange();
 
-      assertEquals( "foo", TestUtil.getMessageObject().findSetProperty( "w200", "fileName" ) );
+      assertEquals( [ "foo" ], TestUtil.getMessageObject().findSetProperty( "w200", "fileNames" ) );
       upload.destroy();
     },
 
@@ -413,7 +423,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     testSubmit : [
       function() {
         var upload = createFileUpload();
-        setFileName( upload, "foo" );
+        setFileName( upload, [ "foo" ] );
         upload.submit( this.BLANK );
         TestUtil.delayTest( 600 );
         TestUtil.store( upload );
@@ -433,13 +443,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
 /////////
 // Helper
 
-var createFileUploadByProtocol = function( id, parentId ) {
+var createFileUploadByProtocol = function( id, parentId, style ) {
   rwt.remote.MessageProcessor.processOperation( {
     "target" : id,
     "action" : "create",
     "type" : "rwt.widgets.FileUpload",
     "properties" : {
-      "style" : [],
+      "style" : style ? style : [],
       "parent" : parentId
     }
   } );
@@ -476,7 +486,7 @@ var checkInputLayout = function( upload ) {
 };
 
 var setFileName = function( upload, value ) {
-  upload._getFileName = function(){ return value; };
+  upload._getFileNames = function(){ return value; };
 };
 
 }());

@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.widgets;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -57,10 +58,11 @@ public class FileUpload_Test {
 
   @Test
   public void testStyle() {
-    FileUpload upload = new FileUpload( shell, SWT.BORDER | SWT.FLAT );
+    FileUpload upload = new FileUpload( shell, SWT.BORDER | SWT.FLAT | SWT.MULTI );
 
     assertEquals( 0, upload.getStyle() & SWT.FLAT );
     assertEquals( SWT.BORDER, upload.getStyle() & SWT.BORDER );
+    assertEquals( SWT.MULTI, upload.getStyle() & SWT.MULTI );
   }
 
   ///////
@@ -144,8 +146,8 @@ public class FileUpload_Test {
     }
   }
 
-  ///////////
-  // FileName
+  //////////////
+  // FileName(s)
 
   @Test
   public void testGetFileNameDefaultsToNull() {
@@ -157,8 +159,37 @@ public class FileUpload_Test {
   public void testGetFileName() {
     FileUpload upload = new FileUpload( shell, SWT.NONE );
     IFileUploadAdapter adapter = getFileUploadAdapter( upload );
-    adapter.setFileName( "foo.txt" );
+    adapter.setFileNames( new String[]{ "foo.txt" } );
     assertEquals( "foo.txt", upload.getFileName() );
+  }
+
+  @Test
+  public void testGetFileNamesDefaultsToEmptyArray() {
+    FileUpload upload = new FileUpload( shell, SWT.NONE );
+    assertEquals( 0, upload.getFileNames().length );
+  }
+
+  @Test
+  public void testGetFileNames() {
+    FileUpload upload = new FileUpload( shell, SWT.MULTI );
+    IFileUploadAdapter adapter = getFileUploadAdapter( upload );
+
+    adapter.setFileNames( new String[]{ "foo.txt", "bar.txt" } );
+
+    String[] expected = new String[]{ "foo.txt", "bar.txt" };
+    assertArrayEquals( expected, upload.getFileNames() );
+  }
+
+  @Test
+  public void testGetFileNames_ReturnsSaveCopy() {
+    FileUpload upload = new FileUpload( shell, SWT.MULTI );
+    IFileUploadAdapter adapter = getFileUploadAdapter( upload );
+    adapter.setFileNames( new String[]{ "foo.txt", "bar.txt" } );
+
+    upload.getFileNames()[ 0 ] = null;
+
+    String[] expected = new String[]{ "foo.txt", "bar.txt" };
+    assertArrayEquals( expected, upload.getFileNames() );
   }
 
   /////////
@@ -168,7 +199,7 @@ public class FileUpload_Test {
   public void testSubmit() {
     FileUpload upload = new FileUpload( shell, SWT.NONE );
     IFileUploadAdapter adapter = getFileUploadAdapter( upload );
-    adapter.setFileName( "foo.txt" );
+    adapter.setFileNames( new String[] { "foo.txt" } );
     assertNull( adapter.getAndResetUrl() );
     upload.submit( "http://foo/" );
     assertEquals( "http://foo/", adapter.getAndResetUrl() );
@@ -179,7 +210,7 @@ public class FileUpload_Test {
     FileUpload upload = new FileUpload( shell, SWT.NONE );
     IFileUploadAdapter adapter = getFileUploadAdapter( upload );
     assertNull( adapter.getAndResetUrl() );
-    adapter.setFileName( "foo.txt" );
+    adapter.setFileNames( new String[]{ "foo.txt" } );
     upload.submit( "http://foo/" );
     upload.submit( "http://bar/" );
     assertEquals( "http://bar/", adapter.getAndResetUrl() );

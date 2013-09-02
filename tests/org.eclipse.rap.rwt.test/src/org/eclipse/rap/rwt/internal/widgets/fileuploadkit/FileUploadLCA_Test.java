@@ -98,7 +98,7 @@ public class FileUploadLCA_Test {
   @Test
   public void testReadFileName() {
     Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( fileUpload ), "fileName", "foo" );
+    Fixture.fakeSetProperty( getId( fileUpload ), "fileNames", new JsonArray().add( "foo" ) );
     Fixture.executeLifeCycleFromServerThread( );
 
     assertEquals( "foo", fileUpload.getFileName() );
@@ -112,7 +112,7 @@ public class FileUploadLCA_Test {
   @Test
   public void testReadEmptyFileName() {
     Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( fileUpload ), "fileName", "" );
+    Fixture.fakeSetProperty( getId( fileUpload ), "fileNames", new JsonArray() );
     Fixture.executeLifeCycleFromServerThread( );
 
     assertEquals( null, fileUpload.getFileName() );
@@ -124,7 +124,7 @@ public class FileUploadLCA_Test {
     fileUpload.addSelectionListener( listener );
 
     Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( fileUpload ), "fileName", "foo" );
+    Fixture.fakeSetProperty( getId( fileUpload ), "fileNames", new JsonArray().add( "foo" ) );
     Fixture.executeLifeCycleFromServerThread( );
 
     assertEquals( "foo", fileUpload.getFileName() );
@@ -138,6 +138,16 @@ public class FileUploadLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( fileUpload );
     assertEquals( "rwt.widgets.FileUpload", operation.getType() );
+  }
+
+  @Test
+  public void testRenderCreate_withMULTI() throws IOException {
+    fileUpload = new FileUpload( shell, SWT.MULTI );
+    lca.renderInitialization( fileUpload );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( fileUpload );
+    assertEquals( new JsonArray().add( "MULTI" ), operation.getProperty( "style" ) );
   }
 
   @Test
@@ -242,7 +252,7 @@ public class FileUploadLCA_Test {
   @Test
   public void testSubmit() throws IOException {
     IFileUploadAdapter adapter = getFileUploadAdapter( fileUpload );
-    adapter.setFileName( "foo" );
+    adapter.setFileNames( new String[] { "foo" } );
 
     fileUpload.submit( "bar" );
     lca.renderChanges( fileUpload );

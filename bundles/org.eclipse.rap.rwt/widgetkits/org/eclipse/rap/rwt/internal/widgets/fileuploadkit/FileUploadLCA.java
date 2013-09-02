@@ -11,11 +11,11 @@
 package org.eclipse.rap.rwt.internal.widgets.fileuploadkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsStringArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class FileUploadLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.FileUpload";
-  private static final String[] ALLOWED_STYLES = new String[] { "BORDER" };
+  private static final String[] ALLOWED_STYLES = new String[] { "BORDER", "MULTI" };
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
@@ -78,9 +78,9 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
 
   private void readFileName( FileUpload fileUpload ) {
     IFileUploadAdapter adapter = fileUpload.getAdapter( IFileUploadAdapter.class );
-    String fileName = readPropertyValue( fileUpload, "fileName" );
-    if( fileName != null ) {
-      adapter.setFileName( fileName.equals( "" ) ? null : fileName );
+    String[] fileNames = readPropertyValueAsStringArray( getId( fileUpload ), "fileNames" );
+    if( fileNames != null ) {
+      adapter.setFileNames( fileNames );
       fileUpload.notifyListeners( SWT.Selection, new Event() );
     }
   }
