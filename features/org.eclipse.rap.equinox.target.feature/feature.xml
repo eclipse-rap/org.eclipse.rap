@@ -22,7 +22,7 @@
    </url>
 
    <requires>
-      <import feature="org.eclipse.rap.feature" version="2.1.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.rap.feature" version="2.1.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin
