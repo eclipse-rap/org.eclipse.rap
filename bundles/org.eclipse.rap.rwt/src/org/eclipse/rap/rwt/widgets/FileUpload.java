@@ -170,7 +170,7 @@ public class FileUpload extends Canvas {
 
   /**
    * Returns the selected file name, without the path. If no file name has been selected,
-   * <code>null</code> is returned.
+   * <code>null</code> is returned. If multiple files have been selected, the first is returned.
    *
    * @return the selected file name
    *
@@ -182,6 +182,21 @@ public class FileUpload extends Canvas {
   public String getFileName() {
     checkWidget();
     return fileNames.length > 0 ? fileNames[ 0 ] : null;
+  }
+
+  /**
+   * Returns a (possibly empty) array with the names of all files that were selected.
+   *
+   * @return the names of the selected files
+   *
+   * @exception SWTException <ul>
+   *   <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *   <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public String[] getFileNames() {
+    checkWidget();
+    return fileNames.clone();
   }
 
   /**
