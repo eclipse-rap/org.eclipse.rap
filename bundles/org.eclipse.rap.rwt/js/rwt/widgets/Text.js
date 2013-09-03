@@ -304,7 +304,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       }
       if( element ) {
         var image = this._getIconImage( iconId );
-        element.style.backgroundImage = image ? "URL(" + image[ 0 ] + ")" : "none";
+        rwt.html.Style.setBackgroundImage( element, image ? image[ 0 ] : null );
       }
       this._layoutIcon( iconId );
     },

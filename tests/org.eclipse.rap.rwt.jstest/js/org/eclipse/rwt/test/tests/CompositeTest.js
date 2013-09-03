@@ -150,7 +150,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
         composite.addToDocument();
         TestUtil.flush();
         var image = composite._getTargetNode().style.backgroundImage;
-        assertEquals( "url(bla.jpg)", image );
+        assertTrue( image.indexOf( "bla.jpg" ) != -1 );
         composite.setBackgroundImage( null );
         image = composite._getTargetNode().style.backgroundImage;
         assertTrue( image.indexOf( "blank.gif" ) != -1 );

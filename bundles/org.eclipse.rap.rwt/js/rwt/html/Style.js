@@ -614,8 +614,6 @@ rwt.qx.Class.define( "rwt.html.Style", {
     _setCssBackgroundImage : function( target, value ) {
       var cssImageStr = value ? "URL(" + this._resolveResource( value ) + ")" : "none";
       this.setStyleProperty( target, "backgroundImage", cssImageStr );
-      this.setStyleProperty( target, "backgroundRepeat", "no-repeat" );
-      this.setStyleProperty( target, "backgroundPosition", "center" );
     },
 
     _setCssFilterImage : function( target, value ) {

@@ -3549,7 +3549,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     _styleBackgroundImage : function( value ) {
       if( value ) {
-        this.setStyleProperty( "backgroundImage", "url(" + value + ")");
+        rwt.html.Style.setBackgroundImage( this, value );
         this.setStyleProperty( "backgroundRepeat", this.getStyleProperty( "backgroundRepeat" ) );
         this.setStyleProperty( "backgroundPosition", this.getStyleProperty( "backgroundPosition" ) );
       } else {
