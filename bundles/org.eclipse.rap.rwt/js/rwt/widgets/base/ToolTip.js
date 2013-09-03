@@ -92,7 +92,7 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip",
     showInterval :
     {
       check : "Integer",
-      init : 1000,
+      init : 500,
       apply : "_applyShowInterval"
     },
 
@@ -100,7 +100,7 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip",
     hideInterval :
     {
       check : "Integer",
-      init : 4000,
+      init : 20000,
       apply : "_applyHideInterval"
     },
 

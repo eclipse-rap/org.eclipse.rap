@@ -23,19 +23,15 @@
 }
 
 Widget-ToolTip {
-  padding: 8px;
-  background-color: #f0f0f0;
-  background-image : gradient(
-    linear, left top, right top,
-    from( #f8f9ff ),
-    to( #f4f4f4 )
-  );
-  border: 1px solid #a0b3ca;
-  border-radius: 2px;
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  color: #4a4a4a;
-  opacity: 1;
-  animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
+  padding: 10px;
+  background-color: rgb(32, 31, 27);
+  background-image : none;
+  border: none;
+  border-radius: 1px;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #e0e0e0;
+  opacity: 0.9;
+  animation: fadeOut 150ms ease-in;
   box-shadow: none;
 }
 
