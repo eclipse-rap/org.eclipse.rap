@@ -65,9 +65,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
     testContent : function() {
       var widget = this.createDefaultWidget();
       this.initWidget( widget, true );
-      assertTrue( this.TestUtil.getCssBackgroundImage(
-        widget._getTargetNode().firstChild).search( "test.jpg" ) != -1
-      );
+
+      var url = this.TestUtil.getCssBackgroundImage( widget._getTargetNode().firstChild );
+      if( rwt.client.Client.isMshtml() || rwt.client.Client.isWebkit() ) {
+        if( rwt.client.Client.isMshtml() ) {
+          assertTrue( url.indexOf( "http" ) === 0 );
+        }
+        assertTrue( url.indexOf( "test.jpg" ) !== -1 );
+      } else {
+        assertEquals( "test.jpg", url );
+      }
       assertEquals( "test text", widget._getTargetNode().lastChild.innerHTML );
       this.disposeWidget( widget );
     },

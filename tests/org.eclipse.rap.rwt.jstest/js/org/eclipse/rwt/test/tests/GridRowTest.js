@@ -573,7 +573,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 2, row._getTargetNode().childNodes.length );
       var node = row._getTargetNode().childNodes[ 0 ];
       var url = TestUtil.getCssBackgroundImage( node );
-      assertTrue( url.indexOf( "single.gif" ) != -1 );
+
+      if( rwt.client.Client.isMshtml() || rwt.client.Client.isWebkit() ) {
+        if( rwt.client.Client.isMshtml() ) {
+          assertTrue( url.indexOf( "http" ) === 0 );
+        }
+        assertTrue( url.indexOf( "single.gif" ) !== -1 );
+      } else {
+        assertEquals( "single.gif", url );
+      }
       var position = node.style.backgroundPosition;
       assertTrue(    position.indexOf( "center" ) != -1
                   || position.indexOf( "50%" ) != -1 );

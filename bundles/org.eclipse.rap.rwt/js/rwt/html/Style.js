@@ -612,7 +612,7 @@ rwt.qx.Class.define( "rwt.html.Style", {
     // Private
 
     _setCssBackgroundImage : function( target, value ) {
-      var cssImageStr = value ? "URL(" + value + ")" : "none";
+      var cssImageStr = value ? "URL(" + this._resolveResource( value ) + ")" : "none";
       this.setStyleProperty( target, "backgroundImage", cssImageStr );
       this.setStyleProperty( target, "backgroundRepeat", "no-repeat" );
       this.setStyleProperty( target, "backgroundPosition", "center" );
@@ -698,7 +698,21 @@ rwt.qx.Class.define( "rwt.html.Style", {
                                  originalEvent.relatedTarget);
         target.dispatchEvent( newEvent );
       }
-    } )
+    } ),
+
+    _resolveResource : rwt.util.Variant.select( "qx.client", {
+      "mshtml" : function( url ) {
+        return this._basePath + url;
+      },
+      "default" : function( url ) {
+        return url;
+      }
+    } ),
+
+    _basePath : ( function() {
+      var href = document.location.href;
+      return href.slice( 0, href.lastIndexOf( "/" ) + 1 );
+    }() )
 
 
   }

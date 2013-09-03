@@ -671,7 +671,8 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
           var content = this.getCellContent( cell );
           var cssImageStr = "";
           if( content ) {
-            cssImageStr = "background-image:url(" + content + ")";
+            var path =  rwt.html.Style._resolveResource( content );
+            cssImageStr = "background-image:url(" + path + ")";
           }
           return   "<div style='position:absolute;border:0 none;line-height:0px;font-size:0px;"
                  + cssImageStr

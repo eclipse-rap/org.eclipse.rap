@@ -712,7 +712,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _setImage : function( element, src, enabled ) {
-      element.style.backgroundImage = src ? "URL(" + src + ")" : "none";
+      element.style.backgroundImage
+        = src ? "URL(" + rwt.html.Style._resolveResource( src ) + ")" : "none";
       if( enabled !== null ) {
         var opacity = enabled ? 1 : 0.3;
         Style.setOpacity( element, opacity );
