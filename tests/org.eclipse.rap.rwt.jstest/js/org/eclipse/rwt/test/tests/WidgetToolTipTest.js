@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2013 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -8,78 +8,80 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+
+var manager = rwt.widgets.util.ToolTipManager.getInstance();
+var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
+var wm = rwt.remote.WidgetManager.getInstance();
+
+var widget;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
   extend : rwt.qx.Object,
-  
-  construct : function() {
-    this.base( arguments );
-    this.TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-    this.TestUtil.prepareTimerUse();
-    this.manager = rwt.widgets.util.ToolTipManager.getInstance();
-    this.wm = rwt.remote.WidgetManager.getInstance();        
-    this.TestUtil.flush();
-    this.toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
-  },
-  
+
   members : {
-    
+
     TARGETPLATFORM : [ "win", "mac", "unix" ],
 
-    testUpdateWidgetToolTipText : function() {
-      this.widget1 = new rwt.widgets.base.Label( "Hello World 1" );
-      this.widget2 = new rwt.widgets.base.Label( "Hello World 2" );
-      this.widget1.addToDocument();
-      this.widget2.addToDocument();
-      this.TestUtil.flush();            
-      this.wm.setToolTip( this.widget1, "test1" );
-      this.wm.setToolTip( this.widget2, "test2" );            
-      var widget = this.widget1;
-      var event = {
-        getTarget : function() { return widget; },
-        getType : function() { return "mouseover" }
-      };            
-      this.manager.handleMouseEvent( event );
-      assertEquals( "test1", this.toolTip._atom.getLabel() );
-      var widget = this.widget2;
-      var event = {
-        getTarget : function() { return widget; },
-        getType : function() { return "mouseover" }
-      };            
-      this.manager.handleMouseEvent( event );
-      assertEquals( "test2", this.toolTip._atom.getLabel() );
-      this.wm.setToolTip( this.widget1, "test3" );
-      var widget = this.widget1;
-      var event = {
-        getTarget : function() { return widget; },
-        getType : function() { return "mouseover" }
-      };            
-      this.manager.handleMouseEvent( event );
-      assertEquals( "test3", this.toolTip._atom.getLabel() );
-      this.widget1.setParent( null );
-      this.widget2.setParent( null );
-      this.widget1.dispose();
-      this.widget2.dispose();
-      this.TestUtil.flush();      
+    setUp : function() {
+      widget = new rwt.widgets.base.Label( "Hello World 1" );
+      widget.addToDocument();
+      TestUtil.flush();
     },
-    
-    testUpdateWigetToolTipTextWhileToolTipBound : function() {
-      this.widget1 = new rwt.widgets.base.Label( "Hello World 1" );
-      this.widget1.addToDocument();
-      this.TestUtil.flush();      
-      this.wm.setToolTip( this.widget1, "test1" );            
-      var widget = this.widget1;
-      var event = {
-        getTarget : function() { return widget; },
-        getType : function() { return "mouseover" }
-      };            
-      this.manager.handleMouseEvent( event );
-      assertEquals( "test1", this.toolTip._atom.getLabel() );
-      this.wm.setToolTip( this.widget1, "test2" );
-      assertEquals( "test2", this.toolTip._atom.getLabel() );      
-      this.widget1.setParent( null );
-      this.widget1.dispose();
-      this.TestUtil.flush();
+
+    tearDown : function() {
+      widget.destroy();
+    },
+
+    testUpdateWidgetToolTipText_HoverFromDocument : function() {
+      wm.setToolTip( widget, "test1" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      assertEquals( "test1", toolTip._atom.getLabel() );
+    },
+
+    testUpdateWidgetToolTipText_HoverFromOtherWidget : function() {
+      var widget2 = new rwt.widgets.base.Label( "Hello World 2" );
+      widget2.addToDocument();
+      TestUtil.flush();
+      wm.setToolTip( widget, "test1" );
+      wm.setToolTip( widget2, "test2" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      TestUtil.hoverFromTo( widget.getElement(), widget2.getElement() );
+
+      assertEquals( "test2", toolTip._atom.getLabel() );
+      widget2.destroy();
+    },
+
+    testUpdateWidgetToolTipText_HoverAgainWithDifferentText : function() {
+      var widget2 = new rwt.widgets.base.Label( "Hello World 2" );
+      widget2.addToDocument();
+      TestUtil.flush();
+      wm.setToolTip( widget, "test1" );
+      wm.setToolTip( widget2, "test2" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      TestUtil.hoverFromTo( widget.getElement(), widget2.getElement() );
+
+      wm.setToolTip( widget, "test3" );
+      TestUtil.hoverFromTo( widget2.getElement(), widget.getElement() );
+
+      assertEquals( "test3", toolTip._atom.getLabel() );
+      widget.destroy();
+    },
+
+    testUpdateWidgetToolTipText_WhileToolTipBound : function() {
+      wm.setToolTip( widget, "test1" );
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      wm.setToolTip( widget, "test2" );
+
+      assertEquals( "test2", toolTip._atom.getLabel() );
     }
   }
-  
+
 } );
+
+}());
