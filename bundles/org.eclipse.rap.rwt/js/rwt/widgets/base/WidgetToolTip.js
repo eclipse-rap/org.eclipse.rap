@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource.
+ * Copyright (c) 2009, 2013 EclipseSource.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,32 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     this._atom._createLabel();
     this._atom.getLabelObject().setMode( "html" );
   },
+
+  statics : {
+
+    setToolTipText : function( widget, value ) {
+      if( value != null && value !== "" ) {
+        var EncodingUtil = rwt.util.Encoding;
+        var text = EncodingUtil.escapeText( value, false );
+        text = EncodingUtil.replaceNewLines( text, "<br/>" );
+        widget.setUserData( "toolTipText", text );
+        var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
+        widget.setToolTip( toolTip );
+        // make sure "boundToWidget" is initialized:
+        if( toolTip.getParent() != null ) {
+          if( toolTip.getBoundToWidget() == widget ) {
+            toolTip.updateText( widget );
+          }
+        }
+      } else {
+        widget.setToolTip( null );
+        widget.setUserData( "toolTipText", null );
+      }
+      widget.dispatchSimpleEvent( "changeToolTipText", widget ); // used by Synchronizer.js
+    }
+
+  },
+
 
   members : {
 

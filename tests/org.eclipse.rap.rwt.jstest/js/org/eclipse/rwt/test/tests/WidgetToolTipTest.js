@@ -13,6 +13,7 @@
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
 var manager = rwt.widgets.util.ToolTipManager.getInstance();
+var WidgetToolTip = rwt.widgets.base.WidgetToolTip;
 var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
 var wm = rwt.remote.WidgetManager.getInstance();
 
@@ -36,7 +37,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
     },
 
     testUpdateWidgetToolTipText_HoverFromDocument : function() {
-      wm.setToolTip( widget, "test1" );
+      WidgetToolTip.setToolTipText( widget, "test1" );
       TestUtil.hoverFromTo( document.body, widget.getElement() );
 
       assertEquals( "test1", toolTip._atom.getLabel() );
@@ -46,8 +47,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       var widget2 = new rwt.widgets.base.Label( "Hello World 2" );
       widget2.addToDocument();
       TestUtil.flush();
-      wm.setToolTip( widget, "test1" );
-      wm.setToolTip( widget2, "test2" );
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      WidgetToolTip.setToolTipText( widget2, "test2" );
       TestUtil.hoverFromTo( document.body, widget.getElement() );
 
       TestUtil.hoverFromTo( widget.getElement(), widget2.getElement() );
@@ -60,8 +61,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       var widget2 = new rwt.widgets.base.Label( "Hello World 2" );
       widget2.addToDocument();
       TestUtil.flush();
-      wm.setToolTip( widget, "test1" );
-      wm.setToolTip( widget2, "test2" );
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      WidgetToolTip.setToolTipText( widget2, "test2" );
       TestUtil.hoverFromTo( document.body, widget.getElement() );
       TestUtil.hoverFromTo( widget.getElement(), widget2.getElement() );
 
@@ -73,7 +74,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
     },
 
     testUpdateWidgetToolTipText_WhileToolTipBound : function() {
-      wm.setToolTip( widget, "test1" );
+      WidgetToolTip.setToolTipText( widget, "test1" );
 
       TestUtil.hoverFromTo( document.body, widget.getElement() );
       wm.setToolTip( widget, "test2" );
