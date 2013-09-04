@@ -223,11 +223,26 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip",
      * @type member
      * @return {void}
      */
-    _afterAppear : function()
-    {
-      this.base(arguments);
+    _afterAppear : function() {
+      this.base( arguments );
+      var oldLeft = this.getLeft();
+      var oldTop = this.getTop();
+      var newPosition = this._positionAfterAppear( oldLeft, oldTop );
+      if( newPosition[ 0 ] !== oldLeft || newPosition[ 1 ] !== oldTop ) {
+        rwt.client.Timer.once( function() {
+          this.setLeft( newPosition[ 0 ] );
+          this.setTop( newPosition[ 1 ] );
+        }, this, 0 );
+      }
+    },
 
-      if (this.getRestrictToPageOnOpen()) {
+    _positionAfterAppear : function( oldLeft, oldTop ) {
+      var result = [ oldLeft, oldTop ];
+      if( this.getRestrictToPageOnOpen() ) {
+        var left   = (this._wantedLeft == null) ? this.getLeft() : this._wantedLeft;
+        var top    = this.getTop();
+        var width  = this.getBoxWidth();
+        var height = this.getBoxHeight();
         var doc = rwt.widgets.base.ClientDocument.getInstance();
         var docWidth = doc.getClientWidth();
         var docHeight = doc.getClientHeight();
@@ -235,17 +250,8 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip",
         var restrictToPageRight = parseInt( this.getRestrictToPageRight(), 10 );
         var restrictToPageTop = parseInt( this.getRestrictToPageTop(), 10 );
         var restrictToPageBottom = parseInt( this.getRestrictToPageBottom(), 10 );
-        var left   = (this._wantedLeft == null) ? this.getLeft() : this._wantedLeft;
-        var top    = this.getTop();
-        var width  = this.getBoxWidth();
-        var height = this.getBoxHeight();
-
         var mouseX = rwt.event.MouseEvent.getPageX();
         var mouseY = rwt.event.MouseEvent.getPageY();
-
-        var oldLeft = this.getLeft();
-        var oldTop = top;
-
         // NOTE: We check right and bottom first, because top and left should have
         //       priority, when both sides are violated.
         if (left + width > docWidth - restrictToPageRight) {
@@ -290,17 +296,10 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip",
             left = left + minimalNonClippingMovement[0];
             top = top + minimalNonClippingMovement[1];
         }
-
-        if (left != oldLeft || top != oldTop) {
-          rwt.client.Timer.once( function() {
-            this.setLeft(left);
-            this.setTop(top);
-          }, this, 0 );
-        }
+        result = [ left, top ];
       }
+      return result;
     },
-
-
 
     /*
     ---------------------------------------------------------------------------

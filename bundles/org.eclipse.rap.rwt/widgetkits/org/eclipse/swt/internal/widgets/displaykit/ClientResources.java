@@ -155,6 +155,7 @@ public final class ClientResources {
     "rwt/widgets/Menu.js",
     "rwt/remote/handler/MenuHandler.js",
     "rwt/remote/EventUtil.js",
+    "rwt/widgets/util/ToolTipConfig.js",
     "rwt/widgets/base/WidgetToolTip.js",
     "rwt/widgets/util/GraphicsMixin.js",
     "rwt/graphics/GraphicsUtil.js",

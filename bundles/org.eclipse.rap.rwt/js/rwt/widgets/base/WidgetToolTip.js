@@ -57,7 +57,36 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     updateText : function( widget ) {
       this._atom.setLabel( widget.getUserData( "toolTipText" ) );
+    },
+
+    _positionAfterAppear : function( oldLeft, oldTop ) {
+      var config = rwt.widgets.util.ToolTipConfig.getConfig( this.getBoundToWidget() );
+      switch( config.position ) {
+        case "horizontal-center":
+          return this._positionHorizontalCenter( oldLeft, oldTop );
+        default:
+          return this.base( arguments, oldLeft, oldTop );
+      }
+    },
+
+    _positionHorizontalCenter : function() {
+      var target = this._getWidgetBounds();
+      var left = Math.round( target[ 0 ] + ( target[ 2 ] / 2 ) - this.getWidthValue() / 2 );
+      var top = target[ 1 ] + target[ 3 ] + 3;
+      return [ left, top ];
+    },
+
+    _getWidgetBounds : function() {
+      var widget = this.getBoundToWidget();
+      var location = rwt.html.Location.get( widget.getElement() );
+      return [
+        location.left,
+        location.top,
+        widget.getWidthValue(),
+        widget.getHeightValue()
+      ];
     }
 
   }
+
 } );
