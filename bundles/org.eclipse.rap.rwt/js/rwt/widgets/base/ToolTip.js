@@ -292,11 +292,10 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip",
         }
 
         if (left != oldLeft || top != oldTop) {
-          var self = this;
-          window.setTimeout(function() {
-            self.setLeft(left);
-            self.setTop(top);
-          }, 0);
+          rwt.client.Timer.once( function() {
+            this.setLeft(left);
+            this.setTop(top);
+          }, this, 0 );
         }
       }
     },

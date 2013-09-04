@@ -28,6 +28,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
 
     setUp : function() {
       widget = new rwt.widgets.base.Label( "Hello World 1" );
+      widget.setLeft( 100 );
+      widget.setTop( 10 );
+      widget.setWidth( 100 );
+      widget.setHeight( 20 );
       widget.addToDocument();
       TestUtil.flush();
     },
@@ -80,9 +84,27 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       wm.setToolTip( widget, "test2" );
 
       assertEquals( "test2", toolTip._atom.getLabel() );
+    },
+
+    testPosition_MouseRelative : function() {
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip( widget );
+
+      assertEquals( 111, toolTip.getLeft() );
+      assertEquals( 40, toolTip.getTop() );
     }
+
   }
 
 } );
+
+var showToolTip = function( widget ) {
+  toolTip._onshowtimer();
+  TestUtil.flush();
+  TestUtil.forceTimerOnce();
+  TestUtil.flush();
+};
 
 }());
