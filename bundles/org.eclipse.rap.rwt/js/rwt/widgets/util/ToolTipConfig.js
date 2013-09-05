@@ -26,11 +26,15 @@ namespace( "rwt.client" );
     },
 
     _defaultConfig : {
-      "position" : "mouse"
+      "position" : "mouse",
+      "appearDelay" : 800,
+      "disappearDelay" : 200
     },
 
     _horizontalConfig : {
-      "position" : "horizontal-center"
+      "position" : "horizontal-center",
+      "appearDelay" : 60,
+      "disappearDelay" : 100
     }
 
   };

@@ -100,8 +100,6 @@ rwt.qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
 
     _configureToolTip : function() {
       var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
-      toolTip.setShowInterval( 600 );
-      toolTip.setHideInterval( 15000 );
       toolTip.setMousePointerOffsetX( -35 );
       toolTip.setMousePointerOffsetY( -100 );
       var manager = rwt.widgets.util.ToolTipManager.getInstance();

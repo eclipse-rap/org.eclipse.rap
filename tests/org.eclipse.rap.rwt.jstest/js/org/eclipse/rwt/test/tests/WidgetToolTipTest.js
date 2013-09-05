@@ -128,6 +128,49 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
     },
 
+    testAppear_DefaultDelay : function() {
+      config = {};
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      assertTrue( toolTip._showTimer.isEnabled() );
+      assertEquals( 1000, toolTip._showTimer.getInterval() );
+    },
+
+    testAppear_CustomDelay : function() {
+      config = { "appearDelay" : 123 };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      assertTrue( toolTip._showTimer.isEnabled() );
+      assertEquals( 123, toolTip._showTimer.getInterval() );
+    },
+
+    testDisappear_DefaultDelay : function() {
+      config = {};
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.hoverFromTo( widget.getElement(), document.body );
+
+      assertTrue( toolTip._hideTimer.isEnabled() );
+      assertEquals( 200, toolTip._hideTimer.getInterval() );
+    },
+
+    testDisappear_CustomDelay : function() {
+      config = { "disappearDelay" : 456 };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.hoverFromTo( widget.getElement(), document.body );
+
+      assertTrue( toolTip._hideTimer.isEnabled() );
+      assertEquals( 456, toolTip._hideTimer.getInterval() );
+    },
 
     testDoNotHideAfterMouseOut : function() {
       WidgetToolTip.setToolTipText( widget, "test1" );

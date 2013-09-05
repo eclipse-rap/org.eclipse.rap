@@ -18,12 +18,13 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     this.base( arguments );
     this._label = new rwt.widgets.base.MultiCellWidget( [ "label" ] );
     this._label.setParent( this );
-    this._showTimer = new rwt.client.Timer(this.getShowInterval());
+    this._showTimer = new rwt.client.Timer();
     this._showTimer.addEventListener("interval", this._onshowtimer, this);
-    this._hideTimer = new rwt.client.Timer(this.getHideInterval());
+    this._hideTimer = new rwt.client.Timer();
     this._hideTimer.addEventListener("interval", this._onhidetimer, this);
     this.addEventListener("mouseover", this._onmouseover);
     this.addEventListener("mouseout", this._onmouseover);
+    this._currentConfig = {};
   },
 
   statics : {
@@ -78,18 +79,6 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       init : 20
     },
 
-    showInterval : {
-      check : "Integer",
-      init : 500,
-      apply : "_applyShowInterval"
-    },
-
-    hideInterval : {
-      check : "Integer",
-      init : 500,
-      apply : "_applyHideInterval"
-    },
-
     boundToWidget : {
       check : "rwt.widgets.base.Widget",
       apply : "_applyBoundToWidget"
@@ -101,60 +90,55 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     _minZIndex : 1e7,
     _isFocusRoot : false,
 
-    _applyHideInterval : function(value, old) {
-      this._hideTimer.setInterval(value);
-    },
-
-    _applyShowInterval : function(value, old) {
-      this._showTimer.setInterval(value);
-    },
-
-    _applyBoundToWidget : function(value, old) {
+    _applyBoundToWidget : function( value, old ) {
       var manager = rwt.widgets.util.ToolTipManager.getInstance();
       manager.setCurrentToolTip( null );
-      if (value) {
-        this.setParent(value.getTopLevelWidget());
-      } else if (old) {
-        this.setParent(null);
+      if( value ) {
+        this.setParent( rwt.widgets.base.ClientDocument.getInstance() );
+        this._config = rwt.widgets.util.ToolTipConfig.getConfig( this.getBoundToWidget() );
+        this._showTimer.setInterval( this._config.appearDelay || 1000 );
+        this._hideTimer.setInterval( this._config.disappearDelay || 200 );
+      } else if( old ) {
+        this._config = {};
       }
     },
 
     _beforeAppear : function() {
-      this.base(arguments);
+      this.base( arguments );
       this._stopShowTimer();
     },
 
     _beforeDisappear : function() {
-      this.base(arguments);
+      this.base( arguments );
       this._stopHideTimer();
     },
 
     _startShowTimer : function() {
-      if (!this._showTimer.getEnabled()) {
+      if( !this._showTimer.getEnabled() ) {
         this._showTimer.start();
       }
     },
 
     _startHideTimer : function() {
-      if(!this._hideTimer.getEnabled()) {
+      if( !this._hideTimer.getEnabled() ) {
         this._hideTimer.start();
       }
     },
 
     _stopShowTimer : function() {
-      if (this._showTimer.getEnabled()) {
+      if( this._showTimer.getEnabled() ) {
         this._showTimer.stop();
       }
     },
 
     _stopHideTimer : function() {
-      if (this._hideTimer.getEnabled()) {
+      if( this._hideTimer.getEnabled() ) {
         this._hideTimer.stop();
       }
     },
 
     _onmouseover : function(e) {
-      if (this.getHideOnHover()) {
+      if( this.getHideOnHover() ) {
         this.hide();
       }
     },
@@ -192,8 +176,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _getPositionAfterAppear : function() {
-      var config = rwt.widgets.util.ToolTipConfig.getConfig( this.getBoundToWidget() );
-      switch( config.position ) {
+      switch( this._config.position ) {
         case "horizontal-center":
           return this._positionHorizontalCenter();
         default:
