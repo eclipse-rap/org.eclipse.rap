@@ -11,162 +11,80 @@
  *    EclipseSource - adaptation for the Eclipse Remote Application Platform
  ******************************************************************************/
 
-/**
- * @appearance tool-tip
- */
-rwt.qx.Class.define("rwt.widgets.base.ToolTip",
-{
-  extend : rwt.widgets.base.PopupAtom,
+rwt.qx.Class.define("rwt.widgets.base.ToolTip", {
+  extend : rwt.widgets.base.Popup,
 
-
-
-
-  /*
-  *****************************************************************************
-     CONSTRUCTOR
-  *****************************************************************************
-  */
-
-  construct : function(vLabel, vIcon)
-  {
-    // ************************************************************************
-    //   INIT
-    // ************************************************************************
-    this.base(arguments, vLabel, vIcon);
-
-    // ************************************************************************
-    //   TIMER
-    // ************************************************************************
+  construct : function( vLabel, vIcon ) {
+    this.base( arguments );
+    this._atom = new rwt.widgets.base.Atom( vLabel, vIcon );
+    this._atom.setParent( this );
     this._showTimer = new rwt.client.Timer(this.getShowInterval());
     this._showTimer.addEventListener("interval", this._onshowtimer, this);
-
     this._hideTimer = new rwt.client.Timer(this.getHideInterval());
     this._hideTimer.addEventListener("interval", this._onhidetimer, this);
-
-    // ************************************************************************
-    //   EVENTS
-    // ************************************************************************
     this.addEventListener("mouseover", this._onmouseover);
     this.addEventListener("mouseout", this._onmouseover);
   },
 
+  properties : {
 
-
-
-  /*
-  *****************************************************************************
-     PROPERTIES
-  *****************************************************************************
-  */
-
-  properties :
-  {
-    appearance :
-    {
+    appearance : {
       refine : true,
       init : "widget-tool-tip"
     },
 
-    /** Controls whether the tooltip is hidden when hovered across */
-    hideOnHover :
-    {
+    hideOnHover : {
       check : "Boolean",
       init : true
     },
 
-    /** Horizontal offset of the mouse pointer (in pixel) */
-    mousePointerOffsetX :
-    {
+    mousePointerOffsetX : {
       check : "Integer",
       init : 1
     },
 
-    /** Vertical offset of the mouse pointer (in pixel) */
-    mousePointerOffsetY :
-    {
+    mousePointerOffsetY : {
       check : "Integer",
       init : 20
     },
 
-    /** Interval after the tooltip is shown (in milliseconds) */
-    showInterval :
-    {
+    showInterval : {
       check : "Integer",
       init : 500,
       apply : "_applyShowInterval"
     },
 
-    /** Interval after the tooltip is hidden (in milliseconds) */
-    hideInterval :
-    {
+    hideInterval : {
       check : "Integer",
       init : 20000,
       apply : "_applyHideInterval"
     },
 
-    /** Widget to which the tooltip is bound to */
-    boundToWidget :
-    {
+    boundToWidget : {
       check : "rwt.widgets.base.Widget",
       apply : "_applyBoundToWidget"
     }
+
   },
 
 
-
-
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
-
-  members :
-  {
+  members : {
     _minZIndex : 1e7,
+    _isFocusRoot : false,
 
+    getAtom : function() {
+      return this._atom;
+    },
 
-
-
-    /*
-    ---------------------------------------------------------------------------
-      APPLY ROUTINES
-    ---------------------------------------------------------------------------
-    */
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     */
     _applyHideInterval : function(value, old) {
       this._hideTimer.setInterval(value);
     },
 
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     */
     _applyShowInterval : function(value, old) {
       this._showTimer.setInterval(value);
     },
 
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     */
-    _applyBoundToWidget : function(value, old)
-    {
+    _applyBoundToWidget : function(value, old) {
       if (value) {
         this.setParent(value.getTopLevelWidget());
       } else if (old) {
@@ -174,55 +92,17 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip",
       }
     },
 
-
-
-
-    /*
-    ---------------------------------------------------------------------------
-      APPEAR/DISAPPEAR
-    ---------------------------------------------------------------------------
-    */
-
-    /**
-     * Callback method for the "beforeAppear" event.<br/>
-     * Does two things: stops the timer for the show interval and
-     * starts the timer for the hide interval.
-     *
-     * @type member
-     * @return {void}
-     */
-    _beforeAppear : function()
-    {
+    _beforeAppear : function() {
       this.base(arguments);
-
       this._stopShowTimer();
       this._startHideTimer();
     },
 
-
-    /**
-     * Callback method for the "beforeDisappear" event.<br/>
-     * Stops the timer for the hide interval.
-     *
-     * @type member
-     * @return {void}
-     */
-    _beforeDisappear : function()
-    {
+    _beforeDisappear : function() {
       this.base(arguments);
       this._stopHideTimer();
     },
 
-
-    /**
-     * Callback method for the "afterAppear" event.<br/>
-     * If the property {@link #restrictToPageOnOpen} is set to <code>true</code>
-     * the tooltip gets repositioned to ensure it is displayed within the
-     * boundaries of the {@link rwt.widgets.base.ClientDocument}.
-     *
-     * @type member
-     * @return {void}
-     */
     _afterAppear : function() {
       this.base( arguments );
       var oldLeft = this.getLeft();
@@ -301,143 +181,55 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip",
       return result;
     },
 
-    /*
-    ---------------------------------------------------------------------------
-      TIMER
-    ---------------------------------------------------------------------------
-    */
-
-    /**
-     * Utility method to start the timer for the show interval
-     * (if the timer is disabled)
-     *
-     * @type member
-     * @return {void}
-     */
-    _startShowTimer : function()
-    {
+    _startShowTimer : function() {
       if (!this._showTimer.getEnabled()) {
         this._showTimer.start();
       }
     },
 
-
-    /**
-     * Utility method to start the timer for the hide interval
-     * (if the timer is disabled)
-     *
-     * @type member
-     * @return {void}
-     */
-    _startHideTimer : function()
-    {
+    _startHideTimer : function() {
       if (!this._hideTimer.getEnabled()) {
         this._hideTimer.start();
       }
     },
 
-
-    /**
-     * Utility method to stop the timer for the show interval
-     * (if the timer is enabled)
-     *
-     * @type member
-     * @return {void}
-     */
-    _stopShowTimer : function()
-    {
+    _stopShowTimer : function() {
       if (this._showTimer.getEnabled()) {
         this._showTimer.stop();
       }
     },
 
-
-    /**
-     * Utility method to stop the timer for the hide interval
-     * (if the timer is enabled)
-     *
-     * @type member
-     * @return {void}
-     */
-    _stopHideTimer : function()
-    {
+    _stopHideTimer : function() {
       if (this._hideTimer.getEnabled()) {
         this._hideTimer.stop();
       }
     },
 
-
-
-
-    /*
-    ---------------------------------------------------------------------------
-      EVENTS
-    ---------------------------------------------------------------------------
-    */
-
-    /**
-     * Callback method for the "mouseOver" event.<br/>
-     * If property {@link #hideOnOver} is enabled the tooltip gets hidden
-     *
-     * @type member
-     * @param e {rwt.event.MouseEvent} mouseOver event
-     * @return {void}
-     */
-    _onmouseover : function(e)
-    {
+    _onmouseover : function(e) {
       if (this.getHideOnHover()) {
         this.hide();
       }
     },
 
-
-    /**
-     * Callback method for the "interval" event of the show timer.<br/>
-     * Positions the tooltip (sets left and top) and calls the
-     * {@link #show} method.
-     *
-     * @type member
-     * @param e {rwt.event.Event} interval event
-     */
-    _onshowtimer : function(e)
-    {
+    _onshowtimer : function(e) {
       this.setLeft(rwt.event.MouseEvent.getPageX() + this.getMousePointerOffsetX());
       this.setTop(rwt.event.MouseEvent.getPageY() + this.getMousePointerOffsetY());
       this.show();
     },
 
-
-    /**
-     * Callback method for the "interval" event of the hide timer.<br/>
-     * Hides the tooltip by calling the corresponding {@link #hide} method.
-     *
-     * @type member
-     * @param e {rwt.event.Event} interval event
-     * @return {var} TODOC
-     */
     _onhidetimer : function(e) {
       return this.hide();
     }
+
   },
 
-
-
-
-  /*
-  *****************************************************************************
-     DESTRUCTOR
-  *****************************************************************************
-  */
-
-  destruct : function()
-  {
+  destruct : function() {
     var mgr = rwt.widgets.util.ToolTipManager.getInstance();
     mgr.remove(this);
-
     if (mgr.getCurrentToolTip() == this) {
       mgr.resetCurrentToolTip();
     }
-
-    this._disposeObjects("_showTimer", "_hideTimer");
+    this._disposeObjects("_showTimer", "_hideTimer", "_atom");
   }
-});
+
+} );

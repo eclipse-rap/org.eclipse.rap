@@ -129,7 +129,6 @@ public final class ClientResources {
     "rwt/html/ImagePreloaderSystem.js",
     "rwt/html/Iframes.js",
     "rwt/remote/Request.js",
-    "rwt/widgets/base/PopupAtom.js",
     "rwt/widgets/base/ToolTip.js",
     "rwt/widgets/util/ToolTipManager.js",
     "rwt/html/Window.js",
