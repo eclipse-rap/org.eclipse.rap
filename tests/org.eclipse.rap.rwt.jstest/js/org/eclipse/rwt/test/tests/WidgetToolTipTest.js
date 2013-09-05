@@ -58,6 +58,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
     testUpdateWidgetToolTipText_HoverFromDocument : function() {
       WidgetToolTip.setToolTipText( widget, "test1" );
       TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
 
       assertEquals( "test1", toolTip._atom.getLabel() );
     },
@@ -71,6 +72,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       TestUtil.hoverFromTo( document.body, widget.getElement() );
 
       TestUtil.hoverFromTo( widget.getElement(), widget2.getElement() );
+      showToolTip();
 
       assertEquals( "test2", toolTip._atom.getLabel() );
       widget2.destroy();
@@ -87,6 +89,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
 
       WidgetToolTip.setToolTipText( widget, "test3" );
       TestUtil.hoverFromTo( widget2.getElement(), widget.getElement() );
+      showToolTip();
 
       assertEquals( "test3", toolTip._atom.getLabel() );
       widget.destroy();
@@ -105,7 +108,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       TestUtil.hoverFromTo( document.body, widget.getElement() );
 
       TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
-      showToolTip( widget );
+      showToolTip();
 
       assertEquals( 111, toolTip.getLeft() );
       assertEquals( 40, toolTip.getTop() );
@@ -117,7 +120,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       TestUtil.hoverFromTo( document.body, widget.getElement() );
 
       TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
-      showToolTip( widget );
+      showToolTip();
 
       var expectedLeft = Math.round( 10 + 1 + 100 + ( 100 / 2 ) - toolTip.getWidthValue() / 2 );
       var expectedTop = 20 + 1 + 10 + 20 + 3; // shell + border + top + height + offset

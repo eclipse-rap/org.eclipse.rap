@@ -50,9 +50,14 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     _applyBoundToWidget : function( value, old ) {
       this.base( arguments, value, old );
-      this.updateText( value );
       var manager = rwt.widgets.util.ToolTipManager.getInstance();
       manager.setCurrentToolTip( null );
+    },
+
+    show : function() {
+      this.updateText( this.getBoundToWidget() );
+      rwt.widgets.base.Widget.flushGlobalQueues();
+      this.base( arguments );
     },
 
     updateText : function( widget ) {
