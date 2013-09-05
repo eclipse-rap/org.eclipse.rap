@@ -124,8 +124,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
 
       var expectedLeft = Math.round( 10 + 1 + 100 + ( 100 / 2 ) - toolTip.getWidthValue() / 2 );
       var expectedTop = 20 + 1 + 10 + 20 + 3; // shell + border + top + height + offset
-      assertEquals( expectedLeft, toolTip.getLeft() );
-      assertEquals( expectedTop, toolTip.getTop() );
+      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
     },
 
 
@@ -172,8 +172,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
 var showToolTip = function( widget ) {
   toolTip._onshowtimer();
   TestUtil.flush();
-  TestUtil.forceTimerOnce();
-  TestUtil.flush();
+//  TestUtil.forceTimerOnce();
+//  TestUtil.flush();
 };
 
 }());

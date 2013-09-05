@@ -53,6 +53,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     show : function() {
+      this._stopHideTimer();
       this.updateText( this.getBoundToWidget() );
       rwt.widgets.base.Widget.flushGlobalQueues();
       this.base( arguments );
@@ -66,7 +67,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       this._label.setCellContent( 0, widget.getUserData( "toolTipText" ) );
     },
 
-    _positionAfterAppear : function( oldLeft, oldTop ) {
+    _getPositionAfterAppear : function( oldLeft, oldTop ) {
       var config = rwt.widgets.util.ToolTipConfig.getConfig( this.getBoundToWidget() );
       switch( config.position ) {
         case "horizontal-center":

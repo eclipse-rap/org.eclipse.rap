@@ -100,18 +100,23 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip", {
 
     _afterAppear : function() {
       this.base( arguments );
+      this._afterAppearLayout();
+    },
+
+    _afterAppearLayout : function() {
       var oldLeft = this.getLeft();
       var oldTop = this.getTop();
-      var newPosition = this._positionAfterAppear( oldLeft, oldTop );
+      var newPosition = this._getPositionAfterAppear( oldLeft, oldTop );
       if( newPosition[ 0 ] !== oldLeft || newPosition[ 1 ] !== oldTop ) {
-        rwt.client.Timer.once( function() {
-          this.setLeft( newPosition[ 0 ] );
-          this.setTop( newPosition[ 1 ] );
-        }, this, 0 );
+        this.setLeft( newPosition[ 0 ] );
+        this.setTop( newPosition[ 1 ] );
+        // Prevent flickering:
+        this._renderRuntimeLeft( newPosition[ 0 ] );
+        this._renderRuntimeTop( newPosition[ 1 ] );
       }
     },
 
-    _positionAfterAppear : function( oldLeft, oldTop ) {
+    _getPositionAfterAppear : function( oldLeft, oldTop ) {
       var result = [ oldLeft, oldTop ];
       if( this.getRestrictToPageOnOpen() ) {
         var left   = (this._wantedLeft == null) ? this.getLeft() : this._wantedLeft;
@@ -207,7 +212,6 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip", {
     },
 
     _onshowtimer : function(e) {
-      this._stopHideTimer();
       this.setLeft(rwt.event.MouseEvent.getPageX() + this.getMousePointerOffsetX());
       this.setTop(rwt.event.MouseEvent.getPageY() + this.getMousePointerOffsetY());
       this.show();
