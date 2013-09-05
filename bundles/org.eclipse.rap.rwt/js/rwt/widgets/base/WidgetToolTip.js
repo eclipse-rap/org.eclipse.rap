@@ -16,8 +16,6 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
   construct : function() {
     this.base( arguments );
-    this._atom._createLabel();
-    this._atom.getLabelObject().setMode( "html" );
   },
 
   statics : {
@@ -61,7 +59,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     updateText : function( widget ) {
-      this._atom.setLabel( widget.getUserData( "toolTipText" ) );
+      this._label.setCellContent( 0, widget.getUserData( "toolTipText" ) );
     },
 
     _positionAfterAppear : function( oldLeft, oldTop ) {

@@ -60,7 +60,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       TestUtil.hoverFromTo( document.body, widget.getElement() );
       showToolTip();
 
-      assertEquals( "test1", toolTip._atom.getLabel() );
+      assertEquals( "test1", toolTip._label.getCellContent( 0 ) );
     },
 
     testUpdateWidgetToolTipText_HoverFromOtherWidget : function() {
@@ -74,7 +74,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       TestUtil.hoverFromTo( widget.getElement(), widget2.getElement() );
       showToolTip();
 
-      assertEquals( "test2", toolTip._atom.getLabel() );
+      assertEquals( "test2", toolTip._label.getCellContent( 0 ) );
       widget2.destroy();
     },
 
@@ -91,7 +91,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       TestUtil.hoverFromTo( widget2.getElement(), widget.getElement() );
       showToolTip();
 
-      assertEquals( "test3", toolTip._atom.getLabel() );
+      assertEquals( "test3", toolTip._label.getCellContent( 0 ) );
       widget.destroy();
     },
 
@@ -101,7 +101,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       TestUtil.hoverFromTo( document.body, widget.getElement() );
       WidgetToolTip.setToolTipText( widget, "test2" );
 
-      assertEquals( "test2", toolTip._atom.getLabel() );
+      assertEquals( "test2", toolTip._label.getCellContent( 0 ) );
     },
 
     testPosition_MouseRelative : function() {

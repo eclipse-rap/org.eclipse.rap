@@ -14,10 +14,10 @@
 rwt.qx.Class.define("rwt.widgets.base.ToolTip", {
   extend : rwt.widgets.base.Popup,
 
-  construct : function( vLabel, vIcon ) {
+  construct : function() {
     this.base( arguments );
-    this._atom = new rwt.widgets.base.Atom( vLabel, vIcon );
-    this._atom.setParent( this );
+    this._label = new rwt.widgets.base.MultiCellWidget( [ "label" ] );
+    this._label.setParent( this );
     this._showTimer = new rwt.client.Timer(this.getShowInterval());
     this._showTimer.addEventListener("interval", this._onshowtimer, this);
     this._hideTimer = new rwt.client.Timer(this.getHideInterval());
@@ -71,10 +71,6 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip", {
   members : {
     _minZIndex : 1e7,
     _isFocusRoot : false,
-
-    getAtom : function() {
-      return this._atom;
-    },
 
     _applyHideInterval : function(value, old) {
       this._hideTimer.setInterval(value);
@@ -229,7 +225,7 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip", {
     if (mgr.getCurrentToolTip() == this) {
       mgr.resetCurrentToolTip();
     }
-    this._disposeObjects("_showTimer", "_hideTimer", "_atom");
+    this._disposeObjects("_showTimer", "_hideTimer", "_label");
   }
 
 } );

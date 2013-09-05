@@ -29,7 +29,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridCellToolTip", {
 
     setText : function( text ) {
       if( this._isValidToolTip( text ) ) {
-        this.getAtom().setLabel( text );
+        this._label.setCellContent( 0, text );
         this.setLeft( rwt.event.MouseEvent.getPageX() + this.getMousePointerOffsetX() );
         this.setTop( rwt.event.MouseEvent.getPageY() + this.getMousePointerOffsetY() );
         this.show();
