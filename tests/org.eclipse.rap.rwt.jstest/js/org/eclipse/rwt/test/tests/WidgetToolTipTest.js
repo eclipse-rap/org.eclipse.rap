@@ -110,8 +110,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
       showToolTip();
 
-      assertEquals( 111, toolTip.getLeft() );
-      assertEquals( 40, toolTip.getTop() );
+      assertEquals( 111, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( 40, parseInt( toolTip._style.top, 10 ) );
     },
 
     testPosition_HorizontalCenterBottom : function() {
@@ -171,9 +171,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
 
 var showToolTip = function( widget ) {
   toolTip._onshowtimer();
-  TestUtil.flush();
-//  TestUtil.forceTimerOnce();
-//  TestUtil.flush();
 };
 
 }());

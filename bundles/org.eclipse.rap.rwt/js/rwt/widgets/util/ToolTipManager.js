@@ -32,7 +32,6 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager",
     /** Holds the current ToolTip instance */
     currentToolTip :
     {
-      check : "rwt.widgets.base.ToolTip",
       nullable : true,
       apply : "_applyCurrentToolTip"
     }

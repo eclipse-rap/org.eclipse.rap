@@ -1007,7 +1007,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     /** Contains the tooltip object connected to the widget. */
     toolTip : {
-      check : "rwt.widgets.base.ToolTip",
       nullable : true,
       event: "changeToolTip"
     },

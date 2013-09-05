@@ -108,11 +108,10 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip", {
       var oldTop = this.getTop();
       var newPosition = this._getPositionAfterAppear( oldLeft, oldTop );
       if( newPosition[ 0 ] !== oldLeft || newPosition[ 1 ] !== oldTop ) {
-        this.setLeft( newPosition[ 0 ] );
-        this.setTop( newPosition[ 1 ] );
-        // Prevent flickering:
-        this._renderRuntimeLeft( newPosition[ 0 ] );
-        this._renderRuntimeTop( newPosition[ 1 ] );
+        rwt.client.Timer.once( function() {
+          this.setLeft( newPosition[ 0 ] );
+          this.setTop( newPosition[ 1 ] );
+        }, this, 0 );
       }
     },
 
