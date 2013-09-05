@@ -58,6 +58,10 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       this.base( arguments );
     },
 
+    hide : function() {
+      this.base( arguments );
+    },
+
     updateText : function( widget ) {
       this._label.setCellContent( 0, widget.getUserData( "toolTipText" ) );
     },

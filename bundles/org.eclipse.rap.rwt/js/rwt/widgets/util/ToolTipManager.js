@@ -73,10 +73,8 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager",
       // If old tooltip existing, hide it and clear widget binding
       if (old && !old.isDisposed())
       {
-        old.hide();
-
         old._stopShowTimer();
-        old._stopHideTimer();
+        old._startHideTimer();
       }
 
       // If new tooltip is not null, set it up and start the timer

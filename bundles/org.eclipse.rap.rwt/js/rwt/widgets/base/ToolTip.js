@@ -56,7 +56,7 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip", {
 
     hideInterval : {
       check : "Integer",
-      init : 20000,
+      init : 500,
       apply : "_applyHideInterval"
     },
 
@@ -91,7 +91,6 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip", {
     _beforeAppear : function() {
       this.base(arguments);
       this._stopShowTimer();
-      this._startHideTimer();
     },
 
     _beforeDisappear : function() {
@@ -184,7 +183,7 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip", {
     },
 
     _startHideTimer : function() {
-      if (!this._hideTimer.getEnabled()) {
+      if(!this._hideTimer.getEnabled()) {
         this._hideTimer.start();
       }
     },
@@ -208,6 +207,7 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip", {
     },
 
     _onshowtimer : function(e) {
+      this._stopHideTimer();
       this.setLeft(rwt.event.MouseEvent.getPageX() + this.getMousePointerOffsetX());
       this.setTop(rwt.event.MouseEvent.getPageY() + this.getMousePointerOffsetY());
       this.show();
