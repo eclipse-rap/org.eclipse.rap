@@ -197,54 +197,68 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _getPositionAfterAppear : function() {
-      switch( this._config.position ) {
-        case "horizontal-center":
-          return this._positionHorizontalCenter();
-        default:
-          return [
-            rwt.event.MouseEvent.getPageX() + this.getMousePointerOffsetX(),
-            rwt.event.MouseEvent.getPageY() + this.getMousePointerOffsetY()
-          ];
-      }
-    },
-
-    _positionHorizontalCenter : function() {
       var target = this._getWidgetBounds();
       var doc = this._getDocumentDimension();
       var self = this._getOwnDimension();
-      var left = Math.round( target[ 0 ] + ( target[ 2 ] / 2 ) - self[ 0 ] / 2 );
+      var result;
+      switch( this._config.position ) {
+        case "horizontal-center":
+          result = this._positionHorizontalCenter( target, doc, self );
+        break;
+        default:
+          result = this._positionMouseRelative( target, doc, self );
+        break;
+      }
+      result[ 0 ] = Math.max( 0, Math.min( result[ 0 ], doc.width - self.width ) );
+      result[ 1 ] = Math.max( 0, Math.min( result[ 1 ], doc.height - self.height ) );
+      return result;
+    },
+
+    _positionMouseRelative : function( target, doc, self ) {
+      return [
+        rwt.event.MouseEvent.getPageX() + this.getMousePointerOffsetX(),
+        rwt.event.MouseEvent.getPageY() + this.getMousePointerOffsetY()
+      ];
+    },
+
+    _positionHorizontalCenter : function( target, doc, self ) {
+      var left = this._getHorizontalOffsetCentered( target, self, doc );
       var top = this._getVerticalOffsetAuto( target, self, doc );
       return [ left, top ];
     },
 
     _getVerticalOffsetAuto : function( target, self, doc ) {
-      var topSpace = target[ 1 ];
-      var bottomSpace = doc[ 1 ] - topSpace - target[ 3 ];
+      var topSpace = target.top;
+      var bottomSpace = doc.height - topSpace - target.height;
       if( topSpace > bottomSpace / 3 ) {
-        return target[ 1 ] - self[ 1 ] - 3; // at the top
+        return target.top - self.height - 3; // at the top
       } else {
-        return target[ 1 ] + target[ 3 ] + 3; // at the bottom
+        return target.top + target.height + 3; // at the bottom
       }
+    },
+
+    _getHorizontalOffsetCentered : function( target, self, doc ) {
+      return Math.round( target.left + ( target.width / 2 ) - self.width / 2 );
     },
 
     _getWidgetBounds : function() {
       var widget = this.getBoundToWidget();
       var location = rwt.html.Location.get( widget.getElement() );
-      return [
-        location.left,
-        location.top,
-        widget.getBoxWidth(),
-        widget.getBoxHeight()
-      ];
+      return {
+        "left" : location.left,
+        "top" : location.top,
+        "width" : widget.getBoxWidth(),
+        "height" : widget.getBoxHeight()
+      };
     },
 
     _getDocumentDimension : function() {
       var doc = rwt.widgets.base.ClientDocument.getInstance();
-      return [ doc.getClientWidth(), doc.getClientHeight() ];
+      return { "width" : doc.getClientWidth(), "height" : doc.getClientHeight() };
     },
 
     _getOwnDimension : function() {
-      return [ this.getBoxWidth(), this.getBoxHeight() ];
+      return { "width" : this.getBoxWidth(), "height" : this.getBoxHeight() };
     }
 
   },

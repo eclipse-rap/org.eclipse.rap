@@ -105,6 +105,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
     },
 
     testPosition_MouseRelative : function() {
+      WidgetToolTip.setToolTipText( widget, "foobar" );
       TestUtil.hoverFromTo( document.body, widget.getElement() );
 
       TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
@@ -143,6 +144,50 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       var expectedTop = 20 + 1 + top - tooltipHeight - 3; // shell + border + top - tooltipHeight - offset
       assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
       assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+    },
+
+
+    testPosition_HorizontalCenterRestrictToPageLeft : function() {
+      config = { "position" : "horizontal-center" };
+      WidgetToolTip.setToolTipText( widget, "foobarfoobarfoobarfoobar" );
+      widget.setLeft( 0 );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      assertEquals( 0, parseInt( toolTip._style.left, 10 ) );
+    },
+
+    testPosition_HorizontalCenterRestrictToPageRight : function() {
+      config = { "position" : "horizontal-center" };
+      WidgetToolTip.setToolTipText( widget, "foobarfoobarfoobarfoobar" );
+      var totalWidth = rwt.widgets.base.ClientDocument.getInstance().getClientWidth();
+      widget.setLeft( totalWidth - 30  );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      var right =   totalWidth
+                  - parseInt( toolTip._style.left, 10 )
+                  - parseInt( toolTip._style.width, 10 );
+      assertEquals( 0, right );
+    },
+
+    testPosition_MouseRelativeRestrictToPageBottom : function() {
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      var totalHeight = rwt.widgets.base.ClientDocument.getInstance().getClientHeight();
+      widget.setTop( totalHeight - 40 );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, totalHeight - 10 );
+      showToolTip();
+
+      var bottom =   totalHeight
+                   - parseInt( toolTip._style.top, 10 )
+                   - parseInt( toolTip._style.height, 10 );
+      assertEquals( 0, bottom );
     },
 
     testAppear_DefaultDelay : function() {
@@ -259,7 +304,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
 
       assertFalse( toolTip._hideTimer.isEnabled() );
     },
-
 
     testStartShowTimerAfterHideIfAppearOnRest : function() {
       config = { "appearOn" : "rest", "disappearOn" : "move" };
