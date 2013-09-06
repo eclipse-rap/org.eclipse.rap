@@ -18,7 +18,12 @@ namespace( "rwt.client" );
     getConfig : function( widget ) {
       switch( widget.classname ) {
         case "rwt.widgets.ToolItem":
-          return this._horizontalConfig;
+          if( widget.hasState( "rwt_VERTICAL" ) ) {
+            return this._verticalConfig;
+          } else {
+            return this._horizontalConfig;
+          }
+        break;
         default:
           return this._defaultConfig;
       }
@@ -35,6 +40,14 @@ namespace( "rwt.client" );
 
     _horizontalConfig : {
       "position" : "horizontal-center",
+      "appearOn" : "enter",
+      "disappearOn" : "exit",
+      "appearDelay" : 200,
+      "disappearDelay" : 100
+    },
+
+    _verticalConfig : {
+      "position" : "vertical-center",
       "appearOn" : "enter",
       "disappearOn" : "exit",
       "appearDelay" : 200,

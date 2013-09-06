@@ -205,6 +205,9 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
         case "horizontal-center":
           result = this._positionHorizontalCenter( target, doc, self );
         break;
+        case "vertical-center":
+          result = this._positionVerticalCenter( target, doc, self );
+        break;
         default:
           result = this._positionMouseRelative( target, doc, self );
         break;
@@ -227,6 +230,12 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       return [ left, top ];
     },
 
+    _positionVerticalCenter : function( target, doc, self ) {
+      var left = this._getHorizontalOffsetAuto( target, self, doc );
+      var top = this._getVerticalOffsetCentered( target, self, doc );
+      return [ left, top ];
+    },
+
     _getVerticalOffsetAuto : function( target, self, doc ) {
       var topSpace = target.top;
       var bottomSpace = doc.height - topSpace - target.height;
@@ -239,6 +248,20 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     _getHorizontalOffsetCentered : function( target, self, doc ) {
       return Math.round( target.left + ( target.width / 2 ) - self.width / 2 );
+    },
+
+    _getHorizontalOffsetAuto : function( target, self, doc ) {
+      var leftSpace = target.left;
+      var rightSpace = doc.width - leftSpace - target.width;
+      if( leftSpace > rightSpace ) {
+        return target.left - self.width - 3; // to the left
+      } else {
+        return target.left + target.width + 3; // to the right
+      }
+    },
+
+    _getVerticalOffsetCentered : function( target, self, doc ) {
+      return Math.round( target.top + ( target.height / 2 ) - self.height / 2 );
     },
 
     _getWidgetBounds : function() {
