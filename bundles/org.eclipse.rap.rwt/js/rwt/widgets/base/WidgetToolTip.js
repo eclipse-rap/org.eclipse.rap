@@ -210,9 +210,21 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     _positionHorizontalCenter : function() {
       var target = this._getWidgetBounds();
-      var left = Math.round( target[ 0 ] + ( target[ 2 ] / 2 ) - this.getBoxWidth() / 2 );
-      var top = target[ 1 ] + target[ 3 ] + 3;
+      var doc = this._getDocumentDimension();
+      var self = this._getOwnDimension();
+      var left = Math.round( target[ 0 ] + ( target[ 2 ] / 2 ) - self[ 0 ] / 2 );
+      var top = this._getVerticalOffsetAuto( target, self, doc );
       return [ left, top ];
+    },
+
+    _getVerticalOffsetAuto : function( target, self, doc ) {
+      var topSpace = target[ 1 ];
+      var bottomSpace = doc[ 1 ] - topSpace - target[ 3 ];
+      if( topSpace > bottomSpace / 3 ) {
+        return target[ 1 ] - self[ 1 ] - 3; // at the top
+      } else {
+        return target[ 1 ] + target[ 3 ] + 3; // at the bottom
+      }
     },
 
     _getWidgetBounds : function() {
@@ -224,6 +236,15 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
         widget.getBoxWidth(),
         widget.getBoxHeight()
       ];
+    },
+
+    _getDocumentDimension : function() {
+      var doc = rwt.widgets.base.ClientDocument.getInstance();
+      return [ doc.getClientWidth(), doc.getClientHeight() ];
+    },
+
+    _getOwnDimension : function() {
+      return [ this.getBoxWidth(), this.getBoxHeight() ];
     }
 
   },

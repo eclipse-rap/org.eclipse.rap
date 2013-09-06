@@ -31,7 +31,7 @@ Widget-ToolTip {
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #e0e0e0;
   opacity: 0.9;
-  animation: fadeOut 150ms ease-in;
+  animation: fadeIn 150ms ease-in, fadeOut 150ms ease-in;
   box-shadow: none;
 }
 
