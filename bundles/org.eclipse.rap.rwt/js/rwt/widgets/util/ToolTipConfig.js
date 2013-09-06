@@ -33,7 +33,7 @@ namespace( "rwt.client" );
 
     _horizontalConfig : {
       "position" : "horizontal-center",
-      "appearDelay" : 60,
+      "appearDelay" : 200,
       "disappearDelay" : 100
     }
 

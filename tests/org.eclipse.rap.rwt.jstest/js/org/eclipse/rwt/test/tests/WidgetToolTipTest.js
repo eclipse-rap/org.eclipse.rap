@@ -206,6 +206,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       showToolTip();
 
       assertFalse( toolTip._hideTimer.isEnabled() );
+    },
+
+    testSkipShowTimerIfAlreadyVisible : function() {
+      var widget2 = new rwt.widgets.base.Label( "Hello World 2" );
+      widget2.addToDocument();
+      TestUtil.flush();
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      WidgetToolTip.setToolTipText( widget2, "test2" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.hoverFromTo( widget.getElement(), document.body );
+      TestUtil.hoverFromTo( document.body, widget2.getElement() );
+
+      assertFalse( toolTip._showTimer.isEnabled() );
+      assertFalse( toolTip._hideTimer.isEnabled() );
+      assertTrue( toolTip.isSeeable() );
+      assertEquals( "test2", toolTip._label.getCellContent( 0 ) );
     }
 
   }

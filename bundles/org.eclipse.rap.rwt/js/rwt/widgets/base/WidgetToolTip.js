@@ -114,8 +114,12 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _startShowTimer : function() {
-      if( !this._showTimer.getEnabled() ) {
-        this._showTimer.start();
+      if( this.isSeeable() ) {
+        this._onshowtimer();
+      } else {
+        if( !this._showTimer.getEnabled() ) {
+          this._showTimer.start();
+        }
       }
     },
 
