@@ -216,6 +216,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertFalse( toolTip.isSeeable() );
     },
 
+    testHideAfterMouseMoveAndTimer : function() {
+      config = { "disappearOn" : "move" };
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.mouseMove( widget );
+      TestUtil.forceInterval( toolTip._hideTimer );
+
+      assertFalse( toolTip.isSeeable() );
+    },
+
     testStopHideTimerWhenReAppearWhileVisible : function() {
       var widget2 = new rwt.widgets.base.Label( "Hello World 2" );
       widget2.addToDocument();
@@ -229,6 +241,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       showToolTip();
 
       assertFalse( toolTip._hideTimer.isEnabled() );
+    },
+
+
+    testStartShowTimerAfterHideIfAppearOnRest : function() {
+      config = { "appearOn" : "rest", "disappearOn" : "move" };
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.mouseMove( widget );
+      TestUtil.forceInterval( toolTip._hideTimer );
+
+      assertTrue( toolTip._showTimer.isEnabled() );
     },
 
     testSkipShowTimerIfAlreadyVisible : function() {

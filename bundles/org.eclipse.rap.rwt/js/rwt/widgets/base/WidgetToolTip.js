@@ -148,8 +148,16 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _handleMouseMove : function( event ) {
-      if( this.getBoundToWidget() && this._config.appearOn === "rest" && !this.isSeeable() ) {
-        this._showTimer.restart();
+      if( this.getBoundToWidget() ) {
+        if( this.isSeeable() ) {
+          if( this._config.disappearOn === "move" ) {
+            this._startHideTimer();
+          }
+        } else {
+          if( this._config.appearOn === "rest" ) {
+            this._showTimer.restart();
+          }
+        }
       }
     },
 
@@ -164,6 +172,9 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _onhidetimer : function(e) {
+      if( this._config.appearOn === "rest" ) {
+        this._showTimer.start();
+      }
       return this.hide();
     },
 
