@@ -114,7 +114,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _startShowTimer : function() {
-      if( this.isSeeable() ) {
+      if( this.isSeeable() && this._config.appearOn === "enter" ) {
         this._onshowtimer();
       } else {
         if( !this._showTimer.getEnabled() ) {
@@ -147,7 +147,13 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       }
     },
 
-    _onshowtimer : function(e) {
+    _handleMouseMove : function( event ) {
+      if( this.getBoundToWidget() && this._config.appearOn === "rest" && !this.isSeeable() ) {
+        this._showTimer.restart();
+      }
+    },
+
+    _onshowtimer : function( e ) {
       this._stopShowTimer();
       this._stopHideTimer();
       this.updateText( this.getBoundToWidget() );

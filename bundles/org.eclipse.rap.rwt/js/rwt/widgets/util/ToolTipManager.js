@@ -97,6 +97,8 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager",
         this._handleMouseOver( event );
       } else if ( type === "mouseout" ) {
         this._handleMouseOut( event );
+      } else if ( type === "mousemove" ) {
+        this._handleMouseMove( event );
       }
     },
 
@@ -163,6 +165,13 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager",
       // If there was a tooltip and there is no new one
       if (vToolTip && !vRelatedTarget) {
         this.setCurrentToolTip(null);
+      }
+    },
+
+    _handleMouseMove : function( e ) {
+      var toolTip = this.getCurrentToolTip();
+      if( toolTip && toolTip._handleMouseMove ) {
+        toolTip._handleMouseMove( e );
       }
     },
 

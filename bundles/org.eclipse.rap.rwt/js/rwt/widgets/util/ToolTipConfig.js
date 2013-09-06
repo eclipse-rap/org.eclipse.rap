@@ -27,12 +27,14 @@ namespace( "rwt.client" );
 
     _defaultConfig : {
       "position" : "mouse",
+      "appearOn" : "rest",
       "appearDelay" : 800,
       "disappearDelay" : 200
     },
 
     _horizontalConfig : {
       "position" : "horizontal-center",
+      "appearOn" : "enter",
       "appearDelay" : 200,
       "disappearDelay" : 100
     }

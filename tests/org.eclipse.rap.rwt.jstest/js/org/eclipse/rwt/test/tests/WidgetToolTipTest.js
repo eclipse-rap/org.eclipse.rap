@@ -138,6 +138,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertEquals( 1000, toolTip._showTimer.getInterval() );
     },
 
+    testAppear_DefaultDelayNotRestartedOnMouseMove : function() {
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      toolTip._showTimer.stop(); // not ideal, but can't think of a better way to test this
+      TestUtil.mouseMove( widget );
+
+      assertFalse( toolTip._showTimer.isEnabled() );
+      assertEquals( 1000, toolTip._showTimer.getInterval() );
+    },
+
+    testAppear_CustomDelayRestartedOnMouseMove : function() {
+      config = { "appearOn" : "rest" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      toolTip._showTimer.stop(); // not ideal, but can't think of a better way to test this
+      TestUtil.mouseMove( widget );
+
+      assertTrue( toolTip._showTimer.isEnabled() );
+      assertEquals( 1000, toolTip._showTimer.getInterval() );
+    },
+
     testAppear_CustomDelay : function() {
       config = { "appearDelay" : 123 };
       WidgetToolTip.setToolTipText( widget, "foobar" );
@@ -209,6 +232,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
     },
 
     testSkipShowTimerIfAlreadyVisible : function() {
+      config = { "appearOn" : "enter" };
       var widget2 = new rwt.widgets.base.Label( "Hello World 2" );
       widget2.addToDocument();
       TestUtil.flush();
@@ -224,6 +248,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertFalse( toolTip._hideTimer.isEnabled() );
       assertTrue( toolTip.isSeeable() );
       assertEquals( "test2", toolTip._label.getCellContent( 0 ) );
+    },
+
+    testDoNotSkipShowTimerIfTargetAppearsOnRest : function() {
+      var widget2 = new rwt.widgets.base.Label( "Hello World 2" );
+      widget2.addToDocument();
+      TestUtil.flush();
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      WidgetToolTip.setToolTipText( widget2, "test2" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.hoverFromTo( widget.getElement(), document.body );
+      TestUtil.hoverFromTo( document.body, widget2.getElement() );
+
+      assertTrue( toolTip._showTimer.isEnabled() );
     }
 
   }
