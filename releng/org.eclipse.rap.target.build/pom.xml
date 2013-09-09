@@ -24,7 +24,7 @@
   <properties>
     <tycho-version>0.16.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
-    <base-platform>4.3-M-builds/M-4.3.1RC2-201308291300/</base-platform>
+    <base-platform>4.3-M-builds/M-4.3.1RC3-201309050705/</base-platform>
     <base-platform-repository>http://download.eclipse.org/eclipse/updates/${base-platform}</base-platform-repository>
     <baseline-repository>http://download.eclipse.org/rt/rap/nightly/runtime/</baseline-repository>
   </properties>
@@ -74,9 +74,11 @@
         </dependencies>
         <configuration>
           <timestampProvider>jgit</timestampProvider>
+<!-- 
           <jgit.ignore>
             pom.xml
           </jgit.ignore>
+ -->
           <format>yyyyMMdd-HHmm</format>
         </configuration>
       </plugin>
