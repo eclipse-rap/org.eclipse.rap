@@ -22,6 +22,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     this._showTimer.addEventListener("interval", this._onshowtimer, this);
     this._hideTimer = new rwt.client.Timer();
     this._hideTimer.addEventListener("interval", this._onhidetimer, this);
+    this._hiddenAt = -1;
     this.addEventListener("mouseover", this._onmouseover);
     this.addEventListener("mouseout", this._onmouseover);
     this._currentConfig = {};
@@ -111,16 +112,22 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     _beforeDisappear : function() {
       this.base( arguments );
       this._stopHideTimer();
+      this._hiddenAt = ( new Date() ).getTime();
     },
 
     _startShowTimer : function() {
-      if( this.isSeeable() && this._config.appearOn === "enter" ) {
+      if( this._config.appearOn === "enter" && this._allowQuickAppear() ) {
         this._onshowtimer();
       } else {
         if( !this._showTimer.getEnabled() ) {
           this._showTimer.start();
         }
       }
+    },
+
+    _allowQuickAppear : function() {
+      var now = ( new Date() ).getTime();
+      return this.isSeeable() || ( this._hiddenAt > 0 && ( now - this._hiddenAt ) < 300 );
     },
 
     _startHideTimer : function() {
@@ -141,8 +148,12 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       }
     },
 
-    _onmouseover : function(e) {
-      if( this.getHideOnHover() ) {
+    _onmouseover : function( e ) {
+      if( this._disappearAnimation && this._disappearAnimation.getDefaultRenderer().isActive() ) {
+        this._disappearAnimation.getDefaultRenderer().setActive( false );
+        this.hide();
+        this._disappearAnimation.getDefaultRenderer().setActive( true );
+      } else {
         this.hide();
       }
     },
@@ -165,7 +176,17 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       this._stopShowTimer();
       this._stopHideTimer();
       this.updateText( this.getBoundToWidget() );
-      this.show();
+      if(    this._appearAnimation
+          && this._appearAnimation.getDefaultRenderer().isActive()
+          && !this.isSeeable()
+          && this._allowQuickAppear() )
+      {
+        this._appearAnimation.getDefaultRenderer().setActive( false );
+        this.show();
+        this._appearAnimation.getDefaultRenderer().setActive( true );
+      } else {
+        this.show();
+      }
       rwt.widgets.base.Widget.flushGlobalQueues(); // render new dimension
       this._afterAppearLayout();
       rwt.widgets.base.Widget.flushGlobalQueues(); // render position

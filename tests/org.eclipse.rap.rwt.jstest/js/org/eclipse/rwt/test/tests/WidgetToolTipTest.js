@@ -319,6 +319,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertFalse( toolTip.isSeeable() );
     },
 
+    testHideOnMouseOverWithoutTimer : function() {
+      config = { "disappearOn" : "exit" };
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.hoverFromTo( widget.getElement(), toolTip.getElement() );
+
+      assertFalse( toolTip.isSeeable() );
+    },
+
+    testHideOnMouseOverWithoutAnimation : function() {
+      config = { "disappearOn" : "exit" };
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      toolTip.setAnimation( { "fadeOut" : [ 400, "linear" ] } );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.hoverFromTo( widget.getElement(), toolTip.getElement() );
+
+      assertFalse( toolTip._disappearAnimation.isStarted() );
+      assertFalse( toolTip.isSeeable() );
+      assertTrue( toolTip._disappearAnimation.getDefaultRenderer().isActive() );
+      toolTip.setAnimation( {} );
+    },
+
     testStopHideTimerWhenReAppearWhileVisible : function() {
       var widget2 = new rwt.widgets.base.Label( "Hello World 2" );
       widget2.addToDocument();
@@ -363,6 +389,66 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertFalse( toolTip._hideTimer.isEnabled() );
       assertTrue( toolTip.isSeeable() );
       assertEquals( "test2", toolTip._label.getCellContent( 0 ) );
+    },
+
+    testSkipShowTimerIfRecentlyHidden : function() {
+      config = { "appearOn" : "enter" };
+      var widget2 = new rwt.widgets.base.Label( "Hello World 2" );
+      widget2.addToDocument();
+      TestUtil.flush();
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      WidgetToolTip.setToolTipText( widget2, "test2" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.hoverFromTo( widget.getElement(), document.body );
+      TestUtil.forceInterval( toolTip._hideTimer );
+      TestUtil.hoverFromTo( document.body, widget2.getElement() );
+
+      assertFalse( toolTip._showTimer.isEnabled() );
+      assertFalse( toolTip._hideTimer.isEnabled() );
+      assertTrue( toolTip.isSeeable() );
+      assertEquals( "test2", toolTip._label.getCellContent( 0 ) );
+    },
+
+    testDoNotSkipShowTimerIfHiddenASecondAgo : function() {
+      config = { "appearOn" : "enter" };
+      var widget2 = new rwt.widgets.base.Label( "Hello World 2" );
+      widget2.addToDocument();
+      TestUtil.flush();
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      WidgetToolTip.setToolTipText( widget2, "test2" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.hoverFromTo( widget.getElement(), document.body );
+      TestUtil.forceInterval( toolTip._hideTimer );
+      toolTip._hiddenAt = ( new Date() ).getTime() - 1001;
+      TestUtil.hoverFromTo( document.body, widget2.getElement() );
+
+      assertTrue( toolTip._showTimer.isEnabled() );
+      assertFalse( toolTip.isSeeable() );
+    },
+
+    testSkipAppearAnimationIfRecentlyHidden : function() {
+      config = { "appearOn" : "enter" };
+      var widget2 = new rwt.widgets.base.Label( "Hello World 2" );
+      widget2.addToDocument();
+      TestUtil.flush();
+      toolTip.setAnimation( { "fadeIn" : [ 400, "linear" ] } );
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      WidgetToolTip.setToolTipText( widget2, "test2" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.hoverFromTo( widget.getElement(), document.body );
+      TestUtil.forceInterval( toolTip._hideTimer );
+      TestUtil.hoverFromTo( document.body, widget2.getElement() );
+
+      assertFalse( toolTip._appearAnimation.isStarted() );
+      assertTrue( toolTip._appearAnimation.getDefaultRenderer().isActive() );
+      assertTrue( toolTip.isSeeable() );
+      toolTip.setAnimation( {} );
     },
 
     testDoNotSkipShowTimerIfTargetAppearsOnRest : function() {
