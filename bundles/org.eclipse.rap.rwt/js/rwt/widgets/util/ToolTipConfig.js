@@ -17,6 +17,10 @@ namespace( "rwt.client" );
 
     getConfig : function( widget ) {
       switch( widget.classname ) {
+        case "rwt.widgets.Text":
+        case "rwt.widgets.Spinner":
+        case "rwt.widgets.Label":
+          return this._textLikeConfig;
         case "rwt.widgets.ToolItem":
           if( widget.hasState( "rwt_VERTICAL" ) ) {
             return this._verticalConfig;
@@ -52,7 +56,16 @@ namespace( "rwt.client" );
       "disappearOn" : "exit",
       "appearDelay" : 200,
       "disappearDelay" : 100
+    },
+
+    _textLikeConfig : {
+      "position" : "align-left",
+      "appearOn" : "enter",
+      "disappearOn" : "exit",
+      "appearDelay" : 800,
+      "disappearDelay" : 200
     }
+
 
   };
 

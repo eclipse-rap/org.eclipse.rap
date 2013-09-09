@@ -129,6 +129,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
     },
 
+    testPosition_HorizontalLeft : function() {
+      config = { "position" : "align-left" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      var expectedLeft = Math.round( 10 + 1 + 100 );
+      var expectedTop = 20 + 1 + 10 + 20 + 3; // shell + border + top + height + offset
+      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+    },
+
     testPosition_VerticalCenterRight : function() { // TODO : restrict by fallback to horizontal
       config = { "position" : "vertical-center" };
       WidgetToolTip.setToolTipText( widget, "foobar" );

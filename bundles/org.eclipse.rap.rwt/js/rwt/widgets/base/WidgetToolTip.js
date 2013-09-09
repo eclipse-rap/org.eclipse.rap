@@ -226,6 +226,9 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
         case "horizontal-center":
           result = this._positionHorizontalCenter( target, doc, self );
         break;
+        case "align-left":
+          result = this._positionAlignLeft( target, doc, self );
+        break;
         case "vertical-center":
           result = this._positionVerticalCenter( target, doc, self );
         break;
@@ -251,6 +254,12 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       return [ left, top ];
     },
 
+    _positionAlignLeft : function( target, doc, self ) {
+      var left = this._getHorizontalOffsetAlignLeft( target, self, doc );
+      var top = this._getVerticalOffsetAuto( target, self, doc );
+      return [ left, top ];
+    },
+
     _positionVerticalCenter : function( target, doc, self ) {
       var left = this._getHorizontalOffsetAuto( target, self, doc );
       var top = this._getVerticalOffsetCentered( target, self, doc );
@@ -269,6 +278,10 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     _getHorizontalOffsetCentered : function( target, self, doc ) {
       return Math.round( target.left + ( target.width / 2 ) - self.width / 2 );
+    },
+
+    _getHorizontalOffsetAlignLeft : function( target, self, doc ) {
+      return target.left;
     },
 
     _getHorizontalOffsetAuto : function( target, self, doc ) {
