@@ -374,6 +374,11 @@ public final class RWT {
   public static final String MARKUP_ENABLED = "org.eclipse.rap.rwt.markupEnabled";
 
   /**
+   * @since 2.2
+   */
+  public static final String ROW_TEMPLATE = "org.eclipse.rap.rwt.rowTemplate";
+
+  /**
    * Controls the number of fixed columns. This constant must be passed to <code>setData()</code>
    * together with an <code>Integer</code> object. The given number of columns, starting
    * with the current leftmost one, will not scroll horizontally. The call to <code>setData()</code>
