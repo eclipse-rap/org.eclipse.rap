@@ -411,8 +411,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       cellToolTip.setCell( 1, 1 );
       cellToolTip._requestedCell = "1,1";
       TestUtil.protocolSet( "w3", { "cellToolTipText" : "foo && <> \"\n bar" } );
-      var labelObject = cellToolTip.getAtom().getLabelObject();
-      assertEquals( "foo &amp;&amp; &lt;&gt; &quot;<br/> bar", labelObject.getText() );
+      var labelObject = cellToolTip._label;
+      assertEquals( "foo &amp;&amp; &lt;&gt; &quot;<br/> bar", labelObject.getCellContent( 0 ) );
       shell.destroy();
       widget.destroy();
     },

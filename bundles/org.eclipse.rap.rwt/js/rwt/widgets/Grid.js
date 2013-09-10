@@ -1421,29 +1421,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     // Cell tooltip handling
 
     setEnableCellToolTip : function( value ) {
-      if( value ) {
-        this._cellToolTip = new rwt.widgets.base.GridCellToolTip( this );
-        this._rowContainer.addEventListener( "mousemove", this._onClientAreaMouseMove, this );
-        this._rowContainer.setToolTip( this._cellToolTip );
-      } else {
-        this._rowContainer.removeEventListener( "mousemove", this._onClientAreaMouseMove, this );
-        this._rowContainer.setToolTip( null );
-        this._cellToolTip.destroy();
-        this._cellToolTip = null;
-      }
-    },
-
-    _onClientAreaMouseMove : function( evt ) {
-      if( this._cellToolTip != null ) {
-        var itemId = null;
-        var columnIndex = -1;
-        if( this._rowContainer.getHoverItem() ) {
-          var widgetManager = rwt.remote.WidgetManager.getInstance();
-          itemId = widgetManager.findIdByWidget( this._rowContainer.getHoverItem() );
-          columnIndex = rwt.widgets.util.GridUtil.getColumnByPageX( this, evt.getPageX() );
-        }
-        this._cellToolTip.setCell( itemId, columnIndex );
-      }
+      rwt.widgets.base.GridCellToolTip.setEnabled( this, value );
     },
 
     /** Only called by server-side */

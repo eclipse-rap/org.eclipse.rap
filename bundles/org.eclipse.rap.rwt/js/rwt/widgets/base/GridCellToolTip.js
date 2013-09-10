@@ -20,6 +20,38 @@ rwt.qx.Class.define( "rwt.widgets.base.GridCellToolTip", {
     this._columnIndex = -1;
   },
 
+  statics : {
+
+    setEnabled : function( grid, value ) {
+      if( value ) {
+        grid._cellToolTip = new rwt.widgets.base.GridCellToolTip( grid );
+        grid._rowContainer.addEventListener( "mousemove", this._onClientAreaMouseMove, grid );
+        grid._rowContainer.setToolTip( grid._cellToolTip );
+      } else {
+        grid._rowContainer.removeEventListener( "mousemove", this._onClientAreaMouseMove, grid );
+        grid._rowContainer.setToolTip( null );
+        grid._cellToolTip.destroy();
+        grid._cellToolTip = null;
+      }
+    },
+
+    _onClientAreaMouseMove : function( evt ) {
+      if( this._cellToolTip != null ) {
+        var itemId = null;
+        var columnIndex = -1;
+        if( this._rowContainer.getHoverItem() ) {
+          var widgetManager = rwt.remote.WidgetManager.getInstance();
+          itemId = widgetManager.findIdByWidget( this._rowContainer.getHoverItem() );
+          columnIndex = rwt.widgets.util.GridUtil.getColumnByPageX( this, evt.getPageX() );
+        }
+        this._cellToolTip.setCell( itemId, columnIndex );
+      }
+    },
+
+
+
+  },
+
   members : {
 
     _onshowtimer : function( evt ) {
