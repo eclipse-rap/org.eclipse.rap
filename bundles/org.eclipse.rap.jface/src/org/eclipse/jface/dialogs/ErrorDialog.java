@@ -20,8 +20,8 @@ import org.eclipse.swt.SWT;
 //import org.eclipse.swt.dnd.Clipboard;
 //import org.eclipse.swt.dnd.TextTransfer;
 //import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+//import org.eclipse.swt.events.SelectionEvent;
+//import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -31,8 +31,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
+//import org.eclipse.swt.widgets.Menu;
+//import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -323,25 +323,27 @@ public class ErrorDialog extends IconAndMessageDialog {
 		data.horizontalSpan = 2;
 		list.setLayoutData(data);
 		list.setFont(parent.getFont());
-		Menu copyMenu = new Menu(list);
-		MenuItem copyItem = new MenuItem(copyMenu, SWT.NONE);
-		copyItem.addSelectionListener(new SelectionListener() {
-			/*
-			 * @see SelectionListener.widgetSelected (SelectionEvent)
-			 */
-			public void widgetSelected(SelectionEvent e) {
-				copyToClipboard();
-			}
-
-			/*
-			 * @see SelectionListener.widgetDefaultSelected(SelectionEvent)
-			 */
-			public void widgetDefaultSelected(SelectionEvent e) {
-				copyToClipboard();
-			}
-		});
-		copyItem.setText(JFaceResources.getString("copy")); //$NON-NLS-1$
-		list.setMenu(copyMenu);
+		// RAP [if] - no clipboard
+//		Menu copyMenu = new Menu(list);
+//		MenuItem copyItem = new MenuItem(copyMenu, SWT.NONE);
+//		copyItem.addSelectionListener(new SelectionListener() {
+//			/*
+//			 * @see SelectionListener.widgetSelected (SelectionEvent)
+//			 */
+//			public void widgetSelected(SelectionEvent e) {
+//				copyToClipboard();
+//			}
+//
+//			/*
+//			 * @see SelectionListener.widgetDefaultSelected(SelectionEvent)
+//			 */
+//			public void widgetDefaultSelected(SelectionEvent e) {
+//				copyToClipboard();
+//			}
+//		});
+//		copyItem.setText(JFaceResources.getString("copy")); //$NON-NLS-1$
+//		list.setMenu(copyMenu);
+		// RAPEND
 		listCreated = true;
 		return list;
 	}
@@ -627,14 +629,14 @@ public class ErrorDialog extends IconAndMessageDialog {
 								+ (newSize.y - oldSize.y)));
 	}
 
-	/**
-	 * Put the details of the status of the error onto the stream.
-	 * 
-	 * @param buildingStatus
-	 * @param buffer
-	 * @param nesting
-	 */
 	// RAP [bm]: 
+//	/**
+//	 * Put the details of the status of the error onto the stream.
+//	 * 
+//	 * @param buildingStatus
+//	 * @param buffer
+//	 * @param nesting
+//	 */
 //	private void populateCopyBuffer(IStatus buildingStatus,
 //			StringBuffer buffer, int nesting) {
 //		if (!buildingStatus.matches(displayMask)) {
@@ -669,13 +671,11 @@ public class ErrorDialog extends IconAndMessageDialog {
 //			populateCopyBuffer(children[i], buffer, nesting + 1);
 //		}
 //	}
-	// RAPEND: [bm] 
-
-	/**
-	 * Copy the contents of the statuses to the clipboard.
-	 */
-	private void copyToClipboard() {
-	// RAP [bm]: 
+//
+//	/**
+//	 * Copy the contents of the statuses to the clipboard.
+//	 */
+//	private void copyToClipboard() {
 //		if (clipboard != null) {
 //			clipboard.dispose();
 //		}
@@ -684,7 +684,8 @@ public class ErrorDialog extends IconAndMessageDialog {
 //		clipboard = new Clipboard(list.getDisplay());
 //		clipboard.setContents(new Object[] { statusBuffer.toString() },
 //				new Transfer[] { TextTransfer.getInstance() });
-	}
+//	}
+	// RAPEND: [bm] 
 
 	/*
 	 * (non-Javadoc)
