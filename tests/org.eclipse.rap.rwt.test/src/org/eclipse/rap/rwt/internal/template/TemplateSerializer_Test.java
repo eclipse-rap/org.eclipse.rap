@@ -64,7 +64,7 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesEmptyCell() {
     RowTemplate template = new RowTemplate();
-    new Cell( template );
+    new Cell( template, "foo" );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
     JsonObject object = serializer.toJson();
@@ -74,11 +74,23 @@ public class TemplateSerializer_Test {
   }
 
   @Test
+  public void testSerializesCellType() {
+    RowTemplate template = new RowTemplate();
+    new Cell( template, "foo" );
+    TemplateSerializer serializer = new TemplateSerializer( template );
+
+    JsonObject object = serializer.toJson();
+
+    JsonObject cell = object.get( "cells" ).asArray().get( 0 ).asObject();
+    assertEquals( cell.get( "type" ).asString(), "foo" );
+  }
+
+  @Test
   public void testSerializesAllCells() {
     RowTemplate template = new RowTemplate();
-    new Cell( template );
-    new Cell( template );
-    new Cell( template );
+    new Cell( template, "foo" );
+    new Cell( template, "foo" );
+    new Cell( template, "foo" );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
     JsonObject object = serializer.toJson();
@@ -90,7 +102,7 @@ public class TemplateSerializer_Test {
   @Test
   public void testCellWith_Left_Top() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template );
+    Cell cell = new Cell( template, "foo" );
     cell.setLeft( 23 );
     cell.setTop( 42 );
     TemplateSerializer serializer = new TemplateSerializer( template );
@@ -111,7 +123,7 @@ public class TemplateSerializer_Test {
   @Test
   public void testCellWith_Left_Top_Wight_Height() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template );
+    Cell cell = new Cell( template, "foo" );
     cell.setLeft( 23 );
     cell.setTop( 42 );
     cell.setWidth( 100 );
@@ -134,7 +146,7 @@ public class TemplateSerializer_Test {
   @Test
   public void testCellWith_Right_Bottom() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template );
+    Cell cell = new Cell( template, "foo" );
     cell.setRight( 23 );
     cell.setBottom( 42 );
     TemplateSerializer serializer = new TemplateSerializer( template );
@@ -155,7 +167,7 @@ public class TemplateSerializer_Test {
   @Test
   public void testCellWith_Right_Bottom_Height_Width() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template );
+    Cell cell = new Cell( template, "foo" );
     cell.setRight( 23 );
     cell.setBottom( 42 );
     cell.setWidth( 100 );
@@ -178,7 +190,7 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesAllAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template );
+    Cell cell = new Cell( template, "foo" );
     cell.addAttribute( "foo", "bar" );
     cell.addAttribute( "foo1", "bar1" );
     cell.addAttribute( "foo2", "bar2" );
@@ -196,7 +208,7 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesTextAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template );
+    Cell cell = new Cell( template, "foo" );
     cell.addAttribute( "foo", "bar" );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
@@ -210,7 +222,7 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesImageAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template );
+    Cell cell = new Cell( template, "foo" );
     cell.addAttribute( "foo", createImage( Fixture.IMAGE_100x50 ) );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
@@ -227,7 +239,7 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesColorAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template );
+    Cell cell = new Cell( template, "foo" );
     cell.addAttribute( "foo", new Color( display, 255, 255, 255 ) );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
@@ -245,7 +257,7 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesRGBAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template );
+    Cell cell = new Cell( template, "foo" );
     cell.addAttribute( "foo", new RGB( 255, 255, 255 ) );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
@@ -263,7 +275,7 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesFontAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template );
+    Cell cell = new Cell( template, "foo" );
     cell.addAttribute( "foo", new Font( display, "Arial", 22, SWT.NONE ) );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
@@ -281,7 +293,7 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesFontDataAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template );
+    Cell cell = new Cell( template, "foo" );
     cell.addAttribute( "foo", new Font( display, "Arial", 22, SWT.NONE ).getFontData()[ 0 ] );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
@@ -299,7 +311,7 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesPointAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template );
+    Cell cell = new Cell( template, "foo" );
     cell.addAttribute( "foo", new Point( 23, 42 ) );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
@@ -315,7 +327,7 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesRectangleAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template );
+    Cell cell = new Cell( template, "foo" );
     cell.addAttribute( "foo", new Rectangle( 23, 42, 123, 142 ) );
     TemplateSerializer serializer = new TemplateSerializer( template );
 

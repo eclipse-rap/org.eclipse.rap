@@ -30,6 +30,7 @@ import org.eclipse.swt.graphics.Rectangle;
 
 public class TemplateSerializer {
 
+  private static final String PROPERTY_TYPE = "type";
   private static final String PROPERTY_ATTRIBUTES = "attributes";
   private static final String PROPERTY_LAYOUT = "layout";
   private static final String PROPERTY_CELLS = "cells";
@@ -66,6 +67,7 @@ public class TemplateSerializer {
 
   private void addCell( JsonArray serializedCells, Cell cell ) {
     JsonObject serializedCell = new JsonObject();
+    serializedCell.add( PROPERTY_TYPE, cell.getType() );
     addLayout( cell, serializedCell );
     addAttributes( cell, serializedCell );
     serializedCells.add( serializedCell );
