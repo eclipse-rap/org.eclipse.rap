@@ -20,6 +20,7 @@ import java.util.Map;
 public class Cell implements Serializable {
 
   private final Map<String, Object> attributes;
+  private final String type;
   private Integer column;
   private Integer top;
   private Integer left;
@@ -27,7 +28,6 @@ public class Cell implements Serializable {
   private Integer height;
   private Integer bottom;
   private Integer right;
-  private final String type;
 
   public Cell( RowTemplate template, String type ) {
     checkType( type );
