@@ -223,11 +223,6 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip", {
   },
 
   destruct : function() {
-    var mgr = rwt.widgets.util.ToolTipManager.getInstance();
-    mgr.remove(this);
-    if (mgr.getCurrentToolTip() == this) {
-      mgr.resetCurrentToolTip();
-    }
     this._disposeObjects("_showTimer", "_hideTimer", "_label");
   }
 

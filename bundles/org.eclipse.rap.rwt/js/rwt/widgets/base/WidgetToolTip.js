@@ -31,24 +31,18 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
   statics : {
 
     setToolTipText : function( widget, value ) {
+      var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
       if( value != null && value !== "" ) {
         var EncodingUtil = rwt.util.Encoding;
         var text = EncodingUtil.escapeText( value, false );
-        text = EncodingUtil.replaceNewLines( text, "<br/>" );
-        widget.setUserData( "toolTipText", text );
-        var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
-        widget.setToolTip( toolTip );
-        // make sure "boundToWidget" is initialized:
-        if( toolTip.getParent() != null ) {
-          if( toolTip.getBoundToWidget() == widget ) {
-            toolTip.updateText( widget );
-          }
+        text = EncodingUtil.replaceNewLines( text, "<br/>" ); // TODO : does not work?
+        widget.setToolTipText( text );
+        if( toolTip.getBoundToWidget() == widget ) {
+          toolTip.updateText( widget );
         }
       } else {
-        widget.setToolTip( null );
-        widget.setUserData( "toolTipText", null );
+        widget.setToolTipText( null );
       }
-      widget.dispatchSimpleEvent( "changeToolTipText", widget ); // used by Synchronizer.js
     }
 
   },
@@ -82,7 +76,8 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     boundToWidget : {
       check : "rwt.widgets.base.Widget",
-      apply : "_applyBoundToWidget"
+      apply : "_applyBoundToWidget",
+      init : null
     }
 
   },
@@ -93,7 +88,6 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     _applyBoundToWidget : function( value, old ) {
       var manager = rwt.widgets.util.ToolTipManager.getInstance();
-      manager.setCurrentToolTip( null );
       if( value ) {
         this.setParent( rwt.widgets.base.ClientDocument.getInstance() );
         this._config = rwt.widgets.util.ToolTipConfig.getConfig( this.getBoundToWidget() );
@@ -214,7 +208,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     updateText : function( widget ) {
-      this._label.setCellContent( 0, widget.getUserData( "toolTipText" ) );
+      this._label.setCellContent( 0, widget.getToolTipText() );
     },
 
     _getPositionAfterAppear : function() {
@@ -322,11 +316,6 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
 
   destruct : function() {
-    var mgr = rwt.widgets.util.ToolTipManager.getInstance();
-    mgr.remove(this);
-    if (mgr.getCurrentToolTip() == this) {
-      mgr.resetCurrentToolTip();
-    }
     this._disposeObjects("_showTimer", "_hideTimer", "_label");
   }
 

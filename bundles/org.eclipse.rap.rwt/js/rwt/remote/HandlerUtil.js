@@ -28,8 +28,7 @@ rwt.remote.HandlerUtil = {
     if( parent ) {
       rwt.remote.HandlerUtil.removeDestroyableChild( parent, widget );
     }
-    widget.setToolTip( null );
-    widget.setUserData( "toolTipText", null );
+    widget.setToolTipText( null );
     widget.destroy();
   },
 

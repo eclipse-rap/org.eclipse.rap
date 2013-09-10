@@ -671,7 +671,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     testShowToolTipOnHover : function() {
       if(! rwt.client.Client.supportsTouch() ) { // Test in MobileWebkitSupport.js
         var widget = this._createWidget();
-        widget.setUserData( "toolTipText", "gogo" );
+        widget.setToolTipText( "gogo" );
         var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
         widget.setToolTip( toolTip );
         TestUtil.flush();
@@ -689,7 +689,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     testDontShowToolTipOnTab : function() {
       var widget = this._createWidget();
-      widget.setUserData( "toolTipText", "gogo" );
+      widget.setToolTipText( "gogo" );
       var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
       widget.setToolTip( toolTip );
       TestUtil.flush();

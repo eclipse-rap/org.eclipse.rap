@@ -357,7 +357,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       var folder = this._createCTabFolderByProtocol( "w3", "w2" );
       var widget = this._createCTabItemByProtocol( "w4", "w3" );
       TestUtil.protocolSet( "w4", { "toolTip" : "hello blue world" } );
-      assertEquals( "hello blue world", widget.getUserData( "toolTipText" ) );
+      assertEquals( "hello blue world", widget.getToolTipText() );
       assertTrue( widget.getToolTip() !== null );
       folder.destroy();
       widget.destroy();
