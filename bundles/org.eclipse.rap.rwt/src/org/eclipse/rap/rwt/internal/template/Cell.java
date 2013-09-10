@@ -27,17 +27,30 @@ public class Cell implements Serializable {
   private Integer height;
   private Integer bottom;
   private Integer right;
+  private final String type;
 
-  public Cell( RowTemplate template ) {
+  public Cell( RowTemplate template, String type ) {
+    checkType( type );
     checkTemplate( template );
-    attributes = new HashMap<String, Object>();
+    this.type = type;
+    this.attributes = new HashMap<String, Object>();
     template.addCell( this );
+  }
+
+  private void checkType( String type ) {
+    if( type == null || type.isEmpty() ) {
+      throw new IllegalArgumentException( "Invalid type" );
+    }
   }
 
   private void checkTemplate( RowTemplate template ) {
     if( template == null ) {
       throw new IllegalArgumentException( "RowTemplate must not be null" );
     }
+  }
+
+  public String getType() {
+    return type;
   }
 
   public Cell setColumn( int index ) {
