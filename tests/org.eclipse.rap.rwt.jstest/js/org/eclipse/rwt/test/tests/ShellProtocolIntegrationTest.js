@@ -313,7 +313,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
       var shell = this._protocolCreateShell();
       this._protocolSet( { "toolTip" : "hello\n blue<> world" } );
       assertEquals( "hello<br/> blue&lt;&gt; world", shell.getToolTipText() );
-      assertTrue( shell.getToolTip() !== null );
       this._disposeShell();
     },
 
@@ -321,7 +320,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
       var shell = this._protocolCreateShell();
       this._protocolSet( { "toolTip" : "hello blue world" } );
       this._protocolSet( { "toolTip" : "" } );
-      assertNull( shell.getToolTip() );
       assertNull( shell.getToolTipText() );
       this._disposeShell();
     },

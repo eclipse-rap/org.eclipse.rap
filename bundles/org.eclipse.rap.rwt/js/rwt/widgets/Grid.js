@@ -20,6 +20,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     // Style-Flags:
     this._hasMultiSelection = false;
     // Internal State:
+    this._hasCustomToolTip = false;
     this._hasSelectionListener = false;
     this._hasDefaultSelectionListener = false;
     this._leadItem = null;
@@ -1422,13 +1423,16 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     setEnableCellToolTip : function( value ) {
       rwt.widgets.base.GridCellToolTip.setEnabled( this, value );
+      this._hasCustomToolTip = true;
+    },
+
+    hasCustomToolTip : function() {
+      return this._hasCustomToolTip;
     },
 
     /** Only called by server-side */
     setCellToolTipText : function( text ) {
-      if( this._cellToolTip != null ) {
-        this._cellToolTip.setText( text );
-      }
+      rwt.widgets.base.GridCellToolTip.showToolTip( text );
     }
 
   }

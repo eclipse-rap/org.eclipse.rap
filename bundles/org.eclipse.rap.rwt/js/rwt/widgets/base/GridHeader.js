@@ -110,8 +110,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
         }
         label.setText( column.getText() );
         label.setImage( column.getImage() );
-        label.setToolTip( column.getToolTip() );
-        label.setUserData( "toolTipText", column.getUserData( "toolTipText" ) );
+        label.setToolTipText( column.getToolTipText() );
         label.setSortIndicator( column.getSortDirection() );
         label.applyObjectId( column.getObjectId() );
         if( column.isGroup() ) {

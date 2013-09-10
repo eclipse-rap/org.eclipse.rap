@@ -126,8 +126,7 @@ rwt.qx.Class.define( "rwt.remote.WidgetManager", {
     },
 
     _removeToolTipPopup : function( widget ) {
-      widget.setToolTip( null );
-      widget.setUserData( "toolTipText", null );
+      widget.setToolTipText( null );
     }
 
   }

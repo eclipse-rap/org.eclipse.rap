@@ -398,23 +398,30 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
       TestUtil.protocolSet( "w3", { "enableCellToolTip" : true } );
-      assertNotNull( widget._cellToolTip );
+      assertTrue( widget.hasCustomToolTip() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetCellToolTipTextByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
+      shell.setLocation( 0, 0 );
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      widget.setLocation( 0, 0 );
       TestUtil.protocolSet( "w3", { "enableCellToolTip" : true } );
-      var cellToolTip = widget._cellToolTip;
-      cellToolTip.setCell( 1, 1 );
-      cellToolTip._requestedCell = "1,1";
+      this._fillTree( widget, 10 );
+      TestUtil.flush();
+      var row = widget.getRowContainer().getFirstChild();
+
+      TestUtil.fakeMouseEvent( row, "mouseover", 10, 10 );
+      TestUtil.fakeMouseEvent( row, "mousemove", 10, 10 );
+      TestUtil.forceInterval( rwt.widgets.base.GridCellToolTip._getTimer() );
       TestUtil.protocolSet( "w3", { "cellToolTipText" : "foo && <> \"\n bar" } );
-      var labelObject = cellToolTip._label;
+      TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._showTimer );
+
+      var labelObject = rwt.widgets.base.WidgetToolTip.getInstance()._label;
       assertEquals( "foo &amp;&amp; &lt;&gt; &quot;<br/> bar", labelObject.getCellContent( 0 ) );
       shell.destroy();
-      widget.destroy();
     },
 
     testSetMarkupEnabledByProtocol : function() {
@@ -4218,19 +4225,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
-    testEnableCellToolTip : function() {
-      var tree = this._createDefaultTree();
-      assertNull( tree._cellToolTip );
-      assertNull( tree._rowContainer.getToolTip() );
-      tree.setEnableCellToolTip( true );
-      assertNotNull( tree._cellToolTip );
-      assertNotNull( tree._rowContainer.getToolTip() );
-      tree.setEnableCellToolTip( false );
-      assertNull( tree._cellToolTip );
-      assertNull( tree._rowContainer.getToolTip() );
-      tree.destroy();
-    },
-
     testRequestCellToolTipText : function() {
       var tree = this._createDefaultTree();
       var widgetManager = rwt.remote.WidgetManager.getInstance();
@@ -4254,7 +4248,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       TestUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 450, 11 );
       TestUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 450, 11 );
-      TestUtil.forceInterval( tree._cellToolTip._showTimer );
+      TestUtil.forceInterval( rwt.widgets.base.GridCellToolTip._getTimer() );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject( 0 );
