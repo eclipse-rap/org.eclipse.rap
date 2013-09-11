@@ -17,15 +17,12 @@ import java.util.Map.Entry;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.graphics.Rectangle;
 
 
 public class TemplateSerializer {
@@ -90,12 +87,15 @@ public class TemplateSerializer {
     if( value instanceof FontData ) {
       return ProtocolUtil.getJsonForFont( ( FontData )value );
     }
-    if( value instanceof Point ) {
-      return ProtocolUtil.getJsonForPoint( ( Point )value );
+    if( value instanceof String ) {
+      return JsonValue.valueOf( ( String )value );
     }
-    if( value instanceof Rectangle ) {
-      return ProtocolUtil.getJsonForRectangle( ( Rectangle )value );
+    if( value instanceof Integer ) {
+      return JsonValue.valueOf( ( ( Integer )value ).intValue() );
     }
-    return JsonUtil.createJsonValue( value );
+    if( value instanceof Boolean ) {
+      return JsonValue.valueOf( ( ( Boolean )value ).booleanValue() );
+    }
+    return JsonValue.NULL;
   }
 }
