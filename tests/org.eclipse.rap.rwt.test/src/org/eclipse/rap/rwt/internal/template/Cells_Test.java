@@ -87,7 +87,7 @@ public class Cells_Test {
   public void testCreateTextCellSetsTextAsAttribute() {
     CellImpl cell = ( CellImpl )Cells.createTextCell( new RowTemplate(), "foo" );
 
-    Object text = cell.getAttributes().get( Cells.PROPERTY_TEXT );
+    Object text = cell.getAttributes().get( Cells.PROPERTY_DEFAULT_TEXT );
     assertEquals( "foo", text );
   }
 
@@ -143,7 +143,7 @@ public class Cells_Test {
 
     CellImpl cell = ( CellImpl )Cells.createImageCell( new RowTemplate(), image );
 
-    Object attribtue = cell.getAttributes().get( Cells.PROPERTY_IMAGE );
+    Object attribtue = cell.getAttributes().get( Cells.PROPERTY_DEFAULT_IMAGE );
     assertSame( image, attribtue );
   }
 

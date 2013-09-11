@@ -16,9 +16,9 @@ import org.eclipse.swt.graphics.Image;
 public final class Cells {
 
   static final String TYPE_IMAGE = "image";
-  static final String PROPERTY_IMAGE = "defaultImage";
+  static final String PROPERTY_DEFAULT_IMAGE = "defaultImage";
   static final String TYPE_TEXT = "text";
-  static final String PROPERTY_TEXT = "defaultText";
+  static final String PROPERTY_DEFAULT_TEXT = "defaultText";
 
   public static Cell createTextCell( RowTemplate template ) {
     checkNotNull( template, "RowTemplate" );
@@ -29,7 +29,7 @@ public final class Cells {
   public static Cell createTextCell( RowTemplate template, String defaultText ) {
     CellImpl cell = ( CellImpl )createTextCell( template );
     checkNotNull( defaultText, "Text" );
-    cell.addAttribute( PROPERTY_TEXT, defaultText );
+    cell.addAttribute( PROPERTY_DEFAULT_TEXT, defaultText );
     return cell;
   }
 
@@ -42,7 +42,7 @@ public final class Cells {
   public static Cell createImageCell( RowTemplate template, Image image ) {
     CellImpl cell = ( CellImpl )createImageCell( template );
     checkNotNull( image, "Image" );
-    cell.addAttribute( PROPERTY_IMAGE, image );
+    cell.addAttribute( PROPERTY_DEFAULT_IMAGE, image );
     return cell;
   }
 
