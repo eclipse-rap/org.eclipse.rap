@@ -51,6 +51,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
 
     tearDown : function() {
       toolTip.hide();
+      toolTip.setBoundToWidget( null );
       rwt.widgets.util.ToolTipConfig.getConfig = orgGetConfig;
       shell.destroy();
     },
@@ -241,6 +242,35 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
 
       assertTrue( toolTip._showTimer.isEnabled() );
       assertEquals( 1000, toolTip._showTimer.getInterval() );
+    },
+
+    testTextIsEmptyString_StartsTimer : function() {
+      widget.setToolTipText( "" );
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      assertTrue( toolTip._showTimer.isEnabled() );
+      assertIdentical( widget, toolTip.getBoundToWidget() );
+    },
+
+    testTextIsEmptyString_DoesNotShow : function() {
+      widget.setToolTipText( "" );
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      TestUtil.forceInterval( toolTip._showTimer );
+
+      assertFalse( toolTip.isSeeable() );
+    },
+
+    testTextIsEmptyString_ShowsWhenTextIsUpdated : function() {
+      widget.setToolTipText( "" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      TestUtil.forceInterval( toolTip._showTimer );
+
+      widget.setToolTipText( "foo" );
+      toolTip.updateText();
+
+      assertTrue( toolTip.isSeeable() );
     },
 
     testAppear_DefaultDelayNotRestartedOnMouseMove : function() {

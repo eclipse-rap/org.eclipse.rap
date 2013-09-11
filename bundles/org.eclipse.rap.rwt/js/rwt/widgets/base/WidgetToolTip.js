@@ -19,12 +19,12 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     this._label = new rwt.widgets.base.MultiCellWidget( [ "label" ] );
     this._label.setParent( this );
     this._showTimer = new rwt.client.Timer();
-    this._showTimer.addEventListener("interval", this._onshowtimer, this);
+    this._showTimer.addEventListener( "interval", this._onshowtimer, this );
     this._hideTimer = new rwt.client.Timer();
-    this._hideTimer.addEventListener("interval", this._onhidetimer, this);
+    this._hideTimer.addEventListener( "interval", this._onhidetimer, this );
     this._hiddenAt = -1;
-    this.addEventListener("mouseover", this._onmouseover);
-    this.addEventListener("mouseout", this._onmouseover);
+    this.addEventListener( "mouseover", this._onmouseover );
+    this.addEventListener( "mouseout", this._onmouseover );
     this._currentConfig = {};
   },
 
@@ -38,7 +38,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
         text = EncodingUtil.replaceNewLines( text, "<br/>" ); // TODO : does not work?
         widget.setToolTipText( text );
         if( toolTip.getBoundToWidget() == widget ) {
-          toolTip.updateText( widget );
+          toolTip.updateText();
         }
       } else {
         widget.setToolTipText( null );
@@ -54,16 +54,6 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       init : "widget-tool-tip"
     },
 
-    restrictToPageOnOpen : {
-      refine : true,
-      init : false // this messes with my own layout code, I'll do it myself!
-    },
-
-    hideOnHover : {
-      check : "Boolean",
-      init : true
-    },
-
     mousePointerOffsetX : {
       check : "Integer",
       init : 1
@@ -77,6 +67,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     boundToWidget : {
       check : "rwt.widgets.base.Widget",
       apply : "_applyBoundToWidget",
+      nullable : true,
       init : null
     }
 
@@ -169,21 +160,23 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     _onshowtimer : function( e ) {
       this._stopShowTimer();
       this._stopHideTimer();
-      this.updateText( this.getBoundToWidget() );
-      if(    this._appearAnimation
-          && this._appearAnimation.getDefaultRenderer().isActive()
-          && !this.isSeeable()
-          && this._allowQuickAppear() )
-      {
-        this._appearAnimation.getDefaultRenderer().setActive( false );
-        this.show();
-        this._appearAnimation.getDefaultRenderer().setActive( true );
-      } else {
-        this.show();
+      this._updateTextInternal();
+      if( this.getText() ) {
+        if(    this._appearAnimation
+            && this._appearAnimation.getDefaultRenderer().isActive()
+            && !this.isSeeable()
+            && this._allowQuickAppear() )
+        {
+          this._appearAnimation.getDefaultRenderer().setActive( false );
+          this.show();
+          this._appearAnimation.getDefaultRenderer().setActive( true );
+        } else {
+          this.show();
+        }
+        rwt.widgets.base.Widget.flushGlobalQueues(); // render new dimension
+        this._afterAppearLayout();
+        rwt.widgets.base.Widget.flushGlobalQueues(); // render position
       }
-      rwt.widgets.base.Widget.flushGlobalQueues(); // render new dimension
-      this._afterAppearLayout();
-      rwt.widgets.base.Widget.flushGlobalQueues(); // render position
     },
 
     _onhidetimer : function(e) {
@@ -203,12 +196,19 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       this.base( arguments, v );
     },
 
-    hide : function() {
-      this.base( arguments );
+    updateText : function() {
+      this._updateTextInternal();
+      if( this.getText() && !this._showTimer.isEnabled() ) {
+        this._onshowtimer();
+      }
     },
 
-    updateText : function( widget ) {
-      this._label.setCellContent( 0, widget.getToolTipText() );
+    _updateTextInternal : function() {
+      this._label.setCellContent( 0, this.getBoundToWidget().getToolTipText() );
+    },
+
+    getText : function() {
+      return this._label.getCellContent( 0 );
     },
 
     _getPositionAfterAppear : function() {

@@ -20,7 +20,7 @@ var getToolTip = function() {
 
 rwt.qx.Class.define("rwt.widgets.util.ToolTipManager", {
   type : "singleton",
-  extend : rwt.util.ObjectManager,
+  extend : rwt.qx.Object,
 
 
   properties : {
@@ -70,12 +70,11 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager", {
 
     _handleMouseOver : function( e ) {
       var vTarget = e.getTarget();
-      var text = null;
       // Allows us to use DOM Nodes as tooltip target :)
       if (!(vTarget instanceof rwt.widgets.base.Widget) && vTarget.nodeType == 1) {
         vTarget = rwt.event.EventHandlerUtil.getTargetObject(vTarget);
       }
-      while (vTarget != null && !(text = vTarget.getToolTipText())) {
+      while (vTarget != null && vTarget.getToolTipText() === null ) {
         vTarget = vTarget.getParent();
       }
       this.setCurrentToolTipTarget( vTarget );
