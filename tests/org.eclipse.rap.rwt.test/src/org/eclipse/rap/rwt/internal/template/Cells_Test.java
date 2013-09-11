@@ -38,15 +38,15 @@ public class Cells_Test {
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testCreateTextCellFailsWithNullTemplate() {
+  public void testCreateTextCellFailsWithNullTemplateButWithText() {
     Cell cell = Cells.createTextCell( null, "text" );
 
     assertNotNull( cell );
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testCreateTextCellFailsWithNullTemplateButWithBindingINdex() {
-    Cell cell = Cells.createTextCell( null, 23 );
+  public void testCreateTextCellFailsWithNullTemplate() {
+    Cell cell = Cells.createTextCell( null );
 
     assertNotNull( cell );
   }
@@ -59,7 +59,7 @@ public class Cells_Test {
   }
 
   @Test
-  public void testCreateTextCellUsesTextType() {
+  public void testCreateTextCellUsesTextTypeWithText() {
     CellImpl cell = ( CellImpl )Cells.createTextCell( new RowTemplate(), "text" );
 
     String type = cell.getType();
@@ -68,8 +68,8 @@ public class Cells_Test {
   }
 
   @Test
-  public void testCreateTextCellUsesTextTypeWithBindingIndex() {
-    CellImpl cell = ( CellImpl )Cells.createTextCell( new RowTemplate(), 23 );
+  public void testCreateTextCellUsesTextType() {
+    CellImpl cell = ( CellImpl )Cells.createTextCell( new RowTemplate() );
 
     String type = cell.getType();
 
@@ -91,24 +91,16 @@ public class Cells_Test {
     assertEquals( "foo", text );
   }
 
-  @Test
-  public void testCreateTextCellSetsBindingIndex() {
-    CellImpl cell = ( CellImpl )Cells.createTextCell( new RowTemplate(), 23 );
-
-    Integer index = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_BINDING_INDEX );
-    assertEquals( 23, index.intValue() );
-  }
-
   @Test( expected = IllegalArgumentException.class )
-  public void testCreateImageCellFailsWithNullTemplate() {
+  public void testCreateImageCellFailsWithNullTemplateButWithImage() {
     Cell cell = Cells.createImageCell( null, createImage( Fixture.IMAGE_100x50 ) );
 
     assertNotNull( cell );
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testCreateImageCellFailsWithNullTemplateButWithBindingIndex() {
-    Cell cell = Cells.createImageCell( null, 23 );
+  public void testCreateImageCellFailsWithNullTemplate() {
+    Cell cell = Cells.createImageCell( null );
 
     assertNotNull( cell );
   }
@@ -121,7 +113,7 @@ public class Cells_Test {
   }
 
   @Test
-  public void testCreateImageCellUsesImageType() {
+  public void testCreateImageCellUsesImageTypeWithImage() {
     CellImpl cell = ( CellImpl )Cells.createImageCell( new RowTemplate(), createImage( Fixture.IMAGE_100x50 ) );
 
     String type = cell.getType();
@@ -130,8 +122,8 @@ public class Cells_Test {
   }
 
   @Test
-  public void testCreateImageCellUsesImageTypeWithBindingIndex() {
-    CellImpl cell = ( CellImpl )Cells.createImageCell( new RowTemplate(), 23 );
+  public void testCreateImageCellUsesImageType() {
+    CellImpl cell = ( CellImpl )Cells.createImageCell( new RowTemplate() );
 
     String type = cell.getType();
 
@@ -153,14 +145,6 @@ public class Cells_Test {
 
     Object attribtue = cell.getAttributes().get( Cells.PROPERTY_IMAGE );
     assertSame( image, attribtue );
-  }
-
-  @Test
-  public void testCreateImageCellSetsBindingIndex() {
-    CellImpl cell = ( CellImpl )Cells.createImageCell( new RowTemplate(), 23 );
-
-    Integer index = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_BINDING_INDEX );
-    assertEquals( 23, index.intValue() );
   }
 
   private Image createImage( String name ) {

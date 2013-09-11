@@ -12,7 +12,6 @@ package org.eclipse.rap.rwt.internal.template;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -21,7 +20,7 @@ public class TemplateLCAUtil {
   private static final String PROP_ROW_TEMPLATE = "rowTemplate";
 
   public static void renderRowTemplate( Widget widget ) {
-    Object data = widget.getData( RWT.ROW_TEMPLATE );
+    Object data = widget.getData( RowTemplate.ROW_TEMPLATE );
     if( data != null && data instanceof RowTemplate ) {
       TemplateSerializer serializer = new TemplateSerializer( ( RowTemplate )data );
       getRemoteObject( widget ).set( PROP_ROW_TEMPLATE, serializer.toJson() );

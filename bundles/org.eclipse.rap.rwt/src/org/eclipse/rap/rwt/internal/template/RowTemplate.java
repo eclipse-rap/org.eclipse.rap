@@ -17,6 +17,8 @@ import java.util.List;
 
 public class RowTemplate implements Serializable {
 
+  public static final String ROW_TEMPLATE = "org.eclipse.rap.rwt.rowTemplate";
+
   private final List<Cell> cells;
 
   public RowTemplate() {

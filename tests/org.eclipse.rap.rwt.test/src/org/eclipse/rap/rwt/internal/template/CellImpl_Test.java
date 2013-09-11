@@ -18,10 +18,30 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class CellImpl_Test {
+
+  private Display display;
+
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    display = new Display();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
 
   @Test( expected = IllegalArgumentException.class )
   public void testFailsWithoutTemplate() {
@@ -124,6 +144,90 @@ public class CellImpl_Test {
     Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
     Cell actualCell = cell.setSelectable( true );
+
+    assertSame( cell, actualCell );
+  }
+
+  @Test
+  public void testSetsForeground() {
+    Color color = new Color( display, 100, 100, 100 );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
+
+    cell.setForeground( color );
+
+    Color actualColor = ( Color )cell.getAttributes().get( CellImpl.PROPERTY_FOREGROUND );
+    assertSame( color, actualColor );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetForegroundFailsWithNull() {
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
+
+    cell.setForeground( null );
+  }
+
+  @Test
+  public void testSetForegroundReturnsCell() {
+    Color color = new Color( display, 100, 100, 100 );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
+
+    Cell actualCell = cell.setForeground( color );
+
+    assertSame( cell, actualCell );
+  }
+
+  @Test
+  public void testSetsBackground() {
+    Color color = new Color( display, 100, 100, 100 );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
+
+    cell.setBackground( color );
+
+    Color actualColor = ( Color )cell.getAttributes().get( CellImpl.PROPERTY_BACKGROUND );
+    assertSame( color, actualColor );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetBackgroundFailsWithNull() {
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
+
+    cell.setBackground( null );
+  }
+
+  @Test
+  public void testSetBackgroundReturnsCell() {
+    Color color = new Color( display, 100, 100, 100 );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
+
+    Cell actualCell = cell.setBackground( color );
+
+    assertSame( cell, actualCell );
+  }
+
+  @Test
+  public void testSetsFont() {
+    Font font = new Font( display, "Arial", 22, SWT.NONE );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
+
+    cell.setFont( font );
+
+    Font actualFont = ( Font )cell.getAttributes().get( CellImpl.PROPERTY_FONT );
+    assertSame( font, actualFont );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetFontFailsWithNull() {
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
+
+    cell.setFont( null );
+  }
+
+  @Test
+  public void testSetFontReturnsCell() {
+    Font font = new Font( display, "Arial", 22, SWT.NONE );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
+
+    Cell actualCell = cell.setFont( font );
 
     assertSame( cell, actualCell );
   }

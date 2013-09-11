@@ -16,37 +16,33 @@ import org.eclipse.swt.graphics.Image;
 public final class Cells {
 
   static final String TYPE_IMAGE = "image";
-  static final String PROPERTY_IMAGE = "image";
+  static final String PROPERTY_IMAGE = "defaultImage";
   static final String TYPE_TEXT = "text";
-  static final String PROPERTY_TEXT = "text";
+  static final String PROPERTY_TEXT = "defaultText";
 
-  public static Cell createTextCell( RowTemplate template, String text ) {
+  public static Cell createTextCell( RowTemplate template ) {
     checkNotNull( template, "RowTemplate" );
-    checkNotNull( text, "Text" );
     CellImpl cell = new CellImpl( template, TYPE_TEXT );
-    cell.addAttribute( PROPERTY_TEXT, text );
     return cell;
   }
 
-  public static Cell createTextCell( RowTemplate template, int bindingIndex ) {
+  public static Cell createTextCell( RowTemplate template, String defaultText ) {
+    CellImpl cell = ( CellImpl )createTextCell( template );
+    checkNotNull( defaultText, "Text" );
+    cell.addAttribute( PROPERTY_TEXT, defaultText );
+    return cell;
+  }
+
+  public static Cell createImageCell( RowTemplate template ) {
     checkNotNull( template, "RowTemplate" );
-    CellImpl cell = new CellImpl( template, TYPE_TEXT );
-    cell.setBindingIndex( bindingIndex );
+    CellImpl cell = new CellImpl( template, TYPE_IMAGE );
     return cell;
   }
 
   public static Cell createImageCell( RowTemplate template, Image image ) {
-    checkNotNull( template, "RowTemplate" );
+    CellImpl cell = ( CellImpl )createImageCell( template );
     checkNotNull( image, "Image" );
-    CellImpl cell = new CellImpl( template, TYPE_IMAGE );
     cell.addAttribute( PROPERTY_IMAGE, image );
-    return cell;
-  }
-
-  public static Cell createImageCell( RowTemplate template, int bindingIndex ) {
-    checkNotNull( template, "RowTemplate" );
-    CellImpl cell = new CellImpl( template, TYPE_IMAGE );
-    cell.setBindingIndex( bindingIndex );
     return cell;
   }
 

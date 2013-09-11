@@ -1697,7 +1697,7 @@ public class TableLCA_Test {
   @Test
   public void testRenderRowTemplate() throws IOException {
     RowTemplate rowTemplate = new RowTemplate();
-    table.setData( RWT.ROW_TEMPLATE, rowTemplate );
+    table.setData( RowTemplate.ROW_TEMPLATE, rowTemplate );
     JsonValue template = new TemplateSerializer( rowTemplate ).toJson();
 
     lca.render( table );
@@ -1708,7 +1708,7 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderRowTemplateOnlyIfItsARowTemplate() throws IOException {
-    table.setData( RWT.ROW_TEMPLATE, new Object() );
+    table.setData( RowTemplate.ROW_TEMPLATE, new Object() );
 
     lca.render( table );
 

@@ -12,6 +12,12 @@ package org.eclipse.rap.rwt.internal.template;
 
 import java.io.Serializable;
 
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+
+/**
+ * @noimplement This interface is not intended to be implemented by clients.
+ */
 public interface Cell extends Serializable {
 
   Cell setName( String name );
@@ -31,5 +37,11 @@ public interface Cell extends Serializable {
   Cell setWidth( int width );
 
   Cell setHeight( int height );
+
+  Cell setForeground( Color foreground );
+
+  Cell setBackground( Color background );
+
+  Cell setFont( Font font );
 
 }
