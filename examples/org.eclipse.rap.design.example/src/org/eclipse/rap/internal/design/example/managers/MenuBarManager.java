@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 EclipseSource and others.
+ * Copyright (c) 2008, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,7 @@ public class MenuBarManager extends MenuManager {
 
   private static final String MENU_BAR_VARIANT = "menuBar"; //$NON-NLS-1$
   private Composite menuParent;
-  private final List toolItemList = new ArrayList();
+  private final List<ToolItem> toolItemList = new ArrayList<ToolItem>();
   private ToolBar toolbar;
 
   @Override
@@ -65,12 +65,11 @@ public class MenuBarManager extends MenuManager {
   }
 
   private void disposeToolItems() {
-    for( int i = 0; i < toolItemList.size(); i++ ) {
-      ToolItem item = ( ToolItem ) toolItemList.get( i );
+    for( ToolItem item : toolItemList ) {
       if( !item.isDisposed() ) {
         Object data = item.getData();
         if( data != null && data instanceof Menu ) {
-          Menu menu = ( Menu ) data;
+          Menu menu = ( Menu )data;
           if( !menu.isDisposed() ) {
             menu.dispose();
           }
@@ -100,7 +99,7 @@ public class MenuBarManager extends MenuManager {
     }
   }
 
-  private int extractStyle( final MenuManager manager ) {
+  private int extractStyle( MenuManager manager ) {
     int style = SWT.NONE;
     if( manager.getItems() != null && manager.getItems().length > 0 ) {
       style = SWT.DROP_DOWN;
@@ -108,8 +107,7 @@ public class MenuBarManager extends MenuManager {
     return style;
   }
 
-  private void createMenu( final MenuManager manager, final ToolItem toolItem )
-  {
+  private void createMenu( final MenuManager manager, final ToolItem toolItem ) {
     final Menu menu = new Menu( menuParent );
     toolItem.setData( menu );
     menu.setData( RWT.CUSTOM_VARIANT, MENU_BAR_VARIANT );
@@ -128,8 +126,7 @@ public class MenuBarManager extends MenuManager {
         int leftIndent = bounds.x;
         int topIndent = bounds.y + bounds.height;
         Point indent = new Point( leftIndent, topIndent );
-        Point menuLocation
-          = display.map( toolbar, toolbar.getShell(), indent );
+        Point menuLocation = display.map( toolbar, toolbar.getShell(), indent );
         menu.setLocation( menuLocation );
         // style the menuitems and show the menu
         menu.setData( RWT.CUSTOM_VARIANT, MENU_BAR_VARIANT );
@@ -137,23 +134,23 @@ public class MenuBarManager extends MenuManager {
         menu.setVisible( true );
       }
 
-      private void hookMenuToToolItem( final MenuManager manager,
-                                       final Menu menu )
-      {
+      private void hookMenuToToolItem( MenuManager manager, Menu menu ) {
         IContributionItem[] contribItems = manager.getItems();
         if( contribItems != null && contribItems.length > 0 ) {
           for( int i = 0; i < contribItems.length; i++ ) {
-            if( i > 0 || !( contribItems[ i ] instanceof Separator ) ) {
-              contribItems[ i ].fill( menu, -1 );
+            if( contribItems[ i ].isVisible() ) {
+              if( i > 0 || !( contribItems[ i ] instanceof Separator ) ) {
+                contribItems[ i ].fill( menu, -1 );
+              }
             }
           }
         }
-      };
+      }
 
     } );
   }
 
-  private void styleMenuItems( final Menu menu ) {
+  private void styleMenuItems( Menu menu ) {
     MenuItem[] items = menu.getItems();
     if( items != null && items.length > 0 ) {
       for( int i = 0; i < items.length; i++ ) {
