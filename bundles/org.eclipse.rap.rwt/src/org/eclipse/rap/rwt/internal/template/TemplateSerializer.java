@@ -31,9 +31,6 @@ import org.eclipse.swt.graphics.Rectangle;
 public class TemplateSerializer {
 
   private static final String PROPERTY_TYPE = "type";
-  private static final String PROPERTY_ATTRIBUTES = "attributes";
-  private static final String PROPERTY_LAYOUT = "layout";
-  private static final String PROPERTY_CELLS = "cells";
 
   private final RowTemplate template;
 
@@ -48,55 +45,33 @@ public class TemplateSerializer {
     }
   }
 
-  public JsonObject toJson() {
-    JsonObject object = new JsonObject();
+  public JsonValue toJson() {
+    JsonArray serializedCells = new JsonArray();
     List<Cell> cells = template.getCells();
     if( !cells.isEmpty() ) {
-      addCells( object, cells );
+      addCells( serializedCells, cells );
     }
-    return object;
+    return serializedCells;
   }
 
-  private void addCells( JsonObject object, List<Cell> cells ) {
-    JsonArray serializedCells = new JsonArray();
+  private void addCells( JsonArray serializedCells, List<Cell> cells ) {
     for( Cell cell : cells ) {
-      addCell( serializedCells, cell );
+      addCell( serializedCells, ( CellImpl )cell );
     }
-    object.add( PROPERTY_CELLS, serializedCells );
   }
 
-  private void addCell( JsonArray serializedCells, Cell cell ) {
+  private void addCell( JsonArray serializedCells, CellImpl cell ) {
     JsonObject serializedCell = new JsonObject();
     serializedCell.add( PROPERTY_TYPE, cell.getType() );
-    addLayout( cell, serializedCell );
     addAttributes( cell, serializedCell );
     serializedCells.add( serializedCell );
   }
 
-  private void addLayout( Cell cell, JsonObject serializedCell ) {
-    JsonArray layout = new JsonArray();
-    layout.add( getJsonValue( cell.getTop() ) );
-    layout.add( getJsonValue( cell.getRight() ) );
-    layout.add( getJsonValue( cell.getBottom() ) );
-    layout.add( getJsonValue( cell.getLeft() ) );
-    layout.add( getJsonValue( cell.getWidth() ) );
-    layout.add( getJsonValue( cell.getHeight() ) );
-    serializedCell.add( PROPERTY_LAYOUT, layout );
-  }
-
-  private void addAttributes( Cell cell, JsonObject serializedCell ) {
+  private void addAttributes( CellImpl cell, JsonObject serializedCell ) {
     Map<String, Object> attributes = cell.getAttributes();
-    if( !attributes.isEmpty() ) {
-      serializedCell.add( PROPERTY_ATTRIBUTES, getSerializedAttributes( attributes ) );
-    }
-  }
-
-  private JsonObject getSerializedAttributes( Map<String, Object> attributes ) {
-    JsonObject serializedAttributes = new JsonObject();
     for( Entry<String, Object> entry : attributes.entrySet() ) {
-      serializedAttributes.add( entry.getKey(), getJsonValue( entry.getValue() ) );
+      serializedCell.add( entry.getKey(), getJsonValue( entry.getValue() ) );
     }
-    return serializedAttributes;
   }
 
   private JsonValue getJsonValue( Object value ) {

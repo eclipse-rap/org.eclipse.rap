@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.template;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Map;
@@ -20,28 +21,28 @@ import java.util.Map;
 import org.junit.Test;
 
 
-public class Cell_Test {
+public class CellImpl_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testFailsWithoutTemplate() {
-    new Cell( null, "foo" );
+    new CellImpl( null, "foo" );
   }
 
   @Test( expected = IllegalArgumentException.class )
   public void testFailsWithoutType() {
-    new Cell( new RowTemplate(), null );
+    new CellImpl( new RowTemplate(), null );
   }
 
   @Test( expected = IllegalArgumentException.class )
   public void testFailsEmptyType() {
-    new Cell( new RowTemplate(), "" );
+    new CellImpl( new RowTemplate(), "" );
   }
 
   @Test
   public void testAddsItselfToTemplate() {
     RowTemplate template = new RowTemplate();
 
-    Cell cell = new Cell( template, "foo" );
+    Cell cell = new CellImpl( template, "foo" );
 
     List<Cell> cells = template.getCells();
     assertEquals( cells.size(), 1 );
@@ -49,8 +50,8 @@ public class Cell_Test {
   }
 
   @Test
-  public void testhasType() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+  public void testHasType() {
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     String type = cell.getType();
 
@@ -58,92 +59,162 @@ public class Cell_Test {
   }
 
   @Test
-  public void testColumnIsNullByDefault() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+  public void testNameIsNullByDefault() {
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
-    Integer column = cell.getColumn();
+    Object name = cell.getAttributes().get( CellImpl.PROPERTY_NAME );
 
-    assertNull( column );
+    assertNull( name );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetNameFailsWithNullName() {
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
+
+    cell.setName( null );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetNameFailsWithEmptyName() {
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
+
+    cell.setName( "" );
   }
 
   @Test
-  public void testSetsColumn() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+  public void testSetsName() {
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
-    cell.setColumn( 1 );
+    cell.setName( "bar" );
 
-    Integer column = cell.getColumn();
-    assertEquals( Integer.valueOf( 1 ), column );
+    String name = ( String )cell.getAttributes().get( CellImpl.PROPERTY_NAME );
+    assertEquals( name, "bar" );
   }
 
   @Test
-  public void testSetsColumnToZero() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+  public void testSetNameReturnsCell() {
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
-    cell.setColumn( 0 );
+    Cell actualCell = cell.setName( "bar" );
 
-    Integer column = cell.getColumn();
-    assertEquals( Integer.valueOf( 0 ), column );
+    assertSame( cell, actualCell );
   }
 
   @Test
-  public void testSetColumnReturnsCell() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+  public void testSelectableIsNullByDefault() {
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
-    Cell actualCell = cell.setColumn( 1 );
+    Object selectable = cell.getAttributes().get( CellImpl.PROPERTY_SELECTABLE );
+
+    assertNull( selectable );
+  }
+
+  @Test
+  public void testSetsSelectable() {
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
+
+    cell.setSelectable( true );
+
+    Boolean selectable = ( Boolean )cell.getAttributes().get( CellImpl.PROPERTY_SELECTABLE );
+    assertTrue( selectable.booleanValue() );
+  }
+
+  @Test
+  public void testSetSelectableReturnsCell() {
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
+
+    Cell actualCell = cell.setSelectable( true );
+
+    assertSame( cell, actualCell );
+  }
+
+  @Test
+  public void testBindingIndexIsNullByDefault() {
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
+
+    Object index = cell.getAttributes().get( CellImpl.PROPERTY_BINDING_INDEX );
+
+    assertNull( index );
+  }
+
+  @Test
+  public void testSetsBindingIndex() {
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
+
+    cell.setBindingIndex( 1 );
+
+    Integer index = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_BINDING_INDEX );
+    assertEquals( Integer.valueOf( 1 ), index );
+  }
+
+  @Test
+  public void testSetsBindingIndexToZero() {
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
+
+    cell.setBindingIndex( 0 );
+
+    Integer index = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_BINDING_INDEX );
+    assertEquals( Integer.valueOf( 0 ), index );
+  }
+
+  @Test
+  public void testSetBindingIndexReturnsCell() {
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
+
+    Cell actualCell = cell.setBindingIndex( 1 );
 
     assertSame( cell, actualCell );
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testSetColumnFailsWithNegativeColumn() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+  public void testSetBindingIndexFailsWithNegativeBindingIndex() {
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
-    cell.setColumn( -1 );
+    cell.setBindingIndex( -1 );
   }
 
   @Test
   public void testLeftIsNullByDefault() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
-    Integer left = cell.getLeft();
+    Object left = cell.getAttributes().get( CellImpl.PROPERTY_LEFT );
 
     assertNull( left );
   }
 
   @Test
   public void testSetsLeft() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setLeft( 23 );
 
-    Integer left = cell.getLeft();
+    Integer left = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_LEFT );
     assertEquals( Integer.valueOf( 23 ), left );
   }
 
   @Test
   public void testSetsLeftToNegative() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setLeft( -1 );
 
-    Integer left = cell.getLeft();
+    Integer left = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_LEFT );
     assertEquals( Integer.valueOf( -1 ), left );
   }
 
   @Test
   public void testSetsLeftToZero() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setLeft( 0 );
 
-    Integer left = cell.getLeft();
+    Integer left = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_LEFT );
     assertEquals( Integer.valueOf( 0 ), left );
   }
 
   @Test
   public void testSetLeftReturnsCell() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
     Cell actualCell = cell.setLeft( 23 );
 
@@ -152,46 +223,46 @@ public class Cell_Test {
 
   @Test
   public void testRightIsNullByDefault() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
-    Integer right = cell.getRight();
+    Object right = cell.getAttributes().get( CellImpl.PROPERTY_RIGHT );
 
     assertNull( right );
   }
 
   @Test
   public void testSetsRight() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setRight( 23 );
 
-    Integer right = cell.getRight();
+    Integer right = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_RIGHT );
     assertEquals( Integer.valueOf( 23 ), right );
   }
 
   @Test
   public void testSetsRightToNegative() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setRight( -1 );
 
-    Integer right = cell.getRight();
+    Integer right = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_RIGHT );
     assertEquals( Integer.valueOf( -1 ), right );
   }
 
   @Test
   public void testSetsRightToZero() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setRight( 0 );
 
-    Integer right = cell.getRight();
+    Integer right = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_RIGHT );
     assertEquals( Integer.valueOf( 0 ), right );
   }
 
   @Test
   public void testSetRightReturnsCell() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
     Cell actualCell = cell.setRight( 23 );
 
@@ -200,46 +271,46 @@ public class Cell_Test {
 
   @Test
   public void testTopIsNullByDefault() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
-    Integer top = cell.getTop();
+    Object top = cell.getAttributes().get( CellImpl.PROPERTY_TOP );
 
     assertNull( top );
   }
 
   @Test
   public void testSetsTop() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setTop( 23 );
 
-    Integer top = cell.getTop();
+    Integer top = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_TOP );
     assertEquals( Integer.valueOf( 23 ), top );
   }
 
   @Test
   public void testSetsTopToNegative() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setTop( -1 );
 
-    Integer top = cell.getTop();
+    Integer top = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_TOP );
     assertEquals( Integer.valueOf( -1 ), top );
   }
 
   @Test
   public void testSetsTopToZero() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setTop( 0 );
 
-    Integer top = cell.getTop();
+    Integer top = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_TOP );
     assertEquals( Integer.valueOf( 0 ), top );
   }
 
   @Test
   public void testSetTopReturnsCell() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
     Cell actualCell = cell.setTop( 23 );
 
@@ -248,46 +319,46 @@ public class Cell_Test {
 
   @Test
   public void testBottomIsNullByDefault() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
-    Integer bottom = cell.getBottom();
+    Object bottom = cell.getAttributes().get( CellImpl.PROPERTY_BOTTOM );
 
     assertNull( bottom );
   }
 
   @Test
   public void testSetsBottom() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setBottom( 23 );
 
-    Integer bottom = cell.getBottom();
+    Integer bottom = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_BOTTOM );
     assertEquals( Integer.valueOf( 23 ), bottom );
   }
 
   @Test
   public void testSetsBottomToNegative() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setBottom( -1 );
 
-    Integer bottom = cell.getBottom();
+    Integer bottom = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_BOTTOM );
     assertEquals( Integer.valueOf( -1 ), bottom );
   }
 
   @Test
   public void testSetsBottomToZero() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setBottom( 0 );
 
-    Integer bottom = cell.getBottom();
+    Integer bottom = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_BOTTOM );
     assertEquals( Integer.valueOf( 0 ), bottom );
   }
 
   @Test
   public void testSetBottomReturnsCell() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
     Cell actualCell = cell.setBottom( 23 );
 
@@ -296,36 +367,36 @@ public class Cell_Test {
 
   @Test
   public void testWidthIsNullByDefault() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
-    Integer width = cell.getWidth();
+    Object width = cell.getAttributes().get( CellImpl.PROPERTY_WIDTH );
 
     assertNull( width );
   }
 
   @Test
   public void testSetsWidth() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setWidth( 23 );
 
-    Integer width = cell.getWidth();
+    Integer width = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_WIDTH );
     assertEquals( Integer.valueOf( 23 ), width );
   }
 
   @Test
   public void testSetsWidthToZero() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setWidth( 0 );
 
-    Integer width = cell.getWidth();
+    Integer width = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_WIDTH );
     assertEquals( Integer.valueOf( 0 ), width );
   }
 
   @Test
   public void testSetWidthReturnsCell() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
     Cell actualCell = cell.setWidth( 23 );
 
@@ -334,43 +405,43 @@ public class Cell_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testSetWidthFailsWithNegativeValue() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setWidth( -23 );
   }
 
   @Test
   public void testHeightIsNullByDefault() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
-    Integer height = cell.getHeight();
+    Object height = cell.getAttributes().get( CellImpl.PROPERTY_HEIGHT );
 
     assertNull( height );
   }
 
   @Test
   public void testSetsHeight() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setHeight( 23 );
 
-    Integer height = cell.getHeight();
+    Integer height = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_HEIGHT );
     assertEquals( Integer.valueOf( 23 ), height );
   }
 
   @Test
   public void testSetsHeightToZero() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setHeight( 0 );
 
-    Integer height = cell.getHeight();
+    Integer height = ( Integer )cell.getAttributes().get( CellImpl.PROPERTY_HEIGHT );
     assertEquals( Integer.valueOf( 0 ), height );
   }
 
   @Test
   public void testSetHeightReturnsCell() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
     Cell actualCell = cell.setHeight( 23 );
 
@@ -379,14 +450,14 @@ public class Cell_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testSetHeightFailsWithNegativeValue() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setHeight( -23 );
   }
 
   @Test( expected = IllegalArgumentException.class )
   public void testFailsWith_Left_Right_Width() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setLeft( 10 );
     cell.setRight( 10 );
@@ -396,7 +467,7 @@ public class Cell_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testFailsWith_Width_Right_Left() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setWidth( 10 );
     cell.setRight( 10 );
@@ -406,7 +477,7 @@ public class Cell_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testFailsWith_Width_Left_Right() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setLeft( 10 );
     cell.setWidth( 10 );
@@ -416,7 +487,7 @@ public class Cell_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testFailsWith_Top_Bottom_Height() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setTop( 10 );
     cell.setBottom( 10 );
@@ -426,7 +497,7 @@ public class Cell_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testFailsWith_Bottom_Height_Top() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setBottom( 10 );
     cell.setHeight( 10 );
@@ -436,7 +507,7 @@ public class Cell_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testFailsWith_Height_Top_Bottom() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    Cell cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.setHeight( 10 );
     cell.setTop( 10 );
@@ -446,7 +517,7 @@ public class Cell_Test {
 
   @Test
   public void testAddsAttribute() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
     Object attribute = new Object();
 
     cell.addAttribute( "foo", attribute );
@@ -458,7 +529,7 @@ public class Cell_Test {
 
   @Test
   public void testAddsAllAttribute() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
     Object attribute1 = new Object();
     Object attribute2 = new Object();
 
@@ -473,7 +544,7 @@ public class Cell_Test {
 
   @Test
   public void testAttributesAreSafeCopy() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
     Map<String, Object> attributes = cell.getAttributes();
 
     cell.addAttribute( "foo", new Object() );
@@ -483,7 +554,7 @@ public class Cell_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testAddAttributeFailsWithNullKey() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
     Object attribute = new Object();
 
     cell.addAttribute( null, attribute );
@@ -491,7 +562,7 @@ public class Cell_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testAddAttributeFailsWithEmptyKey() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
     Object attribute = new Object();
 
     cell.addAttribute( "", attribute );
@@ -499,7 +570,7 @@ public class Cell_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testAddAttributeFailsWithNullValue() {
-    Cell cell = new Cell( new RowTemplate(), "foo" );
+    CellImpl cell = new CellImpl( new RowTemplate(), "foo" );
 
     cell.addAttribute( "foo", null );
   }

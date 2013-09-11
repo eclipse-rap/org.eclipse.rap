@@ -55,181 +55,181 @@ public class TemplateSerializer_Test {
   public void testSerializesEmptyTemplate() {
     TemplateSerializer serializer = new TemplateSerializer( new RowTemplate() );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    assertNotNull( object );
-    assertTrue( object.isEmpty() );
+    assertNotNull( cells );
+    assertTrue( cells.isEmpty() );
   }
 
   @Test
   public void testSerializesEmptyCell() {
     RowTemplate template = new RowTemplate();
-    new Cell( template, "foo" );
+    new CellImpl( template, "foo" );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonArray cells = object.get( "cells" ).asArray();
     assertEquals( 1, cells.size() );
   }
 
   @Test
   public void testSerializesCellType() {
     RowTemplate template = new RowTemplate();
-    new Cell( template, "foo" );
+    new CellImpl( template, "foo" );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonObject cell = object.get( "cells" ).asArray().get( 0 ).asObject();
+    JsonObject cell = cells.get( 0 ).asObject();
     assertEquals( cell.get( "type" ).asString(), "foo" );
+  }
+
+  @Test
+  public void testSerializesCellName() {
+    RowTemplate template = new RowTemplate();
+    new CellImpl( template, "foo" ).setName( "bar" );
+    TemplateSerializer serializer = new TemplateSerializer( template );
+
+    JsonArray cells = serializer.toJson().asArray();
+
+    JsonObject cell = cells.get( 0 ).asObject();
+    assertEquals( cell.get( CellImpl.PROPERTY_NAME ).asString(), "bar" );
+  }
+
+  @Test
+  public void testSerializesSelectable() {
+    RowTemplate template = new RowTemplate();
+    new CellImpl( template, "foo" ).setSelectable( true );
+    TemplateSerializer serializer = new TemplateSerializer( template );
+
+    JsonArray cells = serializer.toJson().asArray();
+
+    JsonObject cell = cells.get( 0 ).asObject();
+    assertTrue( cell.get( CellImpl.PROPERTY_SELECTABLE ).asBoolean() );
   }
 
   @Test
   public void testSerializesAllCells() {
     RowTemplate template = new RowTemplate();
-    new Cell( template, "foo" );
-    new Cell( template, "foo" );
-    new Cell( template, "foo" );
+    new CellImpl( template, "foo" );
+    new CellImpl( template, "foo" );
+    new CellImpl( template, "foo" );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonArray cells = object.get( "cells" ).asArray();
     assertEquals( 3, cells.size() );
   }
 
   @Test
   public void testCellWith_Left_Top() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template, "foo" );
+    Cell cell = new CellImpl( template, "foo" );
     cell.setLeft( 23 );
     cell.setTop( 42 );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonObject actualCell = object.get( "cells" ).asArray().get( 0 ).asObject();
-    JsonArray layout = actualCell.get( "layout" ).asArray();
-    assertEquals( 6, layout.size() );
-    assertEquals( 42, layout.get( 0 ).asInt() );
-    assertEquals( JsonObject.NULL, layout.get( 1 ) );
-    assertEquals( JsonObject.NULL, layout.get( 2 ) );
-    assertEquals( 23, layout.get( 3 ).asInt() );
-    assertEquals( JsonObject.NULL, layout.get( 4 ) );
-    assertEquals( JsonObject.NULL, layout.get( 5 ) );
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    assertEquals( 23, actualCell.get( CellImpl.PROPERTY_LEFT ).asInt() );
+    assertEquals( 42, actualCell.get( CellImpl.PROPERTY_TOP ).asInt() );
   }
 
   @Test
   public void testCellWith_Left_Top_Wight_Height() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template, "foo" );
+    Cell cell = new CellImpl( template, "foo" );
     cell.setLeft( 23 );
     cell.setTop( 42 );
     cell.setWidth( 100 );
     cell.setHeight( 200 );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonObject actualCell = object.get( "cells" ).asArray().get( 0 ).asObject();
-    JsonArray layout = actualCell.get( "layout" ).asArray();
-    assertEquals( 6, layout.size() );
-    assertEquals( 42, layout.get( 0 ).asInt() );
-    assertEquals( JsonObject.NULL, layout.get( 1 ) );
-    assertEquals( JsonObject.NULL, layout.get( 2 ) );
-    assertEquals( 23, layout.get( 3 ).asInt() );
-    assertEquals( 100, layout.get( 4 ).asInt() );
-    assertEquals( 200, layout.get( 5 ).asInt() );
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    assertEquals( 23, actualCell.get( CellImpl.PROPERTY_LEFT ).asInt() );
+    assertEquals( 42, actualCell.get( CellImpl.PROPERTY_TOP ).asInt() );
+    assertEquals( 100, actualCell.get( CellImpl.PROPERTY_WIDTH ).asInt() );
+    assertEquals( 200, actualCell.get( CellImpl.PROPERTY_HEIGHT ).asInt() );
   }
 
   @Test
   public void testCellWith_Right_Bottom() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template, "foo" );
+    Cell cell = new CellImpl( template, "foo" );
     cell.setRight( 23 );
     cell.setBottom( 42 );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonObject actualCell = object.get( "cells" ).asArray().get( 0 ).asObject();
-    JsonArray layout = actualCell.get( "layout" ).asArray();
-    assertEquals( 6, layout.size() );
-    assertEquals( JsonObject.NULL, layout.get( 0 ) );
-    assertEquals( 23, layout.get( 1 ).asInt() );
-    assertEquals( 42, layout.get( 2 ).asInt() );
-    assertEquals( JsonObject.NULL, layout.get( 3 ) );
-    assertEquals( JsonObject.NULL, layout.get( 4 ) );
-    assertEquals( JsonObject.NULL, layout.get( 5 ) );
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    assertEquals( 42, actualCell.get( CellImpl.PROPERTY_BOTTOM ).asInt() );
+    assertEquals( 23, actualCell.get( CellImpl.PROPERTY_RIGHT ).asInt() );
   }
 
   @Test
   public void testCellWith_Right_Bottom_Height_Width() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template, "foo" );
+    Cell cell = new CellImpl( template, "foo" );
     cell.setRight( 23 );
     cell.setBottom( 42 );
     cell.setWidth( 100 );
     cell.setHeight( 200 );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonObject actualCell = object.get( "cells" ).asArray().get( 0 ).asObject();
-    JsonArray layout = actualCell.get( "layout" ).asArray();
-    assertEquals( 6, layout.size() );
-    assertEquals( JsonObject.NULL, layout.get( 0 ) );
-    assertEquals( 23, layout.get( 1 ).asInt() );
-    assertEquals( 42, layout.get( 2 ).asInt() );
-    assertEquals( JsonObject.NULL, layout.get( 3 ) );
-    assertEquals( 100, layout.get( 4 ).asInt() );
-    assertEquals( 200, layout.get( 5 ).asInt() );
+    JsonObject actualCell = cells.asArray().get( 0 ).asObject();
+    assertEquals( 23, actualCell.get( CellImpl.PROPERTY_RIGHT ).asInt() );
+    assertEquals( 42, actualCell.get( CellImpl.PROPERTY_BOTTOM ).asInt() );
+    assertEquals( 100, actualCell.get( CellImpl.PROPERTY_WIDTH ).asInt() );
+    assertEquals( 200, actualCell.get( CellImpl.PROPERTY_HEIGHT ).asInt() );
   }
 
   @Test
   public void testSerializesAllAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template, "foo" );
+    CellImpl cell = new CellImpl( template, "foo" );
     cell.addAttribute( "foo", "bar" );
     cell.addAttribute( "foo1", "bar1" );
     cell.addAttribute( "foo2", "bar2" );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonObject actualCell = object.get( "cells" ).asArray().get( 0 ).asObject();
-    JsonObject attributes = actualCell.get( "attributes" ).asObject();
-    assertEquals( "bar", attributes.get( "foo" ).asString() );
-    assertEquals( "bar1", attributes.get( "foo1" ).asString() );
-    assertEquals( "bar2", attributes.get( "foo2" ).asString() );
+    JsonObject actualCell = cells.asArray().get( 0 ).asObject();
+    assertEquals( "bar", actualCell.get( "foo" ).asString() );
+    assertEquals( "bar1", actualCell.get( "foo1" ).asString() );
+    assertEquals( "bar2", actualCell.get( "foo2" ).asString() );
   }
 
   @Test
   public void testSerializesTextAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template, "foo" );
+    CellImpl cell = new CellImpl( template, "foo" );
     cell.addAttribute( "foo", "bar" );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonObject actualCell = object.get( "cells" ).asArray().get( 0 ).asObject();
-    JsonObject attributes = actualCell.get( "attributes" ).asObject();
-    assertEquals( "bar", attributes.get( "foo" ).asString() );
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    assertEquals( "bar", actualCell.get( "foo" ).asString() );
   }
 
   @Test
   public void testSerializesImageAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template, "foo" );
+    CellImpl cell = new CellImpl( template, "foo" );
     cell.addAttribute( "foo", createImage( Fixture.IMAGE_100x50 ) );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonObject actualCell = object.get( "cells" ).asArray().get( 0 ).asObject();
-    JsonArray image = actualCell.get( "attributes" ).asObject().get( "foo" ).asArray();
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    JsonArray image = actualCell.get( "foo" ).asArray();
     assertEquals( 3, image.size() );
     assertTrue( image.get( 0 ).isString() );
     assertEquals( 100, image.get( 1 ).asInt() );
@@ -239,14 +239,14 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesColorAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template, "foo" );
+    CellImpl cell = new CellImpl( template, "foo" );
     cell.addAttribute( "foo", new Color( display, 255, 255, 255 ) );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonObject actualCell = object.get( "cells" ).asArray().get( 0 ).asObject();
-    JsonArray color = actualCell.get( "attributes" ).asObject().get( "foo" ).asArray();
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    JsonArray color = actualCell.get( "foo" ).asArray();
     assertEquals( 4, color.size() );
     assertEquals( 255, color.get( 0 ).asInt() );
     assertEquals( 255, color.get( 1 ).asInt() );
@@ -257,14 +257,14 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesRGBAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template, "foo" );
+    CellImpl cell = new CellImpl( template, "foo" );
     cell.addAttribute( "foo", new RGB( 255, 255, 255 ) );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonObject actualCell = object.get( "cells" ).asArray().get( 0 ).asObject();
-    JsonArray color = actualCell.get( "attributes" ).asObject().get( "foo" ).asArray();
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    JsonArray color = actualCell.get( "foo" ).asArray();
     assertEquals( 4, color.size() );
     assertEquals( 255, color.get( 0 ).asInt() );
     assertEquals( 255, color.get( 1 ).asInt() );
@@ -275,14 +275,14 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesFontAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template, "foo" );
+    CellImpl cell = new CellImpl( template, "foo" );
     cell.addAttribute( "foo", new Font( display, "Arial", 22, SWT.NONE ) );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonObject actualCell = object.get( "cells" ).asArray().get( 0 ).asObject();
-    JsonArray font = actualCell.get( "attributes" ).asObject().get( "foo" ).asArray();
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    JsonArray font = actualCell.get( "foo" ).asArray();
     assertEquals( 4, font.size() );
     assertEquals( "Arial", font.get( 0 ).asArray().get( 0 ).asString() );
     assertEquals( 22, font.get( 1 ).asInt() );
@@ -293,14 +293,14 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesFontDataAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template, "foo" );
+    CellImpl cell = new CellImpl( template, "foo" );
     cell.addAttribute( "foo", new Font( display, "Arial", 22, SWT.NONE ).getFontData()[ 0 ] );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonObject actualCell = object.get( "cells" ).asArray().get( 0 ).asObject();
-    JsonArray font = actualCell.get( "attributes" ).asObject().get( "foo" ).asArray();
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    JsonArray font = actualCell.get( "foo" ).asArray();
     assertEquals( 4, font.size() );
     assertEquals( "Arial", font.get( 0 ).asArray().get( 0 ).asString() );
     assertEquals( 22, font.get( 1 ).asInt() );
@@ -311,14 +311,14 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesPointAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template, "foo" );
+    CellImpl cell = new CellImpl( template, "foo" );
     cell.addAttribute( "foo", new Point( 23, 42 ) );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonObject actualCell = object.get( "cells" ).asArray().get( 0 ).asObject();
-    JsonArray point = actualCell.get( "attributes" ).asObject().get( "foo" ).asArray();
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    JsonArray point = actualCell.get( "foo" ).asArray();
     assertEquals( 2, point.size() );
     assertEquals( 23, point.get( 0 ).asInt() );
     assertEquals( 42, point.get( 1 ).asInt() );
@@ -327,14 +327,14 @@ public class TemplateSerializer_Test {
   @Test
   public void testSerializesRectangleAttribute() {
     RowTemplate template = new RowTemplate();
-    Cell cell = new Cell( template, "foo" );
+    CellImpl cell = new CellImpl( template, "foo" );
     cell.addAttribute( "foo", new Rectangle( 23, 42, 123, 142 ) );
     TemplateSerializer serializer = new TemplateSerializer( template );
 
-    JsonObject object = serializer.toJson();
+    JsonArray cells = serializer.toJson().asArray();
 
-    JsonObject actualCell = object.get( "cells" ).asArray().get( 0 ).asObject();
-    JsonArray point = actualCell.get( "attributes" ).asObject().get( "foo" ).asArray();
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    JsonArray point = actualCell.get( "foo" ).asArray();
     assertEquals( 4, point.size() );
     assertEquals( 23, point.get( 0 ).asInt() );
     assertEquals( 42, point.get( 1 ).asInt() );

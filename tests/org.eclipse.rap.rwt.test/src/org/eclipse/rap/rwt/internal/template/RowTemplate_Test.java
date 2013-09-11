@@ -31,7 +31,7 @@ public class RowTemplate_Test {
   @Test
   public void testAddsCell() {
     RowTemplate template = new RowTemplate();
-    Cell cell = mock( Cell.class );
+    CellImpl cell = mock( CellImpl.class );
 
     template.addCell( cell );
 
@@ -43,8 +43,8 @@ public class RowTemplate_Test {
   @Test
   public void testAddsCells() {
     RowTemplate template = new RowTemplate();
-    Cell cell1 = mock( Cell.class );
-    Cell cell2 = mock( Cell.class );
+    CellImpl cell1 = mock( CellImpl.class );
+    CellImpl cell2 = mock( CellImpl.class );
 
     template.addCell( cell1 );
     template.addCell( cell2 );
@@ -60,7 +60,7 @@ public class RowTemplate_Test {
     RowTemplate template = new RowTemplate();
     List<Cell> cells = template.getCells();
 
-    template.addCell( mock( Cell.class ) );
+    template.addCell( mock( CellImpl.class ) );
 
     assertEquals( 0, cells.size() );
   }

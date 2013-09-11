@@ -34,7 +34,7 @@ public class RowTemplate implements Serializable {
     }
   }
 
-  List<Cell> getCells() {
+  public List<Cell> getCells() {
     return new ArrayList<Cell>( cells );
   }
 }
