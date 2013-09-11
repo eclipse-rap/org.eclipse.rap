@@ -420,6 +420,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       var labelObject = rwt.widgets.base.WidgetToolTip.getInstance()._label;
       assertEquals( "foo &amp;&amp; &lt;&gt; &quot;<br/> bar", labelObject.getCellContent( 0 ) );
+      assertEquals( "", row.getToolTipText() );
       shell.destroy();
     },
 
@@ -4221,6 +4222,38 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.fakeMouseEvent( tree._rowContainer._children[ 1 ], "mouseup" );
       assertTrue( tree.isItemSelected( child0 ) );
       assertTrue( tree.isItemSelected( child1 ) );
+      tree.destroy();
+    },
+
+    testRequestCellToolTipText : function() {
+      var tree = this._createDefaultTree();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
+      widgetManager.add( tree, "w3", true );
+      tree.setEnableCellToolTip( true );
+      tree.setColumnCount( 6 );
+      tree.setItemMetrics( 0, 0, 5, 0, 0, 0, 50 );
+      tree.setItemMetrics( 1, 5, 10, 0, 0, 0, 50 );
+      tree.setItemMetrics( 2, 15, 10, 0, 0, 0, 50 );
+      tree.setItemMetrics( 3, 25, 10, 0, 0, 0, 50 );
+      tree.setItemMetrics( 4, 35, 350, 0, 0, 0, 50 );
+      tree.setItemMetrics( 5, 400, 100, 405, 10, 430, 50 );
+      tree.setItemCount( 1 );
+      var item = this._createItem( tree.getRootItem(), 0 );
+      widgetManager.add( item, "w45", true );
+      TestUtil.flush();
+      var leftButton = rwt.event.MouseEvent.buttons.left;
+      var node = tree._rowContainer.getChildren()[ 0 ].getElement();
+
+      TestUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 450, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 450, 11 );
+      TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._showTimer );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject( 0 );
+      var actualItem = message.findCallProperty( "w3", "renderToolTipText", "item" );
+      var actualCol = message.findCallProperty( "w3", "renderToolTipText", "column" );
+      assertEquals( "w45", actualItem );
+      assertEquals( 5, actualCol );
       tree.destroy();
     },
 

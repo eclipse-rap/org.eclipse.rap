@@ -33,7 +33,7 @@ rwt.widgets.base.GridCellToolTip = {
       if( row ) {
         row.setToolTipText( text );
         rwt.widgets.base.WidgetToolTip.getInstance().updateText();
-        row.resetToolTipText();
+        row.setToolTipText( "" );
       }
     }
   },
