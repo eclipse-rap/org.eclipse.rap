@@ -373,7 +373,14 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
 
     _getIconStyle : function( iconId ) {
       var manager = rwt.theme.AppearanceManager.getInstance();
-      return manager.styleFrom( "text-field-icon", iconId === "search" ? { search : true } : {} );
+      var states = {};
+      if( iconId === "search" ) {
+        states[ "search" ] = true;
+      }
+      if( this._customVariant !== null ) {
+        states[ this._customVariant ] = true;
+      }
+      return manager.styleFrom( "text-field-icon", states );
     },
 
     ///////////////////

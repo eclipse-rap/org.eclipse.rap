@@ -1396,6 +1396,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( expected, parseInt( text.getElement().style.paddingTop, 10 ) );
     },
 
+    testIconStyle_states : function() {
+      createText();
+      text.setCustomVariant( "variant_test" );
+      TestUtil.fakeAppearance( "text-field-icon",  {
+        style : function( states ) {
+          return states;
+        }
+      } );
+
+      var iconStyle = text._getIconStyle( "search" );
+
+      assertTrue( iconStyle.variant_test );
+      assertTrue( iconStyle.search );
+      TestUtil.restoreAppearance();
+    },
+
     /////////
     // Helper
 
