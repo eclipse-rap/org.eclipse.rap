@@ -14,22 +14,14 @@ namespace( "rwt.widgets.base" );
 
 rwt.widgets.base.GridCellToolTip = {
 
-  _cell : null,
+  _cell : [ null, null, null ],
   _requestedCell : null,
-  _timer : null,
-  _getTimer : function() {
-    if( this._timer == null ) {
-      this._timer = new rwt.client.Timer( 1000 );
-      this._timer.addEventListener( "interval", this._onTimer, this );
-    }
-    return this._timer;
-  },
 
   setEnabled : function( grid, value ) {
     if( value ) {
-      grid._rowContainer.addEventListener( "mousemove", this._onClientAreaMouseMove, grid );
+      grid.addEventListener( "renderCellToolTip", this._onRender, grid );
     } else {
-      grid._rowContainer.removeEventListener( "mousemove", this._onClientAreaMouseMove, grid );
+      grid.removeEventListener( "renderCellToolTip", this._onRender, grid );
     }
   },
 
@@ -40,48 +32,28 @@ rwt.widgets.base.GridCellToolTip = {
       var row = grid.getRowContainer()._findRowByItem( item );
       if( row ) {
         row.setToolTipText( text );
-        rwt.widgets.base.WidgetToolTip.getInstance().show();
-        rwt.widgets.util.ToolTipManager.getInstance().setCurrentToolTipTarget( row );
+        rwt.widgets.base.WidgetToolTip.getInstance().updateText();
+        row.resetToolTipText();
       }
     }
   },
 
-  _onClientAreaMouseMove : function( evt ) {
+  _onRender : function( row ) {
     var itemId = null;
     var columnIndex = -1;
-    if( this._rowContainer.getHoverItem() ) {
+    var item = this._rowContainer.findItemByRow( row );
+    if( item ) {
       itemId = rwt.remote.ObjectRegistry.getId( this._rowContainer.getHoverItem() );
-      columnIndex = rwt.widgets.util.GridUtil.getColumnByPageX( this, evt.getPageX() );
+      var GridUtil = rwt.widgets.util.GridUtil;
+      columnIndex = GridUtil.getColumnByPageX( this, rwt.event.MouseEvent.getPageX() );
     }
     rwt.widgets.base.GridCellToolTip._setCell( this, itemId, columnIndex );
   },
 
   _setCell : function( grid, itemId, columnIndex ) {
-    this._cell = [ grid, itemId, columnIndex ];
-    if( this._isValidCell() ) {
-      this._getTimer().restart();
-    } else {
-      this._getTimer().stop();
-    }
-  },
-
-  _isValidCell : function() {
-    return    this._cell
-           && this._cell[ 0 ] != null
-           && this._cell[ 1 ] != null
-           && this._cell[ 2 ] != -1;
-  },
-
-  _isValidToolTip : function( text ) {
-    return    text
-           && this._cell[ 0 ] === this._requestedCell[ 0 ]
-           && this._cell[ 1 ] === this._requestedCell[ 1 ]
-           && this._cell[ 2 ] === this._requestedCell[ 2 ];
-  },
-
-  _onTimer : function() {
-    this._getTimer().stop();
-    if( this._isValidCell() ) {
+    var cell = [ grid, itemId, columnIndex ];
+    if( this._isValidCell( cell ) ) {
+      this._cell = cell;
       var connection = rwt.remote.Connection.getInstance();
       connection.getRemoteObject( this._cell[ 0 ] ).call( "renderToolTipText", {
         "item" : this._cell[ 1 ],
@@ -89,6 +61,22 @@ rwt.widgets.base.GridCellToolTip = {
       } );
       this._requestedCell = this._cell;
     }
+  },
+
+  _isValidCell : function( cell ) {
+    var valid =     cell
+                 && cell[ 0 ] != null
+                 && cell[ 1 ] != null
+                 && cell[ 2 ] != -1;
+     return valid;
+  },
+
+  _isValidToolTip : function( text ) {
+    return    text
+           && this._requestedCell
+           && this._cell[ 0 ] === this._requestedCell[ 0 ]
+           && this._cell[ 1 ] === this._requestedCell[ 1 ]
+           && this._cell[ 2 ] === this._requestedCell[ 2 ];
   }
 
 };

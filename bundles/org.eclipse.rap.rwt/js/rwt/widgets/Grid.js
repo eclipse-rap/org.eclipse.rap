@@ -20,7 +20,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     // Style-Flags:
     this._hasMultiSelection = false;
     // Internal State:
-    this._hasCustomToolTip = false;
     this._hasSelectionListener = false;
     this._hasDefaultSelectionListener = false;
     this._leadItem = null;
@@ -55,7 +54,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this.add( this._rowContainer );
     this.add( this._horzScrollBar );
     this.add( this._vertScrollBar );
-    this._cellToolTip = null;
     // Configure:
     this._config = this._rowContainer.getRenderConfig();
     this.setCursor( "default" );
@@ -82,10 +80,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this._focusItem = null;
     this._sortColumn = null;
     this._resizeLine = null;
-    if( this._cellToolTip ) {
-      this._cellToolTip.destroy();
-      this._cellToolTip = null;
-    }
   },
 
   members : {
@@ -1421,16 +1415,19 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     ////////////////////////
     // Cell tooltip handling
 
-    setEnableCellToolTip : function( value ) {
+    setEnableCellToolTip : function( value ) { // protocol name
+      this.setCellToolTipsEnabled( value );
+    },
+
+    setCellToolTipsEnabled : function( value ) {
+      this._rowContainer.setCellToolTipsEnabled( value );
       rwt.widgets.base.GridCellToolTip.setEnabled( this, value );
-      this._hasCustomToolTip = true;
     },
 
-    hasCustomToolTip : function() {
-      return this._hasCustomToolTip;
+    getCellToolTipsEnabled : function() {
+      return this._rowContainer.getCellToolTipsEnabled();
     },
 
-    /** Only called by server-side */
     setCellToolTipText : function( text ) {
       rwt.widgets.base.GridCellToolTip.showToolTip( text );
     }

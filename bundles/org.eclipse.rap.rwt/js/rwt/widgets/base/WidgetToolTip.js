@@ -176,6 +176,8 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
         rwt.widgets.base.Widget.flushGlobalQueues(); // render new dimension
         this._afterAppearLayout();
         rwt.widgets.base.Widget.flushGlobalQueues(); // render position
+      } else if( this.getBoundToWidget().requestToolTipText ) {
+        this.getBoundToWidget().requestToolTipText();
       }
     },
 

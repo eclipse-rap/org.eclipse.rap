@@ -114,6 +114,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this.setState( "even", index % 2 === 0 );
     },
 
+    requestToolTipText : function() {
+      this.dispatchSimpleEvent( "renderCellToolTip", this, true );
+    },
+
     ////////////
     // internals
 

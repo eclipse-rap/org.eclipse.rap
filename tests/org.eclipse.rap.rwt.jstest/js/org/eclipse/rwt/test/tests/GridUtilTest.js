@@ -370,7 +370,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
 
       TestUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 6, 11 );
       TestUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 6, 11 );
-      TestUtil.forceInterval( rwt.widgets.base.GridCellToolTip._getTimer() );
+      TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._showTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
@@ -407,7 +407,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
 
       TestUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 16, 11 );
       TestUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 16, 11 );
-      TestUtil.forceInterval( rwt.widgets.base.GridCellToolTip._getTimer() );
+      TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._showTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();

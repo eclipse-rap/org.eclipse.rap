@@ -398,7 +398,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
       TestUtil.protocolSet( "w3", { "enableCellToolTip" : true } );
-      assertTrue( widget.hasCustomToolTip() );
+      assertTrue( widget.getCellToolTipsEnabled() );
       shell.destroy();
       widget.destroy();
     },
@@ -415,9 +415,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       TestUtil.fakeMouseEvent( row, "mouseover", 10, 10 );
       TestUtil.fakeMouseEvent( row, "mousemove", 10, 10 );
-      TestUtil.forceInterval( rwt.widgets.base.GridCellToolTip._getTimer() );
-      TestUtil.protocolSet( "w3", { "cellToolTipText" : "foo && <> \"\n bar" } );
       TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._showTimer );
+      TestUtil.protocolSet( "w3", { "cellToolTipText" : "foo && <> \"\n bar" } );
 
       var labelObject = rwt.widgets.base.WidgetToolTip.getInstance()._label;
       assertEquals( "foo &amp;&amp; &lt;&gt; &quot;<br/> bar", labelObject.getCellContent( 0 ) );
@@ -4241,14 +4240,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var item = this._createItem( tree.getRootItem(), 0 );
       widgetManager.add( item, "w45", true );
       TestUtil.flush();
-      TestUtil.prepareTimerUse();
-      TestUtil.initRequestLog();
       var leftButton = rwt.event.MouseEvent.buttons.left;
       var node = tree._rowContainer.getChildren()[ 0 ].getElement();
 
       TestUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 450, 11 );
       TestUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 450, 11 );
-      TestUtil.forceInterval( rwt.widgets.base.GridCellToolTip._getTimer() );
+      TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._showTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject( 0 );
