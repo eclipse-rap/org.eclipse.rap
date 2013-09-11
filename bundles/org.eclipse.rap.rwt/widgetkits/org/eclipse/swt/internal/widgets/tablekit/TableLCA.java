@@ -36,6 +36,7 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
@@ -128,6 +129,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     ScrollBarLCAUtil.preserveValues( table );
   }
 
+  @Override
   public void readData( Widget widget ) {
     Table table = ( Table )widget;
     readTopItemIndex( table );
@@ -163,6 +165,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     remoteObject.set( "indentionWidth", 0 );
     remoteObject.set( PROP_TREE_COLUMN, -1 );
     remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( table ) );
+    TemplateLCAUtil.renderRowTemplate( table );
     ScrollBarLCAUtil.renderInitialization( table );
   }
 

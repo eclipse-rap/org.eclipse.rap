@@ -27,8 +27,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.template.RowTemplate;
-import org.eclipse.rap.rwt.internal.template.TemplateSerializer;
+import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
@@ -81,7 +80,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final String PROP_ENABLE_CELL_TOOLTIP = "enableCellToolTip";
   private static final String PROP_CELL_TOOLTIP_TEXT = "cellToolTipText";
   private static final String PROP_MARKUP_ENABLED = "markupEnabled";
-  private static final String PROP_ROW_TEMPLATE = "rowTemplate";
 
   private static final int ZERO = 0 ;
   private static final String[] DEFAULT_SELECTION = new String[ 0 ];
@@ -152,7 +150,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
     remoteObject.set( "indentionWidth", adapter.getIndentionWidth() );
     remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( tree ) );
-    setRowTemplate( remoteObject, tree );
+    TemplateLCAUtil.renderRowTemplate( tree );
     ScrollBarLCAUtil.renderInitialization( tree );
   }
 
@@ -290,14 +288,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
                                     .add( itemMetrics[ i ].textWidth ) );
       }
       getRemoteObject( tree ).set( PROP_ITEM_METRICS, metrics );
-    }
-  }
-
-  private void setRowTemplate( RemoteObject remoteObject, Tree tree ) {
-    Object data = tree.getData( RWT.ROW_TEMPLATE );
-    if( data != null && data instanceof RowTemplate ) {
-      TemplateSerializer serializer = new TemplateSerializer( ( RowTemplate )data );
-      remoteObject.set( PROP_ROW_TEMPLATE, serializer.toJson() );
     }
   }
 
