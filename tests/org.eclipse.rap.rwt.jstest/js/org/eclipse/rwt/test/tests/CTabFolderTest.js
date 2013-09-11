@@ -639,6 +639,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       assertEquals( "w4", message.findSetProperty( "w3", "selection" ) );
     },
 
+    testUpdateNextSelected : function() {
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      var item2 = this._createCTabItemByProtocol( "w4", "w3" );
+      var item1 = this._createCTabItemByProtocol( "w5", "w3" );
+      var item0 = this._createCTabItemByProtocol( "w6", "w3" );
+      item2.addState( "nextSelected" );
+
+      item1.setSelected( true );
+
+      assertTrue( item0.hasState( "nextSelected" ) );
+      assertFalse( item2.hasState( "nextSelected" ) );
+    },
+
     /////////
     // Helper
 
