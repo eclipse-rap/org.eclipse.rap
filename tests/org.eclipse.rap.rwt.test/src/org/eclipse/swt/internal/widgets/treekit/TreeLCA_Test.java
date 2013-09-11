@@ -1584,7 +1584,7 @@ public class TreeLCA_Test {
   @Test
   public void testRenderRowTemplate() throws IOException {
     RowTemplate rowTemplate = new RowTemplate();
-    tree.setData( RWT.ROW_TEMPLATE, rowTemplate );
+    tree.setData( RowTemplate.ROW_TEMPLATE, rowTemplate );
     JsonValue template = new TemplateSerializer( rowTemplate ).toJson();
 
     lca.render( tree );
@@ -1595,7 +1595,7 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderRowTemplateOnlyIfItsARowTemplate() throws IOException {
-    tree.setData( RWT.ROW_TEMPLATE, new Object() );
+    tree.setData( RowTemplate.ROW_TEMPLATE, new Object() );
 
     lca.render( tree );
 

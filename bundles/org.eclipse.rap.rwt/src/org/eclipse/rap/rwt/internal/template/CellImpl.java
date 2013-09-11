@@ -15,6 +15,9 @@ import static org.eclipse.rap.rwt.internal.util.ParamCheck.notNullOrEmpty;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+
 
 public class CellImpl implements Cell {
 
@@ -27,6 +30,9 @@ public class CellImpl implements Cell {
   static final String PROPERTY_BINDING_INDEX = "bindingIndex";
   static final String PROPERTY_SELECTABLE = "selectable";
   static final String PROPERTY_NAME = "name";
+  static final String PROPERTY_FOREGROUND = "foreground";
+  static final String PROPERTY_BACKGROUND = "background";
+  static final String PROPERTY_FONT = "font";
 
   private final Map<String, Object> attributes;
   private final String type;
@@ -69,6 +75,24 @@ public class CellImpl implements Cell {
 
   public Cell setSelectable( boolean selectable ) {
     attributes.put( PROPERTY_SELECTABLE, Boolean.valueOf( selectable ) );
+    return this;
+  }
+
+  public Cell setForeground( Color foreground ) {
+    checkNotNull( foreground, "Foreground" );
+    attributes.put( PROPERTY_FOREGROUND, foreground );
+    return this;
+  }
+
+  public Cell setBackground( Color background ) {
+    checkNotNull( background, "Background" );
+    attributes.put( PROPERTY_BACKGROUND, background );
+    return this;
+  }
+
+  public Cell setFont( Font font ) {
+    checkNotNull( font, "Font" );
+    attributes.put( PROPERTY_FONT, font );
     return this;
   }
 
@@ -135,8 +159,12 @@ public class CellImpl implements Cell {
 
   private void checkAttribute( String name, Object attribute ) {
     checkNotNullOrEmpty( name );
-    if( attribute == null ) {
-      throw new IllegalArgumentException( "Attribute must not be null" );
+    checkNotNull( attribute, "Attribute" );
+  }
+
+  private void checkNotNull( Object value, String name ) {
+    if( value == null ) {
+      throw new IllegalArgumentException( name + " must not be null" );
     }
   }
 

@@ -18,7 +18,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -49,7 +48,7 @@ public class TemplateLCAUtil_Test {
   @Test
   public void testRenderRowTemplate() {
     RowTemplate rowTemplate = new RowTemplate();
-    shell.setData( RWT.ROW_TEMPLATE, rowTemplate );
+    shell.setData( RowTemplate.ROW_TEMPLATE, rowTemplate );
     JsonValue template = new TemplateSerializer( rowTemplate ).toJson();
     RemoteObjectImpl remoteObject = fakeRemoteObject();
 
@@ -60,7 +59,7 @@ public class TemplateLCAUtil_Test {
 
   @Test
   public void testRenderRowTemplateOnlyIfItsARowTemplate() {
-    shell.setData( RWT.ROW_TEMPLATE, new Object() );
+    shell.setData( RowTemplate.ROW_TEMPLATE, new Object() );
     RemoteObjectImpl remoteObject = fakeRemoteObject();
 
     TemplateLCAUtil.renderRowTemplate( shell );
