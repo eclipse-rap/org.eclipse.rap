@@ -188,6 +188,59 @@ public class TemplateSerializer_Test {
   }
 
   @Test
+  public void testCellWithForeground() {
+    RowTemplate template = new RowTemplate();
+    Color color = new Color( display, 255, 255, 255 );
+    new CellImpl( template, "foo" ).setForeground( color );
+    TemplateSerializer serializer = new TemplateSerializer( template );
+
+    JsonArray cells = serializer.toJson().asArray();
+
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    JsonArray actualColor = actualCell.get( CellImpl.PROPERTY_FOREGROUND ).asArray();
+    assertEquals( 4, actualColor.size() );
+    assertEquals( 255, actualColor.get( 0 ).asInt() );
+    assertEquals( 255, actualColor.get( 1 ).asInt() );
+    assertEquals( 255, actualColor.get( 2 ).asInt() );
+    assertEquals( 255, actualColor.get( 3 ).asInt() );
+  }
+
+  @Test
+  public void testCellWithBackground() {
+    RowTemplate template = new RowTemplate();
+    Color color = new Color( display, 255, 255, 255 );
+    new CellImpl( template, "foo" ).setBackground( color );
+    TemplateSerializer serializer = new TemplateSerializer( template );
+
+    JsonArray cells = serializer.toJson().asArray();
+
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    JsonArray actualColor = actualCell.get( CellImpl.PROPERTY_BACKGROUND ).asArray();
+    assertEquals( 4, actualColor.size() );
+    assertEquals( 255, actualColor.get( 0 ).asInt() );
+    assertEquals( 255, actualColor.get( 1 ).asInt() );
+    assertEquals( 255, actualColor.get( 2 ).asInt() );
+    assertEquals( 255, actualColor.get( 3 ).asInt() );
+  }
+
+  @Test
+  public void testSerializesCellWithFont() {
+    RowTemplate template = new RowTemplate();
+    new CellImpl( template, "foo" ).setFont( new Font( display, "Arial", 22, SWT.NONE ) );
+    TemplateSerializer serializer = new TemplateSerializer( template );
+
+    JsonArray cells = serializer.toJson().asArray();
+
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    JsonArray actualFont = actualCell.get( CellImpl.PROPERTY_FONT ).asArray();
+    assertEquals( 4, actualFont.size() );
+    assertEquals( "Arial", actualFont.get( 0 ).asArray().get( 0 ).asString() );
+    assertEquals( 22, actualFont.get( 1 ).asInt() );
+    assertFalse( actualFont.get( 2 ).asBoolean() );
+    assertFalse( actualFont.get( 3 ).asBoolean() );
+  }
+
+  @Test
   public void testSerializesAllAttribute() {
     RowTemplate template = new RowTemplate();
     CellImpl cell = new CellImpl( template, "foo" );
