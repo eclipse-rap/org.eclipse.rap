@@ -12,12 +12,11 @@ package org.eclipse.rap.rwt.internal.template;
 
 import static org.eclipse.rap.rwt.internal.util.ParamCheck.notNullOrEmpty;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class CellImpl implements Serializable, Cell {
+public class CellImpl implements Cell {
 
   static final String PROPERTY_LEFT = "left";
   static final String PROPERTY_TOP = "top";

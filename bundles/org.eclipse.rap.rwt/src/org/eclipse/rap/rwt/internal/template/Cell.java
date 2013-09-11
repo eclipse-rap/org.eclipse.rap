@@ -10,7 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.template;
 
-public interface Cell {
+import java.io.Serializable;
+
+public interface Cell extends Serializable {
 
   Cell setName( String name );
 
@@ -29,4 +31,5 @@ public interface Cell {
   Cell setWidth( int width );
 
   Cell setHeight( int height );
+
 }

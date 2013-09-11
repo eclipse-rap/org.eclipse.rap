@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.template;
 import org.eclipse.swt.graphics.Image;
 
 
-public class Cells {
+public final class Cells {
 
   static final String TYPE_IMAGE = "image";
   static final String PROPERTY_IMAGE = "image";
