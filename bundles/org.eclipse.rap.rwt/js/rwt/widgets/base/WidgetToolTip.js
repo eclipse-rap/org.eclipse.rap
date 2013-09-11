@@ -22,10 +22,10 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     this._showTimer.addEventListener( "interval", this._onshowtimer, this );
     this._hideTimer = new rwt.client.Timer();
     this._hideTimer.addEventListener( "interval", this._onhidetimer, this );
-    this._hiddenAt = -1;
     this.addEventListener( "mouseover", this._onmouseover );
     this.addEventListener( "mouseout", this._onmouseover );
     this._currentConfig = {};
+    this.setRestrictToPageOnOpen( false );
   },
 
   statics : {
@@ -97,7 +97,6 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     _beforeDisappear : function() {
       this.base( arguments );
       this._stopHideTimer();
-      this._hiddenAt = ( new Date() ).getTime();
     },
 
     _startShowTimer : function() {
@@ -112,7 +111,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     _allowQuickAppear : function() {
       var now = ( new Date() ).getTime();
-      return this.isSeeable() || ( this._hiddenAt > 0 && ( now - this._hiddenAt ) < 300 );
+      return this.isSeeable() || ( this._hideTimeStamp > 0 && ( now - this._hideTimeStamp ) < 300 );
     },
 
     _startHideTimer : function() {
@@ -192,10 +191,6 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       var newPosition = this._getPositionAfterAppear();
       this.setLeft( newPosition[ 0 ] );
       this.setTop( newPosition[ 1 ] );
-    },
-
-    _applyLeft : function( v ) {
-      this.base( arguments, v );
     },
 
     updateText : function() {

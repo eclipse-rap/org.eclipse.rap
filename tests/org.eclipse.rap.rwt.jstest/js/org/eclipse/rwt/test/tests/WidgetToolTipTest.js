@@ -467,7 +467,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
 
       TestUtil.hoverFromTo( widget.getElement(), document.body );
       TestUtil.forceInterval( toolTip._hideTimer );
-      toolTip._hiddenAt = ( new Date() ).getTime() - 1001;
+      toolTip._hideTimeStamp = ( new Date() ).getTime() - 1001;
       TestUtil.hoverFromTo( document.body, widget2.getElement() );
 
       assertTrue( toolTip._showTimer.isEnabled() );
