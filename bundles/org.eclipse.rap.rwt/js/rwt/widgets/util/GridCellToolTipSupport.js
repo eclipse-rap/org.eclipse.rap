@@ -10,9 +10,9 @@
  ******************************************************************************/
 
 
-namespace( "rwt.widgets.base" );
+namespace( "rwt.widgets.util" );
 
-rwt.widgets.base.GridCellToolTip = {
+rwt.widgets.util.GridCellToolTipSupport = {
 
   _cell : [ null, null, null ],
   _requestedCell : null,
@@ -47,7 +47,7 @@ rwt.widgets.base.GridCellToolTip = {
       var GridUtil = rwt.widgets.util.GridUtil;
       columnIndex = GridUtil.getColumnByPageX( this, rwt.event.MouseEvent.getPageX() );
     }
-    rwt.widgets.base.GridCellToolTip._setCell( this, itemId, columnIndex );
+    rwt.widgets.util.GridCellToolTipSupport._setCell( this, itemId, columnIndex );
   },
 
   _setCell : function( grid, itemId, columnIndex ) {

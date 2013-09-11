@@ -1421,7 +1421,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     setCellToolTipsEnabled : function( value ) {
       this._rowContainer.setCellToolTipsEnabled( value );
-      rwt.widgets.base.GridCellToolTip.setEnabled( this, value );
+      rwt.widgets.util.GridCellToolTipSupport.setEnabled( this, value );
     },
 
     getCellToolTipsEnabled : function() {
@@ -1429,7 +1429,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     setCellToolTipText : function( text ) {
-      rwt.widgets.base.GridCellToolTip.showToolTip( text );
+      rwt.widgets.util.GridCellToolTipSupport.showToolTip( text );
     }
 
   }

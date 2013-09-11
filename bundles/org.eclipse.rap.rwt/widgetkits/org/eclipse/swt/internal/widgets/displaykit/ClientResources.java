@@ -181,7 +181,7 @@ public final class ClientResources {
     "rwt/widgets/GridItem.js",
     "rwt/remote/handler/GridItemHandler.js",
     "rwt/widgets/util/GridDNDFeedback.js",
-    "rwt/widgets/base/GridCellToolTip.js",
+    "rwt/widgets/util/GridCellToolTipSupport.js",
     "rwt/widgets/base/GridHeader.js",
     "rwt/widgets/GridColumn.js",
     "rwt/widgets/base/GridColumnLabel.js",
