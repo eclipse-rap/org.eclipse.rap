@@ -22,9 +22,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;
 import org.junit.Before;
@@ -306,40 +304,6 @@ public class TemplateSerializer_Test {
     assertEquals( 22, font.get( 1 ).asInt() );
     assertFalse( font.get( 2 ).asBoolean() );
     assertFalse( font.get( 3 ).asBoolean() );
-  }
-
-  @Test
-  public void testSerializesPointAttribute() {
-    RowTemplate template = new RowTemplate();
-    CellImpl cell = new CellImpl( template, "foo" );
-    cell.addAttribute( "foo", new Point( 23, 42 ) );
-    TemplateSerializer serializer = new TemplateSerializer( template );
-
-    JsonArray cells = serializer.toJson().asArray();
-
-    JsonObject actualCell = cells.get( 0 ).asObject();
-    JsonArray point = actualCell.get( "foo" ).asArray();
-    assertEquals( 2, point.size() );
-    assertEquals( 23, point.get( 0 ).asInt() );
-    assertEquals( 42, point.get( 1 ).asInt() );
-  }
-
-  @Test
-  public void testSerializesRectangleAttribute() {
-    RowTemplate template = new RowTemplate();
-    CellImpl cell = new CellImpl( template, "foo" );
-    cell.addAttribute( "foo", new Rectangle( 23, 42, 123, 142 ) );
-    TemplateSerializer serializer = new TemplateSerializer( template );
-
-    JsonArray cells = serializer.toJson().asArray();
-
-    JsonObject actualCell = cells.get( 0 ).asObject();
-    JsonArray point = actualCell.get( "foo" ).asArray();
-    assertEquals( 4, point.size() );
-    assertEquals( 23, point.get( 0 ).asInt() );
-    assertEquals( 42, point.get( 1 ).asInt() );
-    assertEquals( 123, point.get( 2 ).asInt() );
-    assertEquals( 142, point.get( 3 ).asInt() );
   }
 
   private Image createImage( String name ) {
