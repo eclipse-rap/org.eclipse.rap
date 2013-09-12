@@ -10,24 +10,27 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.widgets.fileuploadkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -36,7 +39,6 @@ import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.rap.rwt.widgets.FileUpload;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
@@ -96,42 +98,6 @@ public class FileUploadLCA_Test {
   }
 
   @Test
-  public void testReadFileName() {
-    Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( fileUpload ), "fileNames", new JsonArray().add( "foo" ) );
-    Fixture.executeLifeCycleFromServerThread( );
-
-    assertEquals( "foo", fileUpload.getFileName() );
-
-    Fixture.fakeNewRequest();
-    Fixture.executeLifeCycleFromServerThread( );
-
-    assertEquals( "foo", fileUpload.getFileName() );
-  }
-
-  @Test
-  public void testReadEmptyFileName() {
-    Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( fileUpload ), "fileNames", new JsonArray() );
-    Fixture.executeLifeCycleFromServerThread( );
-
-    assertEquals( null, fileUpload.getFileName() );
-  }
-
-  @Test
-  public void testFireSelectionEvent() {
-    SelectionListener listener = mock( SelectionListener.class );
-    fileUpload.addSelectionListener( listener );
-
-    Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( fileUpload ), "fileNames", new JsonArray().add( "foo" ) );
-    Fixture.executeLifeCycleFromServerThread( );
-
-    assertEquals( "foo", fileUpload.getFileName() );
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( fileUpload );
 
@@ -148,6 +114,26 @@ public class FileUploadLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( fileUpload );
     assertEquals( new JsonArray().add( "MULTI" ), operation.getProperty( "style" ) );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( fileUpload );
+    lca.renderInitialization( fileUpload );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof FileUploadOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    FileUploadOperationHandler handler = spy( new FileUploadOperationHandler( fileUpload ) );
+    getRemoteObject( getId( fileUpload ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( fileUpload ), "Help", new JsonObject() );
+    lca.readData( fileUpload );
+
+    verify( handler ).handleNotifyHelp( fileUpload, new JsonObject() );
   }
 
   @Test
@@ -300,6 +286,48 @@ public class FileUploadLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( fileUpload, "customVariant" ) );
+  }
+
+  @Test
+  public void testRenderAddSelectionListener() throws Exception {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( fileUpload );
+    Fixture.preserveWidgets();
+
+    fileUpload.addSelectionListener( mock( SelectionListener.class ) );
+    lca.renderChanges( fileUpload );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.TRUE, message.findListenProperty( fileUpload, "Selection" ) );
+  }
+
+  @Test
+  public void testRenderRemoveSelectionListener() throws Exception {
+    SelectionListener listener = mock( SelectionListener.class );
+    fileUpload.addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( fileUpload );
+    Fixture.preserveWidgets();
+
+    fileUpload.removeSelectionListener( listener );
+    lca.renderChanges( fileUpload );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.FALSE, message.findListenProperty( fileUpload, "Selection" ) );
+  }
+
+  @Test
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( fileUpload );
+    Fixture.preserveWidgets();
+
+    fileUpload.addSelectionListener( mock( SelectionListener.class ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( fileUpload );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( fileUpload, "Selection" ) );
   }
 
   private IFileUploadAdapter getFileUploadAdapter( FileUpload upload ) {

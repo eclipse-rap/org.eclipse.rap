@@ -39,7 +39,9 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.FileUpload", {
     }
   } ),
 
-  listeners : rwt.remote.HandlerUtil.extendControlListeners( [] ),
+  listeners : rwt.remote.HandlerUtil.extendControlListeners( [
+    "Selection"
+  ] ),
 
   listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} ),
 

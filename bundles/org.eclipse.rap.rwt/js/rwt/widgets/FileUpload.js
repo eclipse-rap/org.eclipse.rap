@@ -54,6 +54,10 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
       this._iframe.destroy();
     },
 
+    execute : function() {
+      // suppress button default action
+    },
+
     ////////////
     // Internals
 
@@ -111,13 +115,9 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
     },
 
     _onValueChange : function( event ) {
-      // TODO [tb] : implement setHasValueChangedListener?
       var fileNames = this._formatFileNames( this._getFileNames() );
-      if( !rwt.remote.EventUtil.getSuspended() ) {
-        var server = rwt.remote.Connection.getInstance();
-        server.getRemoteObject( this ).set( "fileNames", fileNames );
-        server.send();
-      }
+      rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "fileNames", fileNames );
+      this._notifySelected();
     },
 
     _getFileNames : function() {
