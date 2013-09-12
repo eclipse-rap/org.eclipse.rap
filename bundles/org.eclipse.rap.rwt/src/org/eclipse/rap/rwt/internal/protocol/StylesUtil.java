@@ -51,7 +51,11 @@ public final class StylesUtil {
   }
 
   public static String[] filterStyles( Widget widget, String... allowedStyles ) {
-    List<String> containedStyles = findContainedStyles( widget, allowedStyles );
+    return filterStyles( widget.getStyle(), allowedStyles );
+  }
+
+  public static String[] filterStyles( int styles, String... allowedStyles ) {
+    List<String> containedStyles = findContainedStyles( styles, allowedStyles );
     if( containedStyles.isEmpty() ) {
       containedStyles.add( "NONE" );
     }
@@ -59,14 +63,14 @@ public final class StylesUtil {
     return containedStyles.toArray( result );
   }
 
-  private static List<String> findContainedStyles( Widget widget, String... allowedStyles ) {
+  private static List<String> findContainedStyles( int styles, String... allowedStyles ) {
     List<String> containedStyles = new ArrayList<String>();
     for( String allowedStyle : allowedStyles ) {
       Integer object = availableStyles.get( allowedStyle );
       if( object == null ) {
         throw new IllegalArgumentException( allowedStyle + " is not an existing SWT style" );
       }
-      if( ( widget.getStyle() & object.intValue() ) != 0 ) {
+      if( ( styles & object.intValue() ) != 0 ) {
         containedStyles.add( allowedStyle );
       }
     }

@@ -42,6 +42,14 @@ public class StylesUtil_Test {
 
   @Test
   public void testHasOneStyle() {
+    String[] styles = StylesUtil.filterStyles( SWT.PUSH, new String[] { "PUSH" } );
+
+    assertEquals( 1, styles.length );
+    assertEquals( "PUSH", styles[ 0 ] );
+  }
+
+  @Test
+  public void testHasOneStyleWithWidget() {
     Button button = new Button( shell, SWT.PUSH );
 
     String[] styles = StylesUtil.filterStyles( button, new String[] { "PUSH" } );
@@ -52,6 +60,15 @@ public class StylesUtil_Test {
 
   @Test
   public void testHasTwoStyles() {
+    String[] styles = StylesUtil.filterStyles( SWT.PUSH  | SWT.BORDER, new String[] { "PUSH", "BORDER" } );
+
+    assertEquals( 2, styles.length );
+    assertEquals( "PUSH", styles[ 0 ] );
+    assertEquals( "BORDER", styles[ 1 ] );
+  }
+
+  @Test
+  public void testHasTwoStylesWithWidget() {
     Button button = new Button( shell, SWT.PUSH  | SWT.BORDER );
 
     String[] styles = StylesUtil.filterStyles( button, new String[] { "PUSH", "BORDER" } );
@@ -63,6 +80,14 @@ public class StylesUtil_Test {
 
   @Test
   public void testHasOnlyOneOfTwoPossibleStyles() {
+    String[] styles = StylesUtil.filterStyles( SWT.PUSH, new String[] { "PUSH", "BORDER" } );
+
+    assertEquals( 1, styles.length );
+    assertEquals( "PUSH", styles[ 0 ] );
+  }
+
+  @Test
+  public void testHasOnlyOneOfTwoPossibleStylesWithWidget() {
     Button button = new Button( shell, SWT.PUSH  );
 
     String[] styles = StylesUtil.filterStyles( button, new String[] { "PUSH", "BORDER" } );
@@ -73,6 +98,14 @@ public class StylesUtil_Test {
 
   @Test
   public void testHasNoAllowedStyles() {
+    String[] styles = StylesUtil.filterStyles( SWT.NONE, new String[] {} );
+
+    assertEquals( 1, styles.length );
+    assertEquals( "NONE", styles[ 0 ] );
+  }
+
+  @Test
+  public void testHasNoAllowedStylesWithWidget() {
     Button button = new Button( shell, SWT.NONE  );
 
     String[] styles = StylesUtil.filterStyles( button, new String[] {} );
@@ -92,7 +125,24 @@ public class StylesUtil_Test {
   }
 
   @Test
+  public void testNoneStylesWithWidget() {
+    String[] styles = StylesUtil.filterStyles( SWT.NONE, new String[] { "NO_RADIO_GROUP" } );
+
+    assertEquals( 1, styles.length );
+    assertEquals( "NONE", styles[ 0 ] );
+  }
+
+  @Test
   public void testWithNonExistingStyle() {
+    try {
+      StylesUtil.filterStyles( SWT.NONE, new String[] { "FOO" } );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  @Test
+  public void testWithNonExistingStyleWithWidget() {
     Button button = new Button( shell, SWT.NONE  );
 
     try {

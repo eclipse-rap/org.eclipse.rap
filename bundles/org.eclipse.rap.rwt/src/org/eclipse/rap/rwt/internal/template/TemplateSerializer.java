@@ -17,7 +17,9 @@ import java.util.Map.Entry;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.protocol.StylesUtil;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -28,6 +30,7 @@ import org.eclipse.swt.graphics.RGB;
 public class TemplateSerializer {
 
   private static final String PROPERTY_TYPE = "type";
+  private static final String PROPERTY_STYLE = "style";
 
   private final RowTemplate template;
 
@@ -60,8 +63,14 @@ public class TemplateSerializer {
   private void addCell( JsonArray serializedCells, CellImpl cell ) {
     JsonObject serializedCell = new JsonObject();
     serializedCell.add( PROPERTY_TYPE, cell.getType() );
+    addStyles( cell, serializedCell );
     addAttributes( cell, serializedCell );
     serializedCells.add( serializedCell );
+  }
+
+  private void addStyles( CellImpl cell, JsonObject serializedCell ) {
+    String[] styles = StylesUtil.filterStyles( cell.getStyle(), CellImpl.ALLOWED_STYLES );
+    serializedCell.add( PROPERTY_STYLE, JsonUtil.createJsonArray( styles ) );
   }
 
   private void addAttributes( CellImpl cell, JsonObject serializedCell ) {
