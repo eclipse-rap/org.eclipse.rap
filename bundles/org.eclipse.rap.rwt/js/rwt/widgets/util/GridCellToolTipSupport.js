@@ -38,6 +38,16 @@ rwt.widgets.util.GridCellToolTipSupport = {
     }
   },
 
+  adjustToolTipPosition : function( currentPosition, row ) {
+    var position = currentPosition.concat();
+    var grid = this._cell[ 0 ];
+    var rowLeft = rwt.html.Location.get( row.getElement() ).left;
+    var cellLeft = grid.getRenderConfig().itemLeft[ this._cell[ 2 ] ];
+    position[ 0 ] = rowLeft + cellLeft;
+    return position;
+  },
+
+
   _onRender : function( row ) {
     var itemId = null;
     var columnIndex = -1;

@@ -116,6 +116,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertEquals( 40, parseInt( toolTip._style.top, 10 ) );
     },
 
+    testPosition_AdjustToolTipPosition : function() {
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      widget.adjustToolTipPosition = function( position ) {
+        return [ position[ 0 ] + 1, position[ 1 ] + 1 ];
+      };
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      assertEquals( 112, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( 41, parseInt( toolTip._style.top, 10 ) );
+    },
+
     testPosition_HorizontalCenterBottom : function() {
       config = { "position" : "horizontal-center" };
       WidgetToolTip.setToolTipText( widget, "foobar" );

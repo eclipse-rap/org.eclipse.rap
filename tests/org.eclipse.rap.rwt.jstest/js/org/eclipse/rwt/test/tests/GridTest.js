@@ -424,6 +424,31 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       shell.destroy();
     },
 
+    testSetCellToolTipTextByProtocol_PositionIsColumnAligned : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      shell.setLocation( 1, 0 );
+      shell.setBorder( null );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      widget.setLocation( 2, 0 );
+      widget.setBorder( null );
+      TestUtil.protocolSet( "w3", { "enableCellToolTip" : true } );
+      this._fillTree( widget, 10 );
+      widget.setColumnCount( 2 );
+      widget.setItemMetrics( 0, 0, 20, 0, 0, 0, 20, 0, 10 );
+      widget.setItemMetrics( 1, 20, 20, 0, 0, 20, 20, 0, 10 );
+      TestUtil.flush();
+      var row = widget.getRowContainer().getFirstChild();
+
+      TestUtil.fakeMouseEvent( row, "mouseover", 30, 10 );
+      TestUtil.fakeMouseEvent( row, "mousemove", 30, 10 );
+      TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._showTimer );
+      TestUtil.protocolSet( "w3", { "cellToolTipText" : "foo && <> \"\n bar" } );
+
+      var left = rwt.widgets.base.WidgetToolTip.getInstance().getLeft();
+      assertEquals( 1 + 2 + 20, left );
+      shell.destroy();
+    },
+
     testSetMarkupEnabledByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       rwt.remote.MessageProcessor.processOperation( {
@@ -4222,38 +4247,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.fakeMouseEvent( tree._rowContainer._children[ 1 ], "mouseup" );
       assertTrue( tree.isItemSelected( child0 ) );
       assertTrue( tree.isItemSelected( child1 ) );
-      tree.destroy();
-    },
-
-    testRequestCellToolTipText : function() {
-      var tree = this._createDefaultTree();
-      var widgetManager = rwt.remote.WidgetManager.getInstance();
-      widgetManager.add( tree, "w3", true );
-      tree.setEnableCellToolTip( true );
-      tree.setColumnCount( 6 );
-      tree.setItemMetrics( 0, 0, 5, 0, 0, 0, 50 );
-      tree.setItemMetrics( 1, 5, 10, 0, 0, 0, 50 );
-      tree.setItemMetrics( 2, 15, 10, 0, 0, 0, 50 );
-      tree.setItemMetrics( 3, 25, 10, 0, 0, 0, 50 );
-      tree.setItemMetrics( 4, 35, 350, 0, 0, 0, 50 );
-      tree.setItemMetrics( 5, 400, 100, 405, 10, 430, 50 );
-      tree.setItemCount( 1 );
-      var item = this._createItem( tree.getRootItem(), 0 );
-      widgetManager.add( item, "w45", true );
-      TestUtil.flush();
-      var leftButton = rwt.event.MouseEvent.buttons.left;
-      var node = tree._rowContainer.getChildren()[ 0 ].getElement();
-
-      TestUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 450, 11 );
-      TestUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 450, 11 );
-      TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._showTimer );
-
-      assertEquals( 1, TestUtil.getRequestsSend() );
-      var message = TestUtil.getMessageObject( 0 );
-      var actualItem = message.findCallProperty( "w3", "renderToolTipText", "item" );
-      var actualCol = message.findCallProperty( "w3", "renderToolTipText", "column" );
-      assertEquals( "w45", actualItem );
-      assertEquals( 5, actualCol );
       tree.destroy();
     },
 

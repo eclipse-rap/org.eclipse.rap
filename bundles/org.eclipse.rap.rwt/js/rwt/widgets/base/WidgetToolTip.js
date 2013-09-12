@@ -189,6 +189,9 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     _afterAppearLayout : function() {
       var newPosition = this._getPositionAfterAppear();
+      if( this.getBoundToWidget().adjustToolTipPosition ) {
+        newPosition = this.getBoundToWidget().adjustToolTipPosition( newPosition );
+      }
       this.setLeft( newPosition[ 0 ] );
       this.setTop( newPosition[ 1 ] );
     },

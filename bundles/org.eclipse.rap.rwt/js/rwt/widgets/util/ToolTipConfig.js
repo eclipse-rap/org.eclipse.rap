@@ -28,6 +28,9 @@ namespace( "rwt.client" );
             return this._horizontalConfig;
           }
         break;
+        case "rwt.widgets.base.GridRow":
+          return this._rowConfig;
+        break;
         default:
           return this._defaultConfig;
       }
@@ -62,6 +65,14 @@ namespace( "rwt.client" );
       "position" : "align-left",
       "appearOn" : "enter",
       "disappearOn" : "exit",
+      "appearDelay" : 800,
+      "disappearDelay" : 200
+    },
+
+    _rowConfig : {
+      "position" : "align-left",
+      "appearOn" : "rest",
+      "disappearOn" : "move",
       "appearDelay" : 800,
       "disappearDelay" : 200
     }
