@@ -363,6 +363,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       TestUtil.forceInterval( toolTip._hideTimer );
 
       assertFalse( toolTip.isSeeable() );
+      assertNull( toolTip.getBoundToWidget() );
     },
 
     testHideAfterMouseMoveAndTimer : function() {

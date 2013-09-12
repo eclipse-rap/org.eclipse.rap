@@ -50,9 +50,10 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager", {
         getToolTip()._startHideTimer();
       }
 
+      getToolTip().setBoundToWidget( value );
+
       // If new tooltip is not null, set it up and start the timer
       if (value) {
-        getToolTip().setBoundToWidget( value );
         getToolTip()._startShowTimer();
       }
     },
