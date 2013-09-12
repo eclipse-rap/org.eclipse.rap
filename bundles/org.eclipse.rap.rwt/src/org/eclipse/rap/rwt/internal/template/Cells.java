@@ -13,6 +13,9 @@ package org.eclipse.rap.rwt.internal.template;
 import org.eclipse.swt.graphics.Image;
 
 
+/*
+ * Supported styles: SWT.TOP, SWT.BOTTOM, SWT.LEFT, SWT.RIGHT, SWT.CENTER, SWT.FILL, SWT.WRAP
+ */
 public final class Cells {
 
   static final String TYPE_IMAGE = "image";
@@ -20,27 +23,27 @@ public final class Cells {
   static final String TYPE_TEXT = "text";
   static final String PROPERTY_DEFAULT_TEXT = "defaultText";
 
-  public static Cell createTextCell( RowTemplate template ) {
+  public static Cell createTextCell( RowTemplate template, int style ) {
     checkNotNull( template, "RowTemplate" );
-    CellImpl cell = new CellImpl( template, TYPE_TEXT );
+    CellImpl cell = new CellImpl( template, TYPE_TEXT, style );
     return cell;
   }
 
-  public static Cell createTextCell( RowTemplate template, String defaultText ) {
-    CellImpl cell = ( CellImpl )createTextCell( template );
+  public static Cell createTextCell( RowTemplate template, int style, String defaultText ) {
+    CellImpl cell = ( CellImpl )createTextCell( template, style );
     checkNotNull( defaultText, "Text" );
     cell.addAttribute( PROPERTY_DEFAULT_TEXT, defaultText );
     return cell;
   }
 
-  public static Cell createImageCell( RowTemplate template ) {
+  public static Cell createImageCell( RowTemplate template, int style ) {
     checkNotNull( template, "RowTemplate" );
-    CellImpl cell = new CellImpl( template, TYPE_IMAGE );
+    CellImpl cell = new CellImpl( template, TYPE_IMAGE, style );
     return cell;
   }
 
-  public static Cell createImageCell( RowTemplate template, Image image ) {
-    CellImpl cell = ( CellImpl )createImageCell( template );
+  public static Cell createImageCell( RowTemplate template, int style, Image image ) {
+    CellImpl cell = ( CellImpl )createImageCell( template, style );
     checkNotNull( image, "Image" );
     cell.addAttribute( PROPERTY_DEFAULT_IMAGE, image );
     return cell;

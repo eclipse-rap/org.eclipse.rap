@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;
@@ -39,28 +40,28 @@ public class Cells_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testCreateTextCellFailsWithNullTemplateButWithText() {
-    Cell cell = Cells.createTextCell( null, "text" );
+    Cell cell = Cells.createTextCell( null, SWT.NONE, "text" );
 
     assertNotNull( cell );
   }
 
   @Test( expected = IllegalArgumentException.class )
   public void testCreateTextCellFailsWithNullTemplate() {
-    Cell cell = Cells.createTextCell( null );
+    Cell cell = Cells.createTextCell( null, SWT.NONE );
 
     assertNotNull( cell );
   }
 
   @Test( expected = IllegalArgumentException.class )
   public void testCreateTextCellFailsWithNullText() {
-    Cell cell = Cells.createTextCell( new RowTemplate(), null );
+    Cell cell = Cells.createTextCell( new RowTemplate(), SWT.NONE, null );
 
     assertNotNull( cell );
   }
 
   @Test
   public void testCreateTextCellUsesTextTypeWithText() {
-    CellImpl cell = ( CellImpl )Cells.createTextCell( new RowTemplate(), "text" );
+    CellImpl cell = ( CellImpl )Cells.createTextCell( new RowTemplate(), SWT.NONE, "text" );
 
     String type = cell.getType();
 
@@ -69,7 +70,7 @@ public class Cells_Test {
 
   @Test
   public void testCreateTextCellUsesTextType() {
-    CellImpl cell = ( CellImpl )Cells.createTextCell( new RowTemplate() );
+    CellImpl cell = ( CellImpl )Cells.createTextCell( new RowTemplate(), SWT.NONE );
 
     String type = cell.getType();
 
@@ -77,15 +78,33 @@ public class Cells_Test {
   }
 
   @Test
+  public void testCreateTextCellSetsStyle() {
+    CellImpl cell = ( CellImpl )Cells.createTextCell( new RowTemplate(), SWT.TOP );
+
+    int style = cell.getStyle();
+
+    assertEquals( SWT.TOP, style );
+  }
+
+  @Test
+  public void testCreateTextCellWithTextSetsStyle() {
+    CellImpl cell = ( CellImpl )Cells.createTextCell( new RowTemplate(), SWT.TOP, "text" );
+
+    int style = cell.getStyle();
+
+    assertEquals( SWT.TOP, style );
+  }
+
+  @Test
   public void testCreateTextCellReturnsCell() {
-    Cell cell = Cells.createTextCell( new RowTemplate(), "text" );
+    Cell cell = Cells.createTextCell( new RowTemplate(), SWT.NONE, "text" );
 
     assertNotNull( cell );
   }
 
   @Test
   public void testCreateTextCellSetsTextAsAttribute() {
-    CellImpl cell = ( CellImpl )Cells.createTextCell( new RowTemplate(), "foo" );
+    CellImpl cell = ( CellImpl )Cells.createTextCell( new RowTemplate(), SWT.NONE, "foo" );
 
     Object text = cell.getAttributes().get( Cells.PROPERTY_DEFAULT_TEXT );
     assertEquals( "foo", text );
@@ -93,28 +112,30 @@ public class Cells_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testCreateImageCellFailsWithNullTemplateButWithImage() {
-    Cell cell = Cells.createImageCell( null, createImage( Fixture.IMAGE_100x50 ) );
+    Cell cell = Cells.createImageCell( null, SWT.NONE, createImage( Fixture.IMAGE_100x50 ) );
 
     assertNotNull( cell );
   }
 
   @Test( expected = IllegalArgumentException.class )
   public void testCreateImageCellFailsWithNullTemplate() {
-    Cell cell = Cells.createImageCell( null );
+    Cell cell = Cells.createImageCell( null, SWT.NONE );
 
     assertNotNull( cell );
   }
 
   @Test( expected = IllegalArgumentException.class )
   public void testCreateImageCellFailsWithNullImage() {
-    Cell cell = Cells.createImageCell( new RowTemplate(), null );
+    Cell cell = Cells.createImageCell( new RowTemplate(), SWT.NONE, null );
 
     assertNotNull( cell );
   }
 
   @Test
   public void testCreateImageCellUsesImageTypeWithImage() {
-    CellImpl cell = ( CellImpl )Cells.createImageCell( new RowTemplate(), createImage( Fixture.IMAGE_100x50 ) );
+    CellImpl cell = ( CellImpl )Cells.createImageCell( new RowTemplate(),
+                                                       SWT.NONE,
+                                                       createImage( Fixture.IMAGE_100x50 ) );
 
     String type = cell.getType();
 
@@ -123,7 +144,7 @@ public class Cells_Test {
 
   @Test
   public void testCreateImageCellUsesImageType() {
-    CellImpl cell = ( CellImpl )Cells.createImageCell( new RowTemplate() );
+    CellImpl cell = ( CellImpl )Cells.createImageCell( new RowTemplate(), SWT.NONE );
 
     String type = cell.getType();
 
@@ -131,8 +152,30 @@ public class Cells_Test {
   }
 
   @Test
+  public void testCreateImageCellSetsStyle() {
+    CellImpl cell = ( CellImpl )Cells.createImageCell( new RowTemplate(), SWT.TOP );
+
+    int style = cell.getStyle();
+
+    assertEquals( SWT.TOP, style );
+  }
+
+  @Test
+  public void testCreateImageCellWithImageSetsStyle() {
+    CellImpl cell = ( CellImpl )Cells.createImageCell( new RowTemplate(),
+                                                       SWT.TOP,
+                                                       createImage( Fixture.IMAGE_100x50 ) );
+
+    int style = cell.getStyle();
+
+    assertEquals( SWT.TOP, style );
+  }
+
+  @Test
   public void testCreateImageCellReturnsCell() {
-    Cell cell = Cells.createImageCell( new RowTemplate(), createImage( Fixture.IMAGE_100x50 ) );
+    Cell cell = Cells.createImageCell( new RowTemplate(),
+                                       SWT.NONE,
+                                       createImage( Fixture.IMAGE_100x50 ) );
 
     assertNotNull( cell );
   }
@@ -141,7 +184,7 @@ public class Cells_Test {
   public void testCreateImageCellSetsImageAsAttribute() {
     Image image = createImage( Fixture.IMAGE_100x50 );
 
-    CellImpl cell = ( CellImpl )Cells.createImageCell( new RowTemplate(), image );
+    CellImpl cell = ( CellImpl )Cells.createImageCell( new RowTemplate(), SWT.NONE, image );
 
     Object attribtue = cell.getAttributes().get( Cells.PROPERTY_DEFAULT_IMAGE );
     assertSame( image, attribtue );

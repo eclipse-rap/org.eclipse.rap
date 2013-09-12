@@ -21,6 +21,9 @@ import org.eclipse.swt.graphics.Font;
 
 public class CellImpl implements Cell {
 
+  static final String[] ALLOWED_STYLES = new String[] {
+    "TOP", "BOTTOM", "LEFT", "RIGHT", "CENTER", "FILL", "WRAP"
+  };
   static final String PROPERTY_LEFT = "left";
   static final String PROPERTY_TOP = "top";
   static final String PROPERTY_RIGHT = "right";
@@ -36,11 +39,13 @@ public class CellImpl implements Cell {
 
   private final Map<String, Object> attributes;
   private final String type;
+  private final int style;
 
-  public CellImpl( RowTemplate template, String type ) {
+  public CellImpl( RowTemplate template, String type, int style ) {
     checkType( type );
     checkTemplate( template );
     this.type = type;
+    this.style = style;
     this.attributes = new HashMap<String, Object>();
     template.addCell( this );
   }
@@ -59,6 +64,10 @@ public class CellImpl implements Cell {
 
   public String getType() {
     return type;
+  }
+
+  public int getStyle() {
+    return style;
   }
 
   public Cell setName( String name ) {
