@@ -219,9 +219,6 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       var docDimension = this._getDocumentDimension();
       var selfDimension = this._getOwnDimension();
       var newPosition = this._getPositionAfterAppear( targetBounds, docDimension, selfDimension );
-      if( this.getBoundToWidget().adjustToolTipPosition ) {
-        newPosition = this.getBoundToWidget().adjustToolTipPosition( newPosition );
-      }
       this.setLeft( newPosition[ 0 ] );
       this.setTop( newPosition[ 1 ] );
       var selfInnerBounds = {
@@ -405,12 +402,20 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     _getWidgetBounds : function() {
       var widget = this.getBoundToWidget();
       var location = rwt.html.Location.get( widget.getElement() );
-      return {
+      var result = {
         "left" : location.left,
         "top" : location.top,
         "width" : widget.getBoxWidth(),
         "height" : widget.getBoxHeight()
       };
+      if( widget.getToolTipTargetBounds ) {
+        var innerBounds = widget.getToolTipTargetBounds();
+        result.left += innerBounds.left;
+        result.top += innerBounds.top;
+        result.width = innerBounds.width;
+        result.height = innerBounds.height;
+      }
+      return result;
     },
 
     _getDocumentDimension : function() {

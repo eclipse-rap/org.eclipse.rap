@@ -32,7 +32,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       shell = TestUtil.createShellByProtocol( "w2" );
       shell.setLeft( 10 );
       shell.setTop( 20 );
-      shell.setBorder( null );
       shell.show();
       widget = new rwt.widgets.base.Label( "Hello World 1" );
       widget.setLeft( 100 );
@@ -117,30 +116,33 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertEquals( 40, parseInt( toolTip._style.top, 10 ) );
     },
 
-    testPosition_AdjustToolTipPosition : function() {
+    testPosition_HorizontalCenterBottom : function() {
+      config = { "position" : "horizontal-center" };
       WidgetToolTip.setToolTipText( widget, "foobar" );
-      widget.adjustToolTipPosition = function( position ) {
-        return [ position[ 0 ] + 1, position[ 1 ] + 1 ];
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      var expectedLeft = Math.round( 10 + 1 + 100 + 100 / 2 - toolTip.getWidthValue() / 2 );
+      var expectedTop = 20 + 1 + 10 + 20 + 3; // shell + border + top + height + offset
+      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+    },
+
+    testPosition_HorizontalCenterBottomWithCustomTargetBounds : function() {
+      config = { "position" : "horizontal-center" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      widget.getToolTipTargetBounds = function() {
+        return { "top" : 2, "left" : 2, "width" : 10, "height" : 10 };
       };
       TestUtil.hoverFromTo( document.body, widget.getElement() );
 
       TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
       showToolTip();
 
-      assertEquals( 112, parseInt( toolTip._style.left, 10 ) );
-      assertEquals( 41, parseInt( toolTip._style.top, 10 ) );
-    },
-
-    testPosition_HorizontalCenterBottom : function() {
-      config = { "position" : "horizontal-center" };
-      WidgetToolTip.setToolTipText( widget, "foobar" );
-      TestUtil.hoverFromTo( document.body, widget.getElement() );
-
-      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
-      showToolTip();
-
-      var expectedLeft = Math.round( 10 + 1 + 100 + 100 / 2 - toolTip.getWidthValue() / 2 );
-      var expectedTop = 20 + 1 + 10 + 20 + 3; // shell + border + top + height + offset
+      var expectedLeft = Math.round( 10 + 1 + 100 + 2 + 10 / 2 - toolTip.getWidthValue() / 2 );
+      var expectedTop = 20 + 1 + 10 + 2 + 10 + 3;
       assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
       assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
     },
@@ -593,6 +595,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
 
     testPointer_CenterUpPositionRestrictedToPage : function() {
       config = { "position" : "horizontal-center" };
+      shell.setBorder( null );
       WidgetToolTip.setToolTipText( widget, "foobarfoobarfoobarfoobar" );
       TestUtil.hoverFromTo( document.body, widget.getElement() );
       toolTip.setPointers( [ [ "foo.gif", 10, 20 ], null, null, null ] );

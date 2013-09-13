@@ -118,8 +118,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this.dispatchSimpleEvent( "renderCellToolTip", this, true );
     },
 
-    adjustToolTipPosition : function( currentPosition ) {
-      return rwt.widgets.util.GridCellToolTipSupport.adjustToolTipPosition( currentPosition, this );
+    getToolTipTargetBounds : function() {
+      return rwt.widgets.util.GridCellToolTipSupport.getCurrentToolTipTargetBounds( this );
     },
 
     ////////////

@@ -38,15 +38,15 @@ rwt.widgets.util.GridCellToolTipSupport = {
     }
   },
 
-  adjustToolTipPosition : function( currentPosition, row ) {
-    var position = currentPosition.concat();
+  getCurrentToolTipTargetBounds : function( row ) {
     var grid = this._cell[ 0 ];
-    var rowLeft = rwt.html.Location.get( row.getElement() ).left;
-    var cellLeft = grid.getRenderConfig().itemLeft[ this._cell[ 2 ] ];
-    position[ 0 ] = rowLeft + cellLeft;
-    return position;
+    return {
+      left : grid.getRenderConfig().itemLeft[ this._cell[ 2 ] ],
+      top : 0,
+      height : row.getBoxHeight(),
+      width : grid.getRenderConfig().itemWidth[ this._cell[ 2 ] ]
+    };
   },
-
 
   _onRender : function( row ) {
     var itemId = null;
