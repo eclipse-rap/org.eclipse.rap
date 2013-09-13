@@ -39,6 +39,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       widget.setWidth( 100 );
       widget.setHeight( 20 );
       widget.setParent( shell );
+      toolTip.setMarginLeft( 0 );
       TestUtil.flush();
       orgGetConfig = rwt.widgets.util.ToolTipConfig.getConfig;
       rwt.widgets.util.ToolTipConfig.getConfig = function() {
@@ -155,7 +156,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
       showToolTip();
 
-      var expectedLeft = Math.round( 10 + 1 + 100 );
+      var expectedLeft = 10 + 1 + 100 + 3;
       var expectedTop = 20 + 1 + 10 + 20 + 3; // shell + border + top + height + offset
       assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
       assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
@@ -667,7 +668,44 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertEquals( ( toolTip.getBoxWidth() - 2 ) + "px", pointer.style.left );
       assertEquals( "20px", pointer.style.width );
       assertEquals( "10px", pointer.style.height );
-    }
+    },
+
+    testPointer_LeftAlignUpPosition : function() {
+      config = { "position" : "align-left" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      toolTip.setPaddingLeft( 12 );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      toolTip.setPointers( [ [ "foo.gif", 10, 20 ], null, null, null ] );
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      var pointer = toolTip._getPointerElement();
+      assertTrue( TestUtil.getCssBackgroundImage( pointer ).indexOf( "foo.gif" ) !== -1 );
+      assertEquals( "12px", pointer.style.left );
+      assertEquals( "-20px", pointer.style.top );
+      assertEquals( "10px", pointer.style.width );
+      assertEquals( "20px", pointer.style.height );
+    },
+
+    testPointer_LeftAlignDownPosition : function() {
+      config = { "position" : "align-left" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      toolTip.setPaddingLeft( 12 );
+      var totalHeight =  rwt.widgets.base.ClientDocument.getInstance().getClientHeight();
+
+      widget.setTop( Math.round( totalHeight / 3 ) + 50 );
+      toolTip.setPointers( [ null, null, [ "foo.gif", 10, 20 ], null ] );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      var pointer = toolTip._getPointerElement();
+      assertTrue( TestUtil.getCssBackgroundImage( pointer ).indexOf( "foo.gif" ) !== -1 );
+      assertEquals( "12px", pointer.style.left );
+      assertEquals( ( toolTip.getBoxHeight() - 2 ) + "px", pointer.style.top );
+      assertEquals( "10px", pointer.style.width );
+      assertEquals( "20px", pointer.style.height );
+    },
 
   }
 

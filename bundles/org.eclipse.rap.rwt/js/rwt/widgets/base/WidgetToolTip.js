@@ -82,6 +82,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
   members : {
     _minZIndex : 1e7,
+    _targetDistance : 3,
     _isFocusRoot : false,
 
     updateText : function() {
@@ -256,7 +257,11 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       element.style.width = pointer[ 1 ] + "px";
       element.style.height = pointer[ 2 ] + "px";
       element.style.top = ( -1 * pointer[ 2 ] ) + "px";
-      element.style.left = Math.round( targetCenter.left - self.left - pointer[ 1 ] / 2 ) + "px";
+      if( this._config.position === "align-left" ) {
+        element.style.left = this.getPaddingLeft();
+      } else {
+        element.style.left = Math.round( targetCenter.left - self.left - pointer[ 1 ] / 2 ) + "px";
+      }
       element.style.display = "";
     },
 
@@ -268,7 +273,11 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       element.style.width = pointer[ 1 ] + "px";
       element.style.height = pointer[ 2 ] + "px";
       element.style.top = self.height + "px";
-      element.style.left = Math.round( targetCenter.left - self.left - pointer[ 1 ] / 2 ) + "px";
+      if( this._config.position === "align-left" ) {
+        element.style.left = this.getPaddingLeft();
+      } else {
+        element.style.left = Math.round( targetCenter.left - self.left - pointer[ 1 ] / 2 ) + "px";
+      }
       element.style.display = "";
     },
 
@@ -370,10 +379,10 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     _getVerticalOffsetAuto : function( target, self, doc ) {
       var topSpace = target.top;
       var bottomSpace = doc.height - topSpace - target.height;
-      if( topSpace > bottomSpace / 3 ) {
-        return target.top - self.height - 3; // at the top
+      if( topSpace > bottomSpace / 4 ) {
+        return target.top - self.height - this._targetDistance; // at the top
       } else {
-        return target.top + target.height + 3; // at the bottom
+        return target.top + target.height + this._targetDistance; // at the bottom
       }
     },
 
@@ -382,7 +391,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _getHorizontalOffsetAlignLeft : function( target, self, doc ) {
-      return target.left;
+      return target.left + this._targetDistance;
     },
 
     _getHorizontalOffsetAuto : function( target, self, doc ) {
@@ -428,7 +437,6 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     }
 
   },
-
 
   destruct : function() {
     this._disposeObjects("_showTimer", "_hideTimer", "_label");
