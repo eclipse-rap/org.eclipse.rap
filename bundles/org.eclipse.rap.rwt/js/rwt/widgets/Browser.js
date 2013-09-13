@@ -141,14 +141,15 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
       } catch( ex ) {
         success = false;
       }
-      var req = rwt.remote.Connection.getInstance();
-      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
-      remoteObject.set( "executeResult", success );
-      remoteObject.set( "evaluateResult", result );
+      var connection = rwt.remote.Connection.getInstance();
+      var id = rwt.remote.ObjectRegistry.getId( this );
+      var method = success ? "evaluationSucceeded" : "evaluationFailed";
+      var properties = success ? { "result" : result } : {};
+      connection.getMessageWriter().appendCall( id, method, properties );
       if( this.getExecutedFunctionPending() ) {
-        req.sendImmediate( false );
+        connection.sendImmediate( false );
       } else {
-        req.send();
+        connection.send();
       }
     },
 
@@ -253,8 +254,8 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
 
     _createFunctionImpl : function( name ) {
       var win = this.getContentWindow();
-      var server = rwt.remote.Connection.getInstance();
-      var remoteObject = server.getRemoteObject( this );
+      var connection = rwt.remote.Connection.getInstance();
+      var id = rwt.remote.ObjectRegistry.getId( this );
       var that = this;
       win[ name + "_impl" ] = function() {
         var result = {};
@@ -264,14 +265,16 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
               + name
               + "\". Another browser function is still pending.";
           } else {
-            var args = that.toJSON( arguments );
-            remoteObject.set( "executeFunction", name );
-            remoteObject.set( "executeArguments", args );
+            var properties = {
+              "name" : name,
+              "arguments" : that.toJSON( arguments )
+            };
+            connection.getMessageWriter().appendCall( id, "executeFunction", properties );
             that.setExecutedFunctionResult( null );
             that.setExecutedFunctionError( null );
             that.setExecutedFunctionPending( true );
             that.setAsynchronousResult( false );
-            server.sendImmediate( false );
+            connection.sendImmediate( false );
             if( that.getExecutedFunctionPending() ) {
               that.setAsynchronousResult( true );
             } else {

@@ -10,40 +10,41 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.widgets;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.internal.browser.browserkit.BrowserOperationHandler;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 
 public class BrowserUtil_Test {
 
-  private Display display;
   private Browser browser;
   private BrowserCallback browserCallback;
 
   @Before
   public void setUp() {
     Fixture.setUp();
-    display = new Display();
+    Display display = new Display();
     Shell shell = new Shell( display );
     browser = new Browser( shell, SWT.NONE );
-    browserCallback = new BrowserCallback() {
-      public void evaluationSucceeded( Object result ) {
-      }
-      public void evaluationFailed( Exception exception ) {
-      }
-    };
+    getRemoteObject( browser ).setHandler( new BrowserOperationHandler( browser ) );
+    browserCallback = mock( BrowserCallback.class );
   }
 
   @After
@@ -109,44 +110,28 @@ public class BrowserUtil_Test {
 
   @Test
   public void testCallCallback_Succeeded() {
-    final Object[] log = new Object[ 1 ];
-    browserCallback = new BrowserCallback() {
-      public void evaluationSucceeded( Object result ) {
-        log[ 0 ] = result;
-      }
-      public void evaluationFailed( Exception exception ) {
-        log[ 0 ] = exception.getMessage();
-      }
-    };
     BrowserUtil.evaluate( browser, "return 5;", browserCallback );
     Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( browser ), "executeResult", true );
-    Fixture.fakeSetProperty( getId( browser ), "evaluateResult", new JsonArray().add( 5 ) );
 
+    JsonObject parameters = new JsonObject().add( "result", new JsonArray().add( 5 ) );
+    Fixture.fakeCallOperation( getId( browser ), "evaluationSucceeded", parameters );
     Fixture.readDataAndProcessAction( browser );
 
-    assertEquals( Integer.valueOf( 5 ), log[ 0 ] );
+    verify( browserCallback ).evaluationSucceeded( Integer.valueOf( 5 ) );
   }
 
   @Test
   public void testCallCallback_Failed() {
-    final Object[] log = new Object[ 1 ];
-    browserCallback = new BrowserCallback() {
-      public void evaluationSucceeded( Object result ) {
-        log[ 0 ] = result;
-      }
-      public void evaluationFailed( Exception exception ) {
-        log[ 0 ] = exception.getMessage();
-      }
-    };
     BrowserUtil.evaluate( browser, "return 5/0;", browserCallback );
     Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( browser ), "executeResult", false );
-    Fixture.fakeSetProperty( getId( browser ), "evaluateResult", "devide by zero" );
 
+    JsonObject parameters = new JsonObject().add( "result", new JsonArray().add( 5 ) );
+    Fixture.fakeCallOperation( getId( browser ), "evaluationFailed", parameters );
     Fixture.readDataAndProcessAction( browser );
 
-    assertEquals( "Failed to evaluate Javascript expression", log[ 0 ] );
+    ArgumentCaptor<Exception> captor = ArgumentCaptor.forClass( Exception.class );
+    verify( browserCallback ).evaluationFailed( captor.capture() );
+    assertEquals( "Failed to evaluate Javascript expression", captor.getValue().getMessage() );
   }
 
 }

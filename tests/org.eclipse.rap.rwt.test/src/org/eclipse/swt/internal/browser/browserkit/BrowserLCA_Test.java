@@ -12,27 +12,24 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.browser.browserkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
-import static org.eclipse.rap.rwt.testfixture.Fixture.fakeNewRequest;
-import static org.eclipse.rap.rwt.testfixture.Fixture.fakeSetProperty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -42,7 +39,6 @@ import org.eclipse.rap.rwt.widgets.BrowserUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
-import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.browser.ProgressListener;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
@@ -177,84 +173,32 @@ public class BrowserLCA_Test {
   }
 
   @Test
-  public void testExecuteFunction() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final List<Object> log = new ArrayList<Object>();
-    new BrowserFunction( browser, "func" ) {
-      @Override
-      public Object function( Object[] arguments ) {
-        log.addAll( Arrays.asList( arguments ) );
-        return new Object[ 0 ];
-      }
-    };
-    fakeNewRequest();
-    fakeSetProperty( getId( browser ), BrowserLCA.PARAM_EXECUTE_FUNCTION, "func" );
-    JsonArray args = new JsonArray().add( "eclipse" ).add( 3.6 );
-    fakeSetProperty( getId( browser ), BrowserLCA.PARAM_EXECUTE_ARGUMENTS, args );
-
-    Fixture.readDataAndProcessAction( browser );
-
-    Object[] expected = new Object[] { "eclipse", Double.valueOf( 3.6 ) };
-    assertTrue( Arrays.equals( expected, log.toArray() ) );
-  }
-
-  @Test
-  public void testProgressEvent() {
-    final ArrayList<String> log = new ArrayList<String>();
-    Fixture.markInitialized( display );
-    browser.addProgressListener( new ProgressListener() {
-      public void changed( ProgressEvent event ) {
-        log.add( "changed" );
-      }
-      public void completed( ProgressEvent event ) {
-        log.add( "completed" );
-      }
-    } );
-
-    Fixture.fakeNotifyOperation( getId( browser ), BrowserLCA.EVENT_PROGRESS, null );
-    Fixture.readDataAndProcessAction( browser );
-
-    assertEquals( 2, log.size() );
-    assertEquals( "changed", log.get( 0 ) );
-    assertEquals( "completed", log.get( 1 ) );
-  }
-
-  @Test
-  public void testProgressEvent_InvisibleBrowser() {
-    Fixture.markInitialized( display );
-    browser.setVisible( false );
-    ProgressListener listener = mock( ProgressListener.class );
-    browser.addProgressListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( browser ), BrowserLCA.EVENT_PROGRESS, null );
-    Fixture.readDataAndProcessAction( browser );
-
-    verify( listener ).changed( any( ProgressEvent.class ) );
-    verify( listener ).completed( any( ProgressEvent.class ) );
-  }
-
-  @Test
-  public void testProgressEvent_DisabledBrowser() {
-    Fixture.markInitialized( display );
-    browser.setEnabled( false );
-    browser.setVisible( false );
-    ProgressListener listener = mock( ProgressListener.class );
-    browser.addProgressListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( browser ), BrowserLCA.EVENT_PROGRESS, null );
-    Fixture.readDataAndProcessAction( browser );
-
-    verify( listener ).changed( any( ProgressEvent.class ) );
-    verify( listener ).completed( any( ProgressEvent.class ) );
-  }
-
-  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( browser );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( browser );
     assertEquals( "rwt.widgets.Browser", operation.getType() );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( browser );
+    lca.renderInitialization( browser );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof BrowserOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    BrowserOperationHandler handler = spy( new BrowserOperationHandler( browser ) );
+    getRemoteObject( getId( browser ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( browser ), "Help", new JsonObject() );
+    lca.readData( browser );
+
+    verify( handler ).handleNotifyHelp( browser, new JsonObject() );
   }
 
   @Test
@@ -300,12 +244,7 @@ public class BrowserLCA_Test {
     Fixture.markInitialized( browser );
     Fixture.preserveWidgets();
 
-    browser.addProgressListener( new ProgressListener(){
-      public void changed( ProgressEvent event ) {
-      }
-      public void completed( ProgressEvent event ) {
-      }
-    } );
+    browser.addProgressListener( mock( ProgressListener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( browser );
 
@@ -365,23 +304,6 @@ public class BrowserLCA_Test {
   }
 
   @Test
-  public void testEvaluateResponse() {
-    BrowserCallback browserCallback = mock( BrowserCallback.class );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( browser );
-
-    BrowserUtil.evaluate( browser, "alert('33');", browserCallback );
-    Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( browser ), "executeResult", true );
-    JsonArray result = new JsonArray().add( 27 );
-    Fixture.fakeSetProperty( getId( browser ), "evaluateResult", result );
-    Fixture.executeLifeCycleFromServerThread();
-
-    verify( browserCallback, times( 1 ) ).evaluationSucceeded( Integer.valueOf( 27 ) );
-  }
-
-  @Test
   public void testCallCreateFunctions() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
@@ -415,6 +337,7 @@ public class BrowserLCA_Test {
   public void testRenderFunctionResult() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
+    getRemoteObject( browser ).setHandler( new BrowserOperationHandler( browser ) );
     new BrowserFunction( browser, "func" ) {
       @Override
       public Object function( Object[] arguments ) {
@@ -429,10 +352,10 @@ public class BrowserLCA_Test {
         };
       }
     };
-    fakeNewRequest();
-    fakeSetProperty( getId( browser ), BrowserLCA.PARAM_EXECUTE_FUNCTION, "func" );
-    JsonArray args = new JsonArray().add( "eclipse" ).add( 3.6 );
-    fakeSetProperty( getId( browser ), BrowserLCA.PARAM_EXECUTE_ARGUMENTS, args );
+    JsonObject parameters = new JsonObject()
+      .add( "name", "func" )
+      .add( "arguments", new JsonArray().add( "eclipse" ).add( 3.6 ) );
+    Fixture.fakeCallOperation( getId( browser ), "executeFunction", parameters );
 
     Fixture.executeLifeCycleFromServerThread();
 
