@@ -94,8 +94,7 @@ public class ShellOperationHandler extends ControlOperationHandler<Shell> {
                                         arrayValue.get( 1 ).asInt(),
                                         arrayValue.get( 2 ).asInt(),
                                         arrayValue.get( 3 ).asInt() );
-      IShellAdapter shellAdapter = shell.getAdapter( IShellAdapter.class );
-      shellAdapter.setBounds( bounds );
+      getAdapter( shell ).setBounds( bounds );
     }
   }
 
@@ -148,8 +147,12 @@ public class ShellOperationHandler extends ControlOperationHandler<Shell> {
 
   private static void setActiveControl( Shell shell, Widget widget ) {
     if( EventUtil.isAccessible( widget ) ) {
-      shell.getAdapter( IShellAdapter.class ).setActiveControl( ( Control )widget );
+      getAdapter( shell ).setActiveControl( ( Control )widget );
     }
+  }
+
+  private static IShellAdapter getAdapter( Shell shell ) {
+    return shell.getAdapter( IShellAdapter.class );
   }
 
 }
