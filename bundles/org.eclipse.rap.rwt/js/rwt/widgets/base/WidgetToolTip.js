@@ -235,21 +235,77 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     _renderPointer : function( target, self ) {
       var pointers = this.getPointers();
+      var enabled = this._config.position && this._config.position !== "mouse" && pointers;
+      this._getPointerElement().style.display = "none";
+      if( enabled ) {
+        var direction = this._getDirection( target, self );
+        if( direction === "up" && pointers[ 0 ] ) {
+          this._renderPointerUp( target, self );
+        } else if( direction === "down" && pointers[ 2 ] ) {
+          this._renderPointerDown( target, self );
+        } else if( direction === "left" && pointers[ 3 ] ) {
+          this._renderPointerLeft( target, self );
+        } else if( direction === "right" && pointers[ 1 ] ) {
+          this._renderPointerRight( target, self );
+        }
+      }
+    },
+
+    _renderPointerUp : function( target, self ) {
+      var pointer = this.getPointers()[ 0 ];
       var element = this._getPointerElement();
-      if( this._config.position === "horizontal-center" && pointers && pointers[ 0 ] ) {
-        var targetCenter = this._getBoundsCenter( target );
-        var pointerUrl = pointers[ 0 ][ 0 ];
-        var pointerWidth = pointers[ 0 ][ 1 ];
-        var pointerHeight = pointers[ 0 ][ 2 ];
-        rwt.html.Style.setBackgroundImage( element, pointerUrl );
-        element.style.width = pointerWidth + "px";
-        element.style.height = pointerHeight + "px";
-        element.style.top = ( -1 * pointerHeight ) + "px";
-        console.log( target,  self );
-        element.style.left = Math.round( targetCenter.left - self.left - pointerWidth / 2 ) + "px";
-        element.style.display = "";
+      var targetCenter = this._getBoundsCenter( target );
+      rwt.html.Style.setBackgroundImage( element, pointer[ 0 ] );
+      element.style.width = pointer[ 1 ] + "px";
+      element.style.height = pointer[ 2 ] + "px";
+      element.style.top = ( -1 * pointer[ 2 ] ) + "px";
+      element.style.left = Math.round( targetCenter.left - self.left - pointer[ 1 ] / 2 ) + "px";
+      element.style.display = "";
+    },
+
+    _renderPointerDown : function( target, self ) {
+      var pointer = this.getPointers()[ 2 ];
+      var element = this._getPointerElement();
+      var targetCenter = this._getBoundsCenter( target );
+      rwt.html.Style.setBackgroundImage( element, pointer[ 0 ] );
+      element.style.width = pointer[ 1 ] + "px";
+      element.style.height = pointer[ 2 ] + "px";
+      element.style.top = self.height + "px";
+      element.style.left = Math.round( targetCenter.left - self.left - pointer[ 1 ] / 2 ) + "px";
+      element.style.display = "";
+    },
+
+    _renderPointerLeft : function( target, self ) {
+      var pointer = this.getPointers()[ 3 ];
+      var element = this._getPointerElement();
+      var targetCenter = this._getBoundsCenter( target );
+      rwt.html.Style.setBackgroundImage( element, pointer[ 0 ] );
+      element.style.width = pointer[ 1 ] + "px";
+      element.style.height = pointer[ 2 ] + "px";
+      element.style.left = ( -1 * pointer[ 1 ] ) + "px";
+      element.style.top = Math.round( targetCenter.top - self.top - pointer[ 2 ] / 2 ) + "px";
+      element.style.display = "";
+    },
+
+    _renderPointerRight : function( target, self ) {
+      var pointer = this.getPointers()[ 1 ];
+      var element = this._getPointerElement();
+      var targetCenter = this._getBoundsCenter( target );
+      rwt.html.Style.setBackgroundImage( element, pointer[ 0 ] );
+      element.style.width = pointer[ 1 ] + "px";
+      element.style.height = pointer[ 2 ] + "px";
+      element.style.left = self.width + "px";
+      element.style.top = Math.round( targetCenter.top - self.top - pointer[ 2 ] / 2 ) + "px";
+      element.style.display = "";
+    },
+
+    _getDirection : function( target, self ) {
+      var targetBetweenSelfX = target.left >= self.left && target.left <= ( self.left + self.width );
+      var selfBetweenTargetX = self.left >= target.left && self.left <= ( target.left + target.width );
+      if( targetBetweenSelfX || selfBetweenTargetX ) {
+        return self.top > target.top ? "up" : "down";
       } else {
-        element.style.display = "none";
+        return self.left > target.left ? "left" : "right";
       }
     },
 

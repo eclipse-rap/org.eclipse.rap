@@ -176,9 +176,9 @@ var appearances = {
       result.shadow = tv.getCssShadow( "Widget-ToolTip", "box-shadow" );
       result.pointers = [
         [ rwt.remote.Connection.RESOURCE_PATH + "widget/rap/arrows/tooltip-up.png", 15, 8 ],
-        null,
-        null,
-        null
+        [ rwt.remote.Connection.RESOURCE_PATH + "widget/rap/arrows/tooltip-right.png", 8, 15 ],
+        [ rwt.remote.Connection.RESOURCE_PATH + "widget/rap/arrows/tooltip-down.png", 15, 8 ],
+        [ rwt.remote.Connection.RESOURCE_PATH + "widget/rap/arrows/tooltip-left.png", 8, 15 ]
       ];
       return result;
     }

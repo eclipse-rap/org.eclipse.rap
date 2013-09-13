@@ -605,6 +605,65 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       var expectedLeft = 10 + 50 - 1 - 5; // shell-left + half widget - border- half tooltip
       assertEquals( 0, toolTip.getLeft() );
       assertEquals( expectedLeft + "px", pointer.style.left );
+    },
+
+    testPointer_CenterDownPosition : function() {
+      config = { "position" : "horizontal-center" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      var totalHeight =  rwt.widgets.base.ClientDocument.getInstance().getClientHeight();
+
+      widget.setTop( Math.round( totalHeight / 3 ) + 50 );
+      toolTip.setPointers( [ null, null, [ "foo.gif", 10, 20 ], null ] );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      var pointer = toolTip._getPointerElement();
+      assertTrue( TestUtil.getCssBackgroundImage( pointer ).indexOf( "foo.gif" ) !== -1 );
+      var expectedLeft = Math.floor( ( toolTip.getBoxWidth() - 2 ) / 2 - 5 );
+      var actualLeft = parseInt( pointer.style.left, 10 );
+      assertTrue( Math.abs( expectedLeft - actualLeft ) <= 1 ); // exact center may not be possible
+      assertEquals( ( toolTip.getBoxHeight() - 2 ) + "px", pointer.style.top );
+      assertEquals( "10px", pointer.style.width );
+      assertEquals( "20px", pointer.style.height );
+    },
+
+    testPointer_CenterLeftPosition : function() {
+      config = { "position" : "vertical-center" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+
+      toolTip.setPointers( [ null, null, null, [ "foo.gif", 20, 10 ] ] );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      var pointer = toolTip._getPointerElement();
+      assertTrue( TestUtil.getCssBackgroundImage( pointer ).indexOf( "foo.gif" ) !== -1 );
+      var expectedTop = Math.floor( ( toolTip.getBoxHeight() - 2 ) / 2 - 5 );
+      var actualTop = parseInt( pointer.style.top, 10 );
+      assertTrue( Math.abs( expectedTop - actualTop ) <= 1 ); // exact center may not be possible
+      assertEquals( "-20px", pointer.style.left );
+      assertEquals( "20px", pointer.style.width );
+      assertEquals( "10px", pointer.style.height );
+    },
+
+    testPointer_CenterRightPosition : function() {
+      config = { "position" : "vertical-center" };
+      var totalWidth =  rwt.widgets.base.ClientDocument.getInstance().getClientWidth();
+      var left = Math.round( totalWidth / 2 );
+      widget.setLeft( left );
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+
+      toolTip.setPointers( [ null, [ "foo.gif", 20, 10 ], null, null ] );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      var pointer = toolTip._getPointerElement();
+      assertTrue( TestUtil.getCssBackgroundImage( pointer ).indexOf( "foo.gif" ) !== -1 );
+      var expectedTop = Math.floor( ( toolTip.getBoxHeight() - 2 ) / 2 - 5 );
+      var actualTop = parseInt( pointer.style.top, 10 );
+      assertTrue( Math.abs( expectedTop - actualTop ) <= 1 ); // exact center may not be possible
+      assertEquals( ( toolTip.getBoxWidth() - 2 ) + "px", pointer.style.left );
+      assertEquals( "20px", pointer.style.width );
+      assertEquals( "10px", pointer.style.height );
     }
 
   }
