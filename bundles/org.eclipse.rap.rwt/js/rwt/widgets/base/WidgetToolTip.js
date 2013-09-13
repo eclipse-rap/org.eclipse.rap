@@ -18,6 +18,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     this.base( arguments );
     this._label = new rwt.widgets.base.MultiCellWidget( [ "label" ] );
     this._label.setParent( this );
+    this._pointer = null;
     this._showTimer = new rwt.client.Timer();
     this._showTimer.addEventListener( "interval", this._onshowtimer, this );
     this._hideTimer = new rwt.client.Timer();
@@ -69,6 +70,12 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       apply : "_applyBoundToWidget",
       nullable : true,
       init : null
+    },
+
+    pointers : {
+      nullable : true,
+      init : null,
+      themeable : true
     }
 
   },
@@ -76,6 +83,26 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
   members : {
     _minZIndex : 1e7,
     _isFocusRoot : false,
+
+    updateText : function() {
+      this._updateTextInternal();
+      if( this.getText() && !this._showTimer.isEnabled() ) {
+        this._onshowtimer();
+      }
+    },
+
+    _applyElement : function( value, old ) {
+      this.base( arguments, value, old );
+    },
+
+    _getPointerElement : function() {
+      if( this._pointer == null ) {
+        this._pointer = document.createElement( "div" );
+        this._pointer.style.position = "absolute";
+        this.getElement().appendChild( this._pointer );
+      }
+      return this._pointer;
+    },
 
     _applyBoundToWidget : function( value, old ) {
       var manager = rwt.widgets.util.ToolTipManager.getInstance();
@@ -194,12 +221,24 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       }
       this.setLeft( newPosition[ 0 ] );
       this.setTop( newPosition[ 1 ] );
+      this._renderPointer();
     },
 
-    updateText : function() {
-      this._updateTextInternal();
-      if( this.getText() && !this._showTimer.isEnabled() ) {
-        this._onshowtimer();
+    _renderPointer : function() {
+      var pointers = this.getPointers();
+      var element = this._getPointerElement();
+      if( this._config.position === "horizontal-center" && pointers && pointers[ 0 ] ) {
+        var pointerUrl = pointers[ 0 ][ 0 ];
+        var pointerWidth = pointers[ 0 ][ 1 ];
+        var pointerHeight = pointers[ 0 ][ 2 ];
+        rwt.html.Style.setBackgroundImage( element, pointerUrl );
+        element.style.width = pointerWidth + "px";
+        element.style.height = pointerHeight + "px";
+        element.style.top = ( -1 * pointerHeight ) + "px";
+        element.style.left = Math.round( this.getBoxWidth() / 2 - pointerWidth / 2 ) + "px";
+        element.style.display = "";
+      } else {
+        element.style.display = "none";
       }
     },
 

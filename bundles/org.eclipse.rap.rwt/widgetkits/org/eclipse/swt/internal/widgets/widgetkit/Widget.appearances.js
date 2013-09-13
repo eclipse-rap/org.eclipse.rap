@@ -174,6 +174,12 @@ var appearances = {
       result.backgroundGradient = tv.getCssGradient( "Widget-ToolTip", "background-image" );
       result.opacity = tv.getCssFloat( "Widget-ToolTip", "opacity" );
       result.shadow = tv.getCssShadow( "Widget-ToolTip", "box-shadow" );
+      result.pointers = [
+        [ rwt.remote.Connection.RESOURCE_PATH + "widget/rap/arrows/tooltip-up.png", 15, 8 ],
+        null,
+        null,
+        null
+      ];
       return result;
     }
   }

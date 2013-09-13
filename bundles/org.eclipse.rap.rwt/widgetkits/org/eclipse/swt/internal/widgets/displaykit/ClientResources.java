@@ -302,6 +302,7 @@ public final class ClientResources {
     "resource/widget/rap/arrows/chevron-right.png",
     "resource/widget/rap/arrows/chevron-left-hover.png",
     "resource/widget/rap/arrows/chevron-right-hover.png",
+    "resource/widget/rap/arrows/tooltip-up.png",
     "resource/widget/rap/tree/loading.gif",
     "resource/widget/rap/ctabfolder/maximize.gif",
     "resource/widget/rap/ctabfolder/minimize.gif",

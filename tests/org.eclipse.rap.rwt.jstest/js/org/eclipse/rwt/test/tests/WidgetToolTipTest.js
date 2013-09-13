@@ -523,6 +523,71 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       TestUtil.hoverFromTo( document.body, widget2.getElement() );
 
       assertTrue( toolTip._showTimer.isEnabled() );
+    },
+
+    testPointer_AddedToDom : function() {
+      config = { "position" : "horizontal-center" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      toolTip.setPointers( [ [ "foo.gif", 10, 20 ], null, null, null ] );
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      var pointer = toolTip._getPointerElement();
+      assertIdentical( toolTip.getElement(), pointer.parentNode );
+      assertEquals( "absolute", pointer.style.position );
+    },
+
+    testPointer_setDisplayNone : function() {
+      config = { "position" : "horizontal-center" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      toolTip.setPointers( [ [ "foo.gif", 10, 20 ], null, null, null ] );
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+      toolTip.setPointers( [ null, null, null, null ] );
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      var pointer = toolTip._getPointerElement();
+      assertEquals( "none", pointer.style.display );
+    },
+
+    testPointer_setDisplayDefault : function() {
+      config = { "position" : "horizontal-center" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      toolTip.setPointers( [ null, null, null, null ] );
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+      toolTip.setPointers( [ [ "foo.gif", 10, 20 ], null, null, null ] );
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      var pointer = toolTip._getPointerElement();
+      assertEquals( "", pointer.style.display );
+    },
+
+    testPointer_CenterUpPosition : function() {
+      config = { "position" : "horizontal-center" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      toolTip.setPointers( [ [ "foo.gif", 10, 20 ], null, null, null ] );
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      var pointer = toolTip._getPointerElement();
+      var expectedLeft = Math.round( toolTip.getBoxWidth() / 2 - 5 );
+      assertTrue( TestUtil.getCssBackgroundImage( pointer ).indexOf( "foo.gif" ) !== -1 );
+      assertEquals( toolTip.getElement(), pointer.parentNode );
+      assertEquals( expectedLeft + "px", pointer.style.left );
+      assertEquals( "-20px", pointer.style.top );
+      assertEquals( "10px", pointer.style.width );
+      assertEquals( "20px", pointer.style.height );
     }
 
   }
