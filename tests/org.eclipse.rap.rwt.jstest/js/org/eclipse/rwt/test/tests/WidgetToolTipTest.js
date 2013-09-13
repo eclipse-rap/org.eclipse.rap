@@ -32,6 +32,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       shell = TestUtil.createShellByProtocol( "w2" );
       shell.setLeft( 10 );
       shell.setTop( 20 );
+      shell.setBorder( null );
       shell.show();
       widget = new rwt.widgets.base.Label( "Hello World 1" );
       widget.setLeft( 100 );
@@ -581,13 +582,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       showToolTip();
 
       var pointer = toolTip._getPointerElement();
-      var expectedLeft = Math.round( toolTip.getBoxWidth() / 2 - 5 );
       assertTrue( TestUtil.getCssBackgroundImage( pointer ).indexOf( "foo.gif" ) !== -1 );
-      assertEquals( toolTip.getElement(), pointer.parentNode );
-      assertEquals( expectedLeft + "px", pointer.style.left );
+      var expectedLeft = Math.floor( ( toolTip.getBoxWidth() - 2 ) / 2 - 5 );
+      var actualLeft = parseInt( pointer.style.left, 10 );
+      assertTrue( Math.abs( expectedLeft - actualLeft ) <= 1 ); // exact center may not be possible
       assertEquals( "-20px", pointer.style.top );
       assertEquals( "10px", pointer.style.width );
       assertEquals( "20px", pointer.style.height );
+    },
+
+    testPointer_CenterUpPositionRestrictedToPage : function() {
+      config = { "position" : "horizontal-center" };
+      WidgetToolTip.setToolTipText( widget, "foobarfoobarfoobarfoobar" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      toolTip.setPointers( [ [ "foo.gif", 10, 20 ], null, null, null ] );
+
+      widget.setLeft( 0 );
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      var pointer = toolTip._getPointerElement();
+      var expectedLeft = 10 + 50 - 1 - 5; // shell-left + half widget - border- half tooltip
+      assertEquals( 0, toolTip.getLeft() );
+      assertEquals( expectedLeft + "px", pointer.style.left );
     }
 
   }

@@ -215,19 +215,29 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _afterAppearLayout : function() {
-      var newPosition = this._getPositionAfterAppear();
+      var targetBounds = this._getWidgetBounds();
+      var docDimension = this._getDocumentDimension();
+      var selfDimension = this._getOwnDimension();
+      var newPosition = this._getPositionAfterAppear( targetBounds, docDimension, selfDimension );
       if( this.getBoundToWidget().adjustToolTipPosition ) {
         newPosition = this.getBoundToWidget().adjustToolTipPosition( newPosition );
       }
       this.setLeft( newPosition[ 0 ] );
       this.setTop( newPosition[ 1 ] );
-      this._renderPointer();
+      var selfInnerBounds = {
+        left : newPosition[ 0 ] + this._cachedBorderLeft,
+        top : newPosition[ 1 ] + this._cachedBorderTop,
+        width : selfDimension.width - this._cachedBorderLeft - this._cachedBorderRight,
+        height : selfDimension.height - this._cachedBorderTop - this._cachedBorderBottom
+      };
+      this._renderPointer( targetBounds, selfInnerBounds );
     },
 
-    _renderPointer : function() {
+    _renderPointer : function( target, self ) {
       var pointers = this.getPointers();
       var element = this._getPointerElement();
       if( this._config.position === "horizontal-center" && pointers && pointers[ 0 ] ) {
+        var targetCenter = this._getBoundsCenter( target );
         var pointerUrl = pointers[ 0 ][ 0 ];
         var pointerWidth = pointers[ 0 ][ 1 ];
         var pointerHeight = pointers[ 0 ][ 2 ];
@@ -235,11 +245,19 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
         element.style.width = pointerWidth + "px";
         element.style.height = pointerHeight + "px";
         element.style.top = ( -1 * pointerHeight ) + "px";
-        element.style.left = Math.round( this.getBoxWidth() / 2 - pointerWidth / 2 ) + "px";
+        console.log( target,  self );
+        element.style.left = Math.round( targetCenter.left - self.left - pointerWidth / 2 ) + "px";
         element.style.display = "";
       } else {
         element.style.display = "none";
       }
+    },
+
+    _getBoundsCenter : function( bounds ) {  // may return float!
+      return {
+        left : bounds.left + bounds.width / 2,
+        top : bounds.top + bounds.height / 2
+      };
     },
 
     _updateTextInternal : function() {
@@ -250,10 +268,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       return this._label.getCellContent( 0 );
     },
 
-    _getPositionAfterAppear : function() {
-      var target = this._getWidgetBounds();
-      var doc = this._getDocumentDimension();
-      var self = this._getOwnDimension();
+    _getPositionAfterAppear : function( target, doc, self ) {
       var result;
       switch( this._config.position ) {
         case "horizontal-center":
