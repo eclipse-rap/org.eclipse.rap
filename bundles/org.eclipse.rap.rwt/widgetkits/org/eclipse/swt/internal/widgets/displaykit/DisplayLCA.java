@@ -44,7 +44,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -83,13 +82,6 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     for( int i = 0; i < shells.length; i++ ) {
       Composite shell = shells[ i ];
       WidgetTreeVisitor.accept( shell, visitor );
-    }
-    for( int i = 0; i < shells.length; i++ ) {
-      if( shells[ i ].getMaximized() || shells[ i ].getFullScreen() ) {
-        Object adapter = shells[ i ].getAdapter( IShellAdapter.class );
-        IShellAdapter shellAdapter = ( IShellAdapter )adapter;
-        shellAdapter.setBounds( display.getBounds() );
-      }
     }
     DNDSupport.processEvents();
     RemoteObjectLifeCycleAdapter.readData();
@@ -333,19 +325,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   }
 
   private static boolean hasResizeListener( Display display ) {
-    IDisplayAdapter displayAdapter = getDisplayAdapter( display );
-    return hasMaximizedShell( display ) ? true : displayAdapter.isListening( SWT.Resize );
-  }
-
-  private static boolean hasMaximizedShell( Display display ) {
-    boolean result = false;
-    Shell[] shells = getShells( display );
-    for( Shell shell : shells ) {
-      if( shell.getFullScreen() || shell.getMaximized() ) {
-        result = true;
-      }
-    }
-    return result;
+    return getDisplayAdapter( display ).isListening( SWT.Resize );
   }
 
   private static IDisplayAdapter getDisplayAdapter( Display display ) {

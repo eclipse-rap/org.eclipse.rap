@@ -268,6 +268,27 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.destroy();
     },
 
+    testSendResize_onMaximizedShell : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      MessageProcessor.processOperation( {
+        "target" : "w2",
+        "action" : "listen",
+        "properties" : { "Resize" : true }
+      } );
+      shell.setMode( "maximized" );
+      TestUtil.clearRequestLog();
+
+      rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
+
+      var message = TestUtil.getMessageObject();
+      var width = rwt.html.Window.getInnerWidth( window );
+      var height = rwt.html.Window.getInnerHeight( window );
+      assertEquals( [ 0, 0, width, height ], message.findSetProperty( "w2", "bounds" ) );
+      assertNotNull( message.findNotifyOperation( "w2", "Resize" ) );
+      shell.destroy();
+    },
+
     testSendMove : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       MessageProcessor.processOperation( {

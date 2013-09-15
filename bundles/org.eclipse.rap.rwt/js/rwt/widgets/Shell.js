@@ -44,6 +44,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     this._hasMoveListener = false;
     this._sendMoveFlag  = false;
     this._sendResizeFlag = false;
+    this._sendResizeDelayed = false;
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
     this.addEventListener( "changeFocusedChild", this._onChangeFocusedChild );
     this.addEventListener( "changeActive", this._onChangeActive );
@@ -161,12 +162,14 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
 
   destruct : function() {
     this.setParentShell( null );
-    var req = rwt.remote.Connection.getInstance();
-    req.removeEventListener( "send", this._onSend, this );
+    var connection = rwt.remote.Connection.getInstance();
+    connection.removeEventListener( "send", this._onSend, this );
+    var document = rwt.widgets.base.ClientDocument.getInstance();
+    document.removeEventListener( "windowresize", this._onWindowResize, this );
     if( this.isCreated() ) {
       rwt.html.EventRegistration.removeEventListener( this.getElement(),
-                                                     "mousedown",
-                                                     this.__onwindowmousedown );
+                                                      "mousedown",
+                                                      this.__onwindowmousedown );
     }
   },
 
@@ -429,7 +432,19 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     _applyMode : function( value, oldValue ) {
       var mode = value == null ? "normal" : value;
       rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "mode", mode );
+      var document = rwt.widgets.base.ClientDocument.getInstance();
+      if( value == "maximized" ) {
+        document.addEventListener( "windowresize", this._onWindowResize, this );
+      } else {
+        document.removeEventListener( "windowresize", this._onWindowResize, this );
+      }
       this.base( arguments, value, oldValue );
+    },
+
+    _onWindowResize : function( evt ) {
+      this._sendResizeDelayed = true;
+      this._sendResizeFlag = true;
+      this._sendBounds();
     },
 
     _onChangeSize : function( evt ) {
@@ -458,10 +473,11 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
         remoteObject.notify( "Move", {} );
       }
       if( this._hasResizeListener && this._sendResizeFlag ) {
-        remoteObject.notify( "Resize", {} );
+        remoteObject.notify( "Resize", {}, this._sendResizeDelayed ? 500 : undefined );
       }
       this._sendMoveFlag  = false;
       this._sendResizeFlag = false;
+      this._sendResizeDelayed = false;
     },
 
     _parseNumber : function( value ) {
