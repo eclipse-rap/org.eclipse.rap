@@ -16,12 +16,31 @@ namespace( "rwt.client" );
   rwt.widgets.util.ToolTipConfig = {
 
     getConfig : function( widget ) {
+      if( widget.getParent() instanceof rwt.widgets.CoolBar ) {
+        if( widget.getParent().hasState( "rwt_VERTICAL" ) ) {
+          return this._verticalConfig;
+        } else {
+          return this._horizontalConfig;
+        }
+      }
+      if( widget instanceof rwt.widgets.Label && !widget._rawText ) {
+        return this._horizontalConfig;
+      }
       switch( widget.classname ) {
         case "rwt.widgets.Text":
         case "rwt.widgets.Spinner":
+        case "rwt.widgets.Button":
         case "rwt.widgets.Label":
-          return this._textLikeConfig;
+        case "rwt.widgets.Combo":
+        case "rwt.widgets.DateTimeDate":
+        case "rwt.widgets.DateTimeTime":
+        case "rwt.widgets.DateTimeCalendar":
+          return this._formConfig;
         case "rwt.widgets.ToolItem":
+        case "rwt.widgets.ProgressBar":
+        case "rwt.widgets.ControlDecorator":
+        case "rwt.widgets.Scale":
+        case "rwt.widgets.Slider":
           if( widget.hasState( "rwt_VERTICAL" ) ) {
             return this._verticalConfig;
           } else {
@@ -30,7 +49,6 @@ namespace( "rwt.client" );
         break;
         case "rwt.widgets.base.GridRow":
           return this._rowConfig;
-        break;
         default:
           return this._defaultConfig;
       }
@@ -41,7 +59,7 @@ namespace( "rwt.client" );
       "position" : "mouse",
       "appearOn" : "rest",
       "disappearOn" : "move",
-      "appearDelay" : 800,
+      "appearDelay" : 1100,
       "disappearDelay" : 200
     },
 
@@ -61,11 +79,11 @@ namespace( "rwt.client" );
       "disappearDelay" : 100
     },
 
-    _textLikeConfig : {
+    _formConfig : {
       "position" : "align-left",
-      "appearOn" : "enter",
+      "appearOn" : "rest",
       "disappearOn" : "exit",
-      "appearDelay" : 800,
+      "appearDelay" : 700,
       "disappearDelay" : 200
     },
 
@@ -73,7 +91,7 @@ namespace( "rwt.client" );
       "position" : "align-left",
       "appearOn" : "rest",
       "disappearOn" : "move",
-      "appearDelay" : 800,
+      "appearDelay" : 500,
       "disappearDelay" : 200
     }
 

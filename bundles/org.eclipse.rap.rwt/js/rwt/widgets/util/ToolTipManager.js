@@ -58,6 +58,7 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager", {
       }
     },
 
+    // TODO : handleKeyEvent
     handleMouseEvent : function( event ) {
       var type = event.getType();
       if( type === "mouseover" ) {

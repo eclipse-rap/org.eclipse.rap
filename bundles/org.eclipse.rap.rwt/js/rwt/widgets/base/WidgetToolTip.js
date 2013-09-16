@@ -27,7 +27,6 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     this.addEventListener( "mouseout", this._onmouseover );
     this._currentConfig = {};
     this.setRestrictToPageOnOpen( false );
-    this._previousTargetBounds = null;
   },
 
   statics : {
@@ -83,7 +82,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
   members : {
     _minZIndex : 1e7,
-    _targetDistance : 3,
+    _targetDistance : 4,
     _isFocusRoot : false,
 
     updateText : function() {
@@ -193,11 +192,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       this._stopHideTimer();
       this._updateTextInternal();
       if( this.getText() ) {
-        var quick = this._allowQuickAppear();
-        if( !quick ) {
-          this._previousTargetBounds = null;
-        }
-        if(    quick
+        if(    this._allowQuickAppear()
             && this._appearAnimation
             && this._appearAnimation.getDefaultRenderer().isActive()
             && !this.isSeeable() )
@@ -237,7 +232,6 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
         height : selfDimension.height - this._cachedBorderTop - this._cachedBorderBottom
       };
       this._renderPointer( targetBounds, selfInnerBounds );
-      this._previousTargetBounds = targetBounds;
     },
 
     _renderPointer : function( target, self ) {
@@ -342,9 +336,6 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     _getPositionAfterAppear : function( target, doc, self ) {
       var result;
       switch( this._config.position ) {
-        case "auto":
-          result = this._positionAuto( target, doc, self );
-        break;
         case "horizontal-center":
           result = this._positionHorizontalCenter( target, doc, self );
         break;
@@ -370,12 +361,6 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       ];
     },
 
-    _positionAuto : function( target, doc, self ) {
-      var left = this._getHorizontalOffsetCentered( target, self, doc );
-      var top = this._getVerticalOffsetAuto( target, self, doc );
-      return [ left, top ];
-    },
-
     _positionHorizontalCenter : function( target, doc, self ) {
       var left = this._getHorizontalOffsetCentered( target, self, doc );
       var top = this._getVerticalOffsetAutoByAbsolutePosition( target, self, doc );
@@ -394,24 +379,12 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       return [ left, top ];
     },
 
-    _getVerticalOffsetAuto : function( target, self, doc ) {
-      var prev = this._previousTargetBounds;
-      if( prev && target.top > ( prev.top + prev.height ) ) {
-        return this._getVerticalOffsetTop( target, self );
-      } else if( prev && prev.top > ( target.top + target.height ) ) {
-        return this._getVerticalOffsetBottom( target, self );
-      } else {
-        return this._getVerticalOffsetAutoByAbsolutePosition( target, self, doc );
-      }
-    },
-
     _getVerticalOffsetAutoByAbsolutePosition : function( target, self, doc ) {
-      var bottomSpace = doc.height - target.top - target.height;
-      if( target.top > bottomSpace / 4 ) {
-        return this._getVerticalOffsetTop( target, self );
-      } else {
-        return this._getVerticalOffsetBottom( target, self );
+      var top = this._getVerticalOffsetTop( target, self );
+      if( top < 30 ) {
+        top = this._getVerticalOffsetBottom( target, self );
       }
+      return top;
     },
 
     _getVerticalOffsetTop : function( target, self ) {
@@ -434,9 +407,9 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       var leftSpace = target.left;
       var rightSpace = doc.width - leftSpace - target.width;
       if( leftSpace > rightSpace ) {
-        return target.left - self.width - 3; // to the left
+        return target.left - self.width - this._targetDistance; // to the left
       } else {
-        return target.left + target.width + 3; // to the right
+        return target.left + target.width + this._targetDistance; // to the right
       }
     },
 
