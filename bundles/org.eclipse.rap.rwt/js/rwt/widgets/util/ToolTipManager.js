@@ -71,6 +71,9 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager", {
 
     _handleMouseOver : function( e ) {
       var vTarget = e.getTarget();
+      if( vTarget === getToolTip() ) {
+        return;
+      }
       // Allows us to use DOM Nodes as tooltip target :)
       if (!(vTarget instanceof rwt.widgets.base.Widget) && vTarget.nodeType == 1) {
         vTarget = rwt.event.EventHandlerUtil.getTargetObject(vTarget);
@@ -85,23 +88,16 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager", {
     _handleMouseOut : function( e ) {
       var vTarget = e.getTarget();
       var vRelatedTarget = e.getRelatedTarget();
-
+      if( vTarget === getToolTip() ) {
+        return;
+      }
       var tTarget = this.getCurrentToolTipTarget();
-
-      // If there was a tooltip and
-      // - the destination target is the current tooltip
-      //   or
-      // - the current tooltip contains the destination target
       if (tTarget && (vRelatedTarget == getToolTip() || getToolTip().contains(vRelatedTarget))) {
         return;
       }
-
-      // If the destination target exists and the target contains it
       if (vRelatedTarget && vTarget && vTarget.contains(vRelatedTarget)) {
         return;
       }
-
-      // If there was a tooltip and there is no new one
       if (tTarget && !vRelatedTarget) {
         this.setCurrentToolTipTarget( null );
       }

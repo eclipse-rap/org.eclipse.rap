@@ -161,7 +161,10 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       }
     },
 
-    _onmouseover : function( e ) {
+    _onmouseover : function( event ) {
+      if( this._pointer && this._pointer === event.getDomTarget() ) {
+        return;
+      }
       if( this._disappearAnimation && this._disappearAnimation.getDefaultRenderer().isActive() ) {
         this._disappearAnimation.getDefaultRenderer().setActive( false );
         this.hide();
@@ -179,7 +182,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
           }
         } else {
           if( this._config.appearOn === "rest" ) {
-            this._showTimer.restart();
+            this._showTimer.restart(); // TODO: ignore small movements for start?
           }
         }
       }

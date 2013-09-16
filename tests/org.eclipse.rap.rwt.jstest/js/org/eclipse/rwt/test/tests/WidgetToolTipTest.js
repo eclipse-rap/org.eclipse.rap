@@ -643,23 +643,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
       assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
     },
-//
-//    testPosition_HorizontalCenterTop : function() {
-//      config = { "position" : "horizontal-center" };
-//      WidgetToolTip.setToolTipText( widget, "foobar" );
-//      var totalHeight =  rwt.widgets.base.ClientDocument.getInstance().getClientHeight();
-//      var top = Math.round( totalHeight / 3 ) + 50;
-//
-//      widget.setTop( top );
-//      TestUtil.hoverFromTo( document.body, widget.getElement() );
-//      showToolTip();
-//
-//      var tooltipHeight = toolTip.getHeightValue();
-//      var expectedLeft = Math.round( 10 + 1 + 100 + ( 100 / 2 ) - toolTip.getWidthValue() / 2 );
-//      var expectedTop = 20 + 1 + top - tooltipHeight - 3; // shell + border + top - tooltipHeight - offset
-//      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
-//      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
-//    },
 
     testPointer_AddedToDom : function() {
       config = { "position" : "horizontal-center" };
@@ -673,6 +656,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       var pointer = toolTip._getPointerElement();
       assertIdentical( toolTip.getElement(), pointer.parentNode );
       assertEquals( "absolute", pointer.style.position );
+    },
+
+    testDoNotHideOnMouseOverPointer : function() {
+      config = { "position" : "horizontal-center", "disappearOn" : "exit" };
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      toolTip.setPointers( [ [ "foo.gif", 10, 20 ], null, null, null ] );
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      TestUtil.hoverFromTo( widget.getElement(), toolTip._getPointerElement() );
+
+      assertTrue( toolTip.isSeeable() );
+    },
+
+    testDoNotSetTargetOnMouseOverPointer : function() {
+      config = { "position" : "horizontal-center", "disappearOn" : "exit" };
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      toolTip.setPointers( [ [ "foo.gif", 10, 20 ], null, null, null ] );
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      TestUtil.hoverFromTo( widget.getElement(), toolTip._getPointerElement() );
+
+      assertIdentical( widget, toolTip.getBoundToWidget() );
     },
 
     testPointer_setDisplayNone : function() {
