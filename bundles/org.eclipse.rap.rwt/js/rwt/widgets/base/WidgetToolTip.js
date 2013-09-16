@@ -27,6 +27,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     this.addEventListener( "mouseout", this._onmouseover );
     this._currentConfig = {};
     this.setRestrictToPageOnOpen( false );
+    this._previousTargetBounds = null;
   },
 
   statics : {
@@ -189,10 +190,14 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       this._stopHideTimer();
       this._updateTextInternal();
       if( this.getText() ) {
-        if(    this._appearAnimation
+        var quick = this._allowQuickAppear();
+        if( !quick ) {
+          this._previousTargetBounds = null;
+        }
+        if(    quick
+            && this._appearAnimation
             && this._appearAnimation.getDefaultRenderer().isActive()
-            && !this.isSeeable()
-            && this._allowQuickAppear() )
+            && !this.isSeeable() )
         {
           this._appearAnimation.getDefaultRenderer().setActive( false );
           this.show();
@@ -229,6 +234,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
         height : selfDimension.height - this._cachedBorderTop - this._cachedBorderBottom
       };
       this._renderPointer( targetBounds, selfInnerBounds );
+      this._previousTargetBounds = targetBounds;
     },
 
     _renderPointer : function( target, self ) {
@@ -333,6 +339,9 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     _getPositionAfterAppear : function( target, doc, self ) {
       var result;
       switch( this._config.position ) {
+        case "auto":
+          result = this._positionAuto( target, doc, self );
+        break;
         case "horizontal-center":
           result = this._positionHorizontalCenter( target, doc, self );
         break;
@@ -358,15 +367,21 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       ];
     },
 
-    _positionHorizontalCenter : function( target, doc, self ) {
+    _positionAuto : function( target, doc, self ) {
       var left = this._getHorizontalOffsetCentered( target, self, doc );
       var top = this._getVerticalOffsetAuto( target, self, doc );
       return [ left, top ];
     },
 
+    _positionHorizontalCenter : function( target, doc, self ) {
+      var left = this._getHorizontalOffsetCentered( target, self, doc );
+      var top = this._getVerticalOffsetAutoByAbsolutePosition( target, self, doc );
+      return [ left, top ];
+    },
+
     _positionAlignLeft : function( target, doc, self ) {
       var left = this._getHorizontalOffsetAlignLeft( target, self, doc );
-      var top = this._getVerticalOffsetAuto( target, self, doc );
+      var top = this._getVerticalOffsetAutoByAbsolutePosition( target, self, doc );
       return [ left, top ];
     },
 
@@ -377,13 +392,31 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _getVerticalOffsetAuto : function( target, self, doc ) {
-      var topSpace = target.top;
-      var bottomSpace = doc.height - topSpace - target.height;
-      if( topSpace > bottomSpace / 4 ) {
-        return target.top - self.height - this._targetDistance; // at the top
+      var prev = this._previousTargetBounds;
+      if( prev && target.top > ( prev.top + prev.height ) ) {
+        return this._getVerticalOffsetTop( target, self );
+      } else if( prev && prev.top > ( target.top + target.height ) ) {
+        return this._getVerticalOffsetBottom( target, self );
       } else {
-        return target.top + target.height + this._targetDistance; // at the bottom
+        return this._getVerticalOffsetAutoByAbsolutePosition( target, self, doc );
       }
+    },
+
+    _getVerticalOffsetAutoByAbsolutePosition : function( target, self, doc ) {
+      var bottomSpace = doc.height - target.top - target.height;
+      if( target.top > bottomSpace / 4 ) {
+        return this._getVerticalOffsetTop( target, self );
+      } else {
+        return this._getVerticalOffsetBottom( target, self );
+      }
+    },
+
+    _getVerticalOffsetTop : function( target, self ) {
+      return target.top - self.height - this._targetDistance; // at the top
+    },
+
+    _getVerticalOffsetBottom : function( target, self ) {
+      return target.top + target.height + this._targetDistance; // at the bottom
     },
 
     _getHorizontalOffsetCentered : function( target, self, doc ) {

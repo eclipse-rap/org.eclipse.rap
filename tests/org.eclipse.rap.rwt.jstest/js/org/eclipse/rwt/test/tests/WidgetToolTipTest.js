@@ -33,14 +33,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       shell.setLeft( 10 );
       shell.setTop( 20 );
       shell.show();
-      widget = new rwt.widgets.base.Label( "Hello World 1" );
-      widget.setLeft( 100 );
-      widget.setTop( 10 );
-      widget.setWidth( 100 );
-      widget.setHeight( 20 );
-      widget.setParent( shell );
-      toolTip.setMarginLeft( 0 );
-      TestUtil.flush();
+      widget = this._createWidget( 100, 10, 100, 20, "Hello World 1" );
       orgGetConfig = rwt.widgets.util.ToolTipConfig.getConfig;
       rwt.widgets.util.ToolTipConfig.getConfig = function() {
         return config;
@@ -53,9 +46,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
     tearDown : function() {
       toolTip.hide();
       toolTip.setBoundToWidget( null );
+      toolTip._previousTargetBounds = null;
       rwt.widgets.util.ToolTipConfig.getConfig = orgGetConfig;
       shell.destroy();
     },
+
+    _createWidget : function( left, top, width, height, text ) {
+      var widget = new rwt.widgets.base.Label( text );
+      widget.setLeft( left );
+      widget.setTop( top );
+      widget.setWidth( width );
+      widget.setHeight( height );
+      widget.setParent( shell );
+      TestUtil.flush();
+      return widget;
+    },
+
+    /////////
+    // Tests:
 
     testUpdateWidgetToolTipText_HoverFromDocument : function() {
       WidgetToolTip.setToolTipText( widget, "test1" );
@@ -117,7 +125,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertEquals( 40, parseInt( toolTip._style.top, 10 ) );
     },
 
-    testPosition_HorizontalCenterBottom : function() {
+    testPosition_HorizontalCenter_Bottom : function() {
       config = { "position" : "horizontal-center" };
       WidgetToolTip.setToolTipText( widget, "foobar" );
 
@@ -131,7 +139,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
     },
 
-    testPosition_HorizontalCenterBottomWithCustomTargetBounds : function() {
+    testPosition_HorizontalCenter_BottomWithCustomTargetBounds : function() {
       config = { "position" : "horizontal-center" };
       WidgetToolTip.setToolTipText( widget, "foobar" );
       widget.getToolTipTargetBounds = function() {
@@ -191,7 +199,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
     },
 
-    testPosition_HorizontalCenterTop : function() {
+    testPosition_HorizontalCenter_TopByAbsoluteTargetPosition : function() {
       config = { "position" : "horizontal-center" };
       WidgetToolTip.setToolTipText( widget, "foobar" );
       var totalHeight =  rwt.widgets.base.ClientDocument.getInstance().getClientHeight();
@@ -208,8 +216,101 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
     },
 
+    testPosition_Auto_RelativeTargetPositionTop : function() {
+      config = { "position" : "auto", "appearOn" : "enter" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      var widget2 = this._createWidget( 12, 40, 111, 10, "Hello World 2" );
+      WidgetToolTip.setToolTipText( widget2, "foobar2" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
 
-    testPosition_HorizontalCenterRestrictToPageLeft : function() {
+      TestUtil.hoverFromTo( widget.getElement(), widget2.getElement() );
+
+      var tooltipHeight = toolTip.getHeightValue();
+      var expectedLeft = Math.round( 10 + 1 + 12 + ( 111 / 2 ) - toolTip.getWidthValue() / 2 );
+      var expectedTop = 20 + 1 + 40 - tooltipHeight - 3;
+      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+    },
+
+    testPosition_Auto_RelativeTargetIgnoredIfNotQuickAppear : function() {
+      config = { "position" : "auto", "appearOn" : "enter" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      var widget2 = this._createWidget( 12, 40, 111, 10, "Hello World 2" );
+      WidgetToolTip.setToolTipText( widget2, "foobar2" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      toolTip.hide();
+      toolTip._hideTimeStamp = 0;
+      TestUtil.hoverFromTo( widget.getElement(), widget2.getElement() );
+      showToolTip();
+
+      var tooltipHeight = toolTip.getHeightValue();
+      var expectedLeft = Math.round( 10 + 1 + 12 + ( 111 / 2 ) - toolTip.getWidthValue() / 2 );
+      var expectedTop = 20 + 1 + 40 + 10 + 3;
+      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+    },
+
+    testPosition_Auto_RelativeTargetPositionTopIgnoredIfOverlap : function() {
+      config = { "position" : "auto", "appearOn" : "enter" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      var widget2 = this._createWidget( 12, 30, 111, 10, "Hello World 2" );
+      WidgetToolTip.setToolTipText( widget2, "foobar2" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.hoverFromTo( widget.getElement(), widget2.getElement() );
+
+      var tooltipHeight = toolTip.getHeightValue();
+      var expectedLeft = Math.round( 10 + 1 + 12 + ( 111 / 2 ) - toolTip.getWidthValue() / 2 );
+      var expectedTop = 20 + 1 + 30 + 10 + 3;
+      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+    },
+
+    testPosition_Auto_RelativeTargetPositionBottom : function() {
+      config = { "position" : "auto", "appearOn" : "enter" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      var totalHeight =  rwt.widgets.base.ClientDocument.getInstance().getClientHeight();
+      var top = Math.round( totalHeight / 3 ) + 50;
+      var widget2 = this._createWidget( 12, top, 111, 10, "Hello World 2" );
+      widget.setTop( top + 50 );
+      WidgetToolTip.setToolTipText( widget2, "foobar2" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.hoverFromTo( widget.getElement(), widget2.getElement() );
+
+      var tooltipHeight = toolTip.getHeightValue();
+      var expectedLeft = Math.round( 10 + 1 + 12 + ( 111 / 2 ) - toolTip.getWidthValue() / 2 );
+      var expectedTop = 20 + 1 + top + 10 + 3;
+      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+    },
+
+    testPosition_Auto_RelativeTargetPositionBottomIgnoredIfOverlap : function() {
+      config = { "position" : "auto", "appearOn" : "enter" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      var totalHeight =  rwt.widgets.base.ClientDocument.getInstance().getClientHeight();
+      var top = Math.round( totalHeight / 3 ) + 50;
+      var widget2 = this._createWidget( 12, top, 111, 10, "Hello World 2" );
+      widget.setTop( top + widget2.getHeight() );
+      WidgetToolTip.setToolTipText( widget2, "foobar2" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.hoverFromTo( widget.getElement(), widget2.getElement() );
+
+      var tooltipHeight = toolTip.getHeightValue();
+      var expectedLeft = Math.round( 10 + 1 + 12 + ( 111 / 2 ) - toolTip.getWidthValue() / 2 );
+      var expectedTop = 20 + 1 + top - tooltipHeight - 3;
+      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+    },
+
+    testPosition_HorizontalCenter_RestrictToPageLeft : function() {
       config = { "position" : "horizontal-center" };
       WidgetToolTip.setToolTipText( widget, "foobarfoobarfoobarfoobar" );
       widget.setLeft( 0 );
@@ -528,6 +629,37 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
 
       assertTrue( toolTip._showTimer.isEnabled() );
     },
+
+    testPosition_AutoDefaultsToHorizontalCenter : function() {
+      config = { "position" : "auto" };
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      var expectedLeft = Math.round( 10 + 1 + 100 + 100 / 2 - toolTip.getWidthValue() / 2 );
+      var expectedTop = 20 + 1 + 10 + 20 + 3; // shell + border + top + height + offset
+      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+    },
+//
+//    testPosition_HorizontalCenterTop : function() {
+//      config = { "position" : "horizontal-center" };
+//      WidgetToolTip.setToolTipText( widget, "foobar" );
+//      var totalHeight =  rwt.widgets.base.ClientDocument.getInstance().getClientHeight();
+//      var top = Math.round( totalHeight / 3 ) + 50;
+//
+//      widget.setTop( top );
+//      TestUtil.hoverFromTo( document.body, widget.getElement() );
+//      showToolTip();
+//
+//      var tooltipHeight = toolTip.getHeightValue();
+//      var expectedLeft = Math.round( 10 + 1 + 100 + ( 100 / 2 ) - toolTip.getWidthValue() / 2 );
+//      var expectedTop = 20 + 1 + top - tooltipHeight - 3; // shell + border + top - tooltipHeight - offset
+//      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
+//      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+//    },
 
     testPointer_AddedToDom : function() {
       config = { "position" : "horizontal-center" };
