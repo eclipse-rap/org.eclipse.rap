@@ -11,12 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.scrolledcompositekit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -24,9 +26,12 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -37,7 +42,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
@@ -169,17 +173,6 @@ public class ScrolledCompositeLCA_Test {
   }
 
   @Test
-  public void testReadData_ScrollBarsSelection() {
-    sc.setContent( new Composite( sc, SWT.NONE ) );
-
-    Fixture.fakeSetProperty( getId( sc ), "horizontalBar.selection", 1 );
-    Fixture.fakeSetProperty( getId( sc ), "verticalBar.selection", 2 );
-    Fixture.readDataAndProcessAction( sc );
-
-    assertEquals( new Point( 1, 2 ), sc.getOrigin() );
-  }
-
-  @Test
   public void testReadData_ScrollBarsSelectionEvent() {
     sc.setContent( new Composite( sc, SWT.NONE ) );
     SelectionListener selectionListener = mock( SelectionListener.class );
@@ -203,6 +196,26 @@ public class ScrolledCompositeLCA_Test {
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "H_SCROLL" ) );
     assertTrue( Arrays.asList( styles ).contains( "V_SCROLL" ) );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( sc );
+    lca.renderInitialization( sc );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof ScrolledCompositeOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    ScrolledCompositeOperationHandler handler = spy( new ScrolledCompositeOperationHandler( sc ) );
+    getRemoteObject( getId( sc ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( sc ), "Help", new JsonObject() );
+    lca.readData( sc );
+
+    verify( handler ).handleNotifyHelp( sc, new JsonObject() );
   }
 
   @Test
