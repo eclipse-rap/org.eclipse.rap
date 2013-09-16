@@ -23,22 +23,31 @@ namespace( "rwt.client" );
           return this._horizontalConfig;
         }
       }
-      if( widget instanceof rwt.widgets.Label && !widget._rawText ) {
-        return this._horizontalConfig;
-      }
       switch( widget.classname ) {
+        case "rwt.widgets.ControlDecorator":
+          return this._quickConfig;
+        case "rwt.widgets.Label":
+          if( !widget._rawText ) {
+            return this._quickConfig;
+          } else {
+            return this._fieldConfig;
+          }
+        break;
+        case "rwt.widgets.Button":
+          if( widget.getAppearance() === "check-box" || widget.getAppearance() === "radio-button" ) {
+            return this._checkConfig;
+          } else {
+            return this._horizontalConfig;
+          }
+        break;
         case "rwt.widgets.Text":
         case "rwt.widgets.Spinner":
-        case "rwt.widgets.Button":
-        case "rwt.widgets.Label":
         case "rwt.widgets.Combo":
         case "rwt.widgets.DateTimeDate":
         case "rwt.widgets.DateTimeTime":
-        case "rwt.widgets.DateTimeCalendar":
-          return this._formConfig;
+          return this._fieldConfig;
         case "rwt.widgets.ToolItem":
         case "rwt.widgets.ProgressBar":
-        case "rwt.widgets.ControlDecorator":
         case "rwt.widgets.Scale":
         case "rwt.widgets.Slider":
           if( widget.hasState( "rwt_VERTICAL" ) ) {
@@ -59,12 +68,20 @@ namespace( "rwt.client" );
       "position" : "mouse",
       "appearOn" : "rest",
       "disappearOn" : "move",
-      "appearDelay" : 1100,
+      "appearDelay" : 1000,
       "disappearDelay" : 200
     },
 
     _horizontalConfig : {
       "position" : "horizontal-center",
+      "appearOn" : "enter",
+      "disappearOn" : "exit",
+      "appearDelay" : 200,
+      "disappearDelay" : 100
+    },
+
+    _checkConfig : {
+      "position" : "align-left",
       "appearOn" : "enter",
       "disappearOn" : "exit",
       "appearDelay" : 200,
@@ -79,12 +96,20 @@ namespace( "rwt.client" );
       "disappearDelay" : 100
     },
 
-    _formConfig : {
+    _fieldConfig : {
       "position" : "align-left",
       "appearOn" : "rest",
       "disappearOn" : "exit",
-      "appearDelay" : 700,
+      "appearDelay" : 500,
       "disappearDelay" : 200
+    },
+
+    _quickConfig : {
+      "position" : "horizontal-center",
+      "appearOn" : "enter",
+      "disappearOn" : "exit",
+      "appearDelay" : 20,
+      "disappearDelay" : 50
     },
 
     _rowConfig : {

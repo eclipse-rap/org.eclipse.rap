@@ -12,6 +12,21 @@
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var ToolTipConfig = rwt.widgets.util.ToolTipConfig;
+var getConfig = function( widget ) {
+  return ToolTipConfig.getConfig( widget );
+};
+var stringArray = [ "a", "a", "a", "a", "a", "a", "a", "a", "a" ];
+var createDateTimeDate = function() {
+  return new rwt.widgets.DateTimeDate( "medium", stringArray, stringArray, stringArray, "", "MDY" );
+};
+var createDateTimeTime = function() {
+  return new rwt.widgets.DateTimeTime( "medium" );
+};
+var createDateTimeCalendar = function() {
+  return new rwt.widgets.DateTimeCalendar( "medium", stringArray, stringArray, stringArray, "", "MDY" );
+};
+
+
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
   extend : rwt.qx.Object,
@@ -34,6 +49,146 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       var config = ToolTipConfig.getConfig( widget );
 
       assertEquals( "horizontal-center", config.position );
+    },
+
+    testVerticalToolItemConfig : function() {
+      var widget = new rwt.widgets.ToolItem();
+      widget.addState( "rwt_VERTICAL" );
+
+      var config = getConfig( widget );
+
+      assertEquals( "vertical-center", config.position );
+    },
+
+    testScaleConfig : function() {
+      var widget = new rwt.widgets.Scale();
+
+      var config = ToolTipConfig.getConfig( widget );
+
+      assertEquals( "horizontal-center", config.position );
+    },
+
+    testScaleConfigVertical : function() {
+      var widget = new rwt.widgets.Scale();
+      widget.addState( "rwt_VERTICAL" );
+
+      var config = getConfig( widget );
+
+      assertEquals( "vertical-center", config.position );
+    },
+
+    testPushButtonWithTextConfig : function() {
+      var widget = new rwt.widgets.Button();
+      widget.setText( "foo" );
+
+      var config = ToolTipConfig.getConfig( widget );
+
+      assertEquals( "horizontal-center", config.position );
+      assertEquals( "enter", config.appearOn );
+      assertEquals( "exit", config.disappearOn );
+    },
+
+    testCheckButtonConfig : function() {
+      var widget = new rwt.widgets.Button( "check" );
+
+      var config = ToolTipConfig.getConfig( widget );
+
+      assertEquals( "align-left", config.position );
+      assertEquals( "enter", config.appearOn );
+      assertEquals( "exit", config.disappearOn );
+    },
+
+    testRadioButtonConfig : function() {
+      var widget = new rwt.widgets.Button( "radio" );
+
+      var config = ToolTipConfig.getConfig( widget );
+
+      assertEquals( "align-left", config.position );
+      assertEquals( "enter", config.appearOn );
+      assertEquals( "exit", config.disappearOn );
+    },
+
+    testLabelWithTextConfig : function() {
+      var widget = new rwt.widgets.Label( {} );
+      widget.setText( "foo" );
+
+      var config = ToolTipConfig.getConfig( widget );
+
+      assertEquals( "align-left", config.position );
+      assertEquals( "rest", config.appearOn );
+      assertEquals( "exit", config.disappearOn );
+    },
+
+    testLabelWithImageOnlyConfig : function() {
+      var widget = new rwt.widgets.Label( {} );
+      widget.setImage( "foo.jpg", 10, 10 );
+
+      var config = ToolTipConfig.getConfig( widget );
+
+      assertEquals( "horizontal-center", config.position );
+      assertEquals( "enter", config.appearOn );
+      assertEquals( "exit", config.disappearOn );
+    },
+
+    testControlDecoratorConfig : function() {
+      var widget = new rwt.widgets.ControlDecorator();
+
+      var config = ToolTipConfig.getConfig( widget );
+
+      assertEquals( "horizontal-center", config.position );
+      assertEquals( "enter", config.appearOn );
+      assertEquals( "exit", config.disappearOn );
+      assertTrue( config.appearDelay <= 100 );
+    },
+
+    testLeftAlignedWidgetInCoolBar : function() {
+      var widget = new rwt.widgets.Text();
+      var coolbar = new rwt.widgets.CoolBar();
+      widget.setParent( coolbar );
+
+      var config = ToolTipConfig.getConfig( widget );
+
+      assertEquals( "horizontal-center", config.position );
+      assertEquals( "enter", config.appearOn );
+      assertEquals( "exit", config.disappearOn );
+    },
+
+    testAlwaysLeftAlignedWidgets : function() {
+      assertEquals( "align-left", getConfig( new rwt.widgets.Text() ).position );
+      assertEquals( "align-left", getConfig( new rwt.widgets.Spinner() ).position );
+      assertEquals( "align-left", getConfig( new rwt.widgets.Combo() ).position );
+      assertEquals( "align-left", getConfig( new rwt.widgets.base.GridRow() ).position );
+      assertEquals( "align-left", getConfig( createDateTimeDate() ).position );
+      assertEquals( "align-left", getConfig( createDateTimeTime() ).position );
+    },
+
+    testAlwaysMouseRelativeWidgets : function() {
+      assertEquals( "mouse", getConfig( new rwt.widgets.Composite() ).position );
+      assertEquals( "mouse", getConfig( new rwt.widgets.ScrolledComposite() ).position );
+      assertEquals( "mouse", getConfig( new rwt.widgets.Group() ).position );
+      assertEquals( "mouse", getConfig( new rwt.widgets.Shell( [] ) ).position );
+      assertEquals( "mouse", getConfig( new rwt.widgets.List( false ) ).position );
+      assertEquals( "mouse", getConfig( createDateTimeCalendar() ).position );
+    },
+
+    testAlwaysOnRestAppearWidgets : function() {
+      assertEquals( "rest", getConfig( new rwt.widgets.Composite() ).appearOn );
+      assertEquals( "rest", getConfig( new rwt.widgets.ScrolledComposite() ).appearOn );
+      assertEquals( "rest", getConfig( new rwt.widgets.Group() ).appearOn );
+      assertEquals( "rest", getConfig( new rwt.widgets.Shell( [] ) ).appearOn );
+      assertEquals( "rest", getConfig( new rwt.widgets.List( false ) ).appearOn );
+      assertEquals( "rest", getConfig( createDateTimeCalendar() ).appearOn );
+      assertEquals( "rest", getConfig( new rwt.widgets.base.GridRow() ).appearOn );
+      assertEquals( "rest", getConfig( new rwt.widgets.Text() ).appearOn );
+      assertEquals( "rest", getConfig( new rwt.widgets.Spinner() ).appearOn );
+      assertEquals( "rest", getConfig( new rwt.widgets.Combo() ).appearOn );
+    },
+
+    testAlwaysOnEnterAppearWidgets : function() {
+      assertEquals( "enter", getConfig( new rwt.widgets.ToolItem() ).appearOn );
+      assertEquals( "enter", getConfig( new rwt.widgets.Scale() ).appearOn );
+      assertEquals( "enter", getConfig( new rwt.widgets.Slider() ).appearOn );
+      assertEquals( "enter", getConfig( new rwt.widgets.ProgressBar() ).appearOn );
     }
 
   }
