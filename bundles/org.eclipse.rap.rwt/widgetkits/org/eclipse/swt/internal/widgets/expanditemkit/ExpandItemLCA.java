@@ -19,7 +19,6 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.graphics.Rectangle;
@@ -48,23 +47,11 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     preserveProperty( item, PROP_HEADER_HEIGHT, item.getHeaderHeight() );
   }
 
-  public void readData( Widget widget ) {
-    final ExpandItem item = ( ExpandItem )widget;
-    final String expanded = WidgetLCAUtil.readPropertyValue( widget, PROP_EXPANDED );
-    if( expanded != null ) {
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          item.setExpanded( Boolean.valueOf( expanded ).booleanValue() );
-          preserveProperty( item, PROP_EXPANDED, item.getExpanded() );
-        }
-      } );
-    }
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ExpandItem item = ( ExpandItem )widget;
     RemoteObject remoteObject = createRemoteObject( item, TYPE );
+    remoteObject.setHandler( new ExpandItemOperationHandler( item ) );
     remoteObject.set( "parent", getId( item.getParent() ) );
   }
 

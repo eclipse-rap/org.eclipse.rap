@@ -11,20 +11,27 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.expandbarkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -154,6 +161,26 @@ public class ExpandBarLCA_Test {
     assertEquals( "rwt.widgets.ExpandBar", operation.getType() );
     List<Object> styles = Arrays.asList( operation.getStyles() );
     assertFalse( styles.contains( "V_SCROLL" ) );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( expandBar );
+    lca.renderInitialization( expandBar );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof ExpandBarOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    ExpandBarOperationHandler handler = spy( new ExpandBarOperationHandler( expandBar ) );
+    getRemoteObject( getId( expandBar ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( expandBar ), "Help", new JsonObject() );
+    lca.readData( expandBar );
+
+    verify( handler ).handleNotifyHelp( expandBar, new JsonObject() );
   }
 
   @Test

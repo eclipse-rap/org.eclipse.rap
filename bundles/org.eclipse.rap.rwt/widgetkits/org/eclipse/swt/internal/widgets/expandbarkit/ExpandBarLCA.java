@@ -16,16 +16,12 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRe
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
@@ -34,7 +30,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Widget;
@@ -62,20 +57,17 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
     ScrollBarLCAUtil.preserveValues( expandBar );
   }
 
+  @Override
   public void readData( Widget widget ) {
-    ExpandBar expandBar = ( ExpandBar )widget;
-    ControlLCAUtil.processKeyEvents( expandBar );
-    ControlLCAUtil.processMenuDetect( expandBar );
-    WidgetLCAUtil.processHelp( expandBar );
-    processExpandEvent( expandBar, SWT.Expand, "Expand" );
-    processExpandEvent( expandBar, SWT.Collapse, "Collapse" );
-    ScrollBarLCAUtil.processSelectionEvent( expandBar );
+    super.readData( widget );
+    ScrollBarLCAUtil.processSelectionEvent( ( ExpandBar )widget );
   }
 
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ExpandBar expandBar = ( ExpandBar )widget;
     RemoteObject remoteObject = createRemoteObject( expandBar, TYPE );
+    remoteObject.setHandler( new ExpandBarOperationHandler( expandBar ) );
     remoteObject.set( "parent", getId( expandBar.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( expandBar, ALLOWED_STYLES ) ) );
     ScrollBarLCAUtil.renderInitialization( expandBar );
@@ -130,22 +122,6 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
 
   public static IExpandBarAdapter getExpandBarAdapter( ExpandBar bar ) {
     return bar.getAdapter( IExpandBarAdapter.class );
-  }
-
-  /////////////////////////////////
-  // Process expand/collapse events
-
-  private static void processExpandEvent( ExpandBar bar, int eventType, String eventName ) {
-    if( wasEventSent( bar, eventName ) ) {
-      String value = readEventPropertyValue( bar, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
-      Event event = new Event();
-      event.item = getItem( bar, value );
-      bar.notifyListeners( eventType, event );
-    }
-  }
-
-  private static ExpandItem getItem( ExpandBar bar, String itemId ) {
-    return ( ExpandItem )find( bar, itemId );
   }
 
 }
