@@ -48,6 +48,7 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager", {
       {
         getToolTip()._stopShowTimer();
         getToolTip()._startHideTimer();
+        old.removeEventListener( "updateToolTip", this._updateEventHandler );
       }
 
       getToolTip().setBoundToWidget( value );
@@ -55,6 +56,7 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager", {
       // If new tooltip is not null, set it up and start the timer
       if (value) {
         getToolTip()._startShowTimer();
+        value.addEventListener( "updateToolTip", this._updateEventHandler );
       }
     },
 
@@ -145,6 +147,12 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager", {
             this.setCurrentToolTipTarget( null );
           }
         break;
+      }
+    },
+
+    _updateEventHandler : function( target ) {
+      if( getToolTip().getBoundToWidget() === target ) {
+        getToolTip().updateText();
       }
     }
 

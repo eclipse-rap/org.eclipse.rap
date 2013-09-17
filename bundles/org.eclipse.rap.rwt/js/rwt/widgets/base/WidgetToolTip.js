@@ -38,9 +38,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
         var text = EncodingUtil.escapeText( value, false );
         text = EncodingUtil.replaceNewLines( text, "<br/>" );
         widget.setToolTipText( text );
-        if( toolTip.getBoundToWidget() == widget ) {
-          toolTip.updateText();
-        }
+        widget.dispatchSimpleEvent( "updateToolTip", widget );
       } else {
         widget.setToolTipText( null );
       }

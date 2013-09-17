@@ -906,7 +906,80 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( 1, log );
       shell.destroy();
       progressBar.destroy();
-    }
+    },
+
+    testGetToolTipTargetBounds_Horizontal : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bar = new rwt.widgets.ProgressBar();
+      bar.setDimension( 200, 30 );
+      bar.addToDocument();
+      bar.setBorder( new rwt.html.Border( 3 ) );
+      bar.setSelection( 50 );
+      TestUtil.flush();
+
+      var bounds = bar.getToolTipTargetBounds();
+      assertEquals( 100, bounds.left );
+      assertEquals( 0, bounds.top );
+      assertEquals( 0, bounds.width );
+      assertEquals( 30, bounds.height );
+      bar.destroy();
+      TestUtil.flush();
+    },
+
+    testGetToolTipTargetBounds_Vertical : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bar = new rwt.widgets.ProgressBar();
+      bar.addState( "rwt_VERTICAL" );
+      bar.setDimension( 30, 200 );
+      bar.addToDocument();
+      bar.setBorder( new rwt.html.Border( 3 ) );
+      bar.setSelection( 30 );
+      TestUtil.flush();
+
+      var bounds = bar.getToolTipTargetBounds();
+      assertEquals( 0, bounds.left );
+      assertEquals( 139, bounds.top );
+      assertEquals( 30, bounds.width );
+      assertEquals( 0, bounds.height );
+      bar.destroy();
+      TestUtil.flush();
+    },
+
+    testGetToolTipTargetBounds_Indeterminate : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bar = new rwt.widgets.ProgressBar();
+      bar.addState( "rwt_INDETERMINATE" );
+      bar.setDimension( 30, 200 );
+      bar.addToDocument();
+      bar.setBorder( new rwt.html.Border( 3 ) );
+      bar.setSelection( 50 );
+      TestUtil.flush();
+
+      var bounds = bar.getToolTipTargetBounds();
+      assertEquals( 0, bounds.left );
+      assertEquals( 0, bounds.top );
+      assertEquals( 30, bounds.width );
+      assertEquals( 200, bounds.height );
+      bar.destroy();
+      TestUtil.flush();
+    },
+
+    testSetSelectionFiresUpdateToolTip : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bar = new rwt.widgets.ProgressBar();
+      var fired = false;
+      bar.addEventListener( "updateToolTip", function( arg ) {
+        fired = arg;
+      } );
+
+      bar.setSelection( 50 );
+
+      assertIdentical( bar, fired );
+      bar.destroy();
+      TestUtil.flush();
+    },
+
+
 
   }
 

@@ -127,6 +127,7 @@ rwt.qx.Class.define( "rwt.widgets.ProgressBar", {
       this._selection = selection;
       this.addToQueue( "indicatorSelection" );
       this.dispatchSimpleEvent( "selectionChanged", this );
+      this.dispatchSimpleEvent( "updateToolTip", this );
     },
 
     addState : function( state ) {
@@ -151,6 +152,31 @@ rwt.qx.Class.define( "rwt.widgets.ProgressBar", {
         this.removeState( "error" );
         this.removeState( "paused" );
         this.addState( "normal" );
+      }
+    },
+
+    getToolTipTargetBounds : function() {
+      if( this._isVertical() ) {
+        return {
+          "top" : this.getBoxHeight() - this._cachedBorderLeft - this._getIndicatorLength(),
+          "left" : 0,
+          "width" : this.getBoxWidth(),
+          "height" : 0
+        };
+      } else if( this._isIndeterminate() ) {
+        return {
+          "left" : 0,
+          "top" : 0,
+          "width" : this.getBoxWidth(),
+          "height" : this.getBoxHeight()
+        };
+      } else {
+        return {
+          "left" : this._cachedBorderLeft + this._getIndicatorLength(),
+          "top" : 0,
+          "width" : 0,
+          "height" : this.getBoxHeight()
+        };
       }
     },
 
