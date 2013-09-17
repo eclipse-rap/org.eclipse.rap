@@ -152,8 +152,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       this.base( arguments, start, length );
       if( !rwt.remote.EventUtil.getSuspended() ) {
         var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
-        remoteObject.set( "selectionStart", start );
-        remoteObject.set( "selectionLength", length );
+        remoteObject.set( "selection", [ start, start + length ] );
       }
     },
 

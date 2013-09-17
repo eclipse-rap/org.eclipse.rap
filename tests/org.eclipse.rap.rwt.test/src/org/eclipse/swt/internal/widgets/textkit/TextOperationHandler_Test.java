@@ -20,10 +20,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -74,12 +74,12 @@ public class TextOperationHandler_Test {
 
   @Test
   public void testHandleText_withVerifyListener() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     handler = new TextOperationHandler( text );
     text.setText( "some text" );
     text.addListener( SWT.Verify, mock( Listener.class ) );
 
     handler.handleSet( new JsonObject().add( "text", "verify me" ) );
-    processEvents();
 
     assertEquals( "verify me", text.getText() );
   }
@@ -89,7 +89,7 @@ public class TextOperationHandler_Test {
     handler = new TextOperationHandler( text );
     text.setText( "text" );
 
-    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( new Point( 1, 2 ), text.getSelection() );
   }
@@ -100,8 +100,7 @@ public class TextOperationHandler_Test {
     text.setText( "original text" );
     JsonObject properties = new JsonObject()
       .add( "text", "abc" )
-      .add( "selectionStart", 1 )
-      .add( "selectionLength", 1 );
+      .add( "selection", new JsonArray().add( 1 ).add( 2 ) );
 
     handler.handleSet( properties );
 
@@ -115,7 +114,7 @@ public class TextOperationHandler_Test {
     text.setText( "original text" );
 
     handler.handleSet( new JsonObject().add( "text", "abc" ) );
-    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( "abc", text.getText() );
     assertEquals( new Point( 1, 2 ), text.getSelection() );
@@ -123,6 +122,7 @@ public class TextOperationHandler_Test {
 
   @Test
   public void testHandleSetTextAndSelection_withVerifyListener_changeText() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     handler = new TextOperationHandler( text );
     text.addListener( SWT.Verify, new Listener() {
       public void handleEvent( Event event ) {
@@ -131,9 +131,7 @@ public class TextOperationHandler_Test {
     } );
 
     handler.handleSet( new JsonObject().add( "text", "abc" ) );
-    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
-    WidgetUtil.getLCA( text ).preserveValues( text );
-    processEvents();
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( "verified", text.getText() );
     assertEquals( new Point( 1, 2 ), text.getSelection() );
@@ -141,13 +139,12 @@ public class TextOperationHandler_Test {
 
   @Test
   public void testHandleSetTextAndSelection_withVerifyListener_doesNotChangeText() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     handler = new TextOperationHandler( text );
     text.addListener( SWT.Verify, mock( Listener.class ) );
 
     handler.handleSet( new JsonObject().add( "text", "abc" ) );
-    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
-    WidgetUtil.getLCA( text ).preserveValues( text );
-    processEvents();
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( "abc", text.getText() );
     assertEquals( new Point( 1, 2 ), text.getSelection() );
@@ -155,13 +152,12 @@ public class TextOperationHandler_Test {
 
   @Test
   public void testHandleSelection_withVerifyListener() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     handler = new TextOperationHandler( text );
     text.setText( "abc" );
     text.addListener( SWT.Verify, mock( Listener.class ) );
 
-    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
-    WidgetUtil.getLCA( text ).preserveValues( text );
-    processEvents();
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( new Point( 1, 2 ), text.getSelection() );
   }
@@ -241,12 +237,6 @@ public class TextOperationHandler_Test {
     handler.handleNotify( ClientMessageConst.EVENT_MODIFY, new JsonObject() );
 
     verify( mockedText, never() ).notifyListeners( eq( SWT.Modify ), any( Event.class ) );
-  }
-
-  private void processEvents() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    while( Display.getCurrent().readAndDispatch() ) {
-    }
   }
 
 }

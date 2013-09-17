@@ -717,8 +717,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.fakeMouseEvent( text, "mouseup" );
       Server.getInstance().send();
 
-      assertEquals( 3, TestUtil.getMessageObject().findSetProperty( "w3", "selectionStart" ) );
-      assertEquals( 0, TestUtil.getMessageObject().findSetProperty( "w3", "selectionLength" ) );
+      assertEquals( [ 3, 3 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
     },
 
 //    TODO [tb] : activate when fixed
@@ -733,8 +732,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 //      TestUtil.fakeMouseEvent( shell, "mouseup" );
 //      Server.getInstance().send();
 //
-//      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
-//      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
+//      assertEquals( [ 3, 3 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
 //    },
 //
     testSendSelectionChangeOnKeyPress : function() {
@@ -746,8 +744,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.keyDown( text, "Enter" );
       Server.getInstance().send();
 
-      assertEquals( 3, TestUtil.getMessageObject().findSetProperty( "w3", "selectionStart" ) );
-      assertEquals( 0, TestUtil.getMessageObject().findSetProperty( "w3", "selectionLength" ) );
+      assertEquals( [ 3, 3 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
     },
 
     testSendSelectionChangeOnTwoKeyPress : function() {
@@ -759,8 +756,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.keyDown( text, "Enter" ); // can send a request without releasing Right
       Server.getInstance().send();
 
-      assertEquals( 3, TestUtil.getMessageObject().findSetProperty( "w3", "selectionStart" ) );
-      assertEquals( 0, TestUtil.getMessageObject().findSetProperty( "w3", "selectionLength" ) );
+      assertEquals( [ 3, 3 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
     },
 
     testSendSelectionChangeOnProgrammaticValueChange : function() {
@@ -771,8 +767,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setValue( "f" );
       Server.getInstance().send();
 
-      assertEquals( 1, TestUtil.getMessageObject().findSetProperty( "w3", "selectionStart" ) );
-      assertEquals( 0, TestUtil.getMessageObject().findSetProperty( "w3", "selectionLength" ) );
+      assertEquals( [ 1, 1 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
     },
 
     testSendTextChange : function() {

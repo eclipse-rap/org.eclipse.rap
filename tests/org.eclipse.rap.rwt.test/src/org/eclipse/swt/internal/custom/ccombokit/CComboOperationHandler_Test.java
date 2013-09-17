@@ -21,6 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -95,7 +96,7 @@ public class CComboOperationHandler_Test {
   public void testHandleSelection() {
     ccombo.setText( "text" );
 
-    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( new Point( 1, 2 ), ccombo.getSelection() );
   }
@@ -106,7 +107,7 @@ public class CComboOperationHandler_Test {
     ccombo.setText( "abc" );
     ccombo.addListener( SWT.Verify, mock( Listener.class ) );
 
-    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( new Point( 1, 2 ), ccombo.getSelection() );
   }
@@ -116,8 +117,7 @@ public class CComboOperationHandler_Test {
     ccombo.setText( "original text" );
     JsonObject properties = new JsonObject()
       .add( "text", "abc" )
-      .add( "selectionStart", 1 )
-      .add( "selectionLength", 1 );
+      .add( "selection", new JsonArray().add( 1 ).add( 2 ) );
 
     handler.handleSet( properties );
 
@@ -130,7 +130,7 @@ public class CComboOperationHandler_Test {
     ccombo.setText( "original text" );
 
     handler.handleSet( new JsonObject().add( "text", "abc" ) );
-    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( "abc", ccombo.getText() );
     assertEquals( new Point( 1, 2 ), ccombo.getSelection() );
@@ -146,7 +146,7 @@ public class CComboOperationHandler_Test {
     } );
 
     handler.handleSet( new JsonObject().add( "text", "abc" ) );
-    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( "verified", ccombo.getText() );
     assertEquals( new Point( 1, 2 ), ccombo.getSelection() );
@@ -158,7 +158,7 @@ public class CComboOperationHandler_Test {
     ccombo.addListener( SWT.Verify, mock( Listener.class ) );
 
     handler.handleSet( new JsonObject().add( "text", "abc" ) );
-    handler.handleSet( new JsonObject().add( "selectionStart", 1 ).add( "selectionLength", 1 ) );
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( "abc", ccombo.getText() );
     assertEquals( new Point( 1, 2 ), ccombo.getSelection() );

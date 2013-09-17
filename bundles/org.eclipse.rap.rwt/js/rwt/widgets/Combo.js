@@ -728,11 +728,10 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         length = 0;
       }
       if( this._selectionStart != start || this._selectionLength != length ) {
-        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
         this._selectionStart = start;
-        remoteObject.set( "selectionStart", start );
         this._selectionLength = length;
-        remoteObject.set( "selectionLength", length );
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
+        remoteObject.set( "selection", [ start, start + length ] );
       }
     },
 
