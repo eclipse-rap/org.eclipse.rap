@@ -75,6 +75,15 @@ rwt.qx.Class.define( "rwt.widgets.Slider", {
       this._hasSelectionListener = value;
     },
 
+    getToolTipTargetBounds : function() {
+      return {
+        "left" : this._cachedBorderLeft + ( this._thumb.getLeft() || 0 ),
+        "top" : this._cachedBorderLeft + ( this._thumb.getTop() || 0 ),
+        "width" : this._thumb.getBoxWidth(),
+        "height" : this._thumb.getBoxHeight()
+      };
+    },
+
     //////////////
     // Overwritten
 
