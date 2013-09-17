@@ -400,6 +400,33 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertFalse( toolTip.isSeeable() );
     },
 
+    testHideAfterKeyDownAndTimer : function() {
+      config = { "disappearOn" : "move" };
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.press( widget, "A" );
+      TestUtil.forceInterval( toolTip._hideTimer );
+
+      assertFalse( toolTip.isSeeable() );
+    },
+
+    testDoHideAfterModifierKeyDownAndTimer : function() {
+      config = { "disappearOn" : "move" };
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.press( widget, "Control" );
+      TestUtil.press( widget, "Alt" );
+      TestUtil.press( widget, "Shift" );
+      TestUtil.press( widget, "Meta" );
+      TestUtil.press( widget, "Win" );
+
+      assertFalse( toolTip._hideTimer.isEnabled() );
+    },
+
     testHideOnMouseOverWithoutAnimation : function() {
       config = { "disappearOn" : "exit" };
       WidgetToolTip.setToolTipText( widget, "test1" );

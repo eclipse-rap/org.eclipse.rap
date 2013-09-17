@@ -129,7 +129,25 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager", {
       if (tTarget === vTarget) {
         this.setCurrentToolTipTarget(null);
       }
+    },
+
+    handleKeyEvent : function( event ) {
+      var toolTipTarget = this.getCurrentToolTipTarget();
+      switch( event.getKeyIdentifier() ) {
+        case "Control":
+        case "Alt":
+        case "Shift":
+        case "Meta":
+        case "Win":
+        break;
+        default:
+          if( toolTipTarget ) {
+            this.setCurrentToolTipTarget( null );
+          }
+        break;
+      }
     }
+
   }
 
 } );
