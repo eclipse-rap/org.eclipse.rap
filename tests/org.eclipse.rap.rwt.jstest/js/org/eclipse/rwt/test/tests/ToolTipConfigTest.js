@@ -79,7 +79,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       assertFalse( config.autoHide );
     },
 
-    testPushButtonWithTextConfig : function() {
+    testPushButton : function() {
       var widget = new rwt.widgets.Button();
       widget.setText( "foo" );
 
@@ -90,22 +90,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       assertEquals( "exit", config.disappearOn );
     },
 
-    testCheckButtonConfig : function() {
-      var widget = new rwt.widgets.Button( "check" );
+    testTabItem : function() {
+      var widget = new rwt.widgets.TabItem();
 
       var config = ToolTipConfig.getConfig( widget );
 
-      assertEquals( "align-left", config.position );
+      assertEquals( "horizontal-center", config.position );
       assertEquals( "enter", config.appearOn );
       assertEquals( "exit", config.disappearOn );
     },
 
-    testRadioButtonConfig : function() {
-      var widget = new rwt.widgets.Button( "radio" );
+    testCTabItem : function() {
+      var widget = new rwt.widgets.CTabItem( new rwt.widgets.CTabFolder() );
 
       var config = ToolTipConfig.getConfig( widget );
 
-      assertEquals( "align-left", config.position );
+      assertEquals( "horizontal-center", config.position );
       assertEquals( "enter", config.appearOn );
       assertEquals( "exit", config.disappearOn );
     },

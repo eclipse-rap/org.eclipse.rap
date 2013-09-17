@@ -34,6 +34,8 @@ namespace( "rwt.client" );
           }
         break;
         case "rwt.widgets.Button":
+        case "rwt.widgets.TabItem":
+        case "rwt.widgets.CTabItem":
           return this._horizontalClickableConfig;
         case "rwt.widgets.Text":
         case "rwt.widgets.Spinner":
