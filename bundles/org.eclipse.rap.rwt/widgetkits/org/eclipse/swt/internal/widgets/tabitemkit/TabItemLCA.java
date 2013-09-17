@@ -48,9 +48,6 @@ public class TabItemLCA extends AbstractWidgetLCA {
     preserveProperty( item, PROP_CONTROL, item.getControl() );
   }
 
-  public void readData( Widget widget ) {
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     TabItem item = ( TabItem )widget;

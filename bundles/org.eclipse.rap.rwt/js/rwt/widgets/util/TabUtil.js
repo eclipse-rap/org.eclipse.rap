@@ -63,9 +63,10 @@ rwt.qx.Class.define( "rwt.widgets.util.TabUtil", {
       if( !rwt.remote.EventUtil.getSuspended() && tab.getChecked() ) {
         var widgetManager = rwt.remote.WidgetManager.getInstance();
         var itemId = widgetManager.findIdByWidget( tab );
-        var server = rwt.remote.Connection.getInstance();
         var folder = tab.getParent().getParent();
-        server.getRemoteObject( folder ).notify( "Selection", {
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( folder );
+        remoteObject.set( "selection", itemId );
+        remoteObject.notify( "Selection", {
           "item" : itemId
         } );
       }

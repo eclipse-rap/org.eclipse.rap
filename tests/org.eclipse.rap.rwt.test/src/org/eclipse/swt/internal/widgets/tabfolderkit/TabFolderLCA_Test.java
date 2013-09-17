@@ -11,36 +11,34 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
+
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -50,7 +48,6 @@ import org.eclipse.swt.widgets.TabItem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 
 public class TabFolderLCA_Test {
@@ -156,55 +153,6 @@ public class TabFolderLCA_Test {
   }
 
   @Test
-  public void testSelectionWithoutListener() {
-    TabItem item0 = new TabItem( folder, SWT.NONE );
-    Control control0 = new Button( folder, SWT.PUSH );
-    item0.setControl( control0 );
-    TabItem item1 = new TabItem( folder, SWT.NONE );
-    Control control1 = new Button( folder, SWT.PUSH );
-    item1.setControl( control1 );
-
-    fakeWidgetSelected( folder, item1 );
-    Fixture.readDataAndProcessAction( display );
-
-    assertEquals( 1, folder.getSelectionIndex() );
-    assertFalse( control0.getVisible() );
-    assertTrue( control1.getVisible() );
-  }
-
-  @Test
-  public void testSelectionWithListener() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    TabItem item0 = new TabItem( folder, SWT.NONE );
-    Control control0 = new Button( folder, SWT.PUSH );
-    item0.setControl( control0 );
-    TabItem item1 = new TabItem( folder, SWT.NONE );
-    Control control1 = new Button( folder, SWT.PUSH );
-    item1.setControl( control1 );
-    SelectionListener listener = mock( SelectionListener.class );
-    folder.addSelectionListener( listener );
-
-    fakeWidgetSelected( folder, item1 );
-    Fixture.readDataAndProcessAction( display );
-
-    assertEquals( 1, folder.getSelectionIndex() );
-    assertFalse( control0.getVisible() );
-    assertTrue( control1.getVisible() );
-    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener ).widgetSelected( captor.capture() );
-    SelectionEvent event = captor.getValue();
-    assertSame( item1, event.item );
-    assertSame( folder, event.widget );
-    assertTrue( event.doit );
-    assertEquals( 0, event.x );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.width );
-    assertEquals( 0, event.height );
-    assertEquals( 0, event.detail );
-    assertNull( event.text );
-  }
-
-  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( folder );
 
@@ -226,6 +174,26 @@ public class TabFolderLCA_Test {
     assertEquals( "rwt.widgets.TabFolder", operation.getType() );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "BOTTOM" ) );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( folder );
+    lca.renderInitialization( folder );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof TabFolderOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    TabFolderOperationHandler handler = spy( new TabFolderOperationHandler( folder ) );
+    getRemoteObject( getId( folder ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( folder ), "Help", new JsonObject() );
+    lca.readData( folder );
+
+    verify( handler ).handleNotifyHelp( folder, new JsonObject() );
   }
 
   @Test
@@ -289,18 +257,8 @@ public class TabFolderLCA_Test {
   }
 
   @Test
-  public void testReadSelection() {
-    TabItem item = new TabItem( folder, SWT.NONE );
-    folder.setSelection( new TabItem[ 0 ] );
-
-    fakeWidgetSelected( folder, item );
-    Fixture.readDataAndProcessAction( folder );
-
-    assertSame( item, folder.getSelection()[ 0 ] );
-  }
-
-  @Test
   public void testResetSelectionInSelectionEvent() {
+    getRemoteObject( folder ).setHandler( new TabFolderOperationHandler( folder ) );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
     final TabItem item1 = new TabItem( folder, SWT.NONE );
@@ -321,6 +279,7 @@ public class TabFolderLCA_Test {
   }
 
   private void fakeWidgetSelected( TabFolder folder, TabItem item ) {
+    Fixture.fakeSetProperty( getId( folder ), "selection", getId( item ) );
     JsonObject parameters = new JsonObject()
       .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
     Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_SELECTION, parameters );
