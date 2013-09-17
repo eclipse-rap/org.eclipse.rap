@@ -773,6 +773,51 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertTrue( success );
       assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "Selection" ) );
       button.destroy();
+    },
+
+    testPushButton_getToolTipTargetBounds : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w2",
+          "bounds" : [ 10, 10, 100, 20 ]
+        }
+      } );
+      var widget = ObjectManager.getObject( "w3" );
+      TestUtil.flush();
+
+      var bounds = widget.getToolTipTargetBounds();
+      assertEquals( 0, bounds.left );
+      assertEquals( 0, bounds.top );
+      assertEquals( 100, bounds.width );
+      assertEquals( 20, bounds.height );
+      shell.destroy();
+    },
+
+    testCheckButton_getToolTipTargetBounds : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "CHECK" ],
+          "parent" : "w2",
+          "bounds" : [ 10, 10, 100, 20 ]
+        }
+      } );
+      var widget = ObjectManager.getObject( "w3" );
+      widget.setSelectionIndicator( [ "foo.jpg", 7, 8 ] );
+      widget.setPadding( 4 );
+      TestUtil.flush();
+
+      assertEquals( { "left" : 4, "top" : 6, "width" : 7, "height" : 8 },
+                    widget.getToolTipTargetBounds() );
+      shell.destroy();
     }
 
   }

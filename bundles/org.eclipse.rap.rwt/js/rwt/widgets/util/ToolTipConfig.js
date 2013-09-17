@@ -34,12 +34,7 @@ namespace( "rwt.client" );
           }
         break;
         case "rwt.widgets.Button":
-          if( widget.getAppearance() === "check-box" || widget.getAppearance() === "radio-button" ) {
-            return this._checkConfig;
-          } else {
-            return this._horizontalClickableConfig;
-          }
-        break;
+          return this._horizontalClickableConfig;
         case "rwt.widgets.Text":
         case "rwt.widgets.Spinner":
         case "rwt.widgets.Combo":
