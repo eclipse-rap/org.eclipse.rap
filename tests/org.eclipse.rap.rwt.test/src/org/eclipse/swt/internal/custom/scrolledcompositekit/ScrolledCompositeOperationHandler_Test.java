@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.scrolledcompositekit;
 
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,7 +46,8 @@ public class ScrolledCompositeOperationHandler_Test {
 
   @Test
   public void testHandleSetSelection_horizontalScrollBar() {
-    when( composite.getHorizontalBar() ).thenReturn( mock( ScrollBar.class ) );
+    doReturn( mock( ScrollBar.class ) ).when( composite ).getHorizontalBar();
+
     handler.handleSet( new JsonObject().add( "horizontalBar.selection", 1 ) );
 
     verify( composite ).setOrigin( new Point( 1, 0 ) );
@@ -53,7 +55,8 @@ public class ScrolledCompositeOperationHandler_Test {
 
   @Test
   public void testHandleSetSelection_verticalScrollBar() {
-    when( composite.getVerticalBar() ).thenReturn( mock( ScrollBar.class ) );
+    doReturn( mock( ScrollBar.class ) ).when( composite ).getVerticalBar();
+
     handler.handleSet( new JsonObject().add( "verticalBar.selection", 1 ) );
 
     verify( composite ).setOrigin( new Point( 0, 1 ) );
@@ -61,8 +64,9 @@ public class ScrolledCompositeOperationHandler_Test {
 
   @Test
   public void testHandleSetSelection_bothScrollBars() {
-    when( composite.getHorizontalBar() ).thenReturn( mock( ScrollBar.class ) );
-    when( composite.getVerticalBar() ).thenReturn( mock( ScrollBar.class ) );
+    doReturn( mock( ScrollBar.class ) ).when( composite ).getHorizontalBar();
+    doReturn( mock( ScrollBar.class ) ).when( composite ).getVerticalBar();
+
     handler.handleSet( new JsonObject()
       .add( "horizontalBar.selection", 1 )
       .add( "verticalBar.selection", 2 ) );
