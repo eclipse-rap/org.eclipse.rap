@@ -66,6 +66,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       var config = ToolTipConfig.getConfig( widget );
 
       assertEquals( "horizontal-center", config.position );
+      assertFalse( config.autoHide );
     },
 
     testScaleConfigVertical : function() {
@@ -75,6 +76,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       var config = getConfig( widget );
 
       assertEquals( "vertical-center", config.position );
+      assertFalse( config.autoHide );
     },
 
     testPushButtonWithTextConfig : function() {
@@ -138,6 +140,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       assertEquals( "horizontal-center", config.position );
       assertEquals( "enter", config.appearOn );
       assertEquals( "exit", config.disappearOn );
+      assertFalse( config.autoHide );
       assertTrue( config.appearDelay <= 100 );
     },
 
@@ -160,6 +163,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       assertEquals( "align-left", getConfig( new rwt.widgets.base.GridRow() ).position );
       assertEquals( "align-left", getConfig( createDateTimeDate() ).position );
       assertEquals( "align-left", getConfig( createDateTimeTime() ).position );
+    },
+
+    testAlwaysAutoHideWidgets : function() {
+      assertTrue( getConfig( new rwt.widgets.Text() ).autoHide );
+      assertTrue( getConfig( new rwt.widgets.Spinner() ).autoHide );
+      assertTrue( getConfig( new rwt.widgets.Combo() ).autoHide );
+      assertTrue( getConfig( new rwt.widgets.base.GridRow() ).autoHide );
+      assertTrue( getConfig( createDateTimeDate() ).autoHide );
+      assertTrue( getConfig( createDateTimeTime() ).autoHide );
     },
 
     testAlwaysMouseRelativeWidgets : function() {

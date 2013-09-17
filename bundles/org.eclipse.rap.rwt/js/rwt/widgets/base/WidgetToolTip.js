@@ -36,7 +36,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       if( value != null && value !== "" ) {
         var EncodingUtil = rwt.util.Encoding;
         var text = EncodingUtil.escapeText( value, false );
-        text = EncodingUtil.replaceNewLines( text, "<br/>" ); // TODO : does not work?
+        text = EncodingUtil.replaceNewLines( text, "<br/>" );
         widget.setToolTipText( text );
         if( toolTip.getBoundToWidget() == widget ) {
           toolTip.updateText();
@@ -112,6 +112,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
         this._config = rwt.widgets.util.ToolTipConfig.getConfig( this.getBoundToWidget() );
         this._showTimer.setInterval( this._config.appearDelay || 1000 );
         this._hideTimer.setInterval( this._config.disappearDelay || 200 );
+        this.setAutoHide( this._config.autoHide === false ? false : true );
       } else if( old ) {
         this._config = {};
       }

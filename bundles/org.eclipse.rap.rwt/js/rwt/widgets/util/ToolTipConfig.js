@@ -18,9 +18,9 @@ namespace( "rwt.client" );
     getConfig : function( widget ) {
       if( widget.getParent() instanceof rwt.widgets.CoolBar ) {
         if( widget.getParent().hasState( "rwt_VERTICAL" ) ) {
-          return this._verticalConfig;
+          return this._verticalClickableConfig;
         } else {
-          return this._horizontalConfig;
+          return this._horizontalClickableConfig;
         }
       }
       switch( widget.classname ) {
@@ -37,7 +37,7 @@ namespace( "rwt.client" );
           if( widget.getAppearance() === "check-box" || widget.getAppearance() === "radio-button" ) {
             return this._checkConfig;
           } else {
-            return this._horizontalConfig;
+            return this._horizontalClickableConfig;
           }
         break;
         case "rwt.widgets.Text":
@@ -47,13 +47,19 @@ namespace( "rwt.client" );
         case "rwt.widgets.DateTimeTime":
           return this._fieldConfig;
         case "rwt.widgets.ToolItem":
+          if( widget.hasState( "rwt_VERTICAL" ) ) {
+            return this._verticalClickableConfig;
+          } else {
+            return this._horizontalClickableConfig;
+          }
+        break;
         case "rwt.widgets.ProgressBar":
         case "rwt.widgets.Scale":
         case "rwt.widgets.Slider":
           if( widget.hasState( "rwt_VERTICAL" ) ) {
-            return this._verticalConfig;
+            return this._verticalBarConfig;
           } else {
-            return this._horizontalConfig;
+            return this._horizontalBarConfig;
           }
         break;
         case "rwt.widgets.base.GridRow":
@@ -69,27 +75,48 @@ namespace( "rwt.client" );
       "appearOn" : "rest",
       "disappearOn" : "move",
       "appearDelay" : 1000,
-      "disappearDelay" : 200
+      "disappearDelay" : 200,
+      "autoHide" : true
     },
 
-    _horizontalConfig : {
+    _horizontalClickableConfig : {
       "position" : "horizontal-center",
       "appearOn" : "enter",
       "disappearOn" : "exit",
       "appearDelay" : 200,
-      "disappearDelay" : 100
+      "disappearDelay" : 100,
+      "autoHide" : true
+    },
+
+    _verticalClickableConfig : {
+      "position" : "vertical-center",
+      "appearOn" : "enter",
+      "disappearOn" : "exit",
+      "appearDelay" : 200,
+      "disappearDelay" : 100,
+      "autoHide" : true
+    },
+
+    _horizontalBarConfig : {
+      "position" : "horizontal-center",
+      "appearOn" : "enter",
+      "disappearOn" : "exit",
+      "appearDelay" : 200,
+      "disappearDelay" : 100,
+      "autoHide" : false
+    },
+
+    _verticalBarConfig : {
+      "position" : "vertical-center",
+      "appearOn" : "enter",
+      "disappearOn" : "exit",
+      "appearDelay" : 200,
+      "disappearDelay" : 100,
+      "autoHide" : false
     },
 
     _checkConfig : {
       "position" : "align-left",
-      "appearOn" : "enter",
-      "disappearOn" : "exit",
-      "appearDelay" : 200,
-      "disappearDelay" : 100
-    },
-
-    _verticalConfig : {
-      "position" : "vertical-center",
       "appearOn" : "enter",
       "disappearOn" : "exit",
       "appearDelay" : 200,
@@ -101,7 +128,8 @@ namespace( "rwt.client" );
       "appearOn" : "rest",
       "disappearOn" : "exit",
       "appearDelay" : 500,
-      "disappearDelay" : 200
+      "disappearDelay" : 200,
+      "autoHide" : true
     },
 
     _quickConfig : {
@@ -109,7 +137,8 @@ namespace( "rwt.client" );
       "appearOn" : "enter",
       "disappearOn" : "exit",
       "appearDelay" : 20,
-      "disappearDelay" : 50
+      "disappearDelay" : 50,
+      "autoHide" : false
     },
 
     _rowConfig : {
@@ -117,7 +146,8 @@ namespace( "rwt.client" );
       "appearOn" : "rest",
       "disappearOn" : "move",
       "appearDelay" : 500,
-      "disappearDelay" : 200
+      "disappearDelay" : 200,
+      "autoHide" : true
     }
 
 

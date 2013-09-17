@@ -377,6 +377,25 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertNull( toolTip.getBoundToWidget() );
     },
 
+    testAutoHideFalseByConfig : function() {
+      config = { "autoHide" : false };
+      WidgetToolTip.setToolTipText( widget, "test1" );
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      assertFalse( toolTip.getAutoHide() );
+    },
+
+    testAutoHideTrueByDefault : function() {
+      WidgetToolTip.setToolTipText( widget, "test1" );
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      assertTrue( toolTip.getAutoHide() );
+    },
+
     testHideAfterMouseMoveAndTimer : function() {
       config = { "disappearOn" : "move" };
       WidgetToolTip.setToolTipText( widget, "test1" );

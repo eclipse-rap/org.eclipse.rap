@@ -132,7 +132,6 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager", {
     },
 
     handleKeyEvent : function( event ) {
-      var toolTipTarget = this.getCurrentToolTipTarget();
       switch( event.getKeyIdentifier() ) {
         case "Control":
         case "Alt":
@@ -141,6 +140,7 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager", {
         case "Win":
         break;
         default:
+          var toolTipTarget = this.getCurrentToolTipTarget();
           if( toolTipTarget ) {
             this.setCurrentToolTipTarget( null );
           }
