@@ -44,12 +44,12 @@ public class CellImpl_Test {
     Fixture.tearDown();
   }
 
-  @Test( expected = IllegalArgumentException.class )
+  @Test( expected = NullPointerException.class )
   public void testFailsWithoutTemplate() {
     new CellImpl( null, "foo", SWT.NONE );
   }
 
-  @Test( expected = IllegalArgumentException.class )
+  @Test( expected = NullPointerException.class )
   public void testFailsWithoutType() {
     new CellImpl( new RowTemplate(), null, SWT.NONE );
   }

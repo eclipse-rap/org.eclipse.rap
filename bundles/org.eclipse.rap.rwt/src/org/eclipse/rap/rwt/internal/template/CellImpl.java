@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.template;
 
+import static org.eclipse.rap.rwt.internal.util.ParamCheck.notNull;
 import static org.eclipse.rap.rwt.internal.util.ParamCheck.notNullOrEmpty;
 
 import java.util.HashMap;
@@ -42,24 +43,12 @@ public class CellImpl implements Cell {
   private final int style;
 
   public CellImpl( RowTemplate template, String type, int style ) {
-    checkType( type );
-    checkTemplate( template );
+    notNull( template, "template" );
+    notNullOrEmpty( type, "type" );
     this.type = type;
     this.style = style;
     this.attributes = new HashMap<String, Object>();
     template.addCell( this );
-  }
-
-  private void checkType( String type ) {
-    if( type == null || type.isEmpty() ) {
-      throw new IllegalArgumentException( "Invalid type" );
-    }
-  }
-
-  private void checkTemplate( RowTemplate template ) {
-    if( template == null ) {
-      throw new IllegalArgumentException( "RowTemplate must not be null" );
-    }
   }
 
   public String getType() {
