@@ -66,6 +66,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       var config = ToolTipConfig.getConfig( widget );
 
       assertEquals( "horizontal-center", config.position );
+      assertEquals( -2, config.overlap );
       assertFalse( config.autoHide );
     },
 
@@ -76,6 +77,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       var config = getConfig( widget );
 
       assertEquals( "vertical-center", config.position );
+      assertEquals( -2, config.overlap );
+      assertFalse( config.autoHide );
+    },
+
+    testProgressBarConfigHorizontal : function() {
+      var widget = new rwt.widgets.ProgressBar();
+      widget.addState( "rwt_HORIZONTAL" );
+
+      var config = ToolTipConfig.getConfig( widget );
+
+      assertEquals( "horizontal-center", config.position );
+      assertEquals( 3, config.overlap );
+      assertFalse( config.autoHide );
+    },
+
+    testProgressBarConfigVertical : function() {
+      var widget = new rwt.widgets.ProgressBar();
+      widget.addState( "rwt_VERTICAL" );
+
+      var config = ToolTipConfig.getConfig( widget );
+
+      assertEquals( "vertical-center", config.position );
+      assertEquals( 3, config.overlap );
       assertFalse( config.autoHide );
     },
 
@@ -88,6 +112,31 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       assertEquals( "horizontal-center", config.position );
       assertEquals( "enter", config.appearOn );
       assertEquals( "exit", config.disappearOn );
+      assertEquals( "undefined", typeof config.overlap );
+    },
+
+    testCheckButton : function() {
+      var widget = new rwt.widgets.Button( "check" );
+      widget.setText( "foo" );
+
+      var config = ToolTipConfig.getConfig( widget );
+
+      assertEquals( "horizontal-center", config.position );
+      assertEquals( "enter", config.appearOn );
+      assertEquals( "exit", config.disappearOn );
+      assertEquals( -1, config.overlap );
+    },
+
+    testRadioButton : function() {
+      var widget = new rwt.widgets.Button( "radio" );
+      widget.setText( "foo" );
+
+      var config = ToolTipConfig.getConfig( widget );
+
+      assertEquals( "horizontal-center", config.position );
+      assertEquals( "enter", config.appearOn );
+      assertEquals( "exit", config.disappearOn );
+      assertEquals( -1, config.overlap );
     },
 
     testTabItem : function() {
@@ -140,6 +189,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       assertEquals( "horizontal-center", config.position );
       assertEquals( "enter", config.appearOn );
       assertEquals( "exit", config.disappearOn );
+      assertEquals( -1, config.overlap );
       assertFalse( config.autoHide );
       assertTrue( config.appearDelay <= 100 );
     },

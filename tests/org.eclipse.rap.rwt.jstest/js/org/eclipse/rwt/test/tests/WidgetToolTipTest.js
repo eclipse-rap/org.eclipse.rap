@@ -820,6 +820,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
     },
 
+    testPointer_ChangesTargetDistance_CustomOverlap : function() {
+      config = { "position" : "horizontal-center", "overlap" : 7 };
+      toolTip.setPointers( [ [ "foo.gif", 10, 30 ], null, null, null ] );
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      var expectedLeft = Math.round( 10 + 1 + 100 + 100 / 2 - toolTip.getWidthValue() / 2 );
+      var expectedTop = 20 + 1 + 10 + 20 + 30 - 7;
+      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+    },
+
     testPointer_ChangesTargetDistance_Down : function() {
       config = { "position" : "horizontal-center" };
       toolTip.setPointers( [ null, null, [ "foo.gif", 10, 30 ], null ] );

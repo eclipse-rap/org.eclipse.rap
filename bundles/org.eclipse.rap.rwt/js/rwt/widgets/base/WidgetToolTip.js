@@ -446,7 +446,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _getTargetDistance : function( direction ) {
-      var overlap = 4;
+      var overlap = typeof this._config.overlap === "number" ? this._config.overlap : 4;
       if( direction === "up" && this.getPointers()[ 0 ] ) {
         return this.getPointers()[ 0 ][ 2 ] - overlap;
       } else if( direction === "down" && this.getPointers()[ 2 ] ) {

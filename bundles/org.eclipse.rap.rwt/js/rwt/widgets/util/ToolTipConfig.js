@@ -17,26 +17,17 @@ namespace( "rwt.client" );
 
     getConfig : function( widget ) {
       if( widget.getParent() instanceof rwt.widgets.CoolBar ) {
-        if( widget.getParent().hasState( "rwt_VERTICAL" ) ) {
-          return this._verticalClickableConfig;
-        } else {
-          return this._horizontalClickableConfig;
-        }
+        return this._getClickableConfig( widget );
       }
       switch( widget.classname ) {
         case "rwt.widgets.ControlDecorator":
           return this._quickConfig;
         case "rwt.widgets.Label":
-          if( !widget._rawText ) {
-            return this._quickConfig;
-          } else {
-            return this._fieldConfig;
-          }
-        break;
+          return this._getLabelConfig( widget );
         case "rwt.widgets.Button":
         case "rwt.widgets.TabItem":
         case "rwt.widgets.CTabItem":
-          return this._horizontalClickableConfig;
+          return this._getClickableConfig( widget );
         case "rwt.widgets.Text":
         case "rwt.widgets.Spinner":
         case "rwt.widgets.Combo":
@@ -44,27 +35,48 @@ namespace( "rwt.client" );
         case "rwt.widgets.DateTimeTime":
           return this._fieldConfig;
         case "rwt.widgets.ToolItem":
-          if( widget.hasState( "rwt_VERTICAL" ) ) {
-            return this._verticalClickableConfig;
-          } else {
-            return this._horizontalClickableConfig;
-          }
-        break;
+          return this._getClickableConfig( widget );
         case "rwt.widgets.ProgressBar":
+          return rwt.util.Objects.mergeWith( { "overlap" : 3 }, this._getBarConfig( widget ) );
         case "rwt.widgets.Scale":
         case "rwt.widgets.Slider":
-          if( widget.hasState( "rwt_VERTICAL" ) ) {
-            return this._verticalBarConfig;
-          } else {
-            return this._horizontalBarConfig;
-          }
-        break;
+          return rwt.util.Objects.mergeWith( { "overlap" : -2 }, this._getBarConfig( widget ) );
         case "rwt.widgets.base.GridRow":
           return this._rowConfig;
         default:
           return this._defaultConfig;
       }
 
+    },
+
+    _getBarConfig : function( widget ) {
+      if( widget.hasState( "rwt_VERTICAL" ) ) {
+        return this._verticalBarConfig;
+      } else {
+        return this._horizontalBarConfig;
+      }
+    },
+
+    _getClickableConfig : function( widget ) {
+      if( widget.hasState( "rwt_VERTICAL" ) ) {
+        return this._verticalClickableConfig;
+      } else {
+        var appearance = widget.getAppearance();
+        var result = this._horizontalClickableConfig;
+        if( appearance === "check-box" || appearance === "radio-button" ) {
+          return rwt.util.Objects.mergeWith( { "overlap" : -1 }, result );
+        } else {
+          return result;
+        }
+      }
+    },
+
+    _getLabelConfig : function( widget ) {
+      if( !widget._rawText ) {
+        return this._quickConfig;
+      } else {
+        return this._fieldConfig;
+      }
     },
 
     _defaultConfig : {
@@ -135,7 +147,8 @@ namespace( "rwt.client" );
       "disappearOn" : "exit",
       "appearDelay" : 20,
       "disappearDelay" : 50,
-      "autoHide" : false
+      "autoHide" : false,
+      "overlap" : -1
     },
 
     _rowConfig : {
