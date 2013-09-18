@@ -21,6 +21,7 @@ var config;
 var shell;
 var widget;
 var offset = 4;
+var overlap = 4;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
   extend : rwt.qx.Object,
@@ -803,6 +804,69 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertEquals( "10px", pointer.style.width );
       assertEquals( "20px", pointer.style.height );
     },
+
+    testPointer_ChangesTargetDistance_Up : function() {
+      config = { "position" : "horizontal-center" };
+      toolTip.setPointers( [ [ "foo.gif", 10, 30 ], null, null, null ] );
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      var expectedLeft = Math.round( 10 + 1 + 100 + 100 / 2 - toolTip.getWidthValue() / 2 );
+      var expectedTop = 20 + 1 + 10 + 20 + 30 - overlap;
+      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+    },
+
+    testPointer_ChangesTargetDistance_Down : function() {
+      config = { "position" : "horizontal-center" };
+      toolTip.setPointers( [ null, null, [ "foo.gif", 10, 30 ], null ] );
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      widget.setTop( 200 );
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      var expectedLeft = Math.round( 10 + 1 + 100 + 100 / 2 - toolTip.getWidthValue() / 2 );
+      var tooltipHeight = toolTip.getHeightValue();
+      var expectedTop = 20 + 1 + 200 - tooltipHeight - 30 + overlap;
+      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+    },
+
+    testPointer_ChangesTargetDistance_Left : function() {
+      config = { "position" : "vertical-center" };
+      toolTip.setPointers( [ null, null, null, [ "foo.gif", 30, 10 ] ] );
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      var expectedLeft = 10 + 1 + 100 + 100 + 30 - overlap;
+      var expectedTop = 20 + 1 + 10 + 20 / 2 - toolTip.getBoxHeight() / 2;
+      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+    },
+
+    testPointer_ChangesTargetDistance_Right : function() {
+      config = { "position" : "vertical-center" };
+      toolTip.setPointers( [ null, [ "foo.gif", 30, 10 ], null, null ] );
+      WidgetToolTip.setToolTipText( widget, "foobar" );
+      var totalWidth =  rwt.widgets.base.ClientDocument.getInstance().getClientWidth();
+      var left = Math.round( totalWidth / 2 );
+      widget.setLeft( left );
+
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      var expectedLeft = 10 + 1 + left - toolTip.getBoxWidth() - 30 + overlap;
+      var expectedTop = 20 + 1 + 10 + 20 / 2 - toolTip.getBoxHeight() / 2;
+      assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
+      assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+    }
 
   }
 

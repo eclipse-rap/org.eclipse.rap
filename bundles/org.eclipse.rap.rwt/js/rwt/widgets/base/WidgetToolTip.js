@@ -80,7 +80,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
   members : {
     _minZIndex : 1e7,
-    _targetDistance : 4, // make config-able (for checkbox, slider, scale, controldeco)
+    _targetDistance : 4,
     _isFocusRoot : false,
 
     updateText : function() {
@@ -98,7 +98,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       if( this._pointer == null ) {
         this._pointer = document.createElement( "div" );
         this._pointer.style.position = "absolute";
-        // TODO: make mouse pass through
+        rwt.html.Style.setPointerEvents( this._pointer, "none" );
         this.getElement().appendChild( this._pointer );
       }
       return this._pointer;
@@ -388,11 +388,11 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _getVerticalOffsetTop : function( target, self ) {
-      return target.top - self.height - this._targetDistance; // at the top
+      return target.top - self.height - this._getTargetDistance( "down" );
     },
 
     _getVerticalOffsetBottom : function( target, self ) {
-      return target.top + target.height + this._targetDistance; // at the bottom
+      return target.top + target.height + this._getTargetDistance( "up" );
     },
 
     _getHorizontalOffsetCentered : function( target, self, doc ) {
@@ -407,9 +407,9 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       var leftSpace = target.left;
       var rightSpace = doc.width - leftSpace - target.width;
       if( leftSpace > rightSpace ) {
-        return target.left - self.width - this._targetDistance; // to the left
+        return target.left - self.width - this._getTargetDistance( "right" );
       } else {
-        return target.left + target.width + this._targetDistance; // to the right
+        return target.left + target.width + this._getTargetDistance( "left" );
       }
     },
 
@@ -443,7 +443,23 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     _getOwnDimension : function() {
       return { "width" : this.getBoxWidth(), "height" : this.getBoxHeight() };
+    },
+
+    _getTargetDistance : function( direction ) {
+      var overlap = 4;
+      if( direction === "up" && this.getPointers()[ 0 ] ) {
+        return this.getPointers()[ 0 ][ 2 ] - overlap;
+      } else if( direction === "down" && this.getPointers()[ 2 ] ) {
+        return this.getPointers()[ 2 ][ 2 ] - overlap;
+      } else if( direction === "left" && this.getPointers()[ 3 ] ) {
+        return this.getPointers()[ 3 ][ 1 ] - overlap;
+      } else if( direction === "right" && this.getPointers()[ 1 ] ) {
+        return this.getPointers()[ 1 ][ 1 ] - overlap;
+      } else {
+        return this._targetDistance;
+      }
     }
+
 
   },
 
