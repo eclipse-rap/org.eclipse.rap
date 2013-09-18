@@ -36,14 +36,9 @@ Widget-ToolTip {
   box-shadow: none;
 }
 
-/*
-Widget-ToolTip-Pointer:up {
-  background-image : url( up.png );
+Widget-ToolTip-Pointer {
+  background-image: none;
 }
-
-Widget-ToolTip-Pointer:down {
-  background-image : url( down.png );
-}*/
 
 Display {
   rwt-shadow-color: #a7a6aa;

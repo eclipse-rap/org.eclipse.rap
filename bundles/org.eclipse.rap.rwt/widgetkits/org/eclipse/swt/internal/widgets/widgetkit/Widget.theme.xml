@@ -169,6 +169,21 @@
 
     <property name="box-shadow" description="The shadow behind the tooltip." />
 
+    <element name="Widget-ToolTip-Pointer">
+
+      <property name="background-image"
+          description="The image used by the tooltips to point towards a specific widget." />
+
+      <state name="up" description="On pointing up" />
+
+      <state name="down" description="On pointing down" />
+
+      <state name="left" description="On pointing left" />
+
+      <state name="right" description="On pointing right" />
+
+    </element>
+
   </element>
 
   <!-- TODO [rst] Eliminate when property support is gone. -->

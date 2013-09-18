@@ -35,6 +35,10 @@ Widget-ToolTip {
   box-shadow: 3px 4px 2px rgba( 0, 0, 0, 0.3 );
 }
 
+Widget-ToolTip-Pointer {
+  background-image: none;
+}
+
 Display {
   rwt-shadow-color: #a7a6aa;
   rwt-highlight-color: #ffffff;

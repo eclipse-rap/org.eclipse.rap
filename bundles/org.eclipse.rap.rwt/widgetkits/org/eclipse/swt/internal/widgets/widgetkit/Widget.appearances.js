@@ -174,11 +174,18 @@ var appearances = {
       result.backgroundGradient = tv.getCssGradient( "Widget-ToolTip", "background-image" );
       result.opacity = tv.getCssFloat( "Widget-ToolTip", "opacity" );
       result.shadow = tv.getCssShadow( "Widget-ToolTip", "box-shadow" );
+      var getPointer = function( direction ) {
+        var store = rwt.theme.ThemeStore.getInstance();
+        var states = {};
+        states[ direction ] = true;
+        var result = store.getSizedImage( "Widget-ToolTip-Pointer", direction, "background-image" );
+        return result[ 0 ] ? result : null;
+      }
       result.pointers = [
-        [ rwt.remote.Connection.RESOURCE_PATH + "widget/rap/arrows/tooltip-up.png", 15, 8 ],
-        [ rwt.remote.Connection.RESOURCE_PATH + "widget/rap/arrows/tooltip-right.png", 8, 15 ],
-        [ rwt.remote.Connection.RESOURCE_PATH + "widget/rap/arrows/tooltip-down.png", 15, 8 ],
-        [ rwt.remote.Connection.RESOURCE_PATH + "widget/rap/arrows/tooltip-left.png", 8, 15 ]
+        getPointer( "up" ),
+        getPointer( "right" ),
+        getPointer( "down" ),
+        getPointer( "left" )
       ];
       return result;
     }

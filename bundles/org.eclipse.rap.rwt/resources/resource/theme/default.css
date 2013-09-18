@@ -35,6 +35,26 @@ Widget-ToolTip {
   box-shadow: none;
 }
 
+Widget-ToolTip-Pointer {
+  background-image: none;
+}
+
+Widget-ToolTip-Pointer:up {
+  background-image : url( resource/widget/rap/arrows/tooltip-up.png );
+}
+
+Widget-ToolTip-Pointer:down {
+  background-image : url( resource/widget/rap/arrows/tooltip-down.png );
+}
+
+Widget-ToolTip-Pointer:left {
+  background-image : url( resource/widget/rap/arrows/tooltip-left.png );
+}
+
+Widget-ToolTip-Pointer:right {
+  background-image : url( resource/widget/rap/arrows/tooltip-right.png );
+}
+
 Display {
   rwt-shadow-color: #a7a6aa;
   rwt-highlight-color: #ffffff;
@@ -1085,7 +1105,6 @@ Table-RowOverlay:linesvisible:even:selected:unfocused {
   );
   color: #ffffff;
 }
-
 
 TableColumn-SortIndicator {
   background-image: none;
