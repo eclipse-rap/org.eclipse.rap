@@ -111,6 +111,7 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
   },
 
   members : {
+
     _onChangeWidth : function( evt ) {
       this._line.setWidth( this.getWidth() - 2 * rwt.widgets.Scale.PADDING );
       this._updateStep();
@@ -282,10 +283,11 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
       var pos =   rwt.widgets.Scale.PADDING
                 + this._pxStep * ( this._selection - this._minimum );
       if( this._horizontal ) {
-        this._thumb.setLeft( pos );
+        this._thumb.setLeft( Math.round( pos ) );
       } else {
-        this._thumb.setTop( pos );
+        this._thumb.setTop( Math.round( pos ) );
       }
+      this.dispatchSimpleEvent( "updateToolTip", this );
     },
 
     _getSelectionFromThumbPosition : function( position ) {
@@ -351,6 +353,15 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
 
     setPageIncrement : function( value ) {
       this._pageIncrement = value;
+    },
+
+    getToolTipTargetBounds : function() {
+      return {
+        "left" : this._cachedBorderLeft + ( this._thumb.getLeft() || 0 ),
+        "top" : this._cachedBorderLeft + ( this._thumb.getTop() || 0 ),
+        "width" : this._thumb.getBoxWidth(),
+        "height" : this._thumb.getBoxHeight()
+      };
     },
 
     // overwritten:

@@ -80,7 +80,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
   members : {
     _minZIndex : 1e7,
-    _targetDistance : 4,
+    _targetDistance : 4, // make config-able (for checkbox, slider, scale, controldeco)
     _isFocusRoot : false,
 
     updateText : function() {
@@ -98,6 +98,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       if( this._pointer == null ) {
         this._pointer = document.createElement( "div" );
         this._pointer.style.position = "absolute";
+        // TODO: make mouse pass through
         this.getElement().appendChild( this._pointer );
       }
       return this._pointer;
