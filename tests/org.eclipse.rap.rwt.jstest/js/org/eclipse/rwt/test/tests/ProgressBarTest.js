@@ -977,9 +977,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertIdentical( bar, fired );
       bar.destroy();
       TestUtil.flush();
-    },
-
-
+    }
 
   }
 

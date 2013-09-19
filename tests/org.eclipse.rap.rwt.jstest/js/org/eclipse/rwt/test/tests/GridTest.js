@@ -445,7 +445,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.protocolSet( "w3", { "cellToolTipText" : "foo && <> \"\n bar" } );
 
       var left = rwt.widgets.base.WidgetToolTip.getInstance().getLeft();
-      assertEquals( 1 + 2 + 20 + 3, left );
+      assertEquals( 1 + 2 + 20 + 4, left );
       shell.destroy();
     },
 

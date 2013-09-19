@@ -73,11 +73,12 @@ rwt.scripting.Synchronizer.prototype = { // TODO : use the getter defined by the
     this._sync( widget, "cursor", widget.__user$cursor || null );
   },
 
-  // These events are fired by "dispatchSimpleEvent" in the widgets type handler or setter:
-
-  _onChangeToolTipText : function( widget ) {
-    this._sync( widget, "toolTip", widget.getUserData( "toolTipText" ) );
+  _onChangeToolTipText : function( event ) {
+    var widget = event.getTarget();
+    this._sync( widget, "toolTip", widget.getToolTipText() );
   },
+
+  // These events are fired by "dispatchSimpleEvent" in the widgets type handler or setter:
 
   _onChangeButtonText : function( widget ) {
     this._sync( widget, "text", widget.getCellContent( 2 ) );

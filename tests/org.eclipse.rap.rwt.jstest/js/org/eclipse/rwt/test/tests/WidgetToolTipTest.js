@@ -197,7 +197,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       showToolTip();
 
       var expectedLeft = 10 + 1 + 100 + 100 + offset;
-      var expectedTop = 20 + 1 + 10 + 20 / 2 - toolTip.getBoxHeight() / 2;
+      var expectedTop = Math.round( 20 + 1 + 10 + 20 / 2 - toolTip.getBoxHeight() / 2 );
       assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
       assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
     },
@@ -213,7 +213,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       showToolTip();
 
       var expectedLeft = 10 + 1 + left - toolTip.getBoxWidth() - offset;
-      var expectedTop = 20 + 1 + 10 + 20 / 2 - toolTip.getBoxHeight() / 2;
+      var expectedTop = Math.round( 20 + 1 + 10 + 20 / 2 - toolTip.getBoxHeight() / 2 );
       assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
       assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
     },
@@ -861,7 +861,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       showToolTip();
 
       var expectedLeft = 10 + 1 + 100 + 100 + 30 - overlap;
-      var expectedTop = 20 + 1 + 10 + 20 / 2 - toolTip.getBoxHeight() / 2;
+      var expectedTop = Math.round( 20 + 1 + 10 + 20 / 2 - toolTip.getBoxHeight() / 2 );
       assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
       assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
     },
@@ -878,7 +878,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       showToolTip();
 
       var expectedLeft = 10 + 1 + left - toolTip.getBoxWidth() - 30 + overlap;
-      var expectedTop = 20 + 1 + 10 + 20 / 2 - toolTip.getBoxHeight() / 2;
+      var expectedTop = Math.round( 20 + 1 + 10 + 20 / 2 - toolTip.getBoxHeight() / 2 );
       assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
       assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
     }

@@ -468,7 +468,7 @@ rwt.remote.HandlerUtil = {
       * @return {string|null} the receiver's tool tip text
       */
      getToolTipText : function() {
-       return this.getUserData( "toolTipText" );
+       return this.getToolTipText();
      },
      /**
       * @description Returns <code>true</code> if the receiver is visible, and

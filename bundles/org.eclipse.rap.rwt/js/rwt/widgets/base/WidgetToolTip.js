@@ -261,7 +261,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       element.style.height = pointer[ 2 ] + "px";
       element.style.top = ( -1 * pointer[ 2 ] ) + "px";
       if( this._config.position === "align-left" ) {
-        element.style.left = this.getPaddingLeft();
+        element.style.left = this.getPaddingLeft() + "px";
       } else {
         element.style.left = Math.round( targetCenter.left - self.left - pointer[ 1 ] / 2 ) + "px";
       }
@@ -277,7 +277,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       element.style.height = pointer[ 2 ] + "px";
       element.style.top = self.height + "px";
       if( this._config.position === "align-left" ) {
-        element.style.left = this.getPaddingLeft();
+        element.style.left = this.getPaddingLeft() + "px";
       } else {
         element.style.left = Math.round( targetCenter.left - self.left - pointer[ 1 ] / 2 ) + "px";
       }
