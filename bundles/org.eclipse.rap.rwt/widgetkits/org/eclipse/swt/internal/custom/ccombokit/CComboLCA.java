@@ -17,20 +17,15 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
@@ -85,29 +80,11 @@ public final class CComboLCA extends AbstractWidgetLCA {
     preserveListener( ccombo, PROP_MODIFY_LISTENER, hasModifyListener( ccombo ) );
   }
 
-  public void readData( Widget widget ) {
-    CCombo ccombo = ( CCombo )widget;
-    String value = readPropertyValue( ccombo, "selectionIndex" );
-    if( value != null ) {
-      ccombo.select( NumberFormatUtil.parseInt( value ) );
-    }
-    String listVisible = readPropertyValue( ccombo, "listVisible" );
-    if( listVisible != null ) {
-      ccombo.setListVisible( Boolean.valueOf( listVisible ).booleanValue() );
-    }
-    readTextAndSelection( ccombo );
-    ControlLCAUtil.processSelection( ccombo, null, true );
-    ControlLCAUtil.processDefaultSelection( ccombo, null );
-    ControlLCAUtil.processEvents( ccombo );
-    ControlLCAUtil.processKeyEvents( ccombo );
-    ControlLCAUtil.processMenuDetect( ccombo );
-    WidgetLCAUtil.processHelp( ccombo );
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     CCombo ccombo = ( CCombo )widget;
     RemoteObject remoteObject = createRemoteObject( ccombo, TYPE );
+    remoteObject.setHandler( new CComboOperationHandler( ccombo ) );
     remoteObject.set( "parent", getId( ccombo.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( ccombo, ALLOWED_STYLES ) ) );
     remoteObject.set( "ccombo", true );
@@ -130,57 +107,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
     renderListenSelection( ccombo );
     renderListenDefaultSelection( ccombo );
     renderListenModify( ccombo );
-  }
-
-  ///////////////////////////////////////
-  // Helping methods to read client state
-
-  private static void readTextAndSelection( final CCombo ccombo ) {
-    final Point selection = readSelection( ccombo );
-    final String txt = readPropertyValue( ccombo, "text" );
-    if( txt != null ) {
-      if( isListening( ccombo, SWT.Verify ) ) {
-        // setText needs to be executed in a ProcessAcction runnable as it may
-        // fire a VerifyEvent whose fields (text and doit) need to be evaluated
-        // before actually setting the new value
-        ProcessActionRunner.add( new Runnable() {
-          public void run() {
-            ccombo.setText( txt );
-            // since text is set in process action, preserved values have to be
-            // replaced
-            WidgetAdapter adapter = getAdapter( ccombo );
-            adapter.preserve( PROP_TEXT, txt );
-            if( selection != null ) {
-              ccombo.setSelection( selection );
-              adapter.preserve( PROP_SELECTION, selection );
-            }
-         }
-        } );
-      } else {
-        ccombo.setText( txt );
-        if( selection != null ) {
-          ccombo.setSelection( selection );
-        }
-      }
-    } else if( selection != null ) {
-      ccombo.setSelection( selection );
-    }
-  }
-
-  private static Point readSelection( CCombo ccombo ) {
-    Point result = null;
-    String selStart = readPropertyValue( ccombo, "selectionStart" );
-    String selLength = readPropertyValue( ccombo, "selectionLength" );
-    if( selStart != null || selLength != null ) {
-      result = new Point( 0, 0 );
-      if( selStart != null ) {
-        result.x = NumberFormatUtil.parseInt( selStart );
-      }
-      if( selLength != null ) {
-        result.y = result.x + NumberFormatUtil.parseInt( selLength );
-      }
-    }
-    return result;
   }
 
   //////////////////////////////////////////////
@@ -267,4 +193,5 @@ public final class CComboLCA extends AbstractWidgetLCA {
     }
     return result;
   }
+
 }

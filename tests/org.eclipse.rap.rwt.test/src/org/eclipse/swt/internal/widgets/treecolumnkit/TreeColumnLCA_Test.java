@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets.treecolumnkit;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
+import static org.eclipse.swt.internal.widgets.treecolumnkit.TreeColumnLCA.getLeft;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -132,7 +133,7 @@ public class TreeColumnLCA_Test {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     Object left = adapter.getPreserved( TreeColumnLCA.PROP_LEFT );
-    assertEquals( new Integer( TreeColumnLCA.getLeft( column ) ), left );
+    assertEquals( new Integer( getLeft( column ) ), left );
     Object resizable = adapter.getPreserved( TreeColumnLCA.PROP_RESIZABLE );
     assertEquals( Boolean.TRUE, resizable );
     Object moveable = adapter.getPreserved( TreeColumnLCA.PROP_MOVEABLE );
@@ -147,7 +148,7 @@ public class TreeColumnLCA_Test {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     left = adapter.getPreserved( TreeColumnLCA.PROP_LEFT );
-    assertEquals( new Integer( TreeColumnLCA.getLeft( column ) ), left );
+    assertEquals( new Integer( getLeft( column ) ), left );
     resizable = adapter.getPreserved( TreeColumnLCA.PROP_RESIZABLE );
     assertEquals( Boolean.FALSE, resizable );
     moveable = adapter.getPreserved( TreeColumnLCA.PROP_MOVEABLE );
@@ -164,16 +165,16 @@ public class TreeColumnLCA_Test {
     TreeColumn column2 = new TreeColumn( tree, SWT.NONE );
     column2.setWidth( 10 );
     // Test with natural column order
-    assertEquals( 0, TreeColumnLCA.getLeft( column ) );
-    assertEquals( 10, TreeColumnLCA.getLeft( column1 ) );
-    assertEquals( 20, TreeColumnLCA.getLeft( column2 ) );
+    assertEquals( 0, getLeft( column ) );
+    assertEquals( 10, getLeft( column1 ) );
+    assertEquals( 20, getLeft( column2 ) );
     // Test with reverted column order
     tree.setColumnOrder( new int[]{
       2, 1, 0
     } );
-    assertEquals( 0, TreeColumnLCA.getLeft( column2 ) );
-    assertEquals( 10, TreeColumnLCA.getLeft( column1 ) );
-    assertEquals( 20, TreeColumnLCA.getLeft( column ) );
+    assertEquals( 0, getLeft( column2 ) );
+    assertEquals( 10, getLeft( column1 ) );
+    assertEquals( 20, getLeft( column ) );
   }
 
   @Test

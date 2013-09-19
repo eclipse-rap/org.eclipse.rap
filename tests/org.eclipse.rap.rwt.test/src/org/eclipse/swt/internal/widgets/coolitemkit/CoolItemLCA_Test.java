@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolitemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -21,14 +23,17 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.ICoolBarAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.CoolBar;
@@ -92,6 +97,15 @@ public class CoolItemLCA_Test {
   }
 
   @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( item );
+    lca.renderInitialization( item );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof CoolItemOperationHandler );
+  }
+
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( item );
 
@@ -136,21 +150,6 @@ public class CoolItemLCA_Test {
   }
 
   @Test
-  public void testReadMove() {
-    bar.setSize( 100, 10 );
-    item.setSize( 10, 10 );
-    CoolItem item2 = new CoolItem( bar, SWT.NONE );
-    item2.setSize( 20, 10 );
-    int oldX = item.getBounds().x;
-
-    JsonObject parameters = new JsonObject().add( "left", 25 );
-    Fixture.fakeCallOperation( getId( item ), "move", parameters  );
-    Fixture.readDataAndProcessAction( display );
-
-    assertTrue( oldX != item.getBounds().x );
-  }
-
-  @Test
   public void testRenderData() throws IOException {
     registerDataKeys( new String[]{ "foo", "bar" } );
     item.setData( "foo", "string" );
@@ -176,6 +175,40 @@ public class CoolItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
+  }
+
+  @Test
+  public void testSnapBackItemMoved() {
+    bar.setSize( 400, 25 );
+    item.setSize( 250, 25 );
+    getRemoteObject( item ).setHandler( new CoolItemOperationHandler( item ) );
+    CoolItem item1 = new CoolItem( bar, SWT.NONE );
+    item1.setSize( 250, 25 );
+    // Set up environment; get displayId first as it currently is in 'real life'
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( bar );
+    Fixture.markInitialized( item );
+    Fixture.markInitialized( item1 );
+    // get adapter to set item order
+    ICoolBarAdapter cba = bar.getAdapter( ICoolBarAdapter.class );
+
+    // Simulate that fist item is dragged around but dropped at its original
+    // position
+    cba.setItemOrder( new int[] { 0, 1 } );
+
+    fakeMove( item, 10 );
+    Fixture.executeLifeCycleFromServerThread();
+
+    assertEquals( 0, bar.getItemOrder()[ 0 ] );
+    assertEquals( 1, bar.getItemOrder()[ 1 ] );
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findSetOperation( item, "bounds" ) );
+  }
+
+  private void fakeMove( CoolItem coolItem, int x ) {
+    Fixture.fakeNewRequest();
+    Fixture.fakeCallOperation( getId( coolItem ), "move", new JsonObject().add( "left", x ) );
   }
 
 }

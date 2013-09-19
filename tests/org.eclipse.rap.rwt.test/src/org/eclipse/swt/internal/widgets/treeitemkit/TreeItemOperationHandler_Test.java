@@ -28,18 +28,15 @@ import org.junit.Test;
 
 public class TreeItemOperationHandler_Test {
 
-  private Display display;
-  private Shell shell;
-  private Tree tree;
   private TreeItem item;
   private TreeItemOperationHandler handler;
 
   @Before
   public void setUp() {
     Fixture.setUp();
-    display = new Display();
-    shell = new Shell( display, SWT.NONE );
-    tree = new Tree( shell, SWT.CHECK );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.CHECK );
     tree.setBounds( 0, 0, 100, 100 );
     item = new TreeItem( tree, SWT.NONE );
     new TreeItem( item, SWT.NONE );

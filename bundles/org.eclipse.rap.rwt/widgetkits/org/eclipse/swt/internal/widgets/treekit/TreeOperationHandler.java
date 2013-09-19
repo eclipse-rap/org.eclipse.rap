@@ -134,8 +134,8 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
   /*
    * PROTOCOL CALL renderToolTipText
    *
-   * @item (string) id of the hovered item
-   * @column (int) column index of the hovered cell
+   * @param item (string) id of the hovered item
+   * @param column (int) column index of the hovered cell
    */
   public void handleCallRenderToolTipText( Tree tree, JsonObject properties ) {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
@@ -158,7 +158,7 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
    * @param shiftKey (boolean) true if the SHIFT key was pressed
    * @param detail (string) "check" if checkbox is selected, "hyperlink" if RWT hyperlink is
    *        selected
-   * @item item (string) id of selected item
+   * @param item (string) id of selected item
    */
   public void handleNotifySelection( Tree tree, JsonObject properties ) {
     Event event = createSelectionEvent( SWT.Selection, properties );
@@ -173,7 +173,7 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
    * @param ctrlKey (boolean) true if the CTRL key was pressed
    * @param shiftKey (boolean) true if the SHIFT key was pressed
    * @param detail (string) "check" is checkbox is selected
-   * @item item (string) id of selected item
+   * @param item (string) id of selected item
    */
   public void handleNotifyDefaultSelection( Tree tree, JsonObject properties ) {
     Event event = createSelectionEvent( SWT.DefaultSelection, properties );
@@ -184,7 +184,7 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
   /*
    * PROTOCOL NOTIFY Expand
    *
-   * @item item (string) id of expanded item
+   * @param item (string) id of expanded item
    */
   public void handleNotifyExpand( Tree tree, JsonObject properties ) {
     Event event = new Event();
@@ -195,7 +195,7 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
   /*
    * PROTOCOL NOTIFY Collapse
    *
-   * @item item (string) id of collapsed item
+   * @param item (string) id of collapsed item
    */
   public void handleNotifyCollapse( Tree tree, JsonObject properties ) {
     Event event = new Event();

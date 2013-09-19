@@ -24,7 +24,7 @@
   <properties>
     <tycho-version>0.18.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
-    <signing-plugin-version>1.0.1</signing-plugin-version>
+    <signing-plugin-version>1.0.4</signing-plugin-version>
     <surefire-version>2.15</surefire-version>
     <junit-version>4.8.2</junit-version>
     <mockito-version>1.8.4</mockito-version>
@@ -101,13 +101,6 @@
       <url>http://build.eclipse.org/rt/rap/base-platforms/2.2/extra-dependencies</url>
     </repository>
   </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>maven.eclipse.org</id>
-      <url>http://maven.eclipse.org/nexus/content/repositories/milestone-indigo</url>
-    </pluginRepository>
-  </pluginRepositories>
 
   <build>
     <plugins>
@@ -208,8 +201,8 @@
 
       <pluginRepositories>
         <pluginRepository>
-          <id>m2e-cbi</id>
-          <url>http://download.eclipse.org/technology/m2e/maven/</url>
+          <id>eclipse-cbi</id>
+          <url>https://repo.eclipse.org/content/groups/cbi/</url>
         </pluginRepository>
       </pluginRepositories>
 

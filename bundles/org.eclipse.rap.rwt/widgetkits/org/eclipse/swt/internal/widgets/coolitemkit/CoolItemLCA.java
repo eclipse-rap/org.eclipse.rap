@@ -12,26 +12,18 @@
 package org.eclipse.swt.internal.widgets.coolitemkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasCallReceived;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.ICoolBarAdapter;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.CoolItem;
 import org.eclipse.swt.widgets.Widget;
 
@@ -56,24 +48,11 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveData( item );
   }
 
-  public void readData( Widget widget ) {
-    final CoolItem item = ( CoolItem )widget;
-    String methodName = "move";
-    if( wasCallReceived( getId( item ), methodName ) ) {
-      String left = readCallPropertyValueAsString( getId( item ), methodName, "left" );
-      final int newLeft = NumberFormatUtil.parseInt( left );
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          moveItem( item, newLeft );
-        }
-      } );
-    }
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     CoolItem item = ( CoolItem )widget;
     RemoteObject remoteObject = createRemoteObject( item, TYPE );
+    remoteObject.setHandler( new CoolItemOperationHandler( item ) );
     remoteObject.set( "parent", getId( item.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( item, ALLOWED_STYLES ) ) );
   }
@@ -85,76 +64,6 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     renderProperty( item, PROP_CONTROL, item.getControl(), null );
     WidgetLCAUtil.renderCustomVariant( item );
     WidgetLCAUtil.renderData( item );
-  }
-
-  ///////////////////////////////
-  // Methods for item re-ordering
-
-  private static void moveItem( CoolItem coolItem, int newX ) {
-    CoolItem[] items = coolItem.getParent().getItems();
-    boolean changed = false;
-    int newOrder = -1;
-    int maxX = 0;
-    int minX = 0;
-    for( int i = 0; newOrder == -1 && i < items.length; i++ ) {
-      CoolItem item = items[ i ];
-      Rectangle itemBounds = item.getBounds();
-      if( item != coolItem && itemBounds.contains( newX, itemBounds.y ) ) {
-        if( coolItem.getBounds().x > newX ) {
-          newOrder = i + 1;
-        } else {
-          newOrder = i;
-        }
-        changed = changeOrder( coolItem, newOrder );
-      }
-      maxX = Math.max( maxX, itemBounds.x + itemBounds.width );
-      minX = Math.min( minX, itemBounds.x );
-    }
-    if( newOrder == -1 && newX > maxX ) {
-      // item was moved after the last item
-      int last = coolItem.getParent().getItemCount() - 1;
-      changed = changeOrder( coolItem, last );
-    } else if( newOrder == -1 && newX < minX ) {
-      // item was moved before the first item
-      changed = changeOrder( coolItem, 0 );
-    }
-    // In case an item was moved but that didn't cause it to change its order,
-    // we need to let it 'snap back' to its previous position
-    if( !changed ) {
-      // TODO [rh] HACK: a decent solution would mark the item as 'bounds
-      //      changed' and that mark could be evaluated by writeBounds.
-      //      A more flexible writeBounds implementation on WidgetLCAUtil is
-      //      necessary therefore.
-      getAdapter( coolItem ).preserve( Props.BOUNDS, null );
-    }
-  }
-
-  private static boolean changeOrder( CoolItem coolItem, int newOrder ) {
-    boolean result;
-    CoolBar coolBar = coolItem.getParent();
-    int itemIndex = coolBar.indexOf( coolItem );
-    int[] itemOrder = coolBar.getItemOrder();
-    int length = itemOrder.length;
-    int[] targetOrder = new int[ length ];
-    int index = 0;
-    if ( itemIndex != newOrder ) {
-      for( int i = 0; i < length; i++ ) {
-        if( i == newOrder ) {
-          targetOrder[ i ] = itemOrder[ itemIndex ];
-        } else {
-          if( index == itemIndex ) {
-            index++;
-          }
-          targetOrder[ i ] = itemOrder[ index ];
-          index++;
-        }
-      }
-      coolBar.getAdapter( ICoolBarAdapter.class ).setItemOrder( targetOrder );
-      result = true;
-    } else {
-      result = false;
-    }
-    return result;
   }
 
 }

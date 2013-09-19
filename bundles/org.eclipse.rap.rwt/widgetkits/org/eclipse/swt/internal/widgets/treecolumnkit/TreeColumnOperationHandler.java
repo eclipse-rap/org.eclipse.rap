@@ -60,7 +60,7 @@ public class TreeColumnOperationHandler extends WidgetOperationHandler<TreeColum
   /*
    * PROTOCOL CALL move
    *
-   * @left (int) the left position of the column
+   * @param left (int) the left position of the column
    */
   public void handleCallMove( final TreeColumn column, JsonObject properties ) {
     final int newLeft = properties.get( PROP_LEFT ).asInt();
@@ -74,7 +74,7 @@ public class TreeColumnOperationHandler extends WidgetOperationHandler<TreeColum
   /*
    * PROTOCOL CALL resize
    *
-   * @width (int) the width of the column
+   * @param width (int) the width of the column
    */
   public void handleCallResize( final TreeColumn column, JsonObject properties ) {
     final int width = properties.get( PROP_WIDTH ).asInt();
@@ -179,13 +179,12 @@ public class TreeColumnOperationHandler extends WidgetOperationHandler<TreeColum
     return getTreeAdapter( column ).getColumnLeft( column );
   }
 
-  private static ITreeAdapter getTreeAdapter( TreeColumn column ) {
-    return column.getParent().getAdapter( ITreeAdapter.class );
+  private static int getLeftOffset( TreeColumn column ) {
+    return getTreeAdapter( column ).getScrollLeft();
   }
 
-  private static int getLeftOffset( TreeColumn column ) {
-    ITreeAdapter adapter = column.getParent().getAdapter( ITreeAdapter.class );
-    return adapter.getScrollLeft();
+  private static ITreeAdapter getTreeAdapter( TreeColumn column ) {
+    return column.getParent().getAdapter( ITreeAdapter.class );
   }
 
   private static int arrayIndexOf( int[] array, int value ) {

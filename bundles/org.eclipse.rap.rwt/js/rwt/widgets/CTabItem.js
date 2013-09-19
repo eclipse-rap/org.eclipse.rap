@@ -159,17 +159,12 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
 
     _updateNextSelected : function() {
       var prevItem = null;
-      var findSelected = false;
       var children = this._parent.getChildren();
-      for( var i = 0; i < children.length && !findSelected; i++ ) {
+      for( var i = 0; i < children.length; i++ ) {
         if( children[ i ].classname === "rwt.widgets.CTabItem" ) {
-          findSelected = children[ i ].isSelected();
-          if( prevItem != null ) {
-            if( findSelected ) {
-              prevItem.addState( "nextSelected" );
-            } else {
-              prevItem.removeState( "nextSelected" );
-            }
+          children[ i ].removeState( "nextSelected" );
+          if( prevItem != null && children[ i ].isSelected() ) {
+            prevItem.addState( "nextSelected" );
           }
           prevItem = children[ i ];
         }

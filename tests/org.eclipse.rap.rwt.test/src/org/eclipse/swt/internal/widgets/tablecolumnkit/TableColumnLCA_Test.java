@@ -11,17 +11,16 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
+import static org.eclipse.swt.internal.widgets.tablecolumnkit.TableColumnLCA.getLeft;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
@@ -29,21 +28,20 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
@@ -120,7 +118,7 @@ public class TableColumnLCA_Test {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     Object left = adapter.getPreserved( TableColumnLCA.PROP_LEFT );
-    assertEquals( new Integer( getColumnLeft( column ) ), left );
+    assertEquals( new Integer( getLeft( column ) ), left );
     Object resizable = adapter.getPreserved( TableColumnLCA.PROP_RESIZABLE );
     assertEquals( Boolean.TRUE, resizable );
     Object moveable = adapter.getPreserved( TableColumnLCA.PROP_MOVEABLE );
@@ -135,32 +133,13 @@ public class TableColumnLCA_Test {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     left = adapter.getPreserved( TableColumnLCA.PROP_LEFT );
-    assertEquals( new Integer( getColumnLeft( column ) ), left );
+    assertEquals( new Integer( getLeft( column ) ), left );
     resizable = adapter.getPreserved( TableColumnLCA.PROP_RESIZABLE );
     assertEquals( Boolean.FALSE, resizable );
     moveable = adapter.getPreserved( TableColumnLCA.PROP_MOVEABLE );
     assertEquals( Boolean.TRUE, moveable );
     Object width = adapter.getPreserved( TableColumnLCA.PROP_WIDTH );
     assertEquals( new Integer( 30 ), width );
-  }
-
-  @Test
-  public void testResizeEvent() {
-    Fixture.markInitialized( column );
-    column.setWidth( 20 );
-    ControlListener listener = mock( ControlListener.class );
-    column.addControlListener( listener );
-
-    int newWidth = column.getWidth() + 2;
-    JsonObject parameters = new JsonObject().add( "width", newWidth );
-    Fixture.fakeCallOperation( getId( column ), "resize", parameters );
-    Fixture.executeLifeCycleFromServerThread( );
-
-    assertEquals( newWidth, column.getWidth() );
-    verify( listener, times( 1 ) ).controlResized( any( ControlEvent.class ) );
-    verify( listener, times( 0 ) ).controlMoved( any( ControlEvent.class ) );
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( newWidth, message.findSetProperty( column, "width" ).asInt() );
   }
 
   @Test
@@ -171,131 +150,18 @@ public class TableColumnLCA_Test {
     TableColumn column2 = new TableColumn( table, SWT.NONE );
     column2.setWidth( 10 );
     // Test with natural column order
-    assertEquals( 0, getColumnLeft( column ) );
-    assertEquals( 10, getColumnLeft( column1 ) );
-    assertEquals( 20, getColumnLeft( column2 ) );
+    assertEquals( 0, getLeft( column ) );
+    assertEquals( 10, getLeft( column1 ) );
+    assertEquals( 20, getLeft( column2 ) );
     // Test with reverted column order
     table.setColumnOrder( new int[]{
       2, 1, 0
     } );
-    assertEquals( 0, getColumnLeft( column2 ) );
-    assertEquals( 10, getColumnLeft( column1 ) );
-    assertEquals( 20, getColumnLeft( column ) );
+    assertEquals( 0, getLeft( column2 ) );
+    assertEquals( 10, getLeft( column1 ) );
+    assertEquals( 20, getLeft( column ) );
   }
 
-  @Test
-  public void testMoveColumn() {
-    column.setText( "Col 0" );
-    column.setWidth( 10 );
-    TableColumn column1 = new TableColumn( table, SWT.NONE );
-    column1.setText( "Col 1" );
-    column1.setWidth( 20 );
-    TableColumn column2 = new TableColumn( table, SWT.NONE );
-    column2.setText( "Col 2" );
-    column2.setWidth( 30 );
-    TableColumn column3 = new TableColumn( table, SWT.NONE );
-    column3.setText( "Col 3" );
-    column3.setWidth( 30 );
-    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60, Col 3: 61..90
-    // (as created)
-    // Move Col 3 between position 0 and position 1
-    // Then move the same column between position 2 and 3
-    // thereafter order should be:
-    // Col 0, Col 1, Col 3, Col 2
-    table.setColumnOrder( new int[] { 0, 1, 2, 3 } );
-    TableColumnLCA.moveColumn( column3, 5 );
-    int[] columnOrder = table.getColumnOrder();
-    assertEquals( 0, columnOrder[ 0 ] );
-    assertEquals( 3, columnOrder[ 1 ] );
-    assertEquals( 1, columnOrder[ 2 ] );
-    assertEquals( 2, columnOrder[ 3 ] );
-    TableColumnLCA.moveColumn( column3, 55 );
-    columnOrder = table.getColumnOrder();
-    assertEquals( 0, columnOrder[ 0 ] );
-    assertEquals( 1, columnOrder[ 1 ] );
-    assertEquals( 3, columnOrder[ 2 ] );
-    assertEquals( 2, columnOrder[ 3 ] );
-    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60, Col 3: 61..90 (as created)
-    // Move Col 1 over Col 0 (left half), thereafter order should be:
-    // Col 1, Col 0, Col 2, Col 3
-    table.setColumnOrder( new int[] { 0, 1, 2, 3 } );
-    TableColumnLCA.moveColumn( column1, 3 );
-    columnOrder = table.getColumnOrder();
-    assertEquals( 1, columnOrder[ 0 ] );
-    assertEquals( 0, columnOrder[ 1 ] );
-    assertEquals( 2, columnOrder[ 2 ] );
-    assertEquals( 3, columnOrder[ 3 ] );
-    // Current order: Col 1: 0..20, Col 0: 21..30, Col 2: 31..60, Col 3: 61..90
-    // Move Col 1 over Col 0 (right half), thereafter order should be:
-    // Col 0, Col 1, Col 2, Col 3
-    table.setColumnOrder( new int[] { 1, 0, 2, 3 } );
-    TableColumnLCA.moveColumn( column1, 27 );
-    columnOrder = table.getColumnOrder();
-    assertEquals( 0, columnOrder[ 0 ] );
-    assertEquals( 1, columnOrder[ 1 ] );
-    assertEquals( 2, columnOrder[ 2 ] );
-    assertEquals( 3, columnOrder[ 3 ] );
-    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60, Col 3: 61..90
-    // Move Col 2 over Col 1 (left half), thereafter order should be:
-    // Col 0, Col 2, Col 1, Col 3
-    table.setColumnOrder( new int[] { 0, 1, 2, 3 } );
-    TableColumnLCA.moveColumn( column2, 13 );
-    columnOrder = table.getColumnOrder();
-    assertEquals( 0, columnOrder[ 0 ] );
-    assertEquals( 2, columnOrder[ 1 ] );
-    assertEquals( 1, columnOrder[ 2 ] );
-    assertEquals( 3, columnOrder[ 3 ] );
-    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60, Col 3: 61..90
-    // Move Col 2 over Col 1 (right half), thereafter order should be:
-    // Col 2, Col 0, Col 1, Col 3
-    table.setColumnOrder( new int[] { 0, 1, 2, 3 } );
-    TableColumnLCA.moveColumn( column2, 3 );
-    columnOrder = table.getColumnOrder();
-    assertEquals( 2, columnOrder[ 0 ] );
-    assertEquals( 0, columnOrder[ 1 ] );
-    assertEquals( 1, columnOrder[ 2 ] );
-    assertEquals( 3, columnOrder[ 3 ] );
-    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60, Col 3: 61..90
-    // Move Col 2 way left of Col 0, thereafter order should be:
-    // Col 2, Col 0, Col 1, Col 3
-    table.setColumnOrder( new int[] { 0, 1, 2, 3 } );
-    TableColumnLCA.moveColumn( column2, -30 );
-    columnOrder = table.getColumnOrder();
-    assertEquals( 2, columnOrder[ 0 ] );
-    assertEquals( 0, columnOrder[ 1 ] );
-    assertEquals( 1, columnOrder[ 2 ] );
-    assertEquals( 3, columnOrder[ 3 ] );
-    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60, Col 3: 61..90
-    // Move Col 0 way right of Col 2, thereafter order should be:
-    // Col 1, Col 2, Col 3, Col 0
-    table.setColumnOrder( new int[] { 0, 1, 2, 3 } );
-    TableColumnLCA.moveColumn( column, 100 );
-    columnOrder = table.getColumnOrder();
-    assertEquals( 1, columnOrder[ 0 ] );
-    assertEquals( 2, columnOrder[ 1 ] );
-    assertEquals( 3, columnOrder[ 2 ] );
-    assertEquals( 0, columnOrder[ 3 ] );
-    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60, Col 3: 61..90
-    // Move Col 1 onto itself, order should stay unchanged:
-    // Col 0, Col 1, Col 2, Col 3
-    table.setColumnOrder( new int[] { 0, 1, 2, 3 } );
-    TableColumnLCA.moveColumn( column1, 13 );
-    columnOrder = table.getColumnOrder();
-    assertEquals( 0, columnOrder[ 0 ] );
-    assertEquals( 1, columnOrder[ 1 ] );
-    assertEquals( 2, columnOrder[ 2 ] );
-    assertEquals( 3, columnOrder[ 3 ] );
-    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60, Col 3: 61..90
-    // Move Col 0 over Col 2 (left half), order should be:
-    // Col 1, Col 0, Col 2, Col 3
-    table.setColumnOrder( new int[] { 0, 1, 2, 3 } );
-    TableColumnLCA.moveColumn( column, 33 );
-    columnOrder = table.getColumnOrder();
-    assertEquals( 1, columnOrder[ 0 ] );
-    assertEquals( 0, columnOrder[ 1 ] );
-    assertEquals( 2, columnOrder[ 2 ] );
-    assertEquals( 3, columnOrder[ 3 ] );
-  }
 
   // see bug 336340
   @Test
@@ -311,55 +177,13 @@ public class TableColumnLCA_Test {
     table.getColumn( 2 ).setWidth( 0 );
 
     TableColumn column1 = table.getColumn( 1 );
+    getRemoteObject( column1 ).setHandler( new TableColumnOperationHandler( column1 ) );
     JsonObject parameters = new JsonObject().add( "left", 35 );
     Fixture.fakeCallOperation( getId( column1 ), "move", parameters  );
     Fixture.executeLifeCycleFromServerThread( );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( column1, "left" ).asInt() );
-  }
-
-  @Test
-  public void testMoveColumnFixedColumnTarget() {
-    Table table = createFixedColumnsTable( shell );
-    table.setSize( 200, 200 );
-    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
-    adapter.setLeftOffset( 80 );
-    TableColumn column3 = table.getColumn( 3 );
-    TableColumnLCA.moveColumn( column3, 105 );
-    int[] columnOrder = table.getColumnOrder();
-    assertEquals( 0, columnOrder[ 0 ] );
-    assertEquals( 1, columnOrder[ 1 ] );
-    assertEquals( 2, columnOrder[ 2 ] );
-    assertEquals( 3, columnOrder[ 3 ] );
-  }
-
-  @Test
-  public void testMoveColumnFixedColumnSource() {
-    Table table = createFixedColumnsTable( shell );
-    table.setSize( 200, 200 );
-    TableColumn column0 = table.getColumn( 0 );
-    TableColumnLCA.moveColumn( column0, 105 );
-    int[] columnOrder = table.getColumnOrder();
-    assertEquals( 0, columnOrder[ 0 ] );
-    assertEquals( 1, columnOrder[ 1 ] );
-    assertEquals( 2, columnOrder[ 2 ] );
-    assertEquals( 3, columnOrder[ 3 ] );
-  }
-
-  @Test
-  public void testMoveColumnFixedColumnRightHalfTarget() {
-    Table table = createFixedColumnsTable( shell );
-    table.setSize( 200, 200 );
-    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
-    adapter.setLeftOffset( 100 );
-    TableColumn column3 = table.getColumn( 3 );
-    TableColumnLCA.moveColumn( column3, 145 );
-    int[] columnOrder = table.getColumnOrder();
-    assertEquals( 0, columnOrder[ 0 ] );
-    assertEquals( 1, columnOrder[ 1 ] );
-    assertEquals( 2, columnOrder[ 2 ] );
-    assertEquals( 3, columnOrder[ 3 ] );
   }
 
   @Test
@@ -381,6 +205,16 @@ public class TableColumnLCA_Test {
     CreateOperation operation = message.findCreateOperation( column );
     assertTrue( operation.getPropertyNames().indexOf( "style" ) == -1 );
     assertEquals( "right", message.findCreateProperty( column, "alignment" ).asString() );
+  }
+
+  @Test
+  public void testRenderCreate_setsOperationHandler() throws IOException {
+    String id = getId( column );
+
+    lca.renderInitialization( column );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof TableColumnOperationHandler );
   }
 
   @Test
@@ -868,21 +702,6 @@ public class TableColumnLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
-  }
-
-  private static int getColumnLeft( TableColumn column ) {
-    return column.getParent().getAdapter( ITableAdapter.class ).getColumnLeft( column );
-  }
-
-  private Table createFixedColumnsTable( Shell shell ) {
-    Table table = new Table( shell, SWT.NONE );
-    table.setData( RWT.FIXED_COLUMNS, new Integer( 1 ) );
-    for( int i = 0; i < 10; i++ ) {
-      TableColumn column = new TableColumn( table, SWT.NONE );
-      column.setWidth( 50 );
-      column.setText( "Column " + i );
-    }
-    return table;
   }
 
 }

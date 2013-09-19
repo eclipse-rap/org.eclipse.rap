@@ -354,42 +354,72 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testSendValueChanged : function() {
-      var wm = rwt.remote.WidgetManager.getInstance();
-      TestUtil.initRequestLog();
-      var upload = createFileUpload();
-      wm.add( upload, "w200", true );
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var upload = createFileUploadByProtocol( "w200", "w2" );
+      TestUtil.protocolListen( "w200", { "Selection" : true } );
 
       setFileName( upload, [ "foo" ] );
       upload._onValueChange();
 
       assertEquals( [ "foo" ], TestUtil.getMessageObject().findSetProperty( "w200", "fileNames" ) );
-      upload.destroy();
+      shell.destroy();
     },
 
     testDontSendFullPathValueSlash : function() {
-      var wm = rwt.remote.WidgetManager.getInstance();
-      TestUtil.initRequestLog();
-      var upload = createFileUpload();
-      wm.add( upload, "w200", true );
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var upload = createFileUploadByProtocol( "w200", "w2" );
+      TestUtil.protocolListen( "w200", { "Selection" : true } );
 
       setFileName( upload, [ "c:/mypath/foo" ] );
       upload._onValueChange();
 
       assertEquals( [ "foo" ], TestUtil.getMessageObject().findSetProperty( "w200", "fileNames" ) );
-      upload.destroy();
+      shell.destroy();
     },
 
     testDontSendFullPathValueBackSlash : function() {
-      var wm = rwt.remote.WidgetManager.getInstance();
-      TestUtil.initRequestLog();
-      var upload = createFileUpload();
-      wm.add( upload, "w200", true );
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var upload = createFileUploadByProtocol( "w200", "w2" );
+      TestUtil.protocolListen( "w200", { "Selection" : true } );
 
       setFileName( upload, [ "c:\\mypath\\foo" ] );
       upload._onValueChange();
 
       assertEquals( [ "foo" ], TestUtil.getMessageObject().findSetProperty( "w200", "fileNames" ) );
-      upload.destroy();
+      shell.destroy();
+    },
+
+    testNotifySelection : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var upload = createFileUploadByProtocol( "w200", "w2" );
+      TestUtil.protocolListen( "w200", { "Selection" : true } );
+
+      setFileName( upload, [ "foo" ] );
+      upload._onValueChange();
+
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w200", "Selection" ) );
+      shell.destroy();
+    },
+
+    testExecuteDoesNotSendRequest : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var upload = createFileUploadByProtocol( "w200", "w2" );
+      TestUtil.protocolListen( "w200", { "Selection" : true } );
+
+      upload.execute();
+
+      assertEquals( 0, TestUtil.getRequestsSend() );
+      shell.destroy();
+    },
+
+    testSetHasSelectionListenerByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var upload = createFileUploadByProtocol( "w200", "w2" );
+
+      TestUtil.protocolListen( "w200", { "Selection" : true } );
+
+      assertTrue( upload._hasSelectionListener );
+      shell.destroy();
     },
 
     testSubmitWithoutUrl : function() {

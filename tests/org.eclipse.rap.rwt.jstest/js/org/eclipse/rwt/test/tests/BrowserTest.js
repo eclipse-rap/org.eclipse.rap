@@ -139,7 +139,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         browser.execute( "window.foo = 33;" );
         assertEquals( 17, foo );
         assertEquals( 33, win.foo );
-        assertTrue( TestUtil.getMessageObject().findSetProperty( "w6", "executeResult" ) );
+        var message = TestUtil.getMessageObject();
+        assertNotNull( message.findCallOperation( "w6", "evaluationSucceeded" ) );
         browser.destroy();
         delete foo;
       }
@@ -172,8 +173,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
             "script" : "33;"
           }
         } );
-        assertTrue( TestUtil.getMessageObject().findSetProperty( "w3", "executeResult" ) );
-        assertEquals( [ 33 ], TestUtil.getMessageObject().findSetProperty( "w3", "evaluateResult" ) );
+        var message = TestUtil.getMessageObject();
+        assertEquals( [ 33 ], message.findCallProperty( "w3", "evaluationSucceeded", "result" ) );
         browser.destroy();
       }
     ],
@@ -223,7 +224,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( "slow connection?", browser._isLoaded );
         TestUtil.initRequestLog();
         browser.execute( "for(){}" );
-        assertFalse( TestUtil.getMessageObject().findSetProperty( "w6", "executeResult" ) );
+        var message = TestUtil.getMessageObject();
+        assertNotNull( message.findCallOperation( "w6", "evaluationFailed" ) );
         browser.destroy();
         delete foo;
       }
@@ -239,8 +241,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( "slow connection?", browser._isLoaded );
         TestUtil.initRequestLog();
         browser.execute( "/regexp/;" );
-        assertNull( TestUtil.getMessageObject().findSetProperty( "w6", "evaluateResult" ) );
-
+        var message = TestUtil.getMessageObject();
+        assertNull( message.findCallProperty( "w6", "evaluationSucceeded", "result" ) );
         browser.destroy();
       }
     ],
@@ -255,8 +257,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( "slow connection?", browser._isLoaded );
         TestUtil.initRequestLog();
         browser.execute( "( function(){ return {};})();" );
-        assertNull( TestUtil.getMessageObject().findSetProperty( "w6", "evaluateResult" ) );
-        assertTrue( TestUtil.getMessageObject().findSetProperty( "w6", "executeResult" ) );
+        var message = TestUtil.getMessageObject();
+        assertNull( message.findCallProperty( "w6", "evaluationSucceeded", "result" ) );
         browser.destroy();
       }
     ],
@@ -272,8 +274,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         TestUtil.initRequestLog();
         browser.execute( "( function(){ return [ 1,2,3 ]; } )();" );
         var expected = [1,2,3];
-        assertTrue( TestUtil.getMessageObject().findSetProperty( "w6", "executeResult" ) );
-        assertEquals( expected, TestUtil.getMessageObject().findSetProperty( "w6", "evaluateResult" )[ 0 ] );
+        var message = TestUtil.getMessageObject();
+        var actual = message.findCallProperty( "w6", "evaluationSucceeded", "result" )[ 0 ];
+        assertEquals( expected, actual );
         browser.destroy();
       }
     ],
@@ -288,8 +291,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( "slow connection?", browser._isLoaded );
         TestUtil.initRequestLog();
         browser.execute( "( function(){ return function(){}; } )();" );
-        assertTrue( TestUtil.getMessageObject().findSetProperty( "w6", "executeResult" ) );
-        assertEquals( [], TestUtil.getMessageObject().findSetProperty( "w6", "evaluateResult" )[ 0 ] );
+        var message = TestUtil.getMessageObject();
+        assertEquals( [], message.findCallProperty( "w6", "evaluationSucceeded", "result" )[ 0 ] );
         browser.destroy();
       }
     ],
@@ -495,6 +498,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           error = ex;
         }
         assertNotNull( error );
+      }
+    ],
+
+    testBrowserFunctionCall  :  [
+      function() {
+        var browser = this._createBrowser();
+        TestUtil.delayTest( 1000 );
+        TestUtil.store( browser );
+      },
+      function( browser ) {
+        assertTrue( "slow connection?", browser._isLoaded );
+        TestUtil.initRequestLog();
+        browser.createFunction( "abc" );
+        var win = browser.getContentWindow();
+        assertTrue( typeof( win.abc ) === "function" );
+        assertTrue( typeof( win.abc_impl ) === "function" );
+
+        win.abc( 5 );
+
+        var message = TestUtil.getMessageObject();
+        assertEquals( "abc", message.findCallProperty( "w6", "executeFunction", "name" ) );
+        assertEquals( [ 5 ], message.findCallProperty( "w6", "executeFunction", "arguments" ) );
+        browser.destroy();
       }
     ],
 

@@ -217,28 +217,6 @@ public class DisplayLCA_Test {
   }
 
   @Test
-  public void testRenderResizeListener_MaximizedShell() throws IOException {
-    Shell shell = new Shell( display );
-    shell.setMaximized( true );
-
-    displayLCA.render( display );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( getId( display ), "Resize" ) );
-  }
-
-  @Test
-  public void testRenderResizeListener_FullScreenShell() throws IOException {
-    Shell shell = new Shell( display );
-    shell.setFullScreen( true );
-
-    displayLCA.render( display );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( getId( display ), "Resize" ) );
-  }
-
-  @Test
   public void testRenderResizeListenerUnchanged() throws IOException {
     Listener listener = mock( Listener.class );
     display.addListener( SWT.Resize, listener  );
@@ -372,27 +350,6 @@ public class DisplayLCA_Test {
     Fixture.fakeSetProperty( getId( display ), "focusControl", "null" );
     Fixture.readDataAndProcessAction( display );
     assertEquals( previousFocusControl, display.getFocusControl() );
-  }
-
-  @Test
-  public void testResizeMaximizedShells() {
-    Object adapter = display.getAdapter( IDisplayAdapter.class );
-    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
-    displayAdapter.setBounds( new Rectangle( 0, 0, 800, 600 ) );
-    Shell shell1 = new Shell( display, SWT.NONE );
-    shell1.setBounds( 0, 0, 800, 600 );
-    Shell shell2 = new Shell( display, SWT.NONE );
-    shell2.setBounds( 0, 0, 300, 400 );
-    shell2.setMaximized( true );
-    // fake display resize
-    Fixture.fakeSetProperty( getId( display ), "bounds", createJsonArray( 0, 0, 700, 500 ) );
-
-    displayLCA.readData( display );
-
-    // shell1 is not resized although it has the same size as the display
-    assertEquals( new Rectangle( 0, 0, 800, 600 ), shell1.getBounds() );
-    // shell2 is resized because it's maximized
-    assertEquals( new Rectangle( 0, 0, 700, 500 ), shell2.getBounds() );
   }
 
   @Test
@@ -548,6 +505,7 @@ public class DisplayLCA_Test {
   }
 
   private static class TestWidgetLCA extends AbstractWidgetLCA {
+    @Override
     public void readData( Widget widget ) {
     }
     @Override

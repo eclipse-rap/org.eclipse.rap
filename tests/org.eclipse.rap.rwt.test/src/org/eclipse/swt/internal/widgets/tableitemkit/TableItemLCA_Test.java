@@ -27,9 +27,11 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -57,6 +59,7 @@ public class TableItemLCA_Test {
   private Display display;
   private Shell shell;
   private Table table;
+  private TableItem item;
   private TableItemLCA lca;
 
   @Before
@@ -65,6 +68,7 @@ public class TableItemLCA_Test {
     display = new Display();
     shell = new Shell( display );
     table = new Table( shell, SWT.NONE );
+    item = new TableItem( table, SWT.NONE );
     lca = new TableItemLCA();
     Fixture.fakeNewRequest();
   }
@@ -76,15 +80,13 @@ public class TableItemLCA_Test {
 
   @Test
   public void testPreserveValues() throws IOException {
-    Table table = new Table( shell, SWT.BORDER );
     new TableColumn( table, SWT.CENTER );
     new TableColumn( table, SWT.CENTER );
     new TableColumn( table, SWT.CENTER );
-    TableItem item1 = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
-    WidgetAdapter adapter = WidgetUtil.getAdapter( item1 );
-    Image[] images1 = TableItemLCA.getImages( item1 );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    Image[] images1 = TableItemLCA.getImages( item );
     Image[] images2 = ( Image[] )adapter.getPreserved( TableItemLCA.PROP_IMAGES );
     assertEquals( images1[ 0 ], images2[ 0 ] );
     assertEquals( images1[ 1 ], images2[ 1 ] );
@@ -107,38 +109,38 @@ public class TableItemLCA_Test {
     assertNull( preservedCellFonts[ 1 ] );
     assertNull( preservedCellFonts[ 2 ] );
     Fixture.clearPreserved();
-    item1.setText( 0, "item11" );
-    item1.setText( 1, "item12" );
-    item1.setText( 2, "item13" );
+    item.setText( 0, "item11" );
+    item.setText( 1, "item12" );
+    item.setText( 2, "item13" );
     Font font1 = new Font( display, "font1", 10, 1 );
-    item1.setFont( 0, font1 );
+    item.setFont( 0, font1 );
     Font font2 = new Font( display, "font2", 8, 1 );
-    item1.setFont( 1, font2 );
+    item.setFont( 1, font2 );
     Font font3 = new Font( display, "font3", 6, 1 );
-    item1.setFont( 2, font3 );
+    item.setFont( 2, font3 );
     Image image1 = createImage( display, Fixture.IMAGE1 );
     Image image2 = createImage( display, Fixture.IMAGE2 );
     Image image3 = createImage( display, Fixture.IMAGE3 );
-    item1.setImage( new Image[]{
+    item.setImage( new Image[]{
       image1, image2, image3
     } );
     Color background1 =new Color( display, 234, 230, 54 );
-    item1.setBackground( 0, background1 );
+    item.setBackground( 0, background1 );
     Color background2 =new Color( display, 145, 222, 134 );
-    item1.setBackground( 1, background2 );
+    item.setBackground( 1, background2 );
     Color background3 =new Color( display, 143, 134, 34 );
-    item1.setBackground( 2, background3 );
+    item.setBackground( 2, background3 );
     Color foreground1 =new Color( display, 77, 77, 54 );
-    item1.setForeground( 0, foreground1 );
+    item.setForeground( 0, foreground1 );
     Color foreground2 =new Color( display, 156, 45, 134 );
-    item1.setForeground( 1, foreground2 );
+    item.setForeground( 1, foreground2 );
     Color foreground3 =new Color( display, 88, 134, 34 );
-    item1.setForeground( 2, foreground3 );
+    item.setForeground( 2, foreground3 );
     table.setSelection( 0 );
     ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
     tableAdapter.setFocusIndex( 0 );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( item1 );
+    adapter = WidgetUtil.getAdapter( item );
     images2 = ( Image[] )adapter.getPreserved( TableItemLCA.PROP_IMAGES );
     assertEquals( image1, images2[ 0 ] );
     assertEquals( image2, images2[ 1 ] );
@@ -163,7 +165,7 @@ public class TableItemLCA_Test {
   @Test
   public void testCheckPreserveValues() {
     Table table = new Table( shell, SWT.CHECK );
-    TableItem item = new TableItem( table, SWT.NONE );
+    item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     WidgetAdapter adapter = WidgetUtil.getAdapter( item );
@@ -185,7 +187,6 @@ public class TableItemLCA_Test {
 
   @Test
   public void testItemTextWithoutColumn() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
     // Ensure that even though there are no columns, the first text of an item
     // will be rendered
     Fixture.fakeResponseWriter();
@@ -202,7 +203,7 @@ public class TableItemLCA_Test {
   @Test
   public void testDisposeSelected() {
     final boolean[] executed = { false };
-    final Table table = new Table( shell, SWT.CHECK );
+    table = new Table( shell, SWT.CHECK );
     new TableItem( table, SWT.NONE );
     new TableItem( table, SWT.NONE );
     new TableItem( table, SWT.NONE );
@@ -225,36 +226,36 @@ public class TableItemLCA_Test {
 
   @Test
   public void testDispose() throws IOException {
-    Table table = new Table( shell, SWT.CHECK );
-    TableItem tableItem = new TableItem( table, SWT.NONE );
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( tableItem );
+    table = new Table( shell, SWT.CHECK );
+    item = new TableItem( table, SWT.NONE );
+    AbstractWidgetLCA lca = WidgetUtil.getLCA( item );
     Fixture.markInitialized( table );
-    Fixture.markInitialized( tableItem );
+    Fixture.markInitialized( item );
     Fixture.fakeResponseWriter();
 
-    tableItem.dispose();
-    lca.renderDispose( tableItem );
+    item.dispose();
+    lca.renderDispose( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertNotNull( message.findDestroyOperation( tableItem ) );
+    assertNotNull( message.findDestroyOperation( item ) );
   }
 
   @Test
   public void testDisposeTable() throws IOException {
-    Table table = new Table( shell, SWT.CHECK );
-    TableItem tableItem = new TableItem( table, SWT.NONE );
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( tableItem );
+    table = new Table( shell, SWT.CHECK );
+    item = new TableItem( table, SWT.NONE );
+    AbstractWidgetLCA lca = WidgetUtil.getLCA( item );
     Fixture.markInitialized( table );
-    Fixture.markInitialized( tableItem );
+    Fixture.markInitialized( item );
     Fixture.fakeResponseWriter();
 
     table.dispose();
-    lca.renderDispose( tableItem );
+    lca.renderDispose( item );
 
     // when the whole table is disposed of, the tableitem's dispose must not be rendered
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findDestroyOperation( tableItem ) );
-    assertTrue( tableItem.isDisposed() );
+    assertNull( message.findDestroyOperation( item ) );
+    assertTrue( item.isDisposed() );
   }
 
   @Test
@@ -288,7 +289,6 @@ public class TableItemLCA_Test {
   @Test
   public void testDynamicColumns() {
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
     item.setBackground( 0, display.getSystemColor( SWT.COLOR_BLACK ) );
     // Create another column after setting a cell background
     // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=277089
@@ -299,8 +299,6 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderCreate() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
-
     lca.renderInitialization( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -309,9 +307,17 @@ public class TableItemLCA_Test {
   }
 
   @Test
-  public void testRenderParent() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
+  public void testRenderCreate_setsOperationHandler() throws IOException {
+    String id = getId( item );
 
+    lca.renderInitialization( item );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof TableItemOperationHandler );
+  }
+
+  @Test
+  public void testRenderParent() throws IOException {
     lca.renderInitialization( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -321,20 +327,17 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderInitialIndex() throws IOException {
-    new TableItem( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
+    TableItem item1 = new TableItem( table, SWT.NONE );
 
-    lca.render( item );
+    lca.render( item1 );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( item );
+    CreateOperation operation = message.findCreateOperation( item1 );
     assertEquals( 1, operation.getProperty( "index" ).asInt() );
   }
 
   @Test
   public void testRenderIndex() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
-
     new TableItem( table, SWT.NONE, 0 );
     lca.renderChanges( item );
 
@@ -345,7 +348,7 @@ public class TableItemLCA_Test {
   @Test
   public void testRenderIndex_VirtualAfterClear() throws IOException {
     table = new Table( shell, SWT.VIRTUAL );
-    TableItem item = new TableItem( table, SWT.NONE );
+    item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
     Fixture.preserveWidgets();
@@ -360,7 +363,6 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderIndexUnchanged() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -376,7 +378,6 @@ public class TableItemLCA_Test {
   public void testRenderInitialTexts() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
 
     lca.render( item );
 
@@ -389,7 +390,6 @@ public class TableItemLCA_Test {
   public void testRenderTexts() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
 
     item.setText( new String[] { "item 0.0", "item 0.1" } );
     lca.renderChanges( item );
@@ -403,7 +403,6 @@ public class TableItemLCA_Test {
   public void testRenderTextsUnchanged() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -419,7 +418,6 @@ public class TableItemLCA_Test {
   public void testRenderInitialImages() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
 
     lca.render( item );
 
@@ -432,7 +430,6 @@ public class TableItemLCA_Test {
   public void testRenderImages() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
     Image image = createImage( display, Fixture.IMAGE1 );
 
     item.setImage( new Image[] { null, image } );
@@ -449,7 +446,6 @@ public class TableItemLCA_Test {
   public void testRenderImagesUnchanged() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
     Image image = createImage( display, Fixture.IMAGE1 );
@@ -464,8 +460,6 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderInitialBackground() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
-
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -475,9 +469,8 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderBackground() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
-
     item.setBackground( display.getSystemColor( SWT.COLOR_GREEN ) );
+
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -487,7 +480,6 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderBackgroundUnchanged() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -501,8 +493,6 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderInitialForeground() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
-
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -512,9 +502,8 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderForeground() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
-
     item.setForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
+
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -524,7 +513,6 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderForegroundUnchanged() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -538,8 +526,6 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderInitialFont() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
-
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -549,9 +535,8 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderFont() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
-
     item.setFont( new Font( display, "Arial", 20, SWT.BOLD ) );
+
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -561,7 +546,6 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderFontUnchanged() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -577,7 +561,6 @@ public class TableItemLCA_Test {
   public void testRenderInitialCellBackgrounds() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
 
     lca.render( item );
 
@@ -590,7 +573,6 @@ public class TableItemLCA_Test {
   public void testRenderCellBackgrounds() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
 
     item.setBackground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
     lca.renderChanges( item );
@@ -604,7 +586,6 @@ public class TableItemLCA_Test {
   public void testRenderCellBackgroundsUnchanged() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -620,7 +601,6 @@ public class TableItemLCA_Test {
   public void testRenderInitialCellForegrounds() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
 
     lca.render( item );
 
@@ -633,7 +613,6 @@ public class TableItemLCA_Test {
   public void testRenderCellForegrounds() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
 
     item.setForeground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
     lca.renderChanges( item );
@@ -647,7 +626,6 @@ public class TableItemLCA_Test {
   public void testRenderCellForegroundsUnchanged() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -663,7 +641,6 @@ public class TableItemLCA_Test {
   public void testRenderInitialCellFonts() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
 
     lca.render( item );
 
@@ -676,7 +653,6 @@ public class TableItemLCA_Test {
   public void testRenderCellFonts() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
 
     item.setFont( 1, new Font( display, "Arial", 20, SWT.BOLD ) );
     lca.renderChanges( item );
@@ -690,7 +666,6 @@ public class TableItemLCA_Test {
   public void testRenderCellFontsUnchanged() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -705,7 +680,7 @@ public class TableItemLCA_Test {
   @Test
   public void testRenderInitialChecked() throws IOException {
     table = new Table( shell, SWT.CHECK );
-    TableItem item = new TableItem( table, SWT.NONE );
+    item = new TableItem( table, SWT.NONE );
 
     lca.render( item );
 
@@ -717,7 +692,7 @@ public class TableItemLCA_Test {
   @Test
   public void testRenderChecked() throws IOException {
     table = new Table( shell, SWT.CHECK );
-    TableItem item = new TableItem( table, SWT.NONE );
+    item = new TableItem( table, SWT.NONE );
 
     item.setChecked( true );
     lca.renderChanges( item );
@@ -729,7 +704,7 @@ public class TableItemLCA_Test {
   @Test
   public void testRenderCheckedUnchanged() throws IOException {
     table = new Table( shell, SWT.CHECK );
-    TableItem item = new TableItem( table, SWT.NONE );
+    item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -744,7 +719,7 @@ public class TableItemLCA_Test {
   @Test
   public void testRenderInitialGrayed() throws IOException {
     table = new Table( shell, SWT.CHECK );
-    TableItem item = new TableItem( table, SWT.NONE );
+    item = new TableItem( table, SWT.NONE );
 
     lca.render( item );
 
@@ -756,7 +731,7 @@ public class TableItemLCA_Test {
   @Test
   public void testRenderGrayed() throws IOException {
     table = new Table( shell, SWT.CHECK );
-    TableItem item = new TableItem( table, SWT.NONE );
+    item = new TableItem( table, SWT.NONE );
 
     item.setGrayed( true );
     lca.renderChanges( item );
@@ -768,7 +743,7 @@ public class TableItemLCA_Test {
   @Test
   public void testRenderGrayedUnchanged() throws IOException {
     table = new Table( shell, SWT.CHECK );
-    TableItem item = new TableItem( table, SWT.NONE );
+    item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -782,8 +757,6 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderInitialCustomVariant() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
-
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -793,9 +766,8 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderCustomVariant() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
-
     item.setData( RWT.CUSTOM_VARIANT, "blue" );
+
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -804,7 +776,6 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderCustomVariantUnchanged() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -831,7 +802,6 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderData() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
     registerDataKeys( new String[]{ "foo", "bar" } );
     item.setData( "foo", "string" );
     item.setData( "bar", Integer.valueOf( 1 ) );
@@ -846,7 +816,6 @@ public class TableItemLCA_Test {
 
   @Test
   public void testRenderDataUnchanged() throws IOException {
-    TableItem item = new TableItem( table, SWT.NONE );
     registerDataKeys( new String[]{ "foo" } );
     item.setData( "foo", "string" );
     Fixture.markInitialized( display );

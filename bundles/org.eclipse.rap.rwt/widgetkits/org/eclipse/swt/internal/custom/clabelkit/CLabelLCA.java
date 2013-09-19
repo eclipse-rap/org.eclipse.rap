@@ -69,18 +69,11 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveBackgroundGradient( label );
   }
 
-  public void readData( Widget widget ) {
-    CLabel label = ( CLabel )widget;
-    ControlLCAUtil.processEvents( label );
-    ControlLCAUtil.processKeyEvents( label );
-    ControlLCAUtil.processMenuDetect( label );
-    WidgetLCAUtil.processHelp( label );
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     CLabel clabel = ( CLabel )widget;
     RemoteObject remoteObject = createRemoteObject( clabel, TYPE );
+    remoteObject.setHandler( new CLabelOperationHandler( clabel ) );
     remoteObject.set( "parent", getId( clabel.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( clabel, ALLOWED_STYLES ) ) );
     // NOTE : This is consistent with Tree and Table, but might change - See Bug 373764

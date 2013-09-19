@@ -25,7 +25,6 @@ import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.Widget;
 
@@ -48,20 +47,13 @@ public class CoolBarLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveCustomVariant( coolBar );
   }
 
-  public void readData( Widget widget ) {
-    Control coolBar = ( Control )widget;
-    ControlLCAUtil.processEvents( coolBar );
-    ControlLCAUtil.processKeyEvents( coolBar );
-    ControlLCAUtil.processMenuDetect( coolBar );
-    WidgetLCAUtil.processHelp( coolBar );
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
-    CoolBar coolbar = ( CoolBar )widget;
-    RemoteObject remoteObject = createRemoteObject( coolbar, TYPE );
-    remoteObject.set( "parent", getId( coolbar.getParent() ) );
-    remoteObject.set( "style", createJsonArray( getStyles( coolbar, ALLOWED_STYLES ) ) );
+    CoolBar coolBar = ( CoolBar )widget;
+    RemoteObject remoteObject = createRemoteObject( coolBar, TYPE );
+    remoteObject.setHandler( new CoolBarOperationHandler( coolBar ) );
+    remoteObject.set( "parent", getId( coolBar.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( coolBar, ALLOWED_STYLES ) ) );
   }
 
   @Override

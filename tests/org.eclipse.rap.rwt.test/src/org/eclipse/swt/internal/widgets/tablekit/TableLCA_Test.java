@@ -38,6 +38,8 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
+import org.eclipse.rap.rwt.internal.template.RowTemplate;
+import org.eclipse.rap.rwt.internal.template.TemplateSerializer;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -1690,6 +1692,38 @@ public class TableLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findCreateProperty( table, "markupEnabled" ) );
+  }
+
+  @Test
+  public void testRenderRowTemplate() throws IOException {
+    RowTemplate rowTemplate = new RowTemplate();
+    table.setData( RowTemplate.ROW_TEMPLATE, rowTemplate );
+    JsonValue template = new TemplateSerializer( rowTemplate ).toJson();
+
+    lca.render( table );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( template, message.findCreateProperty( table, "rowTemplate" ) );
+  }
+
+  @Test
+  public void testRenderRowTemplateOnlyIfItsARowTemplate() throws IOException {
+    table.setData( RowTemplate.ROW_TEMPLATE, new Object() );
+
+    lca.render( table );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation createOperation = message.findCreateOperation( table );
+    assertNull( createOperation.getProperty( "rowTemplate" ) );
+  }
+
+  @Test
+  public void testRenderRowTemplateOnlyIfPresent() throws IOException {
+    lca.render( table );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation createOperation = message.findCreateOperation( table );
+    assertNull( createOperation.getProperty( "rowTemplate" ) );
   }
 
   private static void createTableColumns( Table table, int count ) {

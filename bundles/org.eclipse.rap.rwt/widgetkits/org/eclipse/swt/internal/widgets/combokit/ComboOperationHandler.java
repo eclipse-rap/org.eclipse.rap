@@ -19,6 +19,7 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -32,8 +33,6 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
   private static final String PROP_LIST_VISIBLE = "listVisible";
   private static final String PROP_TEXT = "text";
   private static final String PROP_SELECTION = "selection";
-  private static final String PROP_SELECTION_START = "selectionStart";
-  private static final String PROP_SELECTION_LENGTH = "selectionLength";
 
   public ComboOperationHandler( Combo combo ) {
     super( combo );
@@ -91,7 +90,7 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
    * @param text (string) the text
    */
   public void handleSetText( final Combo combo, JsonObject properties ) {
-    final JsonValue value = properties.get( PROP_TEXT );
+    JsonValue value = properties.get( PROP_TEXT );
     if( value != null ) {
       final String text = value.asString();
       if( isListening( combo, SWT.Verify ) ) {
@@ -112,14 +111,14 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
   }
 
   /*
-   * PROTOCOL SET textSelection
+   * PROTOCOL SET selection
    *
-   * @param selectionStart (int) the text selection start
-   * @param selectionLength (int) the text selection length
+   * @param selection ([start, end]) the text selection
    */
   public void handleSetSelection( final Combo combo, JsonObject properties ) {
-    final Point selection = readSelection( properties );
-    if( selection != null ) {
+    JsonValue value = properties.get( PROP_SELECTION );
+    if( value != null ) {
+      final Point selection = ProtocolUtil.toPoint( value );
       if( isListening( combo, SWT.Verify ) ) {
         // if text is delayed, delay the selection too
         ProcessActionRunner.add( new Runnable() {
@@ -164,22 +163,6 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
    * ignored, Modify event is fired when set text
    */
   public void handleNotifyModify( Combo combo, JsonObject properties ) {
-  }
-
-  private static Point readSelection( JsonObject properties ) {
-    Point selection = null;
-    JsonValue selectionStart = properties.get( PROP_SELECTION_START );
-    JsonValue selectionLength = properties.get( PROP_SELECTION_LENGTH );
-    if( selectionStart != null || selectionLength != null ) {
-      selection = new Point( 0, 0 );
-      if( selectionStart != null ) {
-        selection.x = selectionStart.asInt();
-      }
-      if( selectionLength != null ) {
-        selection.y = selection.x + selectionLength.asInt();
-      }
-    }
-    return selection;
   }
 
 }

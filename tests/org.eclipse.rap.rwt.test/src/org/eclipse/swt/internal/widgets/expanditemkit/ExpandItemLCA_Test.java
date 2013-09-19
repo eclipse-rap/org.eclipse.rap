@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.expanditemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
@@ -19,17 +20,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -38,10 +39,10 @@ import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ExpandEvent;
 import org.eclipse.swt.events.ExpandListener;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
+import org.eclipse.swt.internal.widgets.expandbarkit.ExpandBarOperationHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
@@ -77,81 +78,26 @@ public class ExpandItemLCA_Test {
   }
 
   @Test
-  public void testExpandItem() {
-    ExpandListener listener = mock( ExpandListener.class );
-    expandBar.addExpandListener( listener );
-
-    Fixture.fakeSetProperty( WidgetUtil.getId( expandItem ), "expanded", true );
-    fakeExpandEvent( expandItem, "Expand" );
-    Fixture.readDataAndProcessAction( display );
-
-    ArgumentCaptor<ExpandEvent> captor = ArgumentCaptor.forClass( ExpandEvent.class );
-    verify( listener, times( 1 ) ).itemExpanded( captor.capture() );
-    SelectionEvent event = captor.getValue();
-    assertEquals( expandBar, event.getSource() );
-    assertEquals( expandItem, event.item );
-    assertEquals( SWT.NONE, event.detail );
-    assertEquals( 0, event.x );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.width );
-    assertEquals( 0, event.height );
-    assertTrue( event.doit );
-    assertTrue( expandItem.getExpanded() );
-  }
-
-  @Test
   public void testExpandPropertyInsideExpandEvent() {
-    final AtomicBoolean log = new AtomicBoolean();
-    ExpandListener listener = new ExpandListener() {
-      public void itemExpanded( ExpandEvent event ) {
-        log.set( ( ( ExpandItem )( event.item ) ).getExpanded() );
-      }
-      public void itemCollapsed( ExpandEvent event ) {
-      }
-    };
+    getRemoteObject( expandBar ).setHandler( new ExpandBarOperationHandler( expandBar ) );
+    getRemoteObject( expandItem ).setHandler( new ExpandItemOperationHandler( expandItem ) );
+    ExpandListener listener = mock( ExpandListener.class );
     expandBar.addExpandListener( listener );
 
     Fixture.fakeSetProperty( WidgetUtil.getId( expandItem ), "expanded", true );
     fakeExpandEvent( expandItem, "Expand" );
     Fixture.readDataAndProcessAction( display );
 
-    assertTrue( log.get() );
-  }
-
-  @Test
-  public void testCollapseItem() {
-    ExpandListener listener = mock( ExpandListener.class );
-    expandBar.addExpandListener( listener );
-    expandItem.setExpanded( true );
-
-    Fixture.fakeSetProperty( WidgetUtil.getId( expandItem ), "expanded", false );
-    fakeExpandEvent( expandItem, "Collapse" );
-    Fixture.readDataAndProcessAction( display );
-
     ArgumentCaptor<ExpandEvent> captor = ArgumentCaptor.forClass( ExpandEvent.class );
-    verify( listener, times( 1 ) ).itemCollapsed( captor.capture() );
-    SelectionEvent event = captor.getValue();
-    assertEquals( expandBar, event.getSource() );
-    assertEquals( expandItem, event.item );
-    assertEquals( SWT.NONE, event.detail );
-    assertEquals( 0, event.x );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.width );
-    assertEquals( 0, event.height );
-    assertTrue( event.doit );
-    assertFalse( expandItem.getExpanded() );
+    verify( listener ).itemExpanded( captor.capture() );
+    assertTrue( ( ( ExpandItem )captor.getValue().item ).getExpanded() );
   }
 
   @Test
   public void testExpandPropertyInsideCollapseEvent() {
-    final AtomicBoolean log = new AtomicBoolean( true );
-    ExpandListener listener = new ExpandListener() {
-      public void itemExpanded( ExpandEvent event ) {
-      }
-      public void itemCollapsed( ExpandEvent event ) {
-        log.set( ( ( ExpandItem )( event.item ) ).getExpanded() );
-      }
-    };
+    getRemoteObject( expandBar ).setHandler( new ExpandBarOperationHandler( expandBar ) );
+    getRemoteObject( expandItem ).setHandler( new ExpandItemOperationHandler( expandItem ) );
+    ExpandListener listener = mock( ExpandListener.class );
     expandItem.setExpanded( true );
     expandBar.addExpandListener( listener );
 
@@ -159,7 +105,9 @@ public class ExpandItemLCA_Test {
     fakeExpandEvent( expandItem, "Collapse" );
     Fixture.readDataAndProcessAction( display );
 
-    assertFalse( log.get() );
+    ArgumentCaptor<ExpandEvent> captor = ArgumentCaptor.forClass( ExpandEvent.class );
+    verify( listener ).itemCollapsed( captor.capture() );
+    assertFalse( ( ( ExpandItem )captor.getValue().item ).getExpanded() );
   }
 
   @Test
@@ -170,6 +118,15 @@ public class ExpandItemLCA_Test {
     CreateOperation operation = message.findCreateOperation( expandItem );
     assertEquals( "rwt.widgets.ExpandItem", operation.getType() );
     assertTrue( operation.getPropertyNames().indexOf( "style" ) == -1 );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( expandItem );
+    lca.renderInitialization( expandItem );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof ExpandItemOperationHandler );
   }
 
   @Test

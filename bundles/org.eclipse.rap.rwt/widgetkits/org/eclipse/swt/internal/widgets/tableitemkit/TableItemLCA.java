@@ -78,16 +78,12 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  public void readData( Widget widget ) {
-    TableItem item = ( TableItem )widget;
-    readChecked( item );
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     TableItem item = ( TableItem )widget;
     Table parent = item.getParent();
     RemoteObject remoteObject = createRemoteObject( item, TYPE );
+    remoteObject.setHandler( new TableItemOperationHandler( item ) );
     remoteObject.set( "parent", WidgetUtil.getId( parent ) );
   }
 
@@ -110,16 +106,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
           }
         } );
       }
-    }
-  }
-
-  //////////////////
-  // ReadData helper
-
-  private void readChecked( TableItem item ) {
-    String value = WidgetLCAUtil.readPropertyValue( item, "checked" );
-    if( value != null ) {
-      item.setChecked( Boolean.valueOf( value ).booleanValue() );
     }
   }
 

@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -21,16 +20,9 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
-import java.util.Arrays;
 
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -76,39 +68,10 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   }
 
   @Override
-  public void readData( Widget widget ) {
-    final TableColumn column = ( TableColumn )widget;
-    String methodName = "resize";
-    if( ProtocolUtil.wasCallReceived( getId( column ), methodName ) ) {
-      // TODO [rh] HACK: force width to have changed when client-side changes
-      //      it. Since this is done while a column resize we must re-layout
-      //      all columns including the resized one.
-      String width = readCallPropertyValueAsString( getId( column ), methodName, "width" );
-      final int newWidth = NumberFormatUtil.parseInt( width );
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          column.setWidth( newWidth );
-        }
-      } );
-    }
-    methodName = "move";
-    if( ProtocolUtil.wasCallReceived( getId( column ), methodName ) ) {
-      String left = readCallPropertyValueAsString( getId( column ), methodName, "left" );
-      final int newLeft = NumberFormatUtil.parseInt( left );
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          moveColumn( column, newLeft );
-        }
-      } );
-    }
-    ControlLCAUtil.processSelection( column, null, false );
-    ControlLCAUtil.processDefaultSelection( column, null );
-  }
-
-  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     TableColumn column = ( TableColumn )widget;
     RemoteObject remoteObject = createRemoteObject( column, TYPE );
+    remoteObject.setHandler( new TableColumnOperationHandler( column ) );
     remoteObject.set( "parent", getId( column.getParent() ) );
   }
 
@@ -136,9 +99,8 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     return column.getParent().indexOf( column );
   }
 
-  private static int getLeft( TableColumn column ) {
-    ITableAdapter adapter = column.getParent().getAdapter( ITableAdapter.class );
-    return adapter.getColumnLeft( column );
+  static int getLeft( TableColumn column ) {
+    return getTableAdapter( column ).getColumnLeft( column );
   }
 
   private static String getAlignment( TableColumn column ) {
@@ -159,109 +121,11 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   }
 
   private static boolean isFixed( TableColumn column ) {
-    ITableAdapter adapter = column.getParent().getAdapter( ITableAdapter.class );
-    return adapter.isFixedColumn( column );
+    return getTableAdapter( column ).isFixedColumn( column );
   }
 
-  /////////////////////////////////
-  // Helping methods to move column
-
-  static void moveColumn( TableColumn column, int newLeft ) {
-    Table table = column.getParent();
-    int targetColumn = findMoveTarget( table, newLeft );
-    int[] columnOrder = table.getColumnOrder();
-    int index = table.indexOf( column );
-    int orderIndex = arrayIndexOf( columnOrder, index );
-    columnOrder = arrayRemove( columnOrder, orderIndex );
-    if( orderIndex < targetColumn ) {
-      targetColumn--;
-    }
-    if( isFixed( column ) || isFixed( table.getColumn( targetColumn ) ) ) {
-      targetColumn = table.indexOf( column );
-    }
-    columnOrder = arrayInsert( columnOrder, targetColumn, index );
-    if( Arrays.equals( columnOrder, table.getColumnOrder() ) ) {
-      // TODO [rh] HACK mark left as changed
-      TableColumn[] columns = table.getColumns();
-      for( int i = 0; i < columns.length; i++ ) {
-        WidgetAdapter adapter = WidgetUtil.getAdapter( columns[ i ] );
-        adapter.preserve( PROP_LEFT, null );
-      }
-    } else {
-      table.setColumnOrder( columnOrder );
-      // [if] HACK mark left as changed - see bug 336340
-      WidgetAdapter adapter = WidgetUtil.getAdapter( column );
-      adapter.preserve( PROP_LEFT, null );
-    }
-  }
-
-  /* (intentionally non-JavaDoc'ed)
-   * Returns the index in the columnOrder array at which the moved column
-   * should be inserted (moving remaining columns to the right). A return
-   * value of columnCount indicates that the moved column should be inserted
-   * after the right-most column.
-   */
-  private static int findMoveTarget( Table table, int newLeft ) {
-    int result = -1;
-    TableColumn[] columns = table.getColumns();
-    int[] columnOrder = table.getColumnOrder();
-    if( newLeft < 0 ) {
-      result = 0;
-    } else {
-      for( int i = 0; result == -1 && i < columns.length; i++ ) {
-        TableColumn column = columns[ columnOrder [ i ] ];
-        int left = getLeft( column );
-        int width = column.getWidth();
-        if( isFixed( column ) ) {
-          left += getLeftOffset( column );
-        }
-        if( newLeft >= left && newLeft <= left + width ) {
-          result = i;
-          if( newLeft >= left + width / 2 && result < columns.length && !isFixed( column ) ) {
-            result++;
-          }
-        }
-      }
-    }
-    // Column was moved right of the right-most column
-    if( result == -1 ) {
-      result = columns.length;
-    }
-    return result;
-  }
-
-  private static int getLeftOffset( TableColumn column ) {
-    ITableAdapter adapter = column.getParent().getAdapter( ITableAdapter.class );
-    return adapter.getLeftOffset();
-  }
-
-  private static int arrayIndexOf( int[] array, int value ) {
-    int result = -1;
-    for( int i = 0; result == -1 && i < array.length; i++ ) {
-      if( array[ i ] == value ) {
-        result = i;
-      }
-    }
-    return result;
-  }
-
-  private static int[] arrayRemove( int[] array, int index ) {
-    int length = array.length;
-    int[] result = new int[ length - 1 ];
-    System.arraycopy( array, 0, result, 0, index );
-    if( index < length - 1 ) {
-      System.arraycopy( array, index + 1, result, index, length - index - 1 );
-    }
-    return result;
-  }
-
-  private static int[] arrayInsert( int[] array, int index, int value ) {
-    int length = array.length;
-    int[] result = new int[ length + 1 ];
-    System.arraycopy( array, 0, result, 0, length );
-    System.arraycopy( result, index, result, index + 1, length - index );
-    result[ index ] = value;
-    return result;
+  private static ITableAdapter getTableAdapter( TableColumn column ) {
+    return column.getParent().getAdapter( ITableAdapter.class );
   }
 
 }

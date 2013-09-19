@@ -15,9 +15,8 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
@@ -27,9 +26,10 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -56,7 +56,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 
 public class CComboLCA_Test {
@@ -173,76 +172,11 @@ public class CComboLCA_Test {
   }
 
   @Test
-  public void testReadData_ListVisible() {
-    ccombo.add( "item 1" );
-    ccombo.add( "item 2" );
-
-    Fixture.fakeSetProperty( getId( ccombo ), "listVisible", true );
-    lca.readData( ccombo );
-
-    assertTrue( ccombo.getListVisible() );
-  }
-
-  @Test
-  public void testReadData_SelectedItem() {
-    ccombo.add( "item 1" );
-    ccombo.add( "item 2" );
-
-    Fixture.fakeSetProperty( getId( ccombo ), "selectionIndex", 1 );
-    lca.readData( ccombo );
-
-    assertEquals( 1, ccombo.getSelectionIndex() );
-  }
-
-  @Test
-  public void testFireSelectionEvent() {
-    SelectionListener listener = mock( SelectionListener.class );
-    ccombo.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( ccombo ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.readDataAndProcessAction( ccombo );
-
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testFireDefaultSelectionEvent() {
-    SelectionListener listener = mock( SelectionListener.class );
-    ccombo.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( ccombo ),
-                                 ClientMessageConst.EVENT_DEFAULT_SELECTION,
-                                 null );
-    Fixture.readDataAndProcessAction( ccombo );
-
-    verify( listener, times( 1 ) ).widgetDefaultSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testReadData_Text() {
-    Fixture.fakeSetProperty( getId( ccombo ), "text", "abc" );
-
-    lca.readData( ccombo );
-
-    assertEquals( "abc", ccombo.getText() );
-  }
-
-  @Test
-  public void testReadData_TextAndSelection() {
-    Fixture.fakeSetProperty( getId( ccombo ), "text", "abc" );
-    Fixture.fakeSetProperty( getId( ccombo ), "selectionStart", 1 );
-    Fixture.fakeSetProperty( getId( ccombo ), "selectionLength", 1 );
-
-    lca.readData( ccombo );
-
-    assertEquals( new Point( 1, 2 ), ccombo.getSelection() );
-  }
-
-  @Test
   public void testTextIsNotRenderdBack() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( ccombo );
+    getRemoteObject( getId( ccombo ) ).setHandler( new CComboOperationHandler( ccombo ) );
 
     Fixture.fakeSetProperty( getId( ccombo ), "text", "some text" );
     Fixture.executeLifeCycleFromServerThread();
@@ -251,79 +185,6 @@ public class CComboLCA_Test {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( ccombo, "text" ) );
     assertEquals( "some text", ccombo.getText() );
-  }
-
-  @Test
-  public void testReadText_WithVerifyListener() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    Fixture.markInitialized( ccombo );
-    ccombo.setText( "some text" );
-    VerifyListener listener = mock( VerifyListener.class );
-    ccombo.addVerifyListener( listener );
-
-    Fixture.fakeSetProperty( getId( ccombo ), "text", "verify me" );
-    Fixture.executeLifeCycleFromServerThread();
-
-    assertEquals( "verify me", ccombo.getText() );
-    ArgumentCaptor<VerifyEvent> captor = ArgumentCaptor.forClass( VerifyEvent.class );
-    verify( listener, times( 1 ) ).verifyText( captor.capture() );
-    VerifyEvent event = captor.getValue();
-    assertEquals( "verify me", event.text );
-    assertEquals( 0, event.start );
-    assertEquals( 9, event.end );
-  }
-
-  @Test
-  public void testTextSelectionWithVerifyEvent_EmptyListener() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    Fixture.markInitialized( ccombo );
-    VerifyListener listener = mock( VerifyListener.class );
-    ccombo.addVerifyListener( listener );
-
-    fakeTextAndSelectionParameters( "verify me", 1, 0 );
-    Fixture.executeLifeCycleFromServerThread();
-
-    verify( listener, times( 1 ) ).verifyText( any( VerifyEvent.class ) );
-    assertEquals( "verify me", ccombo.getText() );
-    assertEquals( new Point( 1, 1 ), ccombo.getSelection() );
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( ccombo, "text" ) );
-    assertNull( message.findSetOperation( ccombo, "selection" ) );
-  }
-
-  @Test
-  public void testTextSelectionWithVerifyEvent_ListenerDoesNotChangeSelection() {
-    ccombo.setText( "" );
-    ccombo.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-        event.text = "verified";
-      }
-    } );
-
-    fakeTextAndSelectionParameters( "verify me", 1, 0 );
-    Fixture.executeLifeCycleFromServerThread( );
-
-    assertEquals( new Point( 1, 1 ), ccombo.getSelection() );
-    assertEquals( "verified", ccombo.getText() );
-  }
-
-  @Test
-  public void testTextSelectionWithVerifyEvent_ListenerAdjustsSelection() {
-    ccombo.setText( "" );
-    ccombo.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-        event.text = "";
-      }
-    } );
-
-    fakeTextAndSelectionParameters( "verify me", 1, 0 );
-    Fixture.executeLifeCycleFromServerThread( );
-
-    assertEquals( new Point( 0, 0 ), ccombo.getSelection() );
-    assertEquals( "", ccombo.getText() );
   }
 
   @Test
@@ -361,6 +222,26 @@ public class CComboLCA_Test {
     CreateOperation operation = message.findCreateOperation( ccombo );
     assertEquals( "rwt.widgets.Combo", operation.getType() );
     assertEquals( JsonValue.TRUE, operation.getProperty( "ccombo" ) );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( ccombo );
+    lca.renderInitialization( ccombo );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof CComboOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    CComboOperationHandler handler = spy( new CComboOperationHandler( ccombo ) );
+    getRemoteObject( getId( ccombo ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( ccombo ), "Help", new JsonObject() );
+    lca.readData( ccombo );
+
+    verify( handler ).handleNotifyHelp( ccombo, new JsonObject() );
   }
 
   @Test
@@ -907,12 +788,6 @@ public class CComboLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( ccombo, "verify" ) );
-  }
-
-  private void fakeTextAndSelectionParameters( String text, int start, int length ) {
-    Fixture.fakeSetProperty( getId( ccombo ), "text", text );
-    Fixture.fakeSetProperty( getId( ccombo ), "selectionStart", start );
-    Fixture.fakeSetProperty( getId( ccombo ), "selectionLength", length );
   }
 
 }

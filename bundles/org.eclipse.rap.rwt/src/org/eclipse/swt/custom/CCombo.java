@@ -58,7 +58,7 @@ import org.eclipse.swt.widgets.Widget;
  *
  * @since 1.2
  */
-public final class CCombo extends Composite {
+public class CCombo extends Composite {
 
   /* Default size for widgets */
   static final int DEFAULT_WIDTH = 64;
@@ -228,7 +228,9 @@ public final class CCombo extends Composite {
    */
   public void setSelection( Point selection ) {
     checkWidget();
-    if( selection == null ) SWT.error ( SWT.ERROR_NULL_ARGUMENT );
+    if( selection == null ) {
+      SWT.error ( SWT.ERROR_NULL_ARGUMENT );
+    }
     int validatedStart = this.selection.x;
     int validatedEnd = this.selection.y;
     int start = selection.x;

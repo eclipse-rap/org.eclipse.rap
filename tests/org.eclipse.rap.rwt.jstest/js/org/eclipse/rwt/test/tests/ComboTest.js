@@ -1014,6 +1014,36 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       widget.destroy();
     },
 
+    testSendSelectionChangeOnMouseDown : function() {
+      var combo = this._createDefaultCombo();
+      combo.setEditable( true );
+      combo.setText( "foobar" );
+      TestUtil.flush();
+
+      TestUtil.fakeMouseEvent( combo._field, "mousedown" );
+      this._setTextSelection( combo._field, [ 3, 3 ] );
+      TestUtil.fakeMouseEvent( combo._field, "mouseup" );
+      rwt.remote.Connection.getInstance().send();
+
+      assertEquals( [ 3, 3 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
+      combo.destroy();
+    },
+
+    testSendSelectionChangeOnKeyPress : function() {
+      var combo = this._createDefaultCombo();
+      combo.setEditable( true );
+      combo.setText( "foobar" );
+      TestUtil.flush();
+      combo.focus();
+
+      this._setTextSelection( combo._field, [ 3, 3 ] );
+      TestUtil.keyDown( combo._field.getElement(), "Enter" );
+      rwt.remote.Connection.getInstance().send();
+
+      assertEquals( [ 3, 3 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
+      combo.destroy();
+    },
+
     //////////
     // Helpers
 
@@ -1033,6 +1063,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
 
     _getItems : function( combo ) {
       return combo._list.getItems();
+    },
+
+    _setTextSelection : function( text, selection ) {
+      text._setSelectionStart( selection[ 0 ] );
+      text._setSelectionLength( selection[ 1 ] - selection[ 0 ] );
     }
 
   }

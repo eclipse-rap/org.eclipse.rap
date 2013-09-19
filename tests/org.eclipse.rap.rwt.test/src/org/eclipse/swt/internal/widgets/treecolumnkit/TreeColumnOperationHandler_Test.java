@@ -12,6 +12,7 @@ package org.eclipse.swt.internal.widgets.treecolumnkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
+import static org.eclipse.swt.internal.widgets.treecolumnkit.TreeColumnOperationHandler.moveColumn;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
@@ -131,7 +132,7 @@ public class TreeColumnOperationHandler_Test {
     tree.setColumnOrder( new int[]{
       0, 1, 2
     } );
-    TreeColumnOperationHandler.moveColumn( column1, 3 );
+    moveColumn( column1, 3 );
     int[] columnOrder = tree.getColumnOrder();
     assertEquals( 1, columnOrder[ 0 ] );
     assertEquals( 0, columnOrder[ 1 ] );
@@ -142,7 +143,7 @@ public class TreeColumnOperationHandler_Test {
     tree.setColumnOrder( new int[]{
       1, 0, 2
     } );
-    TreeColumnOperationHandler.moveColumn( column1, 27 );
+    moveColumn( column1, 27 );
     columnOrder = tree.getColumnOrder();
     assertEquals( 0, columnOrder[ 0 ] );
     assertEquals( 1, columnOrder[ 1 ] );
@@ -153,7 +154,7 @@ public class TreeColumnOperationHandler_Test {
     tree.setColumnOrder( new int[]{
       0, 1, 2
     } );
-    TreeColumnOperationHandler.moveColumn( column2, 13 );
+    moveColumn( column2, 13 );
     columnOrder = tree.getColumnOrder();
     assertEquals( 0, columnOrder[ 0 ] );
     assertEquals( 2, columnOrder[ 1 ] );
@@ -164,7 +165,7 @@ public class TreeColumnOperationHandler_Test {
     tree.setColumnOrder( new int[]{
       0, 1, 2
     } );
-    TreeColumnOperationHandler.moveColumn( column2, 3 );
+    moveColumn( column2, 3 );
     columnOrder = tree.getColumnOrder();
     assertEquals( 2, columnOrder[ 0 ] );
     assertEquals( 0, columnOrder[ 1 ] );
@@ -175,7 +176,7 @@ public class TreeColumnOperationHandler_Test {
     tree.setColumnOrder( new int[]{
       0, 1, 2
     } );
-    TreeColumnOperationHandler.moveColumn( column2, -30 );
+    moveColumn( column2, -30 );
     columnOrder = tree.getColumnOrder();
     assertEquals( 2, columnOrder[ 0 ] );
     assertEquals( 0, columnOrder[ 1 ] );
@@ -186,7 +187,7 @@ public class TreeColumnOperationHandler_Test {
     tree.setColumnOrder( new int[]{
       0, 1, 2
     } );
-    TreeColumnOperationHandler.moveColumn( column, 100 );
+    moveColumn( column, 100 );
     columnOrder = tree.getColumnOrder();
     assertEquals( 1, columnOrder[ 0 ] );
     assertEquals( 2, columnOrder[ 1 ] );
@@ -197,7 +198,7 @@ public class TreeColumnOperationHandler_Test {
     tree.setColumnOrder( new int[]{
       0, 1, 2
     } );
-    TreeColumnOperationHandler.moveColumn( column1, 13 );
+    moveColumn( column1, 13 );
     columnOrder = tree.getColumnOrder();
     assertEquals( 0, columnOrder[ 0 ] );
     assertEquals( 1, columnOrder[ 1 ] );
@@ -208,7 +209,7 @@ public class TreeColumnOperationHandler_Test {
     tree.setColumnOrder( new int[]{
       0, 1, 2
     } );
-    TreeColumnOperationHandler.moveColumn( column, 33 );
+    moveColumn( column, 33 );
     columnOrder = tree.getColumnOrder();
     assertEquals( 1, columnOrder[ 0 ] );
     assertEquals( 0, columnOrder[ 1 ] );
@@ -223,7 +224,7 @@ public class TreeColumnOperationHandler_Test {
     adapter.setScrollLeft( 80 );
     TreeColumn column3 = tree.getColumn( 3 );
 
-    TreeColumnOperationHandler.moveColumn( column3, 105 );
+    moveColumn( column3, 105 );
 
     int[] columnOrder = tree.getColumnOrder();
     assertEquals( 0, columnOrder[ 0 ] );
@@ -237,10 +238,10 @@ public class TreeColumnOperationHandler_Test {
     tree = createFixedColumnsTree( shell );
     tree.setSize( 200, 200 );
     TreeColumn column0 = tree.getColumn( 0 );
-    TreeColumnOperationHandler.moveColumn( column0, 105 );
+
+    moveColumn( column0, 105 );
 
     int[] columnOrder = tree.getColumnOrder();
-
     assertEquals( 0, columnOrder[ 0 ] );
     assertEquals( 1, columnOrder[ 1 ] );
     assertEquals( 2, columnOrder[ 2 ] );
@@ -255,7 +256,7 @@ public class TreeColumnOperationHandler_Test {
     adapter.setScrollLeft( 100 );
     TreeColumn column3 = tree.getColumn( 3 );
 
-    TreeColumnOperationHandler.moveColumn( column3, 145 );
+    moveColumn( column3, 145 );
 
     int[] columnOrder = tree.getColumnOrder();
     assertEquals( 0, columnOrder[ 0 ] );

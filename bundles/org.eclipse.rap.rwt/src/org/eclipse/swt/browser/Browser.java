@@ -556,10 +556,6 @@ public class Browser extends Composite {
     notifyListeners( EventTypes.PROGRESS_CHANGED, new Event() );
   }
 
-  private void sendProgressCompletedEvent() {
-    notifyListeners( EventTypes.PROGRESS_COMPLETED, new Event() );
-  }
-
   private static String prepareScript( String script ) {
     StringBuilder buffer = new StringBuilder( "(function(){" );
     buffer.append( script );
@@ -613,11 +609,6 @@ public class Browser extends Composite {
 
     public String getText() {
       return html;
-    }
-
-    public void sendProgressCompletedEvent() {
-      sendProgressChangedEvent();
-      Browser.this.sendProgressCompletedEvent();
     }
 
     public String getExecuteScript() {

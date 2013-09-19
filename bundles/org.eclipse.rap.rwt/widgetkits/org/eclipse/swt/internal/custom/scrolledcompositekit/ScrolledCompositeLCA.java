@@ -20,7 +20,6 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
@@ -36,10 +35,6 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ScrolledComposite";
   private static final String[] ALLOWED_STYLES = new String[] { "H_SCROLL", "V_SCROLL", "BORDER" };
-
-  // Request parameter names
-  private static final String PARAM_H_BAR_SELECTION = "horizontalBar.selection";
-  private static final String PARAM_V_BAR_SELECTION = "verticalBar.selection";
 
   // Property names
   private static final String PROP_ORIGIN = "origin";
@@ -60,31 +55,17 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     ScrollBarLCAUtil.preserveValues( composite );
   }
 
+  @Override
   public void readData( Widget widget ) {
-    ScrolledComposite composite = ( ScrolledComposite )widget;
-    Point origin = composite.getOrigin();
-    String value = WidgetLCAUtil.readPropertyValue( widget, PARAM_H_BAR_SELECTION );
-    ScrollBar hScroll = composite.getHorizontalBar();
-    if( value != null && hScroll != null ) {
-      origin.x = NumberFormatUtil.parseInt( value );
-    }
-    value = WidgetLCAUtil.readPropertyValue( widget, PARAM_V_BAR_SELECTION );
-    ScrollBar vScroll = composite.getVerticalBar();
-    if( value != null && vScroll != null ) {
-      origin.y = NumberFormatUtil.parseInt( value );
-    }
-    composite.setOrigin( origin );
-    ControlLCAUtil.processEvents( composite );
-    ControlLCAUtil.processKeyEvents( composite );
-    ControlLCAUtil.processMenuDetect( composite );
-    WidgetLCAUtil.processHelp( composite );
-    ScrollBarLCAUtil.processSelectionEvent( composite );
+    super.readData( widget );
+    ScrollBarLCAUtil.processSelectionEvent( ( ScrolledComposite )widget );
   }
 
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ScrolledComposite composite = ( ScrolledComposite )widget;
     RemoteObject remoteObject = createRemoteObject( composite, TYPE );
+    remoteObject.setHandler( new ScrolledCompositeOperationHandler( composite ) );
     remoteObject.set( "parent", getId( composite.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( composite, ALLOWED_STYLES ) ) );
     ScrollBarLCAUtil.renderInitialization( composite );

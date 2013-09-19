@@ -660,7 +660,8 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
     _sendChanges : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
-        remoteObject.set( "day", this._removeLeadingZero( this._dayTextField.getText() ) );
+        var day = parseInt( this._removeLeadingZero( this._dayTextField.getText() ), 10 );
+        remoteObject.set( "day", day );
         remoteObject.set( "month", this._monthInt - 1 );
         remoteObject.set( "year", this._lastValidYear );
         if( this._hasSelectionListener ) {

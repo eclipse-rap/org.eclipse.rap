@@ -27,6 +27,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
@@ -149,6 +150,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
     remoteObject.set( "indentionWidth", adapter.getIndentionWidth() );
     remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( tree ) );
+    TemplateLCAUtil.renderRowTemplate( tree );
     ScrollBarLCAUtil.renderInitialization( tree );
   }
 
