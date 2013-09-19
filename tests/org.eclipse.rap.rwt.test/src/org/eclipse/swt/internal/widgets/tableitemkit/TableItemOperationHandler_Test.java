@@ -8,39 +8,35 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.widgets.treeitemkit;
+package org.eclipse.swt.internal.widgets.tableitemkit;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 
-public class TreeItemOperationHandler_Test {
+public class TableItemOperationHandler_Test {
 
-  private TreeItem item;
-  private TreeItemOperationHandler handler;
+  private TableItem item;
+  private TableItemOperationHandler handler;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.CHECK );
-    tree.setBounds( 0, 0, 100, 100 );
-    item = new TreeItem( tree, SWT.NONE );
-    new TreeItem( item, SWT.NONE );
-    handler = new TreeItemOperationHandler( item );
+    Table table = new Table( shell, SWT.CHECK );
+    item = new TableItem( table, SWT.NONE );
+    handler = new TableItemOperationHandler( item );
   }
 
   @After
@@ -53,25 +49,6 @@ public class TreeItemOperationHandler_Test {
     handler.handleSet( new JsonObject().add( "checked", true ) );
 
     assertTrue( item.getChecked() );
-  }
-
-  @Test
-  public void testHandleSetЕxpanded_expand() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-
-    handler.handleSet( new JsonObject().add( "expanded", true ) );
-
-    assertTrue( item.getExpanded() );
-  }
-
-  @Test
-  public void testHandleSetЕxpanded_collaps() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    item.setExpanded( true );
-
-    handler.handleSet( new JsonObject().add( "expanded", false ) );
-
-    assertFalse( item.getExpanded() );
   }
 
 }

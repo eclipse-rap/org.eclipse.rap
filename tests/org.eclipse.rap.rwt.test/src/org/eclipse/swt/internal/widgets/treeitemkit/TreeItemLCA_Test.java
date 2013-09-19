@@ -31,6 +31,7 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -59,6 +60,7 @@ public class TreeItemLCA_Test {
   private Display display;
   private Shell shell;
   private Tree tree;
+  private TreeItem item;
   private TreeItemLCA lca;
 
   @Before
@@ -67,6 +69,7 @@ public class TreeItemLCA_Test {
     display = new Display();
     shell = new Shell( display );
     tree = new Tree( shell, SWT.NONE );
+    item = new TreeItem( tree, SWT.NONE );
     lca = new TreeItemLCA();
     Fixture.fakeNewRequest();
   }
@@ -83,20 +86,19 @@ public class TreeItemLCA_Test {
     new TreeColumn( tree, SWT.NONE, 0 );
     new TreeColumn( tree, SWT.NONE, 1 );
     new TreeColumn( tree, SWT.NONE, 2 );
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    treeItem.setText( "qwert" );
-    new TreeItem( treeItem, SWT.NONE, 0 );
+    item.setText( "qwert" );
+    new TreeItem( item, SWT.NONE, 0 );
     Image image = createImage( display, Fixture.IMAGE1 );
-    treeItem.setImage( image );
-    treeItem.setExpanded( true );
+    item.setImage( image );
+    item.setExpanded( true );
     Fixture.preserveWidgets();
-    WidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
     String[] texts = ( String[] )adapter.getPreserved( TreeItemLCA.PROP_TEXTS );
     assertEquals( "qwert", texts[ 0 ] );
     assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_EXPANDED ) );
     Image[] images = ( Image[] )adapter.getPreserved( TreeItemLCA.PROP_IMAGES );
     assertEquals( image, images[ 0 ] );
-    IWidgetColorAdapter colorAdapter = treeItem.getAdapter( IWidgetColorAdapter.class );
+    IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
     Object background = adapter.getPreserved( TreeItemLCA.PROP_BACKGROUND );
     assertEquals( colorAdapter.getUserBackground(), background );
     Object foreground = adapter.getPreserved( TreeItemLCA.PROP_FOREGROUND );
@@ -108,40 +110,40 @@ public class TreeItemLCA_Test {
     Color[] foregrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FOREGROUNDS );
     assertTrue( Arrays.equals( new Color[ 3 ], foregrounds ) );
     Fixture.clearPreserved();
-    treeItem.setText( 0, "item11" );
-    treeItem.setText( 1, "item12" );
-    treeItem.setText( 2, "item13" );
+    item.setText( 0, "item11" );
+    item.setText( 1, "item12" );
+    item.setText( 2, "item13" );
     Image image1 = createImage( display, Fixture.IMAGE1 );
     Image image2 = createImage( display, Fixture.IMAGE2 );
     Image image3 = createImage( display, Fixture.IMAGE3 );
-    treeItem.setImage( 0, image1 );
-    treeItem.setImage( 1, image2 );
-    treeItem.setImage( 2, image3 );
-    tree.setSelection( treeItem );
+    item.setImage( 0, image1 );
+    item.setImage( 1, image2 );
+    item.setImage( 2, image3 );
+    tree.setSelection( item );
     background =new Color( display, 234, 113, 34 );
-    treeItem.setBackground( ( Color )background );
+    item.setBackground( ( Color )background );
     foreground =new Color( display, 122, 232, 45 );
-    treeItem.setForeground( ( Color )foreground );
+    item.setForeground( ( Color )foreground );
     Font font1 = new Font( display, "font1", 10, 1 );
-    treeItem.setFont( 0, font1 );
+    item.setFont( 0, font1 );
     Font font2 = new Font( display, "font1", 8, 1 );
-    treeItem.setFont( 1, font2 );
+    item.setFont( 1, font2 );
     Font font3 = new Font( display, "font1", 6, 1 );
-    treeItem.setFont( 2, font3 );
+    item.setFont( 2, font3 );
     Color background1 = new Color( display, 234, 230, 54 );
-    treeItem.setBackground( 0, background1 );
+    item.setBackground( 0, background1 );
     Color background2 = new Color( display, 145, 222, 134 );
-    treeItem.setBackground( 1, background2 );
+    item.setBackground( 1, background2 );
     Color background3 = new Color( display, 143, 134, 34 );
-    treeItem.setBackground( 2, background3 );
+    item.setBackground( 2, background3 );
     Color foreground1 = new Color( display, 77, 77, 54 );
-    treeItem.setForeground( 0, foreground1 );
+    item.setForeground( 0, foreground1 );
     Color foreground2 = new Color( display, 156, 45, 134 );
-    treeItem.setForeground( 1, foreground2 );
+    item.setForeground( 1, foreground2 );
     Color foreground3 = new Color( display, 88, 134, 34 );
-    treeItem.setForeground( 2, foreground3 );
+    item.setForeground( 2, foreground3 );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( treeItem );
+    adapter = WidgetUtil.getAdapter( item );
     texts = ( String[] )adapter.getPreserved( TreeItemLCA.PROP_TEXTS );
     assertEquals( "item11", texts[ 0 ] );
     assertEquals( "item12", texts[ 1 ] );
@@ -169,17 +171,17 @@ public class TreeItemLCA_Test {
   @Test
   public void testCheckPreserveValues() {
     tree = new Tree( shell, SWT.CHECK );
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
-    WidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
     assertEquals( Boolean.FALSE, adapter.getPreserved( TreeItemLCA.PROP_CHECKED ) );
     assertEquals( Boolean.FALSE, adapter.getPreserved( TreeItemLCA.PROP_GRAYED ) );
     Fixture.clearPreserved();
-    treeItem.setChecked( true );
-    treeItem.setGrayed( true );
+    item.setChecked( true );
+    item.setGrayed( true );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( treeItem );
+    adapter = WidgetUtil.getAdapter( item );
     assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_CHECKED ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_GRAYED ) );
   }
@@ -198,29 +200,27 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testExpandedPropertyNotRenderedBack() {
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    getRemoteObject( treeItem ).setHandler( new TreeItemOperationHandler( treeItem ) );
-    Fixture.markInitialized( treeItem );
-    new TreeItem( treeItem, SWT.NONE );
-    treeItem.setExpanded( false );
+    getRemoteObject( item ).setHandler( new TreeItemOperationHandler( item ) );
+    Fixture.markInitialized( item );
+    new TreeItem( item, SWT.NONE );
+    item.setExpanded( false );
 
-    Fixture.fakeSetProperty( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, true  );
+    Fixture.fakeSetProperty( getId( item ), TreeItemLCA.PROP_EXPANDED, true  );
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( treeItem, TreeItemLCA.PROP_EXPANDED ) );
+    assertNull( message.findSetOperation( item, TreeItemLCA.PROP_EXPANDED ) );
   }
 
   @Test
   public void testGetBoundsWithScrolling() {
     getRemoteObject( tree ).setHandler( new TreeOperationHandler( tree ) );
-    TreeItem rootItem = new TreeItem( tree, 0 );
     TreeItem rootItem2 = new TreeItem( tree, 0 );
     TreeItem rootItem3 = new TreeItem( tree, 0 );
 
     tree.getAdapter( ITreeAdapter.class ).checkData();
 
-    assertEquals( 0, rootItem.getBounds().y );
+    assertEquals( 0, item.getBounds().y );
     assertEquals( 27, rootItem2.getBounds().y );
     assertEquals( 54, rootItem3.getBounds().y );
 
@@ -229,14 +229,13 @@ public class TreeItemLCA_Test {
     Fixture.fakeSetProperty( getId( tree ), "topItemIndex", 2 );
     Fixture.readDataAndProcessAction( display );
 
-    assertEquals( -54, rootItem.getBounds().y );
+    assertEquals( -54, item.getBounds().y );
     assertEquals( -27, rootItem2.getBounds().y );
     assertEquals( 0, rootItem3.getBounds().y );
   }
 
   @Test
   public void testPreserveInitialItemCount() {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
 
     Fixture.preserveWidgets();
@@ -246,7 +245,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testPreserveItemCount() {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
 
     item.setItemCount( 10 );
@@ -257,8 +255,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderCreate() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-
     lca.renderInitialization( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -267,9 +263,17 @@ public class TreeItemLCA_Test {
   }
 
   @Test
-  public void testRenderDispose() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
+  public void testRenderCreate_setsOperationHandler() throws IOException {
+    String id = getId( item );
 
+    lca.renderInitialization( item );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof TreeItemOperationHandler );
+  }
+
+  @Test
+  public void testRenderDispose() throws IOException {
     lca.renderDispose( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -279,7 +283,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderDisposeWithDisposedTree() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     tree.dispose();
 
     lca.renderDispose( item );
@@ -290,7 +293,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderDisposeWithDisposedParentItem() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeItem subitem = new TreeItem( item, SWT.NONE );
     item.dispose();
 
@@ -302,7 +304,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderDispose_withDisposedParent_destroysRemoteObjects() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     lca.renderInitialization( item );
     RemoteObjectImpl remoteObject = RemoteObjectRegistry.getInstance().get( getId( item ) );
     tree.dispose();
@@ -314,8 +315,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderParent() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-
     lca.renderInitialization( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -325,20 +324,17 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderInitialIndex() throws IOException {
-    new TreeItem( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
 
-    lca.render( item );
+    lca.render( treeItem );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( item );
+    CreateOperation operation = message.findCreateOperation( treeItem );
     assertEquals( 1, operation.getProperty( "index" ).asInt() );
   }
 
   @Test
   public void testRenderIndex() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-
     new TreeItem( tree, SWT.NONE, 0 );
     lca.renderChanges( item );
 
@@ -348,8 +344,8 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderIndex_VirtualAfterClear() throws IOException {
-    tree = new Tree( shell, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
+    tree = new Tree( shell, SWT.VIRTUAL );
+    item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
     Fixture.preserveWidgets();
@@ -377,7 +373,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderIndexUnchanged() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -391,8 +386,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderInitialItemCount() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -402,9 +395,8 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderItemCount() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-
     item.setItemCount( 10 );
+
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -413,7 +405,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderItemCountUnchanged() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -429,7 +420,6 @@ public class TreeItemLCA_Test {
   public void testRenderInitialTexts() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
 
     lca.render( item );
 
@@ -442,7 +432,6 @@ public class TreeItemLCA_Test {
   public void testRenderTexts() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
 
     item.setText( new String[] { "item 0.0", "item 0.1" } );
     lca.renderChanges( item );
@@ -456,7 +445,6 @@ public class TreeItemLCA_Test {
   public void testRenderTextsUnchanged() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -472,7 +460,6 @@ public class TreeItemLCA_Test {
   public void testRenderInitialImages() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
 
     lca.render( item );
 
@@ -485,7 +472,6 @@ public class TreeItemLCA_Test {
   public void testRenderImages() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     Image image = createImage( display, Fixture.IMAGE1 );
 
     item.setImage( new Image[] { null, image } );
@@ -502,7 +488,6 @@ public class TreeItemLCA_Test {
   public void testRenderImagesUnchanged() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
     Image image = createImage( display, Fixture.IMAGE1 );
@@ -517,8 +502,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderInitialBackground() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -528,9 +511,8 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderBackground() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-
     item.setBackground( display.getSystemColor( SWT.COLOR_GREEN ) );
+
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -540,7 +522,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderBackgroundUnchanged() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -554,8 +535,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderInitialForeground() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -565,8 +544,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderForeground() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-
     item.setForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
     lca.renderChanges( item );
 
@@ -577,7 +554,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderForegroundUnchanged() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -591,8 +567,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderInitialFont() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -602,9 +576,8 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderFont() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-
     item.setFont( new Font( display, "Arial", 20, SWT.BOLD ) );
+
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -614,7 +587,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderFontUnchanged() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -630,7 +602,6 @@ public class TreeItemLCA_Test {
   public void testRenderInitialCellBackgrounds() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
 
     lca.render( item );
 
@@ -643,7 +614,6 @@ public class TreeItemLCA_Test {
   public void testRenderCellBackgrounds() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
 
     item.setBackground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
     lca.renderChanges( item );
@@ -657,7 +627,6 @@ public class TreeItemLCA_Test {
   public void testRenderCellBackgroundsUnchanged() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -673,7 +642,6 @@ public class TreeItemLCA_Test {
   public void testRenderInitialCellForegrounds() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
 
     lca.render( item );
 
@@ -686,7 +654,6 @@ public class TreeItemLCA_Test {
   public void testRenderCellForegrounds() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
 
     item.setForeground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
     lca.renderChanges( item );
@@ -700,7 +667,6 @@ public class TreeItemLCA_Test {
   public void testRenderCellForegroundsUnchanged() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -716,7 +682,6 @@ public class TreeItemLCA_Test {
   public void testRenderInitialCellFonts() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
 
     lca.render( item );
 
@@ -729,7 +694,6 @@ public class TreeItemLCA_Test {
   public void testRenderCellFonts() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
 
     item.setFont( 1, new Font( display, "Arial", 20, SWT.BOLD ) );
     lca.renderChanges( item );
@@ -743,7 +707,6 @@ public class TreeItemLCA_Test {
   public void testRenderCellFontsUnchanged() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -757,8 +720,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderInitialExpanded() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -768,7 +729,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderExpanded() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     new TreeItem( item, SWT.NONE );
 
     item.setExpanded( true );
@@ -780,7 +740,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderExpandedUnchanged() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     new TreeItem( item, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
@@ -796,7 +755,7 @@ public class TreeItemLCA_Test {
   @Test
   public void testRenderInitialChecked() throws IOException {
     tree = new Tree( shell, SWT.CHECK );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item = new TreeItem( tree, SWT.NONE );
 
     lca.render( item );
 
@@ -808,7 +767,7 @@ public class TreeItemLCA_Test {
   @Test
   public void testRenderChecked() throws IOException {
     tree = new Tree( shell, SWT.CHECK );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item = new TreeItem( tree, SWT.NONE );
 
     item.setChecked( true );
     lca.renderChanges( item );
@@ -820,7 +779,7 @@ public class TreeItemLCA_Test {
   @Test
   public void testRenderCheckedUnchanged() throws IOException {
     tree = new Tree( shell, SWT.CHECK );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -835,7 +794,7 @@ public class TreeItemLCA_Test {
   @Test
   public void testRenderInitialGrayed() throws IOException {
     tree = new Tree( shell, SWT.CHECK );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item = new TreeItem( tree, SWT.NONE );
 
     lca.render( item );
 
@@ -847,7 +806,7 @@ public class TreeItemLCA_Test {
   @Test
   public void testRenderGrayed() throws IOException {
     tree = new Tree( shell, SWT.CHECK );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item = new TreeItem( tree, SWT.NONE );
 
     item.setGrayed( true );
     lca.renderChanges( item );
@@ -859,7 +818,7 @@ public class TreeItemLCA_Test {
   @Test
   public void testRenderGrayedUnchanged() throws IOException {
     tree = new Tree( shell, SWT.CHECK );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -873,8 +832,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderInitialCustomVariant() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -884,9 +841,8 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderCustomVariant() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-
     item.setData( RWT.CUSTOM_VARIANT, "blue" );
+
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -895,7 +851,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderCustomVariantUnchanged() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -909,7 +864,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderData() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     registerDataKeys( new String[]{ "foo", "bar" } );
     item.setData( "foo", "string" );
     item.setData( "bar", Integer.valueOf( 1 ) );
@@ -924,7 +878,6 @@ public class TreeItemLCA_Test {
 
   @Test
   public void testRenderDataUnchanged() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     registerDataKeys( new String[]{ "foo" } );
     item.setData( "foo", "string" );
     Fixture.markInitialized( display );
