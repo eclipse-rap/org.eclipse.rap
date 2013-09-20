@@ -32,6 +32,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.shellkit.ShellOperationHandler;
+import org.eclipse.swt.internal.widgets.tablekit.TableOperationHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -375,13 +376,14 @@ public class MouseEvent_Test {
   }
 
   private Table createTableWithMouseListener() {
-    Table result = new Table( shell, SWT.NONE );
-    result.setSize( 100, 100 );
+    Table table = new Table( shell, SWT.NONE );
+    getRemoteObject( table ).setHandler( new TableOperationHandler( table ) );
+    table.setSize( 100, 100 );
     for( int i = 0; i < 5; i++ ) {
-      new TableItem( result, SWT.NONE);
+      new TableItem( table, SWT.NONE);
     }
-    result.addMouseListener( new LoggingMouseListener( events ) );
-    return result;
+    table.addMouseListener( new LoggingMouseListener( events ) );
+    return table;
   }
 
   private static void fakeSelectionRequest( Widget widget, Widget item ) {

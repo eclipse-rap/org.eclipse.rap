@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablekit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -20,10 +19,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -37,7 +36,7 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.template.RowTemplate;
 import org.eclipse.rap.rwt.internal.template.TemplateSerializer;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
@@ -45,6 +44,7 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -80,7 +80,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 
 public class TableLCA_Test {
@@ -186,76 +185,6 @@ public class TableLCA_Test {
   }
 
   @Test
-  public void testFireWidgetSelectedWithCheck() {
-    table = new Table( shell, SWT.CHECK );
-    TableItem item = new TableItem( table, SWT.NONE );
-    SelectionListener listener = mock( SelectionListener.class );
-    table.addSelectionListener( listener );
-
-    fakeWidgetSelected( table, getId( item ), "check" );
-    Fixture.readDataAndProcessAction( display );
-
-    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
-    assertSame( item, captor.getValue().item );
-    assertEquals( SWT.CHECK, captor.getValue().detail );
-    verify( listener, times( 0 ) ).widgetDefaultSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testFireWidgetDefaultSelected() {
-    table = new Table( shell, SWT.MULTI );
-    TableItem item = new TableItem( table, SWT.NONE );
-    SelectionListener listener = mock( SelectionListener.class );
-    table.addSelectionListener( listener );
-
-    fakeWidgetDefaultSelected( table, item );
-    Fixture.readDataAndProcessAction( display );
-
-    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
-    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener, times( 1 ) ).widgetDefaultSelected( captor.capture() );
-    assertSame( item, captor.getValue().item );
-  }
-
-  @Test
-  public void testFireWidgetDefaultSelected_WithoutFocusedItem() {
-    table = new Table( shell, SWT.MULTI );
-    new TableItem( table, SWT.NONE );
-    TableItem disposedItem = new TableItem( table, SWT.NONE );
-    disposedItem.dispose();
-    SelectionListener listener = mock( SelectionListener.class );
-    table.addSelectionListener( listener );
-
-    fakeWidgetDefaultSelected( table, disposedItem );
-    Fixture.readDataAndProcessAction( display );
-
-    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
-    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener, times( 1 ) ).widgetDefaultSelected( captor.capture() );
-    assertNull( captor.getValue().item );
-  }
-
-  @Test
-  public void testFireWidgetDefaultSelected_WithFocusedItem() {
-    table = new Table( shell, SWT.MULTI );
-    TableItem item = new TableItem( table, SWT.NONE );
-    TableItem disposedItem = new TableItem( table, SWT.NONE );
-    disposedItem.dispose();
-    table.setSelection( 0 ); // set focus item
-    SelectionListener listener = mock( SelectionListener.class );
-    table.addSelectionListener( listener );
-
-    fakeWidgetDefaultSelected( table, disposedItem );
-    Fixture.readDataAndProcessAction( display );
-
-    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
-    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener, times( 1 ) ).widgetDefaultSelected( captor.capture() );
-    assertSame( item, captor.getValue().item );
-  }
-
-  @Test
   public void testRedraw() {
     final Table[] table = { null };
     shell.setSize( 100, 100 );
@@ -284,11 +213,13 @@ public class TableLCA_Test {
   public void testNoUnwantedResolveItems() {
     shell.setSize( 100, 100 );
     table = new Table( shell, SWT.VIRTUAL );
+    Fixture.markInitialized( table );
+    getRemoteObject( table ).setHandler( new TableOperationHandler( table ) );
     table.setSize( 90, 90 );
     table.setItemCount( 1000 );
     shell.open();
-    fakeSetTopItemIndex( table, 500 );
 
+    fakeSetTopItemIndex( table, 500 );
     Fixture.executeLifeCycleFromServerThread();
 
     assertTrue( isItemVirtual( table, 499 ) );
@@ -340,6 +271,8 @@ public class TableLCA_Test {
   public void testSetDataEvent() {
     shell.setSize( 100, 100 );
     table = new Table( shell, SWT.VIRTUAL );
+    Fixture.markInitialized( table );
+    getRemoteObject( table ).setHandler( new TableOperationHandler( table ) );
     Listener listener = new Listener() {
       public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
@@ -363,56 +296,6 @@ public class TableLCA_Test {
     assertTrue( isItemVirtual( table, 510 ) );
     assertEquals( "Item 500", table.getItem( 500 ).getText() );
     assertEquals( "Item 502", table.getItem( 502 ).getText() );
-  }
-
-  @Test
-  public void testReadSelection() {
-    table = new Table( shell, SWT.MULTI );
-    TableItem item1 = new TableItem( table, SWT.NONE );
-    TableItem item2 = new TableItem( table, SWT.NONE );
-
-    JsonValue selection = createJsonArray( getId( item1 ), getId( item2 ) );
-    Fixture.fakeSetProperty( getId( table ), "selection", selection );
-    Fixture.executeLifeCycleFromServerThread();
-
-    TableItem[] selectedItems = table.getSelection();
-    assertEquals( 2, selectedItems.length );
-    assertSame( item1, selectedItems[ 1 ] );
-    assertSame( item2, selectedItems[ 0 ] );
-  }
-
-  @Test
-  public void testReadSelection_UnresolvedItem() {
-    table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
-    table.setItemCount( 3 );
-    TableItem item = table.getItem( 0 );
-    item.setText( "Item 1" );
-
-    Fixture.fakeNewRequest();
-    JsonValue selection = createJsonArray( getId( item ), getId( table ) + "#2" );
-    Fixture.fakeSetProperty( getId( table ), "selection", selection );
-    Fixture.executeLifeCycleFromServerThread();
-
-    int[] selectedIndices = table.getSelectionIndices();
-    assertEquals( 2, selectedIndices.length );
-    assertEquals( 0, selectedIndices[ 1 ] );
-    assertEquals( 2, selectedIndices[ 0 ] );
-    assertTrue( isItemVirtual( table, 2 ) );
-  }
-
-  @Test
-  public void testReadSelectionDisposedItem() {
-    table = new Table( shell, SWT.MULTI );
-    TableItem item = new TableItem( table, SWT.NONE );
-    new TableItem( table, SWT.NONE );
-    item.dispose();
-
-    Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( table ), "selection", createJsonArray( getId( item ) ) );
-    Fixture.executeLifeCycleFromServerThread();
-
-    TableItem[] selectedItems = table.getSelection();
-    assertEquals( 0, selectedItems.length );
   }
 
   /*
@@ -605,120 +488,6 @@ public class TableLCA_Test {
   }
 
   @Test
-  public void testReadFocusItem() {
-    // ensure that reading selection parameter does not override focusIndex
-    table = new Table( shell, SWT.MULTI );
-    for( int i = 0; i < 5; i++ ) {
-      new TableItem( table, SWT.NONE );
-    }
-
-    Fixture.fakeSetProperty( getId( table ), "focusItem", indexToId( table, 4 ) );
-    JsonValue items = JsonUtil.createJsonArray( indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } ) );
-    Fixture.fakeSetProperty( getId( table ), "selection", items );
-    TableLCA tableLCA = new TableLCA();
-    tableLCA.readData( table );
-
-    assertEquals( 4, table.getAdapter( ITableAdapter.class ).getFocusIndex() );
-  }
-
-  @Test
-  public void testReadUnresolvedFocusItem() {
-    // ensure that reading selection parameter does not override focusIndex
-    table = new Table( shell, SWT.MULTI );
-    createTableItems( table, 5 );
-
-    Fixture.fakeSetProperty( getId( table ), "focusItem", getId( table ) + "#4" );
-    JsonValue items = createJsonArray( indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } ) );
-    Fixture.fakeSetProperty( getId( table ), "selection", items );
-    TableLCA tableLCA = new TableLCA();
-    tableLCA.readData( table );
-
-    assertEquals( 4, table.getAdapter( ITableAdapter.class ).getFocusIndex() );
-  }
-
-  @Test
-  public void testReadDisposedFocusItem() {
-    // ensure that reading selection parameter does not override focusIndex
-    table = new Table( shell, SWT.MULTI );
-    createTableItems( table, 5 );
-
-    JsonValue items = createJsonArray( indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } ) );
-    Fixture.fakeSetProperty( getId( table ), "selection", items );
-    Fixture.fakeSetProperty( getId( table ), "focusItem", indexToId( table, 4 ) );
-    table.getItem( 4 ).dispose();
-    TableLCA tableLCA = new TableLCA();
-    tableLCA.readData( table );
-
-    assertEquals( -1, table.getAdapter( ITableAdapter.class ).getFocusIndex() );
-  }
-
-  @Test
-  public void testReadTopIndex() {
-    table = new Table( shell, SWT.MULTI );
-    table.setSize( 485, 485 );
-    createTableItems( table, 115 );
-
-    int[] indices = new int[]{
-      114,70,71,72,73,74,75,76,77,78,79,80,81,82,83,
-      84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,
-      99,100,101,102,103,104,105,106,107,108,109,
-      110,111,112,113,0
-    };
-    JsonValue items = createJsonArray( indicesToIds( table, indices ) );
-    Fixture.fakeSetProperty( getId( table ), "selection", items );
-    fakeSetTopItemIndex( table, 0 );
-    TableLCA tableLCA = new TableLCA();
-    tableLCA.readData( table );
-
-    assertEquals( 0, table.getTopIndex() );
-  }
-
-  @Test
-  public void testCellTooltipRequestForMissingCells() {
-    createTableItems( table, 3 );
-    final StringBuilder log = new StringBuilder();
-    ICellToolTipAdapter tableAdapter = table.getAdapter( ICellToolTipAdapter.class );
-    tableAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
-      public void getToolTipText( Item item, int columnIndex ) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append( "[" );
-        buffer.append( WidgetUtil.getId( item ) );
-        buffer.append( "," );
-        buffer.append( columnIndex );
-        buffer.append( "]" );
-        log.append( buffer.toString() );
-      }
-    } );
-    String itemId = WidgetUtil.getId( table.getItem( 0 ) );
-    fakeCellToolTipRequest( table, itemId, 0 );
-    Fixture.executeLifeCycleFromServerThread();
-    String expected = "[" + itemId + ",0]";
-    assertEquals( expected, log.toString() );
-    log.setLength( 0 );
-    itemId = WidgetUtil.getId( table.getItem( 2 ) );
-    fakeCellToolTipRequest( table, itemId, 0 );
-    Fixture.executeLifeCycleFromServerThread();
-    expected = "[" + itemId + ",0]";
-    assertEquals( expected, log.toString() );
-    log.setLength( 0 );
-    fakeCellToolTipRequest( table, "xyz", 0 );
-    Fixture.executeLifeCycleFromServerThread();
-    assertEquals( "", log.toString() );
-    fakeCellToolTipRequest( table, itemId, 1 );
-    Fixture.executeLifeCycleFromServerThread();
-    assertEquals( "", log.toString() );
-    createTableColumns( table, 2 );
-    fakeCellToolTipRequest( table, itemId, 1 );
-    Fixture.executeLifeCycleFromServerThread();
-    expected = "[" + itemId + ",1]";
-    assertEquals( expected, log.toString() );
-    log.setLength( 0 );
-    fakeCellToolTipRequest( table, itemId, 2 );
-    Fixture.executeLifeCycleFromServerThread();
-    assertEquals( "", log.toString() );
-  }
-
-  @Test
   public void testHorizontalScrollbarsSelectionEvent() {
     createTableItems( table, 20 );
     SelectionListener listener = mock( SelectionListener.class );
@@ -743,21 +512,6 @@ public class TableLCA_Test {
   }
 
   @Test
-  public void testSelectionEvent_UnresolvedItem() {
-    table = new Table( shell, SWT.VIRTUAL );
-    table.setItemCount( 3 );
-    SelectionListener listener = mock( SelectionListener.class );
-    table.addSelectionListener( listener );
-
-    fakeWidgetSelected( table, getId( table ) + "#2" );
-    Fixture.readDataAndProcessAction( table );
-
-    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener ).widgetSelected( captor.capture() );
-    assertSame( table.getItem( 2 ), captor.getValue().item );
-  }
-
-  @Test
   public void testRenderNonNegativeImageWidth() throws IOException {
     TableColumn column = new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -773,6 +527,7 @@ public class TableLCA_Test {
   @Test
   public void testReadItemToolTipDoesNotResolveVirtualItems() {
     table = new Table( shell, SWT.VIRTUAL );
+    getRemoteObject( table ).setHandler( new TableOperationHandler( table ) );
     table.setData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
     ICellToolTipAdapter toolTipAdapter = CellToolTipUtil.getAdapter( table );
     ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
@@ -811,6 +566,27 @@ public class TableLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( table );
     assertEquals( JsonValue.TRUE, operation.getProperty( "splitContainer" ) );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( table );
+
+    lca.renderInitialization( table );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof TableOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    TableOperationHandler handler = spy( new TableOperationHandler( table ) );
+    getRemoteObject( getId( table ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( table ), "Help", new JsonObject() );
+    lca.readData( table );
+
+    verify( handler ).handleNotifyHelp( table, new JsonObject() );
   }
 
   @Test
@@ -1641,6 +1417,7 @@ public class TableLCA_Test {
   public void testRenderCellToolTipText() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
+    getRemoteObject( table ).setHandler( new TableOperationHandler( table ) );
     createTableItems( table, 5 );
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
     adapter.setCellToolTipProvider( new ICellToolTipProvider() {
@@ -1665,9 +1442,10 @@ public class TableLCA_Test {
   }
 
   @Test
-  public void testRenderCellToolTipTextNull() {
+  public void testRenderCellToolTipText_null() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
+    getRemoteObject( table ).setHandler( new TableOperationHandler( table ) );
     createTableItems( table, 5 );
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
     adapter.setCellToolTipProvider( new ICellToolTipProvider() {
@@ -1726,12 +1504,6 @@ public class TableLCA_Test {
     assertNull( createOperation.getProperty( "rowTemplate" ) );
   }
 
-  private static void createTableColumns( Table table, int count ) {
-    for( int i = 0; i < count; i++ ) {
-      new TableColumn( table, SWT.NONE );
-    }
-  }
-
   private static void createTableItems( Table table, int count ) {
     for( int i = 0; i < count; i++ ) {
       new TableItem( table, SWT.NONE );
@@ -1748,42 +1520,6 @@ public class TableLCA_Test {
 
   private static boolean isItemVirtual( Table table, int index ) {
     return table.getAdapter( ITableAdapter.class ).isItemVirtual( index );
-  }
-
-  private static String[] indicesToIds( Table table, int[] indices ) {
-    String[] items = new String[ indices.length ];
-    for( int i = 0; i < indices.length; i++ ) {
-      items[ i ] = indexToId( table, indices[ i ] );
-    }
-    return items;
-  }
-
-  private static String indexToId( Table table, int index ) {
-    return WidgetUtil.getId( table.getItem( index ) );
-  }
-
-  private void fakeWidgetSelected( Table table, String itemId ) {
-    fakeWidgetSelected( table, itemId, null );
-  }
-
-  private void fakeWidgetSelected( Table table, String itemId, String detail ) {
-    JsonObject parameters = new JsonObject()
-      .add( ClientMessageConst.EVENT_PARAM_ITEM, itemId );
-    if( detail != null ) {
-      parameters.add( ClientMessageConst.EVENT_PARAM_DETAIL, detail );
-    }
-    Fixture.fakeNotifyOperation( getId( table ),
-                                 ClientMessageConst.EVENT_SELECTION,
-                                 parameters );
-  }
-
-  private void fakeWidgetDefaultSelected( Table table, TableItem item ) {
-    Fixture.fakeNewRequest();
-    JsonObject parameters = new JsonObject()
-      .add( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
-    Fixture.fakeNotifyOperation( getId( table ),
-                                 ClientMessageConst.EVENT_DEFAULT_SELECTION,
-                                 parameters );
   }
 
   private void fakeSetTopItemIndex( Table table, int index ) {

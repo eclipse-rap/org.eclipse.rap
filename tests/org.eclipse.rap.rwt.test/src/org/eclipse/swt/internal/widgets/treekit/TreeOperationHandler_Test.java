@@ -154,11 +154,11 @@ public class TreeOperationHandler_Test {
     Tree spyTree = spy( tree );
     handler = new TreeOperationHandler( spyTree );
     TreeItem item = new TreeItem( spyTree, SWT.NONE );
+
     JsonObject properties = new JsonObject()
       .add( "altKey", true )
       .add( "shiftKey", true )
       .add( "item", getId( item ) );
-
     handler.handleNotify( EVENT_SELECTION, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -173,10 +173,10 @@ public class TreeOperationHandler_Test {
     Tree spyTree = spy( tree );
     handler = new TreeOperationHandler( spyTree );
     TreeItem item = new TreeItem( spyTree, SWT.NONE );
-    JsonObject properties = new JsonObject()
-    .add( "item", getId( item ) )
-    .add( "detail", "hyperlink" );
 
+    JsonObject properties = new JsonObject()
+      .add( "item", getId( item ) )
+      .add( "detail", "hyperlink" );
     handler.handleNotify( EVENT_SELECTION, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -191,10 +191,10 @@ public class TreeOperationHandler_Test {
     Tree spyTree = spy( tree );
     handler = new TreeOperationHandler( spyTree );
     TreeItem item = new TreeItem( spyTree, SWT.NONE );
-    JsonObject properties = new JsonObject()
-    .add( "item", getId( item ) )
-    .add( "detail", "check" );
 
+    JsonObject properties = new JsonObject()
+      .add( "item", getId( item ) )
+      .add( "detail", "check" );
     handler.handleNotify( EVENT_SELECTION, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -209,11 +209,11 @@ public class TreeOperationHandler_Test {
     Tree spyTree = spy( tree );
     handler = new TreeOperationHandler( spyTree );
     TreeItem item = new TreeItem( spyTree, SWT.NONE );
+
     JsonObject properties = new JsonObject()
       .add( "altKey", true )
       .add( "shiftKey", true )
       .add( "item", getId( item ) );
-
     handler.handleNotify( EVENT_DEFAULT_SELECTION, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -241,6 +241,7 @@ public class TreeOperationHandler_Test {
   public void testHandleNotifyMouseDown() {
     Tree spyTree = spy( tree );
     handler = new TreeOperationHandler( spyTree );
+
     JsonObject properties = new JsonObject()
       .add( "altKey", true )
       .add( "shiftKey", true )
@@ -248,7 +249,6 @@ public class TreeOperationHandler_Test {
       .add( "x", 2 )
       .add( "y", 3 )
       .add( "time", 4 );
-
     handler.handleNotify( EVENT_MOUSE_DOWN, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -266,6 +266,7 @@ public class TreeOperationHandler_Test {
   public void testHandleNotifyMouseDown_coordinatesOutOfClientArea() {
     Tree spyTree = spy( tree );
     handler = new TreeOperationHandler( spyTree );
+
     JsonObject properties = new JsonObject()
       .add( "altKey", true )
       .add( "shiftKey", true )
@@ -273,7 +274,6 @@ public class TreeOperationHandler_Test {
       .add( "x", 110 )
       .add( "y", 3 )
       .add( "time", 4 );
-
     handler.handleNotify( EVENT_MOUSE_DOWN, properties );
 
     verify( spyTree, times( 0 ) ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
@@ -283,6 +283,7 @@ public class TreeOperationHandler_Test {
   public void testHandleNotifyMouseDoubleClick() {
     Tree spyTree = spy( tree );
     handler = new TreeOperationHandler( spyTree );
+
     JsonObject properties = new JsonObject()
       .add( "altKey", true )
       .add( "shiftKey", true )
@@ -290,7 +291,6 @@ public class TreeOperationHandler_Test {
       .add( "x", 2 )
       .add( "y", 3 )
       .add( "time", 4 );
-
     handler.handleNotify( EVENT_MOUSE_DOUBLE_CLICK, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -308,6 +308,7 @@ public class TreeOperationHandler_Test {
   public void testHandleNotifyMouseUp() {
     Tree spyTree = spy( tree );
     handler = new TreeOperationHandler( spyTree );
+
     JsonObject properties = new JsonObject()
       .add( "altKey", true )
       .add( "shiftKey", true )
@@ -315,7 +316,6 @@ public class TreeOperationHandler_Test {
       .add( "x", 2 )
       .add( "y", 3 )
       .add( "time", 4 );
-
     handler.handleNotify( EVENT_MOUSE_UP, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -335,7 +335,6 @@ public class TreeOperationHandler_Test {
       .add( "shiftKey", true )
       .add( "keyCode", 9 )
       .add( "charCode", 0 );
-
     handler.handleNotify( EVENT_TRAVERSE, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -352,7 +351,6 @@ public class TreeOperationHandler_Test {
       .add( "ctrlKey", true )
       .add( "keyCode", 9 )
       .add( "charCode", 0 );
-
     handler.handleNotify( EVENT_TRAVERSE, properties );
 
     verify( mockedTree, times( 0 ) ).notifyListeners( eq( SWT.Traverse ), any( Event.class ) );
@@ -364,7 +362,6 @@ public class TreeOperationHandler_Test {
       .add( "shiftKey", true )
       .add( "keyCode", 65 )
       .add( "charCode", 97 );
-
     handler.handleNotify( EVENT_KEY_DOWN, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -381,7 +378,6 @@ public class TreeOperationHandler_Test {
       .add( "shiftKey", true )
       .add( "keyCode", 65 )
       .add( "charCode", 97 );
-
     handler.handleNotify( EVENT_KEY_DOWN, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -395,7 +391,6 @@ public class TreeOperationHandler_Test {
   @Test
   public void testHandleNotifyMenuDetect() {
     JsonObject properties = new JsonObject().add( "x", 1 ).add( "y", 2 );
-
     handler.handleNotify( EVENT_MENU_DETECT, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -417,8 +412,8 @@ public class TreeOperationHandler_Test {
     Tree spyTree = spy( tree );
     handler = new TreeOperationHandler( spyTree );
     TreeItem item = new TreeItem( spyTree, SWT.NONE );
-    JsonObject properties = new JsonObject().add( "item", getId( item ) );
 
+    JsonObject properties = new JsonObject().add( "item", getId( item ) );
     handler.handleNotify( EVENT_EXPAND, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -431,8 +426,8 @@ public class TreeOperationHandler_Test {
     Tree spyTree = spy( tree );
     handler = new TreeOperationHandler( spyTree );
     TreeItem item = new TreeItem( spyTree, SWT.NONE );
-    JsonObject properties = new JsonObject().add( "item", getId( item ) );
 
+    JsonObject properties = new JsonObject().add( "item", getId( item ) );
     handler.handleNotify( EVENT_COLLAPSE, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -461,8 +456,8 @@ public class TreeOperationHandler_Test {
         adapter.setCellToolTipText( buffer.toString() );
       }
     } );
-    JsonObject properties = new JsonObject().add( "item", getId( item ) ).add( "column", 0 );
 
+    JsonObject properties = new JsonObject().add( "item", getId( item ) ).add( "column", 0 );
     handler.handleCall( "renderToolTipText", properties );
 
     assertEquals( getId( item ) + ",0", CellToolTipUtil.getAdapter( tree ).getCellToolTipText() );

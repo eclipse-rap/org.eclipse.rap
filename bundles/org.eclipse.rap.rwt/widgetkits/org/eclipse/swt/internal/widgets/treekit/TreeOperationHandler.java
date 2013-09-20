@@ -161,9 +161,12 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
    * @param item (string) id of selected item
    */
   public void handleNotifySelection( Tree tree, JsonObject properties ) {
-    Event event = createSelectionEvent( SWT.Selection, properties );
-    event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
-    tree.notifyListeners( SWT.Selection, event );
+    TreeItem item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
+    if( item != null ) {
+      Event event = createSelectionEvent( SWT.Selection, properties );
+      event.item = item;
+      tree.notifyListeners( SWT.Selection, event );
+    }
   }
 
   /*

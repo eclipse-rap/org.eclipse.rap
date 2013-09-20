@@ -11,23 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablekit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_ITEM;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsStringArray;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasCallReceived;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
@@ -35,9 +27,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
@@ -46,8 +36,6 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
-import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
-import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.widgets.Control;
@@ -131,24 +119,15 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   @Override
   public void readData( Widget widget ) {
-    Table table = ( Table )widget;
-    readTopItemIndex( table );
-    readScrollLeft( table );
-    readSelection( table );
-    readFocusIndex( table ); // must be called *after* readSelection
-    readWidgetSelected( table );
-    readWidgetDefaultSelected( table );
-    readCellToolTipTextRequested( table );
-    ControlLCAUtil.processEvents( table );
-    ControlLCAUtil.processKeyEvents( table );
-    ControlLCAUtil.processMenuDetect( table );
-    ScrollBarLCAUtil.processSelectionEvent( table );
+    super.readData( widget );
+    ScrollBarLCAUtil.processSelectionEvent( ( Table )widget );
   }
 
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Table table = ( Table )widget;
     RemoteObject remoteObject = createRemoteObject( table, TYPE );
+    remoteObject.setHandler( new TableOperationHandler( table ) );
     remoteObject.set( "parent", getId( table.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( table, ALLOWED_STYLES ) ) );
     remoteObject.set( "appearance", "table" );
@@ -206,100 +185,8 @@ public final class TableLCA extends AbstractWidgetLCA {
     getTableAdapter( table ).checkData();
   }
 
-  ////////////////////////////////////////////////////
-  // Helping methods to read client-side state changes
-
-  private static void readSelection( Table table ) {
-    String[] values = readPropertyValueAsStringArray( getId( table ), "selection" );
-    if( values != null ) {
-      int[] newSelection = new int[ values.length ];
-      for( int i = 0; i < values.length; i++ ) {
-        String itemId = values[ i ];
-        TableItem item = getItem( table, itemId );
-        if( item != null ) {
-          newSelection[ i ] = table.indexOf( item );
-        } else {
-          newSelection[ i ] = -1;
-        }
-      }
-      table.deselectAll();
-      table.select( newSelection );
-    }
-  }
-
-  private static void readTopItemIndex( Table table ) {
-    String value = readPropertyValue( table, "topItemIndex" );
-    if( value != null ) {
-      int topIndex = NumberFormatUtil.parseInt( value );
-      table.setTopIndex( topIndex );
-    }
-  }
-
-  private static void readFocusIndex( Table table ) {
-    String value = readPropertyValue( table, "focusItem" );
-    if( value != null ) {
-      TableItem item = getItem( table, value );
-      if( item != null ) {
-        getTableAdapter( table ).setFocusIndex( table.indexOf( item ) );
-      }
-    }
-  }
-
-  private static void readScrollLeft( Table table ) {
-    String value = readPropertyValue( table, "scrollLeft" );
-    if( value != null ) {
-      int leftOffset = NumberFormatUtil.parseInt( value );
-      table.getAdapter( ITableAdapter.class ).setLeftOffset( leftOffset );
-    }
-  }
-
-  private static void readWidgetSelected( Table table ) {
-    String eventName = ClientMessageConst.EVENT_SELECTION;
-    if( wasEventSent( table, eventName ) ) {
-      String value = readEventPropertyValue( table, eventName, EVENT_PARAM_ITEM );
-      TableItem item = getItem( table, value );
-      // Bugfix: check if index is valid before firing event to avoid problems with fast scrolling
-      // TODO [tb] : Still useful? bugzilla id?
-      if( item != null ) {
-        ControlLCAUtil.processSelection( table, item, false );
-      }
-    }
-  }
-
-  private static void readWidgetDefaultSelected( Table table ) {
-    String eventName = ClientMessageConst.EVENT_DEFAULT_SELECTION;
-    if( wasEventSent( table, eventName ) ) {
-      // A default-selected event can occur without a selection being present.
-      // In this case the event.item field points to the focused item
-      TableItem item = getFocusItem( table );
-      String value = readEventPropertyValue( table, eventName, EVENT_PARAM_ITEM );
-      TableItem selectedItem = getItem( table, value );
-      if( selectedItem != null ) {
-        // TODO [rh] do something about when index points to unresolved item!
-        item = selectedItem;
-      }
-      ControlLCAUtil.processDefaultSelection( table, item );
-    }
-  }
-
   ////////////////
   // Cell tooltips
-
-  private static void readCellToolTipTextRequested( Table table ) {
-    ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
-    adapter.setCellToolTipText( null );
-    ICellToolTipProvider provider = adapter.getCellToolTipProvider();
-    String methodName = "renderToolTipText";
-    if( provider != null && wasCallReceived( getId( table ), methodName ) ) {
-      String itemId = readCallPropertyValueAsString( getId( table ), methodName, "item" );
-      String column = readCallPropertyValueAsString( getId( table ), methodName, "column" );
-      int columnIndex = NumberFormatUtil.parseInt( column );
-      TableItem item = getItem( table, itemId );
-      if( item != null && ( columnIndex == 0 || columnIndex < table.getColumnCount() ) ) {
-        provider.getToolTipText( item, columnIndex );
-      }
-    }
-  }
 
   private static String getCellToolTipText( Table table ) {
     return CellToolTipUtil.getAdapter( table ).getCellToolTipText();
@@ -356,18 +243,6 @@ public final class TableLCA extends AbstractWidgetLCA {
   static boolean hasAlwaysHideSelection( Table table ) {
     Object data = table.getData( Table.ALWAYS_HIDE_SELECTION );
     return Boolean.TRUE.equals( data );
-  }
-
-  private static TableItem getItem( Table table, String itemId ) {
-    TableItem item;
-    String[] idParts = itemId.split( "#" );
-    if( idParts.length == 2 ) {
-      int index = Integer.parseInt( idParts[ 1 ] );
-      item = table.getItem( index );
-    } else {
-      item = ( TableItem )find( table, itemId );
-    }
-    return item;
   }
 
   private static ITableAdapter getTableAdapter( Table table ) {
