@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
@@ -18,27 +19,24 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -47,17 +45,12 @@ import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Adapter;
-import org.eclipse.swt.custom.CTabFolder2Listener;
-import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.custom.ctabitemkit.CTabItemLCA;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
@@ -74,7 +67,6 @@ import org.eclipse.swt.widgets.Widget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 
 public class CTabFolderLCA_Test {
@@ -193,6 +185,8 @@ public class CTabFolderLCA_Test {
   @Test
   public void testChangeSelection() {
     folder = new CTabFolder( shell, SWT.MULTI );
+    Fixture.markInitialized( folder );
+    getRemoteObject( folder ).setHandler( new CTabFolderOperationHandler( folder ) );
     folder.setSize( 100, 100 );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
     CTabItemControl item1Control = new CTabItemControl( folder, SWT.NONE );
@@ -205,145 +199,11 @@ public class CTabFolderLCA_Test {
     // The actual test request: item1 is selected, the request selects item2
     folder.setSelection( item1 );
     Fixture.fakeSetProperty( getId( folder ), "selection", getId( item2 ) );
-    Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread();
 
     assertSame( item2, folder.getSelection() );
     assertEquals( "visible=false", item1Control.markup.toString() );
     assertEquals( "visible=true", item2Control.markup.toString() );
-  }
-
-  @Test
-  public void testSelectionEvent() {
-    folder = new CTabFolder( shell, SWT.MULTI );
-    SelectionListener listener = mock( SelectionListener.class );
-    folder.addSelectionListener( listener );
-    CTabItem item1 = new CTabItem( folder, SWT.NONE );
-    CTabItem item2 = new CTabItem( folder, SWT.NONE );
-    folder.setSelection( item1 );
-
-    JsonObject parameters = new JsonObject();
-//    parameters.add( "item", WidgetUtil.getId( item2 ) );
-    Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_SELECTION, parameters );
-    Fixture.fakeSetProperty( getId( folder ),
-                              CTabFolderLCA.PARAM_SELECTION,
-                              getId( item2 ) );
-
-    Fixture.readDataAndProcessAction( folder );
-
-    assertSame( item2, folder.getSelection() );
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testMinimizeEvent() {
-    CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
-    folder.addCTabFolder2Listener( listener  );
-
-    fakeFolderEvent( folder, ClientMessageConst.EVENT_FOLDER_DETAIL_MINIMIZE, null );
-    Fixture.readDataAndProcessAction( folder );
-
-    verify( listener, times( 1 ) ).minimize( any( CTabFolderEvent.class ) );
-  }
-
-  @Test
-  public void testMaximizeEvent() {
-    CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
-    folder.addCTabFolder2Listener( listener  );
-
-    fakeFolderEvent( folder, ClientMessageConst.EVENT_FOLDER_DETAIL_MAXIMIZE, null );
-    Fixture.readDataAndProcessAction( folder );
-
-    verify( listener, times( 1 ) ).maximize( any( CTabFolderEvent.class ) );
-  }
-
-  @Test
-  public void testRestoreEvent() {
-    CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
-    folder.addCTabFolder2Listener( listener  );
-
-    fakeFolderEvent( folder, ClientMessageConst.EVENT_FOLDER_DETAIL_RESTORE, null );
-    Fixture.readDataAndProcessAction( folder );
-
-    verify( listener, times( 1 ) ).restore( any( CTabFolderEvent.class ) );
-  }
-
-  @Test
-  public void testCloseEvent_WithVeto() {
-    final AtomicBoolean log = new AtomicBoolean( false );
-    CTabItem item = new CTabItem( folder, SWT.NONE );
-    folder.addCTabFolder2Listener( new CTabFolder2Adapter() {
-      @Override
-      public void close( CTabFolderEvent event ){
-        log.set( true );
-        event.doit = false;
-      }
-    } );
-
-    fakeFolderEvent( folder, ClientMessageConst.EVENT_FOLDER_DETAIL_CLOSE, getId( item ) );
-    Fixture.readDataAndProcessAction( folder );
-
-    assertTrue( log.get() );
-    assertFalse( item.isDisposed() );
-  }
-
-  @Test
-  public void testCloseEvent_WithoutVeto() {
-    CTabItem item = new CTabItem( folder, SWT.NONE );
-    CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
-    folder.addCTabFolder2Listener( listener  );
-
-    fakeFolderEvent( folder, ClientMessageConst.EVENT_FOLDER_DETAIL_CLOSE, getId( item ) );
-    Fixture.readDataAndProcessAction( folder );
-
-    verify( listener, times( 1 ) ).close( any( CTabFolderEvent.class ) );
-    assertTrue( item.isDisposed() );
-  }
-
-  @Test
-  public void testShowListEvent_WithVeto() {
-    folder = new CTabFolder( shell, SWT.SINGLE );
-    folder.setSize( 30, 130 );
-    CTabItem item1 = new CTabItem( folder, SWT.NONE );
-    new CTabItem( folder, SWT.NONE );
-    folder.setSelection( item1 );
-    final List<CTabFolderEvent> log = new ArrayList<CTabFolderEvent>();
-    folder.addCTabFolder2Listener( new CTabFolder2Adapter() {
-      @Override
-      public void showList( CTabFolderEvent event ) {
-        event.doit = false;
-        log.add( event );
-      }
-    } );
-
-    fakeFolderEvent( folder, ClientMessageConst.EVENT_FOLDER_DETAIL_SHOW_LIST, null );
-    Fixture.readDataAndProcessAction( folder );
-
-    CTabFolderEvent event = log.get( 0 );
-    Rectangle chevronRect = folder.getAdapter( ICTabFolderAdapter.class ).getChevronRect();
-    Rectangle eventRet = new Rectangle( event.x, event.y, event.width, event.height);
-    assertEquals( eventRet, chevronRect );
-    assertFalse( event.doit );
-    assertEquals( null, getShowListMenu( folder ) );
-  }
-
-  @Test
-  public void testShowListEvent_WithoutVeto() {
-    folder = new CTabFolder( shell, SWT.SINGLE );
-    folder.setSize( 30, 130 );
-    CTabItem item1 = new CTabItem( folder, SWT.NONE );
-    new CTabItem( folder, SWT.NONE );
-    CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
-    folder.addCTabFolder2Listener( listener );
-    folder.setSelection( item1 );
-
-    fakeFolderEvent( folder, ClientMessageConst.EVENT_FOLDER_DETAIL_SHOW_LIST, null );
-    Fixture.readDataAndProcessAction( folder );
-
-    ArgumentCaptor<CTabFolderEvent> captor = ArgumentCaptor.forClass( CTabFolderEvent.class );
-    verify( listener, times( 1 ) ).showList( captor.capture() );
-    assertTrue( captor.getValue().doit );
-    assertEquals( 1, getShowListMenu( folder ).getItemCount() );
   }
 
   @Test
@@ -371,6 +231,26 @@ public class CTabFolderLCA_Test {
     assertFalse( styles.contains( "BOTTOM" ) );
     assertTrue( styles.contains( "MULTI" ) );
     assertEquals( "bottom", message.findCreateProperty( folder, "tabPosition" ).asString() );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( folder );
+    lca.renderInitialization( folder );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof CTabFolderOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    CTabFolderOperationHandler handler = spy( new CTabFolderOperationHandler( folder ) );
+    getRemoteObject( getId( folder ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( folder ), "Help", new JsonObject() );
+    lca.readData( folder );
+
+    verify( handler ).handleNotifyHelp( folder, new JsonObject() );
   }
 
   @Test
@@ -996,18 +876,6 @@ public class CTabFolderLCA_Test {
     assertNull( message.findListenOperation( folder, "Folder" ) );
   }
 
-  private static Menu getShowListMenu( CTabFolder folder ) {
-    Menu result = null;
-    try {
-      Field field = CTabFolder.class.getDeclaredField( "showMenu" );
-      field.setAccessible( true );
-      result = ( Menu )field.get( folder );
-    } catch( Exception e ) {
-      e.printStackTrace();
-    }
-    return result;
-  }
-
   private static final class CTabItemControl extends Composite {
     private static final long serialVersionUID = 1L;
 
@@ -1047,6 +915,7 @@ public class CTabFolderLCA_Test {
             throws IOException
           {
           }
+          @Override
           public void readData( Widget widget ) {
           }
         };
@@ -1055,14 +924,6 @@ public class CTabFolderLCA_Test {
       }
       return ( T )result;
     }
-  }
-
-  private static void fakeFolderEvent( CTabFolder folder, String detail, String itemId ) {
-    JsonObject parameters = new JsonObject().add( ClientMessageConst.EVENT_PARAM_DETAIL, detail );
-    if( itemId != null ) {
-      parameters.add( ClientMessageConst.EVENT_PARAM_ITEM, itemId );
-    }
-    Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_FOLDER, parameters );
   }
 
 }

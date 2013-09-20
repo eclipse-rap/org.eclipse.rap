@@ -66,7 +66,7 @@ rwt.qx.Class.define( "rwt.widgets.util.TabUtil", {
         var folder = tab.getParent().getParent();
         var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( folder );
         remoteObject.set( "selection", itemId );
-        remoteObject.notify( "Selection", {
+        rwt.remote.EventUtil.notifySelected( folder, {
           "item" : itemId
         } );
       }

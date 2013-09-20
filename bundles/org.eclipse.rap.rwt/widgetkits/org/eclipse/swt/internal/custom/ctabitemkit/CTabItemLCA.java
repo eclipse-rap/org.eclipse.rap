@@ -60,6 +60,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     preserveProperty( item, PROP_SHOW_CLOSE, item.getShowClose() );
   }
 
+  @Override
   public void readData( Widget widget ) {
   }
 

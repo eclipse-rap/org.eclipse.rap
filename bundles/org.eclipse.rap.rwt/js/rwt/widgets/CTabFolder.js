@@ -517,7 +517,9 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
           var itemId = rwt.remote.WidgetManager.getInstance().findIdByWidget( item );
           var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
           remoteObject.set( "selection", itemId );
-          rwt.remote.EventUtil.notifySelected( this );
+          rwt.remote.EventUtil.notifySelected( this, {
+            "item" : itemId
+          } );
         }
       }
     },
@@ -531,7 +533,9 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
           var itemId = rwt.remote.WidgetManager.getInstance().findIdByWidget( item );
           var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
           remoteObject.set( "selection", itemId );
-          rwt.remote.EventUtil.widgetDefaultSelected( evt, this );
+          rwt.remote.EventUtil.notifyDefaultSelected( this, {
+            "item" : itemId
+          } );
         }
       }
     }

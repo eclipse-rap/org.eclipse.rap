@@ -11,42 +11,34 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_ITEM;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -56,12 +48,6 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   private static final String[] ALLOWED_STYLES = new String[] {
     "CLOSE", "FLAT", "SINGLE", "MULTI", "NO_RADIO_GROUP", "BORDER"
   };
-
-  // Request parameter that denotes the id of the selected tab item
-  public static final String PARAM_SELECTION = "selection";
-  // Request parameters for min/max state
-  public static final String PARAM_MAXIMIZED = "maximized";
-  public static final String PARAM_MINIMIZED = "minimized";
 
   // Property names
   private static final String PROP_TOOLTIP_TEXTS = "toolTipTexts";
@@ -126,42 +112,11 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     preserveListener( folder, PROP_FOLDER_LISTENER, hasFolderListener( folder ) );
   }
 
-  public void readData( Widget widget ) {
-    final CTabFolder folder = ( CTabFolder )widget;
-    String value = WidgetLCAUtil.readPropertyValue( folder, PARAM_MINIMIZED );
-    if( value != null ) {
-      folder.setMinimized( Boolean.valueOf( value ).booleanValue() );
-    }
-    value = WidgetLCAUtil.readPropertyValue( folder, PARAM_MAXIMIZED );
-    if( value != null ) {
-      folder.setMaximized( Boolean.valueOf( value ).booleanValue() );
-    }
-    processFolderEvent( folder );
-    // TODO [rh] it's a hack: necessary because folder.setSelection changes
-    //      the visibility of tabItem.control; but preserveValues stores
-    //      the already changed visibility and thus no visibility property is rendered
-    String selectedItemId = WidgetLCAUtil.readPropertyValue( folder, PARAM_SELECTION );
-    if( selectedItemId != null ) {
-      final CTabItem item = ( CTabItem )WidgetUtil.find( folder, selectedItemId );
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          folder.setSelection( item );
-          preserveProperty( folder, PROP_SELECTION, folder.getSelection() );
-          ControlLCAUtil.processSelection( folder, item, false );
-          ControlLCAUtil.processDefaultSelection( folder, item );
-        }
-      } );
-    }
-    ControlLCAUtil.processEvents( folder );
-    ControlLCAUtil.processKeyEvents( folder );
-    ControlLCAUtil.processMenuDetect( folder );
-    WidgetLCAUtil.processHelp( folder );
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     CTabFolder folder = ( CTabFolder )widget;
     RemoteObject remoteObject = createRemoteObject( folder, TYPE );
+    remoteObject.setHandler( new CTabFolderOperationHandler( folder ) );
     remoteObject.set( "parent", WidgetUtil.getId( folder.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( folder, ALLOWED_STYLES ) ) );
     JsonArray toolTipTexts = new JsonArray()
@@ -257,72 +212,6 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       }
       getRemoteObject( folder ).set( PROP_SELECTION_BG_GRADIENT, gradient );
     }
-  }
-
-  ///////////////
-  // Event helper
-
-  private static void processFolderEvent( CTabFolder folder ) {
-    String eventName = ClientMessageConst.EVENT_FOLDER;
-    if( wasEventSent( folder, eventName ) ) {
-      String detail = readEventPropertyValue( folder, eventName, EVENT_PARAM_DETAIL );
-      if( ClientMessageConst.EVENT_FOLDER_DETAIL_MINIMIZE.equals( detail ) ) {
-        folder.notifyListeners( EventTypes.CTAB_FOLDER_MINIMIZE, new Event() );
-      } else if( ClientMessageConst.EVENT_FOLDER_DETAIL_MAXIMIZE.equals( detail ) ) {
-        folder.notifyListeners( EventTypes.CTAB_FOLDER_MAXIMIZE, new Event() );
-      } else if( ClientMessageConst.EVENT_FOLDER_DETAIL_RESTORE.equals( detail ) ) {
-        folder.notifyListeners( EventTypes.CTAB_FOLDER_RESTORE, new Event() );
-      } else if( ClientMessageConst.EVENT_FOLDER_DETAIL_CLOSE.equals( detail ) ) {
-        String itemId = readEventPropertyValue( folder, eventName, EVENT_PARAM_ITEM );
-        CTabItem item = ( CTabItem )WidgetUtil.find( folder, itemId );
-        notifyCloseListeners( item );
-      } else if( ClientMessageConst.EVENT_FOLDER_DETAIL_SHOW_LIST.equals( detail ) ) {
-        notifyShowListListeners( folder );
-      }
-    }
-  }
-
-  private static void notifyCloseListeners( final CTabItem item ) {
-    ProcessActionRunner.add( new Runnable() {
-      public void run() {
-        boolean doit = sendCloseEvent( item );
-        if( doit ) {
-          item.dispose();
-        }
-      }
-    } );
-  }
-
-  private static void notifyShowListListeners( final CTabFolder folder ) {
-    ProcessActionRunner.add( new Runnable() {
-      public void run() {
-        boolean doit = sendShowListEvent( folder );
-        if( doit ) {
-          ICTabFolderAdapter adapter = getCTabFolderAdapter( folder );
-          adapter.showListMenu();
-        }
-      }
-    } );
-  }
-
-  private static boolean sendCloseEvent( CTabItem item ) {
-    Event event = new Event();
-    event.item = item;
-    event.doit = true;
-    item.getParent().notifyListeners( EventTypes.CTAB_FOLDER_CLOSE, event );
-    return event.doit;
-  }
-
-  private static boolean sendShowListEvent( CTabFolder folder ) {
-    Event event = new Event();
-    Rectangle chevronRect = getChevronBounds( folder );
-    event.x = chevronRect.x;
-    event.y = chevronRect.y;
-    event.height = chevronRect.height;
-    event.width = chevronRect.width;
-    event.doit = true;
-    folder.notifyListeners( EventTypes.CTAB_FOLDER_SHOW_LIST, event );
-    return event.doit;
   }
 
   //////////////////
