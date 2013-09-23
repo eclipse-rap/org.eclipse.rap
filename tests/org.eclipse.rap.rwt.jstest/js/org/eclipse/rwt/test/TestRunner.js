@@ -254,6 +254,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
         rwt.event.EventHandler.setFocusRoot(
           rwt.widgets.base.ClientDocument.getInstance()
         );
+        rwt.widgets.base.WidgetToolTip.getInstance().hide();
+        rwt.widgets.base.WidgetToolTip.getInstance()._hideTimeStamp = ( new Date( 0 ) ).valueOf();
       }
       rwt.widgets.base.Widget.flushGlobalQueues();
     },

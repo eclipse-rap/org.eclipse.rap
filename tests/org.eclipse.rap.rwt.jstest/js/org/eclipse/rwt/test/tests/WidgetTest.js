@@ -668,44 +668,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       assertTrue( node.parentNode !== parentNode );
     },
 
-    testShowToolTipOnHover : function() {
-      if(! rwt.client.Client.supportsTouch() ) { // Test in MobileWebkitSupport.js
-        var widget = this._createWidget();
-        widget.setUserData( "toolTipText", "gogo" );
-        var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
-        widget.setToolTip( toolTip );
-        TestUtil.flush();
-
-        TestUtil.hoverFromTo( document.body, widget.getElement() );
-        TestUtil.forceInterval( toolTip._showTimer );
-        TestUtil.flush();
-
-        assertTrue( toolTip.isSeeable() );
-        assertEquals( "gogo", toolTip.getAtom().getLabel() );
-        toolTip.hide();
-        widget.destroy();
-      }
-    },
-
-    testDontShowToolTipOnTab : function() {
-      var widget = this._createWidget();
-      widget.setUserData( "toolTipText", "gogo" );
-      var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
-      widget.setToolTip( toolTip );
-      TestUtil.flush();
-      widget.focus();
-      try {
-        TestUtil.forceInterval( toolTip._showTimer );
-      } catch( ex ) {
-        // expected
-      }
-      TestUtil.flush();
-
-      assertFalse( toolTip.isSeeable() );
-      toolTip.hide();
-      widget.destroy();
-    },
-
     testBoxWidthZero : function() {
       var widget = this._createWidget();
       widget.setLeft( 10 );

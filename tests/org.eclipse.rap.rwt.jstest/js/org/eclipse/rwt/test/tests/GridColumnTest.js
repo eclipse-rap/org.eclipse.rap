@@ -157,8 +157,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
 
       var label = this._getColumnLabel( tree, column );
-      assertEquals( "hello blue world", label.getUserData( "toolTipText" ) );
-      assertTrue( label.getToolTip() !== null );
+      assertEquals( "hello blue world", label.getToolTipText() );
+      assertTrue( label.getToolTipText() !== null );
       column.dispose();
       tree.destroy();
     },
@@ -402,8 +402,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.protocolSet( "w4", { "toolTip" : "hello blue world" } );
-      assertEquals( "hello blue world", column.getUserData( "toolTipText" ) );
-      assertTrue( column.getToolTip() !== null );
+      assertEquals( "hello blue world", column.getToolTipText() );
+      assertTrue( column.getToolTipText() !== null );
       column.dispose();
       tree.destroy();
     },

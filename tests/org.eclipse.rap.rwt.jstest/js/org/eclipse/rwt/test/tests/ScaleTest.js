@@ -229,6 +229,62 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
       scale.setMaximum( 100 );
 
       assertEquals( 1, log );
+    },
+
+    testGetToolTipTargetBounds_Horizontal : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var scale = new rwt.widgets.Scale( true );
+      scale.setDimension( 100, 20 );
+      scale.setSelection( 30 );
+      scale.addToDocument();
+      scale.setBorder( new rwt.html.Border( 2 ) );
+      TestUtil.flush();
+
+      var bounds = scale.getToolTipTargetBounds();
+
+      var thumb = scale._thumb.getElement();
+      assertEquals( 2 + parseInt( thumb.style.left, 10 ), bounds.left );
+      assertEquals( 2 + parseInt( thumb.style.top, 10 ), bounds.top );
+      assertEquals( parseInt( thumb.style.width, 10 ), bounds.width );
+      assertEquals( parseInt( thumb.style.height, 10 ), bounds.height );
+    },
+
+    testGetToolTipTargetBounds_Vertical : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var scale = new rwt.widgets.Scale( false );
+      scale.setDimension( 20, 100 );
+      scale.setSelection( 30 );
+      scale.addToDocument();
+      scale.setBorder( new rwt.html.Border( 2 ) );
+      TestUtil.flush();
+
+      var bounds = scale.getToolTipTargetBounds();
+
+      var thumb = scale._thumb.getElement();
+      assertEquals( 2 + parseInt( thumb.style.left, 10 ), bounds.left );
+      assertEquals( 2 + parseInt( thumb.style.top, 10 ), bounds.top );
+      assertEquals( parseInt( thumb.style.width, 10 ), bounds.width );
+      assertEquals( parseInt( thumb.style.height, 10 ), bounds.height );
+      scale.destroy();
+    },
+
+    testSetSelection_FiresUpdateToolTip : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var scale = new rwt.widgets.Scale( false );
+      scale.setDimension( 20, 100 );
+      scale.setSelection( 30 );
+      scale.addToDocument();
+      scale.setBorder( new rwt.html.Border( 2 ) );
+      TestUtil.flush();
+      var fired = false;
+      scale.addEventListener( "updateToolTip", function( arg ) {
+        fired = arg;
+      } );
+
+      scale.setSelection( 30 );
+
+      assertIdentical( scale, fired );
+      scale.destroy();
     }
 
   }

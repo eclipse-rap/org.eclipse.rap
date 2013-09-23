@@ -266,8 +266,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
       this._setPropertyByProtocol( "w4", { "toolTip" : "hello blue world" } );
-      assertEquals( "hello blue world", widget.getUserData( "toolTipText" ) );
-      assertTrue( widget.getToolTip() !== null );
+      assertEquals( "hello blue world", widget.getToolTipText() );
       shell.destroy();
       toolbar.destroy();
       widget.destroy();

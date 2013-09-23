@@ -54,7 +54,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this.add( this._rowContainer );
     this.add( this._horzScrollBar );
     this.add( this._vertScrollBar );
-    this._cellToolTip = null;
     // Configure:
     this._config = this._rowContainer.getRenderConfig();
     this.setCursor( "default" );
@@ -81,10 +80,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this._focusItem = null;
     this._sortColumn = null;
     this._resizeLine = null;
-    if( this._cellToolTip ) {
-      this._cellToolTip.destroy();
-      this._cellToolTip = null;
-    }
   },
 
   members : {
@@ -1420,37 +1415,21 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     ////////////////////////
     // Cell tooltip handling
 
-    setEnableCellToolTip : function( value ) {
-      if( value ) {
-        this._cellToolTip = new rwt.widgets.base.GridCellToolTip( this );
-        this._rowContainer.addEventListener( "mousemove", this._onClientAreaMouseMove, this );
-        this._rowContainer.setToolTip( this._cellToolTip );
-      } else {
-        this._rowContainer.removeEventListener( "mousemove", this._onClientAreaMouseMove, this );
-        this._rowContainer.setToolTip( null );
-        this._cellToolTip.destroy();
-        this._cellToolTip = null;
-      }
+    setEnableCellToolTip : function( value ) { // protocol name
+      this.setCellToolTipsEnabled( value );
     },
 
-    _onClientAreaMouseMove : function( evt ) {
-      if( this._cellToolTip != null ) {
-        var itemId = null;
-        var columnIndex = -1;
-        if( this._rowContainer.getHoverItem() ) {
-          var widgetManager = rwt.remote.WidgetManager.getInstance();
-          itemId = widgetManager.findIdByWidget( this._rowContainer.getHoverItem() );
-          columnIndex = rwt.widgets.util.GridUtil.getColumnByPageX( this, evt.getPageX() );
-        }
-        this._cellToolTip.setCell( itemId, columnIndex );
-      }
+    setCellToolTipsEnabled : function( value ) {
+      this._rowContainer.setCellToolTipsEnabled( value );
+      rwt.widgets.util.GridCellToolTipSupport.setEnabled( this, value );
     },
 
-    /** Only called by server-side */
+    getCellToolTipsEnabled : function() {
+      return this._rowContainer.getCellToolTipsEnabled();
+    },
+
     setCellToolTipText : function( text ) {
-      if( this._cellToolTip != null ) {
-        this._cellToolTip.setText( text );
-      }
+      rwt.widgets.util.GridCellToolTipSupport.showToolTip( text );
     }
 
   }

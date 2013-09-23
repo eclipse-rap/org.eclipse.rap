@@ -169,6 +169,25 @@
 
     <property name="box-shadow" description="The shadow behind the tooltip." />
 
+    <element name="Widget-ToolTip-Pointer">
+      <description>
+        A pointer attached outside a tooltip to point towards the widget it belongs to.
+        Not supported in Internet Explorer 8 or lower.
+      </description>
+
+      <property name="background-image"
+                description="Background image used to display the pointer." />
+
+      <state name="up" description="On pointing up" />
+
+      <state name="down" description="On pointing down" />
+
+      <state name="left" description="On pointing left" />
+
+      <state name="right" description="On pointing right" />
+
+    </element>
+
   </element>
 
   <!-- TODO [rst] Eliminate when property support is gone. -->

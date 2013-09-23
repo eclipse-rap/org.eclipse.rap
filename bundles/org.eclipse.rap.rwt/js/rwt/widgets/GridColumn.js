@@ -113,12 +113,12 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
       return this._group;
     },
 
-    setToolTip : function( value ) {
+    setToolTipText : function( value ) {
       this._toolTip = value;
       this._update();
     },
 
-    getToolTip : function() {
+    getToolTipText : function() {
       return this._toolTip;
     },
 

@@ -1006,10 +1006,9 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     },
 
     /** Contains the tooltip object connected to the widget. */
-    toolTip : {
-      check : "rwt.widgets.base.ToolTip",
+    toolTipText : {
       nullable : true,
-      event: "changeToolTip"
+      event: "changeToolTipText"
     },
 
     /** Contains the context menu object connected to the widget. (Need real implementation) */

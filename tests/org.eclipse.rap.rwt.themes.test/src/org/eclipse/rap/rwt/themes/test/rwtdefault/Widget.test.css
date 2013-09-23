@@ -12,14 +12,30 @@
 Widget-ToolTip {
   padding: 10px;
   background-color: rgb(32, 31, 27);
-  background-image : none;
+  background-image: none;
   border: none;
   border-radius: 1px;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #e0e0e0;
   opacity: 0.9;
-  animation: fadeOut 150ms ease-in;
+  animation: fadeIn 150ms ease-in, fadeOut 150ms ease-in;
   box-shadow: none;
+}
+
+Widget-ToolTip-Pointer:up {
+  background-image : url( resource/widget/rap/arrows/tooltip-up.png );
+}
+
+Widget-ToolTip-Pointer:down {
+  background-image : url( resource/widget/rap/arrows/tooltip-down.png );
+}
+
+Widget-ToolTip-Pointer:left {
+  background-image : url( resource/widget/rap/arrows/tooltip-left.png );
+}
+
+Widget-ToolTip-Pointer:right {
+  background-image : url( resource/widget/rap/arrows/tooltip-right.png );
 }
 
 Display {

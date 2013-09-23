@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -122,24 +122,11 @@ rwt.qx.Class.define( "rwt.remote.WidgetManager", {
      * removes the tool tip of the widget.
      */
     setToolTip : function( widget, toolTipText ) {
-      if( toolTipText != null && toolTipText !== "" ) {
-        widget.setUserData( "toolTipText", toolTipText );
-        var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
-        widget.setToolTip( toolTip );
-        // make sure "boundToWidget" is initialized:
-        if( toolTip.getParent() != null ) {
-          if( toolTip.getBoundToWidget() == widget ) {
-            toolTip.updateText( widget );
-          }
-        }
-      } else {
-        this._removeToolTipPopup( widget );
-      }
+      rwt.widgets.base.WidgetToolTip.setToolTipText( widget, toolTipText );
     },
 
     _removeToolTipPopup : function( widget ) {
-      widget.setToolTip( null );
-      widget.setUserData( "toolTipText", null );
+      widget.setToolTipText( null );
     }
 
   }

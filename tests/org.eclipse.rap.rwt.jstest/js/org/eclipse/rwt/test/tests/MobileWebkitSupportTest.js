@@ -351,7 +351,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       widget.setToolTip( toolTip );
-      widget.setUserData( "toolTipText", "foo" );
+      widget.setToolTipText( "foo" );
       TestUtil.flush();
       var node = widget._getTargetNode();
       this.touch( node, "touchstart" );

@@ -279,6 +279,35 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       cont.destroy();
     },
 
+    testSetCellToolTipsEnabled_True : function() {
+      var cont = this._createContainer();
+      cont.setHeight( 100 );
+
+      cont.setCellToolTipsEnabled( true );
+
+      assertEquals( "", cont.getChildren()[ 0 ].getToolTipText() );
+    },
+
+    testSetCellToolTipsEnabled_TrueAfterHeightChange : function() {
+      var cont = this._createContainer();
+      cont.setHeight( 100 );
+
+      cont.setCellToolTipsEnabled( true );
+      cont.setHeight( 200 );
+
+      assertEquals( "", cont.getLastChild().getToolTipText() );
+    },
+
+    testSetCellToolTipsEnabled_False : function() {
+      var cont = this._createContainer();
+      cont.setHeight( 100 );
+
+      cont.setCellToolTipsEnabled( true );
+      cont.setCellToolTipsEnabled( false );
+
+      assertNull( cont.getChildren()[ 0 ].getToolTipText() );
+    },
+
     /////////
     // Helper
 
@@ -298,7 +327,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       tree.setWidth( 500 );
       tree.setHeight( 500 );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );
-      tree.setColumnCount( 1 )
+      tree.setColumnCount( 1 );
       tree.setItemMetrics( 1, 0, 500, 0, 0, 0, 500 );
       tree.setItemMetrics( 2, 0, 500, 0, 0, 0, 500 );
       tree.addToDocument();

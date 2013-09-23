@@ -242,6 +242,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 45, bounds.width );
     },
 
+    testRequestToolTipText_DispatchsBubblingEvent : function() {
+      var data;
+      row.getParent().addEventListener( "renderCellToolTip", function( value ) {
+        data = value;
+      } );
+
+      row.requestToolTipText();
+
+      assertIdentical( row, data );
+    },
+
     testLabelBoundsTable : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );

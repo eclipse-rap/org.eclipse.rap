@@ -254,6 +254,7 @@ rwt.qx.Class.define( "rwt.event.EventHandler", {
         if( rwt.qx.Class.isDefined("rwt.event.DragAndDropHandler") ) {
           rwt.event.DragAndDropHandler.getInstance().handleKeyEvent( vKeyEventObject );
         }
+        rwt.widgets.util.ToolTipManager.getInstance().handleKeyEvent( vKeyEventObject );
       }
       vKeyEventObject.dispose();
     },

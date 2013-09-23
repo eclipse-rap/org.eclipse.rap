@@ -90,6 +90,25 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
       }
     },
 
+    getToolTipTargetBounds : function() {
+      if( this.getSelectionIndicator() ) {
+        var styleTop = parseInt( this.getCellNode( 0 ).style.top, 10 );
+        return  {
+          "left" : this._cachedBorderLeft + this.getPaddingLeft(),
+          "top" : this._cachedBorderTop + styleTop,
+          "width" : this.getSelectionIndicator()[ 1 ],
+          "height" : this.getSelectionIndicator()[ 2 ]
+        };
+      } else {
+        return  {
+          "left" : 0,
+          "top" : 0,
+          "width" : this.getBoxWidth(),
+          "height" : this.getBoxHeight()
+        };
+      }
+    },
+
     _onMnemonic : function( event ) {
       switch( event.type ) {
         case "show":

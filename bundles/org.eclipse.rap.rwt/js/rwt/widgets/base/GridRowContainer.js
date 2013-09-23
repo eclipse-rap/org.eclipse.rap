@@ -134,6 +134,21 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
       this._updateRowCount();
     },
 
+    setCellToolTipsEnabled : function( value ) {
+      this._cellToolTipsEnabled = value;
+      for( var i = 0; i < this._children.length; i++ ) {
+        if( value ) {
+          this._children[ i ].setToolTipText( "" );
+        } else {
+          this._children[ i ].resetToolTipText();
+        }
+      }
+    },
+
+    getCellToolTipsEnabled : function( value ) {
+      return this._cellToolTipsEnabled;
+    },
+
     updateRowLines : function() {
       var border = this._config.linesVisible ? this._getHorizontalGridBorder() : null;
       this._rowBorder = border;
@@ -322,6 +337,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
       while( this._children.length < rowsNeeded ) {
         var row = new rwt.widgets.base.GridRow( this.getParent() );
         row.setAppearance( this._getRowAppearance() );
+        if( this._cellToolTipsEnabled ) {
+          row.setToolTipText( "" );
+        }
         row.setZIndex( 0 );
         row.setWidth( this._rowWidth );
         row.setHeight( this._rowHeight );

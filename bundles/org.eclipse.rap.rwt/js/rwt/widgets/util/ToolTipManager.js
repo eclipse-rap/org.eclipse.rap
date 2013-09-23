@@ -11,49 +11,27 @@
  *    EclipseSource - adaptation for the Eclipse Remote Application Platform
  ******************************************************************************/
 
-/** This manages ToolTip instances */
-rwt.qx.Class.define("rwt.widgets.util.ToolTipManager",
-{
+(function(){
+
+var getToolTip = function() {
+  return rwt.widgets.base.WidgetToolTip.getInstance();
+};
+
+
+rwt.qx.Class.define("rwt.widgets.util.ToolTipManager", {
   type : "singleton",
-  extend : rwt.util.ObjectManager,
+  extend : rwt.qx.Object,
 
 
-
-
-
-  /*
-  *****************************************************************************
-     PROPERTIES
-  *****************************************************************************
-  */
-
-  properties :
-  {
-    /** Holds the current ToolTip instance */
-    currentToolTip :
-    {
-      check : "rwt.widgets.base.ToolTip",
+  properties : {
+    currentToolTipTarget : {
       nullable : true,
-      apply : "_applyCurrentToolTip"
+      apply : "_applyCurrentToolTipTarget"
     }
   },
 
 
-
-
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
-
-  members :
-  {
-    /*
-    ---------------------------------------------------------------------------
-      APPLY ROUTINES
-    ---------------------------------------------------------------------------
-    */
+  members : {
 
     /**
      * TODOC
@@ -63,134 +41,81 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager",
      * @param old {var} Previous value
      * @return {void | Boolean} TODOC
      */
-    _applyCurrentToolTip : function(value, old)
-    {
-      // Return if the new tooltip is a child of the old one
-      if (old && old.contains(value)) {
-        return;
-      }
+    _applyCurrentToolTipTarget : function(value, old) {
 
       // If old tooltip existing, hide it and clear widget binding
-      if (old && !old.isDisposed())
+      if (old)
       {
-        old.hide();
-
-        old._stopShowTimer();
-        old._stopHideTimer();
+        getToolTip()._stopShowTimer();
+        getToolTip()._startHideTimer();
+        old.removeEventListener( "updateToolTip", this._updateEventHandler );
       }
+
+      getToolTip().setBoundToWidget( value );
 
       // If new tooltip is not null, set it up and start the timer
       if (value) {
-        value._startShowTimer();
+        getToolTip()._startShowTimer();
+        value.addEventListener( "updateToolTip", this._updateEventHandler );
       }
     },
 
-
-
-
-    /*
-    ---------------------------------------------------------------------------
-      EVENT INTERFACE: MOUSE
-    ---------------------------------------------------------------------------
-    */
-
+    // TODO : handleKeyEvent
     handleMouseEvent : function( event ) {
       var type = event.getType();
       if( type === "mouseover" ) {
         this._handleMouseOver( event );
       } else if ( type === "mouseout" ) {
         this._handleMouseOut( event );
+      } else if ( type === "mousemove" ) {
+        this._handleMouseMove( event );
       }
     },
 
-    /**
-     * Searches for the tooltip of the target widget. If any tooltip instance
-     * is found this instance is bound to the target widget and the tooltip is
-     * set as {@link #currentToolTip}
-     *
-     * @type member
-     * @param e {rwt.event.MouseEvent} mouseOver event
-     * @return {void}
-     */
     _handleMouseOver : function( e ) {
       var vTarget = e.getTarget();
-      var vToolTip;
-
+      if( vTarget === getToolTip() ) {
+        return;
+      }
       // Allows us to use DOM Nodes as tooltip target :)
       if (!(vTarget instanceof rwt.widgets.base.Widget) && vTarget.nodeType == 1) {
         vTarget = rwt.event.EventHandlerUtil.getTargetObject(vTarget);
       }
-
-      // Search first parent which has a tooltip
-      while (vTarget != null && !(vToolTip = vTarget.getToolTip())) {
+      while (vTarget != null && vTarget.getToolTipText() === null ) {
         vTarget = vTarget.getParent();
       }
-
-      // Bind tooltip to widget
-      if (vToolTip != null) {
-        vToolTip.setBoundToWidget(vTarget);
-      }
-
-      // Set Property
-      this.setCurrentToolTip(vToolTip);
+      this.setCurrentToolTipTarget( vTarget );
     },
 
 
-    /**
-     * Resets the property {@link #currentToolTip} if there was a
-     * tooltip and no new one is created.
-     *
-     * @type member
-     * @param e {rwt.event.MouseEvent} mouseOut event
-     * @return {void}
-     */
     _handleMouseOut : function( e ) {
       var vTarget = e.getTarget();
       var vRelatedTarget = e.getRelatedTarget();
-
-      var vToolTip = this.getCurrentToolTip();
-
-      // If there was a tooltip and
-      // - the destination target is the current tooltip
-      //   or
-      // - the current tooltip contains the destination target
-      if (vToolTip && (vRelatedTarget == vToolTip || vToolTip.contains(vRelatedTarget))) {
+      if( vTarget === getToolTip() ) {
         return;
       }
-
-      // If the destination target exists and the target contains it
+      var tTarget = this.getCurrentToolTipTarget();
+      if (tTarget && (vRelatedTarget == getToolTip() || getToolTip().contains(vRelatedTarget))) {
+        return;
+      }
       if (vRelatedTarget && vTarget && vTarget.contains(vRelatedTarget)) {
         return;
       }
-
-      // If there was a tooltip and there is no new one
-      if (vToolTip && !vRelatedTarget) {
-        this.setCurrentToolTip(null);
+      if (tTarget && !vRelatedTarget) {
+        this.setCurrentToolTipTarget( null );
       }
     },
 
-
-
-
-    /*
-    ---------------------------------------------------------------------------
-      EVENT INTERFACE: FOCUS
-    ---------------------------------------------------------------------------
-    */
+    _handleMouseMove : function( e ) {
+      if( this.getCurrentToolTipTarget() ) {
+        getToolTip()._handleMouseMove( e );
+      }
+    },
 
     handleFocus : function( e ) {
       // nothing to do
     },
 
-
-    /**
-     * Reset the property {@link #currentToolTip} if the
-     * current tooltip is the tooltip of the target widget.
-     *
-     * @type member
-     * @param e {rwt.event.FocusEvent} blur event
-     * @return {void}
-     */
     handleBlur : function(e)
     {
       var vTarget = e.getTarget();
@@ -199,13 +124,41 @@ rwt.qx.Class.define("rwt.widgets.util.ToolTipManager",
         return;
       }
 
-      var vToolTip = this.getCurrentToolTip();
+      var tTarget = this.getCurrentToolTipTarget();
 
       // Only set to null if blured widget is the
       // one which has created the current tooltip
-      if (vToolTip && vToolTip == vTarget.getToolTip()) {
-        this.setCurrentToolTip(null);
+      if (tTarget === vTarget) {
+        this.setCurrentToolTipTarget(null);
+      }
+    },
+
+    handleKeyEvent : function( event ) {
+      switch( event.getKeyIdentifier() ) {
+        case "Control":
+        case "Alt":
+        case "Shift":
+        case "Meta":
+        case "Win":
+        break;
+        default:
+          var toolTipTarget = this.getCurrentToolTipTarget();
+          if( toolTipTarget ) {
+            this.setCurrentToolTipTarget( null );
+          }
+        break;
+      }
+    },
+
+    _updateEventHandler : function( target ) {
+      if( getToolTip().getBoundToWidget() === target ) {
+        getToolTip().updateText();
       }
     }
+
   }
-});
+
+} );
+
+
+}());

@@ -28,8 +28,7 @@ rwt.remote.HandlerUtil = {
     if( parent ) {
       rwt.remote.HandlerUtil.removeDestroyableChild( parent, widget );
     }
-    widget.setToolTip( null );
-    widget.setUserData( "toolTipText", null );
+    widget.setToolTipText( null );
     widget.destroy();
   },
 
@@ -186,24 +185,7 @@ rwt.remote.HandlerUtil = {
       widget.setHeight( bounds[ 3 ] );
     },
     "toolTip" : function( widget, value ) {
-      if( value != null && value !== "" ) {
-        var EncodingUtil = rwt.util.Encoding;
-        var text = EncodingUtil.escapeText( value, false );
-        text = EncodingUtil.replaceNewLines( text, "<br/>" );
-        widget.setUserData( "toolTipText", text );
-        var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
-        widget.setToolTip( toolTip );
-        // make sure "boundToWidget" is initialized:
-        if( toolTip.getParent() != null ) {
-          if( toolTip.getBoundToWidget() == widget ) {
-            toolTip.updateText( widget );
-          }
-        }
-      } else {
-        widget.setToolTip( null );
-        widget.setUserData( "toolTipText", null );
-      }
-      widget.dispatchSimpleEvent( "changeToolTipText", widget ); // used by Synchronizer.js
+      rwt.widgets.base.WidgetToolTip.setToolTipText( widget, value );
     },
     "font" : function( widget, fontData ) {
       if( widget.setFont ) { // test if font property is supported - why wouldn't it? [tb]
@@ -486,7 +468,7 @@ rwt.remote.HandlerUtil = {
       * @return {string|null} the receiver's tool tip text
       */
      getToolTipText : function() {
-       return this.getUserData( "toolTipText" );
+       return this.getToolTipText();
      },
      /**
       * @description Returns <code>true</code> if the receiver is visible, and

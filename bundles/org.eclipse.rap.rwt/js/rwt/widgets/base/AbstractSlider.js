@@ -336,6 +336,7 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
       } else {
         this._thumb.setTop( pos );
       }
+      this.dispatchSimpleEvent( "updateToolTip", this );
     },
 
     _updateThumbSize : function() {

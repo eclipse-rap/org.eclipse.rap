@@ -280,8 +280,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
           "toolTip" : "hello blue world"
         }
       } );
-      assertEquals( "hello blue world", item.getUserData( "toolTipText" ) );
-      assertTrue( item.getToolTip() !== null );
+      assertEquals( "hello blue world", item.getToolTipText() );
       folder.destroy();
     },
 

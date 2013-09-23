@@ -298,6 +298,48 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       widget.destroy();
     },
 
+    testGetToolTipTargetBoundsVertical : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = this._createSlider( false );
+      widget.setBorder( new rwt.html.Border( 1 ) );
+
+      var bounds = widget.getToolTipTargetBounds();
+
+      assertEquals( 1, bounds.left );
+      assertEquals( 17, bounds.top );
+      assertEquals( 20, bounds.width );
+      assertEquals( 7, bounds.height );
+      widget.destroy();
+    },
+
+    testGetToolTipTargetBoundsHorizontal : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = this._createSlider( true );
+      widget.setBorder( new rwt.html.Border( 1 ) );
+
+      var bounds = widget.getToolTipTargetBounds();
+
+      assertEquals( 17, bounds.left );
+      assertEquals( 1, bounds.top );
+      assertEquals( 7, bounds.width );
+      assertEquals( 20, bounds.height );
+      widget.destroy();
+    },
+
+    testFireToolTipUpdate : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = this._createSlider( true );
+      var fired = false;
+      widget.addEventListener( "updateToolTip", function( arg ) {
+        fired = arg;
+      } );
+
+      widget.setSelection( 30 );
+
+      assertIdentical( widget, fired );
+      widget.destroy();
+    },
+
     testThumbPositionNoScaling : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
