@@ -613,6 +613,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       var pointer = toolTip._getPointerElement();
       assertIdentical( toolTip.getElement(), pointer.parentNode );
       assertEquals( "absolute", pointer.style.position );
+      assertEquals( "no-repeat", pointer.style.backgroundRepeat );
     },
 
     testDoNotHideOnMouseOverPointer : function() {

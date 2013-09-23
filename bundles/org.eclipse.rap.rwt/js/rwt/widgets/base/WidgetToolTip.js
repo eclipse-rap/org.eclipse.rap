@@ -98,6 +98,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       if( this._pointer == null ) {
         this._pointer = document.createElement( "div" );
         this._pointer.style.position = "absolute";
+        this._pointer.style.backgroundRepeat = "no-repeat";
         rwt.html.Style.setPointerEvents( this._pointer, "none" );
         this.getElement().appendChild( this._pointer );
       }
@@ -447,14 +448,15 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     _getTargetDistance : function( direction ) {
       var overlap = typeof this._config.overlap === "number" ? this._config.overlap : 4;
-      if( direction === "up" && this.getPointers()[ 0 ] ) {
-        return this.getPointers()[ 0 ][ 2 ] - overlap;
-      } else if( direction === "down" && this.getPointers()[ 2 ] ) {
-        return this.getPointers()[ 2 ][ 2 ] - overlap;
-      } else if( direction === "left" && this.getPointers()[ 3 ] ) {
-        return this.getPointers()[ 3 ][ 1 ] - overlap;
-      } else if( direction === "right" && this.getPointers()[ 1 ] ) {
-        return this.getPointers()[ 1 ][ 1 ] - overlap;
+      var pointers = this.getPointers();
+      if( direction === "up" && pointers && pointers[ 0 ] ) {
+        return pointers[ 0 ][ 2 ] - overlap;
+      } else if( direction === "down" && pointers && pointers[ 2 ] ) {
+        return pointers[ 2 ][ 2 ] - overlap;
+      } else if( direction === "left" && pointers && pointers[ 3 ] ) {
+        return pointers[ 3 ][ 1 ] - overlap;
+      } else if( direction === "right" && pointers && pointers[ 1 ] ) {
+        return pointers[ 1 ][ 1 ] - overlap;
       } else {
         return this._targetDistance;
       }
