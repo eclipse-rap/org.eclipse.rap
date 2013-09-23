@@ -1427,6 +1427,16 @@ public class TreeLCA_Test {
   }
 
   @Test
+  public void testRenderCellToolTipText_resetsText() throws IOException {
+    ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
+    adapter.setCellToolTipText( "foo" );
+
+    lca.renderChanges( tree );
+
+    assertNull( adapter.getCellToolTipText() );
+  }
+
+  @Test
   public void testRenderCellToolTipTextNull() {
     getRemoteObject( tree ).setHandler( new TreeOperationHandler( tree ) );
     Fixture.markInitialized( display );

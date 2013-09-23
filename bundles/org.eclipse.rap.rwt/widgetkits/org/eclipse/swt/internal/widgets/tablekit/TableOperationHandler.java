@@ -148,7 +148,6 @@ public class TableOperationHandler extends ControlOperationHandler<Table> {
    */
   public void handleCallRenderToolTipText( Table table, JsonObject properties ) {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
-    adapter.setCellToolTipText( null );
     ICellToolTipProvider provider = adapter.getCellToolTipProvider();
     if( provider != null ) {
       TableItem item = getItem( table, properties.get( "item" ).asString() );

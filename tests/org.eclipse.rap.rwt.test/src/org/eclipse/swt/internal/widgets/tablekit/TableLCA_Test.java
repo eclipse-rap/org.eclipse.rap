@@ -1442,6 +1442,16 @@ public class TableLCA_Test {
   }
 
   @Test
+  public void testRenderCellToolTipText_resetsText() throws IOException {
+    ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
+    adapter.setCellToolTipText( "foo" );
+
+    lca.renderChanges( table );
+
+    assertNull( adapter.getCellToolTipText() );
+  }
+
+  @Test
   public void testRenderCellToolTipText_null() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );

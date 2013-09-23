@@ -139,7 +139,6 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
    */
   public void handleCallRenderToolTipText( Tree tree, JsonObject properties ) {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
-    adapter.setCellToolTipText( null );
     ICellToolTipProvider provider = adapter.getCellToolTipProvider();
     if( provider != null ) {
       TreeItem item = getItem( tree, properties.get( "item" ).asString() );

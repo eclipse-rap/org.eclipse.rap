@@ -36,6 +36,7 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
+import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.widgets.Control;
@@ -175,7 +176,7 @@ public final class TableLCA extends AbstractWidgetLCA {
                     false );
     renderProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ), false );
     renderProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ), false );
-    renderProperty( table, PROP_CELL_TOOLTIP_TEXT, getCellToolTipText( table ), null );
+    renderProperty( table, PROP_CELL_TOOLTIP_TEXT, getAndResetCellToolTipText( table ), null );
     ScrollBarLCAUtil.renderChanges( table );
   }
 
@@ -188,8 +189,11 @@ public final class TableLCA extends AbstractWidgetLCA {
   ////////////////
   // Cell tooltips
 
-  private static String getCellToolTipText( Table table ) {
-    return CellToolTipUtil.getAdapter( table ).getCellToolTipText();
+  private static String getAndResetCellToolTipText( Table table ) {
+    ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
+    String toolTipText = adapter.getCellToolTipText();
+    adapter.setCellToolTipText( null );
+    return toolTipText;
   }
 
   //////////////////

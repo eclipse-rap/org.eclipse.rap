@@ -35,6 +35,7 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
+import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.widgets.Control;
@@ -185,7 +186,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderListener( tree, PROP_EXPAND_LISTENER, hasExpandListener( tree ), false );
     renderListener( tree, PROP_COLLAPSE_LISTENER, hasCollapseListener( tree ), false );
     renderProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ), false );
-    renderProperty( tree, PROP_CELL_TOOLTIP_TEXT, getCellToolTipText( tree ), null );
+    renderProperty( tree, PROP_CELL_TOOLTIP_TEXT, getAndResetCellToolTipText( tree ), null );
     ScrollBarLCAUtil.renderChanges( tree );
   }
 
@@ -198,8 +199,11 @@ public final class TreeLCA extends AbstractWidgetLCA {
   //////////////////
   // Helping methods
 
-  private static String getCellToolTipText( Tree tree ) {
-    return CellToolTipUtil.getAdapter( tree ).getCellToolTipText();
+  private static String getAndResetCellToolTipText( Tree tree ) {
+    ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
+    String toolTipText = adapter.getCellToolTipText();
+    adapter.setCellToolTipText( null );
+    return toolTipText;
   }
 
   private boolean listensToSetData( Tree tree ) {
