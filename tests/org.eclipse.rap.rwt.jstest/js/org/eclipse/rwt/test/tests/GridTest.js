@@ -424,6 +424,30 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       shell.destroy();
     },
 
+    testSetCellToolTipTextByProtocol_ToolTipHasBeenUbound : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      shell.setLocation( 0, 0 );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      widget.setLocation( 0, 0 );
+      TestUtil.protocolSet( "w3", { "enableCellToolTip" : true } );
+      this._fillTree( widget, 10 );
+      TestUtil.flush();
+      var row = widget.getRowContainer().getFirstChild();
+      TestUtil.fakeMouseEvent( row, "mouseover", 10, 10 );
+      TestUtil.fakeMouseEvent( row, "mousemove", 10, 10 );
+      TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._showTimer );
+
+      TestUtil.fakeMouseEvent( row, "mouseout", 10, 10 );
+      TestUtil.fakeMouseEvent( shell, "mouseover", 10, 10 );
+      TestUtil.fakeMouseEvent( shell, "mousemove", 10, 10 );
+      TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._hideTimer );
+      TestUtil.protocolSet( "w3", { "cellToolTipText" : "foo && <> \"\n bar" } );
+
+      assertFalse( rwt.widgets.base.WidgetToolTip.getInstance().isSeeable() );
+      assertNull( rwt.widgets.base.WidgetToolTip.getInstance().getBoundToWidget() );
+      shell.destroy();
+    },
+
     testSetCellToolTipTextByProtocol_PositionIsColumnAligned : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       shell.setLocation( 1, 0 );
