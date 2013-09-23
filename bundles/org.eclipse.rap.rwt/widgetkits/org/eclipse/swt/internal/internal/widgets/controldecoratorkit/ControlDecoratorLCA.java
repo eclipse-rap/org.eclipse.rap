@@ -24,7 +24,6 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
@@ -60,15 +59,11 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
                       isListening( decorator, SWT.DefaultSelection ) );
   }
 
-  public void readData( Widget widget ) {
-    ControlLCAUtil.processSelection( widget, null, false );
-    ControlLCAUtil.processDefaultSelection( widget, null );
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ControlDecorator decorator = ( ControlDecorator )widget;
     RemoteObject remoteObject = createRemoteObject( decorator, TYPE );
+    remoteObject.setHandler( new ControlDecoratorOperationHandler( decorator ) );
     remoteObject.set( "parent", getId( decorator.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( decorator, ALLOWED_STYLES ) ) );
   }

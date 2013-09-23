@@ -16,8 +16,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,7 +24,8 @@ import java.util.List;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -34,10 +33,8 @@ import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.ControlDecorator;
 import org.eclipse.swt.widgets.Button;
@@ -47,7 +44,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 
 public class ControlDecoratorLCA_Test {
@@ -72,42 +68,6 @@ public class ControlDecoratorLCA_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
-  }
-
-  @Test
-  public void testSelectionEvent() {
-    SelectionListener listener = mock( SelectionListener.class );
-    decorator.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( decorator ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.readDataAndProcessAction( decorator );
-
-    ArgumentCaptor<SelectionEvent> capture = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener, times( 1 ) ).widgetSelected( capture.capture() );
-    SelectionEvent event = capture.getValue();
-    assertEquals( decorator, event.getSource() );
-    assertEquals( null, event.item );
-    assertEquals( SWT.NONE, event.detail );
-    assertEquals( new Rectangle( 0, 0, 0, 0 ), getEventBounds( event ) );
-    assertTrue( event.doit );
-  }
-
-  @Test
-  public void testDefaultSelectionEvent() {
-    SelectionListener listener = mock( SelectionListener.class );
-    decorator.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( decorator ), ClientMessageConst.EVENT_DEFAULT_SELECTION, null );
-    Fixture.readDataAndProcessAction( decorator );
-
-    ArgumentCaptor<SelectionEvent> capture = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener, times( 1 ) ).widgetDefaultSelected( capture.capture() );
-    SelectionEvent event = capture.getValue();
-    assertEquals( decorator, event.getSource() );
-    assertEquals( null, event.item );
-    assertEquals( SWT.NONE, event.detail );
-    assertEquals( new Rectangle( 0, 0, 0, 0 ), getEventBounds( event ) );
-    assertTrue( event.doit );
   }
 
   @Test
@@ -146,6 +106,16 @@ public class ControlDecoratorLCA_Test {
     List<Object> styles = Arrays.asList( operation.getStyles() );
     assertTrue( styles.contains( "LEFT" ) );
     assertTrue( styles.contains( "TOP" ) );
+  }
+
+  @Test
+  public void testRenderCreate_setsOperationHandler() throws IOException {
+    String id = getId( decorator );
+
+    lca.renderInitialization( decorator );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof ControlDecoratorOperationHandler );
   }
 
   @Test
@@ -435,7 +405,4 @@ public class ControlDecoratorLCA_Test {
     assertNull( message.findListenOperation( decorator, "Selection" ) );
   }
 
-  private static Rectangle getEventBounds( SelectionEvent event ) {
-    return new Rectangle( event.x, event.y, event.width, event.height );
-  }
 }
