@@ -898,8 +898,7 @@ public class ActionContributionItem extends ContributionItem {
 						text = getParent().getOverrides().getText(this);
 					}
 
-					// RAP [bm]: MenuItem#setAccelerator
-//					mi.setAccelerator(accelerator);
+					mi.setAccelerator(accelerator);
 
 					if (text == null) {
 						text = updatedAction.getText();
@@ -1289,8 +1288,7 @@ public class ActionContributionItem extends ContributionItem {
 			final MenuItem realItem = items[i];
 			final MenuItem proxyItem = new MenuItem(proxy, realItem.getStyle());
 			proxyItem.setData(realItem);
-			// RAP [bm]: MenuItem#setAccelerator
-//			proxyItem.setAccelerator(realItem.getAccelerator());
+			proxyItem.setAccelerator(realItem.getAccelerator());
 			proxyItem.setEnabled(realItem.getEnabled());
 			proxyItem.setImage(realItem.getImage());
 			proxyItem.setSelection(realItem.getSelection());
