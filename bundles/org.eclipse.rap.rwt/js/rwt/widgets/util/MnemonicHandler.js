@@ -157,7 +157,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     _doFire : function( event, onlyVisible, handlers ) {
       for( var key in handlers ) {
         var entry = handlers[ key ];
-        if( !onlyVisible || entry[ 0 ].isSeeable() ) {
+        if( ( !onlyVisible || entry[ 0 ].isSeeable() ) && entry[ 0 ].getEnabled() ) {
           try{
             entry[ 1 ].call( entry[ 0 ], event );
             if( event.success ) {
