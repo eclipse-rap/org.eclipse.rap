@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,61 +11,102 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
+
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;
+import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Widget;
 
 
 public final class MenuItemLCA extends AbstractWidgetLCA {
 
-  private static final BarMenuItemLCA BAR_MENU_ITEM_LCA = new BarMenuItemLCA();
-  private static final PushMenuItemLCA PUSH_MENU_ITEM_LCA = new PushMenuItemLCA();
-  private static final CheckMenuItemLCA CHECK_MENU_ITEM_LCA = new CheckMenuItemLCA();
-  private static final RadioMenuItemLCA RADIO_MENU_ITEM_LCA = new RadioMenuItemLCA();
-  private static final SeparatorMenuItemLCA SEPARATOR_MENU_ITEM_LCA = new SeparatorMenuItemLCA();
+  private static final String TYPE = "rwt.widgets.MenuItem";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "CHECK", "CASCADE", "PUSH", "RADIO", "SEPARATOR"
+  };
 
+  private static final String PROP_TEXT = "text";
+  private static final String PROP_MNEMONIC_INDEX = "mnemonicIndex";
+  private static final String PROP_IMAGE = "image";
+  private static final String PROP_MENU = "menu";
+  private static final String PROP_ENABLED = "enabled";
+  private static final String PROP_SELECTION = "selection";
+  private static final String PROP_SELECTION_LISTENER = "Selection";
+
+  @Override
   public void preserveValues( Widget widget ) {
     MenuItem item = ( MenuItem )widget;
-    getDelegateLCA( item ).preserveValues( item );
+    WidgetLCAUtil.preserveCustomVariant( item );
+    WidgetLCAUtil.preserveData( item );
+    preserveProperty( item, PROP_TEXT, item.getText() );
+    preserveProperty( item, PROP_IMAGE, item.getImage() );
+    preserveProperty( item, PROP_MENU, item.getMenu() );
+    preserveProperty( item, PROP_ENABLED, item.getEnabled() );
+    preserveProperty( item, PROP_SELECTION, item.getSelection() );
+    preserveListener( item, PROP_SELECTION_LISTENER, isListening( item, SWT.Selection ) );
+    WidgetLCAUtil.preserveHelpListener( item );
   }
 
-  public void readData( Widget widget ) {
-    MenuItem item = ( MenuItem )widget;
-    getDelegateLCA( item ).readData( item );
-  }
-
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     MenuItem item = ( MenuItem )widget;
-    getDelegateLCA( item ).renderInitialization( item );
+    RemoteObject remoteObject = RemoteObjectFactory.createRemoteObject( item, TYPE );
+    remoteObject.setHandler( new MenuItemOperationHandler( item ) );
+    Menu parent = item.getParent();
+    remoteObject.set( "parent", getId( parent ) );
+    remoteObject.set( "style", createJsonArray( getStyles( item, ALLOWED_STYLES ) ) );
+    remoteObject.set( "index", parent.indexOf( item ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     MenuItem item = ( MenuItem )widget;
-    getDelegateLCA( item ).renderChanges( item );
+    WidgetLCAUtil.renderCustomVariant( item );
+    WidgetLCAUtil.renderData( item );
+    renderText( item );
+    renderMnemonicIndex( item );
+    renderProperty( item, PROP_IMAGE, item.getImage(), null );
+    WidgetLCAUtil.renderMenu( item, item.getMenu() );
+    renderProperty( item, PROP_ENABLED, item.getEnabled(), true );
+    renderProperty( item, PROP_SELECTION, item.getSelection(), false );
+    renderListener( item, PROP_SELECTION_LISTENER, isListening( item, SWT.Selection ), false );
+    WidgetLCAUtil.renderListenHelp( item );
   }
 
-  private static boolean isTopLevelMenuBarItem( MenuItem item ) {
-    return ( item.getParent().getStyle() & SWT.BAR ) != 0;
-  }
-
-  private static MenuItemDelegateLCA getDelegateLCA( MenuItem item ) {
-    MenuItemDelegateLCA result;
-    if( isTopLevelMenuBarItem( item ) ) {
-      result = BAR_MENU_ITEM_LCA;
-    } else if( ( item.getStyle() & ( SWT.PUSH | SWT.CASCADE ) ) != 0 ) {
-      result = PUSH_MENU_ITEM_LCA;
-    } else if( ( item.getStyle() & SWT.CHECK ) != 0 ) {
-      result = CHECK_MENU_ITEM_LCA;
-    } else if( ( item.getStyle() & SWT.RADIO ) != 0 ) {
-      result = RADIO_MENU_ITEM_LCA;
-    } else if( ( item.getStyle() & SWT.SEPARATOR ) != 0 ) {
-      result = SEPARATOR_MENU_ITEM_LCA;
-    } else {
-      throw new IllegalStateException( "Unknown menu item type." );
+  private static void renderText( MenuItem item ) {
+    String newValue = item.getText();
+    if( WidgetLCAUtil.hasChanged( item, PROP_TEXT, newValue, "" ) ) {
+      String text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
+      getRemoteObject( item ).set( PROP_TEXT, text );
     }
-    return result;
   }
+
+  private static void renderMnemonicIndex( MenuItem item ) {
+    if( ( item.getStyle() & SWT.SEPARATOR ) == 0 ) {
+      String text = item.getText();
+      if( WidgetLCAUtil.hasChanged( item, PROP_TEXT, text, "" ) ) {
+        int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
+        if( mnemonicIndex != -1 ) {
+          getRemoteObject( item ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+        }
+      }
+    }
+  }
+
 }

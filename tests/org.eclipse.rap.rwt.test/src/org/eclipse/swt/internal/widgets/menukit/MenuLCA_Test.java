@@ -17,9 +17,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
@@ -30,7 +29,9 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -43,8 +44,6 @@ import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.internal.widgets.shellkit.ShellOperationHandler;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -169,6 +168,28 @@ public class MenuLCA_Test {
     assertEquals( "rwt.widgets.Menu", operation.getType() );
     assertTrue( Arrays.asList( operation.getStyles() ).contains( "POP_UP" ) );
     assertTrue( Arrays.asList( operation.getStyles() ).contains( "NO_RADIO_GROUP" ) );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    String id = getId( menu );
+    lca.renderInitialization( menu );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof MenuOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuOperationHandler handler = spy( new MenuOperationHandler( menu ) );
+    getRemoteObject( getId( menu ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( menu ), "Help", new JsonObject() );
+    lca.readData( menu );
+
+    verify( handler ).handleNotifyHelp( menu, new JsonObject() );
   }
 
   @Test
@@ -529,43 +550,6 @@ public class MenuLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( menu, "unhideItems" );
     assertEquals( JsonValue.TRUE, operation.getProperty( "reveal" ) );
-  }
-
-  @Test
-  public void testFireShowEvent() {
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    Listener listener = mock( Listener.class );
-    menu.addListener( SWT.Show, listener );
-
-    Fixture.fakeNotifyOperation( getId( menu ), ClientMessageConst.EVENT_SHOW, null );
-    Fixture.readDataAndProcessAction( menu );
-
-    verify( listener, times( 1 ) ).handleEvent( any( Event.class ) );
-  }
-
-  @Test
-  public void testFireHideEvent() {
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    Listener listener = mock( Listener.class );
-    menu.addListener( SWT.Hide, listener );
-
-    Fixture.fakeNotifyOperation( getId( menu ), ClientMessageConst.EVENT_HIDE, null );
-    Fixture.readDataAndProcessAction( menu );
-
-    verify( listener, times( 1 ) ).handleEvent( any( Event.class ) );
-  }
-
-  @Test
-  public void testFireArmEvent() {
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    MenuItem item = new MenuItem( menu, SWT.CHECK );
-    Listener listener = mock( Listener.class );
-    item.addListener( SWT.Arm, listener );
-
-    Fixture.fakeNotifyOperation( getId( menu ), ClientMessageConst.EVENT_SHOW, null );
-    Fixture.readDataAndProcessAction( item );
-
-    verify( listener, times( 1 ) ).handleEvent( any( Event.class ) );
   }
 
 }

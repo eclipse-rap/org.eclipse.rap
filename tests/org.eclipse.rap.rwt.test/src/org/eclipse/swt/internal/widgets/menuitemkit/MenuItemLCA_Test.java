@@ -12,29 +12,29 @@
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -42,13 +42,9 @@ import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ArmEvent;
-import org.eclipse.swt.events.ArmListener;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Display;
@@ -57,11 +53,10 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Widget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 
 
 public class MenuItemLCA_Test {
@@ -110,105 +105,16 @@ public class MenuItemLCA_Test {
   }
 
   @Test
-  public void testSelectionEvent() {
-    shell.setMenu( menu );
-    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
-    SelectionListener listener = mock( SelectionListener.class );
-    menuItem.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( menuItem ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.readDataAndProcessAction( menuItem );
-
-    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener ).widgetSelected( captor.capture() );
-    SelectionEvent event = captor.getValue();
-    assertEquals( menuItem, event.getSource() );
-    assertEquals( null, event.item );
-    assertEquals( SWT.NONE, event.detail );
-    assertEquals( 0, event.x );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.width );
-    assertEquals( 0, event.height );
-    assertTrue( event.doit );
-  }
-
-  @Test
-  public void testSelectionEventOnBarItem() {
-    shell.setMenuBar( menuBar );
-    MenuItem menuItem = new MenuItem( menuBar, SWT.PUSH );
-    SelectionListener listener = mock( SelectionListener.class );
-    menuItem.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( menuItem ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.readDataAndProcessAction( menuItem );
-
-    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testCheckItemSelected() {
-    shell.setMenu( menu );
-    MenuItem menuItem = new MenuItem( menu, SWT.CHECK );
-
-    Fixture.fakeSetProperty( getId( menuItem ), "selection", true );
-    Fixture.readDataAndProcessAction( menuItem );
-
-    assertTrue( menuItem.getSelection() );
-  }
-
-  @Test
-  public void testRadioSelectionEvent() {
-    MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
-    Menu menu = new Menu( menuBarItem );
-    menuBarItem.setMenu( menu );
-    MenuItem item = new MenuItem( menu, SWT.RADIO );
-    SelectionListener listener = mock( SelectionListener.class );
-    item.addSelectionListener( listener );
-
-    Fixture.fakeSetProperty( getId( item ), "selection", true );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.readDataAndProcessAction( item );
-
-    assertTrue( item.getSelection() );
-    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872
-  @Test
-  public void testRadioDeselectionEvent() {
-    MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
-    Menu menu = new Menu( menuBarItem );
-    menuBarItem.setMenu( menu );
-    MenuItem item = new MenuItem( menu, SWT.RADIO );
-    item.setSelection( true );
-    SelectionListener listener = mock( SelectionListener.class );
-    item.addSelectionListener( listener );
-
-    Fixture.fakeSetProperty( getId( item ), "selection", false );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, null );
-    Fixture.readDataAndProcessAction( item );
-
-    assertFalse( item.getSelection() );
-    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testRadioTypedSelectionEventOrder_TypedListener() {
-    final List<Widget> log = new ArrayList<Widget>();
-    MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
-    Menu menu = new Menu( menuBarItem );
-    menuBarItem.setMenu( menu );
+  public void testRadioSelectionEventOrder() {
     MenuItem radioItem1 = new MenuItem( menu, SWT.RADIO );
+    getRemoteObject( radioItem1 ).setHandler( new MenuItemOperationHandler( radioItem1 ) );
     MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
+    getRemoteObject( radioItem2 ).setHandler( new MenuItemOperationHandler( radioItem2 ) );
     radioItem2.setSelection( true );
-    SelectionAdapter listener = new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        log.add( event.widget );
-      }
-    };
-    radioItem1.addSelectionListener( listener );
-    radioItem2.addSelectionListener( listener );
+    Listener radioItem1Listener = mock( Listener.class );
+    radioItem1.addListener( SWT.Selection, radioItem1Listener );
+    Listener radioItem2Listener = mock( Listener.class );
+    radioItem2.addListener( SWT.Selection, radioItem2Listener );
 
     Fixture.fakeSetProperty( getId( radioItem1 ), "selection", true );
     Fixture.fakeSetProperty( getId( radioItem2 ), "selection", false );
@@ -216,57 +122,10 @@ public class MenuItemLCA_Test {
     Fixture.fakeNotifyOperation( getId( radioItem2 ), EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( display );
 
-    assertTrue( Arrays.equals( new Widget[]{ radioItem2, radioItem1 }, log.toArray() ) );
-  }
-
-  @Test
-  public void testRadioTypedSelectionEventOrder_UntypedListener() {
-    final List<Widget> log = new ArrayList<Widget>();
-    MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
-    Menu menu = new Menu( menuBarItem );
-    menuBarItem.setMenu( menu );
-    MenuItem radioItem1 = new MenuItem( menu, SWT.RADIO );
-    MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
-    radioItem2.setSelection( true );
-    Listener listener = new Listener() {
-      public void handleEvent( Event event ) {
-        log.add( event.widget );
-      }
-    };
-    radioItem1.addListener( SWT.Selection, listener );
-    radioItem2.addListener( SWT.Selection, listener );
-
-    Fixture.fakeSetProperty( getId( radioItem1 ), "selection", true );
-    Fixture.fakeSetProperty( getId( radioItem2 ), "selection", false );
-    Fixture.fakeNotifyOperation( getId( radioItem1 ), EVENT_SELECTION, null );
-    Fixture.fakeNotifyOperation( getId( radioItem2 ), EVENT_SELECTION, null );
-    Fixture.readDataAndProcessAction( display );
-
-    assertTrue( Arrays.equals( new Widget[]{ radioItem2, radioItem1 }, log.toArray() ) );
-  }
-
-  @Test
-  public void testArmEvent() {
-    MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
-    Menu menu = new Menu( menuBarItem );
-    menuBarItem.setMenu( menu );
-    MenuItem pushItem = new MenuItem( menu, SWT.PUSH );
-    MenuItem radioItem = new MenuItem( menu, SWT.RADIO );
-    MenuItem checkItem = new MenuItem( menu, SWT.CHECK );
-    ArmListener pushArmListener = mock( ArmListener.class );
-    pushItem.addArmListener( pushArmListener );
-    ArmListener radioArmListener = mock( ArmListener.class );
-    radioItem.addArmListener( radioArmListener );
-    ArmListener checkArmListener = mock( ArmListener.class );
-    checkItem.addArmListener( checkArmListener );
-
-    Fixture.fakeNewRequest();
-    Fixture.fakeNotifyOperation( getId( menu ), ClientMessageConst.EVENT_SHOW, null );
-    Fixture.readDataAndProcessAction( display );
-
-    verify( pushArmListener, times( 1 ) ).widgetArmed( any( ArmEvent.class ) );
-    verify( radioArmListener, times( 1 ) ).widgetArmed( any( ArmEvent.class ) );
-    verify( checkArmListener, times( 1 ) ).widgetArmed( any( ArmEvent.class ) );
+    InOrder order = inOrder( radioItem1Listener, radioItem2Listener );
+    order.verify( radioItem2Listener ).handleEvent( any( Event.class ) );
+    order.verify( radioItem1Listener ).handleEvent( any( Event.class ) );
+    order.verifyNoMoreInteractions();
   }
 
   private void testPreserveText( MenuItem menuItem ) {
@@ -344,6 +203,28 @@ public class MenuItemLCA_Test {
     CreateOperation operation = message.findCreateOperation( item );
     assertEquals( "rwt.widgets.MenuItem", operation.getType() );
     assertTrue( Arrays.asList( operation.getStyles() ).contains( "CASCADE" ) );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.PUSH );
+    String id = getId( item );
+    lca.renderInitialization( item );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof MenuItemOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    MenuItem item = new MenuItem( menu, SWT.PUSH );
+    MenuItemOperationHandler handler = spy( new MenuItemOperationHandler( item ) );
+    getRemoteObject( getId( item ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( item ), "Help", new JsonObject() );
+    lca.readData( item );
+
+    verify( handler ).handleNotifyHelp( item, new JsonObject() );
   }
 
   @Test
