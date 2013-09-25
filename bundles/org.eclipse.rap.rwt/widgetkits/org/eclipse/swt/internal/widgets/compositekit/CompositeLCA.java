@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets.compositekit;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderClientListeners;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
@@ -60,6 +61,7 @@ public class CompositeLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderRoundedBorder( widget );
     WidgetLCAUtil.renderCustomVariant( widget );
     renderClientArea( ( Composite )widget );
+    renderClientListeners( widget );
   }
 
   public void renderClientArea( Composite composite ) {

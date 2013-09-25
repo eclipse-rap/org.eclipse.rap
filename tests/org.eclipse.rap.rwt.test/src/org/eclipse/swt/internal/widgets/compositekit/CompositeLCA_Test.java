@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.compositekit;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
@@ -24,6 +25,7 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -141,6 +143,16 @@ public class CompositeLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( composite, "clientArea" ) );
+  }
+
+  @Test
+  public void testRenderChanges_rendersClientListener() throws IOException {
+    composite.addListener( SWT.MouseDown, new ClientListener( "" ) );
+
+    lca.renderChanges( composite );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCallOperation( composite, "addListener" ) );
   }
 
   private Rectangle toRectangle( Object property ) {
