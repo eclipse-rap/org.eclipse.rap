@@ -519,6 +519,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.destroy();
     },
 
+    testDoNotHoverDisabledItems : function() {
+      this.createDefaultToolBar();
+      this.toolItem1.setEnabled( false );
+
+      this.TestUtil.mouseOver( this.toolItem1 );
+
+      assertFalse( this.toolItem1.hasState( "over" ) );
+      this.disposeToolBar();
+    },
+
     testKeyboardControlActivate : function() {
       this.createDefaultToolBar();
       assertFalse( this.toolBar.isFocused() );
@@ -545,6 +555,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.createDefaultToolBar();
       this.toolBar.focus();
       assertTrue( this.toolItem1.hasState( "over" ) );
+      this.TestUtil.mouseOut( this.toolItem1 );
       this.TestUtil.mouseOver( this.toolItem3 );
       assertFalse( this.toolItem1.hasState( "over" ) );
       assertTrue( this.toolItem3.hasState( "over" ) );

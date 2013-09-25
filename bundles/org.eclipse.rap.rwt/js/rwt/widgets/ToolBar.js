@@ -50,12 +50,10 @@ rwt.qx.Class.define( "rwt.widgets.ToolBar", {
     _onMouseOver : function( event ) {
       var target = event.getTarget();
       if( this._hoverItem != null && this._hoverItem != target ) {
-        this._hoverItem.removeState( "over" );
         this._hoverItem = null;
       }
       if( this._isToolItem( target ) ) {
         this._hoverItem = target;
-        this._hoverItem.addState( "over" );
       }
     },
 
