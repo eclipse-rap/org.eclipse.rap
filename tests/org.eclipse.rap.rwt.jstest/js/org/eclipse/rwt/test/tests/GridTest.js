@@ -1639,6 +1639,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testWheelScrollStopProppagation : function() {
       var tree = this._createDefaultTree();
+      this._fillTree( tree, 100 );
+      TestUtil.flush();
       var log = [];
       tree._rowContainer.addEventListener( "mousewheel", function( event ) {
         log.push( "area", event );
@@ -1646,10 +1648,28 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.addEventListener( "mousewheel", function( event ) {
         log.push( "tree", event );
       } );
-      TestUtil.fakeWheel( tree._rowContainer, 2 );
+
+      TestUtil.fakeWheel( tree._rowContainer, -2 );
+
       assertEquals( 2, log.length );
       assertEquals( "area", log[ 0 ] );
       assertTrue( log[ 1 ].getDefaultPrevented() );
+      tree.destroy();
+    },
+
+    testWheelScrollStopProppagation_AllowIfScrollBarIsUnchanged : function() {
+      var tree = this._createDefaultTree();
+      this._fillTree( tree, 100 );
+      TestUtil.flush();
+      var log = [];
+      tree.addEventListener( "mousewheel", function( event ) {
+        log.push( event );
+      } );
+
+      TestUtil.fakeWheel( tree._rowContainer, 1 );
+
+      assertEquals( 1, log.length );
+      assertFalse( log[ 0 ].getDefaultPrevented() );
       tree.destroy();
     },
 

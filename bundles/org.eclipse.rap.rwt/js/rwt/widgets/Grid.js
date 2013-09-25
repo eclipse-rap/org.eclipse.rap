@@ -641,11 +641,15 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _onClientAreaMouseWheel : function( event ) {
-      event.preventDefault();
-      event.stopPropagation();
       var change = event.getWheelDelta() * this._itemHeight * 2;
-      this._vertScrollBar.setValue( this._vertScrollBar.getValue() - change );
-      this._vertScrollBar.setValue( this._vertScrollBar.getValue() ); // See Bug 396309
+      var orgValue = this._vertScrollBar.getValue();
+      this._vertScrollBar.setValue( orgValue - change );
+      var newValue = this._vertScrollBar.getValue();
+      this._vertScrollBar.setValue( newValue ); // See Bug 396309
+      if( newValue !== orgValue ) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
     },
 
     _onKeyPress : function( event ) {
