@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,9 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
 
   factory : function( properties ) {
     var styleMap = rwt.remote.HandlerUtil.createStyleMap( properties.style );
+    var rowTemplate =   properties.rowTemplate
+                      ? new rwt.widgets.util.Template( properties.rowTemplate )
+                      : null;
     var configMap = {
       appearance : properties.appearance,
       noScroll : styleMap.NO_SCROLL,
@@ -25,7 +28,8 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
       selectionPadding : properties.selectionPadding,
       indentionWidth : properties.indentionWidth,
       splitContainer : properties.splitContainer,
-      markupEnabled : properties.markupEnabled
+      markupEnabled : properties.markupEnabled,
+      rowTemplate : rowTemplate
     };
     var result = new rwt.widgets.Grid( configMap );
     rwt.remote.HandlerUtil.addStatesForStyles( result, properties.style );

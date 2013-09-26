@@ -73,8 +73,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         if( config.treeColumn !== -1 ) {
           this._renderIndention( item, config, hoverTarget );
         }
-        this._renderCheckBox( item, config, hoverTarget, contentOnly );
-        this._renderCells( item, config, renderSelected, hoverTarget, contentOnly );
+        if( config.rowTemplate ) {
+        } else {
+          this._renderColumnModel( item, config, hoverTarget, renderSelected, contentOnly );
+        }
         this._renderOverlay( item, config );
         this._hideRemainingElements();
       } else {
@@ -124,6 +126,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     ////////////
     // internals
+
+    _renderColumnModel : function( item, config, hoverTarget, renderSelected, contentOnly ) {
+      this._renderCheckBox( item, config, hoverTarget, contentOnly );
+      this._renderCells( item, config, renderSelected, hoverTarget, contentOnly );
+    },
 
     _renderHeight : function( item, config ) {
       var result = false;

@@ -2503,6 +2503,43 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertTrue( log > 0 );
     },
 
+    testRenderTemplate_EmptyTemplateRendersEmptyItem : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test" ] );
+      tree.getRenderConfig().rowTemplate = mockTemplate();
+
+      row.renderItem( item, tree._config, false, null );
+
+      assertEquals( 0, row._getTargetNode().childNodes.length );
+    },
+
+    testRenderTemplate_EmptyTemplateRendersItemBackground : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      item.setBackground( "red" );
+
+      item.setTexts( [ "Test" ] );
+      tree.getRenderConfig().rowTemplate = mockTemplate();
+
+      row.renderItem( item, tree._config, false, null );
+
+      assertEquals( "red", row._getTargetNode().style.backgroundColor );
+    },
+
+    testRenderTemplate_EmptyTemplateRendersOverlay : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      this._setOverlayBackground( "green" );
+
+      item.setTexts( [ "Test" ] );
+      tree.getRenderConfig().rowTemplate = mockTemplate();
+
+      row.renderItem( item, tree._config, false, null );
+
+      assertEquals( "green", row._overlayElement.style.backgroundColor );
+    },
+
 
      /////////
      // Helper
@@ -2752,5 +2789,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
   }
 
 } );
+
+var mockTemplate = function() {
+  return {};
+};
 
 }());

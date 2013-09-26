@@ -292,7 +292,8 @@ public final class ClientResources {
     "rwt/scripting/CompositeProxy.js",
     "rwt/scripting/Synchronizer.js",
     "rwt/scripting/WidgetProxyFactory.js",
-    "rwt/remote/handler/FunctionHandler.js"
+    "rwt/remote/handler/FunctionHandler.js",
+    "rwt/widgets/util/Template.js"
   };
 
   private static final String[] WIDGET_IMAGES = new String[] {

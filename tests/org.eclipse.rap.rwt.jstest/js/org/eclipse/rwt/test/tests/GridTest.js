@@ -104,6 +104,30 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       widget.destroy();
     },
 
+    testCreateWithRowTemplateByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = rwt.remote.MessageProcessor;
+      var template = [];
+
+      processor.processOperationArray( [
+        "create",
+         "w3",
+        "rwt.widgets.Grid",
+        {
+          "style" : [],
+          "parent" : "w2",
+          "appearance": "table",
+          "selectionPadding" : [ 2, 4 ],
+          "rowTemplate" : template
+        }
+      ] );
+
+      var config = rwt.remote.ObjectRegistry.getObject( "w3" ).getRenderConfig();
+      assertTrue( config.rowTemplate instanceof rwt.widgets.util.Template );
+      assertIdentical( template, config.rowTemplate._cells );
+      shell.destroy();
+    },
+
     testSetItemCountByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
