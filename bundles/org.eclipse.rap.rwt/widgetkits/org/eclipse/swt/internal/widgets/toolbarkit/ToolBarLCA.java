@@ -22,7 +22,6 @@ import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Widget;
 
@@ -41,17 +40,11 @@ public class ToolBarLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveCustomVariant( toolBar );
   }
 
-  public void readData( Widget widget ) {
-    ControlLCAUtil.processEvents( ( Control )widget );
-    ControlLCAUtil.processKeyEvents( ( Control )widget );
-    ControlLCAUtil.processMenuDetect( ( Control )widget );
-    WidgetLCAUtil.processHelp( widget );
-  }
-
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ToolBar toolBar = ( ToolBar )widget;
     RemoteObject remoteObject = createRemoteObject( toolBar, TYPE );
+    remoteObject.setHandler( new ToolBarOperationHandler( toolBar ) );
     remoteObject.set( "parent", getId( toolBar.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( toolBar, ALLOWED_STYLES ) ) );
   }
