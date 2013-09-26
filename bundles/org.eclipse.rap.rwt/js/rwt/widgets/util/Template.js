@@ -16,9 +16,43 @@ namespace( "rwt.widgets.util" );
 
 rwt.widgets.util.Template = function( cells ) {
   this._cells = cells;
+  this._item = null;
 };
 
 rwt.widgets.util.Template.prototype = {
+
+  configurate : function( item ) {
+    this._item = item;
+  },
+
+  getCellCount : function() {
+    return this._cells.length;
+  },
+
+  getCellLeft : function( cell ) {
+    return this._cells[ cell ].left;
+  },
+
+  getCellTop : function( cell ) {
+    return this._cells[ cell ].top;
+  },
+
+  getCellWidth : function( cell ) {
+    return this._cells[ cell ].width;
+  },
+
+  getCellHeight : function( cell ) {
+    return this._cells[ cell ].height;
+  },
+
+  getCellType : function( cell ) {
+    return this._cells[ cell ].type;
+  },
+
+  getCellText : function( cell ) {
+    return this._item.getText.apply( this._item, arguments );
+  }
+
 };
 
 }());
