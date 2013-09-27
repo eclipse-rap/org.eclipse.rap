@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2009 IBM Corporation and others.
+ * Copyright (c) 2003, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,6 +65,10 @@ public class CoolBarManager extends ContributionManager implements
      * The cool bar items style; <code>SWT.NONE</code> by default.
      */
     private int itemStyle = SWT.NONE;
+
+// RAP [if] Used by text size determination resize listener - see bug 417989
+    private boolean inUpdate = false;
+// ENDRAP
 
     /**
      * Creates a new cool bar manager with the default style. Equivalent to
@@ -261,10 +265,12 @@ public class CoolBarManager extends ContributionManager implements
     private void addCoolBarResizeListener() {
       coolBar.addControlListener( new ControlAdapter() {
         public void controlResized( ControlEvent event ) {
-          IContributionItem[] items = getItems();
-          for( int i = 0; i < items.length; i++ ) {
-            IContributionItem item = items[ i ];
-            item.update( SIZE );
+          if( !inUpdate ) {
+            IContributionItem[] items = getItems();
+            for( int i = 0; i < items.length; i++ ) {
+              IContributionItem item = items[ i ];
+              item.update( SIZE );
+            }
           }
         }
       } );
@@ -850,6 +856,7 @@ public class CoolBarManager extends ContributionManager implements
 
         try {
             coolBar.setRedraw(false);
+            inUpdate = true;
 
             // Refresh the widget data with the internal data structure.
             refresh();
@@ -993,6 +1000,7 @@ public class CoolBarManager extends ContributionManager implements
             setDirty(false);
         } finally {
             coolBar.setRedraw(true);
+            inUpdate = false;
         }
     }
 
