@@ -21,7 +21,7 @@ rwt.widgets.util.Template = function( cells ) {
 
 rwt.widgets.util.Template.prototype = {
 
-  configurate : function( item ) {
+  configure : function( item ) {
     this._item = item;
   },
 
@@ -49,8 +49,13 @@ rwt.widgets.util.Template.prototype = {
     return this._cells[ cell ].type;
   },
 
-  getCellText : function( cell ) {
-    return this._item.getText.apply( this._item, arguments );
+  getCellText : function( cell, arg ) {
+    if( typeof this._cells[ cell ].bindingIndex === "number" ) {
+      var index = this._cells[ cell ].bindingIndex;
+      return this._item.getText( index, arg );
+    } else {
+      return "";
+    }
   }
 
 };

@@ -63,23 +63,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testGetCellText_FromGridItem : function() {
-      var template = new Template( [ { "bindingIndex" : 1 } ] );
+      var template = new Template( [ { "bindingIndex" : 1 }, {} ] );
 
-      template.configurate( createGridItem( [ "foo", "bar" ] ) );
-      assertEquals( "foo", template.getCellText( 0 ) );
-      assertEquals( "bar", template.getCellText( 1 ) );
+      template.configure( createGridItem( [ "foo", "bar" ] ) );
+      assertEquals( "bar", template.getCellText( 0 ) );
+      assertEquals( "", template.getCellText( 1 ) );
     },
 
-    testGetCellText_ForwardParameters : function() {
-      var template = new Template( [ { "bindingIndex" : 1 } ] );
+    testGetCellText_ForwardArgument : function() {
+      var template = new Template( [ { "bindingIndex" : 0 } ] );
       var item = createGridItem( [ "foo", "bar" ] );
       var arg;
       item.getText = function() { arg = arguments; };
 
-      template.configurate( item );
-      template.getCellText( 1, 2, 3 );
+      template.configure( item );
+      template.getCellText( 0, 33 );
 
-      assertEquals( [ 1, 2, 3 ], rwt.util.Arrays.fromArguments( arg ) );
+      assertEquals( [ 0, 33 ], rwt.util.Arrays.fromArguments( arg ) );
     }
 
   }

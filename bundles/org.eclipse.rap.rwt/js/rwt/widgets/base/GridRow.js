@@ -74,6 +74,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           this._renderIndention( item, config, hoverTarget );
         }
         if( config.rowTemplate ) {
+          this._renderTemplate( item, config, hoverTarget, renderSelected, contentOnly );
         } else {
           this._renderColumnModel( item, config, hoverTarget, renderSelected, contentOnly );
         }
@@ -130,6 +131,20 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderColumnModel : function( item, config, hoverTarget, renderSelected, contentOnly ) {
       this._renderCheckBox( item, config, hoverTarget, contentOnly );
       this._renderCells( item, config, renderSelected, hoverTarget, contentOnly );
+    },
+
+    _renderTemplate : function( item, config, hoverTarget, renderSelected, contentOnly ) {
+      var template = config.rowTemplate;
+      template.configure( item );
+      if( template.getCellCount() > 0 ) {
+        var element = this._getTextElement( 0 );
+        element.innerHTML = template.getCellText( 0 );
+        this._setBounds( element,
+                         template.getCellLeft( 0 ),
+                         template.getCellTop( 0 ),
+                         template.getCellWidth( 0 ),
+                         template.getCellHeight( 0 ) );
+      }
     },
 
     _renderHeight : function( item, config ) {
@@ -731,7 +746,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       rwt.html.Style.setBackgroundImage( element, src, enabled != null ? opacity : null);
     },
 
-    _getTextElement : function( cell, config ) {
+    _getTextElement : function( cell ) {
       var result = this._cellLabels[ cell ];
       if( !result ) {
         result = this._createElement( 3 );

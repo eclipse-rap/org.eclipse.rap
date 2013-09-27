@@ -2509,7 +2509,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       item.setTexts( [ "Test" ] );
       tree.getRenderConfig().rowTemplate = mockTemplate();
 
-      row.renderItem( item, tree._config, false, null );
+      row.renderItem( item, tree.getRenderConfig(), false, null );
 
       assertEquals( 0, row._getTargetNode().childNodes.length );
     },
@@ -2540,6 +2540,67 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "green", row._overlayElement.style.backgroundColor );
     },
 
+    testRenderTemplate_RenderSingleCellLeft : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "text", 10, 20 ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var nodes = row._getTargetNode().childNodes;
+      assertEquals( 1, nodes.length );
+      assertEquals( 10, parseInt( nodes[ 0 ].style.left, 10 ) );
+    },
+
+    testRenderTemplate_RenderSingleCellTop : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "text", 10, 20 ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var nodes = row._getTargetNode().childNodes;
+      assertEquals( 20, parseInt( nodes[ 0 ].style.top, 10 ) );
+    },
+
+    testRenderTemplate_RenderSingleCellWidth : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "text", 10, 20, 100, 12 ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var nodes = row._getTargetNode().childNodes;
+      assertEquals( 100, parseInt( nodes[ 0 ].style.width, 10 ) );
+    },
+
+    testRenderTemplate_RenderSingleCellHeight : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "text", 10, 20, 100, 12 ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var nodes = row._getTargetNode().childNodes;
+      assertEquals( 12, parseInt( nodes[ 0 ].style.height, 10 ) );
+    },
+
+    testRenderTemplate_RenderSingleCellText : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      item.setTexts( [ "foo", "bar" ] );
+
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 1, "text", 10, 20 ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var nodes = row._getTargetNode().childNodes;
+      assertEquals( "bar", nodes[ 0 ].innerHTML );
+    },
 
      /////////
      // Helper
@@ -2791,7 +2852,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 } );
 
 var mockTemplate = function() {
-  return {};
+  var cells = [];
+  for( var i = 0; i < arguments.length; i++ ) {
+    cells.push(  {
+      "bindingIndex" : arguments[ i ][ 0 ],
+      "type" : arguments[ i ][ 1 ],
+      "left" : arguments[ i ][ 2 ],
+      "top" : arguments[ i ][ 3 ],
+      "width" : arguments[ i ][ 4 ],
+      "height" : arguments[ i ][ 5 ]
+    } );
+  }
+  return new rwt.widgets.util.Template( cells );
 };
 
 }());
