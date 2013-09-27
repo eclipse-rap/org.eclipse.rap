@@ -66,6 +66,8 @@ public class CoolBarManager extends ContributionManager implements
      */
     private int itemStyle = SWT.NONE;
 
+    private boolean inUpdate = false;
+
     /**
      * Creates a new cool bar manager with the default style. Equivalent to
      * <code>CoolBarManager(SWT.NONE)</code>.
@@ -261,10 +263,12 @@ public class CoolBarManager extends ContributionManager implements
     private void addCoolBarResizeListener() {
       coolBar.addControlListener( new ControlAdapter() {
         public void controlResized( ControlEvent event ) {
-          IContributionItem[] items = getItems();
-          for( int i = 0; i < items.length; i++ ) {
-            IContributionItem item = items[ i ];
-            item.update( SIZE );
+          if( !inUpdate ) {
+            IContributionItem[] items = getItems();
+            for( int i = 0; i < items.length; i++ ) {
+              IContributionItem item = items[ i ];
+              item.update( SIZE );
+            }
           }
         }
       } );
@@ -850,6 +854,7 @@ public class CoolBarManager extends ContributionManager implements
 
         try {
             coolBar.setRedraw(false);
+            inUpdate = true;
 
             // Refresh the widget data with the internal data structure.
             refresh();
@@ -993,6 +998,7 @@ public class CoolBarManager extends ContributionManager implements
             setDirty(false);
         } finally {
             coolBar.setRedraw(true);
+            inUpdate = false;
         }
     }
 
