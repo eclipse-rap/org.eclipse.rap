@@ -2543,6 +2543,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     testRenderTemplate_RenderSingleCellLeft : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
+      item.setTexts( [ "foo", "bar" ] );
 
       tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "text", 10, 20 ] );
 
@@ -2556,6 +2557,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     testRenderTemplate_RenderSingleCellTop : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
+      item.setTexts( [ "foo", "bar" ] );
 
       tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "text", 10, 20 ] );
 
@@ -2568,6 +2570,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     testRenderTemplate_RenderSingleCellWidth : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
+      item.setTexts( [ "foo", "bar" ] );
 
       tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "text", 10, 20, 100, 12 ] );
 
@@ -2580,6 +2583,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     testRenderTemplate_RenderSingleCellHeight : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
+      item.setTexts( [ "foo", "bar" ] );
 
       tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "text", 10, 20, 100, 12 ] );
 
@@ -2599,6 +2603,49 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.renderItem( item, tree._config, false, null );
 
       var nodes = row._getTargetNode().childNodes;
+      assertEquals( "bar", nodes[ 0 ].innerHTML );
+    },
+
+    testRenderTemplate_RenderMultipleTextCells : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      item.setTexts( [ "foo", "bar" ] );
+
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "text", 1, 1, 1, 1 ],
+                                                         [ 1, "text", 1, 1, 1, 1 ] );
+      row.renderItem( item, tree._config, false, null );
+
+      var nodes = row._getTargetNode().childNodes;
+      assertEquals( 2, nodes.length );
+      assertEquals( "foo", nodes[ 0 ].innerHTML );
+      assertEquals( "bar", nodes[ 1 ].innerHTML );
+    },
+
+    testRenderTemplate_DoNotRenderEmptyTextCells : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      item.setTexts( [ "foo", "bar" ] );
+
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ null, "text", 1, 1, 1, 1 ],
+                                                         [ 1, "text", 1, 1, 1, 1 ] );
+      row.renderItem( item, tree._config, false, null );
+
+      var nodes = row._getTargetNode().childNodes;
+      assertEquals( 1, nodes.length );
+      assertEquals( "bar", nodes[ 0 ].innerHTML );
+    },
+
+    testRenderTemplate_DoNotRenderTextForNonTextCells : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      item.setTexts( [ "foo", "bar" ] );
+
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "asdf", 1, 1, 1, 1 ],
+                                                         [ 1, "text", 1, 1, 1, 1 ] );
+      row.renderItem( item, tree._config, false, null );
+
+      var nodes = row._getTargetNode().childNodes;
+      assertEquals( 1, nodes.length );
       assertEquals( "bar", nodes[ 0 ].innerHTML );
     },
 

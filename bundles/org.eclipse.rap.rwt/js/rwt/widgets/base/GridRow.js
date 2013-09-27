@@ -136,14 +136,16 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderTemplate : function( item, config, hoverTarget, renderSelected, contentOnly ) {
       var template = config.rowTemplate;
       template.configure( item );
-      if( template.getCellCount() > 0 ) {
-        var element = this._getTextElement( 0 );
-        element.innerHTML = template.getCellText( 0 );
-        this._setBounds( element,
-                         template.getCellLeft( 0 ),
-                         template.getCellTop( 0 ),
-                         template.getCellWidth( 0 ),
-                         template.getCellHeight( 0 ) );
+      for( var i = 0; i < template.getCellCount(); i++ ) {
+        if( template.getCellType( i ) === "text" && template.getCellText( i ) ) {
+          var element = this._getTextElement( i );
+          element.innerHTML = template.getCellText( i );
+          this._setBounds( element,
+                           template.getCellLeft( i ),
+                           template.getCellTop( i ),
+                           template.getCellWidth( i ),
+                           template.getCellHeight( i ) );
+        }
       }
     },
 
