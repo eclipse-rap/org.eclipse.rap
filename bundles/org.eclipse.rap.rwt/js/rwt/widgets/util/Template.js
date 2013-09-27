@@ -21,6 +21,8 @@ rwt.widgets.util.Template = function( cells ) {
 
 rwt.widgets.util.Template.prototype = {
 
+  hasCellLayout : rwt.util.Functions.returnTrue,
+
   configure : function( item ) {
     this._item = item;
   },
@@ -49,14 +51,27 @@ rwt.widgets.util.Template.prototype = {
     return this._cells[ cell ].type;
   },
 
-  getCellText : function( cell, arg ) {
+  hasText : function( cell ) {
+    if( typeof this._cells[ cell ].bindingIndex === "number" ) {
+      var index = this._cells[ cell ].bindingIndex;
+      return this._item.hasText( index );
+    } else {
+      return false;
+    }
+  },
+
+  getText : function( cell, arg ) {
     if( typeof this._cells[ cell ].bindingIndex === "number" ) {
       var index = this._cells[ cell ].bindingIndex;
       return this._item.getText( index, arg );
     } else {
       return "";
     }
-  }
+  },
+
+  getCellForeground : function(){},
+  getCellBackground : function(){},
+  getCellFont : function(){},
 
 };
 

@@ -113,6 +113,8 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
 
   members : {
 
+    hasCellLayout : rwt.util.Functions.returnFalse,
+
     setItemCount : function( value ) {
       var msg = this._children.length > value ? "remove" : "add";
       this._children.length = value;

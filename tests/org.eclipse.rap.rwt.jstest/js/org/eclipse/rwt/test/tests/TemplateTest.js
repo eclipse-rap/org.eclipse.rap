@@ -62,25 +62,49 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( "anyString", template.getCellType( 0 ) );
     },
 
-    testGetCellText_FromGridItem : function() {
+    testgetText_FromGridItem : function() {
       var template = new Template( [ { "bindingIndex" : 1 }, {} ] );
 
       template.configure( createGridItem( [ "foo", "bar" ] ) );
-      assertEquals( "bar", template.getCellText( 0 ) );
-      assertEquals( "", template.getCellText( 1 ) );
+      assertEquals( "bar", template.getText( 0 ) );
+      assertEquals( "", template.getText( 1 ) );
     },
 
-    testGetCellText_ForwardArgument : function() {
+    testGetText_ForwardArgument : function() {
       var template = new Template( [ { "bindingIndex" : 0 } ] );
       var item = createGridItem( [ "foo", "bar" ] );
       var arg;
       item.getText = function() { arg = arguments; };
 
       template.configure( item );
-      template.getCellText( 0, 33 );
+      template.getText( 0, 33 );
 
       assertEquals( [ 0, 33 ], rwt.util.Arrays.fromArguments( arg ) );
-    }
+    },
+
+    testHasText_NoBindingOrDefault : function() {
+      var template = new Template( [ { } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
+      template.configure( item );
+
+      assertFalse( template.hasText( 0 ) );
+    },
+
+    testHasText_BoundToEmptyAndNoDefault : function() {
+      var template = new Template( [ { "bindingIndex" : 0 } ] );
+      var item = createGridItem( [ "", "bar" ] );
+      template.configure( item );
+
+      assertFalse( template.hasText( 0 ) );
+    },
+
+    testHasText_BoundToValue : function() {
+      var template = new Template( [ { "bindingIndex" : 0 } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
+      template.configure( item );
+
+      assertTrue( template.hasText( 0 ) );
+    },
 
   }
 

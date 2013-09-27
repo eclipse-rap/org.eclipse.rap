@@ -137,14 +137,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var template = config.rowTemplate;
       template.configure( item );
       for( var i = 0; i < template.getCellCount(); i++ ) {
-        if( template.getCellType( i ) === "text" && template.getCellText( i ) ) {
-          var element = this._getTextElement( i );
-          element.innerHTML = template.getCellText( i );
-          this._setBounds( element,
-                           template.getCellLeft( i ),
-                           template.getCellTop( i ),
-                           template.getCellWidth( i ),
-                           template.getCellHeight( i ) );
+        switch( template.getCellType( i ) ) {
+          case "text":
+            this._renderCellLabel( template, i, config, false, false );
+          break;
         }
       }
     },
@@ -543,7 +539,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var renderBounds = false;
       if( item.hasText( cell ) ) {
         renderBounds = isTreeColumn || !contentOnly || !this._cellLabels[ cell ];
-        element = this._getTextElement( cell, config );
+        element = this._getTextElement( cell );
         this._renderElementContent( element, item, cell, config.markupEnabled );
         if( renderBounds ) {
           element.style.textAlign = isTreeColumn ? "left" : this._getAlignment( cell, config );
@@ -551,7 +547,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         this._styleLabel( element, item, cell, config );
       } else if( this._cellLabels[ cell ] ) {
         renderBounds = isTreeColumn || !contentOnly;
-        element = this._getTextElement( cell, config );
+        element = this._getTextElement( cell );
         this._renderElementContent( element, null, -1, config.markupEnabled );
       }
       if( renderBounds ) {
@@ -563,11 +559,23 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderCellLabelBounds : function( item, cell, config ) {
       var element = this._cellLabels[ cell ];
       if( element ) {
-        var left = this._getItemTextLeft( item, cell, config );
-        var width = this._getItemTextWidth( item, cell, config );
-        var top = this._getCellPadding( config )[ 0 ];
-        this._setBounds( element, left, top, width, this.getHeight() - top );
+        if( item.hasCellLayout() ) {
+          this._renderCellLayout( element, item, cell );
+        } else {
+          var left = this._getItemTextLeft( item, cell, config );
+          var width = this._getItemTextWidth( item, cell, config );
+          var top = this._getCellPadding( config )[ 0 ];
+          this._setBounds( element, left, top, width, this.getHeight() - top );
+        }
       }
+    },
+
+    _renderCellLayout : function( element, template, cell ) {
+      this._setBounds( element,
+                       template.getCellLeft( cell ),
+                       template.getCellTop( cell ),
+                       template.getCellWidth( cell ),
+                       template.getCellHeight( cell ) );
     },
 
     _renderElementContent : Variant.select( "qx.client", {
