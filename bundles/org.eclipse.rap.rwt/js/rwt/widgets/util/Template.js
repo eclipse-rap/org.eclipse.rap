@@ -17,6 +17,7 @@ namespace( "rwt.widgets.util" );
 rwt.widgets.util.Template = function( cells ) {
   this._cells = cells;
   this._item = null;
+  this._parseCells();
 };
 
 rwt.widgets.util.Template.prototype = {
@@ -67,7 +68,17 @@ rwt.widgets.util.Template.prototype = {
     }
   },
 
-  getCellForeground : function(){},
+  getCellForeground : function( cell ) {
+    var result = null;
+    if( this._isBound( cell ) ) {
+      result = this._item.getCellForeground( this._getIndex( cell ) );
+    }
+    if( ( result === null || result === "" ) && this._cells[ cell ].foreground ) {
+      result = this._cells[ cell ].foreground;
+    }
+    return result;
+  },
+
   getCellBackground : function(){},
 
   getCellFont : function( cell ){
@@ -76,10 +87,6 @@ rwt.widgets.util.Template.prototype = {
       result = this._item.getCellFont( this._getIndex( cell ) );
     }
     if( ( result === null || result === "" ) && this._cells[ cell ].font ) {
-      if( this._cells[ cell ].font instanceof Array ) {
-        var font = this._cells[ cell ].font;
-        this._cells[ cell ].font = rwt.html.Font.fromArray( font ).toCss();
-      }
       result = this._cells[ cell ].font;
     }
     return result;
@@ -91,6 +98,19 @@ rwt.widgets.util.Template.prototype = {
 
   _getIndex : function( cell ) {
     return this._cells[ cell ].bindingIndex;
+  },
+
+  _parseCells : function() {
+    for( var i = 0; i < this._cells.length; i++ ) {
+      if( this._cells[ i ].font ) {
+        var font = this._cells[ i ].font;
+        this._cells[ i ].font = rwt.html.Font.fromArray( font ).toCss();
+      }
+      if( this._cells[ i ].foreground ) {
+        var foreground = this._cells[ i ].foreground;
+        this._cells[ i ].foreground = rwt.util.Colors.rgbToRgbString( foreground );
+      }
+    }
   }
 
 };
