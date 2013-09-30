@@ -167,6 +167,7 @@ public class TableOperationHandler extends ControlOperationHandler<Table> {
    * @param detail (string) "check" if checkbox is selected, "hyperlink" if RWT hyperlink is
    *        selected
    * @param item (string) id of selected item
+   * @param text (string) the value of href attribute or content of the selected RWT hyperlink
    */
   public void handleNotifySelection( Table table, JsonObject properties ) {
     TableItem item = getItem( table, properties.get( EVENT_PARAM_ITEM ).asString() );

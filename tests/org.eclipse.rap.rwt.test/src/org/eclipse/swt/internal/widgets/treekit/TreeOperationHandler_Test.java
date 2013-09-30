@@ -176,7 +176,8 @@ public class TreeOperationHandler_Test {
 
     JsonObject properties = new JsonObject()
       .add( "item", getId( item ) )
-      .add( "detail", "hyperlink" );
+      .add( "detail", "hyperlink" )
+      .add( "text", "foo" );
     handler.handleNotify( EVENT_SELECTION, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -184,6 +185,7 @@ public class TreeOperationHandler_Test {
     Event event = captor.getValue();
     assertEquals( item, event.item );
     assertEquals( RWT.HYPERLINK, event.detail );
+    assertEquals( "foo", event.text );
   }
 
   @Test

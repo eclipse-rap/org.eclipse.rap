@@ -12,6 +12,7 @@ package org.eclipse.rap.rwt.internal.protocol;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_HEIGHT;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_TEXT;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_WIDTH;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_X;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_Y;
@@ -66,6 +67,7 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
     event.type = eventType;
     event.stateMask = readStateMask( properties );
     event.detail = readDetail( properties );
+    event.text = readText( properties );
     event.setBounds( readBounds( properties ) );
     return event;
   }
@@ -117,6 +119,11 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
     JsonValue height = properties.get( EVENT_PARAM_HEIGHT );
     bounds.height = height == null ? 0 : height.asInt();
     return bounds;
+  }
+
+  private static String readText( JsonObject properties ) {
+    JsonValue value = properties.get( EVENT_PARAM_TEXT );
+    return value == null ? null : value.asString();
   }
 
 }
