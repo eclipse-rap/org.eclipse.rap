@@ -196,6 +196,52 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       template.configure( createGridItem( [ "foo", "bar" ] ) );
 
       assertEquals( "rgb(255,0,0)", template.getCellForeground( 0 ) );
+    },
+
+    testGetCellBackground_NotBoundIsNull : function() {
+      var item = createGridItem( [ "foo", "bar" ] );
+      item.setCellBackgrounds( [ "rgb( 0, 1, 2 )", "rgb( 3, 4, 5 )" ] );
+
+      var template = new Template( [ {}, {} ] );
+      template.configure( item );
+
+      assertNull( template.getCellBackground( 0 ) );
+    },
+
+    testGetCellBackground_FromGridItem : function() {
+      var template = new Template( [ { "bindingIndex" : 1 }, {} ] );
+      var item = createGridItem( [ "foo", "bar" ] );
+
+      item.setCellBackgrounds( [ null, "rgb( 3, 4, 5 )" ] );
+      template.configure( item );
+
+      assertEquals( "rgb( 3, 4, 5 )", template.getCellBackground( 0 ) );
+    },
+
+    testGetCellBackground_FromGridItemDoesOverwriteDefault : function() {
+      var template = new Template( [ { "bindingIndex" : 1, "background" : [ 255, 0, 0, 255 ] } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
+
+      item.setCellBackgrounds( [ null, "rgb( 3, 4, 5 )" ] );
+      template.configure( item );
+
+      assertEquals( "rgb( 3, 4, 5 )", template.getCellBackground( 0 ) );
+    },
+
+    testGetCellBackground_FromDefaultUnbound : function() {
+      var template = new Template( [ { "background" : [ 255, 0, 0, 255 ] } ] );
+
+      template.configure( createGridItem( [ "foo", "bar" ] ) );
+
+      assertEquals( "rgb(255,0,0)", template.getCellBackground( 0 ) );
+    },
+
+    testGetCellBackground_FromDefaultItemValueNotSet : function() {
+      var template = new Template( [ { "bindingIndex" : 1, "background" : [ 255, 0, 0, 255 ] } ] );
+
+      template.configure( createGridItem( [ "foo", "bar" ] ) );
+
+      assertEquals( "rgb(255,0,0)", template.getCellBackground( 0 ) );
     }
 
   }

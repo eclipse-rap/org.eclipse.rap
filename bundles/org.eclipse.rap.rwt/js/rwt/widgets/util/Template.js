@@ -79,7 +79,17 @@ rwt.widgets.util.Template.prototype = {
     return result;
   },
 
-  getCellBackground : function(){},
+  getCellBackground : function( cell ) {
+    var result = null;
+    if( this._isBound( cell ) ) {
+      result = this._item.getCellBackground( this._getIndex( cell ) );
+    }
+    if( ( result === null || result === "" ) && this._cells[ cell ].background ) {
+      result = this._cells[ cell ].background;
+    }
+    return result;
+  },
+
 
   getCellFont : function( cell ){
     var result = null;
@@ -109,6 +119,10 @@ rwt.widgets.util.Template.prototype = {
       if( this._cells[ i ].foreground ) {
         var foreground = this._cells[ i ].foreground;
         this._cells[ i ].foreground = rwt.util.Colors.rgbToRgbString( foreground );
+      }
+      if( this._cells[ i ].background ) {
+        var background = this._cells[ i ].background;
+        this._cells[ i ].background = rwt.util.Colors.rgbToRgbString( background );
       }
     }
   }

@@ -137,9 +137,13 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var template = config.rowTemplate;
       template.configure( item );
       for( var i = 0; i < template.getCellCount(); i++ ) {
+        var background = this._getCellBackgroundColor( template, i, config );
         switch( template.getCellType( i ) ) {
           case "text":
             this._renderCellLabel( template, i, config, false, false );
+            if( background || this._cellLabels[ i ] ) {
+              this._getTextElement( i ).style.backgroundColor = background;
+            }
           break;
         }
       }
@@ -559,7 +563,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderCellLabelBounds : function( item, cell, config ) {
       var element = this._cellLabels[ cell ];
       if( element ) {
-        if( item.hasCellLayout() ) {
+        if( item && item.hasCellLayout() ) {
           this._renderCellLayout( element, item, cell );
         } else {
           var left = this._getItemTextLeft( item, cell, config );

@@ -2649,6 +2649,37 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "bar", nodes[ 0 ].innerHTML );
     },
 
+    testRenderTemplate_RenderTextCellBackground : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      item.setTexts( [ "foo", "bar" ] );
+
+      tree.getRenderConfig().rowTemplate = mockTemplate( {
+        "type" : "text",
+        "background" : [ 255, 0, 0 ]
+      } );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var color = row._getTargetNode().childNodes[ 0 ].style.backgroundColor;
+      assertEquals( [ 255, 0, 0 ], rwt.util.Colors.stringToRgb( color ) );
+    },
+
+    testRenderTemplate_ResetTextCellBackground : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "text", 1, 1, 1, 1 ] );
+      item.setTexts( [ "foo", "bar" ] );
+      item.setCellBackgrounds( [ "#ff00ff" ] );
+      row.renderItem( item, tree._config, false, null );
+
+      item.setCellBackgrounds( [ null ] );
+      row.renderItem( item, tree._config, false, null );
+
+      var color = row._getTargetNode().childNodes[ 0 ].style.backgroundColor;
+      assertTrue( color === "" || color === "transparent" );
+    },
+
      /////////
      // Helper
 
@@ -2901,14 +2932,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 var mockTemplate = function() {
   var cells = [];
   for( var i = 0; i < arguments.length; i++ ) {
-    cells.push(  {
-      "bindingIndex" : arguments[ i ][ 0 ],
-      "type" : arguments[ i ][ 1 ],
-      "left" : arguments[ i ][ 2 ],
-      "top" : arguments[ i ][ 3 ],
-      "width" : arguments[ i ][ 4 ],
-      "height" : arguments[ i ][ 5 ]
-    } );
+    if( arguments[ i ] instanceof Array ) {
+      cells.push(  {
+        "bindingIndex" : arguments[ i ][ 0 ],
+        "type" : arguments[ i ][ 1 ],
+        "left" : arguments[ i ][ 2 ],
+        "top" : arguments[ i ][ 3 ],
+        "width" : arguments[ i ][ 4 ],
+        "height" : arguments[ i ][ 5 ]
+      } );
+    } else {
+      cells.push( arguments[ i ] );
+    }
   }
   return new rwt.widgets.util.Template( cells );
 };
