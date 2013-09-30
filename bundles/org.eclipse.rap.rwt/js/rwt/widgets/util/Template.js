@@ -52,18 +52,16 @@ rwt.widgets.util.Template.prototype = {
   },
 
   hasText : function( cell ) {
-    if( typeof this._cells[ cell ].bindingIndex === "number" ) {
-      var index = this._cells[ cell ].bindingIndex;
-      return this._item.hasText( index );
+    if( this._isBound( cell ) ) {
+      return this._item.hasText( this._getIndex( cell ) );
     } else {
       return false;
     }
   },
 
   getText : function( cell, arg ) {
-    if( typeof this._cells[ cell ].bindingIndex === "number" ) {
-      var index = this._cells[ cell ].bindingIndex;
-      return this._item.getText( index, arg );
+    if( this._isBound( cell ) ) {
+      return this._item.getText( this._getIndex( cell ), arg );
     } else {
       return "";
     }
@@ -71,7 +69,29 @@ rwt.widgets.util.Template.prototype = {
 
   getCellForeground : function(){},
   getCellBackground : function(){},
-  getCellFont : function(){},
+
+  getCellFont : function( cell ){
+    var result = null;
+    if( this._isBound( cell ) ) {
+      result = this._item.getCellFont( this._getIndex( cell ) );
+    }
+    if( ( result === null || result === "" ) && this._cells[ cell ].font ) {
+      if( this._cells[ cell ].font instanceof Array ) {
+        var font = this._cells[ cell ].font;
+        this._cells[ cell ].font = rwt.html.Font.fromArray( font ).toCss();
+      }
+      result = this._cells[ cell ].font;
+    }
+    return result;
+  },
+
+  _isBound : function( cell ) {
+    return typeof this._cells[ cell ].bindingIndex === "number";
+  },
+
+  _getIndex : function( cell ) {
+    return this._cells[ cell ].bindingIndex;
+  }
 
 };
 

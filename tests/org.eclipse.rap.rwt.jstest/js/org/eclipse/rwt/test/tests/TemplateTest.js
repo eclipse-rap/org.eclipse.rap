@@ -106,6 +106,52 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertTrue( template.hasText( 0 ) );
     },
 
+    testGetCellFont_NotBoundIsNull : function() {
+      var item = createGridItem( [ "foo", "bar" ] );
+      item.setCellFonts( [ "14px Arial", "14px Arial" ] );
+
+      var template = new Template( [ {}, {} ] );
+      template.configure( item );
+
+      assertNull( template.getCellFont( 0 ) );
+    },
+
+    testGetCellFont_FromGridItem : function() {
+      var template = new Template( [ { "bindingIndex" : 1 }, {} ] );
+      var item = createGridItem( [ "foo", "bar" ] );
+
+      item.setCellFonts( [ null, "14px Arial" ] );
+      template.configure( item );
+
+      assertEquals( "14px Arial", template.getCellFont( 0 ) );
+    },
+
+    testGetCellFont_FromGridItemDoesOverwriteDefault : function() {
+      var template = new Template( [ { "bindingIndex" : 1, "font" : [ [ "Foo" ], 17, false, false ] }, {} ] );
+      var item = createGridItem( [ "foo", "bar" ] );
+
+      item.setCellFonts( [ null, "14px Arial" ] );
+      template.configure( item );
+
+      assertEquals( "14px Arial", template.getCellFont( 0 ) );
+    },
+
+    testGetCellFont_FromDefaultUnbound : function() {
+      var template = new Template( [ { "font" : [ [ "Arial" ], 14, false, false ] }, {} ] );
+
+      template.configure( createGridItem( [ "foo", "bar" ] ) );
+
+      assertEquals( "14px Arial", template.getCellFont( 0 ) );
+    },
+
+    testGetCellFont_FromDefaultItemNotSet : function() {
+      var template = new Template( [ { "bindingIndex" : 1, "font" : [ [ "Arial" ], 14, false, false ] }, {} ] );
+
+      template.configure( createGridItem( [ "foo", "bar" ] ) );
+
+      assertEquals( "14px Arial", template.getCellFont( 0 ) );
+    }
+
   }
 
 } );
