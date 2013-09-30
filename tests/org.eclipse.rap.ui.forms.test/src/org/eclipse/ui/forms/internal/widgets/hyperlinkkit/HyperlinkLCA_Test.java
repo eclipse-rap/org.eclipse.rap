@@ -10,15 +10,18 @@
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.json.*;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
@@ -28,6 +31,7 @@ import org.eclipse.ui.forms.HyperlinkSettings;
 import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.internal.widgets.IHyperlinkAdapter;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.junit.Test;
 
 @SuppressWarnings("restriction")
 public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
@@ -41,33 +45,6 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     hyperlink = new Hyperlink( shell, SWT.NONE );
     lca = new HyperlinkLCA();
     Fixture.fakeNewRequest();
-  }
-
-  public void testSelectionEvent() {
-    Hyperlink hyperlink = new Hyperlink( shell, SWT.NONE );
-    testDefaultSelectionEvent( hyperlink );
-  }
-
-  @SuppressWarnings("serial")
-  private void testDefaultSelectionEvent( final Hyperlink hyperlink ) {
-    final StringBuffer log = new StringBuffer();
-    Listener listener = new Listener() {
-      public void handleEvent( Event event ) {
-        assertEquals( hyperlink, event.widget );
-        assertEquals( null, event.item );
-        assertEquals( SWT.NONE, event.detail );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertEquals( true, event.doit );
-        log.append( "widgetDefaultSelected" );
-      }
-    };
-    hyperlink.addListener( SWT.DefaultSelection, listener );
-    Fixture.fakeNotifyOperation( getId( hyperlink ), ClientMessageConst.EVENT_DEFAULT_SELECTION, null );
-    Fixture.readDataAndProcessAction( hyperlink );
-    assertEquals( "widgetDefaultSelected", log.toString() );
   }
 
   public void testRenderCreate() throws IOException {
@@ -88,6 +65,26 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( "forms.widgets.Hyperlink", operation.getType() );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( hyperlink );
+    lca.renderInitialization( hyperlink );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof HyperlinkOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    HyperlinkOperationHandler handler = spy( new HyperlinkOperationHandler( hyperlink ) );
+    getRemoteObject( getId( hyperlink ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( hyperlink ), "Help", new JsonObject() );
+    lca.readData( hyperlink );
+
+    verify( handler ).handleNotifyHelp( hyperlink, new JsonObject() );
   }
 
   public void testRenderParent() throws IOException {
