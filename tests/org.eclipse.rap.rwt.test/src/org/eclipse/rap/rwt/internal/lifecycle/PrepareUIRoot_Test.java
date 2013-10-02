@@ -13,11 +13,14 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.widgets.Display;
@@ -57,21 +60,27 @@ public class PrepareUIRoot_Test {
   }
 
   @Test
-  public void testExecuteInFirstRequests() throws IOException {
+  public void testExecuteInFirstRequest() throws IOException {
     EntryPointManager entryPointManager = getApplicationContext().getEntryPointManager();
     entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, TestEntryPoint.class, null );
+    Runnable runnable = mock( Runnable.class );
+    ProcessActionRunner.add( runnable  );
 
+    Fixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
     PhaseId phaseId = phase.execute( null );
 
     assertEquals( PhaseId.RENDER, phaseId );
     assertTrue( TestEntryPoint.wasInvoked );
+    verify( runnable ).run();
   }
 
   private static class TestEntryPoint implements EntryPoint {
     static boolean wasInvoked;
     public int createUI() {
+      new Display();
       wasInvoked = true;
       return 0;
     }
   }
+
 }
