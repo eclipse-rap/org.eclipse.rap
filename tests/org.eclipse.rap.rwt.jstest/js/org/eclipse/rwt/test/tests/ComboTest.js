@@ -165,6 +165,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
         }
       } );
       var widget = ObjectManager.getObject( "w3" );
+      assertEquals( [ "a", "b", "c" ], widget._items );
+      widget._updateItems();
       var items = widget._list.getItems();
       assertEquals( 3, widget._list.getItemsCount() );
       assertEquals( "a", items[ 0 ].getLabel() );
@@ -187,6 +189,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
         }
       } );
       var widget = ObjectManager.getObject( "w3" );
+      widget._updateItems();
       var items = widget._list.getItems();
       assertEquals( 1, widget._list.getItemsCount() );
       assertEquals( "&nbsp; foo &amp; bar&nbsp;", items[ 0 ].getLabel() );
@@ -906,6 +909,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       } );
 
       combo.setItems( [ "Simula", "Smalltalk" ] );
+      combo._updateItems();
       TestUtil.flush();
 
       assertEquals( 1, log );
@@ -951,6 +955,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
 
       combo.applyObjectId( "123" );
       combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
+      combo._updateItems();
 
       var listItemId = combo._list.getHtmlAttribute( "id" ) + "-listitem-3";
       assertEquals( listItemId, combo._list.getItems()[ 3 ].getHtmlAttribute( "id" ) );
@@ -1053,6 +1058,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.setItemHeight( 19 );
       combo.setEditable( false );
       combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
+      combo._updateItems();
       combo.setVisibleItemCount( 5 );
       combo.addToDocument();
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Combo" );

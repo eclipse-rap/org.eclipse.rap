@@ -308,6 +308,9 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     },
 
     _toggleListVisibility : function() {
+      if( !this._dropped ) {
+        this._updateItems();
+      }
       if( this._list.getItemsCount() ) {
         // Temporary make the text field ReadOnly, when the list is dropped.
         if( this._editable ) {
@@ -483,6 +486,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
           evt.stopPropagation();
         }
       } else if( this.getFocused() ) {
+        this._updateItems();
         evt.preventDefault();
         evt.stopPropagation();
         var toSelect;
@@ -568,6 +572,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
           if( evt.isAltPressed() ) {
             this._toggleListVisibility();
           } else {
+            this._updateItems();
             if( this._selected || this._manager.getSelectedItem() ) {
               this._list._onkeypress( evt );
               var selected = this._manager.getSelectedItem();
@@ -632,6 +637,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     // Additional check for ALT and CTRL keys is added to fix bug 288344
     _onKeyInput : function( evt ) {
       if( ( this._dropped || !this._editable ) && !evt.isAltPressed() && !evt.isCtrlPressed() ) {
+        this._updateItems();
         this._list._onkeyinput( evt );
         var selected = this._manager.getSelectedItem();
         if( selected != null ) {
@@ -739,12 +745,22 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       return this._itemHeight * this._visibleItemCount;
     },
 
+    _updateItems : function() {
+      if( this._items ) {
+        this._list.setItems( this._items );
+        this.createDispatchEvent( "itemsChanged" );
+        delete this._items;
+      }
+    },
+
     //////////////
     // Set methods
 
     setItems : function( items ) {
-      this._list.setItems( items );
-      this.createDispatchEvent( "itemsChanged" );
+      this._items = items;
+      if( this._dropped ) {
+        this._updateItems();
+      }
     },
 
     setVisibleItemCount : function( value ) {
@@ -756,6 +772,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     },
 
     select : function( index ) {
+      this._updateItems();
       var items = this._list.getItems();
       var item = null;
       if( index >= 0 && index <= items.length - 1 ) {
