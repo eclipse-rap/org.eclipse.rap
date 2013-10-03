@@ -184,6 +184,18 @@ public final class NativeKeyFormatter extends AbstractKeyFormatter {
 				sortedKeys[index++] = lookup.getCommand();
 			}
 
+// RAP [if] Add default modifiers sort with windows behavior - see bug 410319
+		} else {
+		    if ((modifierKeys & lookup.getCtrl()) != 0) {
+		        sortedKeys[index++] = lookup.getCtrl();
+  		    }
+  		    if ((modifierKeys & lookup.getAlt()) != 0) {
+  		        sortedKeys[index++] = lookup.getAlt();
+  		    }
+  		    if ((modifierKeys & lookup.getShift()) != 0) {
+  		        sortedKeys[index++] = lookup.getShift();
+  		    }
+// ENDRAP [if]
 		}
 
 		return sortedKeys;
