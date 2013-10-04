@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.service;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -69,7 +70,7 @@ import org.eclipse.swt.widgets.Display;
  * @see Display#wake
  * @since 2.0
  */
-public class ServerPushSession {
+public class ServerPushSession implements SerializableCompatibility {
 
   private final UISession uiSession;
 
