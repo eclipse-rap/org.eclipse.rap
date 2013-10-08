@@ -1022,19 +1022,17 @@ public class Table_Test {
 
     // calling setSelection makes the selected item visible
     table.setSelection( 95 );
-    ITableAdapter tableAdapter
-      = table.getAdapter( ITableAdapter.class );
-    assertTrue( tableAdapter.isItemVisible( table.getItem( 95 ) ) );
+    assertTrue( table.isItemVisible( 95 ) );
 
     // calling select does *not* make the selected item visible
     table.select( 0 );
-    assertFalse( tableAdapter.isItemVisible( table.getItem( 0 ) ) );
-    assertTrue( tableAdapter.isItemVisible( table.getItem( 95 ) ) );
+    assertFalse( table.isItemVisible( 0 ) );
+    assertTrue( table.isItemVisible( 95 ) );
 
     // selecting a range will make the lower end of the range visible
     table.setSelection( 0, 95 );
-    assertTrue( tableAdapter.isItemVisible( table.getItem( 0 ) ) );
-    assertFalse( tableAdapter.isItemVisible( table.getItem( 95 ) ) );
+    assertTrue( table.isItemVisible( 0 ) );
+    assertFalse( table.isItemVisible( 95 ) );
   }
 
   @Test
@@ -1868,9 +1866,7 @@ public class Table_Test {
   public void testCheckDataWithInvalidIndex() {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 10 );
-    ITableAdapter adapter
-      = table.getAdapter( ITableAdapter.class );
-    adapter.checkData( 99 );
+    table.getAdapter( ITableAdapter.class ).checkData( 99 );
     // No assert - the purpose of this test is to ensure that no
     // ArrayIndexOutOfBoundsException is thrown
   }
@@ -2641,8 +2637,6 @@ public class Table_Test {
 
   @Test
   public void testAddSelectionListener() {
-    Table table = new Table( shell, SWT.NONE );
-
     table.addSelectionListener( mock( SelectionListener.class ) );
 
     assertTrue( table.isListening( SWT.Selection ) );
@@ -2651,7 +2645,6 @@ public class Table_Test {
 
   @Test
   public void testRemoveSelectionListener() {
-    Table table = new Table( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     table.addSelectionListener( listener );
 
@@ -2661,34 +2654,86 @@ public class Table_Test {
     assertFalse( table.isListening( SWT.DefaultSelection ) );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testAddSelectionListenerWithNullArgument() {
-    Table table = new Table( shell, SWT.NONE );
-
-    try {
-      table.addSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+    table.addSelectionListener( null );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testRemoveSelectionListenerWithNullArgument() {
-    Table table = new Table( shell, SWT.NONE );
-
-    try {
-      table.removeSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+    table.removeSelectionListener( null );
   }
 
   @Test
   public void testDisposeCellEditor() {
-    Table table = new Table( shell, SWT.NONE );
     Text cellEditor = new Text( table, SWT.NONE );
 
     table.dispose();
 
     assertTrue( cellEditor.isDisposed() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetPreloadedItems_invalidValue() {
+    table.setData( RWT.PRELOADED_ITEMS, new Object() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetPreloadedItems_negativeValue() {
+    table.setData( RWT.PRELOADED_ITEMS, Integer.valueOf( -1 ) );
+  }
+
+  @Test
+  public void testResolvedItems_withoutPreloadedItemsSet() {
+    table = new Table( shell, SWT.VIRTUAL );
+    table.setSize( 100, 100 );
+    table.setItemCount( 200 );
+
+    table.setTopIndex( 100 );
+    redrawTable( table );
+
+    assertEquals( 4, countResolvedItems( table ) );
+  }
+
+  @Test
+  public void testResolvedItems_zeroPreloadedItems() {
+    table = new Table( shell, SWT.VIRTUAL );
+    table.setData( RWT.PRELOADED_ITEMS, Integer.valueOf( 0 ) );
+    table.setSize( 100, 100 );
+    table.setItemCount( 200 );
+
+    table.setTopIndex( 100 );
+    redrawTable( table );
+
+    assertEquals( 4, countResolvedItems( table ) );
+  }
+
+  @Test
+  public void testResolvedItems_10PreloadedItems() {
+    table = new Table( shell, SWT.VIRTUAL );
+    table.setData( RWT.PRELOADED_ITEMS, Integer.valueOf( 10 ) );
+    table.setSize( 100, 100 );
+    table.setItemCount( 200 );
+
+    table.setTopIndex( 100 );
+    redrawTable( table );
+
+    // visible (4) + above visible area( 10 ) + below visible area (10)
+    assertEquals( 24, countResolvedItems( table ) );
+  }
+
+  @Test
+  public void testResolvedItems_300PreloadedItems() {
+    table = new Table( shell, SWT.VIRTUAL );
+    table.setData( RWT.PRELOADED_ITEMS, Integer.valueOf( 200 ) );
+    table.setSize( 100, 100 );
+    table.setItemCount( 200 );
+
+    table.setTopIndex( 100 );
+    redrawTable( table );
+
+    // all items preloaded
+    assertEquals( 200, countResolvedItems( table ) );
   }
 
   private Image createImage50x100() throws IOException {
@@ -2752,8 +2797,7 @@ public class Table_Test {
   }
 
   private static void redrawTable( Table table ) {
-    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
-    tableAdapter.checkData();
+    table.getAdapter( ITableAdapter.class ).checkData();
   }
 
   private Table createFixedColumnsTable() {
