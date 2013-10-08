@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,8 @@
 package org.eclipse.swt.internal.graphics;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.Test;
@@ -19,54 +20,48 @@ import org.junit.Test;
 
 public class InternalImage_Test {
 
-  @Test
+  @Test( expected = NullPointerException.class )
   public void testConstructorWithNullResourceName() {
-    try {
-      new InternalImage( null, 1, 1 );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
+    new InternalImage( null, 1, 1, false );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testConstructorWithZeroWidth() {
-    try {
-      new InternalImage( "res", 0, 1 );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+    new InternalImage( "res", 0, 1, false );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testConstructorWithNegativeWidth() {
-    try {
-      new InternalImage( "res", -1, 1 );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+    new InternalImage( "res", -1, 1, false );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testConstructorWithZeroHeight() {
-    try {
-      new InternalImage( "res", 1, 0 );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+    new InternalImage( "res", 1, 0, false );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testConstructorWithNegativeHeight() {
+    new InternalImage( "res", 1, 0, false );
   }
 
   @Test
-  public void testConstructorWithNegativeHeight() {
-    try {
-      new InternalImage( "res", 1, 0 );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+  public void testConstructorWithExternalTrue() {
+    InternalImage internalImage = new InternalImage( "res", 1, 2, true );
+
+    assertTrue( internalImage.isExternal() );
+  }
+
+  @Test
+  public void testConstructorWithExternalFalse() {
+    InternalImage internalImage = new InternalImage( "res", 1, 2, false );
+
+    assertFalse( internalImage.isExternal() );
   }
 
   @Test
   public void testGetBounds() {
-    InternalImage internalImage = new InternalImage( "res", 1, 2 );
+    InternalImage internalImage = new InternalImage( "res", 1, 2, false );
     assertEquals( 0, internalImage.getBounds().x );
     assertEquals( 0, internalImage.getBounds().y );
     assertEquals( 1, internalImage.getBounds().width );
@@ -76,7 +71,7 @@ public class InternalImage_Test {
   @Test
   public void testGetResourceName() {
     String resourceName = "resourceName";
-    InternalImage internalImage = new InternalImage( resourceName, 1, 2 );
+    InternalImage internalImage = new InternalImage( resourceName, 1, 2, false );
     assertEquals( resourceName, internalImage.getResourceName() );
   }
 
@@ -85,7 +80,7 @@ public class InternalImage_Test {
     String resourceName = "resourceName";
     int width = 1;
     int height = 2;
-    InternalImage internalImage = new InternalImage( resourceName, width, height );
+    InternalImage internalImage = new InternalImage( resourceName, width, height, false );
 
     InternalImage deserializedInternalImage = Fixture.serializeAndDeserialize( internalImage );
 

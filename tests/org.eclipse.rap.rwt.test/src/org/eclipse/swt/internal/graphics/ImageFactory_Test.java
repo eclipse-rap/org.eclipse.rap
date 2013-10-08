@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -116,6 +117,14 @@ public class ImageFactory_Test {
   public void testGetImagePathForNullImage() {
     String imagePath = ImageFactory.getImagePath( null );
     assertNull( imagePath );
+  }
+
+  @Test
+  public void testGetImagePathForExternalImage() {
+    String url = "http://foo.org/bar.png";
+    Image externalImage = new ExternalImageDescriptor( url , 32, 32 ).createImage( display );
+
+    assertEquals( url, ImageFactory.getImagePath( externalImage ) );
   }
 
   private static String getRegisterPath( Image image ) {
