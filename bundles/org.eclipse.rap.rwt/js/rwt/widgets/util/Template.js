@@ -17,6 +17,7 @@ namespace( "rwt.widgets.util" );
 rwt.widgets.util.Template = function( cells ) {
   this._cells = cells;
   this._item = null;
+  this._dimension = null;
   this._parseCells();
 };
 
@@ -24,8 +25,9 @@ rwt.widgets.util.Template.prototype = {
 
   hasCellLayout : rwt.util.Functions.returnTrue,
 
-  configure : function( item ) {
+  configure : function( item, dimension ) {
     this._item = item;
+    this._dimension = dimension;
   },
 
   getCellCount : function() {
@@ -33,19 +35,31 @@ rwt.widgets.util.Template.prototype = {
   },
 
   getCellLeft : function( cell ) {
-    return this._cells[ cell ].left;
+    var cellData = this._cells[ cell ];
+    return   cellData.left !== undefined
+           ? cellData.left
+           : this._dimension[ 0 ] - cellData.width - cellData.right;
   },
 
   getCellTop : function( cell ) {
-    return this._cells[ cell ].top;
+    var cellData = this._cells[ cell ];
+    return   cellData.top !== undefined
+           ? cellData.top
+           : this._dimension[ 1 ] - cellData.height - cellData.bottom;
   },
 
   getCellWidth : function( cell ) {
-    return this._cells[ cell ].width;
+    var cellData = this._cells[ cell ];
+    return   cellData.width !== undefined
+           ? cellData.width
+           : this._dimension[ 0 ] - cellData.left - cellData.right;
   },
 
   getCellHeight : function( cell ) {
-    return this._cells[ cell ].height;
+    var cellData = this._cells[ cell ];
+    return   cellData.height !== undefined
+           ? cellData.height
+           : this._dimension[ 1 ] - cellData.top - cellData.bottom;
   },
 
   getCellType : function( cell ) {

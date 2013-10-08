@@ -38,10 +38,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( 15, template.getCellLeft( 0 ) );
     },
 
+    testGetCellLeft_LeftIsUndefined : function() {
+      var template = new Template( [ { "width" : 10, "right" : 15 } ] );
+      template.configure( null, [ 100, 30 ] );
+
+      assertEquals( 75, template.getCellLeft( 0 ) );
+    },
+
     testGetCellTop_TopIsOffset : function() {
       var template = new Template( [ { "top" : 12 } ] );
 
       assertEquals( 12, template.getCellTop( 0 ) );
+    },
+
+    testGetCellTop_TopIsUndefined : function() {
+      var template = new Template( [ { "height" : 10, "bottom" : 15 } ] );
+      template.configure( null, [ 100, 30 ] );
+
+      assertEquals( 5, template.getCellTop( 0 ) );
     },
 
     testGetCellWidth_WidthIsSet : function() {
@@ -50,10 +64,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( 17, template.getCellWidth( 0 ) );
     },
 
+    testGetCellWidth_WidthIsUndefined : function() {
+      var template = new Template( [ { "left" : 10, "right" : 15 } ] );
+      template.configure( null, [ 100, 30 ] );
+
+      assertEquals( 75, template.getCellWidth( 0 ) );
+    },
+
     testGetCellHeight_HeightIsSet : function() {
       var template = new Template( [ { "height" : 12 } ] );
 
       assertEquals( 12, template.getCellHeight( 0 ) );
+    },
+
+    testGetCellHeight_HeightIsUndefined : function() {
+      var template = new Template( [ { "top" : 10, "bottom" : 15 } ] );
+      template.configure( null, [ 100, 30 ] );
+
+      assertEquals( 5, template.getCellHeight( 0 ) );
     },
 
     testGetCellType : function() {
