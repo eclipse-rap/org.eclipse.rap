@@ -1043,6 +1043,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text = null;
     },
 
+    testDisposeText_DoNotCrashIfTextLoosesFocusDuringDestroy : function() {
+      // See Bug 418719 - Client error: TypeError while press key quickly
+      createText();
+      var widget = new rwt.widgets.Button();
+      widget.setParent( shell );
+      TestUtil.flush();
+      text.focus();
+
+      text.destroy();
+      widget.focus();
+      TestUtil.flush();
+
+      assertTrue( text.isDisposed() );
+    },
+
     testInputEvent: function() {
       createText();
       text.setValue( "c" );

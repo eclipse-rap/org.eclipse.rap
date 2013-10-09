@@ -661,7 +661,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
 
     _applyFocused : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
-      if( !rwt.widgets.util.FocusHandler.mouseFocus ) {
+      if( newValue && !rwt.widgets.util.FocusHandler.mouseFocus ) {
         this._renderSelection();
       }
     },
