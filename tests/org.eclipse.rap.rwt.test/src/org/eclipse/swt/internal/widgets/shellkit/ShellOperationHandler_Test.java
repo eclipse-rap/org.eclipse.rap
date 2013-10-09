@@ -17,6 +17,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_RES
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
@@ -162,6 +163,13 @@ public class ShellOperationHandler_Test {
     handler.handleNotify( EVENT_ACTIVATE, new JsonObject() );
 
     assertSame( shell, display.getActiveShell() );
+  }
+
+  @Test
+  public void testHandleNotifyActivate_invalidateFocus() {
+    handler.handleNotify( EVENT_ACTIVATE, new JsonObject() );
+
+    assertTrue( getDisplayAdapter( display ).isFocusInvalidated() );
   }
 
   @Test

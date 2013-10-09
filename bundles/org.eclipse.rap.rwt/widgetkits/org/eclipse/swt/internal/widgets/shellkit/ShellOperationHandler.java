@@ -142,7 +142,9 @@ public class ShellOperationHandler extends ControlOperationHandler<Shell> {
    */
   @Override
   public void handleNotifyActivate( Shell shell, JsonObject properties ) {
-    shell.getDisplay().getAdapter( IDisplayAdapter.class ).setActiveShell( shell );
+    IDisplayAdapter displayAdapter = shell.getDisplay().getAdapter( IDisplayAdapter.class );
+    displayAdapter.setActiveShell( shell );
+    displayAdapter.invalidateFocus();
   }
 
   private static void setActiveControl( Shell shell, Widget widget ) {

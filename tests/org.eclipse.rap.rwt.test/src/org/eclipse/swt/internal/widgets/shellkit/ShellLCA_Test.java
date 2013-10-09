@@ -50,6 +50,7 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -603,6 +604,27 @@ public class ShellLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findSetProperty( shell, "visibility" ) );
+  }
+
+  // see bug 418893
+  @Test
+  public void testRenderFocusControlAfterShellIsActivated() {
+    Shell otherShell = new Shell( display );
+    getRemoteObject( otherShell ).setHandler( new ShellOperationHandler( otherShell ) );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( otherShell );
+    Label focusControl = new Label( otherShell, SWT.NONE );
+    otherShell.open();
+    focusControl.forceFocus();
+    shell.open();
+
+    Fixture.fakeNewRequest();
+    Fixture.fakeNotifyOperation( getId( otherShell ), "Activate", new JsonObject() );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    String actual = message.findSetProperty( getId( display ), "focusControl" ).asString();
+    assertEquals( getId( focusControl ),  actual );
   }
 
 }
