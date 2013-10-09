@@ -19,24 +19,24 @@ public class RowTemplate implements Serializable {
 
   public static final String ROW_TEMPLATE = "org.eclipse.rap.rwt.rowTemplate";
 
-  private final List<Cell> cells;
+  private final List<Cell<?>> cells;
 
   public RowTemplate() {
-    cells = new ArrayList<Cell>();
+    cells = new ArrayList<Cell<?>>();
   }
 
-  void addCell( Cell cell ) {
+  void addCell( Cell<?> cell ) {
     checkCell( cell );
     cells.add( cell );
   }
 
-  private void checkCell( Cell cell ) {
+  private void checkCell( Cell<?> cell ) {
     if( cell == null ) {
       throw new IllegalArgumentException( "Cell must not be null" );
     }
   }
 
-  public List<Cell> getCells() {
-    return new ArrayList<Cell>( cells );
+  public List<Cell<?>> getCells() {
+    return new ArrayList<Cell<?>>( cells );
   }
 }

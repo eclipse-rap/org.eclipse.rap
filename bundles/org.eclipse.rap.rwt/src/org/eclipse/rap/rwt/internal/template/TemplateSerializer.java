@@ -17,9 +17,7 @@ import java.util.Map.Entry;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.protocol.StylesUtil;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -30,7 +28,6 @@ import org.eclipse.swt.graphics.RGB;
 public class TemplateSerializer {
 
   private static final String PROPERTY_TYPE = "type";
-  private static final String PROPERTY_STYLE = "style";
 
   private final RowTemplate template;
 
@@ -47,34 +44,28 @@ public class TemplateSerializer {
 
   public JsonValue toJson() {
     JsonArray serializedCells = new JsonArray();
-    List<Cell> cells = template.getCells();
+    List<Cell<?>> cells = template.getCells();
     if( !cells.isEmpty() ) {
       addCells( serializedCells, cells );
     }
     return serializedCells;
   }
 
-  private void addCells( JsonArray serializedCells, List<Cell> cells ) {
-    for( Cell cell : cells ) {
-      addCell( serializedCells, ( CellImpl )cell );
+  private void addCells( JsonArray serializedCells, List<Cell<?>> cells ) {
+    for( Cell<?> cell : cells ) {
+      addCell( serializedCells, cell );
     }
   }
 
-  private void addCell( JsonArray serializedCells, CellImpl cell ) {
+  private void addCell( JsonArray serializedCells, Cell cell ) {
     JsonObject serializedCell = new JsonObject();
     serializedCell.add( PROPERTY_TYPE, cell.getType() );
-    addStyles( cell, serializedCell );
     addAttributes( cell, serializedCell );
     serializedCells.add( serializedCell );
   }
 
-  private void addStyles( CellImpl cell, JsonObject serializedCell ) {
-    String[] styles = StylesUtil.filterStyles( cell.getStyle(), CellImpl.ALLOWED_STYLES );
-    serializedCell.add( PROPERTY_STYLE, JsonUtil.createJsonArray( styles ) );
-  }
-
-  private void addAttributes( CellImpl cell, JsonObject serializedCell ) {
-    Map<String, Object> attributes = cell.getAttributes();
+  private void addAttributes( Cell<?> cell, JsonObject serializedCell ) {
+    Map<String, Object> attributes = cell.getAdapter( CellData.class ).getAttributes();
     for( Entry<String, Object> entry : attributes.entrySet() ) {
       serializedCell.add( entry.getKey(), getJsonValue( entry.getValue() ) );
     }
