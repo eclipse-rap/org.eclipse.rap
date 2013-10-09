@@ -145,6 +145,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
               this._getTextElement( i ).style.backgroundColor = background;
             }
           break;
+          case "image":
+            this._renderCellImage( template, i, config, false, false );
+          break;
         }
       }
     },
@@ -529,9 +532,13 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderCellImageBounds : function( item, cell, config ) {
       var element = this._cellImages[ cell ];
       if( element ) {
-        var left = this._getItemImageLeft( item, cell, config );
-        var width = this._getItemImageWidth( item, cell, config );
-        this._setBounds( element, left, 0, width, this.getHeight() );
+        if( item && item.hasCellLayout() ) {
+          this._renderCellLayout( element, item, cell );
+        } else {
+          var left = this._getItemImageLeft( item, cell, config );
+          var width = this._getItemImageWidth( item, cell, config );
+          this._setBounds( element, left, 0, width, this.getHeight() );
+        }
       }
     },
 
@@ -569,6 +576,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           var left = this._getItemTextLeft( item, cell, config );
           var width = this._getItemTextWidth( item, cell, config );
           var top = this._getCellPadding( config )[ 0 ];
+          // TODO : for vertical center rendering line-height should also be set,
+          //        but not otherwise. Also not sure about bottom alignment.
           this._setBounds( element, left, top, width, this.getHeight() - top );
         }
       }
@@ -764,7 +773,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var result = this._cellLabels[ cell ];
       if( !result ) {
         result = this._createElement( 3 );
-        result.style.verticalAlign = "middle";
+        result.style.verticalAlign = "middle"; // TODO [tb] : not a valid property, does nothing?
         result.style.whiteSpace = "nowrap";
         if( rwt.client.Client.isNewMshtml() ) {
           result.style.backgroundColor = "rgba(0, 0, 0, 0)";

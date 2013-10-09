@@ -82,6 +82,14 @@ rwt.widgets.util.Template.prototype = {
     }
   },
 
+  getImage : function( cell, arg ) {
+    if( this._isBound( cell ) ) {
+      return this._item.getImage( this._getIndex( cell ), arg );
+    } else {
+      return null;
+    }
+  },
+
   getCellForeground : function( cell ) {
     var result = null;
     if( this._isBound( cell ) ) {

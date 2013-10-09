@@ -2560,7 +2560,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( [ 400, 15 ], log[ 0 ][ 1 ] );
     },
 
-    testRenderTemplate_RenderSingleCellLeft : function() {
+    testRenderTemplate_RenderTextCellLeft : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
       item.setTexts( [ "foo", "bar" ] );
@@ -2574,7 +2574,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 10, parseInt( nodes[ 0 ].style.left, 10 ) );
     },
 
-    testRenderTemplate_RenderSingleCellTop : function() {
+    testRenderTemplate_RenderTextCellTop : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
       item.setTexts( [ "foo", "bar" ] );
@@ -2587,7 +2587,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 20, parseInt( nodes[ 0 ].style.top, 10 ) );
     },
 
-    testRenderTemplate_RenderSingleCellWidth : function() {
+    testRenderTemplate_RenderTextCellWidth : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
       item.setTexts( [ "foo", "bar" ] );
@@ -2600,7 +2600,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 100, parseInt( nodes[ 0 ].style.width, 10 ) );
     },
 
-    testRenderTemplate_RenderSingleCellHeight : function() {
+    testRenderTemplate_RenderTextCellHeight : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
       item.setTexts( [ "foo", "bar" ] );
@@ -2685,6 +2685,25 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( [ 255, 0, 0 ], rwt.util.Colors.stringToRgb( color ) );
     },
 
+   // TODO : Should the cell have a transparent background if an overlay is present?
+   // NOTE: "Normal" cells consist of separate backround and foreground elements, overlay is between
+//    testRenderTemplate_RenderNotTextCellBackgroundIfOverlayIsUsed : function() {
+//      tree.setTreeColumn( -1 );
+//      var item = this._createItem( tree );
+//      item.setTexts( [ "foo", "bar" ] );
+//      this._setOverlayBackground( "green" );
+//
+//      tree.getRenderConfig().rowTemplate = mockTemplate( {
+//        "type" : "text",
+//        "background" : [ 255, 0, 0 ]
+//      } );
+//
+//      row.renderItem( item, tree._config, false, null );
+//
+//      var color = row._getTargetNode().childNodes[ 0 ].style.backgroundColor;
+//      assertTrue( color === "" || color === "transparent" );
+//    },
+
     testRenderTemplate_ResetTextCellBackground : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
@@ -2698,6 +2717,72 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
       var color = row._getTargetNode().childNodes[ 0 ].style.backgroundColor;
       assertTrue( color === "" || color === "transparent" );
+    },
+
+    testRenderTemplate_RenderImageCellContent : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      item.setImages( [ "foo.jpg", "bar.jpg" ] );
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 1, "image", 10, 20, 30, 40 ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var nodes = row._getTargetNode().childNodes;
+      var image = TestUtil.getCssBackgroundImage( nodes[ 0 ] );
+      assertTrue( image.indexOf( "bar.jpg" ) != -1 );
+    },
+
+    testRenderTemplate_RenderImageCellLeft : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      item.setImages( [ "foo.jpg", "bar.jpg" ] );
+
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "image", 10, 20 ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var nodes = row._getTargetNode().childNodes;
+      assertEquals( 1, nodes.length );
+      assertEquals( 10, parseInt( nodes[ 0 ].style.left, 10 ) );
+    },
+
+    testRenderTemplate_RenderImageCellTop : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      item.setImages( [ "foo.jpg", "bar.jpg" ] );
+
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "image", 10, 20 ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var nodes = row._getTargetNode().childNodes;
+      assertEquals( 20, parseInt( nodes[ 0 ].style.top, 10 ) );
+    },
+
+    testRenderTemplate_RenderImageCellWidth : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      item.setImages( [ "foo.jpg", "bar.jpg" ] );
+
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "image", 10, 20, 100, 12 ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var nodes = row._getTargetNode().childNodes;
+      assertEquals( 100, parseInt( nodes[ 0 ].style.width, 10 ) );
+    },
+
+    testRenderTemplate_RenderImageCellHeight : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      item.setImages( [ "foo.jpg", "bar.jpg" ] );
+
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "image", 10, 20, 100, 12 ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var nodes = row._getTargetNode().childNodes;
+      assertEquals( 12, parseInt( nodes[ 0 ].style.height, 10 ) );
     },
 
      /////////

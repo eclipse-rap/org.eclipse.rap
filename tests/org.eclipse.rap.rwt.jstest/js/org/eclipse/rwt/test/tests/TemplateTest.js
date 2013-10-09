@@ -90,7 +90,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( "anyString", template.getCellType( 0 ) );
     },
 
-    testgetText_FromGridItem : function() {
+    testGetText_FromGridItem : function() {
       var template = new Template( [ { "bindingIndex" : 1 }, {} ] );
 
       template.configure( createGridItem( [ "foo", "bar" ] ) );
@@ -132,6 +132,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       template.configure( item );
 
       assertTrue( template.hasText( 0 ) );
+    },
+
+    testGetImage_FromGridItem : function() {
+      var template = new Template( [ { "bindingIndex" : 1 }, {} ] );
+
+      template.configure( createGridItem( [], [ "foo.png", "bar.png" ] ) );
+      assertEquals( "bar.png", template.getImage( 0 ) );
+      assertNull( template.getImage( 1 ) );
     },
 
     testGetCellFont_NotBoundIsNull : function() {
@@ -276,11 +284,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
 } );
 
-var createGridItem = function( texts ) {
+var createGridItem = function( texts, images ) {
   var root = new rwt.widgets.GridItem();
   root.setItemCount( 1 );
   var result = new rwt.widgets.GridItem( root, 0 );
   result.setTexts( texts );
+  result.setImages( images );
   return result;
 };
 
