@@ -2540,16 +2540,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "green", row._overlayElement.style.backgroundColor );
     },
 
-    testRenderTemplate_ConfigureTemplate : function() {
+    testRenderTemplate_CallRender : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
       row.setHeight( 15 );
       var template = mockTemplate( [ 0, "text", 10, 20 ] );
       var log = [];
-      var configure = template.configure;
-      template.configure = function() {
+      var render = template.render;
+      template.render = function() {
         log.push( rwt.util.Arrays.fromArguments( arguments ) );
-        configure.apply( this, arguments );
+        render.apply( this, arguments );
       };
       tree.getRenderConfig().rowTemplate = template;
 

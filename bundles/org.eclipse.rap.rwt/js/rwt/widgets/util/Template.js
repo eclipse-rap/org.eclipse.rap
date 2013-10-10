@@ -25,7 +25,7 @@ rwt.widgets.util.Template.prototype = {
 
   hasCellLayout : rwt.util.Functions.returnTrue,
 
-  configure : function( item, dimension ) {
+  render : function( item, dimension ) {
     this._item = item;
     this._dimension = dimension;
   },
