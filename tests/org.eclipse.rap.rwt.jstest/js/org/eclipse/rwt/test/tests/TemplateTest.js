@@ -54,7 +54,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var template = new Template( [ {}, {}, {} ] );
 
       try {
-        template.render( { "dimension" : [ 100, 100 ], "container" : {}, "item" : null } );
+        template.render( { "bounds" : [ 0, 0, 100, 100 ], "container" : {}, "item" : null } );
         fail();
       } catch( ex ) {
         // expected
@@ -327,7 +327,7 @@ var render = function( template, item, dimension ) {
   template.render( {
     "container" : createContainer( template ),
     "item" : item,
-    "dimension" : dimension || [ 100, 100 ]
+    "bounds" : dimension ? [ 0, 0 ].concat( dimension ) : [ 0, 0, 100, 100 ]
   } );
 };
 

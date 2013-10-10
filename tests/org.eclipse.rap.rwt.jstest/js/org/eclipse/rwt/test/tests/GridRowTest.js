@@ -2521,7 +2521,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 1, log.length );
       assertEquals( 1, log[ 0 ].length );
       assertIdentical( item, log[ 0 ][ 0 ].item );
-      assertEquals( [ 400, 15 ], log[ 0 ][ 0 ].dimension );
+      assertEquals( [ 0, 0, 400, 15 ], log[ 0 ][ 0 ].bounds );
       assertIdentical( row._getTargetNode(), log[ 0 ][ 0 ].container.element );
       assertIdentical( template, log[ 0 ][ 0 ].container.template );
     },

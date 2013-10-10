@@ -142,7 +142,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       template.render( {
         "container" : this._templateContainer,
         "item" : item,
-        "dimension" : [ this.getWidth(), this.getHeight() ]
+        "bounds" : [ 0, 0, this.getWidth(), this.getHeight() ]
       } );
       for( var i = 0; i < template.getCellCount(); i++ ) {
         var background = this._getCellBackgroundColor( template, i, config );
