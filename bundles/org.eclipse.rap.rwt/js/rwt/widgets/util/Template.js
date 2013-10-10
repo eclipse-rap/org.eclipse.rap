@@ -25,7 +25,20 @@ rwt.widgets.util.Template.prototype = {
 
   hasCellLayout : rwt.util.Functions.returnTrue,
 
+  createContainer : function( element ) {
+    if( !element || typeof element.nodeName !== "string" ) {
+      throw new Error( "Not a valid target for TemplateContainer:" + element );
+    }
+    return {
+      "element" : element,
+      "template" : this
+    };
+  },
+
   render : function( options ) {
+    if( !options.container || options.container.template !== this ) {
+      throw new Error( "No valid TemplateContainer: " + options.container );
+    }
     this._item = options.item;
     this._dimension = options.dimension;
   },

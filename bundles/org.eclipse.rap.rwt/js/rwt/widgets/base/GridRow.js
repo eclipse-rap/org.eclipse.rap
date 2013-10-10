@@ -42,6 +42,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     this._miscNodes = [];
     this._usedMiscNodes = 0;
     this._cellsRendered = 0;
+    this._templateContainer = null;
   },
 
   destruct : function() {
@@ -135,7 +136,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _renderTemplate : function( item, config, hoverTarget, renderSelected, contentOnly ) {
       var template = config.rowTemplate;
+      if( this._templateContainer == null ) {
+        this._templateContainer = template.createContainer( this._getTargetNode() );
+      }
       template.render( {
+        "container" : this._templateContainer,
         "item" : item,
         "dimension" : [ this.getWidth(), this.getHeight() ]
       } );

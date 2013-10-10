@@ -2503,6 +2503,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertTrue( log > 0 );
     },
 
+    testRenderTemplate_CallRender : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      row.setHeight( 15 );
+      var template = mockTemplate( [ 0, "text", 10, 20 ] );
+      var log = [];
+      var render = template.render;
+      template.render = function() {
+        log.push( rwt.util.Arrays.fromArguments( arguments ) );
+        render.apply( this, arguments );
+      };
+      tree.getRenderConfig().rowTemplate = template;
+
+      row.renderItem( item, tree._config, false, null );
+
+      assertEquals( 1, log.length );
+      assertEquals( 1, log[ 0 ].length );
+      assertIdentical( item, log[ 0 ][ 0 ].item );
+      assertEquals( [ 400, 15 ], log[ 0 ][ 0 ].dimension );
+      assertIdentical( row._getTargetNode(), log[ 0 ][ 0 ].container.element );
+      assertIdentical( template, log[ 0 ][ 0 ].container.template );
+    },
+
     testRenderTemplate_EmptyTemplateRendersEmptyItem : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
@@ -2538,27 +2561,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.renderItem( item, tree._config, false, null );
 
       assertEquals( "green", row._overlayElement.style.backgroundColor );
-    },
-
-    testRenderTemplate_CallRender : function() {
-      tree.setTreeColumn( -1 );
-      var item = this._createItem( tree );
-      row.setHeight( 15 );
-      var template = mockTemplate( [ 0, "text", 10, 20 ] );
-      var log = [];
-      var render = template.render;
-      template.render = function() {
-        log.push( rwt.util.Arrays.fromArguments( arguments ) );
-        render.apply( this, arguments );
-      };
-      tree.getRenderConfig().rowTemplate = template;
-
-      row.renderItem( item, tree._config, false, null );
-
-      assertEquals( 1, log.length );
-      assertEquals( 1, log[ 0 ].length );
-      assertIdentical( item, log[ 0 ][ 0 ].item );
-      assertEquals( [ 400, 15 ], log[ 0 ][ 0 ].dimension );
     },
 
     testRenderTemplate_RenderTextCellLeft : function() {
