@@ -135,7 +135,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _renderTemplate : function( item, config, hoverTarget, renderSelected, contentOnly ) {
       var template = config.rowTemplate;
-      template.render( item, [ this.getWidth(), this.getHeight() ] );
+      template.render( {
+        "item" : item,
+        "dimension" : [ this.getWidth(), this.getHeight() ]
+      } );
       for( var i = 0; i < template.getCellCount(); i++ ) {
         var background = this._getCellBackgroundColor( template, i, config );
         switch( template.getCellType( i ) ) {

@@ -2556,8 +2556,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.renderItem( item, tree._config, false, null );
 
       assertEquals( 1, log.length );
-      assertIdentical( item, log[ 0 ][ 0 ] );
-      assertEquals( [ 400, 15 ], log[ 0 ][ 1 ] );
+      assertEquals( 1, log[ 0 ].length );
+      assertIdentical( item, log[ 0 ][ 0 ].item );
+      assertEquals( [ 400, 15 ], log[ 0 ][ 0 ].dimension );
     },
 
     testRenderTemplate_RenderTextCellLeft : function() {

@@ -16,18 +16,18 @@ namespace( "rwt.widgets.util" );
 
 rwt.widgets.util.Template = function( cells ) {
   this._cells = cells;
+  this._parseCells();
   this._item = null;
   this._dimension = null;
-  this._parseCells();
 };
 
 rwt.widgets.util.Template.prototype = {
 
   hasCellLayout : rwt.util.Functions.returnTrue,
 
-  render : function( item, dimension ) {
-    this._item = item;
-    this._dimension = dimension;
+  render : function( options ) {
+    this._item = options.item;
+    this._dimension = options.dimension;
   },
 
   getCellCount : function() {
